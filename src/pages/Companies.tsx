@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { OnboardingHint } from "@/components/OnboardingHint";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -148,7 +149,10 @@ const Companies = () => {
 
       {/* Canton Filter */}
       <div>
-        <label className="text-sm font-medium mb-2 block">Kanton</label>
+        <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+          Kanton
+          <OnboardingHint content="Filtern Sie Umzugsfirmen nach Ihrem gewünschten Servicegebiet." />
+        </label>
         <Select value={selectedCanton} onValueChange={setSelectedCanton}>
           <SelectTrigger className="h-12">
             <MapPin className="w-4 h-4 mr-2" />
@@ -166,7 +170,10 @@ const Companies = () => {
 
       {/* Rating Filter */}
       <div>
-        <label className="text-sm font-medium mb-2 block">Mindestbewertung</label>
+        <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+          Mindestbewertung
+          <OnboardingHint content="Zeigen Sie nur Firmen mit einer bestimmten Mindestbewertung an, um Qualität zu garantieren." />
+        </label>
         <Select value={selectedRating} onValueChange={setSelectedRating}>
           <SelectTrigger className="h-12">
             <Star className="w-4 h-4 mr-2" />

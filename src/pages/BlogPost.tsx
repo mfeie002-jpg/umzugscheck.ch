@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -114,6 +115,16 @@ const BlogPost = () => {
       <Navigation />
 
       <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs
+            items={[
+              { label: "Blog", href: "/blog" },
+              { label: post.title },
+            ]}
+          />
+        </div>
+
         {/* Header */}
         <section className="py-12 md:py-16 gradient-hero text-white">
           <div className="container mx-auto px-4">

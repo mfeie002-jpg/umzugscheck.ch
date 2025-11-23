@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -75,6 +76,16 @@ const Canton = () => {
       <Navigation />
 
       <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs
+            items={[
+              { label: "Kantone", href: "/" },
+              { label: `Kanton ${info.name}` },
+            ]}
+          />
+        </div>
+
         {/* Hero */}
         <section className="py-16 md:py-24 gradient-hero text-white">
           <div className="container mx-auto px-4">

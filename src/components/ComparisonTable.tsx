@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, CheckCircle2, X, ArrowRight } from "lucide-react";
+import { Star, CheckCircle2, X, ArrowRight, DollarSign, Shield, Package, Wrench, Sparkles, Trash2, Archive } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Company {
@@ -22,16 +22,15 @@ interface ComparisonTableProps {
 }
 
 const comparisonFeatures = [
-  { label: "Bewertung", key: "rating" },
-  { label: "Preisniveau", key: "price_level" },
-  { label: "Geprüft", key: "verified" },
-  { label: "Verfügbarkeit", key: "available" },
-  { label: "Transportservice", key: "transport" },
-  { label: "Packservice", key: "packing" },
-  { label: "Montageservice", key: "assembly" },
-  { label: "Reinigungsservice", key: "cleaning" },
-  { label: "Lagerung", key: "storage" },
-  { label: "Entsorgung", key: "disposal" },
+  { label: "Bewertung", key: "rating", icon: Star },
+  { label: "Preisniveau", key: "price_level", icon: DollarSign },
+  { label: "Geprüft", key: "verified", icon: Shield },
+  { label: "Transportservice", key: "transport", icon: Package },
+  { label: "Packservice", key: "packing", icon: Package },
+  { label: "Montageservice", key: "assembly", icon: Wrench },
+  { label: "Reinigungsservice", key: "cleaning", icon: Sparkles },
+  { label: "Lagerung", key: "storage", icon: Archive },
+  { label: "Entsorgung", key: "disposal", icon: Trash2 },
 ];
 
 export const ComparisonTable = ({ companies, maxCompanies = 5 }: ComparisonTableProps) => {
@@ -62,24 +61,22 @@ export const ComparisonTable = ({ companies, maxCompanies = 5 }: ComparisonTable
       </CardHeader>
       <CardContent className="p-0">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b bg-secondary/30">
-                <th className="text-left p-4 font-semibold min-w-[180px] sticky left-0 bg-secondary/30 z-10">
-                  Kriterium
+          <table className="w-full border-collapse">
+            <thead className="sticky top-0 z-20 bg-white shadow-soft">
+              <tr className="bg-gradient-to-r from-primary/5 to-primary/10">
+                <th className="p-6 text-left font-bold text-base border-b-2 border-border sticky left-0 bg-gradient-to-r from-primary/5 to-primary/10 z-30 min-w-[180px]">
+                  Vergleich
                 </th>
                 {displayCompanies.map((company) => (
-                  <th key={company.id} className="p-4 min-w-[200px]">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-3xl">
-                        {company.logo}
-                      </div>
+                  <th key={company.id} className="p-6 border-b-2 border-border min-w-[220px]">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="text-4xl">{company.logo}</div>
                       <div className="text-center">
-                        <div className="font-bold text-sm">{company.name}</div>
+                        <div className="font-bold text-lg mb-1">{company.name}</div>
                         {company.verified && (
-                          <Badge className="mt-1 bg-success text-white text-xs">
+                          <Badge variant="outline" className="text-xs bg-success/10 text-success border-success/30">
                             <CheckCircle2 className="w-3 h-3 mr-1" />
-                            Geprüft
+                            Verifiziert
                           </Badge>
                         )}
                       </div>
@@ -89,105 +86,110 @@ export const ComparisonTable = ({ companies, maxCompanies = 5 }: ComparisonTable
               </tr>
             </thead>
             <tbody>
-              {/* Rating */}
-              <tr className="border-b hover:bg-secondary/20 transition-colors">
-                <td className="p-4 font-medium sticky left-0 bg-background z-10">
-                  Bewertung
-                </td>
-                {displayCompanies.map((company) => (
-                  <td key={company.id} className="p-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.floor(company.rating)
-                                ? "fill-accent text-accent"
-                                : "fill-muted text-muted"
-                            }`}
-                          />
-                        ))}
+              {comparisonFeatures.map((feature, index) => {
+                const FeatureIcon = feature.icon;
+                return (
+                  <tr
+                    key={feature.key}
+                    className={`transition-colors hover:bg-secondary/30 ${
+                      index % 2 === 0 ? "bg-white" : "bg-secondary/10"
+                    }`}
+                  >
+                    <td className="p-5 font-semibold text-sm border-b border-border sticky left-0 bg-inherit z-10">
+                      <div className="flex items-center gap-2">
+                        <FeatureIcon className="w-4 h-4 text-primary" />
+                        {feature.label}
                       </div>
-                      <span className="font-bold">{company.rating}</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {company.review_count} Bewertungen
-                    </div>
-                  </td>
-                ))}
-              </tr>
-
-              {/* Price Level */}
-              <tr className="border-b hover:bg-secondary/20 transition-colors">
-                <td className="p-4 font-medium sticky left-0 bg-background z-10">
-                  Preisniveau
-                </td>
-                {displayCompanies.map((company) => (
-                  <td key={company.id} className="p-4 text-center">
-                    <span className="font-bold text-primary text-lg">
-                      {company.price_level}
-                    </span>
-                  </td>
-                ))}
-              </tr>
-
-              {/* Verified */}
-              <tr className="border-b hover:bg-secondary/20 transition-colors">
-                <td className="p-4 font-medium sticky left-0 bg-background z-10">
-                  Geprüft & Verifiziert
-                </td>
-                {displayCompanies.map((company) => (
-                  <td key={company.id} className="p-4 text-center">
-                    {company.verified ? (
-                      <CheckCircle2 className="w-6 h-6 text-success mx-auto" />
-                    ) : (
-                      <X className="w-6 h-6 text-muted mx-auto" />
-                    )}
-                  </td>
-                ))}
-              </tr>
-
-              {/* Services */}
-              {["transport", "packing", "assembly", "cleaning", "storage", "disposal"].map((service) => (
-                <tr key={service} className="border-b hover:bg-secondary/20 transition-colors">
-                  <td className="p-4 font-medium sticky left-0 bg-background z-10 capitalize">
-                    {service === "transport" && "Transportservice"}
-                    {service === "packing" && "Packservice"}
-                    {service === "assembly" && "Montageservice"}
-                    {service === "cleaning" && "Reinigungsservice"}
-                    {service === "storage" && "Lagerung"}
-                    {service === "disposal" && "Entsorgung"}
-                  </td>
-                  {displayCompanies.map((company) => (
-                    <td key={company.id} className="p-4 text-center">
-                      {hasService(company, service) ? (
-                        <CheckCircle2 className="w-6 h-6 text-success mx-auto" />
-                      ) : (
-                        <X className="w-6 h-6 text-muted mx-auto" />
-                      )}
                     </td>
-                  ))}
-                </tr>
-              ))}
+                    {displayCompanies.map((company) => {
+                      let content;
+                      if (feature.key === "rating") {
+                        content = (
+                          <div className="flex flex-col items-center gap-1">
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-4 h-4 ${
+                                    i < Math.floor(company.rating)
+                                      ? "fill-yellow-400 text-yellow-400"
+                                      : "text-gray-300"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                            <span className="text-sm font-bold text-foreground">{company.rating.toFixed(1)}</span>
+                            <span className="text-xs text-muted-foreground">({company.review_count})</span>
+                          </div>
+                        );
+                      } else if (feature.key === "price_level") {
+                        const priceColor = 
+                          company.price_level === "CHF" ? "bg-success/10 text-success" :
+                          company.price_level === "CHF CHF" ? "bg-warning/10 text-warning" :
+                          "bg-primary/10 text-primary";
+                        content = (
+                          <span className={`inline-block px-4 py-1.5 rounded-full font-bold text-sm ${priceColor}`}>
+                            {company.price_level}
+                          </span>
+                        );
+                      } else if (feature.key === "verified") {
+                        content = company.verified ? (
+                          <div className="flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
+                              <CheckCircle2 className="w-5 h-5 text-success" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                              <X className="w-5 h-5 text-muted-foreground/40" />
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        const hasIt = hasService(company, feature.key);
+                        content = hasIt ? (
+                          <div className="flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
+                              <CheckCircle2 className="w-5 h-5 text-success" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                              <X className="w-5 h-5 text-muted-foreground/40" />
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      return (
+                        <td key={`${company.name}-${feature.key}`} className="p-5 text-center border-b border-border">
+                          {content}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
 
-              {/* CTA Row */}
-              <tr className="bg-secondary/10">
-                <td className="p-4 font-medium sticky left-0 bg-secondary/10 z-10">
-                  Aktion
+              {/* Action Row */}
+              <tr className="bg-gradient-to-r from-accent/10 to-accent/5">
+                <td className="p-6 font-bold text-base sticky left-0 bg-gradient-to-r from-accent/10 to-accent/5 z-10">
+                  Kontakt
                 </td>
                 {displayCompanies.map((company) => (
-                  <td key={company.id} className="p-4">
-                    <div className="space-y-2">
+                  <td key={`${company.name}-action`} className="p-6">
+                    <div className="flex flex-col gap-3">
                       <Link to={`/firmen/${company.id}`}>
-                        <Button variant="outline" size="sm" className="w-full">
+                        <Button variant="outline" className="w-full hover:bg-secondary" size="default">
                           Profil ansehen
                         </Button>
                       </Link>
                       <Link to="/rechner">
-                        <Button size="sm" className="w-full bg-accent hover:bg-accent/90 group">
+                        <Button className="w-full bg-accent hover:bg-accent/90 shadow-accent group" size="default">
                           Offerte anfragen
-                          <ArrowRight className="ml-2 w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                       </Link>
                     </div>

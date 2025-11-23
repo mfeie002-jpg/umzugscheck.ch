@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QuickCalculator } from "@/components/calculator/QuickCalculator";
 import { AdvancedCalculator } from "@/components/calculator/AdvancedCalculator";
@@ -12,6 +13,16 @@ const Calculator = () => {
       <Navigation />
       
       <main className="flex-1 bg-gradient-light">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs
+            items={[
+              { label: "Startseite", href: "/" },
+              { label: "Kostenrechner" },
+            ]}
+          />
+        </div>
+
         {/* Header */}
         <section className="py-12 md:py-16 gradient-hero text-white">
           <div className="container mx-auto px-4">

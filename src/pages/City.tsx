@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -108,21 +109,25 @@ const City = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex-col">
       <Navigation />
       
       <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs
+            items={[
+              { label: "Kantone", href: "/" },
+              { label: `Kanton ${city.canton}`, href: `/kanton/${city.cantonSlug}` },
+              { label: city.name },
+            ]}
+          />
+        </div>
+
         {/* Hero Section */}
         <section className="gradient-hero text-white py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="flex items-center gap-2 text-white/80 mb-4">
-                <Link to={`/kanton/${city.cantonSlug}`} className="hover:text-white transition-colors">
-                  Kanton {city.canton}
-                </Link>
-                <span>/</span>
-                <span>{city.name}</span>
-              </div>
               
               <h1 className="mb-6">
                 Umzug in {city.name}
