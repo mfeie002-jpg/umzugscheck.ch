@@ -123,12 +123,20 @@ export const ComparisonTable = ({ companies, maxCompanies = 5 }: ComparisonTable
                           </div>
                         );
                       } else if (feature.key === "price_level") {
-                        const priceColor = 
-                          company.price_level === "CHF" ? "bg-success/10 text-success" :
-                          company.price_level === "CHF CHF" ? "bg-warning/10 text-warning" :
-                          "bg-primary/10 text-primary";
-                        content = (
-                          <span className={`inline-block px-4 py-1.5 rounded-full font-bold text-sm ${priceColor}`}>
+                        // Check if it's an actual price range or old CHF format
+                        const isActualPrice = company.price_level.includes('-') || company.price_level.includes('/');
+                        content = isActualPrice ? (
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="font-bold text-sm text-foreground whitespace-nowrap">
+                              {company.price_level}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className={`inline-block px-4 py-1.5 rounded-full font-bold text-sm ${
+                            company.price_level === "CHF" ? "bg-success/10 text-success" :
+                            company.price_level === "CHF CHF" ? "bg-warning/10 text-warning" :
+                            "bg-primary/10 text-primary"
+                          }`}>
                             {company.price_level}
                           </span>
                         );

@@ -160,7 +160,7 @@ const CompanyProfile = () => {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-4 mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) => (
@@ -176,6 +176,13 @@ const CompanyProfile = () => {
                       </div>
                       <span className="font-semibold text-lg">{company.rating}</span>
                       <span className="text-white/80">({company.review_count} Bewertungen)</span>
+                    </div>
+                    
+                    <div className="h-6 w-px bg-white/30 hidden sm:block"></div>
+                    
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
+                      <span className="text-white/80 text-sm">Preisniveau:</span>
+                      <span className="font-bold text-lg text-white">{company.price_level}</span>
                     </div>
                   </div>
 
