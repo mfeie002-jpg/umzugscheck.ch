@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,12 @@ import {
   MapPin,
   Mail,
   Phone as PhoneIcon,
-  Eye
+  Eye,
+  Building2,
+  Settings,
+  ArrowRight,
+  MessageSquare,
+  Star
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -312,6 +317,58 @@ const AdminDashboard = () => {
                   </div>
                   <div className="text-3xl font-bold mb-1">{stats.converted}</div>
                   <div className="text-sm text-muted-foreground">Konvertiert</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Quick Links */}
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <Link to="/admin/companies">
+                <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 rounded-lg bg-primary/10">
+                        <Building2 className="w-6 h-6 text-primary" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Firmen verwalten</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Umzugsfirmen hinzufügen und bearbeiten
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/admin/reviews">
+                <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 rounded-lg bg-yellow-400/10">
+                        <MessageSquare className="w-6 h-6 text-yellow-600" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Bewertungen verwalten</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Bewertungen ansehen und beantworten
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Card className="shadow-medium opacity-50 cursor-not-allowed h-full">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-3 rounded-lg bg-muted">
+                      <Settings className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Einstellungen</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Bald verfügbar
+                  </p>
                 </CardContent>
               </Card>
             </div>

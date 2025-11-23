@@ -16,6 +16,7 @@ import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminReviews from "./pages/admin/Reviews";
 import AIUpload from "./pages/AIUpload";
 import NotFound from "./pages/NotFound";
 import CompaniesAdmin from "./pages/admin/Companies";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/companies" element={<CompaniesAdmin />} />
+            <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
