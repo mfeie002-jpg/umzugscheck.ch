@@ -7,8 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 interface Company {
   id: string;
@@ -42,13 +44,22 @@ const Companies = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCanton, setSelectedCanton] = useState(searchParams.get("canton") || "Alle Kantone");
   const [selectedRating, setSelectedRating] = useState("Alle");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     fetchCompanies();
   }, []);
 
   useEffect(() => {
-    filterCompanies();
+    // Trigger animation when filters change
+    setIsAnimating(true);
+    const timer = setTimeout(() => {
+      filterCompanies();
+      setIsAnimating(false);
+    }, 150);
+    
+    return () => clearTimeout(timer);
   }, [companies, searchTerm, selectedCanton, selectedRating]);
 
   const fetchCompanies = async () => {
@@ -96,180 +107,393 @@ const Companies = () => {
     setFilteredCompanies(filtered);
   };
 
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCanton("Alle Kantone");
+    setSelectedRating("Alle");
+  };
+
+  const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle";
+
+  const FilterSection = () => (
+    <div className="space-y-4">
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        <Input
+          placeholder="Firma oder Service suchen..."
+          className="pl-10 h-12"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Canton Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block">Kanton</label>
+        <Select value={selectedCanton} onValueChange={setSelectedCanton}>
+          <SelectTrigger className="h-12">
+            <MapPin className="w-4 h-4 mr-2" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SWISS_CANTONS.map((canton) => (
+              <SelectItem key={canton} value={canton}>
+                {canton}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Rating Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block">Mindestbewertung</label>
+        <Select value={selectedRating} onValueChange={setSelectedRating}>
+          <SelectTrigger className="h-12">
+            <Star className="w-4 h-4 mr-2" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Alle">Alle Bewertungen</SelectItem>
+            <SelectItem value="4.5">4.5+ Sterne</SelectItem>
+            <SelectItem value="4.0">4.0+ Sterne</SelectItem>
+            <SelectItem value="3.5">3.5+ Sterne</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Clear Filters */}
+      {hasActiveFilters && (
+        <Button
+          variant="outline"
+          onClick={clearFilters}
+          className="w-full"
+        >
+          <X className="w-4 h-4 mr-2" />
+          Filter zurücksetzen
+        </Button>
+      )}
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
 
       <main className="flex-1">
         {/* Header */}
-        <section className="py-16 md:py-24 gradient-hero text-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="mb-4">Umzugsfirmen in der Schweiz</h1>
-              <p className="text-lg md:text-xl text-white/90">
-                Finden Sie geprüfte Umzugsunternehmen in Ihrer Region. Vergleichen Sie Preise, Bewertungen und
-                Services.
+        <section className="py-20 md:py-28 gradient-hero text-white relative overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <Badge variant="secondary" className="mb-4 bg-white/10 text-white border-white/20">
+                <TrendingUp className="w-3 h-3 mr-1" />
+                Über 200 geprüfte Firmen
+              </Badge>
+              <h1 className="mb-6">Umzugsfirmen in der Schweiz</h1>
+              <p className="text-xl md:text-2xl text-white/90 font-light leading-relaxed">
+                Finden Sie geprüfte Umzugsunternehmen in Ihrer Region.<br />
+                Vergleichen Sie Preise, Bewertungen und Services – kostenlos & unverbindlich.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Filters & Search */}
-        <section className="py-8 bg-secondary/30 border-b sticky top-0 z-10">
+        {/* Filters & Search - Desktop */}
+        <section className="py-6 bg-white border-b sticky top-16 z-40 shadow-soft">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Search */}
-                <div className="flex-1 relative">
+              {/* Desktop Filters */}
+              <div className="hidden md:block">
+                <div className="flex gap-4 mb-4">
+                  {/* Search */}
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      placeholder="Firma oder Service suchen..."
+                      className="pl-10 h-12"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Canton Filter */}
+                  <Select value={selectedCanton} onValueChange={setSelectedCanton}>
+                    <SelectTrigger className="w-64 h-12">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SWISS_CANTONS.map((canton) => (
+                        <SelectItem key={canton} value={canton}>
+                          {canton}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Rating Filter */}
+                  <Select value={selectedRating} onValueChange={setSelectedRating}>
+                    <SelectTrigger className="w-48 h-12">
+                      <Star className="w-4 h-4 mr-2" />
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Alle">Alle Bewertungen</SelectItem>
+                      <SelectItem value="4.5">4.5+ Sterne</SelectItem>
+                      <SelectItem value="4.0">4.0+ Sterne</SelectItem>
+                      <SelectItem value="3.5">3.5+ Sterne</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Active Filters & Results Count */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {filteredCompanies.length} {filteredCompanies.length === 1 ? "Firma" : "Firmen"}
+                    </span>
+                    {hasActiveFilters && (
+                      <>
+                        <span className="text-sm text-muted-foreground">•</span>
+                        <div className="flex items-center gap-2">
+                          {searchTerm && (
+                            <Badge variant="secondary" className="gap-1">
+                              Suche: {searchTerm}
+                              <X
+                                className="w-3 h-3 cursor-pointer hover:text-destructive"
+                                onClick={() => setSearchTerm("")}
+                              />
+                            </Badge>
+                          )}
+                          {selectedCanton !== "Alle Kantone" && (
+                            <Badge variant="secondary" className="gap-1">
+                              {selectedCanton}
+                              <X
+                                className="w-3 h-3 cursor-pointer hover:text-destructive"
+                                onClick={() => setSelectedCanton("Alle Kantone")}
+                              />
+                            </Badge>
+                          )}
+                          {selectedRating !== "Alle" && (
+                            <Badge variant="secondary" className="gap-1">
+                              {selectedRating}+ ⭐
+                              <X
+                                className="w-3 h-3 cursor-pointer hover:text-destructive"
+                                onClick={() => setSelectedRating("Alle")}
+                              />
+                            </Badge>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={clearFilters}
+                            className="h-7 text-xs"
+                          >
+                            Alle zurücksetzen
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Search & Filter Button */}
+              <div className="md:hidden space-y-3">
+                <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    placeholder="Firma oder Service suchen..."
-                    className="pl-10 bg-white"
+                    placeholder="Firma suchen..."
+                    className="pl-10 h-12"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-
-                {/* Canton Filter */}
-                <Select value={selectedCanton} onValueChange={setSelectedCanton}>
-                  <SelectTrigger className="w-full md:w-64 bg-white">
-                    <SlidersHorizontal className="w-4 h-4 mr-2" />
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SWISS_CANTONS.map((canton) => (
-                      <SelectItem key={canton} value={canton}>
-                        {canton}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Rating Filter */}
-                <Select value={selectedRating} onValueChange={setSelectedRating}>
-                  <SelectTrigger className="w-full md:w-48 bg-white">
-                    <Star className="w-4 h-4 mr-2" />
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Alle">Alle Bewertungen</SelectItem>
-                    <SelectItem value="4.5">4.5+ Sterne</SelectItem>
-                    <SelectItem value="4.0">4.0+ Sterne</SelectItem>
-                    <SelectItem value="3.5">3.5+ Sterne</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="mt-4 text-sm text-muted-foreground">
-                {filteredCompanies.length} {filteredCompanies.length === 1 ? "Firma" : "Firmen"} gefunden
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {filteredCompanies.length} {filteredCompanies.length === 1 ? "Firma" : "Firmen"}
+                  </span>
+                  
+                  <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <SlidersHorizontal className="w-4 h-4" />
+                        Filter
+                        {hasActiveFilters && (
+                          <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
+                            {[searchTerm, selectedCanton !== "Alle Kantone", selectedRating !== "Alle"].filter(Boolean).length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="h-[80vh]">
+                      <SheetHeader>
+                        <SheetTitle>Filter</SheetTitle>
+                      </SheetHeader>
+                      <div className="mt-6">
+                        <FilterSection />
+                      </div>
+                      <div className="mt-6">
+                        <Button
+                          className="w-full"
+                          onClick={() => setIsFilterOpen(false)}
+                        >
+                          {filteredCompanies.length} {filteredCompanies.length === 1 ? "Firma" : "Firmen"} anzeigen
+                        </Button>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Companies Grid */}
-        <section className="py-12">
+        <section className="py-12 md:py-16 bg-gradient-light">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               {loading ? (
-                <div className="text-center py-12">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                  <p className="mt-4 text-muted-foreground">Lade Umzugsfirmen...</p>
+                <div className="text-center py-16">
+                  <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent"></div>
+                  <p className="mt-6 text-lg text-muted-foreground">Lade Umzugsfirmen...</p>
                 </div>
               ) : filteredCompanies.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-lg text-muted-foreground">Keine Firmen gefunden.</p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Versuchen Sie, Ihre Filter anzupassen.
-                  </p>
-                </div>
+                <Card className="text-center py-16">
+                  <CardContent>
+                    <div className="max-w-md mx-auto space-y-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
+                        <Search className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-xl font-semibold">Keine Firmen gefunden</h3>
+                      <p className="text-muted-foreground">
+                        Versuchen Sie, Ihre Filter anzupassen oder eine andere Suche durchzuführen.
+                      </p>
+                      {hasActiveFilters && (
+                        <Button onClick={clearFilters} variant="outline">
+                          <X className="w-4 h-4 mr-2" />
+                          Filter zurücksetzen
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               ) : (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {filteredCompanies.map((company) => (
-                    <Card
-                      key={company.id}
-                      className="group hover:shadow-strong transition-all duration-300 hover:-translate-y-1"
+                <div className={`grid md:grid-cols-2 gap-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+                  {filteredCompanies.map((company, index) => (
+                    <ScrollReveal key={company.id} delay={index * 50}>
+                      <Card className="h-full hover-lift border-2 hover:border-primary/20 transition-all duration-300 bg-white"
                     >
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
-                          {/* Header */}
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-14 h-14 rounded-xl bg-primary-light flex items-center justify-center text-3xl">
+                        <CardContent className="p-6 h-full flex flex-col">
+                          <div className="space-y-5 flex-1">
+                            {/* Header */}
+                            <div className="flex items-start gap-4">
+                              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-4xl shadow-soft flex-shrink-0">
                                 {company.logo}
                               </div>
-                              <div>
-                                <h3 className="font-bold text-lg leading-tight">{company.name}</h3>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                  <MapPin className="w-3 h-3" />
-                                  <span>{company.service_areas.slice(0, 2).join(", ")}</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-2 mb-2">
+                                  <h3 className="font-bold text-xl leading-tight">{company.name}</h3>
+                                  {company.verified && (
+                                    <Badge className="bg-success text-white border-0 flex-shrink-0">
+                                      <CheckCircle2 className="w-3 h-3 mr-1" />
+                                      Geprüft
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                  <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                                  <span className="truncate">{company.service_areas.slice(0, 2).join(", ")}</span>
                                   {company.service_areas.length > 2 && (
-                                    <span className="text-xs">+{company.service_areas.length - 2}</span>
+                                    <span className="text-xs font-medium">+{company.service_areas.length - 2}</span>
                                   )}
                                 </div>
                               </div>
                             </div>
-                            {company.verified && (
-                              <div className="flex-shrink-0">
-                                <CheckCircle2 className="w-5 h-5 text-success" />
+
+                            {/* Rating */}
+                            <div className="flex items-center gap-3 p-3 bg-accent-light/30 rounded-lg">
+                              <div className="flex items-center gap-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={`w-4 h-4 ${
+                                      i < Math.floor(company.rating)
+                                        ? "fill-accent text-accent"
+                                        : "fill-muted text-muted"
+                                    }`}
+                                  />
+                                ))}
                               </div>
-                            )}
-                          </div>
-
-                          {/* Rating */}
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-4 h-4 ${
-                                    i < Math.floor(company.rating)
-                                      ? "fill-accent text-accent"
-                                      : "text-muted"
-                                  }`}
-                                />
-                              ))}
+                              <span className="font-bold text-lg">{company.rating}</span>
+                              <span className="text-sm text-muted-foreground">
+                                ({company.review_count})
+                              </span>
                             </div>
-                            <span className="font-semibold text-sm">{company.rating}</span>
-                            <span className="text-sm text-muted-foreground">
-                              ({company.review_count} Bewertungen)
-                            </span>
-                          </div>
 
-                          {/* Description */}
-                          <p className="text-sm text-muted-foreground line-clamp-2">{company.description}</p>
+                            {/* Description */}
+                            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                              {company.description}
+                            </p>
 
-                          {/* Services */}
-                          <div className="flex flex-wrap gap-1.5">
-                            {company.services.slice(0, 3).map((service, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {service}
-                              </Badge>
-                            ))}
-                            {company.services.length > 3 && (
-                              <Badge variant="outline" className="text-xs">
-                                +{company.services.length - 3}
-                              </Badge>
-                            )}
-                          </div>
+                            {/* Services */}
+                            <div>
+                              <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
+                                Services
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                {company.services.slice(0, 3).map((service, idx) => (
+                                  <Badge key={idx} variant="secondary" className="text-xs font-medium">
+                                    {service}
+                                  </Badge>
+                                ))}
+                                {company.services.length > 3 && (
+                                  <Badge variant="secondary" className="text-xs font-medium">
+                                    +{company.services.length - 3} weitere
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
 
-                          {/* Price & CTA */}
-                          <div className="flex items-center justify-between pt-2 border-t">
-                            <div className="text-sm">
-                              <span className="text-muted-foreground">Preisniveau: </span>
-                              <span className="font-medium text-primary">{company.price_level}</span>
+                            {/* Price & Contact Info */}
+                            <div className="pt-4 border-t space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm text-muted-foreground">Preisniveau</span>
+                                <span className="font-bold text-primary text-lg">{company.price_level}</span>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-2 text-xs">
+                                {company.phone && (
+                                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                                    <Phone className="w-3.5 h-3.5" />
+                                    <span className="truncate">Telefon</span>
+                                  </div>
+                                )}
+                                {company.email && (
+                                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                                    <Mail className="w-3.5 h-3.5" />
+                                    <span className="truncate">E-Mail</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
 
-                          <Link to={`/firmen/${company.id}`}>
-                            <Button className="w-full group-hover:bg-primary group-hover:text-white transition-colors">
+                          {/* CTA Button */}
+                          <Link to={`/firmen/${company.id}`} className="mt-5">
+                            <Button className="w-full h-12 bg-primary hover:bg-primary-dark shadow-medium group">
                               Profil ansehen
                               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </Button>
                           </Link>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </ScrollReveal>
                   ))}
                 </div>
               )}
