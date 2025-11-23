@@ -22,6 +22,7 @@ import AIUpload from "./pages/AIUpload";
 import NotFound from "./pages/NotFound";
 import CompaniesAdmin from "./pages/admin/Companies";
 import LeadsAdmin from "./pages/admin/Leads";
+import AdminAnalytics from "./pages/admin/Analytics";
 import MovingCostGuide from "./pages/MovingCostGuide";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/admin/companies" element={<CompaniesAdmin />} />
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/leads" element={<LeadsAdmin />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

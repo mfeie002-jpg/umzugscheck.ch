@@ -30,6 +30,9 @@ export const Navigation = () => {
             <Link to="/firmen" className="text-foreground hover:text-primary transition-base font-medium">
               Umzugsfirmen
             </Link>
+            <Link to="/vergleichen" className="text-foreground hover:text-primary transition-base font-medium">
+              Vergleichen
+            </Link>
             <Link to="/blog" className="text-foreground hover:text-primary transition-base font-medium">
               Ratgeber
             </Link>
@@ -87,6 +90,13 @@ export const Navigation = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Umzugsfirmen
+              </Link>
+              <Link 
+                to="/vergleichen" 
+                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base"
+                onClick={() => setIsOpen(false)}
+              >
+                Vergleichen
               </Link>
               <Link 
                 to="/blog" 
