@@ -13,6 +13,9 @@ import { PieChart as RechartsPC, Pie, Cell, ResponsiveContainer, Legend, Tooltip
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useParallax } from "@/hooks/use-parallax";
 import { cn } from "@/lib/utils";
+import { TopPicks } from "@/components/TopPicks";
+import { InsuranceBlock } from "@/components/trust/InsuranceBlock";
+import { Breadcrumbs, BreadcrumbItem } from "@/components/Breadcrumbs";
 
 const CalculatorResults = () => {
   const location = useLocation();
@@ -20,6 +23,11 @@ const CalculatorResults = () => {
   const [calculation, setCalculation] = useState<MovingCalculation | null>(null);
   const [distance, setDistance] = useState<number>(0);
   const [calculatorData, setCalculatorData] = useState<any>(null);
+
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { label: "Kostenrechner", href: "/rechner" },
+    { label: "Ergebnis" }
+  ];
 
   useEffect(() => {
     if (!location.state || !location.state.calculation) {
@@ -172,7 +180,8 @@ const CalculatorResults = () => {
           
           {/* Content */}
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-4xl mx-auto">
+            <Breadcrumbs items={breadcrumbItems} />
+            <div className="max-w-4xl mx-auto mt-6">
               <Link to="/rechner">
                 <Button variant="outline" className="mb-6 border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
                   <ArrowLeft className="mr-2 w-4 h-4" />
@@ -190,17 +199,20 @@ const CalculatorResults = () => {
         {/* Price Estimate & Details */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto space-y-6">
-              {/* Main Price Card */}
-              <div 
-                ref={priceCardAnim.ref}
-                className={cn(
-                  "transition-all duration-700 ease-out",
-                  priceCardAnim.isVisible 
-                    ? "opacity-100 translate-y-0" 
-                    : "opacity-0 translate-y-8"
-                )}
-              >
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Main Content - 2 columns */}
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Main Price Card */}
+                  <div
+                    ref={priceCardAnim.ref}
+                    className={cn(
+                      "transition-all duration-700 ease-out",
+                      priceCardAnim.isVisible 
+                        ? "opacity-100 translate-y-0" 
+                        : "opacity-0 translate-y-8"
+                    )}
+                  >
                 <Card className="shadow-strong border-primary/20 bg-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -357,29 +369,29 @@ const CalculatorResults = () => {
                     Durchschnittliche Ersparnis durch Vergleich: <span className="font-semibold text-success">{formatCurrency(Math.round(calculation.priceMax * 0.3))}</span>
                   </p>
                 </CardContent>
-              </Card>
-              </div>
+                  </Card>
+                  </div>
 
-              {/* Lead Capture Form */}
-              <div 
-                ref={leadFormAnim.ref}
-                className={cn(
-                  "transition-all duration-700 ease-out delay-300",
-                  leadFormAnim.isVisible 
-                    ? "opacity-100 translate-y-0" 
-                    : "opacity-0 translate-y-8"
-                )}
-              >
-                <LeadCaptureForm
-                calculatorData={calculatorData}
-                calculation={calculation}
-                distance={distance}
-                  calculatorType={location.state.type}
-                />
-              </div>
+                  {/* Lead Capture Form */}
+                  <div
+                 ref={leadFormAnim.ref}
+                 className={cn(
+                   "transition-all duration-700 ease-out delay-300",
+                   leadFormAnim.isVisible 
+                     ? "opacity-100 translate-y-0" 
+                     : "opacity-0 translate-y-8"
+                 )}
+               >
+                 <LeadCaptureForm
+                 calculatorData={calculatorData}
+                 calculation={calculation}
+                 distance={distance}
+                   calculatorType={location.state.type}
+                 />
+                 </div>
 
-              {/* Companies */}
-              <div 
+                 {/* Companies */}
+                 <div
                 ref={companiesAnim.ref}
                 className={cn(
                   "mt-8 space-y-6 transition-all duration-700 ease-out delay-500",
@@ -460,10 +472,10 @@ const CalculatorResults = () => {
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+                 </div>
 
-              {/* Trust Section */}
-              <div 
+                 {/* Trust Section */}
+                 <div
                 ref={trustSectionAnim.ref}
                 className={cn(
                   "mt-8 transition-all duration-700 ease-out delay-700",
@@ -498,7 +510,15 @@ const CalculatorResults = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+                  </Card>
+                  </div>
+                </div>
+
+                {/* Sidebar - 1 column */}
+                <div className="space-y-6">
+                  <TopPicks title="Empfohlen für Ihren Umzug" limit={5} />
+                  <InsuranceBlock />
+                </div>
               </div>
             </div>
           </div>
