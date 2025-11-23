@@ -1,17 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Star, CheckCircle2, X, ArrowRight, AlertCircle, TrendingUp } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Star, CheckCircle2, X, ArrowRight, AlertCircle, TrendingUp, Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { ComparisonTable } from "@/components/ComparisonTable";
+import { Separator } from "@/components/ui/separator";
 
 interface Company {
   id: string;
@@ -29,6 +32,10 @@ const Compare = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cantonFilter, setCantonFilter] = useState<string>("all");
+  const [priceFilter, setPriceFilter] = useState<string>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
 
   useEffect(() => {
     fetchCompanies();
@@ -59,7 +66,65 @@ const Compare = () => {
     }
   };
 
+  // Get unique values for filters
+  const allCantons = useMemo(() => {
+    const cantons = new Set<string>();
+    companies.forEach(company => {
+      company.service_areas?.forEach(area => cantons.add(area));
+    });
+    return Array.from(cantons).sort();
+  }, [companies]);
+
+  const allServices = useMemo(() => {
+    const services = new Set<string>();
+    companies.forEach(company => {
+      company.services?.forEach(service => services.add(service));
+    });
+    return Array.from(services).sort();
+  }, [companies]);
+
+  // Filter companies
+  const filteredCompanies = useMemo(() => {
+    return companies.filter(company => {
+      // Search filter
+      if (searchTerm && !company.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+      
+      // Canton filter
+      if (cantonFilter !== "all" && !company.service_areas?.includes(cantonFilter)) {
+        return false;
+      }
+      
+      // Price filter
+      if (priceFilter !== "all" && company.price_level !== priceFilter) {
+        return false;
+      }
+      
+      // Service filter
+      if (serviceFilter !== "all" && !company.services?.includes(serviceFilter)) {
+        return false;
+      }
+      
+      return true;
+    });
+  }, [companies, searchTerm, cantonFilter, priceFilter, serviceFilter]);
+
   const selectedCompanyData = companies.filter(c => selectedCompanies.includes(c.id));
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setCantonFilter("all");
+    setPriceFilter("all");
+    setServiceFilter("all");
+  };
+
+  const activeFilterCount = [
+    searchTerm !== "",
+    cantonFilter !== "all",
+    priceFilter !== "all",
+    serviceFilter !== "all"
+  ].filter(Boolean).length;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -116,15 +181,112 @@ const Compare = () => {
                 </div>
               </ScrollReveal>
 
+              {/* Search and Filters */}
+              <ScrollReveal>
+                <Card className="mb-8 border-primary/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Filter className="w-5 h-5 text-primary" />
+                      <h3 className="font-semibold text-lg">Suchen & Filtern</h3>
+                      {activeFilterCount > 0 && (
+                        <Badge variant="secondary" className="ml-2">
+                          {activeFilterCount} aktiv
+                        </Badge>
+                      )}
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                      {/* Search */}
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Firma suchen..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-9"
+                        />
+                      </div>
+
+                      {/* Canton Filter */}
+                      <Select value={cantonFilter} onValueChange={setCantonFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Kanton wählen" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Alle Kantone</SelectItem>
+                          {allCantons.map(canton => (
+                            <SelectItem key={canton} value={canton}>
+                              {canton}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      {/* Price Filter */}
+                      <Select value={priceFilter} onValueChange={setPriceFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Preisniveau" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Alle Preise</SelectItem>
+                          <SelectItem value="CHF 800-1000/Tag">CHF 800-1000/Tag</SelectItem>
+                          <SelectItem value="CHF 900-1200/Tag">CHF 900-1200/Tag</SelectItem>
+                          <SelectItem value="CHF 1000-1400/Tag">CHF 1000-1400/Tag</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {/* Service Filter */}
+                      <Select value={serviceFilter} onValueChange={setServiceFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Dienstleistung" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Alle Dienste</SelectItem>
+                          {allServices.map(service => (
+                            <SelectItem key={service} value={service}>
+                              {service}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">
+                        {filteredCompanies.length} {filteredCompanies.length === 1 ? 'Firma' : 'Firmen'} gefunden
+                      </p>
+                      {activeFilterCount > 0 && (
+                        <Button variant="ghost" size="sm" onClick={clearFilters}>
+                          Filter zurücksetzen
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </ScrollReveal>
+
               {loading ? (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                   {[...Array(6)].map((_, i) => (
                     <LoadingSkeletonCompany key={i} />
                   ))}
                 </div>
+              ) : filteredCompanies.length === 0 ? (
+                <Card className="p-12 text-center bg-gradient-to-br from-secondary/20 to-transparent mb-12">
+                  <div className="max-w-md mx-auto">
+                    <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-bold mb-2">Keine Firmen gefunden</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Mit den aktuellen Filtereinstellungen wurden keine Umzugsfirmen gefunden.
+                    </p>
+                    <Button variant="outline" onClick={clearFilters}>
+                      Filter zurücksetzen
+                    </Button>
+                  </div>
+                </Card>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                  {companies.map((company, index) => (
+                  {filteredCompanies.map((company, index) => (
                     <ScrollReveal key={company.id} delay={index * 0.1}>
                       <Card
                         className={`cursor-pointer transition-all duration-300 hover:shadow-strong hover:-translate-y-1 ${
