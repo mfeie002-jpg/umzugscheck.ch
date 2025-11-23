@@ -10,6 +10,8 @@ import { formatCurrency, getMoveSize } from "@/lib/pricing";
 import type { MovingCalculation } from "@/lib/pricing";
 import { LeadCaptureForm } from "@/components/LeadCaptureForm";
 import { PieChart as RechartsPC, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from "recharts";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 const CalculatorResults = () => {
   const location = useLocation();
@@ -94,6 +96,13 @@ const CalculatorResults = () => {
     setActiveIndex(undefined);
   };
 
+  // Scroll animations
+  const priceCardAnim = useScrollAnimation(0.2);
+  const breakdownAnim = useScrollAnimation(0.2);
+  const leadFormAnim = useScrollAnimation(0.2);
+  const companiesAnim = useScrollAnimation(0.1);
+  const trustSectionAnim = useScrollAnimation(0.2);
+
   const mockCompanies = [
     {
       id: 1,
@@ -155,7 +164,16 @@ const CalculatorResults = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto space-y-6">
               {/* Main Price Card */}
-              <Card className="shadow-strong border-primary/20 bg-white">
+              <div 
+                ref={priceCardAnim.ref}
+                className={cn(
+                  "transition-all duration-700 ease-out",
+                  priceCardAnim.isVisible 
+                    ? "opacity-100 translate-y-0" 
+                    : "opacity-0 translate-y-8"
+                )}
+              >
+                <Card className="shadow-strong border-primary/20 bg-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingDown className="w-6 h-6 text-success" />
@@ -202,7 +220,15 @@ const CalculatorResults = () => {
                   </div>
 
                   {/* Cost Breakdown Chart */}
-                  <div className="border-t pt-6">
+                  <div 
+                    ref={breakdownAnim.ref}
+                    className={cn(
+                      "border-t pt-6 transition-all duration-700 ease-out delay-200",
+                      breakdownAnim.isVisible 
+                        ? "opacity-100 translate-y-0" 
+                        : "opacity-0 translate-y-8"
+                    )}
+                  >
                     <div className="flex items-center gap-2 mb-4">
                       <PieChart className="w-5 h-5 text-primary" />
                       <h3 className="font-semibold text-lg">Kostenaufschlüsselung</h3>
@@ -304,17 +330,36 @@ const CalculatorResults = () => {
                   </p>
                 </CardContent>
               </Card>
+              </div>
 
               {/* Lead Capture Form */}
-              <LeadCaptureForm
+              <div 
+                ref={leadFormAnim.ref}
+                className={cn(
+                  "transition-all duration-700 ease-out delay-300",
+                  leadFormAnim.isVisible 
+                    ? "opacity-100 translate-y-0" 
+                    : "opacity-0 translate-y-8"
+                )}
+              >
+                <LeadCaptureForm
                 calculatorData={calculatorData}
                 calculation={calculation}
                 distance={distance}
-                calculatorType={location.state.type}
-              />
+                  calculatorType={location.state.type}
+                />
+              </div>
 
               {/* Companies */}
-              <div className="mt-8 space-y-6">
+              <div 
+                ref={companiesAnim.ref}
+                className={cn(
+                  "mt-8 space-y-6 transition-all duration-700 ease-out delay-500",
+                  companiesAnim.isVisible 
+                    ? "opacity-100 translate-y-0" 
+                    : "opacity-0 translate-y-8"
+                )}
+              >
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Verfügbare Umzugsfirmen</h2>
                   <Badge variant="outline" className="bg-success-light text-success border-success/20">
@@ -390,7 +435,16 @@ const CalculatorResults = () => {
               </div>
 
               {/* Trust Section */}
-              <Card className="mt-8 bg-secondary/30 border-none">
+              <div 
+                ref={trustSectionAnim.ref}
+                className={cn(
+                  "mt-8 transition-all duration-700 ease-out delay-700",
+                  trustSectionAnim.isVisible 
+                    ? "opacity-100 translate-y-0" 
+                    : "opacity-0 translate-y-8"
+                )}
+              >
+                <Card className="bg-secondary/30 border-none">
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6 items-center">
                     <div className="flex-1">
@@ -417,6 +471,7 @@ const CalculatorResults = () => {
                   </div>
                 </CardContent>
               </Card>
+              </div>
             </div>
           </div>
         </section>
