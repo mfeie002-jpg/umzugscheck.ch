@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
+import { OnboardingHint } from "@/components/OnboardingHint";
 import { 
   CalendarIcon, 
   ArrowRight, 
@@ -326,7 +327,10 @@ export const LeadCaptureForm = ({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Vor- und Nachname *</FormLabel>
+                      <FormLabel className="flex items-center gap-1">
+                        Vor- und Nachname *
+                        <OnboardingHint content="Geben Sie Ihren vollständigen Namen ein, damit die Umzugsfirmen Sie korrekt ansprechen können." />
+                      </FormLabel>
                       <FormControl>
                         <Input placeholder="Max Mustermann" {...field} className="h-11" />
                       </FormControl>
@@ -341,7 +345,10 @@ export const LeadCaptureForm = ({
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>E-Mail-Adresse *</FormLabel>
+                        <FormLabel className="flex items-center gap-1">
+                          E-Mail-Adresse *
+                          <OnboardingHint content="Hierhin werden die Offerten der Umzugsfirmen gesendet. Bitte verwenden Sie eine gültige E-Mail-Adresse." />
+                        </FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
