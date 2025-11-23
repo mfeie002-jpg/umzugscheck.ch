@@ -31,6 +31,8 @@ import { supabase } from "@/integrations/supabase/client";
 import type { MovingCalculation } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
 import { useAnalytics } from "@/lib/analytics";
+import { logger } from "@/lib/logger";
+import { checkRateLimit, getRateLimitReset } from "@/lib/rate-limiter";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein").max(100),
@@ -86,6 +88,29 @@ export const LeadCaptureForm = ({
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // Check rate limit - max 3 submissions per hour
+    const isAllowed = checkRateLimit({
+      key: 'lead_form',
+      maxAttempts: 3,
+      windowMs: 60 * 60 * 1000, // 1 hour
+    });
+
+    if (!isAllowed) {
+      const resetTime = getRateLimitReset({
+        key: 'lead_form',
+        maxAttempts: 3,
+        windowMs: 60 * 60 * 1000,
+      });
+      const minutesRemaining = Math.ceil(resetTime / 60000);
+      
+      toast({
+        title: "Zu viele Anfragen",
+        description: `Bitte warten Sie ${minutesRemaining} Minute(n), bevor Sie eine neue Anfrage senden.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -133,7 +158,7 @@ export const LeadCaptureForm = ({
         onSuccess();
       }
     } catch (error) {
-      console.error("Error submitting lead:", error);
+      logger.error("Error submitting lead", error, { calculatorType });
       const errorMsg = error instanceof Error ? error.message : 'Unbekannter Fehler';
       analytics.trackError('lead_submission_error', { 
         error: errorMsg,

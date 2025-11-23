@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 const responseSchema = z.object({
   response: z.string().min(10, "Antwort muss mindestens 10 Zeichen lang sein").max(1000, "Antwort darf maximal 1000 Zeichen lang sein"),
@@ -98,7 +99,7 @@ export const ReviewResponseForm = ({
 
       onSuccess?.();
     } catch (error) {
-      console.error("Error submitting response:", error);
+      logger.error("Error submitting response", error, { reviewId, companyId });
       toast({
         title: "Fehler",
         description: "Antwort konnte nicht gespeichert werden.",

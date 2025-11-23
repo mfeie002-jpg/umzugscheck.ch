@@ -1,4 +1,4 @@
 project_id = "twpyrbhqsfwtoyudkfss"
 
 [functions.analyze-moving-photos]
-verify_jwt = false
+verify_jwt = true
