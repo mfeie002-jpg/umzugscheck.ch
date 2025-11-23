@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import logo from "@/assets/umzugscheck-logo.png";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,11 +13,12 @@ export const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-hero rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">U</span>
-            </div>
-            <span className="text-xl md:text-2xl font-bold text-primary">Umzugscheck.ch</span>
+          <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <img 
+              src={logo} 
+              alt="Umzugscheck.ch Logo" 
+              className="h-8 md:h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
