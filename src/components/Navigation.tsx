@@ -3,7 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
-import logo from "@/assets/umzugscheck-logo-alt.png";
+import logo from "@/assets/umzugscheck-logo.png";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
