@@ -33,6 +33,34 @@ const CalculatorResults = () => {
     return null;
   }
 
+  // Custom tooltip component for the pie chart
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0];
+      const percentage = ((data.value / calculation.breakdown.total) * 100).toFixed(1);
+      
+      const explanations: Record<string, string> = {
+        "Basispreis": "Grundpreis für Transport und Arbeitskräfte basierend auf Volumen",
+        "Distanzgebühr": "Zusätzliche Kosten für die Transportdistanz zwischen den Standorten",
+        "Stockwerkgebühr": "Gebühr für den Transport über mehrere Stockwerke ohne Lift",
+        "Lift-Rabatt": "Rabatt für vorhandene Liftanlagen an beiden Standorten",
+        "Zusatzleistungen": "Kosten für zusätzliche Services wie Packservice, Reinigung, etc."
+      };
+
+      return (
+        <div className="bg-background border border-border rounded-lg p-4 shadow-strong max-w-xs">
+          <p className="font-bold text-foreground mb-2">{data.name}</p>
+          <p className="text-sm text-muted-foreground mb-2">{explanations[data.name]}</p>
+          <div className="space-y-1">
+            <p className="text-lg font-bold text-primary">{formatCurrency(data.value)}</p>
+            <p className="text-sm text-muted-foreground">{percentage}% vom Gesamtpreis</p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   const mockCompanies = [
     {
       id: 1,
@@ -164,6 +192,10 @@ const CalculatorResults = () => {
                               cx="50%"
                               cy="50%"
                               labelLine={false}
+                              label={({ name, value }) => {
+                                const percentage = ((value / calculation.breakdown.total) * 100).toFixed(0);
+                                return `${percentage}%`;
+                              }}
                               outerRadius={80}
                               fill="#8884d8"
                               dataKey="value"
@@ -179,14 +211,7 @@ const CalculatorResults = () => {
                                 <Cell key={`cell-${index}`} fill={entry.color} />
                               ))}
                             </Pie>
-                            <Tooltip 
-                              formatter={(value: number) => formatCurrency(value)}
-                              contentStyle={{ 
-                                backgroundColor: 'hsl(var(--background))', 
-                                border: '1px solid hsl(var(--border))',
-                                borderRadius: '8px'
-                              }}
-                            />
+                            <Tooltip content={<CustomTooltip />} />
                             <Legend />
                           </RechartsPC>
                         </ResponsiveContainer>
