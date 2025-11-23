@@ -30,6 +30,7 @@ import StorageCalculator from "./pages/StorageCalculator";
 import PackingCalculator from "./pages/PackingCalculator";
 import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/stadt/:slug" element={<City />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/ueber-uns" element={<About />} />
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
