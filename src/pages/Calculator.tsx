@@ -6,6 +6,7 @@ import { QuickCalculator } from "@/components/calculator/QuickCalculator";
 import { AdvancedCalculator } from "@/components/calculator/AdvancedCalculator";
 import { AICalculator } from "@/components/calculator/AICalculator";
 import { Calculator as CalculatorIcon, Wrench, Sparkles } from "lucide-react";
+import { OtherCalculators } from "@/components/OtherCalculators";
 
 const Calculator = () => {
   return (
@@ -89,6 +90,9 @@ const Calculator = () => {
             </div>
           </div>
         </section>
+        
+        {/* Other Calculators */}
+        <OtherCalculators currentPath="/rechner" />
       </main>
 
       <Footer />
