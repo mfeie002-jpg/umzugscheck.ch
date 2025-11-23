@@ -5,9 +5,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Phone, MapPin, Send, Clock, CheckCircle2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Mail, Phone, MapPin, Send, Clock, MessageSquare, Calculator, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { FAQAccordion, type FAQItem } from "@/components/FAQAccordion";
+import { Link } from "react-router-dom";
+
+const contactFAQs: FAQItem[] = [
+  {
+    question: "Ist der Service wirklich kostenlos?",
+    answer: "Ja, unser Vergleichsservice ist 100% kostenlos und unverbindlich. Sie zahlen nur für den Umzug selbst, wenn Sie sich für eine Firma entscheiden.",
+  },
+  {
+    question: "Wie viele Offerten erhalte ich?",
+    answer: "Sie erhalten bis zu 5 kostenlose Offerten von geprüften Umzugsfirmen in Ihrer Region. So können Sie Preise und Leistungen optimal vergleichen.",
+  },
+  {
+    question: "Sind alle Firmen geprüft?",
+    answer: "Ja, wir arbeiten nur mit geprüften und zertifizierten Umzugsfirmen zusammen. Alle Partner haben eine gültige Betriebshaftpflichtversicherung.",
+  },
+  {
+    question: "Wie schnell erhalte ich Angebote?",
+    answer: "Nach Ihrer Anfrage erhalten Sie in der Regel innerhalb von 24-48 Stunden die ersten Offerten von interessierten Umzugsfirmen.",
+  },
+];
 
 const Contact = () => {
   const { toast } = useToast();
@@ -186,59 +208,60 @@ const Contact = () => {
                     </p>
                   </CardContent>
                 </Card>
+
+                {/* Quick Links */}
+                <Card className="shadow-medium">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Schnellzugriff</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Link to="/rechner" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
+                      <Calculator className="w-5 h-5 text-primary" />
+                      <div>
+                        <div className="font-medium group-hover:text-primary transition-colors">Kostenrechner</div>
+                        <div className="text-xs text-muted-foreground">Preise berechnen</div>
+                      </div>
+                    </Link>
+                    <Link to="/firmen" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
+                      <MessageSquare className="w-5 h-5 text-primary" />
+                      <div>
+                        <div className="font-medium group-hover:text-primary transition-colors">Firmen vergleichen</div>
+                        <div className="text-xs text-muted-foreground">Alle Anbieter</div>
+                      </div>
+                    </Link>
+                    <Link to="#faq" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
+                      <HelpCircle className="w-5 h-5 text-primary" />
+                      <div>
+                        <div className="font-medium group-hover:text-primary transition-colors">FAQ</div>
+                        <div className="text-xs text-muted-foreground">Häufige Fragen</div>
+                      </div>
+                    </Link>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
+            {/* Map Placeholder */}
+            <div className="max-w-6xl mx-auto mt-12">
+              <Card className="shadow-strong overflow-hidden">
+                <div className="h-64 md:h-80 bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border-b">
+                  <div className="text-center">
+                    <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
+                    <p className="text-muted-foreground font-medium">Standort Zürich</p>
+                    <p className="text-sm text-muted-foreground">Musterstrasse 123, 8000 Zürich</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
             {/* FAQ Section */}
-            <div className="max-w-6xl mx-auto mt-16">
-              <div className="text-center mb-12">
-                <h2 className="mb-4">Häufig gestellte Fragen</h2>
-                <p className="text-lg text-muted-foreground">
-                  Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="shadow-medium">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-3">Ist der Service wirklich kostenlos?</h3>
-                    <p className="text-muted-foreground">
-                      Ja, unser Vergleichsservice ist 100% kostenlos und unverbindlich. 
-                      Sie zahlen nur für den Umzug selbst, wenn Sie sich für eine Firma entscheiden.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-medium">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-3">Wie viele Offerten erhalte ich?</h3>
-                    <p className="text-muted-foreground">
-                      Sie erhalten bis zu 5 kostenlose Offerten von geprüften Umzugsfirmen 
-                      in Ihrer Region. So können Sie Preise und Leistungen optimal vergleichen.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-medium">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-3">Sind alle Firmen geprüft?</h3>
-                    <p className="text-muted-foreground">
-                      Ja, wir arbeiten nur mit geprüften und zertifizierten Umzugsfirmen zusammen. 
-                      Alle Partner haben eine gültige Betriebshaftpflichtversicherung.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-medium">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-3">Wie schnell erhalte ich Angebote?</h3>
-                    <p className="text-muted-foreground">
-                      Nach Ihrer Anfrage erhalten Sie in der Regel innerhalb von 24-48 Stunden 
-                      die ersten Offerten von interessierten Umzugsfirmen.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+            <div id="faq" className="max-w-6xl mx-auto mt-16">
+              <FAQAccordion
+                items={contactFAQs}
+                title="Häufig gestellte Fragen"
+                subtitle="Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage."
+                variant="compact"
+              />
             </div>
           </div>
         </section>
