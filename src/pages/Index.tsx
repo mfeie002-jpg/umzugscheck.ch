@@ -16,6 +16,7 @@ import { IndependentExplainer } from "@/components/trust/IndependentExplainer";
 import { CalculatorSection } from "@/components/CalculatorSection";
 import { Testimonials } from "@/components/Testimonials";
 import { useParallax } from "@/hooks/use-parallax";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -121,6 +122,9 @@ const Index = () => {
         <FAQ />
       </ScrollReveal>
       <Footer />
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 };
