@@ -18,7 +18,23 @@ import { Testimonials } from "@/components/Testimonials";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background Gradients */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 -left-4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
+        <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-accent/8 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
+        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-primary/6 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }}></div>
+        <div className="absolute top-2/3 -right-20 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '9s', animationDelay: '1s' }}></div>
+      </div>
+      
+      {/* Subtle Grid Pattern Overlay */}
+      <div className="fixed inset-0 -z-10 opacity-[0.02] pointer-events-none" 
+           style={{ 
+             backgroundImage: 'radial-gradient(circle, hsl(var(--foreground)) 1px, transparent 1px)',
+             backgroundSize: '50px 50px'
+           }}>
+      </div>
+
       <Navigation />
       <Hero />
       <ScrollReveal>
