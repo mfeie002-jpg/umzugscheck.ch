@@ -135,6 +135,14 @@ export default {
             backgroundPosition: "100% 50%",
           },
         },
+        "glow-pulse": {
+          "0%, 100%": {
+            boxShadow: "0 0 20px hsl(0 75% 55% / 0.4), 0 0 40px hsl(0 75% 55% / 0.2)",
+          },
+          "50%": {
+            boxShadow: "0 0 30px hsl(0 75% 55% / 0.6), 0 0 60px hsl(0 75% 55% / 0.3), 0 0 80px hsl(0 75% 55% / 0.1)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -142,6 +150,7 @@ export default {
         "blob": "blob 8s infinite ease-in-out",
         "blob-reverse": "blob-reverse 9s infinite ease-in-out",
         "gradient-shift": "gradient-shift 15s ease infinite",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
       },
       animationDelay: {
         "2000": "2s",
