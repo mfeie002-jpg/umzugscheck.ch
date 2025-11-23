@@ -11,13 +11,13 @@ export const Navigation = () => {
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <img 
               src={logo} 
               alt="Umzugscheck.ch Logo" 
-              className="h-14 md:h-16 w-auto"
+              className="h-12 md:h-16 w-auto"
             />
           </Link>
 
