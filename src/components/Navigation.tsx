@@ -23,22 +23,22 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            <Link to="/" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
               Home
             </Link>
-            <Link to="/rechner" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/rechner" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
               Preisrechner
             </Link>
-            <Link to="/firmen" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/firmen" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
               Umzugsfirmen
             </Link>
-            <Link to="/vergleichen" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/vergleichen" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
               Vergleichen
             </Link>
-            <Link to="/blog" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/blog" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
               Ratgeber
             </Link>
-            <Link to="/kontakt" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/kontakt" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
               Kontakt
             </Link>
           </div>
