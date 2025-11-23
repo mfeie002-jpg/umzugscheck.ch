@@ -24,6 +24,12 @@ import CompaniesAdmin from "./pages/admin/Companies";
 import LeadsAdmin from "./pages/admin/Leads";
 import AdminAnalytics from "./pages/admin/Analytics";
 import MovingCostGuide from "./pages/MovingCostGuide";
+import CleaningCalculator from "./pages/CleaningCalculator";
+import DisposalCalculator from "./pages/DisposalCalculator";
+import StorageCalculator from "./pages/StorageCalculator";
+import PackingCalculator from "./pages/PackingCalculator";
+import AssemblyCalculator from "./pages/AssemblyCalculator";
+import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +45,12 @@ const App = () => (
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
+            <Route path="/rechner/reinigung" element={<CleaningCalculator />} />
+            <Route path="/rechner/entsorgung" element={<DisposalCalculator />} />
+            <Route path="/rechner/lager" element={<StorageCalculator />} />
+            <Route path="/rechner/packservice" element={<PackingCalculator />} />
+            <Route path="/rechner/moebelmontage" element={<AssemblyCalculator />} />
+            <Route path="/rechner/konfigurator" element={<TotalPriceConfigurator />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
