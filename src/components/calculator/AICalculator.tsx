@@ -36,38 +36,48 @@ export const AICalculator = () => {
     setIsAnalyzing(true);
     
     try {
-      // Convert first image to base64 for analysis
-      const file = files[0];
-      const base64 = await fileToBase64(file);
-
-      // Note: In a real implementation, this would call your Lovable Cloud edge function
-      // that integrates with Lovable AI for image analysis
+      // Convert all images to base64
+      const imagePromises = files
+        .filter(file => file.type.startsWith('image/'))
+        .slice(0, 5) // Limit to first 5 images for performance
+        .map(file => fileToBase64(file));
       
-      // Simulated AI analysis
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const images = await Promise.all(imagePromises);
+      
+      console.log('Sending', images.length, 'images for analysis');
 
-      const mockAnalysis = {
-        estimatedVolume: "35 m³",
-        rooms: [
-          { name: "Wohnzimmer", items: 12, volume: "15 m³" },
-          { name: "Schlafzimmer", items: 8, volume: "10 m³" },
-          { name: "Küche", items: 6, volume: "6 m³" },
-          { name: "Badezimmer", items: 4, volume: "4 m³" },
-        ],
-        largeItems: ["Sofa 3-Sitzer", "Esstisch", "Bett 180x200", "Schrank 3m"],
-        confidence: 0.87,
-      };
+      // Call Lovable Cloud edge function for AI analysis
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-moving-photos`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ images }),
+        }
+      );
 
-      setAnalysis(mockAnalysis);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `HTTP ${response.status}`);
+      }
+
+      const analysis = await response.json();
+      console.log('Analysis result:', analysis);
+
+      setAnalysis(analysis);
       
       toast({
         title: "Analyse abgeschlossen!",
         description: "Ihre Umzugsgrösse wurde geschätzt. Sie können die Werte noch anpassen.",
       });
     } catch (error) {
+      console.error('AI analysis error:', error);
       toast({
         title: "Fehler bei der Analyse",
-        description: "Bitte versuchen Sie es erneut oder nutzen Sie den manuellen Rechner.",
+        description: error instanceof Error ? error.message : "Bitte versuchen Sie es erneut oder nutzen Sie den manuellen Rechner.",
         variant: "destructive",
       });
     } finally {
