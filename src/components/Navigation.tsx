@@ -3,21 +3,21 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
-import logo from "@/assets/umzugscheck-logo-variation.png";
+import logo from "@/assets/umzugscheck-logo.png";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="flex items-center justify-between h-48 md:h-56">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <img 
               src={logo} 
               alt="Umzugscheck.ch Logo" 
-              className="h-40 md:h-48 w-auto"
+              className="h-8 md:h-10 w-auto"
             />
           </Link>
 
