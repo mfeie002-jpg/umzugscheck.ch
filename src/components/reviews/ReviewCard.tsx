@@ -1,15 +1,18 @@
-import { useState } from "react";
-import { Star, ThumbsUp, CheckCircle2, ImageIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Star, ThumbsUp, CheckCircle2, ImageIcon, Reply, Edit2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ReviewResponseForm } from "./ReviewResponseForm";
 
 interface ReviewCardProps {
   id: string;
+  companyId: string;
   userName: string;
   userInitials: string;
   rating: number;
@@ -28,10 +31,16 @@ interface ReviewCardProps {
   };
   userHasVoted?: boolean;
   onVoteChange?: () => void;
+  response?: {
+    id: string;
+    response: string;
+    created_at: string;
+  } | null;
 }
 
 export const ReviewCard = ({
   id,
+  companyId,
   userName,
   userInitials,
   rating,
@@ -44,11 +53,32 @@ export const ReviewCard = ({
   serviceRatings,
   userHasVoted = false,
   onVoteChange,
+  response,
 }: ReviewCardProps) => {
   const { toast } = useToast();
   const [isVoting, setIsVoting] = useState(false);
   const [hasVoted, setHasVoted] = useState(userHasVoted);
   const [voteCount, setVoteCount] = useState(helpfulCount);
+  const [showResponseForm, setShowResponseForm] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    checkAdminStatus();
+  }, []);
+
+  const checkAdminStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .single();
+
+    setIsAdmin(!!data);
+  };
 
   const handleVote = async () => {
     setIsVoting(true);
@@ -224,7 +254,74 @@ export const ReviewCard = ({
                 <ThumbsUp className={`w-4 h-4 mr-2 ${hasVoted ? "fill-current" : ""}`} />
                 Hilfreich ({voteCount})
               </Button>
+
+              {isAdmin && !response && !showResponseForm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowResponseForm(true)}
+                >
+                  <Reply className="w-4 h-4 mr-2" />
+                  Antworten
+                </Button>
+              )}
+
+              {isAdmin && response && !showResponseForm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowResponseForm(true)}
+                >
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Antwort bearbeiten
+                </Button>
+              )}
             </div>
+
+            {/* Response Form */}
+            {showResponseForm && isAdmin && (
+              <div className="mt-4 p-4 bg-muted/30 rounded-lg">
+                <ReviewResponseForm
+                  reviewId={id}
+                  companyId={companyId}
+                  existingResponse={response ? { id: response.id, response: response.response } : undefined}
+                  onSuccess={() => {
+                    setShowResponseForm(false);
+                    onVoteChange?.();
+                  }}
+                  onCancel={() => setShowResponseForm(false)}
+                />
+              </div>
+            )}
+
+            {/* Company Response Display */}
+            {response && !showResponseForm && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="bg-muted/30 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <Avatar className="w-10 h-10 flex-shrink-0">
+                      <AvatarFallback className="bg-accent/10 text-accent font-semibold">
+                        UN
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm">Antwort des Unternehmens</span>
+                        <Badge variant="secondary" className="text-xs">
+                          Verifiziert
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {response.response}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(response.created_at).toLocaleDateString("de-CH")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
