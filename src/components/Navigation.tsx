@@ -17,7 +17,7 @@ export const Navigation = () => {
             <img 
               src={logo} 
               alt="Umzugscheck.ch Logo" 
-              className="h-8 md:h-10 w-auto"
+              className="h-12 md:h-16 w-auto"
             />
           </Link>
 
