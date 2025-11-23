@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { formatCurrency, getMoveSize } from "@/lib/pricing";
 import type { MovingCalculation } from "@/lib/pricing";
 import { LeadCaptureForm } from "@/components/LeadCaptureForm";
-import { PieChart as RechartsPC, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { PieChart as RechartsPC, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from "recharts";
 
 const CalculatorResults = () => {
   const location = useLocation();
@@ -59,6 +59,39 @@ const CalculatorResults = () => {
       );
     }
     return null;
+  };
+
+  // Custom active shape for hover effect
+  const renderActiveShape = (props: any) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload } = props;
+    
+    return (
+      <g>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius + 10}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+          style={{
+            filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
+            transition: 'all 0.3s ease-out'
+          }}
+        />
+      </g>
+    );
+  };
+
+  const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+
+  const onPieEnter = (_: any, index: number) => {
+    setActiveIndex(index);
+  };
+
+  const onPieLeave = () => {
+    setActiveIndex(undefined);
   };
 
   const mockCompanies = [
@@ -199,6 +232,11 @@ const CalculatorResults = () => {
                               outerRadius={80}
                               fill="#8884d8"
                               dataKey="value"
+                              activeIndex={activeIndex}
+                              activeShape={renderActiveShape}
+                              onMouseEnter={onPieEnter}
+                              onMouseLeave={onPieLeave}
+                              style={{ cursor: 'pointer' }}
                             >
                               {[
                                 { name: "Basispreis", value: calculation.breakdown.basePrice, color: "hsl(var(--primary))" },
@@ -208,7 +246,13 @@ const CalculatorResults = () => {
                                 ...((calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount) > 0 ? 
                                   [{ name: "Zusatzleistungen", value: calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount, color: "hsl(var(--muted))" }] : [])
                               ].map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                <Cell 
+                                  key={`cell-${index}`} 
+                                  fill={entry.color}
+                                  style={{
+                                    transition: 'all 0.3s ease-out'
+                                  }}
+                                />
                               ))}
                             </Pie>
                             <Tooltip content={<CustomTooltip />} />
