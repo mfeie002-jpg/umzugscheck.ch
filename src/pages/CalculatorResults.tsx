@@ -4,53 +4,32 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CheckCircle2, TrendingDown, Star, Shield, ArrowRight } from "lucide-react";
+import { ArrowLeft, CheckCircle2, TrendingDown, Star, Shield, ArrowRight, Package, Clock, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
+import { formatCurrency, getMoveSize } from "@/lib/pricing";
+import type { MovingCalculation } from "@/lib/pricing";
 
 const CalculatorResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [estimatedPrice, setEstimatedPrice] = useState({ min: 0, max: 0 });
+  const [calculation, setCalculation] = useState<MovingCalculation | null>(null);
+  const [distance, setDistance] = useState<number>(0);
+  const [calculatorData, setCalculatorData] = useState<any>(null);
 
   useEffect(() => {
-    if (!location.state) {
+    if (!location.state || !location.state.calculation) {
       navigate("/rechner");
       return;
     }
 
-    // Calculate estimated price based on calculator data
-    const { calculatorData, type } = location.state;
-    
-    // Simple price estimation logic (in real app, this would be more sophisticated)
-    let basePrice = 800;
-    const roomMultiplier: any = {
-      "1": 1,
-      "2": 1.3,
-      "3": 1.6,
-      "4": 2,
-      "5": 2.4,
-      "6+": 2.8,
-      "house": 3.5
-    };
-
-    const rooms = calculatorData.rooms || "3";
-    basePrice *= roomMultiplier[rooms] || 1.5;
-
-    // Add service costs if advanced calculator
-    if (type === "advanced") {
-      if (calculatorData.packing) basePrice += 300;
-      if (calculatorData.mounting) basePrice += 200;
-      if (calculatorData.cleaning) basePrice += 250;
-      if (calculatorData.disposal) basePrice += 150;
-      if (calculatorData.storage) basePrice += 400;
-      if (calculatorData.piano) basePrice += 500;
-    }
-
-    setEstimatedPrice({
-      min: Math.round(basePrice * 0.85),
-      max: Math.round(basePrice * 1.15)
-    });
+    setCalculation(location.state.calculation);
+    setDistance(location.state.distance || 0);
+    setCalculatorData(location.state.calculatorData);
   }, [location, navigate]);
+
+  if (!calculation) {
+    return null;
+  }
 
   const mockCompanies = [
     {
@@ -58,7 +37,7 @@ const CalculatorResults = () => {
       name: "Züri Umzüge AG",
       rating: 4.8,
       reviews: 127,
-      price: estimatedPrice.min,
+      price: calculation.priceMin,
       verified: true,
       responseTime: "< 2 Std.",
       services: ["Packservice", "Montage", "Versicherung"]
@@ -68,7 +47,7 @@ const CalculatorResults = () => {
       name: "Swiss Move Solutions",
       rating: 4.9,
       reviews: 203,
-      price: Math.round((estimatedPrice.min + estimatedPrice.max) / 2),
+      price: Math.round((calculation.priceMin + calculation.priceMax) / 2),
       verified: true,
       responseTime: "< 1 Std.",
       services: ["Alle Services", "24/7 Support"]
@@ -78,7 +57,7 @@ const CalculatorResults = () => {
       name: "Express Umzugsfirma",
       rating: 4.7,
       reviews: 89,
-      price: estimatedPrice.max,
+      price: calculation.priceMax,
       verified: true,
       responseTime: "< 4 Std.",
       services: ["Packservice", "Endreinigung"]
@@ -108,32 +87,59 @@ const CalculatorResults = () => {
           </div>
         </section>
 
-        {/* Price Estimate */}
+        {/* Price Estimate & Details */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto space-y-6">
+              {/* Main Price Card */}
               <Card className="shadow-strong border-primary/20 bg-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingDown className="w-6 h-6 text-success" />
-                    Geschätzte Kosten
+                    Geschätzte Umzugskosten
                   </CardTitle>
                   <CardDescription>
                     Basierend auf Ihren Angaben – finale Preise können variieren
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-6">
                   <div className="flex items-baseline gap-3">
                     <span className="text-4xl md:text-5xl font-bold text-primary">
-                      CHF {estimatedPrice.min.toLocaleString()}
+                      {formatCurrency(calculation.priceMin)}
                     </span>
                     <span className="text-2xl text-muted-foreground">-</span>
                     <span className="text-4xl md:text-5xl font-bold text-primary">
-                      {estimatedPrice.max.toLocaleString()}
+                      {formatCurrency(calculation.priceMax)}
                     </span>
                   </div>
-                  <p className="text-muted-foreground mt-4">
-                    Durchschnittliche Ersparnis durch Vergleich: <span className="font-semibold text-success">CHF {Math.round(estimatedPrice.max * 0.3).toLocaleString()}</span>
+                  
+                  {/* Quick Stats */}
+                  <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                    <div className="text-center">
+                      <Package className="w-6 h-6 text-primary mx-auto mb-2" />
+                      <div className="text-2xl font-bold">{calculation.volumeM3} m³</div>
+                      <div className="text-sm text-muted-foreground">Volumen</div>
+                    </div>
+                    <div className="text-center">
+                      <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
+                      <div className="text-2xl font-bold">{calculation.estimatedHours}h</div>
+                      <div className="text-sm text-muted-foreground">Geschätzte Dauer</div>
+                    </div>
+                    <div className="text-center">
+                      <TrendingUp className="w-6 h-6 text-primary mx-auto mb-2" />
+                      <div className="text-2xl font-bold">{distance} km</div>
+                      <div className="text-sm text-muted-foreground">Distanz</div>
+                    </div>
+                  </div>
+
+                  {/* Move Size */}
+                  <div className="bg-secondary/30 rounded-lg p-4">
+                    <div className="font-semibold mb-1">Umzugsgrösse</div>
+                    <div className="text-sm text-muted-foreground">{getMoveSize(calculation.volumeM3)}</div>
+                  </div>
+
+                  <p className="text-muted-foreground text-sm">
+                    Durchschnittliche Ersparnis durch Vergleich: <span className="font-semibold text-success">{formatCurrency(Math.round(calculation.priceMax * 0.3))}</span>
                   </p>
                 </CardContent>
               </Card>

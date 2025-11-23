@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, MapPin, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { calculateQuickMovingPrice, estimateDistance } from "@/lib/pricing";
 
 const formSchema = z.object({
   fromPostal: z.string().min(4, "Bitte gültige PLZ eingeben").max(10),
@@ -17,6 +19,10 @@ const formSchema = z.object({
   toCity: z.string().min(2, "Bitte Ort eingeben"),
   rooms: z.string().min(1, "Bitte Zimmerzahl wählen"),
   movingType: z.string().min(1, "Bitte Umzugsart wählen"),
+  floorsFrom: z.string(),
+  floorsTo: z.string(),
+  hasElevatorFrom: z.boolean(),
+  hasElevatorTo: z.boolean(),
 });
 
 export const QuickCalculator = () => {
@@ -32,16 +38,41 @@ export const QuickCalculator = () => {
       toCity: "",
       rooms: "",
       movingType: "local",
+      floorsFrom: "0",
+      floorsTo: "0",
+      hasElevatorFrom: false,
+      hasElevatorTo: false,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
+    
+    // Calculate distance
+    const distance = estimateDistance(values.fromPostal, values.toPostal);
+    
+    // Calculate pricing
+    const calculation = calculateQuickMovingPrice(
+      values.rooms,
+      distance,
+      parseInt(values.floorsFrom),
+      parseInt(values.floorsTo),
+      values.hasElevatorFrom,
+      values.hasElevatorTo
+    );
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Navigate to results with data
-    navigate("/rechner/ergebnis", { state: { calculatorData: values, type: "quick" } });
+    navigate("/rechner/ergebnis", { 
+      state: { 
+        calculatorData: values, 
+        calculation,
+        distance,
+        type: "quick" 
+      } 
+    });
   };
 
   return (
@@ -182,6 +213,102 @@ export const QuickCalculator = () => {
                   </FormItem>
                 )}
               />
+            </div>
+
+            {/* Floors and Elevator */}
+            <div className="space-y-4">
+              <div className="text-sm font-semibold text-muted-foreground">Stockwerke & Lift</div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <FormField
+                    control={form.control}
+                    name="floorsFrom"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Stockwerk (von)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Stockwerk" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0">Erdgeschoss</SelectItem>
+                            <SelectItem value="1">1. Stock</SelectItem>
+                            <SelectItem value="2">2. Stock</SelectItem>
+                            <SelectItem value="3">3. Stock</SelectItem>
+                            <SelectItem value="4">4. Stock</SelectItem>
+                            <SelectItem value="5">5+ Stock</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="hasElevatorFrom"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center space-x-2 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal cursor-pointer">
+                          Lift vorhanden
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <FormField
+                    control={form.control}
+                    name="floorsTo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Stockwerk (nach)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Stockwerk" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0">Erdgeschoss</SelectItem>
+                            <SelectItem value="1">1. Stock</SelectItem>
+                            <SelectItem value="2">2. Stock</SelectItem>
+                            <SelectItem value="3">3. Stock</SelectItem>
+                            <SelectItem value="4">4. Stock</SelectItem>
+                            <SelectItem value="5">5+ Stock</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="hasElevatorTo"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center space-x-2 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal cursor-pointer">
+                          Lift vorhanden
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </div>
 
             <Button 
