@@ -1,49 +1,73 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { MegaDropdown } from "@/components/MegaDropdown";
+import { MobileMenu } from "@/components/MobileMenu";
 import logo from "@/assets/umzugscheck-logo.png";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { label: "Startseite", href: "/" },
+  { label: "Preisrechner", href: "/rechner", hasDropdown: true },
+  { label: "Umzugsfirmen", href: "/firmen" },
+  { label: "Ratgeber", href: "/blog" },
+  { label: "Über uns", href: "/ueber-uns" },
+  { label: "Kontakt", href: "/kontakt" }
+];
 
 export const Navigation = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMegaDropdownOpen, setIsMegaDropdownOpen] = useState(false);
+
   return (
-    <nav className="bg-white border-b-[0.5px] border-border sticky top-0 z-50 shadow-soft">
+    <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-24 md:h-36 py-4 md:py-5">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+          <Link 
+            to="/" 
+            className="flex items-center hover:opacity-90 transition-opacity"
+          >
             <img 
               src={logo} 
               alt="Umzugscheck.ch Logo" 
-              className="h-16 md:h-24 w-auto" 
+              className="h-14 md:h-20 w-auto" 
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
-            <Link to="/" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
-              Home
-            </Link>
-            <Link to="/rechner" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
-              Preisrechner
-            </Link>
-            <Link to="/firmen" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
-              Umzugsfirmen
-            </Link>
-            <Link to="/vergleichen" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
-              Vergleichen
-            </Link>
-            <Link to="/blog" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
-              Ratgeber
-            </Link>
-            <Link to="/kontakt" className="text-foreground hover:text-primary transition-base font-medium hover:underline underline-offset-4">
-              Kontakt
-            </Link>
+          <div className="hidden lg:flex items-center gap-1">
+            {navItems.map((item) => (
+              <div key={item.label} className="relative">
+                {item.hasDropdown ? (
+                  <button
+                    onMouseEnter={() => setIsMegaDropdownOpen(true)}
+                    onMouseLeave={() => setIsMegaDropdownOpen(false)}
+                    className={cn(
+                      "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
+                    )}
+                  >
+                    {item.label}
+                    <ChevronDown className={cn(
+                      "w-4 h-4 transition-transform",
+                      isMegaDropdownOpen && "rotate-180"
+                    )} />
+                  </button>
+                ) : (
+                  <Link
+                    to={item.href}
+                    className="px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50 inline-block"
+                  >
+                    {item.label}
+                  </Link>
+                )}
+              </div>
+            ))}
           </div>
 
-          {/* CTA Button */}
+          {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <DarkModeToggle />
             <Link to="/auth">
@@ -60,76 +84,31 @@ export const Navigation = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            onClick={() => setIsOpen(!isOpen)} 
-            className="lg:hidden p-2 text-foreground" 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+            className="lg:hidden p-2 text-foreground hover:bg-secondary rounded-lg transition-colors" 
             aria-label="Toggle menu"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="lg:hidden py-4 border-t border-border">
-            <div className="flex flex-col gap-4">
-              <Link 
-                to="/" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base" 
-                onClick={() => setIsOpen(false)}
-              >
-                Home
-              </Link>
-              <Link 
-                to="/rechner" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base" 
-                onClick={() => setIsOpen(false)}
-              >
-                Preisrechner
-              </Link>
-              <Link 
-                to="/firmen" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base" 
-                onClick={() => setIsOpen(false)}
-              >
-                Umzugsfirmen
-              </Link>
-              <Link 
-                to="/vergleichen" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base" 
-                onClick={() => setIsOpen(false)}
-              >
-                Vergleichen
-              </Link>
-              <Link 
-                to="/blog" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base" 
-                onClick={() => setIsOpen(false)}
-              >
-                Ratgeber
-              </Link>
-              <Link 
-                to="/kontakt" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base" 
-                onClick={() => setIsOpen(false)}
-              >
-                Kontakt
-              </Link>
-              <Link 
-                to="/auth" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base" 
-                onClick={() => setIsOpen(false)}
-              >
-                Admin Login
-              </Link>
-              <Link to="/rechner" onClick={() => setIsOpen(false)}>
-                <Button className="w-full bg-accent hover:bg-accent/90">
-                  Offerten erhalten
-                </Button>
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* Mega Dropdown */}
+        <div
+          onMouseEnter={() => setIsMegaDropdownOpen(true)}
+          onMouseLeave={() => setIsMegaDropdownOpen(false)}
+        >
+          <MegaDropdown 
+            isOpen={isMegaDropdownOpen} 
+            onClose={() => setIsMegaDropdownOpen(false)} 
+          />
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      <MobileMenu 
+        isOpen={isMobileMenuOpen} 
+        onClose={() => setIsMobileMenuOpen(false)} 
+      />
     </nav>
   );
 };
