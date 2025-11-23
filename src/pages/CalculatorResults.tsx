@@ -4,11 +4,12 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CheckCircle2, TrendingDown, Star, Shield, ArrowRight, Package, Clock, TrendingUp } from "lucide-react";
+import { ArrowLeft, CheckCircle2, TrendingDown, Star, Shield, ArrowRight, Package, Clock, TrendingUp, PieChart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatCurrency, getMoveSize } from "@/lib/pricing";
 import type { MovingCalculation } from "@/lib/pricing";
 import { LeadCaptureForm } from "@/components/LeadCaptureForm";
+import { PieChart as RechartsPC, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 
 const CalculatorResults = () => {
   const location = useLocation();
@@ -137,6 +138,96 @@ const CalculatorResults = () => {
                   <div className="bg-secondary/30 rounded-lg p-4">
                     <div className="font-semibold mb-1">Umzugsgrösse</div>
                     <div className="text-sm text-muted-foreground">{getMoveSize(calculation.volumeM3)}</div>
+                  </div>
+
+                  {/* Cost Breakdown Chart */}
+                  <div className="border-t pt-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <PieChart className="w-5 h-5 text-primary" />
+                      <h3 className="font-semibold text-lg">Kostenaufschlüsselung</h3>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6 items-center">
+                      {/* Chart */}
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsPC>
+                            <Pie
+                              data={[
+                                { name: "Basispreis", value: calculation.breakdown.basePrice, color: "hsl(var(--primary))" },
+                                ...(calculation.breakdown.distanceFee > 0 ? [{ name: "Distanzgebühr", value: calculation.breakdown.distanceFee, color: "hsl(var(--accent))" }] : []),
+                                ...(calculation.breakdown.floorFee > 0 ? [{ name: "Stockwerkgebühr", value: calculation.breakdown.floorFee, color: "hsl(var(--secondary))" }] : []),
+                                ...(calculation.breakdown.elevatorDiscount < 0 ? [{ name: "Lift-Rabatt", value: Math.abs(calculation.breakdown.elevatorDiscount), color: "hsl(var(--success))" }] : []),
+                                ...((calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount) > 0 ? 
+                                  [{ name: "Zusatzleistungen", value: calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount, color: "hsl(var(--muted))" }] : [])
+                              ]}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              outerRadius={80}
+                              fill="#8884d8"
+                              dataKey="value"
+                            >
+                              {[
+                                { name: "Basispreis", value: calculation.breakdown.basePrice, color: "hsl(var(--primary))" },
+                                ...(calculation.breakdown.distanceFee > 0 ? [{ name: "Distanzgebühr", value: calculation.breakdown.distanceFee, color: "hsl(var(--accent))" }] : []),
+                                ...(calculation.breakdown.floorFee > 0 ? [{ name: "Stockwerkgebühr", value: calculation.breakdown.floorFee, color: "hsl(var(--secondary))" }] : []),
+                                ...(calculation.breakdown.elevatorDiscount < 0 ? [{ name: "Lift-Rabatt", value: Math.abs(calculation.breakdown.elevatorDiscount), color: "hsl(var(--success))" }] : []),
+                                ...((calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount) > 0 ? 
+                                  [{ name: "Zusatzleistungen", value: calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount, color: "hsl(var(--muted))" }] : [])
+                              ].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              formatter={(value: number) => formatCurrency(value)}
+                              contentStyle={{ 
+                                backgroundColor: 'hsl(var(--background))', 
+                                border: '1px solid hsl(var(--border))',
+                                borderRadius: '8px'
+                              }}
+                            />
+                            <Legend />
+                          </RechartsPC>
+                        </ResponsiveContainer>
+                      </div>
+
+                      {/* Breakdown List */}
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center p-3 rounded-lg bg-primary/5">
+                          <span className="font-medium">Basispreis</span>
+                          <span className="font-bold text-primary">{formatCurrency(calculation.breakdown.basePrice)}</span>
+                        </div>
+                        {calculation.breakdown.distanceFee > 0 && (
+                          <div className="flex justify-between items-center p-3 rounded-lg bg-accent/5">
+                            <span className="font-medium">Distanzgebühr</span>
+                            <span className="font-bold text-accent">{formatCurrency(calculation.breakdown.distanceFee)}</span>
+                          </div>
+                        )}
+                        {calculation.breakdown.floorFee > 0 && (
+                          <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/20">
+                            <span className="font-medium">Stockwerkgebühr</span>
+                            <span className="font-bold">{formatCurrency(calculation.breakdown.floorFee)}</span>
+                          </div>
+                        )}
+                        {calculation.breakdown.elevatorDiscount < 0 && (
+                          <div className="flex justify-between items-center p-3 rounded-lg bg-success/5">
+                            <span className="font-medium">Lift-Rabatt</span>
+                            <span className="font-bold text-success">{formatCurrency(calculation.breakdown.elevatorDiscount)}</span>
+                          </div>
+                        )}
+                        {(calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount) > 0 && (
+                          <div className="flex justify-between items-center p-3 rounded-lg bg-muted/20">
+                            <span className="font-medium">Zusatzleistungen</span>
+                            <span className="font-bold">{formatCurrency(calculation.breakdown.total - calculation.breakdown.basePrice - calculation.breakdown.distanceFee - calculation.breakdown.floorFee - calculation.breakdown.elevatorDiscount)}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center p-3 rounded-lg bg-primary/10 border-t-2 border-primary mt-4">
+                          <span className="font-bold text-lg">Total</span>
+                          <span className="font-bold text-lg text-primary">{formatCurrency(calculation.breakdown.total)}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <p className="text-muted-foreground text-sm">
