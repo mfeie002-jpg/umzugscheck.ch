@@ -71,7 +71,7 @@ export const Hero = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <Link to="/rechner" className="flex-1">
-              <Button size="lg" className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white shadow-accent group transition-all duration-300 hover:shadow-xl hover:scale-105">
+              <Button size="lg" className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white shadow-accent group transition-all duration-300 hover:shadow-xl hover:scale-105 animate-glow-pulse">
                 Jetzt Offerten vergleichen
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
