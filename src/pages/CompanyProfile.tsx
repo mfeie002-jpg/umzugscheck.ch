@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Star,
   MapPin,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAnalytics } from "@/lib/analytics";
+import { ReviewList } from "@/components/reviews/ReviewList";
 
 interface Company {
   id: string;
@@ -191,58 +193,73 @@ const CompanyProfile = () => {
               <div className="grid lg:grid-cols-3 gap-8">
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-8">
-                  {/* Services */}
-                  <Card>
-                    <CardContent className="p-6">
-                      <h2 className="text-2xl font-bold mb-4">Unsere Dienstleistungen</h2>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        {company.services.map((service, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
-                            <span>{service}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <Tabs defaultValue="overview" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3">
+                      <TabsTrigger value="overview">Übersicht</TabsTrigger>
+                      <TabsTrigger value="reviews">Bewertungen</TabsTrigger>
+                      <TabsTrigger value="about">Über uns</TabsTrigger>
+                    </TabsList>
 
-                  {/* Service Areas */}
-                  <Card>
-                    <CardContent className="p-6">
-                      <h2 className="text-2xl font-bold mb-4">Servicegebiete</h2>
-                      <div className="flex flex-wrap gap-2">
-                        {company.service_areas.map((area, index) => (
-                          <Badge key={index} variant="secondary" className="text-sm">
-                            <MapPin className="w-3 h-3 mr-1" />
-                            {area}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <TabsContent value="overview" className="space-y-6 mt-6">
+                      {/* Services */}
+                      <Card>
+                        <CardContent className="p-6">
+                          <h2 className="text-2xl font-bold mb-4">Unsere Dienstleistungen</h2>
+                          <div className="grid md:grid-cols-2 gap-3">
+                            {company.services.map((service, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
+                                <span>{service}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                  {/* About */}
-                  <Card>
-                    <CardContent className="p-6">
-                      <h2 className="text-2xl font-bold mb-4">Über uns</h2>
-                      <div className="prose max-w-none">
-                        <p className="text-muted-foreground leading-relaxed">
-                          {company.description}
-                        </p>
-                        <Separator className="my-4" />
-                        <div className="grid md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="font-semibold">Preisniveau:</span>
-                            <span className="ml-2 text-primary font-medium">{company.price_level}</span>
+                      {/* Service Areas */}
+                      <Card>
+                        <CardContent className="p-6">
+                          <h2 className="text-2xl font-bold mb-4">Servicegebiete</h2>
+                          <div className="flex flex-wrap gap-2">
+                            {company.service_areas.map((area, index) => (
+                              <Badge key={index} variant="secondary" className="text-sm">
+                                <MapPin className="w-3 h-3 mr-1" />
+                                {area}
+                              </Badge>
+                            ))}
                           </div>
-                          <div>
-                            <span className="font-semibold">Bewertung:</span>
-                            <span className="ml-2">{company.rating}/5</span>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+
+                    <TabsContent value="reviews" className="mt-6">
+                      <ReviewList companyId={company.id} />
+                    </TabsContent>
+
+                    <TabsContent value="about" className="mt-6">
+                      <Card>
+                        <CardContent className="p-6">
+                          <h2 className="text-2xl font-bold mb-4">Über uns</h2>
+                          <div className="prose max-w-none">
+                            <p className="text-muted-foreground leading-relaxed">
+                              {company.description}
+                            </p>
+                            <Separator className="my-4" />
+                            <div className="grid md:grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="font-semibold">Preisniveau:</span>
+                                <span className="ml-2 text-primary font-medium">{company.price_level}</span>
+                              </div>
+                              <div>
+                                <span className="font-semibold">Bewertung:</span>
+                                <span className="ml-2">{company.rating}/5</span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
                 </div>
 
                 {/* Sidebar */}
