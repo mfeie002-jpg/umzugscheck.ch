@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, CheckCircle2, X, ArrowRight, AlertCircle, TrendingUp, Search, Filter } from "lucide-react";
+import { Star, CheckCircle2, X, ArrowRight, AlertCircle, TrendingUp, Search, Filter, ArrowUpDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -36,6 +36,7 @@ const Compare = () => {
   const [cantonFilter, setCantonFilter] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("rating");
 
   useEffect(() => {
     fetchCompanies();
@@ -83,9 +84,10 @@ const Compare = () => {
     return Array.from(services).sort();
   }, [companies]);
 
-  // Filter companies
-  const filteredCompanies = useMemo(() => {
-    return companies.filter(company => {
+  // Filter and sort companies
+  const filteredAndSortedCompanies = useMemo(() => {
+    // First filter
+    const filtered = companies.filter(company => {
       // Search filter
       if (searchTerm && !company.name.toLowerCase().includes(searchTerm.toLowerCase())) {
         return false;
@@ -108,7 +110,30 @@ const Compare = () => {
       
       return true;
     });
-  }, [companies, searchTerm, cantonFilter, priceFilter, serviceFilter]);
+
+    // Then sort
+    return [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "rating":
+          return (b.rating || 0) - (a.rating || 0);
+        case "review_count":
+          return (b.review_count || 0) - (a.review_count || 0);
+        case "price_low":
+          // Extract first number from price_level string for comparison
+          const priceA = parseInt(a.price_level?.match(/\d+/)?.[0] || "999999");
+          const priceB = parseInt(b.price_level?.match(/\d+/)?.[0] || "999999");
+          return priceA - priceB;
+        case "price_high":
+          const priceA2 = parseInt(a.price_level?.match(/\d+/)?.[0] || "0");
+          const priceB2 = parseInt(b.price_level?.match(/\d+/)?.[0] || "0");
+          return priceB2 - priceA2;
+        case "name":
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+  }, [companies, searchTerm, cantonFilter, priceFilter, serviceFilter, sortBy]);
 
   const selectedCompanyData = companies.filter(c => selectedCompanies.includes(c.id));
 
@@ -117,6 +142,7 @@ const Compare = () => {
     setCantonFilter("all");
     setPriceFilter("all");
     setServiceFilter("all");
+    setSortBy("rating");
   };
 
   const activeFilterCount = [
@@ -251,15 +277,37 @@ const Compare = () => {
                       </Select>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <Separator className="my-4" />
+
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
                       <p className="text-sm text-muted-foreground">
-                        {filteredCompanies.length} {filteredCompanies.length === 1 ? 'Firma' : 'Firmen'} gefunden
+                        {filteredAndSortedCompanies.length} {filteredAndSortedCompanies.length === 1 ? 'Firma' : 'Firmen'} gefunden
                       </p>
-                      {activeFilterCount > 0 && (
-                        <Button variant="ghost" size="sm" onClick={clearFilters}>
-                          Filter zurücksetzen
-                        </Button>
-                      )}
+                      
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm font-medium">Sortieren:</span>
+                        </div>
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="rating">Bewertung (hoch)</SelectItem>
+                            <SelectItem value="review_count">Anzahl Bewertungen</SelectItem>
+                            <SelectItem value="price_low">Preis (niedrig)</SelectItem>
+                            <SelectItem value="price_high">Preis (hoch)</SelectItem>
+                            <SelectItem value="name">Name (A-Z)</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        {activeFilterCount > 0 && (
+                          <Button variant="ghost" size="sm" onClick={clearFilters}>
+                            Zurücksetzen
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -271,7 +319,7 @@ const Compare = () => {
                     <LoadingSkeletonCompany key={i} />
                   ))}
                 </div>
-              ) : filteredCompanies.length === 0 ? (
+              ) : filteredAndSortedCompanies.length === 0 ? (
                 <Card className="p-12 text-center bg-gradient-to-br from-secondary/20 to-transparent mb-12">
                   <div className="max-w-md mx-auto">
                     <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -286,7 +334,7 @@ const Compare = () => {
                 </Card>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                  {filteredCompanies.map((company, index) => (
+                  {filteredAndSortedCompanies.map((company, index) => (
                     <ScrollReveal key={company.id} delay={index * 0.1}>
                       <Card
                         className={`cursor-pointer transition-all duration-300 hover:shadow-strong hover:-translate-y-1 ${
