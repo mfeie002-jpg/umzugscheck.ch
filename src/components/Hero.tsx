@@ -44,27 +44,27 @@ export const Hero = () => {
           </p>
 
           {/* Trust Signals */}
-          <div className="grid grid-cols-3 gap-6 pt-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-success" />
-                <span className="text-2xl font-bold">100%</span>
+          <div className="grid grid-cols-3 gap-4 pt-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
               </div>
-              <p className="text-sm text-white/80">kostenlos</p>
+              <p className="text-3xl font-bold text-center mb-1">100%</p>
+              <p className="text-sm text-white/90 text-center font-medium">kostenlos</p>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-success" />
-                <span className="text-2xl font-bold">4.8/5</span>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <TrendingDown className="w-6 h-6 text-accent" />
               </div>
-              <p className="text-sm text-white/80">Kundenbewertung</p>
+              <p className="text-3xl font-bold text-center mb-1">4.8/5</p>
+              <p className="text-sm text-white/90 text-center font-medium">Bewertung</p>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-success" />
-                <span className="text-2xl font-bold">2 Min</span>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
               </div>
-              <p className="text-sm text-white/80">Zeitaufwand</p>
+              <p className="text-3xl font-bold text-center mb-1">2 Min</p>
+              <p className="text-sm text-white/90 text-center font-medium">Zeitaufwand</p>
             </div>
           </div>
 
