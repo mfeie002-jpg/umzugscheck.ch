@@ -35,8 +35,8 @@ export const Hero = () => {
           </div>
 
           <h1 className="leading-tight">
-            Umzugsofferten vergleichen –<br />
-            <span className="text-accent">einfach & transparent</span>
+            Ihren Umzug<br />
+            <span className="text-accent">einfach vergleichen</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-light max-w-xl">
