@@ -9,7 +9,7 @@ export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
+    <nav className="bg-white border-b-[0.5px] border-border sticky top-0 z-50 shadow-soft">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20 md:h-28 py-3 md:py-4">
           {/* Logo */}
