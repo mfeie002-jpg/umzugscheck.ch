@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 interface Review {
   id: string;
   user_id: string;
+  company_id: string;
   rating: number;
   title: string;
   comment: string;
@@ -21,6 +22,11 @@ interface Review {
   service_ratings: any;
   profiles?: {
     full_name: string;
+  } | null;
+  response?: {
+    id: string;
+    response: string;
+    created_at: string;
   } | null;
 }
 
@@ -80,9 +86,9 @@ export const ReviewList = ({ companyId }: ReviewListProps) => {
 
       if (error) throw error;
       
-      // Fetch profiles separately for each review
+      // Fetch profiles and responses separately for each review
       if (data) {
-        const reviewsWithProfiles = await Promise.all(
+        const reviewsWithData = await Promise.all(
           data.map(async (review) => {
             const { data: profile } = await supabase
               .from("profiles")
@@ -90,13 +96,20 @@ export const ReviewList = ({ companyId }: ReviewListProps) => {
               .eq("id", review.user_id)
               .single();
             
+            const { data: response } = await supabase
+              .from("review_responses")
+              .select("id, response, created_at")
+              .eq("review_id", review.id)
+              .single();
+            
             return {
               ...review,
               profiles: profile,
+              response: response,
             };
           })
         );
-        setReviews(reviewsWithProfiles);
+        setReviews(reviewsWithData);
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -236,6 +249,7 @@ export const ReviewList = ({ companyId }: ReviewListProps) => {
               <ReviewCard
                 key={review.id}
                 id={review.id}
+                companyId={review.company_id}
                 userName={review.profiles?.full_name || "Anonymer Nutzer"}
                 userInitials={getUserInitials(review.profiles?.full_name || "AN")}
                 rating={review.rating}
@@ -248,6 +262,7 @@ export const ReviewList = ({ companyId }: ReviewListProps) => {
                 serviceRatings={review.service_ratings}
                 userHasVoted={userVotes.has(review.id)}
                 onVoteChange={fetchReviews}
+                response={review.response}
               />
             ))}
           </div>
