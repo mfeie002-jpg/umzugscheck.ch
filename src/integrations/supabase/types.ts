@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      companies: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          email: string | null
+          featured: boolean | null
+          gallery_images: string[] | null
+          id: string
+          logo: string | null
+          name: string
+          phone: string | null
+          price_level: string | null
+          rating: number | null
+          review_count: number | null
+          service_areas: string[] | null
+          services: string[] | null
+          updated_at: string | null
+          verified: boolean | null
+          website: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          featured?: boolean | null
+          gallery_images?: string[] | null
+          id?: string
+          logo?: string | null
+          name: string
+          phone?: string | null
+          price_level?: string | null
+          rating?: number | null
+          review_count?: number | null
+          service_areas?: string[] | null
+          services?: string[] | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          featured?: boolean | null
+          gallery_images?: string[] | null
+          id?: string
+          logo?: string | null
+          name?: string
+          phone?: string | null
+          price_level?: string | null
+          rating?: number | null
+          review_count?: number | null
+          service_areas?: string[] | null
+          services?: string[] | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      leads: {
+        Row: {
+          calculator_input: Json
+          calculator_output: Json
+          calculator_type: string
+          comments: string | null
+          created_at: string | null
+          email: string
+          from_city: string
+          from_postal: string
+          id: string
+          move_date: string | null
+          name: string
+          phone: string | null
+          status: string | null
+          to_city: string
+          to_postal: string
+        }
+        Insert: {
+          calculator_input: Json
+          calculator_output: Json
+          calculator_type: string
+          comments?: string | null
+          created_at?: string | null
+          email: string
+          from_city: string
+          from_postal: string
+          id?: string
+          move_date?: string | null
+          name: string
+          phone?: string | null
+          status?: string | null
+          to_city: string
+          to_postal: string
+        }
+        Update: {
+          calculator_input?: Json
+          calculator_output?: Json
+          calculator_type?: string
+          comments?: string | null
+          created_at?: string | null
+          email?: string
+          from_city?: string
+          from_postal?: string
+          id?: string
+          move_date?: string | null
+          name?: string
+          phone?: string | null
+          status?: string | null
+          to_city?: string
+          to_postal?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
