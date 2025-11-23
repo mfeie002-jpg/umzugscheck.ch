@@ -122,6 +122,157 @@ export const Testimonials = () => {
     };
 
     fetchTestimonials();
+
+    // Set up real-time subscription for new reviews
+    const channel = supabase
+      .channel('testimonials-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'reviews',
+          filter: 'verified=eq.true'
+        },
+        async (payload) => {
+          console.log('New review received:', payload);
+          
+          // Fetch the full review data with joined tables
+          const { data: newReview, error } = await supabase
+            .from("reviews")
+            .select(`
+              id,
+              rating,
+              title,
+              comment,
+              created_at,
+              verified,
+              profiles:user_id (
+                full_name
+              ),
+              companies:company_id (
+                name
+              )
+            `)
+            .eq("id", payload.new.id)
+            .gte("rating", 4.5)
+            .single();
+
+          if (error || !newReview) {
+            console.error('Error fetching new review:', error);
+            return;
+          }
+
+          const highlight = getHighlightForRating(newReview.rating);
+          const fullName = (newReview.profiles as any)?.full_name || "Anonymer Kunde";
+          const companyName = (newReview.companies as any)?.name || "Schweizweit";
+
+          const formattedReview: TestimonialData = {
+            id: newReview.id,
+            name: fullName,
+            location: companyName,
+            rating: Math.round(newReview.rating),
+            date: formatDate(newReview.created_at),
+            comment: newReview.comment,
+            title: newReview.title,
+            highlight: highlight.text,
+            highlightIcon: highlight.icon,
+            verified: newReview.verified,
+          };
+
+          // Add new review to the beginning and limit to 3
+          setTestimonials((prev) => [formattedReview, ...prev].slice(0, 3));
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'reviews'
+        },
+        async (payload) => {
+          console.log('Review updated:', payload);
+          
+          // If review was just verified and has good rating, fetch and add it
+          if (payload.new.verified && payload.new.rating >= 4.5) {
+            const { data: updatedReview, error } = await supabase
+              .from("reviews")
+              .select(`
+                id,
+                rating,
+                title,
+                comment,
+                created_at,
+                verified,
+                profiles:user_id (
+                  full_name
+                ),
+                companies:company_id (
+                  name
+                )
+              `)
+              .eq("id", payload.new.id)
+              .single();
+
+            if (error || !updatedReview) {
+              console.error('Error fetching updated review:', error);
+              return;
+            }
+
+            const highlight = getHighlightForRating(updatedReview.rating);
+            const fullName = (updatedReview.profiles as any)?.full_name || "Anonymer Kunde";
+            const companyName = (updatedReview.companies as any)?.name || "Schweizweit";
+
+            const formattedReview: TestimonialData = {
+              id: updatedReview.id,
+              name: fullName,
+              location: companyName,
+              rating: Math.round(updatedReview.rating),
+              date: formatDate(updatedReview.created_at),
+              comment: updatedReview.comment,
+              title: updatedReview.title,
+              highlight: highlight.text,
+              highlightIcon: highlight.icon,
+              verified: updatedReview.verified,
+            };
+
+            // Check if review already exists in list
+            setTestimonials((prev) => {
+              const exists = prev.some(t => t.id === formattedReview.id);
+              if (exists) {
+                // Update existing review
+                return prev.map(t => t.id === formattedReview.id ? formattedReview : t);
+              } else {
+                // Add new review to the beginning
+                return [formattedReview, ...prev].slice(0, 3);
+              }
+            });
+          } else if (!payload.new.verified || payload.new.rating < 4.5) {
+            // Remove review if it no longer meets criteria
+            setTestimonials((prev) => prev.filter(t => t.id !== payload.new.id));
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'reviews'
+        },
+        (payload) => {
+          console.log('Review deleted:', payload);
+          // Remove deleted review from the list
+          setTestimonials((prev) => prev.filter(t => t.id !== payload.old.id));
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   if (loading) {
