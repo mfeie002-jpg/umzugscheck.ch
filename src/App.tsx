@@ -16,7 +16,9 @@ import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AIUpload from "./pages/AIUpload";
 import NotFound from "./pages/NotFound";
+import CompaniesAdmin from "./pages/admin/Companies";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/rechner" element={<Calculator />} />
+            <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
@@ -40,6 +43,7 @@ const App = () => (
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/companies" element={<CompaniesAdmin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
