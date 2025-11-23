@@ -1,5 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+// Simple dev-only logger
+const isDev = Deno.env.get('ENVIRONMENT') === 'development';
+const log = {
+  info: (msg: string, data?: any) => isDev && console.log(`[INFO] ${msg}`, data || ''),
+  error: (msg: string, error?: any) => console.error(`[ERROR] ${msg}`, error instanceof Error ? error.message : error),
+};
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -25,7 +32,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    console.log('Analyzing', images.length, 'images');
+    log.info('Analyzing images', { count: images.length });
 
     // Prepare content array with system prompt and images
     const content: any[] = [
@@ -89,7 +96,7 @@ Be detailed and accurate. For Swiss homes, use German room names (Wohnzimmer, Sc
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error('AI Gateway error:', aiResponse.status, errorText);
+      log.error('AI Gateway error', { status: aiResponse.status, errorText });
       
       if (aiResponse.status === 429) {
         return new Response(
@@ -109,10 +116,10 @@ Be detailed and accurate. For Swiss homes, use German room names (Wohnzimmer, Sc
     }
 
     const aiData = await aiResponse.json();
-    console.log('AI response received');
+    log.info('AI response received');
 
     const analysisText = aiData.choices[0].message.content;
-    console.log('Analysis:', analysisText);
+    log.info('Analysis complete');
 
     // Parse JSON from the response
     let analysis;
@@ -127,8 +134,7 @@ Be detailed and accurate. For Swiss homes, use German room names (Wohnzimmer, Sc
         analysis = JSON.parse(analysisText);
       }
     } catch (parseError) {
-      console.error('Failed to parse AI response as JSON:', parseError);
-      console.error('Raw response:', analysisText);
+      log.error('Failed to parse AI response', parseError);
       
       // Return a fallback response
       analysis = {
@@ -148,7 +154,7 @@ Be detailed and accurate. For Swiss homes, use German room names (Wohnzimmer, Sc
     );
 
   } catch (error) {
-    console.error('Error in analyze-moving-photos:', error);
+    log.error('Error in analyze-moving-photos', error);
     const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     return new Response(
       JSON.stringify({ error: errorMessage }),

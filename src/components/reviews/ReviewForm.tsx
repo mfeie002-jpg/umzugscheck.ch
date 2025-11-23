@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -146,7 +147,7 @@ export const ReviewForm = ({ companyId, onSuccess, onCancel }: ReviewFormProps) 
 
       onSuccess?.();
     } catch (error) {
-      console.error("Error submitting review:", error);
+      logger.error("Error submitting review", error, { companyId });
       toast({
         title: "Fehler",
         description: "Bewertung konnte nicht gespeichert werden.",
