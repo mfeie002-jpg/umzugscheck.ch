@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,6 +40,7 @@ export const Navigation = () => {
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center gap-3">
+            <DarkModeToggle />
             <Link to="/auth">
               <Button variant="ghost" className="text-foreground hover:text-primary">
                 Admin Login

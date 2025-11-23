@@ -323,6 +323,23 @@ const AdminDashboard = () => {
 
             {/* Quick Links */}
             <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <Link to="/admin/leads">
+                <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 rounded-lg bg-blue-500/10">
+                        <Users className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Leads verwalten</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Anfragen verwalten und Status aktualisieren
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
               <Link to="/admin/companies">
                 <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
                   <CardContent className="p-6">
@@ -356,21 +373,6 @@ const AdminDashboard = () => {
                   </CardContent>
                 </Card>
               </Link>
-
-              <Card className="shadow-medium opacity-50 cursor-not-allowed h-full">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 rounded-lg bg-muted">
-                      <Settings className="w-6 h-6 text-muted-foreground" />
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">Einstellungen</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Bald verfügbar
-                  </p>
-                </CardContent>
-              </Card>
             </div>
 
             {/* Filters and Actions */}

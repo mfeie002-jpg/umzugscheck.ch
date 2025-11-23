@@ -9,6 +9,7 @@ import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
 import Companies from "./pages/Companies";
 import CompanyProfile from "./pages/CompanyProfile";
+import Compare from "./pages/Compare";
 import Canton from "./pages/Canton";
 import City from "./pages/City";
 import Blog from "./pages/Blog";
@@ -20,6 +21,7 @@ import AdminReviews from "./pages/admin/Reviews";
 import AIUpload from "./pages/AIUpload";
 import NotFound from "./pages/NotFound";
 import CompaniesAdmin from "./pages/admin/Companies";
+import LeadsAdmin from "./pages/admin/Leads";
 import MovingCostGuide from "./pages/MovingCostGuide";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,7 @@ const App = () => (
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
+            <Route path="/vergleichen" element={<Compare />} />
             <Route path="/kanton/:slug" element={<Canton />} />
             <Route path="/stadt/:slug" element={<City />} />
             <Route path="/blog" element={<Blog />} />
@@ -47,6 +50,7 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/companies" element={<CompaniesAdmin />} />
             <Route path="/admin/reviews" element={<AdminReviews />} />
+            <Route path="/admin/leads" element={<LeadsAdmin />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
