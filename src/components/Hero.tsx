@@ -40,8 +40,7 @@ export const Hero = () => {
           </h1>
 
           <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-light max-w-xl">
-            Finden Sie die beste Umzugsfirma in Ihrer Region. Vergleichen Sie Preise, 
-            Bewertungen und Services in nur 2 Minuten.
+            Beste Preise vergleichen – kostenlos in 2 Minuten.
           </p>
 
           {/* Trust Signals */}
