@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -14,8 +15,13 @@ import {
   ArrowRight,
   Calculator,
   Users,
-  Home
+  Home,
+  Phone,
+  Mail
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { FAQAccordion } from "@/components/FAQAccordion";
+import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 
 const cityData: Record<string, {
   name: string;
@@ -90,6 +96,37 @@ const cityData: Record<string, {
 const City = () => {
   const { slug } = useParams();
   const city = slug ? cityData[slug] : null;
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (city) {
+      fetchCompanies();
+    }
+  }, [city]);
+
+  const fetchCompanies = async () => {
+    if (!city) return;
+    
+    setLoading(true);
+    try {
+      // Try to find companies that serve this city or canton
+      const { data, error } = await supabase
+        .from("companies")
+        .select("*")
+        .or(`service_areas.cs.{${city.name}},service_areas.cs.{${city.canton}}`)
+        .order("rating", { ascending: false })
+        .limit(6);
+
+      if (!error && data) {
+        setCompanies(data);
+      }
+    } catch (err) {
+      console.error("Error fetching companies:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!city) {
     return (
@@ -256,47 +293,107 @@ const City = () => {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                {city.companies.map((company) => (
-                  <Card key={company.name} className="shadow-strong hover:shadow-strong transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-bold mb-2">{company.name}</h3>
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                              <span className="font-semibold">{company.rating}</span>
+              {loading ? (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {[...Array(4)].map((_, index) => (
+                    <LoadingSkeletonCompany key={index} />
+                  ))}
+                </div>
+              ) : companies.length > 0 ? (
+                <>
+                  <div className="grid md:grid-cols-2 gap-6 mb-8">
+                    {companies.slice(0, 4).map((company) => (
+                      <Card key={company.id} className="hover-lift border-2 hover:border-primary/20 transition-all">
+                        <CardContent className="p-6">
+                          <div className="flex items-start gap-4 mb-4">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-3xl shadow-soft flex-shrink-0">
+                              {company.logo}
                             </div>
-                            <span className="text-sm text-muted-foreground">
-                              ({company.reviews} Bewertungen)
-                            </span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <h3 className="font-bold text-lg">{company.name}</h3>
+                                {company.verified && (
+                                  <Badge className="bg-success text-white border-0 flex-shrink-0">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                    Geprüft
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="flex items-center gap-1">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      className={`w-4 h-4 ${
+                                        i < Math.floor(company.rating)
+                                          ? "fill-accent text-accent"
+                                          : "fill-muted text-muted"
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="font-bold">{company.rating}</span>
+                                <span className="text-sm text-muted-foreground">
+                                  ({company.review_count})
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <Badge variant="outline" className="bg-success-light text-success border-success/20">
-                          <Shield className="w-3 h-3 mr-1" />
-                          Geprüft
-                        </Badge>
-                      </div>
-                      <Link to={`/firmen/${company.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                        <Button variant="outline" className="w-full">
-                          Firma ansehen
-                          <ArrowRight className="ml-2 w-4 h-4" />
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                          
+                          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                            {company.description}
+                          </p>
+                          
+                          <div className="flex items-center gap-2 mb-4 text-sm">
+                            {company.phone && (
+                              <div className="flex items-center gap-1 text-muted-foreground">
+                                <Phone className="w-3.5 h-3.5" />
+                              </div>
+                            )}
+                            {company.email && (
+                              <div className="flex items-center gap-1 text-muted-foreground">
+                                <Mail className="w-3.5 h-3.5" />
+                              </div>
+                            )}
+                            {company.price_level && (
+                              <Badge variant="secondary" className="ml-auto">
+                                {company.price_level}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          <Link to={`/firmen/${company.id}`}>
+                            <Button className="w-full bg-primary hover:bg-primary-dark">
+                              Profil ansehen
+                              <ArrowRight className="ml-2 w-4 h-4" />
+                            </Button>
+                          </Link>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
 
-              <div className="text-center">
-                <Link to="/firmen">
-                  <Button size="lg" variant="outline">
-                    Alle Firmen in {city.name} anzeigen
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-              </div>
+                  <div className="text-center">
+                    <Link to={`/firmen?canton=${city.canton}`}>
+                      <Button size="lg" variant="outline">
+                        Alle Firmen in {city.name} anzeigen
+                        <ArrowRight className="ml-2 w-5 h-5" />
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <Card className="text-center py-12">
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">
+                      Aktuell sind keine Firmen für {city.name} verfügbar.
+                    </p>
+                    <Link to="/firmen">
+                      <Button variant="outline">Alle Firmen durchsuchen</Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </section>
@@ -306,43 +403,30 @@ const City = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <h2 className="mb-12 text-center">Häufige Fragen zu Umzügen in {city.name}</h2>
-              <div className="space-y-6">
-                <Card className="shadow-medium">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-3">
-                      Was kostet ein Umzug in {city.name} durchschnittlich?
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Die Kosten variieren je nach Grösse der Wohnung und Distanz. 
-                      Im Durchschnitt zahlen Sie für einen Umzug in {city.name} etwa CHF {city.avgPrice.toLocaleString()}.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-medium">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-3">
-                      Wie lange dauert ein Umzug in {city.name}?
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Ein durchschnittlicher Umzug (3-Zimmer-Wohnung) dauert etwa 6-8 Stunden. 
-                      Die genaue Dauer hängt von der Menge des Umzugsguts und den örtlichen Gegebenheiten ab.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-medium">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-3">
-                      Benötige ich eine Parkbewilligung für den Umzug?
-                    </h3>
-                    <p className="text-muted-foreground">
-                      In vielen Quartieren von {city.name} wird eine Parkbewilligung empfohlen. 
-                      Ihre Umzugsfirma kann Sie dabei unterstützen oder die Bewilligung für Sie beantragen.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+              <FAQAccordion 
+                items={[
+                  {
+                    question: `Was kostet ein Umzug in ${city.name} durchschnittlich?`,
+                    answer: `Die Kosten variieren je nach Grösse der Wohnung und Distanz. Im Durchschnitt zahlen Sie für einen Umzug in ${city.name} etwa CHF ${city.avgPrice.toLocaleString()}. Für eine genaue Schätzung nutzen Sie unseren kostenlosen Umzugsrechner.`
+                  },
+                  {
+                    question: `Wie lange dauert ein Umzug in ${city.name}?`,
+                    answer: "Ein durchschnittlicher Umzug (3-Zimmer-Wohnung) dauert etwa 6-8 Stunden. Die genaue Dauer hängt von der Menge des Umzugsguts, den örtlichen Gegebenheiten (Stockwerk, Lift, Parkplatz) und der Entfernung ab."
+                  },
+                  {
+                    question: `Benötige ich eine Parkbewilligung für den Umzug in ${city.name}?`,
+                    answer: `In vielen Quartieren von ${city.name} wird eine Parkbewilligung für den Umzugswagen empfohlen oder ist sogar Pflicht. Ihre Umzugsfirma kann Sie dabei unterstützen oder die Bewilligung für Sie bei der Stadt beantragen.`
+                  },
+                  {
+                    question: "Wie weit im Voraus sollte ich meinen Umzug buchen?",
+                    answer: "Wir empfehlen, Ihren Umzug mindestens 4-6 Wochen im Voraus zu planen. Während der Hochsaison (Mai-September) sollten Sie noch früher buchen. Mit Umzugscheck.ch können Sie schnell mehrere Offerten vergleichen."
+                  },
+                  {
+                    question: "Welche zusätzlichen Services bieten Umzugsfirmen an?",
+                    answer: "Viele Umzugsfirmen bieten Zusatzservices wie Packservice, Endreinigung, Entsorgung, Möbelmontage und Lagerung an. Diese Services können Sie bei der Offerten-Anfrage direkt miteinbeziehen."
+                  }
+                ]}
+              />
             </div>
           </div>
         </section>
