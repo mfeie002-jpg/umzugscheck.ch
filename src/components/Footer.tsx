@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
+import logo from "@/assets/umzugscheck-logo.png";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -10,12 +11,13 @@ export const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {/* Company Info */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-primary font-bold text-xl">U</span>
-              </div>
-              <span className="text-xl font-bold">Umzugscheck.ch</span>
-            </div>
+            <Link to="/" className="flex items-center hover:opacity-90 transition-opacity">
+              <img 
+                src={logo} 
+                alt="Umzugscheck.ch Logo" 
+                className="h-16 w-auto"
+              />
+            </Link>
             <p className="text-primary-foreground/80 text-sm leading-relaxed">
               Die führende Vergleichsplattform für Umzüge in der Schweiz. 
               Kostenlos, transparent und einfach.
