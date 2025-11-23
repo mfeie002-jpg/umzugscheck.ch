@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,9 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, MapPin, Home, CheckCircle2 } from "lucide-react";
+import { ArrowRight, MapPin, Home, CheckCircle2, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { calculateQuickMovingPrice, estimateDistance } from "@/lib/pricing";
+import { calculatorApi } from "@/lib/api";
+import { useAnalytics } from "@/lib/analytics";
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
   fromPostal: z.string().min(4, "Bitte gültige PLZ eingeben").max(10),
@@ -27,7 +30,14 @@ const formSchema = z.object({
 
 export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const analytics = useAnalytics();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    analytics.trackCalculatorStarted('quick');
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,32 +57,70 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
+    setError(null);
     
-    // Calculate distance
-    const distance = estimateDistance(values.fromPostal, values.toPostal);
-    
-    // Calculate pricing
-    const calculation = calculateQuickMovingPrice(
-      values.rooms,
-      distance,
-      parseInt(values.floorsFrom),
-      parseInt(values.floorsTo),
-      values.hasElevatorFrom,
-      values.hasElevatorTo
-    );
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Navigate to results with data
-    navigate("/rechner/ergebnis", { 
-      state: { 
-        calculatorData: values, 
-        calculation,
-        distance,
-        type: "quick" 
-      } 
-    });
+    try {
+      // Call API with properly typed data
+      const requestData: any = {
+        fromPostal: values.fromPostal,
+        fromCity: values.fromCity,
+        toPostal: values.toPostal,
+        toCity: values.toCity,
+        rooms: values.rooms,
+        movingType: values.movingType,
+        floorsFrom: values.floorsFrom,
+        floorsTo: values.floorsTo,
+        hasElevatorFrom: values.hasElevatorFrom,
+        hasElevatorTo: values.hasElevatorTo,
+      };
+
+      const response = await calculatorApi.quick(requestData);
+      
+      if (response.error) {
+        setError(response.error);
+        analytics.trackError('calculator_api_error', { 
+          calculator_type: 'quick',
+          error: response.error 
+        });
+        toast({
+          title: "Berechnung fehlgeschlagen",
+          description: response.error,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!response.data) {
+        throw new Error('Keine Daten erhalten');
+      }
+
+      // Track completion
+      analytics.trackCalculatorCompleted('quick', response.data);
+      
+      // Navigate to results with data
+      navigate("/rechner/ergebnis", { 
+        state: { 
+          calculatorData: values, 
+          calculation: response.data,
+          distance: response.data.distance,
+          type: "quick" 
+        } 
+      });
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten';
+      setError(errorMsg);
+      analytics.trackError('calculator_error', { 
+        calculator_type: 'quick',
+        error: errorMsg 
+      });
+      toast({
+        title: "Fehler",
+        description: errorMsg,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (embedded) {
@@ -86,6 +134,13 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              
               <FormField
                 control={form.control}
                 name="fromPostal"

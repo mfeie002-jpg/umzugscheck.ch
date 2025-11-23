@@ -8,9 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp } from "lucide-react";
+import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { useAnalytics } from "@/lib/analytics";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Company {
   id: string;
@@ -38,9 +40,11 @@ const SWISS_CANTONS = [
 
 const Companies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const analytics = useAnalytics();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCanton, setSelectedCanton] = useState(searchParams.get("canton") || "Alle Kantone");
   const [selectedRating, setSelectedRating] = useState("Alle");
@@ -48,10 +52,20 @@ const Companies = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    analytics.trackPageView('Companies List', '/firmen');
     fetchCompanies();
   }, []);
 
   useEffect(() => {
+    // Track filter changes
+    if (searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle") {
+      analytics.trackFilterApplied({
+        search: searchTerm,
+        canton: selectedCanton,
+        rating: selectedRating,
+      });
+    }
+
     // Trigger animation when filters change
     setIsAnimating(true);
     const timer = setTimeout(() => {
@@ -63,6 +77,7 @@ const Companies = () => {
   }, [companies, searchTerm, selectedCanton, selectedRating]);
 
   const fetchCompanies = async () => {
+    setError(null);
     try {
       const { data, error } = await supabase
         .from("companies")
@@ -72,8 +87,11 @@ const Companies = () => {
 
       if (error) throw error;
       setCompanies(data || []);
-    } catch (error) {
-      console.error("Error fetching companies:", error);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Fehler beim Laden der Firmen';
+      setError(errorMsg);
+      analytics.trackError('companies_fetch_error', { error: errorMsg });
+      console.error("Error fetching companies:", err);
     } finally {
       setLoading(false);
     }
@@ -358,6 +376,23 @@ const Companies = () => {
         <section className="py-12 md:py-16 bg-gradient-light">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
+              {error && (
+                <Alert variant="destructive" className="mb-6">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    {error}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={fetchCompanies}
+                      className="ml-4"
+                    >
+                      Erneut versuchen
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {loading ? (
                 <div className="text-center py-16">
                   <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent"></div>
@@ -485,7 +520,11 @@ const Companies = () => {
                           </div>
 
                           {/* CTA Button */}
-                          <Link to={`/firmen/${company.id}`} className="mt-5">
+                          <Link 
+                            to={`/firmen/${company.id}`} 
+                            className="mt-5"
+                            onClick={() => analytics.trackCompanyClicked(company.id, company.name, 'view_profile')}
+                          >
                             <Button className="w-full h-12 bg-primary hover:bg-primary-dark shadow-medium group">
                               Profil ansehen
                               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
