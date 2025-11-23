@@ -11,7 +11,7 @@ export const Navigation = () => {
   return (
     <nav className="bg-white border-b-[0.5px] border-border sticky top-0 z-50 shadow-soft">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20 md:h-28 py-3 md:py-4">
+        <div className="flex items-center justify-between h-24 md:h-36 py-4 md:py-5">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <img 
