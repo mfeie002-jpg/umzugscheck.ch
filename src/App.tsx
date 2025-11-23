@@ -6,6 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
+import Companies from "./pages/Companies";
+import CompanyProfile from "./pages/CompanyProfile";
+import Canton from "./pages/Canton";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,7 +25,12 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/rechner" element={<Calculator />} />
           <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/firmen" element={<Companies />} />
+          <Route path="/firmen/:id" element={<CompanyProfile />} />
+          <Route path="/:canton/umzugsfirmen" element={<Canton />} />
+          <Route path="/:city/umzug" element={<Canton />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

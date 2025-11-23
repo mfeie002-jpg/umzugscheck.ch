@@ -26,14 +26,11 @@ export const Navigation = () => {
             <Link to="/rechner" className="text-foreground hover:text-primary transition-base font-medium">
               Preisrechner
             </Link>
-            <Link to="/unternehmen" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/firmen" className="text-foreground hover:text-primary transition-base font-medium">
               Umzugsfirmen
             </Link>
-            <Link to="/ratgeber" className="text-foreground hover:text-primary transition-base font-medium">
+            <Link to="/blog" className="text-foreground hover:text-primary transition-base font-medium">
               Ratgeber
-            </Link>
-            <Link to="/kontakt" className="text-foreground hover:text-primary transition-base font-medium">
-              Kontakt
             </Link>
           </div>
 
@@ -75,25 +72,18 @@ export const Navigation = () => {
                 Preisrechner
               </Link>
               <Link 
-                to="/unternehmen" 
+                to="/firmen" 
                 className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base"
                 onClick={() => setIsOpen(false)}
               >
                 Umzugsfirmen
               </Link>
               <Link 
-                to="/ratgeber" 
+                to="/blog" 
                 className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base"
                 onClick={() => setIsOpen(false)}
               >
                 Ratgeber
-              </Link>
-              <Link 
-                to="/kontakt" 
-                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base"
-                onClick={() => setIsOpen(false)}
-              >
-                Kontakt
               </Link>
               <Link to="/rechner" onClick={() => setIsOpen(false)}>
                 <Button className="w-full bg-accent hover:bg-accent/90">

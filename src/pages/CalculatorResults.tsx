@@ -8,6 +8,7 @@ import { ArrowLeft, CheckCircle2, TrendingDown, Star, Shield, ArrowRight, Packag
 import { useEffect, useState } from "react";
 import { formatCurrency, getMoveSize } from "@/lib/pricing";
 import type { MovingCalculation } from "@/lib/pricing";
+import { LeadCaptureForm } from "@/components/LeadCaptureForm";
 
 const CalculatorResults = () => {
   const location = useLocation();
@@ -143,6 +144,14 @@ const CalculatorResults = () => {
                   </p>
                 </CardContent>
               </Card>
+
+              {/* Lead Capture Form */}
+              <LeadCaptureForm
+                calculatorData={calculatorData}
+                calculation={calculation}
+                distance={distance}
+                calculatorType={location.state.type}
+              />
 
               {/* Companies */}
               <div className="mt-8 space-y-6">
