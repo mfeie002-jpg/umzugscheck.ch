@@ -1,47 +1,173 @@
+import { useState, useEffect } from "react";
 import { Star, Quote, CheckCircle2, TrendingDown, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah M.",
-    location: "Zürich → Bern",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-    rating: 5,
-    date: "Vor 2 Wochen",
-    comment: "Ich konnte CHF 850 bei meinem Umzug sparen! Die Vergleichsplattform hat mir in nur 2 Minuten 5 Offerten geliefert. Alle Firmen waren professionell und der Service war top.",
-    highlight: "CHF 850 gespart",
-    highlightIcon: TrendingDown,
-    verified: true
-  },
-  {
-    id: 2,
-    name: "Michael K.",
-    location: "Basel → Winterthur",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-    rating: 5,
-    date: "Vor 1 Woche",
-    comment: "Super einfach und transparent! Keine versteckten Kosten. Die Umzugsfirma war pünktlich, freundlich und hat alles perfekt erledigt. Würde ich jederzeit wieder nutzen.",
-    highlight: "5 Sterne Service",
-    highlightIcon: Star,
-    verified: true
-  },
-  {
-    id: 3,
-    name: "Anna L.",
-    location: "Luzern → Genf",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-    rating: 5,
-    date: "Vor 3 Tagen",
-    comment: "Innerhalb von 24 Stunden hatte ich bereits 4 konkrete Angebote. Die Preisunterschiede waren enorm! Dank Umzugscheck.ch habe ich die beste Firma zum besten Preis gefunden.",
-    highlight: "In 24h Angebote",
-    highlightIcon: Clock,
-    verified: true
-  }
-];
+interface Review {
+  id: string;
+  rating: number;
+  title: string;
+  comment: string;
+  created_at: string;
+  verified: boolean;
+  profiles: {
+    full_name: string;
+  } | null;
+  companies: {
+    name: string;
+  } | null;
+}
+
+interface TestimonialData {
+  id: string;
+  name: string;
+  location: string;
+  rating: number;
+  date: string;
+  comment: string;
+  title: string;
+  highlight: string;
+  highlightIcon: any;
+  verified: boolean;
+}
+
+const getHighlightForRating = (rating: number): { text: string; icon: any } => {
+  if (rating >= 5) return { text: "5 Sterne Service", icon: Star };
+  if (rating >= 4.5) return { text: "Top bewertet", icon: Star };
+  return { text: "Empfohlen", icon: CheckCircle2 };
+};
+
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) return "Heute";
+  if (diffDays === 1) return "Vor 1 Tag";
+  if (diffDays < 7) return `Vor ${diffDays} Tagen`;
+  if (diffDays < 14) return "Vor 1 Woche";
+  if (diffDays < 30) return `Vor ${Math.floor(diffDays / 7)} Wochen`;
+  if (diffDays < 60) return "Vor 1 Monat";
+  return `Vor ${Math.floor(diffDays / 30)} Monaten`;
+};
+
+const getInitials = (name: string): string => {
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+};
 
 export const Testimonials = () => {
+  const [testimonials, setTestimonials] = useState<TestimonialData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("reviews")
+          .select(`
+            id,
+            rating,
+            title,
+            comment,
+            created_at,
+            verified,
+            profiles:user_id (
+              full_name
+            ),
+            companies:company_id (
+              name
+            )
+          `)
+          .eq("verified", true)
+          .gte("rating", 4.5)
+          .order("created_at", { ascending: false })
+          .limit(6);
+
+        if (error) throw error;
+
+        const formattedTestimonials: TestimonialData[] = (data || []).map((review: any) => {
+          const highlight = getHighlightForRating(review.rating);
+          const fullName = review.profiles?.full_name || "Anonymer Kunde";
+          const companyName = review.companies?.name || "Schweizweit";
+          
+          return {
+            id: review.id,
+            name: fullName,
+            location: companyName,
+            rating: Math.round(review.rating),
+            date: formatDate(review.created_at),
+            comment: review.comment,
+            title: review.title,
+            highlight: highlight.text,
+            highlightIcon: highlight.icon,
+            verified: review.verified,
+          };
+        });
+
+        setTestimonials(formattedTestimonials.slice(0, 3));
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+        // Keep empty array on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-12 md:py-16 bg-gradient-to-b from-background to-secondary/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10 md:mb-12">
+            <div className="inline-flex items-center gap-2 bg-success/10 text-success px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Verifizierte Kundenbewertungen</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">
+              Das sagen unsere zufriedenen Kunden
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Über 12'000 Kunden haben bereits erfolgreich verglichen und gespart
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="border-border">
+                <CardContent className="p-6 space-y-4">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <div className="flex items-center gap-3 pt-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-12 md:py-16 bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto px-4">
@@ -54,7 +180,7 @@ export const Testimonials = () => {
             Das sagen unsere zufriedenen Kunden
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Über 12'000 Kunden haben bereits erfolgreich verglichen und gespart
+            Echte Bewertungen von verifizierten Kunden
           </p>
         </div>
 
@@ -78,8 +204,13 @@ export const Testimonials = () => {
                   ))}
                 </div>
 
+                {/* Title */}
+                <h4 className="font-semibold text-foreground">
+                  {testimonial.title}
+                </h4>
+
                 {/* Comment */}
-                <p className="text-foreground leading-relaxed text-sm">
+                <p className="text-muted-foreground leading-relaxed text-sm">
                   "{testimonial.comment}"
                 </p>
 
@@ -95,9 +226,10 @@ export const Testimonials = () => {
 
                 {/* Author Info */}
                 <div className="flex items-center gap-3 pt-4 border-t">
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                  <Avatar className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20">
+                    <AvatarFallback className="bg-transparent text-foreground font-semibold">
+                      {getInitials(testimonial.name)}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
