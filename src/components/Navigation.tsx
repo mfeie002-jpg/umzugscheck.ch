@@ -38,7 +38,12 @@ export const Navigation = () => {
           </div>
 
           {/* CTA Button */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex items-center gap-3">
+            <Link to="/auth">
+              <Button variant="ghost" className="text-foreground hover:text-primary">
+                Admin Login
+              </Button>
+            </Link>
             <Link to="/rechner">
               <Button className="bg-accent hover:bg-accent/90 shadow-medium">
                 Offerten erhalten
@@ -94,6 +99,13 @@ export const Navigation = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Kontakt
+              </Link>
+              <Link 
+                to="/auth" 
+                className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg transition-base"
+                onClick={() => setIsOpen(false)}
+              >
+                Admin Login
               </Link>
               <Link to="/rechner" onClick={() => setIsOpen(false)}>
                 <Button className="w-full bg-accent hover:bg-accent/90">
