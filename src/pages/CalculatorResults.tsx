@@ -11,6 +11,7 @@ import type { MovingCalculation } from "@/lib/pricing";
 import { LeadCaptureForm } from "@/components/LeadCaptureForm";
 import { PieChart as RechartsPC, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } from "recharts";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useParallax } from "@/hooks/use-parallax";
 import { cn } from "@/lib/utils";
 
 const CalculatorResults = () => {
@@ -102,6 +103,9 @@ const CalculatorResults = () => {
   const leadFormAnim = useScrollAnimation(0.2);
   const companiesAnim = useScrollAnimation(0.1);
   const trustSectionAnim = useScrollAnimation(0.2);
+  
+  // Parallax effect for hero section
+  const parallaxOffset = useParallax(0.4);
 
   const mockCompanies = [
     {
@@ -142,8 +146,32 @@ const CalculatorResults = () => {
       
       <main className="flex-1 bg-gradient-light">
         {/* Header */}
-        <section className="py-12 md:py-16 gradient-hero text-white">
-          <div className="container mx-auto px-4">
+        <section className="relative py-12 md:py-16 text-white overflow-hidden">
+          {/* Parallax Background Layers */}
+          <div 
+            className="absolute inset-0 gradient-hero"
+            style={{
+              transform: `translateY(${parallaxOffset}px)`,
+              transition: 'transform 0.1s ease-out'
+            }}
+          />
+          <div 
+            className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-transparent"
+            style={{
+              transform: `translateY(${parallaxOffset * 0.6}px)`,
+              transition: 'transform 0.1s ease-out'
+            }}
+          />
+          <div 
+            className="absolute inset-0 bg-gradient-to-r from-accent/10 via-transparent to-primary/10"
+            style={{
+              transform: `translateY(${parallaxOffset * 1.2}px)`,
+              transition: 'transform 0.1s ease-out'
+            }}
+          />
+          
+          {/* Content */}
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
               <Link to="/rechner">
                 <Button variant="outline" className="mb-6 border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
