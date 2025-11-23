@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, MapPin, Home } from "lucide-react";
+import { ArrowRight, MapPin, Home, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { calculateQuickMovingPrice, estimateDistance } from "@/lib/pricing";
 
@@ -25,7 +25,7 @@ const formSchema = z.object({
   hasElevatorTo: z.boolean(),
 });
 
-export const QuickCalculator = () => {
+export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -74,6 +74,120 @@ export const QuickCalculator = () => {
       } 
     });
   };
+
+  if (embedded) {
+    return (
+      <div className="bg-white rounded-2xl shadow-strong p-6 md:p-8 text-foreground">
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-2xl font-bold mb-2">Schnell-Rechner</h3>
+            <p className="text-muted-foreground">Erhalten Sie in 60 Sekunden eine präzise Kostenschätzung</p>
+          </div>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="fromPostal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Von (PLZ)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="z.B. 8001" {...field} className="h-11" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="fromCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Von (Ort)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="z.B. Zürich" {...field} className="h-11" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="toPostal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Nach (PLZ)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="z.B. 3000" {...field} className="h-11" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="toCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Nach (Ort)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="z.B. Bern" {...field} className="h-11" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="rooms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Wohnungsgrösse</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="Wählen" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="1">1 Zimmer (Studio)</SelectItem>
+                        <SelectItem value="2">2 Zimmer</SelectItem>
+                        <SelectItem value="3">3 Zimmer</SelectItem>
+                        <SelectItem value="4">4 Zimmer</SelectItem>
+                        <SelectItem value="5">5 Zimmer</SelectItem>
+                        <SelectItem value="6+">6+ Zimmer</SelectItem>
+                        <SelectItem value="house">Haus</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button 
+                type="submit" 
+                className="w-full bg-primary hover:bg-primary/90 shadow-medium group h-11"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Berechnen..." : "Offerten vergleichen"}
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </form>
+          </Form>
+
+          <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2 border-t">
+            <CheckCircle2 className="w-4 h-4 text-success" />
+            <span>Keine Kreditkarte erforderlich</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Card className="shadow-strong">
