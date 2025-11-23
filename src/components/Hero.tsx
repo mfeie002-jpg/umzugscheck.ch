@@ -7,15 +7,19 @@ export const Hero = () => {
   return (
   <section className="relative overflow-hidden gradient-hero text-white">
     {/* Animated Background Layers */}
-    <div className="absolute inset-0">
+    <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark bg-[length:200%_200%] animate-gradient-shift">
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtMy4zMTQgMi42ODYtNiA2LTZzNiAyLjY4NiA2IDYtMi42ODYgNi02IDYtNi0yLjY4Ni02LTZ6bTAgMjRjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnpNMTIgMThjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnptMCAyNGMwLTMuMzE0IDIuNjg2LTYgNi02czYgMi42ODYgNiA2LTIuNjg2IDYtNiA2LTYtMi42ODYtNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
       
       {/* Animated Gradient Blobs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-accent/30 to-primary/20 rounded-full blur-3xl animate-blob"></div>
-      <div className="absolute top-20 right-20 w-[400px] h-[400px] bg-gradient-to-br from-primary/30 to-accent/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-      <div className="absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-gradient-to-tr from-accent/20 to-primary/30 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
-      <div className="absolute bottom-0 left-1/3 w-[450px] h-[450px] bg-gradient-to-br from-white/10 to-accent/10 rounded-full blur-3xl animate-blob animation-delay-6000"></div>
+      <div className="absolute -top-20 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-accent/40 to-primary/30 rounded-full blur-3xl animate-blob opacity-70"></div>
+      <div className="absolute top-40 right-40 w-[500px] h-[500px] bg-gradient-to-br from-primary-light/50 to-accent/30 rounded-full blur-3xl animate-blob-reverse animation-delay-2000 opacity-60"></div>
+      <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] bg-gradient-to-tr from-accent/30 to-primary-light/40 rounded-full blur-3xl animate-blob animation-delay-4000 opacity-70"></div>
+      <div className="absolute bottom-20 left-1/3 w-[550px] h-[550px] bg-gradient-to-br from-white/15 to-accent/20 rounded-full blur-3xl animate-blob-reverse animation-delay-6000 opacity-50"></div>
+      
+      {/* Additional moving elements for more depth */}
+      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-2xl animate-blob animation-delay-3000 opacity-40"></div>
+      <div className="absolute bottom-1/3 left-1/4 w-[450px] h-[450px] bg-gradient-to-tl from-primary-light/30 to-transparent rounded-full blur-2xl animate-blob-reverse animation-delay-5000 opacity-40"></div>
       
       {/* Overlay gradient for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10"></div>

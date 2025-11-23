@@ -104,20 +104,44 @@ export default {
             transform: "translate(0px, 0px) scale(1)",
           },
           "33%": {
-            transform: "translate(30px, -50px) scale(1.1)",
+            transform: "translate(60px, -80px) scale(1.15)",
           },
           "66%": {
-            transform: "translate(-20px, 20px) scale(0.9)",
+            transform: "translate(-40px, 60px) scale(0.85)",
           },
           "100%": {
             transform: "translate(0px, 0px) scale(1)",
+          },
+        },
+        "blob-reverse": {
+          "0%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+          "33%": {
+            transform: "translate(-60px, 80px) scale(0.85)",
+          },
+          "66%": {
+            transform: "translate(40px, -60px) scale(1.15)",
+          },
+          "100%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+        },
+        "gradient-shift": {
+          "0%, 100%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
           },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "blob": "blob 7s infinite",
+        "blob": "blob 8s infinite ease-in-out",
+        "blob-reverse": "blob-reverse 9s infinite ease-in-out",
+        "gradient-shift": "gradient-shift 15s ease infinite",
       },
       animationDelay: {
         "2000": "2s",
