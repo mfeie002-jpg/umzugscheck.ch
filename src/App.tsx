@@ -20,6 +20,7 @@ import AdminReviews from "./pages/admin/Reviews";
 import AIUpload from "./pages/AIUpload";
 import NotFound from "./pages/NotFound";
 import CompaniesAdmin from "./pages/admin/Companies";
+import MovingCostGuide from "./pages/MovingCostGuide";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/companies" element={<CompaniesAdmin />} />
             <Route path="/admin/reviews" element={<AdminReviews />} />
+            <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
