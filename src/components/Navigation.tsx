@@ -11,7 +11,7 @@ export const Navigation = () => {
         <div className="flex items-center justify-between h-24 md:h-36 py-4 md:py-5">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-            <img alt="Umzugscheck.ch Logo" className="h-20 md:h-28 w-auto" src={logo} />
+            <img alt="Umzugscheck.ch Logo" className="h-16 md:h-24 w-auto" src={logo} />
           </Link>
 
           {/* Desktop Navigation */}
