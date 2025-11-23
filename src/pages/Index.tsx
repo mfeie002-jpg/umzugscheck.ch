@@ -14,6 +14,7 @@ import { TopPicks } from "@/components/TopPicks";
 import { VerifiedBadge } from "@/components/trust/VerifiedBadge";
 import { IndependentExplainer } from "@/components/trust/IndependentExplainer";
 import { CalculatorSection } from "@/components/CalculatorSection";
+import { Testimonials } from "@/components/Testimonials";
 
 const Index = () => {
   return (
@@ -31,6 +32,9 @@ const Index = () => {
       </ScrollReveal>
       <ScrollReveal delay={175}>
         <CalculatorSection />
+      </ScrollReveal>
+      <ScrollReveal delay={190}>
+        <Testimonials />
       </ScrollReveal>
       <ScrollReveal delay={200}>
         <TopMovers />
