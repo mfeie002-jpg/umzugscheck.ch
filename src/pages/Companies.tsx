@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle } from "lucide-react";
+import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useAnalytics } from "@/lib/analytics";
@@ -219,10 +219,16 @@ const Companies = () => {
                 Über 200 geprüfte Firmen
               </Badge>
               <h1 className="mb-6">Umzugsfirmen in der Schweiz</h1>
-              <p className="text-xl md:text-2xl text-white/90 font-light leading-relaxed">
+              <p className="text-xl md:text-2xl text-white/90 font-light leading-relaxed mb-6">
                 Finden Sie geprüfte Umzugsunternehmen in Ihrer Region.<br />
                 Vergleichen Sie Preise, Bewertungen und Services – kostenlos & unverbindlich.
               </p>
+              <Link to="/vergleichen">
+                <Button size="lg" variant="outline" className="border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
+                  <BarChart3 className="w-5 h-5 mr-2" />
+                  Firmen direkt vergleichen
+                </Button>
+              </Link>
             </div>
           </div>
         </section>

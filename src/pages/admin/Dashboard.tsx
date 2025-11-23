@@ -322,7 +322,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* Quick Links */}
-            <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <div className="grid md:grid-cols-4 gap-6 mb-12">
               <Link to="/admin/leads">
                 <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
                   <CardContent className="p-6">
@@ -369,6 +369,23 @@ const AdminDashboard = () => {
                     <h3 className="text-lg font-semibold mb-2">Bewertungen verwalten</h3>
                     <p className="text-sm text-muted-foreground">
                       Bewertungen ansehen und beantworten
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/admin/analytics">
+                <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 rounded-lg bg-purple-500/10">
+                        <Star className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Analytics</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Detaillierte Performance-Einblicke
                     </p>
                   </CardContent>
                 </Card>
