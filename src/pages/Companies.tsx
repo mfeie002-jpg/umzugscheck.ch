@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -134,6 +134,27 @@ const Companies = () => {
 
   const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle";
 
+  // Calculate company counts per canton
+  const cantonCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    
+    companies.forEach((company) => {
+      company.service_areas.forEach((area) => {
+        counts[area] = (counts[area] || 0) + 1;
+      });
+    });
+    
+    return counts;
+  }, [companies]);
+
+  const getCantonDisplayName = (canton: string) => {
+    if (canton === "Alle Kantone") {
+      return `${canton} (${companies.length})`;
+    }
+    const count = cantonCounts[canton] || 0;
+    return `${canton} (${count})`;
+  };
+
   const FilterSection = () => (
     <div className="space-y-4">
       {/* Search */}
@@ -161,7 +182,7 @@ const Companies = () => {
           <SelectContent>
             {SWISS_CANTONS.map((canton) => (
               <SelectItem key={canton} value={canton}>
-                {canton}
+                {getCantonDisplayName(canton)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -260,7 +281,7 @@ const Companies = () => {
                     <SelectContent>
                       {SWISS_CANTONS.map((canton) => (
                         <SelectItem key={canton} value={canton}>
-                          {canton}
+                          {getCantonDisplayName(canton)}
                         </SelectItem>
                       ))}
                     </SelectContent>
