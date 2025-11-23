@@ -10,7 +10,7 @@ export const Navigation = () => {
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-48 md:h-56">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
