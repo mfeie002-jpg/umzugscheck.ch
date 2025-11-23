@@ -117,8 +117,16 @@ export const TopPicks = ({ title = "Top-Empfehlungen für Sie", limit = 5 }: Top
                 #{index + 1}
               </div>
 
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-2xl flex-shrink-0">
-                {mover.logo}
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-2xl flex-shrink-0 overflow-hidden">
+                {mover.logo.startsWith('http') ? (
+                  <img 
+                    src={mover.logo} 
+                    alt={`${mover.name} logo`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span>{mover.logo}</span>
+                )}
               </div>
 
               <div className="flex-1 min-w-0">
