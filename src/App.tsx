@@ -9,8 +9,10 @@ import CalculatorResults from "./pages/CalculatorResults";
 import Companies from "./pages/Companies";
 import CompanyProfile from "./pages/CompanyProfile";
 import Canton from "./pages/Canton";
+import City from "./pages/City";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,10 +29,11 @@ const App = () => (
           <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
           <Route path="/firmen" element={<Companies />} />
           <Route path="/firmen/:id" element={<CompanyProfile />} />
-          <Route path="/:canton/umzugsfirmen" element={<Canton />} />
-          <Route path="/:city/umzug" element={<Canton />} />
+          <Route path="/kanton/:slug" element={<Canton />} />
+          <Route path="/stadt/:slug" element={<City />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/kontakt" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

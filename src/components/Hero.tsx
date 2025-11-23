@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { QuickCalculator } from "./calculator/QuickCalculator";
 
 export const Hero = () => {
   return (
@@ -61,58 +62,7 @@ export const Hero = () => {
 
           {/* Right Column - Quick Calculator Preview Card */}
           <div className="lg:ml-auto w-full max-w-md">
-            <div className="bg-white rounded-2xl shadow-strong p-6 md:p-8 text-foreground">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-2xl font-bold mb-2">Schnell-Rechner</h3>
-                  <p className="text-muted-foreground">Erhalten Sie in 60 Sekunden bis zu 5 kostenlose Offerten</p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Von (PLZ oder Ort)</label>
-                    <input 
-                      type="text" 
-                      placeholder="z.B. 8001 Zürich"
-                      className="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Nach (PLZ oder Ort)</label>
-                    <input 
-                      type="text" 
-                      placeholder="z.B. 3000 Bern"
-                      className="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Wohnungsgrösse</label>
-                    <select className="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                      <option>1 Zimmer (Studio)</option>
-                      <option>2 Zimmer</option>
-                      <option>3 Zimmer</option>
-                      <option>4 Zimmer</option>
-                      <option>5+ Zimmer</option>
-                      <option>Haus</option>
-                    </select>
-                  </div>
-
-                  <Link to="/rechner" className="block">
-                    <Button className="w-full bg-primary hover:bg-primary/90 shadow-medium group">
-                      Offerten vergleichen
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2 border-t">
-                  <CheckCircle2 className="w-4 h-4 text-success" />
-                  <span>Keine Kreditkarte erforderlich</span>
-                </div>
-              </div>
-            </div>
+            <QuickCalculator embedded />
           </div>
         </div>
       </div>

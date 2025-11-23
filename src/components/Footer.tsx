@@ -7,7 +7,7 @@ export const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -32,12 +32,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/unternehmen" className="text-primary-foreground/80 hover:text-white transition-base">
+                <Link to="/firmen" className="text-primary-foreground/80 hover:text-white transition-base">
                   Umzugsfirmen
                 </Link>
               </li>
               <li>
-                <Link to="/ratgeber" className="text-primary-foreground/80 hover:text-white transition-base">
+                <Link to="/blog" className="text-primary-foreground/80 hover:text-white transition-base">
                   Ratgeber
                 </Link>
               </li>
@@ -49,12 +49,39 @@ export const Footer = () => {
             </ul>
           </div>
 
+          {/* Popular Cities */}
+          <div>
+            <h4 className="font-bold mb-4">Beliebte Städte</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/stadt/zuerich" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Zürich
+                </Link>
+              </li>
+              <li>
+                <Link to="/stadt/bern" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Bern
+                </Link>
+              </li>
+              <li>
+                <Link to="/stadt/basel" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Basel
+                </Link>
+              </li>
+              <li>
+                <Link to="/stadt/winterthur" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Winterthur
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Kantone */}
           <div>
             <h4 className="font-bold mb-4">Beliebte Kantone</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/kanton/zürich" className="text-primary-foreground/80 hover:text-white transition-base">
+                <Link to="/kanton/zuerich" className="text-primary-foreground/80 hover:text-white transition-base">
                   Zürich
                 </Link>
               </li>
@@ -64,18 +91,8 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/kanton/genf" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Genf
-                </Link>
-              </li>
-              <li>
-                <Link to="/kanton/basel-stadt" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Basel-Stadt
-                </Link>
-              </li>
-              <li>
-                <Link to="/kantone" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Alle 26 Kantone →
+                <Link to="/kanton/basel" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Basel
                 </Link>
               </li>
             </ul>
