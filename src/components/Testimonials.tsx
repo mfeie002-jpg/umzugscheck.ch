@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Star, Quote, CheckCircle2, TrendingDown, Clock } from "lucide-react";
+import { Star, Quote, CheckCircle2, TrendingDown, Clock, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 interface Review {
   id: string;
@@ -31,6 +33,7 @@ interface TestimonialData {
   highlight: string;
   highlightIcon: any;
   verified: boolean;
+  isNew?: boolean;
 }
 
 const getHighlightForRating = (rating: number): { text: string; icon: any } => {
@@ -66,6 +69,7 @@ const getInitials = (name: string): string => {
 export const Testimonials = () => {
   const [testimonials, setTestimonials] = useState<TestimonialData[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -178,10 +182,25 @@ export const Testimonials = () => {
             highlight: highlight.text,
             highlightIcon: highlight.icon,
             verified: newReview.verified,
+            isNew: true,
           };
 
           // Add new review to the beginning and limit to 3
           setTestimonials((prev) => [formattedReview, ...prev].slice(0, 3));
+
+          // Show toast notification
+          toast({
+            title: "Neue Bewertung! 🎉",
+            description: `${fullName} hat gerade eine ${newReview.rating}-Sterne Bewertung abgegeben.`,
+            duration: 5000,
+          });
+
+          // Remove "new" badge after animation completes
+          setTimeout(() => {
+            setTestimonials((prev) =>
+              prev.map((t) => (t.id === formattedReview.id ? { ...t, isNew: false } : t))
+            );
+          }, 3000);
         }
       )
       .on(
@@ -235,6 +254,7 @@ export const Testimonials = () => {
               highlight: highlight.text,
               highlightIcon: highlight.icon,
               verified: updatedReview.verified,
+              isNew: true,
             };
 
             // Check if review already exists in list
@@ -244,6 +264,20 @@ export const Testimonials = () => {
                 // Update existing review
                 return prev.map(t => t.id === formattedReview.id ? formattedReview : t);
               } else {
+                // Show toast for newly verified review
+                toast({
+                  title: "Verifizierte Bewertung! ✓",
+                  description: `${fullName}'s Bewertung wurde gerade verifiziert.`,
+                  duration: 5000,
+                });
+
+                // Remove "new" badge after animation
+                setTimeout(() => {
+                  setTestimonials((current) =>
+                    current.map((t) => (t.id === formattedReview.id ? { ...t, isNew: false } : t))
+                  );
+                }, 3000);
+
                 // Add new review to the beginning
                 return [formattedReview, ...prev].slice(0, 3);
               }
@@ -339,10 +373,22 @@ export const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <Card 
               key={testimonial.id} 
-              className="group hover:shadow-strong transition-all duration-300 hover:-translate-y-1 border-border animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className={`group hover:shadow-strong transition-all duration-300 hover:-translate-y-1 border-border ${
+                testimonial.isNew ? 'animate-[scale-in_0.5s_ease-out] ring-2 ring-accent shadow-accent' : 'animate-fade-in'
+              }`}
+              style={{ animationDelay: testimonial.isNew ? '0s' : `${index * 0.1}s` }}
             >
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-6 space-y-4 relative">
+                {/* New Badge */}
+                {testimonial.isNew && (
+                  <Badge 
+                    className="absolute top-4 right-4 bg-gradient-to-r from-accent to-accent/80 text-white animate-pulse"
+                  >
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    Neu
+                  </Badge>
+                )}
+
                 {/* Quote Icon */}
                 <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
                   <Quote className="w-5 h-5 text-accent" />
