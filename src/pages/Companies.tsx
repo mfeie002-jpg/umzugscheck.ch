@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useAnalytics } from "@/lib/analytics";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 
 interface Company {
   id: string;
@@ -428,9 +429,10 @@ const Companies = () => {
               )}
 
               {loading ? (
-                <div className="text-center py-16">
-                  <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent"></div>
-                  <p className="mt-6 text-lg text-muted-foreground">Lade Umzugsfirmen...</p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {[...Array(6)].map((_, index) => (
+                    <LoadingSkeletonCompany key={index} />
+                  ))}
                 </div>
               ) : filteredCompanies.length === 0 ? (
                 <Card className="text-center py-16">

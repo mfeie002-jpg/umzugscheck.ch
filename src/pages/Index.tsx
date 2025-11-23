@@ -17,6 +17,8 @@ import { CalculatorSection } from "@/components/CalculatorSection";
 import { Testimonials } from "@/components/Testimonials";
 import { useParallax } from "@/hooks/use-parallax";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { OtherCalculators } from "@/components/OtherCalculators";
+import { BlogTeaser } from "@/components/BlogTeaser";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -88,9 +90,12 @@ const Index = () => {
         <Testimonials />
       </ScrollReveal>
       <ScrollReveal delay={200}>
-        <TopMovers />
+        <OtherCalculators />
       </ScrollReveal>
       <ScrollReveal delay={220}>
+        <TopMovers />
+      </ScrollReveal>
+      <ScrollReveal delay={240}>
         <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
@@ -100,10 +105,10 @@ const Index = () => {
           </div>
         </section>
       </ScrollReveal>
-      <ScrollReveal delay={250}>
+      <ScrollReveal delay={260}>
         <PopularCantons />
       </ScrollReveal>
-      <ScrollReveal delay={270}>
+      <ScrollReveal delay={280}>
         <section className="py-12">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
@@ -114,6 +119,9 @@ const Index = () => {
       </ScrollReveal>
       <ScrollReveal delay={300}>
         <WhyChooseUs />
+      </ScrollReveal>
+      <ScrollReveal delay={320}>
+        <BlogTeaser />
       </ScrollReveal>
       <ScrollReveal delay={350}>
         <CTASection />
