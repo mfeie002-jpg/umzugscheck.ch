@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Star,
   MapPin,
@@ -15,8 +16,10 @@ import {
   CheckCircle2,
   ArrowLeft,
   ArrowRight,
+  AlertCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAnalytics } from "@/lib/analytics";
 
 interface Company {
   id: string;
@@ -37,8 +40,10 @@ interface Company {
 
 const CompanyProfile = () => {
   const { id } = useParams();
+  const analytics = useAnalytics();
   const [company, setCompany] = useState<Company | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -47,6 +52,7 @@ const CompanyProfile = () => {
   }, [id]);
 
   const fetchCompany = async (companyId: string) => {
+    setError(null);
     try {
       const { data, error } = await supabase
         .from("companies")
@@ -55,9 +61,17 @@ const CompanyProfile = () => {
         .single();
 
       if (error) throw error;
-      setCompany(data);
-    } catch (error) {
-      console.error("Error fetching company:", error);
+      
+      if (data) {
+        setCompany(data);
+        analytics.trackCompanyViewed(data.id, data.name);
+        analytics.trackPageView('Company Profile', `/firmen/${companyId}`);
+      }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Firma nicht gefunden';
+      setError(errorMsg);
+      analytics.trackError('company_fetch_error', { companyId, error: errorMsg });
+      console.error("Error fetching company:", err);
     } finally {
       setLoading(false);
     }
@@ -76,7 +90,13 @@ const CompanyProfile = () => {
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="text-center max-w-md mx-auto px-4">
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <h2 className="text-2xl font-bold mb-2">Firma nicht gefunden</h2>
             <p className="text-muted-foreground mb-6">Diese Firma existiert nicht oder wurde entfernt.</p>
             <Link to="/firmen">
@@ -228,7 +248,10 @@ const CompanyProfile = () => {
 
                       <Separator />
 
-                      <Link to="/rechner">
+                      <Link 
+                        to="/rechner"
+                        onClick={() => analytics.trackCompanyClicked(company.id, company.name, 'request_quote')}
+                      >
                         <Button className="w-full bg-accent hover:bg-accent/90 shadow-accent group" size="lg">
                           Jetzt Offerte erhalten
                           <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

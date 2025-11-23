@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,13 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, MapPin, Home, Package, Calendar as CalendarIcon } from "lucide-react";
+import { ArrowRight, MapPin, Home, Package, Calendar as CalendarIcon, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { calculateAdvancedMovingPrice, estimateDistance } from "@/lib/pricing";
+import { calculatorApi } from "@/lib/api";
+import { useAnalytics } from "@/lib/analytics";
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
   fromPostal: z.string().min(4),
@@ -44,7 +47,14 @@ const formSchema = z.object({
 
 export const AdvancedCalculator = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const analytics = useAnalytics();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    analytics.trackCalculatorStarted('advanced');
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,49 +84,84 @@ export const AdvancedCalculator = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
+    setError(null);
     
-    // Calculate distance
-    const distanceKm = estimateDistance(values.fromPostal, values.toPostal);
-    
-    // Prepare inventory
-    const inventory = {
-      boxes: parseInt(values.boxes),
-      wardrobes: parseInt(values.wardrobes),
-      beds: parseInt(values.beds),
-      sofas: parseInt(values.sofas),
-      tables: parseInt(values.tables),
-      chairs: parseInt(values.chairs),
-    };
-    
-    // Prepare extra services
-    const extraServices = {
-      cleaning: values.cleaning,
-      disposal: values.disposal,
-      packing: values.packing,
-      storage: values.storage,
-      assembly: values.assembly,
-      specialItems: values.specialItems,
-    };
-    
-    // Calculate price
-    const calculation = calculateAdvancedMovingPrice(
-      inventory,
-      distanceKm,
-      extraServices,
-      parseInt(values.floorsFrom),
-      parseInt(values.floorsTo),
-      values.elevatorFrom,
-      values.elevatorTo
-    );
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    navigate("/rechner/ergebnis", { 
-      state: { 
-        calculatorData: values, 
-        calculation,
-        type: "advanced" 
-      } 
-    });
+    try {
+      // Prepare data for API
+      const requestData: any = {
+        fromPostal: values.fromPostal,
+        fromCity: values.fromCity,
+        toPostal: values.toPostal,
+        toCity: values.toCity,
+        rooms: "3", // Default for advanced
+        movingType: "local",
+        floorsFrom: values.floorsFrom,
+        floorsTo: values.floorsTo,
+        hasElevatorFrom: values.elevatorFrom,
+        hasElevatorTo: values.elevatorTo,
+        inventory: {
+          boxes: parseInt(values.boxes),
+          wardrobes: parseInt(values.wardrobes),
+          beds: parseInt(values.beds),
+          sofas: parseInt(values.sofas),
+          tables: parseInt(values.tables),
+          chairs: parseInt(values.chairs),
+        },
+        extraServices: {
+          cleaning: values.cleaning,
+          disposal: values.disposal,
+          packing: values.packing,
+          storage: values.storage,
+          assembly: values.assembly,
+          specialItems: values.specialItems,
+        },
+        movingDate: format(values.movingDate, "yyyy-MM-dd"),
+      };
+
+      const response = await calculatorApi.advanced(requestData);
+      
+      if (response.error) {
+        setError(response.error);
+        analytics.trackError('calculator_api_error', { 
+          calculator_type: 'advanced',
+          error: response.error 
+        });
+        toast({
+          title: "Berechnung fehlgeschlagen",
+          description: response.error,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!response.data) {
+        throw new Error('Keine Daten erhalten');
+      }
+
+      analytics.trackCalculatorCompleted('advanced', response.data);
+      
+      navigate("/rechner/ergebnis", { 
+        state: { 
+          calculatorData: values, 
+          calculation: response.data,
+          type: "advanced" 
+        } 
+      });
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten';
+      setError(errorMsg);
+      analytics.trackError('calculator_error', { 
+        calculator_type: 'advanced',
+        error: errorMsg 
+      });
+      toast({
+        title: "Fehler",
+        description: errorMsg,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -133,6 +178,13 @@ export const AdvancedCalculator = () => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             {/* Locations */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">

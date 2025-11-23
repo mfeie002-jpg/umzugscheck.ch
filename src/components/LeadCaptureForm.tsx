@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,6 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { MovingCalculation } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
+import { useAnalytics } from "@/lib/analytics";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein").max(100),
@@ -63,9 +64,14 @@ export const LeadCaptureForm = ({
   onSuccess,
 }: LeadCaptureFormProps) => {
   const { toast } = useToast();
+  const analytics = useAnalytics();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    analytics.trackPageView('Lead Form', '/rechner/ergebnis');
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -108,6 +114,15 @@ export const LeadCaptureForm = ({
 
       setIsSuccess(true);
 
+      // Track lead submission
+      analytics.trackLeadSubmitted({
+        calculatorType,
+        moveDate: format(values.moveDate, "yyyy-MM-dd"),
+        fromCity: calculatorData.fromCity,
+        toCity: calculatorData.toCity,
+        priceRange: `${calculation.priceMin}-${calculation.priceMax}`,
+      });
+
       toast({
         title: "Anfrage erfolgreich gesendet!",
         description: "Wir leiten Ihre Anfrage an passende Umzugsfirmen weiter.",
@@ -118,6 +133,11 @@ export const LeadCaptureForm = ({
       }
     } catch (error) {
       console.error("Error submitting lead:", error);
+      const errorMsg = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      analytics.trackError('lead_submission_error', { 
+        error: errorMsg,
+        calculatorType 
+      });
       toast({
         title: "Fehler beim Senden",
         description: "Bitte versuchen Sie es später erneut.",
