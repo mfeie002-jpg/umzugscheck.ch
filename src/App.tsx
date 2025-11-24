@@ -12,6 +12,7 @@ import CompanyProfile from "./pages/CompanyProfile";
 import Compare from "./pages/Compare";
 import Canton from "./pages/Canton";
 import City from "./pages/City";
+import Regionen from "./pages/Regionen";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
@@ -57,7 +58,9 @@ const App = () => (
             <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
+            <Route path="/regionen" element={<Regionen />} />
             <Route path="/kanton/:slug" element={<Canton />} />
+            <Route path="/umzug/:canton" element={<Canton />} />
             <Route path="/stadt/:slug" element={<City />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />

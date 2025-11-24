@@ -12,6 +12,7 @@ const navItems = [
   { label: "Startseite", href: "/" },
   { label: "Preisrechner", href: "/rechner", hasDropdown: true },
   { label: "Umzugsfirmen", href: "/firmen" },
+  { label: "Regionen", href: "/regionen" },
   { label: "Ratgeber", href: "/blog" },
   { label: "Über uns", href: "/ueber-uns" },
   { label: "Kontakt", href: "/kontakt" }
