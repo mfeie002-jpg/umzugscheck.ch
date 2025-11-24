@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box } from "lucide-react";
+import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { calculateVideoBasedPrice, formatCurrency } from "@/lib/pricing";
 
 interface AnalysisResult {
   videoId: string;
@@ -33,6 +34,7 @@ export default function VideoEstimator() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [priceEstimate, setPriceEstimate] = useState<{ minPrice: number; maxPrice: number; estimatedHours: number } | null>(null);
   
   // Lead form state
   const [name, setName] = useState("");
@@ -109,6 +111,18 @@ export default function VideoEstimator() {
 
         if (data && data.success) {
           setAnalysisResult(data.data);
+          
+          // Calculate price estimate based on volume and difficulty
+          const priceCalc = calculateVideoBasedPrice(
+            data.data.estimatedVolumeM3,
+            data.data.difficultyScore
+          );
+          setPriceEstimate({
+            minPrice: priceCalc.priceMin,
+            maxPrice: priceCalc.priceMax,
+            estimatedHours: priceCalc.estimatedHours
+          });
+          
           setStep(3);
         } else {
           throw new Error(data?.error || 'Analyse fehlgeschlagen');
@@ -181,6 +195,7 @@ export default function VideoEstimator() {
     setStep(1);
     setSelectedFile(null);
     setAnalysisResult(null);
+    setPriceEstimate(null);
     setError(null);
   };
 
@@ -416,6 +431,57 @@ export default function VideoEstimator() {
                       </div>
                     </CardContent>
                   </Card>
+
+                  {/* Price Estimate Card */}
+                  {priceEstimate && (
+                    <Card className="border-2 border-accent/30 bg-accent/5">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TrendingUp className="w-6 h-6 text-accent" />
+                          Geschätzte Umzugskosten
+                        </CardTitle>
+                        <CardDescription>
+                          Basierend auf {analysisResult.estimatedVolumeM3} m³ Volumen und Schwierigkeitsgrad {analysisResult.difficultyScore}/5
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="p-6 rounded-lg bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
+                          <div className="text-center">
+                            <p className="text-sm text-muted-foreground mb-2">Geschätzter Preis</p>
+                            <p className="text-4xl font-bold text-accent mb-1">
+                              {formatCurrency(priceEstimate.minPrice)} - {formatCurrency(priceEstimate.maxPrice)}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Ca. {priceEstimate.estimatedHours} Stunden
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-3 text-sm">
+                          <div className="p-3 rounded-lg bg-card border">
+                            <p className="text-muted-foreground mb-1">Basis</p>
+                            <p className="font-semibold">Umzugsvolumen</p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-card border">
+                            <p className="text-muted-foreground mb-1">Distanz</p>
+                            <p className="font-semibold">~50 km angenommen</p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-card border">
+                            <p className="text-muted-foreground mb-1">Anpassung</p>
+                            <p className="font-semibold">Nach Schwierigkeit</p>
+                          </div>
+                        </div>
+
+                        <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900">
+                          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                            ⚠️ Dies ist eine automatische Schätzung. Der tatsächliche Preis kann je nach genauer Distanz, 
+                            Zusatzleistungen und spezifischen Anforderungen variieren. Für ein präzises Angebot fordern 
+                            Sie bitte eine Offerte an.
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
 
                   <Card>
                     <CardHeader>
