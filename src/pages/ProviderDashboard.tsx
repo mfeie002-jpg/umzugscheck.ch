@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AvailableLeadsMarket } from "@/components/AvailableLeadsMarket";
 import { ProfileOptimizationSuggestions } from "@/components/provider/ProfileOptimizationSuggestions";
+import { CompetitorAnalysis } from "@/components/provider/CompetitorAnalysis";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -250,18 +251,39 @@ const ProviderDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Profile Optimization */}
+          {/* Profile Optimization and Competitor Analysis */}
           {isApproved && (
-            <div className="mb-8">
-              <ProfileOptimizationSuggestions provider={{
-                id: provider.id,
-                cantons_served: provider.cantons_served,
-                preferred_regions: provider.preferred_regions,
-                min_job_value: provider.min_job_value,
-                max_leads_per_month: provider.max_leads_per_month,
-                price_level: provider.price_level,
-                services_offered: provider.services_offered
-              }} />
+            <div className="space-y-8 mb-8">
+              <Tabs defaultValue="optimization" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="optimization">Profil-Optimierung</TabsTrigger>
+                  <TabsTrigger value="competitors">Wettbewerbsanalyse</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="optimization">
+                  <ProfileOptimizationSuggestions provider={{
+                    id: provider.id,
+                    cantons_served: provider.cantons_served,
+                    preferred_regions: provider.preferred_regions,
+                    min_job_value: provider.min_job_value,
+                    max_leads_per_month: provider.max_leads_per_month,
+                    price_level: provider.price_level,
+                    services_offered: provider.services_offered
+                  }} />
+                </TabsContent>
+
+                <TabsContent value="competitors">
+                  <CompetitorAnalysis provider={{
+                    id: provider.id,
+                    company_name: provider.company_name,
+                    cantons_served: provider.cantons_served,
+                    services_offered: provider.services_offered,
+                    price_level: provider.price_level,
+                    employees_count: provider.employees_count,
+                    fleet_size: provider.fleet_size
+                  }} />
+                </TabsContent>
+              </Tabs>
             </div>
           )}
 
