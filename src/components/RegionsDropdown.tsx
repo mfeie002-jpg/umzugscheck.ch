@@ -24,6 +24,21 @@ import { SeasonalPricing } from "@/components/SeasonalPricing";
 import { RegionalReviews } from "@/components/RegionalReviews";
 import { PricingAnalyticsDashboard } from "@/components/PricingAnalyticsDashboard";
 import { RoutePlanner } from "@/components/RoutePlanner";
+import { PriceAlerts } from "@/components/PriceAlerts";
+import { CostOptimizer } from "@/components/CostOptimizer";
+import { CantonRecommender } from "@/components/CantonRecommender";
+import { HistoricalPriceTrends } from "@/components/HistoricalPriceTrends";
+import { PriceHeatMap } from "@/components/PriceHeatMap";
+import { AIMovingDateSuggester } from "@/components/AIMovingDateSuggester";
+import { RealTimeAvailability } from "@/components/RealTimeAvailability";
+import { CompetitivePricingAnalyzer } from "@/components/CompetitivePricingAnalyzer";
+import { MLPricePredictions } from "@/components/MLPricePredictions";
+import { WeatherBasedRecommendations } from "@/components/WeatherBasedRecommendations";
+import { PeakHourAvoidance } from "@/components/PeakHourAvoidance";
+import { ProviderPerformanceMatrix } from "@/components/ProviderPerformanceMatrix";
+import { SmartMovingChecklist } from "@/components/SmartMovingChecklist";
+import { CostQualityMatrix } from "@/components/CostQualityMatrix";
+import { LeadDemandTracker } from "@/components/LeadDemandTracker";
 
 interface Canton {
   name: string;
@@ -447,13 +462,63 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
                 <PopularMovingRoutes />
               </TabsContent>
 
-              <TabsContent value="insights" className="space-y-4">
+              <TabsContent value="insights" className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                {/* Row 1: Quick Tools */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <QuickCalculator />
                   <RoutePlanner />
                 </div>
-                <CantonComparison />
+
+                {/* Row 2: Alerts & Optimization */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <PriceAlerts />
+                  <CostOptimizer />
+                </div>
+
+                {/* Row 3: AI & Recommendations */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <CantonRecommender />
+                  <AIMovingDateSuggester />
+                </div>
+
+                {/* Row 4: Historical & ML */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <HistoricalPriceTrends />
+                  <MLPricePredictions />
+                </div>
+
+                {/* Full Width: Heat Map */}
+                <PriceHeatMap />
+
+                {/* Row 5: Real-Time Tracking */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <RealTimeAvailability />
+                  <LeadDemandTracker />
+                </div>
+
+                {/* Row 6: Weather & Peak Hours */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <WeatherBasedRecommendations />
+                  <PeakHourAvoidance />
+                </div>
+
+                {/* Row 7: Performance & Competitive */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <ProviderPerformanceMatrix />
+                  <CompetitivePricingAnalyzer />
+                </div>
+
+                {/* Row 8: Matrix Views */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <CostQualityMatrix />
+                  <CantonComparison />
+                </div>
+
+                {/* Row 9: Analytics & Planning */}
                 <PricingAnalyticsDashboard />
+                <SmartMovingChecklist />
+
+                {/* Row 10: Final Insights */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <SeasonalPricing />
                   <RegionalReviews />
