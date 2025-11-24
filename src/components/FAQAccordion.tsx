@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HelpCircle } from "lucide-react";
+import { Helmet } from "react-helmet";
 
 export interface FAQItem {
   question: string;
@@ -27,12 +28,31 @@ export const FAQAccordion = ({
   variant = "default",
   defaultOpen = [],
 }: FAQAccordionProps) => {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": items.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  };
+
   const content = (
-    <Accordion 
-      type="multiple" 
-      defaultValue={defaultOpen}
-      className="space-y-2"
-    >
+    <>
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+      </Helmet>
+      <Accordion 
+        type="multiple" 
+        defaultValue={defaultOpen}
+        className="space-y-2"
+      >
       {items.map((item, index) => (
         <AccordionItem
           key={index}
@@ -50,7 +70,8 @@ export const FAQAccordion = ({
           </AccordionContent>
         </AccordionItem>
       ))}
-    </Accordion>
+      </Accordion>
+    </>
   );
 
   if (variant === "compact") {

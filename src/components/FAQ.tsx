@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Helmet } from "react-helmet";
 
 const faqs = [
   {
@@ -40,9 +41,27 @@ const faqs = [
   }
 ];
 
+const FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+
 export const FAQ = () => {
   return (
     <section className="py-16 md:py-24 bg-white">
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(FAQ_SCHEMA)}
+        </script>
+      </Helmet>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 md:mb-16">
           <h2 className="mb-4">Häufig gestellte Fragen</h2>
