@@ -13,7 +13,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Swiss-inspired professional palette */
+    /* Swiss-inspired premium palette */
     --background: 0 0% 100%;
     --foreground: 220 40% 15%;
 
@@ -24,65 +24,81 @@ All colors MUST be HSL.
     --popover-foreground: 220 40% 15%;
 
     /* Deep navy primary - Swiss professional */
-    --primary: 220 70% 25%;
+    --primary: 220 70% 28%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 220 60% 92%;
+    --primary-light: 220 60% 95%;
     --primary-dark: 220 75% 18%;
+    --primary-glow: 220 70% 65%;
 
-    /* Swiss red accent */
+    /* Swiss red accent - enhanced */
     --accent: 0 75% 55%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 0 70% 95%;
-    --accent-dark: 0 80% 40%;
+    --accent-light: 0 70% 96%;
+    --accent-dark: 0 80% 42%;
+    --accent-glow: 0 75% 70%;
 
     /* Neutral secondary */
-    --secondary: 220 15% 95%;
+    --secondary: 220 15% 96%;
     --secondary-foreground: 220 40% 15%;
 
-    --muted: 220 15% 96%;
-    --muted-foreground: 220 15% 45%;
+    --muted: 220 12% 94%;
+    --muted-foreground: 220 15% 42%;
 
-    --success: 142 76% 36%;
+    --success: 142 76% 38%;
     --success-foreground: 0 0% 100%;
-    --success-light: 142 60% 95%;
+    --success-light: 142 60% 96%;
 
-    --warning: 45 93% 47%;
+    --warning: 45 93% 48%;
     --warning-foreground: 0 0% 100%;
-    --warning-light: 45 93% 95%;
+    --warning-light: 45 93% 96%;
     
-    --info: 200 80% 50%;
+    --info: 200 80% 52%;
     --info-foreground: 0 0% 100%;
-    --info-light: 200 80% 95%;
+    --info-light: 200 80% 96%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 92%;
-    --ring: 220 70% 25%;
+    --border: 220 15% 90%;
+    --input: 220 15% 93%;
+    --ring: 220 70% 28%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(220 70% 25%) 0%, hsl(220 75% 35%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(0 75% 55%) 0%, hsl(15 80% 50%) 100%);
-    --gradient-light: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 60% 98%) 100%);
+    /* Enhanced gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220 70% 28%) 0%, hsl(220 75% 38%) 50%, hsl(220 80% 32%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(0 75% 55%) 0%, hsl(15 80% 52%) 50%, hsl(0 78% 50%) 100%);
+    --gradient-light: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 55% 98%) 50%, hsl(220 60% 97%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(220 70% 28%) 0%, hsl(0 75% 55%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 60% 98%) 0%, hsl(0 0% 100%) 100%);
 
-    /* Shadows */
-    --shadow-soft: 0 2px 8px -2px hsl(220 40% 15% / 0.08);
-    --shadow-medium: 0 4px 16px -4px hsl(220 40% 15% / 0.12);
-    --shadow-strong: 0 12px 32px -8px hsl(220 40% 15% / 0.18);
-    --shadow-accent: 0 8px 24px -6px hsl(0 75% 55% / 0.25);
-    --shadow-hover: 0 16px 48px -10px hsl(220 40% 15% / 0.22);
+    /* Enhanced shadows with depth */
+    --shadow-xs: 0 1px 3px 0 hsl(220 40% 15% / 0.05);
+    --shadow-soft: 0 2px 8px -2px hsl(220 40% 15% / 0.08), 0 1px 4px -1px hsl(220 40% 15% / 0.06);
+    --shadow-medium: 0 4px 16px -4px hsl(220 40% 15% / 0.12), 0 2px 8px -2px hsl(220 40% 15% / 0.08);
+    --shadow-strong: 0 12px 32px -8px hsl(220 40% 15% / 0.18), 0 4px 16px -4px hsl(220 40% 15% / 0.12);
+    --shadow-accent: 0 8px 24px -6px hsl(0 75% 55% / 0.28), 0 4px 12px -4px hsl(0 75% 55% / 0.16);
+    --shadow-hover: 0 20px 56px -12px hsl(220 40% 15% / 0.24), 0 8px 24px -6px hsl(220 40% 15% / 0.16);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
 
-    /* Animations */
+    /* Smooth animations */
     --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-spring: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* Typography */
-    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Typography - Premium Swiss */
+    --font-heading: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* Spacing scale */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -167,19 +183,27 @@ All colors MUST be HSL.
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
   }
 
   h1 {
-    @apply text-4xl md:text-6xl lg:text-7xl;
+    @apply text-4xl md:text-5xl lg:text-6xl;
+    font-weight: 800;
   }
 
   h2 {
     @apply text-3xl md:text-4xl lg:text-5xl;
+    font-weight: 700;
   }
 
   h3 {
-    @apply text-2xl md:text-3xl;
+    @apply text-xl md:text-2xl lg:text-3xl;
+    font-weight: 600;
+  }
+  
+  p {
+    line-height: 1.7;
   }
 }
 
@@ -211,6 +235,14 @@ All colors MUST be HSL.
   .gradient-light {
     background: var(--gradient-light);
   }
+  
+  .gradient-premium {
+    background: var(--gradient-premium);
+  }
+  
+  .gradient-subtle {
+    background: var(--gradient-subtle);
+  }
 
   .transition-base {
     transition: var(--transition-base);
@@ -222,6 +254,10 @@ All colors MUST be HSL.
   
   .transition-bounce {
     transition: var(--transition-bounce);
+  }
+  
+  .transition-spring {
+    transition: var(--transition-spring);
   }
   
   /* Scroll animations */
@@ -270,23 +306,50 @@ All colors MUST be HSL.
     }
   }
   
-  /* Hover effects */
+  /* Enhanced hover effects */
   .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .hover-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-hover);
   }
 
-  /* Enhanced hover effects */
   .hover-scale {
-    @apply transition-transform duration-200 hover:scale-105;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.02);
   }
 
   .hover-glow {
-    @apply transition-shadow duration-300 hover:shadow-glow;
+    transition: box-shadow 0.4s ease;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .hover-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hover-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .hover-shine:hover::before {
+    left: 100%;
   }
 
   /* Micro-interactions */

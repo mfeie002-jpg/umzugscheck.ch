@@ -18,6 +18,8 @@ import { SocialProofMetrics } from "@/components/SocialProofMetrics";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ComparisonPreview } from "@/components/ComparisonPreview";
 import { VideoEstimatorTeaser } from "@/components/VideoEstimatorTeaser";
+import { TrustCounter } from "@/components/trust/TrustCounter";
+import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -75,6 +77,11 @@ const Index = () => {
       
       {/* 1. Hero Section with CTAs */}
       <Hero />
+      
+      {/* Trust Counter with animated numbers */}
+      <ScrollReveal>
+        <TrustCounter />
+      </ScrollReveal>
       
       {/* Trust Line under Hero */}
       <ScrollReveal>
@@ -166,6 +173,9 @@ const Index = () => {
       
       {/* Sticky Mobile CTA Bar */}
       <StickyMobileCTA />
+      
+      {/* Live Activity Indicator */}
+      <LiveActivityIndicator />
     </div>
   );
 };
