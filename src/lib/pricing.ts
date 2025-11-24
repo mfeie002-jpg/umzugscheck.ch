@@ -308,3 +308,194 @@ export const calculateCleaningPrice = (input: CleaningCalculatorInput): Cleaning
     priceRange
   };
 };
+
+// Storage Calculator
+export interface StorageCalculation {
+  monthlyPrice: number;
+  setupFee: number;
+  totalFirstMonth: number;
+  priceRange: { min: number; max: number };
+}
+
+export interface StorageCalculatorInput {
+  volumeM3: number;
+  duration: number;
+  climateControlled: boolean;
+  insurance: boolean;
+  accessFrequency: 'rare' | 'monthly' | 'weekly';
+}
+
+export const calculateStoragePrice = (input: StorageCalculatorInput): StorageCalculation => {
+  // Base rate per m³ per month
+  const baseRatePerM3 = input.climateControlled ? 35 : 25;
+  const monthlyPrice = input.volumeM3 * baseRatePerM3;
+  
+  // Access frequency surcharge
+  const accessFees = {
+    'rare': 0,
+    'monthly': 20,
+    'weekly': 50
+  };
+  const accessFee = accessFees[input.accessFrequency];
+  
+  // Insurance (5% of monthly price)
+  const insuranceFee = input.insurance ? monthlyPrice * 0.05 : 0;
+  
+  const totalMonthly = monthlyPrice + accessFee + insuranceFee;
+  
+  // Setup fee (one-time)
+  const setupFee = 150;
+  
+  const totalFirstMonth = totalMonthly + setupFee;
+  
+  const priceRange = {
+    min: Math.round(totalMonthly * 0.9),
+    max: Math.round(totalMonthly * 1.1)
+  };
+  
+  return {
+    monthlyPrice: Math.round(totalMonthly),
+    setupFee,
+    totalFirstMonth: Math.round(totalFirstMonth),
+    priceRange
+  };
+};
+
+// Disposal Calculator
+export interface DisposalCalculation {
+  disposalFee: number;
+  transportFee: number;
+  totalPrice: number;
+  priceRange: { min: number; max: number };
+}
+
+export interface DisposalCalculatorInput {
+  volumeM3: number;
+  hasHazardous: boolean;
+  hasElectronics: boolean;
+  hasFurniture: boolean;
+  distance: number;
+}
+
+export const calculateDisposalPrice = (input: DisposalCalculatorInput): DisposalCalculation => {
+  // Base disposal fee per m³
+  const baseDisposalRate = 80;
+  let disposalFee = input.volumeM3 * baseDisposalRate;
+  
+  // Special item surcharges
+  if (input.hasHazardous) disposalFee += 200;
+  if (input.hasElectronics) disposalFee += 100;
+  if (input.hasFurniture) disposalFee += 150;
+  
+  // Transport fee based on distance
+  const transportFee = input.distance <= 20 ? 100 : 100 + (input.distance - 20) * 3;
+  
+  const totalPrice = disposalFee + transportFee;
+  
+  const priceRange = {
+    min: Math.round(totalPrice * 0.85),
+    max: Math.round(totalPrice * 1.15)
+  };
+  
+  return {
+    disposalFee: Math.round(disposalFee),
+    transportFee: Math.round(transportFee),
+    totalPrice: Math.round(totalPrice),
+    priceRange
+  };
+};
+
+// Packing Calculator
+export interface PackingCalculation {
+  materialCost: number;
+  laborCost: number;
+  totalPrice: number;
+  estimatedHours: number;
+  priceRange: { min: number; max: number };
+}
+
+export interface PackingCalculatorInput {
+  rooms: number;
+  hasFragileItems: boolean;
+  hasArtwork: boolean;
+  packingLevel: 'partial' | 'full';
+}
+
+export const calculatePackingPrice = (input: PackingCalculatorInput): PackingCalculation => {
+  // Material costs per room
+  const materialPerRoom = input.packingLevel === 'full' ? 120 : 60;
+  let materialCost = input.rooms * materialPerRoom;
+  
+  // Special item surcharges
+  if (input.hasFragileItems) materialCost += 80;
+  if (input.hasArtwork) materialCost += 150;
+  
+  // Labor costs (2 hours per room for full, 1 hour for partial)
+  const hoursPerRoom = input.packingLevel === 'full' ? 2 : 1;
+  const estimatedHours = input.rooms * hoursPerRoom;
+  const laborCost = estimatedHours * 80; // CHF 80/hour
+  
+  const totalPrice = materialCost + laborCost;
+  
+  const priceRange = {
+    min: Math.round(totalPrice * 0.85),
+    max: Math.round(totalPrice * 1.15)
+  };
+  
+  return {
+    materialCost: Math.round(materialCost),
+    laborCost: Math.round(laborCost),
+    totalPrice: Math.round(totalPrice),
+    estimatedHours,
+    priceRange
+  };
+};
+
+// Assembly Calculator
+export interface AssemblyCalculation {
+  laborCost: number;
+  estimatedHours: number;
+  totalPrice: number;
+  priceRange: { min: number; max: number };
+}
+
+export interface AssemblyCalculatorInput {
+  furnitureItems: {
+    beds: number;
+    wardrobes: number;
+    shelves: number;
+    tables: number;
+    chairs: number;
+    kitchen: number;
+  };
+  hasComplexItems: boolean;
+}
+
+export const calculateAssemblyPrice = (input: AssemblyCalculatorInput): AssemblyCalculation => {
+  // Hours per furniture type
+  let totalHours = 0;
+  totalHours += input.furnitureItems.beds * 1.5;
+  totalHours += input.furnitureItems.wardrobes * 2;
+  totalHours += input.furnitureItems.shelves * 1;
+  totalHours += input.furnitureItems.tables * 0.5;
+  totalHours += input.furnitureItems.chairs * 0.25;
+  totalHours += input.furnitureItems.kitchen * 3;
+  
+  // Complex items surcharge
+  if (input.hasComplexItems) totalHours += 2;
+  
+  const estimatedHours = Math.ceil(totalHours);
+  const laborCost = estimatedHours * 90; // CHF 90/hour
+  
+  const priceRange = {
+    min: Math.round(laborCost * 0.85),
+    max: Math.round(laborCost * 1.15)
+  };
+  
+  return {
+    laborCost,
+    estimatedHours,
+    totalPrice: laborCost,
+    priceRange
+  };
+};

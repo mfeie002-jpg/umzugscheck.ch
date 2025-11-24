@@ -364,6 +364,39 @@ const CleaningCalculator = () => {
                 )}
               </Card>
             </div>
+
+            {/* SEO Content */}
+            <div className="mt-16 prose prose-slate max-w-none">
+              <h2 className="text-2xl font-bold text-foreground mb-4">Endreinigung beim Umzug in der Schweiz</h2>
+              
+              <div className="grid md:grid-cols-2 gap-8 text-muted-foreground">
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3">Warum professionelle Endreinigung?</h3>
+                  <p className="mb-4">
+                    Die Endreinigung ist bei einem Wohnungswechsel in der Schweiz Pflicht und entscheidend für die 
+                    Rückerstattung Ihrer Mietkaution. Eine professionelle Reinigung garantiert, dass alle Räume, 
+                    Böden, Fenster und sanitären Anlagen dem geforderten Standard entsprechen.
+                  </p>
+                  <p>
+                    Unsere Partner kennen die Anforderungen der Vermieter und Verwaltungen genau. Mit professionellem 
+                    Equipment und Erfahrung sorgen sie dafür, dass Ihre Wohnung abnahmebereit ist.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3">Unsere Reinigungsleistungen</h3>
+                  <ul className="space-y-2">
+                    <li>✓ Komplette Wohnungsreinigung nach Standard</li>
+                    <li>✓ Fensterreinigung innen & aussen</li>
+                    <li>✓ Küchen- und Ofenreinigung</li>
+                    <li>✓ Bad- und WC-Reinigung</li>
+                    <li>✓ Boden- und Teppichreinigung</li>
+                    <li>✓ Balkon- und Kellerreinigung</li>
+                    <li>✓ Abnahmegarantie</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
