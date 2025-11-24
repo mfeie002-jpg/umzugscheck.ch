@@ -41,6 +41,11 @@ import { SmartPushNotifications } from "@/components/home/SmartPushNotifications
 import { MovingTipsCarousel } from "@/components/home/MovingTipsCarousel";
 import { PriceGuaranteeBadge } from "@/components/home/PriceGuaranteeBadge";
 import { LiveSupportIndicator } from "@/components/home/LiveSupportIndicator";
+import { ReferralProgram } from "@/components/home/ReferralProgram";
+import { AvailabilityCalendar } from "@/components/home/AvailabilityCalendar";
+import { EcoFriendlyMoving } from "@/components/home/EcoFriendlyMoving";
+import { BeforeAfterGallery } from "@/components/home/BeforeAfterGallery";
+import { VirtualTourBooking } from "@/components/home/VirtualTourBooking";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -285,24 +290,49 @@ const Index = () => {
       <ScrollReveal delay={390}>
         <MovingResourcesHub />
       </ScrollReveal>
+      
+      {/* 19b. Eco-Friendly Moving */}
+      <ScrollReveal delay={395}>
+        <EcoFriendlyMoving />
+      </ScrollReveal>
+      
+      {/* 19c. Before/After Gallery */}
+      <ScrollReveal delay={400}>
+        <BeforeAfterGallery />
+      </ScrollReveal>
+      
+      {/* 19d. Virtual Tour Booking */}
+      <ScrollReveal delay={405}>
+        <VirtualTourBooking />
+      </ScrollReveal>
+      
+      {/* 19e. Availability Calendar */}
+      <ScrollReveal delay={410}>
+        <AvailabilityCalendar />
+      </ScrollReveal>
+      
+      {/* 19f. Referral Program */}
+      <ScrollReveal delay={415}>
+        <ReferralProgram />
+      </ScrollReveal>
 
       {/* 20. Blog Teaser */}
-      <ScrollReveal delay={400}>
+      <ScrollReveal delay={420}>
         <BlogTeaser />
       </ScrollReveal>
       
       {/* 20a. Newsletter Signup */}
-      <ScrollReveal delay={410}>
+      <ScrollReveal delay={430}>
         <NewsletterSignup />
       </ScrollReveal>
 
       {/* 21. FAQ Section */}
-      <ScrollReveal delay={420}>
+      <ScrollReveal delay={440}>
         <FAQ />
       </ScrollReveal>
 
       {/* Final CTA */}
-      <ScrollReveal delay={430}>
+      <ScrollReveal delay={450}>
         <CTASection />
       </ScrollReveal>
 
