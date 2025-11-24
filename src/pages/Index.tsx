@@ -1,25 +1,22 @@
 import { Navigation } from "@/components/Navigation";
-import { Hero } from "@/components/Hero";
-import { TrustSignals } from "@/components/TrustSignals";
+import { Footer } from "@/components/Footer";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { HowItWorks } from "@/components/HowItWorks";
 import { TopMovers } from "@/components/TopMovers";
-import { WhyChooseUs } from "@/components/WhyChooseUs";
 import { PopularCantons } from "@/components/PopularCantons";
 import { FAQ } from "@/components/FAQ";
 import { CTASection } from "@/components/CTASection";
-import { Footer } from "@/components/Footer";
-import { ScrollReveal } from "@/components/ScrollReveal";
-import { CalculatorSection } from "@/components/CalculatorSection";
 import { useParallax } from "@/hooks/use-parallax";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { OtherCalculators } from "@/components/OtherCalculators";
 import { BlogTeaser } from "@/components/BlogTeaser";
-import { SocialProofMetrics } from "@/components/SocialProofMetrics";
-import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ComparisonPreview } from "@/components/ComparisonPreview";
-import { VideoEstimatorTeaser } from "@/components/VideoEstimatorTeaser";
-import { TrustCounter } from "@/components/trust/TrustCounter";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
+import { EmotionalHero } from "@/components/home/EmotionalHero";
+import { ServiceCarousel } from "@/components/home/ServiceCarousel";
+import { PremiumWhyChooseUs } from "@/components/home/PremiumWhyChooseUs";
+import { ReviewsShowcase } from "@/components/home/ReviewsShowcase";
+import { TrustCertificates } from "@/components/home/TrustCertificates";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -75,94 +72,71 @@ const Index = () => {
 
       <Navigation />
       
-      {/* 1. Hero Section with CTAs */}
-      <Hero />
+      {/* 1. NEW: Emotional Hero with AI Calculator as Primary USP */}
+      <EmotionalHero />
       
-      {/* Trust Counter with animated numbers */}
+      {/* 2. Trust Certificates & Security Badges */}
       <ScrollReveal>
-        <TrustCounter />
+        <TrustCertificates />
       </ScrollReveal>
       
-      {/* Trust Line under Hero */}
-      <ScrollReveal>
-        <TrustSignals />
-      </ScrollReveal>
-
-      {/* 2. Central Preisrechner Block */}
+      {/* 3. Service Carousel - All services at a glance */}
       <ScrollReveal delay={80}>
-        <CalculatorSection />
+        <ServiceCarousel />
       </ScrollReveal>
 
-      {/* First CTA after Calculator */}
+      {/* 4. How It Works - 4 steps */}
       <ScrollReveal delay={100}>
-        <CTASection />
-      </ScrollReveal>
-
-      {/* 3. "So funktioniert es" Section (How It Works) */}
-      <ScrollReveal delay={120}>
         <HowItWorks />
       </ScrollReveal>
 
-      {/* 3.5 Comparison Preview Section */}
-      <ScrollReveal delay={130}>
+      {/* 5. NEW: Premium Why Choose Us with family business focus */}
+      <ScrollReveal delay={120}>
+        <PremiumWhyChooseUs />
+      </ScrollReveal>
+      
+      {/* First CTA */}
+      <ScrollReveal delay={140}>
+        <CTASection />
+      </ScrollReveal>
+
+      {/* 6. NEW: Reviews Showcase with verified customer feedback */}
+      <ScrollReveal delay={160}>
+        <ReviewsShowcase />
+      </ScrollReveal>
+
+      {/* 7. Comparison Preview Section */}
+      <ScrollReveal delay={180}>
         <ComparisonPreview />
       </ScrollReveal>
 
-      {/* 4. Top Umzugsfirmen Section */}
-      <ScrollReveal delay={140}>
+      {/* 8. Top Umzugsfirmen Section */}
+      <ScrollReveal delay={200}>
         <TopMovers />
       </ScrollReveal>
 
-      {/* Second CTA after Top Companies */}
-      <ScrollReveal delay={160}>
+      {/* Second CTA */}
+      <ScrollReveal delay={220}>
         <CTASection />
       </ScrollReveal>
 
-      {/* 5. Regionen / Kantone Section */}
-      <ScrollReveal delay={180}>
+      {/* 9. Popular Regions */}
+      <ScrollReveal delay={240}>
         <PopularCantons />
       </ScrollReveal>
 
-      {/* 6. "Warum Umzugscheck.ch?" Section (USP/Benefits) */}
-      <ScrollReveal delay={200}>
-        <WhyChooseUs />
-      </ScrollReveal>
-
-      {/* 7. Social Proof & Kennzahlen (Metrics + Testimonials) */}
-      <ScrollReveal delay={220}>
-        <SocialProofMetrics />
-      </ScrollReveal>
-
-      {/* Third CTA after Social Proof */}
-      <ScrollReveal delay={240}>
-        <CTASection />
-      </ScrollReveal>
-
-      {/* 8. Video Estimator Teaser */}
-      <ScrollReveal delay={250}>
-        <VideoEstimatorTeaser />
-      </ScrollReveal>
-
-      {/* 9. Services / Bundles Section (Other Calculators) */}
+      {/* 10. Blog Teaser */}
       <ScrollReveal delay={260}>
-        <OtherCalculators 
-          title="Alles aus einer Hand" 
-          description="Umfassende Dienstleistungen für Ihren perfekten Umzug – von Reinigung bis Lagerung"
-        />
-      </ScrollReveal>
-
-      {/* 10. Ratgeber / Content Teaser (Blog) */}
-      <ScrollReveal delay={280}>
         <BlogTeaser />
       </ScrollReveal>
 
       {/* 11. FAQ Section */}
-      <ScrollReveal delay={300}>
+      <ScrollReveal delay={280}>
         <FAQ />
       </ScrollReveal>
 
-      {/* Final CTA before Footer */}
-      <ScrollReveal delay={320}>
+      {/* Final CTA */}
+      <ScrollReveal delay={300}>
         <CTASection />
       </ScrollReveal>
 
