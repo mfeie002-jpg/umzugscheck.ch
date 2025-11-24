@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Package, Loader2, ShoppingCart } from "lucide-react";
+import { MapPin, Calendar, Package, Loader2, ShoppingCart, Star, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
+import { calculateLeadQualityScore } from "@/lib/pricing";
 
 interface Lead {
   id: string;
@@ -61,11 +62,20 @@ export function AvailableLeadsMarket() {
     }
   };
 
-  const calculateLeadPrice = (lead: Lead) => {
-    const volume = lead.calculator_output?.volume || 30;
-    if (volume > 80) return 45;
-    if (volume > 50) return 30;
-    return 15;
+  const getQualityBadgeVariant = (tier: string) => {
+    switch (tier) {
+      case 'elite': return 'default';
+      case 'premium': return 'secondary';
+      default: return 'outline';
+    }
+  };
+
+  const getQualityLabel = (tier: string) => {
+    switch (tier) {
+      case 'elite': return 'Elite';
+      case 'premium': return 'Premium';
+      default: return 'Standard';
+    }
   };
 
   const handlePurchaseLead = async (leadId: string) => {
@@ -122,8 +132,16 @@ export function AvailableLeadsMarket() {
   return (
     <div className="grid md:grid-cols-2 gap-4">
       {leads.map((lead) => {
-        const price = calculateLeadPrice(lead);
-        const volume = lead.calculator_output?.volume || "--";
+        const volume = lead.calculator_output?.volume || 30;
+        const qualityScore = calculateLeadQualityScore({
+          volume,
+          fromPostal: lead.from_postal,
+          toPostal: lead.to_postal,
+          calculatorType: lead.calculator_type,
+          calculatorOutput: lead.calculator_output,
+          estimatedValue: lead.calculator_output?.priceAvg
+        });
+        
         const isPurchasing = purchasing === lead.id;
 
         return (
@@ -131,7 +149,13 @@ export function AvailableLeadsMarket() {
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-lg">{lead.calculator_type}</CardTitle>
+                  <div className="flex items-center gap-2 mb-1">
+                    <CardTitle className="text-lg">{lead.calculator_type}</CardTitle>
+                    <Badge variant={getQualityBadgeVariant(qualityScore.qualityTier)}>
+                      <Star className="h-3 w-3 mr-1" />
+                      {getQualityLabel(qualityScore.qualityTier)}
+                    </Badge>
+                  </div>
                   <CardDescription className="mt-1">
                     <div className="flex items-center gap-1 text-sm">
                       <MapPin className="h-3 w-3" />
@@ -139,44 +163,76 @@ export function AvailableLeadsMarket() {
                     </div>
                   </CardDescription>
                 </div>
-                <Badge variant="secondary" className="ml-2">
-                  CHF {price}
-                </Badge>
+                <div className="ml-2 text-right">
+                  <Badge variant="secondary" className="text-base font-bold">
+                    CHF {qualityScore.finalPrice}
+                  </Badge>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Score: {qualityScore.totalScore}/100
+                  </div>
+                </div>
               </div>
             </CardHeader>
 
             <CardContent className="flex-1">
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Von:</span>
-                  <span className="font-medium">
-                    {lead.from_postal} {lead.from_city}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Nach:</span>
-                  <span className="font-medium">
-                    {lead.to_postal} {lead.to_city}
-                  </span>
-                </div>
-                {lead.move_date && (
+              <div className="space-y-3">
+                {/* Location & Move Details */}
+                <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Umzugsdatum:</span>
-                    <span className="font-medium flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(lead.move_date).toLocaleDateString("de-CH")}
+                    <span className="text-muted-foreground">Von:</span>
+                    <span className="font-medium">
+                      {lead.from_postal} {lead.from_city}
                     </span>
                   </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Volumen:</span>
-                  <span className="font-medium">{volume} m³</span>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Nach:</span>
+                    <span className="font-medium">
+                      {lead.to_postal} {lead.to_city}
+                    </span>
+                  </div>
+                  {lead.move_date && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Umzugsdatum:</span>
+                      <span className="font-medium flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(lead.move_date).toLocaleDateString("de-CH")}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Volumen:</span>
+                    <span className="font-medium">{volume} m³</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Geschätzter Wert:</span>
+                    <span className="font-medium">CHF {qualityScore.estimatedJobValue.toLocaleString()}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Eingegangen:</span>
-                  <span className="font-medium">
-                    {new Date(lead.created_at).toLocaleDateString("de-CH")}
-                  </span>
+
+                {/* Price Breakdown */}
+                <div className="border-t pt-3">
+                  <div className="flex items-center gap-1 text-xs font-semibold text-muted-foreground mb-2">
+                    <TrendingUp className="h-3 w-3" />
+                    Preis-Breakdown
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Basispreis:</span>
+                      <span>CHF {qualityScore.basePrice}</span>
+                    </div>
+                    {qualityScore.locationPremium > 0 && (
+                      <div className="flex justify-between text-primary">
+                        <span>Standort-Premium:</span>
+                        <span>+ CHF {qualityScore.locationPremium}</span>
+                      </div>
+                    )}
+                    {qualityScore.complexityAdjustment > 0 && (
+                      <div className="flex justify-between text-primary">
+                        <span>Komplexitätszuschlag:</span>
+                        <span>+ CHF {qualityScore.complexityAdjustment}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -195,7 +251,7 @@ export function AvailableLeadsMarket() {
                 ) : (
                   <>
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    Für CHF {price} kaufen
+                    Für CHF {qualityScore.finalPrice} kaufen
                   </>
                 )}
               </Button>

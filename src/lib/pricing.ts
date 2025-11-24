@@ -574,3 +574,135 @@ export const calculateAssemblyPrice = (input: AssemblyCalculatorInput): Assembly
     priceRange
   };
 };
+
+// Lead Quality Scoring & Pricing
+
+export interface LeadQualityScore {
+  totalScore: number; // 0-100
+  volumeScore: number;
+  locationScore: number;
+  complexityScore: number;
+  estimatedJobValue: number;
+  basePrice: number;
+  locationPremium: number;
+  complexityAdjustment: number;
+  finalPrice: number;
+  qualityTier: 'standard' | 'premium' | 'elite';
+}
+
+export interface LeadPricingInput {
+  volume?: number;
+  fromPostal: string;
+  toPostal: string;
+  calculatorType: string;
+  calculatorOutput?: any;
+  estimatedValue?: number;
+}
+
+// Canton premium multipliers based on market demand and affluence
+const CANTON_PREMIUMS: Record<string, number> = {
+  'ZH': 1.3,  // Zürich - highest
+  'ZG': 1.25, // Zug
+  'GE': 1.2,  // Geneva
+  'BS': 1.2,  // Basel-Stadt
+  'VD': 1.15, // Vaud
+  'BL': 1.1,  // Basel-Land
+  'AG': 1.05, // Aargau
+  'SG': 1.0,  // St. Gallen
+  'BE': 1.0,  // Bern
+  'LU': 1.0,  // Luzern
+  // Other cantons default to 1.0
+};
+
+const getCantonFromPostal = (postalCode: string): string => {
+  const code = postalCode.substring(0, 1);
+  const codeMap: Record<string, string> = {
+    '1': 'VD',
+    '2': 'NE',
+    '3': 'BE',
+    '4': 'BS',
+    '5': 'AG',
+    '6': 'LU',
+    '7': 'GR',
+    '8': 'ZH',
+    '9': 'SG'
+  };
+  return codeMap[code] || 'Other';
+};
+
+export const calculateLeadQualityScore = (
+  input: LeadPricingInput
+): LeadQualityScore => {
+  const { volume = 30, fromPostal, toPostal, calculatorType, calculatorOutput, estimatedValue } = input;
+
+  // 1. Volume Score (0-40 points)
+  let volumeScore = 0;
+  if (volume <= 20) volumeScore = 10;
+  else if (volume <= 40) volumeScore = 20;
+  else if (volume <= 60) volumeScore = 30;
+  else volumeScore = 40;
+
+  // 2. Location Score (0-30 points)
+  const fromCanton = getCantonFromPostal(fromPostal);
+  const toCanton = getCantonFromPostal(toPostal);
+  const maxPremium = Math.max(
+    CANTON_PREMIUMS[fromCanton] || 1.0,
+    CANTON_PREMIUMS[toCanton] || 1.0
+  );
+  const locationScore = Math.round((maxPremium - 1.0) * 100); // 0-30 points
+
+  // 3. Complexity Score (0-30 points)
+  let complexityScore = 15; // default
+  if (calculatorOutput) {
+    const hasExtraServices = calculatorOutput.extraServices?.length > 0;
+    const hasSpecialItems = calculatorOutput.specialItems?.length > 0;
+    const hasDifficultAccess = calculatorOutput.accessDifficulty === 'difficult';
+    const floors = (calculatorOutput.floorsStart || 0) + (calculatorOutput.floorsDestination || 0);
+    
+    if (hasExtraServices) complexityScore += 5;
+    if (hasSpecialItems) complexityScore += 5;
+    if (hasDifficultAccess) complexityScore += 5;
+    if (floors > 4) complexityScore += 5;
+    
+    complexityScore = Math.min(30, complexityScore);
+  }
+
+  const totalScore = volumeScore + locationScore + complexityScore;
+
+  // Determine quality tier
+  let qualityTier: 'standard' | 'premium' | 'elite' = 'standard';
+  if (totalScore >= 70) qualityTier = 'elite';
+  else if (totalScore >= 50) qualityTier = 'premium';
+
+  // Calculate pricing
+  // Base price from volume
+  let basePrice = 15; // CHF
+  if (volume > 80) basePrice = 45;
+  else if (volume > 50) basePrice = 30;
+  else if (volume > 30) basePrice = 20;
+
+  // Location premium
+  const locationPremium = Math.round(basePrice * (maxPremium - 1.0));
+
+  // Complexity adjustment (0-25% extra)
+  const complexityMultiplier = 1 + (complexityScore / 120); // max +25%
+  const complexityAdjustment = Math.round(basePrice * (complexityMultiplier - 1.0));
+
+  const finalPrice = basePrice + locationPremium + complexityAdjustment;
+
+  // Estimate job value
+  const jobValueEstimate = estimatedValue || (volume * 80); // CHF 80 per m³ average
+
+  return {
+    totalScore,
+    volumeScore,
+    locationScore,
+    complexityScore,
+    estimatedJobValue: jobValueEstimate,
+    basePrice,
+    locationPremium,
+    complexityAdjustment,
+    finalPrice,
+    qualityTier
+  };
+};
