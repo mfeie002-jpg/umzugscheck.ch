@@ -230,3 +230,81 @@ export const getMoveSize = (volumeM3: number): string => {
   if (volumeM3 < 75) return "Gross (4-5 Zimmer)";
   return "Sehr gross (Haus/6+ Zimmer)";
 };
+
+// Cleaning Calculator Types and Functions
+export interface CleaningCalculation {
+  basePrice: number;
+  servicesPrice: number;
+  totalPrice: number;
+  estimatedHours: number;
+  priceRange: { min: number; max: number };
+}
+
+export interface CleaningCalculatorInput {
+  cleaningType: 'end-of-lease' | 'regular' | 'deep-clean';
+  squareMeters: number;
+  rooms: number;
+  bathrooms: number;
+  hasBalcony: boolean;
+  hasWindows: boolean;
+  hasOven: boolean;
+  hasCarpets: boolean;
+  hasStorage: boolean;
+}
+
+export const calculateCleaningPrice = (input: CleaningCalculatorInput): CleaningCalculation => {
+  // Base rates per square meter
+  const baseRates = {
+    'end-of-lease': 8, // CHF per m²
+    'regular': 5,
+    'deep-clean': 7
+  };
+
+  const baseRate = baseRates[input.cleaningType];
+  const basePrice = input.squareMeters * baseRate;
+
+  // Additional services pricing
+  let servicesPrice = 0;
+  
+  if (input.hasWindows) {
+    servicesPrice += input.rooms * 25; // CHF 25 per room for window cleaning
+  }
+  
+  if (input.hasOven) {
+    servicesPrice += 80; // CHF 80 for oven cleaning
+  }
+  
+  if (input.hasBalcony) {
+    servicesPrice += 50; // CHF 50 per balcony
+  }
+  
+  if (input.hasCarpets) {
+    servicesPrice += input.rooms * 40; // CHF 40 per room for carpet cleaning
+  }
+  
+  if (input.hasStorage) {
+    servicesPrice += 60; // CHF 60 for storage/basement cleaning
+  }
+
+  // Bathroom surcharge
+  servicesPrice += (input.bathrooms - 1) * 50; // Extra CHF 50 per additional bathroom
+
+  const totalPrice = basePrice + servicesPrice;
+  
+  // Estimate hours (roughly 20-30 CHF per hour labor cost)
+  const estimatedHours = Math.ceil(totalPrice / 25);
+
+  // Price range (±15%)
+  const priceRange = {
+    min: Math.round(totalPrice * 0.85),
+    max: Math.round(totalPrice * 1.15)
+  };
+
+  return {
+    basePrice: Math.round(basePrice),
+    servicesPrice: Math.round(servicesPrice),
+    totalPrice: Math.round(totalPrice),
+    estimatedHours,
+    priceRange
+  };
+};
