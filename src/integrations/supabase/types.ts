@@ -74,6 +74,51 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_bids: {
+        Row: {
+          bid_amount: number
+          created_at: string
+          id: string
+          lead_id: string
+          provider_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          bid_amount: number
+          created_at?: string
+          id?: string
+          lead_id: string
+          provider_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          bid_amount?: number
+          created_at?: string
+          id?: string
+          lead_id?: string
+          provider_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_bids_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_bids_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_transactions: {
         Row: {
           amount: number
@@ -128,11 +173,15 @@ export type Database = {
       leads: {
         Row: {
           assigned_provider_ids: string[] | null
+          bid_count: number | null
+          bidding_closes_at: string | null
+          bidding_enabled: boolean | null
           calculator_input: Json
           calculator_output: Json
           calculator_type: string
           comments: string | null
           created_at: string | null
+          current_highest_bid: number | null
           email: string
           from_city: string
           from_postal: string
@@ -141,17 +190,22 @@ export type Database = {
           move_date: string | null
           name: string
           phone: string | null
+          starting_bid: number | null
           status: string | null
           to_city: string
           to_postal: string
         }
         Insert: {
           assigned_provider_ids?: string[] | null
+          bid_count?: number | null
+          bidding_closes_at?: string | null
+          bidding_enabled?: boolean | null
           calculator_input: Json
           calculator_output: Json
           calculator_type: string
           comments?: string | null
           created_at?: string | null
+          current_highest_bid?: number | null
           email: string
           from_city: string
           from_postal: string
@@ -160,17 +214,22 @@ export type Database = {
           move_date?: string | null
           name: string
           phone?: string | null
+          starting_bid?: number | null
           status?: string | null
           to_city: string
           to_postal: string
         }
         Update: {
           assigned_provider_ids?: string[] | null
+          bid_count?: number | null
+          bidding_closes_at?: string | null
+          bidding_enabled?: boolean | null
           calculator_input?: Json
           calculator_output?: Json
           calculator_type?: string
           comments?: string | null
           created_at?: string | null
+          current_highest_bid?: number | null
           email?: string
           from_city?: string
           from_postal?: string
@@ -179,6 +238,7 @@ export type Database = {
           move_date?: string | null
           name?: string
           phone?: string | null
+          starting_bid?: number | null
           status?: string | null
           to_city?: string
           to_postal?: string
@@ -600,6 +660,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      close_lead_bidding: { Args: { p_lead_id: string }; Returns: Json }
       count_provider_leads_this_month: {
         Args: { provider_id: string }
         Returns: number
