@@ -12,16 +12,32 @@ const faqs = [
     answer: "Ja, unser Service ist für Sie als Kunde 100% kostenlos. Wir finanzieren uns über Provisionen der Umzugsfirmen, wenn eine Buchung zustande kommt. Sie zahlen niemals extra für die Nutzung unserer Plattform."
   },
   {
+    question: "Wie hoch sind die typischen Umzugskosten in der Schweiz?",
+    answer: "Die Kosten variieren je nach Grösse und Distanz. Eine 2-Zimmer-Wohnung kostet ca. CHF 800-1'200, eine 3-4-Zimmer-Wohnung ca. CHF 1'500-2'500, und ein Einfamilienhaus ca. CHF 3'000-5'000. Mit unserem Rechner erhalten Sie eine genaue Schätzung für Ihren spezifischen Umzug."
+  },
+  {
     question: "Wie viele Offerten erhalte ich?",
     answer: "Sie erhalten bis zu 5 kostenlose Offerten von geprüften Umzugsfirmen in Ihrer Region. Die genaue Anzahl hängt von der Verfügbarkeit und Ihrem Standort ab. Manchmal sind es 3-4 Offerten, bei guter Verfügbarkeit auch 5."
+  },
+  {
+    question: "Wann sollte ich meinen Umzug buchen?",
+    answer: "Idealerweise 4-6 Wochen im Voraus, besonders für Umzüge am Monatsende oder in den Sommermonaten. Kurzfristige Buchungen (1-2 Wochen vorher) sind je nach Verfügbarkeit oft möglich, können aber teurer sein."
   },
   {
     question: "Wie lange dauert es, bis ich Offerten erhalte?",
     answer: "In der Regel erhalten Sie die ersten Offerten innerhalb von 24 Stunden. Die meisten Umzugsfirmen melden sich sehr schnell – oft bereits nach wenigen Stunden. Sie können die Offerten dann in Ruhe vergleichen."
   },
   {
+    question: "Was ist mit Endreinigung und Abgabegarantie?",
+    answer: "Viele unserer Partner bieten professionelle Endreinigungen mit Abgabegarantie an. Das bedeutet: Die Reinigung entspricht den Anforderungen der Vermieter, oder die Firma reinigt kostenfrei nach. Sie können diesen Service direkt im Rechner hinzufügen."
+  },
+  {
     question: "Sind die Umzugsfirmen wirklich geprüft?",
     answer: "Ja, alle unsere Partner durchlaufen einen strengen Prüfprozess. Wir überprüfen Lizenzen, Versicherungen, Kundenbewertungen und führen persönliche Gespräche. Nur seriöse, erfahrene Firmen werden aufgenommen."
+  },
+  {
+    question: "Was passiert bei Schäden während des Umzugs?",
+    answer: "Alle unsere Partnerfirmen verfügen über eine Haftpflichtversicherung. Bei Schäden können Sie sich direkt an die Umzugsfirma wenden. Die Versicherung deckt Schäden an Möbeln, Hausrat und Gebäuden während des Transports ab."
   },
   {
     question: "Kann ich auch kurzfristig einen Umzug buchen?",
