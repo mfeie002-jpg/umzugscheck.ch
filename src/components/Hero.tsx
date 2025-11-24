@@ -40,7 +40,7 @@ export const Hero = () => {
           </h1>
 
           <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-light max-w-xl">
-            Beste Preise vergleichen – kostenlos in 2 Minuten.
+            Vergleichen Sie Umzugsfirmen und Preise in der Schweiz – schnell, transparent und kostenlos.
           </p>
 
           {/* Trust Signals */}
@@ -71,20 +71,36 @@ export const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <Link to="/rechner" className="flex-1">
               <Button size="lg" className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white shadow-accent group transition-all duration-300 hover:shadow-xl hover:scale-105 animate-glow-pulse">
-                Jetzt Offerten vergleichen
+                Umzugskosten berechnen
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="flex-1 h-14 text-lg border-white/30 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all duration-300"
-              onClick={() => {
-                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              Wie es funktioniert
-            </Button>
+            <Link to="/firmen" className="flex-1">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="w-full h-14 text-lg border-white/30 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all duration-300"
+              >
+                Umzugsfirmen vergleichen
+              </Button>
+            </Link>
+          </div>
+
+          {/* Trust Line */}
+          <div className="pt-4 text-center sm:text-left">
+            <p className="text-white/90 text-sm font-medium">
+              <span className="inline-flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-success" />
+                100% geprüfte Umzugsfirmen
+              </span>
+              <span className="mx-2">•</span>
+              <span className="inline-flex items-center gap-2">
+                <TrendingDown className="w-4 h-4 text-accent" />
+                Bis zu 40% sparen
+              </span>
+              <span className="mx-2">•</span>
+              <span>Schweizweit</span>
+            </p>
           </div>
         </div>
 
