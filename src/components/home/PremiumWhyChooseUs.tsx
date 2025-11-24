@@ -1,48 +1,48 @@
-import { Shield, Heart, Zap, Award, Users, TrendingUp, Clock, CheckCircle2 } from "lucide-react";
+import { Shield, Heart, Zap, Award, Users, TrendingUp, Clock, CheckCircle2, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const benefits = [
   {
     icon: Shield,
     title: "Schweizer Qualität",
-    description: "100% in der Schweiz entwickelt und betrieben. Höchste Qualitätsstandards nach Schweizer Norm.",
+    description: "Höchste Standards und nachhaltige Partnerschaften mit geprüften lokalen Umzugsfirmen.",
     color: "text-primary",
-    gradient: "from-primary/10 to-primary/5"
+    gradient: "from-primary/20 to-primary/5"
   },
   {
-    icon: Heart,
-    title: "Familiengeführtes Unternehmen",
-    description: "Persönliche Betreuung mit Herz. Bei uns sind Sie keine Nummer, sondern ein geschätzter Kunde.",
+    icon: Users,
+    title: "Familienunternehmen",
+    description: "Als inhabergeführtes Schweizer Familienunternehmen bieten wir persönliche Betreuung auf Augenhöhe.",
     color: "text-accent",
-    gradient: "from-accent/10 to-accent/5"
+    gradient: "from-accent/20 to-accent/5"
   },
   {
     icon: Award,
     title: "White-Glove Service",
-    description: "Premium-Umzugsservice mit höchster Sorgfalt. Ihre Möbel und Gegenstände sind bei uns in besten Händen.",
-    color: "text-warning",
-    gradient: "from-warning/10 to-warning/5"
+    description: "Jeder Umzug wird individuell begleitet – von der ersten Anfrage bis zur letzten Kiste.",
+    color: "text-info",
+    gradient: "from-info/20 to-info/5"
   },
   {
     icon: Zap,
-    title: "KI-gestützte Preisberechnung",
-    description: "Modernste Technologie für transparente Preise. Unser KI-Rechner berücksichtigt alle relevanten Faktoren.",
-    color: "text-info",
-    gradient: "from-info/10 to-info/5"
+    title: "Transparente KI-Preise",
+    description: "Unsere KI garantiert faire Marktpreise ohne versteckte Kosten – sofort und präzise.",
+    color: "text-success",
+    gradient: "from-success/20 to-success/5"
   },
   {
     icon: Clock,
     title: "Schnelle Reaktionszeiten",
-    description: "Antwort innerhalb von 2 Stunden garantiert. Wir wissen, dass Zeit bei einem Umzug kostbar ist.",
-    color: "text-success",
-    gradient: "from-success/10 to-success/5"
+    description: "Offerten innerhalb von 24 Stunden – weil Ihr Umzug nicht warten kann.",
+    color: "text-warning",
+    gradient: "from-warning/20 to-warning/5"
   },
   {
     icon: TrendingUp,
-    title: "Extra-Mile Mentalität",
-    description: "Wir gehen die Extra-Meile für Sie. Ihr Erfolg ist unser Erfolg – wir geben immer 110%.",
+    title: "Die Extra-Meile",
+    description: "Von Endreinigung bis Möbelmontage – wir denken einen Schritt weiter für Sie.",
     color: "text-primary",
-    gradient: "from-primary/10 to-primary/5"
+    gradient: "from-primary/20 to-primary/5"
   }
 ];
 
