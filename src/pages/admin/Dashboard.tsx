@@ -392,6 +392,39 @@ const AdminDashboard = () => {
               </Link>
             </div>
 
+            {/* Provider Management Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold mb-6">Anbieter-Verwaltung</h2>
+              <div className="grid md:grid-cols-1 gap-6">
+                <Link to="/admin/providers">
+                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <Building2 className="w-6 h-6 text-primary" />
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">Partner verwalten</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Bewerbungen prüfen, Anbieter genehmigen und Partner-Status verwalten
+                      </p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                          <span className="text-muted-foreground">Ausstehende Bewerbungen</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-success"></div>
+                          <span className="text-muted-foreground">Aktive Partner</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
+            </div>
+
             {/* Filters and Actions */}
             <Card className="shadow-strong mb-6">
               <CardHeader>
