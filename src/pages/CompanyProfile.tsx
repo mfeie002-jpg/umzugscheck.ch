@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -115,8 +116,56 @@ const CompanyProfile = () => {
     );
   }
 
+  // Generate structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `https://umzugscheck.ch/firmen/${company.id}`,
+    "name": company.name,
+    "description": company.description,
+    "url": `https://umzugscheck.ch/firmen/${company.id}`,
+    "telephone": company.phone,
+    "email": company.email,
+    "priceRange": company.price_level,
+    "image": company.logo,
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": company.rating.toString(),
+      "bestRating": "5",
+      "worstRating": "1",
+      "ratingCount": company.review_count.toString()
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "CH",
+      "addressLocality": company.service_areas[0] || "Schweiz"
+    },
+    "areaServed": company.service_areas.map(area => ({
+      "@type": "City",
+      "name": area
+    })),
+    "serviceType": company.services
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{company.name} - Bewertungen & Offerten | Umzugscheck.ch</title>
+        <meta name="description" content={`${company.name} - ${company.description} ⭐ ${company.rating}/5 basierend auf ${company.review_count} Bewertungen. Jetzt unverbindlich Offerte anfragen!`} />
+        <meta name="keywords" content={`${company.name}, Umzugsfirma, Umzug Schweiz, ${company.service_areas.join(', ')}, Bewertungen`} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={`${company.name} - Umzugsfirma | Umzugscheck.ch`} />
+        <meta property="og:description" content={`⭐ ${company.rating}/5 - ${company.review_count} Bewertungen. ${company.description}`} />
+        <meta property="og:type" content="business.business" />
+        <meta property="og:url" content={`https://umzugscheck.ch/firmen/${company.id}`} />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+      
       <Navigation />
 
       <main className="flex-1">
