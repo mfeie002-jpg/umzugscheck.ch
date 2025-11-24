@@ -39,6 +39,7 @@ import ProviderSignup from "./pages/ProviderSignup";
 import ProviderLogin from "./pages/ProviderLogin";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderProfile from "./pages/ProviderProfile";
+import AdminProviders from "./pages/admin/Providers";
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,7 @@ const App = () => (
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/leads" element={<LeadsAdmin />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/providers" element={<AdminProviders />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
             <Route path="/anbieter-werden" element={<BecomeProvider />} />
             <Route path="/anbieter/registrieren" element={<ProviderSignup />} />
