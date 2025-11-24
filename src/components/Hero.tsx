@@ -34,13 +34,14 @@ export const Hero = () => {
             <span>100% kostenlos & unverbindlich</span>
           </div>
 
-          <h1 className="leading-tight">
+          <h1 className="leading-tight tracking-tight">
             Ihren Umzug<br />
-            <span className="text-accent">einfach vergleichen</span>
+            <span className="text-accent drop-shadow-lg">einfach vergleichen</span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-light max-w-xl">
-            Vergleichen Sie Umzugsfirmen und Preise in der Schweiz – schnell, transparent und kostenlos.
+          <p className="text-xl md:text-2xl text-white/95 leading-relaxed max-w-xl">
+            Sparen Sie bis zu <strong className="text-white font-bold">40% bei Ihrem Umzug</strong> – 
+            kostenlos, transparent und in nur 2 Minuten.
           </p>
 
           {/* Trust Signals */}
@@ -70,18 +71,21 @@ export const Hero = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <Link to="/rechner" className="flex-1">
-              <Button size="lg" className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white shadow-accent group transition-all duration-300 hover:shadow-xl hover:scale-105 animate-glow-pulse">
-                Umzugskosten berechnen
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Button 
+                size="lg" 
+                className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white shadow-accent group transition-all duration-300 hover:shadow-xl hover:scale-105 animate-glow-pulse hover-shine"
+              >
+                <span className="relative z-10">Kostenlos Preis berechnen</span>
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
               </Button>
             </Link>
             <Link to="/firmen" className="flex-1">
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="w-full h-14 text-lg border-white/30 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all duration-300"
+                className="w-full h-14 text-lg border-2 border-white/40 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:border-white/60"
               >
-                Umzugsfirmen vergleichen
+                Firmen vergleichen
               </Button>
             </Link>
           </div>
@@ -106,7 +110,11 @@ export const Hero = () => {
 
         {/* Right Column - Quick Calculator Preview Card */}
         <div className="lg:ml-auto w-full max-w-md">
-          <div className="backdrop-blur-md bg-white/95 rounded-2xl shadow-2xl p-8 border border-white/20 hover-lift">
+          <div className="backdrop-blur-lg bg-white/98 rounded-3xl shadow-2xl p-8 border-2 border-white/30 hover-lift relative overflow-hidden">
+            {/* Premium badge */}
+            <div className="absolute top-4 right-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
+              Beliebteste Funktion
+            </div>
             <QuickCalculator embedded />
           </div>
         </div>
