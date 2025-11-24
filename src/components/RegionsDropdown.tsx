@@ -22,6 +22,8 @@ import { QuickCalculator } from "@/components/QuickCalculator";
 import { CantonComparison } from "@/components/CantonComparison";
 import { SeasonalPricing } from "@/components/SeasonalPricing";
 import { RegionalReviews } from "@/components/RegionalReviews";
+import { PricingAnalyticsDashboard } from "@/components/PricingAnalyticsDashboard";
+import { RoutePlanner } from "@/components/RoutePlanner";
 
 interface Canton {
   name: string;
@@ -446,10 +448,16 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
               </TabsContent>
 
               <TabsContent value="insights" className="space-y-4">
-                <QuickCalculator />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <QuickCalculator />
+                  <RoutePlanner />
+                </div>
                 <CantonComparison />
-                <SeasonalPricing />
-                <RegionalReviews />
+                <PricingAnalyticsDashboard />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <SeasonalPricing />
+                  <RegionalReviews />
+                </div>
               </TabsContent>
             </Tabs>
 
