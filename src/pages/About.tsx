@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { Shield, Users, Target, TrendingUp, Heart, Award } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { DataProtectionBadge } from "@/components/trust/DataProtectionBadge";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 const About = () => {
   const values = [
@@ -50,6 +51,11 @@ const About = () => {
       <Navigation />
       
       <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 py-4">
+          <Breadcrumbs items={[{ label: "Über uns" }]} showHome />
+        </div>
+
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-secondary/30 to-background border-b border-border py-16 md:py-24">
           <div className="container mx-auto px-4">
