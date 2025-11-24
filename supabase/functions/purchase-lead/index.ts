@@ -11,6 +11,31 @@ const getCantonFromPostal = (postalCode: string): string => {
   return codeMap[code] || 'Other';
 };
 
+// Dynamic pricing helper functions
+function calculateDemandMultiplier(interestedProviders: number): number {
+  if (interestedProviders === 0) return 0.7;
+  if (interestedProviders === 1) return 0.85;
+  if (interestedProviders === 2) return 1.0;
+  if (interestedProviders <= 4) return 1.15;
+  if (interestedProviders <= 6) return 1.3;
+  return 1.5;
+}
+
+function calculateSeasonalMultiplier(date: Date): number {
+  const month = date.getMonth();
+  if (month >= 4 && month <= 8) return 1.25; // Peak season
+  if (month === 2 || month === 3 || month === 9) return 1.1; // Shoulder
+  return 0.85; // Off-season
+}
+
+function calculateAvailabilityMultiplier(availabilityPercentage: number): number {
+  if (availabilityPercentage >= 80) return 0.8;
+  if (availabilityPercentage >= 60) return 0.9;
+  if (availabilityPercentage >= 40) return 1.0;
+  if (availabilityPercentage >= 20) return 1.2;
+  return 1.4;
+}
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -87,9 +112,44 @@ serve(async (req) => {
     const complexityMultiplier = 1 + (complexityScore / 120);
     const complexityAdjustment = Math.round(basePrice * (complexityMultiplier - 1.0));
     
-    let priceBeforeDiscount = basePrice + locationPremium + complexityAdjustment;
+    let priceBeforeDynamic = basePrice + locationPremium + complexityAdjustment;
     
-    // Apply age-based discount
+    // === DYNAMIC PRICING ADJUSTMENTS ===
+    
+    // 1. Count interested providers (demand factor)
+    const { data: existingPurchases } = await supabase
+      .from("lead_transactions")
+      .select("id")
+      .eq("lead_id", leadId);
+    
+    const interestedProviders = (existingPurchases?.length || 0) + 1; // +1 for current purchase
+    
+    // 2. Calculate provider availability (check monthly lead counts)
+    const { data: providerStats } = await supabase.rpc('count_provider_leads_this_month', {
+      provider_id: providerId
+    });
+    
+    const { data: providerData } = await supabase
+      .from("service_providers")
+      .select("max_leads_per_month")
+      .eq("id", providerId)
+      .single();
+    
+    const maxLeads = providerData?.max_leads_per_month || 50;
+    const currentLeads = providerStats || 0;
+    const availabilityPercentage = Math.max(0, ((maxLeads - currentLeads) / maxLeads) * 100);
+    
+    // 3. Get move date for seasonal pricing
+    const moveDate = lead.move_date ? new Date(lead.move_date) : new Date();
+    
+    // Apply dynamic pricing multipliers
+    const demandMultiplier = calculateDemandMultiplier(interestedProviders);
+    const seasonalMultiplier = calculateSeasonalMultiplier(moveDate);
+    const availabilityMultiplier = calculateAvailabilityMultiplier(availabilityPercentage);
+    
+    let priceAfterDynamic = Math.round(priceBeforeDynamic * demandMultiplier * seasonalMultiplier * availabilityMultiplier);
+    
+    // Apply age-based discount (after dynamic pricing)
     let ageDiscountPercentage = 0;
     if (hoursOld >= 48) {
       ageDiscountPercentage = 30; // 30% off after 48 hours
@@ -97,14 +157,20 @@ serve(async (req) => {
       ageDiscountPercentage = 15; // 15% off after 24 hours
     }
     
-    const ageDiscount = Math.round(priceBeforeDiscount * (ageDiscountPercentage / 100));
-    const leadPrice = priceBeforeDiscount - ageDiscount;
+    const ageDiscount = Math.round(priceAfterDynamic * (ageDiscountPercentage / 100));
+    const leadPrice = priceAfterDynamic - ageDiscount;
     
-    console.log("Lead pricing breakdown:", {
+    console.log("Lead pricing breakdown (with dynamic pricing):", {
       basePrice,
       locationPremium,
       complexityAdjustment,
-      priceBeforeDiscount,
+      priceBeforeDynamic,
+      interestedProviders,
+      demandMultiplier,
+      seasonalMultiplier,
+      availabilityMultiplier,
+      availabilityPercentage,
+      priceAfterDynamic,
       hoursOld,
       ageDiscountPercentage,
       ageDiscount,
