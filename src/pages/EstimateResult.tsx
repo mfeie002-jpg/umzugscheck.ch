@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { Loader2, Package, Clock, TrendingUp, Star, ArrowRight, MapPin } from "lucide-react";
+import { Loader2, Package, Clock, TrendingUp, Star, ArrowRight, MapPin, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { formatCurrency, getMoveSize } from "@/lib/pricing";
 
@@ -28,6 +28,102 @@ interface EstimateSession {
   estimate: any;
   companies: Company[];
 }
+
+const getCalculatorTypeDetails = (moveDetails: any) => {
+  const type = moveDetails.calculatorType || 'quick';
+  
+  switch (type) {
+    case 'cleaning':
+      return {
+        title: 'Reinigungsservice',
+        icon: '🧹',
+        details: moveDetails.cleaningDetails,
+        items: [
+          { label: 'Reinigungsart', value: moveDetails.cleaningDetails?.cleaningType === 'end-of-lease' ? 'Endreinigung' : 'Grundreinigung' },
+          { label: 'Fläche', value: `${moveDetails.cleaningDetails?.squareMeters} m²` },
+          { label: 'Zimmer', value: moveDetails.cleaningDetails?.rooms },
+          { label: 'Badezimmer', value: moveDetails.cleaningDetails?.bathrooms },
+        ],
+        features: [
+          moveDetails.cleaningDetails?.hasWindows && 'Fensterreinigung',
+          moveDetails.cleaningDetails?.hasOven && 'Ofenreinigung',
+          moveDetails.cleaningDetails?.hasBalcony && 'Balkonreinigung',
+          moveDetails.cleaningDetails?.hasCarpets && 'Teppichreinigung',
+        ].filter(Boolean),
+      };
+    case 'disposal':
+      return {
+        title: 'Entsorgungsservice',
+        icon: '♻️',
+        details: moveDetails.disposalDetails,
+        items: [
+          { label: 'Volumen', value: `${moveDetails.disposalDetails?.volumeM3} m³` },
+          { label: 'Entfernung', value: `${moveDetails.disposalDetails?.distance} km` },
+        ],
+        features: [
+          moveDetails.disposalDetails?.hasHazardous && 'Sondermüll',
+          moveDetails.disposalDetails?.hasElectronics && 'Elektronik',
+          moveDetails.disposalDetails?.hasFurniture && 'Möbel',
+        ].filter(Boolean),
+      };
+    case 'storage':
+      return {
+        title: 'Lagerservice',
+        icon: '📦',
+        details: moveDetails.storageDetails,
+        items: [
+          { label: 'Volumen', value: `${moveDetails.storageDetails?.volumeM3} m³` },
+          { label: 'Dauer', value: `${moveDetails.storageDetails?.duration} Monate` },
+          { label: 'Zugriff', value: moveDetails.storageDetails?.accessFrequency === 'rare' ? 'Selten' : moveDetails.storageDetails?.accessFrequency === 'monthly' ? 'Monatlich' : 'Wöchentlich' },
+        ],
+        features: [
+          moveDetails.storageDetails?.climateControlled && 'Klimatisiert',
+          moveDetails.storageDetails?.insurance && 'Versicherung',
+        ].filter(Boolean),
+      };
+    case 'packing':
+      return {
+        title: 'Packservice',
+        icon: '📦',
+        details: moveDetails.packingDetails,
+        items: [
+          { label: 'Zimmer', value: moveDetails.packingDetails?.rooms },
+          { label: 'Service-Level', value: moveDetails.packingDetails?.packingLevel === 'full' ? 'Vollservice' : 'Teilservice' },
+        ],
+        features: [
+          moveDetails.packingDetails?.hasFragileItems && 'Fragile Gegenstände',
+          moveDetails.packingDetails?.hasArtwork && 'Kunstwerke',
+        ].filter(Boolean),
+      };
+    case 'assembly':
+      return {
+        title: 'Montageservice',
+        icon: '🔧',
+        details: moveDetails.assemblyDetails,
+        items: [
+          { label: 'Betten', value: moveDetails.assemblyDetails?.furnitureItems?.beds || 0 },
+          { label: 'Schränke', value: moveDetails.assemblyDetails?.furnitureItems?.wardrobes || 0 },
+          { label: 'Regale', value: moveDetails.assemblyDetails?.furnitureItems?.shelves || 0 },
+          { label: 'Küche', value: moveDetails.assemblyDetails?.furnitureItems?.kitchen || 0 },
+        ].filter(item => item.value > 0),
+        features: [
+          moveDetails.assemblyDetails?.hasComplexItems && 'Komplexe Möbel',
+        ].filter(Boolean),
+      };
+    case 'video':
+      return {
+        title: 'Video-Analyse',
+        icon: '🎥',
+        details: moveDetails,
+        items: [
+          { label: 'Video-ID', value: moveDetails.videoId?.substring(0, 8) + '...' },
+        ],
+        features: ['KI-gestützte Volumenberechnung'],
+      };
+    default:
+      return null;
+  }
+};
 
 export default function EstimateResult() {
   const { id } = useParams<{ id: string }>();
@@ -102,6 +198,7 @@ export default function EstimateResult() {
   }
 
   const { estimate, move_details, companies } = session;
+  const typeDetails = getCalculatorTypeDetails(move_details);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -115,9 +212,45 @@ export default function EstimateResult() {
               Ihre Kostenschätzung
             </h1>
             <p className="text-muted-foreground">
-              Basierend auf Ihren Angaben: {move_details.fromCity} → {move_details.toCity}
+              {move_details.fromCity && move_details.toCity 
+                ? `Basierend auf Ihren Angaben: ${move_details.fromCity} → ${move_details.toCity}`
+                : `Basierend auf Ihren Angaben`
+              }
             </p>
           </div>
+
+          {/* Calculator Type Details */}
+          {typeDetails && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="text-2xl">{typeDetails.icon}</span>
+                  {typeDetails.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {typeDetails.items.map((item, idx) => (
+                    <div key={idx} className="p-3 bg-muted/50 rounded-lg">
+                      <div className="text-xs text-muted-foreground">{item.label}</div>
+                      <div className="font-semibold mt-1">{item.value}</div>
+                    </div>
+                  ))}
+                </div>
+                
+                {typeDetails.features.length > 0 && (
+                  <div>
+                    <div className="text-sm font-medium mb-2">Zusätzliche Services:</div>
+                    <div className="flex flex-wrap gap-2">
+                      {typeDetails.features.map((feature, idx) => (
+                        <Badge key={idx} variant="secondary">{feature}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Price Estimate */}
           <Card>
@@ -245,15 +378,28 @@ export default function EstimateResult() {
           </Card>
 
           {/* CTA */}
-          <div className="flex justify-center">
+          <div className="flex gap-4 flex-col sm:flex-row">
             <Button
               size="lg"
               onClick={handleContinue}
               disabled={selectedCompanies.size === 0}
-              className="gap-2"
+              className="gap-2 flex-1"
             >
               Offerten von {selectedCompanies.size} {selectedCompanies.size === 1 ? 'Firma' : 'Firmen'} erhalten
               <ArrowRight className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => {
+                const sessionIds = [id];
+                navigate(`/bundle?sessions=${sessionIds.join(',')}`);
+              }}
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Weitere Services hinzufügen
             </Button>
           </div>
         </div>

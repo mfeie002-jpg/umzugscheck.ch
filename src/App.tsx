@@ -11,6 +11,7 @@ import CalculatorResults from "./pages/CalculatorResults";
 import EstimateResult from "./pages/EstimateResult";
 import LeadRequest from "./pages/LeadRequest";
 import ThankYou from "./pages/ThankYou";
+import BundleEstimates from "./pages/BundleEstimates";
 import Companies from "./pages/Companies";
 import CompanyProfile from "./pages/CompanyProfile";
 import Compare from "./pages/Compare";
@@ -45,6 +46,7 @@ import ProviderProfile from "./pages/ProviderProfile";
 import ProviderPricing from "./pages/ProviderPricing";
 import AdminProviders from "./pages/admin/Providers";
 import ProviderDetail from "./pages/admin/ProviderDetail";
+import FunnelAnalytics from "./pages/admin/FunnelAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +64,7 @@ const App = () => (
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
             <Route path="/ergebnis/:id" element={<EstimateResult />} />
+            <Route path="/bundle" element={<BundleEstimates />} />
             <Route path="/offerte-anfordern/:id" element={<LeadRequest />} />
             <Route path="/danke/:id" element={<ThankYou />} />
             <Route path="/rechner/reinigung" element={<CleaningCalculator />} />
@@ -88,6 +91,7 @@ const App = () => (
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/leads" element={<LeadsAdmin />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/funnel" element={<FunnelAnalytics />} />
             <Route path="/admin/providers" element={<AdminProviders />} />
             <Route path="/admin/providers/:id" element={<ProviderDetail />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />

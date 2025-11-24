@@ -67,6 +67,14 @@ Deno.serve(async (req) => {
 
     console.log('Fetched estimate session with companies:', companies.length);
 
+    // Mark session as viewed for A/B testing tracking
+    if (!session.viewed_companies) {
+      await supabase
+        .from('estimate_sessions')
+        .update({ viewed_companies: true })
+        .eq('id', sessionId);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,

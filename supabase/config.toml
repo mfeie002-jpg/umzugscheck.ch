@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.create-funnel-lead]
 verify_jwt = false
+
+[functions.create-bundled-estimate]
+verify_jwt = false
