@@ -8,7 +8,7 @@ import { MapPin, Calendar, Package, Loader2, ShoppingCart, Star, TrendingUp, Clo
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
-import { calculateLeadQualityScore } from "@/lib/pricing";
+import { calculateLeadQuality, getQualityColor, getQualityBadgeVariant } from "@/lib/lead-quality";
 import { calculateLeadMatchScore, getMatchLevelColor, getMatchLevelLabel } from "@/lib/lead-matching";
 import { LeadBiddingCard } from "./LeadBiddingCard";
 import { LeadPreviewDialog } from "./LeadPreviewDialog";
@@ -195,15 +195,13 @@ export function AvailableLeadsMarket() {
 
   const renderDirectPurchaseLead = (lead: Lead) => {
     const volume = lead.calculator_output?.volume || 30;
-    const qualityScore = calculateLeadQualityScore({
-      volume,
-      fromPostal: lead.from_postal,
-      toPostal: lead.to_postal,
-      calculatorType: lead.calculator_type,
-      calculatorOutput: lead.calculator_output,
-      estimatedValue: lead.calculator_output?.priceAvg,
-      createdAt: lead.created_at
-    });
+    const qualityScore = calculateLeadQuality(lead, provider ? {
+      cantons_served: provider.cantons_served,
+      preferred_regions: provider.preferred_regions,
+      min_job_value: provider.min_job_value,
+      price_level: provider.price_level,
+      services_offered: provider.services_offered
+    } : undefined);
 
     // Calculate match score
     const matchScore = provider ? calculateLeadMatchScore(provider, lead, currentMonthLeadCount) : null;
@@ -217,11 +215,10 @@ export function AvailableLeadsMarket() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <CardTitle className="text-lg">{lead.calculator_type}</CardTitle>
-                <Badge variant={getQualityBadgeVariant(qualityScore.qualityTier)}>
+                <Badge variant={getQualityBadgeVariant(qualityScore.qualityLevel) as any} className={getQualityColor(qualityScore.grade)}>
                   <Star className="h-3 w-3 mr-1" />
-                  {getQualityLabel(qualityScore.qualityTier)}
+                  {qualityScore.grade}
                 </Badge>
-                  {qualityScore.ageDiscountPercentage > 0 && getUrgencyBadge(qualityScore.urgencyLevel, qualityScore.ageDiscountPercentage)}
                   {matchScore && (
                     <Badge variant="outline" className={getMatchLevelColor(matchScore.matchLevel)}>
                       <Target className="h-3 w-3 mr-1" />
@@ -237,27 +234,20 @@ export function AvailableLeadsMarket() {
               </CardDescription>
             </div>
             <div className="ml-2 text-right">
-              <div className="flex items-center gap-2">
-                {qualityScore.ageDiscount > 0 && (
-                  <span className="text-sm line-through text-muted-foreground">
-                    CHF {qualityScore.finalPrice + qualityScore.ageDiscount}
-                  </span>
-                )}
+              <div className="flex flex-col items-end gap-1">
                 <Badge variant="secondary" className="text-base font-bold">
-                  CHF {qualityScore.finalPrice}
+                  CHF {Math.round(qualityScore.estimatedValue * 0.02)}
                 </Badge>
-              </div>
-              <div className="text-xs text-muted-foreground mt-1">
-                Score: {qualityScore.totalScore}/100
-              </div>
-              {qualityScore.hoursOld < 48 && (
-                <div className="text-xs text-primary mt-1 flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {getTimeRemaining(qualityScore.hoursOld)}
+                <div className="text-xs text-muted-foreground">
+                  Score: {qualityScore.totalScore}/100
                 </div>
-              )}
+                <div className="text-xs text-primary">
+                  {qualityScore.conversionProbability.toFixed(0)}% Conversion
+                </div>
+              </div>
             </div>
           </div>
+        </CardHeader>
         </CardHeader>
 
         <CardContent className="flex-1">
@@ -307,40 +297,24 @@ export function AvailableLeadsMarket() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Geschätzter Wert:</span>
-                <span className="font-medium">CHF {qualityScore.estimatedJobValue.toLocaleString()}</span>
+                <span className="font-medium">CHF {qualityScore.estimatedValue.toLocaleString()}</span>
               </div>
             </div>
 
-            <div className="border-t pt-3">
-              <div className="flex items-center gap-1 text-xs font-semibold text-muted-foreground mb-2">
-                <TrendingUp className="h-3 w-3" />
-                Preis-Breakdown
-              </div>
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Basispreis:</span>
-                  <span>CHF {qualityScore.basePrice}</span>
+            {/* Quality Insights */}
+            {qualityScore.insights.length > 0 && (
+              <div className="border-t pt-3">
+                <div className="flex items-center gap-1 text-xs font-semibold text-muted-foreground mb-2">
+                  <TrendingUp className="h-3 w-3" />
+                  Qualitäts-Insights
                 </div>
-                {qualityScore.locationPremium > 0 && (
-                  <div className="flex justify-between text-primary">
-                    <span>Standort-Premium:</span>
-                    <span>+ CHF {qualityScore.locationPremium}</span>
-                  </div>
-                )}
-                {qualityScore.complexityAdjustment > 0 && (
-                  <div className="flex justify-between text-primary">
-                    <span>Komplexitätszuschlag:</span>
-                    <span>+ CHF {qualityScore.complexityAdjustment}</span>
-                  </div>
-                )}
-                {qualityScore.ageDiscount > 0 && (
-                  <div className="flex justify-between text-green-600 dark:text-green-400 font-semibold">
-                    <span>Zeit-Rabatt ({qualityScore.ageDiscountPercentage}%):</span>
-                    <span>- CHF {qualityScore.ageDiscount}</span>
-                  </div>
-                )}
+                <div className="space-y-1 text-xs">
+                  {qualityScore.insights.map((insight, i) => (
+                    <div key={i} className="text-muted-foreground">• {insight}</div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </CardContent>
 
@@ -368,7 +342,7 @@ export function AvailableLeadsMarket() {
             ) : (
               <>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                CHF {qualityScore.finalPrice}
+                CHF {Math.round(qualityScore.estimatedValue * 0.02)}
               </>
             )}
           </Button>

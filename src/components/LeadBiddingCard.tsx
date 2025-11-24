@@ -8,7 +8,7 @@ import { MapPin, Calendar, Package, Loader2, Gavel, Star, TrendingUp, Clock, Zap
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
-import { calculateLeadQualityScore } from "@/lib/pricing";
+import { calculateLeadQuality, getQualityColor } from "@/lib/lead-quality";
 import { calculateLeadMatchScore, getMatchLevelColor, getMatchLevelLabel } from "@/lib/lead-matching";
 import { LeadPreviewDialog } from "./LeadPreviewDialog";
 
@@ -53,22 +53,20 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
   const [currentMonthLeadCount, setCurrentMonthLeadCount] = useState<number>(0);
 
   const volume = lead.calculator_output?.volume || 30;
-  const qualityScore = calculateLeadQualityScore({
-    volume,
-    fromPostal: lead.from_postal,
-    toPostal: lead.to_postal,
-    calculatorType: lead.calculator_type,
-    calculatorOutput: lead.calculator_output,
-    estimatedValue: lead.calculator_output?.priceAvg,
-    createdAt: lead.created_at
-  });
+  const qualityScore = calculateLeadQuality(lead, provider ? {
+    cantons_served: provider.cantons_served,
+    preferred_regions: provider.preferred_regions,
+    min_job_value: provider.min_job_value,
+    price_level: provider.price_level,
+    services_offered: provider.services_offered
+  } : undefined);
 
   // Calculate match score
   const matchScore = provider ? calculateLeadMatchScore(provider, lead, currentMonthLeadCount) : null;
 
   const minimumBid = lead.current_highest_bid 
     ? lead.current_highest_bid + 1 
-    : lead.starting_bid || qualityScore.finalPrice;
+    : lead.starting_bid || Math.round(qualityScore.estimatedValue * 0.02);
 
   useEffect(() => {
     if (!lead.bidding_enabled || !provider) return;
@@ -200,10 +198,11 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
     }
   };
 
-  const getQualityBadgeVariant = (tier: string) => {
-    switch (tier) {
-      case 'elite': return 'default';
-      case 'premium': return 'secondary';
+  const getQualityBadgeVariant = (level: string) => {
+    switch (level) {
+      case 'excellent': return 'default';
+      case 'high': return 'default';
+      case 'good': return 'secondary';
       default: return 'outline';
     }
   };
@@ -218,9 +217,9 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <CardTitle className="text-lg">{lead.calculator_type}</CardTitle>
-              <Badge variant={getQualityBadgeVariant(qualityScore.qualityTier)}>
+              <Badge variant={getQualityBadgeVariant(qualityScore.qualityLevel)} className={getQualityColor(qualityScore.grade)}>
                 <Star className="h-3 w-3 mr-1" />
-                {qualityScore.qualityTier.toUpperCase()}
+                {qualityScore.grade}
               </Badge>
               <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 dark:text-purple-400">
                 <Gavel className="h-3 w-3 mr-1" />
@@ -266,7 +265,7 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
               <div className="text-muted-foreground text-xs">Startgebot</div>
-              <div className="font-bold text-lg">CHF {lead.starting_bid || qualityScore.finalPrice}</div>
+              <div className="font-bold text-lg">CHF {lead.starting_bid || Math.round(qualityScore.estimatedValue * 0.02)}</div>
             </div>
             <div>
               <div className="text-muted-foreground text-xs">Höchstgebot</div>
@@ -308,7 +307,7 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Geschätzter Wert:</span>
-            <span className="font-medium">CHF {qualityScore.estimatedJobValue.toLocaleString()}</span>
+            <span className="font-medium">CHF {qualityScore.estimatedValue.toLocaleString()}</span>
           </div>
           {lead.move_date && (
             <div className="flex justify-between">
