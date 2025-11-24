@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, TrendingUp, Award, MapPin } from "lucide-react";
+import { Star, TrendingUp, Award, MapPin, SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface RegionalReview {
   canton: string;
@@ -14,6 +16,8 @@ interface RegionalReview {
 export const RegionalReviews = () => {
   const [regionalData, setRegionalData] = useState<RegionalReview[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<"rating" | "reviews" | "companies">("rating");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
 
   useEffect(() => {
     const fetchRegionalReviews = async () => {
@@ -64,6 +68,13 @@ export const RegionalReviews = () => {
     LU: "Luzern",
   };
 
+  // Sort data based on selected criteria
+  const sortedData = [...regionalData].sort((a, b) => {
+    if (sortBy === "rating") return b.avgRating - a.avgRating;
+    if (sortBy === "reviews") return b.reviewCount - a.reviewCount;
+    return 0;
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -74,6 +85,33 @@ export const RegionalReviews = () => {
         <CardDescription>
           Die am besten bewerteten Umzugsfirmen nach Region
         </CardDescription>
+        
+        {/* Filters */}
+        <div className="flex gap-2 mt-4">
+          <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SlidersHorizontal className="w-4 h-4 mr-2" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="rating">Höchste Bewertung</SelectItem>
+              <SelectItem value="reviews">Meiste Bewertungen</SelectItem>
+              <SelectItem value="companies">Meiste Firmen</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select value={serviceFilter} onValueChange={setServiceFilter}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle Services</SelectItem>
+              <SelectItem value="moving">Umzug</SelectItem>
+              <SelectItem value="cleaning">Reinigung</SelectItem>
+              <SelectItem value="storage">Lagerung</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         {loading ? (
@@ -84,7 +122,7 @@ export const RegionalReviews = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {regionalData.map((data, index) => (
+            {sortedData.map((data, index) => (
               <div
                 key={data.canton}
                 className="p-4 rounded-lg border hover:bg-muted/50 transition-colors"
