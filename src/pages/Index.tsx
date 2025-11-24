@@ -17,6 +17,7 @@ import { ServiceCarousel } from "@/components/home/ServiceCarousel";
 import { PremiumWhyChooseUs } from "@/components/home/PremiumWhyChooseUs";
 import { ReviewsShowcase } from "@/components/home/ReviewsShowcase";
 import { TrustCertificates } from "@/components/home/TrustCertificates";
+import { TrustCounter } from "@/components/home/TrustCounter";
 import { VideoTestimonials } from "@/components/VideoTestimonials";
 import { InteractiveCalculatorDemo } from "@/components/InteractiveCalculatorDemo";
 import { LiveChatSupport } from "@/components/LiveChatSupport";
@@ -100,9 +101,9 @@ const Index = () => {
       {/* 1. NEW: Emotional Hero with AI Calculator as Primary USP */}
       <EmotionalHero />
       
-      {/* 2. Trust Certificates & Security Badges */}
+      {/* 2. Trust Counter with Stats, Ratings & Team */}
       <ScrollReveal>
-        <TrustCertificates />
+        <TrustCounter />
       </ScrollReveal>
       
       {/* 3. Service Carousel - All services at a glance */}
@@ -115,9 +116,14 @@ const Index = () => {
         <HowItWorks />
       </ScrollReveal>
 
-      {/* 5. NEW: Premium Why Choose Us with family business focus */}
+      {/* 5. Premium Why Choose Us with family business focus */}
       <ScrollReveal delay={120}>
         <PremiumWhyChooseUs />
+      </ScrollReveal>
+      
+      {/* 6. Trust Certificates & Security Badges */}
+      <ScrollReveal delay={140}>
+        <TrustCertificates />
       </ScrollReveal>
       
       {/* First CTA */}
