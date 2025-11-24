@@ -9,6 +9,9 @@ import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { AIMovingAssistant } from "./components/AIMovingAssistant";
+import { OfflineIndicator } from "./components/OfflineIndicator";
+import { QuickActionBar } from "./components/QuickActionBar";
+import { StickyContactBar } from "./components/StickyContactBar";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { PushNotificationPrompt } from "./components/PushNotificationPrompt";
 import { CustomerOnboarding } from "./components/CustomerOnboarding";
@@ -56,7 +59,10 @@ import ProviderPricing from "./pages/ProviderPricing";
 import AdminProviders from "./pages/admin/Providers";
 import ProviderDetail from "./pages/admin/ProviderDetail";
 import FunnelAnalytics from "./pages/admin/FunnelAnalytics";
+import Reports from "./pages/admin/Reports";
+import ReviewSubmission from "./pages/ReviewSubmission";
 import Subscriptions from "./pages/admin/Subscriptions";
+import MobileProviderApp from "./pages/MobileProviderApp";
 import PricingAnalytics from "./pages/admin/PricingAnalytics";
 import MLAnalytics from "./pages/admin/MLAnalytics";
 import DynamicPricing from "./pages/admin/DynamicPricing";
@@ -73,12 +79,15 @@ const App = () => (
           <BrowserRouter>
             <div className="flex flex-col min-h-screen bg-background">
               <Navigation />
-              <AIMovingAssistant />
-              <PWAInstallPrompt />
-              <PushNotificationPrompt />
-              <CustomerOnboarding />
-              <ProviderOnboarding />
-              <ScrollToTop />
+          <AIMovingAssistant />
+          <PWAInstallPrompt />
+          <PushNotificationPrompt />
+          <CustomerOnboarding />
+          <ProviderOnboarding />
+          <ScrollToTop />
+          <OfflineIndicator />
+          <QuickActionBar />
+          <StickyContactBar />
               <main className="flex-1">
                 <Routes>
             <Route path="/" element={<Index />} />
@@ -115,6 +124,9 @@ const App = () => (
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/funnel-analytics" element={<FunnelAnalytics />} />
             <Route path="/admin/subscriptions" element={<Subscriptions />} />
+            <Route path="/admin/reports" element={<Reports />} />
+            <Route path="/anbieter/mobile" element={<MobileProviderApp />} />
+            <Route path="/bewertung/:requestId" element={<ReviewSubmission />} />
             <Route path="/admin/pricing" element={<DynamicPricing />} />
           <Route path="/admin/pricing-analytics" element={<PricingAnalytics />} />
           <Route path="/admin/ml-analytics" element={<MLAnalytics />} />
