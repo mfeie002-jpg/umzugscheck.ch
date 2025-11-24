@@ -46,6 +46,12 @@ import { AvailabilityCalendar } from "@/components/home/AvailabilityCalendar";
 import { EcoFriendlyMoving } from "@/components/home/EcoFriendlyMoving";
 import { BeforeAfterGallery } from "@/components/home/BeforeAfterGallery";
 import { VirtualTourBooking } from "@/components/home/VirtualTourBooking";
+import { MobileAppBanner } from "@/components/home/MobileAppBanner";
+import { SmartRecommendations } from "@/components/home/SmartRecommendations";
+import { AdvancedMicroInteractions } from "@/components/home/AdvancedMicroInteractions";
+import { CookieConsent } from "@/components/home/CookieConsent";
+import { PriceComparisonChart } from "@/components/home/PriceComparisonChart";
+import { EmergencyMovingService } from "@/components/home/EmergencyMovingService";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -182,6 +188,9 @@ const Index = () => {
         <TrustCounter />
       </ScrollReveal>
       
+      {/* 6a. Advanced Micro-Interactions */}
+      <AdvancedMicroInteractions />
+      
       {/* 7. Service Carousel - All services at a glance */}
       <ScrollReveal delay={100}>
         <ServiceCarousel />
@@ -239,6 +248,16 @@ const Index = () => {
       {/* 13a. Live Price Comparison */}
       <ScrollReveal delay={250}>
         <LivePriceComparison />
+      </ScrollReveal>
+      
+      {/* 13b. Price Comparison Chart */}
+      <ScrollReveal delay={255}>
+        <PriceComparisonChart />
+      </ScrollReveal>
+      
+      {/* 13c. Smart Recommendations */}
+      <ScrollReveal delay={260}>
+        <SmartRecommendations />
       </ScrollReveal>
 
       {/* 14. Reviews Showcase with verified customer feedback */}
@@ -315,24 +334,29 @@ const Index = () => {
       <ScrollReveal delay={415}>
         <ReferralProgram />
       </ScrollReveal>
+      
+      {/* 19g. Emergency Moving Service */}
+      <ScrollReveal delay={420}>
+        <EmergencyMovingService />
+      </ScrollReveal>
 
       {/* 20. Blog Teaser */}
-      <ScrollReveal delay={420}>
+      <ScrollReveal delay={425}>
         <BlogTeaser />
       </ScrollReveal>
       
       {/* 20a. Newsletter Signup */}
-      <ScrollReveal delay={430}>
+      <ScrollReveal delay={435}>
         <NewsletterSignup />
       </ScrollReveal>
 
       {/* 21. FAQ Section */}
-      <ScrollReveal delay={440}>
+      <ScrollReveal delay={445}>
         <FAQ />
       </ScrollReveal>
 
       {/* Final CTA */}
-      <ScrollReveal delay={450}>
+      <ScrollReveal delay={455}>
         <CTASection />
       </ScrollReveal>
 
@@ -359,6 +383,12 @@ const Index = () => {
       
       {/* Live Support Indicator */}
       <LiveSupportIndicator />
+      
+      {/* Mobile App Banner */}
+      <MobileAppBanner />
+      
+      {/* Cookie Consent */}
+      <CookieConsent />
     </div>
   );
 };
