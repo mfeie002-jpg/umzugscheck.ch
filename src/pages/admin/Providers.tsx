@@ -498,6 +498,14 @@ const ProvidersAdmin = () => {
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex items-center justify-end gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => navigate(`/admin/providers/${provider.id}`)}
+                                >
+                                  <Eye className="w-4 h-4 mr-1" />
+                                  Details
+                                </Button>
                                 {provider.verification_status === "pending" && (
                                   <>
                                     <Button
@@ -518,16 +526,6 @@ const ProvidersAdmin = () => {
                                       Ablehnen
                                     </Button>
                                   </>
-                                )}
-                                {provider.verification_status === "approved" && (
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => navigate(`/anbieter/profil/${provider.id}`)}
-                                  >
-                                    <Eye className="w-4 h-4 mr-1" />
-                                    Ansehen
-                                  </Button>
                                 )}
                                 {provider.verification_status === "rejected" && (
                                   <Button
