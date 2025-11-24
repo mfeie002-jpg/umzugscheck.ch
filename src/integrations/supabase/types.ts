@@ -412,6 +412,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      count_provider_leads_this_month: {
+        Args: { provider_id: string }
+        Returns: number
+      }
+      find_matching_providers: {
+        Args: {
+          estimated_value?: number
+          lead_from_postal: string
+          lead_to_postal: string
+        }
+        Returns: string[]
+      }
+      get_canton_from_postal: { Args: { postal_code: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
