@@ -13,8 +13,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { calculateCleaningPrice, CleaningCalculatorInput } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -72,7 +75,9 @@ const SERVICE_SCHEMA = {
 };
 
 const CleaningCalculator = () => {
+  const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,9 +94,51 @@ const CleaningCalculator = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const calculation = calculateCleaningPrice(values as CleaningCalculatorInput);
-    setResult(calculation);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    
+    try {
+      const calculation = calculateCleaningPrice(values as CleaningCalculatorInput);
+      setResult(calculation);
+      
+      // Create estimate session for funnel
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        'create-estimate-session',
+        {
+          body: {
+            moveDetails: {
+              fromPostal: '8000',
+              fromCity: 'Zürich',
+              toPostal: '8000',
+              toCity: 'Zürich',
+              calculatorType: 'cleaning',
+              cleaningDetails: values,
+            },
+            estimate: {
+              priceMin: calculation.priceRange.min,
+              priceMax: calculation.priceRange.max,
+              volumeM3: values.squareMeters,
+              estimatedHours: calculation.estimatedHours,
+              distance: 0,
+            },
+          },
+        }
+      );
+
+      if (!sessionError && sessionData?.success) {
+        // Navigate to funnel after short delay to show result
+        setTimeout(() => {
+          navigate(`/ergebnis/${sessionData.data.id}`);
+        }, 1500);
+        
+        toast.success("Kostenschätzung berechnet!");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Fehler bei der Berechnung");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

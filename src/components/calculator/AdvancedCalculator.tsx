@@ -18,6 +18,7 @@ import { calculatorApi } from "@/lib/api";
 import { useAnalytics } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   fromPostal: z.string().min(4),
@@ -140,12 +141,30 @@ export const AdvancedCalculator = () => {
 
       analytics.trackCalculatorCompleted('advanced', response.data);
       
-      navigate("/rechner/ergebnis", { 
-        state: { 
-          calculatorData: values, 
-          calculation: response.data,
-          type: "advanced" 
-        } 
+      // Create estimate session
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        'create-estimate-session',
+        {
+          body: {
+            moveDetails: {
+              ...requestData,
+              calculatorType: 'advanced',
+            },
+            estimate: response.data,
+          },
+        }
+      );
+
+      if (sessionError || !sessionData?.success) {
+        throw new Error(sessionData?.error?.message || 'Failed to create estimate session');
+      }
+
+      // Navigate to new result page
+      navigate(`/ergebnis/${sessionData.data.id}`);
+      
+      toast({
+        title: "Erfolg",
+        description: "Kostenschätzung erfolgreich berechnet!",
       });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten';
