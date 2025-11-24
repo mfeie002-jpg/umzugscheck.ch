@@ -138,13 +138,39 @@ const CompanyProfile = () => {
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "CH",
-      "addressLocality": company.service_areas[0] || "Schweiz"
+      "addressLocality": company.service_areas[0] || "Schweiz",
+      "addressRegion": company.service_areas[0] || "Schweiz"
     },
     "areaServed": company.service_areas.map(area => ({
       "@type": "City",
       "name": area
     })),
-    "serviceType": company.services
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "18:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Saturday",
+        "opens": "09:00",
+        "closes": "16:00"
+      }
+    ],
+    "serviceType": company.services,
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Umzugsdienstleistungen",
+      "itemListElement": company.services.map((service, index) => ({
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": service
+        }
+      }))
+    }
   };
 
   return (
