@@ -8,10 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp, MapPin } from "lucide-react";
+import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp, MapPin, Search, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { calculateVideoBasedPrice, formatCurrency, estimateDistance } from "@/lib/pricing";
+import { searchPostalCodes, validatePostalCode, PostalCodeEntry } from "@/lib/swiss-postal-codes";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AnalysisResult {
   videoId: string;
@@ -55,6 +58,12 @@ export default function VideoEstimator() {
   const [fromPostal, setFromPostal] = useState<string>("");
   const [toPostal, setToPostal] = useState<string>("");
   const [usePostalCodes, setUsePostalCodes] = useState(false);
+  const [fromPostalOpen, setFromPostalOpen] = useState(false);
+  const [toPostalOpen, setToPostalOpen] = useState(false);
+  const [fromPostalSearch, setFromPostalSearch] = useState<string>("");
+  const [toPostalSearch, setToPostalSearch] = useState<string>("");
+  const [fromPostalValid, setFromPostalValid] = useState<boolean | null>(null);
+  const [toPostalValid, setToPostalValid] = useState<boolean | null>(null);
   
   // Lead form state
   const [name, setName] = useState("");
@@ -233,32 +242,61 @@ export default function VideoEstimator() {
     }
   };
 
-  const handlePostalCodeChange = (from: string, to: string) => {
-    setFromPostal(from);
-    setToPostal(to);
+  const handleFromPostalSelect = (entry: PostalCodeEntry) => {
+    setFromPostal(entry.code);
+    setFromPostalSearch(`${entry.code} - ${entry.city}`);
+    setFromPostalValid(true);
+    setFromPostalOpen(false);
     
-    // Validate Swiss postal codes (4 digits)
-    const isValidFrom = /^\d{4}$/.test(from);
-    const isValidTo = /^\d{4}$/.test(to);
-    
-    if (isValidFrom && isValidTo && analysisResult) {
-      const calculatedDistance = estimateDistance(from, to);
-      setCustomDistance(calculatedDistance.toString());
-      setUsePostalCodes(true);
-      setIsCustomDistance(true);
-      
-      const priceCalc = calculateVideoBasedPrice(
-        analysisResult.estimatedVolumeM3,
-        analysisResult.difficultyScore,
-        calculatedDistance
-      );
-      setPriceEstimate({
-        minPrice: priceCalc.priceMin,
-        maxPrice: priceCalc.priceMax,
-        estimatedHours: priceCalc.estimatedHours,
-        breakdown: priceCalc.breakdown
-      });
+    if (toPostal && validatePostalCode(toPostal) && analysisResult) {
+      calculateDistanceAndPrice(entry.code, toPostal);
     }
+  };
+
+  const handleToPostalSelect = (entry: PostalCodeEntry) => {
+    setToPostal(entry.code);
+    setToPostalSearch(`${entry.code} - ${entry.city}`);
+    setToPostalValid(true);
+    setToPostalOpen(false);
+    
+    if (fromPostal && validatePostalCode(fromPostal) && analysisResult) {
+      calculateDistanceAndPrice(fromPostal, entry.code);
+    }
+  };
+
+  const calculateDistanceAndPrice = (from: string, to: string) => {
+    if (!analysisResult) return;
+    
+    const calculatedDistance = estimateDistance(from, to);
+    setCustomDistance(calculatedDistance.toString());
+    setUsePostalCodes(true);
+    setIsCustomDistance(true);
+    
+    const priceCalc = calculateVideoBasedPrice(
+      analysisResult.estimatedVolumeM3,
+      analysisResult.difficultyScore,
+      calculatedDistance
+    );
+    setPriceEstimate({
+      minPrice: priceCalc.priceMin,
+      maxPrice: priceCalc.priceMax,
+      estimatedHours: priceCalc.estimatedHours,
+      breakdown: priceCalc.breakdown
+    });
+  };
+
+  const clearFromPostal = () => {
+    setFromPostal("");
+    setFromPostalSearch("");
+    setFromPostalValid(null);
+    setUsePostalCodes(false);
+  };
+
+  const clearToPostal = () => {
+    setToPostal("");
+    setToPostalSearch("");
+    setToPostalValid(null);
+    setUsePostalCodes(false);
   };
 
   const handleReset = () => {
@@ -270,6 +308,10 @@ export default function VideoEstimator() {
     setIsCustomDistance(false);
     setFromPostal("");
     setToPostal("");
+    setFromPostalSearch("");
+    setToPostalSearch("");
+    setFromPostalValid(null);
+    setToPostalValid(null);
     setUsePostalCodes(false);
     setError(null);
   };
@@ -536,28 +578,106 @@ export default function VideoEstimator() {
                             </p>
                             <div className="grid grid-cols-2 gap-3">
                               <div>
-                                <Label htmlFor="fromPostal" className="text-sm mb-1">Von PLZ</Label>
-                                <Input
-                                  id="fromPostal"
-                                  type="text"
-                                  maxLength={4}
-                                  placeholder="8000"
-                                  value={fromPostal}
-                                  onChange={(e) => handlePostalCodeChange(e.target.value, toPostal)}
-                                  className="text-lg"
-                                />
+                                <Label htmlFor="fromPostal" className="text-sm mb-2 block">Von PLZ</Label>
+                                <Popover open={fromPostalOpen} onOpenChange={setFromPostalOpen}>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      aria-expanded={fromPostalOpen}
+                                      className={`w-full justify-between text-left font-normal ${
+                                        fromPostalValid === false ? 'border-destructive' : 
+                                        fromPostalValid === true ? 'border-green-500' : ''
+                                      }`}
+                                    >
+                                      {fromPostalSearch || <span className="text-muted-foreground">PLZ suchen...</span>}
+                                      {fromPostal ? (
+                                        <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
+                                          e.stopPropagation();
+                                          clearFromPostal();
+                                        }} />
+                                      ) : (
+                                        <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                      )}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
+                                    <Command>
+                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
+                                      <CommandList>
+                                        <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
+                                        <CommandGroup>
+                                          {searchPostalCodes(fromPostalSearch).map((entry) => (
+                                            <CommandItem
+                                              key={entry.code}
+                                              value={`${entry.code} ${entry.city}`}
+                                              onSelect={() => handleFromPostalSelect(entry)}
+                                            >
+                                              <CheckCircle className={`mr-2 h-4 w-4 ${
+                                                fromPostal === entry.code ? 'opacity-100' : 'opacity-0'
+                                              }`} />
+                                              <div>
+                                                <div className="font-medium">{entry.code} - {entry.city}</div>
+                                                <div className="text-xs text-muted-foreground">{entry.canton}</div>
+                                              </div>
+                                            </CommandItem>
+                                          ))}
+                                        </CommandGroup>
+                                      </CommandList>
+                                    </Command>
+                                  </PopoverContent>
+                                </Popover>
                               </div>
                               <div>
-                                <Label htmlFor="toPostal" className="text-sm mb-1">Nach PLZ</Label>
-                                <Input
-                                  id="toPostal"
-                                  type="text"
-                                  maxLength={4}
-                                  placeholder="3000"
-                                  value={toPostal}
-                                  onChange={(e) => handlePostalCodeChange(fromPostal, e.target.value)}
-                                  className="text-lg"
-                                />
+                                <Label htmlFor="toPostal" className="text-sm mb-2 block">Nach PLZ</Label>
+                                <Popover open={toPostalOpen} onOpenChange={setToPostalOpen}>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      aria-expanded={toPostalOpen}
+                                      className={`w-full justify-between text-left font-normal ${
+                                        toPostalValid === false ? 'border-destructive' : 
+                                        toPostalValid === true ? 'border-green-500' : ''
+                                      }`}
+                                    >
+                                      {toPostalSearch || <span className="text-muted-foreground">PLZ suchen...</span>}
+                                      {toPostal ? (
+                                        <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
+                                          e.stopPropagation();
+                                          clearToPostal();
+                                        }} />
+                                      ) : (
+                                        <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                      )}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
+                                    <Command>
+                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
+                                      <CommandList>
+                                        <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
+                                        <CommandGroup>
+                                          {searchPostalCodes(toPostalSearch).map((entry) => (
+                                            <CommandItem
+                                              key={entry.code}
+                                              value={`${entry.code} ${entry.city}`}
+                                              onSelect={() => handleToPostalSelect(entry)}
+                                            >
+                                              <CheckCircle className={`mr-2 h-4 w-4 ${
+                                                toPostal === entry.code ? 'opacity-100' : 'opacity-0'
+                                              }`} />
+                                              <div>
+                                                <div className="font-medium">{entry.code} - {entry.city}</div>
+                                                <div className="text-xs text-muted-foreground">{entry.canton}</div>
+                                              </div>
+                                            </CommandItem>
+                                          ))}
+                                        </CommandGroup>
+                                      </CommandList>
+                                    </Command>
+                                  </PopoverContent>
+                                </Popover>
                               </div>
                             </div>
                             {usePostalCodes && (
