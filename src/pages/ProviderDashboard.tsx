@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AvailableLeadsMarket } from "@/components/AvailableLeadsMarket";
+import { ProfileOptimizationSuggestions } from "@/components/provider/ProfileOptimizationSuggestions";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -248,6 +249,21 @@ const ProviderDashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Profile Optimization */}
+          {isApproved && (
+            <div className="mb-8">
+              <ProfileOptimizationSuggestions provider={{
+                id: provider.id,
+                cantons_served: provider.cantons_served,
+                preferred_regions: provider.preferred_regions,
+                min_job_value: provider.min_job_value,
+                max_leads_per_month: provider.max_leads_per_month,
+                price_level: provider.price_level,
+                services_offered: provider.services_offered
+              }} />
+            </div>
+          )}
 
           {/* Leads Section with Tabs */}
           <Tabs defaultValue="assigned" className="w-full">
