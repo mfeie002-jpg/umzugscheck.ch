@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { MapPin, Calendar, Package, Loader2, Gavel, Star, TrendingUp, Clock, Zap, Users } from "lucide-react";
+import { MapPin, Calendar, Package, Loader2, Gavel, Star, TrendingUp, Clock, Zap, Users, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
 import { calculateLeadQualityScore } from "@/lib/pricing";
+import { LeadPreviewDialog } from "./LeadPreviewDialog";
 
 interface Lead {
   id: string;
@@ -279,6 +280,14 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
         {/* Bidding Input */}
         {!isBiddingClosed && (
           <div className="space-y-2">
+            <div className="flex gap-2">
+              <LeadPreviewDialog lead={lead}>
+                <Button variant="outline" className="flex-1">
+                  <Eye className="w-4 h-4 mr-2" />
+                  Vorschau
+                </Button>
+              </LeadPreviewDialog>
+            </div>
             <div className="flex gap-2">
               <Input
                 type="number"

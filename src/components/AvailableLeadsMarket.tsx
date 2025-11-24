@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Calendar, Package, Loader2, ShoppingCart, Star, TrendingUp, Clock, Zap, Gavel } from "lucide-react";
+import { MapPin, Calendar, Package, Loader2, ShoppingCart, Star, TrendingUp, Clock, Zap, Gavel, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
 import { calculateLeadQualityScore } from "@/lib/pricing";
 import { LeadBiddingCard } from "./LeadBiddingCard";
+import { LeadPreviewDialog } from "./LeadPreviewDialog";
 
 interface Lead {
   id: string;
@@ -297,9 +298,15 @@ export function AvailableLeadsMarket() {
           </div>
         </CardContent>
 
-        <CardFooter>
+        <CardFooter className="flex gap-2">
+          <LeadPreviewDialog lead={lead}>
+            <Button variant="outline" className="flex-1">
+              <Eye className="w-4 h-4 mr-2" />
+              Vorschau
+            </Button>
+          </LeadPreviewDialog>
           <Button
-            className="w-full"
+            className="flex-1"
             onClick={() => handlePurchaseLead(lead.id)}
             disabled={isPurchasing}
           >
@@ -311,7 +318,7 @@ export function AvailableLeadsMarket() {
             ) : (
               <>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Für CHF {qualityScore.finalPrice} kaufen
+                CHF {qualityScore.finalPrice}
               </>
             )}
           </Button>
