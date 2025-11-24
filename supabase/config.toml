@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.purchase-lead]
 verify_jwt = false
+
+[functions.notify-expiring-leads]
+verify_jwt = false
