@@ -41,3 +41,12 @@ verify_jwt = false
 
 [functions.update-lead-conversion]
 verify_jwt = true
+
+[functions.create-estimate-session]
+verify_jwt = false
+
+[functions.get-estimate-session]
+verify_jwt = false
+
+[functions.create-funnel-lead]
+verify_jwt = false
