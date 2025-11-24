@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { TrustSignals } from "@/components/TrustSignals";
+import { TrustBadges } from "@/components/TrustBadges";
 import { HowItWorks } from "@/components/HowItWorks";
 import { TopMovers } from "@/components/TopMovers";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
@@ -81,8 +82,13 @@ const Index = () => {
         <TrustSignals />
       </ScrollReveal>
 
+      {/* Trust Badges */}
+      <ScrollReveal delay={60}>
+        <TrustBadges />
+      </ScrollReveal>
+
       {/* 2. Central Preisrechner Block */}
-      <ScrollReveal delay={80}>
+      <ScrollReveal delay={100}>
         <CalculatorSection />
       </ScrollReveal>
 
