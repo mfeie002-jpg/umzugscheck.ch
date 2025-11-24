@@ -23,6 +23,7 @@ import { LiveChatSupport } from "@/components/LiveChatSupport";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { CustomerOnboarding } from "@/components/CustomerOnboarding";
 import { ProviderOnboarding } from "@/components/ProviderOnboarding";
+import { SEOHead } from "@/components/SEOHead";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -33,6 +34,24 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEOHead
+        title="Umzugscheck.ch - KI-Preisrechner für Schweizer Umzüge"
+        description="Vergleichen Sie Umzugsofferten mit unserem KI-Preisrechner. Erhalten Sie in Sekunden präzise Offerten von über 200 geprüften Umzugsfirmen in der ganzen Schweiz. Transparent, fair und 100% schweizerisch."
+        keywords="umzug schweiz, umzugsfirma, umzugsofferte, preisrechner, ki, zürich, bern, basel, geneva, lausanne"
+        canonical="/"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Umzugscheck.ch",
+          "url": "https://umzugscheck.ch",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://umzugscheck.ch/firmen?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }}
+      />
+      
       {/* Animated Background Gradients with Parallax */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div 

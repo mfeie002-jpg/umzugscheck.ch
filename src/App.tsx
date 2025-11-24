@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Suspense, lazy } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -70,25 +73,35 @@ import DynamicPricing from "./pages/admin/DynamicPricing";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <ProviderAuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <div className="flex flex-col min-h-screen bg-background">
-              <Navigation />
-          <AIMovingAssistant />
-          <PWAInstallPrompt />
-          <PushNotificationPrompt />
-          <CustomerOnboarding />
-          <ProviderOnboarding />
-          <ScrollToTop />
-          <OfflineIndicator />
-          <QuickActionBar />
-          <StickyContactBar />
-              <main className="flex-1">
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ProviderAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Suspense fallback={
+                <div className="flex items-center justify-center min-h-screen">
+                  <div className="space-y-4 w-full max-w-md p-6">
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-32 w-full" />
+                    <Skeleton className="h-24 w-full" />
+                  </div>
+                </div>
+              }>
+                <div className="flex flex-col min-h-screen bg-background">
+                  <Navigation />
+                  <AIMovingAssistant />
+                  <PWAInstallPrompt />
+                  <PushNotificationPrompt />
+                  <CustomerOnboarding />
+                  <ProviderOnboarding />
+                  <ScrollToTop />
+                  <OfflineIndicator />
+                  <QuickActionBar />
+                  <StickyContactBar />
+                  <main className="flex-1">
                 <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/rechner" element={<Calculator />} />
@@ -141,15 +154,17 @@ const App = () => (
             <Route path="/anbieter/preise" element={<ProviderPricing />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
-              </main>
-              <Footer />
-            </div>
+                  </Routes>
+                </main>
+                <Footer />
+              </div>
+            </Suspense>
           </BrowserRouter>
         </TooltipProvider>
       </ProviderAuthProvider>
     </AuthProvider>
   </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
