@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -9,8 +10,51 @@ import { Calculator as CalculatorIcon, Wrench, Sparkles } from "lucide-react";
 import { OtherCalculators } from "@/components/OtherCalculators";
 
 const Calculator = () => {
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Umzugskosten-Rechner",
+    "name": "Umzugsrechner - Kostenlose Kostenschätzung",
+    "description": "Berechnen Sie Ihre Umzugskosten kostenlos und unverbindlich. Wählen Sie zwischen Schnell-Rechner (60 Sekunden), detailliertem Rechner oder KI-gestützter Analyse mit Fotos/Videos.",
+    "provider": {
+      "@type": "Organization",
+      "name": "Umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Switzerland"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CHF",
+      "description": "Kostenlose Umzugskostenschätzung"
+    },
+    "category": "Umzugsdienstleistungen",
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Private Haushalte und Unternehmen"
+    },
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://umzugscheck.ch/rechner"
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>Umzugsrechner - Kostenlose Kostenschätzung | Umzugscheck.ch</title>
+        <meta name="description" content="Berechnen Sie Ihre Umzugskosten in 60 Sekunden. Schnell-Rechner, detaillierter Rechner oder KI-Analyse mit Fotos. ✓ Kostenlos ✓ Unverbindlich ✓ Präzise Schätzung" />
+        <meta name="keywords" content="Umzugsrechner, Umzugskosten berechnen, Umzug Kostenrechner Schweiz, Umzugskalkulator" />
+        <link rel="canonical" href="https://umzugscheck.ch/rechner" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(serviceSchema)}
+        </script>
+      </Helmet>
+
       <Navigation />
       
       <main className="flex-1 bg-gradient-light">

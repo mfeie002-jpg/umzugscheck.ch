@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,34 @@ const formSchema = z.object({
 const CleaningCalculator = () => {
   const [result, setResult] = useState<any>(null);
   
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Endreinigung-Rechner",
+    "name": "Reinigungsrechner - Endreinigung Kosten berechnen",
+    "description": "Berechnen Sie die Kosten für Ihre Wohnungsendreinigung. Geben Sie Quadratmeter, Zimmerzahl und zusätzliche Services an für eine präzise Kostenschätzung.",
+    "provider": {
+      "@type": "Organization",
+      "name": "Umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Switzerland"
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceRange": "CHF 200-800",
+      "priceCurrency": "CHF"
+    },
+    "category": "Reinigungsdienstleistungen",
+    "serviceOutput": "Professionelle Endreinigung nach Umzug",
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://umzugscheck.ch/reinigungsrechner"
+    }
+  };
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,6 +96,17 @@ const CleaningCalculator = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Reinigungsrechner - Endreinigung Kosten berechnen | Umzugscheck.ch</title>
+        <meta name="description" content="Berechnen Sie die Kosten für Ihre Wohnungsendreinigung. Endreinigung, normale Reinigung oder Tiefenreinigung. ✓ Kostenlose Schätzung ✓ Sofort Ergebnis" />
+        <meta name="keywords" content="Reinigungsrechner, Endreinigung Kosten, Wohnungsreinigung Preis, Umzugsreinigung Schweiz" />
+        <link rel="canonical" href="https://umzugscheck.ch/reinigungsrechner" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(serviceSchema)}
+        </script>
+      </Helmet>
+
       <Navigation />
       
       <main className="flex-1">

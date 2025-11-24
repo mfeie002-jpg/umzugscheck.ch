@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,34 @@ const formSchema = z.object({
 const StorageCalculator = () => {
   const [result, setResult] = useState<any>(null);
   
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Lagerung & Einlagerung",
+    "name": "Lagerrechner - Einlagerung Kosten berechnen",
+    "description": "Berechnen Sie die Kosten für die Einlagerung Ihres Hausrats. Klimatisiert, versichert, flexible Laufzeiten. Perfekt für Zwischenlagerung bei Umzügen.",
+    "provider": {
+      "@type": "Organization",
+      "name": "Umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Switzerland"
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceRange": "CHF 100-800/Monat",
+      "priceCurrency": "CHF"
+    },
+    "category": "Lagerdienstleistungen",
+    "serviceOutput": "Sichere Einlagerung von Hausrat und Möbeln",
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://umzugscheck.ch/lagerrechner"
+    }
+  };
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,6 +86,17 @@ const StorageCalculator = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Lagerrechner - Einlagerung Kosten berechnen | Umzugscheck.ch</title>
+        <meta name="description" content="Berechnen Sie die Kosten für Einlagerung und Lagerung. Klimatisiert, versichert, flexible Laufzeiten. ✓ Kostenlose Schätzung ✓ Transparente Preise" />
+        <meta name="keywords" content="Lagerrechner, Einlagerung Kosten, Selfstorage Schweiz, Möbellager Preis" />
+        <link rel="canonical" href="https://umzugscheck.ch/lagerrechner" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(serviceSchema)}
+        </script>
+      </Helmet>
+
       <Navigation />
       
       <main className="flex-1">

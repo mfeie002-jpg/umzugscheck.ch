@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,34 @@ const formSchema = z.object({
 const PackingCalculator = () => {
   const [result, setResult] = useState<any>(null);
   
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Packservice",
+    "name": "Packservice-Rechner - Verpackung Kosten berechnen",
+    "description": "Berechnen Sie die Kosten für professionellen Packservice. Teil- oder Vollservice, Schutz für fragile Gegenstände und Kunstwerke.",
+    "provider": {
+      "@type": "Organization",
+      "name": "Umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Switzerland"
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceRange": "CHF 200-1500",
+      "priceCurrency": "CHF"
+    },
+    "category": "Packservice",
+    "serviceOutput": "Professionelle Verpackung von Hausrat",
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://umzugscheck.ch/packservice-rechner"
+    }
+  };
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,6 +84,17 @@ const PackingCalculator = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Packservice-Rechner - Verpackung Kosten berechnen | Umzugscheck.ch</title>
+        <meta name="description" content="Berechnen Sie die Kosten für professionellen Packservice. Teil- oder Vollservice, Schutz für fragile Gegenstände. ✓ Kostenlose Schätzung ✓ Sicherer Transport" />
+        <meta name="keywords" content="Packservice Rechner, Verpackung Kosten, Umzugskartons Schweiz, Packservice Preis" />
+        <link rel="canonical" href="https://umzugscheck.ch/packservice-rechner" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(serviceSchema)}
+        </script>
+      </Helmet>
+
       <Navigation />
       
       <main className="flex-1">
