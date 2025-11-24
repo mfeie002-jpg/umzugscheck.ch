@@ -21,6 +21,11 @@ import { VideoTestimonials } from "@/components/VideoTestimonials";
 import { InteractiveCalculatorDemo } from "@/components/InteractiveCalculatorDemo";
 import { LiveChatSupport } from "@/components/LiveChatSupport";
 import { SEOHead } from "@/components/SEOHead";
+import { TeamShowcase } from "@/components/home/TeamShowcase";
+import { SuccessMetrics } from "@/components/home/SuccessMetrics";
+import { PricingTransparency } from "@/components/home/PricingTransparency";
+import { ProcessTimeline } from "@/components/home/ProcessTimeline";
+import { QuickCalculatorTeaser } from "@/components/home/QuickCalculatorTeaser";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -137,88 +142,108 @@ const Index = () => {
       {/* 2. Live Activity Counter */}
       <LiveActivityCounter />
       
-      {/* 3. AI Calculator Explainer - How it works */}
+      {/* 3. Success Metrics */}
+      <ScrollReveal>
+        <SuccessMetrics />
+      </ScrollReveal>
+      
+      {/* 4. AI Calculator Explainer - How it works */}
       <ScrollReveal>
         <AICalculatorExplainer />
       </ScrollReveal>
       
-      {/* 4. Trust Counter with Stats, Ratings & Team */}
-      <ScrollReveal>
+      {/* 5. Quick Calculator Teaser - Prominent CTA */}
+      <ScrollReveal delay={60}>
+        <QuickCalculatorTeaser />
+      </ScrollReveal>
+      
+      {/* 6. Trust Counter with Stats, Ratings & Team */}
+      <ScrollReveal delay={80}>
         <TrustCounter />
       </ScrollReveal>
       
-      {/* 5. Service Carousel - All services at a glance */}
-      <ScrollReveal delay={80}>
+      {/* 7. Service Carousel - All services at a glance */}
+      <ScrollReveal delay={100}>
         <ServiceCarousel />
       </ScrollReveal>
 
-      {/* 6. How It Works - 4 steps */}
-      <ScrollReveal delay={100}>
-        <HowItWorks />
+      {/* 8. Process Timeline - Detailed steps */}
+      <ScrollReveal delay={120}>
+        <ProcessTimeline />
       </ScrollReveal>
 
-      {/* 7. Premium Why Choose Us with family business focus */}
-      <ScrollReveal delay={120}>
+      {/* 9. Premium Why Choose Us with family business focus */}
+      <ScrollReveal delay={140}>
         <PremiumWhyChooseUs />
       </ScrollReveal>
       
-      {/* 8. Trust Certificates & Security Badges */}
-      <ScrollReveal delay={140}>
+      {/* 10. Team Showcase - Meet the family */}
+      <ScrollReveal delay={160}>
+        <TeamShowcase />
+      </ScrollReveal>
+      
+      {/* 11. Trust Certificates & Security Badges */}
+      <ScrollReveal delay={180}>
         <TrustCertificates />
       </ScrollReveal>
       
       {/* First CTA */}
-      <ScrollReveal delay={140}>
+      <ScrollReveal delay={200}>
         <CTASection />
       </ScrollReveal>
 
-      {/* 6. Interactive Calculator Demo */}
-      <ScrollReveal delay={160}>
+      {/* 12. Pricing Transparency */}
+      <ScrollReveal delay={220}>
+        <PricingTransparency />
+      </ScrollReveal>
+
+      {/* 13. Interactive Calculator Demo */}
+      <ScrollReveal delay={240}>
         <InteractiveCalculatorDemo />
       </ScrollReveal>
 
-      {/* 7. NEW: Reviews Showcase with verified customer feedback */}
-      <ScrollReveal delay={180}>
+      {/* 14. Reviews Showcase with verified customer feedback */}
+      <ScrollReveal delay={260}>
         <ReviewsShowcase />
       </ScrollReveal>
 
-      {/* 8. Video Testimonials */}
-      <ScrollReveal delay={200}>
+      {/* 15. Video Testimonials */}
+      <ScrollReveal delay={280}>
         <VideoTestimonials />
       </ScrollReveal>
 
-      {/* 9. Comparison Preview Section */}
-      <ScrollReveal delay={180}>
+      {/* 16. Comparison Preview Section */}
+      <ScrollReveal delay={300}>
         <ComparisonPreview />
       </ScrollReveal>
 
-      {/* 8. Top Umzugsfirmen Section */}
-      <ScrollReveal delay={200}>
+      {/* 17. Top Umzugsfirmen Section */}
+      <ScrollReveal delay={320}>
         <TopMovers />
       </ScrollReveal>
 
       {/* Second CTA */}
-      <ScrollReveal delay={220}>
+      <ScrollReveal delay={340}>
         <CTASection />
       </ScrollReveal>
 
-      {/* 9. Popular Regions */}
-      <ScrollReveal delay={240}>
+      {/* 18. Popular Regions */}
+      <ScrollReveal delay={360}>
         <PopularCantons />
       </ScrollReveal>
 
-      {/* 10. Blog Teaser */}
-      <ScrollReveal delay={260}>
+      {/* 19. Blog Teaser */}
+      <ScrollReveal delay={380}>
         <BlogTeaser />
       </ScrollReveal>
 
-      {/* 11. FAQ Section */}
-      <ScrollReveal delay={280}>
+      {/* 20. FAQ Section */}
+      <ScrollReveal delay={400}>
         <FAQ />
       </ScrollReveal>
 
       {/* Final CTA */}
-      <ScrollReveal delay={300}>
+      <ScrollReveal delay={420}>
         <CTASection />
       </ScrollReveal>
 
