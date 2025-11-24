@@ -14,6 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AvailableLeadsMarket } from "@/components/AvailableLeadsMarket";
 import { ProfileOptimizationSuggestions } from "@/components/provider/ProfileOptimizationSuggestions";
 import { CompetitorAnalysis } from "@/components/provider/CompetitorAnalysis";
+import { PurchasedLeadsList } from "@/components/provider/PurchasedLeadsList";
+import { ConversionAnalytics } from "@/components/provider/ConversionAnalytics";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -255,9 +257,10 @@ const ProviderDashboard = () => {
           {isApproved && (
             <div className="space-y-8 mb-8">
               <Tabs defaultValue="optimization" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="optimization">Profil-Optimierung</TabsTrigger>
                   <TabsTrigger value="competitors">Wettbewerbsanalyse</TabsTrigger>
+                  <TabsTrigger value="analytics">Conversion Analytics</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="optimization">
@@ -283,15 +286,20 @@ const ProviderDashboard = () => {
                     fleet_size: provider.fleet_size
                   }} />
                 </TabsContent>
+
+                <TabsContent value="analytics">
+                  <ConversionAnalytics providerId={provider.id} />
+                </TabsContent>
               </Tabs>
             </div>
           )}
 
           {/* Leads Section with Tabs */}
           <Tabs defaultValue="assigned" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
               <TabsTrigger value="assigned">Zugewiesene Leads</TabsTrigger>
               <TabsTrigger value="marketplace">Lead-Marktplatz</TabsTrigger>
+              <TabsTrigger value="purchased">Gekaufte Leads</TabsTrigger>
             </TabsList>
 
             <TabsContent value="assigned">
@@ -365,6 +373,10 @@ const ProviderDashboard = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="purchased">
+              <PurchasedLeadsList />
             </TabsContent>
           </Tabs>
         </div>

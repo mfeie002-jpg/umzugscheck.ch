@@ -1,6 +1,8 @@
 // Advanced Lead Quality Scoring System
 // Evaluates leads based on conversion probability, value, and provider fit
 
+import { ConversionHistory } from "./conversion-history";
+
 interface LeadData {
   id: string;
   calculator_type: string;
@@ -19,15 +21,6 @@ interface ProviderCriteria {
   min_job_value?: number | null;
   price_level?: string | null;
   services_offered: string[];
-}
-
-interface ConversionHistory {
-  total_leads: number;
-  converted_leads: number;
-  avg_conversion_time_days: number;
-  by_calculator_type: Record<string, { total: number; converted: number }>;
-  by_canton: Record<string, { total: number; converted: number }>;
-  by_value_range: Record<string, { total: number; converted: number }>;
 }
 
 export interface LeadQualityScore {

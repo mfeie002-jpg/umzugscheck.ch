@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, TrendingUp, MapPin, DollarSign, Briefcase, Lightbulb } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { calculateLeadMatchScore } from "@/lib/lead-matching";
+import { fetchProviderConversionHistory } from "@/lib/conversion-history";
 
 interface Provider {
   id: string;
@@ -41,6 +42,9 @@ export function ProfileOptimizationSuggestions({ provider }: { provider: Provide
     setLoading(true);
 
     try {
+      // Fetch conversion history
+      const conversionHistory = await fetchProviderConversionHistory(provider.id);
+
       // Fetch recent leads (last 30 days)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
