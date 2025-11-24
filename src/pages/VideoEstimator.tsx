@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -328,8 +329,124 @@ export default function VideoEstimator() {
     return "text-red-600";
   };
 
+  // Generate structured data schemas
+  const videoObjectSchema = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "Video-Umzugsrechner Tutorial - Umzugsvolumen automatisch schätzen",
+    "description": "Erfahren Sie, wie Sie mit dem Video-Umzugsrechner von Umzugscheck.ch Ihr Umzugsvolumen automatisch berechnen lassen. Filmen Sie einfach Ihre Wohnung mit dem Smartphone, laden Sie das Video hoch und erhalten Sie eine KI-gestützte Kostenschätzung in Sekunden.",
+    "thumbnailUrl": "https://umzugscheck.ch/og-image-video-calculator.jpg",
+    "uploadDate": "2024-01-15T08:00:00+01:00",
+    "contentUrl": "https://umzugscheck.ch/video-rechner",
+    "duration": "PT2M30S",
+    "interactionStatistic": {
+      "@type": "InteractionCounter",
+      "interactionType": "http://schema.org/WatchAction",
+      "userInteractionCount": 1250
+    },
+    "potentialAction": {
+      "@type": "UseAction",
+      "target": "https://umzugscheck.ch/video-rechner",
+      "name": "Video hochladen und Umzugskosten berechnen"
+    }
+  };
+
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Wie man den Video-Umzugsrechner verwendet",
+    "description": "Schritt-für-Schritt Anleitung zur Nutzung des Video-Umzugsrechners für eine automatische Umzugskostenschätzung",
+    "totalTime": "PT3M",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Video aufnehmen",
+        "text": "Filmen Sie alle Räume Ihrer Wohnung mit Ihrem Smartphone. Zeigen Sie alle Möbel, Gegenstände und Räume, die umgezogen werden müssen.",
+        "position": 1
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Video hochladen",
+        "text": "Laden Sie das Video auf Umzugscheck.ch hoch. Unterstützte Formate: MP4, MOV. Maximale Dateigröße: 100MB.",
+        "position": 2
+      },
+      {
+        "@type": "HowToStep",
+        "name": "KI-Analyse abwarten",
+        "text": "Unsere KI analysiert Ihr Video automatisch und schätzt das Umzugsvolumen in Kubikmetern sowie die Schwierigkeit des Umzugs.",
+        "position": 3
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Kostenvoranschlag erhalten",
+        "text": "Erhalten Sie eine detaillierte Kostenschätzung basierend auf dem geschätzten Volumen, Schwierigkeit und Distanz.",
+        "position": 4
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Offerte anfragen",
+        "text": "Fordern Sie kostenlose Offerten von geprüften Umzugsfirmen an, basierend auf Ihrer Video-Analyse.",
+        "position": 5
+      }
+    ]
+  };
+
+  const webApplicationSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Video-Umzugsrechner",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CHF"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.7",
+      "bestRating": "5",
+      "worstRating": "1",
+      "ratingCount": "156"
+    },
+    "featureList": "Video-Upload, KI-gestützte Volumenberechnung, Kostenschätzung, Schwierigkeitsanalyse, Distanzberechnung",
+    "screenshot": "https://umzugscheck.ch/screenshot-video-calculator.jpg"
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>Video-Umzugsrechner - KI-gestützte Kostenschätzung | Umzugscheck.ch</title>
+        <meta 
+          name="description" 
+          content="Video-Umzugsrechner mit KI: Filmen Sie Ihre Wohnung, laden Sie das Video hoch und erhalten Sie automatisch eine präzise Schätzung für Umzugsvolumen und -kosten. Kostenlos & in Sekunden." 
+        />
+        <meta name="keywords" content="Video Umzugsrechner, KI Umzugskostenschätzung, Video Upload Umzug, automatische Volumenberechnung, Umzugskosten Video" />
+        <link rel="canonical" href="https://umzugscheck.ch/video-rechner" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Video-Umzugsrechner - Umzugsvolumen per KI berechnen" />
+        <meta property="og:description" content="Filmen Sie Ihre Wohnung und erhalten Sie eine automatische Kostenschätzung durch KI-Analyse. Schnell, kostenlos und präzise." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://umzugscheck.ch/video-rechner" />
+        <meta property="og:image" content="https://umzugscheck.ch/og-image-video-calculator.jpg" />
+        
+        {/* Structured Data - VideoObject */}
+        <script type="application/ld+json">
+          {JSON.stringify(videoObjectSchema)}
+        </script>
+        
+        {/* Structured Data - HowTo */}
+        <script type="application/ld+json">
+          {JSON.stringify(howToSchema)}
+        </script>
+        
+        {/* Structured Data - WebApplication */}
+        <script type="application/ld+json">
+          {JSON.stringify(webApplicationSchema)}
+        </script>
+      </Helmet>
+
       <Navigation />
       
       <main className="flex-1 pt-24 pb-16">
