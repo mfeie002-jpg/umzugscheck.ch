@@ -102,86 +102,87 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Define schema outside component to prevent recreation on every render
+const SERVICE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Gesamtpreis-Konfigurator",
+  "name": "Gesamtpreis-Konfigurator - Alle Umzugsservices kombiniert",
+  "description": "Kombinieren Sie alle Umzugsservices in einem Tool: Umzug, Reinigung, Entsorgung, Packservice, Lagerung und Möbelmontage. Erhalten Sie ein transparentes Gesamtangebot.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Umzugscheck.ch",
+    "url": "https://umzugscheck.ch"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "CHF",
+    "lowPrice": "500",
+    "highPrice": "8000"
+  },
+  "category": "Umzugsdienstleistungen",
+  "serviceOutput": "Komplettes Umzugspaket mit allen Services",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Umzugsservices",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Umzugsservice"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Endreinigung"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Entsorgung"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Packservice"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Lagerung"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Möbelmontage"
+        }
+      }
+    ]
+  },
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://umzugscheck.ch/gesamtpreis"
+  }
+};
+
 const TotalPriceConfigurator = () => {
   const [step, setStep] = useState(1);
   const [results, setResults] = useState<any>(null);
-  
-  const serviceSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Gesamtpreis-Konfigurator",
-    "name": "Gesamtpreis-Konfigurator - Alle Umzugsservices kombiniert",
-    "description": "Kombinieren Sie alle Umzugsservices in einem Tool: Umzug, Reinigung, Entsorgung, Packservice, Lagerung und Möbelmontage. Erhalten Sie ein transparentes Gesamtangebot.",
-    "provider": {
-      "@type": "Organization",
-      "name": "Umzugscheck.ch",
-      "url": "https://umzugscheck.ch"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Switzerland"
-    },
-    "offers": {
-      "@type": "AggregateOffer",
-      "priceCurrency": "CHF",
-      "lowPrice": "500",
-      "highPrice": "8000"
-    },
-    "category": "Umzugsdienstleistungen",
-    "serviceOutput": "Komplettes Umzugspaket mit allen Services",
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Umzugsservices",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Umzugsservice"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Endreinigung"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Entsorgung"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Packservice"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Lagerung"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Möbelmontage"
-          }
-        }
-      ]
-    },
-    "availableChannel": {
-      "@type": "ServiceChannel",
-      "serviceUrl": "https://umzugscheck.ch/gesamtpreis"
-    }
-  };
   
   const { register, handleSubmit, watch, setValue } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -354,7 +355,7 @@ const TotalPriceConfigurator = () => {
         <link rel="canonical" href="https://umzugscheck.ch/gesamtpreis" />
         
         <script type="application/ld+json">
-          {JSON.stringify(serviceSchema)}
+          {JSON.stringify(SERVICE_SCHEMA)}
         </script>
       </Helmet>
 

@@ -43,36 +43,36 @@ const formSchema = z.object({
   hasStorage: z.boolean().default(false),
 });
 
+const SERVICE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Endreinigung-Rechner",
+  "name": "Reinigungsrechner - Endreinigung Kosten berechnen",
+  "description": "Berechnen Sie die Kosten für Ihre Wohnungsendreinigung. Geben Sie Quadratmeter, Zimmerzahl und zusätzliche Services an für eine präzise Kostenschätzung.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Umzugscheck.ch",
+    "url": "https://umzugscheck.ch"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceRange": "CHF 200-800",
+    "priceCurrency": "CHF"
+  },
+  "category": "Reinigungsdienstleistungen",
+  "serviceOutput": "Professionelle Endreinigung nach Umzug",
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://umzugscheck.ch/reinigungsrechner"
+  }
+};
+
 const CleaningCalculator = () => {
   const [result, setResult] = useState<any>(null);
-  
-  const serviceSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Endreinigung-Rechner",
-    "name": "Reinigungsrechner - Endreinigung Kosten berechnen",
-    "description": "Berechnen Sie die Kosten für Ihre Wohnungsendreinigung. Geben Sie Quadratmeter, Zimmerzahl und zusätzliche Services an für eine präzise Kostenschätzung.",
-    "provider": {
-      "@type": "Organization",
-      "name": "Umzugscheck.ch",
-      "url": "https://umzugscheck.ch"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Switzerland"
-    },
-    "offers": {
-      "@type": "Offer",
-      "priceRange": "CHF 200-800",
-      "priceCurrency": "CHF"
-    },
-    "category": "Reinigungsdienstleistungen",
-    "serviceOutput": "Professionelle Endreinigung nach Umzug",
-    "availableChannel": {
-      "@type": "ServiceChannel",
-      "serviceUrl": "https://umzugscheck.ch/reinigungsrechner"
-    }
-  };
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -103,7 +103,7 @@ const CleaningCalculator = () => {
         <link rel="canonical" href="https://umzugscheck.ch/reinigungsrechner" />
         
         <script type="application/ld+json">
-          {JSON.stringify(serviceSchema)}
+          {JSON.stringify(SERVICE_SCHEMA)}
         </script>
       </Helmet>
 

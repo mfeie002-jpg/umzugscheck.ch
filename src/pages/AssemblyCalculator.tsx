@@ -34,36 +34,36 @@ const formSchema = z.object({
   hasComplexItems: z.boolean().default(false),
 });
 
+const SERVICE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Möbelmontage",
+  "name": "Möbelmontage-Rechner - Montage Kosten berechnen",
+  "description": "Berechnen Sie die Kosten für Möbelmontage und -demontage. Betten, Schränke, Regale, Küchen und mehr. Professionelle Monteure für Ihren Umzug.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Umzugscheck.ch",
+    "url": "https://umzugscheck.ch"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceRange": "CHF 150-1200",
+    "priceCurrency": "CHF"
+  },
+  "category": "Möbelmontage",
+  "serviceOutput": "Professionelle Möbelmontage und -demontage",
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://umzugscheck.ch/montage-rechner"
+  }
+};
+
 const AssemblyCalculator = () => {
   const [result, setResult] = useState<any>(null);
-  
-  const serviceSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Möbelmontage",
-    "name": "Möbelmontage-Rechner - Montage Kosten berechnen",
-    "description": "Berechnen Sie die Kosten für Möbelmontage und -demontage. Betten, Schränke, Regale, Küchen und mehr. Professionelle Monteure für Ihren Umzug.",
-    "provider": {
-      "@type": "Organization",
-      "name": "Umzugscheck.ch",
-      "url": "https://umzugscheck.ch"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Switzerland"
-    },
-    "offers": {
-      "@type": "Offer",
-      "priceRange": "CHF 150-1200",
-      "priceCurrency": "CHF"
-    },
-    "category": "Möbelmontage",
-    "serviceOutput": "Professionelle Möbelmontage und -demontage",
-    "availableChannel": {
-      "@type": "ServiceChannel",
-      "serviceUrl": "https://umzugscheck.ch/montage-rechner"
-    }
-  };
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -94,7 +94,7 @@ const AssemblyCalculator = () => {
         <link rel="canonical" href="https://umzugscheck.ch/montage-rechner" />
         
         <script type="application/ld+json">
-          {JSON.stringify(serviceSchema)}
+          {JSON.stringify(SERVICE_SCHEMA)}
         </script>
       </Helmet>
 
