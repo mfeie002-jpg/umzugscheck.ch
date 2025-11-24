@@ -30,6 +30,7 @@ import StorageCalculator from "./pages/StorageCalculator";
 import PackingCalculator from "./pages/PackingCalculator";
 import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
+import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/rechner/packservice" element={<PackingCalculator />} />
             <Route path="/rechner/moebelmontage" element={<AssemblyCalculator />} />
             <Route path="/rechner/konfigurator" element={<TotalPriceConfigurator />} />
+            <Route path="/rechner/video" element={<VideoEstimator />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />

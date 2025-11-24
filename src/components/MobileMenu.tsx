@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings } from "lucide-react";
+import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -49,6 +49,11 @@ const calculators = [
     icon: Settings,
     title: "Gesamtpreis-Konfigurator",
     href: "/rechner/konfigurator"
+  },
+  {
+    icon: Video,
+    title: "Video-Umzugsrechner",
+    href: "/rechner/video"
   }
 ];
 

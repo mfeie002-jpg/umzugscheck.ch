@@ -1,4 +1,4 @@
-import { Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings } from "lucide-react";
+import { Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +51,12 @@ const calculators: CalculatorItem[] = [
     title: "Gesamtpreis-Konfigurator",
     description: "Alle Services kombinierbar",
     href: "/rechner/konfigurator"
+  },
+  {
+    icon: Video,
+    title: "Video-Umzugsrechner",
+    description: "KI-Analyse per Video",
+    href: "/rechner/video"
   }
 ];
 
