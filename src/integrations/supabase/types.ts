@@ -121,37 +121,55 @@ export type Database = {
       }
       lead_transactions: {
         Row: {
+          actual_job_value: number | null
           amount: number
+          conversion_date: string | null
+          conversion_notes: string | null
+          conversion_status: string | null
           created_at: string | null
           currency: string | null
           id: string
           lead_id: string
+          lost_reason: string | null
           provider_id: string
           purchased_at: string | null
           status: string
           stripe_payment_intent_id: string | null
+          updated_at: string | null
         }
         Insert: {
+          actual_job_value?: number | null
           amount: number
+          conversion_date?: string | null
+          conversion_notes?: string | null
+          conversion_status?: string | null
           created_at?: string | null
           currency?: string | null
           id?: string
           lead_id: string
+          lost_reason?: string | null
           provider_id: string
           purchased_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
+          updated_at?: string | null
         }
         Update: {
+          actual_job_value?: number | null
           amount?: number
+          conversion_date?: string | null
+          conversion_notes?: string | null
+          conversion_status?: string | null
           created_at?: string | null
           currency?: string | null
           id?: string
           lead_id?: string
+          lost_reason?: string | null
           provider_id?: string
           purchased_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -657,7 +675,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      provider_conversion_stats: {
+        Row: {
+          avg_days_to_convert: number | null
+          avg_job_value: number | null
+          conversion_rate: number | null
+          converted_leads: number | null
+          lost_leads: number | null
+          pending_leads: number | null
+          provider_id: string | null
+          total_leads: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_transactions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       close_lead_bidding: { Args: { p_lead_id: string }; Returns: Json }
@@ -674,6 +712,10 @@ export type Database = {
         Returns: string[]
       }
       get_canton_from_postal: { Args: { postal_code: string }; Returns: string }
+      get_provider_conversion_history: {
+        Args: { p_provider_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
