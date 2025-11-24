@@ -26,6 +26,13 @@ import { SuccessMetrics } from "@/components/home/SuccessMetrics";
 import { PricingTransparency } from "@/components/home/PricingTransparency";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import { QuickCalculatorTeaser } from "@/components/home/QuickCalculatorTeaser";
+import { SocialProofNotifications } from "@/components/home/SocialProofNotifications";
+import { ExitIntentPopup } from "@/components/home/ExitIntentPopup";
+import { PartnerCertifications } from "@/components/home/PartnerCertifications";
+import { NewsletterSignup } from "@/components/home/NewsletterSignup";
+import { ServiceAreaMap } from "@/components/home/ServiceAreaMap";
+import { MovingResourcesHub } from "@/components/home/MovingResourcesHub";
+import { SeasonalPromotions } from "@/components/home/SeasonalPromotions";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -187,9 +194,17 @@ const Index = () => {
         <TrustCertificates />
       </ScrollReveal>
       
+      {/* 11a. Partner Certifications */}
+      <PartnerCertifications />
+      
       {/* First CTA */}
       <ScrollReveal delay={200}>
         <CTASection />
+      </ScrollReveal>
+      
+      {/* 11b. Seasonal Promotions */}
+      <ScrollReveal delay={210}>
+        <SeasonalPromotions />
       </ScrollReveal>
 
       {/* 12. Pricing Transparency */}
@@ -227,23 +242,38 @@ const Index = () => {
         <CTASection />
       </ScrollReveal>
 
-      {/* 18. Popular Regions */}
+      {/* 18. Service Area Map */}
       <ScrollReveal delay={360}>
+        <ServiceAreaMap />
+      </ScrollReveal>
+      
+      {/* 19. Popular Regions */}
+      <ScrollReveal delay={380}>
         <PopularCantons />
       </ScrollReveal>
-
-      {/* 19. Blog Teaser */}
-      <ScrollReveal delay={380}>
-        <BlogTeaser />
+      
+      {/* 19a. Moving Resources Hub */}
+      <ScrollReveal delay={390}>
+        <MovingResourcesHub />
       </ScrollReveal>
 
-      {/* 20. FAQ Section */}
+      {/* 20. Blog Teaser */}
       <ScrollReveal delay={400}>
+        <BlogTeaser />
+      </ScrollReveal>
+      
+      {/* 20a. Newsletter Signup */}
+      <ScrollReveal delay={410}>
+        <NewsletterSignup />
+      </ScrollReveal>
+
+      {/* 21. FAQ Section */}
+      <ScrollReveal delay={420}>
         <FAQ />
       </ScrollReveal>
 
       {/* Final CTA */}
-      <ScrollReveal delay={420}>
+      <ScrollReveal delay={430}>
         <CTASection />
       </ScrollReveal>
 
@@ -255,6 +285,12 @@ const Index = () => {
       
       {/* Live Chat Support */}
       <LiveChatSupport />
+      
+      {/* Social Proof Notifications */}
+      <SocialProofNotifications />
+      
+      {/* Exit Intent Popup */}
+      <ExitIntentPopup />
     </div>
   );
 };
