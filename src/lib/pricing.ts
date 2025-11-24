@@ -236,7 +236,14 @@ export const calculateVideoBasedPrice = (
   volumeM3: number,
   difficultyScore: number,
   distanceKm: number = 50
-): MovingCalculation => {
+): MovingCalculation & { 
+  breakdown: MovingCalculation['breakdown'] & { 
+    basePricePercent: number;
+    distanceFeePercent: number;
+    floorFeePercent: number;
+    elevatorDiscountPercent: number;
+  } 
+} => {
   // Convert volume to approximate room count (avg 15-20m³ per room)
   const estimatedRoomsNum = Math.max(1, Math.min(5, Math.round(volumeM3 / 17)));
   const estimatedRooms = estimatedRoomsNum.toString() as "1" | "2" | "3" | "4" | "5" | "6+" | "house";
@@ -268,17 +275,33 @@ export const calculateVideoBasedPrice = (
   const adjustedMin = Math.round(baseCalculation.priceMin * difficultyMultiplier);
   const adjustedMax = Math.round(baseCalculation.priceMax * difficultyMultiplier);
   
+  const basePrice = Math.round((baseCalculation.breakdown.basePrice || 0) * difficultyMultiplier);
+  const distanceFee = baseCalculation.breakdown.distanceFee;
+  const floorFee = baseCalculation.breakdown.floorFee;
+  const elevatorDiscount = baseCalculation.breakdown.elevatorDiscount;
+  const total = Math.round(baseCalculation.breakdown.total * difficultyMultiplier);
+  
+  // Calculate percentages
+  const basePricePercent = Math.round((basePrice / total) * 100);
+  const distanceFeePercent = Math.round((distanceFee / total) * 100);
+  const floorFeePercent = Math.round((floorFee / total) * 100);
+  const elevatorDiscountPercent = Math.round((elevatorDiscount / total) * 100);
+  
   return {
     volumeM3,
     priceMin: adjustedMin,
     priceMax: adjustedMax,
     estimatedHours: baseCalculation.estimatedHours,
     breakdown: {
-      basePrice: Math.round((baseCalculation.breakdown.basePrice || 0) * difficultyMultiplier),
-      distanceFee: baseCalculation.breakdown.distanceFee,
-      floorFee: baseCalculation.breakdown.floorFee,
-      elevatorDiscount: baseCalculation.breakdown.elevatorDiscount,
-      total: Math.round(baseCalculation.breakdown.total * difficultyMultiplier)
+      basePrice,
+      basePricePercent,
+      distanceFee,
+      distanceFeePercent,
+      floorFee,
+      floorFeePercent,
+      elevatorDiscount,
+      elevatorDiscountPercent,
+      total
     }
   };
 };

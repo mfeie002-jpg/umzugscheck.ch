@@ -34,7 +34,22 @@ export default function VideoEstimator() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [priceEstimate, setPriceEstimate] = useState<{ minPrice: number; maxPrice: number; estimatedHours: number } | null>(null);
+  const [priceEstimate, setPriceEstimate] = useState<{
+    minPrice: number;
+    maxPrice: number;
+    estimatedHours: number;
+    breakdown?: {
+      basePrice: number;
+      basePricePercent: number;
+      distanceFee: number;
+      distanceFeePercent: number;
+      floorFee: number;
+      floorFeePercent: number;
+      elevatorDiscount: number;
+      elevatorDiscountPercent: number;
+      total: number;
+    };
+  } | null>(null);
   const [customDistance, setCustomDistance] = useState<string>("50");
   const [isCustomDistance, setIsCustomDistance] = useState(false);
   
@@ -111,7 +126,7 @@ export default function VideoEstimator() {
           throw new Error(functionError.message || 'Analyse fehlgeschlagen');
         }
 
-        if (data && data.success) {
+          if (data && data.success) {
           setAnalysisResult(data.data);
           
           // Calculate price estimate based on volume and difficulty
@@ -122,7 +137,8 @@ export default function VideoEstimator() {
           setPriceEstimate({
             minPrice: priceCalc.priceMin,
             maxPrice: priceCalc.priceMax,
-            estimatedHours: priceCalc.estimatedHours
+            estimatedHours: priceCalc.estimatedHours,
+            breakdown: priceCalc.breakdown
           });
           
           setStep(3);
@@ -207,7 +223,8 @@ export default function VideoEstimator() {
       setPriceEstimate({
         minPrice: priceCalc.priceMin,
         maxPrice: priceCalc.priceMax,
-        estimatedHours: priceCalc.estimatedHours
+        estimatedHours: priceCalc.estimatedHours,
+        breakdown: priceCalc.breakdown
       });
     }
   };
@@ -535,6 +552,102 @@ export default function VideoEstimator() {
                             Für ein verbindliches Angebot fordern Sie bitte eine Offerte an.
                           </p>
                         </div>
+
+                        {/* Cost Breakdown Visualization */}
+                        {priceEstimate.breakdown && (
+                          <div className="p-6 rounded-lg bg-card border border-border">
+                            <h4 className="font-semibold mb-4 flex items-center gap-2">
+                              <Package className="w-5 h-5 text-primary" />
+                              Kostenaufschlüsselung
+                            </h4>
+                            
+                            <div className="space-y-4">
+                              {/* Visual Bar */}
+                              <div className="flex h-8 rounded-full overflow-hidden">
+                                <div 
+                                  className="bg-primary transition-all" 
+                                  style={{ width: `${priceEstimate.breakdown.basePricePercent}%` }}
+                                  title={`Basispreis: ${priceEstimate.breakdown.basePricePercent}%`}
+                                ></div>
+                                <div 
+                                  className="bg-blue-500 transition-all" 
+                                  style={{ width: `${priceEstimate.breakdown.distanceFeePercent}%` }}
+                                  title={`Distanzgebühr: ${priceEstimate.breakdown.distanceFeePercent}%`}
+                                ></div>
+                                {priceEstimate.breakdown.floorFee > 0 && (
+                                  <div 
+                                    className="bg-orange-500 transition-all" 
+                                    style={{ width: `${priceEstimate.breakdown.floorFeePercent}%` }}
+                                    title={`Etagenzuschlag: ${priceEstimate.breakdown.floorFeePercent}%`}
+                                  ></div>
+                                )}
+                                {priceEstimate.breakdown.elevatorDiscount < 0 && (
+                                  <div 
+                                    className="bg-green-500 transition-all" 
+                                    style={{ width: `${Math.abs(priceEstimate.breakdown.elevatorDiscountPercent)}%` }}
+                                    title={`Aufzugrabatt: ${Math.abs(priceEstimate.breakdown.elevatorDiscountPercent)}%`}
+                                  ></div>
+                                )}
+                              </div>
+
+                              {/* Breakdown Items */}
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between pb-2 border-b">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-primary"></div>
+                                    <span className="text-sm font-medium">Basispreis</span>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="font-semibold">{formatCurrency(priceEstimate.breakdown.basePrice)}</div>
+                                    <div className="text-xs text-muted-foreground">{priceEstimate.breakdown.basePricePercent}%</div>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center justify-between pb-2 border-b">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                                    <span className="text-sm font-medium">Distanzgebühr</span>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="font-semibold">{formatCurrency(priceEstimate.breakdown.distanceFee)}</div>
+                                    <div className="text-xs text-muted-foreground">{priceEstimate.breakdown.distanceFeePercent}%</div>
+                                  </div>
+                                </div>
+
+                                {priceEstimate.breakdown.floorFee > 0 && (
+                                  <div className="flex items-center justify-between pb-2 border-b">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                                      <span className="text-sm font-medium">Etagenzuschlag</span>
+                                    </div>
+                                    <div className="text-right">
+                                      <div className="font-semibold">{formatCurrency(priceEstimate.breakdown.floorFee)}</div>
+                                      <div className="text-xs text-muted-foreground">{priceEstimate.breakdown.floorFeePercent}%</div>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {priceEstimate.breakdown.elevatorDiscount < 0 && (
+                                  <div className="flex items-center justify-between pb-2 border-b">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                      <span className="text-sm font-medium">Aufzugrabatt</span>
+                                    </div>
+                                    <div className="text-right">
+                                      <div className="font-semibold">{formatCurrency(priceEstimate.breakdown.elevatorDiscount)}</div>
+                                      <div className="text-xs text-muted-foreground">{Math.abs(priceEstimate.breakdown.elevatorDiscountPercent)}%</div>
+                                    </div>
+                                  </div>
+                                )}
+
+                                <div className="flex items-center justify-between pt-3 bg-accent/10 -mx-3 px-3 py-3 rounded-lg">
+                                  <span className="font-semibold">Gesamtkosten</span>
+                                  <span className="font-bold text-lg text-accent">{formatCurrency(priceEstimate.breakdown.total)}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   )}
