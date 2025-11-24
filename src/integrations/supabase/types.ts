@@ -76,6 +76,7 @@ export type Database = {
       }
       leads: {
         Row: {
+          assigned_provider_ids: string[] | null
           calculator_input: Json
           calculator_output: Json
           calculator_type: string
@@ -85,6 +86,7 @@ export type Database = {
           from_city: string
           from_postal: string
           id: string
+          lead_source: string | null
           move_date: string | null
           name: string
           phone: string | null
@@ -93,6 +95,7 @@ export type Database = {
           to_postal: string
         }
         Insert: {
+          assigned_provider_ids?: string[] | null
           calculator_input: Json
           calculator_output: Json
           calculator_type: string
@@ -102,6 +105,7 @@ export type Database = {
           from_city: string
           from_postal: string
           id?: string
+          lead_source?: string | null
           move_date?: string | null
           name: string
           phone?: string | null
@@ -110,6 +114,7 @@ export type Database = {
           to_postal: string
         }
         Update: {
+          assigned_provider_ids?: string[] | null
           calculator_input?: Json
           calculator_output?: Json
           calculator_type?: string
@@ -119,6 +124,7 @@ export type Database = {
           from_city?: string
           from_postal?: string
           id?: string
+          lead_source?: string | null
           move_date?: string | null
           name?: string
           phone?: string | null
@@ -296,6 +302,90 @@ export type Database = {
           },
         ]
       }
+      service_providers: {
+        Row: {
+          account_status: Database["public"]["Enums"]["account_status"]
+          cantons_served: string[]
+          city: string
+          company_name: string
+          contact_person_name: string
+          country: string
+          created_at: string
+          description: string | null
+          email: string
+          employees_count: number | null
+          fleet_size: number | null
+          id: string
+          logo_url: string | null
+          max_leads_per_month: number | null
+          min_job_value: number | null
+          password_hash: string
+          phone: string
+          preferred_regions: string[] | null
+          price_level: Database["public"]["Enums"]["price_level"] | null
+          services_offered: string[]
+          street: string
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+          website: string | null
+          zip: string
+        }
+        Insert: {
+          account_status?: Database["public"]["Enums"]["account_status"]
+          cantons_served?: string[]
+          city: string
+          company_name: string
+          contact_person_name: string
+          country?: string
+          created_at?: string
+          description?: string | null
+          email: string
+          employees_count?: number | null
+          fleet_size?: number | null
+          id?: string
+          logo_url?: string | null
+          max_leads_per_month?: number | null
+          min_job_value?: number | null
+          password_hash: string
+          phone: string
+          preferred_regions?: string[] | null
+          price_level?: Database["public"]["Enums"]["price_level"] | null
+          services_offered?: string[]
+          street: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          website?: string | null
+          zip: string
+        }
+        Update: {
+          account_status?: Database["public"]["Enums"]["account_status"]
+          cantons_served?: string[]
+          city?: string
+          company_name?: string
+          contact_person_name?: string
+          country?: string
+          created_at?: string
+          description?: string | null
+          email?: string
+          employees_count?: number | null
+          fleet_size?: number | null
+          id?: string
+          logo_url?: string | null
+          max_leads_per_month?: number | null
+          min_job_value?: number | null
+          password_hash?: string
+          phone?: string
+          preferred_regions?: string[] | null
+          price_level?: Database["public"]["Enums"]["price_level"] | null
+          services_offered?: string[]
+          street?: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          website?: string | null
+          zip?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -331,7 +421,10 @@ export type Database = {
       }
     }
     Enums: {
+      account_status: "active" | "inactive"
       app_role: "admin" | "user"
+      price_level: "günstig" | "fair" | "premium"
+      verification_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -459,7 +552,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_status: ["active", "inactive"],
       app_role: ["admin", "user"],
+      price_level: ["günstig", "fair", "premium"],
+      verification_status: ["pending", "approved", "rejected"],
     },
   },
 } as const

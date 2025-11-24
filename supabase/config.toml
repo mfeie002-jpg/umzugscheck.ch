@@ -8,3 +8,18 @@ verify_jwt = false
 
 [functions.validate-postal-code]
 verify_jwt = false
+
+[functions.provider-signup]
+verify_jwt = false
+
+[functions.provider-login]
+verify_jwt = false
+
+[functions.provider-profile]
+verify_jwt = false
+
+[functions.provider-leads]
+verify_jwt = false
+
+[functions.admin-verify-provider]
+verify_jwt = true

@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import Index from "./pages/Index";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
@@ -33,17 +34,23 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
+import BecomeProvider from "./pages/BecomeProvider";
+import ProviderSignup from "./pages/ProviderSignup";
+import ProviderLogin from "./pages/ProviderLogin";
+import ProviderDashboard from "./pages/ProviderDashboard";
+import ProviderProfile from "./pages/ProviderProfile";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
+      <ProviderAuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
@@ -73,10 +80,16 @@ const App = () => (
             <Route path="/admin/leads" element={<LeadsAdmin />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
+            <Route path="/anbieter-werden" element={<BecomeProvider />} />
+            <Route path="/anbieter/registrieren" element={<ProviderSignup />} />
+            <Route path="/anbieter/login" element={<ProviderLogin />} />
+            <Route path="/anbieter/dashboard" element={<ProviderDashboard />} />
+            <Route path="/anbieter/profil" element={<ProviderProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ProviderAuthProvider>
     </AuthProvider>
   </QueryClientProvider>
 );
