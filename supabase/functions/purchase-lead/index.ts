@@ -39,10 +39,16 @@ serve(async (req) => {
 
     if (leadError) throw leadError;
 
-    // Calculate lead price using quality scoring system
+    // Calculate lead price using quality scoring system with age-based discounts
     const volume = lead.calculator_output?.volume || 30;
     const fromCanton = getCantonFromPostal(lead.from_postal);
     const toCanton = getCantonFromPostal(lead.to_postal);
+    const createdAt = lead.created_at;
+    
+    // Calculate lead age in hours
+    const leadDate = new Date(createdAt);
+    const now = new Date();
+    const hoursOld = Math.floor((now.getTime() - leadDate.getTime()) / (1000 * 60 * 60));
     
     // Canton premium multipliers
     const cantonPremiums: Record<string, number> = {
@@ -81,12 +87,27 @@ serve(async (req) => {
     const complexityMultiplier = 1 + (complexityScore / 120);
     const complexityAdjustment = Math.round(basePrice * (complexityMultiplier - 1.0));
     
-    const leadPrice = basePrice + locationPremium + complexityAdjustment;
+    let priceBeforeDiscount = basePrice + locationPremium + complexityAdjustment;
+    
+    // Apply age-based discount
+    let ageDiscountPercentage = 0;
+    if (hoursOld >= 48) {
+      ageDiscountPercentage = 30; // 30% off after 48 hours
+    } else if (hoursOld >= 24) {
+      ageDiscountPercentage = 15; // 15% off after 24 hours
+    }
+    
+    const ageDiscount = Math.round(priceBeforeDiscount * (ageDiscountPercentage / 100));
+    const leadPrice = priceBeforeDiscount - ageDiscount;
     
     console.log("Lead pricing breakdown:", {
       basePrice,
       locationPremium,
       complexityAdjustment,
+      priceBeforeDiscount,
+      hoursOld,
+      ageDiscountPercentage,
+      ageDiscount,
       finalPrice: leadPrice,
       volume,
       fromCanton,

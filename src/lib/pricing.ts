@@ -588,6 +588,10 @@ export interface LeadQualityScore {
   complexityAdjustment: number;
   finalPrice: number;
   qualityTier: 'standard' | 'premium' | 'elite';
+  ageDiscount: number; // Discount amount in CHF
+  ageDiscountPercentage: number; // Discount percentage
+  hoursOld: number; // Age of lead in hours
+  urgencyLevel: 'new' | 'urgent' | 'expiring'; // Urgency indicator
 }
 
 export interface LeadPricingInput {
@@ -597,6 +601,7 @@ export interface LeadPricingInput {
   calculatorType: string;
   calculatorOutput?: any;
   estimatedValue?: number;
+  createdAt?: string; // ISO timestamp for age-based pricing
 }
 
 // Canton premium multipliers based on market demand and affluence
@@ -633,7 +638,16 @@ const getCantonFromPostal = (postalCode: string): string => {
 export const calculateLeadQualityScore = (
   input: LeadPricingInput
 ): LeadQualityScore => {
-  const { volume = 30, fromPostal, toPostal, calculatorType, calculatorOutput, estimatedValue } = input;
+  const { volume = 30, fromPostal, toPostal, calculatorType, calculatorOutput, estimatedValue, createdAt } = input;
+
+  // Calculate lead age in hours
+  let hoursOld = 0;
+  let urgencyLevel: 'new' | 'urgent' | 'expiring' = 'new';
+  if (createdAt) {
+    const leadDate = new Date(createdAt);
+    const now = new Date();
+    hoursOld = Math.floor((now.getTime() - leadDate.getTime()) / (1000 * 60 * 60));
+  }
 
   // 1. Volume Score (0-40 points)
   let volumeScore = 0;
@@ -688,7 +702,20 @@ export const calculateLeadQualityScore = (
   const complexityMultiplier = 1 + (complexityScore / 120); // max +25%
   const complexityAdjustment = Math.round(basePrice * (complexityMultiplier - 1.0));
 
-  const finalPrice = basePrice + locationPremium + complexityAdjustment;
+  let priceBeforeDiscount = basePrice + locationPremium + complexityAdjustment;
+
+  // Calculate age-based discount
+  let ageDiscountPercentage = 0;
+  if (hoursOld >= 48) {
+    ageDiscountPercentage = 30; // 30% off after 48 hours
+    urgencyLevel = 'expiring';
+  } else if (hoursOld >= 24) {
+    ageDiscountPercentage = 15; // 15% off after 24 hours
+    urgencyLevel = 'urgent';
+  }
+
+  const ageDiscount = Math.round(priceBeforeDiscount * (ageDiscountPercentage / 100));
+  const finalPrice = priceBeforeDiscount - ageDiscount;
 
   // Estimate job value
   const jobValueEstimate = estimatedValue || (volume * 80); // CHF 80 per m³ average
@@ -703,6 +730,10 @@ export const calculateLeadQualityScore = (
     locationPremium,
     complexityAdjustment,
     finalPrice,
-    qualityTier
+    qualityTier,
+    ageDiscount,
+    ageDiscountPercentage,
+    hoursOld,
+    urgencyLevel
   };
 };
