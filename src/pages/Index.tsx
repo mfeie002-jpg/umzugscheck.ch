@@ -57,6 +57,16 @@ import { PerformanceMonitor } from "@/components/home/PerformanceMonitor";
 import { AccessibilityEnhancer } from "@/components/home/AccessibilityEnhancer";
 import { PrefetchLinks } from "@/components/home/PrefetchLinks";
 import { useAnalytics, useScrollTracking, useTimeTracking } from "@/hooks/use-analytics";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { NotificationCenter } from "@/components/NotificationCenter";
+import { QuickActionBar } from "@/components/QuickActionBar";
+import { ABTestingProvider } from "@/components/home/ABTestingProvider";
+import { AdvancedServiceWorker } from "@/components/home/AdvancedServiceWorker";
+import { RealTimeUpdates } from "@/components/home/RealTimeUpdates";
+import { VoiceSearch } from "@/components/home/VoiceSearch";
+import { AdvancedAnalytics } from "@/components/home/AdvancedAnalytics";
+import { SmartCaching } from "@/components/home/SmartCaching";
 
 const Index = () => {
   // Analytics hooks
@@ -71,11 +81,15 @@ const Index = () => {
   const parallax4 = useParallax(0.3);
 
   return (
-    <>
+    <ABTestingProvider>
       {/* Global Enhancements */}
       <AccessibilityEnhancer />
       <PrefetchLinks />
       <PerformanceMonitor />
+      <AdvancedServiceWorker />
+      <AdvancedAnalytics />
+      <SmartCaching />
+      <RealTimeUpdates />
       
       <div className="min-h-screen relative overflow-hidden">
       <SEOHead
@@ -407,8 +421,23 @@ const Index = () => {
       
       {/* Cookie Consent */}
       <CookieConsent />
+      
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
+      
+      {/* Offline Indicator */}
+      <OfflineIndicator />
+      
+      {/* Notification Center */}
+      <NotificationCenter />
+      
+      {/* Quick Action Bar */}
+      <QuickActionBar />
+      
+      {/* Voice Search */}
+      <VoiceSearch />
       </div>
-    </>
+    </ABTestingProvider>
   );
 };
 
