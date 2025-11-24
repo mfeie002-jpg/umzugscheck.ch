@@ -248,7 +248,6 @@ export function AvailableLeadsMarket() {
             </div>
           </div>
         </CardHeader>
-        </CardHeader>
 
         <CardContent className="flex-1">
           <div className="space-y-3">
