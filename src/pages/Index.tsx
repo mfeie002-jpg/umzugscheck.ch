@@ -33,6 +33,14 @@ import { NewsletterSignup } from "@/components/home/NewsletterSignup";
 import { ServiceAreaMap } from "@/components/home/ServiceAreaMap";
 import { MovingResourcesHub } from "@/components/home/MovingResourcesHub";
 import { SeasonalPromotions } from "@/components/home/SeasonalPromotions";
+import { InteractiveMovingQuiz } from "@/components/home/InteractiveMovingQuiz";
+import { LivePriceComparison } from "@/components/home/LivePriceComparison";
+import { WhatsAppButton } from "@/components/home/WhatsAppButton";
+import { SuccessStoriesCarousel } from "@/components/home/SuccessStoriesCarousel";
+import { SmartPushNotifications } from "@/components/home/SmartPushNotifications";
+import { MovingTipsCarousel } from "@/components/home/MovingTipsCarousel";
+import { PriceGuaranteeBadge } from "@/components/home/PriceGuaranteeBadge";
+import { LiveSupportIndicator } from "@/components/home/LiveSupportIndicator";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -197,15 +205,21 @@ const Index = () => {
       {/* 11a. Partner Certifications */}
       <PartnerCertifications />
       
+      {/* 11b. Price Guarantee Badge */}
+      <PriceGuaranteeBadge />
+      
       {/* First CTA */}
       <ScrollReveal delay={200}>
         <CTASection />
       </ScrollReveal>
       
-      {/* 11b. Seasonal Promotions */}
+      {/* 11c. Seasonal Promotions */}
       <ScrollReveal delay={210}>
         <SeasonalPromotions />
       </ScrollReveal>
+      
+      {/* 11d. Moving Tips Carousel */}
+      <MovingTipsCarousel />
 
       {/* 12. Pricing Transparency */}
       <ScrollReveal delay={220}>
@@ -216,6 +230,11 @@ const Index = () => {
       <ScrollReveal delay={240}>
         <InteractiveCalculatorDemo />
       </ScrollReveal>
+      
+      {/* 13a. Live Price Comparison */}
+      <ScrollReveal delay={250}>
+        <LivePriceComparison />
+      </ScrollReveal>
 
       {/* 14. Reviews Showcase with verified customer feedback */}
       <ScrollReveal delay={260}>
@@ -225,6 +244,11 @@ const Index = () => {
       {/* 15. Video Testimonials */}
       <ScrollReveal delay={280}>
         <VideoTestimonials />
+      </ScrollReveal>
+      
+      {/* 15a. Success Stories Carousel */}
+      <ScrollReveal delay={290}>
+        <SuccessStoriesCarousel />
       </ScrollReveal>
 
       {/* 16. Comparison Preview Section */}
@@ -240,6 +264,11 @@ const Index = () => {
       {/* Second CTA */}
       <ScrollReveal delay={340}>
         <CTASection />
+      </ScrollReveal>
+      
+      {/* 17a. Interactive Moving Quiz */}
+      <ScrollReveal delay={350}>
+        <InteractiveMovingQuiz />
       </ScrollReveal>
 
       {/* 18. Service Area Map */}
@@ -291,6 +320,15 @@ const Index = () => {
       
       {/* Exit Intent Popup */}
       <ExitIntentPopup />
+      
+      {/* WhatsApp Button */}
+      <WhatsAppButton />
+      
+      {/* Push Notifications Prompt */}
+      <SmartPushNotifications />
+      
+      {/* Live Support Indicator */}
+      <LiveSupportIndicator />
     </div>
   );
 };
