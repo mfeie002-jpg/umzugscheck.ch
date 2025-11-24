@@ -9,39 +9,39 @@ import { AICalculator } from "@/components/calculator/AICalculator";
 import { Calculator as CalculatorIcon, Wrench, Sparkles } from "lucide-react";
 import { OtherCalculators } from "@/components/OtherCalculators";
 
-const Calculator = () => {
-  const serviceSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Umzugskosten-Rechner",
-    "name": "Umzugsrechner - Kostenlose Kostenschätzung",
-    "description": "Berechnen Sie Ihre Umzugskosten kostenlos und unverbindlich. Wählen Sie zwischen Schnell-Rechner (60 Sekunden), detailliertem Rechner oder KI-gestützter Analyse mit Fotos/Videos.",
-    "provider": {
-      "@type": "Organization",
-      "name": "Umzugscheck.ch",
-      "url": "https://umzugscheck.ch"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Switzerland"
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "CHF",
-      "description": "Kostenlose Umzugskostenschätzung"
-    },
-    "category": "Umzugsdienstleistungen",
-    "audience": {
-      "@type": "Audience",
-      "audienceType": "Private Haushalte und Unternehmen"
-    },
-    "availableChannel": {
-      "@type": "ServiceChannel",
-      "serviceUrl": "https://umzugscheck.ch/rechner"
-    }
-  };
+const SERVICE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Umzugskosten-Rechner",
+  "name": "Umzugsrechner - Kostenlose Kostenschätzung",
+  "description": "Berechnen Sie Ihre Umzugskosten kostenlos und unverbindlich. Wählen Sie zwischen Schnell-Rechner (60 Sekunden), detailliertem Rechner oder KI-gestützter Analyse mit Fotos/Videos.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Umzugscheck.ch",
+    "url": "https://umzugscheck.ch"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CHF",
+    "description": "Kostenlose Umzugskostenschätzung"
+  },
+  "category": "Umzugsdienstleistungen",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Private Haushalte und Unternehmen"
+  },
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://umzugscheck.ch/rechner"
+  }
+};
 
+const Calculator = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
@@ -51,7 +51,7 @@ const Calculator = () => {
         <link rel="canonical" href="https://umzugscheck.ch/rechner" />
         
         <script type="application/ld+json">
-          {JSON.stringify(serviceSchema)}
+          {JSON.stringify(SERVICE_SCHEMA)}
         </script>
       </Helmet>
 

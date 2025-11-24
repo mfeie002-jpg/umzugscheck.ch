@@ -37,36 +37,36 @@ const formSchema = z.object({
   accessFrequency: z.enum(['rare', 'monthly', 'weekly']),
 });
 
+const SERVICE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Lagerung & Einlagerung",
+  "name": "Lagerrechner - Einlagerung Kosten berechnen",
+  "description": "Berechnen Sie die Kosten für die Einlagerung Ihres Hausrats. Klimatisiert, versichert, flexible Laufzeiten. Perfekt für Zwischenlagerung bei Umzügen.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Umzugscheck.ch",
+    "url": "https://umzugscheck.ch"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceRange": "CHF 100-800/Monat",
+    "priceCurrency": "CHF"
+  },
+  "category": "Lagerdienstleistungen",
+  "serviceOutput": "Sichere Einlagerung von Hausrat und Möbeln",
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://umzugscheck.ch/lagerrechner"
+  }
+};
+
 const StorageCalculator = () => {
   const [result, setResult] = useState<any>(null);
-  
-  const serviceSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Lagerung & Einlagerung",
-    "name": "Lagerrechner - Einlagerung Kosten berechnen",
-    "description": "Berechnen Sie die Kosten für die Einlagerung Ihres Hausrats. Klimatisiert, versichert, flexible Laufzeiten. Perfekt für Zwischenlagerung bei Umzügen.",
-    "provider": {
-      "@type": "Organization",
-      "name": "Umzugscheck.ch",
-      "url": "https://umzugscheck.ch"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Switzerland"
-    },
-    "offers": {
-      "@type": "Offer",
-      "priceRange": "CHF 100-800/Monat",
-      "priceCurrency": "CHF"
-    },
-    "category": "Lagerdienstleistungen",
-    "serviceOutput": "Sichere Einlagerung von Hausrat und Möbeln",
-    "availableChannel": {
-      "@type": "ServiceChannel",
-      "serviceUrl": "https://umzugscheck.ch/lagerrechner"
-    }
-  };
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,7 +93,7 @@ const StorageCalculator = () => {
         <link rel="canonical" href="https://umzugscheck.ch/lagerrechner" />
         
         <script type="application/ld+json">
-          {JSON.stringify(serviceSchema)}
+          {JSON.stringify(SERVICE_SCHEMA)}
         </script>
       </Helmet>
 

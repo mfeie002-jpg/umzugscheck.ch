@@ -30,36 +30,36 @@ const formSchema = z.object({
   hasFurniture: z.boolean().default(false),
 });
 
+const SERVICE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Entsorgung & Räumung",
+  "name": "Entsorgungsrechner - Entrümpelung Kosten berechnen",
+  "description": "Berechnen Sie die Kosten für Entsorgung und Räumung. Geben Sie Volumen und Art der Gegenstände an für eine präzise Kostenschätzung.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Umzugscheck.ch",
+    "url": "https://umzugscheck.ch"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceRange": "CHF 150-2000",
+    "priceCurrency": "CHF"
+  },
+  "category": "Entsorgungsdienstleistungen",
+  "serviceOutput": "Professionelle Entrümpelung und Entsorgung",
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://umzugscheck.ch/entsorgungsrechner"
+  }
+};
+
 const DisposalCalculator = () => {
   const [result, setResult] = useState<any>(null);
-  
-  const serviceSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Entsorgung & Räumung",
-    "name": "Entsorgungsrechner - Entrümpelung Kosten berechnen",
-    "description": "Berechnen Sie die Kosten für Entsorgung und Räumung. Geben Sie Volumen und Art der Gegenstände an für eine präzise Kostenschätzung.",
-    "provider": {
-      "@type": "Organization",
-      "name": "Umzugscheck.ch",
-      "url": "https://umzugscheck.ch"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Switzerland"
-    },
-    "offers": {
-      "@type": "Offer",
-      "priceRange": "CHF 150-2000",
-      "priceCurrency": "CHF"
-    },
-    "category": "Entsorgungsdienstleistungen",
-    "serviceOutput": "Professionelle Entrümpelung und Entsorgung",
-    "availableChannel": {
-      "@type": "ServiceChannel",
-      "serviceUrl": "https://umzugscheck.ch/entsorgungsrechner"
-    }
-  };
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -86,7 +86,7 @@ const DisposalCalculator = () => {
         <link rel="canonical" href="https://umzugscheck.ch/entsorgungsrechner" />
         
         <script type="application/ld+json">
-          {JSON.stringify(serviceSchema)}
+          {JSON.stringify(SERVICE_SCHEMA)}
         </script>
       </Helmet>
 
