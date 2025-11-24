@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video, MapPin } from "lucide-react";
+import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video, MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Collapsible,
   CollapsibleContent,
@@ -58,32 +61,32 @@ const calculators = [
 ];
 
 const cantons = [
-  { name: "Zürich", href: "/zuerich/umzugsfirmen" },
-  { name: "Bern", href: "/bern/umzugsfirmen" },
-  { name: "Luzern", href: "/luzern/umzugsfirmen" },
-  { name: "Uri", href: "/uri/umzugsfirmen" },
-  { name: "Schwyz", href: "/schwyz/umzugsfirmen" },
-  { name: "Obwalden", href: "/obwalden/umzugsfirmen" },
-  { name: "Nidwalden", href: "/nidwalden/umzugsfirmen" },
-  { name: "Glarus", href: "/glarus/umzugsfirmen" },
-  { name: "Zug", href: "/zug/umzugsfirmen" },
-  { name: "Fribourg", href: "/fribourg/umzugsfirmen" },
-  { name: "Solothurn", href: "/solothurn/umzugsfirmen" },
-  { name: "Basel-Stadt", href: "/basel-stadt/umzugsfirmen" },
-  { name: "Basel-Landschaft", href: "/basel-landschaft/umzugsfirmen" },
-  { name: "Schaffhausen", href: "/schaffhausen/umzugsfirmen" },
-  { name: "Appenzell Ausserrhoden", href: "/appenzell-ausserrhoden/umzugsfirmen" },
-  { name: "Appenzell Innerrhoden", href: "/appenzell-innerrhoden/umzugsfirmen" },
-  { name: "St. Gallen", href: "/st-gallen/umzugsfirmen" },
-  { name: "Graubünden", href: "/graubuenden/umzugsfirmen" },
-  { name: "Aargau", href: "/aargau/umzugsfirmen" },
-  { name: "Thurgau", href: "/thurgau/umzugsfirmen" },
-  { name: "Ticino", href: "/ticino/umzugsfirmen" },
-  { name: "Vaud", href: "/vaud/umzugsfirmen" },
-  { name: "Valais", href: "/valais/umzugsfirmen" },
-  { name: "Neuchâtel", href: "/neuchatel/umzugsfirmen" },
-  { name: "Genève", href: "/geneve/umzugsfirmen" },
-  { name: "Jura", href: "/jura/umzugsfirmen" }
+  { name: "Zürich", code: "ZH", href: "/zuerich/umzugsfirmen", cities: ["Zürich", "Winterthur"] },
+  { name: "Bern", code: "BE", href: "/bern/umzugsfirmen", cities: ["Bern", "Biel"] },
+  { name: "Luzern", code: "LU", href: "/luzern/umzugsfirmen", cities: ["Luzern"] },
+  { name: "Uri", code: "UR", href: "/uri/umzugsfirmen", cities: [] },
+  { name: "Schwyz", code: "SZ", href: "/schwyz/umzugsfirmen", cities: ["Schwyz"] },
+  { name: "Obwalden", code: "OW", href: "/obwalden/umzugsfirmen", cities: [] },
+  { name: "Nidwalden", code: "NW", href: "/nidwalden/umzugsfirmen", cities: [] },
+  { name: "Glarus", code: "GL", href: "/glarus/umzugsfirmen", cities: [] },
+  { name: "Zug", code: "ZG", href: "/zug/umzugsfirmen", cities: ["Zug"] },
+  { name: "Fribourg", code: "FR", href: "/fribourg/umzugsfirmen", cities: ["Fribourg"] },
+  { name: "Solothurn", code: "SO", href: "/solothurn/umzugsfirmen", cities: ["Solothurn"] },
+  { name: "Basel-Stadt", code: "BS", href: "/basel-stadt/umzugsfirmen", cities: ["Basel"] },
+  { name: "Basel-Landschaft", code: "BL", href: "/basel-landschaft/umzugsfirmen", cities: [] },
+  { name: "Schaffhausen", code: "SH", href: "/schaffhausen/umzugsfirmen", cities: ["Schaffhausen"] },
+  { name: "Appenzell Ausserrhoden", code: "AR", href: "/appenzell-ausserrhoden/umzugsfirmen", cities: [] },
+  { name: "Appenzell Innerrhoden", code: "AI", href: "/appenzell-innerrhoden/umzugsfirmen", cities: [] },
+  { name: "St. Gallen", code: "SG", href: "/st-gallen/umzugsfirmen", cities: ["St. Gallen"] },
+  { name: "Graubünden", code: "GR", href: "/graubuenden/umzugsfirmen", cities: ["Chur"] },
+  { name: "Aargau", code: "AG", href: "/aargau/umzugsfirmen", cities: ["Aarau", "Baden"] },
+  { name: "Thurgau", code: "TG", href: "/thurgau/umzugsfirmen", cities: ["Frauenfeld"] },
+  { name: "Ticino", code: "TI", href: "/ticino/umzugsfirmen", cities: ["Lugano"] },
+  { name: "Vaud", code: "VD", href: "/vaud/umzugsfirmen", cities: ["Lausanne"] },
+  { name: "Valais", code: "VS", href: "/valais/umzugsfirmen", cities: ["Sion"] },
+  { name: "Neuchâtel", code: "NE", href: "/neuchatel/umzugsfirmen", cities: ["Neuchâtel"] },
+  { name: "Genève", code: "GE", href: "/geneve/umzugsfirmen", cities: ["Genève"] },
+  { name: "Jura", code: "JU", href: "/jura/umzugsfirmen", cities: [] }
 ];
 
 const mainNavItems = [
@@ -97,6 +100,45 @@ const mainNavItems = [
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const [isCalculatorsOpen, setIsCalculatorsOpen] = useState(false);
   const [isRegionsOpen, setIsRegionsOpen] = useState(false);
+  const [regionSearch, setRegionSearch] = useState("");
+  const [companyCounts, setCompanyCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (isOpen && isRegionsOpen) {
+      fetchCompanyCounts();
+    }
+  }, [isOpen, isRegionsOpen]);
+
+  const fetchCompanyCounts = async () => {
+    try {
+      const { data: companies } = await supabase
+        .from('companies')
+        .select('service_areas');
+
+      if (companies) {
+        const counts: Record<string, number> = {};
+        
+        cantons.forEach(canton => {
+          const count = companies.filter(company => 
+            company.service_areas?.includes(canton.code)
+          ).length;
+          counts[canton.code] = count;
+        });
+        
+        setCompanyCounts(counts);
+      }
+    } catch (error) {
+      console.error('Error fetching company counts:', error);
+    }
+  };
+
+  const filteredCantons = regionSearch 
+    ? cantons.filter(canton => 
+        canton.name.toLowerCase().includes(regionSearch.toLowerCase()) ||
+        canton.code.toLowerCase().includes(regionSearch.toLowerCase()) ||
+        canton.cities.some(city => city.toLowerCase().includes(regionSearch.toLowerCase()))
+      )
+    : cantons;
 
   if (!isOpen) return null;
 
@@ -162,18 +204,65 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 isRegionsOpen && "rotate-180"
               )} />
             </CollapsibleTrigger>
-            <CollapsibleContent className="mt-2 space-y-1 max-h-64 overflow-y-auto">
-              {cantons.map((canton) => (
-                <Link
-                  key={canton.name}
-                  to={canton.href}
-                  onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
-                >
-                  <MapPin className="w-4 h-4 text-primary" />
-                  <span className="text-sm">{canton.name}</span>
-                </Link>
-              ))}
+            <CollapsibleContent className="mt-2 space-y-2">
+              {/* Search */}
+              <div className="px-4 pb-2">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Suchen..."
+                    value={regionSearch}
+                    onChange={(e) => setRegionSearch(e.target.value)}
+                    className="pl-9 h-9 text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Cantons List */}
+              <div className="max-h-96 overflow-y-auto space-y-1">
+                {filteredCantons.map((canton) => (
+                  <div key={canton.code}>
+                    <Link
+                      to={canton.href}
+                      onClick={onClose}
+                      className="flex items-center justify-between gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                        <span className="text-sm truncate">{canton.name}</span>
+                      </div>
+                      {companyCounts[canton.code] > 0 && (
+                        <Badge variant="secondary" className="text-xs">
+                          {companyCounts[canton.code]}
+                        </Badge>
+                      )}
+                    </Link>
+                    
+                    {/* Cities */}
+                    {canton.cities.length > 0 && (
+                      <div className="ml-16 space-y-1 mt-1">
+                        {canton.cities.map((city) => (
+                          <Link
+                            key={city}
+                            to={`/${city.toLowerCase().replace(/\s+/g, '-')}/umzugsfirmen`}
+                            onClick={onClose}
+                            className="block text-xs text-muted-foreground hover:text-foreground py-1"
+                          >
+                            • {city}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {filteredCantons.length === 0 && (
+                <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+                  Keine Regionen gefunden
+                </div>
+              )}
             </CollapsibleContent>
           </Collapsible>
 
