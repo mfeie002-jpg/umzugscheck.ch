@@ -23,3 +23,9 @@ verify_jwt = false
 
 [functions.admin-verify-provider]
 verify_jwt = true
+
+[functions.provider-subscription]
+verify_jwt = false
+
+[functions.purchase-lead]
+verify_jwt = false

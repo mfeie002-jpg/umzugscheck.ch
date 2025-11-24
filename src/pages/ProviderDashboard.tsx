@@ -10,6 +10,8 @@ import { Helmet } from "react-helmet";
 import { Loader2, TrendingUp, Calendar, Users, Settings, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AvailableLeadsMarket } from "@/components/AvailableLeadsMarket";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -129,6 +131,37 @@ const ProviderDashboard = () => {
             </Alert>
           )}
 
+          {/* Subscription Status */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Abonnement & Zahlungen</CardTitle>
+              <CardDescription>Verwalten Sie Ihr Abo und sehen Sie Ihre Transaktionen</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Aktueller Plan</p>
+                    <p className="text-2xl font-bold">Keine aktive Subscription</p>
+                  </div>
+                  <Button asChild>
+                    <Link to="/anbieter/preise">
+                      Plan auswählen
+                    </Link>
+                  </Button>
+                </div>
+                <div className="pt-4 border-t">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Wählen Sie einen passenden Tarif und erhalten Sie automatisch qualifizierte Umzugs-Leads.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Alternativ können Sie einzelne Leads kaufen (CHF 15-45 pro Lead).
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Stats */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <Card>
@@ -216,56 +249,86 @@ const ProviderDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Leads */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Eingehende Leads</CardTitle>
-              <CardDescription>
-                {isPending ? 'Leads werden nach Freischaltung angezeigt' : 'Ihre aktuellen Anfragen'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loadingLeads ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                </div>
-              ) : isPending ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Leads werden nach Freischaltung Ihres Accounts angezeigt</p>
-                </div>
-              ) : leads.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>Noch keine Leads vorhanden</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {leads.map((lead: any) => (
-                    <div key={lead.id} className="p-4 border rounded-lg">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <p className="font-semibold">{lead.name}</p>
-                          <p className="text-sm text-muted-foreground">{lead.email}</p>
-                        </div>
-                        <Badge>{lead.status || 'neu'}</Badge>
-                      </div>
-                      <div className="text-sm space-y-1">
-                        <p><span className="font-medium">Von:</span> {lead.from_postal} {lead.from_city}</p>
-                        <p><span className="font-medium">Nach:</span> {lead.to_postal} {lead.to_city}</p>
-                        {lead.move_date && (
-                          <p><span className="font-medium">Datum:</span> {new Date(lead.move_date).toLocaleDateString('de-CH')}</p>
-                        )}
-                        <p><span className="font-medium">Rechner:</span> {lead.calculator_type}</p>
-                      </div>
-                      {lead.comments && (
-                        <p className="text-sm mt-2 text-muted-foreground">{lead.comments}</p>
-                      )}
+          {/* Leads Section with Tabs */}
+          <Tabs defaultValue="assigned" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="assigned">Zugewiesene Leads</TabsTrigger>
+              <TabsTrigger value="marketplace">Lead-Marktplatz</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="assigned">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Zugewiesene Leads</CardTitle>
+                  <CardDescription>
+                    {isPending ? 'Leads werden nach Freischaltung angezeigt' : 'Ihre automatisch zugewiesenen Anfragen'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {loadingLeads ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin" />
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                  ) : isPending ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>Leads werden nach Freischaltung Ihres Accounts angezeigt</p>
+                    </div>
+                  ) : leads.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>Noch keine Leads vorhanden</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {leads.map((lead: any) => (
+                        <div key={lead.id} className="p-4 border rounded-lg">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <p className="font-semibold">{lead.name}</p>
+                              <p className="text-sm text-muted-foreground">{lead.email}</p>
+                            </div>
+                            <Badge>{lead.status || 'neu'}</Badge>
+                          </div>
+                          <div className="text-sm space-y-1">
+                            <p><span className="font-medium">Von:</span> {lead.from_postal} {lead.from_city}</p>
+                            <p><span className="font-medium">Nach:</span> {lead.to_postal} {lead.to_city}</p>
+                            {lead.move_date && (
+                              <p><span className="font-medium">Datum:</span> {new Date(lead.move_date).toLocaleDateString('de-CH')}</p>
+                            )}
+                            <p><span className="font-medium">Rechner:</span> {lead.calculator_type}</p>
+                          </div>
+                          {lead.comments && (
+                            <p className="text-sm mt-2 text-muted-foreground">{lead.comments}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="marketplace">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Lead-Marktplatz</CardTitle>
+                  <CardDescription>
+                    Kaufen Sie einzelne Leads, die zu Ihren Kantonen passen (CHF 15-45 pro Lead)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {isPending ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>Lead-Marktplatz wird nach Freischaltung verfügbar</p>
+                    </div>
+                  ) : (
+                    <AvailableLeadsMarket />
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
