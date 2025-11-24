@@ -47,6 +47,7 @@ import ProviderPricing from "./pages/ProviderPricing";
 import AdminProviders from "./pages/admin/Providers";
 import ProviderDetail from "./pages/admin/ProviderDetail";
 import FunnelAnalytics from "./pages/admin/FunnelAnalytics";
+import DynamicPricing from "./pages/admin/DynamicPricing";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
             <Route path="/admin/leads" element={<LeadsAdmin />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/funnel" element={<FunnelAnalytics />} />
+            <Route path="/admin/pricing" element={<DynamicPricing />} />
             <Route path="/admin/providers" element={<AdminProviders />} />
             <Route path="/admin/providers/:id" element={<ProviderDetail />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
