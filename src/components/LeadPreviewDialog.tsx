@@ -1,8 +1,10 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, MapPin, Package, Calendar, TrendingUp, Star, Lock, Gavel, ShoppingCart } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Eye, MapPin, Package, Calendar, TrendingUp, Star, Lock, Gavel, ShoppingCart, Target, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { calculateLeadQualityScore } from "@/lib/pricing";
+import { calculateLeadMatchScore, getMatchLevelColor, getMatchLevelLabel } from "@/lib/lead-matching";
 
 interface Lead {
   id: string;
@@ -21,11 +23,13 @@ interface Lead {
 
 interface LeadPreviewDialogProps {
   lead: Lead;
+  provider?: any; // Provider data for match scoring
+  currentMonthLeadCount?: number;
   children?: React.ReactNode;
   onProceed?: () => void;
 }
 
-export function LeadPreviewDialog({ lead, children, onProceed }: LeadPreviewDialogProps) {
+export function LeadPreviewDialog({ lead, provider, currentMonthLeadCount = 0, children, onProceed }: LeadPreviewDialogProps) {
   const volume = lead.calculator_output?.volume || 30;
   
   const qualityScore = calculateLeadQualityScore({
@@ -37,6 +41,9 @@ export function LeadPreviewDialog({ lead, children, onProceed }: LeadPreviewDial
     estimatedValue: lead.calculator_output?.priceAvg,
     createdAt: lead.created_at
   });
+
+  // Calculate match score if provider data is available
+  const matchScore = provider ? calculateLeadMatchScore(provider, lead, currentMonthLeadCount) : null;
 
   // Get canton from postal code (first digit)
   const getCantonFromPostal = (postalCode: string): string => {
@@ -98,6 +105,80 @@ export function LeadPreviewDialog({ lead, children, onProceed }: LeadPreviewDial
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Match Score Section (if provider data available) */}
+          {matchScore && (
+            <div className={`p-4 rounded-lg border-2 ${getMatchLevelColor(matchScore.matchLevel)}`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  <h3 className="font-semibold">Ihre Kompatibilität</h3>
+                </div>
+                <Badge variant="outline" className={getMatchLevelColor(matchScore.matchLevel)}>
+                  {getMatchLevelLabel(matchScore.matchLevel)}
+                </Badge>
+              </div>
+              
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Match-Score</span>
+                  <span className="font-bold text-lg">{matchScore.matchPercentage}%</span>
+                </div>
+                <Progress value={matchScore.matchPercentage} className="h-2" />
+              </div>
+
+              {/* Match Breakdown */}
+              <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                <div className="flex items-center gap-1">
+                  {matchScore.details.servesBothCantons ? (
+                    <CheckCircle2 className="h-3 w-3 text-green-600" />
+                  ) : (
+                    <XCircle className="h-3 w-3 text-red-600" />
+                  )}
+                  <span>Servicegebiet</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  {matchScore.details.hasCapacity ? (
+                    <CheckCircle2 className="h-3 w-3 text-green-600" />
+                  ) : (
+                    <AlertCircle className="h-3 w-3 text-yellow-600" />
+                  )}
+                  <span>Kapazität</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  {matchScore.details.meetsMinValue ? (
+                    <CheckCircle2 className="h-3 w-3 text-green-600" />
+                  ) : (
+                    <XCircle className="h-3 w-3 text-red-600" />
+                  )}
+                  <span>Auftragswert</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  {matchScore.details.offersRequiredServices ? (
+                    <CheckCircle2 className="h-3 w-3 text-green-600" />
+                  ) : (
+                    <AlertCircle className="h-3 w-3 text-yellow-600" />
+                  )}
+                  <span>Services</span>
+                </div>
+              </div>
+
+              {/* Recommendations */}
+              {matchScore.recommendations.length > 0 && (
+                <div className="border-t pt-2 mt-2">
+                  <div className="text-xs font-semibold mb-1">Empfehlungen:</div>
+                  <ul className="text-xs space-y-1">
+                    {matchScore.recommendations.map((rec, idx) => (
+                      <li key={idx} className="flex items-start gap-1">
+                        <span className="text-muted-foreground">•</span>
+                        <span>{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Quality Score & Type */}
           <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
             <div>
