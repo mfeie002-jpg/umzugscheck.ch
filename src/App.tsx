@@ -39,6 +39,7 @@ import ProviderSignup from "./pages/ProviderSignup";
 import ProviderLogin from "./pages/ProviderLogin";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderProfile from "./pages/ProviderProfile";
+import ProviderPricing from "./pages/ProviderPricing";
 import AdminProviders from "./pages/admin/Providers";
 import ProviderDetail from "./pages/admin/ProviderDetail";
 
@@ -89,6 +90,7 @@ const App = () => (
             <Route path="/anbieter/login" element={<ProviderLogin />} />
             <Route path="/anbieter/dashboard" element={<ProviderDashboard />} />
             <Route path="/anbieter/profil" element={<ProviderProfile />} />
+            <Route path="/anbieter/preise" element={<ProviderPricing />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           </BrowserRouter>
