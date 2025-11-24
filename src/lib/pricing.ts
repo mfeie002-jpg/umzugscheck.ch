@@ -234,7 +234,8 @@ export const getMoveSize = (volumeM3: number): string => {
 // Calculate moving price from video analysis (volume + difficulty)
 export const calculateVideoBasedPrice = (
   volumeM3: number,
-  difficultyScore: number
+  difficultyScore: number,
+  distanceKm: number = 50
 ): MovingCalculation => {
   // Convert volume to approximate room count (avg 15-20m³ per room)
   const estimatedRoomsNum = Math.max(1, Math.min(5, Math.round(volumeM3 / 17)));
@@ -251,13 +252,10 @@ export const calculateVideoBasedPrice = (
   const floorsDestination = floorsOrigin;
   const elevatorDestination = elevatorOrigin;
   
-  // Assume average distance of 50km for estimation
-  const assumedDistance = 50;
-  
-  // Use existing pricing logic
+  // Use existing pricing logic with custom distance
   const baseCalculation = calculateQuickMovingPrice(
     estimatedRooms,
-    assumedDistance,
+    distanceKm,
     floorsOrigin,
     floorsDestination,
     elevatorOrigin,

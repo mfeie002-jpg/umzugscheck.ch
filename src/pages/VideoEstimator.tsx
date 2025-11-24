@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp } from "lucide-react";
+import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { calculateVideoBasedPrice, formatCurrency } from "@/lib/pricing";
@@ -35,6 +35,8 @@ export default function VideoEstimator() {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [priceEstimate, setPriceEstimate] = useState<{ minPrice: number; maxPrice: number; estimatedHours: number } | null>(null);
+  const [customDistance, setCustomDistance] = useState<string>("50");
+  const [isCustomDistance, setIsCustomDistance] = useState(false);
   
   // Lead form state
   const [name, setName] = useState("");
@@ -191,11 +193,32 @@ export default function VideoEstimator() {
     }
   };
 
+  const handleDistanceChange = (newDistance: string) => {
+    setCustomDistance(newDistance);
+    const distanceNum = parseInt(newDistance);
+    
+    if (!isNaN(distanceNum) && distanceNum > 0 && analysisResult) {
+      setIsCustomDistance(true);
+      const priceCalc = calculateVideoBasedPrice(
+        analysisResult.estimatedVolumeM3,
+        analysisResult.difficultyScore,
+        distanceNum
+      );
+      setPriceEstimate({
+        minPrice: priceCalc.priceMin,
+        maxPrice: priceCalc.priceMax,
+        estimatedHours: priceCalc.estimatedHours
+      });
+    }
+  };
+
   const handleReset = () => {
     setStep(1);
     setSelectedFile(null);
     setAnalysisResult(null);
     setPriceEstimate(null);
+    setCustomDistance("50");
+    setIsCustomDistance(false);
     setError(null);
   };
 
@@ -445,6 +468,39 @@ export default function VideoEstimator() {
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
+                        {/* Distance Adjustment */}
+                        <div className="p-4 rounded-lg bg-card border border-border">
+                          <div className="flex items-center gap-2 mb-3">
+                            <MapPin className="w-5 h-5 text-primary" />
+                            <Label htmlFor="distance" className="text-base font-semibold">
+                              Umzugsdistanz anpassen
+                            </Label>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Geben Sie die tatsächliche Distanz ein für eine genauere Preisschätzung
+                          </p>
+                          <div className="flex gap-3 items-end">
+                            <div className="flex-1">
+                              <Input
+                                id="distance"
+                                type="number"
+                                min="1"
+                                max="500"
+                                value={customDistance}
+                                onChange={(e) => handleDistanceChange(e.target.value)}
+                                className="text-lg"
+                              />
+                            </div>
+                            <div className="text-muted-foreground font-medium pb-2">km</div>
+                          </div>
+                          {isCustomDistance && (
+                            <p className="text-xs text-primary mt-2 flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
+                              Preis aktualisiert für {customDistance} km
+                            </p>
+                          )}
+                        </div>
+
                         <div className="p-6 rounded-lg bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
                           <div className="text-center">
                             <p className="text-sm text-muted-foreground mb-2">Geschätzter Preis</p>
@@ -459,24 +515,24 @@ export default function VideoEstimator() {
 
                         <div className="grid md:grid-cols-3 gap-3 text-sm">
                           <div className="p-3 rounded-lg bg-card border">
-                            <p className="text-muted-foreground mb-1">Basis</p>
-                            <p className="font-semibold">Umzugsvolumen</p>
+                            <p className="text-muted-foreground mb-1">Volumen</p>
+                            <p className="font-semibold">{analysisResult.estimatedVolumeM3} m³</p>
                           </div>
                           <div className="p-3 rounded-lg bg-card border">
                             <p className="text-muted-foreground mb-1">Distanz</p>
-                            <p className="font-semibold">~50 km angenommen</p>
+                            <p className="font-semibold">{customDistance} km</p>
                           </div>
                           <div className="p-3 rounded-lg bg-card border">
-                            <p className="text-muted-foreground mb-1">Anpassung</p>
-                            <p className="font-semibold">Nach Schwierigkeit</p>
+                            <p className="text-muted-foreground mb-1">Schwierigkeit</p>
+                            <p className="font-semibold">{analysisResult.difficultyScore}/5</p>
                           </div>
                         </div>
 
                         <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900">
                           <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                            ⚠️ Dies ist eine automatische Schätzung. Der tatsächliche Preis kann je nach genauer Distanz, 
-                            Zusatzleistungen und spezifischen Anforderungen variieren. Für ein präzises Angebot fordern 
-                            Sie bitte eine Offerte an.
+                            ⚠️ Dies ist eine automatische Schätzung. Der tatsächliche Preis kann je nach 
+                            Zusatzleistungen, Parkplatzsituation und spezifischen Anforderungen variieren. 
+                            Für ein verbindliches Angebot fordern Sie bitte eine Offerte an.
                           </p>
                         </div>
                       </CardContent>
