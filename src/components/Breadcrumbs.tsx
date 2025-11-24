@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronRight, Home } from "lucide-react";
+import { Helmet } from "react-helmet";
 
 export interface BreadcrumbItem {
   label: string;
@@ -16,8 +17,24 @@ export const Breadcrumbs = ({ items, showHome = true }: BreadcrumbsProps) => {
     ? [{ label: "Home", href: "/" }, ...items]
     : items;
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": allItems.map((item, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.label,
+      "item": item.href ? `https://umzugscheck.ch${item.href}` : undefined
+    }))
+  };
+
   return (
     <nav aria-label="Breadcrumb" className="py-3">
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+      </Helmet>
       <ol className="flex items-center flex-wrap gap-2 text-sm">
         {allItems.map((item, index) => {
           const isLast = index === allItems.length - 1;
