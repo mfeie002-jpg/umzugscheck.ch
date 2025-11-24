@@ -231,6 +231,60 @@ export const getMoveSize = (volumeM3: number): string => {
   return "Sehr gross (Haus/6+ Zimmer)";
 };
 
+// Calculate moving price from video analysis (volume + difficulty)
+export const calculateVideoBasedPrice = (
+  volumeM3: number,
+  difficultyScore: number
+): MovingCalculation => {
+  // Convert volume to approximate room count (avg 15-20m³ per room)
+  const estimatedRoomsNum = Math.max(1, Math.min(5, Math.round(volumeM3 / 17)));
+  const estimatedRooms = estimatedRoomsNum.toString() as "1" | "2" | "3" | "4" | "5" | "6+" | "house";
+  
+  // Use difficulty score to infer floor situation
+  // Low difficulty (1-2) = ground floor or elevator
+  // Medium difficulty (2.5-3.5) = 1-2 floors, possibly no elevator
+  // High difficulty (4-5) = 3+ floors, no elevator
+  const floorsOrigin = difficultyScore <= 2 ? 0 : difficultyScore <= 3.5 ? 2 : 4;
+  const elevatorOrigin = difficultyScore <= 2;
+  
+  // Assume same conditions for destination (can be adjusted later)
+  const floorsDestination = floorsOrigin;
+  const elevatorDestination = elevatorOrigin;
+  
+  // Assume average distance of 50km for estimation
+  const assumedDistance = 50;
+  
+  // Use existing pricing logic
+  const baseCalculation = calculateQuickMovingPrice(
+    estimatedRooms,
+    assumedDistance,
+    floorsOrigin,
+    floorsDestination,
+    elevatorOrigin,
+    elevatorDestination
+  );
+  
+  // Apply difficulty adjustment (±15%)
+  const difficultyMultiplier = 0.85 + (difficultyScore / 5) * 0.3; // Range: 0.85 to 1.15
+  
+  const adjustedMin = Math.round(baseCalculation.priceMin * difficultyMultiplier);
+  const adjustedMax = Math.round(baseCalculation.priceMax * difficultyMultiplier);
+  
+  return {
+    volumeM3,
+    priceMin: adjustedMin,
+    priceMax: adjustedMax,
+    estimatedHours: baseCalculation.estimatedHours,
+    breakdown: {
+      basePrice: Math.round((baseCalculation.breakdown.basePrice || 0) * difficultyMultiplier),
+      distanceFee: baseCalculation.breakdown.distanceFee,
+      floorFee: baseCalculation.breakdown.floorFee,
+      elevatorDiscount: baseCalculation.breakdown.elevatorDiscount,
+      total: Math.round(baseCalculation.breakdown.total * difficultyMultiplier)
+    }
+  };
+};
+
 // Cleaning Calculator Types and Functions
 export interface CleaningCalculation {
   basePrice: number;
