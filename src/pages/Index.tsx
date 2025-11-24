@@ -52,8 +52,18 @@ import { AdvancedMicroInteractions } from "@/components/home/AdvancedMicroIntera
 import { CookieConsent } from "@/components/home/CookieConsent";
 import { PriceComparisonChart } from "@/components/home/PriceComparisonChart";
 import { EmergencyMovingService } from "@/components/home/EmergencyMovingService";
+import { ErrorBoundaryWrapper } from "@/components/ErrorBoundaryWrapper";
+import { PerformanceMonitor } from "@/components/home/PerformanceMonitor";
+import { AccessibilityEnhancer } from "@/components/home/AccessibilityEnhancer";
+import { PrefetchLinks } from "@/components/home/PrefetchLinks";
+import { useAnalytics, useScrollTracking, useTimeTracking } from "@/hooks/use-analytics";
 
 const Index = () => {
+  // Analytics hooks
+  useAnalytics();
+  useScrollTracking();
+  useTimeTracking();
+  
   // Different parallax speeds for depth effect
   const parallax1 = useParallax(0.15);
   const parallax2 = useParallax(0.25);
@@ -61,7 +71,13 @@ const Index = () => {
   const parallax4 = useParallax(0.3);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <>
+      {/* Global Enhancements */}
+      <AccessibilityEnhancer />
+      <PrefetchLinks />
+      <PerformanceMonitor />
+      
+      <div className="min-h-screen relative overflow-hidden">
       <SEOHead
         title="Umzugscheck.ch - KI-Preisrechner für Schweizer Umzüge | Transparent & Fair"
         description="Vergleichen Sie Umzugsofferten mit unserem KI-Preisrechner. Erhalten Sie in Sekunden präzise Offerten von über 200 geprüften Umzugsfirmen in der ganzen Schweiz. Transparent, fair und 100% schweizerisch."
@@ -163,7 +179,9 @@ const Index = () => {
       </div>
 
       {/* 1. NEW: Emotional Hero with AI Calculator as Primary USP */}
-      <EmotionalHero />
+      <ErrorBoundaryWrapper>
+        <EmotionalHero />
+      </ErrorBoundaryWrapper>
       
       {/* 2. Live Activity Counter */}
       <LiveActivityCounter />
@@ -389,7 +407,8 @@ const Index = () => {
       
       {/* Cookie Consent */}
       <CookieConsent />
-    </div>
+      </div>
+    </>
   );
 };
 
