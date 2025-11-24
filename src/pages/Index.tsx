@@ -19,6 +19,8 @@ import { SocialProofMetrics } from "@/components/SocialProofMetrics";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ComparisonPreview } from "@/components/ComparisonPreview";
 import { VideoEstimatorTeaser } from "@/components/VideoEstimatorTeaser";
+import { SEOHead } from "@/components/SEOHead";
+import { generateOrganizationSchema, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/schema";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -27,8 +29,35 @@ const Index = () => {
   const parallax3 = useParallax(0.1);
   const parallax4 = useParallax(0.3);
 
+  const organizationSchema = generateOrganizationSchema();
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "/" }
+  ]);
+  
+  const faqSchema = generateFAQSchema([
+    {
+      question: "Wie funktioniert Umzugscheck.ch?",
+      answer: "Geben Sie Ihre Umzugsdetails ein, vergleichen Sie Offerten von geprüften Firmen und wählen Sie das beste Angebot. Alles kostenlos und unverbindlich."
+    },
+    {
+      question: "Ist der Service wirklich kostenlos?",
+      answer: "Ja, der gesamte Vergleichsservice ist für Sie 100% kostenlos. Wir erhalten eine Provision von den Umzugsfirmen, wenn Sie ein Angebot annehmen."
+    },
+    {
+      question: "Wie viel kann ich sparen?",
+      answer: "Unsere Kunden sparen durchschnittlich 40% der Umzugskosten durch den Vergleich mehrerer Angebote."
+    }
+  ]);
+
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SEOHead 
+        title="Umzugsfirmen vergleichen & bis zu 40% sparen"
+        description="Vergleichen Sie kostenlos Offerten von 200+ geprüften Umzugsfirmen in der Schweiz. Sparen Sie bis zu 40% bei Ihrem Umzug. Schnell, einfach & unverbindlich."
+        canonical="/"
+        keywords="umzug schweiz, umzugsfirma vergleich, umzugskosten, offerte umzug, günstig umziehen"
+        schema={[organizationSchema, breadcrumbSchema, faqSchema]}
+      />
       {/* Animated Background Gradients with Parallax */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div 
