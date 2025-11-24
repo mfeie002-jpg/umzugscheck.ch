@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video } from "lucide-react";
+import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -57,6 +57,35 @@ const calculators = [
   }
 ];
 
+const cantons = [
+  { name: "Zürich", href: "/zuerich/umzugsfirmen" },
+  { name: "Bern", href: "/bern/umzugsfirmen" },
+  { name: "Luzern", href: "/luzern/umzugsfirmen" },
+  { name: "Uri", href: "/uri/umzugsfirmen" },
+  { name: "Schwyz", href: "/schwyz/umzugsfirmen" },
+  { name: "Obwalden", href: "/obwalden/umzugsfirmen" },
+  { name: "Nidwalden", href: "/nidwalden/umzugsfirmen" },
+  { name: "Glarus", href: "/glarus/umzugsfirmen" },
+  { name: "Zug", href: "/zug/umzugsfirmen" },
+  { name: "Fribourg", href: "/fribourg/umzugsfirmen" },
+  { name: "Solothurn", href: "/solothurn/umzugsfirmen" },
+  { name: "Basel-Stadt", href: "/basel-stadt/umzugsfirmen" },
+  { name: "Basel-Landschaft", href: "/basel-landschaft/umzugsfirmen" },
+  { name: "Schaffhausen", href: "/schaffhausen/umzugsfirmen" },
+  { name: "Appenzell Ausserrhoden", href: "/appenzell-ausserrhoden/umzugsfirmen" },
+  { name: "Appenzell Innerrhoden", href: "/appenzell-innerrhoden/umzugsfirmen" },
+  { name: "St. Gallen", href: "/st-gallen/umzugsfirmen" },
+  { name: "Graubünden", href: "/graubuenden/umzugsfirmen" },
+  { name: "Aargau", href: "/aargau/umzugsfirmen" },
+  { name: "Thurgau", href: "/thurgau/umzugsfirmen" },
+  { name: "Ticino", href: "/ticino/umzugsfirmen" },
+  { name: "Vaud", href: "/vaud/umzugsfirmen" },
+  { name: "Valais", href: "/valais/umzugsfirmen" },
+  { name: "Neuchâtel", href: "/neuchatel/umzugsfirmen" },
+  { name: "Genève", href: "/geneve/umzugsfirmen" },
+  { name: "Jura", href: "/jura/umzugsfirmen" }
+];
+
 const mainNavItems = [
   { label: "Startseite", href: "/" },
   { label: "Umzugsfirmen", href: "/firmen" },
@@ -67,6 +96,7 @@ const mainNavItems = [
 
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const [isCalculatorsOpen, setIsCalculatorsOpen] = useState(false);
+  const [isRegionsOpen, setIsRegionsOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -115,6 +145,33 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 >
                   <calc.icon className="w-4 h-4 text-primary" />
                   <span className="text-sm">{calc.title}</span>
+                </Link>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Regions Accordion */}
+          <Collapsible
+            open={isRegionsOpen}
+            onOpenChange={setIsRegionsOpen}
+          >
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium">
+              <span>Regionen</span>
+              <ChevronDown className={cn(
+                "w-4 h-4 transition-transform",
+                isRegionsOpen && "rotate-180"
+              )} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-1 max-h-64 overflow-y-auto">
+              {cantons.map((canton) => (
+                <Link
+                  key={canton.name}
+                  to={canton.href}
+                  onClick={onClose}
+                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                >
+                  <MapPin className="w-4 h-4 text-primary" />
+                  <span className="text-sm">{canton.name}</span>
                 </Link>
               ))}
             </CollapsibleContent>
