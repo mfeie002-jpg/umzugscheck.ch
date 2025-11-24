@@ -19,13 +19,12 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        colors: {
-          primary: {
-            DEFAULT: "hsl(var(--primary))",
-            foreground: "hsl(var(--primary-foreground))",
-            light: "hsl(var(--primary-light))",
-            dark: "hsl(var(--primary-dark))",
-          },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          light: "hsl(var(--primary-light))",
+          dark: "hsl(var(--primary-dark))",
+        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -138,10 +137,10 @@ export default {
         },
         "glow-pulse": {
           "0%, 100%": {
-            boxShadow: "0 0 20px hsl(var(--accent) / 0.4), 0 0 40px hsl(var(--accent) / 0.2)",
+            boxShadow: "0 0 20px hsl(0 75% 55% / 0.4), 0 0 40px hsl(0 75% 55% / 0.2)",
           },
           "50%": {
-            boxShadow: "0 0 30px hsl(var(--accent) / 0.6), 0 0 60px hsl(var(--accent) / 0.3), 0 0 80px hsl(var(--accent) / 0.1)",
+            boxShadow: "0 0 30px hsl(0 75% 55% / 0.6), 0 0 60px hsl(0 75% 55% / 0.3), 0 0 80px hsl(0 75% 55% / 0.1)",
           },
         },
       },
