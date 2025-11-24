@@ -2,6 +2,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Shield, Users, Target, TrendingUp, Heart, Award } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { DataProtectionBadge } from "@/components/trust/DataProtectionBadge";
 
 const About = () => {
   const values = [
@@ -249,6 +250,20 @@ const About = () => {
                     zur passenden Offerte
                   </p>
                 </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* Data Protection Section */}
+        <section className="py-16 md:py-24 bg-secondary/10">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="max-w-3xl mx-auto">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8 text-center">
+                  Ihre Daten sind sicher
+                </h2>
+                <DataProtectionBadge />
               </div>
             </ScrollReveal>
           </div>
