@@ -143,6 +143,42 @@ export type Database = {
         }
         Relationships: []
       }
+      historical_pricing: {
+        Row: {
+          avg_price: number
+          canton_code: string
+          created_at: string
+          id: string
+          lead_volume: number
+          max_price: number
+          min_price: number
+          month: string
+          year: number
+        }
+        Insert: {
+          avg_price: number
+          canton_code: string
+          created_at?: string
+          id?: string
+          lead_volume?: number
+          max_price: number
+          min_price: number
+          month: string
+          year: number
+        }
+        Update: {
+          avg_price?: number
+          canton_code?: string
+          created_at?: string
+          id?: string
+          lead_volume?: number
+          max_price?: number
+          min_price?: number
+          month?: string
+          year?: number
+        }
+        Relationships: []
+      }
       lead_bids: {
         Row: {
           bid_amount: number
@@ -402,6 +438,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      price_alerts: {
+        Row: {
+          alert_frequency: string
+          canton_code: string
+          created_at: string
+          id: string
+          is_active: boolean
+          last_triggered_at: string | null
+          max_price: number
+          updated_at: string
+          user_email: string
+        }
+        Insert: {
+          alert_frequency?: string
+          canton_code: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_triggered_at?: string | null
+          max_price: number
+          updated_at?: string
+          user_email: string
+        }
+        Update: {
+          alert_frequency?: string
+          canton_code?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_triggered_at?: string | null
+          max_price?: number
+          updated_at?: string
+          user_email?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
