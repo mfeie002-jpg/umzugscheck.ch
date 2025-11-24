@@ -56,8 +56,8 @@ const steps: OnboardingStep[] = [
     icon: TrendingUp,
     action: "Dashboard öffnen",
     route: "/anbieter/dashboard",
-  },
-};
+  }
+];
 
 export const ProviderOnboarding = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -115,7 +115,6 @@ export const ProviderOnboarding = () => {
           </Button>
 
           <div className="p-6 space-y-6">
-            {/* Progress */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
@@ -126,20 +125,17 @@ export const ProviderOnboarding = () => {
               <Progress value={progress} />
             </div>
 
-            {/* Icon */}
             <div className="flex justify-center">
               <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
                 <Icon className="w-10 h-10 text-primary" />
               </div>
             </div>
 
-            {/* Content */}
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-bold">{step.title}</h2>
               <p className="text-muted-foreground">{step.description}</p>
             </div>
 
-            {/* Features */}
             <Card>
               <CardContent className="p-4">
                 <div className="space-y-3">
@@ -211,7 +207,6 @@ export const ProviderOnboarding = () => {
               </CardContent>
             </Card>
 
-            {/* Actions */}
             <div className="flex gap-3">
               <Button
                 onClick={() => handleAction(step.route)}
@@ -227,7 +222,6 @@ export const ProviderOnboarding = () => {
               )}
             </div>
 
-            {/* Skip */}
             <div className="text-center">
               <Button onClick={handleSkip} variant="ghost" size="sm">
                 Tour überspringen

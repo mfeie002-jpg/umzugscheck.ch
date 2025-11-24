@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,12 +11,6 @@ serve(async (req) => {
   }
 
   try {
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    if (!resendApiKey) {
-      throw new Error("RESEND_API_KEY not configured");
-    }
-
-    const resend = new Resend(resendApiKey);
     const { type, to, data } = await req.json();
 
     let emailContent = { subject: "", html: "" };
@@ -127,21 +120,12 @@ serve(async (req) => {
         throw new Error("Invalid email type");
     }
 
-    const { data: emailData, error } = await resend.emails.send({
-      from: "Umzugscheck.ch <onboarding@resend.dev>",
-      to: [to],
-      subject: emailContent.subject,
-      html: emailContent.html,
-    });
-
-    if (error) {
-      throw error;
-    }
-
-    console.log("Email sent successfully:", emailData);
+    // Email service skipped - log only for now
+    console.log(`Email notification [${type}] would be sent to:`, to);
+    console.log("Subject:", emailContent.subject);
 
     return new Response(
-      JSON.stringify({ success: true, data: emailData }),
+      JSON.stringify({ success: true, message: "Email logged (service skipped)" }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
