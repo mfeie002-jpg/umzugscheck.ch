@@ -1,0 +1,36 @@
+{
+  "name": "Umzugscheck.ch - Schweizer Umzugsvergleich",
+  "short_name": "Umzugscheck",
+  "description": "Vergleichen Sie Umzugsofferten von über 200 Umzugsfirmen in der ganzen Schweiz. Kostenlos & unabhängig.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/lovable-uploads/1bdb4b13-ea35-4ded-a82e-4aa0714e0608.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/1bdb4b13-ea35-4ded-a82e-4aa0714e0608.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "utilities", "productivity"],
+  "lang": "de-CH",
+  "dir": "ltr",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "/lovable-uploads/d4aa8c36-01f9-47b7-8e18-bd2a8e22467a.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
