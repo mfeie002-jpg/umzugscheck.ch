@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { calculateVideoBasedPrice, formatCurrency } from "@/lib/pricing";
+import { calculateVideoBasedPrice, formatCurrency, estimateDistance } from "@/lib/pricing";
 
 interface AnalysisResult {
   videoId: string;
@@ -52,6 +52,9 @@ export default function VideoEstimator() {
   } | null>(null);
   const [customDistance, setCustomDistance] = useState<string>("50");
   const [isCustomDistance, setIsCustomDistance] = useState(false);
+  const [fromPostal, setFromPostal] = useState<string>("");
+  const [toPostal, setToPostal] = useState<string>("");
+  const [usePostalCodes, setUsePostalCodes] = useState(false);
   
   // Lead form state
   const [name, setName] = useState("");
@@ -215,10 +218,39 @@ export default function VideoEstimator() {
     
     if (!isNaN(distanceNum) && distanceNum > 0 && analysisResult) {
       setIsCustomDistance(true);
+      setUsePostalCodes(false);
       const priceCalc = calculateVideoBasedPrice(
         analysisResult.estimatedVolumeM3,
         analysisResult.difficultyScore,
         distanceNum
+      );
+      setPriceEstimate({
+        minPrice: priceCalc.priceMin,
+        maxPrice: priceCalc.priceMax,
+        estimatedHours: priceCalc.estimatedHours,
+        breakdown: priceCalc.breakdown
+      });
+    }
+  };
+
+  const handlePostalCodeChange = (from: string, to: string) => {
+    setFromPostal(from);
+    setToPostal(to);
+    
+    // Validate Swiss postal codes (4 digits)
+    const isValidFrom = /^\d{4}$/.test(from);
+    const isValidTo = /^\d{4}$/.test(to);
+    
+    if (isValidFrom && isValidTo && analysisResult) {
+      const calculatedDistance = estimateDistance(from, to);
+      setCustomDistance(calculatedDistance.toString());
+      setUsePostalCodes(true);
+      setIsCustomDistance(true);
+      
+      const priceCalc = calculateVideoBasedPrice(
+        analysisResult.estimatedVolumeM3,
+        analysisResult.difficultyScore,
+        calculatedDistance
       );
       setPriceEstimate({
         minPrice: priceCalc.priceMin,
@@ -236,6 +268,9 @@ export default function VideoEstimator() {
     setPriceEstimate(null);
     setCustomDistance("50");
     setIsCustomDistance(false);
+    setFromPostal("");
+    setToPostal("");
+    setUsePostalCodes(false);
     setError(null);
   };
 
@@ -486,36 +521,86 @@ export default function VideoEstimator() {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Distance Adjustment */}
-                        <div className="p-4 rounded-lg bg-card border border-border">
-                          <div className="flex items-center gap-2 mb-3">
+                        <div className="p-4 rounded-lg bg-card border border-border space-y-4">
+                          <div className="flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-primary" />
-                            <Label htmlFor="distance" className="text-base font-semibold">
+                            <Label className="text-base font-semibold">
                               Umzugsdistanz anpassen
                             </Label>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-3">
-                            Geben Sie die tatsächliche Distanz ein für eine genauere Preisschätzung
-                          </p>
-                          <div className="flex gap-3 items-end">
-                            <div className="flex-1">
-                              <Input
-                                id="distance"
-                                type="number"
-                                min="1"
-                                max="500"
-                                value={customDistance}
-                                onChange={(e) => handleDistanceChange(e.target.value)}
-                                className="text-lg"
-                              />
-                            </div>
-                            <div className="text-muted-foreground font-medium pb-2">km</div>
-                          </div>
-                          {isCustomDistance && (
-                            <p className="text-xs text-primary mt-2 flex items-center gap-1">
-                              <CheckCircle className="w-3 h-3" />
-                              Preis aktualisiert für {customDistance} km
+                          
+                          {/* Postal Code Inputs */}
+                          <div className="space-y-3">
+                            <p className="text-sm text-muted-foreground">
+                              Geben Sie die Postleitzahlen ein für eine automatische Distanzberechnung
                             </p>
-                          )}
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <Label htmlFor="fromPostal" className="text-sm mb-1">Von PLZ</Label>
+                                <Input
+                                  id="fromPostal"
+                                  type="text"
+                                  maxLength={4}
+                                  placeholder="8000"
+                                  value={fromPostal}
+                                  onChange={(e) => handlePostalCodeChange(e.target.value, toPostal)}
+                                  className="text-lg"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="toPostal" className="text-sm mb-1">Nach PLZ</Label>
+                                <Input
+                                  id="toPostal"
+                                  type="text"
+                                  maxLength={4}
+                                  placeholder="3000"
+                                  value={toPostal}
+                                  onChange={(e) => handlePostalCodeChange(fromPostal, e.target.value)}
+                                  className="text-lg"
+                                />
+                              </div>
+                            </div>
+                            {usePostalCodes && (
+                              <p className="text-xs text-primary flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3" />
+                                Distanz automatisch berechnet: {customDistance} km
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Or Manual Distance */}
+                          <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                              <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                              <span className="bg-card px-2 text-muted-foreground">Oder manuell</span>
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="distance" className="text-sm mb-1">Distanz (km)</Label>
+                            <div className="flex gap-3 items-end">
+                              <div className="flex-1">
+                                <Input
+                                  id="distance"
+                                  type="number"
+                                  min="1"
+                                  max="500"
+                                  value={customDistance}
+                                  onChange={(e) => handleDistanceChange(e.target.value)}
+                                  className="text-lg"
+                                />
+                              </div>
+                              <div className="text-muted-foreground font-medium pb-2">km</div>
+                            </div>
+                            {isCustomDistance && !usePostalCodes && (
+                              <p className="text-xs text-primary mt-2 flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3" />
+                                Preis aktualisiert für {customDistance} km
+                              </p>
+                            )}
+                          </div>
                         </div>
 
                         <div className="p-6 rounded-lg bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
