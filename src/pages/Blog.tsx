@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, ArrowRight, Search, TrendingUp, BookOpen, DollarSign } from "lucide-react";
 import { useState } from "react";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 
 const BLOG_POSTS = [
   {
@@ -277,6 +278,7 @@ const Blog = () => {
       </main>
 
       <Footer />
+      <StickyMobileCTA />
     </div>
   );
 };

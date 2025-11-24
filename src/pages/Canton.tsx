@@ -11,6 +11,7 @@ import { TrendingDown, Star, MapPin, ArrowRight, Calculator, CheckCircle2, Phone
 import { supabase } from "@/integrations/supabase/client";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 
 const CANTON_INFO: Record<string, {
   name: string;
@@ -744,6 +745,7 @@ const Canton = () => {
       </main>
 
       <Footer />
+      <StickyMobileCTA />
     </div>
   );
 };

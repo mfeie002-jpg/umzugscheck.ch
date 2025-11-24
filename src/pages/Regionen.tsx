@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { MapPin, TrendingUp, Users } from "lucide-react";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 
 const cantons = [
   { name: "Zürich", slug: "zuerich", companies: 42, moves: "1'200+" },
@@ -142,6 +143,7 @@ const Regionen = () => {
 
       <Footer />
       <ScrollToTop />
+      <StickyMobileCTA />
     </div>
   );
 };

@@ -15,6 +15,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { OtherCalculators } from "@/components/OtherCalculators";
 import { BlogTeaser } from "@/components/BlogTeaser";
 import { SocialProofMetrics } from "@/components/SocialProofMetrics";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -150,6 +151,9 @@ const Index = () => {
       
       {/* Scroll to Top Button */}
       <ScrollToTop />
+      
+      {/* Sticky Mobile CTA Bar */}
+      <StickyMobileCTA />
     </div>
   );
 };
