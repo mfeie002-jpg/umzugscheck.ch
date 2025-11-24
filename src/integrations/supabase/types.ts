@@ -224,6 +224,59 @@ export type Database = {
           },
         ]
       }
+      lead_quality_factors: {
+        Row: {
+          completeness_score: number | null
+          created_at: string | null
+          historical_score: number | null
+          id: string
+          lead_id: string
+          predicted_conversion_probability: number | null
+          provider_fit_score: number | null
+          quality_score: number
+          recommended_price: number | null
+          updated_at: string | null
+          urgency_score: number | null
+          value_score: number | null
+        }
+        Insert: {
+          completeness_score?: number | null
+          created_at?: string | null
+          historical_score?: number | null
+          id?: string
+          lead_id: string
+          predicted_conversion_probability?: number | null
+          provider_fit_score?: number | null
+          quality_score: number
+          recommended_price?: number | null
+          updated_at?: string | null
+          urgency_score?: number | null
+          value_score?: number | null
+        }
+        Update: {
+          completeness_score?: number | null
+          created_at?: string | null
+          historical_score?: number | null
+          id?: string
+          lead_id?: string
+          predicted_conversion_probability?: number | null
+          provider_fit_score?: number | null
+          quality_score?: number
+          recommended_price?: number | null
+          updated_at?: string | null
+          urgency_score?: number | null
+          value_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_quality_factors_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_transactions: {
         Row: {
           actual_job_value: number | null
@@ -439,6 +492,48 @@ export type Database = {
           },
         ]
       }
+      platform_analytics: {
+        Row: {
+          active_providers: number | null
+          avg_lead_value: number | null
+          avg_response_time_hours: number | null
+          created_at: string | null
+          customer_satisfaction_avg: number | null
+          id: string
+          metric_date: string
+          new_providers: number | null
+          total_conversions: number | null
+          total_leads: number | null
+          total_revenue: number | null
+        }
+        Insert: {
+          active_providers?: number | null
+          avg_lead_value?: number | null
+          avg_response_time_hours?: number | null
+          created_at?: string | null
+          customer_satisfaction_avg?: number | null
+          id?: string
+          metric_date?: string
+          new_providers?: number | null
+          total_conversions?: number | null
+          total_leads?: number | null
+          total_revenue?: number | null
+        }
+        Update: {
+          active_providers?: number | null
+          avg_lead_value?: number | null
+          avg_response_time_hours?: number | null
+          created_at?: string | null
+          customer_satisfaction_avg?: number | null
+          id?: string
+          metric_date?: string
+          new_providers?: number | null
+          total_conversions?: number | null
+          total_leads?: number | null
+          total_revenue?: number | null
+        }
+        Relationships: []
+      }
       price_alerts: {
         Row: {
           alert_frequency: string
@@ -499,6 +594,59 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_performance_metrics: {
+        Row: {
+          conversion_rate: number | null
+          created_at: string | null
+          customer_satisfaction_score: number | null
+          id: string
+          leads_contacted: number | null
+          leads_converted: number | null
+          leads_received: number | null
+          leads_viewed: number | null
+          metric_date: string
+          provider_id: string
+          response_time_avg_hours: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          conversion_rate?: number | null
+          created_at?: string | null
+          customer_satisfaction_score?: number | null
+          id?: string
+          leads_contacted?: number | null
+          leads_converted?: number | null
+          leads_received?: number | null
+          leads_viewed?: number | null
+          metric_date?: string
+          provider_id: string
+          response_time_avg_hours?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          conversion_rate?: number | null
+          created_at?: string | null
+          customer_satisfaction_score?: number | null
+          id?: string
+          leads_contacted?: number | null
+          leads_converted?: number | null
+          leads_received?: number | null
+          leads_viewed?: number | null
+          metric_date?: string
+          provider_id?: string
+          response_time_avg_hours?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_performance_metrics_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_subscriptions: {
         Row: {
           created_at: string | null
@@ -546,6 +694,70 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_requests: {
+        Row: {
+          created_at: string | null
+          customer_email: string
+          customer_name: string
+          id: string
+          lead_id: string
+          provider_id: string
+          reminder_sent_at: string | null
+          request_sent_at: string | null
+          review_id: string | null
+          review_submitted: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_email: string
+          customer_name: string
+          id?: string
+          lead_id: string
+          provider_id: string
+          reminder_sent_at?: string | null
+          request_sent_at?: string | null
+          review_id?: string | null
+          review_submitted?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          lead_id?: string
+          provider_id?: string
+          reminder_sent_at?: string | null
+          request_sent_at?: string | null
+          review_id?: string | null
+          review_submitted?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_requests_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_requests_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -780,8 +992,12 @@ export type Database = {
       }
       subscription_plans: {
         Row: {
+          advanced_analytics: boolean | null
+          auto_bidding: boolean | null
+          competitor_insights: boolean | null
           created_at: string | null
           description: string | null
+          display_order: number | null
           features: Json | null
           id: string
           is_active: boolean | null
@@ -789,11 +1005,17 @@ export type Database = {
           name: string
           price_monthly: number
           price_yearly: number | null
+          priority_level: number | null
+          tier_name: string | null
           updated_at: string | null
         }
         Insert: {
+          advanced_analytics?: boolean | null
+          auto_bidding?: boolean | null
+          competitor_insights?: boolean | null
           created_at?: string | null
           description?: string | null
+          display_order?: number | null
           features?: Json | null
           id?: string
           is_active?: boolean | null
@@ -801,11 +1023,17 @@ export type Database = {
           name: string
           price_monthly: number
           price_yearly?: number | null
+          priority_level?: number | null
+          tier_name?: string | null
           updated_at?: string | null
         }
         Update: {
+          advanced_analytics?: boolean | null
+          auto_bidding?: boolean | null
+          competitor_insights?: boolean | null
           created_at?: string | null
           description?: string | null
+          display_order?: number | null
           features?: Json | null
           id?: string
           is_active?: boolean | null
@@ -813,6 +1041,8 @@ export type Database = {
           name?: string
           price_monthly?: number
           price_yearly?: number | null
+          priority_level?: number | null
+          tier_name?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -863,6 +1093,10 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_provider_match_score: {
+        Args: { p_lead_id: string; p_provider_id: string }
+        Returns: number
+      }
       close_lead_bidding: { Args: { p_lead_id: string }; Returns: Json }
       count_provider_leads_this_month: {
         Args: { provider_id: string }
