@@ -17,6 +17,8 @@ interface MoveDetails {
   hasElevatorFrom: boolean;
   hasElevatorTo: boolean;
   moveDate?: string;
+  calculatorType?: string;
+  [key: string]: any; // Allow additional properties for different calculator types
 }
 
 interface Estimate {
@@ -59,22 +61,58 @@ Deno.serve(async (req) => {
 
     console.log('Creating estimate session with move details:', moveDetails);
 
-    // Find matching providers based on location and estimated value
-    const estimatedValue = (estimate.priceMin + estimate.priceMax) / 2;
-    const { data: matchingProviderIds, error: matchError } = await supabase.rpc(
-      'find_matching_providers',
-      {
-        lead_from_postal: moveDetails.fromPostal,
-        lead_to_postal: moveDetails.toPostal,
-        estimated_value: estimatedValue,
-      }
-    );
+    // Determine service type from calculator type
+    const calculatorType = moveDetails.calculatorType || 'quick';
+    const serviceTypeMap: Record<string, string> = {
+      'quick': 'moving',
+      'advanced': 'moving',
+      'video': 'moving',
+      'cleaning': 'cleaning',
+      'disposal': 'disposal',
+      'storage': 'storage',
+      'packing': 'packing',
+      'assembly': 'assembly',
+    };
+    const serviceType = serviceTypeMap[calculatorType] || 'moving';
 
-    if (matchError) {
-      console.error('Error finding matching providers:', matchError);
+    // Find matching providers based on location, value, AND service type
+    const estimatedValue = (estimate.priceMin + estimate.priceMax) / 2;
+    let matchingProviderIds: string[] = [];
+
+    if (serviceType === 'moving') {
+      // Use existing provider matching for moving services
+      const { data: providerIds, error: matchError } = await supabase.rpc(
+        'find_matching_providers',
+        {
+          lead_from_postal: moveDetails.fromPostal || '8000',
+          lead_to_postal: moveDetails.toPostal || '8000',
+          estimated_value: estimatedValue,
+        }
+      );
+
+      if (matchError) {
+        console.error('Error finding matching providers:', matchError);
+      } else {
+        matchingProviderIds = providerIds || [];
+      }
+    } else {
+      // For other services, find companies offering that service type
+      const { data: companies, error: compError } = await supabase
+        .from('companies')
+        .select('id')
+        .contains('service_types', [serviceType])
+        .limit(20);
+
+      if (!compError && companies) {
+        matchingProviderIds = companies.map(c => c.id);
+      }
     }
 
-    console.log('Found matching providers:', matchingProviderIds);
+    console.log('Found matching companies for', serviceType, ':', matchingProviderIds);
+
+    // Assign A/B test variant (simple random assignment)
+    const variants = ['default', 'variant_a', 'variant_b'];
+    const funnelVariant = variants[Math.floor(Math.random() * variants.length)];
 
     // Create estimate session
     const { data: session, error: sessionError } = await supabase
@@ -82,7 +120,11 @@ Deno.serve(async (req) => {
       .insert({
         move_details: moveDetails,
         estimate,
-        matching_company_ids: matchingProviderIds || [],
+        matching_company_ids: matchingProviderIds,
+        funnel_variant: funnelVariant,
+        viewed_companies: false,
+        selected_companies: 0,
+        submitted_lead: false,
       })
       .select()
       .single();

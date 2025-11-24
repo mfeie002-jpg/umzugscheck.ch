@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      bundled_estimates: {
+        Row: {
+          created_at: string | null
+          estimate_session_ids: string[]
+          expires_at: string | null
+          id: string
+          total_price_max: number
+          total_price_min: number
+        }
+        Insert: {
+          created_at?: string | null
+          estimate_session_ids: string[]
+          expires_at?: string | null
+          id?: string
+          total_price_max: number
+          total_price_min: number
+        }
+        Update: {
+          created_at?: string | null
+          estimate_session_ids?: string[]
+          expires_at?: string | null
+          id?: string
+          total_price_max?: number
+          total_price_min?: number
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           created_at: string | null
@@ -29,6 +56,7 @@ export type Database = {
           rating: number | null
           review_count: number | null
           service_areas: string[] | null
+          service_types: string[] | null
           services: string[] | null
           updated_at: string | null
           verified: boolean | null
@@ -48,6 +76,7 @@ export type Database = {
           rating?: number | null
           review_count?: number | null
           service_areas?: string[] | null
+          service_types?: string[] | null
           services?: string[] | null
           updated_at?: string | null
           verified?: boolean | null
@@ -67,6 +96,7 @@ export type Database = {
           rating?: number | null
           review_count?: number | null
           service_areas?: string[] | null
+          service_types?: string[] | null
           services?: string[] | null
           updated_at?: string | null
           verified?: boolean | null
@@ -79,25 +109,37 @@ export type Database = {
           created_at: string | null
           estimate: Json
           expires_at: string | null
+          funnel_variant: string | null
           id: string
           matching_company_ids: string[] | null
           move_details: Json
+          selected_companies: number | null
+          submitted_lead: boolean | null
+          viewed_companies: boolean | null
         }
         Insert: {
           created_at?: string | null
           estimate: Json
           expires_at?: string | null
+          funnel_variant?: string | null
           id?: string
           matching_company_ids?: string[] | null
           move_details: Json
+          selected_companies?: number | null
+          submitted_lead?: boolean | null
+          viewed_companies?: boolean | null
         }
         Update: {
           created_at?: string | null
           estimate?: Json
           expires_at?: string | null
+          funnel_variant?: string | null
           id?: string
           matching_company_ids?: string[] | null
           move_details?: Json
+          selected_companies?: number | null
+          submitted_lead?: boolean | null
+          viewed_companies?: boolean | null
         }
         Relationships: []
       }
@@ -221,6 +263,7 @@ export type Database = {
           bid_count: number | null
           bidding_closes_at: string | null
           bidding_enabled: boolean | null
+          bundled_estimate_id: string | null
           calculator_input: Json
           calculator_output: Json
           calculator_type: string
@@ -247,6 +290,7 @@ export type Database = {
           bid_count?: number | null
           bidding_closes_at?: string | null
           bidding_enabled?: boolean | null
+          bundled_estimate_id?: string | null
           calculator_input: Json
           calculator_output: Json
           calculator_type: string
@@ -273,6 +317,7 @@ export type Database = {
           bid_count?: number | null
           bidding_closes_at?: string | null
           bidding_enabled?: boolean | null
+          bundled_estimate_id?: string | null
           calculator_input?: Json
           calculator_output?: Json
           calculator_type?: string
@@ -295,6 +340,13 @@ export type Database = {
           to_postal?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "leads_bundled_estimate_id_fkey"
+            columns: ["bundled_estimate_id"]
+            isOneToOne: false
+            referencedRelation: "bundled_estimates"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "leads_estimate_session_id_fkey"
             columns: ["estimate_session_id"]

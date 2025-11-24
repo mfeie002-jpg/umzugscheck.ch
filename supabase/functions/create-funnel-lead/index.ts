@@ -38,6 +38,15 @@ Deno.serve(async (req) => {
 
     console.log('Creating funnel lead for estimate session:', estimateSessionId);
 
+    // Track company selection count for A/B testing
+    await supabase
+      .from('estimate_sessions')
+      .update({ 
+        selected_companies: selectedCompanyIds.length,
+        submitted_lead: false,
+      })
+      .eq('id', estimateSessionId);
+
     // Fetch estimate session
     const { data: session, error: sessionError } = await supabase
       .from('estimate_sessions')
@@ -96,6 +105,12 @@ Deno.serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // Mark session as converted for A/B testing
+    await supabase
+      .from('estimate_sessions')
+      .update({ submitted_lead: true })
+      .eq('id', estimateSessionId);
 
     console.log('Created funnel lead:', lead.id);
 
