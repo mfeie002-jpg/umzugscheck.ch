@@ -74,6 +74,33 @@ export type Database = {
         }
         Relationships: []
       }
+      estimate_sessions: {
+        Row: {
+          created_at: string | null
+          estimate: Json
+          expires_at: string | null
+          id: string
+          matching_company_ids: string[] | null
+          move_details: Json
+        }
+        Insert: {
+          created_at?: string | null
+          estimate: Json
+          expires_at?: string | null
+          id?: string
+          matching_company_ids?: string[] | null
+          move_details: Json
+        }
+        Update: {
+          created_at?: string | null
+          estimate?: Json
+          expires_at?: string | null
+          id?: string
+          matching_company_ids?: string[] | null
+          move_details?: Json
+        }
+        Relationships: []
+      }
       lead_bids: {
         Row: {
           bid_amount: number
@@ -201,6 +228,7 @@ export type Database = {
           created_at: string | null
           current_highest_bid: number | null
           email: string
+          estimate_session_id: string | null
           from_city: string
           from_postal: string
           id: string
@@ -208,6 +236,7 @@ export type Database = {
           move_date: string | null
           name: string
           phone: string | null
+          selected_company_ids: string[] | null
           starting_bid: number | null
           status: string | null
           to_city: string
@@ -225,6 +254,7 @@ export type Database = {
           created_at?: string | null
           current_highest_bid?: number | null
           email: string
+          estimate_session_id?: string | null
           from_city: string
           from_postal: string
           id?: string
@@ -232,6 +262,7 @@ export type Database = {
           move_date?: string | null
           name: string
           phone?: string | null
+          selected_company_ids?: string[] | null
           starting_bid?: number | null
           status?: string | null
           to_city: string
@@ -249,6 +280,7 @@ export type Database = {
           created_at?: string | null
           current_highest_bid?: number | null
           email?: string
+          estimate_session_id?: string | null
           from_city?: string
           from_postal?: string
           id?: string
@@ -256,12 +288,21 @@ export type Database = {
           move_date?: string | null
           name?: string
           phone?: string | null
+          selected_company_ids?: string[] | null
           starting_bid?: number | null
           status?: string | null
           to_city?: string
           to_postal?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "leads_estimate_session_id_fkey"
+            columns: ["estimate_session_id"]
+            isOneToOne: false
+            referencedRelation: "estimate_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payment_history: {
         Row: {

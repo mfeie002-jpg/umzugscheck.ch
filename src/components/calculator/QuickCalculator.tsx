@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { calculatorApi } from "@/lib/api";
 import { useAnalytics } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
@@ -97,14 +98,27 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
       // Track completion
       analytics.trackCalculatorCompleted('quick', response.data);
       
-      // Navigate to results with data
-      navigate("/rechner/ergebnis", { 
-        state: { 
-          calculatorData: values, 
-          calculation: response.data,
-          distance: response.data.distance,
-          type: "quick" 
-        } 
+      // Create estimate session
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        'create-estimate-session',
+        {
+          body: {
+            moveDetails: values,
+            estimate: response.data,
+          },
+        }
+      );
+
+      if (sessionError || !sessionData?.success) {
+        throw new Error(sessionData?.error?.message || 'Failed to create estimate session');
+      }
+
+      // Navigate to new result page
+      navigate(`/ergebnis/${sessionData.data.id}`);
+      
+      toast({
+        title: "Erfolg",
+        description: "Kostenschätzung erfolgreich berechnet!",
       });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten';

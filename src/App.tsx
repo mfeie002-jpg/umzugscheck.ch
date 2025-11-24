@@ -8,6 +8,9 @@ import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import Index from "./pages/Index";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
+import EstimateResult from "./pages/EstimateResult";
+import LeadRequest from "./pages/LeadRequest";
+import ThankYou from "./pages/ThankYou";
 import Companies from "./pages/Companies";
 import CompanyProfile from "./pages/CompanyProfile";
 import Compare from "./pages/Compare";
@@ -58,6 +61,9 @@ const App = () => (
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
+            <Route path="/ergebnis/:id" element={<EstimateResult />} />
+            <Route path="/offerte-anfordern/:id" element={<LeadRequest />} />
+            <Route path="/danke/:id" element={<ThankYou />} />
             <Route path="/rechner/reinigung" element={<CleaningCalculator />} />
             <Route path="/rechner/entsorgung" element={<DisposalCalculator />} />
             <Route path="/rechner/lager" element={<StorageCalculator />} />
