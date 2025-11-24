@@ -16,6 +16,8 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'lovable-uploads/**/*'],
+      injectRegister: 'auto',
+      strategies: 'generateSW',
       manifest: {
         name: 'Umzugscheck.ch',
         short_name: 'Umzugscheck',
@@ -34,7 +36,7 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        globPatterns: ['**/*.{js,html,ico,png,svg,woff,woff2}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -43,7 +45,7 @@ export default defineConfig(({ mode }) => ({
               cacheName: 'google-fonts-cache',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                maxAgeSeconds: 60 * 60 * 24 * 365
               },
               cacheableResponse: {
                 statuses: [0, 200]
@@ -58,7 +60,7 @@ export default defineConfig(({ mode }) => ({
               networkTimeoutSeconds: 10,
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 5 // 5 minutes
+                maxAgeSeconds: 60 * 5
               }
             }
           }
