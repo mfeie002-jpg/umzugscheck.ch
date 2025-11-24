@@ -16,6 +16,7 @@ import { ProfileOptimizationSuggestions } from "@/components/provider/ProfileOpt
 import { CompetitorAnalysis } from "@/components/provider/CompetitorAnalysis";
 import { PurchasedLeadsList } from "@/components/provider/PurchasedLeadsList";
 import { ConversionAnalytics } from "@/components/provider/ConversionAnalytics";
+import { MLPredictions } from "@/components/provider/MLPredictions";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -257,10 +258,11 @@ const ProviderDashboard = () => {
           {isApproved && (
             <div className="space-y-8 mb-8">
               <Tabs defaultValue="optimization" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="optimization">Profil-Optimierung</TabsTrigger>
                   <TabsTrigger value="competitors">Wettbewerbsanalyse</TabsTrigger>
                   <TabsTrigger value="analytics">Conversion Analytics</TabsTrigger>
+                  <TabsTrigger value="ml">KI-Empfehlungen</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="optimization">
@@ -289,6 +291,10 @@ const ProviderDashboard = () => {
 
                 <TabsContent value="analytics">
                   <ConversionAnalytics providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="ml">
+                  <MLPredictions providerId={provider.id} />
                 </TabsContent>
               </Tabs>
             </div>
