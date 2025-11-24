@@ -1,6 +1,16 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
+// Helper function to map postal codes to cantons
+const getCantonFromPostal = (postalCode: string): string => {
+  const code = postalCode.substring(0, 1);
+  const codeMap: Record<string, string> = {
+    '1': 'VD', '2': 'NE', '3': 'BE', '4': 'BS',
+    '5': 'AG', '6': 'LU', '7': 'GR', '8': 'ZH', '9': 'SG'
+  };
+  return codeMap[code] || 'Other';
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -23,18 +33,65 @@ serve(async (req) => {
     // Get lead details
     const { data: lead, error: leadError } = await supabase
       .from("leads")
-      .select("*, calculator_output")
+      .select("*")
       .eq("id", leadId)
       .single();
 
     if (leadError) throw leadError;
 
-    // Calculate lead price based on volume
+    // Calculate lead price using quality scoring system
     const volume = lead.calculator_output?.volume || 30;
-    let leadPrice = 15; // Base price
+    const fromCanton = getCantonFromPostal(lead.from_postal);
+    const toCanton = getCantonFromPostal(lead.to_postal);
     
-    if (volume > 50) leadPrice = 30;
-    if (volume > 80) leadPrice = 45;
+    // Canton premium multipliers
+    const cantonPremiums: Record<string, number> = {
+      'ZH': 1.3, 'ZG': 1.25, 'GE': 1.2, 'BS': 1.2, 'VD': 1.15,
+      'BL': 1.1, 'AG': 1.05, 'SG': 1.0, 'BE': 1.0, 'LU': 1.0
+    };
+    
+    const maxPremium = Math.max(
+      cantonPremiums[fromCanton] || 1.0,
+      cantonPremiums[toCanton] || 1.0
+    );
+    
+    // Base price from volume
+    let basePrice = 15;
+    if (volume > 80) basePrice = 45;
+    else if (volume > 50) basePrice = 30;
+    else if (volume > 30) basePrice = 20;
+    
+    // Location premium
+    const locationPremium = Math.round(basePrice * (maxPremium - 1.0));
+    
+    // Complexity adjustment
+    let complexityScore = 15;
+    if (lead.calculator_output) {
+      const hasExtraServices = lead.calculator_output.extraServices?.length > 0;
+      const hasSpecialItems = lead.calculator_output.specialItems?.length > 0;
+      const hasDifficultAccess = lead.calculator_output.accessDifficulty === 'difficult';
+      const floors = (lead.calculator_output.floorsStart || 0) + (lead.calculator_output.floorsDestination || 0);
+      
+      if (hasExtraServices) complexityScore += 5;
+      if (hasSpecialItems) complexityScore += 5;
+      if (hasDifficultAccess) complexityScore += 5;
+      if (floors > 4) complexityScore += 5;
+    }
+    
+    const complexityMultiplier = 1 + (complexityScore / 120);
+    const complexityAdjustment = Math.round(basePrice * (complexityMultiplier - 1.0));
+    
+    const leadPrice = basePrice + locationPremium + complexityAdjustment;
+    
+    console.log("Lead pricing breakdown:", {
+      basePrice,
+      locationPremium,
+      complexityAdjustment,
+      finalPrice: leadPrice,
+      volume,
+      fromCanton,
+      toCanton
+    });
 
     // Check if provider already purchased this lead
     const { data: existingTransaction } = await supabase
