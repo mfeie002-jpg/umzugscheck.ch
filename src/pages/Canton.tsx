@@ -343,6 +343,122 @@ const Canton = () => {
   };
 
   if (!info) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">Kanton nicht gefunden</h2>
+            <p className="text-muted-foreground mb-6">Diese Seite ist noch nicht verfügbar.</p>
+            <Link to="/">
+              <Button>Zurück zur Startseite</Button>
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Calculate aggregate rating from companies
+  const averageRating = companies.length > 0
+    ? (companies.reduce((sum, c) => sum + (c.rating || 0), 0) / companies.length).toFixed(1)
+    : "0";
+  const totalReviews = companies.reduce((sum, c) => sum + (c.review_count || 0), 0);
+
+  // Generate FAQ questions
+  const faqs = [
+    {
+      question: `Wie viel kostet ein Umzug im Kanton ${info.name}?`,
+      answer: `Die Kosten für einen Umzug im Kanton ${info.name} variieren je nach Wohnungsgrösse, Distanz und zusätzlichen Services. Ein 3-Zimmer-Umzug kostet durchschnittlich ${info.priceRange.threeRooms}, ein Studio ${info.priceRange.studio}. Nutzen Sie unseren kostenlosen Umzugsrechner für eine genaue Schätzung basierend auf Ihren individuellen Anforderungen.`
+    },
+    {
+      question: "Wie lange im Voraus sollte ich eine Umzugsfirma buchen?",
+      answer: `Wir empfehlen, 4-6 Wochen vor dem geplanten Umzugstermin Offerten einzuholen. In ${info.name} sind besonders die Sommermonate und Monatsenden stark nachgefragt. Bei grösseren Umzügen oder speziellen Anforderungen sollten Sie 8-12 Wochen Vorlauf einplanen.`
+    },
+    {
+      question: `Welche Umzugsfirmen sind im Kanton ${info.name} aktiv?`,
+      answer: `Im Kanton ${info.name} sind über 20 geprüfte Umzugsfirmen aktiv, die wir auf Umzugscheck.ch listen. Die Anbieter decken alle Hauptorte ab: ${info.cities.slice(0, 3).join(', ')} und weitere Gemeinden. Nutzen Sie unseren Vergleich, um die passende Firma für Ihren Standort zu finden.`
+    },
+    {
+      question: "Was ist im Umzugspreis inbegriffen?",
+      answer: `Die meisten Umzugsfirmen in ${info.name} bieten Pauschal- oder Stundenansätze. Typischerweise inbegriffen sind: Transport mit LKW, mindestens 2 Umzugshelfer, Grundversicherung und Treibstoff. Zusatzleistungen wie Verpackungsmaterial, Möbelmontage oder Endreinigung werden separat verrechnet. Fordern Sie detaillierte Offerten an, um Überraschungen zu vermeiden.`
+    },
+    {
+      question: "Benötige ich eine Halteverbotszone?",
+      answer: `In vielen Gemeinden im Kanton ${info.name} ist eine Halteverbotszone sinnvoll oder sogar erforderlich, insbesondere in dicht besiedelten Gebieten wie ${info.cities[0]}. Die Umzugsfirma kann diese für Sie organisieren. Kosten: ca. CHF 100-200. Erkundigen Sie sich rechtzeitig bei Ihrer Gemeinde über die Anforderungen.`
+    },
+    {
+      question: "Wie kann ich beim Umzug sparen?",
+      answer: `So sparen Sie bei Ihrem Umzug in ${info.name}: 1) Mehrere Offerten vergleichen (durchschnittlich 30-40% Preisunterschied), 2) Umzug unter der Woche statt am Wochenende, 3) Selbst packen und Material besorgen, 4) Kleinteile selbst transportieren, 5) Umzugstermin ausserhalb der Hochsaison wählen (Sommer, Monatsende). Nutzen Sie unseren Rechner für einen ersten Kostenvoranschlag.`
+    },
+    {
+      question: "Sind die Umzugsfirmen versichert?",
+      answer: `Alle auf Umzugscheck.ch gelisteten Firmen in ${info.name} verfügen über eine Haftpflichtversicherung. Diese deckt jedoch nur grobe Fahrlässigkeit ab. Für wertvollen Hausrat empfehlen wir eine separate Transportversicherung. Klären Sie den Versicherungsumfang vor Vertragsabschluss und dokumentieren Sie wertvolle Gegenstände mit Fotos.`
+    },
+    {
+      question: `Gibt es spezielle Herausforderungen bei Umzügen in ${info.name}?`,
+      answer: `${info.name === 'Zürich' ? 'In Zürich sind enge Altstadtgassen, hohe Gebäude ohne Lift und Parkplatzmangel typische Herausforderungen.' : 
+               info.name === 'Bern' ? 'In Bern stellen die Altstadtlage mit engen Gassen und die vielen historischen Gebäude besondere Anforderungen.' :
+               info.name === 'Genf' ? 'In Genf sind internationale Kunden, mehrsprachige Kommunikation und grenzüberschreitende Umzüge häufig.' :
+               info.name === 'Tessin' ? 'Im Tessin sind Hanglagen, enge Dorfkerne und begrenzte Zufahrtsmöglichkeiten zu beachten.' :
+               info.name === 'Graubünden' ? 'In Graubünden stellen alpine Lagen, Saisonwohnungen und lange Anfahrtswege besondere Herausforderungen dar.' :
+               info.name === 'Wallis' ? 'Im Wallis sind Bergumzüge, Feriendomizile und zweisprachige Kommunikation (Deutsch/Französisch) zu berücksichtigen.' :
+               `In ${info.name} kennen lokale Umzugsfirmen die regionalen Besonderheiten und können flexibel auf besondere Anforderungen reagieren.`
+             } Professionelle Firmen sind auf diese Gegebenheiten spezialisiert.`
+    }
+  ];
+
+  // Generate structured data schemas
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  };
+
+  const aggregateRatingSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": `Umzugsfirmen in ${info.name}`,
+    "description": info.description,
+    "numberOfItems": companies.length,
+    "aggregateRating": companies.length > 0 ? {
+      "@type": "AggregateRating",
+      "ratingValue": averageRating,
+      "bestRating": "5",
+      "worstRating": "1",
+      "ratingCount": totalReviews.toString()
+    } : undefined,
+    "itemListElement": companies.slice(0, 5).map((company, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "LocalBusiness",
+        "@id": `https://umzugscheck.ch/firmen/${company.id}`,
+        "name": company.name,
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": company.rating?.toString() || "0",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": company.review_count?.toString() || "0"
+        },
+        "priceRange": company.price_level,
+        "areaServed": {
+          "@type": "City",
+          "name": info.name
+        }
+      }
+    }))
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* SEO Meta Tags */}
@@ -350,7 +466,7 @@ const Canton = () => {
         <title>Umzug {info.name} – Offerten vergleichen | Umzugscheck.ch</title>
         <meta 
           name="description" 
-          content={`Umzugsfirmen in ${info.name} vergleichen. ${info.description} Kostenlose Offerten von geprüften Umzugsunternehmen.`} 
+          content={`Umzugsfirmen in ${info.name} vergleichen. ${info.description} ⭐ ${averageRating}/5 Durchschnittsbewertung. Kostenlose Offerten von geprüften Umzugsunternehmen.`} 
         />
         <meta name="keywords" content={`Umzug ${info.name}, Umzugsfirma ${info.name}, Umzugskosten ${info.name}, ${info.cities.join(', ')}`} />
         <link rel="canonical" href={`https://umzugscheck.ch/umzug/${cantonKey}`} />
@@ -358,23 +474,17 @@ const Canton = () => {
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={`Umzug ${info.name} – Die besten Umzugsfirmen vergleichen`} />
-        <meta property="og:description" content={info.description} />
+        <meta property="og:description" content={`${info.description} ⭐ ${averageRating}/5 basierend auf ${totalReviews} Bewertungen.`} />
         <meta property="og:url" content={`https://umzugscheck.ch/umzug/${cantonKey}`} />
         
-        {/* Structured Data - LocalBusiness */}
+        {/* Structured Data - FAQ Schema */}
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": `Umzugscheck.ch - ${info.name}`,
-            "description": info.description,
-            "areaServed": {
-              "@type": "State",
-              "name": info.name
-            },
-            "priceRange": info.priceRange.studio,
-            "url": `https://umzugscheck.ch/umzug/${cantonKey}`
-          })}
+          {JSON.stringify(faqSchema)}
+        </script>
+        
+        {/* Structured Data - Aggregate Rating Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify(aggregateRatingSchema)}
         </script>
         
         {/* Structured Data - BreadcrumbList */}
@@ -406,23 +516,6 @@ const Canton = () => {
         </script>
       </Helmet>
 
-      <Navigation />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-2">Kanton nicht gefunden</h2>
-            <p className="text-muted-foreground mb-6">Diese Seite ist noch nicht verfügbar.</p>
-            <Link to="/">
-              <Button>Zurück zur Startseite</Button>
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen flex flex-col">
       <Navigation />
 
       <main className="flex-1">
@@ -696,49 +789,7 @@ const Canton = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl font-bold mb-8 text-center">Häufige Fragen zu Umzügen in {info.name}</h2>
-              <FAQAccordion 
-                items={[
-                  {
-                    question: `Wie viel kostet ein Umzug im Kanton ${info.name}?`,
-                    answer: `Die Kosten für einen Umzug im Kanton ${info.name} variieren je nach Wohnungsgrösse, Distanz und zusätzlichen Services. Ein 3-Zimmer-Umzug kostet durchschnittlich ${info.priceRange.threeRooms}, ein Studio ${info.priceRange.studio}. Nutzen Sie unseren kostenlosen Umzugsrechner für eine genaue Schätzung basierend auf Ihren individuellen Anforderungen.`
-                  },
-                  {
-                    question: "Wie lange im Voraus sollte ich eine Umzugsfirma buchen?",
-                    answer: `Wir empfehlen, 4-6 Wochen vor dem geplanten Umzugstermin Offerten einzuholen. In ${info.name} sind besonders die Sommermonate und Monatsenden stark nachgefragt. Bei grösseren Umzügen oder speziellen Anforderungen sollten Sie 8-12 Wochen Vorlauf einplanen.`
-                  },
-                  {
-                    question: `Welche Umzugsfirmen sind im Kanton ${info.name} aktiv?`,
-                    answer: `Im Kanton ${info.name} sind über 20 geprüfte Umzugsfirmen aktiv, die wir auf Umzugscheck.ch listen. Die Anbieter decken alle Hauptorte ab: ${info.cities.slice(0, 3).join(', ')} und weitere Gemeinden. Nutzen Sie unseren Vergleich, um die passende Firma für Ihren Standort zu finden.`
-                  },
-                  {
-                    question: "Was ist im Umzugspreis inbegriffen?",
-                    answer: `Die meisten Umzugsfirmen in ${info.name} bieten Pauschal- oder Stundenansätze. Typischerweise inbegriffen sind: Transport mit LKW, mindestens 2 Umzugshelfer, Grundversicherung und Treibstoff. Zusatzleistungen wie Verpackungsmaterial, Möbelmontage oder Endreinigung werden separat verrechnet. Fordern Sie detaillierte Offerten an, um Überraschungen zu vermeiden.`
-                  },
-                  {
-                    question: "Benötige ich eine Halteverbotszone?",
-                    answer: `In vielen Gemeinden im Kanton ${info.name} ist eine Halteverbotszone sinnvoll oder sogar erforderlich, insbesondere in dicht besiedelten Gebieten wie ${info.cities[0]}. Die Umzugsfirma kann diese für Sie organisieren. Kosten: ca. CHF 100-200. Erkundigen Sie sich rechtzeitig bei Ihrer Gemeinde über die Anforderungen.`
-                  },
-                  {
-                    question: "Wie kann ich beim Umzug sparen?",
-                    answer: `So sparen Sie bei Ihrem Umzug in ${info.name}: 1) Mehrere Offerten vergleichen (durchschnittlich 30-40% Preisunterschied), 2) Umzug unter der Woche statt am Wochenende, 3) Selbst packen und Material besorgen, 4) Kleinteile selbst transportieren, 5) Umzugstermin ausserhalb der Hochsaison wählen (Sommer, Monatsende). Nutzen Sie unseren Rechner für einen ersten Kostenvoranschlag.`
-                  },
-                  {
-                    question: "Sind die Umzugsfirmen versichert?",
-                    answer: `Alle auf Umzugscheck.ch gelisteten Firmen in ${info.name} verfügen über eine Haftpflichtversicherung. Diese deckt jedoch nur grobe Fahrlässigkeit ab. Für wertvollen Hausrat empfehlen wir eine separate Transportversicherung. Klären Sie den Versicherungsumfang vor Vertragsabschluss und dokumentieren Sie wertvolle Gegenstände mit Fotos.`
-                  },
-                  {
-                    question: `Gibt es spezielle Herausforderungen bei Umzügen in ${info.name}?`,
-                    answer: `${info.name === 'Zürich' ? 'In Zürich sind enge Altstadtgassen, hohe Gebäude ohne Lift und Parkplatzmangel typische Herausforderungen.' : 
-                             info.name === 'Bern' ? 'In Bern stellen die Altstadtlage mit engen Gassen und die vielen historischen Gebäude besondere Anforderungen.' :
-                             info.name === 'Genf' ? 'In Genf sind internationale Kunden, mehrsprachige Kommunikation und grenzüberschreitende Umzüge häufig.' :
-                             info.name === 'Tessin' ? 'Im Tessin sind Hanglagen, enge Dorfkerne und begrenzte Zufahrtsmöglichkeiten zu beachten.' :
-                             info.name === 'Graubünden' ? 'In Graubünden stellen alpine Lagen, Saisonwohnungen und lange Anfahrtswege besondere Herausforderungen dar.' :
-                             info.name === 'Wallis' ? 'Im Wallis sind Bergumzüge, Feriendomizile und zweisprachige Kommunikation (Deutsch/Französisch) zu berücksichtigen.' :
-                             `In ${info.name} kennen lokale Umzugsfirmen die regionalen Besonderheiten und können flexibel auf besondere Anforderungen reagieren.`
-                           } Professionelle Firmen sind auf diese Gegebenheiten spezialisiert.`
-                  }
-                ]}
-              />
+              <FAQAccordion items={faqs} />
             </div>
           </div>
         </section>
