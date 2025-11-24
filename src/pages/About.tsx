@@ -4,6 +4,40 @@ import { Shield, Users, Target, TrendingUp, Heart, Award } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { DataProtectionBadge } from "@/components/trust/DataProtectionBadge";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Helmet } from "react-helmet";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Umzugscheck.ch",
+  "alternateName": "Umzugscheck",
+  "url": "https://umzugscheck.ch",
+  "logo": "https://umzugscheck.ch/logo.png",
+  "description": "Schweizer Vergleichsplattform für Umzugsofferten. Vergleichen Sie geprüfte Umzugsfirmen aus allen 26 Kantonen und sparen Sie Zeit und Geld bei Ihrem Umzug.",
+  "foundingDate": "2024",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "CH",
+    "addressRegion": "Schweiz"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "availableLanguage": ["German", "French", "Italian"]
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "knowsAbout": [
+    "Umzugsservice",
+    "Wohnungsendreinigung",
+    "Entsorgung",
+    "Lagerung",
+    "Packservice",
+    "Möbelmontage"
+  ]
+};
 
 const About = () => {
   const values = [
@@ -48,6 +82,17 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Über uns - Umzugscheck.ch | Ihre unabhängige Schweizer Vergleichsplattform</title>
+        <meta 
+          name="description" 
+          content="Erfahren Sie mehr über Umzugscheck.ch - die unabhängige Schweizer Vergleichsplattform für Umzugsofferten. Unsere Mission, Werte und wie wir Ihnen helfen, den besten Umzugsservice zu finden."
+        />
+        <script type="application/ld+json">
+          {JSON.stringify(organizationSchema)}
+        </script>
+      </Helmet>
+
       <Navigation />
       
       <main className="flex-1">
