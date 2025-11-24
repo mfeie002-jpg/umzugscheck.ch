@@ -18,6 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { QuickCalculator } from "@/components/QuickCalculator";
+import { CantonComparison } from "@/components/CantonComparison";
+import { SeasonalPricing } from "@/components/SeasonalPricing";
+import { RegionalReviews } from "@/components/RegionalReviews";
 
 interface Canton {
   name: string;
@@ -357,10 +361,11 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
             </div>
 
             <Tabs defaultValue="list" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsList className="grid w-full grid-cols-4 mb-4">
                 <TabsTrigger value="list">Liste</TabsTrigger>
                 <TabsTrigger value="map">Karte</TabsTrigger>
-                <TabsTrigger value="routes">Beliebte Routen</TabsTrigger>
+                <TabsTrigger value="routes">Routen</TabsTrigger>
+                <TabsTrigger value="insights">Insights</TabsTrigger>
               </TabsList>
 
               <TabsContent value="list">
@@ -438,6 +443,13 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
 
               <TabsContent value="routes">
                 <PopularMovingRoutes />
+              </TabsContent>
+
+              <TabsContent value="insights" className="space-y-4">
+                <QuickCalculator />
+                <CantonComparison />
+                <SeasonalPricing />
+                <RegionalReviews />
               </TabsContent>
             </Tabs>
 
