@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Calendar, Package, Loader2, ShoppingCart, Star, TrendingUp, Clock, Zap, Gavel, Eye } from "lucide-react";
+import { MapPin, Calendar, Package, Loader2, ShoppingCart, Star, TrendingUp, Clock, Zap, Gavel, Eye, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
 import { calculateLeadQualityScore } from "@/lib/pricing";
+import { calculateLeadMatchScore, getMatchLevelColor, getMatchLevelLabel } from "@/lib/lead-matching";
 import { LeadBiddingCard } from "./LeadBiddingCard";
 import { LeadPreviewDialog } from "./LeadPreviewDialog";
 
@@ -34,12 +36,30 @@ export function AvailableLeadsMarket() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
+  const [currentMonthLeadCount, setCurrentMonthLeadCount] = useState<number>(0);
 
   useEffect(() => {
     if (provider) {
       fetchAvailableLeads();
+      fetchCurrentMonthLeadCount();
     }
   }, [provider]);
+
+  const fetchCurrentMonthLeadCount = async () => {
+    if (!provider) return;
+    
+    try {
+      const { count } = await supabase
+        .from("lead_transactions")
+        .select("*", { count: 'exact', head: true })
+        .eq("provider_id", provider.id)
+        .gte("created_at", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString());
+      
+      setCurrentMonthLeadCount(count || 0);
+    } catch (error) {
+      console.error("Error fetching lead count:", error);
+    }
+  };
 
   const fetchAvailableLeads = async () => {
     try {
@@ -184,6 +204,9 @@ export function AvailableLeadsMarket() {
       estimatedValue: lead.calculator_output?.priceAvg,
       createdAt: lead.created_at
     });
+
+    // Calculate match score
+    const matchScore = provider ? calculateLeadMatchScore(provider, lead, currentMonthLeadCount) : null;
     
     const isPurchasing = purchasing === lead.id;
 
@@ -198,8 +221,14 @@ export function AvailableLeadsMarket() {
                   <Star className="h-3 w-3 mr-1" />
                   {getQualityLabel(qualityScore.qualityTier)}
                 </Badge>
-                {qualityScore.ageDiscountPercentage > 0 && getUrgencyBadge(qualityScore.urgencyLevel, qualityScore.ageDiscountPercentage)}
-              </div>
+                  {qualityScore.ageDiscountPercentage > 0 && getUrgencyBadge(qualityScore.urgencyLevel, qualityScore.ageDiscountPercentage)}
+                  {matchScore && (
+                    <Badge variant="outline" className={getMatchLevelColor(matchScore.matchLevel)}>
+                      <Target className="h-3 w-3 mr-1" />
+                      {matchScore.matchPercentage}%
+                    </Badge>
+                  )}
+                </div>
               <CardDescription className="mt-1">
                 <div className="flex items-center gap-1 text-sm">
                   <MapPin className="h-3 w-3" />
@@ -233,6 +262,23 @@ export function AvailableLeadsMarket() {
 
         <CardContent className="flex-1">
           <div className="space-y-3">
+            {/* Match Score */}
+            {matchScore && (
+              <div className={`p-3 rounded-lg border ${getMatchLevelColor(matchScore.matchLevel)}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <Target className="h-4 w-4" />
+                    Match-Score
+                  </div>
+                  <span className="font-bold">{matchScore.matchPercentage}%</span>
+                </div>
+                <Progress value={matchScore.matchPercentage} className="h-1.5" />
+                <div className="text-xs text-muted-foreground mt-2">
+                  {getMatchLevelLabel(matchScore.matchLevel)} - {matchScore.details.servesBothCantons ? 'In Ihrem Gebiet' : 'Außerhalb'}
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Von:</span>
@@ -299,7 +345,11 @@ export function AvailableLeadsMarket() {
         </CardContent>
 
         <CardFooter className="flex gap-2">
-          <LeadPreviewDialog lead={lead}>
+          <LeadPreviewDialog 
+            lead={lead}
+            provider={provider}
+            currentMonthLeadCount={currentMonthLeadCount}
+          >
             <Button variant="outline" className="flex-1">
               <Eye className="w-4 h-4 mr-2" />
               Vorschau

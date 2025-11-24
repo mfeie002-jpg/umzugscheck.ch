@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { MapPin, Calendar, Package, Loader2, Gavel, Star, TrendingUp, Clock, Zap, Users, Eye } from "lucide-react";
+import { MapPin, Calendar, Package, Loader2, Gavel, Star, TrendingUp, Clock, Zap, Users, Eye, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
 import { calculateLeadQualityScore } from "@/lib/pricing";
+import { calculateLeadMatchScore, getMatchLevelColor, getMatchLevelLabel } from "@/lib/lead-matching";
 import { LeadPreviewDialog } from "./LeadPreviewDialog";
 
 interface Lead {
@@ -48,6 +50,7 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
   const [bids, setBids] = useState<Bid[]>([]);
   const [myBid, setMyBid] = useState<Bid | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
+  const [currentMonthLeadCount, setCurrentMonthLeadCount] = useState<number>(0);
 
   const volume = lead.calculator_output?.volume || 30;
   const qualityScore = calculateLeadQualityScore({
@@ -60,14 +63,32 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
     createdAt: lead.created_at
   });
 
+  // Calculate match score
+  const matchScore = provider ? calculateLeadMatchScore(provider, lead, currentMonthLeadCount) : null;
+
   const minimumBid = lead.current_highest_bid 
     ? lead.current_highest_bid + 1 
     : lead.starting_bid || qualityScore.finalPrice;
 
   useEffect(() => {
-    if (!lead.bidding_enabled) return;
+    if (!lead.bidding_enabled || !provider) return;
 
-    // Fetch bids
+    // Fetch current month lead count for capacity calculation
+    const fetchLeadCount = async () => {
+      try {
+        const { count } = await supabase
+          .from("lead_transactions")
+          .select("*", { count: 'exact', head: true })
+          .eq("provider_id", provider.id)
+          .gte("created_at", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString());
+        
+        setCurrentMonthLeadCount(count || 0);
+      } catch (error) {
+        console.error("Error fetching lead count:", error);
+      }
+    };
+
+    fetchLeadCount();
     fetchBids();
 
     // Subscribe to real-time bid updates
@@ -205,6 +226,12 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
                 <Gavel className="h-3 w-3 mr-1" />
                 Auktion
               </Badge>
+              {matchScore && (
+                <Badge variant="outline" className={getMatchLevelColor(matchScore.matchLevel)}>
+                  <Target className="h-3 w-3 mr-1" />
+                  {matchScore.matchPercentage}%
+                </Badge>
+              )}
             </div>
             <CardDescription className="mt-1">
               <div className="flex items-center gap-1 text-sm">
@@ -217,6 +244,23 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
       </CardHeader>
 
       <CardContent className="flex-1 space-y-4">
+        {/* Match Score (if available) */}
+        {matchScore && (
+          <div className={`p-3 rounded-lg border ${getMatchLevelColor(matchScore.matchLevel)}`}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Target className="h-4 w-4" />
+                Match-Score
+              </div>
+              <span className="font-bold">{matchScore.matchPercentage}%</span>
+            </div>
+            <Progress value={matchScore.matchPercentage} className="h-1.5" />
+            <div className="text-xs text-muted-foreground mt-2">
+              {getMatchLevelLabel(matchScore.matchLevel)} - {matchScore.details.servesBothCantons ? 'In Ihrem Gebiet' : 'Außerhalb'}
+            </div>
+          </div>
+        )}
+
         {/* Bidding Stats */}
         <div className="bg-muted/30 rounded-lg p-3">
           <div className="grid grid-cols-2 gap-3 text-sm">
@@ -281,7 +325,11 @@ export function LeadBiddingCard({ lead, onBidPlaced }: LeadBiddingCardProps) {
         {!isBiddingClosed && (
           <div className="space-y-2">
             <div className="flex gap-2">
-              <LeadPreviewDialog lead={lead}>
+              <LeadPreviewDialog 
+                lead={lead} 
+                provider={provider}
+                currentMonthLeadCount={currentMonthLeadCount}
+              >
                 <Button variant="outline" className="flex-1">
                   <Eye className="w-4 h-4 mr-2" />
                   Vorschau
