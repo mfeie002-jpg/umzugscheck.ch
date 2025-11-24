@@ -17,6 +17,12 @@ import { ServiceCarousel } from "@/components/home/ServiceCarousel";
 import { PremiumWhyChooseUs } from "@/components/home/PremiumWhyChooseUs";
 import { ReviewsShowcase } from "@/components/home/ReviewsShowcase";
 import { TrustCertificates } from "@/components/home/TrustCertificates";
+import { VideoTestimonials } from "@/components/VideoTestimonials";
+import { InteractiveCalculatorDemo } from "@/components/InteractiveCalculatorDemo";
+import { LiveChatSupport } from "@/components/LiveChatSupport";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { CustomerOnboarding } from "@/components/CustomerOnboarding";
+import { ProviderOnboarding } from "@/components/ProviderOnboarding";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -100,12 +106,22 @@ const Index = () => {
         <CTASection />
       </ScrollReveal>
 
-      {/* 6. NEW: Reviews Showcase with verified customer feedback */}
+      {/* 6. Interactive Calculator Demo */}
       <ScrollReveal delay={160}>
+        <InteractiveCalculatorDemo />
+      </ScrollReveal>
+
+      {/* 7. NEW: Reviews Showcase with verified customer feedback */}
+      <ScrollReveal delay={180}>
         <ReviewsShowcase />
       </ScrollReveal>
 
-      {/* 7. Comparison Preview Section */}
+      {/* 8. Video Testimonials */}
+      <ScrollReveal delay={200}>
+        <VideoTestimonials />
+      </ScrollReveal>
+
+      {/* 9. Comparison Preview Section */}
       <ScrollReveal delay={180}>
         <ComparisonPreview />
       </ScrollReveal>
@@ -150,6 +166,18 @@ const Index = () => {
       
       {/* Live Activity Indicator */}
       <LiveActivityIndicator />
+      
+      {/* Live Chat Support */}
+      <LiveChatSupport />
+      
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
+      
+      {/* Customer Onboarding */}
+      <CustomerOnboarding />
+      
+      {/* Provider Onboarding */}
+      <ProviderOnboarding />
     </div>
   );
 };
