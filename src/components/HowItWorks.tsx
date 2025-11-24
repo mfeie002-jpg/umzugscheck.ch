@@ -1,23 +1,31 @@
-import { Calculator, FileSearch, ThumbsUp } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Calculator, FileSearch, ThumbsUp, CheckCircle2, ArrowRight } from "lucide-react";
 
 const steps = [
   {
     icon: Calculator,
     number: "01",
-    title: "Rechner ausfüllen",
+    title: "Angaben zum Umzug machen",
     description: "Geben Sie Ihre Umzugsdetails ein – Grösse, Distanz, gewünschte Services. Dauert nur 60 Sekunden."
   },
   {
     icon: FileSearch,
     number: "02",
-    title: "Offerten vergleichen",
+    title: "Angebote von Umzugsfirmen erhalten",
     description: "Erhalten Sie bis zu 5 kostenlose Offerten von geprüften Umzugsfirmen in Ihrer Region."
   },
   {
-    icon: ThumbsUp,
+    icon: CheckCircle2,
     number: "03",
-    title: "Firma auswählen",
-    description: "Vergleichen Sie Preise, Bewertungen und Services. Buchen Sie direkt die beste Firma für Ihren Umzug."
+    title: "Preise & Bewertungen vergleichen",
+    description: "Vergleichen Sie Preise, Kundenbewertungen und Services transparent nebeneinander."
+  },
+  {
+    icon: ThumbsUp,
+    number: "04",
+    title: "Umzugsfirma auswählen und umziehen",
+    description: "Buchen Sie direkt die beste Firma für Ihren Umzug und lehnen Sie sich entspannt zurück."
   }
 ];
 
@@ -32,12 +40,12 @@ export const HowItWorks = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6 max-w-6xl mx-auto">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               {/* Connector Line - Desktop Only */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-border">
+                <div className="hidden lg:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-border">
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-accent rounded-full"></div>
                 </div>
               )}
@@ -59,6 +67,16 @@ export const HowItWorks = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* CTA Button */}
+        <div className="text-center mt-12">
+          <Link to="/rechner">
+            <Button size="lg" className="group shadow-accent">
+              Jetzt Umzugskosten berechnen
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

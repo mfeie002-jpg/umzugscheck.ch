@@ -16,6 +16,8 @@ import { OtherCalculators } from "@/components/OtherCalculators";
 import { BlogTeaser } from "@/components/BlogTeaser";
 import { SocialProofMetrics } from "@/components/SocialProofMetrics";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { ComparisonPreview } from "@/components/ComparisonPreview";
+import { VideoEstimatorTeaser } from "@/components/VideoEstimatorTeaser";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -94,6 +96,11 @@ const Index = () => {
         <HowItWorks />
       </ScrollReveal>
 
+      {/* 3.5 Comparison Preview Section */}
+      <ScrollReveal delay={130}>
+        <ComparisonPreview />
+      </ScrollReveal>
+
       {/* 4. Top Umzugsfirmen Section */}
       <ScrollReveal delay={140}>
         <TopMovers />
@@ -124,7 +131,12 @@ const Index = () => {
         <CTASection />
       </ScrollReveal>
 
-      {/* 8. Services / Bundles Section (Other Calculators) */}
+      {/* 8. Video Estimator Teaser */}
+      <ScrollReveal delay={250}>
+        <VideoEstimatorTeaser />
+      </ScrollReveal>
+
+      {/* 9. Services / Bundles Section (Other Calculators) */}
       <ScrollReveal delay={260}>
         <OtherCalculators 
           title="Alles aus einer Hand" 
@@ -132,12 +144,12 @@ const Index = () => {
         />
       </ScrollReveal>
 
-      {/* 9. Ratgeber / Content Teaser (Blog) */}
+      {/* 10. Ratgeber / Content Teaser (Blog) */}
       <ScrollReveal delay={280}>
         <BlogTeaser />
       </ScrollReveal>
 
-      {/* 10. FAQ Section */}
+      {/* 11. FAQ Section */}
       <ScrollReveal delay={300}>
         <FAQ />
       </ScrollReveal>
