@@ -1,5 +1,3 @@
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { HowItWorks } from "@/components/HowItWorks";
 import { TopMovers } from "@/components/TopMovers";
@@ -7,7 +5,6 @@ import { PopularCantons } from "@/components/PopularCantons";
 import { FAQ } from "@/components/FAQ";
 import { CTASection } from "@/components/CTASection";
 import { useParallax } from "@/hooks/use-parallax";
-import { ScrollToTop } from "@/components/ScrollToTop";
 import { BlogTeaser } from "@/components/BlogTeaser";
 import { ComparisonPreview } from "@/components/ComparisonPreview";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
@@ -23,9 +20,6 @@ import { AICalculatorExplainer } from "@/components/home/AICalculatorExplainer";
 import { VideoTestimonials } from "@/components/VideoTestimonials";
 import { InteractiveCalculatorDemo } from "@/components/InteractiveCalculatorDemo";
 import { LiveChatSupport } from "@/components/LiveChatSupport";
-import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
-import { CustomerOnboarding } from "@/components/CustomerOnboarding";
-import { ProviderOnboarding } from "@/components/ProviderOnboarding";
 import { SEOHead } from "@/components/SEOHead";
 
 const Index = () => {
@@ -137,8 +131,6 @@ const Index = () => {
            }}>
       </div>
 
-      <Navigation />
-      
       {/* 1. NEW: Emotional Hero with AI Calculator as Primary USP */}
       <EmotionalHero />
       
@@ -230,11 +222,6 @@ const Index = () => {
         <CTASection />
       </ScrollReveal>
 
-      <Footer />
-      
-      {/* Scroll to Top Button */}
-      <ScrollToTop />
-      
       {/* Sticky Mobile CTA Bar */}
       <StickyMobileCTA />
       
@@ -243,15 +230,6 @@ const Index = () => {
       
       {/* Live Chat Support */}
       <LiveChatSupport />
-      
-      {/* PWA Install Prompt */}
-      <PWAInstallPrompt />
-      
-      {/* Customer Onboarding */}
-      <CustomerOnboarding />
-      
-      {/* Provider Onboarding */}
-      <ProviderOnboarding />
     </div>
   );
 };
