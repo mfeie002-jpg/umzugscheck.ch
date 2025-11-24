@@ -5,6 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
+import { Navigation } from "./components/Navigation";
+import { Footer } from "./components/Footer";
+import { ScrollToTop } from "./components/ScrollToTop";
+import { AIMovingAssistant } from "./components/AIMovingAssistant";
+import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import Index from "./pages/Index";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
@@ -61,7 +66,13 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
+            <div className="flex flex-col min-h-screen bg-background">
+              <Navigation />
+              <AIMovingAssistant />
+              <PWAInstallPrompt />
+              <ScrollToTop />
+              <main className="flex-1">
+                <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
@@ -109,6 +120,9 @@ const App = () => (
             <Route path="/anbieter/preise" element={<ProviderPricing />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+              </main>
+              <Footer />
+            </div>
           </BrowserRouter>
         </TooltipProvider>
       </ProviderAuthProvider>
