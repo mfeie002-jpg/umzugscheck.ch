@@ -32,7 +32,8 @@ import {
   Settings,
   ArrowRight,
   MessageSquare,
-  Star
+  Star,
+  Brain
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -390,6 +391,39 @@ const AdminDashboard = () => {
                   </CardContent>
                 </Card>
               </Link>
+            </div>
+
+            {/* ML Analytics Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold mb-6">KI & Machine Learning</h2>
+              <div className="grid md:grid-cols-1 gap-6">
+                <Link to="/admin/ml-analytics">
+                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <Brain className="w-6 h-6 text-primary" />
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">KI-Analytics</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Machine Learning basierte Vorhersagen, Lead-Qualität-Scores und optimale Preisempfehlungen
+                      </p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-primary"></div>
+                          <span className="text-muted-foreground">Lead-Vorhersagen</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-success"></div>
+                          <span className="text-muted-foreground">Preis-Optimierung</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             </div>
 
             {/* Provider Management Section */}
