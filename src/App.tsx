@@ -10,7 +10,11 @@ import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { AIMovingAssistant } from "./components/AIMovingAssistant";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
+import { PushNotificationPrompt } from "./components/PushNotificationPrompt";
+import { CustomerOnboarding } from "./components/CustomerOnboarding";
+import { ProviderOnboarding } from "./components/ProviderOnboarding";
 import Index from "./pages/Index";
+import Sitemap from "./pages/Sitemap";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
 import EstimateResult from "./pages/EstimateResult";
@@ -70,6 +74,9 @@ const App = () => (
               <Navigation />
               <AIMovingAssistant />
               <PWAInstallPrompt />
+              <PushNotificationPrompt />
+              <CustomerOnboarding />
+              <ProviderOnboarding />
               <ScrollToTop />
               <main className="flex-1">
                 <Routes>
@@ -118,6 +125,7 @@ const App = () => (
             <Route path="/anbieter/dashboard" element={<ProviderDashboard />} />
             <Route path="/anbieter/profil" element={<ProviderProfile />} />
             <Route path="/anbieter/preise" element={<ProviderPricing />} />
+            <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
               </main>
