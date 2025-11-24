@@ -18,6 +18,8 @@ import { PremiumWhyChooseUs } from "@/components/home/PremiumWhyChooseUs";
 import { ReviewsShowcase } from "@/components/home/ReviewsShowcase";
 import { TrustCertificates } from "@/components/home/TrustCertificates";
 import { TrustCounter } from "@/components/home/TrustCounter";
+import { LiveActivityCounter } from "@/components/home/LiveActivityCounter";
+import { AICalculatorExplainer } from "@/components/home/AICalculatorExplainer";
 import { VideoTestimonials } from "@/components/VideoTestimonials";
 import { InteractiveCalculatorDemo } from "@/components/InteractiveCalculatorDemo";
 import { LiveChatSupport } from "@/components/LiveChatSupport";
@@ -36,20 +38,59 @@ const Index = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
       <SEOHead
-        title="Umzugscheck.ch - KI-Preisrechner für Schweizer Umzüge"
+        title="Umzugscheck.ch - KI-Preisrechner für Schweizer Umzüge | Transparent & Fair"
         description="Vergleichen Sie Umzugsofferten mit unserem KI-Preisrechner. Erhalten Sie in Sekunden präzise Offerten von über 200 geprüften Umzugsfirmen in der ganzen Schweiz. Transparent, fair und 100% schweizerisch."
-        keywords="umzug schweiz, umzugsfirma, umzugsofferte, preisrechner, ki, zürich, bern, basel, geneva, lausanne"
+        keywords="umzug schweiz, umzugsfirma, umzugsofferte, ki preisrechner, umzugskosten, zürich, bern, basel, genf, lausanne, familienunternehmen"
         canonical="/"
         structuredData={{
           "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "Umzugscheck.ch",
-          "url": "https://umzugscheck.ch",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://umzugscheck.ch/firmen?search={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "name": "Umzugscheck.ch",
+              "url": "https://umzugscheck.ch",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://umzugscheck.ch/firmen?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@type": "MovingCompany",
+              "name": "Umzugscheck.ch",
+              "description": "Führende Vergleichsplattform für Umzüge in der Schweiz mit KI-Preisrechner",
+              "url": "https://umzugscheck.ch",
+              "logo": "https://umzugscheck.ch/assets/umzugscheck-logo.png",
+              "image": "https://umzugscheck.ch/assets/hero-moving-family.jpg",
+              "telephone": "+41-44-567-89-00",
+              "email": "info@umzugscheck.ch",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Bahnhofstrasse 100",
+                "addressLocality": "Zürich",
+                "postalCode": "8001",
+                "addressCountry": "CH"
+              },
+              "areaServed": {
+                "@type": "Country",
+                "name": "Schweiz"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "12000",
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "priceRange": "CHF",
+              "openingHours": "Mo-Fr 08:00-18:00",
+              "sameAs": [
+                "https://www.facebook.com/umzugscheck",
+                "https://www.linkedin.com/company/umzugscheck",
+                "https://www.instagram.com/umzugscheck"
+              ]
+            }
+          ]
         }}
       />
       
@@ -101,27 +142,35 @@ const Index = () => {
       {/* 1. NEW: Emotional Hero with AI Calculator as Primary USP */}
       <EmotionalHero />
       
-      {/* 2. Trust Counter with Stats, Ratings & Team */}
+      {/* 2. Live Activity Counter */}
+      <LiveActivityCounter />
+      
+      {/* 3. AI Calculator Explainer - How it works */}
+      <ScrollReveal>
+        <AICalculatorExplainer />
+      </ScrollReveal>
+      
+      {/* 4. Trust Counter with Stats, Ratings & Team */}
       <ScrollReveal>
         <TrustCounter />
       </ScrollReveal>
       
-      {/* 3. Service Carousel - All services at a glance */}
+      {/* 5. Service Carousel - All services at a glance */}
       <ScrollReveal delay={80}>
         <ServiceCarousel />
       </ScrollReveal>
 
-      {/* 4. How It Works - 4 steps */}
+      {/* 6. How It Works - 4 steps */}
       <ScrollReveal delay={100}>
         <HowItWorks />
       </ScrollReveal>
 
-      {/* 5. Premium Why Choose Us with family business focus */}
+      {/* 7. Premium Why Choose Us with family business focus */}
       <ScrollReveal delay={120}>
         <PremiumWhyChooseUs />
       </ScrollReveal>
       
-      {/* 6. Trust Certificates & Security Badges */}
+      {/* 8. Trust Certificates & Security Badges */}
       <ScrollReveal delay={140}>
         <TrustCertificates />
       </ScrollReveal>
