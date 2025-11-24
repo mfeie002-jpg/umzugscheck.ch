@@ -175,7 +175,7 @@ export default function VideoEstimator() {
   };
 
   const handleSubmitLead = async () => {
-    if (!name || !email || !analysisResult) {
+    if (!name || !email || !analysisResult || !priceEstimate) {
       toast.error("Bitte füllen Sie alle erforderlichen Felder aus");
       return;
     }
@@ -183,37 +183,39 @@ export default function VideoEstimator() {
     setIsSubmittingLead(true);
 
     try {
-      const { error: leadError } = await supabase.from('leads').insert([{
-        name,
-        email,
-        phone: phone || null,
-        comments: message || `Video-basierte Schätzung: ${analysisResult.estimatedVolumeM3} m³, Schwierigkeit: ${analysisResult.difficultyScore}`,
-        from_postal: "0000",
-        from_city: "Video-Analyse",
-        to_postal: "0000",
-        to_city: "Video-Analyse",
-        calculator_type: "video",
-        calculator_input: {
-          videoId: analysisResult.videoId,
-          fileName: selectedFile?.name
-        } as any,
-        calculator_output: analysisResult as any
-      }]);
+      // Create estimate session
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        'create-estimate-session',
+        {
+          body: {
+            moveDetails: {
+              fromPostal: fromPostal || '0000',
+              fromCity: 'Video-Analyse',
+              toPostal: toPostal || '0000',
+              toCity: 'Video-Analyse',
+              calculatorType: 'video',
+              videoId: analysisResult.videoId,
+              fileName: selectedFile?.name,
+            },
+            estimate: {
+              priceMin: priceEstimate.minPrice,
+              priceMax: priceEstimate.maxPrice,
+              volumeM3: analysisResult.estimatedVolumeM3,
+              estimatedHours: priceEstimate.estimatedHours,
+              distance: parseInt(customDistance) || 50,
+            },
+          },
+        }
+      );
 
-      if (leadError) throw leadError;
+      if (sessionError || !sessionData?.success) {
+        throw new Error(sessionData?.error?.message || 'Failed to create estimate session');
+      }
 
-      toast.success("Vielen Dank! Wir melden uns in Kürze bei Ihnen.");
+      // Navigate to funnel
+      navigate(`/ergebnis/${sessionData.data.id}`);
       
-      // Reset form
-      setTimeout(() => {
-        setStep(1);
-        setSelectedFile(null);
-        setAnalysisResult(null);
-        setName("");
-        setEmail("");
-        setPhone("");
-        setMessage("");
-      }, 2000);
+      toast.success("Kostenschätzung erstellt!");
     } catch (err) {
       console.error('Lead submission error:', err);
       toast.error("Anfrage konnte nicht gesendet werden");

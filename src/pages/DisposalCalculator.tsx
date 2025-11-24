@@ -11,8 +11,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { calculateDisposalPrice, DisposalCalculatorInput } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -59,7 +62,9 @@ const SERVICE_SCHEMA = {
 };
 
 const DisposalCalculator = () => {
+  const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,9 +77,50 @@ const DisposalCalculator = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const calculation = calculateDisposalPrice(values as DisposalCalculatorInput);
-    setResult(calculation);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    
+    try {
+      const calculation = calculateDisposalPrice(values as DisposalCalculatorInput);
+      setResult(calculation);
+      
+      // Create estimate session
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        'create-estimate-session',
+        {
+          body: {
+            moveDetails: {
+              fromPostal: '8000',
+              fromCity: 'Zürich',
+              toPostal: '8000',
+              toCity: 'Zürich',
+              calculatorType: 'disposal',
+              disposalDetails: values,
+            },
+            estimate: {
+              priceMin: calculation.priceRange.min,
+              priceMax: calculation.priceRange.max,
+              volumeM3: values.volumeM3,
+              estimatedHours: 0,
+              distance: values.distance,
+            },
+          },
+        }
+      );
+
+      if (!sessionError && sessionData?.success) {
+        setTimeout(() => {
+          navigate(`/ergebnis/${sessionData.data.id}`);
+        }, 1500);
+        
+        toast.success("Kostenschätzung berechnet!");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Fehler bei der Berechnung");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
