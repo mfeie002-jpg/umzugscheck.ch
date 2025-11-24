@@ -1,12 +1,48 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { Helmet } from "react-helmet";
 import logo from "@/assets/umzugscheck-logo.png";
+
+const ORGANIZATION_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Umzugscheck.ch",
+  "url": "https://umzugscheck.ch",
+  "logo": "https://umzugscheck.ch/assets/umzugscheck-logo.png",
+  "description": "Die führende Vergleichsplattform für Umzüge in der Schweiz. Kostenlos, transparent und einfach.",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+41-44-567-89-00",
+    "contactType": "customer service",
+    "email": "info@umzugscheck.ch",
+    "areaServed": "CH",
+    "availableLanguage": ["German", "French", "Italian"]
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Bahnhofstrasse 100",
+    "addressLocality": "Zürich",
+    "postalCode": "8001",
+    "addressCountry": "CH"
+  },
+  "sameAs": [
+    "https://www.facebook.com/umzugscheck",
+    "https://www.linkedin.com/company/umzugscheck",
+    "https://www.instagram.com/umzugscheck",
+    "https://twitter.com/umzugscheck"
+  ]
+};
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-primary text-primary-foreground">
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(ORGANIZATION_SCHEMA)}
+        </script>
+      </Helmet>
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {/* Company Info */}
