@@ -32,6 +32,9 @@ import Cookies from "./pages/Cookies";
 import Calculator from "./pages/Calculator";
 import RechnerHub from "./pages/RechnerHub";
 import CalculatorResults from "./pages/CalculatorResults";
+import Volumenrechner from "./pages/rechner/Volumenrechner";
+import TransporterGroesse from "./pages/rechner/TransporterGroesse";
+import Zuerich from "./pages/umzugsfirmen/Zuerich";
 import EstimateResult from "./pages/EstimateResult";
 import LeadRequest from "./pages/LeadRequest";
 import ThankYou from "./pages/ThankYou";
@@ -127,8 +130,8 @@ const App = () => (
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/rechner" element={<RechnerHub />} />
             <Route path="/rechner/umzugskosten" element={<Calculator />} />
-            <Route path="/rechner/volumenrechner" element={<Calculator />} />
-            <Route path="/rechner/transporter-groesse" element={<Calculator />} />
+            <Route path="/rechner/volumenrechner" element={<Volumenrechner />} />
+            <Route path="/rechner/transporter-groesse" element={<TransporterGroesse />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
             <Route path="/ergebnis/:id" element={<EstimateResult />} />
@@ -150,6 +153,12 @@ const App = () => (
             <Route path="/umzug/:canton" element={<Canton />} />
             <Route path="/stadt/:slug" element={<City />} />
             <Route path="/umzugsfirmen/:slug" element={<City />} />
+            <Route path="/umzugsfirmen/zuerich" element={<Zuerich />} />
+            <Route path="/umzugsfirmen/bern" element={<Zuerich />} />
+            <Route path="/umzugsfirmen/basel" element={<Zuerich />} />
+            <Route path="/umzugsfirmen/luzern" element={<Zuerich />} />
+            <Route path="/umzugsfirmen/winterthur" element={<Zuerich />} />
+            <Route path="/umzugsfirmen/st-gallen" element={<Zuerich />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/ueber-uns" element={<About />} />

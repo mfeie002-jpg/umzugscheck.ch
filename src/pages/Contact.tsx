@@ -5,31 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Mail, Phone, MapPin, Send, Clock, MessageSquare, Calculator, HelpCircle } from "lucide-react";
+import { Mail, Phone, Clock, Send, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { FAQAccordion, type FAQItem } from "@/components/FAQAccordion";
-import { Link } from "react-router-dom";
-
-const contactFAQs: FAQItem[] = [
-  {
-    question: "Ist der Service wirklich kostenlos?",
-    answer: "Ja, unser Vergleichsservice ist 100% kostenlos und unverbindlich. Sie zahlen nur für den Umzug selbst, wenn Sie sich für eine Firma entscheiden.",
-  },
-  {
-    question: "Wie viele Offerten erhalte ich?",
-    answer: "Sie erhalten bis zu 5 kostenlose Offerten von geprüften Umzugsfirmen in Ihrer Region. So können Sie Preise und Leistungen optimal vergleichen.",
-  },
-  {
-    question: "Sind alle Firmen geprüft?",
-    answer: "Ja, wir arbeiten nur mit geprüften und zertifizierten Umzugsfirmen zusammen. Alle Partner haben eine gültige Betriebshaftpflichtversicherung.",
-  },
-  {
-    question: "Wie schnell erhalte ich Angebote?",
-    answer: "Nach Ihrer Anfrage erhalten Sie in der Regel innerhalb von 24-48 Stunden die ersten Offerten von interessierten Umzugsfirmen.",
-  },
-];
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { SEOHead } from "@/components/SEOHead";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -39,7 +19,6 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     toast({
@@ -51,224 +30,189 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
+    <>
+      <SEOHead
+        title="Kontakt - Umzugscheck.ch"
+        description="Kontaktieren Sie uns bei Fragen zu Ihrem Umzug oder unserem Vergleichsservice. Schnelle Antwort garantiert."
+        canonical="https://umzugscheck.ch/kontakt"
+      />
       
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="gradient-hero text-white py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="mb-6">Kontaktieren Sie uns</h1>
-              <p className="text-lg md:text-xl text-white/90">
-                Haben Sie Fragen zu Ihrem Umzug oder unserem Service? 
-                Wir sind für Sie da und helfen Ihnen gerne weiter.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Form & Info */}
-        <section className="py-16 md:py-24 bg-gradient-light">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
-              {/* Contact Form */}
-              <Card className="lg:col-span-2 shadow-strong">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Send className="w-6 h-6 text-primary" />
-                    Nachricht senden
-                  </CardTitle>
-                  <CardDescription>
-                    Füllen Sie das Formular aus und wir melden uns schnellstmöglich bei Ihnen.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Vor- und Nachname *</Label>
-                        <Input 
-                          id="name" 
-                          placeholder="Max Mustermann" 
-                          required 
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">E-Mail-Adresse *</Label>
-                        <Input 
-                          id="email" 
-                          type="email" 
-                          placeholder="max@beispiel.ch" 
-                          required 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Telefonnummer</Label>
-                        <Input 
-                          id="phone" 
-                          type="tel" 
-                          placeholder="+41 79 123 45 67" 
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Betreff *</Label>
-                        <Input 
-                          id="subject" 
-                          placeholder="Ihre Anfrage" 
-                          required 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Nachricht *</Label>
-                      <Textarea 
-                        id="message" 
-                        placeholder="Beschreiben Sie Ihr Anliegen..."
-                        rows={6}
-                        required
-                      />
-                    </div>
-
-                    <Button 
-                      type="submit" 
-                      className="w-full md:w-auto bg-accent hover:bg-accent/90 shadow-accent"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? "Wird gesendet..." : "Nachricht senden"}
-                      <Send className="ml-2 w-4 h-4" />
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-
-              {/* Contact Info */}
-              <div className="space-y-6">
-                <Card className="shadow-medium">
-                  <CardHeader>
-                    <CardTitle className="text-xl">Kontaktinformationen</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <Mail className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold mb-1">E-Mail</div>
-                        <a href="mailto:info@umzugscheck.ch" className="text-muted-foreground hover:text-primary transition-colors">
-                          info@umzugscheck.ch
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <Phone className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold mb-1">Telefon</div>
-                        <a href="tel:+41445555555" className="text-muted-foreground hover:text-primary transition-colors">
-                          +41 44 555 55 55
-                        </a>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          Mo-Fr: 08:00 - 18:00 Uhr
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <MapPin className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold mb-1">Adresse</div>
-                        <div className="text-muted-foreground">
-                          Umzugscheck GmbH<br />
-                          Musterstrasse 123<br />
-                          8000 Zürich<br />
-                          Schweiz
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-medium bg-success/5 border-success/20">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="flex items-center gap-2 text-success font-semibold">
-                      <Clock className="w-5 h-5" />
-                      Schnelle Antwort garantiert
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Wir beantworten Ihre Anfrage in der Regel innerhalb von 24 Stunden an Werktagen.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                {/* Quick Links */}
-                <Card className="shadow-medium">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Schnellzugriff</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Link to="/rechner" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
-                      <Calculator className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="font-medium group-hover:text-primary transition-colors">Kostenrechner</div>
-                        <div className="text-xs text-muted-foreground">Preise berechnen</div>
-                      </div>
-                    </Link>
-                    <Link to="/firmen" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
-                      <MessageSquare className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="font-medium group-hover:text-primary transition-colors">Firmen vergleichen</div>
-                        <div className="text-xs text-muted-foreground">Alle Anbieter</div>
-                      </div>
-                    </Link>
-                    <Link to="#faq" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
-                      <HelpCircle className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="font-medium group-hover:text-primary transition-colors">FAQ</div>
-                        <div className="text-xs text-muted-foreground">Häufige Fragen</div>
-                      </div>
-                    </Link>
-                  </CardContent>
-                </Card>
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        
+        <main className="flex-1">
+          {/* Hero */}
+          <section className="py-16 md:py-24 bg-gradient-to-b from-primary/5 to-background border-b border-border">
+            <div className="container mx-auto px-4">
+              <div className="max-w-3xl mx-auto text-center">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6">Kontakt</h1>
+                <p className="text-xl text-muted-foreground">
+                  Haben Sie Fragen zu Ihrem Umzug oder unserem Service? Wir sind für Sie da.
+                </p>
               </div>
             </div>
+          </section>
 
-            {/* Map Placeholder */}
-            <div className="max-w-6xl mx-auto mt-12">
-              <Card className="shadow-strong overflow-hidden">
-                <div className="h-64 md:h-80 bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border-b">
-                  <div className="text-center">
-                    <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
-                    <p className="text-muted-foreground font-medium">Standort Zürich</p>
-                    <p className="text-sm text-muted-foreground">Musterstrasse 123, 8000 Zürich</p>
-                  </div>
+          {/* Contact Form & Info */}
+          <section className="py-16 md:py-24">
+            <div className="container mx-auto px-4">
+              <div className="max-w-5xl mx-auto grid lg:grid-cols-3 gap-8">
+                {/* Contact Form */}
+                <Card className="lg:col-span-2">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Send className="w-5 h-5 text-primary" />
+                      Nachricht senden
+                    </CardTitle>
+                    <CardDescription>
+                      Wir beantworten Ihre Anfrage innerhalb von 24 Stunden.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Name *</Label>
+                          <Input id="name" placeholder="Ihr Name" required />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">E-Mail *</Label>
+                          <Input id="email" type="email" placeholder="ihre@email.ch" required />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="subject">Betreff *</Label>
+                        <Input id="subject" placeholder="Worum geht es?" required />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="message">Nachricht *</Label>
+                        <Textarea 
+                          id="message" 
+                          placeholder="Ihre Nachricht..."
+                          rows={6}
+                          required
+                        />
+                      </div>
+
+                      <Button 
+                        type="submit" 
+                        className="w-full"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? "Wird gesendet..." : "Nachricht senden"}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+
+                {/* Contact Info */}
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Kontaktinformationen</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="flex items-start gap-3">
+                        <Mail className="w-5 h-5 text-primary mt-0.5" />
+                        <div>
+                          <div className="font-medium mb-1">E-Mail</div>
+                          <a href="mailto:info@umzugscheck.ch" className="text-muted-foreground hover:text-primary transition-colors">
+                            info@umzugscheck.ch
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <Phone className="w-5 h-5 text-primary mt-0.5" />
+                        <div>
+                          <div className="font-medium mb-1">Telefon</div>
+                          <a href="tel:+41445555555" className="text-muted-foreground hover:text-primary transition-colors">
+                            +41 44 555 55 55
+                          </a>
+                          <div className="text-sm text-muted-foreground mt-1">
+                            Mo-Fr: 08:00 - 18:00 Uhr
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <Clock className="w-5 h-5 text-primary mt-0.5" />
+                        <div>
+                          <div className="font-medium mb-1">Schnelle Antwort</div>
+                          <div className="text-sm text-muted-foreground">
+                            Wir antworten innerhalb von 24 Stunden an Werktagen
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-primary/5 border-primary/20">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-3">
+                        <HelpCircle className="w-5 h-5 text-primary mt-0.5" />
+                        <div>
+                          <div className="font-medium mb-2">Wichtiger Hinweis</div>
+                          <p className="text-sm text-muted-foreground">
+                            Wir vermitteln Umzugsfirmen und führen keine eigenen Umzüge durch. 
+                            Für konkrete Offerten nutzen Sie bitte unser Anfrageformular.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-              </Card>
-            </div>
+              </div>
 
-            {/* FAQ Section */}
-            <div id="faq" className="max-w-6xl mx-auto mt-16">
-              <FAQAccordion
-                items={contactFAQs}
-                title="Häufig gestellte Fragen"
-                subtitle="Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage."
-                variant="compact"
-              />
-            </div>
-          </div>
-        </section>
-      </main>
+              {/* FAQ */}
+              <div className="max-w-5xl mx-auto mt-16">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold mb-4">Häufig gestellte Fragen</h2>
+                  <p className="text-muted-foreground">
+                    Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage.
+                  </p>
+                </div>
 
-      <Footer />
-    </div>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>Ist der Service wirklich kostenlos?</AccordionTrigger>
+                    <AccordionContent>
+                      Ja, unser Vergleichsservice ist 100% kostenlos und unverbindlich. 
+                      Sie zahlen nur für den Umzug selbst, wenn Sie sich für eine Firma entscheiden.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>Wie viele Offerten erhalte ich?</AccordionTrigger>
+                    <AccordionContent>
+                      Sie erhalten bis zu 5 kostenlose Offerten von geprüften Umzugsfirmen 
+                      in Ihrer Region. So können Sie Preise und Leistungen optimal vergleichen.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger>Sind alle Firmen geprüft?</AccordionTrigger>
+                    <AccordionContent>
+                      Ja, wir arbeiten nur mit geprüften und zertifizierten Umzugsfirmen zusammen. 
+                      Alle Partner haben eine gültige Betriebshaftpflichtversicherung.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-4">
+                    <AccordionTrigger>Wie schnell erhalte ich Angebote?</AccordionTrigger>
+                    <AccordionContent>
+                      Nach Ihrer Anfrage erhalten Sie in der Regel innerhalb von 24-48 Stunden 
+                      die ersten Offerten von interessierten Umzugsfirmen.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <Footer />
+      </div>
+    </>
   );
 };
 
