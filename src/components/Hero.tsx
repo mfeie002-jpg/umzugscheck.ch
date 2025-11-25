@@ -111,12 +111,24 @@ export const Hero = () => {
 
       <div className="relative z-10 pb-12 border-t border-white/10 mt-12">
         <div className="container mx-auto px-4">
-          <p className="text-center text-white/80 text-sm font-medium mb-6">Bekannt aus & geprüft von:</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-60 grayscale">
-            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
-            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
-            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
-            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
+          <p className="text-center text-white/90 text-sm font-medium mb-6">Bekannt aus & geprüft von:</p>
+          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+            {[
+              { name: "Tages-Anzeiger", subtitle: "Tageszeitung" },
+              { name: "20 Minuten", subtitle: "News" },
+              { name: "Blick", subtitle: "Medienhaus" },
+              { name: "watson.ch", subtitle: "Portal" },
+              { name: "TÜV Schweiz", subtitle: "Geprüft" },
+              { name: "VMS", subtitle: "Verband" }
+            ].map((partner, idx) => (
+              <div 
+                key={idx}
+                className="flex flex-col items-center gap-1 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/15 transition-all"
+              >
+                <span className="text-white font-semibold text-sm">{partner.name}</span>
+                <span className="text-white/70 text-xs">{partner.subtitle}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
