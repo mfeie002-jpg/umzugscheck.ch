@@ -43,6 +43,8 @@ import Luzern from "./pages/umzugsfirmen/Luzern";
 import Winterthur from "./pages/umzugsfirmen/Winterthur";
 import StGallen from "./pages/umzugsfirmen/StGallen";
 import WasKostetEinUmzug from "./pages/ratgeber/WasKostetEinUmzug";
+import UmzugImWinter from "./pages/ratgeber/UmzugImWinter";
+import UmzugMitKindern from "./pages/ratgeber/UmzugMitKindern";
 import EstimateResult from "./pages/EstimateResult";
 import LeadRequest from "./pages/LeadRequest";
 import ThankYou from "./pages/ThankYou";
@@ -75,6 +77,7 @@ import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
 import Ratgeber from "./pages/Ratgeber";
 import BecomeProvider from "./pages/BecomeProvider";
+import { StickyMobileCTA } from "./components/StickyMobileCTA";
 import ProviderSignup from "./pages/ProviderSignup";
 import ProviderLogin from "./pages/ProviderLogin";
 import ProviderDashboard from "./pages/ProviderDashboard";
@@ -122,6 +125,7 @@ const App = () => (
                   <OfflineIndicator />
                   <QuickActionBar />
                   <StickyContactBar />
+                  <StickyMobileCTA />
                   <main className="flex-1">
                 <Routes>
             <Route path="/" element={<Index />} />
@@ -170,6 +174,8 @@ const App = () => (
             <Route path="/umzugsfirmen/st-gallen" element={<StGallen />} />
             <Route path="/ratgeber/umzugscheckliste-pdf" element={<UmzugschecklistePDF />} />
             <Route path="/ratgeber/was-kostet-ein-umzug" element={<WasKostetEinUmzug />} />
+            <Route path="/ratgeber/umzug-im-winter" element={<UmzugImWinter />} />
+            <Route path="/ratgeber/umzug-mit-kindern" element={<UmzugMitKindern />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/ueber-uns" element={<About />} />
