@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { TrustSignals } from "@/components/TrustSignals";
@@ -24,6 +24,7 @@ import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator"
 import { RecentActivityFeed } from "@/components/trust/RecentActivityFeed";
 import { TrustMicroSignals } from "@/components/trust/TrustMicroSignals";
 import { SecurityBadges } from "@/components/trust/SecurityBadges";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { 
   generateOrganizationSchema, 
   generateServiceSchema, 
@@ -221,6 +222,9 @@ const Index = () => {
       
       {/* Sticky Mobile CTA Bar */}
       <StickyMobileCTA />
+      
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
       
       {/* Live Activity Indicators */}
       <LiveActivityIndicator />

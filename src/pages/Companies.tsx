@@ -15,6 +15,8 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { useAnalytics } from "@/lib/analytics";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Company {
   id: string;
@@ -43,6 +45,7 @@ const SWISS_CANTONS = [
 const Companies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const analytics = useAnalytics();
+  const isMobile = useIsMobile();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
@@ -387,37 +390,92 @@ const Companies = () => {
                     {filteredCompanies.length} {filteredCompanies.length === 1 ? "Firma" : "Firmen"}
                   </span>
                   
-                  <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                    <SheetTrigger asChild>
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <SlidersHorizontal className="w-4 h-4" />
-                        Filter
-                        {hasActiveFilters && (
-                          <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
-                            {[searchTerm, selectedCanton !== "Alle Kantone", selectedRating !== "Alle"].filter(Boolean).length}
-                          </Badge>
-                        )}
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom" className="h-[80vh]">
-                      <SheetHeader>
-                        <SheetTitle>Filter</SheetTitle>
-                      </SheetHeader>
-                      <div className="mt-6">
-                        <FilterSection />
-                      </div>
-                      <div className="mt-6">
-                        <Button
-                          className="w-full"
-                          onClick={() => setIsFilterOpen(false)}
-                        >
-                          {filteredCompanies.length} {filteredCompanies.length === 1 ? "Firma" : "Firmen"} anzeigen
-                        </Button>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2"
+                    onClick={() => setIsFilterOpen(true)}
+                  >
+                    <SlidersHorizontal className="w-4 h-4" />
+                    Filter
+                    {hasActiveFilters && (
+                      <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
+                        {[searchTerm, selectedCanton !== "Alle Kantone", selectedRating !== "Alle"].filter(Boolean).length}
+                      </Badge>
+                    )}
+                  </Button>
                 </div>
               </div>
+
+              {/* Mobile Filter Bottom Sheet */}
+              <BottomSheet 
+                isOpen={isFilterOpen} 
+                onClose={() => setIsFilterOpen(false)}
+                title="Filter anwenden"
+              >
+                <div className="space-y-6">
+                  {/* Canton Filter */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      Kanton
+                    </label>
+                    <Select value={selectedCanton} onValueChange={setSelectedCanton}>
+                      <SelectTrigger className="w-full h-12">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="z-[60]">
+                        {SWISS_CANTONS.map((canton) => (
+                          <SelectItem key={canton} value={canton}>
+                            {getCantonDisplayName(canton)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Rating Filter */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold flex items-center gap-2">
+                      <Star className="w-4 h-4" />
+                      Mindestbewertung
+                    </label>
+                    <Select value={selectedRating} onValueChange={setSelectedRating}>
+                      <SelectTrigger className="w-full h-12">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="z-[60]">
+                        <SelectItem value="Alle">Alle Bewertungen</SelectItem>
+                        <SelectItem value="4.5">4.5+ Sterne</SelectItem>
+                        <SelectItem value="4.0">4.0+ Sterne</SelectItem>
+                        <SelectItem value="3.5">3.5+ Sterne</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Apply Button */}
+                  <div className="flex gap-2 pt-4">
+                    {hasActiveFilters && (
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          clearFilters();
+                          setIsFilterOpen(false);
+                        }}
+                        className="flex-1"
+                      >
+                        Zurücksetzen
+                      </Button>
+                    )}
+                    <Button
+                      onClick={() => setIsFilterOpen(false)}
+                      className="flex-1"
+                    >
+                      Anwenden ({filteredCompanies.length})
+                    </Button>
+                  </div>
+                </div>
+              </BottomSheet>
             </div>
           </div>
         </section>
