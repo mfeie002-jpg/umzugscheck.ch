@@ -5,6 +5,21 @@ import { Truck, Sparkles, Trash2, Package, Wrench, Archive, Calculator } from "l
 import { Link } from "react-router-dom";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Umzugsdienstleistungen",
+  "provider": {
+    "@type": "Organization",
+    "name": "Umzugscheck.ch"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Switzerland"
+  },
+  "description": "Umfassende Umzugsdienstleistungen: Transport, Reinigung, Entsorgung, Lagerung, Montage und Packservice."
+};
+
 const Dienstleistungen = () => {
   const services = [
     {
@@ -90,10 +105,11 @@ const Dienstleistungen = () => {
   return (
     <>
       <SEOHead
-        title="Umzugs-Dienstleistungen - Alle Services aus einer Hand | Umzugscheck.ch"
-        description="Komplette Umzugsdienstleistungen: Transport, Endreinigung, Entsorgung, Packservice, Möbelmontage und Lagerung. Alles aus einer Hand von geprüften Schweizer Firmen."
-        keywords="umzugsdienstleistungen, umzugsservice, endreinigung, entsorgung, packservice, möbelmontage, lagerung"
+        title="Umzugsdienstleistungen Schweiz - Alle Services im Überblick | Umzugscheck.ch"
+        description="Alle Umzugsdienstleistungen auf einen Blick: Transport, Reinigung, Entsorgung, Lagerung, Möbelmontage und Packservice. Vergleichen Sie Anbieter und Preise."
+        keywords="umzugsdienstleistungen, umzugsservice, reinigung, entsorgung, lagerung, möbelmontage, packservice"
         canonical="/dienstleistungen"
+        structuredData={structuredData}
       />
 
       <div className="min-h-screen bg-background">

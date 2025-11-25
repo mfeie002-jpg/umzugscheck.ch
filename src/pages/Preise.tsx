@@ -5,14 +5,23 @@ import { Check, Calculator, TrendingDown, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Umzugspreise Schweiz 2025",
+  "description": "Transparente Übersicht der Umzugskosten in der Schweiz. Vergleichen Sie Preise und finden Sie die günstigste Umzugsfirma.",
+  "url": "https://umzugscheck.ch/preise"
+};
+
 const Preise = () => {
   return (
     <>
       <SEOHead
         title="Umzugspreise Schweiz 2025 - Kosten & Preisvergleich | Umzugscheck.ch"
-        description="Transparente Umzugspreise für die ganze Schweiz. Vergleichen Sie Kosten von über 200 Umzugsfirmen und berechnen Sie Ihren persönlichen Umzugspreis in Sekunden."
-        keywords="umzugspreise schweiz, umzugskosten, preisvergleich umzug, was kostet ein umzug, umzug preis berechnen"
+        description="Transparente Übersicht der Umzugskosten in der Schweiz. Vergleichen Sie Preise von geprüften Umzugsfirmen und sparen Sie bis zu 40%. Kostenloser Preisrechner."
+        keywords="umzugskosten schweiz, umzugspreise, umzug kosten, preisvergleich umzug, günstige umzugsfirma"
         canonical="/preise"
+        structuredData={structuredData}
       />
 
       <div className="min-h-screen bg-background">

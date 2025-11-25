@@ -5,14 +5,23 @@ import { Calculator, Clock, Shield, ThumbsUp, CheckCircle, ArrowRight } from "lu
 import { Link } from "react-router-dom";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Umzugsofferte anfragen",
+  "description": "Fordern Sie kostenlos und unverbindlich Umzugsofferten von geprüften Schweizer Umzugsfirmen an.",
+  "url": "https://umzugscheck.ch/offerte"
+};
+
 const Offerte = () => {
   return (
     <>
       <SEOHead
-        title="Kostenlose Umzugsofferte anfordern - Schnell & unverbindlich | Umzugscheck.ch"
-        description="Fordern Sie kostenlos und unverbindlich Umzugsofferten von geprüften Firmen an. Innerhalb von 24 Stunden erhalten Sie passende Angebote für Ihren Umzug."
-        keywords="umzugsofferte, offerte umzug, umzug angebot, kostenlose offerte umzug, umzugsangebot einholen"
+        title="Kostenlose Umzugsofferte anfragen - Vergleichen & Sparen | Umzugscheck.ch"
+        description="Fordern Sie kostenlos und unverbindlich Umzugsofferten von bis zu 5 geprüften Schweizer Umzugsfirmen an. Schnell, einfach und transparent."
+        keywords="umzugsofferte, offerte umzug, umzug anfragen, kostenlose offerte, umzugsangebot"
         canonical="/offerte"
+        structuredData={structuredData}
       />
 
       <div className="min-h-screen bg-background">

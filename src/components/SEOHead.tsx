@@ -12,9 +12,9 @@ interface SEOHeadProps {
 }
 
 export const SEOHead = ({
-  title = "Umzugscheck.ch - KI-Preisrechner für Ihren Umzug",
-  description = "Vergleichen Sie Umzugsofferten mit unserem KI-Preisrechner. Transparent, fair und 100% schweizerisch. Erhalten Sie in Sekunden präzise Offerten von geprüften Umzugsfirmen.",
-  keywords = "umzug, umzugsfirma, umzugsofferte, preisrechner, ki, schweiz, zürich, bern, basel",
+  title = "Umzugscheck.ch - Umzugsofferten vergleichen & sparen",
+  description = "Vergleichen Sie Umzugsofferten von geprüften Schweizer Umzugsfirmen. Transparent, unabhängig und kostenlos. Finden Sie die beste Umzugsfirma für Ihren Umzug.",
+  keywords = "umzug schweiz, umzugsfirma vergleich, umzugsofferte, umzugskosten, umzugsfirmen zürich, umzug bern, umzug basel",
   ogImage = "/lovable-uploads/1bdb4b13-ea35-4ded-a82e-4aa0714e0608.png",
   ogType = "website",
   canonical,
@@ -53,7 +53,16 @@ export const SEOHead = ({
       <meta name="author" content="Umzugscheck.ch" />
       <meta name="geo.region" content="CH" />
       <meta name="geo.placename" content="Switzerland" />
-      <meta name="language" content="German" />
+      <meta name="language" content="de-CH" />
+      <meta httpEquiv="content-language" content="de-CH" />
+      
+      {/* Preconnect for Performance */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://twpyrbhqsfwtoyudkfss.supabase.co" />
+      
+      {/* Mobile Optimization */}
+      <meta name="format-detection" content="telephone=yes" />
+      <meta name="theme-color" content="#2563eb" />
 
       {/* Structured Data */}
       {structuredData && (

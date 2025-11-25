@@ -5,14 +5,23 @@ import { Link } from "react-router-dom";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ComparisonPreview } from "@/components/ComparisonPreview";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Umzugsfirmen Vergleich Schweiz",
+  "description": "Vergleichen Sie Schweizer Umzugsfirmen nach Preis, Service und Bewertungen. Finden Sie die perfekte Umzugsfirma für Ihren Umzug.",
+  "url": "https://umzugscheck.ch/vergleich"
+};
+
 const Vergleich = () => {
   return (
     <>
       <SEOHead
-        title="Umzugsfirmen vergleichen - Finden Sie die beste Firma | Umzugscheck.ch"
-        description="Vergleichen Sie über 200 geprüfte Umzugsfirmen in der Schweiz. Transparent, unabhängig und kostenlos. Finden Sie die beste Umzugsfirma für Ihre Bedürfnisse."
-        keywords="umzugsfirmen vergleichen, umzugsfirma finden, beste umzugsfirma schweiz, umzugsunternehmen vergleich"
+        title="Umzugsfirmen Vergleich Schweiz - Beste Anbieter finden | Umzugscheck.ch"
+        description="Vergleichen Sie über 200 geprüfte Schweizer Umzugsfirmen nach Preis, Service und Bewertungen. Unabhängig, transparent und kostenlos. Jetzt beste Umzugsfirma finden."
+        keywords="umzugsfirmen vergleich, umzugsunternehmen schweiz, beste umzugsfirma, umzugsfirma bewertung"
         canonical="/vergleich"
+        structuredData={structuredData}
       />
 
       <div className="min-h-screen bg-background">
