@@ -13,6 +13,7 @@ import { calculatorApi } from "@/lib/api";
 import { useAnalytics } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PopularBadge } from "@/components/trust/PopularBadge";
 
 const formSchema = z.object({
   fromPostal: z.string().min(4, "Bitte gültige PLZ eingeben").max(10),
@@ -176,8 +177,11 @@ export const CalculatorSection = () => {
               <div className="w-14 h-14 rounded-xl gradient-hero flex items-center justify-center">
                 <Calculator className="w-7 h-7 text-white" />
               </div>
-              <div>
-                <h3 className="text-2xl font-bold">Umzugskosten berechnen</h3>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-2xl font-bold">Umzugskosten berechnen</h3>
+                  <PopularBadge variant="popular" />
+                </div>
                 <p className="text-muted-foreground">Geben Sie Ihre Details ein und erhalten Sie sofort eine Schätzung</p>
               </div>
             </div>

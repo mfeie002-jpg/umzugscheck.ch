@@ -21,6 +21,9 @@ import { ComparisonPreview } from "@/components/ComparisonPreview";
 import { VideoEstimatorTeaser } from "@/components/VideoEstimatorTeaser";
 import { TrustCounter } from "@/components/trust/TrustCounter";
 import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
+import { RecentActivityFeed } from "@/components/trust/RecentActivityFeed";
+import { TrustMicroSignals } from "@/components/trust/TrustMicroSignals";
+import { SecurityBadges } from "@/components/trust/SecurityBadges";
 import { 
   generateOrganizationSchema, 
   generateServiceSchema, 
@@ -127,6 +130,12 @@ const Index = () => {
         <TrustSignals />
       </ScrollReveal>
 
+      <ScrollReveal>
+        <div className="container mx-auto px-4 py-4">
+          <TrustMicroSignals />
+        </div>
+      </ScrollReveal>
+
       {/* 2. Central Preisrechner Block */}
       <ScrollReveal delay={80}>
         <CalculatorSection />
@@ -213,8 +222,9 @@ const Index = () => {
       {/* Sticky Mobile CTA Bar */}
       <StickyMobileCTA />
       
-      {/* Live Activity Indicator */}
+      {/* Live Activity Indicators */}
       <LiveActivityIndicator />
+      <RecentActivityFeed />
     </div>
   );
 };
