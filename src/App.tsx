@@ -125,7 +125,6 @@ const App = () => (
                   <ProviderOnboarding />
                   <ScrollToTop />
                   <OfflineIndicator />
-                  <QuickActionBar />
                   <StickyContactBar />
                   <StickyMobileCTA />
                   <main className="flex-1">
