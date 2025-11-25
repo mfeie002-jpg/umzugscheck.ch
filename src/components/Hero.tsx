@@ -33,21 +33,21 @@ export const Hero = () => {
               Füllen Sie einmal Ihr Umzugsprofil aus und erhalten Sie in kurzer Zeit passende Angebote von geprüften Umzugsfirmen. Transparent, fair und ohne Telefon-Spam.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <TrendingDown className="w-6 h-6 text-accent mx-auto mb-2" />
-                <p className="text-2xl font-bold text-center mb-1">Bis zu 40%</p>
-                <p className="text-sm text-white/90 text-center">Im Schnitt günstiger</p>
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
+                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-accent mx-auto mb-1 sm:mb-2" />
+                <p className="text-lg sm:text-2xl font-bold text-center mb-0.5 sm:mb-1">40%</p>
+                <p className="text-xs sm:text-sm text-white/90 text-center leading-tight">günstiger</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <CheckCircle2 className="w-6 h-6 text-success mx-auto mb-2" />
-                <p className="text-2xl font-bold text-center mb-1">4.8 / 5</p>
-                <p className="text-sm text-white/90 text-center">Zufriedenheit</p>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
+                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success mx-auto mb-1 sm:mb-2" />
+                <p className="text-lg sm:text-2xl font-bold text-center mb-0.5 sm:mb-1">4.8/5</p>
+                <p className="text-xs sm:text-sm text-white/90 text-center leading-tight">Rating</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <Shield className="w-6 h-6 text-white mx-auto mb-2" />
-                <p className="text-2xl font-bold text-center mb-1">15'000+</p>
-                <p className="text-sm text-white/90 text-center">Umzüge begleitet</p>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-white mx-auto mb-1 sm:mb-2" />
+                <p className="text-lg sm:text-2xl font-bold text-center mb-0.5 sm:mb-1">15k+</p>
+                <p className="text-xs sm:text-sm text-white/90 text-center leading-tight">Umzüge</p>
               </div>
             </div>
 
@@ -76,21 +76,21 @@ export const Hero = () => {
           </div>
 
           <div className="lg:ml-auto w-full max-w-md">
-            <div className="backdrop-blur-lg bg-white/98 rounded-3xl shadow-2xl p-8 border-2 border-white/30 relative">
-              <div className="absolute top-4 right-4">
+            <div className="backdrop-blur-lg bg-white/98 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border-2 border-white/30 relative">
+              <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
                 <PopularBadge variant="popular" />
               </div>
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold text-foreground mb-2">Schnell-Rechner</h3>
-                <p className="text-sm text-muted-foreground">In 60 Sekunden zu Ihrer ersten Kostenschätzung.</p>
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-1 sm:mb-2">Schnell-Rechner</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">In 60 Sekunden zu Ihrer Kostenschätzung.</p>
               </div>
               <QuickCalculator embedded />
-              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground justify-center">
-                <Clock className="w-4 h-4" />
-                <span>Antwortzeit: 3–24 Stunden</span>
+              <div className="mt-3 sm:mt-4 flex items-center gap-2 text-xs sm:text-sm text-muted-foreground justify-center">
+                <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span>Antwort: 3–24 Stunden</span>
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-3 sm:mt-4">
               <LiveActivityIndicator />
             </div>
           </div>
