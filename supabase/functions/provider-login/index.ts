@@ -7,7 +7,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const JWT_SECRET = Deno.env.get('JWT_SECRET') || 'your-secret-key-change-in-production';
+const JWT_SECRET = Deno.env.get('JWT_SECRET');
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is not set');
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
