@@ -28,32 +28,32 @@ export const SponsoredCompanyCard = ({
   priceLevel,
 }: SponsoredCompanyCardProps) => {
   return (
-    <Card className="p-6 hover:shadow-lg transition-shadow border-2 border-primary/20 bg-primary/5">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-4">
+    <Card className="p-4 sm:p-6 hover:shadow-lg transition-shadow border-2 border-primary/20 bg-primary/5">
+      <div className="flex flex-col sm:flex-row items-start gap-4 mb-4">
+        <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
           {logo ? (
-            <img src={logo} alt={name} className="w-16 h-16 object-contain rounded-lg" />
+            <img src={logo} alt={name} className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-lg flex-shrink-0" />
           ) : (
-            <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center">
-              <Award className="w-8 h-8 text-primary" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Award className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             </div>
           )}
-          <div>
+          <div className="flex-1 min-w-0">
             <Badge variant="secondary" className="mb-2 bg-primary text-primary-foreground">
               Gesponsert
             </Badge>
-            <h3 className="font-bold text-xl">{name}</h3>
-            <div className="flex items-center gap-2 mt-1">
+            <h3 className="font-bold text-lg sm:text-xl truncate">{name}</h3>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               <div className="flex items-center">
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 <span className="ml-1 font-semibold">{rating.toFixed(1)}</span>
               </div>
-              <span className="text-sm text-muted-foreground">({reviewCount} Bewertungen)</span>
+              <span className="text-xs sm:text-sm text-muted-foreground">({reviewCount} Bewertungen)</span>
             </div>
           </div>
         </div>
         {priceLevel && (
-          <Badge variant="outline" className="text-sm">
+          <Badge variant="outline" className="text-sm self-start sm:self-auto">
             {priceLevel}
           </Badge>
         )}
