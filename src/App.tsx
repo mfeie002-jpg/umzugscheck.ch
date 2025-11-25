@@ -21,6 +21,10 @@ import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
 import Index from "./pages/Index";
 import Sitemap from "./pages/Sitemap";
+import Preise from "./pages/Preise";
+import Vergleich from "./pages/Vergleich";
+import Offerte from "./pages/Offerte";
+import Dienstleistungen from "./pages/Dienstleistungen";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
 import EstimateResult from "./pages/EstimateResult";
@@ -104,6 +108,13 @@ const App = () => (
                   <main className="flex-1">
                 <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/preise" element={<Preise />} />
+            <Route path="/vergleich" element={<Vergleich />} />
+            <Route path="/offerte" element={<Offerte />} />
+            <Route path="/dienstleistungen" element={<Dienstleistungen />} />
+            <Route path="/umzugsfirmen" element={<Companies />} />
+            <Route path="/ratgeber" element={<Blog />} />
+            <Route path="/über-uns" element={<About />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
