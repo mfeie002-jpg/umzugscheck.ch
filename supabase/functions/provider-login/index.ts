@@ -7,11 +7,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const JWT_SECRET = Deno.env.get('JWT_SECRET');
-
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required');
-}
+const JWT_SECRET = Deno.env.get('JWT_SECRET') || 'default-secret-change-in-production';
 
 // Input validation
 function validateEmail(email: string): boolean {
