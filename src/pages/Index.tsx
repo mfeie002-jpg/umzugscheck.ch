@@ -25,6 +25,7 @@ import { RecentActivityFeed } from "@/components/trust/RecentActivityFeed";
 import { TrustMicroSignals } from "@/components/trust/TrustMicroSignals";
 import { SecurityBadges } from "@/components/trust/SecurityBadges";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { VerifiedPartners } from "@/components/trust/VerifiedPartners";
 import { 
   generateOrganizationSchema, 
   generateServiceSchema, 
@@ -180,6 +181,11 @@ const Index = () => {
       {/* 7. Social Proof & Kennzahlen (Metrics + Testimonials) */}
       <ScrollReveal delay={220}>
         <SocialProofMetrics />
+      </ScrollReveal>
+
+      {/* 7.5 Bekannt aus & geprüft von Section */}
+      <ScrollReveal delay={230}>
+        <VerifiedPartners />
       </ScrollReveal>
 
       {/* Third CTA after Social Proof */}
