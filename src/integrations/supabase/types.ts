@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      billing_records: {
+        Row: {
+          billing_model: string
+          billing_period: string | null
+          created_at: string | null
+          id: string
+          invoice_number: string | null
+          lead_id: string | null
+          paid_at: string | null
+          price_chf: number
+          provider_id: string
+          status: string | null
+        }
+        Insert: {
+          billing_model: string
+          billing_period?: string | null
+          created_at?: string | null
+          id?: string
+          invoice_number?: string | null
+          lead_id?: string | null
+          paid_at?: string | null
+          price_chf: number
+          provider_id: string
+          status?: string | null
+        }
+        Update: {
+          billing_model?: string
+          billing_period?: string | null
+          created_at?: string | null
+          id?: string
+          invoice_number?: string | null
+          lead_id?: string | null
+          paid_at?: string | null
+          price_chf?: number
+          provider_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_records_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_records_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bundled_estimates: {
         Row: {
           created_at: string | null
@@ -594,6 +648,47 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_click_events: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          id: string
+          price_chf: number
+          provider_id: string
+          referer: string | null
+          user_agent: string | null
+          user_ip: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          id?: string
+          price_chf: number
+          provider_id: string
+          referer?: string | null
+          user_agent?: string | null
+          user_ip?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          price_chf?: number
+          provider_id?: string
+          referer?: string | null
+          user_agent?: string | null
+          user_ip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_click_events_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_performance_metrics: {
         Row: {
           conversion_rate: number | null
@@ -936,8 +1031,10 @@ export type Database = {
       service_providers: {
         Row: {
           account_status: Database["public"]["Enums"]["account_status"]
+          billing_model: string | null
           cantons_served: string[]
           city: string
+          click_price_chf: number | null
           company_name: string
           contact_person_name: string
           country: string
@@ -947,15 +1044,19 @@ export type Database = {
           employees_count: number | null
           fleet_size: number | null
           id: string
+          is_featured: boolean | null
+          lead_price_chf: number | null
           logo_url: string | null
           max_leads_per_month: number | null
           min_job_value: number | null
+          monthly_fee_chf: number | null
           password_hash: string
           phone: string
           preferred_regions: string[] | null
           price_level: Database["public"]["Enums"]["price_level"] | null
           services_offered: string[]
           street: string
+          subscription_plan: string | null
           updated_at: string
           verification_status: Database["public"]["Enums"]["verification_status"]
           website: string | null
@@ -963,8 +1064,10 @@ export type Database = {
         }
         Insert: {
           account_status?: Database["public"]["Enums"]["account_status"]
+          billing_model?: string | null
           cantons_served?: string[]
           city: string
+          click_price_chf?: number | null
           company_name: string
           contact_person_name: string
           country?: string
@@ -974,15 +1077,19 @@ export type Database = {
           employees_count?: number | null
           fleet_size?: number | null
           id?: string
+          is_featured?: boolean | null
+          lead_price_chf?: number | null
           logo_url?: string | null
           max_leads_per_month?: number | null
           min_job_value?: number | null
+          monthly_fee_chf?: number | null
           password_hash: string
           phone: string
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
           services_offered?: string[]
           street: string
+          subscription_plan?: string | null
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
           website?: string | null
@@ -990,8 +1097,10 @@ export type Database = {
         }
         Update: {
           account_status?: Database["public"]["Enums"]["account_status"]
+          billing_model?: string | null
           cantons_served?: string[]
           city?: string
+          click_price_chf?: number | null
           company_name?: string
           contact_person_name?: string
           country?: string
@@ -1001,15 +1110,19 @@ export type Database = {
           employees_count?: number | null
           fleet_size?: number | null
           id?: string
+          is_featured?: boolean | null
+          lead_price_chf?: number | null
           logo_url?: string | null
           max_leads_per_month?: number | null
           min_job_value?: number | null
+          monthly_fee_chf?: number | null
           password_hash?: string
           phone?: string
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
           services_offered?: string[]
           street?: string
+          subscription_plan?: string | null
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
           website?: string | null
