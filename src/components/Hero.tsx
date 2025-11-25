@@ -5,8 +5,11 @@ import { QuickCalculator } from "./calculator/QuickCalculator";
 import { SecurityBadges } from "@/components/trust/SecurityBadges";
 import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
 import { PopularBadge } from "@/components/trust/PopularBadge";
+import { useHaptic } from "@/hooks/use-haptic";
 
 export const Hero = () => {
+  const { trigger } = useHaptic();
+  
   return (
     <section className="relative overflow-hidden gradient-hero text-white">
       {/* Animated Background Layers */}
@@ -53,13 +56,22 @@ export const Hero = () => {
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
               <Link to="/rechner" className="flex-1">
-                <Button size="lg" className="w-full h-12 sm:h-14 text-sm sm:text-lg bg-accent hover:bg-accent-dark text-white">
+                <Button 
+                  size="lg" 
+                  className="w-full h-12 sm:h-14 text-sm sm:text-lg bg-accent hover:bg-accent-dark text-white"
+                  onClick={() => trigger('medium')}
+                >
                   <span>Umzugskosten berechnen</span>
                   <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </Link>
               <Link to="/firmen" className="flex-1">
-                <Button size="lg" variant="outline" className="w-full h-12 sm:h-14 text-sm sm:text-lg border-2 border-white/40 bg-white/10 text-white">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="w-full h-12 sm:h-14 text-sm sm:text-lg border-2 border-white/40 bg-white/10 text-white"
+                  onClick={() => trigger('light')}
+                >
                   Umzugsfirmen vergleichen
                 </Button>
               </Link>

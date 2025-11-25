@@ -17,6 +17,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useHaptic } from "@/hooks/use-haptic";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
+import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 
 interface Company {
   id: string;
@@ -46,6 +49,7 @@ const Companies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const analytics = useAnalytics();
   const isMobile = useIsMobile();
+  const { trigger } = useHaptic();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +59,15 @@ const Companies = () => {
   const [selectedRating, setSelectedRating] = useState("Alle");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleRefresh = async () => {
+    await fetchCompanies();
+    trigger('success');
+  };
+
+  const { isPulling, isRefreshing, pullDistance, threshold } = usePullToRefresh({
+    onRefresh: handleRefresh
+  });
 
   useEffect(() => {
     analytics.trackPageView('Companies List', '/firmen');
@@ -244,6 +257,12 @@ const Companies = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PullToRefreshIndicator 
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        threshold={threshold}
+      />
       <Navigation />
 
       <main className="flex-1">
