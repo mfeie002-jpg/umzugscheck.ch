@@ -88,35 +88,35 @@ export default function BesteFirmen() {
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="bg-gradient-to-br from-primary/5 via-background to-primary/5 py-16 md:py-24">
+          <section className="bg-gradient-to-br from-primary/5 via-background to-primary/5 py-12 sm:py-16 md:py-24">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto text-center">
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
-                  <Trophy className="w-4 h-4" />
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+                  <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
                   Ranking 2025
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
                   {pageTitle}
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground mb-8">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 px-4">
                   {pageDescription}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                  <div className="flex flex-col items-center p-4 bg-background rounded-lg">
-                    <Star className="w-8 h-8 text-yellow-400 mb-2" />
-                    <div className="font-bold text-2xl">4.8/5</div>
-                    <div className="text-sm text-muted-foreground">Durchschnittliche Bewertung</div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto">
+                  <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
+                    <Star className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400 mb-2" />
+                    <div className="font-bold text-xl sm:text-2xl">4.8/5</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Durchschnittliche Bewertung</div>
                   </div>
-                  <div className="flex flex-col items-center p-4 bg-background rounded-lg">
-                    <Shield className="w-8 h-8 text-green-500 mb-2" />
-                    <div className="font-bold text-2xl">100%</div>
-                    <div className="text-sm text-muted-foreground">Geprüfte Firmen</div>
+                  <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
+                    <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 mb-2" />
+                    <div className="font-bold text-xl sm:text-2xl">100%</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Geprüfte Firmen</div>
                   </div>
-                  <div className="flex flex-col items-center p-4 bg-background rounded-lg">
-                    <Award className="w-8 h-8 text-primary mb-2" />
-                    <div className="font-bold text-2xl">15'000+</div>
-                    <div className="text-sm text-muted-foreground">Erfolgreiche Umzüge</div>
+                  <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
+                    <Award className="w-6 h-6 sm:w-8 sm:h-8 text-primary mb-2" />
+                    <div className="font-bold text-xl sm:text-2xl">15'000+</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Erfolgreiche Umzüge</div>
                   </div>
                 </div>
               </div>
