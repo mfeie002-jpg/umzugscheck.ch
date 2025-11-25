@@ -83,15 +83,15 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
       />
       
       {/* Menu Panel */}
-      <div className="fixed top-20 md:top-24 right-0 bottom-0 w-80 max-w-[85vw] bg-white border-l border-border z-50 overflow-y-auto shadow-strong animate-slide-in-right lg:hidden">
-        <div className="p-6 space-y-2">
+      <div className="fixed top-20 md:top-24 right-0 bottom-0 w-80 max-w-[85vw] bg-background border-l border-border z-50 overflow-y-auto shadow-strong animate-slide-in-right lg:hidden">
+        <div className="p-4 pb-20 space-y-1">
           {/* Main Nav Items */}
           {mainNavItems.map((item) => (
             <Link
               key={item.label}
               to={item.href}
               onClick={onClose}
-              className="block px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium"
+              className="block px-4 py-3.5 text-foreground hover:bg-secondary/80 rounded-lg transition-all font-medium text-[15px]"
             >
               {item.label}
             </Link>
@@ -102,23 +102,23 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             open={isCalculatorsOpen}
             onOpenChange={setIsCalculatorsOpen}
           >
-            <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium">
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3.5 text-foreground hover:bg-secondary/80 rounded-lg transition-all font-medium text-[15px]">
               <span>Rechner</span>
               <ChevronDown className={cn(
                 "w-4 h-4 transition-transform",
                 isCalculatorsOpen && "rotate-180"
               )} />
             </CollapsibleTrigger>
-            <CollapsibleContent className="mt-2 space-y-1">
+            <CollapsibleContent className="mt-1 space-y-0.5 pl-3">
               {calculators.map((calc) => (
                 <Link
                   key={calc.title}
                   to={calc.href}
                   onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-secondary/70 rounded-lg transition-all"
                 >
-                  <calc.icon className="w-4 h-4 text-primary" />
-                  <span className="text-sm">{calc.title}</span>
+                  <calc.icon className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-[14px]">{calc.title}</span>
                 </Link>
               ))}
             </CollapsibleContent>
@@ -128,16 +128,18 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           <div className="border-t border-border my-4" />
 
           {/* Auth & CTA */}
-          <Link to="/auth" onClick={onClose}>
-            <Button variant="ghost" className="w-full justify-start text-foreground hover:text-primary">
-              Admin Login
-            </Button>
-          </Link>
-          <Link to="/rechner" onClick={onClose}>
-            <Button className="w-full bg-accent hover:bg-accent/90 shadow-medium">
-              Offerten erhalten
-            </Button>
-          </Link>
+          <div className="space-y-2 px-1">
+            <Link to="/auth" onClick={onClose} className="block">
+              <Button variant="ghost" className="w-full justify-start text-foreground hover:text-primary h-11">
+                Admin Login
+              </Button>
+            </Link>
+            <Link to="/rechner" onClick={onClose} className="block">
+              <Button className="w-full bg-accent hover:bg-accent/90 shadow-medium h-12 text-[15px] font-semibold">
+                Offerten erhalten
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </>

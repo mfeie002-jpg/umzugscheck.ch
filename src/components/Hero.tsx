@@ -46,26 +46,26 @@ export const Hero = () => {
 
           {/* Trust Signals */}
           <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                <CheckCircle2 className="w-4 h-4 sm:w-6 sm:h-6 text-success animate-pulse" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1.5 sm:mb-2">
+                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success animate-pulse" />
               </div>
-              <p className="text-xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">100%</p>
-              <p className="text-xs sm:text-sm text-white/90 text-center font-medium">kostenlos</p>
+              <p className="text-2xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">100%</p>
+              <p className="text-[11px] sm:text-sm text-white/90 text-center font-medium leading-tight">kostenlos</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                <TrendingDown className="w-4 h-4 sm:w-6 sm:h-6 text-accent" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1.5 sm:mb-2">
+                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
               </div>
-              <p className="text-xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">4.8/5</p>
-              <p className="text-xs sm:text-sm text-white/90 text-center font-medium">Bewertung</p>
+              <p className="text-2xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">4.8/5</p>
+              <p className="text-[11px] sm:text-sm text-white/90 text-center font-medium leading-tight">Bewertung</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                <CheckCircle2 className="w-4 h-4 sm:w-6 sm:h-6 text-success animate-pulse" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1.5 sm:mb-2">
+                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success animate-pulse" />
               </div>
-              <p className="text-xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">2 Min</p>
-              <p className="text-xs sm:text-sm text-white/90 text-center font-medium">Zeitaufwand</p>
+              <p className="text-2xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">2 Min</p>
+              <p className="text-[11px] sm:text-sm text-white/90 text-center font-medium leading-tight">Zeitaufwand</p>
             </div>
           </div>
 
@@ -92,17 +92,17 @@ export const Hero = () => {
 
           {/* Trust Line */}
           <div className="pt-4 text-center sm:text-left">
-            <p className="text-white/90 text-xs sm:text-sm font-medium flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <p className="text-white/90 text-[13px] sm:text-sm font-medium flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-2">
               <span className="inline-flex items-center gap-1.5">
-                <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-success flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
                 <span className="whitespace-nowrap">100% geprüfte Firmen</span>
               </span>
-              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:inline text-white/60">•</span>
               <span className="inline-flex items-center gap-1.5">
-                <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
+                <TrendingDown className="w-4 h-4 text-accent flex-shrink-0" />
                 <span className="whitespace-nowrap">Bis zu 40% sparen</span>
               </span>
-              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:inline text-white/60">•</span>
               <span className="whitespace-nowrap">Schweizweit</span>
             </p>
           </div>
