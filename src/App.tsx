@@ -49,6 +49,7 @@ import BecomeProvider from "./pages/BecomeProvider";
 import ReviewSubmission from "./pages/ReviewSubmission";
 import BesteFirmen from "./pages/BesteFirmen";
 import GuenstigeFirmen from "./pages/GuenstigeFirmen";
+import ProviderPortal from "./pages/ProviderPortal";
 
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
@@ -122,6 +123,7 @@ const App = () => (
             <Route path="/rechner/video" element={<VideoEstimator />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
+            <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
             <Route path="/regionen" element={<Regionen />} />
             <Route path="/kanton/:slug" element={<Canton />} />
@@ -164,7 +166,8 @@ const App = () => (
             <Route path="/firmen-dashboard" element={<ProviderDashboard />} />
             <Route path="/anbieter/profil" element={<ProviderProfile />} />
             <Route path="/anbieter/preise" element={<ProviderPricing />} />
-            <Route path="/firmen-portal" element={<ProviderDashboard />} />
+            <Route path="/firmen-portal" element={<ProviderPortal />} />
+            <Route path="/firmen-portal/dashboard" element={<ProviderDashboard />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

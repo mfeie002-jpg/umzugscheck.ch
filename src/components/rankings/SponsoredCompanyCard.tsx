@@ -74,11 +74,18 @@ export const SponsoredCompanyCard = ({
         </div>
       )}
 
-      <Link to={`/firmen/${id}`}>
-        <Button className="w-full" size="lg">
-          Firma ansehen
-        </Button>
-      </Link>
+      <div className="grid grid-cols-2 gap-2">
+        <Link to={`/umzugsfirmen/${id}`} className="flex-1">
+          <Button variant="outline" size="lg" className="w-full">
+            Firma ansehen
+          </Button>
+        </Link>
+        <Link to="/rechner" className="flex-1">
+          <Button size="lg" className="w-full">
+            Offerte anfordern
+          </Button>
+        </Link>
+      </div>
     </Card>
   );
 };
