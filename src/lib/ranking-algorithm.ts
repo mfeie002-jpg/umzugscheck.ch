@@ -137,17 +137,25 @@ export const generateRanking = (
     })
     .sort((a, b) => b.score - a.score);
   
-  // Calculate average price for savings percentage
-  const avgScore = rankedOrganic.reduce((sum, c) => sum + c.score, 0) / rankedOrganic.length;
-  
-  // Assign ranks and calculate savings
-  const rankedOrganicWithSavings = rankedOrganic.map((company, index) => ({
-    ...company,
-    rank: index + 1,
-    savingsPercentage: company.price_level === 'günstig' 
-      ? Math.min(35, Math.round((1 - company.score / avgScore) * 100))
-      : undefined,
-  }));
+  // Assign ranks and calculate savings percentage based on price level
+  const rankedOrganicWithSavings = rankedOrganic.map((company, index) => {
+    let savingsPercentage: number | undefined;
+    
+    // Calculate savings based on price level and position
+    if (company.price_level === 'günstig') {
+      // Cheaper companies get 20-35% savings badge
+      savingsPercentage = Math.min(35, 20 + Math.floor((10 - index) * 1.5));
+    } else if (company.price_level === 'fair' && index < 5) {
+      // Top fair-priced companies get 10-20% savings badge
+      savingsPercentage = Math.min(20, 10 + (5 - index) * 2);
+    }
+    
+    return {
+      ...company,
+      rank: index + 1,
+      savingsPercentage: savingsPercentage && savingsPercentage > 0 ? savingsPercentage : undefined,
+    };
+  });
   
   // Format sponsored companies
   const sponsoredFormatted: RankedCompany[] = sponsored.map((company, index) => ({

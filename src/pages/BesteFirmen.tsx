@@ -6,8 +6,9 @@ import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { Trophy, Star, Shield, Award } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
+import { generateRanking } from "@/lib/ranking-algorithm";
 
 export default function BesteFirmen() {
   const { region } = useParams();
@@ -29,60 +30,50 @@ export default function BesteFirmen() {
     fetchCompanies();
   }, [region]);
 
-  const fetchCompanies = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("service_providers")
-        .select("*")
-        .eq("verification_status", "approved")
-        .order("ranking_position", { ascending: true, nullsFirst: false });
-
-      if (error) throw error;
-
-      if (data) {
-        const featured = data
-          .filter((c: any) => c.is_featured)
-          .sort((a: any, b: any) => (a.featured_position || 999) - (b.featured_position || 999))
-          .slice(0, 3)
-          .map((c: any) => ({
-            id: c.id,
-            name: c.company_name,
-            logo: c.logo_url,
-            rating: 4.8,
-            reviewCount: 150,
-            regions: c.cantons_served || [],
-            description: c.description || "Professioneller Umzugsservice mit langjähriger Erfahrung.",
-            priceLevel: c.price_level || "Fair",
-            specialOffer: "Spezialrabatt für Umzugscheck-Kunden",
-          }));
-
-        const organic = data
-          .filter((c: any) => !c.is_featured)
-          .sort((a: any, b: any) => (a.ranking_position || 999) - (b.ranking_position || 999))
-          .slice(0, 10)
-          .map((c: any, index: number) => ({
-            id: c.id,
-            rank: featured.length + index + 1,
-            name: c.company_name,
-            logo: c.logo_url,
-            rating: 4.7,
-            reviewCount: 120,
-            regions: c.cantons_served || [],
-            description: c.description || "Zuverlässiger Umzugsservice zu fairen Preisen.",
-            priceLevel: c.price_level || "Fair",
-            savingsPercentage: Math.floor(Math.random() * 30) + 10,
-            verified: c.verification_status === "approved",
-          }));
-
-        setSponsoredCompanies(featured);
-        setOrganicCompanies(organic);
-      }
-    } catch (error) {
-      console.error("Error fetching companies:", error);
-    } finally {
-      setLoading(false);
-    }
+  const fetchCompanies = () => {
+    setLoading(true);
+    
+    // Get companies filtered by region
+    const filteredCompanies = region ? getCompaniesByRegion(region) : DEMO_COMPANIES;
+    
+    // Generate ranking using the algorithm
+    const ranked = generateRanking(filteredCompanies, undefined, 'best');
+    
+    // Format for display components
+    const sponsored = ranked
+      .filter(c => c.isSponsored)
+      .slice(0, 3)
+      .map(c => ({
+        id: c.id,
+        name: c.name,
+        logo: undefined,
+        rating: c.rating,
+        reviewCount: c.review_count,
+        regions: c.service_areas,
+        description: `Professioneller ${c.services_offered.join(', ')}-Service mit ${c.review_count} Kundenbewertungen.`,
+        priceLevel: c.price_level === "günstig" ? "Günstig" : c.price_level === "fair" ? "Fair" : "Premium",
+        specialOffer: "Spezialrabatt für Umzugscheck-Kunden",
+      }));
+    
+    const organic = ranked
+      .filter(c => !c.isSponsored)
+      .map(c => ({
+        id: c.id,
+        rank: c.rank,
+        name: c.name,
+        logo: undefined,
+        rating: c.rating,
+        reviewCount: c.review_count,
+        regions: c.service_areas,
+        description: `Zuverlässiger ${c.services_offered.slice(0, 2).join(' & ')}-Service in ${c.service_areas[0]}.`,
+        priceLevel: c.price_level === "günstig" ? "Günstig" : c.price_level === "fair" ? "Fair" : "Premium",
+        savingsPercentage: c.savingsPercentage,
+        verified: true,
+      }));
+    
+    setSponsoredCompanies(sponsored);
+    setOrganicCompanies(organic);
+    setLoading(false);
   };
 
   return (

@@ -80,15 +80,30 @@ const Companies = () => {
 
   const fetchCompanies = async () => {
     setError(null);
+    setLoading(true);
+    
     try {
-      const { data, error } = await supabase
-        .from("companies")
-        .select("*")
-        .order("featured", { ascending: false })
-        .order("rating", { ascending: false });
-
-      if (error) throw error;
-      setCompanies(data || []);
+      // Import demo companies
+      const { DEMO_COMPANIES } = await import("@/data/companies");
+      
+      // Transform to match Companies interface
+      const transformed = DEMO_COMPANIES.map(c => ({
+        id: c.id,
+        name: c.name,
+        logo: "",
+        description: `Professioneller ${c.services_offered.slice(0, 2).join(' & ')}-Service`,
+        services: c.services_offered,
+        price_level: c.price_level === "günstig" ? "günstig" : c.price_level === "fair" ? "fair" : "premium",
+        rating: c.rating,
+        review_count: c.review_count,
+        service_areas: c.service_areas,
+        verified: true,
+        phone: "+41 44 123 45 67",
+        email: `info@${c.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.ch`,
+        website: `https://www.${c.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.ch`,
+      }));
+      
+      setCompanies(transformed);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Fehler beim Laden der Firmen';
       setError(errorMsg);
