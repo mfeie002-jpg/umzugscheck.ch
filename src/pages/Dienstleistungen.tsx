@@ -1,7 +1,7 @@
 import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, Sparkles, Trash2, Package, Wrench, Archive, Calculator } from "lucide-react";
+import { Truck, Sparkles, Trash2, Package, Wrench, Archive, Calculator, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
@@ -124,46 +124,89 @@ const Dienstleistungen = () => {
           {/* Hero Section */}
           <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Alle Umzugsdienstleistungen aus einer Hand
+              Umzugs-Dienstleistungen im Überblick
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Von Transport über Reinigung bis zur Lagerung – wir bieten Ihnen den kompletten Service für einen stressfreien Umzug in der ganzen Schweiz
+              Für verschiedene Umzugsthemen finden Sie bei uns die passenden Firmen – 
+              vom Privatumzug über Reinigung bis zur Lagerung
             </p>
             <Button size="lg" asChild>
-              <Link to="/rechner/konfigurator">
+              <Link to="/offerte">
                 <Calculator className="w-5 h-5 mr-2" />
-                Gesamtpaket konfigurieren
+                Offerte anfordern
               </Link>
             </Button>
           </div>
 
           {/* Services Grid */}
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-center mb-8">
-              Unsere Dienstleistungen im Detail
-            </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((service, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+              {[
+                {
+                  icon: Truck,
+                  title: "Privatumzug",
+                  description: "Kompletter Umzugsservice für Privatpersonen und Familien. Von der 1-Zimmer-Wohnung bis zum Einfamilienhaus.",
+                  link: "/rechner/umzugskosten"
+                },
+                {
+                  icon: Calculator,
+                  title: "Firmenumzug",
+                  description: "Professionelle Büro- und Firmenumzüge mit minimaler Ausfallzeit. IT-Equipment, Möbel und sensible Unterlagen.",
+                  link: "/rechner/umzugskosten"
+                },
+                {
+                  icon: Sparkles,
+                  title: "Umzugsreinigung mit Abgabegarantie",
+                  description: "Professionelle Endreinigung nach Schweizer Standards. Mit Abnahmegarantie für stressfreie Wohnungsübergabe.",
+                  link: "/rechner/reinigung"
+                },
+                {
+                  icon: Trash2,
+                  title: "Entsorgung & Entrümpelung",
+                  description: "Fachgerechte Entsorgung von Möbeln, Elektrogeräten und Hausrat. Komplette Wohnungsräumungen bei Bedarf.",
+                  link: "/rechner/entsorgung"
+                },
+                {
+                  icon: Archive,
+                  title: "Möbellager & Zwischenlagerung",
+                  description: "Sichere Einlagerung Ihrer Möbel und Gegenstände in klimatisierten Räumen. Flexibel von Tagen bis Monaten.",
+                  link: "/rechner/lager"
+                },
+                {
+                  icon: Wrench,
+                  title: "Klavier- & Spezialtransport",
+                  description: "Fachgerechter Transport von Klavieren, Flügeln, Tresoren und anderen schweren oder empfindlichen Gegenständen.",
+                  link: "/offerte"
+                },
+                {
+                  icon: Package,
+                  title: "Einpackservice",
+                  description: "Professionelles Ein- und Auspacken aller Gegenstände mit dem richtigen Verpackungsmaterial für sicheren Transport.",
+                  link: "/rechner/packservice"
+                },
+                {
+                  icon: Wrench,
+                  title: "Montage & Demontage",
+                  description: "Fachgerechter Auf- und Abbau von Möbeln, Küchen und komplexen Einrichtungen durch erfahrene Monteure.",
+                  link: "/rechner/moebelmontage"
+                }
+              ].map((service, index) => (
+                <Card key={index} className="hover:shadow-strong hover:border-primary/40 transition-all group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                      <service.icon className="w-8 h-8 text-primary" />
+                    <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                      <service.icon className="w-7 h-7 text-primary" />
                     </div>
-                    <CardTitle className="text-xl">{service.title}</CardTitle>
-                    <CardDescription>{service.description}</CardDescription>
+                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                      {service.title}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="space-y-2 mb-6">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-sm">
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button className="w-full" asChild>
+                    <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+                      {service.description}
+                    </p>
+                    <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
                       <Link to={service.link}>
-                        {service.linkText}
+                        Mehr erfahren
                       </Link>
                     </Button>
                   </CardContent>
@@ -172,93 +215,22 @@ const Dienstleistungen = () => {
             </div>
           </section>
 
-          {/* Kombinations-Vorteile */}
-          <section className="mb-16 bg-muted/30 rounded-2xl p-8 md:p-12">
-            <h2 className="text-3xl font-bold mb-8 text-center">
-              Vorteile der Service-Kombination
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Alles aus einer Hand",
-                  description: "Ein Ansprechpartner für alle Dienstleistungen – kein Koordinationsaufwand zwischen verschiedenen Anbietern."
-                },
-                {
-                  title: "Zeitersparnis",
-                  description: "Durch die Bündelung aller Services sparen Sie wertvolle Zeit bei der Organisation Ihres Umzugs."
-                },
-                {
-                  title: "Kostenersparnis",
-                  description: "Paketpreise sind günstiger als einzelne Services. Sparen Sie bis zu 20% durch Kombination."
-                }
-              ].map((benefit, index) => (
-                <div key={index} className="bg-background p-6 rounded-xl shadow-sm text-center">
-                  <h3 className="font-bold text-xl mb-2">{benefit.title}</h3>
-                  <p className="text-muted-foreground">{benefit.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Typische Kombinationen */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-center mb-8">
-              Beliebte Service-Kombinationen
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Basic-Umzug",
-                  services: ["Umzugstransport", "Möbelmontage"],
-                  price: "ab CHF 1'200",
-                  description: "Perfekt für kleine Umzüge und Handwerker-erfahrene Kunden"
-                },
-                {
-                  title: "Komfort-Umzug",
-                  services: ["Umzugstransport", "Packservice", "Möbelmontage", "Endreinigung"],
-                  price: "ab CHF 2'500",
-                  description: "Die beliebteste Kombination – stressfrei umziehen",
-                  popular: true
-                },
-                {
-                  title: "Rundum-Sorglos-Paket",
-                  services: ["Alle Services", "Entsorgung", "Lagerung", "Versicherung Premium"],
-                  price: "ab CHF 4'500",
-                  description: "Maximaler Komfort für anspruchsvolle Umzüge"
-                }
-              ].map((combo, index) => (
-                <Card key={index} className={combo.popular ? "border-primary border-2 relative" : ""}>
-                  {combo.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
-                        Am beliebtesten
-                      </span>
-                    </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle className="text-xl">{combo.title}</CardTitle>
-                    <CardDescription>
-                      <span className="text-2xl font-bold text-foreground">{combo.price}</span>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2 mb-4">
-                      {combo.services.map((service, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-sm">
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
-                          <span>{service}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="text-sm text-muted-foreground mb-4">{combo.description}</p>
-                    <Button className="w-full" variant={combo.popular ? "default" : "outline"} asChild>
-                      <Link to="/rechner/konfigurator">
-                        Paket konfigurieren
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+          {/* Multi-Service CTA */}
+          <section className="mb-16 bg-secondary/5 rounded-2xl p-8 md:p-12">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                Brauchst du Hilfe bei mehreren Themen gleichzeitig?
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Kombinieren Sie verschiedene Services und erhalten Sie ein Gesamtangebot – 
+                oft günstiger als Einzelbuchungen.
+              </p>
+              <Link to="/offerte">
+                <Button size="lg" className="shadow-accent">
+                  Offerte anfordern
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
             </div>
           </section>
 
@@ -278,8 +250,8 @@ const Dienstleistungen = () => {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" asChild>
-                <Link to="/rechner">
-                  Einzelservice berechnen
+                <Link to="/offerte">
+                  Offerte anfordern
                 </Link>
               </Button>
             </div>

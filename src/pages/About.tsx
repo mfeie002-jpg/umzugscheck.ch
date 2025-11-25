@@ -5,6 +5,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { DataProtectionBadge } from "@/components/trust/DataProtectionBadge";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Helmet } from "react-helmet";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -101,54 +102,69 @@ const About = () => {
           <Breadcrumbs items={[{ label: "Über uns" }]} showHome />
         </div>
 
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-secondary/30 to-background border-b border-border py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <ScrollReveal>
-              <div className="max-w-3xl mx-auto text-center">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-                  Über Umzugscheck.ch
-                </h1>
-                <p className="text-xl text-muted-foreground mb-8">
-                  Die unabhängige Schweizer Vergleichsplattform für stressfreie Umzüge
-                </p>
-              </div>
-            </ScrollReveal>
+          {/* Hero Section */}
+          <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              Über umzugscheck.ch
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Die unabhängige Schweizer Vergleichsplattform für faire und transparente Umzugsofferten
+            </p>
           </div>
-        </section>
 
-        {/* Mission Section */}
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <ScrollReveal>
-              <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 text-center">
-                  Unsere Mission
-                </h2>
-                <div className="bg-secondary/20 border border-border rounded-2xl p-8 md:p-12">
-                  <p className="text-lg text-foreground mb-6">
-                    Umzugscheck.ch wurde gegründet, um den Umzugsprozess in der Schweiz transparenter, 
-                    einfacher und kostengünstiger zu gestalten. Wir wissen, dass ein Umzug eine der 
-                    stressigsten Lebenssituationen sein kann – von der Planung über die Kostenkalkulation 
-                    bis zur Auswahl der richtigen Umzugsfirma.
+          {/* Mission Section */}
+          <section className="mb-16">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold mb-6 text-center">Unsere Mission</h2>
+              <Card className="shadow-medium">
+                <CardContent className="p-8 md:p-12">
+                  <p className="text-lg text-foreground mb-6 leading-relaxed">
+                    Umzugscheck.ch hilft Menschen in der Schweiz, faire und transparente Angebote für Umzugsdienstleistungen zu finden. 
+                    Wir glauben, dass ein Umzug nicht kompliziert oder überteuert sein muss. Deshalb haben wir eine Plattform geschaffen, 
+                    auf der Sie schnell und unkompliziert mehrere Offerten von geprüften Umzugsfirmen erhalten können.
                   </p>
-                  <p className="text-lg text-foreground mb-6">
-                    Deshalb haben wir eine Plattform geschaffen, die Ihnen hilft, in wenigen Minuten 
-                    mehrere Offerten von geprüften Umzugsfirmen zu vergleichen. Unsere intelligenten 
-                    Preisrechner geben Ihnen sofort eine realistische Einschätzung Ihrer Umzugskosten, 
-                    und unsere Datenbank mit verifizierten Umzugsunternehmen aus allen 26 Schweizer 
-                    Kantonen stellt sicher, dass Sie nur mit professionellen Anbietern in Kontakt kommen.
+                  <p className="text-lg text-foreground mb-6 leading-relaxed">
+                    Unser Ziel ist es, den Umzugsprozess transparent, fair und stressfrei zu gestalten. Wir bringen Umziehende und 
+                    professionelle Umzugsfirmen zusammen – kostenlos, unverbindlich und mit höchstem Qualitätsanspruch.
                   </p>
-                  <p className="text-lg text-foreground">
-                    Wir sind komplett unabhängig und arbeiten für Sie – nicht für die Umzugsfirmen. 
-                    Unser Ziel ist es, Ihnen die beste Entscheidungsgrundlage zu bieten und Ihnen 
-                    Zeit, Nerven und Geld zu sparen.
-                  </p>
-                </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          {/* Wie wir arbeiten */}
+          <section className="mb-16 bg-secondary/5 rounded-2xl p-8 md:p-12">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold mb-8 text-center">Wie wir arbeiten</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <Users className="w-10 h-10 text-primary mb-3" />
+                    <CardTitle>Neutral & unabhängig</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Wir sind keine Umzugsfirma, sondern eine unabhängige Vergleichsplattform. 
+                      Das bedeutet: Wir arbeiten für Sie, nicht für die Anbieter. Ihre Zufriedenheit steht im Mittelpunkt.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <Shield className="w-10 h-10 text-primary mb-3" />
+                    <CardTitle>Geprüfte Partner</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Alle Umzugsfirmen auf unserer Plattform werden sorgfältig geprüft. Nur Partner mit nachweislich 
+                      gutem Service, gültiger Versicherung und positiven Kundenbewertungen werden aufgenommen.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
-            </ScrollReveal>
-          </div>
-        </section>
+            </div>
+          </section>
 
         {/* Stats Section */}
         <section className="py-16 md:py-24 bg-secondary/10">
