@@ -9,9 +9,13 @@ import { TrendingDown, DollarSign, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DEMO_COMPANIES, getCompaniesByRegion, getCompaniesByPriceLevel } from "@/data/companies";
 import { generateRanking } from "@/lib/ranking-algorithm";
+import { useHaptic } from "@/hooks/use-haptic";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
+import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 
 export default function GuenstigeFirmen() {
   const { region } = useParams();
+  const { trigger } = useHaptic();
   
   const pageTitle = region 
     ? `Günstige Umzugsfirmen in ${region} (2025)` 
@@ -25,6 +29,15 @@ export default function GuenstigeFirmen() {
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
   const [organicCompanies, setOrganicCompanies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleRefresh = async () => {
+    await fetchCompanies();
+    trigger('success');
+  };
+
+  const { isPulling, isRefreshing, pullDistance, threshold } = usePullToRefresh({
+    onRefresh: handleRefresh
+  });
 
   useEffect(() => {
     fetchCompanies();
@@ -79,6 +92,12 @@ export default function GuenstigeFirmen() {
 
   return (
     <>
+      <PullToRefreshIndicator 
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        threshold={threshold}
+      />
       <Helmet>
         <title>{pageTitle} | Umzugscheck.ch</title>
         <meta name="description" content={pageDescription} />

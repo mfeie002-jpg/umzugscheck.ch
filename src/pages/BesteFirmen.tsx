@@ -9,9 +9,13 @@ import { Trophy, Star, Shield, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
 import { generateRanking } from "@/lib/ranking-algorithm";
+import { useHaptic } from "@/hooks/use-haptic";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
+import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 
 export default function BesteFirmen() {
   const { region } = useParams();
+  const { trigger } = useHaptic();
   
   const pageTitle = region 
     ? `Die besten Umzugsfirmen in ${region} (2025)` 
@@ -25,6 +29,15 @@ export default function BesteFirmen() {
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
   const [organicCompanies, setOrganicCompanies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleRefresh = async () => {
+    await fetchCompanies();
+    trigger('success');
+  };
+
+  const { isPulling, isRefreshing, pullDistance, threshold } = usePullToRefresh({
+    onRefresh: handleRefresh
+  });
 
   useEffect(() => {
     fetchCompanies();
@@ -78,6 +91,12 @@ export default function BesteFirmen() {
 
   return (
     <>
+      <PullToRefreshIndicator 
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        threshold={threshold}
+      />
       <Helmet>
         <title>{pageTitle} | Umzugscheck.ch</title>
         <meta name="description" content={pageDescription} />
