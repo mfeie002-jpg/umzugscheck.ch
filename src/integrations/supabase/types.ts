@@ -143,6 +143,44 @@ export type Database = {
         }
         Relationships: []
       }
+      call_tracking: {
+        Row: {
+          call_duration: number | null
+          caller_phone: string | null
+          company_id: string
+          created_at: string | null
+          id: string
+          timestamp: string
+          was_successful: boolean | null
+        }
+        Insert: {
+          call_duration?: number | null
+          caller_phone?: string | null
+          company_id: string
+          created_at?: string | null
+          id?: string
+          timestamp?: string
+          was_successful?: boolean | null
+        }
+        Update: {
+          call_duration?: number | null
+          caller_phone?: string | null
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          timestamp?: string
+          was_successful?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_tracking_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           created_at: string | null
@@ -1373,8 +1411,11 @@ export type Database = {
       service_providers: {
         Row: {
           account_status: Database["public"]["Enums"]["account_status"]
+          avg_completion_time_hours: number | null
           billing_model: string | null
           cantons_served: string[]
+          certifications: string[] | null
+          cities_served: string[] | null
           city: string
           click_price_chf: number | null
           company_name: string
@@ -1382,6 +1423,7 @@ export type Database = {
           country: string
           created_at: string
           description: string | null
+          discount_offer: string | null
           email: string
           employees_count: number | null
           featured_position: number | null
@@ -1390,17 +1432,25 @@ export type Database = {
           is_featured: boolean | null
           lead_price_chf: number | null
           logo_url: string | null
+          long_description: string | null
           max_leads_per_month: number | null
           min_job_value: number | null
           monthly_fee_chf: number | null
           password_hash: string
           phone: string
+          phone_tracking_number: string | null
           preferred_regions: string[] | null
           price_level: Database["public"]["Enums"]["price_level"] | null
+          profile_gallery: string[] | null
           ranking_position: number | null
+          response_time_minutes: number | null
           services_offered: string[]
+          short_description: string | null
+          slug: string | null
+          sponsored_tier: number | null
           street: string
           subscription_plan: string | null
+          success_rate: number | null
           updated_at: string
           verification_status: Database["public"]["Enums"]["verification_status"]
           website: string | null
@@ -1408,8 +1458,11 @@ export type Database = {
         }
         Insert: {
           account_status?: Database["public"]["Enums"]["account_status"]
+          avg_completion_time_hours?: number | null
           billing_model?: string | null
           cantons_served?: string[]
+          certifications?: string[] | null
+          cities_served?: string[] | null
           city: string
           click_price_chf?: number | null
           company_name: string
@@ -1417,6 +1470,7 @@ export type Database = {
           country?: string
           created_at?: string
           description?: string | null
+          discount_offer?: string | null
           email: string
           employees_count?: number | null
           featured_position?: number | null
@@ -1425,17 +1479,25 @@ export type Database = {
           is_featured?: boolean | null
           lead_price_chf?: number | null
           logo_url?: string | null
+          long_description?: string | null
           max_leads_per_month?: number | null
           min_job_value?: number | null
           monthly_fee_chf?: number | null
           password_hash: string
           phone: string
+          phone_tracking_number?: string | null
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
+          profile_gallery?: string[] | null
           ranking_position?: number | null
+          response_time_minutes?: number | null
           services_offered?: string[]
+          short_description?: string | null
+          slug?: string | null
+          sponsored_tier?: number | null
           street: string
           subscription_plan?: string | null
+          success_rate?: number | null
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
           website?: string | null
@@ -1443,8 +1505,11 @@ export type Database = {
         }
         Update: {
           account_status?: Database["public"]["Enums"]["account_status"]
+          avg_completion_time_hours?: number | null
           billing_model?: string | null
           cantons_served?: string[]
+          certifications?: string[] | null
+          cities_served?: string[] | null
           city?: string
           click_price_chf?: number | null
           company_name?: string
@@ -1452,6 +1517,7 @@ export type Database = {
           country?: string
           created_at?: string
           description?: string | null
+          discount_offer?: string | null
           email?: string
           employees_count?: number | null
           featured_position?: number | null
@@ -1460,23 +1526,78 @@ export type Database = {
           is_featured?: boolean | null
           lead_price_chf?: number | null
           logo_url?: string | null
+          long_description?: string | null
           max_leads_per_month?: number | null
           min_job_value?: number | null
           monthly_fee_chf?: number | null
           password_hash?: string
           phone?: string
+          phone_tracking_number?: string | null
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
+          profile_gallery?: string[] | null
           ranking_position?: number | null
+          response_time_minutes?: number | null
           services_offered?: string[]
+          short_description?: string | null
+          slug?: string | null
+          sponsored_tier?: number | null
           street?: string
           subscription_plan?: string | null
+          success_rate?: number | null
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
           website?: string | null
           zip?: string
         }
         Relationships: []
+      }
+      sponsored_plans: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          end_date: string
+          id: string
+          is_active: boolean | null
+          monthly_price_chf: number
+          region: string | null
+          start_date: string
+          tier: number
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          monthly_price_chf: number
+          region?: string | null
+          start_date: string
+          tier: number
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          monthly_price_chf?: number
+          region?: string | null
+          start_date?: string
+          tier?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsored_plans_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscription_plans: {
         Row: {
