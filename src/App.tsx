@@ -61,6 +61,7 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
+import Ratgeber from "./pages/Ratgeber";
 import BecomeProvider from "./pages/BecomeProvider";
 import ProviderSignup from "./pages/ProviderSignup";
 import ProviderLogin from "./pages/ProviderLogin";
@@ -117,7 +118,7 @@ const App = () => (
             <Route path="/offerte" element={<Offerte />} />
             <Route path="/dienstleistungen" element={<Dienstleistungen />} />
             <Route path="/umzugsfirmen" element={<Companies />} />
-            <Route path="/ratgeber" element={<Blog />} />
+            <Route path="/ratgeber" element={<Ratgeber />} />
             <Route path="/über-uns" element={<About />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
             <Route path="/agb" element={<AGB />} />
