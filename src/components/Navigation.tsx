@@ -11,9 +11,12 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Startseite", href: "/" },
-  { label: "Preisrechner", href: "/rechner", hasDropdown: true, dropdownType: "calculators" },
+  { label: "Preise", href: "/preise" },
+  { label: "Vergleich", href: "/vergleich" },
+  { label: "Offerte", href: "/offerte" },
+  { label: "Rechner", href: "/rechner", hasDropdown: true, dropdownType: "calculators" },
   { label: "Umzugsfirmen", href: "/firmen" },
-  { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
+  { label: "Dienstleistungen", href: "/dienstleistungen" },
   { label: "Ratgeber", href: "/blog" },
   { label: "Über uns", href: "/ueber-uns" },
   { label: "Kontakt", href: "/kontakt" }

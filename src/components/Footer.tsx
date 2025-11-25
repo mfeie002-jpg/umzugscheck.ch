@@ -150,36 +150,36 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-bold mb-4">Services</h4>
+            <h4 className="font-bold mb-4">Plattform</h4>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link to="/preise" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Preise
+                </Link>
+              </li>
+              <li>
+                <Link to="/vergleich" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Vergleich
+                </Link>
+              </li>
+              <li>
+                <Link to="/offerte" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Offerte anfordern
+                </Link>
+              </li>
+              <li>
                 <Link to="/rechner" className="text-primary-foreground/80 hover:text-white transition-base">
-                  KI-Preisrechner
+                  Rechner
                 </Link>
               </li>
               <li>
                 <Link to="/firmen" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Umzugsfirmen vergleichen
+                  Umzugsfirmen
                 </Link>
               </li>
               <li>
-                <Link to="/reinigungsrechner" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Endreinigung
-                </Link>
-              </li>
-              <li>
-                <Link to="/entsorgungsrechner" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Entsorgung
-                </Link>
-              </li>
-              <li>
-                <Link to="/lagerrechner" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Lagerung
-                </Link>
-              </li>
-              <li>
-                <Link to="/gesamtpreis-konfigurator" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Gesamtpaket
+                <Link to="/dienstleistungen" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Dienstleistungen
                 </Link>
               </li>
             </ul>
