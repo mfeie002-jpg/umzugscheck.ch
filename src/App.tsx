@@ -24,6 +24,7 @@ import Sitemap from "./pages/Sitemap";
 import Preise from "./pages/Preise";
 import Vergleich from "./pages/Vergleich";
 import Offerte from "./pages/Offerte";
+import OfferteNew from "./pages/OfferteNew";
 import Dienstleistungen from "./pages/Dienstleistungen";
 import Datenschutz from "./pages/Datenschutz";
 import AGB from "./pages/AGB";
@@ -35,6 +36,13 @@ import CalculatorResults from "./pages/CalculatorResults";
 import Volumenrechner from "./pages/rechner/Volumenrechner";
 import TransporterGroesse from "./pages/rechner/TransporterGroesse";
 import Zuerich from "./pages/umzugsfirmen/Zuerich";
+import Bern from "./pages/umzugsfirmen/Bern";
+import Basel from "./pages/umzugsfirmen/Basel";
+import UmzugschecklistePDF from "./pages/ratgeber/UmzugschecklistePDF";
+import Luzern from "./pages/umzugsfirmen/Luzern";
+import Winterthur from "./pages/umzugsfirmen/Winterthur";
+import StGallen from "./pages/umzugsfirmen/StGallen";
+import WasKostetEinUmzug from "./pages/ratgeber/WasKostetEinUmzug";
 import EstimateResult from "./pages/EstimateResult";
 import LeadRequest from "./pages/LeadRequest";
 import ThankYou from "./pages/ThankYou";
@@ -119,7 +127,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/preise" element={<Preise />} />
             <Route path="/vergleich" element={<Vergleich />} />
-            <Route path="/offerte" element={<Offerte />} />
+            <Route path="/offerte" element={<OfferteNew />} />
+            <Route path="/offerte-alt" element={<Offerte />} />
             <Route path="/dienstleistungen" element={<Dienstleistungen />} />
             <Route path="/umzugsfirmen" element={<Companies />} />
             <Route path="/ratgeber" element={<Ratgeber />} />
@@ -154,11 +163,13 @@ const App = () => (
             <Route path="/stadt/:slug" element={<City />} />
             <Route path="/umzugsfirmen/:slug" element={<City />} />
             <Route path="/umzugsfirmen/zuerich" element={<Zuerich />} />
-            <Route path="/umzugsfirmen/bern" element={<Zuerich />} />
-            <Route path="/umzugsfirmen/basel" element={<Zuerich />} />
-            <Route path="/umzugsfirmen/luzern" element={<Zuerich />} />
-            <Route path="/umzugsfirmen/winterthur" element={<Zuerich />} />
-            <Route path="/umzugsfirmen/st-gallen" element={<Zuerich />} />
+            <Route path="/umzugsfirmen/bern" element={<Bern />} />
+            <Route path="/umzugsfirmen/basel" element={<Basel />} />
+            <Route path="/umzugsfirmen/luzern" element={<Luzern />} />
+            <Route path="/umzugsfirmen/winterthur" element={<Winterthur />} />
+            <Route path="/umzugsfirmen/st-gallen" element={<StGallen />} />
+            <Route path="/ratgeber/umzugscheckliste-pdf" element={<UmzugschecklistePDF />} />
+            <Route path="/ratgeber/was-kostet-ein-umzug" element={<WasKostetEinUmzug />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/ueber-uns" element={<About />} />
