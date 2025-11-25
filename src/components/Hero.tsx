@@ -1,398 +1,135 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, CheckCircle2, TrendingDown, Calculator, Lock, Clock, Star, Shield, Award } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { PopularBadge } from "@/components/trust/PopularBadge";
-import { calculatorApi } from "@/lib/api";
-import { useToast } from "@/hooks/use-toast";
-
-const formSchema = z.object({
-  fromPostal: z.string().min(4, "Bitte gültige PLZ eingeben"),
-  fromCity: z.string().min(2, "Bitte Ort eingeben"),
-  toPostal: z.string().min(4, "Bitte gültige PLZ eingeben"),
-  toCity: z.string().min(2, "Bitte Ort eingeben"),
-  rooms: z.string().min(1, "Bitte Zimmerzahl wählen"),
-  moveDate: z.string().optional(),
-  floor: z.string().optional(),
-});
-
-const partnerLogos = [
-  "Swiss Quality",
-  "TrustPilot",
-  "ISO 9001",
-  "Handelsregister",
-  "DSGVO zertifiziert",
-  "Versichert"
-];
+import { ArrowRight, CheckCircle2, TrendingDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { QuickCalculator } from "./calculator/QuickCalculator";
+import { SecurityBadges } from "@/components/trust/SecurityBadges";
 
 export const Hero = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      fromPostal: "",
-      fromCity: "",
-      toPostal: "",
-      toCity: "",
-      rooms: "",
-      moveDate: "",
-      floor: "0",
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true);
-    
-    try {
-      const requestData: any = {
-        fromPostal: values.fromPostal,
-        fromCity: values.fromCity,
-        toPostal: values.toPostal,
-        toCity: values.toCity,
-        rooms: values.rooms,
-        movingType: "local",
-        floorsFrom: values.floor || "0",
-        floorsTo: "0",
-        hasElevatorFrom: false,
-        hasElevatorTo: false,
-      };
-
-      const response = await calculatorApi.quick(requestData);
-      
-      if (response.error) {
-        toast({
-          title: "Berechnung fehlgeschlagen",
-          description: response.error,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (!response.data) {
-        throw new Error('Keine Daten erhalten');
-      }
-      
-      navigate("/rechner/ergebnis", { 
-        state: { 
-          calculatorData: values, 
-          calculation: response.data,
-          distance: response.data.distance,
-          type: "quick" 
-        } 
-      });
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten';
-      toast({
-        title: "Fehler",
-        description: errorMsg,
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-  <section className="relative overflow-hidden bg-gradient-to-br from-background via-secondary/20 to-background">
-    {/* Subtle Background Effects */}
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-20 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+  <section className="relative overflow-hidden gradient-hero text-white">
+    {/* Animated Background Layers */}
+    <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark bg-[length:200%_200%] animate-gradient-shift">
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtMy4zMTQgMi42ODYtNiA2LTZzNiAyLjY4NiA2IDYtMi42ODYgNi02IDYtNi0yLjY4Ni02LTZ6bTAgMjRjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnpNMTIgMThjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnptMCAyNGMwLTMuMzE0IDIuNjg2LTYgNi02czYgMi42ODYgNiA2LTIuNjg2IDYtNiA2LTYtMi42ODYtNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
+      
+      {/* Animated Gradient Blobs */}
+      <div className="absolute -top-20 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-accent/40 to-primary/30 rounded-full blur-3xl animate-blob opacity-70"></div>
+      <div className="absolute top-40 right-40 w-[500px] h-[500px] bg-gradient-to-br from-primary-light/50 to-accent/30 rounded-full blur-3xl animate-blob-reverse animation-delay-2000 opacity-60"></div>
+      <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] bg-gradient-to-tr from-accent/30 to-primary-light/40 rounded-full blur-3xl animate-blob animation-delay-4000 opacity-70"></div>
+      <div className="absolute bottom-20 left-1/3 w-[550px] h-[550px] bg-gradient-to-br from-white/15 to-accent/20 rounded-full blur-3xl animate-blob-reverse animation-delay-6000 opacity-50"></div>
+      
+      {/* Additional moving elements for more depth */}
+      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-2xl animate-blob animation-delay-3000 opacity-40"></div>
+      <div className="absolute bottom-1/3 left-1/4 w-[450px] h-[450px] bg-gradient-to-tl from-primary-light/30 to-transparent rounded-full blur-2xl animate-blob-reverse animation-delay-5000 opacity-40"></div>
+      
+      {/* Overlay gradient for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10"></div>
     </div>
       
-    <div className="container mx-auto px-4 py-12 md:py-20 lg:py-24 relative z-10">
-      <div className="grid lg:grid-cols-2 gap-12 items-start max-w-7xl mx-auto">
+    <div className="container mx-auto px-4 py-20 md:py-28 lg:py-36 relative z-10">
+      <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
         {/* Left Column - Content */}
-        <div className="space-y-6 lg:pr-8">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-success/10 border border-success/20 px-4 py-2 rounded-full text-sm font-medium text-success">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>100% kostenlos & unverbindlich · In 2 Minuten zu 3–5 Offerten</span>
+        <div className="space-y-8 lg:pr-8">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
+            <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+            <span>100% kostenlos & unverbindlich</span>
           </div>
 
-          {/* H1 Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
-            Ihren Umzug in der Schweiz in <span className="text-primary">60 Sekunden</span> vergleichen.
+          <h1 className="leading-tight tracking-tight">
+            Ihren Umzug<br />
+            <span className="text-accent drop-shadow-lg">einfach vergleichen</span>
           </h1>
 
-          {/* Subheadline */}
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Füllen Sie einmal Ihr Umzugsprofil aus und erhalten Sie in kurzer Zeit passende Angebote von geprüften Umzugsfirmen. Transparent, fair und ohne Telefon-Spam.
+          <p className="text-xl md:text-2xl text-white/95 leading-relaxed max-w-xl">
+            Sparen Sie bis zu <strong className="text-white font-bold">40% bei Ihrem Umzug</strong> – 
+            kostenlos, transparent und in nur 2 Minuten.
           </p>
 
-          {/* 3-Column Benefits */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border shadow-soft">
-              <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0">
-                <TrendingDown className="w-5 h-5 text-success" />
+          {/* Trust Signals */}
+          <div className="grid grid-cols-3 gap-4 pt-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
               </div>
-              <div>
-                <div className="font-bold text-foreground mb-1">Bis zu 40% sparen</div>
-                <div className="text-sm text-muted-foreground">Im Schnitt günstiger als Einzelanfragen</div>
-              </div>
+              <p className="text-3xl font-bold text-center mb-1">100%</p>
+              <p className="text-sm text-white/90 text-center font-medium">kostenlos</p>
             </div>
-
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border shadow-soft">
-              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
-                <Star className="w-5 h-5 text-accent" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <TrendingDown className="w-6 h-6 text-accent" />
               </div>
-              <div>
-                <div className="font-bold text-foreground mb-1">4.8 / 5 Zufriedenheit</div>
-                <div className="text-sm text-muted-foreground">Bewertet von echten Kundinnen & Kunden</div>
-              </div>
+              <p className="text-3xl font-bold text-center mb-1">4.8/5</p>
+              <p className="text-sm text-white/90 text-center font-medium">Bewertung</p>
             </div>
-
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border shadow-soft">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Award className="w-5 h-5 text-primary" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
               </div>
-              <div>
-                <div className="font-bold text-foreground mb-1">15'000+ Umzüge</div>
-                <div className="text-sm text-muted-foreground">Vom Studio bis zum Einfamilienhaus</div>
-              </div>
+              <p className="text-3xl font-bold text-center mb-1">2 Min</p>
+              <p className="text-sm text-white/90 text-center font-medium">Zeitaufwand</p>
             </div>
           </div>
 
-          {/* Two Main Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <Link to="/rechner" className="flex-1">
               <Button 
                 size="lg" 
-                className="w-full h-14 text-lg bg-primary hover:bg-primary/90 text-white group transition-all duration-300 hover:shadow-xl hover:scale-105"
+                className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white shadow-accent group transition-all duration-300 hover:shadow-xl hover:scale-105 animate-glow-pulse hover-shine"
               >
-                <Calculator className="mr-2 w-5 h-5" />
-                <span>Umzugskosten berechnen</span>
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <span className="relative z-10">Kostenlos Preis berechnen</span>
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
               </Button>
             </Link>
-            <Link to="/umzugsfirmen" className="flex-1">
+            <Link to="/firmen" className="flex-1">
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="w-full h-14 text-lg border-2 transition-all duration-300 hover:bg-secondary"
+                className="w-full h-14 text-lg border-2 border-white/40 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:border-white/60"
               >
-                Umzugsfirmen vergleichen
+                Firmen vergleichen
               </Button>
             </Link>
           </div>
 
-          {/* Small Text Under Buttons */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Lock className="w-4 h-4 text-success" />
-            <span>Kostenlos & ohne Verpflichtung. Ihre Daten werden nur für Ihre Offerten-Anfrage verwendet.</span>
+          <SecurityBadges />
+
+          {/* Trust Line */}
+          <div className="pt-4 text-center sm:text-left">
+            <p className="text-white/90 text-sm font-medium">
+              <span className="inline-flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-success" />
+                100% geprüfte Umzugsfirmen
+              </span>
+              <span className="mx-2">•</span>
+              <span className="inline-flex items-center gap-2">
+                <TrendingDown className="w-4 h-4 text-accent" />
+                Bis zu 40% sparen
+              </span>
+              <span className="mx-2">•</span>
+              <span>Schweizweit</span>
+            </p>
           </div>
         </div>
 
-        {/* Right Column - Schnell-Rechner Card */}
-        <div className="lg:ml-auto w-full">
-          <div className="relative bg-card rounded-2xl shadow-strong border border-border p-6 md:p-8">
-            {/* Badge in top-right corner */}
-            <div className="absolute top-4 right-4">
-              <PopularBadge variant="popular" />
+        {/* Right Column - Quick Calculator Preview Card */}
+        <div className="lg:ml-auto w-full max-w-md">
+          <div className="backdrop-blur-lg bg-white/98 rounded-3xl shadow-2xl p-8 border-2 border-white/30 hover-lift relative overflow-hidden">
+            {/* Premium badge */}
+            <div className="absolute top-4 right-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
+              Beliebteste Funktion
             </div>
-
-            {/* Card Header */}
-            <div className="mb-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Calculator className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-foreground">Schnell-Rechner</h3>
-                </div>
-              </div>
-              <p className="text-muted-foreground">In 60 Sekunden zu Ihrer ersten Kostenschätzung.</p>
-            </div>
-
-            {/* Form */}
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <FormField
-                    control={form.control}
-                    name="fromPostal"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">Von (PLZ)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="8001" {...field} className="h-11" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="fromCity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">Von (Ort)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Zürich" {...field} className="h-11" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <FormField
-                    control={form.control}
-                    name="toPostal"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">Nach (PLZ)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="3000" {...field} className="h-11" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="toCity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">Nach (Ort)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Bern" {...field} className="h-11" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="rooms"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm">Wohnungsgrösse</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="h-11">
-                            <SelectValue placeholder="Zimmer wählen" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="bg-card z-50">
-                          <SelectItem value="1">1 Zimmer (Studio)</SelectItem>
-                          <SelectItem value="2">2 Zimmer</SelectItem>
-                          <SelectItem value="3">3 Zimmer</SelectItem>
-                          <SelectItem value="4">4 Zimmer</SelectItem>
-                          <SelectItem value="5">5 Zimmer</SelectItem>
-                          <SelectItem value="6+">6+ Zimmer</SelectItem>
-                          <SelectItem value="house">Haus</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="moveDate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm">Umzugsdatum (optional)</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} className="h-11" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="floor"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm">Etage & Lift</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="h-11">
-                            <SelectValue placeholder="Auswählen" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="bg-card z-50">
-                          <SelectItem value="0">Erdgeschoss</SelectItem>
-                          <SelectItem value="1">1. Stock mit Lift</SelectItem>
-                          <SelectItem value="1-no">1. Stock ohne Lift</SelectItem>
-                          <SelectItem value="2">2. Stock mit Lift</SelectItem>
-                          <SelectItem value="2-no">2. Stock ohne Lift</SelectItem>
-                          <SelectItem value="3">3. Stock mit Lift</SelectItem>
-                          <SelectItem value="3-no">3. Stock ohne Lift</SelectItem>
-                          <SelectItem value="4+">4+ Stock mit Lift</SelectItem>
-                          <SelectItem value="4+-no">4+ Stock ohne Lift</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button 
-                  type="submit" 
-                  size="lg" 
-                  disabled={isSubmitting}
-                  className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold group"
-                >
-                  {isSubmitting ? "Wird berechnet..." : "Offerten vergleichen"}
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-
-                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>Durchschnittliche Antwortzeit: 3–24 Stunden</span>
-                </div>
-              </form>
-            </Form>
-
-            {/* Live Activity Widget */}
-            <div className="mt-4 p-3 rounded-lg bg-success/5 border border-success/20">
-              <div className="flex items-center gap-2 text-sm">
-                <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
-                <span className="text-success font-semibold">LIVE</span>
-                <span className="text-muted-foreground">· Soeben 4 Umzugsofferten für Zürich versendet · vor 3 Minuten</span>
-              </div>
-            </div>
+            <QuickCalculator embedded />
           </div>
         </div>
       </div>
     </div>
 
-    {/* Partner Logos Row */}
-    <div className="border-t border-border bg-secondary/30 py-8">
-      <div className="container mx-auto px-4">
-        <p className="text-center text-sm text-muted-foreground mb-6 font-medium">
-          Bekannt aus & geprüft von:
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-          {partnerLogos.map((logo, index) => (
-            <div 
-              key={index}
-              className="flex items-center justify-center px-4 py-2 text-muted-foreground/70 font-semibold text-sm grayscale opacity-60 hover:opacity-100 transition-opacity"
-            >
-              <Shield className="w-5 h-5 mr-2" />
-              {logo}
-            </div>
-          ))}
-        </div>
+      {/* Bottom Wave Decoration */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+          <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(var(--background))"/>
+        </svg>
       </div>
-    </div>
     </section>
   );
 };
