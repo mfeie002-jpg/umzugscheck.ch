@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { QuickCalculator } from "./calculator/QuickCalculator";
+import { SecurityBadges } from "@/components/trust/SecurityBadges";
 
 export const Hero = () => {
   return (
@@ -89,6 +90,8 @@ export const Hero = () => {
               </Button>
             </Link>
           </div>
+
+          <SecurityBadges />
 
           {/* Trust Line */}
           <div className="pt-4 text-center sm:text-left">
