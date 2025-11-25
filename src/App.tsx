@@ -45,12 +45,14 @@ import StGallen from "./pages/umzugsfirmen/StGallen";
 import WasKostetEinUmzug from "./pages/ratgeber/WasKostetEinUmzug";
 import UmzugImWinter from "./pages/ratgeber/UmzugImWinter";
 import UmzugMitKindern from "./pages/ratgeber/UmzugMitKindern";
+import EntsorgungRichtigPlanen from "./pages/ratgeber/EntsorgungRichtigPlanen";
+import UmzugMitHaustieren from "./pages/ratgeber/UmzugMitHaustieren";
+import CompanyProfile from "./pages/CompanyProfile";
 import EstimateResult from "./pages/EstimateResult";
 import LeadRequest from "./pages/LeadRequest";
 import ThankYou from "./pages/ThankYou";
 import BundleEstimates from "./pages/BundleEstimates";
 import Companies from "./pages/Companies";
-import CompanyProfile from "./pages/CompanyProfile";
 import Compare from "./pages/Compare";
 import Canton from "./pages/Canton";
 import City from "./pages/City";
@@ -175,7 +177,12 @@ const App = () => (
             <Route path="/ratgeber/umzugscheckliste-pdf" element={<UmzugschecklistePDF />} />
             <Route path="/ratgeber/was-kostet-ein-umzug" element={<WasKostetEinUmzug />} />
             <Route path="/ratgeber/umzug-im-winter" element={<UmzugImWinter />} />
-            <Route path="/ratgeber/umzug-mit-kindern" element={<UmzugMitKindern />} />
+          <Route path="/ratgeber/umzug-mit-kindern" element={<UmzugMitKindern />} />
+          <Route path="/ratgeber/entsorgung-richtig-planen" element={<EntsorgungRichtigPlanen />} />
+          <Route path="/ratgeber/umzug-mit-haustieren" element={<UmzugMitHaustieren />} />
+          
+          {/* Company Profile */}
+          <Route path="/unternehmen/:id" element={<CompanyProfile />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
