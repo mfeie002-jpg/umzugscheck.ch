@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
+import { Suspense, lazy } from "react";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -33,14 +34,8 @@ import Regionen from "./pages/Regionen";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
-import Auth from "./pages/Auth";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminReviews from "./pages/admin/Reviews";
 import AIUpload from "./pages/AIUpload";
 import NotFound from "./pages/NotFound";
-import CompaniesAdmin from "./pages/admin/Companies";
-import LeadsAdmin from "./pages/admin/Leads";
-import AdminAnalytics from "./pages/admin/Analytics";
 import MovingCostGuide from "./pages/MovingCostGuide";
 import CleaningCalculator from "./pages/CleaningCalculator";
 import DisposalCalculator from "./pages/DisposalCalculator";
@@ -51,23 +46,33 @@ import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
 import BecomeProvider from "./pages/BecomeProvider";
-import ProviderSignup from "./pages/ProviderSignup";
-import ProviderLogin from "./pages/ProviderLogin";
-import ProviderDashboard from "./pages/ProviderDashboard";
-import ProviderProfile from "./pages/ProviderProfile";
-import ProviderPricing from "./pages/ProviderPricing";
-import AdminProviders from "./pages/admin/Providers";
-import ProviderDetail from "./pages/admin/ProviderDetail";
-import FunnelAnalytics from "./pages/admin/FunnelAnalytics";
-import Reports from "./pages/admin/Reports";
 import ReviewSubmission from "./pages/ReviewSubmission";
-import Subscriptions from "./pages/admin/Subscriptions";
-import MobileProviderApp from "./pages/MobileProviderApp";
-import PricingAnalytics from "./pages/admin/PricingAnalytics";
-import MLAnalytics from "./pages/admin/MLAnalytics";
-import DynamicPricing from "./pages/admin/DynamicPricing";
-import Billing from "./pages/admin/Billing";
-import ProviderSignupNew from "./pages/provider/ProviderSignup";
+
+// Lazy load admin pages for code splitting
+const Auth = lazy(() => import("./pages/Auth"));
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
+const CompaniesAdmin = lazy(() => import("./pages/admin/Companies"));
+const LeadsAdmin = lazy(() => import("./pages/admin/Leads"));
+const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
+const AdminProviders = lazy(() => import("./pages/admin/Providers"));
+const ProviderDetail = lazy(() => import("./pages/admin/ProviderDetail"));
+const FunnelAnalytics = lazy(() => import("./pages/admin/FunnelAnalytics"));
+const Reports = lazy(() => import("./pages/admin/Reports"));
+const Subscriptions = lazy(() => import("./pages/admin/Subscriptions"));
+const PricingAnalytics = lazy(() => import("./pages/admin/PricingAnalytics"));
+const MLAnalytics = lazy(() => import("./pages/admin/MLAnalytics"));
+const DynamicPricing = lazy(() => import("./pages/admin/DynamicPricing"));
+const Billing = lazy(() => import("./pages/admin/Billing"));
+
+// Lazy load provider pages for code splitting
+const ProviderSignup = lazy(() => import("./pages/ProviderSignup"));
+const ProviderLogin = lazy(() => import("./pages/ProviderLogin"));
+const ProviderDashboard = lazy(() => import("./pages/ProviderDashboard"));
+const ProviderProfile = lazy(() => import("./pages/ProviderProfile"));
+const ProviderPricing = lazy(() => import("./pages/ProviderPricing"));
+const MobileProviderApp = lazy(() => import("./pages/MobileProviderApp"));
+const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 
 const queryClient = new QueryClient();
 
@@ -91,7 +96,12 @@ const App = () => (
           <QuickActionBar />
           <StickyContactBar />
               <main className="flex-1">
-                <Routes>
+                <Suspense fallback={
+                  <div className="flex items-center justify-center min-h-screen">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  </div>
+                }>
+                  <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
@@ -146,6 +156,7 @@ const App = () => (
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+                </Suspense>
               </main>
               <Footer />
             </div>
