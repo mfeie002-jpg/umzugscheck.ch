@@ -1,583 +1,524 @@
-import { SEOHead } from "@/components/SEOHead";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Calculator, FileCheck, Award, Star, MapPin, CheckCircle2, ArrowRight, TrendingUp, Package, Truck, Home, Clock, Shield, Users, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Calculator, Check, Star, MapPin, TrendingDown, Shield, Award, Users, Clock } from "lucide-react";
+import { ScrollReveal } from "@/components/ScrollReveal";
+import { SEOHead } from "@/components/SEOHead";
 import { QuickCalculator } from "@/components/QuickCalculator";
-import { motion } from "framer-motion";
-
-const topCities = [
-  { name: "Zürich", slug: "zuerich", description: "Die grösste Stadt der Schweiz mit höchster Umzugsnachfrage" },
-  { name: "Bern", slug: "bern", description: "Hauptstadt mit historischer Altstadt" },
-  { name: "Basel", slug: "basel", description: "Kulturzentrum an der Grenze zu Deutschland und Frankreich" },
-  { name: "Luzern", slug: "luzern", description: "Touristische Destination am Vierwaldstättersee" },
-  { name: "Winterthur", slug: "winterthur", description: "Zweitgrösste Stadt im Kanton Zürich" }
-];
-
-const priceRanges = [
-  { type: "1-2 Zimmer Wohnung", price: "CHF 800 - 1'500", volume: "15-25 m³" },
-  { type: "3-4 Zimmer Wohnung", price: "CHF 1'500 - 3'000", volume: "30-45 m³" },
-  { type: "Haus (5+ Zimmer)", price: "CHF 3'000 - 6'000+", volume: "50-80+ m³" },
-  { type: "Firmenumzug (klein)", price: "CHF 2'000 - 5'000", volume: "Individuell" }
-];
-
-const featuredCompanies = [
-  { name: "Zürich Umzüge AG", city: "Zürich", rating: 4.8, usp: "Spezialist für Altbauten" },
-  { name: "Berner Zügelfirma", city: "Bern", rating: 4.7, usp: "Familienunternehmen seit 1985" },
-  { name: "Basel Express Moving", city: "Basel", rating: 4.9, usp: "Grenzüberschreitende Umzüge" },
-  { name: "Luzern Transport AG", city: "Luzern", rating: 4.6, usp: "Komplettservice mit Lagerung" },
-  { name: "Winterthur Movers", city: "Winterthur", rating: 4.8, usp: "Faire Preise, Top Service" },
-  { name: "St. Gallen Umzüge", city: "St. Gallen", rating: 4.7, usp: "Ostschweiz-Spezialist" }
-];
-
-const testimonials = [
-  { name: "Martin S.", city: "Zürich", rating: 5, text: "Schnell, professionell und faire Preise. Sehr empfehlenswert!" },
-  { name: "Sandra M.", city: "Bern", rating: 5, text: "Drei Offerten erhalten und 30% gespart. Danke umzugscheck.ch!" },
-  { name: "Thomas K.", city: "Basel", rating: 5, text: "Unkompliziert und transparent. Genau das, was ich gesucht habe." }
-];
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Umzugscheck.ch",
-  "url": "https://umzugscheck.ch",
-  "description": "Vergleichen Sie Umzugsofferten von geprüften Schweizer Umzugsfirmen",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://umzugscheck.ch/umzugsfirmen?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-};
 
 const Index = () => {
+  const topCities = [
+    { name: "Zürich", slug: "zuerich", description: "Grösste Stadt mit hoher Umzugsnachfrage und professionellen Anbietern" },
+    { name: "Bern", slug: "bern", description: "Hauptstadt mit historischer Altstadt" },
+    { name: "Basel", slug: "basel", description: "Kulturzentrum am Dreiländereck" },
+    { name: "Luzern", slug: "luzern", description: "Zentral gelegen am Vierwaldstättersee" },
+    { name: "Winterthur", slug: "winterthur", description: "Grösste Stadt im Kanton Zürich nach der Hauptstadt" }
+  ];
+
+  const priceRanges = [
+    { type: "1-2 Zimmer Wohnung", price: "CHF 800 - 1'500", note: "Kleinere Wohnungen" },
+    { type: "3-4 Zimmer Wohnung", price: "CHF 1'500 - 3'000", note: "Familienwohnungen" },
+    { type: "Haus", price: "CHF 3'000 - 6'000+", note: "Einfamilienhäuser" },
+    { type: "Firmenumzug", price: "CHF 2'000 - 5'000+", note: "Klein- bis Mittelbetriebe" }
+  ];
+
+  const featuredCompanies = [
+    { name: "Zürich Umzüge AG", city: "Zürich", rating: 4.8, usp: "Spezialist für Altbauten" },
+    { name: "Berner Zügelfirma", city: "Bern", rating: 4.7, usp: "Familienunternehmen seit 1985" },
+    { name: "Basel Express Moving", city: "Basel", rating: 4.9, usp: "Grenzüberschreitende Umzüge" },
+    { name: "Luzern Transport AG", city: "Luzern", rating: 4.6, usp: "Komplettservice mit Lagerung" },
+    { name: "Winterthur Movers", city: "Winterthur", rating: 4.8, usp: "Faire Preise, Top Service" },
+    { name: "St. Gallen Umzüge", city: "St. Gallen", rating: 4.7, usp: "Ostschweiz-Spezialist" }
+  ];
+
+  const calculatorTools = [
+    { 
+      title: "Umzugskosten-Rechner", 
+      slug: "umzugskosten", 
+      description: "Berechnen Sie Ihre Umzugskosten in wenigen Klicks",
+      icon: Calculator 
+    },
+    { 
+      title: "Volumenrechner", 
+      slug: "volumenrechner", 
+      description: "Ermitteln Sie das Volumen Ihres Hausrats",
+      icon: Package 
+    },
+    { 
+      title: "Transporter-Grössen-Rechner", 
+      slug: "transporter-groesse", 
+      description: "Finden Sie die passende Transportergrösse",
+      icon: Truck 
+    }
+  ];
+
+  const testimonials = [
+    { name: "Martin S.", city: "Zürich", rating: 5, text: "Schnell, professionell und faire Preise. Sehr empfehlenswert!" },
+    { name: "Sandra M.", city: "Bern", rating: 5, text: "Drei Offerten erhalten und 30% gespart. Danke!" },
+    { name: "Thomas K.", city: "Basel", rating: 5, text: "Unkompliziert und transparent. Genau das, was ich gesucht habe." },
+    { name: "Julia R.", city: "Luzern", rating: 5, text: "Top Service und sehr hilfsbereites Team. Immer wieder gerne!" }
+  ];
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Umzugscheck.ch",
+    "url": "https://umzugscheck.ch",
+    "description": "Vergleichen Sie Umzugsofferten von geprüften Schweizer Umzugsfirmen. Kostenlos, unverbindlich und transparent."
+  };
+
   return (
     <>
       <SEOHead
-        title="Umzugscheck.ch - Umzugsfirmen vergleichen & bis zu 40% sparen"
+        title="Umzugsfirmen vergleichen Schweiz - Bis zu 40% sparen | Umzugscheck.ch"
         description="Vergleichen Sie Umzugsofferten von geprüften Schweizer Umzugsfirmen. Kostenlos, unverbindlich und transparent. Sparen Sie bis zu 40% bei Ihrem Umzug."
-        keywords="umzug schweiz, umzugsfirma vergleichen, umzugsofferte, umzugskosten schweiz, umzugsfirmen zürich, umzug bern"
-        canonical="/"
+        keywords="umzug schweiz, umzugsfirma vergleichen, umzugsofferte, umzugskosten, umzugsfirmen zürich"
+        canonical="https://umzugscheck.ch"
         structuredData={structuredData}
       />
-      
-      <div className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-primary/5 to-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center space-y-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+
+      <Navigation />
+
+      <main className="min-h-screen bg-background">
+        {/* HERO SECTION */}
+        <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHJva2Utb3BhY2l0eT0iMC4wMyIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40"></div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <ScrollReveal>
+              <div className="max-w-4xl mx-auto text-center space-y-8">
+                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
                   Umzugsfirmen in der Schweiz vergleichen – in wenigen Klicks zur besten Offerte
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+                
+                <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
                   Erhalten Sie mehrere Offerten von geprüften Umzugsfirmen, vergleichen Sie transparent und sparen Sie bis zu 40%. 
                   Kostenlos und unverbindlich.
                 </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center"
-              >
-                <Button asChild size="lg" className="text-lg px-8 py-6">
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                   <Link to="/offerte">
-                    Jetzt Offerte vergleichen
+                    <Button size="lg" className="text-lg px-8 py-6 shadow-accent w-full sm:w-auto">
+                      Jetzt Offerte vergleichen
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
                   </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
                   <Link to="/rechner">
-                    <Calculator className="mr-2 h-5 w-5" />
-                    Umzugskosten berechnen
+                    <Button variant="outline" size="lg" className="text-lg px-8 py-6 w-full sm:w-auto">
+                      <Calculator className="mr-2 h-5 w-5" />
+                      Umzugskosten berechnen
+                    </Button>
                   </Link>
-                </Button>
-              </motion.div>
+                </div>
+              </div>
+            </ScrollReveal>
 
-              {/* Trust badges */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="flex flex-wrap items-center justify-center gap-6 pt-8 text-sm text-muted-foreground"
-              >
-                <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
-                  <span>Schweizer Plattform</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Award className="h-5 w-5 text-primary" />
-                  <span>Geprüfte Firmen</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  <span>5'000+ zufriedene Kunden</span>
-                </div>
-              </motion.div>
-            </div>
+            {/* Calculator Highlight */}
+            <ScrollReveal delay={0.2}>
+              <div className="max-w-3xl mx-auto mt-16">
+                <Card className="shadow-strong border-primary/20">
+                  <CardHeader className="text-center pb-4">
+                    <Badge variant="secondary" className="w-fit mx-auto mb-3">
+                      <Calculator className="w-3 h-3 mr-1" />
+                      Ihr persönlicher Preisrechner
+                    </Badge>
+                    <CardTitle className="text-2xl">Berechnen Sie Ihre Umzugskosten jetzt</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <QuickCalculator />
+                  </CardContent>
+                </Card>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
 
-        {/* AI Calculator Section */}
-        <section className="py-16 bg-muted/30">
+        {/* HOW IT WORKS */}
+        <section className="py-16 md:py-24 bg-secondary/5">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
+            <ScrollReveal>
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Umzugskosten sofort berechnen
+                  So funktioniert umzugscheck.ch
                 </h2>
-                <p className="text-xl text-muted-foreground">
-                  Nutzen Sie unseren KI-Preisrechner für eine präzise Kostenschätzung in Sekunden
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  In nur drei einfachen Schritten zu Ihrem perfekten Umzugsangebot
                 </p>
               </div>
-              <QuickCalculator />
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                So funktioniert umzugscheck.ch
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                In nur 3 Schritten zur besten Umzugsfirma
-              </p>
-            </div>
+            </ScrollReveal>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {[
-                {
-                  step: "1",
-                  title: "Anfrage ausfüllen",
-                  description: "Beschreiben Sie Ihren Umzug in nur 2 Minuten mit unserem einfachen Formular",
-                  icon: Calculator
-                },
-                {
-                  step: "2",
-                  title: "Offerten von geprüften Umzugsfirmen erhalten",
-                  description: "Erhalten Sie mehrere Offerten von verifizierten Firmen in Ihrer Region",
-                  icon: Clock
-                },
-                {
-                  step: "3",
-                  title: "Vergleichen & den besten Partner wählen",
-                  description: "Vergleichen Sie Preise, Bewertungen und Services – und wählen Sie optimal",
-                  icon: Check
-                }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="text-center h-full">
+                { icon: FileCheck, title: "Anfrage ausfüllen", description: "Beschreiben Sie Ihren Umzug in wenigen Minuten – kostenlos und unverbindlich" },
+                { icon: MessageSquare, title: "Offerten von geprüften Umzugsfirmen erhalten", description: "Erhalten Sie bis zu 5 Angebote von verifizierten Anbietern in Ihrer Region" },
+                { icon: Award, title: "Vergleichen & den besten Partner wählen", description: "Vergleichen Sie Preise und Leistungen, und wählen Sie das beste Angebot aus" }
+              ].map((step, index) => (
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Card className="text-center h-full hover:shadow-medium transition-all">
                     <CardHeader>
-                      <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                        {item.step}
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <step.icon className="w-8 h-8 text-primary" />
                       </div>
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <item.icon className="h-6 w-6 text-primary" />
-                      </div>
-                      <CardTitle className="text-xl">{item.title}</CardTitle>
+                      <div className="text-primary font-bold text-lg mb-2">Schritt {index + 1}</div>
+                      <CardTitle className="text-xl">{step.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-muted-foreground">{item.description}</p>
+                      <p className="text-muted-foreground">{step.description}</p>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Top Cities */}
-        <section className="py-16 bg-muted/30">
+        {/* TOP CITIES */}
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Beliebte Umzugsregionen
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                Finden Sie die besten Umzugsfirmen in Ihrer Stadt
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Beliebte Umzugsregionen
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Finden Sie geprüfte Umzugsfirmen in den grössten Städten der Schweiz
+                </p>
+              </div>
+            </ScrollReveal>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
               {topCities.map((city, index) => (
-                <motion.div
-                  key={city.slug}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-center gap-3 mb-3">
-                        <MapPin className="h-5 w-5 text-primary" />
-                        <CardTitle className="text-xl">{city.name}</CardTitle>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{city.description}</p>
-                    </CardHeader>
-                    <CardContent>
-                      <Button asChild variant="outline" className="w-full">
-                        <Link to={`/umzugsfirmen/${city.slug}`}>
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Link to={`/umzugsfirmen/${city.slug}`}>
+                    <Card className="h-full hover:shadow-strong hover:border-primary/40 transition-all group">
+                      <CardHeader>
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                          <MapPin className="w-6 h-6 text-primary" />
+                        </div>
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                          {city.name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground mb-4">{city.description}</p>
+                        <Button variant="ghost" size="sm" className="group-hover:gap-2 transition-all">
                           Umzugsfirmen in {city.name} ansehen
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Price Overview */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Was kostet ein Umzug in der Schweiz?
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                Typische Preisspannen für verschiedene Umzugsarten
-              </p>
-            </div>
-
-            <div className="max-w-3xl mx-auto">
-              <div className="grid gap-4">
-                {priceRanges.map((range, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <Card>
-                      <CardContent className="flex items-center justify-between p-6">
-                        <div>
-                          <h3 className="font-semibold text-lg mb-1">{range.type}</h3>
-                          <p className="text-sm text-muted-foreground">{range.volume}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-primary">{range.price}</p>
-                        </div>
+                          <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </Button>
                       </CardContent>
                     </Card>
-                  </motion.div>
-                ))}
+                  </Link>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PRICE OVERVIEW */}
+        <section className="py-16 md:py-24 bg-gradient-to-b from-secondary/10 to-background">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Was kostet ein Umzug in der Schweiz?
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Typische Preisspannen für verschiedene Umzugsarten
+                </p>
               </div>
+            </ScrollReveal>
+
+            <div className="max-w-4xl mx-auto">
+              <ScrollReveal>
+                <div className="bg-background rounded-xl border shadow-medium overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b bg-secondary/20">
+                          <th className="text-left p-4 font-semibold">Umzugsart</th>
+                          <th className="text-left p-4 font-semibold">Preisspanne</th>
+                          <th className="text-left p-4 font-semibold">Hinweis</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {priceRanges.map((range, index) => (
+                          <tr key={index} className="border-b last:border-0 hover:bg-secondary/5 transition-colors">
+                            <td className="p-4 font-medium">{range.type}</td>
+                            <td className="p-4 text-primary font-semibold">{range.price}</td>
+                            <td className="p-4 text-sm text-muted-foreground">{range.note}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </ScrollReveal>
 
               <div className="text-center mt-8">
-                <Button asChild size="lg" variant="outline">
-                  <Link to="/preise">
-                    <TrendingDown className="mr-2 h-5 w-5" />
+                <Link to="/preise">
+                  <Button size="lg" variant="outline">
                     Alle Preise ansehen
-                  </Link>
-                </Button>
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Featured Companies */}
-        <section className="py-16 bg-muted/30">
+        {/* FEATURED COMPANIES */}
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Beliebte Umzugsfirmen auf umzugscheck.ch
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                Geprüfte und bewertete Partner in der ganzen Schweiz
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Beliebte Umzugsfirmen auf umzugscheck.ch
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Geprüfte und verifizierte Partner aus der ganzen Schweiz
+                </p>
+              </div>
+            </ScrollReveal>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {featuredCompanies.map((company, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow">
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Card className="h-full hover:shadow-strong hover:border-primary/40 transition-all">
                     <CardHeader>
-                      <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center mb-4">
-                        <Award className="h-8 w-8 text-primary" />
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center">
+                          <Home className="w-6 h-6 text-primary" />
+                        </div>
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-current text-yellow-500" />
+                          {company.rating}
+                        </Badge>
                       </div>
-                      <CardTitle className="text-xl">{company.name}</CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span>{company.city}</span>
-                      </div>
-                      <div className="flex items-center gap-1 mt-2">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${
-                              i < Math.floor(company.rating)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                        <span className="ml-2 text-sm font-semibold">{company.rating}</span>
+                      <CardTitle>{company.name}</CardTitle>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <MapPin className="w-4 h-4" />
+                        {company.city}
                       </div>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground mb-4">{company.usp}</p>
-                      <Button asChild className="w-full">
-                        <Link to="/umzugsfirmen">Details & Offerte</Link>
-                      </Button>
+                      <Link to="/umzugsfirmen">
+                        <Button variant="outline" className="w-full" size="sm">
+                          Details & Offerte
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </ScrollReveal>
               ))}
             </div>
 
-            <div className="text-center mt-8">
-              <Button asChild size="lg" variant="outline">
-                <Link to="/umzugsfirmen">Alle Umzugsfirmen ansehen</Link>
-              </Button>
+            <div className="text-center mt-12">
+              <Link to="/umzugsfirmen">
+                <Button size="lg">
+                  Alle Umzugsfirmen ansehen
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Tools Section */}
-        <section className="py-16">
+        {/* TOOLS & CALCULATORS */}
+        <section className="py-16 md:py-24 bg-secondary/5">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Praktische Umzugstools
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                Kostenlose Rechner zur Planung Ihres Umzugs
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="text-center mb-12">
+                <Badge variant="secondary" className="mb-4">
+                  <Calculator className="w-3 h-3 mr-1" />
+                  Kostenlose Tools
+                </Badge>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Praktische Umzugstools
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Planen und berechnen Sie Ihren Umzug mit unseren kostenlosen Rechnern
+                </p>
+              </div>
+            </ScrollReveal>
 
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {[
-                {
-                  title: "Umzugskosten-Rechner",
-                  description: "Berechnen Sie die voraussichtlichen Kosten Ihres Umzugs basierend auf Zimmerzahl und Distanz",
-                  link: "/rechner/umzugskosten"
-                },
-                {
-                  title: "Volumenrechner",
-                  description: "Ermitteln Sie das Volumen Ihres Hausrats für eine präzise Kosteneinschätzung",
-                  link: "/rechner/volumenrechner"
-                },
-                {
-                  title: "Transporter-Grössen-Rechner",
-                  description: "Finden Sie die richtige Transportergrösse für Ihren Umzug",
-                  link: "/rechner/transporter-groesse"
-                }
-              ].map((tool, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <Calculator className="h-8 w-8 text-primary mb-3" />
-                      <CardTitle>{tool.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-4">{tool.description}</p>
-                      <Button asChild variant="outline" className="w-full">
-                        <Link to={tool.link}>Tool öffnen</Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+              {calculatorTools.map((tool, index) => (
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Link to={`/rechner/${tool.slug}`}>
+                    <Card className="h-full hover:shadow-strong hover:border-primary/40 transition-all group">
+                      <CardHeader>
+                        <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                          <tool.icon className="w-7 h-7 text-primary" />
+                        </div>
+                        <CardTitle className="group-hover:text-primary transition-colors">
+                          {tool.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground mb-4">{tool.description}</p>
+                        <Button variant="ghost" size="sm" className="group-hover:gap-2 transition-all">
+                          Tool öffnen
+                          <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="py-16 bg-muted/30">
+        {/* REVIEWS & TRUST */}
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Erfahrungen unserer Nutzer
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                Tausende zufriedene Kunden vertrauen auf umzugscheck.ch
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Erfahrungen unserer Nutzer
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Tausende zufriedene Kunden vertrauen auf umzugscheck.ch
+                </p>
+              </div>
+            </ScrollReveal>
 
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-12">
               {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
+                <ScrollReveal key={index} delay={index * 0.1}>
                   <Card className="h-full">
                     <CardHeader>
-                      <div className="flex items-center gap-1 mb-3">
-                        {Array.from({ length: testimonial.rating }).map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <div className="flex items-center gap-0.5 mb-2">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
                         ))}
                       </div>
                       <CardTitle className="text-lg">{testimonial.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground">{testimonial.city}</p>
+                      <div className="text-sm text-muted-foreground">{testimonial.city}</div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm italic">"{testimonial.text}"</p>
+                      <p className="text-sm text-muted-foreground italic">"{testimonial.text}"</p>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </ScrollReveal>
               ))}
             </div>
 
-            <div className="text-center mt-8 space-y-4">
-              <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
-                  <span>Schweizer Plattform</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  <span>5'000+ Offerten pro Jahr</span>
-                </div>
+            <ScrollReveal>
+              <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
+                <Badge variant="secondary" className="px-6 py-3 text-base">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Schweizer Plattform
+                </Badge>
+                <Badge variant="secondary" className="px-6 py-3 text-base">
+                  <Users className="w-4 h-4 mr-2" />
+                  Mehrere tausend Offerten pro Jahr
+                </Badge>
+                <Badge variant="secondary" className="px-6 py-3 text-base">
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  Nur geprüfte Firmen
+                </Badge>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
-        {/* SEO Text Block */}
-        <section className="py-16">
+        {/* SEO TEXT BLOCK */}
+        <section className="py-16 md:py-24 bg-gradient-to-b from-secondary/5 to-background border-t border-border">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto prose prose-lg">
-              <h2 className="text-3xl font-bold mb-6">
-                Warum Umzugsfirmen in der Schweiz vergleichen?
-              </h2>
-              
-              <p className="text-muted-foreground mb-4">
-                Ein Umzug in der Schweiz kann eine kostspielige Angelegenheit sein. Die Preise variieren stark zwischen verschiedenen 
-                Umzugsfirmen und Regionen. Genau hier setzt <strong>umzugscheck.ch</strong> an: Wir ermöglichen es Ihnen, mehrere 
-                <strong>Umzugsofferten</strong> kostenlos und unverbindlich zu vergleichen und so die beste Umzugsfirma für Ihre 
-                Bedürfnisse zu finden.
-              </p>
+              <ScrollReveal>
+                <div className="space-y-6 text-foreground">
+                  <h2 className="text-3xl font-bold mb-6">Warum Umzugsfirmen in der Schweiz vergleichen?</h2>
+                  
+                  <p className="text-muted-foreground leading-relaxed">
+                    Ein Umzug ist eine der stressigsten Lebenssituationen – und oft auch eine der kostspieligsten. In der Schweiz variieren die 
+                    Preise von Umzugsfirmen stark, abhängig von Region, Umfang und Zusatzleistungen. Genau deshalb lohnt es sich, Umzugsofferten 
+                    zu vergleichen: Sie können bis zu 40% der Kosten sparen, indem Sie mehrere Angebote einholen und das beste Preis-Leistungs-Verhältnis 
+                    auswählen.
+                  </p>
 
-              <p className="text-muted-foreground mb-4">
-                Durch den direkten Vergleich verschiedener Anbieter sparen Sie nicht nur Geld, sondern auch Zeit und Nerven. Statt 
-                mühsam einzelne <strong>Umzugsfirmen</strong> zu kontaktieren, erhalten Sie mit einer einzigen Anfrage mehrere 
-                Angebote – und das völlig kostenlos. So können Sie in Ruhe Preise, Leistungen und Kundenbewertungen vergleichen 
-                und eine fundierte Entscheidung treffen.
-              </p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Umzugscheck.ch ist die führende Vergleichsplattform für Umzugsfirmen in der Schweiz. Wir helfen Ihnen, schnell und unkompliziert 
+                    mehrere Offerten von geprüften Anbietern zu erhalten – kostenlos, unverbindlich und transparent. Egal ob Sie in Zürich, Bern, Basel 
+                    oder einer anderen Stadt umziehen: Mit unserem Service finden Sie die passende Umzugsfirma für Ihre Bedürfnisse.
+                  </p>
 
-              <h3 className="text-2xl font-semibold mt-8 mb-4">Regionale Unterschiede bei Umzugskosten</h3>
-              <p className="text-muted-foreground mb-4">
-                Die <strong>Umzugskosten in der Schweiz</strong> unterscheiden sich je nach Region erheblich. In Grossstädten wie 
-                Zürich, Basel oder Genf sind die Preise tendenziell höher als in ländlichen Gebieten. Dies liegt an höheren 
-                Betriebskosten, schwierigeren Parksituationen und der grösseren Nachfrage. Eine <strong>Umzugsfirma in Zürich</strong> 
-                berechnet oft 20-30% mehr als ein Anbieter in einem kleineren Ort im Emmental oder Appenzellerland.
-              </p>
+                  <h3 className="text-2xl font-bold mt-8 mb-4">Regionale Unterschiede bei Umzugskosten</h3>
+                  
+                  <p className="text-muted-foreground leading-relaxed">
+                    Die Kosten für einen Umzug unterscheiden sich je nach Region deutlich. In Grossstädten wie Zürich oder Genf sind Umzüge tendenziell 
+                    teurer als in ländlichen Gebieten. Das liegt an höheren Lebenshaltungskosten, Parkplatzproblemen und der grösseren Nachfrage nach 
+                    Umzugsdienstleistungen. Dennoch gibt es auch in teureren Regionen preiswerte Anbieter – vorausgesetzt, Sie vergleichen mehrere 
+                    Umzugsofferten.
+                  </p>
 
-              <p className="text-muted-foreground mb-4">
-                Auch innerhalb eines Kantons können die Preise variieren. Ein Umzug innerhalb der Stadt ist oft günstiger als ein 
-                Umzug vom Land in die Stadt oder umgekehrt, da längere Anfahrtswege zusätzliche Kosten verursachen. Durch den 
-                Vergleich mehrerer Anbieter auf <strong>umzugscheck.ch</strong> können Sie jedoch auch in teuren Regionen deutlich 
-                sparen – oft bis zu 40%.
-              </p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Beim Vergleich von Umzugsfirmen sollten Sie nicht nur auf den Preis achten, sondern auch auf Bewertungen, Versicherungsschutz und 
+                    angebotene Services. Viele Umzugsfirmen bieten heute Komplettlösungen an, die neben dem Transport auch Reinigung, Entsorgung, 
+                    Möbelmontage und Zwischenlagerung umfassen.
+                  </p>
 
-              <h3 className="text-2xl font-semibold mt-8 mb-4">So funktioniert umzugscheck.ch</h3>
-              <p className="text-muted-foreground mb-4">
-                Unser Service ist denkbar einfach: Sie beschreiben Ihren Umzug in unserem Online-Formular – Wohnungsgrösse, Start- und 
-                Zieladresse, gewünschte Zusatzleistungen wie Montage, Reinigung oder Entsorgung. Basierend auf Ihren Angaben leiten 
-                wir Ihre Anfrage an passende, geprüfte <strong>Umzugsfirmen in der Schweiz</strong> weiter.
-              </p>
+                  <h3 className="text-2xl font-bold mt-8 mb-4">So funktioniert umzugscheck.ch</h3>
+                  
+                  <p className="text-muted-foreground leading-relaxed">
+                    Unser Service ist denkbar einfach: Sie füllen einmal ein kurzes Formular aus, in dem Sie Ihren Umzug beschreiben. Wir leiten Ihre 
+                    Anfrage an bis zu fünf passende Umzugsfirmen in Ihrer Region weiter. Diese erstellen Ihnen individuelle Offerten, die Sie bequem 
+                    vergleichen können. Sie wählen dann das Angebot aus, das am besten zu Ihnen passt – ohne versteckte Kosten, ohne Verpflichtung.
+                  </p>
 
-              <p className="text-muted-foreground mb-4">
-                Innerhalb von 24 Stunden erhalten Sie mehrere individuelle <strong>Umzugsofferten</strong> per E-Mail. Diese können 
-                Sie in Ruhe vergleichen – nicht nur nach Preis, sondern auch nach Leistungsumfang, Verfügbarkeit und Kundenbewertungen. 
-                So finden Sie garantiert die Umzugsfirma, die am besten zu Ihren Anforderungen und Ihrem Budget passt.
-              </p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Alle Umzugsfirmen auf unserer Plattform sind geprüft und verfügen über die notwendigen Versicherungen. Sie profitieren von echten 
+                    Kundenbewertungen, die Ihnen bei der Auswahl helfen. Zusätzlich bieten wir Ihnen kostenlose Rechner, mit denen Sie Ihre Umzugskosten 
+                    vorab schätzen können.
+                  </p>
 
-              <h3 className="text-2xl font-semibold mt-8 mb-4">Vorteile des Offerten-Vergleichs</h3>
-              <p className="text-muted-foreground mb-4">
-                Wenn Sie <strong>Umzugsofferten vergleichen</strong>, profitieren Sie mehrfach: Sie erhalten Transparenz über die 
-                Marktpreise, können Leistungen und Konditionen direkt gegenüberstellen und vermeiden überhöhte Preise. Zudem sparen 
-                Sie Zeit, da Sie nicht selbst mehrere Firmen einzeln kontaktieren müssen. Alle Offerten kommen bequem zu Ihnen – 
-                kostenlos und unverbindlich.
-              </p>
-
-              <p className="text-muted-foreground mb-4">
-                Ein weiterer Vorteil: Durch den Wettbewerb der Anbieter erhalten Sie oft bessere Konditionen als bei einer direkten 
-                Anfrage. Die <strong>Umzugsfirmen</strong> wissen, dass Sie Angebote vergleichen, und kalkulieren deshalb schärfer. 
-                Das bedeutet für Sie: bessere Preise bei gleicher Qualität.
-              </p>
-
-              <h3 className="text-2xl font-semibold mt-8 mb-4">Geprüfte Umzugsfirmen</h3>
-              <p className="text-muted-foreground mb-4">
-                Alle <strong>Umzugsfirmen auf umzugscheck.ch</strong> werden von uns sorgfältig geprüft. Wir arbeiten nur mit 
-                seriösen, erfahrenen Anbietern zusammen, die über die notwendigen Versicherungen und Qualifikationen verfügen. 
-                Kundenbewertungen und Transparenz stehen dabei im Mittelpunkt. So können Sie sicher sein, dass Sie qualitativ 
-                hochwertige Angebote erhalten.
-              </p>
-
-              <p className="text-muted-foreground mb-4">
-                Unsere Partner müssen strenge Qualitätskriterien erfüllen: Nachweis von Betriebshaftpflicht und Transportversicherung, 
-                nachweisliche Erfahrung im Umzugsgeschäft, positive Kundenbewertungen und faire Geschäftspraktiken. Nur Firmen, die 
-                diese Standards erfüllen, werden auf unserer Plattform gelistet.
-              </p>
-
-              <h3 className="text-2xl font-semibold mt-8 mb-4">Kostenlos und stressfrei umziehen</h3>
-              <p className="text-muted-foreground">
-                Ein Umzug muss nicht stressig und teuer sein. Mit <strong>umzugscheck.ch</strong> finden Sie die passende 
-                <strong>Umzugsfirma in der Schweiz</strong>, vergleichen Preise transparent und sparen bares Geld. Ob Privatumzug, 
-                Firmenumzug oder internationaler Umzug – starten Sie jetzt Ihren kostenlosen Vergleich und profitieren Sie von unserem 
-                schweizweiten Netzwerk geprüfter Umzugspartner. Fordern Sie noch heute Ihre ersten <strong>Umzugsofferten</strong> an 
-                und erleben Sie, wie einfach ein professioneller Umzug sein kann.
-              </p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Mit umzugscheck.ch sparen Sie nicht nur Geld, sondern auch Zeit und Nerven. Statt stundenlang im Internet nach Umzugsfirmen zu suchen 
+                    und einzeln Offerten einzuholen, erhalten Sie bei uns alle Angebote zentral an einem Ort. So können Sie sich auf das Wesentliche 
+                    konzentrieren: Ihren Neuanfang in Ihrem neuen Zuhause.
+                  </p>
+                </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-16 bg-primary text-primary-foreground">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Bereit für Ihren stressfreien Umzug?
-            </h2>
-            <p className="text-xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
-              Fordern Sie jetzt kostenlos mehrere Umzugsofferten an und vergleichen Sie die besten Anbieter
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" variant="secondary">
-                <Link to="/offerte">
-                  Jetzt Offerte anfordern
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10">
-                <Link to="/umzugsfirmen">
-                  Umzugsfirmen durchsuchen
-                </Link>
-              </Button>
-            </div>
+        {/* FINAL CTA */}
+        <section className="py-20 md:py-28 bg-primary text-primary-foreground">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="max-w-3xl mx-auto text-center space-y-8">
+                <h2 className="text-3xl md:text-5xl font-bold">
+                  Bereit für Ihren Umzug?
+                </h2>
+                <p className="text-xl text-primary-foreground/90">
+                  Holen Sie sich jetzt kostenlose Offerten von geprüften Umzugsfirmen und sparen Sie bis zu 40%
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/offerte">
+                    <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
+                      Jetzt Offerte anfordern
+                      <ArrowRight className="ml-2 h-5 h-5" />
+                    </Button>
+                  </Link>
+                  <Link to="/umzugsfirmen">
+                    <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
+                      Firmen durchstöbern
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
-      </div>
+      </main>
+
+      <Footer />
     </>
   );
 };
