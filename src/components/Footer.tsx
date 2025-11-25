@@ -84,6 +84,11 @@ export const Footer = () => {
                   Kontakt
                 </Link>
               </li>
+              <li>
+                <Link to="/auth" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Admin Login
+                </Link>
+              </li>
             </ul>
           </div>
 

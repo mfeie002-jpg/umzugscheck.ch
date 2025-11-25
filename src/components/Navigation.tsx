@@ -5,24 +5,28 @@ import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { MegaDropdown } from "@/components/MegaDropdown";
 import { RegionsDropdown } from "@/components/RegionsDropdown";
+import { ServicesDropdown } from "@/components/ServicesDropdown";
+import { ProviderDropdown } from "@/components/ProviderDropdown";
 import { MobileMenu } from "@/components/MobileMenu";
 import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Startseite", href: "/" },
   { label: "Preisrechner", href: "/rechner", hasDropdown: true, dropdownType: "calculators" },
+  { label: "Umzugsofferten", href: "/rechner" },
   { label: "Umzugsfirmen", href: "/firmen" },
+  { label: "Services", href: "#", hasDropdown: true, dropdownType: "services" },
   { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
   { label: "Ratgeber", href: "/blog" },
-  { label: "Über uns", href: "/ueber-uns" },
-  { label: "Kontakt", href: "/kontakt" }
+  { label: "Für Firmen", href: "/anbieter-werden", hasDropdown: true, dropdownType: "provider" }
 ];
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMegaDropdownOpen, setIsMegaDropdownOpen] = useState(false);
   const [isRegionsDropdownOpen, setIsRegionsDropdownOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
@@ -47,20 +51,16 @@ export const Navigation = () => {
                 {item.hasDropdown ? (
                   <button
                     onMouseEnter={() => {
-                      if (item.dropdownType === "calculators") {
-                        setIsMegaDropdownOpen(true);
-                        setIsRegionsDropdownOpen(false);
-                      } else if (item.dropdownType === "regions") {
-                        setIsRegionsDropdownOpen(true);
-                        setIsMegaDropdownOpen(false);
-                      }
+                      setIsMegaDropdownOpen(item.dropdownType === "calculators");
+                      setIsRegionsDropdownOpen(item.dropdownType === "regions");
+                      setIsServicesDropdownOpen(item.dropdownType === "services");
+                      setIsProviderDropdownOpen(item.dropdownType === "provider");
                     }}
                     onMouseLeave={() => {
-                      if (item.dropdownType === "calculators") {
-                        setIsMegaDropdownOpen(false);
-                      } else if (item.dropdownType === "regions") {
-                        setIsRegionsDropdownOpen(false);
-                      }
+                      if (item.dropdownType === "calculators") setIsMegaDropdownOpen(false);
+                      if (item.dropdownType === "regions") setIsRegionsDropdownOpen(false);
+                      if (item.dropdownType === "services") setIsServicesDropdownOpen(false);
+                      if (item.dropdownType === "provider") setIsProviderDropdownOpen(false);
                     }}
                     className={cn(
                       "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
@@ -70,7 +70,9 @@ export const Navigation = () => {
                     <ChevronDown className={cn(
                       "w-4 h-4 transition-transform",
                       (item.dropdownType === "calculators" && isMegaDropdownOpen) || 
-                      (item.dropdownType === "regions" && isRegionsDropdownOpen) ? "rotate-180" : ""
+                      (item.dropdownType === "regions" && isRegionsDropdownOpen) ||
+                      (item.dropdownType === "services" && isServicesDropdownOpen) ||
+                      (item.dropdownType === "provider" && isProviderDropdownOpen) ? "rotate-180" : ""
                     )} />
                   </button>
                 ) : (
@@ -88,13 +90,8 @@ export const Navigation = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <DarkModeToggle />
-            <Link to="/auth">
-              <Button variant="ghost" className="text-foreground hover:text-primary">
-                Admin Login
-              </Button>
-            </Link>
             <Link to="/rechner">
-              <Button className="bg-accent hover:bg-accent/90 shadow-medium">
+              <Button className="bg-destructive hover:bg-destructive/90 text-white shadow-medium font-bold">
                 Offerten erhalten
               </Button>
             </Link>
@@ -129,6 +126,28 @@ export const Navigation = () => {
           <RegionsDropdown 
             isOpen={isRegionsDropdownOpen} 
             onClose={() => setIsRegionsDropdownOpen(false)} 
+          />
+        </div>
+
+        {/* Services Dropdown */}
+        <div
+          onMouseEnter={() => setIsServicesDropdownOpen(true)}
+          onMouseLeave={() => setIsServicesDropdownOpen(false)}
+        >
+          <ServicesDropdown 
+            isOpen={isServicesDropdownOpen} 
+            onClose={() => setIsServicesDropdownOpen(false)} 
+          />
+        </div>
+
+        {/* Provider Dropdown */}
+        <div
+          onMouseEnter={() => setIsProviderDropdownOpen(true)}
+          onMouseLeave={() => setIsProviderDropdownOpen(false)}
+        >
+          <ProviderDropdown 
+            isOpen={isProviderDropdownOpen} 
+            onClose={() => setIsProviderDropdownOpen(false)} 
           />
         </div>
       </div>

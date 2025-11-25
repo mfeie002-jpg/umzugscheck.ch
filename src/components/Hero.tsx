@@ -1,130 +1,114 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, TrendingDown } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, Clock, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { QuickCalculator } from "./calculator/QuickCalculator";
 import { SecurityBadges } from "@/components/trust/SecurityBadges";
+import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
+import { PopularBadge } from "@/components/trust/PopularBadge";
 
 export const Hero = () => {
   return (
-  <section className="relative overflow-hidden gradient-hero text-white">
-    {/* Animated Background Layers */}
-    <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark bg-[length:200%_200%] animate-gradient-shift">
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtMy4zMTQgMi42ODYtNiA2LTZzNiAyLjY4NiA2IDYtMi42ODYgNi02IDYtNi0yLjY4Ni02LTZ6bTAgMjRjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnpNMTIgMThjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnptMCAyNGMwLTMuMzE0IDIuNjg2LTYgNi02czYgMi42ODYgNiA2LTIuNjg2IDYtNiA2LTYtMi42ODYtNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
-      
-      {/* Animated Gradient Blobs */}
-      <div className="absolute -top-20 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-accent/40 to-primary/30 rounded-full blur-3xl animate-blob opacity-70"></div>
-      <div className="absolute top-40 right-40 w-[500px] h-[500px] bg-gradient-to-br from-primary-light/50 to-accent/30 rounded-full blur-3xl animate-blob-reverse animation-delay-2000 opacity-60"></div>
-      <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] bg-gradient-to-tr from-accent/30 to-primary-light/40 rounded-full blur-3xl animate-blob animation-delay-4000 opacity-70"></div>
-      <div className="absolute bottom-20 left-1/3 w-[550px] h-[550px] bg-gradient-to-br from-white/15 to-accent/20 rounded-full blur-3xl animate-blob-reverse animation-delay-6000 opacity-50"></div>
-      
-      {/* Additional moving elements for more depth */}
-      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-2xl animate-blob animation-delay-3000 opacity-40"></div>
-      <div className="absolute bottom-1/3 left-1/4 w-[450px] h-[450px] bg-gradient-to-tl from-primary-light/30 to-transparent rounded-full blur-2xl animate-blob-reverse animation-delay-5000 opacity-40"></div>
-      
-      {/* Overlay gradient for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10"></div>
-    </div>
-      
-    <div className="container mx-auto px-4 py-20 md:py-28 lg:py-36 relative z-10">
-      <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
-        {/* Left Column - Content */}
-        <div className="space-y-8 lg:pr-8">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
-            <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
-            <span>100% kostenlos & unverbindlich</span>
-          </div>
-
-          <h1 className="leading-tight tracking-tight">
-            Ihren Umzug<br />
-            <span className="text-accent drop-shadow-lg">einfach vergleichen</span>
-          </h1>
-
-          <p className="text-xl md:text-2xl text-white/95 leading-relaxed max-w-xl">
-            Sparen Sie bis zu <strong className="text-white font-bold">40% bei Ihrem Umzug</strong> – 
-            kostenlos, transparent und in nur 2 Minuten.
-          </p>
-
-          {/* Trust Signals */}
-          <div className="grid grid-cols-3 gap-4 pt-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
-              </div>
-              <p className="text-3xl font-bold text-center mb-1">100%</p>
-              <p className="text-sm text-white/90 text-center font-medium">kostenlos</p>
+    <section className="relative overflow-hidden gradient-hero text-white">
+      {/* Animated Background Layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark bg-[length:200%_200%] animate-gradient-shift">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtMy4zMTQgMi42ODYtNiA2LTZzNiAyLjY4NiA2IDYtMi42ODYgNi02IDYtNi0yLjY4Ni02LTZ6bTAgMjRjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnpNMTIgMThjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnptMCAyNGMwLTMuMzE0IDIuNjg2LTYgNi02czYgMi42ODYgNiA2LTIuNjg2IDYtNiA2LTYtMi42ODYtNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
+        <div className="absolute -top-20 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-accent/40 to-primary/30 rounded-full blur-3xl animate-blob opacity-70"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10"></div>
+      </div>
+        
+      <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+          <div className="space-y-8 lg:pr-8">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
+              <CheckCircle2 className="w-4 h-4 text-success animate-pulse" />
+              <span>100% kostenlos & unverbindlich · In 2 Minuten zu 3–5 Offerten</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <TrendingDown className="w-6 h-6 text-accent" />
-              </div>
-              <p className="text-3xl font-bold text-center mb-1">4.8/5</p>
-              <p className="text-sm text-white/90 text-center font-medium">Bewertung</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
-              </div>
-              <p className="text-3xl font-bold text-center mb-1">2 Min</p>
-              <p className="text-sm text-white/90 text-center font-medium">Zeitaufwand</p>
-            </div>
-          </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 pt-6">
-            <Link to="/rechner" className="flex-1">
-              <Button 
-                size="lg" 
-                className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white shadow-accent group transition-all duration-300 hover:shadow-xl hover:scale-105 animate-glow-pulse hover-shine"
-              >
-                <span className="relative z-10">Kostenlos Preis berechnen</span>
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
-              </Button>
-            </Link>
-            <Link to="/firmen" className="flex-1">
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="w-full h-14 text-lg border-2 border-white/40 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:border-white/60"
-              >
-                Firmen vergleichen
-              </Button>
-            </Link>
-          </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+              Ihren Umzug in der Schweiz<br />
+              <span className="text-accent drop-shadow-lg">in 60 Sekunden vergleichen</span>
+            </h1>
 
-          <SecurityBadges />
-
-          {/* Trust Line */}
-          <div className="pt-4 text-center sm:text-left">
-            <p className="text-white/90 text-sm font-medium">
-              <span className="inline-flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-success" />
-                100% geprüfte Umzugsfirmen
-              </span>
-              <span className="mx-2">•</span>
-              <span className="inline-flex items-center gap-2">
-                <TrendingDown className="w-4 h-4 text-accent" />
-                Bis zu 40% sparen
-              </span>
-              <span className="mx-2">•</span>
-              <span>Schweizweit</span>
+            <p className="text-lg md:text-xl text-white/95 leading-relaxed max-w-2xl">
+              Füllen Sie einmal Ihr Umzugsprofil aus und erhalten Sie in kurzer Zeit passende Angebote von geprüften Umzugsfirmen. Transparent, fair und ohne Telefon-Spam.
             </p>
-          </div>
-        </div>
 
-        {/* Right Column - Quick Calculator Preview Card */}
-        <div className="lg:ml-auto w-full max-w-md">
-          <div className="backdrop-blur-lg bg-white/98 rounded-3xl shadow-2xl p-8 border-2 border-white/30 hover-lift relative overflow-hidden">
-            {/* Premium badge */}
-            <div className="absolute top-4 right-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
-              Beliebteste Funktion
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <TrendingDown className="w-6 h-6 text-accent mx-auto mb-2" />
+                <p className="text-2xl font-bold text-center mb-1">Bis zu 40%</p>
+                <p className="text-sm text-white/90 text-center">Im Schnitt günstiger</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <CheckCircle2 className="w-6 h-6 text-success mx-auto mb-2" />
+                <p className="text-2xl font-bold text-center mb-1">4.8 / 5</p>
+                <p className="text-sm text-white/90 text-center">Zufriedenheit</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <Shield className="w-6 h-6 text-white mx-auto mb-2" />
+                <p className="text-2xl font-bold text-center mb-1">15'000+</p>
+                <p className="text-sm text-white/90 text-center">Umzüge begleitet</p>
+              </div>
             </div>
-            <QuickCalculator embedded />
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-6">
+              <Link to="/rechner" className="flex-1">
+                <Button size="lg" className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white">
+                  <span>Umzugskosten berechnen</span>
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link to="/firmen" className="flex-1">
+                <Button size="lg" variant="outline" className="w-full h-14 text-lg border-2 border-white/40 bg-white/10 text-white">
+                  Umzugsfirmen vergleichen
+                </Button>
+              </Link>
+            </div>
+
+            <div className="pt-4">
+              <p className="text-white/90 text-sm flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                Kostenlos & unverbindlich. Ihre Daten werden nur für Ihre Offerten-Anfrage verwendet.
+              </p>
+            </div>
+
+            <SecurityBadges />
+          </div>
+
+          <div className="lg:ml-auto w-full max-w-md">
+            <div className="backdrop-blur-lg bg-white/98 rounded-3xl shadow-2xl p-8 border-2 border-white/30 relative">
+              <div className="absolute top-4 right-4">
+                <PopularBadge variant="popular" />
+              </div>
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-foreground mb-2">Schnell-Rechner</h3>
+                <p className="text-sm text-muted-foreground">In 60 Sekunden zu Ihrer ersten Kostenschätzung.</p>
+              </div>
+              <QuickCalculator embedded />
+              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground justify-center">
+                <Clock className="w-4 h-4" />
+                <span>Antwortzeit: 3–24 Stunden</span>
+              </div>
+            </div>
+            <div className="mt-4">
+              <LiveActivityIndicator />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-      {/* Bottom Wave Decoration */}
+      <div className="relative z-10 pb-12 border-t border-white/10 mt-12">
+        <div className="container mx-auto px-4">
+          <p className="text-center text-white/80 text-sm font-medium mb-6">Bekannt aus & geprüft von:</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 opacity-60 grayscale">
+            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
+            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
+            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
+            <div className="h-12 w-32 bg-white/20 rounded-lg"></div>
+          </div>
+        </div>
+      </div>
+
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
           <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(var(--background))"/>

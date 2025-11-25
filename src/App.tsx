@@ -66,6 +66,8 @@ import MobileProviderApp from "./pages/MobileProviderApp";
 import PricingAnalytics from "./pages/admin/PricingAnalytics";
 import MLAnalytics from "./pages/admin/MLAnalytics";
 import DynamicPricing from "./pages/admin/DynamicPricing";
+import Billing from "./pages/admin/Billing";
+import ProviderSignupNew from "./pages/provider/ProviderSignup";
 
 const queryClient = new QueryClient();
 
@@ -132,9 +134,11 @@ const App = () => (
           <Route path="/admin/ml-analytics" element={<MLAnalytics />} />
             <Route path="/admin/providers" element={<AdminProviders />} />
             <Route path="/admin/providers/:id" element={<ProviderDetail />} />
+            <Route path="/admin/billing" element={<Billing />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
             <Route path="/anbieter-werden" element={<BecomeProvider />} />
             <Route path="/anbieter/registrieren" element={<ProviderSignup />} />
+            <Route path="/anbieter/signup" element={<ProviderSignupNew />} />
             <Route path="/anbieter/login" element={<ProviderLogin />} />
             <Route path="/anbieter/dashboard" element={<ProviderDashboard />} />
             <Route path="/anbieter/profil" element={<ProviderProfile />} />
