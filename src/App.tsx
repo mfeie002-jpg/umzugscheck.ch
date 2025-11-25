@@ -47,6 +47,8 @@ import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
 import BecomeProvider from "./pages/BecomeProvider";
 import ReviewSubmission from "./pages/ReviewSubmission";
+import BesteFirmen from "./pages/BesteFirmen";
+import GuenstigeFirmen from "./pages/GuenstigeFirmen";
 
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
@@ -146,6 +148,10 @@ const App = () => (
             <Route path="/admin/providers/:id" element={<ProviderDetail />} />
             <Route path="/admin/billing" element={<Billing />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
+            <Route path="/beste-umzugsfirma" element={<BesteFirmen />} />
+            <Route path="/beste-umzugsfirma/:region" element={<BesteFirmen />} />
+            <Route path="/guenstige-umzugsfirma" element={<GuenstigeFirmen />} />
+            <Route path="/guenstige-umzugsfirma/:region" element={<GuenstigeFirmen />} />
             <Route path="/anbieter-werden" element={<BecomeProvider />} />
             <Route path="/anbieter/registrieren" element={<ProviderSignup />} />
             <Route path="/anbieter/signup" element={<ProviderSignupNew />} />
