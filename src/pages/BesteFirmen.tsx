@@ -3,16 +3,19 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard";
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
+import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { Trophy, Star, Shield, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
-import { generateRanking } from "@/lib/ranking-algorithm";
+import { getRankedCompanies } from "@/lib/ranking-service";
+import { trackLeadConversion } from "@/lib/bidding-engine";
 import { useHaptic } from "@/hooks/use-haptic";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 import { RankingFilters, FilterState } from "@/components/rankings/RankingFilters";
+import { toast } from "sonner";
 
 export default function BesteFirmen() {
   const { region } = useParams();
@@ -38,6 +41,7 @@ export default function BesteFirmen() {
   // Mock data - sponsored companies (would come from database with is_featured flag)
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
   const [organicCompanies, setOrganicCompanies] = useState<any[]>([]);
+  const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const handleRefresh = async () => {
@@ -56,79 +60,89 @@ export default function BesteFirmen() {
   const fetchCompanies = () => {
     setLoading(true);
     
-    // Get companies filtered by region
-    let filteredCompanies = filters.region !== "all" 
+    const allCompanies = filters.region !== "all" 
       ? getCompaniesByRegion(filters.region) 
       : DEMO_COMPANIES;
     
-    // Apply service filters
-    if (filters.services.length > 0) {
-      filteredCompanies = filteredCompanies.filter(company =>
-        filters.services.some(service => 
-          company.services_offered.some(s => s.toLowerCase().includes(service))
-        )
-      );
-    }
-
-    // Apply price level filter
-    if (filters.priceLevel !== "all") {
-      filteredCompanies = filteredCompanies.filter(
-        company => company.price_level === filters.priceLevel
-      );
-    }
-
-    // Apply minimum rating filter
-    const minRating = parseFloat(filters.minRating);
-    if (minRating > 0) {
-      filteredCompanies = filteredCompanies.filter(
-        company => company.rating >= minRating
-      );
-    }
-    
-    // Determine sort mode based on sortBy
-    let sortMode: 'best' | 'cheapest' | 'rating' | 'reviews' = 'best';
-    if (filters.sortBy === 'rating') sortMode = 'rating';
-    else if (filters.sortBy === 'price') sortMode = 'cheapest';
-    else if (filters.sortBy === 'reviews') sortMode = 'reviews';
-    
-    // Generate ranking using the algorithm
-    const ranked = generateRanking(filteredCompanies, undefined, sortMode);
+    // Use the new ranking service with bidding
+    const result = getRankedCompanies(allCompanies, {
+      filters: {
+        region: filters.region,
+        services: filters.services,
+        priceLevel: filters.priceLevel,
+        minRating: parseFloat(filters.minRating),
+        sortBy: filters.sortBy,
+      },
+      pageType: "beste-umzugsfirma",
+      enableBidding: true,
+    });
     
     // Format for display components
-    const sponsored = ranked
-      .filter(c => c.isSponsored)
-      .slice(0, 3)
-      .map(c => ({
-        id: c.id,
-        name: c.name,
-        logo: undefined,
-        rating: c.rating,
-        reviewCount: c.review_count,
-        regions: c.service_areas,
-        description: `Professioneller ${c.services_offered.join(', ')}-Service mit ${c.review_count} Kundenbewertungen.`,
-        priceLevel: c.price_level === "günstig" ? "Günstig" : c.price_level === "fair" ? "Fair" : "Premium",
-        specialOffer: "Spezialrabatt für Umzugscheck-Kunden",
-      }));
+    const sponsored = result.sponsored.slice(0, 3).map(c => ({
+      id: c.id,
+      name: c.name,
+      logo: c.logo_url,
+      rating: c.rating,
+      reviewCount: c.review_count,
+      regions: c.service_areas,
+      description: c.short_description || `Professioneller Service mit ${c.review_count} Kundenbewertungen.`,
+      priceLevel: c.price_level === "günstig" ? "Günstig" : c.price_level === "fair" ? "Fair" : "Premium",
+      specialOffer: c.discount_offer || "Spezialrabatt für Umzugscheck-Kunden",
+    }));
     
-    const organic = ranked
-      .filter(c => !c.isSponsored)
-      .map(c => ({
-        id: c.id,
-        rank: c.rank,
-        name: c.name,
-        logo: undefined,
-        rating: c.rating,
-        reviewCount: c.review_count,
-        regions: c.service_areas,
-        description: `Zuverlässiger ${c.services_offered.slice(0, 2).join(' & ')}-Service in ${c.service_areas[0]}.`,
-        priceLevel: c.price_level === "günstig" ? "Günstig" : c.price_level === "fair" ? "Fair" : "Premium",
-        savingsPercentage: c.savingsPercentage,
-        verified: true,
-      }));
+    const organic = result.organic.map(c => ({
+      id: c.id,
+      rank: c.rank,
+      name: c.name,
+      logo: c.logo_url,
+      rating: c.rating,
+      reviewCount: c.review_count,
+      regions: c.service_areas,
+      description: c.short_description || `Zuverlässiger Service in ${c.service_areas[0]}.`,
+      priceLevel: c.price_level === "günstig" ? "Günstig" : c.price_level === "fair" ? "Fair" : "Premium",
+      savingsPercentage: c.savingsPercentage,
+      verified: true,
+    }));
     
     setSponsoredCompanies(sponsored);
     setOrganicCompanies(organic);
+    
+    // Pre-select top 2-3 organic companies
+    if (selectedCompanyIds.length === 0) {
+      const topCompanies = organic.slice(0, 3).map(c => c.id);
+      setSelectedCompanyIds(topCompanies);
+    }
+    
     setLoading(false);
+  };
+  
+  const toggleCompanySelection = (companyId: string) => {
+    setSelectedCompanyIds(prev => 
+      prev.includes(companyId)
+        ? prev.filter(id => id !== companyId)
+        : [...prev, companyId]
+    );
+    trigger('light');
+  };
+  
+  const handleRequestOffers = async (contactData: ContactFormData) => {
+    try {
+      // Track lead conversion for billing
+      await trackLeadConversion(selectedCompanyIds, `lead-${Date.now()}`);
+      
+      toast.success("Offerten angefordert!", {
+        description: `Sie erhalten bald Angebote von ${selectedCompanyIds.length} Firmen.`,
+      });
+      
+      // In production, this would call the actual lead API
+      console.log("Lead submitted:", {
+        ...contactData,
+        selectedCompanyIds,
+        leadType: "ranking",
+      });
+    } catch (error) {
+      toast.error("Fehler beim Senden der Anfrage");
+    }
   };
 
   return (
@@ -198,7 +212,16 @@ export default function BesteFirmen() {
                 ) : (
                   <div className="grid gap-6">
                     {sponsoredCompanies.map((company) => (
-                      <SponsoredCompanyCard key={company.id} {...company} />
+                      <div key={company.id} className="relative">
+                        <input
+                          type="checkbox"
+                          id={`select-sponsored-${company.id}`}
+                          checked={selectedCompanyIds.includes(company.id)}
+                          onChange={() => toggleCompanySelection(company.id)}
+                          className="absolute top-4 right-4 z-10 w-5 h-5 cursor-pointer"
+                        />
+                        <SponsoredCompanyCard {...company} />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -236,7 +259,16 @@ export default function BesteFirmen() {
                 ) : (
                   <div className="space-y-4">
                     {organicCompanies.map((company) => (
-                      <OrganicCompanyCard key={company.id} {...company} />
+                      <div key={company.id} className="relative">
+                        <input
+                          type="checkbox"
+                          id={`select-organic-${company.id}`}
+                          checked={selectedCompanyIds.includes(company.id)}
+                          onChange={() => toggleCompanySelection(company.id)}
+                          className="absolute top-4 right-4 z-10 w-5 h-5 cursor-pointer"
+                        />
+                        <OrganicCompanyCard {...company} />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -265,6 +297,13 @@ export default function BesteFirmen() {
         </main>
 
         <Footer />
+        
+        {/* Multi-select Selection Bar */}
+        <CompanySelectionBar
+          selectedCompanyIds={selectedCompanyIds}
+          companies={[...sponsoredCompanies, ...organicCompanies]}
+          onRequestOffers={handleRequestOffers}
+        />
       </div>
     </>
   );

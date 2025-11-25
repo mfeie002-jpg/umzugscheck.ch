@@ -3,16 +3,19 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard";
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
+import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { TrendingDown, DollarSign, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import { DEMO_COMPANIES, getCompaniesByRegion, getCompaniesByPriceLevel } from "@/data/companies";
-import { generateRanking } from "@/lib/ranking-algorithm";
+import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
+import { getRankedCompanies } from "@/lib/ranking-service";
+import { trackLeadConversion } from "@/lib/bidding-engine";
 import { useHaptic } from "@/hooks/use-haptic";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 import { RankingFilters, FilterState } from "@/components/rankings/RankingFilters";
+import { toast } from "sonner";
 
 export default function GuenstigeFirmen() {
   const { region } = useParams();
@@ -38,6 +41,7 @@ export default function GuenstigeFirmen() {
   // Fetch companies from database
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
   const [organicCompanies, setOrganicCompanies] = useState<any[]>([]);
+  const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const handleRefresh = async () => {
@@ -56,84 +60,91 @@ export default function GuenstigeFirmen() {
   const fetchCompanies = () => {
     setLoading(true);
     
-    // Get companies filtered by region
-    let filteredCompanies = filters.region !== "all" 
+    const allCompanies = filters.region !== "all" 
       ? getCompaniesByRegion(filters.region) 
       : DEMO_COMPANIES;
     
-    // Apply service filters
-    if (filters.services.length > 0) {
-      filteredCompanies = filteredCompanies.filter(company =>
-        filters.services.some(service => 
-          company.services_offered.some(s => s.toLowerCase().includes(service))
-        )
-      );
-    }
-
-    // Apply price level filter (default to cheap on this page)
-    if (filters.priceLevel !== "all") {
-      filteredCompanies = filteredCompanies.filter(
-        company => company.price_level === filters.priceLevel
-      );
-    } else {
-      // Show only günstig and fair by default on this page
-      filteredCompanies = filteredCompanies.filter(
-        c => c.price_level === "günstig" || c.price_level === "fair"
-      );
-    }
-
-    // Apply minimum rating filter
-    const minRating = parseFloat(filters.minRating);
-    if (minRating > 0) {
-      filteredCompanies = filteredCompanies.filter(
-        company => company.rating >= minRating
-      );
-    }
-    
-    // Determine sort mode based on sortBy
-    let sortMode: 'best' | 'cheapest' | 'rating' | 'reviews' = 'cheapest';
-    if (filters.sortBy === 'rating') sortMode = 'rating';
-    else if (filters.sortBy === 'recommended') sortMode = 'best';
-    else if (filters.sortBy === 'reviews') sortMode = 'reviews';
-    
-    // Generate ranking using the algorithm with "cheapest" mode
-    const ranked = generateRanking(filteredCompanies, undefined, sortMode);
+    // Use the new ranking service with bidding (prioritize price)
+    const result = getRankedCompanies(allCompanies, {
+      filters: {
+        region: filters.region,
+        services: filters.services,
+        priceLevel: filters.priceLevel,
+        minRating: parseFloat(filters.minRating),
+        sortBy: filters.sortBy,
+      },
+      pageType: "guenstige-umzugsfirma",
+      enableBidding: true,
+    });
     
     // Format for display components
-    const sponsored = ranked
-      .filter(c => c.isSponsored)
-      .slice(0, 3)
-      .map(c => ({
-        id: c.id,
-        name: c.name,
-        logo: undefined,
-        rating: c.rating,
-        reviewCount: c.review_count,
-        regions: c.service_areas,
-        description: `Günstiger ${c.services_offered.join(', ')}-Service ohne Qualitätsverlust.`,
-        priceLevel: c.price_level === "günstig" ? "Günstig" : "Fair",
-        specialOffer: "Exklusiv: Rabatt für Umzugscheck-Kunden",
-      }));
+    const sponsored = result.sponsored.slice(0, 3).map(c => ({
+      id: c.id,
+      name: c.name,
+      logo: c.logo_url,
+      rating: c.rating,
+      reviewCount: c.review_count,
+      regions: c.service_areas,
+      description: c.short_description || `Günstiger Service ohne Qualitätsverlust.`,
+      priceLevel: c.price_level === "günstig" ? "Günstig" : "Fair",
+      specialOffer: c.discount_offer || "Exklusiv: Rabatt für Umzugscheck-Kunden",
+    }));
     
-    const organic = ranked
-      .filter(c => !c.isSponsored)
-      .map(c => ({
-        id: c.id,
-        rank: c.rank,
-        name: c.name,
-        logo: undefined,
-        rating: c.rating,
-        reviewCount: c.review_count,
-        regions: c.service_areas,
-        description: `Preiswerte Umzugslösung mit ${c.services_offered.slice(0, 2).join(' & ')}.`,
-        priceLevel: c.price_level === "günstig" ? "Günstig" : "Fair",
-        savingsPercentage: c.savingsPercentage,
-        verified: true,
-      }));
+    const organic = result.organic.map(c => ({
+      id: c.id,
+      rank: c.rank,
+      name: c.name,
+      logo: c.logo_url,
+      rating: c.rating,
+      reviewCount: c.review_count,
+      regions: c.service_areas,
+      description: c.short_description || `Preiswerte Umzugslösung.`,
+      priceLevel: c.price_level === "günstig" ? "Günstig" : "Fair",
+      savingsPercentage: c.savingsPercentage,
+      verified: true,
+    }));
     
     setSponsoredCompanies(sponsored);
     setOrganicCompanies(organic);
+    
+    // Pre-select top 2-3 cheap companies
+    if (selectedCompanyIds.length === 0) {
+      const cheapestCompanies = organic
+        .filter(c => c.priceLevel === "Günstig")
+        .slice(0, 3)
+        .map(c => c.id);
+      setSelectedCompanyIds(cheapestCompanies);
+    }
+    
     setLoading(false);
+  };
+  
+  const toggleCompanySelection = (companyId: string) => {
+    setSelectedCompanyIds(prev => 
+      prev.includes(companyId)
+        ? prev.filter(id => id !== companyId)
+        : [...prev, companyId]
+    );
+    trigger('light');
+  };
+  
+  const handleRequestOffers = async (contactData: ContactFormData) => {
+    try {
+      await trackLeadConversion(selectedCompanyIds, `lead-${Date.now()}`);
+      
+      toast.success("Offerten angefordert!", {
+        description: `Sie erhalten bald Angebote von ${selectedCompanyIds.length} Firmen.`,
+      });
+      
+      console.log("Lead submitted:", {
+        ...contactData,
+        selectedCompanyIds,
+        leadType: "ranking",
+        pageType: "guenstige-umzugsfirma",
+      });
+    } catch (error) {
+      toast.error("Fehler beim Senden der Anfrage");
+    }
   };
 
   return (
@@ -203,7 +214,16 @@ export default function GuenstigeFirmen() {
                 ) : (
                   <div className="grid gap-6">
                     {sponsoredCompanies.map((company) => (
-                      <SponsoredCompanyCard key={company.id} {...company} />
+                      <div key={company.id} className="relative">
+                        <input
+                          type="checkbox"
+                          id={`select-sponsored-${company.id}`}
+                          checked={selectedCompanyIds.includes(company.id)}
+                          onChange={() => toggleCompanySelection(company.id)}
+                          className="absolute top-4 right-4 z-10 w-5 h-5 cursor-pointer"
+                        />
+                        <SponsoredCompanyCard {...company} />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -241,7 +261,16 @@ export default function GuenstigeFirmen() {
                 ) : (
                   <div className="space-y-4">
                     {organicCompanies.map((company) => (
-                      <OrganicCompanyCard key={company.id} {...company} />
+                      <div key={company.id} className="relative">
+                        <input
+                          type="checkbox"
+                          id={`select-organic-${company.id}`}
+                          checked={selectedCompanyIds.includes(company.id)}
+                          onChange={() => toggleCompanySelection(company.id)}
+                          className="absolute top-4 right-4 z-10 w-5 h-5 cursor-pointer"
+                        />
+                        <OrganicCompanyCard {...company} />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -270,6 +299,13 @@ export default function GuenstigeFirmen() {
         </main>
 
         <Footer />
+        
+        {/* Multi-select Selection Bar */}
+        <CompanySelectionBar
+          selectedCompanyIds={selectedCompanyIds}
+          companies={[...sponsoredCompanies, ...organicCompanies]}
+          onRequestOffers={handleRequestOffers}
+        />
       </div>
     </>
   );
