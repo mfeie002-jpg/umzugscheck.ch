@@ -206,6 +206,42 @@ export type Database = {
         }
         Relationships: []
       }
+      email_automation_settings: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          enabled: boolean | null
+          frequency: string | null
+          id: string
+          last_sent_at: string | null
+          threshold_value: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          enabled?: boolean | null
+          frequency?: string | null
+          id?: string
+          last_sent_at?: string | null
+          threshold_value?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          enabled?: boolean | null
+          frequency?: string | null
+          id?: string
+          last_sent_at?: string | null
+          threshold_value?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       estimate_sessions: {
         Row: {
           created_at: string | null
@@ -1295,6 +1331,42 @@ export type Database = {
           id?: string
           scheduled_date?: string
           status?: string
+        }
+        Relationships: []
+      }
+      seasonal_ranking_presets: {
+        Row: {
+          configuration: Json
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          season: string
+          updated_at: string | null
+        }
+        Insert: {
+          configuration: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          season: string
+          updated_at?: string | null
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          season?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
