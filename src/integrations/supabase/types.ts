@@ -1042,6 +1042,7 @@ export type Database = {
           description: string | null
           email: string
           employees_count: number | null
+          featured_position: number | null
           fleet_size: number | null
           id: string
           is_featured: boolean | null
@@ -1054,6 +1055,7 @@ export type Database = {
           phone: string
           preferred_regions: string[] | null
           price_level: Database["public"]["Enums"]["price_level"] | null
+          ranking_position: number | null
           services_offered: string[]
           street: string
           subscription_plan: string | null
@@ -1075,6 +1077,7 @@ export type Database = {
           description?: string | null
           email: string
           employees_count?: number | null
+          featured_position?: number | null
           fleet_size?: number | null
           id?: string
           is_featured?: boolean | null
@@ -1087,6 +1090,7 @@ export type Database = {
           phone: string
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
+          ranking_position?: number | null
           services_offered?: string[]
           street: string
           subscription_plan?: string | null
@@ -1108,6 +1112,7 @@ export type Database = {
           description?: string | null
           email?: string
           employees_count?: number | null
+          featured_position?: number | null
           fleet_size?: number | null
           id?: string
           is_featured?: boolean | null
@@ -1120,6 +1125,7 @@ export type Database = {
           phone?: string
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
+          ranking_position?: number | null
           services_offered?: string[]
           street?: string
           subscription_plan?: string | null

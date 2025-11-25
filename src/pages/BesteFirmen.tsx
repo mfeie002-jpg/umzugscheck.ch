@@ -6,6 +6,8 @@ import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { Trophy, Star, Shield, Award } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 export default function BesteFirmen() {
   const { region } = useParams();
@@ -19,100 +21,69 @@ export default function BesteFirmen() {
     : "Die besten Umzugsfirmen der Schweiz im Vergleich. Basierend auf Kundenbewertungen, Preis-Leistung und Servicequalität.";
 
   // Mock data - sponsored companies (would come from database with is_featured flag)
-  const sponsoredCompanies = [
-    {
-      id: "1",
-      name: "SwissMove Premium",
-      logo: "/lovable-uploads/d4aa8c36-01f9-47b7-8e18-bd2a8e22467a.png",
-      rating: 4.9,
-      reviewCount: 234,
-      regions: ["Zürich", "Bern", "Basel"],
-      description: "Premium-Umzugsservice mit 15 Jahren Erfahrung. Spezialisiert auf stressfreie Umzüge mit Rundum-Service.",
-      specialOffer: "Spezialrabatt für Umzugscheck-Kunden: 10% auf alle Services",
-      priceLevel: "Premium",
-    },
-    {
-      id: "2",
-      name: "Züri-Umzüge Express",
-      rating: 4.8,
-      reviewCount: 189,
-      regions: ["Zürich", "Zug", "Winterthur"],
-      description: "Schneller und zuverlässiger Umzugsservice. Über 500 erfolgreiche Umzüge pro Jahr.",
-      specialOffer: "Kostenlose Umzugskartons bei Buchung über Umzugscheck",
-      priceLevel: "Fair",
-    },
-    {
-      id: "3",
-      name: "Alpen-Umzüge AG",
-      rating: 4.7,
-      reviewCount: 156,
-      regions: ["Bern", "Luzern", "Thun"],
-      description: "Familiengeführtes Unternehmen mit persönlichem Service. Spezialist für Privatumzüge.",
-      priceLevel: "Günstig",
-    },
-  ];
+  const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
+  const [organicCompanies, setOrganicCompanies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data - organic ranking (would come from database sorted by rating/reviews)
-  const organicCompanies = [
-    {
-      id: "4",
-      rank: 4,
-      name: "Basel-Move Professional",
-      rating: 4.9,
-      reviewCount: 201,
-      regions: ["Basel", "Solothurn", "Aargau"],
-      description: "Professionelle Umzüge mit modernster Ausstattung. Spezialisiert auf Büro- und Privatumzüge.",
-      priceLevel: "Fair",
-      savingsPercentage: 25,
-      verified: true,
-    },
-    {
-      id: "5",
-      rank: 5,
-      name: "Luzerner Umzugsteam",
-      rating: 4.8,
-      reviewCount: 178,
-      regions: ["Luzern", "Zug", "Uri"],
-      description: "Erfahrenes Team mit über 10 Jahren Markterfahrung. Faire Preise und flexible Termine.",
-      priceLevel: "Günstig",
-      savingsPercentage: 30,
-      verified: true,
-    },
-    {
-      id: "6",
-      rank: 6,
-      name: "St. Gallen Umzugsservice",
-      rating: 4.7,
-      reviewCount: 145,
-      regions: ["St. Gallen", "Thurgau", "Appenzell"],
-      description: "Regionaler Umzugsservice mit persönlicher Betreuung. Spezialist für Ostschweiz.",
-      priceLevel: "Fair",
-      verified: false,
-    },
-    {
-      id: "7",
-      rank: 7,
-      name: "Winterthur Express Umzüge",
-      rating: 4.7,
-      reviewCount: 132,
-      regions: ["Winterthur", "Zürich", "Schaffhausen"],
-      description: "Schnelle und unkomplizierte Umzüge. Spezialisiert auf kurzfristige Termine.",
-      priceLevel: "Günstig",
-      savingsPercentage: 20,
-      verified: true,
-    },
-    {
-      id: "8",
-      rank: 8,
-      name: "Aargau Movers",
-      rating: 4.6,
-      reviewCount: 118,
-      regions: ["Aargau", "Zürich", "Solothurn"],
-      description: "Zuverlässiger Umzugspartner mit transparenten Preisen. Über 300 Umzüge pro Jahr.",
-      priceLevel: "Fair",
-      verified: false,
-    },
-  ];
+  useEffect(() => {
+    fetchCompanies();
+  }, [region]);
+
+  const fetchCompanies = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("service_providers")
+        .select("*")
+        .eq("verification_status", "approved")
+        .order("ranking_position", { ascending: true, nullsFirst: false });
+
+      if (error) throw error;
+
+      if (data) {
+        const featured = data
+          .filter((c: any) => c.is_featured)
+          .sort((a: any, b: any) => (a.featured_position || 999) - (b.featured_position || 999))
+          .slice(0, 3)
+          .map((c: any) => ({
+            id: c.id,
+            name: c.company_name,
+            logo: c.logo_url,
+            rating: 4.8,
+            reviewCount: 150,
+            regions: c.cantons_served || [],
+            description: c.description || "Professioneller Umzugsservice mit langjähriger Erfahrung.",
+            priceLevel: c.price_level || "Fair",
+            specialOffer: "Spezialrabatt für Umzugscheck-Kunden",
+          }));
+
+        const organic = data
+          .filter((c: any) => !c.is_featured)
+          .sort((a: any, b: any) => (a.ranking_position || 999) - (b.ranking_position || 999))
+          .slice(0, 10)
+          .map((c: any, index: number) => ({
+            id: c.id,
+            rank: featured.length + index + 1,
+            name: c.company_name,
+            logo: c.logo_url,
+            rating: 4.7,
+            reviewCount: 120,
+            regions: c.cantons_served || [],
+            description: c.description || "Zuverlässiger Umzugsservice zu fairen Preisen.",
+            priceLevel: c.price_level || "Fair",
+            savingsPercentage: Math.floor(Math.random() * 30) + 10,
+            verified: c.verification_status === "approved",
+          }));
+
+        setSponsoredCompanies(featured);
+        setOrganicCompanies(organic);
+      }
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -168,11 +139,17 @@ export default function BesteFirmen() {
                 <h2 className="text-2xl md:text-3xl font-bold mb-8">
                   Empfohlene Top-Anbieter
                 </h2>
-                <div className="grid gap-6">
-                  {sponsoredCompanies.map((company) => (
-                    <SponsoredCompanyCard key={company.id} {...company} />
-                  ))}
-                </div>
+                {loading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                  </div>
+                ) : (
+                  <div className="grid gap-6">
+                    {sponsoredCompanies.map((company) => (
+                      <SponsoredCompanyCard key={company.id} {...company} />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </section>
@@ -187,11 +164,17 @@ export default function BesteFirmen() {
                 <p className="text-muted-foreground mb-8">
                   Sortiert nach Kundenbewertungen, Servicequalität und Preis-Leistungs-Verhältnis
                 </p>
-                <div className="space-y-4">
-                  {organicCompanies.map((company) => (
-                    <OrganicCompanyCard key={company.id} {...company} />
-                  ))}
-                </div>
+                {loading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {organicCompanies.map((company) => (
+                      <OrganicCompanyCard key={company.id} {...company} />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </section>

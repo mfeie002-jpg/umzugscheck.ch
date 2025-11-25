@@ -66,6 +66,7 @@ const PricingAnalytics = lazy(() => import("./pages/admin/PricingAnalytics"));
 const MLAnalytics = lazy(() => import("./pages/admin/MLAnalytics"));
 const DynamicPricing = lazy(() => import("./pages/admin/DynamicPricing"));
 const Billing = lazy(() => import("./pages/admin/Billing"));
+const AdminRankings = lazy(() => import("./pages/admin/Rankings"));
 
 // Lazy load provider pages for code splitting
 const ProviderSignup = lazy(() => import("./pages/ProviderSignup"));
@@ -147,6 +148,7 @@ const App = () => (
             <Route path="/admin/providers" element={<AdminProviders />} />
             <Route path="/admin/providers/:id" element={<ProviderDetail />} />
             <Route path="/admin/billing" element={<Billing />} />
+            <Route path="/admin/rankings" element={<Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>}><AdminRankings /></Suspense>} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
             <Route path="/beste-umzugsfirma" element={<BesteFirmen />} />
             <Route path="/beste-umzugsfirma/:region" element={<BesteFirmen />} />
