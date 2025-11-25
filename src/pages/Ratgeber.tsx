@@ -111,30 +111,30 @@ const Ratgeber = () => {
         </section>
 
         {/* Categories Section */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 sm:py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <ScrollReveal>
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                <div className="text-center mb-8 sm:mb-12">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
                     Themenbereiche
                   </h2>
-                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
                     Finden Sie hilfreiche Artikel und Anleitungen zu allen Aspekten Ihres Umzugs
                   </p>
                 </div>
               </ScrollReveal>
 
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
                 {categories.map((category, index) => (
                   <ScrollReveal key={index} delay={index * 0.1}>
                     <Card className="h-full hover:shadow-strong transition-all hover:border-primary/40">
-                      <CardHeader>
-                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                          <category.icon className="w-6 h-6 text-primary" />
+                      <CardHeader className="pb-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                          <category.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                         </div>
-                        <CardTitle className="text-2xl">{category.title}</CardTitle>
-                        <CardDescription className="text-base">
+                        <CardTitle className="text-xl sm:text-2xl">{category.title}</CardTitle>
+                        <CardDescription className="text-sm sm:text-base">
                           {category.description}
                         </CardDescription>
                       </CardHeader>
@@ -146,8 +146,8 @@ const Ratgeber = () => {
                                 to={`/ratgeber/${article.slug}`}
                                 className="flex items-center gap-3 text-foreground hover:text-primary transition-colors group"
                               >
-                                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                                <span className="text-sm font-medium">{article.title}</span>
+                                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-medium">{article.title}</span>
                               </Link>
                             </li>
                           ))}
@@ -293,27 +293,26 @@ const Ratgeber = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 md:py-24 bg-secondary/10">
+        <section className="py-12 sm:py-16 md:py-24 bg-secondary/10">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <ScrollReveal>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
                   Bereit für Ihren Umzug?
                 </h2>
-                <p className="text-xl text-muted-foreground mb-8">
-                  Berechnen Sie jetzt Ihre Umzugskosten oder holen Sie sich kostenlose Offerten von geprüften Firmen ein.
+                <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 px-4">
+                  Berechnen Sie jetzt Ihre Umzugskosten oder holen Sie sich kostenlose Offerten ein.
                 </p>
-                <div className="flex flex-wrap gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
                   <Link to="/rechner">
-                    <Button size="lg" className="shadow-accent">
+                    <Button size="lg" className="w-full sm:w-auto shadow-accent">
                       <Calculator className="mr-2 w-5 h-5" />
                       Kosten berechnen
                     </Button>
                   </Link>
                   <Link to="/offerte">
-                    <Button size="lg" variant="outline">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto">
                       Offerte anfordern
-                      <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                   </Link>
                 </div>

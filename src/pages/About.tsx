@@ -98,39 +98,43 @@ const About = () => {
       
       <main className="flex-1">
         {/* Breadcrumbs */}
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
           <Breadcrumbs items={[{ label: "Über uns" }]} showHome />
         </div>
 
-          {/* Hero Section */}
-          <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Über umzugscheck.ch
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Die unabhängige Schweizer Vergleichsplattform für faire und transparente Umzugsofferten
-            </p>
-          </div>
-
-          {/* Mission Section */}
-          <section className="mb-16">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold mb-6 text-center">Unsere Mission</h2>
-              <Card className="shadow-medium">
-                <CardContent className="p-8 md:p-12">
-                  <p className="text-lg text-foreground mb-6 leading-relaxed">
-                    Umzugscheck.ch hilft Menschen in der Schweiz, faire und transparente Angebote für Umzugsdienstleistungen zu finden. 
-                    Wir glauben, dass ein Umzug nicht kompliziert oder überteuert sein muss. Deshalb haben wir eine Plattform geschaffen, 
-                    auf der Sie schnell und unkompliziert mehrere Offerten von geprüften Umzugsfirmen erhalten können.
-                  </p>
-                  <p className="text-lg text-foreground mb-6 leading-relaxed">
-                    Unser Ziel ist es, den Umzugsprozess transparent, fair und stressfrei zu gestalten. Wir bringen Umziehende und 
-                    professionelle Umzugsfirmen zusammen – kostenlos, unverbindlich und mit höchstem Qualitätsanspruch.
-                  </p>
-                </CardContent>
-              </Card>
+        {/* Hero Section */}
+        <section className="py-12 sm:py-16 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 md:mb-16">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
+                Über Umzugscheck.ch
+              </h1>
+              <p className="text-lg sm:text-xl text-muted-foreground px-4">
+                Die unabhängige Schweizer Vergleichsplattform für faire und transparente Umzugsofferten
+              </p>
             </div>
-          </section>
+
+            {/* Mission Section */}
+            <div className="mb-12 sm:mb-16">
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Unsere Mission</h2>
+                <Card className="shadow-medium">
+                  <CardContent className="p-6 sm:p-8 md:p-12">
+                    <p className="text-base sm:text-lg mb-6 leading-relaxed">
+                      Umzugscheck.ch hilft Menschen in der Schweiz, faire und transparente Angebote für Umzugsdienstleistungen zu finden. 
+                      Wir glauben, dass ein Umzug nicht kompliziert oder überteuert sein muss. Deshalb haben wir eine Plattform geschaffen, 
+                      auf der Sie schnell und unkompliziert mehrere Offerten von geprüften Umzugsfirmen erhalten können.
+                    </p>
+                    <p className="text-base sm:text-lg leading-relaxed">
+                      Unser Ziel ist es, den Umzugsprozess transparent, fair und stressfrei zu gestalten. Wir bringen Umziehende und 
+                      professionelle Umzugsfirmen zusammen – kostenlos, unverbindlich und mit höchstem Qualitätsanspruch.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
 
           {/* Wie wir arbeiten */}
           <section className="mb-16 bg-secondary/5 rounded-2xl p-8 md:p-12">
