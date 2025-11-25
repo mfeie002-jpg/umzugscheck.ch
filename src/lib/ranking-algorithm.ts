@@ -28,6 +28,16 @@ export interface CompanyData {
   success_rate?: number;
   discount_offer?: string;
   profile_gallery?: string[];
+  
+  // Bidding-related fields
+  biddingEnabled?: boolean;
+  bidModel?: "CPL" | "CPC";
+  maxBidPerLeadCHF?: number;
+  maxBidPerClickCHF?: number;
+  dailyBudgetCHF?: number;
+  remainingDailyBudgetCHF?: number;
+  qualityScore?: number;
+  sponsoredActiveRegions?: string[];
 }
 
 export interface RankingFilters {
