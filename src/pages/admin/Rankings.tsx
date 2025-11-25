@@ -11,7 +11,11 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { GripVertical, Star, Crown, Save, RefreshCw, Search, BarChart3, Eye, Trash2 } from "lucide-react";
+import { GripVertical, Star, Crown, Save, RefreshCw, Search, BarChart3, Eye, Trash2, Download, Calendar, History as HistoryIcon, FlaskConical } from "lucide-react";
+import { exportToCSV, exportAnalyticsToPDF } from "@/lib/export-utils";
+import { RankingScheduler } from "@/components/admin/RankingScheduler";
+import { RankingHistory } from "@/components/admin/RankingHistory";
+import { ABTestManager } from "@/components/admin/ABTestManager";
 import {
   DndContext,
   closestCenter,
@@ -393,6 +397,52 @@ export default function Rankings() {
     c.company_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const exportRankings = () => {
+    const data = [
+      ...filteredFeaturedCompanies.map((c, i) => ({
+        Position: i + 1,
+        Type: "Featured",
+        Company: c.company_name,
+        Cantons: c.cantons_served.join(", "),
+        PriceLevel: c.price_level || "N/A",
+        Status: c.verification_status,
+      })),
+      ...filteredOrganicCompanies.map((c, i) => ({
+        Position: i + filteredFeaturedCompanies.length + 1,
+        Type: "Organic",
+        Company: c.company_name,
+        Cantons: c.cantons_served.join(", "),
+        PriceLevel: c.price_level || "N/A",
+        Status: c.verification_status,
+      })),
+    ];
+
+    exportToCSV(data, "ranking_export");
+    toast({
+      title: "Exportiert",
+      description: "Ranking-Daten wurden als CSV exportiert",
+    });
+  };
+
+  const exportAnalytics = async () => {
+    const data = [...filteredFeaturedCompanies, ...filteredOrganicCompanies].map((company) => {
+      const stats = analytics[company.id] || { total_clicks: 0, total_leads: 0, conversion_rate: 0 };
+      return {
+        Company: company.company_name,
+        Type: company.is_featured ? "Featured" : "Organic",
+        Clicks: stats.total_clicks,
+        Leads: stats.total_leads,
+        "Conversion Rate": `${stats.conversion_rate.toFixed(2)}%`,
+      };
+    });
+
+    await exportAnalyticsToPDF(data, "ranking_analytics");
+    toast({
+      title: "Exportiert",
+      description: "Analytics wurden exportiert",
+    });
+  };
+
   return (
     <>
       <Helmet>
@@ -414,6 +464,13 @@ export default function Rankings() {
                     </p>
                   </div>
                   <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={exportRankings}
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      CSV
+                    </Button>
                     <Button
                       variant="outline"
                       onClick={() => setShowPreview(!showPreview)}
@@ -528,7 +585,7 @@ export default function Rankings() {
                 </Card>
               ) : (
                 <Tabs defaultValue="featured" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-6">
                     <TabsTrigger value="featured">
                       Featured ({featuredCompanies.length})
                     </TabsTrigger>
@@ -536,8 +593,20 @@ export default function Rankings() {
                       Organisch ({organicCompanies.length})
                     </TabsTrigger>
                     <TabsTrigger value="analytics">
-                      <BarChart3 className="w-4 h-4 mr-2" />
+                      <BarChart3 className="w-4 h-4 mr-1" />
                       Analytics
+                    </TabsTrigger>
+                    <TabsTrigger value="scheduler">
+                      <Calendar className="w-4 h-4 mr-1" />
+                      Planen
+                    </TabsTrigger>
+                    <TabsTrigger value="history">
+                      <HistoryIcon className="w-4 h-4 mr-1" />
+                      Verlauf
+                    </TabsTrigger>
+                    <TabsTrigger value="abtests">
+                      <FlaskConical className="w-4 h-4 mr-1" />
+                      A/B Tests
                     </TabsTrigger>
                   </TabsList>
 
@@ -628,10 +697,18 @@ export default function Rankings() {
 
                   <TabsContent value="analytics" className="mt-6">
                     <Card className="p-6">
-                      <h2 className="text-xl font-bold mb-4">Performance Analytics</h2>
-                      <p className="text-sm text-muted-foreground mb-6">
-                        Ranking-Performance basierend auf Klicks und Lead-Generierung
-                      </p>
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h2 className="text-xl font-bold">Performance Analytics</h2>
+                          <p className="text-sm text-muted-foreground">
+                            Ranking-Performance basierend auf Klicks und Lead-Generierung
+                          </p>
+                        </div>
+                        <Button variant="outline" onClick={exportAnalytics}>
+                          <Download className="w-4 h-4 mr-2" />
+                          Export PDF
+                        </Button>
+                      </div>
 
                       <div className="space-y-4">
                         {[...filteredFeaturedCompanies, ...filteredOrganicCompanies].map((company) => {
@@ -675,6 +752,24 @@ export default function Rankings() {
                         })}
                       </div>
                     </Card>
+                  </TabsContent>
+
+                  <TabsContent value="scheduler" className="mt-6">
+                    <RankingScheduler 
+                      currentFeatured={filteredFeaturedCompanies}
+                      currentOrganic={filteredOrganicCompanies}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="history" className="mt-6">
+                    <RankingHistory />
+                  </TabsContent>
+
+                  <TabsContent value="abtests" className="mt-6">
+                    <ABTestManager 
+                      currentFeatured={filteredFeaturedCompanies}
+                      currentOrganic={filteredOrganicCompanies}
+                    />
                   </TabsContent>
                 </Tabs>
               )}

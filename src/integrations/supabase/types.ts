@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      ab_tests: {
+        Row: {
+          created_by: string | null
+          description: string | null
+          ended_at: string | null
+          id: string
+          name: string
+          started_at: string | null
+          status: string
+          variant_a_config: Json
+          variant_a_conversions: number | null
+          variant_a_impressions: number | null
+          variant_b_config: Json
+          variant_b_conversions: number | null
+          variant_b_impressions: number | null
+        }
+        Insert: {
+          created_by?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          name: string
+          started_at?: string | null
+          status?: string
+          variant_a_config: Json
+          variant_a_conversions?: number | null
+          variant_a_impressions?: number | null
+          variant_b_config: Json
+          variant_b_conversions?: number | null
+          variant_b_impressions?: number | null
+        }
+        Update: {
+          created_by?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          name?: string
+          started_at?: string | null
+          status?: string
+          variant_a_config?: Json
+          variant_a_conversions?: number | null
+          variant_a_impressions?: number | null
+          variant_b_config?: Json
+          variant_b_conversions?: number | null
+          variant_b_impressions?: number | null
+        }
+        Relationships: []
+      }
       billing_records: {
         Row: {
           billing_model: string
@@ -793,6 +841,44 @@ export type Database = {
           },
         ]
       }
+      ranking_history: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          company_id: string
+          company_name: string
+          id: string
+          is_featured: boolean
+          position: number
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          company_id: string
+          company_name: string
+          id?: string
+          is_featured?: boolean
+          position: number
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          company_id?: string
+          company_name?: string
+          id?: string
+          is_featured?: boolean
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ranking_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rate_limits: {
         Row: {
           action_type: string
@@ -1027,6 +1113,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      scheduled_rankings: {
+        Row: {
+          configuration: Json
+          created_at: string | null
+          created_by: string | null
+          description: string
+          executed_at: string | null
+          id: string
+          scheduled_date: string
+          status: string
+        }
+        Insert: {
+          configuration: Json
+          created_at?: string | null
+          created_by?: string | null
+          description: string
+          executed_at?: string | null
+          id?: string
+          scheduled_date: string
+          status?: string
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          executed_at?: string | null
+          id?: string
+          scheduled_date?: string
+          status?: string
+        }
+        Relationships: []
       }
       service_providers: {
         Row: {
