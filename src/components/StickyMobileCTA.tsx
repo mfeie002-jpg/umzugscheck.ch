@@ -20,7 +20,7 @@ export const StickyMobileCTA = () => {
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 lg:hidden transition-transform duration-300",
+        "fixed bottom-0 left-0 right-0 z-50 md:hidden transition-transform duration-300",
         isVisible ? "translate-y-0" : "translate-y-full"
       )}
     >
@@ -39,7 +39,7 @@ export const StickyMobileCTA = () => {
             </Link>
 
             {/* Quote Request Button */}
-            <Link to="/rechner" className="block">
+            <Link to="/offerte" className="block">
               <button className="w-full h-12 rounded-lg bg-accent hover:bg-accent-dark text-white font-semibold shadow-medium hover:shadow-strong transition-all duration-300 flex items-center justify-center gap-2 group">
                 <span className="text-sm">Offerte anfordern</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
