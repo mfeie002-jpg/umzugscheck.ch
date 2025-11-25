@@ -69,11 +69,11 @@ const Calculator = () => {
         </div>
 
         {/* Header */}
-        <section className="py-12 md:py-16 gradient-hero text-white">
+        <section className="py-8 sm:py-12 md:py-16 gradient-hero text-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="mb-4">Umzugskosten berechnen</h1>
-              <p className="text-lg md:text-xl text-white/90">
+              <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Umzugskosten berechnen</h1>
+              <p className="text-base sm:text-lg md:text-xl text-white/90">
                 Wählen Sie Ihren Rechner – von schnell bis präzise. 
                 Erhalten Sie sofort eine Kostenschätzung.
               </p>
@@ -82,38 +82,38 @@ const Calculator = () => {
         </section>
 
         {/* Calculator Tabs */}
-        <section className="py-12 md:py-16">
+        <section className="py-8 sm:py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <Tabs defaultValue="quick" className="w-full">
-                <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto gap-2 md:gap-4 bg-white p-2 rounded-xl shadow-medium">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto gap-2 bg-white p-2 rounded-xl shadow-medium">
                   <TabsTrigger 
                     value="quick" 
-                    className="flex flex-col md:flex-row items-center gap-2 py-4 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-2 py-3 sm:py-4 data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
-                    <CalculatorIcon className="w-5 h-5" />
-                    <div className="text-center md:text-left">
-                      <div className="font-semibold">Schnell-Rechner</div>
+                    <CalculatorIcon className="w-5 h-5 flex-shrink-0" />
+                    <div className="text-center sm:text-left">
+                      <div className="font-semibold text-sm sm:text-base">Schnell-Rechner</div>
                       <div className="text-xs opacity-70">60 Sekunden</div>
                     </div>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="advanced"
-                    className="flex flex-col md:flex-row items-center gap-2 py-4 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-2 py-3 sm:py-4 data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
-                    <Wrench className="w-5 h-5" />
-                    <div className="text-center md:text-left">
-                      <div className="font-semibold">Detailliert</div>
+                    <Wrench className="w-5 h-5 flex-shrink-0" />
+                    <div className="text-center sm:text-left">
+                      <div className="font-semibold text-sm sm:text-base">Detailliert</div>
                       <div className="text-xs opacity-70">Präzise Kalkulation</div>
                     </div>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="ai"
-                    className="flex flex-col md:flex-row items-center gap-2 py-4 data-[state=active]:bg-accent data-[state=active]:text-white"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-2 py-3 sm:py-4 data-[state=active]:bg-accent data-[state=active]:text-white"
                   >
-                    <Sparkles className="w-5 h-5" />
-                    <div className="text-center md:text-left">
-                      <div className="font-semibold">KI-Rechner</div>
+                    <Sparkles className="w-5 h-5 flex-shrink-0" />
+                    <div className="text-center sm:text-left">
+                      <div className="font-semibold text-sm sm:text-base">KI-Rechner</div>
                       <div className="text-xs opacity-70">Mit Foto/Video</div>
                     </div>
                   </TabsTrigger>

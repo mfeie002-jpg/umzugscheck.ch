@@ -139,11 +139,11 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
 
   if (embedded) {
     return (
-      <div className="bg-white rounded-2xl shadow-strong p-6 md:p-8 text-foreground">
-        <div className="space-y-6">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-strong p-4 sm:p-6 md:p-8 text-foreground">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <h3 className="text-2xl font-bold mb-2">Schnell-Rechner</h3>
-            <p className="text-muted-foreground">Erhalten Sie in 60 Sekunden eine präzise Kostenschätzung</p>
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">Schnell-Rechner</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">Erhalten Sie in 60 Sekunden eine präzise Kostenschätzung</p>
           </div>
 
           <Form {...form}>
@@ -240,17 +240,17 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
 
               <Button 
                 type="submit" 
-                className="w-full bg-primary hover:bg-primary/90 shadow-medium group h-11"
+                className="w-full bg-primary hover:bg-primary/90 shadow-medium group h-11 sm:h-12 text-sm sm:text-base"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Berechnen..." : "Offerten vergleichen"}
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </form>
           </Form>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2 border-t">
-            <CheckCircle2 className="w-4 h-4 text-success" />
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground pt-2 border-t">
+            <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
             <span>Keine Kreditkarte erforderlich</span>
           </div>
         </div>
