@@ -124,6 +124,9 @@ const App = () => (
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/rechner" element={<Calculator />} />
+            <Route path="/rechner/umzugskosten" element={<Calculator />} />
+            <Route path="/rechner/volumenrechner" element={<Calculator />} />
+            <Route path="/rechner/transporter-groesse" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
             <Route path="/ergebnis/:id" element={<EstimateResult />} />
@@ -144,6 +147,7 @@ const App = () => (
             <Route path="/kanton/:slug" element={<Canton />} />
             <Route path="/umzug/:canton" element={<Canton />} />
             <Route path="/stadt/:slug" element={<City />} />
+            <Route path="/umzugsfirmen/:slug" element={<City />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/ueber-uns" element={<About />} />
