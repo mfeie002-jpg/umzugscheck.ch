@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { GripVertical, Star, Crown, Save, RefreshCw, Search, BarChart3, Eye, Trash2, Download, Calendar, History as HistoryIcon, FlaskConical, Brain, Activity, MapPin } from "lucide-react";
+import { GripVertical, Star, Crown, Save, RefreshCw, Search, BarChart3, Eye, Trash2, Download, Calendar, History as HistoryIcon, FlaskConical, Brain, Activity, MapPin, Bell } from "lucide-react";
 import { exportToCSV, exportAnalyticsToPDF } from "@/lib/export-utils";
 import { RankingScheduler } from "@/components/admin/RankingScheduler";
 import { RankingHistory } from "@/components/admin/RankingHistory";
@@ -20,6 +20,10 @@ import { PerformanceBenchmark } from "@/components/admin/PerformanceBenchmark";
 import { RegionalRankingsManager } from "@/components/admin/RegionalRankingsManager";
 import { RealtimeDashboard } from "@/components/admin/RealtimeDashboard";
 import { MLOptimizer } from "@/components/admin/MLOptimizer";
+import { RevenueForecasting } from "@/components/admin/RevenueForecasting";
+import { EmailAutomationManager } from "@/components/admin/EmailAutomationManager";
+import { CompetitorIntelligence } from "@/components/admin/CompetitorIntelligence";
+import { SeasonalPresets } from "@/components/admin/SeasonalPresets";
 import {
   DndContext,
   closestCenter,
@@ -589,7 +593,7 @@ export default function Rankings() {
                 </Card>
               ) : (
                 <Tabs defaultValue="featured" className="w-full">
-                  <TabsList className="grid w-full grid-cols-5">
+                  <TabsList className="grid w-full grid-cols-7">
                     <TabsTrigger value="featured">
                       Featured ({featuredCompanies.length})
                     </TabsTrigger>
@@ -603,6 +607,14 @@ export default function Rankings() {
                     <TabsTrigger value="ml">
                       <Brain className="w-4 h-4 mr-1" />
                       ML
+                    </TabsTrigger>
+                    <TabsTrigger value="intelligence">
+                      <Eye className="w-4 h-4 mr-1" />
+                      Intel
+                    </TabsTrigger>
+                    <TabsTrigger value="automation">
+                      <Bell className="w-4 h-4 mr-1" />
+                      Auto
                     </TabsTrigger>
                     <TabsTrigger value="more">
                       Mehr
@@ -780,6 +792,32 @@ export default function Rankings() {
                       companies={[...filteredFeaturedCompanies, ...filteredOrganicCompanies]}
                       analytics={analytics}
                     />
+                  </TabsContent>
+
+                  <TabsContent value="intelligence" className="mt-6">
+                    <CompetitorIntelligence />
+                  </TabsContent>
+
+                  <TabsContent value="automation" className="mt-6">
+                    <Tabs defaultValue="alerts" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="alerts">Smart Alerts</TabsTrigger>
+                        <TabsTrigger value="forecasting">Prognosen</TabsTrigger>
+                        <TabsTrigger value="presets">Vorlagen</TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="alerts" className="mt-6">
+                        <EmailAutomationManager />
+                      </TabsContent>
+
+                      <TabsContent value="forecasting" className="mt-6">
+                        <RevenueForecasting />
+                      </TabsContent>
+
+                      <TabsContent value="presets" className="mt-6">
+                        <SeasonalPresets />
+                      </TabsContent>
+                    </Tabs>
                   </TabsContent>
 
                   <TabsContent value="more" className="mt-6">
