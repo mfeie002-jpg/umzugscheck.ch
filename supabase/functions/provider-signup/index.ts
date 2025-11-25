@@ -6,19 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Input validation
-function validateEmail(email: string): boolean {
-  return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
-}
-
-function validatePhone(phone: string): boolean {
-  return /^\+?[0-9\s\-\(\)]{8,20}$/.test(phone);
-}
-
-function sanitizeString(str: string, maxLength: number = 500): string {
-  return str.trim().slice(0, maxLength);
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -59,22 +46,6 @@ serve(async (req) => {
       );
     }
 
-    // Validate email format
-    if (!validateEmail(email)) {
-      return new Response(
-        JSON.stringify({ error: 'Ungültige E-Mail-Adresse' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Validate phone format
-    if (!validatePhone(phone)) {
-      return new Response(
-        JSON.stringify({ error: 'Ungültige Telefonnummer' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     if (!cantonsServed || cantonsServed.length === 0) {
       return new Response(
         JSON.stringify({ error: 'Bitte wählen Sie mindestens einen Kanton aus' }),
@@ -89,32 +60,11 @@ serve(async (req) => {
       );
     }
 
-    // Sanitize inputs
-    const sanitizedEmail = sanitizeString(email, 255).toLowerCase();
-    const sanitizedCompanyName = sanitizeString(companyName, 200);
-    const sanitizedContactName = sanitizeString(contactPersonName, 100);
-    const sanitizedPhone = sanitizeString(phone, 20);
-
-    // Check rate limit for signup attempts (max 5 per hour per email)
-    const { data: rateLimitOk } = await supabase.rpc('check_rate_limit', {
-      p_identifier: sanitizedEmail,
-      p_action_type: 'provider_signup',
-      p_max_attempts: 5,
-      p_window_minutes: 60
-    });
-
-    if (!rateLimitOk) {
-      return new Response(
-        JSON.stringify({ error: 'Zu viele Registrierungsversuche. Bitte versuchen Sie es später erneut.' }),
-        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     // Check if email already exists
     const { data: existingProvider } = await supabase
       .from('service_providers')
       .select('id')
-      .eq('email', sanitizedEmail)
+      .eq('email', email.toLowerCase())
       .maybeSingle();
 
     if (existingProvider) {
@@ -132,11 +82,11 @@ serve(async (req) => {
     const { data: provider, error: insertError } = await supabase
       .from('service_providers')
       .insert({
-        company_name: sanitizedCompanyName,
-        contact_person_name: sanitizedContactName,
-        email: sanitizedEmail,
+        company_name: companyName,
+        contact_person_name: contactPersonName,
+        email: email.toLowerCase(),
         password_hash: passwordHash,
-        phone: sanitizedPhone,
+        phone,
         website: website || null,
         street,
         zip,

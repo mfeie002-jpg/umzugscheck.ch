@@ -51,9 +51,6 @@ export default function Sitemap() {
   const generateSitemap = () => {
     const urls = [
       { loc: baseUrl, priority: "1.0", changefreq: "daily" },
-      { loc: `${baseUrl}/preise`, priority: "0.9", changefreq: "weekly" },
-      { loc: `${baseUrl}/vergleich`, priority: "0.9", changefreq: "weekly" },
-      { loc: `${baseUrl}/offerte`, priority: "0.9", changefreq: "weekly" },
       { loc: `${baseUrl}/rechner`, priority: "1.0", changefreq: "daily" },
       { loc: `${baseUrl}/rechner/video`, priority: "0.9", changefreq: "weekly" },
       { loc: `${baseUrl}/rechner/reinigung`, priority: "0.8", changefreq: "weekly" },
@@ -61,15 +58,11 @@ export default function Sitemap() {
       { loc: `${baseUrl}/rechner/lager`, priority: "0.8", changefreq: "weekly" },
       { loc: `${baseUrl}/rechner/packservice`, priority: "0.8", changefreq: "weekly" },
       { loc: `${baseUrl}/rechner/moebelmontage`, priority: "0.8", changefreq: "weekly" },
-      { loc: `${baseUrl}/umzugsfirmen`, priority: "0.9", changefreq: "daily" },
-      { loc: `${baseUrl}/dienstleistungen`, priority: "0.8", changefreq: "weekly" },
-      { loc: `${baseUrl}/ratgeber`, priority: "0.8", changefreq: "daily" },
-      { loc: `${baseUrl}/über-uns`, priority: "0.7", changefreq: "monthly" },
+      { loc: `${baseUrl}/firmen`, priority: "0.9", changefreq: "daily" },
+      { loc: `${baseUrl}/regionen`, priority: "0.9", changefreq: "weekly" },
+      { loc: `${baseUrl}/blog`, priority: "0.8", changefreq: "daily" },
+      { loc: `${baseUrl}/ueber-uns`, priority: "0.7", changefreq: "monthly" },
       { loc: `${baseUrl}/kontakt`, priority: "0.7", changefreq: "monthly" },
-      { loc: `${baseUrl}/datenschutz`, priority: "0.5", changefreq: "monthly" },
-      { loc: `${baseUrl}/agb`, priority: "0.5", changefreq: "monthly" },
-      { loc: `${baseUrl}/impressum`, priority: "0.5", changefreq: "monthly" },
-      { loc: `${baseUrl}/cookies`, priority: "0.5", changefreq: "monthly" },
       { loc: `${baseUrl}/anbieter-werden`, priority: "0.8", changefreq: "monthly" },
       ...SWISS_CANTONS.map((canton) => ({
         loc: `${baseUrl}/kanton/${canton.code.toLowerCase()}`,
@@ -77,7 +70,7 @@ export default function Sitemap() {
         changefreq: "weekly",
       })),
       ...companies.map((company) => ({
-        loc: `${baseUrl}/umzugsfirmen/${company.id}`,
+        loc: `${baseUrl}/firmen/${company.id}`,
         priority: "0.7",
         changefreq: "weekly",
       })),

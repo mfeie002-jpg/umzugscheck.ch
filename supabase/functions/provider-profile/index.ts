@@ -7,7 +7,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const JWT_SECRET = Deno.env.get('JWT_SECRET') || 'default-secret-change-in-production';
+const JWT_SECRET = Deno.env.get('JWT_SECRET') || 'your-secret-key-change-in-production';
 
 async function verifyToken(authHeader: string | null): Promise<any> {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

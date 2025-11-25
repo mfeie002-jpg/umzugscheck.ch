@@ -11,12 +11,9 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Startseite", href: "/" },
-  { label: "Preise", href: "/preise" },
-  { label: "Vergleich", href: "/vergleich" },
-  { label: "Offerte", href: "/offerte" },
-  { label: "Rechner", href: "/rechner", hasDropdown: true, dropdownType: "calculators" },
+  { label: "Preisrechner", href: "/rechner", hasDropdown: true, dropdownType: "calculators" },
   { label: "Umzugsfirmen", href: "/firmen" },
-  { label: "Dienstleistungen", href: "/dienstleistungen" },
+  { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
   { label: "Ratgeber", href: "/blog" },
   { label: "Über uns", href: "/ueber-uns" },
   { label: "Kontakt", href: "/kontakt" }
@@ -28,9 +25,9 @@ export const Navigation = () => {
   const [isRegionsDropdownOpen, setIsRegionsDropdownOpen] = useState(false);
 
   return (
-    <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft">
+    <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-24">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <Link 
             to="/" 
@@ -39,7 +36,7 @@ export const Navigation = () => {
             <img 
               src={logo} 
               alt="Umzugscheck.ch Logo" 
-              className="h-12 md:h-20 w-auto" 
+              className="h-14 md:h-20 w-auto" 
             />
           </Link>
 

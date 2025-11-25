@@ -35,7 +35,6 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB limit
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -71,40 +70,5 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Split vendor code
-          'vendor': [
-            'react',
-            'react-dom',
-            'react-router-dom',
-          ],
-          // Split UI library
-          'ui': [
-            '@radix-ui/react-accordion',
-            '@radix-ui/react-alert-dialog',
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-select',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-toast',
-          ],
-          // Split animations
-          'animations': [
-            'framer-motion',
-          ],
-          // Split forms
-          'forms': [
-            'react-hook-form',
-            '@hookform/resolvers',
-            'zod',
-          ],
-        }
-      }
-    },
-    chunkSizeWarningLimit: 1000,
   },
 }));

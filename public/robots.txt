@@ -1,18 +1,14 @@
-User-agent: *
+User-agent: Googlebot
 Allow: /
 
-# Disallow admin and internal pages
-Disallow: /admin/
-Disallow: /provider-dashboard/
-Disallow: /provider-login/
-Disallow: /provider-signup/
-Disallow: /auth/
+User-agent: Bingbot
+Allow: /
 
-# Disallow API endpoints
-Disallow: /api/
+User-agent: Twitterbot
+Allow: /
 
-# Sitemap location
-Sitemap: https://umzugscheck.ch/sitemap.xml
+User-agent: facebookexternalhit
+Allow: /
 
-# Crawl-delay for all bots
-Crawl-delay: 1
+User-agent: *
+Allow: /

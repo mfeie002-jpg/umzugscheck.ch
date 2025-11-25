@@ -45,27 +45,27 @@ export const Hero = () => {
           </p>
 
           {/* Trust Signals */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1.5 sm:mb-2">
-                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success animate-pulse" />
+          <div className="grid grid-cols-3 gap-4 pt-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">100%</p>
-              <p className="text-[11px] sm:text-sm text-white/90 text-center font-medium leading-tight">kostenlos</p>
+              <p className="text-3xl font-bold text-center mb-1">100%</p>
+              <p className="text-sm text-white/90 text-center font-medium">kostenlos</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1.5 sm:mb-2">
-                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <TrendingDown className="w-6 h-6 text-accent" />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">4.8/5</p>
-              <p className="text-[11px] sm:text-sm text-white/90 text-center font-medium leading-tight">Bewertung</p>
+              <p className="text-3xl font-bold text-center mb-1">4.8/5</p>
+              <p className="text-sm text-white/90 text-center font-medium">Bewertung</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1.5 sm:mb-2">
-                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success animate-pulse" />
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CheckCircle2 className="w-6 h-6 text-success animate-pulse" />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-center mb-0.5 sm:mb-1">2 Min</p>
-              <p className="text-[11px] sm:text-sm text-white/90 text-center font-medium leading-tight">Zeitaufwand</p>
+              <p className="text-3xl font-bold text-center mb-1">2 Min</p>
+              <p className="text-sm text-white/90 text-center font-medium">Zeitaufwand</p>
             </div>
           </div>
 
@@ -92,18 +92,18 @@ export const Hero = () => {
 
           {/* Trust Line */}
           <div className="pt-4 text-center sm:text-left">
-            <p className="text-white/90 text-[13px] sm:text-sm font-medium flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-2">
-              <span className="inline-flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
-                <span className="whitespace-nowrap">100% geprüfte Firmen</span>
+            <p className="text-white/90 text-sm font-medium">
+              <span className="inline-flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-success" />
+                100% geprüfte Umzugsfirmen
               </span>
-              <span className="hidden sm:inline text-white/60">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <TrendingDown className="w-4 h-4 text-accent flex-shrink-0" />
-                <span className="whitespace-nowrap">Bis zu 40% sparen</span>
+              <span className="mx-2">•</span>
+              <span className="inline-flex items-center gap-2">
+                <TrendingDown className="w-4 h-4 text-accent" />
+                Bis zu 40% sparen
               </span>
-              <span className="hidden sm:inline text-white/60">•</span>
-              <span className="whitespace-nowrap">Schweizweit</span>
+              <span className="mx-2">•</span>
+              <span>Schweizweit</span>
             </p>
           </div>
         </div>

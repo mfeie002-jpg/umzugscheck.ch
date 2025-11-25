@@ -1,282 +1,440 @@
-import { useParams } from "react-router-dom";
-import { SEOHead } from "@/components/SEOHead";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "react-router-dom";
-import { MapPin, Star, TrendingDown, ArrowRight, Check } from "lucide-react";
+import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  MapPin, 
+  TrendingDown, 
+  Star, 
+  Shield, 
+  CheckCircle2,
+  ArrowRight,
+  Calculator,
+  Users,
+  Home,
+  Phone,
+  Mail
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { FAQAccordion } from "@/components/FAQAccordion";
+import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 
 const cityData: Record<string, {
   name: string;
+  canton: string;
+  cantonSlug: string;
+  population: string;
   description: string;
-  priceInfo: string;
-  characteristics: string[];
+  priceRange: { min: number; max: number };
+  avgPrice: number;
+  neighborhoods: string[];
+  companies: { name: string; rating: number; reviews: number }[];
 }> = {
-  zuerich: {
+  "zuerich": {
     name: "Zürich",
-    description: "Als grösste Stadt der Schweiz ist Zürich das wirtschaftliche und kulturelle Zentrum. Umzüge in Zürich sind aufgrund der hohen Nachfrage, dichten Bebauung und historischen Altstadt tendenziell teurer.",
-    priceInfo: "CHF 1'200 - 3'500",
-    characteristics: [
-      "Höhere Umzugspreise durch zentrale Lage",
-      "Viele Altbauten ohne Lift",
-      "Parkplatzsituation oft schwierig",
-      "Grosse Auswahl an Umzugsfirmen"
+    canton: "Zürich",
+    cantonSlug: "zuerich",
+    population: "434'000",
+    description: "Als grösste Stadt der Schweiz und wirtschaftliches Zentrum bietet Zürich eine Vielzahl an professionellen Umzugsfirmen. Die Stadt zeichnet sich durch gute Verkehrsanbindungen aus, was Umzüge erleichtert.",
+    priceRange: { min: 800, max: 4500 },
+    avgPrice: 2200,
+    neighborhoods: ["Zürich-Altstetten", "Zürich-Oerlikon", "Zürich-Wiedikon", "Zürich-Höngg", "Zürich-Seefeld"],
+    companies: [
+      { name: "Züri Umzüge AG", rating: 4.8, reviews: 127 },
+      { name: "Swiss Move Solutions", rating: 4.9, reviews: 203 },
+      { name: "Express Umzugsfirma", rating: 4.7, reviews: 89 }
     ]
   },
-  bern: {
-    name: "Bern",
-    description: "Die Bundeshauptstadt mit ihrer UNESCO-geschützten Altstadt erfordert besondere Sorgfalt beim Umzug. Die engen Gassen und historischen Gebäude stellen spezielle Anforderungen an Umzugsfirmen.",
-    priceInfo: "CHF 1'000 - 3'000",
-    characteristics: [
-      "Historische Altstadt mit Zufahrtsbeschränkungen",
-      "Mittleres Preisniveau",
-      "Viele Treppen in Altstadtgebäuden",
-      "Erfahrene lokale Umzugsfirmen"
-    ]
-  },
-  basel: {
-    name: "Basel",
-    description: "Als Kulturzentrum und Grenzstadt zu Deutschland und Frankreich ist Basel ideal für grenzüberschreitende Umzüge. Die Stadt bietet eine gute Mischung aus Qualität und Preis.",
-    priceInfo: "CHF 900 - 2'800",
-    characteristics: [
-      "Grenzüberschreitende Umzüge möglich",
-      "Gutes Preis-Leistungs-Verhältnis",
-      "Kompakte Stadtstruktur",
-      "Internationale Erfahrung der Anbieter"
-    ]
-  },
-  luzern: {
-    name: "Luzern",
-    description: "Die touristische Destination am Vierwaldstättersee kombiniert städtisches Leben mit Alpenpanorama. Umzüge profitieren von guter Erreichbarkeit und moderater Preisgestaltung.",
-    priceInfo: "CHF 900 - 2'500",
-    characteristics: [
-      "Zentrale Lage in der Zentralschweiz",
-      "Moderate Preise",
-      "Gut erreichbar",
-      "Tourismus-geprägt"
-    ]
-  },
-  winterthur: {
+  "winterthur": {
     name: "Winterthur",
-    description: "Die zweitgrösste Stadt im Kanton Zürich bietet attraktive Wohnmöglichkeiten mit guter Anbindung an Zürich. Umzüge sind hier oft günstiger als in der Metropole.",
-    priceInfo: "CHF 800 - 2'400",
-    characteristics: [
-      "Günstigere Alternative zu Zürich",
-      "Gute Infrastruktur",
-      "Familienfreundlich",
-      "Unkomplizierte Zufahrtswege"
+    canton: "Zürich",
+    cantonSlug: "zuerich",
+    population: "115'000",
+    description: "Winterthur ist die sechstgrösste Stadt der Schweiz und liegt im Kanton Zürich. Dank der kompakten Stadtstruktur und guten Erreichbarkeit sind Umzüge hier oft effizienter und kostengünstiger als in Zürich.",
+    priceRange: { min: 700, max: 3800 },
+    avgPrice: 1900,
+    neighborhoods: ["Winterthur-Stadt", "Winterthur-Seen", "Winterthur-Töss", "Winterthur-Veltheim"],
+    companies: [
+      { name: "Umzüge Winterthur GmbH", rating: 4.7, reviews: 85 },
+      { name: "Reliable Movers", rating: 4.6, reviews: 62 }
     ]
   },
-  "st-gallen": {
-    name: "St. Gallen",
-    description: "Die grösste Stadt der Ostschweiz mit ihrer berühmten Stiftsbibliothek. Umzüge profitieren von der guten regionalen Vernetzung und fairen Preisen.",
-    priceInfo: "CHF 850 - 2'600",
-    characteristics: [
-      "Ostschweiz-Zentrum",
-      "Moderate Preise",
-      "Historische Altstadt",
-      "Gute Verkehrsanbindung"
+  "bern": {
+    name: "Bern",
+    canton: "Bern",
+    cantonSlug: "bern",
+    population: "134'000",
+    description: "Die Bundesstadt Bern kombiniert historischen Charme mit modernem Wohnen. Viele Umzüge finden in der malerischen Altstadt statt, was besondere Anforderungen an die Umzugsfirmen stellt.",
+    priceRange: { min: 750, max: 4200 },
+    avgPrice: 2100,
+    neighborhoods: ["Bern-Bümpliz", "Bern-Länggasse", "Bern-Mattenhof", "Bern-Kirchenfeld"],
+    companies: [
+      { name: "Bern Movers Pro", rating: 4.8, reviews: 134 },
+      { name: "Capital Umzüge AG", rating: 4.7, reviews: 98 }
+    ]
+  },
+  "basel": {
+    name: "Basel",
+    canton: "Basel-Stadt",
+    cantonSlug: "basel",
+    population: "178'000",
+    description: "Basel liegt im Dreiländereck und ist ein wichtiges Kulturzentrum. Die Stadt bietet moderne Infrastruktur und viele erfahrene Umzugsfirmen für nationale und internationale Umzüge.",
+    priceRange: { min: 800, max: 4300 },
+    avgPrice: 2150,
+    neighborhoods: ["Basel-Gundeldingen", "Basel-Kleinhüningen", "Basel-Riehen", "Basel-Bettingen"],
+    companies: [
+      { name: "Basel Transport Services", rating: 4.9, reviews: 156 },
+      { name: "Dreiland Umzüge", rating: 4.6, reviews: 87 }
     ]
   }
 };
 
-const dummyCompanies = [
-  { name: "Zügel-Profis", rating: 4.8, services: ["Privatumzug", "Reinigung", "Montage"], featured: true },
-  { name: "Express Moving", rating: 4.7, services: ["Privatumzug", "Entsorgung"], featured: false },
-  { name: "Schweizer Umzüge AG", rating: 4.9, services: ["Privatumzug", "Firmenumzug", "Lagerung"], featured: true },
-  { name: "City Movers", rating: 4.6, services: ["Privatumzug", "Packservice"], featured: false }
-];
+const City = () => {
+  const { slug } = useParams();
+  const city = slug ? cityData[slug] : null;
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default function City() {
-  const { slug } = useParams<{ slug: string }>();
-  const city = cityData[slug || ""] || cityData.zuerich;
+  useEffect(() => {
+    if (city) {
+      fetchCompanies();
+    }
+  }, [city]);
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": `Umzugsfirmen in ${city.name}`,
-    "description": `Vergleichen Sie Umzugsfirmen in ${city.name}. Kostenlose Offerten von geprüften Anbietern.`,
-    "url": `https://umzugscheck.ch/umzugsfirmen/${slug}`
+  const fetchCompanies = async () => {
+    if (!city) return;
+    
+    setLoading(true);
+    try {
+      // Try to find companies that serve this city or canton
+      const { data, error } = await supabase
+        .from("companies")
+        .select("*")
+        .or(`service_areas.cs.{${city.name}},service_areas.cs.{${city.canton}}`)
+        .order("rating", { ascending: false })
+        .limit(6);
+
+      if (!error && data) {
+        setCompanies(data);
+      }
+    } catch (err) {
+      console.error("Error fetching companies:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <>
-      <SEOHead
-        title={`Umzugsfirmen in ${city.name} vergleichen - Beste Anbieter finden | Umzugscheck.ch`}
-        description={`${city.description} Vergleichen Sie jetzt kostenlos Umzugsofferten von geprüften Firmen in ${city.name}.`}
-        keywords={`umzugsfirmen ${city.name.toLowerCase()}, umzug ${city.name.toLowerCase()}, umzugskosten ${city.name.toLowerCase()}, zügelunternehmen ${city.name.toLowerCase()}`}
-        canonical={`/umzugsfirmen/${slug}`}
-        structuredData={structuredData}
-      />
+  if (!city) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="mb-4">Stadt nicht gefunden</h1>
+            <Link to="/">
+              <Button>Zurück zur Startseite</Button>
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8 md:py-12">
-          <Breadcrumbs 
+  return (
+    <div className="min-h-screen flex-col">
+      <Navigation />
+      
+      <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs
             items={[
-              { label: "Startseite", href: "/" },
-              { label: "Umzugsfirmen", href: "/umzugsfirmen" },
-              { label: city.name, href: `/umzugsfirmen/${slug}` }
+              { label: "Kantone", href: "/" },
+              { label: `Kanton ${city.canton}`, href: `/kanton/${city.cantonSlug}` },
+              { label: city.name },
             ]}
           />
+        </div>
 
-          {/* Hero */}
-          <div className="mb-12">
-            <div className="flex items-center gap-3 mb-4">
-              <MapPin className="h-8 w-8 text-primary" />
-              <h1 className="text-4xl md:text-5xl font-bold">
-                Umzugsfirmen in {city.name}
+        {/* Hero Section */}
+        <section className="gradient-hero text-white py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              
+              <h1 className="mb-6">
+                Umzug in {city.name}
               </h1>
-            </div>
-            <p className="text-xl text-muted-foreground max-w-3xl">
-              {city.description}
-            </p>
-          </div>
+              
+              <p className="text-lg md:text-xl text-white/90 mb-8">
+                {city.description}
+              </p>
 
-          {/* CTA Box */}
-          <Card className="mb-12 border-primary/20 bg-primary/5">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">
-                    Eine Anfrage – mehrere Umzugsofferten für {city.name}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    Vergleichen Sie kostenlos und unverbindlich Angebote von geprüften Umzugsfirmen
-                  </p>
+              <div className="flex flex-wrap gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  <span>{city.population} Einwohner</span>
                 </div>
-                <Button asChild size="lg" className="shrink-0">
-                  <Link to="/offerte">
-                    Offerte für Umzug in {city.name} anfordern
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Home className="w-5 h-5" />
+                  <span>Ø CHF {city.avgPrice.toLocaleString()} pro Umzug</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-success" />
+                  <span>Geprüfte Firmen</span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* City Characteristics */}
-          <section className="mb-12">
-            <h2 className="text-3xl font-bold mb-6">Umzug in {city.name} – das sollten Sie wissen</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingDown className="h-5 w-5 text-primary" />
-                    Typische Umzugskosten
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-3xl font-bold text-primary mb-2">{city.priceInfo}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Durchschnittliche Preisspanne für einen 3-Zimmer-Umzug innerhalb von {city.name}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Besonderheiten</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {city.characteristics.map((char, index) => (
-                      <li key={index} className="flex items-start gap-2 text-sm">
-                        <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                        <span>{char}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Company Listings */}
-          <section className="mb-12">
-            <h2 className="text-3xl font-bold mb-6">Umzugsfirmen in {city.name}</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {dummyCompanies.map((company, index) => (
-                <Card key={index} className={company.featured ? "border-primary" : ""}>
-                  <CardHeader>
-                    {company.featured && (
-                      <div className="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded mb-2 w-fit">
-                        <Star className="h-3 w-3 fill-current" />
-                        Empfohlen
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-xl">{company.name}</CardTitle>
-                        <div className="flex items-center gap-2 mt-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">{city.name}</span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold">{company.rating}</span>
-                        </div>
-                      </div>
+        {/* Price Overview */}
+        <section className="py-16 md:py-20 bg-gradient-light">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="mb-4">Umzugskosten in {city.name}</h2>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Hier finden Sie eine Übersicht der durchschnittlichen Umzugskosten in {city.name}.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
+                <Card className="shadow-medium">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-3xl font-bold text-primary mb-2">
+                      CHF {city.priceRange.min.toLocaleString()}
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-4">
-                      <p className="text-sm text-muted-foreground mb-2">Services:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {company.services.map((service, idx) => (
-                          <span key={idx} className="text-xs bg-muted px-2 py-1 rounded">
-                            {service}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <Button asChild className="w-full">
-                      <Link to="/offerte">Offerte anfragen</Link>
-                    </Button>
+                    <div className="text-muted-foreground">Minimum</div>
+                    <div className="text-sm text-muted-foreground mt-2">1-2 Zimmer</div>
                   </CardContent>
                 </Card>
-              ))}
+
+                <Card className="shadow-strong border-primary/20">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-3xl font-bold text-accent mb-2">
+                      CHF {city.avgPrice.toLocaleString()}
+                    </div>
+                    <div className="text-muted-foreground">Durchschnitt</div>
+                    <div className="text-sm text-muted-foreground mt-2">3-4 Zimmer</div>
+                  </CardContent>
+                </Card>
+
+                <Card className="shadow-medium">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-3xl font-bold text-primary mb-2">
+                      CHF {city.priceRange.max.toLocaleString()}
+                    </div>
+                    <div className="text-muted-foreground">Maximum</div>
+                    <div className="text-sm text-muted-foreground mt-2">5+ Zimmer / Haus</div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Calculator CTA */}
+              <Card className="shadow-strong bg-primary text-white">
+                <CardContent className="p-8">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex-1 text-center md:text-left">
+                      <div className="flex items-center gap-3 justify-center md:justify-start mb-3">
+                        <Calculator className="w-8 h-8" />
+                        <h3 className="text-2xl font-bold">Berechnen Sie Ihre Umzugskosten</h3>
+                      </div>
+                      <p className="text-white/90">
+                        Erhalten Sie in 60 Sekunden eine präzise Kostenschätzung für Ihren Umzug in {city.name}.
+                      </p>
+                    </div>
+                    <Link to="/rechner">
+                      <Button size="lg" variant="outline" className="border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
+                        Jetzt berechnen
+                        <ArrowRight className="ml-2 w-5 h-5" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Price Info */}
-          <section className="mb-12 bg-muted/30 rounded-2xl p-8">
-            <h2 className="text-2xl font-bold mb-4">
-              Was kostet ein Umzug in {city.name}?
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              Die Umzugskosten in {city.name} variieren je nach Wohnungsgrösse, Distanz und gewünschten 
-              Zusatzleistungen. Typischerweise bewegen sich die Preise im Bereich von {city.priceInfo} 
-              für einen Standard-Umzug einer 3-Zimmer-Wohnung.
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Faktoren wie Stockwerk, Lift-Verfügbarkeit, Parkplatzsituation und spezielle Anforderungen 
-              können die Kosten beeinflussen. Durch den Vergleich mehrerer Offerten können Sie bis zu 40% sparen.
-            </p>
-            <Button asChild variant="outline">
-              <Link to="/preise">
-                <TrendingDown className="mr-2 h-4 w-4" />
-                Alle Preise ansehen
-              </Link>
-            </Button>
-          </section>
-
-          {/* Other Cities */}
-          <section>
-            <h2 className="text-2xl font-bold mb-6">Umzugsfirmen in anderen Städten</h2>
-            <div className="flex flex-wrap gap-3">
-              {Object.entries(cityData)
-                .filter(([key]) => key !== slug)
-                .map(([key, data]) => (
-                  <Button key={key} asChild variant="outline">
-                    <Link to={`/umzugsfirmen/${key}`}>{data.name}</Link>
-                  </Button>
+        {/* Neighborhoods */}
+        <section className="py-16 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="mb-8">Beliebte Quartiere in {city.name}</h2>
+              <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
+                {city.neighborhoods.map((neighborhood) => (
+                  <Card key={neighborhood} className="shadow-medium hover:shadow-strong transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-primary" />
+                        <span className="font-medium text-sm">{neighborhood}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
+              </div>
             </div>
-          </section>
-        </div>
-      </div>
-    </>
+          </div>
+        </section>
+
+        {/* Companies */}
+        <section className="py-16 md:py-20 bg-gradient-light">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="mb-4">Top Umzugsfirmen in {city.name}</h2>
+                <p className="text-lg text-muted-foreground">
+                  Geprüfte und bewertete Umzugsfirmen für Ihren Umzug in {city.name}.
+                </p>
+              </div>
+
+              {loading ? (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {[...Array(4)].map((_, index) => (
+                    <LoadingSkeletonCompany key={index} />
+                  ))}
+                </div>
+              ) : companies.length > 0 ? (
+                <>
+                  <div className="grid md:grid-cols-2 gap-6 mb-8">
+                    {companies.slice(0, 4).map((company) => (
+                      <Card key={company.id} className="hover-lift border-2 hover:border-primary/20 transition-all">
+                        <CardContent className="p-6">
+                          <div className="flex items-start gap-4 mb-4">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-3xl shadow-soft flex-shrink-0">
+                              {company.logo}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <h3 className="font-bold text-lg">{company.name}</h3>
+                                {company.verified && (
+                                  <Badge className="bg-success text-white border-0 flex-shrink-0">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                    Geprüft
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="flex items-center gap-1">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      className={`w-4 h-4 ${
+                                        i < Math.floor(company.rating)
+                                          ? "fill-accent text-accent"
+                                          : "fill-muted text-muted"
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="font-bold">{company.rating}</span>
+                                <span className="text-sm text-muted-foreground">
+                                  ({company.review_count})
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                            {company.description}
+                          </p>
+                          
+                          <div className="flex items-center gap-2 mb-4 text-sm">
+                            {company.phone && (
+                              <div className="flex items-center gap-1 text-muted-foreground">
+                                <Phone className="w-3.5 h-3.5" />
+                              </div>
+                            )}
+                            {company.email && (
+                              <div className="flex items-center gap-1 text-muted-foreground">
+                                <Mail className="w-3.5 h-3.5" />
+                              </div>
+                            )}
+                            {company.price_level && (
+                              <Badge variant="secondary" className="ml-auto">
+                                {company.price_level}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          <Link to={`/firmen/${company.id}`}>
+                            <Button className="w-full bg-primary hover:bg-primary-dark">
+                              Profil ansehen
+                              <ArrowRight className="ml-2 w-4 h-4" />
+                            </Button>
+                          </Link>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  <div className="text-center">
+                    <Link to={`/firmen?canton=${city.canton}`}>
+                      <Button size="lg" variant="outline">
+                        Alle Firmen in {city.name} anzeigen
+                        <ArrowRight className="ml-2 w-5 h-5" />
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <Card className="text-center py-12">
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">
+                      Aktuell sind keine Firmen für {city.name} verfügbar.
+                    </p>
+                    <Link to="/firmen">
+                      <Button variant="outline">Alle Firmen durchsuchen</Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-16 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="mb-12 text-center">Häufige Fragen zu Umzügen in {city.name}</h2>
+              <FAQAccordion 
+                items={[
+                  {
+                    question: `Was kostet ein Umzug in ${city.name} durchschnittlich?`,
+                    answer: `Die Kosten variieren je nach Grösse der Wohnung und Distanz. Im Durchschnitt zahlen Sie für einen Umzug in ${city.name} etwa CHF ${city.avgPrice.toLocaleString()}. Für eine genaue Schätzung nutzen Sie unseren kostenlosen Umzugsrechner.`
+                  },
+                  {
+                    question: `Wie lange dauert ein Umzug in ${city.name}?`,
+                    answer: "Ein durchschnittlicher Umzug (3-Zimmer-Wohnung) dauert etwa 6-8 Stunden. Die genaue Dauer hängt von der Menge des Umzugsguts, den örtlichen Gegebenheiten (Stockwerk, Lift, Parkplatz) und der Entfernung ab."
+                  },
+                  {
+                    question: `Benötige ich eine Parkbewilligung für den Umzug in ${city.name}?`,
+                    answer: `In vielen Quartieren von ${city.name} wird eine Parkbewilligung für den Umzugswagen empfohlen oder ist sogar Pflicht. Ihre Umzugsfirma kann Sie dabei unterstützen oder die Bewilligung für Sie bei der Stadt beantragen.`
+                  },
+                  {
+                    question: "Wie weit im Voraus sollte ich meinen Umzug buchen?",
+                    answer: "Wir empfehlen, Ihren Umzug mindestens 4-6 Wochen im Voraus zu planen. Während der Hochsaison (Mai-September) sollten Sie noch früher buchen. Mit Umzugscheck.ch können Sie schnell mehrere Offerten vergleichen."
+                  },
+                  {
+                    question: "Welche zusätzlichen Services bieten Umzugsfirmen an?",
+                    answer: "Viele Umzugsfirmen bieten Zusatzservices wie Packservice, Endreinigung, Entsorgung, Möbelmontage und Lagerung an. Diese Services können Sie bei der Offerten-Anfrage direkt miteinbeziehen."
+                  }
+                ]}
+              />
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
   );
-}
+};
+
+export default City;

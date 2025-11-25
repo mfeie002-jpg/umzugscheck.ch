@@ -5,9 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { Suspense, lazy } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -21,38 +18,14 @@ import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
 import Index from "./pages/Index";
 import Sitemap from "./pages/Sitemap";
-import Preise from "./pages/Preise";
-import Vergleich from "./pages/Vergleich";
-import Offerte from "./pages/Offerte";
-import OfferteNew from "./pages/OfferteNew";
-import Dienstleistungen from "./pages/Dienstleistungen";
-import Datenschutz from "./pages/Datenschutz";
-import AGB from "./pages/AGB";
-import Impressum from "./pages/Impressum";
-import Cookies from "./pages/Cookies";
 import Calculator from "./pages/Calculator";
-import RechnerHub from "./pages/RechnerHub";
 import CalculatorResults from "./pages/CalculatorResults";
-import Volumenrechner from "./pages/rechner/Volumenrechner";
-import TransporterGroesse from "./pages/rechner/TransporterGroesse";
-import Zuerich from "./pages/umzugsfirmen/Zuerich";
-import Bern from "./pages/umzugsfirmen/Bern";
-import Basel from "./pages/umzugsfirmen/Basel";
-import UmzugschecklistePDF from "./pages/ratgeber/UmzugschecklistePDF";
-import Luzern from "./pages/umzugsfirmen/Luzern";
-import Winterthur from "./pages/umzugsfirmen/Winterthur";
-import StGallen from "./pages/umzugsfirmen/StGallen";
-import WasKostetEinUmzug from "./pages/ratgeber/WasKostetEinUmzug";
-import UmzugImWinter from "./pages/ratgeber/UmzugImWinter";
-import UmzugMitKindern from "./pages/ratgeber/UmzugMitKindern";
-import EntsorgungRichtigPlanen from "./pages/ratgeber/EntsorgungRichtigPlanen";
-import UmzugMitHaustieren from "./pages/ratgeber/UmzugMitHaustieren";
-import CompanyProfile from "./pages/CompanyProfile";
 import EstimateResult from "./pages/EstimateResult";
 import LeadRequest from "./pages/LeadRequest";
 import ThankYou from "./pages/ThankYou";
 import BundleEstimates from "./pages/BundleEstimates";
 import Companies from "./pages/Companies";
+import CompanyProfile from "./pages/CompanyProfile";
 import Compare from "./pages/Compare";
 import Canton from "./pages/Canton";
 import City from "./pages/City";
@@ -77,9 +50,7 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
-import Ratgeber from "./pages/Ratgeber";
 import BecomeProvider from "./pages/BecomeProvider";
-import { StickyMobileCTA } from "./components/StickyMobileCTA";
 import ProviderSignup from "./pages/ProviderSignup";
 import ProviderLogin from "./pages/ProviderLogin";
 import ProviderDashboard from "./pages/ProviderDashboard";
@@ -99,53 +70,28 @@ import DynamicPricing from "./pages/admin/DynamicPricing";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ProviderAuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Suspense fallback={
-                <div className="flex items-center justify-center min-h-screen">
-                  <div className="space-y-4 w-full max-w-md p-6">
-                    <Skeleton className="h-12 w-full" />
-                    <Skeleton className="h-32 w-full" />
-                    <Skeleton className="h-24 w-full" />
-                  </div>
-                </div>
-              }>
-                <div className="flex flex-col min-h-screen bg-background">
-                  <Navigation />
-                  <AIMovingAssistant />
-                  <PWAInstallPrompt />
-                  <PushNotificationPrompt />
-                  <CustomerOnboarding />
-                  <ProviderOnboarding />
-                  <ScrollToTop />
-                  <OfflineIndicator />
-                  <StickyContactBar />
-                  <StickyMobileCTA />
-                  <main className="flex-1">
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <ProviderAuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <div className="flex flex-col min-h-screen bg-background">
+              <Navigation />
+          <AIMovingAssistant />
+          <PWAInstallPrompt />
+          <PushNotificationPrompt />
+          <CustomerOnboarding />
+          <ProviderOnboarding />
+          <ScrollToTop />
+          <OfflineIndicator />
+          <QuickActionBar />
+          <StickyContactBar />
+              <main className="flex-1">
                 <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/preise" element={<Preise />} />
-            <Route path="/vergleich" element={<Vergleich />} />
-            <Route path="/offerte" element={<OfferteNew />} />
-            <Route path="/offerte-alt" element={<Offerte />} />
-            <Route path="/dienstleistungen" element={<Dienstleistungen />} />
-            <Route path="/umzugsfirmen" element={<Companies />} />
-            <Route path="/ratgeber" element={<Ratgeber />} />
-            <Route path="/über-uns" element={<About />} />
-            <Route path="/datenschutz" element={<Datenschutz />} />
-            <Route path="/agb" element={<AGB />} />
-            <Route path="/impressum" element={<Impressum />} />
-            <Route path="/cookies" element={<Cookies />} />
-            <Route path="/rechner" element={<RechnerHub />} />
-            <Route path="/rechner/umzugskosten" element={<Calculator />} />
-            <Route path="/rechner/volumenrechner" element={<Volumenrechner />} />
-            <Route path="/rechner/transporter-groesse" element={<TransporterGroesse />} />
+            <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
             <Route path="/ergebnis/:id" element={<EstimateResult />} />
@@ -166,24 +112,7 @@ const App = () => (
             <Route path="/kanton/:slug" element={<Canton />} />
             <Route path="/umzug/:canton" element={<Canton />} />
             <Route path="/stadt/:slug" element={<City />} />
-            <Route path="/umzugsfirmen/:slug" element={<City />} />
-            <Route path="/umzugsfirmen/zuerich" element={<Zuerich />} />
-            <Route path="/umzugsfirmen/bern" element={<Bern />} />
-            <Route path="/umzugsfirmen/basel" element={<Basel />} />
-            <Route path="/umzugsfirmen/luzern" element={<Luzern />} />
-            <Route path="/umzugsfirmen/winterthur" element={<Winterthur />} />
-            <Route path="/umzugsfirmen/st-gallen" element={<StGallen />} />
-            <Route path="/ratgeber/umzugscheckliste-pdf" element={<UmzugschecklistePDF />} />
-            <Route path="/ratgeber/was-kostet-ein-umzug" element={<WasKostetEinUmzug />} />
-            <Route path="/ratgeber/umzug-im-winter" element={<UmzugImWinter />} />
-          <Route path="/ratgeber/umzug-mit-kindern" element={<UmzugMitKindern />} />
-          <Route path="/ratgeber/entsorgung-richtig-planen" element={<EntsorgungRichtigPlanen />} />
-          <Route path="/ratgeber/umzug-mit-haustieren" element={<UmzugMitHaustieren />} />
-          
-          {/* Company Profile */}
-          <Route path="/unternehmen/:id" element={<CompanyProfile />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/ueber-uns" element={<About />} />
             <Route path="/kontakt" element={<Contact />} />
@@ -212,17 +141,15 @@ const App = () => (
             <Route path="/anbieter/preise" element={<ProviderPricing />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </div>
-            </Suspense>
+          </Routes>
+              </main>
+              <Footer />
+            </div>
           </BrowserRouter>
         </TooltipProvider>
       </ProviderAuthProvider>
     </AuthProvider>
   </QueryClientProvider>
-  </ErrorBoundary>
 );
 
 export default App;

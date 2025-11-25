@@ -11,19 +11,6 @@ interface Contact {
   phone: string;
 }
 
-// Input validation
-function validateEmail(email: string): boolean {
-  return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
-}
-
-function validatePhone(phone: string): boolean {
-  return /^\+?[0-9\s\-\(\)]{8,20}$/.test(phone);
-}
-
-function sanitizeString(str: string, maxLength: number = 1000): string {
-  return str.trim().slice(0, maxLength);
-}
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -41,53 +28,11 @@ Deno.serve(async (req) => {
       message?: string;
     };
 
-    // Validate required fields
+    // Validate input
     if (!estimateSessionId || !selectedCompanyIds || !contact?.name || !contact?.email) {
       return new Response(
-        JSON.stringify({ success: false, error: { message: 'Fehlende erforderliche Felder', code: 'MISSING_FIELDS' } }),
+        JSON.stringify({ success: false, error: { message: 'Missing required fields', code: 'INVALID_INPUT' } }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Validate email format
-    if (!validateEmail(contact.email)) {
-      return new Response(
-        JSON.stringify({ success: false, error: { message: 'Ungültige E-Mail-Adresse', code: 'INVALID_EMAIL' } }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Validate phone if provided
-    if (contact.phone && !validatePhone(contact.phone)) {
-      return new Response(
-        JSON.stringify({ success: false, error: { message: 'Ungültige Telefonnummer', code: 'INVALID_PHONE' } }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Sanitize inputs
-    const sanitizedContact = {
-      name: sanitizeString(contact.name, 100),
-      email: sanitizeString(contact.email, 255),
-      phone: contact.phone ? sanitizeString(contact.phone, 20) : undefined
-    };
-    const sanitizedMessage = message ? sanitizeString(message, 2000) : undefined;
-
-    // Check rate limit (3 submissions per hour per email)
-    const { data: rateLimitOk } = await supabase.rpc('check_rate_limit', {
-      p_identifier: sanitizedContact.email,
-      p_action_type: 'lead_submission',
-      p_max_attempts: 3,
-      p_window_minutes: 60
-    });
-
-    if (!rateLimitOk) {
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: { message: 'Zu viele Anfragen. Bitte versuchen Sie es später erneut.', code: 'RATE_LIMIT_EXCEEDED' }
-        }),
-        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -134,9 +79,9 @@ Deno.serve(async (req) => {
       .insert({
         estimate_session_id: estimateSessionId,
         selected_company_ids: selectedCompanyIds,
-        name: sanitizedContact.name,
-        email: sanitizedContact.email,
-        phone: sanitizedContact.phone || null,
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone || null,
         from_postal: moveDetails.fromPostal,
         from_city: moveDetails.fromCity,
         to_postal: moveDetails.toPostal,
@@ -145,7 +90,7 @@ Deno.serve(async (req) => {
         calculator_type: 'quick',
         calculator_input: moveDetails,
         calculator_output: estimate,
-        comments: sanitizedMessage || null,
+        comments: message || null,
         assigned_provider_ids: selectedCompanyIds,
         status: 'new',
         lead_source: 'funnel',
