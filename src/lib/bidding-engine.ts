@@ -24,28 +24,30 @@ export interface BiddingResult {
 }
 
 /**
- * Calculate quality score based on company metrics
+ * Calculate quality score based on company metrics (0-1 scale)
  */
 export const calculateQualityScore = (company: any): number => {
-  const ratingScore = (company.rating / 5) * 4; // Max 4 points
-  const reviewScore = Math.min(Math.log10(company.review_count + 1), 3); // Max 3 points
-  const completenessScore = (company.profile_completeness || 50) / 100 * 2; // Max 2 points
-  const conversionScore = (company.conversion_rate || 0) / 100; // Max 1 point
+  const ratingScore = (company.rating / 5) * 0.4; // Max 0.4
+  const reviewScore = Math.min(Math.log10(company.review_count + 1) / 3, 1) * 0.3; // Max 0.3
+  const completenessScore = (company.profile_completeness || 50) / 100 * 0.2; // Max 0.2
+  const conversionScore = (company.conversion_rate || 0) / 100 * 0.1; // Max 0.1
   
-  return Math.min(ratingScore + reviewScore + completenessScore + conversionScore, 10);
+  return Math.max(0.3, Math.min(1.0, ratingScore + reviewScore + completenessScore + conversionScore));
 };
 
 /**
- * Calculate effective bid score
+ * Calculate effective ad score with relevance factor
  */
 const calculateEffectiveBidScore = (
   company: BiddingCompany,
-  bidType: "CPL" | "CPC"
+  bidType: "CPL" | "CPC",
+  relevanceFactor: number = 1.0
 ): number => {
   const bid = bidType === "CPL" ? company.maxBidPerLeadCHF : company.maxBidPerClickCHF;
   const qualityScore = company.qualityScore || calculateQualityScore(company);
   
-  return bid * qualityScore;
+  // Ad Score = bid * qualityScore * relevanceFactor
+  return bid * qualityScore * relevanceFactor;
 };
 
 /**
@@ -100,11 +102,21 @@ export const runBiddingAuction = (
     isEligibleForSponsored(company, region)
   );
   
-  // Calculate effective bid scores
-  const companiesWithScores = eligibleSponsored.map(company => ({
-    ...company,
-    effectiveBidScore: calculateEffectiveBidScore(company, company.bidModel),
-  }));
+  // Calculate effective bid scores with relevance
+  const companiesWithScores = eligibleSponsored.map(company => {
+    // Calculate relevance factor (could be enhanced with more logic)
+    let relevanceFactor = 1.0;
+    
+    // Boost relevance if region matches strongly
+    if (region && region !== "all" && company.service_areas?.includes(region)) {
+      relevanceFactor *= 1.2;
+    }
+    
+    return {
+      ...company,
+      effectiveBidScore: calculateEffectiveBidScore(company, company.bidModel, relevanceFactor),
+    };
+  });
   
   // Sort by effective bid score (descending)
   companiesWithScores.sort((a, b) => b.effectiveBidScore - a.effectiveBidScore);

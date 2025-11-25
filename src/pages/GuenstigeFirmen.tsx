@@ -5,7 +5,7 @@ import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
 import { Button } from "@/components/ui/button";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { TrendingDown, DollarSign, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 
 export default function GuenstigeFirmen() {
   const { region } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { trigger } = useHaptic();
   
   const pageTitle = region 
@@ -29,14 +30,20 @@ export default function GuenstigeFirmen() {
     ? `Die preiswertesten Umzugsfirmen in ${region}. Vergleichen Sie Preise und sparen Sie bis zu 40% bei Ihrem Umzug.`
     : "Die günstigsten Umzugsfirmen der Schweiz im Vergleich. Faire Preise ohne versteckte Kosten. Sparen Sie bis zu 40%.";
 
+  // Initialize filters from URL params
+  const initializeFilters = (): FilterState => {
+    const services = searchParams.get('services')?.split(',').filter(Boolean) || [];
+    return {
+      region: region || searchParams.get('region') || "all",
+      services,
+      priceLevel: searchParams.get('preis') || "günstig",
+      minRating: searchParams.get('minRating') || "0",
+      sortBy: searchParams.get('sort') || "price",
+    };
+  };
+
   // Filter state
-  const [filters, setFilters] = useState<FilterState>({
-    region: region || "all",
-    services: [],
-    priceLevel: "günstig",
-    minRating: "0",
-    sortBy: "price",
-  });
+  const [filters, setFilters] = useState<FilterState>(initializeFilters());
 
   // Fetch companies from database
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
@@ -52,6 +59,18 @@ export default function GuenstigeFirmen() {
   const { isPulling, isRefreshing, pullDistance, threshold } = usePullToRefresh({
     onRefresh: handleRefresh
   });
+
+  // Update URL params when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filters.region !== "all") params.set('region', filters.region);
+    if (filters.services.length > 0) params.set('services', filters.services.join(','));
+    if (filters.priceLevel !== "all") params.set('preis', filters.priceLevel);
+    if (filters.minRating !== "0") params.set('minRating', filters.minRating);
+    if (filters.sortBy !== "price") params.set('sort', filters.sortBy);
+    
+    setSearchParams(params, { replace: true });
+  }, [filters, setSearchParams]);
 
   useEffect(() => {
     fetchCompanies();
@@ -178,6 +197,9 @@ export default function GuenstigeFirmen() {
                 <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 px-4">
                   {pageDescription}
                 </p>
+                <p className="text-sm text-muted-foreground/80 mb-6 max-w-2xl mx-auto">
+                  Filtern Sie die günstigsten Umzugsfirmen nach Region, Preis und Bewertung. Alle Anbieter sind geprüft und versichert.
+                </p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto">
                   <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
@@ -204,9 +226,14 @@ export default function GuenstigeFirmen() {
           <section className="py-12 bg-muted/30">
             <div className="container mx-auto px-4">
               <div className="max-w-5xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-bold mb-8">
-                  Top Preis-Leistungs-Anbieter
-                </h2>
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold">
+                    Top Preis-Leistungs-Anbieter
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {sponsoredCompanies.length + organicCompanies.length} Firmen gefunden
+                  </p>
+                </div>
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
@@ -240,6 +267,9 @@ export default function GuenstigeFirmen() {
                 </h2>
                 <p className="text-muted-foreground mb-4">
                   Sortiert nach Preis-Leistungs-Verhältnis und Kundenzufriedenheit
+                </p>
+                <p className="text-sm text-primary/70 mb-6 italic">
+                  💡 Tipp: Nutzen Sie die Filter oben, um die passenden günstigen Umzugsfirmen zu finden
                 </p>
 
                 {/* Filters */}

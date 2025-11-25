@@ -30,6 +30,15 @@ export const ENHANCED_COMPANIES: CompanyData[] = [
     success_rate: 98,
     discount_offer: "15% Rabatt für Umzugscheck-Kunden",
     profile_gallery: ["gallery1.jpg", "gallery2.jpg", "gallery3.jpg"],
+    // Bidding fields
+    biddingEnabled: true,
+    bidModel: "CPL",
+    maxBidPerLeadCHF: 45,
+    maxBidPerClickCHF: 5,
+    dailyBudgetCHF: 500,
+    remainingDailyBudgetCHF: 500,
+    qualityScore: 0.95,
+    sponsoredActiveRegions: ["Zürich", "Zug", "Schweizweit"],
   },
   {
     id: "2",
@@ -55,6 +64,15 @@ export const ENHANCED_COMPANIES: CompanyData[] = [
     success_rate: 95,
     discount_offer: "10% Nachlass bei Buchung über Umzugscheck",
     profile_gallery: ["gallery4.jpg", "gallery5.jpg"],
+    // Bidding fields
+    biddingEnabled: true,
+    bidModel: "CPL",
+    maxBidPerLeadCHF: 35,
+    maxBidPerClickCHF: 4,
+    dailyBudgetCHF: 350,
+    remainingDailyBudgetCHF: 350,
+    qualityScore: 0.88,
+    sponsoredActiveRegions: ["Bern", "Thun"],
   },
   {
     id: "3",
@@ -80,6 +98,15 @@ export const ENHANCED_COMPANIES: CompanyData[] = [
     success_rate: 96,
     discount_offer: "Gratis Packservice bei Buchung im März",
     profile_gallery: ["gallery6.jpg", "gallery7.jpg", "gallery8.jpg"],
+    // Bidding fields
+    biddingEnabled: true,
+    bidModel: "CPC",
+    maxBidPerLeadCHF: 30,
+    maxBidPerClickCHF: 6,
+    dailyBudgetCHF: 400,
+    remainingDailyBudgetCHF: 400,
+    qualityScore: 0.9,
+    sponsoredActiveRegions: ["Basel-Stadt", "Basel-Landschaft", "Aargau"],
   },
   
   // HIGH-RATED ORGANIC COMPANIES

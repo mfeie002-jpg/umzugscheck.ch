@@ -17,6 +17,7 @@ import { CompetitorAnalysis } from "@/components/provider/CompetitorAnalysis";
 import { PurchasedLeadsList } from "@/components/provider/PurchasedLeadsList";
 import { ConversionAnalytics } from "@/components/provider/ConversionAnalytics";
 import { MLPredictions } from "@/components/provider/MLPredictions";
+import { BiddingManagement } from "@/components/provider/BiddingManagement";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -258,9 +259,10 @@ const ProviderDashboard = () => {
           {isApproved && (
             <div className="space-y-8 mb-8">
               <Tabs defaultValue="optimization" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-5">
                   <TabsTrigger value="optimization">Profil-Optimierung</TabsTrigger>
                   <TabsTrigger value="competitors">Wettbewerbsanalyse</TabsTrigger>
+                  <TabsTrigger value="bidding">Werbung</TabsTrigger>
                   <TabsTrigger value="analytics">Conversion Analytics</TabsTrigger>
                   <TabsTrigger value="ml">KI-Empfehlungen</TabsTrigger>
                 </TabsList>
@@ -287,6 +289,16 @@ const ProviderDashboard = () => {
                     employees_count: provider.employees_count,
                     fleet_size: provider.fleet_size
                   }} />
+                </TabsContent>
+
+                <TabsContent value="bidding">
+                  <BiddingManagement 
+                    provider={provider}
+                    onUpdate={(updates) => {
+                      console.log("Bidding settings updated:", updates);
+                      // In production: call API to update provider settings
+                    }}
+                  />
                 </TabsContent>
 
                 <TabsContent value="analytics">
