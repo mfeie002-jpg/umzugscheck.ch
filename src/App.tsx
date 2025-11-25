@@ -25,6 +25,10 @@ import Preise from "./pages/Preise";
 import Vergleich from "./pages/Vergleich";
 import Offerte from "./pages/Offerte";
 import Dienstleistungen from "./pages/Dienstleistungen";
+import Datenschutz from "./pages/Datenschutz";
+import AGB from "./pages/AGB";
+import Impressum from "./pages/Impressum";
+import Cookies from "./pages/Cookies";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
 import EstimateResult from "./pages/EstimateResult";
@@ -115,6 +119,10 @@ const App = () => (
             <Route path="/umzugsfirmen" element={<Companies />} />
             <Route path="/ratgeber" element={<Blog />} />
             <Route path="/über-uns" element={<About />} />
+            <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/agb" element={<AGB />} />
+            <Route path="/impressum" element={<Impressum />} />
+            <Route path="/cookies" element={<Cookies />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
