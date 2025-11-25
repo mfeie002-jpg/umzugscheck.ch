@@ -245,7 +245,7 @@ const Companies = () => {
 
       <main className="flex-1">
         {/* Header */}
-        <section className="py-20 md:py-28 gradient-hero text-white relative overflow-hidden">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-28 gradient-hero text-white relative overflow-hidden">
           {/* Background decoration */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
           
@@ -255,14 +255,14 @@ const Companies = () => {
                 <TrendingUp className="w-3 h-3 mr-1" />
                 Über 200 geprüfte Firmen
               </Badge>
-              <h1 className="mb-6">Umzugsfirmen in der Schweiz</h1>
-              <p className="text-xl md:text-2xl text-white/90 font-light leading-relaxed mb-6">
-                Finden Sie geprüfte Umzugsunternehmen in Ihrer Region.<br />
+              <h1 className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Umzugsfirmen in der Schweiz</h1>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 font-light leading-relaxed mb-4 sm:mb-6 px-4">
+                Finden Sie geprüfte Umzugsunternehmen in Ihrer Region.<br className="hidden sm:inline" />
                 Vergleichen Sie Preise, Bewertungen und Services – kostenlos & unverbindlich.
               </p>
               <Link to="/vergleichen">
-                <Button size="lg" variant="outline" className="border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
-                  <BarChart3 className="w-5 h-5 mr-2" />
+                <Button size="lg" variant="outline" className="border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm text-sm sm:text-base">
+                  <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Firmen direkt vergleichen
                 </Button>
               </Link>
@@ -271,12 +271,12 @@ const Companies = () => {
         </section>
 
         {/* Filters & Search - Desktop */}
-        <section className="py-6 bg-white border-b sticky top-16 z-40 shadow-soft">
+        <section className="py-4 sm:py-6 bg-white border-b sticky top-14 sm:top-16 z-40 shadow-soft">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               {/* Desktop Filters */}
               <div className="hidden md:block">
-                <div className="flex gap-4 mb-4">
+                <div className="flex gap-3 lg:gap-4 mb-3 lg:mb-4">
                   {/* Search */}
                   <div className="flex-1 relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -290,7 +290,7 @@ const Companies = () => {
 
                   {/* Canton Filter */}
                   <Select value={selectedCanton} onValueChange={setSelectedCanton}>
-                    <SelectTrigger className="w-64 h-12">
+                    <SelectTrigger className="w-52 lg:w-64 h-12">
                       <MapPin className="w-4 h-4 mr-2" />
                       <SelectValue />
                     </SelectTrigger>
@@ -305,7 +305,7 @@ const Companies = () => {
 
                   {/* Rating Filter */}
                   <Select value={selectedRating} onValueChange={setSelectedRating}>
-                    <SelectTrigger className="w-48 h-12">
+                    <SelectTrigger className="w-40 lg:w-48 h-12">
                       <Star className="w-4 h-4 mr-2" />
                       <SelectValue />
                     </SelectTrigger>
@@ -470,45 +470,44 @@ const Companies = () => {
                   </CardContent>
                 </Card>
               ) : (
-                <div className={`grid md:grid-cols-2 gap-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
                   {filteredCompanies.map((company, index) => (
                     <ScrollReveal key={company.id} delay={index * 50}>
-                      <Card className="h-full hover-lift border-2 hover:border-primary/20 transition-all duration-300 bg-white"
-                    >
-                        <CardContent className="p-6 h-full flex flex-col">
-                          <div className="space-y-5 flex-1">
+                      <Card className="h-full hover-lift border-2 hover:border-primary/20 transition-all duration-300 bg-white">
+                        <CardContent className="p-4 sm:p-6 h-full flex flex-col">
+                          <div className="space-y-4 sm:space-y-5 flex-1">
                             {/* Header */}
-                            <div className="flex items-start gap-4">
-                              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-4xl shadow-soft flex-shrink-0">
+                            <div className="flex items-start gap-3 sm:gap-4">
+                              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-2xl sm:text-4xl shadow-soft flex-shrink-0">
                                 {company.logo}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-start justify-between gap-2 mb-2">
-                                  <h3 className="font-bold text-xl leading-tight">{company.name}</h3>
+                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                                  <h3 className="font-bold text-lg sm:text-xl leading-tight truncate">{company.name}</h3>
                                   {company.verified && (
-                                    <Badge className="bg-success text-white border-0 flex-shrink-0">
+                                    <Badge className="bg-success text-white border-0 flex-shrink-0 self-start">
                                       <CheckCircle2 className="w-3 h-3 mr-1" />
                                       Geprüft
                                     </Badge>
                                   )}
                                 </div>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                  <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                                <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
+                                  <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
                                   <span className="truncate">{company.service_areas.slice(0, 2).join(", ")}</span>
                                   {company.service_areas.length > 2 && (
-                                    <span className="text-xs font-medium">+{company.service_areas.length - 2}</span>
+                                    <span className="text-xs font-medium flex-shrink-0">+{company.service_areas.length - 2}</span>
                                   )}
                                 </div>
                               </div>
                             </div>
 
                             {/* Rating */}
-                            <div className="flex items-center gap-3 p-3 bg-accent-light/30 rounded-lg">
-                              <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-accent-light/30 rounded-lg">
+                              <div className="flex items-center gap-0.5 sm:gap-1">
                                 {[...Array(5)].map((_, i) => (
                                   <Star
                                     key={i}
-                                    className={`w-4 h-4 ${
+                                    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
                                       i < Math.floor(company.rating)
                                         ? "fill-accent text-accent"
                                         : "fill-muted text-muted"
@@ -516,14 +515,14 @@ const Companies = () => {
                                   />
                                 ))}
                               </div>
-                              <span className="font-bold text-lg">{company.rating}</span>
-                              <span className="text-sm text-muted-foreground">
+                              <span className="font-bold text-base sm:text-lg">{company.rating}</span>
+                              <span className="text-xs sm:text-sm text-muted-foreground">
                                 ({company.review_count})
                               </span>
                             </div>
 
                             {/* Description */}
-                            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                               {company.description}
                             </p>
 
@@ -532,7 +531,7 @@ const Companies = () => {
                               <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
                                 Services
                               </div>
-                              <div className="flex flex-wrap gap-2">
+                              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                 {company.services.slice(0, 3).map((service, idx) => (
                                   <Badge key={idx} variant="secondary" className="text-xs font-medium">
                                     {service}
@@ -547,22 +546,22 @@ const Companies = () => {
                             </div>
 
                             {/* Price & Contact Info */}
-                            <div className="pt-4 border-t space-y-3">
+                            <div className="pt-3 sm:pt-4 border-t space-y-2 sm:space-y-3">
                               <div className="flex items-center justify-between">
-                                <span className="text-sm text-muted-foreground">Preisniveau</span>
-                                <span className="font-bold text-primary text-lg">{company.price_level}</span>
+                                <span className="text-xs sm:text-sm text-muted-foreground">Preisniveau</span>
+                                <span className="font-bold text-primary text-base sm:text-lg">{company.price_level}</span>
                               </div>
                               
-                              <div className="grid grid-cols-2 gap-2 text-xs">
+                              <div className="flex gap-3 sm:gap-4 text-xs flex-wrap">
                                 {company.phone && (
                                   <div className="flex items-center gap-1.5 text-muted-foreground">
-                                    <Phone className="w-3.5 h-3.5" />
+                                    <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                                     <span className="truncate">Telefon</span>
                                   </div>
                                 )}
                                 {company.email && (
                                   <div className="flex items-center gap-1.5 text-muted-foreground">
-                                    <Mail className="w-3.5 h-3.5" />
+                                    <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                                     <span className="truncate">E-Mail</span>
                                   </div>
                                 )}
@@ -573,10 +572,10 @@ const Companies = () => {
                           {/* CTA Button */}
                           <Link 
                             to={`/firmen/${company.id}`} 
-                            className="mt-5"
+                            className="mt-4 sm:mt-5"
                             onClick={() => analytics.trackCompanyClicked(company.id, company.name, 'view_profile')}
                           >
-                            <Button className="w-full h-12 bg-primary hover:bg-primary-dark shadow-medium group">
+                            <Button className="w-full h-11 sm:h-12 bg-primary hover:bg-primary-dark shadow-medium group text-sm sm:text-base">
                               Profil ansehen
                               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </Button>

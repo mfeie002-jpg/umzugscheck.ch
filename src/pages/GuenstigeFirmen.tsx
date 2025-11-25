@@ -89,35 +89,35 @@ export default function GuenstigeFirmen() {
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="bg-gradient-to-br from-green-50 via-background to-green-50 dark:from-green-950/20 dark:to-green-950/20 py-16 md:py-24">
+          <section className="bg-gradient-to-br from-green-50 via-background to-green-50 dark:from-green-950/20 dark:to-green-950/20 py-12 sm:py-16 md:py-24">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto text-center">
-                <div className="inline-flex items-center gap-2 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-                  <TrendingDown className="w-4 h-4" />
+                <div className="inline-flex items-center gap-2 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+                  <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4" />
                   Beste Preise 2025
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
                   {pageTitle}
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground mb-8">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 px-4">
                   {pageDescription}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                  <div className="flex flex-col items-center p-4 bg-background rounded-lg">
-                    <TrendingDown className="w-8 h-8 text-green-500 mb-2" />
-                    <div className="font-bold text-2xl">Bis 40%</div>
-                    <div className="text-sm text-muted-foreground">Günstiger als Durchschnitt</div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto">
+                  <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
+                    <TrendingDown className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 mb-2" />
+                    <div className="font-bold text-xl sm:text-2xl">Bis 40%</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Günstiger als Durchschnitt</div>
                   </div>
-                  <div className="flex flex-col items-center p-4 bg-background rounded-lg">
-                    <DollarSign className="w-8 h-8 text-primary mb-2" />
-                    <div className="font-bold text-2xl">Ab CHF 450</div>
-                    <div className="text-sm text-muted-foreground">Pro Umzug</div>
+                  <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
+                    <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary mb-2" />
+                    <div className="font-bold text-xl sm:text-2xl">Ab CHF 450</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Pro Umzug</div>
                   </div>
-                  <div className="flex flex-col items-center p-4 bg-background rounded-lg">
-                    <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
-                    <div className="font-bold text-2xl">Transparent</div>
-                    <div className="text-sm text-muted-foreground">Keine versteckten Kosten</div>
+                  <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
+                    <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 mb-2" />
+                    <div className="font-bold text-xl sm:text-2xl">Transparent</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Keine versteckten Kosten</div>
                   </div>
                 </div>
               </div>
