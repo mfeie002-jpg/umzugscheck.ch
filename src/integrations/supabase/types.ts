@@ -547,6 +547,42 @@ export type Database = {
           },
         ]
       }
+      ml_ranking_models: {
+        Row: {
+          accuracy_score: number | null
+          created_at: string | null
+          id: string
+          last_trained_at: string | null
+          model_name: string
+          model_version: string
+          recommendations: Json | null
+          status: string
+          training_data: Json
+        }
+        Insert: {
+          accuracy_score?: number | null
+          created_at?: string | null
+          id?: string
+          last_trained_at?: string | null
+          model_name: string
+          model_version: string
+          recommendations?: Json | null
+          status?: string
+          training_data: Json
+        }
+        Update: {
+          accuracy_score?: number | null
+          created_at?: string | null
+          id?: string
+          last_trained_at?: string | null
+          model_name?: string
+          model_version?: string
+          recommendations?: Json | null
+          status?: string
+          training_data?: Json
+        }
+        Relationships: []
+      }
       payment_history: {
         Row: {
           amount: number
@@ -841,6 +877,45 @@ export type Database = {
           },
         ]
       }
+      ranking_benchmarks: {
+        Row: {
+          avg_conversion_rate: number | null
+          avg_time_to_conversion: number | null
+          configuration: Json
+          created_by: string | null
+          id: string
+          notes: string | null
+          revenue_generated: number | null
+          snapshot_date: string
+          total_conversions: number | null
+          total_impressions: number | null
+        }
+        Insert: {
+          avg_conversion_rate?: number | null
+          avg_time_to_conversion?: number | null
+          configuration: Json
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          revenue_generated?: number | null
+          snapshot_date?: string
+          total_conversions?: number | null
+          total_impressions?: number | null
+        }
+        Update: {
+          avg_conversion_rate?: number | null
+          avg_time_to_conversion?: number | null
+          configuration?: Json
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          revenue_generated?: number | null
+          snapshot_date?: string
+          total_conversions?: number | null
+          total_impressions?: number | null
+        }
+        Relationships: []
+      }
       ranking_history: {
         Row: {
           changed_at: string | null
@@ -905,6 +980,82 @@ export type Database = {
           window_start?: string
         }
         Relationships: []
+      }
+      realtime_ranking_metrics: {
+        Row: {
+          company_id: string | null
+          id: string
+          metadata: Json | null
+          metric_type: string
+          recorded_at: string | null
+          value: number
+        }
+        Insert: {
+          company_id?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          recorded_at?: string | null
+          value: number
+        }
+        Update: {
+          company_id?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          recorded_at?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "realtime_ranking_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      regional_rankings: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          id: string
+          is_featured: boolean
+          position: number
+          region_code: string
+          region_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          id?: string
+          is_featured?: boolean
+          position: number
+          region_code: string
+          region_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          is_featured?: boolean
+          position?: number
+          region_code?: string
+          region_name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "regional_rankings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       review_requests: {
         Row: {
@@ -1362,6 +1513,7 @@ export type Database = {
         Args: { p_lead_id: string; p_provider_id: string }
         Returns: number
       }
+      capture_ranking_benchmark: { Args: { p_notes?: string }; Returns: string }
       check_rate_limit: {
         Args: {
           p_action_type: string

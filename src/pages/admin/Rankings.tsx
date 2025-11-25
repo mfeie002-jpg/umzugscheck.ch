@@ -11,11 +11,15 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { GripVertical, Star, Crown, Save, RefreshCw, Search, BarChart3, Eye, Trash2, Download, Calendar, History as HistoryIcon, FlaskConical } from "lucide-react";
+import { GripVertical, Star, Crown, Save, RefreshCw, Search, BarChart3, Eye, Trash2, Download, Calendar, History as HistoryIcon, FlaskConical, Brain, Activity, MapPin } from "lucide-react";
 import { exportToCSV, exportAnalyticsToPDF } from "@/lib/export-utils";
 import { RankingScheduler } from "@/components/admin/RankingScheduler";
 import { RankingHistory } from "@/components/admin/RankingHistory";
 import { ABTestManager } from "@/components/admin/ABTestManager";
+import { PerformanceBenchmark } from "@/components/admin/PerformanceBenchmark";
+import { RegionalRankingsManager } from "@/components/admin/RegionalRankingsManager";
+import { RealtimeDashboard } from "@/components/admin/RealtimeDashboard";
+import { MLOptimizer } from "@/components/admin/MLOptimizer";
 import {
   DndContext,
   closestCenter,
@@ -585,28 +589,23 @@ export default function Rankings() {
                 </Card>
               ) : (
                 <Tabs defaultValue="featured" className="w-full">
-                  <TabsList className="grid w-full grid-cols-6">
+                  <TabsList className="grid w-full grid-cols-5">
                     <TabsTrigger value="featured">
                       Featured ({featuredCompanies.length})
                     </TabsTrigger>
                     <TabsTrigger value="organic">
                       Organisch ({organicCompanies.length})
                     </TabsTrigger>
-                    <TabsTrigger value="analytics">
-                      <BarChart3 className="w-4 h-4 mr-1" />
-                      Analytics
+                    <TabsTrigger value="realtime">
+                      <Activity className="w-4 h-4 mr-1" />
+                      Live
                     </TabsTrigger>
-                    <TabsTrigger value="scheduler">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      Planen
+                    <TabsTrigger value="ml">
+                      <Brain className="w-4 h-4 mr-1" />
+                      ML
                     </TabsTrigger>
-                    <TabsTrigger value="history">
-                      <HistoryIcon className="w-4 h-4 mr-1" />
-                      Verlauf
-                    </TabsTrigger>
-                    <TabsTrigger value="abtests">
-                      <FlaskConical className="w-4 h-4 mr-1" />
-                      A/B Tests
+                    <TabsTrigger value="more">
+                      Mehr
                     </TabsTrigger>
                   </TabsList>
 
@@ -770,6 +769,68 @@ export default function Rankings() {
                       currentFeatured={filteredFeaturedCompanies}
                       currentOrganic={filteredOrganicCompanies}
                     />
+                  </TabsContent>
+
+                  <TabsContent value="realtime" className="mt-6">
+                    <RealtimeDashboard />
+                  </TabsContent>
+
+                  <TabsContent value="ml" className="mt-6">
+                    <MLOptimizer 
+                      companies={[...filteredFeaturedCompanies, ...filteredOrganicCompanies]}
+                      analytics={analytics}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="more" className="mt-6">
+                    <Tabs defaultValue="benchmark" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="benchmark">
+                          <BarChart3 className="w-4 h-4 mr-1" />
+                          Benchmarks
+                        </TabsTrigger>
+                        <TabsTrigger value="regional">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          Regional
+                        </TabsTrigger>
+                        <TabsTrigger value="advanced">
+                          Erweitert
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="benchmark" className="mt-6">
+                        <PerformanceBenchmark />
+                      </TabsContent>
+
+                      <TabsContent value="regional" className="mt-6">
+                        <RegionalRankingsManager 
+                          companies={[...filteredFeaturedCompanies, ...filteredOrganicCompanies]}
+                        />
+                      </TabsContent>
+
+                      <TabsContent value="advanced" className="mt-6">
+                        <div className="grid grid-cols-2 gap-6">
+                          <Card className="p-6">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                              <Calendar className="w-5 h-5" />
+                              Geplante Änderungen
+                            </h3>
+                            <RankingScheduler 
+                              currentFeatured={filteredFeaturedCompanies}
+                              currentOrganic={filteredOrganicCompanies}
+                            />
+                          </Card>
+
+                          <Card className="p-6">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                              <HistoryIcon className="w-5 h-5" />
+                              Verlauf
+                            </h3>
+                            <RankingHistory />
+                          </Card>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
                   </TabsContent>
                 </Tabs>
               )}
