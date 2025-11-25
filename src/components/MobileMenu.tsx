@@ -91,7 +91,6 @@ const cantons = [
 
 const mainNavItems = [
   { label: "Startseite", href: "/" },
-  { label: "Umzugsfirmen", href: "/firmen" },
   { label: "Ratgeber", href: "/blog" },
   { label: "Über uns", href: "/ueber-uns" },
   { label: "Kontakt", href: "/kontakt" }
@@ -99,6 +98,7 @@ const mainNavItems = [
 
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const [isCalculatorsOpen, setIsCalculatorsOpen] = useState(false);
+  const [isCompaniesOpen, setIsCompaniesOpen] = useState(false);
   const [isRegionsOpen, setIsRegionsOpen] = useState(false);
   const [regionSearch, setRegionSearch] = useState("");
   const [companyCounts, setCompanyCounts] = useState<Record<string, number>>({});
@@ -189,6 +189,46 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   <span className="text-sm">{calc.title}</span>
                 </Link>
               ))}
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Umzugsfirmen Accordion */}
+          <Collapsible
+            open={isCompaniesOpen}
+            onOpenChange={setIsCompaniesOpen}
+          >
+            <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium">
+              <span>Umzugsfirmen</span>
+              <ChevronDown className={cn(
+                "w-4 h-4 transition-transform",
+                isCompaniesOpen && "rotate-180"
+              )} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-1">
+              <Link
+                to="/beste-umzugsfirma"
+                onClick={onClose}
+                className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+              >
+                <Badge variant="secondary" className="text-xs">Top</Badge>
+                <span className="text-sm">Beste Umzugsfirmen 2025</span>
+              </Link>
+              <Link
+                to="/guenstige-umzugsfirma"
+                onClick={onClose}
+                className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+              >
+                <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">€</Badge>
+                <span className="text-sm">Günstige Umzugsfirmen</span>
+              </Link>
+              <Link
+                to="/firmen"
+                onClick={onClose}
+                className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+              >
+                <MapPin className="w-4 h-4 text-primary" />
+                <span className="text-sm">Alle Umzugsfirmen</span>
+              </Link>
             </CollapsibleContent>
           </Collapsible>
 
