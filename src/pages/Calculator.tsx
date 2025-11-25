@@ -8,6 +8,9 @@ import { AdvancedCalculator } from "@/components/calculator/AdvancedCalculator";
 import { AICalculator } from "@/components/calculator/AICalculator";
 import { Calculator as CalculatorIcon, Wrench, Sparkles } from "lucide-react";
 import { OtherCalculators } from "@/components/OtherCalculators";
+import { useSwipeable } from "react-swipeable";
+import { useState } from "react";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 const SERVICE_SCHEMA = {
   "@context": "https://schema.org",
@@ -42,6 +45,21 @@ const SERVICE_SCHEMA = {
 };
 
 const Calculator = () => {
+  const [activeTab, setActiveTab] = useState("quick");
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (activeTab === "quick") setActiveTab("advanced");
+      else if (activeTab === "advanced") setActiveTab("ai");
+    },
+    onSwipedRight: () => {
+      if (activeTab === "ai") setActiveTab("advanced");
+      else if (activeTab === "advanced") setActiveTab("quick");
+    },
+    trackMouse: false,
+    trackTouch: true,
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
@@ -85,7 +103,7 @@ const Calculator = () => {
         <section className="py-8 sm:py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <Tabs defaultValue="quick" className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto gap-2 bg-white p-2 rounded-xl shadow-medium">
                   <TabsTrigger 
                     value="quick" 
@@ -119,17 +137,19 @@ const Calculator = () => {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="quick" className="mt-8">
-                  <QuickCalculator />
-                </TabsContent>
+                <div {...swipeHandlers} className="touch-pan-y">
+                  <TabsContent value="quick" className="mt-8">
+                    <QuickCalculator />
+                  </TabsContent>
 
-                <TabsContent value="advanced" className="mt-8">
-                  <AdvancedCalculator />
-                </TabsContent>
+                  <TabsContent value="advanced" className="mt-8">
+                    <AdvancedCalculator />
+                  </TabsContent>
 
-                <TabsContent value="ai" className="mt-8">
-                  <AICalculator />
-                </TabsContent>
+                  <TabsContent value="ai" className="mt-8">
+                    <AICalculator />
+                  </TabsContent>
+                </div>
               </Tabs>
             </div>
           </div>
@@ -140,6 +160,9 @@ const Calculator = () => {
       </main>
 
       <Footer />
+      
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
     </div>
   );
 };

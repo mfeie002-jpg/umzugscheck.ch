@@ -1,63 +1,105 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, X } from "lucide-react";
+import { Download, X, Share, Plus } from "lucide-react";
 import { usePWA } from "@/hooks/use-pwa";
 
 export const PWAInstallPrompt = () => {
   const { isInstallable, installPWA } = usePWA();
   const [isDismissed, setIsDismissed] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
     const dismissed = localStorage.getItem("pwa-prompt-dismissed");
     if (dismissed) {
-      setIsDismissed(true);
+      const dismissedDate = new Date(dismissed);
+      const daysSince = (Date.now() - dismissedDate.getTime()) / (1000 * 60 * 60 * 24);
+      if (daysSince < 7) {
+        setIsDismissed(true);
+        return;
+      }
     }
+
+    // Check if iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    setIsIOS(iOS);
+
+    // Show after 10 seconds
+    const timer = setTimeout(() => {
+      if (!dismissed) {
+        setShowPrompt(true);
+      }
+    }, 10000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleDismiss = () => {
     setIsDismissed(true);
-    localStorage.setItem("pwa-prompt-dismissed", "true");
+    setShowPrompt(false);
+    localStorage.setItem("pwa-prompt-dismissed", new Date().toISOString());
   };
 
   const handleInstall = () => {
     installPWA();
-    setIsDismissed(true);
+    setShowPrompt(false);
   };
 
-  if (!isInstallable || isDismissed) return null;
+  if (!showPrompt || isDismissed || !isInstallable) return null;
 
   return (
-    <Card className="fixed bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-96 shadow-lg z-50 border-primary">
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-            <Download className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <div className="flex-1 space-y-2">
-            <h3 className="font-semibold">App installieren</h3>
-            <p className="text-sm text-muted-foreground">
-              Installieren Sie Umzugscheck.ch für schnellen Zugriff und Offline-Funktionen
-            </p>
-            <div className="flex gap-2">
-              <Button onClick={handleInstall} size="sm" className="flex-1">
-                Installieren
-              </Button>
-              <Button onClick={handleDismiss} size="sm" variant="ghost">
-                Später
-              </Button>
+    <div className="fixed bottom-20 left-4 right-4 z-50 animate-slide-up md:hidden">
+      <Card className="p-4 shadow-2xl border-2 border-primary/20">
+        <CardContent className="p-0">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+              <Download className="w-6 h-6 text-primary" />
             </div>
+            
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-sm mb-1">App installieren</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                {isIOS 
+                  ? "Installieren Sie Umzugscheck als App für schnellen Zugriff"
+                  : "Installieren Sie die App für ein besseres Erlebnis"
+                }
+              </p>
+
+              {isIOS ? (
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Share className="w-4 h-4 flex-shrink-0" />
+                    <span>1. Tippen Sie auf <strong>Teilen</strong></span>
+                  </div>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Plus className="w-4 h-4 flex-shrink-0" />
+                    <span>2. Wählen Sie <strong>"Zum Home-Bildschirm"</strong></span>
+                  </div>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleInstall}
+                  size="sm"
+                  className="w-full"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Jetzt installieren
+                </Button>
+              )}
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="flex-shrink-0 h-8 w-8"
+              onClick={handleDismiss}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
-          <Button
-            onClick={handleDismiss}
-            size="icon"
-            variant="ghost"
-            className="flex-shrink-0"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
