@@ -155,24 +155,30 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="relative z-10 pb-12 border-t border-white/10 mt-12">
+      <div className="relative z-20 pb-8 border-t border-white/20 mt-8">
         <div className="container mx-auto px-4">
-          <p className="text-center text-white/90 text-sm font-medium mb-6">Bekannt aus & geprüft von:</p>
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+          <p className="text-center text-white font-medium mb-6">Bekannt aus & geprüft von:</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
             {[
-              { name: "Tages-Anzeiger", subtitle: "Tageszeitung" },
-              { name: "20 Minuten", subtitle: "News" },
-              { name: "Blick", subtitle: "Medienhaus" },
-              { name: "watson.ch", subtitle: "Portal" },
-              { name: "TÜV Schweiz", subtitle: "Geprüft" },
-              { name: "VMS", subtitle: "Verband" }
+              { name: "TAGES-ANZEIGER", subtitle: "Schweizer Tageszeitung", logo: "TA" },
+              { name: "20 MINUTEN", subtitle: "Meistgelesene Zeitung", logo: "20'" },
+              { name: "BLICK", subtitle: "Schweizer Medienhaus", logo: "BLICK" },
+              { name: "watson", subtitle: "News Portal", logo: "watson" },
+              { name: "TÜV", subtitle: "Geprüfte Qualität", logo: "TÜV" },
+              { name: "VMS", subtitle: "Verband Möbeltransporte", logo: "VMS" }
             ].map((partner, idx) => (
               <div 
                 key={idx}
-                className="flex flex-col items-center gap-1 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/15 transition-all"
+                className="relative flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[100px]"
               >
-                <span className="text-white font-semibold text-sm">{partner.name}</span>
-                <span className="text-white/70 text-xs">{partner.subtitle}</span>
+                <div className="text-center">
+                  <div className="text-foreground font-bold text-lg mb-1 group-hover:scale-105 transition-transform">
+                    {partner.logo}
+                  </div>
+                  <div className="text-muted-foreground text-xs leading-tight">
+                    {partner.subtitle}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
