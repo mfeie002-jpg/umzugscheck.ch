@@ -116,7 +116,7 @@ export const filterCompanies = (
 export const generateRanking = (
   companies: CompanyData[],
   filters?: RankingFilters,
-  rankingType: 'best' | 'cheapest' = 'best'
+  rankingType: 'best' | 'cheapest' | 'rating' | 'reviews' = 'best'
 ): RankedCompany[] => {
   // Filter companies
   let filtered = filters ? filterCompanies(companies, filters) : companies;
@@ -146,7 +146,28 @@ export const generateRanking = (
         rank: 0, // Will be set below
       };
     })
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => {
+      // Sort based on ranking type
+      if (rankingType === 'rating') {
+        // Sort by rating first, then review count
+        if (b.rating !== a.rating) return b.rating - a.rating;
+        return b.review_count - a.review_count;
+      } else if (rankingType === 'reviews') {
+        // Sort by review count first, then rating
+        if (b.review_count !== a.review_count) return b.review_count - a.review_count;
+        return b.rating - a.rating;
+      } else if (rankingType === 'cheapest') {
+        // Sort by price level first (günstig > fair > premium), then score
+        const priceOrder = { 'günstig': 1, 'fair': 2, 'premium': 3 };
+        const priceA = priceOrder[a.price_level as keyof typeof priceOrder] || 3;
+        const priceB = priceOrder[b.price_level as keyof typeof priceOrder] || 3;
+        if (priceA !== priceB) return priceA - priceB;
+        return b.score - a.score;
+      } else {
+        // Default: sort by score (best overall)
+        return b.score - a.score;
+      }
+    });
   
   // Assign ranks and calculate savings percentage based on price level
   const rankedOrganicWithSavings = rankedOrganic.map((company, index) => {

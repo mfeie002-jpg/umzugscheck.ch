@@ -12,6 +12,7 @@ import { generateRanking } from "@/lib/ranking-algorithm";
 import { useHaptic } from "@/hooks/use-haptic";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
+import { RankingFilters, FilterState } from "@/components/rankings/RankingFilters";
 
 export default function GuenstigeFirmen() {
   const { region } = useParams();
@@ -24,6 +25,15 @@ export default function GuenstigeFirmen() {
   const pageDescription = region
     ? `Die preiswertesten Umzugsfirmen in ${region}. Vergleichen Sie Preise und sparen Sie bis zu 40% bei Ihrem Umzug.`
     : "Die günstigsten Umzugsfirmen der Schweiz im Vergleich. Faire Preise ohne versteckte Kosten. Sparen Sie bis zu 40%.";
+
+  // Filter state
+  const [filters, setFilters] = useState<FilterState>({
+    region: region || "all",
+    services: [],
+    priceLevel: "günstig",
+    minRating: "0",
+    sortBy: "price",
+  });
 
   // Fetch companies from database
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
@@ -41,17 +51,53 @@ export default function GuenstigeFirmen() {
 
   useEffect(() => {
     fetchCompanies();
-  }, [region]);
+  }, [region, filters]);
 
   const fetchCompanies = () => {
     setLoading(true);
     
-    // Get companies filtered by region and price level
-    let filteredCompanies = region ? getCompaniesByRegion(region) : DEMO_COMPANIES;
-    filteredCompanies = filteredCompanies.filter(c => c.price_level === "günstig" || c.price_level === "fair");
+    // Get companies filtered by region
+    let filteredCompanies = filters.region !== "all" 
+      ? getCompaniesByRegion(filters.region) 
+      : DEMO_COMPANIES;
+    
+    // Apply service filters
+    if (filters.services.length > 0) {
+      filteredCompanies = filteredCompanies.filter(company =>
+        filters.services.some(service => 
+          company.services_offered.some(s => s.toLowerCase().includes(service))
+        )
+      );
+    }
+
+    // Apply price level filter (default to cheap on this page)
+    if (filters.priceLevel !== "all") {
+      filteredCompanies = filteredCompanies.filter(
+        company => company.price_level === filters.priceLevel
+      );
+    } else {
+      // Show only günstig and fair by default on this page
+      filteredCompanies = filteredCompanies.filter(
+        c => c.price_level === "günstig" || c.price_level === "fair"
+      );
+    }
+
+    // Apply minimum rating filter
+    const minRating = parseFloat(filters.minRating);
+    if (minRating > 0) {
+      filteredCompanies = filteredCompanies.filter(
+        company => company.rating >= minRating
+      );
+    }
+    
+    // Determine sort mode based on sortBy
+    let sortMode: 'best' | 'cheapest' | 'rating' | 'reviews' = 'cheapest';
+    if (filters.sortBy === 'rating') sortMode = 'rating';
+    else if (filters.sortBy === 'recommended') sortMode = 'best';
+    else if (filters.sortBy === 'reviews') sortMode = 'reviews';
     
     // Generate ranking using the algorithm with "cheapest" mode
-    const ranked = generateRanking(filteredCompanies, undefined, 'cheapest');
+    const ranked = generateRanking(filteredCompanies, undefined, sortMode);
     
     // Format for display components
     const sponsored = ranked
@@ -172,9 +218,22 @@ export default function GuenstigeFirmen() {
                 <h2 className="text-2xl md:text-3xl font-bold mb-2">
                   Alle günstigen Umzugsfirmen
                 </h2>
-                <p className="text-muted-foreground mb-8">
+                <p className="text-muted-foreground mb-4">
                   Sortiert nach Preis-Leistungs-Verhältnis und Kundenzufriedenheit
                 </p>
+
+                {/* Filters */}
+                <RankingFilters
+                  filters={filters}
+                  onFilterChange={setFilters}
+                  onReset={() => setFilters({
+                    region: "all",
+                    services: [],
+                    priceLevel: "günstig",
+                    minRating: "0",
+                    sortBy: "price",
+                  })}
+                />
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
