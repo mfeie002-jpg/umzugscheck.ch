@@ -157,35 +157,35 @@ const CleaningCalculator = () => {
       <Navigation />
       
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8 md:py-16">
+        <div className="container mx-auto px-4 py-6 sm:py-8 md:py-16">
           <Link 
             to="/rechner"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8"
+            className="inline-flex items-center gap-2 text-sm sm:text-base text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8"
           >
             <ArrowLeft className="w-4 h-4" />
             Zurück zu allen Rechnern
           </Link>
 
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-8 h-8 text-primary" />
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
               </div>
               
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-3">
                 Reinigungsrechner
               </h1>
               
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground px-4">
                 Berechnen Sie die Kosten für Ihre Endreinigung
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Form Card */}
-              <Card className="p-6">
+              <Card className="p-4 sm:p-6">
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
                     {/* Cleaning Type */}
                     <FormField
                       control={form.control}
@@ -377,32 +377,32 @@ const CleaningCalculator = () => {
                       />
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg">
-                      Preis berechnen
+                    <Button type="submit" className="w-full text-sm sm:text-base" size="lg" disabled={isSubmitting}>
+                      {isSubmitting ? "Berechne..." : "Preis berechnen"}
                     </Button>
                   </form>
                 </Form>
               </Card>
 
               {/* Results Card */}
-              <Card className="p-6">
+              <Card className="p-4 sm:p-6">
                 {result ? (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
-                      <h3 className="text-2xl font-bold text-foreground mb-2">
+                      <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
                         Ihre Kostenschätzung
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Basierend auf Ihren Angaben
                       </p>
                     </div>
 
-                    <div className="bg-primary/10 rounded-xl p-6 text-center">
-                      <div className="text-sm text-muted-foreground mb-2">Geschätzter Preis</div>
-                      <div className="text-4xl font-bold text-primary mb-1">
+                    <div className="bg-primary/10 rounded-xl p-4 sm:p-6 text-center">
+                      <div className="text-xs sm:text-sm text-muted-foreground mb-2">Geschätzter Preis</div>
+                      <div className="text-3xl sm:text-4xl font-bold text-primary mb-1">
                         {formatCurrency(result.totalPrice)}
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-xs sm:text-sm text-muted-foreground">
                         {formatCurrency(result.priceRange.min)} - {formatCurrency(result.priceRange.max)}
                       </div>
                     </div>

@@ -16,20 +16,20 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10"></div>
       </div>
         
-      <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
-          <div className="space-y-8 lg:pr-8">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
-              <CheckCircle2 className="w-4 h-4 text-success animate-pulse" />
-              <span>100% kostenlos & unverbindlich · In 2 Minuten zu 3–5 Offerten</span>
+      <div className="container mx-auto px-4 py-12 sm:py-16 md:py-24 lg:py-32 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-7xl mx-auto">
+          <div className="space-y-6 sm:space-y-8 lg:pr-8">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium">
+              <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-success animate-pulse flex-shrink-0" />
+              <span className="truncate">100% kostenlos & unverbindlich · In 2 Minuten zu 3–5 Offerten</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
               Ihren Umzug in der Schweiz<br />
               <span className="text-accent drop-shadow-lg">in 60 Sekunden vergleichen</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-white/95 leading-relaxed max-w-2xl">
+            <p className="text-base sm:text-lg md:text-xl text-white/95 leading-relaxed max-w-2xl">
               Füllen Sie einmal Ihr Umzugsprofil aus und erhalten Sie in kurzer Zeit passende Angebote von geprüften Umzugsfirmen. Transparent, fair und ohne Telefon-Spam.
             </p>
 
@@ -51,24 +51,24 @@ export const Hero = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-6">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
               <Link to="/rechner" className="flex-1">
-                <Button size="lg" className="w-full h-14 text-lg bg-accent hover:bg-accent-dark text-white">
+                <Button size="lg" className="w-full h-12 sm:h-14 text-sm sm:text-lg bg-accent hover:bg-accent-dark text-white">
                   <span>Umzugskosten berechnen</span>
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </Link>
               <Link to="/firmen" className="flex-1">
-                <Button size="lg" variant="outline" className="w-full h-14 text-lg border-2 border-white/40 bg-white/10 text-white">
+                <Button size="lg" variant="outline" className="w-full h-12 sm:h-14 text-sm sm:text-lg border-2 border-white/40 bg-white/10 text-white">
                   Umzugsfirmen vergleichen
                 </Button>
               </Link>
             </div>
 
-            <div className="pt-4">
-              <p className="text-white/90 text-sm flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                Kostenlos & unverbindlich. Ihre Daten werden nur für Ihre Offerten-Anfrage verwendet.
+            <div className="pt-2 sm:pt-4">
+              <p className="text-white/90 text-xs sm:text-sm flex items-center gap-2">
+                <Shield className="w-4 h-4 flex-shrink-0" />
+                <span>Kostenlos & unverbindlich. Ihre Daten werden nur für Ihre Offerten-Anfrage verwendet.</span>
               </p>
             </div>
 
