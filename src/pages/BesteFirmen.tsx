@@ -12,6 +12,7 @@ import { generateRanking } from "@/lib/ranking-algorithm";
 import { useHaptic } from "@/hooks/use-haptic";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
+import { RankingFilters, FilterState } from "@/components/rankings/RankingFilters";
 
 export default function BesteFirmen() {
   const { region } = useParams();
@@ -24,6 +25,15 @@ export default function BesteFirmen() {
   const pageDescription = region
     ? `Vergleichen Sie die top-bewerteten Umzugsfirmen in ${region}. Basierend auf echten Kundenbewertungen, Preis-Leistung und Servicequalität.`
     : "Die besten Umzugsfirmen der Schweiz im Vergleich. Basierend auf Kundenbewertungen, Preis-Leistung und Servicequalität.";
+
+  // Filter state
+  const [filters, setFilters] = useState<FilterState>({
+    region: region || "all",
+    services: [],
+    priceLevel: "all",
+    minRating: "0",
+    sortBy: "recommended",
+  });
 
   // Mock data - sponsored companies (would come from database with is_featured flag)
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
@@ -41,16 +51,48 @@ export default function BesteFirmen() {
 
   useEffect(() => {
     fetchCompanies();
-  }, [region]);
+  }, [region, filters]);
 
   const fetchCompanies = () => {
     setLoading(true);
     
     // Get companies filtered by region
-    const filteredCompanies = region ? getCompaniesByRegion(region) : DEMO_COMPANIES;
+    let filteredCompanies = filters.region !== "all" 
+      ? getCompaniesByRegion(filters.region) 
+      : DEMO_COMPANIES;
+    
+    // Apply service filters
+    if (filters.services.length > 0) {
+      filteredCompanies = filteredCompanies.filter(company =>
+        filters.services.some(service => 
+          company.services_offered.some(s => s.toLowerCase().includes(service))
+        )
+      );
+    }
+
+    // Apply price level filter
+    if (filters.priceLevel !== "all") {
+      filteredCompanies = filteredCompanies.filter(
+        company => company.price_level === filters.priceLevel
+      );
+    }
+
+    // Apply minimum rating filter
+    const minRating = parseFloat(filters.minRating);
+    if (minRating > 0) {
+      filteredCompanies = filteredCompanies.filter(
+        company => company.rating >= minRating
+      );
+    }
+    
+    // Determine sort mode based on sortBy
+    let sortMode: 'best' | 'cheapest' | 'rating' | 'reviews' = 'best';
+    if (filters.sortBy === 'rating') sortMode = 'rating';
+    else if (filters.sortBy === 'price') sortMode = 'cheapest';
+    else if (filters.sortBy === 'reviews') sortMode = 'reviews';
     
     // Generate ranking using the algorithm
-    const ranked = generateRanking(filteredCompanies, undefined, 'best');
+    const ranked = generateRanking(filteredCompanies, undefined, sortMode);
     
     // Format for display components
     const sponsored = ranked
@@ -171,9 +213,22 @@ export default function BesteFirmen() {
                 <h2 className="text-2xl md:text-3xl font-bold mb-2">
                   Komplettes Ranking
                 </h2>
-                <p className="text-muted-foreground mb-8">
+                <p className="text-muted-foreground mb-4">
                   Sortiert nach Kundenbewertungen, Servicequalität und Preis-Leistungs-Verhältnis
                 </p>
+
+                {/* Filters */}
+                <RankingFilters
+                  filters={filters}
+                  onFilterChange={setFilters}
+                  onReset={() => setFilters({
+                    region: "all",
+                    services: [],
+                    priceLevel: "all",
+                    minRating: "0",
+                    sortBy: "recommended",
+                  })}
+                />
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
