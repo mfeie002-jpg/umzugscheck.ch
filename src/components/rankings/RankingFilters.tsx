@@ -22,12 +22,14 @@ const SWISS_CANTONS = [
 ];
 
 const SERVICES = [
-  { id: "umzug", label: "Umzug" },
+  { id: "umzug", label: "Privatumzug" },
+  { id: "firmenumzug", label: "Firmenumzug" },
   { id: "reinigung", label: "Reinigung" },
   { id: "entsorgung", label: "Entsorgung" },
   { id: "lagerung", label: "Lagerung" },
   { id: "packservice", label: "Packservice" },
   { id: "montage", label: "Möbelmontage" },
+  { id: "spezialtransport", label: "Spezialtransporte" },
 ];
 
 const PRICE_LEVELS = [
@@ -50,6 +52,7 @@ export interface FilterState {
   priceLevel: string;
   minRating: string;
   sortBy: string;
+  availability?: string;
 }
 
 interface RankingFiltersProps {
@@ -97,6 +100,7 @@ export const RankingFilters = ({
             <SelectItem value="rating">Beste Bewertung</SelectItem>
             <SelectItem value="price">Günstigste</SelectItem>
             <SelectItem value="reviews">Meiste Bewertungen</SelectItem>
+            <SelectItem value="quality">Höchste Qualität</SelectItem>
           </SelectContent>
         </Select>
       </div>

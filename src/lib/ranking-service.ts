@@ -98,6 +98,15 @@ const applySorting = (
       });
       break;
       
+    case "quality":
+      // Sort by quality score (profile completeness + metrics)
+      sorted.sort((a, b) => {
+        const qualityA = (a.profile_completeness || 50) / 100 + (a.rating / 5);
+        const qualityB = (b.profile_completeness || 50) / 100 + (b.rating / 5);
+        return qualityB - qualityA;
+      });
+      break;
+      
     case "recommended":
     default:
       // Already sorted by algorithm score

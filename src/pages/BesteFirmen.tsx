@@ -5,7 +5,7 @@ import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
 import { Button } from "@/components/ui/button";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Trophy, Star, Shield, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 
 export default function BesteFirmen() {
   const { region } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { trigger } = useHaptic();
   
   const pageTitle = region 
@@ -29,14 +30,20 @@ export default function BesteFirmen() {
     ? `Vergleichen Sie die top-bewerteten Umzugsfirmen in ${region}. Basierend auf echten Kundenbewertungen, Preis-Leistung und Servicequalität.`
     : "Die besten Umzugsfirmen der Schweiz im Vergleich. Basierend auf Kundenbewertungen, Preis-Leistung und Servicequalität.";
 
+  // Initialize filters from URL params
+  const initializeFilters = (): FilterState => {
+    const services = searchParams.get('services')?.split(',').filter(Boolean) || [];
+    return {
+      region: region || searchParams.get('region') || "all",
+      services,
+      priceLevel: searchParams.get('preis') || "all",
+      minRating: searchParams.get('minRating') || "0",
+      sortBy: searchParams.get('sort') || "recommended",
+    };
+  };
+
   // Filter state
-  const [filters, setFilters] = useState<FilterState>({
-    region: region || "all",
-    services: [],
-    priceLevel: "all",
-    minRating: "0",
-    sortBy: "recommended",
-  });
+  const [filters, setFilters] = useState<FilterState>(initializeFilters());
 
   // Mock data - sponsored companies (would come from database with is_featured flag)
   const [sponsoredCompanies, setSponsoredCompanies] = useState<any[]>([]);
@@ -52,6 +59,18 @@ export default function BesteFirmen() {
   const { isPulling, isRefreshing, pullDistance, threshold } = usePullToRefresh({
     onRefresh: handleRefresh
   });
+
+  // Update URL params when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filters.region !== "all") params.set('region', filters.region);
+    if (filters.services.length > 0) params.set('services', filters.services.join(','));
+    if (filters.priceLevel !== "all") params.set('preis', filters.priceLevel);
+    if (filters.minRating !== "0") params.set('minRating', filters.minRating);
+    if (filters.sortBy !== "recommended") params.set('sort', filters.sortBy);
+    
+    setSearchParams(params, { replace: true });
+  }, [filters, setSearchParams]);
 
   useEffect(() => {
     fetchCompanies();
@@ -176,6 +195,9 @@ export default function BesteFirmen() {
                 <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 px-4">
                   {pageDescription}
                 </p>
+                <p className="text-sm text-muted-foreground/80 mb-6 max-w-2xl mx-auto">
+                  Filtern Sie die besten Umzugsfirmen nach Region, Preis und Bewertung. Vergleichen Sie Leistungen und Preise transparent.
+                </p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto">
                   <div className="flex flex-col items-center p-3 sm:p-4 bg-background rounded-lg">
@@ -202,9 +224,14 @@ export default function BesteFirmen() {
           <section className="py-12 bg-muted/30">
             <div className="container mx-auto px-4">
               <div className="max-w-5xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-bold mb-8">
-                  Empfohlene Top-Anbieter
-                </h2>
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold">
+                    Empfohlene Top-Anbieter
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {sponsoredCompanies.length + organicCompanies.length} Firmen gefunden
+                  </p>
+                </div>
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
@@ -238,6 +265,9 @@ export default function BesteFirmen() {
                 </h2>
                 <p className="text-muted-foreground mb-4">
                   Sortiert nach Kundenbewertungen, Servicequalität und Preis-Leistungs-Verhältnis
+                </p>
+                <p className="text-sm text-primary/70 mb-6 italic">
+                  💡 Tipp: Nutzen Sie die Filter oben, um die perfekten Umzugsfirmen für Ihre Bedürfnisse zu finden
                 </p>
 
                 {/* Filters */}
