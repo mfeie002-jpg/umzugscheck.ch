@@ -6,6 +6,8 @@
 export interface CompanyData {
   id: string;
   name: string;
+  slug?: string;
+  logo_url?: string;
   rating: number;
   review_count: number;
   price_level: string;
@@ -13,10 +15,19 @@ export interface CompanyData {
   featured_position?: number;
   ranking_position?: number;
   service_areas: string[];
+  cities_served?: string[];
   services_offered: string[];
   profile_completeness?: number;
   conversion_rate?: number;
   response_time_avg_hours?: number;
+  phone_tracking_number?: string;
+  short_description?: string;
+  long_description?: string;
+  certifications?: string[];
+  avg_completion_time_hours?: number;
+  success_rate?: number;
+  discount_offer?: string;
+  profile_gallery?: string[];
 }
 
 export interface RankingFilters {
@@ -37,31 +48,31 @@ export interface RankedCompany extends CompanyData {
  * Calculate organic ranking score for a company
  * Factors: rating, review count, price level, profile completeness
  */
+/**
+ * Calculate organic ranking score using the exact formula:
+ * rankingScore = (rating * 2.5) + log(reviewCount + 1) + priceBonus + profileCompletenessBonus
+ */
 export const calculateOrganicScore = (company: CompanyData): number => {
-  let score = 0;
+  // Rating component: rating * 2.5 (max 12.5 points for 5-star rating)
+  const ratingScore = company.rating * 2.5;
   
-  // Rating weight: 40 points (max)
-  const ratingScore = (company.rating / 5) * 40;
-  score += ratingScore;
+  // Review count component: logarithmic scale
+  const reviewScore = Math.log10(company.review_count + 1);
   
-  // Review count weight: 25 points (logarithmic scale)
-  const reviewScore = Math.min(25, Math.log10(company.review_count + 1) * 10);
-  score += reviewScore;
-  
-  // Price level bonus: 20 points
-  // "günstig" gets full points, "fair" gets 15, "premium" gets 10
+  // Price level bonus
   const priceLevelMap: Record<string, number> = {
-    'günstig': 20,
-    'fair': 15,
-    'premium': 10,
+    'günstig': 0.3,
+    'fair': 0,
+    'premium': -0.3,
   };
-  score += priceLevelMap[company.price_level] || 10;
+  const priceBonus = priceLevelMap[company.price_level] || 0;
   
-  // Profile completeness: 15 points
-  const completenessScore = (company.profile_completeness || 50) / 100 * 15;
-  score += completenessScore;
+  // Profile completeness bonus (0-1 scale)
+  const completenessBonus = (company.profile_completeness || 50) / 100;
   
-  return Math.round(score * 100) / 100;
+  const totalScore = ratingScore + reviewScore + priceBonus + completenessBonus;
+  
+  return Math.round(totalScore * 100) / 100;
 };
 
 /**

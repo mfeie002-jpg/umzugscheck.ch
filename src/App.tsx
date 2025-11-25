@@ -156,11 +156,15 @@ const App = () => (
             <Route path="/guenstige-umzugsfirma/:region" element={<GuenstigeFirmen />} />
             <Route path="/anbieter-werden" element={<BecomeProvider />} />
             <Route path="/anbieter/registrieren" element={<ProviderSignup />} />
+            <Route path="/firmen-registrieren" element={<ProviderSignup />} />
             <Route path="/anbieter/signup" element={<ProviderSignupNew />} />
             <Route path="/anbieter/login" element={<ProviderLogin />} />
+            <Route path="/firmen-login" element={<ProviderLogin />} />
             <Route path="/anbieter/dashboard" element={<ProviderDashboard />} />
+            <Route path="/firmen-dashboard" element={<ProviderDashboard />} />
             <Route path="/anbieter/profil" element={<ProviderProfile />} />
             <Route path="/anbieter/preise" element={<ProviderPricing />} />
+            <Route path="/firmen-portal" element={<ProviderDashboard />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
