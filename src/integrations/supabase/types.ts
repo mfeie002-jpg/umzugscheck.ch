@@ -698,6 +698,33 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          action_type: string
+          attempt_count: number
+          created_at: string | null
+          id: string
+          identifier: string
+          window_start: string
+        }
+        Insert: {
+          action_type: string
+          attempt_count?: number
+          created_at?: string | null
+          id?: string
+          identifier: string
+          window_start?: string
+        }
+        Update: {
+          action_type?: string
+          attempt_count?: number
+          created_at?: string | null
+          id?: string
+          identifier?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       review_requests: {
         Row: {
           created_at: string | null
@@ -1097,6 +1124,15 @@ export type Database = {
         Args: { p_lead_id: string; p_provider_id: string }
         Returns: number
       }
+      check_rate_limit: {
+        Args: {
+          p_action_type: string
+          p_identifier: string
+          p_max_attempts: number
+          p_window_minutes: number
+        }
+        Returns: boolean
+      }
       close_lead_bidding: { Args: { p_lead_id: string }; Returns: Json }
       count_provider_leads_this_month: {
         Args: { provider_id: string }
@@ -1130,6 +1166,8 @@ export type Database = {
         Args: { provider_id: string }
         Returns: boolean
       }
+      validate_email: { Args: { email: string }; Returns: boolean }
+      validate_phone: { Args: { phone: string }; Returns: boolean }
     }
     Enums: {
       account_status: "active" | "inactive"
