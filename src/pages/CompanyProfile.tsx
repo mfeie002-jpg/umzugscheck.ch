@@ -1,113 +1,34 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Star,
-  MapPin,
-  Phone,
-  Mail,
-  Globe,
-  CheckCircle2,
-  ArrowLeft,
-  ArrowRight,
-  AlertCircle,
+import { Card } from "@/components/ui/card";
+import { 
+  Star, MapPin, Phone, Award, TrendingUp, Clock, 
+  CheckCircle, Mail, Globe, Shield, Percent, ChevronRight 
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAnalytics } from "@/lib/analytics";
+import { ENHANCED_COMPANIES } from "@/data/enhanced-companies";
 import { ReviewList } from "@/components/reviews/ReviewList";
+import { trackPageView } from "@/lib/tracking";
 
-interface Company {
-  id: string;
-  name: string;
-  logo: string;
-  description: string;
-  services: string[];
-  price_level: string;
-  rating: number;
-  review_count: number;
-  service_areas: string[];
-  verified: boolean;
-  phone: string;
-  email: string;
-  website: string;
-  gallery_images?: string[];
-}
-
-const CompanyProfile = () => {
-  const { id } = useParams();
-  const analytics = useAnalytics();
-  const [company, setCompany] = useState<Company | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (id) {
-      fetchCompany(id);
-    }
-  }, [id]);
-
-  const fetchCompany = async (companyId: string) => {
-    setError(null);
-    try {
-      const { data, error } = await supabase
-        .from("companies")
-        .select("*")
-        .eq("id", companyId)
-        .single();
-
-      if (error) throw error;
-      
-      if (data) {
-        setCompany(data);
-        analytics.trackCompanyViewed(data.id, data.name);
-        analytics.trackPageView('Company Profile', `/firmen/${companyId}`);
-      }
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Firma nicht gefunden';
-      setError(errorMsg);
-      analytics.trackError('company_fetch_error', { companyId, error: errorMsg });
-      console.error("Error fetching company:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
+export default function CompanyProfile() {
+  const { slug } = useParams();
+  const [activeTab, setActiveTab] = useState<"overview" | "reviews">("overview");
+  
+  const company = ENHANCED_COMPANIES.find(c => c.slug === slug);
+  
   if (!company) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto px-4">
-            {error && (
-              <Alert variant="destructive" className="mb-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            <h2 className="text-2xl font-bold mb-2">Firma nicht gefunden</h2>
-            <p className="text-muted-foreground mb-6">Diese Firma existiert nicht oder wurde entfernt.</p>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-4">Firma nicht gefunden</h1>
             <Link to="/firmen">
-              <Button>
-                <ArrowLeft className="mr-2 w-4 h-4" />
-                Zurück zur Übersicht
-              </Button>
+              <Button>Zurück zur Übersicht</Button>
             </Link>
           </div>
         </main>
@@ -116,321 +37,257 @@ const CompanyProfile = () => {
     );
   }
 
-  // Generate structured data for SEO
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": `https://umzugscheck.ch/firmen/${company.id}`,
-    "name": company.name,
-    "description": company.description,
-    "url": `https://umzugscheck.ch/firmen/${company.id}`,
-    "telephone": company.phone,
-    "email": company.email,
-    "priceRange": company.price_level,
-    "image": company.logo,
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": company.rating.toString(),
-      "bestRating": "5",
-      "worstRating": "1",
-      "ratingCount": company.review_count.toString()
-    },
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "CH",
-      "addressLocality": company.service_areas[0] || "Schweiz",
-      "addressRegion": company.service_areas[0] || "Schweiz"
-    },
-    "areaServed": company.service_areas.map(area => ({
-      "@type": "City",
-      "name": area
-    })),
-    "openingHoursSpecification": [
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        "opens": "08:00",
-        "closes": "18:00"
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": "Saturday",
-        "opens": "09:00",
-        "closes": "16:00"
-      }
-    ],
-    "serviceType": company.services,
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Umzugsdienstleistungen",
-      "itemListElement": company.services.map((service, index) => ({
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": service
-        }
-      }))
-    }
-  };
+  // Track page view
+  trackPageView({ page: `/umzugsfirmen/${slug}`, companyId: company.id });
+
+  const priceLevelColor = {
+    günstig: "text-green-600 dark:text-green-400",
+    fair: "text-blue-600 dark:text-blue-400",
+    premium: "text-purple-600 dark:text-purple-400"
+  }[company.price_level];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Helmet>
-        <title>{company.name} - Bewertungen & Offerten | Umzugscheck.ch</title>
-        <meta name="description" content={`${company.name} - ${company.description} ⭐ ${company.rating}/5 basierend auf ${company.review_count} Bewertungen. Jetzt unverbindlich Offerte anfragen!`} />
-        <meta name="keywords" content={`${company.name}, Umzugsfirma, Umzug Schweiz, ${company.service_areas.join(', ')}, Bewertungen`} />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content={`${company.name} - Umzugsfirma | Umzugscheck.ch`} />
-        <meta property="og:description" content={`⭐ ${company.rating}/5 - ${company.review_count} Bewertungen. ${company.description}`} />
-        <meta property="og:type" content="business.business" />
-        <meta property="og:url" content={`https://umzugscheck.ch/firmen/${company.id}`} />
-        
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
+        <title>{company.name} - Umzugsfirma | Umzugscheck.ch</title>
+        <meta name="description" content={company.short_description || company.long_description} />
       </Helmet>
-      
-      <Navigation />
 
-      <main className="flex-1">
-        {/* Breadcrumbs */}
-        <div className="container mx-auto px-4 pt-4">
-          <Breadcrumbs
-            items={[
-              { label: "Firmen", href: "/firmen" },
-              { label: company.name },
-            ]}
-          />
-        </div>
-
-        {/* Header */}
-        <section className="py-12 md:py-16 gradient-hero text-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              <Link to="/firmen">
-                <Button
-                  variant="outline"
-                  className="mb-6 border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
-                >
-                  <ArrowLeft className="mr-2 w-4 h-4" />
-                  Zurück zur Übersicht
-                </Button>
-              </Link>
-
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center text-5xl">
-                  {company.logo}
-                </div>
-
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-3xl md:text-4xl font-bold">{company.name}</h1>
-                    {company.verified && (
-                      <Badge className="bg-success/20 text-success border-success/30">
-                        <CheckCircle2 className="w-3 h-3 mr-1" />
-                        Geprüft
-                      </Badge>
-                    )}
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navigation />
+        
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="bg-gradient-to-br from-primary/5 via-background to-primary/5 py-8 sm:py-12">
+            <div className="container mx-auto px-4">
+              <div className="max-w-5xl mx-auto">
+                {company.is_featured && (
+                  <Badge className="mb-4 bg-primary text-primary-foreground">
+                    Empfohlener Partner
+                  </Badge>
+                )}
+                
+                <div className="flex flex-col sm:flex-row items-start gap-6">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white dark:bg-muted rounded-lg shadow-md flex items-center justify-center text-4xl flex-shrink-0">
+                    {company.logo_url || "🏢"}
                   </div>
+                  
+                  <div className="flex-1">
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-3">{company.name}</h1>
+                    
+                    <div className="flex flex-wrap items-center gap-4 mb-4">
+                      <div className="flex items-center">
+                        <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                        <span className="ml-1 font-bold text-lg">{company.rating.toFixed(1)}</span>
+                        <span className="ml-2 text-muted-foreground">
+                          ({company.review_count} Bewertungen)
+                        </span>
+                      </div>
+                      
+                      <Badge variant="outline" className={`${priceLevelColor} border-current`}>
+                        {company.price_level === "günstig" ? "Günstig" : 
+                         company.price_level === "fair" ? "Fair" : "Premium"}
+                      </Badge>
+                      
+                      {company.success_rate && (
+                        <div className="flex items-center text-sm">
+                          <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
+                          <span>{company.success_rate}% Erfolgsrate</span>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-5 h-5 ${
-                              i < Math.floor(company.rating)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-white/30"
-                            }`}
-                          />
+                    <div className="flex items-center gap-2 text-muted-foreground mb-4">
+                      <MapPin className="w-4 h-4" />
+                      <span>{company.service_areas.join(" • ")}</span>
+                    </div>
+
+                    {company.short_description && (
+                      <p className="text-lg mb-4">{company.short_description}</p>
+                    )}
+
+                    {company.certifications && company.certifications.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {company.certifications.map((cert, idx) => (
+                          <Badge key={idx} variant="secondary" className="gap-1">
+                            <Shield className="w-3 h-3" />
+                            {cert}
+                          </Badge>
                         ))}
                       </div>
-                      <span className="font-semibold text-lg">{company.rating}</span>
-                      <span className="text-white/80">({company.review_count} Bewertungen)</span>
-                    </div>
-                    
-                    <div className="h-6 w-px bg-white/30 hidden sm:block"></div>
-                    
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
-                      <span className="text-white/80 text-sm">Preisniveau:</span>
-                      <span className="font-bold text-lg text-white">{company.price_level}</span>
-                    </div>
+                    )}
                   </div>
-
-                  <p className="text-lg text-white/90">{company.description}</p>
                 </div>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-6 w-full">
+                  <Link to="/rechner" className="flex-1">
+                    <Button size="lg" className="w-full">
+                      Offerte anfordern
+                    </Button>
+                  </Link>
+                  {company.phone_tracking_number && (
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="flex-1 gap-2"
+                      onClick={() => {
+                        window.location.href = `tel:${company.phone_tracking_number}`;
+                      }}
+                    >
+                      <Phone className="w-4 h-4" />
+                      Jetzt anrufen
+                    </Button>
+                  )}
+                </div>
+
+                {company.discount_offer && (
+                  <div className="mt-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                    <p className="text-green-700 dark:text-green-300 font-semibold flex items-center gap-2">
+                      <Percent className="w-5 h-5" />
+                      {company.discount_offer}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Content */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              <div className="grid lg:grid-cols-3 gap-8">
-                {/* Main Content */}
-                <div className="lg:col-span-2 space-y-8">
-                  <Tabs defaultValue="overview" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="overview">Übersicht</TabsTrigger>
-                      <TabsTrigger value="reviews">Bewertungen</TabsTrigger>
-                      <TabsTrigger value="about">Über uns</TabsTrigger>
-                    </TabsList>
+          {/* Tabs */}
+          <section className="border-b">
+            <div className="container mx-auto px-4">
+              <div className="max-w-5xl mx-auto flex gap-8">
+                <button
+                  onClick={() => setActiveTab("overview")}
+                  className={`py-4 px-2 border-b-2 transition-colors ${
+                    activeTab === "overview"
+                      ? "border-primary text-primary font-semibold"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Übersicht
+                </button>
+                <button
+                  onClick={() => setActiveTab("reviews")}
+                  className={`py-4 px-2 border-b-2 transition-colors ${
+                    activeTab === "reviews"
+                      ? "border-primary text-primary font-semibold"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Bewertungen
+                </button>
+              </div>
+            </div>
+          </section>
 
-                    <TabsContent value="overview" className="space-y-6 mt-6">
-                      {/* Services */}
-                      <Card>
-                        <CardContent className="p-6">
-                          <h2 className="text-2xl font-bold mb-4">Unsere Dienstleistungen</h2>
-                          <div className="grid md:grid-cols-2 gap-3">
-                            {company.services.map((service, index) => (
-                              <div key={index} className="flex items-center gap-2">
-                                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
-                                <span>{service}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
+          {/* Content */}
+          <section className="py-12">
+            <div className="container mx-auto px-4">
+              <div className="max-w-5xl mx-auto">
+                {activeTab === "overview" ? (
+                  <div className="space-y-8">
+                    {/* Key Metrics */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {company.response_time_avg_hours && (
+                        <Card className="p-4 text-center">
+                          <Clock className="w-6 h-6 mx-auto mb-2 text-primary" />
+                          <div className="font-bold text-xl">{company.response_time_avg_hours}h</div>
+                          <div className="text-sm text-muted-foreground">Antwortzeit</div>
+                        </Card>
+                      )}
+                      {company.avg_completion_time_hours && (
+                        <Card className="p-4 text-center">
+                          <TrendingUp className="w-6 h-6 mx-auto mb-2 text-primary" />
+                          <div className="font-bold text-xl">{company.avg_completion_time_hours}h</div>
+                          <div className="text-sm text-muted-foreground">Durchführungszeit</div>
+                        </Card>
+                      )}
+                      {company.success_rate && (
+                        <Card className="p-4 text-center">
+                          <CheckCircle className="w-6 h-6 mx-auto mb-2 text-green-500" />
+                          <div className="font-bold text-xl">{company.success_rate}%</div>
+                          <div className="text-sm text-muted-foreground">Erfolgsrate</div>
+                        </Card>
+                      )}
+                      <Card className="p-4 text-center">
+                        <Award className="w-6 h-6 mx-auto mb-2 text-primary" />
+                        <div className="font-bold text-xl">{company.review_count}</div>
+                        <div className="text-sm text-muted-foreground">Bewertungen</div>
                       </Card>
+                    </div>
 
-                      {/* Service Areas */}
-                      <Card>
-                        <CardContent className="p-6">
-                          <h2 className="text-2xl font-bold mb-4">Servicegebiete</h2>
-                          <div className="flex flex-wrap gap-2">
-                            {company.service_areas.map((area, index) => (
-                              <Badge key={index} variant="secondary" className="text-sm">
-                                <MapPin className="w-3 h-3 mr-1" />
-                                {area}
-                              </Badge>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </TabsContent>
-
-                    <TabsContent value="reviews" className="mt-6">
-                      <ReviewList companyId={company.id} />
-                    </TabsContent>
-
-                    <TabsContent value="about" className="mt-6">
-                      <Card>
-                        <CardContent className="p-6">
-                          <h2 className="text-2xl font-bold mb-4">Über uns</h2>
-                          <div className="prose max-w-none">
-                            <p className="text-muted-foreground leading-relaxed">
-                              {company.description}
-                            </p>
-                            <Separator className="my-4" />
-                            <div className="grid md:grid-cols-2 gap-4 text-sm">
-                              <div>
-                                <span className="font-semibold">Preisniveau:</span>
-                                <span className="ml-2 text-primary font-medium">{company.price_level}</span>
-                              </div>
-                              <div>
-                                <span className="font-semibold">Bewertung:</span>
-                                <span className="ml-2">{company.rating}/5</span>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </TabsContent>
-                  </Tabs>
-                </div>
-
-                {/* Sidebar */}
-                <div className="space-y-6">
-                  {/* CTA Card */}
-                  <Card className="shadow-strong sticky top-24">
-                    <CardContent className="p-6 space-y-4">
-                      <div>
-                        <h3 className="font-bold text-lg mb-2">Offerte anfragen</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Kostenlos & unverbindlich
+                    {/* About */}
+                    {company.long_description && (
+                      <Card className="p-6">
+                        <h2 className="text-2xl font-bold mb-4">Über uns</h2>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {company.long_description}
                         </p>
+                      </Card>
+                    )}
+
+                    {/* Services */}
+                    <Card className="p-6">
+                      <h2 className="text-2xl font-bold mb-4">Unsere Dienstleistungen</h2>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {company.services_offered.map((service, idx) => (
+                          <div key={idx} className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                            <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                            <span className="text-sm">{service}</span>
+                          </div>
+                        ))}
                       </div>
+                    </Card>
 
-                      <Separator />
+                    {/* Regions */}
+                    <Card className="p-6">
+                      <h2 className="text-2xl font-bold mb-4">Serviceregionen</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {company.service_areas.map((area, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-sm">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            {area}
+                          </Badge>
+                        ))}
+                      </div>
+                      {company.cities_served && company.cities_served.length > 0 && (
+                        <div className="mt-4">
+                          <h3 className="font-semibold mb-2">Städte:</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {company.cities_served.join(", ")}
+                          </p>
+                        </div>
+                      )}
+                    </Card>
 
-                      <Link 
-                        to="/rechner"
-                        onClick={() => analytics.trackCompanyClicked(company.id, company.name, 'request_quote')}
-                      >
-                        <Button className="w-full bg-accent hover:bg-accent/90 shadow-accent group" size="lg">
-                          Jetzt Offerte erhalten
-                          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    {/* CTA */}
+                    <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                      <h2 className="text-2xl font-bold mb-2">Bereit für Ihren Umzug?</h2>
+                      <p className="text-muted-foreground mb-4">
+                        Fordern Sie jetzt ein kostenloses Angebot an und vergleichen Sie Preise.
+                      </p>
+                      <Link to="/rechner">
+                        <Button size="lg" className="gap-2">
+                          Offerte anfordern
+                          <ChevronRight className="w-4 h-4" />
                         </Button>
                       </Link>
-
-                      <div className="space-y-3 text-sm">
-                        {company.phone && (
-                          <a
-                            href={`tel:${company.phone}`}
-                            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Phone className="w-4 h-4" />
-                            <span>{company.phone}</span>
-                          </a>
-                        )}
-
-                        {company.email && (
-                          <a
-                            href={`mailto:${company.email}`}
-                            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Mail className="w-4 h-4" />
-                            <span>{company.email}</span>
-                          </a>
-                        )}
-
-                        {company.website && (
-                          <a
-                            href={company.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Globe className="w-4 h-4" />
-                            <span>Website besuchen</span>
-                          </a>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Trust Signals */}
-                  <Card className="bg-secondary/30 border-none">
-                    <CardContent className="p-6 space-y-3">
-                      <div className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-success" />
-                        <span>Versichert & zertifiziert</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-success" />
-                        <span>Schnelle Reaktionszeit</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-success" />
-                        <span>Faire Preisgestaltung</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                    </Card>
+                  </div>
+                ) : (
+                  <div>
+                    <h2 className="text-2xl font-bold mb-6">Kundenbewertungen</h2>
+                    <ReviewList companyId={company.id} />
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
-};
-
-export default CompanyProfile;
+}
