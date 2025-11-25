@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { TrustSignals } from "@/components/TrustSignals";
@@ -20,6 +21,13 @@ import { ComparisonPreview } from "@/components/ComparisonPreview";
 import { VideoEstimatorTeaser } from "@/components/VideoEstimatorTeaser";
 import { TrustCounter } from "@/components/trust/TrustCounter";
 import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
+import { 
+  generateOrganizationSchema, 
+  generateServiceSchema, 
+  generateFAQSchema,
+  generateBreadcrumbSchema,
+  injectSchema 
+} from "@/lib/schema-markup";
 
 const Index = () => {
   // Different parallax speeds for depth effect
@@ -27,6 +35,37 @@ const Index = () => {
   const parallax2 = useParallax(0.25);
   const parallax3 = useParallax(0.1);
   const parallax4 = useParallax(0.3);
+
+  useEffect(() => {
+    // Inject structured data for homepage
+    const schemas = [
+      generateOrganizationSchema(),
+      generateServiceSchema(
+        "Umzugsvergleich",
+        "Vergleichen Sie Umzugsofferten von über 200 geprüften Umzugsfirmen in der Schweiz",
+        "CHF 850-1500"
+      ),
+      generateFAQSchema([
+        {
+          question: "Wie funktioniert Umzugscheck.ch?",
+          answer: "Geben Sie Ihre Umzugsdetails ein, erhalten Sie kostenlose Offerten von bis zu 5 Umzugsfirmen, vergleichen Sie Preise und Bewertungen, und wählen Sie die beste Firma für Ihren Umzug."
+        },
+        {
+          question: "Ist der Service wirklich kostenlos?",
+          answer: "Ja, Umzugscheck.ch ist für Privatkunden 100% kostenlos. Sie bezahlen nur die Umzugsfirma, die Sie beauftragen."
+        },
+        {
+          question: "Wie schnell erhalte ich Offerten?",
+          answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
+        }
+      ]),
+      generateBreadcrumbSchema([
+        { name: "Startseite", url: "https://umzugscheck.ch" }
+      ])
+    ];
+    
+    injectSchema(schemas);
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
