@@ -32,39 +32,39 @@ export const OrganicCompanyCard = ({
   verified,
 }: OrganicCompanyCardProps) => {
   return (
-    <Card className="p-5 hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-lg">
+    <Card className="p-4 sm:p-5 hover:shadow-md transition-shadow">
+      <div className="flex items-start gap-3 sm:gap-4">
+        <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-base sm:text-lg">
           {rank}
         </div>
         
-        <div className="flex-1">
-          <div className="flex items-start justify-between mb-2">
-            <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2 gap-2">
+            <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
               {logo ? (
-                <img src={logo} alt={name} className="w-12 h-12 object-contain rounded" />
+                <img src={logo} alt={name} className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded flex-shrink-0" />
               ) : (
-                <div className="w-12 h-12 bg-muted rounded flex items-center justify-center">
-                  <Award className="w-6 h-6 text-muted-foreground" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted rounded flex items-center justify-center flex-shrink-0">
+                  <Award className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
                 </div>
               )}
-              <div>
-                <h3 className="font-bold text-lg flex items-center gap-2">
-                  {name}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-base sm:text-lg flex items-center gap-2 flex-wrap">
+                  <span className="truncate">{name}</span>
                   {verified && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-xs flex-shrink-0">
                       Verifiziert
                     </Badge>
                   )}
                 </h3>
-                <div className="flex items-center gap-2 mt-0.5">
+                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                   <div className="flex items-center">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                     <span className="ml-1 font-semibold text-sm">{rating.toFixed(1)}</span>
                   </div>
                   <span className="text-xs text-muted-foreground">({reviewCount})</span>
                   {priceLevel && (
-                    <Badge variant="outline" className="text-xs ml-2">
+                    <Badge variant="outline" className="text-xs">
                       {priceLevel}
                     </Badge>
                   )}
