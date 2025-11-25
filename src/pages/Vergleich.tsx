@@ -141,12 +141,95 @@ const Vergleich = () => {
             </div>
           </section>
 
-          {/* Live Vergleichstabelle Preview */}
+          {/* Simple Comparison Table */}
           <section className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">
               Beispiel: Umzugsfirmen im direkten Vergleich
             </h2>
-            <ComparisonPreview />
+            <div className="overflow-x-auto">
+              <table className="w-full bg-background rounded-xl border shadow-medium">
+                <thead>
+                  <tr className="border-b bg-secondary/20">
+                    <th className="text-left p-4 font-semibold">Firma</th>
+                    <th className="text-left p-4 font-semibold">Region</th>
+                    <th className="text-left p-4 font-semibold">Preisniveau</th>
+                    <th className="text-left p-4 font-semibold">Bewertung</th>
+                    <th className="text-left p-4 font-semibold">Services</th>
+                    <th className="text-left p-4 font-semibold"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { name: "Zürich Umzüge AG", region: "Zürich & Umgebung", price: "CHF", rating: 4.8, services: ["Transport", "Montage", "Reinigung"] },
+                    { name: "Berner Zügelfirma", region: "Bern & Mittelland", price: "CHF CHF", rating: 4.7, services: ["Transport", "Entsorgung"] },
+                    { name: "Basel Express Moving", region: "Basel-Stadt", price: "CHF CHF CHF", rating: 4.9, services: ["Transport", "Montage", "Lagerung"] },
+                    { name: "Luzern Transport AG", region: "Zentralschweiz", price: "CHF CHF", rating: 4.6, services: ["Transport", "Reinigung", "Lagerung"] }
+                  ].map((company, index) => (
+                    <tr key={index} className="border-b last:border-0 hover:bg-secondary/5 transition-colors">
+                      <td className="p-4 font-medium">{company.name}</td>
+                      <td className="p-4 text-sm text-muted-foreground">{company.region}</td>
+                      <td className="p-4">
+                        <span className="text-primary font-semibold">{company.price}</span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <svg key={i} className={`w-4 h-4 ${i < Math.floor(company.rating) ? 'fill-yellow-500 text-yellow-500' : 'fill-gray-300 text-gray-300'}`} viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                          <span className="ml-1 font-medium">{company.rating}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex flex-wrap gap-1">
+                          {company.services.map((service, idx) => (
+                            <span key={idx} className="text-xs px-2 py-1 bg-secondary rounded-full">
+                              {service}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <Button size="sm" variant="outline" asChild>
+                          <Link to="/umzugsfirmen">Details</Link>
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              Dies sind Beispieldaten. Ihre tatsächlichen Offerten basieren auf Ihren individuellen Anforderungen.
+            </p>
+          </section>
+
+          {/* City Links */}
+          <section className="mb-16 bg-muted/30 rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl font-bold text-center mb-8">
+              Zum Vergleich in deiner Region
+            </h2>
+            <p className="text-center text-muted-foreground mb-8">
+              Finden Sie die besten Umzugsfirmen in Ihrer Stadt
+            </p>
+            <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
+              {[
+                { name: "Zürich", slug: "zuerich" },
+                { name: "Bern", slug: "bern" },
+                { name: "Basel", slug: "basel" },
+                { name: "Luzern", slug: "luzern" },
+                { name: "Winterthur", slug: "winterthur" },
+                { name: "St. Gallen", slug: "st-gallen" }
+              ].map((city, index) => (
+                <Button key={index} variant="outline" asChild className="h-auto py-4">
+                  <Link to={`/umzugsfirmen/${city.slug}`} className="flex flex-col items-center gap-2">
+                    <Search className="w-5 h-5" />
+                    <span className="font-medium">{city.name}</span>
+                  </Link>
+                </Button>
+              ))}
+            </div>
           </section>
 
           {/* Vorteile Umzugscheck.ch */}
@@ -185,18 +268,25 @@ const Vergleich = () => {
 
           {/* CTA Section */}
           <section className="bg-primary text-primary-foreground rounded-2xl p-8 md:p-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">
-              Bereit, die beste Umzugsfirma zu finden?
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Jetzt Offerte anfordern und vergleichen
             </h2>
             <p className="text-xl mb-8 text-primary-foreground/90">
-              Starten Sie jetzt Ihren kostenlosen Vergleich
+              Erhalten Sie kostenlose Offerten von geprüften Umzugsfirmen und vergleichen Sie transparent
             </p>
-            <Button size="lg" variant="secondary" asChild>
-              <Link to="/rechner">
-                <Calculator className="w-5 h-5 mr-2" />
-                Jetzt vergleichen
-              </Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" asChild>
+                <Link to="/offerte">
+                  Offerte anfordern
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" asChild>
+                <Link to="/rechner">
+                  <Calculator className="w-5 h-5 mr-2" />
+                  Kosten berechnen
+                </Link>
+              </Button>
+            </div>
           </section>
         </div>
       </div>

@@ -194,6 +194,146 @@ const Preise = () => {
             </div>
           </section>
 
+          {/* Calculator Highlight */}
+          <section className="mb-16">
+            <div className="max-w-4xl mx-auto">
+              <Card className="overflow-hidden shadow-strong border-primary/20">
+                <div className="grid md:grid-cols-2">
+                  <div className="bg-primary text-primary-foreground p-8 md:p-12 flex flex-col justify-center">
+                    <Calculator className="w-12 h-12 mb-4" />
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                      Umzugskosten-Rechner
+                    </h3>
+                    <p className="text-primary-foreground/90 mb-6">
+                      Berechnen Sie Ihre individuellen Umzugskosten mit unserem kostenlosen Rechner – 
+                      präzise und in wenigen Minuten.
+                    </p>
+                  </div>
+                  
+                  <div className="p-8 md:p-12 flex flex-col justify-center bg-background">
+                    <h4 className="text-xl font-bold mb-4">Jetzt berechnen</h4>
+                    <ul className="space-y-3 mb-6">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-5 h-5 text-primary mt-0.5" />
+                        <span className="text-sm">Kostenlos & unverbindlich</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-5 h-5 text-primary mt-0.5" />
+                        <span className="text-sm">Sofortiges Ergebnis</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-5 h-5 text-primary mt-0.5" />
+                        <span className="text-sm">Alle Kostenfaktoren berücksichtigt</span>
+                      </li>
+                    </ul>
+                    <Button size="lg" asChild>
+                      <Link to="/rechner/umzugskosten">
+                        <Calculator className="mr-2 w-5 h-5" />
+                        Umzugskosten berechnen
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </section>
+
+          {/* City-Specific Hints */}
+          <section className="mb-16">
+            <h2 className="text-3xl font-bold text-center mb-8">
+              Regionale Preisunterschiede
+            </h2>
+            <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Umzugskosten variieren je nach Region. Grossstädte wie Zürich sind tendenziell teurer, 
+              während ländliche Regionen oft günstigere Preise bieten.
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {[
+                { 
+                  city: "Zürich", 
+                  slug: "zuerich",
+                  priceLevel: "Höher",
+                  note: "Höhere Lebenshaltungskosten, enge Parkplatzsituation, aber beste Verfügbarkeit"
+                },
+                { 
+                  city: "Bern", 
+                  slug: "bern",
+                  priceLevel: "Mittel",
+                  note: "Ausgeglichenes Preisniveau mit guter Firmenauswahl und Altstadt-Expertise"
+                },
+                { 
+                  city: "Basel", 
+                  slug: "basel",
+                  priceLevel: "Mittel-Hoch",
+                  note: "Grenzregion mit Spezialisten für internationale Umzüge"
+                }
+              ].map((city, index) => (
+                <Card key={index} className="hover:shadow-medium transition-all">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <CardTitle className="text-xl">{city.city}</CardTitle>
+                      <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                        city.priceLevel === "Höher" ? "bg-red-100 text-red-700" :
+                        city.priceLevel === "Mittel-Hoch" ? "bg-orange-100 text-orange-700" :
+                        "bg-green-100 text-green-700"
+                      }`}>
+                        {city.priceLevel}
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">{city.note}</p>
+                    <Button variant="ghost" size="sm" asChild className="w-full">
+                      <Link to={`/umzugsfirmen/${city.slug}`}>
+                        Umzugsfirmen in {city.city} ansehen
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="mb-16 bg-muted/30 rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl font-bold text-center mb-8">
+              Häufige Fragen zu Umzugspreisen
+            </h2>
+            <div className="max-w-3xl mx-auto space-y-6">
+              {[
+                {
+                  question: "Was kostet ein Umzug durchschnittlich in der Schweiz?",
+                  answer: "Die Kosten variieren stark je nach Grösse und Distanz. Eine 3-Zimmer-Wohnung kostet durchschnittlich CHF 1'500-3'000. Nutzen Sie unseren Rechner für eine präzise Schätzung."
+                },
+                {
+                  question: "Gibt es versteckte Kosten bei Umzügen?",
+                  answer: "Bei seriösen Anbietern nicht. Achten Sie auf eine detaillierte Offerte mit Aufschlüsselung aller Positionen: Transportkosten, Arbeitsstunden, Treppenzuschläge, Parkgebühren und Zusatzleistungen."
+                },
+                {
+                  question: "Wann sind Umzüge am günstigsten?",
+                  answer: "Unter der Woche (Montag-Donnerstag), in Wintermonaten (November-Februar) und Mitte des Monats sind Umzüge günstiger. Monatsende und Sommermonate sind Hochsaison."
+                },
+                {
+                  question: "Kann ich beim Umzug Geld sparen?",
+                  answer: "Ja: Umzugsgut vorher ausmisten, selbst packen, Umzugstermin flexibel wählen, mehrere Offerten vergleichen und auf Zusatzleistungen verzichten, die Sie selbst erledigen können."
+                },
+                {
+                  question: "Sind Umzugskosten steuerlich absetzbar?",
+                  answer: "Bei beruflich bedingten Umzügen können Kosten als Berufskosten abgesetzt werden. Private Umzüge sind nicht abzugsfähig. Konsultieren Sie einen Steuerberater für Details."
+                },
+                {
+                  question: "Was passiert bei Schäden während des Umzugs?",
+                  answer: "Seriöse Umzugsfirmen haben eine Transportversicherung. Prüfen Sie die Versicherungsbedingungen in der Offerte und dokumentieren Sie wertvolle Gegenstände vor dem Umzug."
+                }
+              ].map((faq, index) => (
+                <div key={index} className="bg-background p-6 rounded-xl shadow-sm">
+                  <h3 className="font-bold text-lg mb-3">{faq.question}</h3>
+                  <p className="text-muted-foreground">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* CTA Section */}
           <section className="bg-primary text-primary-foreground rounded-2xl p-8 md:p-12 text-center">
             <h2 className="text-3xl font-bold mb-4">
@@ -210,8 +350,8 @@ const Preise = () => {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" asChild>
-                <Link to="/firmen">
-                  Umzugsfirmen vergleichen
+                <Link to="/offerte">
+                  Offerte anfordern
                 </Link>
               </Button>
             </div>

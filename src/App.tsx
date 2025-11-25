@@ -30,6 +30,7 @@ import AGB from "./pages/AGB";
 import Impressum from "./pages/Impressum";
 import Cookies from "./pages/Cookies";
 import Calculator from "./pages/Calculator";
+import RechnerHub from "./pages/RechnerHub";
 import CalculatorResults from "./pages/CalculatorResults";
 import EstimateResult from "./pages/EstimateResult";
 import LeadRequest from "./pages/LeadRequest";
@@ -124,7 +125,7 @@ const App = () => (
             <Route path="/agb" element={<AGB />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/cookies" element={<Cookies />} />
-            <Route path="/rechner" element={<Calculator />} />
+            <Route path="/rechner" element={<RechnerHub />} />
             <Route path="/rechner/umzugskosten" element={<Calculator />} />
             <Route path="/rechner/volumenrechner" element={<Calculator />} />
             <Route path="/rechner/transporter-groesse" element={<Calculator />} />
