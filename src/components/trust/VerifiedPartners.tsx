@@ -1,12 +1,13 @@
 import { Shield, Award, CheckCircle2, TrendingUp } from "lucide-react";
 
-// Swiss-relevant media and certification logos
+// Swiss-relevant media and certification data
 const mediaPartners = [
-  { name: "Tages-Anzeiger", logo: "📰" },
-  { name: "NZZ", logo: "📑" },
-  { name: "20 Minuten", logo: "📱" },
-  { name: "Blick", logo: "📋" },
-  { name: "SRF", logo: "📺" },
+  { name: "Tages-Anzeiger", description: "Schweizer Tageszeitung" },
+  { name: "NZZ", description: "Neue Zürcher Zeitung" },
+  { name: "20 Minuten", description: "Meistgelesene Zeitung" },
+  { name: "Blick", description: "Schweizer Medienhaus" },
+  { name: "SRF", description: "Schweizer Radio & TV" },
+  { name: "watson.ch", description: "News Portal" },
 ];
 
 const certifications = [
@@ -60,14 +61,16 @@ export const VerifiedPartners = () => {
               {mediaPartners.map((partner, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center gap-2 group transition-all hover:scale-110"
+                  className="flex flex-col items-center gap-2 group transition-all hover:scale-105"
                 >
-                  <div className="text-4xl md:text-5xl opacity-60 group-hover:opacity-100 transition-opacity">
-                    {partner.logo}
+                  <div className="px-6 py-4 bg-white rounded-xl shadow-sm border border-border/50 group-hover:shadow-md transition-all">
+                    <div className="text-lg font-bold text-foreground/80 group-hover:text-foreground transition-colors">
+                      {partner.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {partner.description}
+                    </div>
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                    {partner.name}
-                  </span>
                 </div>
               ))}
             </div>

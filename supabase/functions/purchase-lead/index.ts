@@ -47,11 +47,54 @@ serve(async (req) => {
   }
 
   try {
+    // Verify JWT token from provider auth
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Missing or invalid token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const jwtSecret = Deno.env.get("JWT_SECRET");
+    if (!jwtSecret) {
+      throw new Error("JWT_SECRET not configured");
+    }
+
+    // Import JWT verification
+    const { verify } = await import("https://deno.land/x/djwt@v2.8/mod.ts");
+
+    let decodedToken;
+    try {
+      const key = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(jwtSecret),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["verify"]
+      );
+      decodedToken = await verify(token, key);
+    } catch (e) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Invalid token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { providerId, leadId } = await req.json();
+
+    // Verify the authenticated provider matches the providerId in request
+    if (decodedToken.providerId !== providerId) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Provider ID mismatch" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     console.log("Purchase lead request:", { providerId, leadId });
 

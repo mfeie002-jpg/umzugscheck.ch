@@ -36,6 +36,34 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contact.email)) {
+      return new Response(
+        JSON.stringify({ success: false, error: { message: 'Invalid email format', code: 'INVALID_EMAIL' } }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate phone format (optional but must be valid if provided)
+    if (contact.phone) {
+      const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+      if (!phoneRegex.test(contact.phone) || contact.phone.length < 7 || contact.phone.length > 20) {
+        return new Response(
+          JSON.stringify({ success: false, error: { message: 'Invalid phone format', code: 'INVALID_PHONE' } }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    // Validate string lengths
+    if (contact.name.length > 200 || contact.email.length > 200) {
+      return new Response(
+        JSON.stringify({ success: false, error: { message: 'Input too long', code: 'INPUT_TOO_LONG' } }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     console.log('Creating funnel lead for estimate session:', estimateSessionId);
 
     // Track company selection count for A/B testing
