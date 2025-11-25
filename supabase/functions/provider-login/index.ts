@@ -7,7 +7,20 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const JWT_SECRET = Deno.env.get('JWT_SECRET') || 'your-secret-key-change-in-production';
+const JWT_SECRET = Deno.env.get('JWT_SECRET');
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+
+// Input validation
+function validateEmail(email: string): boolean {
+  return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
+}
+
+function sanitizeString(str: string, maxLength: number = 255): string {
+  return str.trim().slice(0, maxLength);
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -29,11 +42,37 @@ serve(async (req) => {
       );
     }
 
+    // Validate email format
+    if (!validateEmail(email)) {
+      return new Response(
+        JSON.stringify({ error: 'Ungültige E-Mail-Adresse' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Sanitize inputs
+    const sanitizedEmail = sanitizeString(email, 255).toLowerCase();
+
+    // Rate limit login attempts (max 10 per 15 minutes per email)
+    const { data: rateLimitOk } = await supabase.rpc('check_rate_limit', {
+      p_identifier: sanitizedEmail,
+      p_action_type: 'provider_login',
+      p_max_attempts: 10,
+      p_window_minutes: 15
+    });
+
+    if (!rateLimitOk) {
+      return new Response(
+        JSON.stringify({ error: 'Zu viele Login-Versuche. Bitte versuchen Sie es später erneut.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Find provider by email
     const { data: provider, error: selectError } = await supabase
       .from('service_providers')
       .select('*')
-      .eq('email', email.toLowerCase())
+      .eq('email', sanitizedEmail)
       .maybeSingle();
 
     if (selectError || !provider) {
