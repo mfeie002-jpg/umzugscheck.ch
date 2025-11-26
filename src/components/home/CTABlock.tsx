@@ -1,0 +1,59 @@
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+
+export const CTABlock = () => {
+  return (
+    <section className="py-16 md:py-20 relative overflow-hidden">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary opacity-95" />
+      
+      {/* Pattern Overlay */}
+      <div className="absolute inset-0 opacity-10" 
+           style={{ 
+             backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+             backgroundSize: '30px 30px'
+           }} 
+      />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-3xl mx-auto text-center text-white space-y-6">
+          <Sparkles className="h-12 w-12 mx-auto mb-4 animate-pulse" />
+          
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+            Bereit für deinen stressfreien Umzug?
+          </h2>
+          
+          <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
+            Erhalte jetzt kostenlose Umzugsofferten von geprüften Profis.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+            <Link to="/firmen">
+              <Button 
+                size="lg"
+                className="w-full sm:w-auto h-14 px-10 text-lg bg-white text-primary hover:bg-white/90 shadow-xl"
+              >
+                GRATIS OFFERTEN STARTEN
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link to="/rechner">
+              <Button 
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto h-14 px-10 text-lg bg-transparent text-white border-2 border-white hover:bg-white/10"
+              >
+                Kosten berechnen
+              </Button>
+            </Link>
+          </div>
+
+          <p className="text-sm text-white/80 pt-4">
+            ✓ 100% kostenlos  ✓ Keine Anmeldung  ✓ In 2 Minuten fertig
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
