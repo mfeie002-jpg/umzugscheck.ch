@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { OnboardingHint } from "@/components/OnboardingHint";
+import { OffertenCTA } from "@/components/OffertenCTA";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -664,6 +665,16 @@ const Companies = () => {
                 </div>
               )}
             </div>
+          </div>
+        </section>
+
+        {/* Offerten CTA Section */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <OffertenCTA 
+              variant="compact"
+              showBenefits
+            />
           </div>
         </section>
       </main>

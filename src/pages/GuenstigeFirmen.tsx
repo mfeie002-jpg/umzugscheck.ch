@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard";
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
+import { OffertenCTA } from "@/components/OffertenCTA";
 import { Button } from "@/components/ui/button";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { TrendingDown, DollarSign, CheckCircle, ArrowRight } from "lucide-react";
