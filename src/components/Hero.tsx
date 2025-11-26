@@ -153,8 +153,8 @@ export const Hero = () => {
               )}
               
               {/* White Banner Overlay - Left Side */}
-              <div className="absolute left-6 bottom-6">
-                <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-2xl p-3 w-56 border border-primary/10">
+              <div className="absolute left-6 bottom-10">
+                <div className="bg-white/85 backdrop-blur-md rounded-xl shadow-2xl p-3 w-56 border border-primary/10">
                   {/* Red Badge */}
                   <div className="mb-2">
                     <Badge className="bg-accent hover:bg-accent text-white px-2 py-0.5 text-[10px]">
