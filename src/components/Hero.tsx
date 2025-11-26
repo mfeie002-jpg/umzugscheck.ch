@@ -43,11 +43,19 @@ export const Hero = () => {
 
   const generateHeroBackground = async () => {
     try {
+      console.log('Requesting hero background generation...');
       const { data, error } = await supabase.functions.invoke('generate-hero-image');
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+      console.log('Edge function response:', data);
       if (data?.imageUrl) {
+        console.log('Setting background image, URL length:', data.imageUrl.length);
         setBackgroundImage(data.imageUrl);
         localStorage.setItem('hero-background-image', data.imageUrl);
+      } else {
+        console.warn('No imageUrl in response');
       }
     } catch (error) {
       console.error('Error generating hero background:', error);
