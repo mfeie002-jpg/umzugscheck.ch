@@ -19,6 +19,8 @@ import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
 import Index from "./pages/Index";
 import NewIndex from "./pages/NewIndex";
+import { HomePage } from "./pages/HomePage";
+import { CityPage } from "./pages/CityPage";
 import HomeOptimized from "./pages/HomeOptimized";
 import Sitemap from "./pages/Sitemap";
 import Calculator from "./pages/Calculator";

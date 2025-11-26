@@ -8,7 +8,7 @@ export interface CityData {
   slug: string;
   canton: string;
   description: string;
-  priceExamples: { size: string; price: string }[];
+  priceExamples: { size: string; distance: string; priceRange: string; icon?: "home" | "trending" | "dollar" }[];
   advantages: string[];
   faqs: { question: string; answer: string }[];
   neighboringCities: string[];
@@ -21,9 +21,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Zürich",
     description: "Die grösste Stadt der Schweiz bietet eine Vielzahl an professionellen Umzugsfirmen mit exzellenter Qualität.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 800–1'200" },
-      { size: "3 Zimmer", price: "CHF 1'200–1'800" },
-      { size: "4+ Zimmer", price: "CHF 1'800–3'000" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 800–1'200", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'200–1'800", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'800–3'000", icon: "dollar" }
     ],
     advantages: [
       "Kurzfristige Verfügbarkeit",
@@ -43,9 +43,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Bern",
     description: "Die Bundesstadt kombiniert historischen Charme mit moderner Infrastruktur und erfahrenen Umzugsprofis.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 750–1'100" },
-      { size: "3 Zimmer", price: "CHF 1'100–1'700" },
-      { size: "4+ Zimmer", price: "CHF 1'700–2'800" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 750–1'100", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'100–1'700", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'700–2'800", icon: "dollar" }
     ],
     advantages: [
       "Altstadtkompetenz der lokalen Firmen",
@@ -65,9 +65,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Basel-Stadt",
     description: "Basel im Dreiländereck bietet erstklassige Umzugsfirmen für nationale und internationale Umzüge.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 800–1'150" },
-      { size: "3 Zimmer", price: "CHF 1'150–1'750" },
-      { size: "4+ Zimmer", price: "CHF 1'750–2'900" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 800–1'150", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'150–1'750", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'750–2'900", icon: "dollar" }
     ],
     advantages: [
       "Internationale Umzugserfahrung",

@@ -4,7 +4,12 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-export const StickyMobileCTA = () => {
+interface StickyMobileCTAProps {
+  text?: string;
+  link?: string;
+}
+
+export const StickyMobileCTA = ({ text = "Offerte erhalten", link = "/umzugsofferten" }: StickyMobileCTAProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -31,9 +36,9 @@ export const StickyMobileCTA = () => {
         <div className="container mx-auto px-4 py-3">
           <div className="flex flex-col gap-2">
             <p className="text-xs text-center text-muted-foreground">Jetzt Offerten für Ihren Umzug erhalten</p>
-            <Link to="/umzugsofferten" className="w-full">
+            <Link to={link} className="w-full">
               <Button size="lg" className="w-full h-12 text-base font-bold shadow-lg">
-                Offerte erhalten
+                {text}
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
