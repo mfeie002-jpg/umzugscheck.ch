@@ -64,175 +64,110 @@ export const Hero = () => {
   };
   
   return (
-    <section className="relative overflow-hidden gradient-hero text-white">
+    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50/50 text-foreground">
       {/* Photographic Background - Happy Family with Movers */}
       {backgroundImage && (
         <div className="absolute inset-0 z-0">
           <img 
             src={backgroundImage} 
             alt="Happy family moving into new home with professional movers"
-            className="w-full h-full object-cover object-center opacity-30"
+            className="w-full h-full object-cover object-center opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/80 to-primary/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-blue-50/80 to-white/70"></div>
         </div>
       )}
       
-      {/* Enhanced Emotional Background with Dynamic Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/90 to-primary-dark/95">
-        
-        {/* Large Warm Gradient Blobs - MORE VISIBLE */}
-        <div className="absolute -top-32 -right-32 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/40 via-amber-400/35 to-yellow-400/30 rounded-full blur-3xl animate-blob opacity-70"></div>
-        <div className="absolute top-1/3 -left-40 w-[700px] h-[700px] bg-gradient-to-br from-emerald-400/30 via-teal-400/35 to-cyan-400/25 rounded-full blur-3xl animate-blob-reverse opacity-60" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-0 right-1/3 w-[600px] h-[600px] bg-gradient-to-br from-rose-400/25 via-pink-400/30 to-fuchsia-400/20 rounded-full blur-3xl animate-blob opacity-50" style={{animationDelay: '4s'}}></div>
-        
-        {/* Accent Color Overlays for Warmth */}
-        <div className="absolute top-20 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-2xl animate-pulse" style={{animationDuration: '4s'}}></div>
-        <div className="absolute bottom-40 right-1/4 w-80 h-80 bg-success/15 rounded-full blur-2xl animate-pulse" style={{animationDuration: '5s', animationDelay: '1s'}}></div>
-        
-        {/* Floating Moving Elements - Relief & Freedom Feeling */}
-        <div className="absolute inset-0 opacity-[0.12]">
-          {/* Happy family moving in - top left */}
-          <div className="absolute top-[12%] left-[8%] w-20 h-20 text-white/60 animate-pulse" style={{animationDuration: '3s'}}>
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
-            </svg>
-          </div>
-          
-          {/* Moving truck - bottom right */}
-          <div className="absolute bottom-[18%] right-[10%] w-28 h-28 opacity-100 animate-pulse" style={{animationDuration: '6s'}}>
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="text-white/40">
-              <path d="M18 18.5C18 19.88 16.88 21 15.5 21C14.12 21 13 19.88 13 18.5C13 17.12 14.12 16 15.5 16C16.88 16 18 17.12 18 18.5ZM19.5 9.5H17V12H21.46L19.5 9.5ZM8.5 16C7.12 16 6 17.12 6 18.5C6 19.88 7.12 21 8.5 21C9.88 21 11 19.88 11 18.5C11 17.12 9.88 16 8.5 16ZM17 8V4H3C1.9 4 1 4.9 1 6V15H3C3 16.66 4.34 18 6 18C7.66 18 9 16.66 9 15H15C15 16.66 16.34 18 18 18C19.66 18 21 16.66 21 15H23V12L19 8H17Z"/>
-            </svg>
-          </div>
-          
-          {/* New home with heart - left center */}
-          <div className="absolute top-[45%] left-[5%] w-24 h-24 text-white/50 animate-pulse" style={{animationDuration: '4.5s'}}>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 9L12 2L21 9V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M9 21V12H15V21" stroke="currentColor" strokeWidth="2"/>
-              <path d="M12 8C12.8284 8 13.5 7.32843 13.5 6.5C13.5 5.67157 12.8284 5 12 5C11.1716 5 10.5 5.67157 10.5 6.5C10.5 7.32843 11.1716 8 12 8Z" fill="currentColor"/>
-            </svg>
-          </div>
-          
-          {/* Checkmark - success feeling top right */}
-          <div className="absolute top-[20%] right-[15%] w-16 h-16 text-success/70 animate-pulse" style={{animationDuration: '3.5s'}}>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5"/>
-              <path d="M7 12L10.5 15.5L17 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          
-          {/* Box stack - organized feeling */}
-          <div className="absolute top-[55%] right-[8%] w-18 h-18 text-white/45 animate-pulse" style={{animationDuration: '5s'}}>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
-              <rect x="14" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
-              <rect x="3" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
-              <rect x="14" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
-            </svg>
-          </div>
-          
-          {/* Stars/quality indicators */}
-          <div className="absolute top-[35%] right-[25%] w-10 h-10 text-yellow-300/60 animate-pulse" style={{animationDuration: '4s'}}>
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-            </svg>
-          </div>
-        </div>
-        
-        {/* Subtle Dot Pattern for Texture */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjIiLz48Y2lyY2xlIGN4PSIzMyIgY3k9IjMiIHI9IjIiLz48Y2lyY2xlIGN4PSIzIiBjeT0iMzMiIHI9IjIiLz48Y2lyY2xlIGN4PSIzMyIgY3k9IjMzIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
-        
-        {/* Depth Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/20"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10"></div>
+      {/* Soft Warm Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-white to-orange-50/20">
+        {/* Subtle Gradient Blobs */}
+        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-gradient-to-br from-blue-200/30 to-blue-100/20 rounded-full blur-3xl animate-blob"></div>
+        <div className="absolute bottom-0 -left-32 w-[500px] h-[500px] bg-gradient-to-br from-orange-100/30 to-amber-50/20 rounded-full blur-3xl animate-blob-reverse" style={{animationDelay: '2s'}}></div>
       </div>
         
       <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24 relative z-10">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-start max-w-7xl mx-auto">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-center max-w-7xl mx-auto">
           <div className="space-y-4 sm:space-y-6 lg:pr-8 w-full">
-            <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium border border-accent/30">
-              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-accent animate-pulse flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold">🇨🇭 Erster KI-Rechner der Schweiz</span>
+            {/* Small KI Badge */}
+            <div className="inline-flex items-center gap-2 bg-accent/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium border border-accent/20">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium text-foreground/80">✨ NEU: KI-gestützte Volumenanalyse (Beta)</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tight">
-              Jetzt mit <span className="text-accent drop-shadow-lg">KI-Rechner</span><br className="hidden sm:inline" />
-              <span className="text-white">bis zu 40% sparen</span>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tight text-foreground">
+              Vergleichen Sie Ihren Umzug – <span className="text-primary">schnell, fair und stressfrei</span>
             </h1>
 
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/95 leading-relaxed">
-              <strong>Einfach Foto oder Video hochladen</strong> – unsere KI analysiert automatisch Ihr Umzugsvolumen und erstellt eine präzise Kostenschätzung. Vergleichen Sie sofort passende Angebote von geprüften Schweizer Umzugsfirmen.
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/80 leading-relaxed">
+              Erhalten Sie in 2 Minuten passende Angebote von geprüften Schweizer Umzugsfirmen. Kostenlos und unverbindlich.
             </p>
 
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
-                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-accent mx-auto mb-1 sm:mb-2" />
-                <p className="text-lg sm:text-2xl font-bold text-center mb-0.5 sm:mb-1">40%</p>
-                <p className="text-xs sm:text-sm text-white/90 text-center leading-tight">günstiger</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
+            {/* USP Row */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4">
+              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
                 <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success mx-auto mb-1 sm:mb-2" />
-                <p className="text-lg sm:text-2xl font-bold text-center mb-0.5 sm:mb-1">4.8/5</p>
-                <p className="text-xs sm:text-sm text-white/90 text-center leading-tight">Rating</p>
+                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">100% kostenlos</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
-                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-white mx-auto mb-1 sm:mb-2" />
-                <p className="text-lg sm:text-2xl font-bold text-center mb-0.5 sm:mb-1">15k+</p>
-                <p className="text-xs sm:text-sm text-white/90 text-center leading-tight">Umzüge</p>
+              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
+                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-accent mx-auto mb-1 sm:mb-2" />
+                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">Bis zu 40% günstiger</p>
+              </div>
+              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
+                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-1 sm:mb-2" />
+                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">4.8/5 Kundenzufriedenheit</p>
+              </div>
+              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-1 sm:mb-2" />
+                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">15'000+ Umzüge begleitet</p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 pt-2 sm:pt-4">
-              <Link to="/rechner" className="w-full">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-2 sm:pt-4">
+              <Link to="/umzugsofferten" className="w-full sm:flex-1">
                 <Button 
                   size="lg" 
-                  className="w-full h-12 sm:h-14 text-sm sm:text-base bg-accent hover:bg-accent-dark text-white font-bold"
+                  className="w-full h-12 sm:h-14 text-sm sm:text-base bg-accent hover:bg-accent/90 text-white font-bold shadow-lg"
                   onClick={() => trigger('medium')}
-                  aria-label="Umzugskosten mit KI-Rechner berechnen"
+                  aria-label="Jetzt Umzug vergleichen"
                 >
-                  <span>Umzugskosten berechnen</span>
+                  <span>Jetzt Umzug vergleichen</span>
                   <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                 </Button>
               </Link>
-              <Link to="/firmen" className="w-full">
+              <Link to="/rechner" className="w-full sm:flex-1">
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-white/40 bg-white/10 text-white hover:bg-white/20"
+                  className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-primary/30 bg-white hover:bg-primary/5 text-foreground font-semibold"
                   onClick={() => trigger('light')}
-                  aria-label="Umzugsfirmen vergleichen und bewerten"
+                  aria-label="Kosten berechnen"
                 >
-                  Umzugsfirmen vergleichen
+                  Kosten berechnen
                 </Button>
               </Link>
             </div>
 
             <div className="pt-2 sm:pt-4">
-              <p className="text-white/90 text-xs sm:text-sm flex items-center gap-2">
-                <Shield className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-                <span>Kostenlos & unverbindlich. Ihre Daten werden nur für Ihre Offerten-Anfrage verwendet.</span>
+              <p className="text-foreground/70 text-xs sm:text-sm flex items-center gap-2">
+                <Shield className="w-4 h-4 flex-shrink-0 text-success" aria-hidden="true" />
+                <span>Kostenlos & unverbindlich. Ihre Daten werden sicher behandelt.</span>
               </p>
             </div>
 
             <SecurityBadges />
           </div>
 
-          <div className="w-full lg:ml-auto lg:max-w-md order-first lg:order-last">
-            <div className="backdrop-blur-lg bg-white/98 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 border-2 border-accent/20 relative">
-              <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex gap-2">
+          <div className="w-full lg:ml-auto lg:max-w-md">
+            <div className="backdrop-blur-lg bg-white rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 border border-primary/20 relative">
+              <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
                 <PopularBadge variant="popular" />
-                <Badge className="bg-accent text-white border-0 shadow-accent">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  KI-Power
-                </Badge>
               </div>
               <div className="mb-3 sm:mb-4">
                 <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-accent" />
                   KI-Umzugsrechner
                 </h3>
-                <p className="text-xs text-foreground/80">📸 Foto oder 🎥 Video hochladen – KI analysiert automatisch</p>
+                <p className="text-xs text-foreground/70">📸 Foto oder 🎥 Video hochladen – KI analysiert automatisch</p>
               </div>
               <AICalculator />
               <div className="mt-3 flex items-center gap-2 text-xs text-success justify-center font-medium">
@@ -247,9 +182,9 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="relative z-20 pb-8 border-t border-white/30 mt-8 bg-primary/20 backdrop-blur-sm">
+      <div className="relative z-20 pb-8 border-t border-primary/10 mt-8 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <p className="text-center text-white font-semibold mb-6 text-sm sm:text-base">Bekannt aus & geprüft von:</p>
+          <p className="text-center text-foreground/80 font-semibold mb-6 text-sm sm:text-base">Bekannt aus & geprüft von:</p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
             <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
               <img src={logo20min} alt="20 Minuten" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />
@@ -280,7 +215,7 @@ export const Hero = () => {
 
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-          <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(var(--background))"/>
+          <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
         </svg>
       </div>
     </section>
