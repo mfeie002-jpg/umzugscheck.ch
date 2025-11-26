@@ -17,6 +17,9 @@ import { RankingFilters, FilterState } from "@/components/rankings/RankingFilter
 import { MobileFilterSheet } from "@/components/rankings/MobileFilterSheet";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { toast } from "sonner";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 export default function GuenstigeFirmen() {
   const { region } = useParams();
