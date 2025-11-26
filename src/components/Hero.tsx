@@ -1,11 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, Clock, TrendingDown, Newspaper, Eye, Zap, ShieldCheck, Award } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, Clock, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { QuickCalculator } from "./calculator/QuickCalculator";
 import { SecurityBadges } from "@/components/trust/SecurityBadges";
 import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
 import { PopularBadge } from "@/components/trust/PopularBadge";
 import { useHaptic } from "@/hooks/use-haptic";
+
+// Import partner logos
+import logo20min from "@/assets/logos/20min-logo.png";
+import logoWatson from "@/assets/logos/watson-logo.png";
+import logoBlick from "@/assets/logos/blick-logo.png";
+import logoTagesanzeiger from "@/assets/logos/tagesanzeiger-logo.png";
+import logoTCS from "@/assets/logos/tcs-logo.png";
+import logoASTAG from "@/assets/logos/astag-logo.png";
 
 export const Hero = () => {
   const { trigger } = useHaptic();
@@ -159,52 +167,28 @@ export const Hero = () => {
         <div className="container mx-auto px-4">
           <p className="text-center text-white font-medium mb-6">Bekannt aus & geprüft von:</p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
-            <div className="relative flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
-              <Newspaper className="w-10 h-10 text-slate-700 mb-1" />
-              <div className="text-center">
-                <div className="text-foreground font-bold text-sm">TAGES-ANZEIGER</div>
-                <div className="text-muted-foreground text-xs">Tageszeitung</div>
-              </div>
+            <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
+              <img src={logo20min} alt="20 Minuten" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />
             </div>
 
-            <div className="relative flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
-              <Clock className="w-10 h-10 text-red-600 mb-1" />
-              <div className="text-center">
-                <div className="text-foreground font-bold text-sm">20 MINUTEN</div>
-                <div className="text-muted-foreground text-xs">Meistgelesen</div>
-              </div>
+            <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
+              <img src={logoTagesanzeiger} alt="Tages-Anzeiger" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />
             </div>
 
-            <div className="relative flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
-              <Eye className="w-10 h-10 text-blue-700 mb-1" />
-              <div className="text-center">
-                <div className="text-foreground font-bold text-sm">BLICK</div>
-                <div className="text-muted-foreground text-xs">Medienhaus</div>
-              </div>
+            <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
+              <img src={logoBlick} alt="Blick" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />
             </div>
 
-            <div className="relative flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
-              <Zap className="w-10 h-10 text-orange-600 mb-1" />
-              <div className="text-center">
-                <div className="text-foreground font-bold text-sm">watson</div>
-                <div className="text-muted-foreground text-xs">News Portal</div>
-              </div>
+            <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
+              <img src={logoWatson} alt="watson" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />
             </div>
 
-            <div className="relative flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
-              <ShieldCheck className="w-10 h-10 text-blue-600 mb-1" />
-              <div className="text-center">
-                <div className="text-foreground font-bold text-sm">TÜV SCHWEIZ</div>
-                <div className="text-muted-foreground text-xs">Geprüft</div>
-              </div>
+            <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
+              <img src={logoTCS} alt="TCS Schweiz" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />
             </div>
 
-            <div className="relative flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
-              <Award className="w-10 h-10 text-green-600 mb-1" />
-              <div className="text-center">
-                <div className="text-foreground font-bold text-sm">VMS</div>
-                <div className="text-muted-foreground text-xs">Verband Möbeltransporte</div>
-              </div>
+            <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
+              <img src={logoASTAG} alt="ASTAG" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />
             </div>
           </div>
         </div>
