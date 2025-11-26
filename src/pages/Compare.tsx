@@ -1,20 +1,14 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, CheckCircle2, X, ArrowRight, AlertCircle, TrendingUp, Search, Filter, ArrowUpDown } from "lucide-react";
+import { Star, CheckCircle2, TrendingDown, Shield, BarChart3, ArrowRight, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { ComparisonTable } from "@/components/ComparisonTable";
-import { Separator } from "@/components/ui/separator";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 
 interface Company {
   id: string;
@@ -24,19 +18,12 @@ interface Company {
   review_count: number;
   price_level: string;
   services: string[];
-  service_areas: string[];
   verified: boolean;
 }
 
 const Compare = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [cantonFilter, setCantonFilter] = useState<string>("all");
-  const [priceFilter, setPriceFilter] = useState<string>("all");
-  const [serviceFilter, setServiceFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("rating");
 
   useEffect(() => {
     fetchCompanies();
@@ -48,7 +35,7 @@ const Compare = () => {
         .from("companies")
         .select("*")
         .order("rating", { ascending: false })
-        .limit(10);
+        .limit(6);
 
       if (error) throw error;
       setCompanies(data || []);
@@ -59,98 +46,29 @@ const Compare = () => {
     }
   };
 
-  const toggleCompany = (companyId: string) => {
-    if (selectedCompanies.includes(companyId)) {
-      setSelectedCompanies(selectedCompanies.filter(id => id !== companyId));
-    } else if (selectedCompanies.length < 5) {
-      setSelectedCompanies([...selectedCompanies, companyId]);
+  const hasService = (company: Company, serviceKey: string) => {
+    return company.services.some(s => 
+      s.toLowerCase().includes(serviceKey.toLowerCase())
+    );
+  };
+
+  const whyCompareReasons = [
+    {
+      icon: TrendingDown,
+      title: "Spart bis zu 40%",
+      description: "Durch den Vergleich mehrerer Angebote finden Sie die besten Preise für Ihren Umzug."
+    },
+    {
+      icon: Shield,
+      title: "Höhere Qualität",
+      description: "Geprüfte Firmen mit echten Kundenbewertungen – nur verifizierte Profis in unserem Netzwerk."
+    },
+    {
+      icon: BarChart3,
+      title: "Transparenz",
+      description: "Leistungen, Preise und Bewertungen auf einen Blick – faire Vergleichsbasis für Ihre Entscheidung."
     }
-  };
-
-  // Get unique values for filters
-  const allCantons = useMemo(() => {
-    const cantons = new Set<string>();
-    companies.forEach(company => {
-      company.service_areas?.forEach(area => cantons.add(area));
-    });
-    return Array.from(cantons).sort();
-  }, [companies]);
-
-  const allServices = useMemo(() => {
-    const services = new Set<string>();
-    companies.forEach(company => {
-      company.services?.forEach(service => services.add(service));
-    });
-    return Array.from(services).sort();
-  }, [companies]);
-
-  // Filter and sort companies
-  const filteredAndSortedCompanies = useMemo(() => {
-    // First filter
-    const filtered = companies.filter(company => {
-      // Search filter
-      if (searchTerm && !company.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return false;
-      }
-      
-      // Canton filter
-      if (cantonFilter !== "all" && !company.service_areas?.includes(cantonFilter)) {
-        return false;
-      }
-      
-      // Price filter
-      if (priceFilter !== "all" && company.price_level !== priceFilter) {
-        return false;
-      }
-      
-      // Service filter
-      if (serviceFilter !== "all" && !company.services?.includes(serviceFilter)) {
-        return false;
-      }
-      
-      return true;
-    });
-
-    // Then sort
-    return [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case "rating":
-          return (b.rating || 0) - (a.rating || 0);
-        case "review_count":
-          return (b.review_count || 0) - (a.review_count || 0);
-        case "price_low":
-          // Extract first number from price_level string for comparison
-          const priceA = parseInt(a.price_level?.match(/\d+/)?.[0] || "999999");
-          const priceB = parseInt(b.price_level?.match(/\d+/)?.[0] || "999999");
-          return priceA - priceB;
-        case "price_high":
-          const priceA2 = parseInt(a.price_level?.match(/\d+/)?.[0] || "0");
-          const priceB2 = parseInt(b.price_level?.match(/\d+/)?.[0] || "0");
-          return priceB2 - priceA2;
-        case "name":
-          return a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
-  }, [companies, searchTerm, cantonFilter, priceFilter, serviceFilter, sortBy]);
-
-  const selectedCompanyData = companies.filter(c => selectedCompanies.includes(c.id));
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setCantonFilter("all");
-    setPriceFilter("all");
-    setServiceFilter("all");
-    setSortBy("rating");
-  };
-
-  const activeFilterCount = [
-    searchTerm !== "",
-    cantonFilter !== "all",
-    priceFilter !== "all",
-    serviceFilter !== "all"
-  ].filter(Boolean).length;
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -158,279 +76,338 @@ const Compare = () => {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="gradient-hero text-white py-20 md:py-28">
+        <section className="gradient-hero text-white py-16 md:py-24">
           <div className="container mx-auto px-4">
             <ScrollReveal>
               <div className="max-w-4xl mx-auto text-center">
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="text-sm font-medium">Transparenter Firmenvergleich</span>
-                </div>
-                <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                  Umzugsfirmen vergleichen
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
+                  Umzugsfirmen vergleichen:<br className="hidden md:block" /> So findest du die besten Preise
                 </h1>
-                <p className="text-xl md:text-2xl text-white/90 mb-8">
-                  Wählen Sie 2-5 Firmen aus und vergleichen Sie Leistungen, Preise und Bewertungen side-by-side
+                <p className="text-lg md:text-xl text-white/90 mb-6 md:mb-8">
+                  Erhalte kostenlose Offerten von geprüften Schweizer Umzugsfirmen und spare bis zu 40%
                 </p>
+                <Link to="/rechner">
+                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-strong h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-bold">
+                    Jetzt vergleichen
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
               </div>
             </ScrollReveal>
           </div>
         </section>
 
-        {/* How to use */}
-        <section className="py-8 bg-gradient-to-b from-secondary/20 to-transparent">
+        {/* Comparison Table - Desktop */}
+        <section className="py-12 md:py-16 bg-gradient-to-b from-secondary/20 to-white">
           <div className="container mx-auto px-4">
             <ScrollReveal>
-              <Alert className="max-w-4xl mx-auto border-primary/20 bg-primary/5">
-                <AlertCircle className="h-5 w-5 text-primary" />
-                <AlertDescription className="text-base">
-                  <strong>So geht's:</strong> Wählen Sie aus der Liste unten 2 bis 5 Umzugsfirmen aus, 
-                  die Sie vergleichen möchten. Die Vergleichstabelle wird automatisch aktualisiert.
-                </AlertDescription>
-              </Alert>
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">
+                Vergleichen Sie die Top-Umzugsfirmen
+              </h2>
             </ScrollReveal>
-          </div>
-        </section>
 
-        {/* Company Selection */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-7xl mx-auto">
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
               <ScrollReveal>
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-3xl font-bold">
-                    Firmen auswählen
-                  </h2>
-                  <Badge variant="outline" className="text-lg px-4 py-2">
-                    {selectedCompanies.length}/5 gewählt
-                  </Badge>
-                </div>
-              </ScrollReveal>
-
-              {/* Search and Filters */}
-              <ScrollReveal>
-                <Card className="mb-8 border-primary/20">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Filter className="w-5 h-5 text-primary" />
-                      <h3 className="font-semibold text-lg">Suchen & Filtern</h3>
-                      {activeFilterCount > 0 && (
-                        <Badge variant="secondary" className="ml-2">
-                          {activeFilterCount} aktiv
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                      {/* Search */}
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Firma suchen..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-9"
-                        />
-                      </div>
-
-                      {/* Canton Filter */}
-                      <Select value={cantonFilter} onValueChange={setCantonFilter}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Kanton wählen" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Alle Kantone</SelectItem>
-                          {allCantons.map(canton => (
-                            <SelectItem key={canton} value={canton}>
-                              {canton}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      {/* Price Filter */}
-                      <Select value={priceFilter} onValueChange={setPriceFilter}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Preisniveau" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Alle Preise</SelectItem>
-                          <SelectItem value="CHF 800-1000/Tag">CHF 800-1000/Tag</SelectItem>
-                          <SelectItem value="CHF 900-1200/Tag">CHF 900-1200/Tag</SelectItem>
-                          <SelectItem value="CHF 1000-1400/Tag">CHF 1000-1400/Tag</SelectItem>
-                        </SelectContent>
-                      </Select>
-
-                      {/* Service Filter */}
-                      <Select value={serviceFilter} onValueChange={setServiceFilter}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Dienstleistung" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Alle Dienste</SelectItem>
-                          {allServices.map(service => (
-                            <SelectItem key={service} value={service}>
-                              {service}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <Separator className="my-4" />
-
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
-                      <p className="text-sm text-muted-foreground">
-                        {filteredAndSortedCompanies.length} {filteredAndSortedCompanies.length === 1 ? 'Firma' : 'Firmen'} gefunden
-                      </p>
-                      
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                          <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm font-medium">Sortieren:</span>
-                        </div>
-                        <Select value={sortBy} onValueChange={setSortBy}>
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="rating">Bewertung (hoch)</SelectItem>
-                            <SelectItem value="review_count">Anzahl Bewertungen</SelectItem>
-                            <SelectItem value="price_low">Preis (niedrig)</SelectItem>
-                            <SelectItem value="price_high">Preis (hoch)</SelectItem>
-                            <SelectItem value="name">Name (A-Z)</SelectItem>
-                          </SelectContent>
-                        </Select>
-
-                        {activeFilterCount > 0 && (
-                          <Button variant="ghost" size="sm" onClick={clearFilters}>
-                            Zurücksetzen
-                          </Button>
+                <Card className="shadow-strong">
+                  <CardContent className="p-0">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-gradient-to-r from-primary/5 to-primary/10 border-b-2 border-border">
+                          <th className="p-4 text-left font-bold">Firma</th>
+                          <th className="p-4 text-center font-bold">Sterne</th>
+                          <th className="p-4 text-center font-bold">Preis</th>
+                          <th className="p-4 text-center font-bold">Verfügbarkeit</th>
+                          <th className="p-4 text-center font-bold">Services</th>
+                          <th className="p-4 text-center font-bold">Aktion</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {loading ? (
+                          <tr>
+                            <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                              Lade Firmen...
+                            </td>
+                          </tr>
+                        ) : (
+                          companies.map((company, index) => (
+                            <tr 
+                              key={company.id} 
+                              className={`border-b border-border hover:bg-secondary/20 transition-colors ${
+                                index % 2 === 0 ? 'bg-white' : 'bg-secondary/5'
+                              }`}
+                            >
+                              <td className="p-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="text-3xl">{company.logo}</div>
+                                  <div>
+                                    <div className="font-bold">{company.name}</div>
+                                    {company.verified && (
+                                      <Badge variant="outline" className="text-xs bg-success/10 text-success border-success/30 mt-1">
+                                        <CheckCircle2 className="w-3 h-3 mr-1" />
+                                        Verifiziert
+                                      </Badge>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-4 text-center">
+                                <div className="flex flex-col items-center gap-1">
+                                  <div className="flex items-center gap-1">
+                                    {[...Array(5)].map((_, i) => (
+                                      <Star
+                                        key={i}
+                                        className={`w-4 h-4 ${
+                                          i < Math.floor(company.rating)
+                                            ? "fill-yellow-400 text-yellow-400"
+                                            : "text-gray-300"
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                  <span className="text-sm font-bold">{company.rating.toFixed(1)}</span>
+                                  <span className="text-xs text-muted-foreground">({company.review_count})</span>
+                                </div>
+                              </td>
+                              <td className="p-4 text-center">
+                                <span className="font-bold text-primary">{company.price_level}</span>
+                              </td>
+                              <td className="p-4 text-center">
+                                <Badge className="bg-success/10 text-success border-success/30">
+                                  Verfügbar
+                                </Badge>
+                              </td>
+                              <td className="p-4">
+                                <div className="flex flex-wrap gap-1 justify-center max-w-[200px] mx-auto">
+                                  {hasService(company, 'transport') && (
+                                    <Badge variant="secondary" className="text-xs">Transport</Badge>
+                                  )}
+                                  {hasService(company, 'pack') && (
+                                    <Badge variant="secondary" className="text-xs">Packen</Badge>
+                                  )}
+                                  {hasService(company, 'clean') && (
+                                    <Badge variant="secondary" className="text-xs">Reinigung</Badge>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-4 text-center">
+                                <Link to="/rechner">
+                                  <Button size="sm" className="shadow-md">
+                                    Offerte anfragen
+                                  </Button>
+                                </Link>
+                              </td>
+                            </tr>
+                          ))
                         )}
-                      </div>
-                    </div>
+                      </tbody>
+                    </table>
                   </CardContent>
                 </Card>
               </ScrollReveal>
+            </div>
 
-              {loading ? (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                  {[...Array(6)].map((_, i) => (
-                    <LoadingSkeletonCompany key={i} />
-                  ))}
-                </div>
-              ) : filteredAndSortedCompanies.length === 0 ? (
-                <Card className="p-12 text-center bg-gradient-to-br from-secondary/20 to-transparent mb-12">
-                  <div className="max-w-md mx-auto">
-                    <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-xl font-bold mb-2">Keine Firmen gefunden</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Mit den aktuellen Filtereinstellungen wurden keine Umzugsfirmen gefunden.
-                    </p>
-                    <Button variant="outline" onClick={clearFilters}>
-                      Filter zurücksetzen
-                    </Button>
-                  </div>
-                </Card>
-              ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                  {filteredAndSortedCompanies.map((company, index) => (
+            {/* Mobile: Airbnb-style Swipeable Cards */}
+            <div className="md:hidden">
+              <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+                {loading ? (
+                  <Card className="flex-shrink-0 w-[85vw] snap-center">
+                    <CardContent className="p-6 text-center text-muted-foreground">
+                      Lade Firmen...
+                    </CardContent>
+                  </Card>
+                ) : (
+                  companies.map((company, index) => (
                     <ScrollReveal key={company.id} delay={index * 0.1}>
-                      <Card
-                        className={`cursor-pointer transition-all duration-300 hover:shadow-strong hover:-translate-y-1 ${
-                          selectedCompanies.includes(company.id)
-                            ? "ring-2 ring-primary shadow-strong scale-[1.02]"
-                            : ""
-                        }`}
-                        onClick={() => toggleCompany(company.id)}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center gap-3 flex-1">
-                              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center text-3xl flex-shrink-0 shadow-soft">
-                                {company.logo}
+                      <Card className="flex-shrink-0 w-[85vw] snap-center shadow-strong hover:shadow-xl transition-shadow">
+                        <CardContent className="p-5">
+                          {/* Company Header */}
+                          <div className="flex items-start gap-3 mb-4">
+                            <div className="text-4xl">{company.logo}</div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold text-lg mb-1 truncate">{company.name}</h3>
+                              <div className="flex items-center gap-1 mb-2">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-bold text-sm">{company.rating.toFixed(1)}</span>
+                                <span className="text-xs text-muted-foreground">({company.review_count})</span>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-bold text-lg mb-1 truncate">{company.name}</h3>
-                                <div className="flex items-center gap-1">
-                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 flex-shrink-0" />
-                                  <span className="text-sm font-medium">{company.rating}</span>
-                                  <span className="text-sm text-muted-foreground">
-                                    ({company.review_count})
-                                  </span>
-                                </div>
-                              </div>
+                              {company.verified && (
+                                <Badge variant="outline" className="text-xs bg-success/10 text-success border-success/30">
+                                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                                  Verifiziert
+                                </Badge>
+                              )}
                             </div>
-                            <Checkbox
-                              checked={selectedCompanies.includes(company.id)}
-                              disabled={!selectedCompanies.includes(company.id) && selectedCompanies.length >= 5}
-                              className="flex-shrink-0 ml-2"
-                            />
                           </div>
-                          
-                          <div className="space-y-3 pt-3 border-t">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-muted-foreground">Preisniveau:</span>
-                              <span className="text-sm font-bold text-primary">{company.price_level}</span>
+
+                          {/* Details */}
+                          <div className="space-y-3 mb-4">
+                            <div className="flex items-center justify-between py-2 border-b border-border">
+                              <span className="text-sm text-muted-foreground">Preis:</span>
+                              <span className="font-bold text-primary">{company.price_level}</span>
                             </div>
-                            {company.verified && (
+                            <div className="flex items-center justify-between py-2 border-b border-border">
+                              <span className="text-sm text-muted-foreground">Verfügbarkeit:</span>
                               <Badge className="bg-success/10 text-success border-success/30">
-                                <CheckCircle2 className="w-3 h-3 mr-1" />
-                                Geprüft
+                                Verfügbar
                               </Badge>
-                            )}
+                            </div>
+                            <div className="py-2">
+                              <span className="text-sm text-muted-foreground mb-2 block">Services:</span>
+                              <div className="flex flex-wrap gap-2">
+                                {hasService(company, 'transport') && (
+                                  <Badge variant="secondary" className="text-xs">Transport</Badge>
+                                )}
+                                {hasService(company, 'pack') && (
+                                  <Badge variant="secondary" className="text-xs">Packen</Badge>
+                                )}
+                                {hasService(company, 'clean') && (
+                                  <Badge variant="secondary" className="text-xs">Reinigung</Badge>
+                                )}
+                                {hasService(company, 'storage') && (
+                                  <Badge variant="secondary" className="text-xs">Lagerung</Badge>
+                                )}
+                              </div>
+                            </div>
                           </div>
+
+                          {/* CTA */}
+                          <Link to="/rechner">
+                            <Button className="w-full shadow-md">
+                              Offerte anfragen
+                              <ArrowRight className="ml-2 w-4 h-4" />
+                            </Button>
+                          </Link>
                         </CardContent>
                       </Card>
                     </ScrollReveal>
-                  ))}
-                </div>
-              )}
+                  ))
+                )}
+              </div>
+              <p className="text-center text-sm text-muted-foreground mt-4">
+                ← Wischen Sie, um mehr Firmen zu sehen →
+              </p>
+            </div>
+          </div>
+        </section>
 
-              {/* Comparison Table */}
-              {selectedCompanyData.length >= 2 && (
-                <ScrollReveal>
-                  <div className="mb-8">
-                    <h2 className="text-3xl font-bold mb-6">
-                      Detaillierter Vergleich
-                    </h2>
-                    <ComparisonTable companies={selectedCompanyData} maxCompanies={5} />
-                  </div>
-                </ScrollReveal>
-              )}
+        {/* Why Compare */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">
+                Warum Umzugsfirmen vergleichen?
+              </h2>
+              <p className="text-center text-muted-foreground mb-8 md:mb-12 max-w-2xl mx-auto">
+                Ein Vergleich lohnt sich immer – hier sind die wichtigsten Vorteile
+              </p>
+            </ScrollReveal>
 
-              {selectedCompanyData.length === 0 && (
-                <ScrollReveal>
-                  <Card className="p-12 text-center bg-gradient-to-br from-secondary/20 to-transparent">
-                    <div className="max-w-md mx-auto">
-                      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                        <TrendingUp className="w-8 h-8 text-primary" />
+            <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+              {whyCompareReasons.map((reason, index) => {
+                const Icon = reason.icon;
+                return (
+                  <ScrollReveal key={index} delay={index * 0.1}>
+                    <Card className="text-center p-6 md:p-8 hover:shadow-strong transition-shadow border-primary/10">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mx-auto mb-4 md:mb-6">
+                        <Icon className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                       </div>
-                      <h3 className="text-xl font-bold mb-2">Bereit zum Vergleichen?</h3>
-                      <p className="text-muted-foreground">
-                        Wählen Sie mindestens 2 Firmen aus der Liste oben aus, um einen detaillierten Vergleich zu sehen.
+                      <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3">{reason.title}</h3>
+                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                        {reason.description}
                       </p>
+                    </Card>
+                  </ScrollReveal>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Reviews + Trust */}
+        <section className="py-12 md:py-16 bg-gradient-to-b from-secondary/20 to-white">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-2">
+                Was unsere Nutzer sagen
+              </h2>
+              <p className="text-center text-muted-foreground mb-8 md:mb-12">
+                Über 15'000 zufriedene Kunden vertrauen auf umzugscheck.ch
+              </p>
+            </ScrollReveal>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {[
+                {
+                  name: "Sarah M.",
+                  location: "Zürich",
+                  rating: 5,
+                  text: "Dank dem Vergleich habe ich CHF 800 gespart! Die Offerten waren schnell da und die Firmen sehr professionell."
+                },
+                {
+                  name: "Marco B.",
+                  location: "Bern",
+                  rating: 5,
+                  text: "Super Service! Konnte in nur 5 Minuten mehrere Angebote vergleichen und die beste Firma für meinen Umzug finden."
+                },
+                {
+                  name: "Julia K.",
+                  location: "Basel",
+                  rating: 5,
+                  text: "Transparent, schnell und kostenlos. Genau so sollte ein Vergleichsportal sein. Absolut empfehlenswert!"
+                }
+              ].map((review, index) => (
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Card className="p-6 hover:shadow-strong transition-shadow">
+                    <div className="flex items-center gap-1 mb-3">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <p className="text-sm md:text-base text-muted-foreground mb-4 leading-relaxed">
+                      "{review.text}"
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center font-bold text-primary">
+                        {review.name.charAt(0)}
+                      </div>
+                      <div>
+                        <div className="font-bold text-sm">{review.name}</div>
+                        <div className="text-xs text-muted-foreground">{review.location}</div>
+                      </div>
                     </div>
                   </Card>
                 </ScrollReveal>
-              )}
-
-              {selectedCompanyData.length === 1 && (
-                <ScrollReveal>
-                  <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-950/20">
-                    <AlertCircle className="h-4 w-4 text-amber-600" />
-                    <AlertDescription className="text-amber-900 dark:text-amber-100">
-                      Wählen Sie mindestens eine weitere Firma aus, um den Vergleich zu starten.
-                    </AlertDescription>
-                  </Alert>
-                </ScrollReveal>
-              )}
+              ))}
             </div>
+          </div>
+        </section>
+
+        {/* CTA Block */}
+        <section className="py-12 md:py-16 gradient-hero text-white">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="max-w-3xl mx-auto text-center">
+                <h2 className="text-2xl md:text-4xl font-bold mb-4">
+                  Bereit für den Vergleich?
+                </h2>
+                <p className="text-lg md:text-xl text-white/90 mb-6 md:mb-8">
+                  Starten Sie jetzt Ihren kostenlosen Vergleich und finden Sie die beste Umzugsfirma für Ihre Bedürfnisse
+                </p>
+                <Link to="/rechner">
+                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-strong h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-bold">
+                    GRATIS OFFERTEN STARTEN
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
       </main>
 
       <Footer />
+      <StickyMobileCTA />
     </div>
   );
 };

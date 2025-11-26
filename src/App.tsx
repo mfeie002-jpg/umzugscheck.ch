@@ -129,6 +129,7 @@ const App = () => (
             <Route path="/firmen/:id" element={<CompanyProfile />} />
             <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
+            <Route path="/vergleich" element={<Compare />} />
             <Route path="/regionen" element={<Regionen />} />
             <Route path="/kanton/:slug" element={<Canton />} />
             <Route path="/umzug/:canton" element={<Canton />} />
