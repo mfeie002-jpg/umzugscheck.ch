@@ -19,6 +19,7 @@ import { RegionCard } from "@/components/home/RegionCard";
 import { ServiceCard } from "@/components/home/ServiceCard";
 import { WhyUmzugscheckSimple } from "@/components/home/WhyUmzugscheckSimple";
 import { TopCompaniesWithLogos } from "@/components/home/TopCompaniesWithLogos";
+import { ForProvidersSection } from "@/components/home/ForProvidersSection";
 
 /**
  * Homepage - Complete Rebuild
@@ -282,6 +283,9 @@ export const HomePage = () => {
 
       {/* Social Proof */}
       <SocialProofSimple />
+
+      {/* For Providers Section */}
+      <ForProvidersSection />
 
       {/* CTA Block */}
       <CTABlock
