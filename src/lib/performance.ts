@@ -184,3 +184,28 @@ export const initPerformanceOptimizations = () => {
     measureCoreWebVitals();
   }
 };
+
+/**
+ * Optimize images on page load
+ */
+export const optimizeImages = () => {
+  if (typeof window === 'undefined') return;
+
+  // Add loading="lazy" to images below fold
+  const images = document.querySelectorAll('img:not([loading])');
+  images.forEach((img: any) => {
+    const rect = img.getBoundingClientRect();
+    if (rect.top > window.innerHeight) {
+      img.loading = 'lazy';
+    }
+  });
+
+  // Add explicit dimensions to prevent CLS
+  const imagesWithoutDimensions = document.querySelectorAll('img:not([width]):not([height])');
+  imagesWithoutDimensions.forEach((img: any) => {
+    if (img.naturalWidth && img.naturalHeight) {
+      img.width = img.naturalWidth;
+      img.height = img.naturalHeight;
+    }
+  });
+};
