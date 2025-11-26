@@ -80,10 +80,11 @@ export const HowItWorks = () => {
 
         {/* Enhanced CTA with additional trust signals */}
         <div className="text-center">
-          <Link to="/rechner">
-            <Button size="lg" className="group shadow-accent h-14 px-8 text-lg hover-shine hover:scale-105 transition-all">
-              Jetzt kostenlos Umzugskosten berechnen
-              <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+          <Link to="/rechner" className="w-full">
+            <Button size="lg" className="w-full group shadow-accent h-12 sm:h-14 px-4 sm:px-8 text-sm sm:text-lg hover-shine hover:scale-105 transition-all">
+              <span className="hidden sm:inline">Jetzt kostenlos Umzugskosten berechnen</span>
+              <span className="sm:hidden">Kostenlos berechnen</span>
+              <ArrowRight className="ml-2 w-4 h-4 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
           <p className="text-sm text-foreground/70 mt-4 flex items-center justify-center gap-2">
