@@ -16,9 +16,9 @@ import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const About = () => {
   const currentUrl = 'https://www.umzugscheck.ch/ueber-uns/';
-  const metaData = generateMetaData('about');
-  const ogTags = generateOGTags('about', undefined, currentUrl);
-  const keywords = getKeywordsForPage('about');
+  const metaData = generateMetaData({ type: 'main-page', pageName: 'ueber-uns' });
+  const ogTags = generateOGTags(metaData, currentUrl);
+  const keywords = getKeywordsForPage('ueber-uns');
   
   const schemas = generatePageSchemas({ type: 'home', url: currentUrl });
   const schemaScript = generateSchemaScript(schemas);
@@ -78,17 +78,17 @@ const About = () => {
         <meta name="keywords" content={keywords.join(', ')} />
         
         {/* OpenGraph Tags */}
-        <meta property="og:title" content={ogTags.title} />
-        <meta property="og:description" content={ogTags.description} />
-        <meta property="og:type" content={ogTags.type} />
-        <meta property="og:url" content={ogTags.url} />
-        <meta property="og:image" content={ogTags.image} />
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
         
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={ogTags.title} />
-        <meta name="twitter:description" content={ogTags.description} />
-        <meta name="twitter:image" content={ogTags.image} />
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
         
         {/* Schema.org JSON-LD */}
         <script type="application/ld+json">

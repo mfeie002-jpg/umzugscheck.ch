@@ -150,9 +150,9 @@ const City = () => {
   }
 
   const currentUrl = `https://www.umzugscheck.ch/${slug}/umzugsfirmen/`;
-  const metaData = generateMetaData('city', city.name);
-  const ogTags = generateOGTags('city', city.name, currentUrl);
-  const keywords = getKeywordsForPage('city', city.name);
+  const metaData = generateMetaData({ type: 'city', city: slug });
+  const ogTags = generateOGTags(metaData, currentUrl);
+  const keywords = getKeywordsForPage('city', slug);
   
   const companyList = companies.map(c => ({
     name: c.name,
@@ -176,17 +176,17 @@ const City = () => {
         <meta name="keywords" content={keywords.join(', ')} />
         
         {/* OpenGraph Tags */}
-        <meta property="og:title" content={ogTags.title} />
-        <meta property="og:description" content={ogTags.description} />
-        <meta property="og:type" content={ogTags.type} />
-        <meta property="og:url" content={ogTags.url} />
-        <meta property="og:image" content={ogTags.image} />
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
         
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={ogTags.title} />
-        <meta name="twitter:description" content={ogTags.description} />
-        <meta name="twitter:image" content={ogTags.image} />
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
         
         {/* Schema.org JSON-LD */}
         <script type="application/ld+json">

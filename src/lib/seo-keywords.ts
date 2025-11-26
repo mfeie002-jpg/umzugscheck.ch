@@ -173,6 +173,13 @@ export function getCityServiceKeywords(
   };
 }
 
+// Helper function to get keywords as array for meta tags
+export function getKeywordsForPage(pageType: string, city?: string, service?: string): string[] {
+  const mapping = getPageKeywords(pageType, city, service);
+  if (!mapping) return [];
+  return [mapping.primary, ...mapping.secondary];
+}
+
 // Get keywords for any page
 export function getPageKeywords(pageType: string, city?: string, service?: string): KeywordMapping | null {
   // Main pages
