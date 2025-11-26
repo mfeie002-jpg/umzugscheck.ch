@@ -93,9 +93,58 @@ export const HomePage = () => {
 
 
   const priceExamples = [
-    { size: "1-2 Zimmer", distance: "bis 20 km", priceRange: "CHF 450-850", icon: "home" as const },
-    { size: "3-4 Zimmer", distance: "bis 50 km", priceRange: "CHF 1'200-2'200", icon: "trending" as const },
-    { size: "Haus / 5+ Zimmer", distance: "über 50 km", priceRange: "ab CHF 2'500", icon: "dollar" as const }
+    { 
+      size: "1-2 Zimmer Wohnung", 
+      distance: "bis 20 km", 
+      priceRange: "CHF 450-850", 
+      icon: "home" as const,
+      duration: "3-5 Stunden",
+      volume: "15-25 m³",
+      imageUrl: "https://images.unsplash.com/photo-1502672260066-6bc36a27ca20?w=800&auto=format&fit=crop",
+      included: [
+        "2-3 Umzugshelfer",
+        "Kleiner Umzugswagen (20-30 m³)",
+        "Standard-Transportversicherung",
+        "Be- und Entladen",
+        "Kurze Strecken ohne Zuschlag"
+      ]
+    },
+    { 
+      size: "3-4 Zimmer Wohnung", 
+      distance: "bis 50 km", 
+      priceRange: "CHF 1'200-2'200", 
+      icon: "trending" as const,
+      duration: "6-8 Stunden",
+      volume: "30-45 m³",
+      imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop",
+      included: [
+        "3-4 erfahrene Umzugshelfer",
+        "Grosser Umzugswagen (40-50 m³)",
+        "Vollkasko-Transportversicherung",
+        "Möbeldemontage & Montage",
+        "Spezial-Tragegurte & Schutzdecken",
+        "Entsorgung Verpackungsmaterial"
+      ]
+    },
+    { 
+      size: "Haus / 5+ Zimmer", 
+      distance: "über 50 km", 
+      priceRange: "ab CHF 2'500", 
+      icon: "dollar" as const,
+      duration: "1-2 Tage",
+      volume: "50-80+ m³",
+      imageUrl: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&auto=format&fit=crop",
+      included: [
+        "4-6 professionelle Umzugshelfer",
+        "Mehrere Fahrzeuge bei Bedarf",
+        "Premium-Transportversicherung",
+        "Komplette Möbeldemontage & Montage",
+        "Spezialtransporte (Piano, Tresor, etc.)",
+        "Einpack-Service & Kartonage",
+        "Zwischenlagerung möglich",
+        "Endreinigung optional"
+      ]
+    }
   ];
 
   return (
