@@ -64,51 +64,53 @@ export const Hero = () => {
           {/* LEFT COLUMN - Text Content */}
           <div className="space-y-6 lg:space-y-8 text-center lg:text-left">
             
-            {/* Small KI Badge */}
-            <Badge variant="secondary" className="inline-flex items-center gap-1.5 text-xs px-3 py-1">
-              <Sparkles className="w-3 h-3" />
-              ✨ NEU: KI-gestützte Volumenanalyse (Beta)
-            </Badge>
-
             {/* Headlines */}
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                Vergleichen Sie Ihren Umzug – schnell, fair und stressfrei
+                Ihr Umzug. Unser Vergleich. <span className="text-primary">Ihre Ersparnis.</span>
               </h1>
-              <p className="text-lg sm:text-xl text-muted-foreground">
-                Erhalten Sie in 2 Minuten passende Angebote von geprüften Schweizer Umzugsfirmen. Kostenlos und unverbindlich.
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+                Finden Sie in 2 Minuten die bestbewerteten Umzugsfirmen der Schweiz. Vergleichen Sie Preise, Bewertungen und Services – kostenlos, unverbindlich und perfekt auf Ihren Umzug abgestimmt.
+              </p>
+              <p className="text-base sm:text-lg text-foreground/70 italic font-medium">
+                Damit Ihr Umzug nicht Stress bedeutet, sondern ein neuer Anfang.
               </p>
             </div>
 
-            {/* USP Row - 2x2 Grid */}
-            <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto lg:mx-0">
-              <div className="flex items-center gap-2 text-sm">
-                <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
-                <span className="font-medium text-foreground">100% kostenlos</span>
+            {/* Stats Row - 3 Column */}
+            <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto lg:mx-0">
+              <div className="text-center lg:text-left">
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                  <TrendingDown className="h-5 w-5 text-accent flex-shrink-0" />
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">40%</p>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground">günstiger dank transparentem Vergleich</p>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <TrendingDown className="h-5 w-5 text-accent flex-shrink-0" />
-                <span className="font-medium text-foreground">Bis 40% günstiger</span>
+              <div className="text-center lg:text-left">
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                  <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">4.8/5</p>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground">Kundenzufriedenheit</p>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-                <span className="font-medium text-foreground">4.8/5 Zufriedenheit</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Shield className="h-5 w-5 text-primary flex-shrink-0" />
-                <span className="font-medium text-foreground">15'000+ Umzüge</span>
+              <div className="text-center lg:text-left">
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                  <Shield className="h-5 w-5 text-primary flex-shrink-0" />
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">15'000+</p>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground">erfolgreiche Umzüge</p>
               </div>
             </div>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
-              <Link to="/umzugsofferten" className="w-full sm:flex-1">
+              <Link to="/firmen" className="w-full sm:flex-1">
                 <Button 
                   size="lg" 
                   className="w-full text-base px-8 bg-accent hover:bg-accent/90 shadow-lg"
                   onClick={() => trigger('medium')}
                 >
-                  Jetzt Umzug vergleichen
+                  Jetzt Umzugsfirmen vergleichen
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -116,10 +118,11 @@ export const Hero = () => {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="w-full text-base px-8 bg-white hover:bg-gray-50"
+                  className="w-full text-base px-8 bg-white hover:bg-gray-50 border-2"
                   onClick={() => trigger('light')}
                 >
-                  Kosten berechnen
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  KI-Umzugsrechner benutzen
                 </Button>
               </Link>
             </div>
@@ -127,7 +130,7 @@ export const Hero = () => {
             {/* Trust Footer */}
             <p className="text-sm text-muted-foreground flex items-center justify-center lg:justify-start gap-2">
               <Shield className="h-4 w-4 text-success" />
-              Ihre Daten sind bei uns sicher und werden nicht weitergegeben
+              Kostenlos & unverbindlich. Ihre Daten werden sicher behandelt.
             </p>
           </div>
 
@@ -162,14 +165,17 @@ export const Hero = () => {
       {/* Calculator Section - BELOW Hero */}
       <div className="container mx-auto px-4 pb-12 sm:pb-16 relative z-10">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-5 sm:p-8 border border-primary/10">
-            <div className="mb-5">
-              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center">
-                <Sparkles className="w-6 h-6 text-accent" />
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 sm:p-10 border border-primary/5">
+            <div className="mb-6">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Badge variant="secondary" className="text-xs">Beliebteste Funktion</Badge>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-3 justify-center">
+                <Sparkles className="w-7 h-7 text-accent" />
                 KI-Umzugsrechner
               </h2>
-              <p className="text-sm text-muted-foreground text-center">
-                Laden Sie Fotos oder ein Video Ihrer Wohnung hoch und erhalten Sie in Sekunden eine präzise Volumenberechnung
+              <p className="text-sm sm:text-base text-muted-foreground text-center max-w-xl mx-auto">
+                Foto oder Video hochladen – sofortige Volumen- & Kostenschätzung
               </p>
             </div>
             <AICalculator />
