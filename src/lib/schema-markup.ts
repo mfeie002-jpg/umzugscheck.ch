@@ -247,8 +247,8 @@ export function generateHowToSchema(name: string, description: string, steps: st
 }
 
 // Main schema generator
-export function generatePageSchemas(pageData: SchemaPage, faqs?: FAQItem[], companies?: CompanyItem[]) {
-  const schemas = [...generateGlobalSchemas()];
+export function generatePageSchemas(pageData: SchemaPage, faqs?: FAQItem[], companies?: CompanyItem[]): any[] {
+  const schemas: any[] = [...generateGlobalSchemas()];
 
   // Add breadcrumbs for non-homepage
   if (pageData.type !== 'home') {

@@ -7,12 +7,10 @@ import { useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { 
-  generateOrganizationSchema, 
-  generateServiceSchema, 
-  generateFAQSchema,
-  generateBreadcrumbSchema,
-  injectSchema 
+  generatePageSchemas,
+  generateSchemaScript
 } from "@/lib/schema-markup";
+import { Helmet } from "react-helmet";
 
 const topCompanies = ENHANCED_COMPANIES
   .filter(c => c.is_featured)
@@ -58,27 +56,17 @@ const faqs = [
 ];
 
 export default function Umzugsofferten() {
-  useEffect(() => {
-    // Inject structured data for SEO
-    const schemas = [
-      generateOrganizationSchema(),
-      generateServiceSchema(
-        "Umzugsofferten Vergleich",
-        "Vergleichen Sie kostenlose Umzugsofferten von geprüften Schweizer Firmen und sparen Sie bis zu 40%",
-        "CHF 800-3000"
-      ),
-      generateFAQSchema(faqs),
-      generateBreadcrumbSchema([
-        { name: "Startseite", url: "https://umzugscheck.ch" },
-        { name: "Umzugsofferten", url: "https://umzugscheck.ch/umzugsofferten" }
-      ])
-    ];
-    
-    injectSchema(schemas);
-  }, []);
+  const schemas = generatePageSchemas(
+    { type: 'offerten', url: 'https://www.umzugscheck.ch/umzugsofferten' },
+    faqs
+  );
+  const schemaScript = generateSchemaScript(schemas);
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <script type="application/ld+json">{schemaScript}</script>
+      </Helmet>
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary via-primary to-primary-dark text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
