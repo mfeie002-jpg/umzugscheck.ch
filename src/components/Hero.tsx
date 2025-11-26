@@ -152,34 +152,34 @@ export const Hero = () => {
                 </div>
               )}
               
-              {/* White Banner Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center p-8">
-                <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 max-w-sm border border-primary/10">
+              {/* White Banner Overlay - Left Side */}
+              <div className="absolute left-6 bottom-6">
+                <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-2xl p-4 w-64 border border-primary/10">
                   {/* Red Badge */}
-                  <div className="mb-4">
-                    <Badge className="bg-accent hover:bg-accent text-white px-3 py-1 text-xs">
-                      🚀 Der erste KI-Rechner der Schweiz
+                  <div className="mb-3">
+                    <Badge className="bg-accent hover:bg-accent text-white px-2.5 py-0.5 text-xs">
+                      🚀 KI-Rechner
                     </Badge>
                   </div>
                   
                   {/* Headline */}
-                  <h3 className="text-2xl font-bold text-foreground mb-4">
-                    Jetzt mit <span className="text-accent">KI-Rechner</span><br />
+                  <h3 className="text-lg font-bold text-foreground mb-3">
+                    Jetzt mit <span className="text-accent">KI</span><br />
                     bis zu 40% sparen
                   </h3>
                   
-                  {/* Calculator Button/Widget */}
+                  {/* Calculator Button */}
                   <Link to="/rechner">
-                    <div className="bg-gradient-to-br from-blue-50 to-white border-2 border-primary/20 rounded-xl p-4 hover:shadow-lg transition-all cursor-pointer group">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Sparkles className="w-6 h-6 text-primary" />
+                    <div className="bg-gradient-to-br from-blue-50 to-white border border-primary/20 rounded-lg p-3 hover:shadow-lg transition-all cursor-pointer group">
+                      <div className="flex items-center gap-2">
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Sparkles className="w-5 h-5 text-primary" />
                         </div>
-                        <div className="flex-1">
-                          <p className="font-bold text-foreground text-sm">Umzugsrechner</p>
-                          <p className="text-xs text-muted-foreground">KI-gestützte Analyse</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-foreground text-xs">Umzugsrechner</p>
+                          <p className="text-xs text-muted-foreground truncate">KI-Analyse</p>
                         </div>
-                        <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform flex-shrink-0" />
                       </div>
                     </div>
                   </Link>
