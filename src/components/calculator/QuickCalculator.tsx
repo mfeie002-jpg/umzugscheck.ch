@@ -49,6 +49,7 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
   const toParam = searchParams.get("to") || "";
   const fromAddress = parseAddress(fromParam);
   const toAddress = parseAddress(toParam);
+  const hasUrlParams = !!(fromParam && toParam);
 
   useEffect(() => {
     analytics.trackCalculatorStarted('quick');
@@ -61,7 +62,7 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
       fromCity: fromAddress.city,
       toPostal: toAddress.postal,
       toCity: toAddress.city,
-      rooms: "",
+      rooms: hasUrlParams ? "3" : "", // Default to 3 rooms when coming from homepage
       movingType: "local",
       floorsFrom: "0",
       floorsTo: "0",
@@ -69,6 +70,17 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
       hasElevatorTo: false,
     },
   });
+
+  // Auto-submit when coming from homepage mini calculator
+  useEffect(() => {
+    if (hasUrlParams && fromAddress.postal && toAddress.postal) {
+      // Small delay to ensure form is fully initialized
+      const timer = setTimeout(() => {
+        form.handleSubmit(onSubmit)();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [hasUrlParams, fromAddress.postal, toAddress.postal]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
