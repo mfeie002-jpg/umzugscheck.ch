@@ -89,10 +89,10 @@ export const TrustCounter = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-secondary mb-4 md:mb-6">
                 <stat.icon className={`w-8 h-8 md:w-10 md:h-10 ${stat.color}`} />
               </div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 bg-gradient-premium bg-clip-text text-transparent">
+              <div className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 text-primary">
                 <AnimatedCounter end={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
+              <div className="text-sm md:text-base text-foreground font-medium">{stat.label}</div>
             </div>
           ))}
         </div>
