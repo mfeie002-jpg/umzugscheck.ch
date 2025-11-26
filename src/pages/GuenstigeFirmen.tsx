@@ -334,9 +334,10 @@ export default function GuenstigeFirmen() {
                 <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
                   Statt lange zu vergleichen, können Sie mit einer Anfrage mehrere Offerten von geprüften Umzugsfirmen erhalten.
                 </p>
-                <Link to="/umzugsofferten">
-                  <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-14 w-full sm:w-auto">
-                    Jetzt Umzugsofferten vergleichen
+                <Link to="/umzugsofferten" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-4 sm:px-6 sm:px-8 h-12 sm:h-14">
+                    <span className="hidden sm:inline">Jetzt Umzugsofferten vergleichen</span>
+                    <span className="sm:hidden">Offerten vergleichen</span>
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </Link>

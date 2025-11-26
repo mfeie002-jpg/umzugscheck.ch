@@ -90,10 +90,11 @@ export default function Umzugsofferten() {
               Erhalten Sie kostenlose Offerten von geprüften Schweizer Umzugsfirmen – schnell, transparent und unverbindlich.
             </p>
             
-            <Link to="/rechner">
-              <Button size="lg" className="bg-accent hover:bg-accent-dark text-white h-14 text-lg px-8 shadow-xl">
-                Jetzt Offerten erhalten
-                <ArrowRight className="ml-2 w-5 h-5" />
+            <Link to="/rechner" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent-dark text-white h-12 sm:h-14 text-base sm:text-lg px-6 sm:px-8 shadow-xl">
+                <span className="hidden sm:inline">Jetzt Offerten erhalten</span>
+                <span className="sm:hidden">Offerten erhalten</span>
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
             </Link>
 
@@ -216,10 +217,11 @@ export default function Umzugsofferten() {
           </div>
 
           <div className="text-center mt-10">
-            <Link to="/rechner">
-              <Button size="lg" className="h-12">
-                Jetzt kostenlos vergleichen
-                <ArrowRight className="ml-2 w-5 h-5" />
+            <Link to="/rechner" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto h-12 text-base sm:text-lg px-6 sm:px-8">
+                <span className="hidden sm:inline">Jetzt kostenlos vergleichen</span>
+                <span className="sm:hidden">Vergleichen</span>
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
             </Link>
           </div>
@@ -357,15 +359,16 @@ export default function Umzugsofferten() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Jetzt kostenlose Umzugsofferten vergleichen
+              <span className="hidden sm:inline">Jetzt kostenlose Umzugsofferten vergleichen</span>
+              <span className="sm:hidden">Offerten vergleichen</span>
             </h2>
             <p className="text-xl mb-8 text-white/90">
               Sparen Sie Zeit und Geld mit unserem kostenlosen Vergleichsservice
             </p>
-            <Link to="/rechner">
-              <Button size="lg" className="bg-accent hover:bg-accent-dark text-white h-14 text-lg px-8">
+            <Link to="/rechner" className="w-full sm:w-auto inline-block">
+              <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent-dark text-white h-12 sm:h-14 text-base sm:text-lg px-6 sm:px-8">
                 Offerten erhalten
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
             </Link>
           </div>

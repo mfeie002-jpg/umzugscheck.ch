@@ -25,13 +25,16 @@ export const CTASection = () => {
             Vergleichen Sie jetzt <strong className="text-white">kostenlos Umzugsofferten</strong> von geprüften Firmen 
             und sparen Sie bis zu <strong className="text-white">40%</strong>.
           </p>
-          <Link to="/rechner">
+          <Link to="/rechner" className="w-full sm:w-auto">
             <Button 
               size="lg" 
-              className="bg-white text-accent hover:bg-white/95 shadow-strong group text-lg px-10 h-16 hover-shine hover:scale-105 transition-all"
+              className="w-full sm:w-auto bg-white text-accent hover:bg-white/95 shadow-strong group text-base sm:text-lg px-6 sm:px-10 h-14 sm:h-16 hover-shine hover:scale-105 transition-all"
             >
-              <span className="relative z-10">Jetzt kostenlos Preis berechnen</span>
-              <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform relative z-10" />
+              <span className="relative z-10">
+                <span className="hidden sm:inline">Jetzt kostenlos Preis berechnen</span>
+                <span className="sm:hidden">Preis berechnen</span>
+              </span>
+              <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform relative z-10" />
             </Button>
           </Link>
           <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-white/90">
