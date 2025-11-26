@@ -46,6 +46,7 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
+import FAQ from "./pages/FAQ";
 import BecomeProvider from "./pages/BecomeProvider";
 import ReviewSubmission from "./pages/ReviewSubmission";
 import BesteFirmen from "./pages/BesteFirmen";
@@ -139,6 +140,8 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/ueber-uns" element={<About />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
