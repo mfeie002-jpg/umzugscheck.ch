@@ -8,6 +8,9 @@ import { Card } from "@/components/ui/card";
 import { HelpCircle } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const faqCategories = [
   {
@@ -143,14 +146,47 @@ const faqCategories = [
 ];
 
 const FAQ = () => {
+  const currentUrl = 'https://www.umzugscheck.ch/faq/';
+  const metaData = generateMetaData('faq');
+  const ogTags = generateOGTags('faq', undefined, currentUrl);
+  const keywords = getKeywordsForPage('faq');
+  
+  // Flatten all FAQs for schema
+  const allFaqs = faqCategories.flatMap(cat => 
+    cat.questions.map(q => ({ question: q.q, answer: q.a }))
+  );
+  
+  const schemas = generatePageSchemas(
+    { type: 'faq', url: currentUrl },
+    allFaqs
+  );
+  const schemaScript = generateSchemaScript(schemas);
+  
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>FAQ - Häufige Fragen | Umzugscheck.ch</title>
-        <meta 
-          name="description" 
-          content="Antworten auf häufig gestellte Fragen zu Umzugsofferten, Preisen, Ablauf, Qualität und Versicherung. Alles was Sie über Ihren Umzug wissen müssen."
-        />
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        <meta name="keywords" content={keywords.join(', ')} />
+        
+        {/* OpenGraph Tags */}
+        <meta property="og:title" content={ogTags.title} />
+        <meta property="og:description" content={ogTags.description} />
+        <meta property="og:type" content={ogTags.type} />
+        <meta property="og:url" content={ogTags.url} />
+        <meta property="og:image" content={ogTags.image} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={ogTags.title} />
+        <meta name="twitter:description" content={ogTags.description} />
+        <meta name="twitter:image" content={ogTags.image} />
+        
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">
+          {schemaScript}
+        </script>
       </Helmet>
 
       {/* Breadcrumbs */}
