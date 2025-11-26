@@ -49,7 +49,7 @@ export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => 
   if (!isOpen) return null;
 
   return (
-    <div className="absolute left-0 right-0 bg-white border-t border-border shadow-2xl z-40 animate-fade-in">
+    <div className="hidden lg:block absolute left-0 right-0 bg-white border-t border-border shadow-2xl z-40 animate-fade-in">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
