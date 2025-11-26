@@ -2,7 +2,19 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export const CTABlock = () => {
+interface CTABlockProps {
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
+}
+
+export const CTABlock = ({ 
+  title = "Bereit für deinen stressfreien Umzug?",
+  description = "Erhalte jetzt kostenlose Umzugsofferten von geprüften Profis.",
+  buttonText = "GRATIS OFFERTEN STARTEN",
+  buttonLink = "/firmen"
+}: CTABlockProps) => {
   return (
     <section className="py-16 md:py-20 relative overflow-hidden">
       {/* Gradient Background */}
@@ -21,20 +33,20 @@ export const CTABlock = () => {
           <Sparkles className="h-12 w-12 mx-auto mb-4 animate-pulse" />
           
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-            Bereit für deinen stressfreien Umzug?
+            {title}
           </h2>
           
           <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
-            Erhalte jetzt kostenlose Umzugsofferten von geprüften Profis.
+            {description}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Link to="/firmen">
+            <Link to={buttonLink}>
               <Button 
                 size="lg"
                 className="w-full sm:w-auto h-14 px-10 text-lg bg-white text-primary hover:bg-white/90 shadow-xl"
               >
-                GRATIS OFFERTEN STARTEN
+                {buttonText}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
