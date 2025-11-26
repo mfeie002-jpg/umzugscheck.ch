@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 
 // Simple dev-only logger
 const isDev = Deno.env.get('ENVIRONMENT') === 'development';
@@ -18,11 +19,52 @@ serve(async (req) => {
   }
 
   try {
+    // Initialize Supabase client for rate limiting
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    // Rate limiting check
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
+    const { data: rateLimitData, error: rateLimitError } = await supabaseClient.rpc('check_rate_limit', {
+      p_identifier: clientIp,
+      p_action_type: 'ai_photo_analysis',
+      p_max_attempts: 5,
+      p_window_minutes: 60
+    });
+
+    if (rateLimitError || !rateLimitData) {
+      log.error('Rate limit exceeded', { ip: clientIp });
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { images } = await req.json();
     
-    if (!images || images.length === 0) {
+    if (!images || !Array.isArray(images) || images.length === 0) {
       return new Response(
         JSON.stringify({ error: 'No images provided' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Limit number of images
+    if (images.length > 10) {
+      return new Response(
+        JSON.stringify({ error: 'Maximum 10 images allowed per request' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate payload size (rough estimate: base64 is ~1.37x original size)
+    const totalSize = images.reduce((sum: number, img: string) => sum + img.length, 0);
+    const maxSize = 15 * 1024 * 1024; // 15MB total
+    if (totalSize > maxSize) {
+      return new Response(
+        JSON.stringify({ error: 'Total image size exceeds 15MB limit' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
