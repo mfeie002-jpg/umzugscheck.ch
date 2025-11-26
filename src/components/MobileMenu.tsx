@@ -176,7 +176,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         id="mobile-menu"
         role="navigation"
         aria-label="Mobile Hauptnavigation"
-        className="fixed top-20 md:top-24 right-0 bottom-0 w-80 max-w-[85vw] bg-white border-l border-border z-50 overflow-y-auto shadow-strong animate-slide-in-right lg:hidden"
+        className="fixed top-16 sm:top-20 right-0 bottom-0 w-[min(320px,85vw)] bg-white border-l border-border z-50 overflow-y-auto shadow-strong animate-slide-in-right lg:hidden"
       >
         <div className="p-6 space-y-2">
           {/* Main Nav Items */}

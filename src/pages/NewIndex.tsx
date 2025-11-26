@@ -131,19 +131,19 @@ const NewIndex = () => {
             />
           </div>
 
-          <div className="container relative z-10 px-4 py-16 md:py-24">
-            <div className="max-w-5xl mx-auto text-center space-y-8">
+          <div className="container relative z-10 px-3 sm:px-4 py-12 sm:py-16 md:py-24">
+            <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
               {/* Title */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="space-y-4"
+                className="space-y-3 sm:space-y-4"
               >
-                <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                  Dein stressfreier Umzug<br />beginnt hier
+                <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight px-2">
+                  Dein stressfreier Umzug<br className="hidden sm:block" /> beginnt hier
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
                   Vergleiche geprüfte Schweizer Umzugsfirmen und erhalte kostenlose Offerten in 2 Minuten.
                 </p>
               </motion.div>
@@ -153,21 +153,21 @@ const NewIndex = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-sm"
+                className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm px-2"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-center">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star key={i} className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <span className="font-semibold">4.8 / 5</span>
-                  <span className="text-muted-foreground hidden sm:inline">basierend auf echten Kundenbewertungen</span>
+                  <span className="font-semibold whitespace-nowrap">4.8 / 5</span>
+                  <span className="text-muted-foreground hidden md:inline">basierend auf echten Kundenbewertungen</span>
                 </div>
                 <div className="text-muted-foreground hidden sm:inline">•</div>
-                <div className="font-semibold">15'000+ vermittelte Umzüge</div>
+                <div className="font-semibold whitespace-nowrap">15'000+ vermittelte Umzüge</div>
                 <div className="text-muted-foreground hidden sm:inline">•</div>
-                <div className="font-semibold text-success">100% kostenlos & unverbindlich</div>
+                <div className="font-semibold text-success whitespace-nowrap">100% kostenlos & unverbindlich</div>
               </motion.div>
 
               {/* Main CTA */}
@@ -175,13 +175,15 @@ const NewIndex = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
+                className="px-2"
               >
                 <Button
                   size="lg"
                   onClick={() => navigate('/umzugsofferten')}
-                  className="h-14 px-8 text-base md:text-lg font-bold gradient-primary text-primary-foreground shadow-strong hover:shadow-hover transition-all"
+                  className="h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base md:text-lg font-bold gradient-primary text-primary-foreground shadow-strong hover:shadow-hover transition-all w-full sm:w-auto"
                 >
-                  JETZT GRATIS OFFERTEN VERGLEICHEN
+                  <span className="hidden sm:inline">JETZT GRATIS OFFERTEN VERGLEICHEN</span>
+                  <span className="sm:hidden">JETZT VERGLEICHEN</span>
                 </Button>
               </motion.div>
             </div>
@@ -189,13 +191,13 @@ const NewIndex = () => {
         </section>
 
         {/* Live Signals + Calculator */}
-        <section className="container px-4 -mt-12 relative z-20 mb-16">
+        <section className="container px-3 sm:px-4 -mt-8 sm:-mt-12 relative z-20 mb-12 sm:mb-16">
           <LiveSignals />
           <MiniCalculator />
         </section>
 
         {/* Why Us Section */}
-        <section className="container px-4 py-16 md:py-20">
+        <section className="container px-3 sm:px-4 py-12 sm:py-16 md:py-20">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
@@ -227,7 +229,7 @@ const NewIndex = () => {
         </section>
 
         {/* Top Companies */}
-        <section className="container px-4 py-16 md:py-20">
+        <section className="container px-3 sm:px-4 py-12 sm:py-16 md:py-20">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
@@ -268,7 +270,7 @@ const NewIndex = () => {
         </section>
 
         {/* How It Works */}
-        <section className="container px-4 py-16 md:py-20 bg-muted/30 rounded-3xl">
+        <section className="container px-3 sm:px-4 py-12 sm:py-16 md:py-20 bg-muted/30 rounded-2xl sm:rounded-3xl mx-3 sm:mx-auto">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
@@ -292,7 +294,7 @@ const NewIndex = () => {
         </section>
 
         {/* Reviews */}
-        <section className="container px-4 py-16 md:py-20">
+        <section className="container px-3 sm:px-4 py-12 sm:py-16 md:py-20">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
@@ -322,8 +324,8 @@ const NewIndex = () => {
         </section>
 
         {/* CTA Block */}
-        <section className="container px-4 py-16 md:py-20">
-          <div className="max-w-4xl mx-auto gradient-primary rounded-3xl p-8 md:p-12 text-center text-white shadow-strong">
+        <section className="container px-3 sm:px-4 py-12 sm:py-16 md:py-20">
+          <div className="max-w-4xl mx-auto gradient-primary rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 text-center text-white shadow-strong">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
               Bereit für Ihren stressfreien Umzug?
             </h2>
@@ -341,7 +343,7 @@ const NewIndex = () => {
         </section>
 
         {/* FAQ */}
-        <section className="container px-4 py-16 md:py-20">
+        <section className="container px-3 sm:px-4 py-12 sm:py-16 md:py-20">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">

@@ -41,7 +41,7 @@ export const CompaniesDropdown = ({ isOpen, onClose }: CompaniesDropdownProps) =
   return (
     <div
       className={cn(
-        "absolute left-0 right-0 top-full mt-2 bg-background border border-border rounded-lg shadow-xl transition-all duration-200 z-50",
+        "hidden lg:block absolute left-0 right-0 top-full mt-2 bg-background border border-border rounded-lg shadow-xl transition-all duration-200 z-50",
         isOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"
       )}
       style={{ width: "600px", marginLeft: "0" }}
