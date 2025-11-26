@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { OffertenCTA } from "@/components/OffertenCTA";
 
 const formSchema = z.object({
   rooms: z.number().min(1).max(10),
@@ -368,9 +369,19 @@ const PackingCalculator = () => {
                     <li>✓ Demontage & Montage auf Wunsch</li>
                     <li>✓ Auspackservice am Zielort verfügbar</li>
                   </ul>
-                </div>
               </div>
             </div>
+
+            {/* Offerten CTA */}
+            <div className="mt-12">
+              <OffertenCTA 
+                title="Umzug mit Packservice kombinieren?"
+                description="Sparen Sie Zeit und Stress – lassen Sie Profis packen. Holen Sie sich kombinierte Offerten für Umzug und Verpackung."
+                buttonText="Kombinierte Offerten anfordern"
+                buttonLink="/umzugsofferten"
+              />
+            </div>
+          </div>
           </div>
         </div>
       </main>

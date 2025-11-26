@@ -18,6 +18,7 @@ import { calculateCleaningPrice, CleaningCalculatorInput } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { OffertenCTA } from "@/components/OffertenCTA";
 import {
   Form,
   FormControl,
@@ -483,6 +484,16 @@ const CleaningCalculator = () => {
                   </ul>
                 </div>
               </div>
+            </div>
+
+            {/* Offerten CTA */}
+            <div className="mt-12">
+              <OffertenCTA 
+                title="Reinigung & Umzug kombinieren?"
+                description="Planen Sie einen Umzug und benötigen auch eine Endreinigung? Holen Sie sich kombinierte Offerten für beide Services."
+                buttonText="Kombinierte Offerten erhalten"
+                buttonLink="/umzugsofferten"
+              />
             </div>
           </div>
         </div>

@@ -42,7 +42,7 @@ const exampleCompanies = [
 
 export const ComparisonPreview = () => {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-white to-secondary/20">
+    <section className="py-12 md:py-20 bg-gradient-to-b from-white to-secondary/20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-3 sm:mb-4">

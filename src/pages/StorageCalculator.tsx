@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { OffertenCTA } from "@/components/OffertenCTA";
 
 const formSchema = z.object({
   volumeM3: z.number().min(1).max(100),
@@ -391,9 +392,19 @@ const StorageCalculator = () => {
                     <li>✓ Versicherungsschutz verfügbar</li>
                     <li>✓ Transport zum/vom Lager organisierbar</li>
                   </ul>
-                </div>
               </div>
             </div>
+
+            {/* Offerten CTA */}
+            <div className="mt-12">
+              <OffertenCTA 
+                title="Umzug mit Lagerung kombinieren?"
+                description="Benötigen Sie eine Zwischenlagerung während Ihres Umzugs? Holen Sie sich kombinierte Offerten."
+                buttonText="Kombinierte Offerten anfordern"
+                buttonLink="/umzugsofferten"
+              />
+            </div>
+          </div>
           </div>
         </div>
       </main>

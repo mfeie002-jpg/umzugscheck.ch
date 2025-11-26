@@ -122,11 +122,6 @@ const Index = () => {
       {/* 1. Hero Section with CTAs */}
       <Hero />
       
-      {/* Trust Counter with animated numbers */}
-      <ScrollReveal>
-        <TrustCounter />
-      </ScrollReveal>
-      
       {/* Trust Line under Hero */}
       <ScrollReveal>
         <TrustSignals />
@@ -156,6 +151,11 @@ const Index = () => {
       {/* 3. "So funktioniert es" Section (How It Works) */}
       <ScrollReveal delay={120}>
         <HowItWorks />
+      </ScrollReveal>
+
+      {/* Trust Counter moved lower - after How It Works */}
+      <ScrollReveal delay={130}>
+        <TrustCounter />
       </ScrollReveal>
 
       {/* 4. Top Umzugsfirmen Section */}
