@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { OffertenCTA } from "@/components/OffertenCTA";
 
 const CANTON_INFO: Record<string, {
   name: string;
@@ -791,6 +792,18 @@ const Canton = () => {
               <h2 className="text-3xl font-bold mb-8 text-center">Häufige Fragen zu Umzügen in {info.name}</h2>
               <FAQAccordion items={faqs} />
             </div>
+          </div>
+        </section>
+
+        {/* Offerten CTA */}
+        <section className="py-12 md:py-16 bg-gradient-light">
+          <div className="container mx-auto px-4">
+            <OffertenCTA
+              title={`Unsicher, welche Umzugsfirma in ${info.name} am besten passt?`}
+              description={`Statt lange zu vergleichen, können Sie mit einer Anfrage mehrere Offerten von geprüften Umzugsfirmen in ${info.name} erhalten. Kostenlos, unverbindlich und in 2 Minuten erledigt.`}
+              buttonText={`Jetzt Umzugsofferten für ${info.name} erhalten`}
+              buttonLink="/umzugsofferten"
+            />
           </div>
         </section>
       </main>

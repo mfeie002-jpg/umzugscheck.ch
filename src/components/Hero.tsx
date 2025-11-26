@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, Clock, TrendingDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, CheckCircle2, Shield, Clock, TrendingDown, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { QuickCalculator } from "./calculator/QuickCalculator";
+import { AICalculator } from "./calculator/AICalculator";
 import { SecurityBadges } from "@/components/trust/SecurityBadges";
 import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
 import { PopularBadge } from "@/components/trust/PopularBadge";
@@ -148,20 +149,20 @@ export const Hero = () => {
       </div>
         
       <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24 relative z-10">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-center max-w-7xl mx-auto">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-start max-w-7xl mx-auto">
           <div className="space-y-4 sm:space-y-6 lg:pr-8 w-full">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium">
-              <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-success animate-pulse flex-shrink-0" />
-              <span className="text-xs sm:text-sm">100% kostenlos & unverbindlich · In 2 Minuten zu 3–5 Offerten</span>
+            <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium border border-accent/30">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-accent animate-pulse flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold">🇨🇭 Erster KI-Rechner der Schweiz</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tight">
-              Ihren Umzug in der Schweiz<br className="hidden sm:inline" />
-              <span className="text-accent drop-shadow-lg">in 60 Sekunden vergleichen</span>
+              Jetzt mit <span className="text-accent drop-shadow-lg">KI-Rechner</span><br className="hidden sm:inline" />
+              <span className="text-white">bis zu 40% sparen</span>
             </h1>
 
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/95 leading-relaxed">
-              Füllen Sie einmal Ihr Umzugsprofil aus und erhalten Sie in kurzer Zeit passende Angebote von geprüften Umzugsfirmen. Transparent, fair und ohne Telefon-Spam.
+              <strong>Einfach Foto oder Video hochladen</strong> – unsere KI analysiert automatisch Ihr Umzugsvolumen und erstellt eine präzise Kostenschätzung. Vergleichen Sie sofort passende Angebote von geprüften Schweizer Umzugsfirmen.
             </p>
 
             <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4">
@@ -216,18 +217,25 @@ export const Hero = () => {
           </div>
 
           <div className="w-full lg:ml-auto lg:max-w-md order-first lg:order-last">
-            <div className="backdrop-blur-lg bg-white/98 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 border-2 border-white/30 relative">
-              <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+            <div className="backdrop-blur-lg bg-white/98 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 border-2 border-accent/20 relative">
+              <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex gap-2">
                 <PopularBadge variant="popular" />
+                <Badge className="bg-accent text-white border-0 shadow-accent">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  KI-Power
+                </Badge>
               </div>
               <div className="mb-3 sm:mb-4">
-                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1">Schnell-Rechner</h3>
-                <p className="text-xs text-muted-foreground">In 60 Sekunden zu Ihrer Kostenschätzung.</p>
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-accent" />
+                  KI-Umzugsrechner
+                </h3>
+                <p className="text-xs text-muted-foreground">📸 Foto oder 🎥 Video hochladen – KI analysiert automatisch</p>
               </div>
-              <QuickCalculator embedded />
-              <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground justify-center">
-                <Clock className="w-3 h-3" />
-                <span>Antwort: 3–24 Stunden</span>
+              <AICalculator />
+              <div className="mt-3 flex items-center gap-2 text-xs text-success justify-center font-medium">
+                <CheckCircle2 className="w-3 h-3" />
+                <span>Sofortige Analyse • Bis zu 40% sparen</span>
               </div>
             </div>
             <div className="mt-3 hidden lg:block">
