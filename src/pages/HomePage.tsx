@@ -12,13 +12,13 @@ import { MiniCalculator } from "@/components/home/MiniCalculator";
 import { LiveSignal } from "@/components/common/LiveSignal";
 import { SEOHead } from "@/components/SEOHead";
 import { KICalculatorShowcase } from "@/components/home/KICalculatorShowcase";
-import { Star, DollarSign, Zap } from "lucide-react";
 import { useFullAnalytics } from "@/hooks/use-analytics";
 import { Navigation } from "@/components/Navigation";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RegionCard } from "@/components/home/RegionCard";
 import { ServiceCard } from "@/components/home/ServiceCard";
+import { WhyUmzugscheckSimple } from "@/components/home/WhyUmzugscheckSimple";
 
 /**
  * Homepage - Complete Rebuild
@@ -91,23 +91,6 @@ export const HomePage = () => {
     }
   ];
 
-  const uspCards = [
-    {
-      icon: Star,
-      title: "Geprüfte Qualität",
-      description: "Nur verifizierte & bewertete Schweizer Umzugsfirmen."
-    },
-    {
-      icon: DollarSign,
-      title: "100% Kostenlos",
-      description: "Du zahlst nichts. Die Firmen bewerben sich bei dir."
-    },
-    {
-      icon: Zap,
-      title: "Schnell & unkompliziert",
-      description: "Offerten in Minuten statt Tagen."
-    }
-  ];
 
   const priceExamples = [
     { size: "1-2 Zimmer", distance: "bis 20 km", priceRange: "CHF 450-850", icon: "home" as const },
@@ -153,30 +136,8 @@ export const HomePage = () => {
       {/* KI Calculator Showcase - Most Important USP */}
       <KICalculatorShowcase />
 
-      {/* USPs */}
-      <section className="py-16 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Warum umzugscheck.ch?
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Die transparente Vergleichsplattform für deinen stressfreien Umzug
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {uspCards.map((usp, index) => (
-              <StandardCard
-                key={index}
-                icon={usp.icon}
-                title={usp.title}
-                description={usp.description}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Why Umzugscheck - 6 USPs */}
+      <WhyUmzugscheckSimple />
 
       {/* Top Companies */}
       <section className="py-16 md:py-20 bg-secondary/20">
