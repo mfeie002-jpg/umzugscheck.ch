@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 const About = () => {
   const stats = [
@@ -66,6 +67,11 @@ const About = () => {
           content="Wir machen Umzüge stressfrei. Seit 2018 helfen wir Menschen in der Schweiz, die besten Umzugsfirmen zu finden. 100% kostenlos & unabhängig."
         />
       </Helmet>
+
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: "Über uns" }]} />
+      </div>
 
       {/* Hero */}
       <EmotionalHero

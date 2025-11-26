@@ -11,6 +11,8 @@ import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
 import { generateServiceSchema, generateBreadcrumbSchema, injectSchema } from "@/lib/schema-markup";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Helmet } from "react-helmet";
 
 const priceCategories = [
   { icon: Home, type: "1 Zimmer", price: "CHF 450 – 850", gradient: "from-blue-500 to-cyan-500" },
@@ -67,6 +69,16 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Was kostet ein Umzug in der Schweiz? Preise & Kosten | Umzugscheck.ch</title>
+        <meta name="description" content="Transparente Umzugspreise für die Schweiz. ✓ Richtpreise nach Wohnungsgrösse ✓ Einflussfaktoren ✓ Echte Beispiele. Jetzt informieren!" />
+      </Helmet>
+
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: "Preise" }]} />
+      </div>
+
       {/* 1. Hero */}
       <EmotionalHero
         title="Was kostet ein Umzug in der Schweiz?"

@@ -12,6 +12,7 @@ import { Helmet } from "react-helmet";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Input } from "@/components/ui/input";
 import { FAQAccordion } from "@/components/FAQAccordion";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 interface CityData {
   name: string;
@@ -249,6 +250,16 @@ const CityMovers = () => {
           {JSON.stringify(schemaMarkup)}
         </script>
       </Helmet>
+
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs 
+          items={[
+            { label: "Regionen", href: "/regionen" },
+            { label: cityInfo.name }
+          ]} 
+        />
+      </div>
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 overflow-hidden">

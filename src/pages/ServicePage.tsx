@@ -12,6 +12,7 @@ import { Helmet } from "react-helmet";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { InstantCalculator } from "@/components/home/InstantCalculator";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 interface ServiceData {
   name: string;
@@ -181,6 +182,16 @@ const ServicePage = () => {
           {JSON.stringify(schemaMarkup)}
         </script>
       </Helmet>
+
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs 
+          items={[
+            { label: "Services" },
+            { label: serviceInfo.name }
+          ]} 
+        />
+      </div>
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 overflow-hidden">

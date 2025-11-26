@@ -11,6 +11,10 @@ import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { ScrollReveal } from "@/components/ScrollReveal";
+import { motion } from "framer-motion";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Helmet } from "react-helmet";
 
 const formSchema = z.object({
   fromAddress: z.string().trim().min(3, "Bitte geben Sie eine gültige Adresse ein").max(200),
@@ -99,6 +103,16 @@ const OffertenPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Kostenlose Umzugsofferten erhalten | Umzugscheck.ch</title>
+        <meta name="description" content="Erhalten Sie jetzt kostenlose Umzugsofferten von geprüften Schweizer Profis. ✓ 100% unverbindlich ✓ In 2 Minuten ✓ Nur geprüfte Firmen." />
+      </Helmet>
+
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: "Offerten erhalten" }]} />
+      </div>
+
       <main>
         <section className="relative py-20 md:py-28 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-accent/90 to-primary/90 z-0" />

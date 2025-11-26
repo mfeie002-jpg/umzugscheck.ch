@@ -10,6 +10,8 @@ import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { motion } from "framer-motion";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Helmet } from "react-helmet";
 
 interface Company {
   id: string;
@@ -81,6 +83,16 @@ const Compare = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Umzugsfirmen vergleichen: Transparent, schnell, kostenlos | Umzugscheck.ch</title>
+        <meta name="description" content="Vergleichen Sie die besten Umzugsfirmen der Schweiz. ✓ Kostenlos ✓ Unverbindlich ✓ Transparente Preise. Jetzt vergleichen und bis zu 40% sparen!" />
+      </Helmet>
+
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: "Vergleich" }]} />
+      </div>
+
       {/* Hero */}
       <EmotionalHero
         title="Umzugsfirmen vergleichen: Transparent, schnell, kostenlos"
