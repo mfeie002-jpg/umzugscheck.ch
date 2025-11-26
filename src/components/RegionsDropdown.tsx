@@ -386,60 +386,40 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
               </TabsList>
 
               <TabsContent value="list">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-[60vh] overflow-y-auto">
                   {sortedCantons.map((canton) => (
-                    <div key={canton.code} className="space-y-2">
-                      <Link
-                        to={canton.href}
-                        onClick={onClose}
-                        className={cn(
-                          "group p-3 rounded-lg border border-border bg-background",
-                          "hover:border-primary/40 hover:shadow-soft transition-all duration-200",
-                          "flex items-center gap-3 w-full",
-                          nearestCanton === canton.code && "border-primary bg-primary/5"
-                        )}
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                          <MapPin className="w-4 h-4 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <h4 className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
-                              {canton.name}
-                              {nearestCanton === canton.code && (
-                                <Badge variant="secondary" className="ml-2 text-xs">
-                                  Nächste
-                                </Badge>
-                              )}
-                            </h4>
-                            {!loading && companyCounts[canton.code] > 0 && (
-                              <Badge variant="secondary" className="text-xs">
-                                {companyCounts[canton.code]}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {canton.code}
-                          </p>
-                        </div>
-                      </Link>
-
-                      {/* Cities */}
-                      {canton.cities && canton.cities.length > 0 && (
-                        <div className="ml-11 space-y-1">
-                          {canton.cities.map((city) => (
-                            <Link
-                              key={city}
-                              to={`/${city.toLowerCase().replace(/\s+/g, '-')}/umzugsfirmen`}
-                              onClick={onClose}
-                              className="block text-sm text-muted-foreground hover:text-primary transition-colors py-1"
-                            >
-                              • {city}
-                            </Link>
-                          ))}
-                        </div>
+                    <Link
+                      key={canton.code}
+                      to={canton.href}
+                      onClick={onClose}
+                      className={cn(
+                        "group px-3 py-2 rounded-lg border border-border bg-background",
+                        "hover:border-primary/40 hover:shadow-soft transition-all duration-200",
+                        "flex items-center gap-2",
+                        nearestCanton === canton.code && "border-primary bg-primary/5"
                       )}
-                    </div>
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                        <MapPin className="w-3.5 h-3.5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors truncate">
+                            {canton.name}
+                          </h4>
+                          {nearestCanton === canton.code && (
+                            <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
+                              Nächste
+                            </Badge>
+                          )}
+                        </div>
+                        {!loading && companyCounts[canton.code] > 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {companyCounts[canton.code]} Firmen
+                          </p>
+                        )}
+                      </div>
+                    </Link>
                   ))}
                 </div>
 
