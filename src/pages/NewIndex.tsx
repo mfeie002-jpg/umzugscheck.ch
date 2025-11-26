@@ -8,6 +8,9 @@ import { LiveSignals } from '@/components/home/LiveSignals';
 import { MiniCalculator } from '@/components/home/MiniCalculator';
 import { USPCard } from '@/components/home/USPCard';
 import { AirbnbCompanyCard } from '@/components/home/AirbnbCompanyCard';
+import { generatePageSchemas, generateSchemaScript } from '@/lib/schema-markup';
+import { generateMetaData, generateOGTags } from '@/lib/seo-meta';
+import { getKeywordsForPage } from '@/lib/seo-keywords';
 import { motion } from 'framer-motion';
 
 const NewIndex = () => {
@@ -68,6 +71,18 @@ const NewIndex = () => {
       answer: 'Unsere Kunden sparen durchschnittlich 30-40% durch den Vergleich mehrerer Offerten. Die Ersparnis hängt von der Umzugsgröße und Region ab.',
     },
   ];
+  
+  // Generate SEO meta data
+  const metaData = generateMetaData({ type: 'main-page', pageName: 'home' });
+  const currentUrl = 'https://www.umzugscheck.ch/';
+  const ogTags = generateOGTags(metaData, currentUrl);
+  
+  // Generate keywords
+  const keywords = getKeywordsForPage('home');
+  
+  // Generate Schema.org structured data
+  const schemas = generatePageSchemas({ type: 'home', url: currentUrl }, faqItems);
+  const schemaScript = generateSchemaScript(schemas);
 
   const howItWorksSteps = [
     {
@@ -111,11 +126,30 @@ const NewIndex = () => {
   return (
     <>
       <Helmet>
-        <title>Umzugsofferten vergleichen & bis zu 40% sparen | Umzugscheck.ch</title>
-        <meta 
-          name="description" 
-          content="Vergleiche geprüfte Schweizer Umzugsfirmen kostenlos und erhalte unverbindliche Offerten in 2 Minuten. 15'000+ vermittelte Umzüge." 
-        />
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        
+        {/* Keywords */}
+        {keywords && keywords.length > 0 && (
+          <meta name="keywords" content={keywords.join(', ')} />
+        )}
+        
+        {/* OpenGraph Tags */}
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
+
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
 
       <div className="min-h-screen gradient-soft">
