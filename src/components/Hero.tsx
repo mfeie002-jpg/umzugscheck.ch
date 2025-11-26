@@ -9,6 +9,7 @@ import { PopularBadge } from "@/components/trust/PopularBadge";
 import { useHaptic } from "@/hooks/use-haptic";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 
 // Import partner logos
 import logo20min from "@/assets/logos/20min-logo.png";
@@ -152,31 +153,36 @@ export const Hero = () => {
                 </div>
               )}
               
-              {/* White Banner Overlay - Left Side */}
-              <div className="absolute left-6 bottom-10">
-                <div className="bg-white/85 backdrop-blur-md rounded-xl shadow-2xl p-3 w-56 border border-primary/10">
+              {/* White Banner Overlay - Left Side with Animation */}
+              <motion.div 
+                className="absolute left-6 bottom-10"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+              >
+                <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-3 w-56 border border-primary/10">
                   {/* Red Badge */}
                   <div className="mb-2">
-                    <Badge className="bg-accent hover:bg-accent text-white px-2 py-0.5 text-[10px]">
+                    <Badge className="bg-accent hover:bg-accent text-white px-2 py-0.5 text-[10px] shadow-sm">
                       🚀 KI-Rechner
                     </Badge>
                   </div>
                   
-                  {/* Headline */}
-                  <h3 className="text-base font-bold text-foreground mb-2">
+                  {/* Headline with Enhanced Contrast */}
+                  <h3 className="text-base font-bold text-foreground mb-2 drop-shadow-sm">
                     Jetzt mit <span className="text-accent">KI</span><br />
                     bis zu 40% sparen
                   </h3>
                   
                   {/* Calculator Button */}
                   <Link to="/rechner">
-                    <div className="bg-gradient-to-br from-blue-50 to-white border border-primary/20 rounded-lg p-2 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="bg-gradient-to-br from-blue-50 to-white border border-primary/20 rounded-lg p-2 hover:shadow-xl transition-all cursor-pointer group hover:scale-[1.02]">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Sparkles className="w-4 h-4 text-primary" />
+                          <Sparkles className="w-4 h-4 text-primary drop-shadow-sm" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-bold text-foreground text-[11px]">Umzugsrechner</p>
+                          <p className="font-bold text-foreground text-[11px] drop-shadow-sm">Umzugsrechner</p>
                           <p className="text-[10px] text-muted-foreground truncate">KI-Analyse</p>
                         </div>
                         <ArrowRight className="w-3 h-3 text-primary group-hover:translate-x-1 transition-transform flex-shrink-0" />
@@ -184,7 +190,7 @@ export const Hero = () => {
                     </div>
                   </Link>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
