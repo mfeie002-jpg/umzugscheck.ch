@@ -85,99 +85,103 @@ export const Hero = () => {
       </div>
         
       <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24 relative z-10">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-center max-w-7xl mx-auto">
-          <div className="space-y-4 sm:space-y-6 lg:pr-8 w-full">
-            {/* Small KI Badge */}
-            <div className="inline-flex items-center gap-2 bg-accent/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium border border-accent/20">
-              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-medium text-foreground/80">✨ NEU: KI-gestützte Volumenanalyse (Beta)</span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tight text-foreground">
-              Vergleichen Sie Ihren Umzug – <span className="text-primary">schnell, fair und stressfrei</span>
-            </h1>
-
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/80 leading-relaxed">
-              Erhalten Sie in 2 Minuten passende Angebote von geprüften Schweizer Umzugsfirmen. Kostenlos und unverbindlich.
-            </p>
-
-            {/* USP Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4">
-              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
-                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success mx-auto mb-1 sm:mb-2" />
-                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">100% kostenlos</p>
-              </div>
-              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
-                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-accent mx-auto mb-1 sm:mb-2" />
-                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">Bis zu 40% günstiger</p>
-              </div>
-              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
-                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-1 sm:mb-2" />
-                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">4.8/5 Kundenzufriedenheit</p>
-              </div>
-              <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
-                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-1 sm:mb-2" />
-                <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">15'000+ Umzüge begleitet</p>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2 sm:pt-4">
-              <Link to="/umzugsofferten" className="w-full sm:flex-1">
-                <Button 
-                  size="lg" 
-                  className="w-full h-12 sm:h-14 text-sm sm:text-base bg-accent hover:bg-accent/90 text-white font-bold shadow-lg"
-                  onClick={() => trigger('medium')}
-                  aria-label="Jetzt Umzug vergleichen"
-                >
-                  <span>Jetzt Umzug vergleichen</span>
-                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
-                </Button>
-              </Link>
-              <Link to="/rechner" className="w-full sm:flex-1">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-primary/30 bg-white hover:bg-primary/5 text-foreground font-semibold"
-                  onClick={() => trigger('light')}
-                  aria-label="Kosten berechnen"
-                >
-                  Kosten berechnen
-                </Button>
-              </Link>
-            </div>
-
-            <div className="pt-2 sm:pt-4">
-              <p className="text-foreground/70 text-xs sm:text-sm flex items-center gap-2">
-                <Shield className="w-4 h-4 flex-shrink-0 text-success" aria-hidden="true" />
-                <span>Kostenlos & unverbindlich. Ihre Daten werden sicher behandelt.</span>
-              </p>
-            </div>
-
-            <SecurityBadges />
+        {/* Hero Content - Centered */}
+        <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+          {/* Small KI Badge */}
+          <div className="inline-flex items-center gap-2 bg-accent/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium border border-accent/20">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
+            <span className="text-xs sm:text-sm font-medium text-foreground/80">✨ NEU: KI-gestützte Volumenanalyse (Beta)</span>
           </div>
 
-          <div className="w-full lg:ml-auto lg:max-w-md">
-            <div className="backdrop-blur-lg bg-white rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 border border-primary/20 relative">
-              <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
-                <PopularBadge variant="popular" />
-              </div>
-              <div className="mb-3 sm:mb-4">
-                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-accent" />
-                  KI-Umzugsrechner
-                </h3>
-                <p className="text-xs text-foreground/70">📸 Foto oder 🎥 Video hochladen – KI analysiert automatisch</p>
-              </div>
-              <AICalculator />
-              <div className="mt-3 flex items-center gap-2 text-xs text-success justify-center font-medium">
-                <CheckCircle2 className="w-3 h-3" />
-                <span>Sofortige Analyse • Bis zu 40% sparen</span>
-              </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-foreground">
+            Vergleichen Sie Ihren Umzug – <span className="text-primary">schnell, fair und stressfrei</span>
+          </h1>
+
+          <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed max-w-3xl mx-auto">
+            Erhalten Sie in 2 Minuten passende Angebote von geprüften Schweizer Umzugsfirmen. Kostenlos und unverbindlich.
+          </p>
+
+          {/* USP Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4 max-w-4xl mx-auto">
+            <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success mx-auto mb-1 sm:mb-2" />
+              <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">100% kostenlos</p>
             </div>
-            <div className="mt-3 hidden lg:block">
-              <LiveActivityIndicator />
+            <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
+              <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-accent mx-auto mb-1 sm:mb-2" />
+              <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">Bis zu 40% günstiger</p>
             </div>
+            <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-1 sm:mb-2" />
+              <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">4.8/5 Kundenzufriedenheit</p>
+            </div>
+            <div className="bg-white backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/10 shadow-sm">
+              <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-1 sm:mb-2" />
+              <p className="text-xs sm:text-sm font-semibold text-center text-foreground leading-tight">15'000+ Umzüge begleitet</p>
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-2 sm:pt-4 justify-center max-w-2xl mx-auto">
+            <Link to="/umzugsofferten" className="w-full sm:flex-1">
+              <Button 
+                size="lg" 
+                className="w-full h-12 sm:h-14 text-sm sm:text-base bg-accent hover:bg-accent/90 text-white font-bold shadow-lg"
+                onClick={() => trigger('medium')}
+                aria-label="Jetzt Umzug vergleichen"
+              >
+                <span>Jetzt Umzug vergleichen</span>
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+              </Button>
+            </Link>
+            <Link to="/rechner" className="w-full sm:flex-1">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-primary/30 bg-white hover:bg-primary/5 text-foreground font-semibold"
+                onClick={() => trigger('light')}
+                aria-label="Kosten berechnen"
+              >
+                Kosten berechnen
+              </Button>
+            </Link>
+          </div>
+
+          <div className="pt-2">
+            <p className="text-foreground/70 text-xs sm:text-sm flex items-center justify-center gap-2">
+              <Shield className="w-4 h-4 flex-shrink-0 text-success" aria-hidden="true" />
+              <span>Kostenlos & unverbindlich. Ihre Daten werden sicher behandelt.</span>
+            </p>
+          </div>
+
+          <div className="pt-4">
+            <SecurityBadges />
+          </div>
+        </div>
+      </div>
+
+      {/* Calculator Section - Below Hero */}
+      <div className="container mx-auto px-4 pb-8 sm:pb-12 relative z-10">
+        <div className="max-w-2xl mx-auto">
+          <div className="backdrop-blur-lg bg-white rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 border border-primary/20 relative">
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+              <PopularBadge variant="popular" />
+            </div>
+            <div className="mb-3 sm:mb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-accent" />
+                KI-Umzugsrechner
+              </h3>
+              <p className="text-xs text-foreground/70">📸 Foto oder 🎥 Video hochladen – KI analysiert automatisch</p>
+            </div>
+            <AICalculator />
+            <div className="mt-3 flex items-center gap-2 text-xs text-success justify-center font-medium">
+              <CheckCircle2 className="w-3 h-3" />
+              <span>Sofortige Analyse • Bis zu 40% sparen</span>
+            </div>
+          </div>
+          <div className="mt-3 flex justify-center">
+            <LiveActivityIndicator />
           </div>
         </div>
       </div>
