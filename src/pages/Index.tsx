@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { TrustSignals } from "@/components/TrustSignals";
 import { HowItWorks } from "@/components/HowItWorks";
@@ -8,7 +7,6 @@ import { WhyChooseUs } from "@/components/WhyChooseUs";
 import { PopularCantons } from "@/components/PopularCantons";
 import { FAQ } from "@/components/FAQ";
 import { CTASection } from "@/components/CTASection";
-import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { CalculatorSection } from "@/components/CalculatorSection";
 import { useParallax } from "@/hooks/use-parallax";
@@ -119,8 +117,6 @@ const Index = () => {
              backgroundSize: '50px 50px'
            }}>
       </div>
-
-      <Navigation />
       
       {/* Main Content */}
       <main id="main-content" role="main">
@@ -217,8 +213,6 @@ const Index = () => {
         <CTASection />
       </ScrollReveal>
       </main>
-
-      <Footer />
       
       {/* Scroll to Top Button */}
       <ScrollToTop />
