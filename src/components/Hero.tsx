@@ -105,16 +105,22 @@ export const Hero = () => {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Link to="/rechner" className="w-full">
+                <button
+                  onClick={() => {
+                    const calcSection = document.querySelector('#ki-rechner-section');
+                    calcSection?.scrollIntoView({ behavior: 'smooth' });
+                    trigger('light');
+                  }}
+                  className="w-full"
+                >
                   <Button 
                     size="lg" 
                     variant="ghost"
                     className="w-full text-base sm:text-lg h-14 bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 backdrop-blur-sm"
-                    onClick={() => trigger('light')}
                   >
                     Kosten berechnen
                   </Button>
-                </Link>
+                </button>
               </motion.div>
 
               {/* Social Proof Badges */}
@@ -162,6 +168,12 @@ export const Hero = () => {
                     Damit Ihr Umzug nicht Stress bedeutet, sondern ein neuer Anfang.
                   </p>
                 </div>
+                
+                {/* Live Trust Element */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-sm">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-green-800 font-medium">LIVE – Kunde aus Zürich hat vor 3 Minuten verglichen.</span>
+                </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-left">
@@ -191,7 +203,7 @@ export const Hero = () => {
                   <Link to="/firmen" className="flex-1">
                     <Button 
                       size="lg" 
-                      className="w-full text-base px-8 bg-accent hover:bg-accent/90 shadow-lg"
+                      className="w-full text-base px-8 bg-destructive hover:bg-destructive/90 shadow-lg"
                       onClick={() => trigger('medium')}
                     >
                       Jetzt Umzugsfirmen vergleichen
@@ -206,7 +218,7 @@ export const Hero = () => {
                       onClick={() => trigger('light')}
                     >
                       <Sparkles className="mr-2 h-4 w-4" />
-                      KI-Rechner
+                      KI-Umzugsrechner benutzen
                     </Button>
                   </Link>
                 </div>
@@ -243,7 +255,7 @@ export const Hero = () => {
       </section>
 
       {/* KI-RECHNER SECTION - Full Width Card Below Hero */}
-      <section className="bg-white py-8 sm:py-12">
+      <section id="ki-rechner-section" className="bg-white py-8 sm:py-12">
         <div className="container mx-auto px-4">
           <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl shadow-lg p-6 sm:p-8 border border-primary/10">
             {/* Header */}

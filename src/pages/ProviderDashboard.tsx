@@ -18,6 +18,7 @@ import { PurchasedLeadsList } from "@/components/provider/PurchasedLeadsList";
 import { ConversionAnalytics } from "@/components/provider/ConversionAnalytics";
 import { MLPredictions } from "@/components/provider/MLPredictions";
 import { BiddingManagement } from "@/components/provider/BiddingManagement";
+import { PricingSettings } from "@/components/provider/PricingSettings";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -259,12 +260,13 @@ const ProviderDashboard = () => {
           {isApproved && (
             <div className="space-y-8 mb-8">
               <Tabs defaultValue="optimization" className="w-full">
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-6 gap-1">
                   <TabsTrigger value="optimization">Profil-Optimierung</TabsTrigger>
-                  <TabsTrigger value="competitors">Wettbewerbsanalyse</TabsTrigger>
+                  <TabsTrigger value="competitors">Wettbewerb</TabsTrigger>
+                  <TabsTrigger value="pricing">Preise & Sichtbarkeit</TabsTrigger>
                   <TabsTrigger value="bidding">Werbung</TabsTrigger>
-                  <TabsTrigger value="analytics">Conversion Analytics</TabsTrigger>
-                  <TabsTrigger value="ml">KI-Empfehlungen</TabsTrigger>
+                  <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                  <TabsTrigger value="ml">KI</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="optimization">
@@ -289,6 +291,18 @@ const ProviderDashboard = () => {
                     employees_count: provider.employees_count,
                     fleet_size: provider.fleet_size
                   }} />
+                </TabsContent>
+
+                <TabsContent value="pricing">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Preise & Sichtbarkeit</CardTitle>
+                      <CardDescription>Verwalten Sie Ihre Abrechnungsmodelle und Werbebudgets</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <PricingSettings providerId={provider.id} />
+                    </CardContent>
+                  </Card>
                 </TabsContent>
 
                 <TabsContent value="bidding">

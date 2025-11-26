@@ -336,8 +336,8 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               Admin Login
             </Button>
           </Link>
-          <Link to="/rechner" onClick={onClose}>
-            <Button className="w-full bg-accent hover:bg-accent/90 shadow-medium">
+          <Link to="/umzugsofferten" onClick={onClose}>
+            <Button className="w-full bg-destructive hover:bg-destructive/90 shadow-medium">
               Offerten erhalten
             </Button>
           </Link>

@@ -1412,7 +1412,10 @@ export type Database = {
         Row: {
           account_status: Database["public"]["Enums"]["account_status"]
           avg_completion_time_hours: number | null
+          bidding_active: boolean | null
           billing_model: string | null
+          call_price_chf: number | null
+          call_tracking_enabled: boolean | null
           cantons_served: string[]
           certifications: string[] | null
           cities_served: string[] | null
@@ -1421,7 +1424,13 @@ export type Database = {
           company_name: string
           contact_person_name: string
           country: string
+          cpc_enabled: boolean | null
+          cpc_price_chf: number | null
+          cpl_enabled: boolean | null
+          cpl_price_chf: number | null
           created_at: string
+          daily_budget_chf: number | null
+          daily_budget_remaining_chf: number | null
           description: string | null
           discount_offer: string | null
           email: string
@@ -1433,6 +1442,7 @@ export type Database = {
           lead_price_chf: number | null
           logo_url: string | null
           long_description: string | null
+          max_bid_chf: number | null
           max_leads_per_month: number | null
           min_job_value: number | null
           monthly_fee_chf: number | null
@@ -1441,7 +1451,9 @@ export type Database = {
           phone_tracking_number: string | null
           preferred_regions: string[] | null
           price_level: Database["public"]["Enums"]["price_level"] | null
+          profile_completeness: number | null
           profile_gallery: string[] | null
+          quality_score: number | null
           ranking_position: number | null
           response_time_minutes: number | null
           services_offered: string[]
@@ -1459,7 +1471,10 @@ export type Database = {
         Insert: {
           account_status?: Database["public"]["Enums"]["account_status"]
           avg_completion_time_hours?: number | null
+          bidding_active?: boolean | null
           billing_model?: string | null
+          call_price_chf?: number | null
+          call_tracking_enabled?: boolean | null
           cantons_served?: string[]
           certifications?: string[] | null
           cities_served?: string[] | null
@@ -1468,7 +1483,13 @@ export type Database = {
           company_name: string
           contact_person_name: string
           country?: string
+          cpc_enabled?: boolean | null
+          cpc_price_chf?: number | null
+          cpl_enabled?: boolean | null
+          cpl_price_chf?: number | null
           created_at?: string
+          daily_budget_chf?: number | null
+          daily_budget_remaining_chf?: number | null
           description?: string | null
           discount_offer?: string | null
           email: string
@@ -1480,6 +1501,7 @@ export type Database = {
           lead_price_chf?: number | null
           logo_url?: string | null
           long_description?: string | null
+          max_bid_chf?: number | null
           max_leads_per_month?: number | null
           min_job_value?: number | null
           monthly_fee_chf?: number | null
@@ -1488,7 +1510,9 @@ export type Database = {
           phone_tracking_number?: string | null
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
+          profile_completeness?: number | null
           profile_gallery?: string[] | null
+          quality_score?: number | null
           ranking_position?: number | null
           response_time_minutes?: number | null
           services_offered?: string[]
@@ -1506,7 +1530,10 @@ export type Database = {
         Update: {
           account_status?: Database["public"]["Enums"]["account_status"]
           avg_completion_time_hours?: number | null
+          bidding_active?: boolean | null
           billing_model?: string | null
+          call_price_chf?: number | null
+          call_tracking_enabled?: boolean | null
           cantons_served?: string[]
           certifications?: string[] | null
           cities_served?: string[] | null
@@ -1515,7 +1542,13 @@ export type Database = {
           company_name?: string
           contact_person_name?: string
           country?: string
+          cpc_enabled?: boolean | null
+          cpc_price_chf?: number | null
+          cpl_enabled?: boolean | null
+          cpl_price_chf?: number | null
           created_at?: string
+          daily_budget_chf?: number | null
+          daily_budget_remaining_chf?: number | null
           description?: string | null
           discount_offer?: string | null
           email?: string
@@ -1527,6 +1560,7 @@ export type Database = {
           lead_price_chf?: number | null
           logo_url?: string | null
           long_description?: string | null
+          max_bid_chf?: number | null
           max_leads_per_month?: number | null
           min_job_value?: number | null
           monthly_fee_chf?: number | null
@@ -1535,7 +1569,9 @@ export type Database = {
           phone_tracking_number?: string | null
           preferred_regions?: string[] | null
           price_level?: Database["public"]["Enums"]["price_level"] | null
+          profile_completeness?: number | null
           profile_gallery?: string[] | null
+          quality_score?: number | null
           ranking_position?: number | null
           response_time_minutes?: number | null
           services_offered?: string[]
