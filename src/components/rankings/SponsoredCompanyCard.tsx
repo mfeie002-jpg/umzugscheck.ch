@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, Award } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackProfileView } from "@/lib/monetization-events";
 
 interface SponsoredCompanyCardProps {
   id: string;
@@ -76,7 +77,12 @@ export const SponsoredCompanyCard = ({
 
       <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3">
         <Link to={`/umzugsfirmen/${id}`} className="w-full">
-          <Button variant="outline" size="lg" className="w-full h-12 sm:h-auto">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="w-full h-12 sm:h-auto"
+            onClick={() => trackProfileView(id)}
+          >
             Firma ansehen
           </Button>
         </Link>
