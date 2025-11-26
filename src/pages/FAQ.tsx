@@ -7,6 +7,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { Card } from "@/components/ui/card";
 import { HelpCircle } from "lucide-react";
 import { Helmet } from "react-helmet";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 const faqCategories = [
   {
@@ -151,6 +152,11 @@ const FAQ = () => {
           content="Antworten auf häufig gestellte Fragen zu Umzugsofferten, Preisen, Ablauf, Qualität und Versicherung. Alles was Sie über Ihren Umzug wissen müssen."
         />
       </Helmet>
+
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: "FAQ" }]} />
+      </div>
 
       {/* Hero */}
       <EmotionalHero
