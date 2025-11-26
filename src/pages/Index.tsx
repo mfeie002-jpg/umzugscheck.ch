@@ -124,23 +124,14 @@ const Index = () => {
       
       {/* Main Content */}
       <main id="main-content" role="main">
-        {/* 1. Hero Section with CTAs */}
+      {/* 1. Hero Section with CTAs - Now includes AI Calculator */}
         <Hero />
       
-      {/* Trust Line under Hero */}
-      <ScrollReveal>
-        <TrustSignals />
-      </ScrollReveal>
-
+      {/* Trust Micro Signals */}
       <ScrollReveal>
         <div className="container mx-auto px-4 py-4">
           <TrustMicroSignals />
         </div>
-      </ScrollReveal>
-
-      {/* 2. Central Preisrechner Block */}
-      <ScrollReveal delay={80}>
-        <CalculatorSection />
       </ScrollReveal>
 
       {/* 2.5 Comparison Feature - Second Most Important USP */}
