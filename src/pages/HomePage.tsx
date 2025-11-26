@@ -13,7 +13,6 @@ import { LiveSignal } from "@/components/common/LiveSignal";
 import { SEOHead } from "@/components/SEOHead";
 import { KICalculatorShowcase } from "@/components/home/KICalculatorShowcase";
 import { useFullAnalytics } from "@/hooks/use-analytics";
-import { Navigation } from "@/components/Navigation";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RegionCard } from "@/components/home/RegionCard";
@@ -155,8 +154,6 @@ export const HomePage = () => {
         faqs={faqItems}
         companies={topCompanies}
       />
-
-      <Navigation />
 
       {/* Breadcrumb for SEO */}
       <div className="bg-background border-b border-border">

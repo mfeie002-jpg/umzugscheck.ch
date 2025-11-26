@@ -416,3 +416,69 @@ All colors MUST be HSL.
     animation-delay: 6s;
   }
 }
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  /* Prevent horizontal scroll */
+  html,
+  body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* Smoother scrolling */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Safe area for notched devices */
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .safe-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  /* Improved spacing for mobile cards */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Better button sizing on mobile */
+  .btn-mobile-optimized {
+    min-height: 3rem;
+    font-size: 1rem;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible for better keyboard navigation */
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Print styles */
+@media print {
+  .no-print,
+  nav,
+  footer,
+  button,
+  .sticky,
+  .fixed {
+    display: none !important;
+  }
+}
