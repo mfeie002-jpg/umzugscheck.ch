@@ -20,57 +20,75 @@ export const Hero = () => {
   
   return (
     <section className="relative overflow-hidden gradient-hero text-white">
-      {/* Animated Background Layers with Emotional Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark bg-[length:200%_200%] animate-gradient-shift">
-        {/* Moving box icons pattern - subtle relief feeling */}
-        <div className="absolute inset-0 opacity-[0.07]">
-          <div className="absolute top-[10%] left-[5%] w-16 h-16 text-white/40">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 16V8C21 7.45 20.55 7 20 7H4C3.45 7 3 7.45 3 8V16C3 16.55 3.45 17 4 17H20C20.55 17 21 16.55 21 16Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 7V17M7 12H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Enhanced Emotional Background with Dynamic Elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark">
+        
+        {/* Large Warm Gradient Blobs - MORE VISIBLE */}
+        <div className="absolute -top-32 -right-32 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/40 via-amber-400/35 to-yellow-400/30 rounded-full blur-3xl animate-blob opacity-70"></div>
+        <div className="absolute top-1/3 -left-40 w-[700px] h-[700px] bg-gradient-to-br from-emerald-400/30 via-teal-400/35 to-cyan-400/25 rounded-full blur-3xl animate-blob-reverse opacity-60" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-0 right-1/3 w-[600px] h-[600px] bg-gradient-to-br from-rose-400/25 via-pink-400/30 to-fuchsia-400/20 rounded-full blur-3xl animate-blob opacity-50" style={{animationDelay: '4s'}}></div>
+        
+        {/* Accent Color Overlays for Warmth */}
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-2xl animate-pulse" style={{animationDuration: '4s'}}></div>
+        <div className="absolute bottom-40 right-1/4 w-80 h-80 bg-success/15 rounded-full blur-2xl animate-pulse" style={{animationDuration: '5s', animationDelay: '1s'}}></div>
+        
+        {/* Floating Moving Elements - Relief & Freedom Feeling */}
+        <div className="absolute inset-0 opacity-[0.12]">
+          {/* Happy family moving in - top left */}
+          <div className="absolute top-[12%] left-[8%] w-20 h-20 text-white/60 animate-pulse" style={{animationDuration: '3s'}}>
+            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
             </svg>
           </div>
-          <div className="absolute top-[60%] left-[15%] w-20 h-20 text-white/30 animate-pulse" style={{animationDuration: '4s'}}>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
-              <path d="M3 9H21M3 15H21" stroke="currentColor" strokeWidth="1.5"/>
+          
+          {/* Moving truck - bottom right */}
+          <div className="absolute bottom-[18%] right-[10%] w-28 h-28 opacity-100 animate-pulse" style={{animationDuration: '6s'}}>
+            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="text-white/40">
+              <path d="M18 18.5C18 19.88 16.88 21 15.5 21C14.12 21 13 19.88 13 18.5C13 17.12 14.12 16 15.5 16C16.88 16 18 17.12 18 18.5ZM19.5 9.5H17V12H21.46L19.5 9.5ZM8.5 16C7.12 16 6 17.12 6 18.5C6 19.88 7.12 21 8.5 21C9.88 21 11 19.88 11 18.5C11 17.12 9.88 16 8.5 16ZM17 8V4H3C1.9 4 1 4.9 1 6V15H3C3 16.66 4.34 18 6 18C7.66 18 9 16.66 9 15H15C15 16.66 16.34 18 18 18C19.66 18 21 16.66 21 15H23V12L19 8H17Z"/>
             </svg>
           </div>
-          <div className="absolute top-[25%] right-[10%] w-14 h-14 text-white/35">
+          
+          {/* New home with heart - left center */}
+          <div className="absolute top-[45%] left-[5%] w-24 h-24 text-white/50 animate-pulse" style={{animationDuration: '4.5s'}}>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="currentColor" strokeWidth="2"/>
-              <path d="M9 10L12 7L15 10M12 7V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              <path d="M3 9L12 2L21 9V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 21V12H15V21" stroke="currentColor" strokeWidth="2"/>
+              <path d="M12 8C12.8284 8 13.5 7.32843 13.5 6.5C13.5 5.67157 12.8284 5 12 5C11.1716 5 10.5 5.67157 10.5 6.5C10.5 7.32843 11.1716 8 12 8Z" fill="currentColor"/>
             </svg>
           </div>
-          <div className="absolute top-[70%] right-[20%] w-12 h-12 text-white/40 animate-pulse" style={{animationDuration: '5s'}}>
+          
+          {/* Checkmark - success feeling top right */}
+          <div className="absolute top-[20%] right-[15%] w-16 h-16 text-success/70 animate-pulse" style={{animationDuration: '3.5s'}}>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-              <path d="M8 12L11 15L16 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5"/>
+              <path d="M7 12L10.5 15.5L17 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          {/* Box stack - organized feeling */}
+          <div className="absolute top-[55%] right-[8%] w-18 h-18 text-white/45 animate-pulse" style={{animationDuration: '5s'}}>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" rx="1"/>
+            </svg>
+          </div>
+          
+          {/* Stars/quality indicators */}
+          <div className="absolute top-[35%] right-[25%] w-10 h-10 text-yellow-300/60 animate-pulse" style={{animationDuration: '4s'}}>
+            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
             </svg>
           </div>
         </div>
         
-        {/* Warm accent gradient for human touch */}
-        <div className="absolute -top-20 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-orange-400/30 via-accent/40 to-primary/30 rounded-full blur-3xl animate-blob opacity-60"></div>
-        <div className="absolute top-1/2 -left-32 w-[500px] h-[500px] bg-gradient-to-br from-green-400/20 via-success/30 to-primary/20 rounded-full blur-3xl animate-blob opacity-50" style={{animationDelay: '2s', animationDuration: '8s'}}></div>
+        {/* Subtle Dot Pattern for Texture */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjIiLz48Y2lyY2xlIGN4PSIzMyIgY3k9IjMiIHI9IjIiLz48Y2lyY2xlIGN4PSIzIiBjeT0iMzMiIHI9IjIiLz48Y2lyY2xlIGN4PSIzMyIgY3k9IjMzIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
         
-        {/* Moving truck silhouette - very subtle */}
-        <div className="absolute bottom-[15%] right-[8%] w-32 h-32 opacity-[0.08] animate-pulse" style={{animationDuration: '6s'}}>
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="text-white">
-            <path d="M1 6.99999V16C1 16.5523 1.44772 17 2 17H3.05493C3.26014 18.6961 4.73751 20 6.5 20C8.26249 20 9.73986 18.6961 9.94507 17H14.0549C14.2601 18.6961 15.7375 20 17.5 20C19.2625 20 20.7399 18.6961 20.9451 17H22C22.5523 17 23 16.5523 23 16V12.5C23 12.2239 22.7761 12 22.5 12H19V8.49999C19 8.22385 18.7761 7.99999 18.5 7.99999H15V6.99999C15 6.44771 14.5523 5.99999 14 5.99999H2C1.44772 5.99999 1 6.44771 1 6.99999Z"/>
-          </svg>
-        </div>
-        
-        {/* House icon - representing new home */}
-        <div className="absolute top-[40%] left-[8%] w-24 h-24 opacity-[0.06]">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white">
-            <path d="M3 12L5 10M21 12L19 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9 21 9 18 9 16C9 14 10 14 12 14C14 14 15 14 15 16C15 18 15 21 15 21M9 21H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        
-        {/* Gradient overlay for depth and emotion */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE4YzAtMy4zMTQgMi42ODYtNiA2LTZzNiAyLjY4NiA2IDYtMi42ODYgNi02IDYtNi0yLjY4Ni02LTZ6bTAgMjRjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnpNMTIgMThjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnptMCAyNGMwLTMuMzE0IDIuNjg2LTYgNi02czYgMi42ODYgNiA2LTIuNjg2IDYtNiA2LTYtMi42ODYtNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
+        {/* Depth Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10"></div>
       </div>
         
       <div className="container mx-auto px-4 py-12 sm:py-16 md:py-24 lg:py-32 relative z-10">
