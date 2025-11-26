@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 
 const isDev = Deno.env.get('ENVIRONMENT') === 'development';
 const log = {
@@ -17,11 +18,43 @@ serve(async (req) => {
   }
 
   try {
+    // Initialize Supabase client for rate limiting
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    // Rate limiting check
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
+    const { data: rateLimitData, error: rateLimitError } = await supabaseClient.rpc('check_rate_limit', {
+      p_identifier: clientIp,
+      p_action_type: 'ai_video_analysis',
+      p_max_attempts: 3,
+      p_window_minutes: 60
+    });
+
+    if (rateLimitError || !rateLimitData) {
+      log.error('Rate limit exceeded', { ip: clientIp });
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { video } = await req.json();
     
     if (!video) {
       return new Response(
         JSON.stringify({ error: 'No video provided' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate video size (base64 encoded)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (video.length > maxSize) {
+      return new Response(
+        JSON.stringify({ error: 'Video size exceeds 50MB limit' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
