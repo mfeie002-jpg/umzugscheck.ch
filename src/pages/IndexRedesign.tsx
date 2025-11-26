@@ -15,7 +15,7 @@ import { RegionsSection } from "@/components/home/RegionsSection";
 import { Helmet } from "react-helmet";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 
-const Index = () => {
+const IndexRedesign = () => {
   const faqData = [
     {
       question: "Wie funktioniert umzugscheck.ch?",
@@ -90,4 +90,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default IndexRedesign;
