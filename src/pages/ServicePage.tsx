@@ -11,6 +11,8 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
 import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
 import { InternalLinks } from "@/components/InternalLinks";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getPageKeywords } from "@/lib/seo-keywords";
 
 interface ServiceData {
   name: string;
@@ -230,12 +232,27 @@ const ServicePage = () => {
   const currentUrl = `https://umzugscheck.ch/${serviceKey}/`;
   const ogTags = generateOGTags(metaData, currentUrl);
 
+  // Generate keywords
+  const keywords = getPageKeywords('', undefined, serviceKey);
+
+  // Generate Schema.org structured data
+  const schemas = generatePageSchemas(
+    { type: 'service', service: serviceKey, url: currentUrl },
+    serviceInfo.faqs
+  );
+  const schemaScript = generateSchemaScript(schemas);
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>{metaData.title}</title>
         <meta name="description" content={metaData.description} />
         <link rel="canonical" href={currentUrl} />
+        
+        {/* Keywords */}
+        {keywords && (
+          <meta name="keywords" content={[keywords.primary, ...keywords.secondary].join(', ')} />
+        )}
         
         {/* OpenGraph Tags */}
         <meta property="og:title" content={ogTags['og:title']} />
@@ -249,6 +266,11 @@ const ServicePage = () => {
         <meta name="twitter:title" content={ogTags['twitter:title']} />
         <meta name="twitter:description" content={ogTags['twitter:description']} />
         <meta name="twitter:image" content={ogTags['twitter:image']} />
+
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">
+          {schemaScript}
+        </script>
       </Helmet>
 
       {/* Hero */}
