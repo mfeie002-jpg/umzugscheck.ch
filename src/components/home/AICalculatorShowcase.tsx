@@ -63,8 +63,8 @@ export const AICalculatorShowcase = () => {
                   <Clock className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">In 90 Sekunden zum Preis</h3>
-                  <p className="text-muted-foreground text-sm">Schneller als jeder andere Rechner auf dem Markt</p>
+                  <h3 className="font-bold text-lg mb-1">Sofortige Preisspanne</h3>
+                  <p className="text-muted-foreground text-sm">Erhalte deine Kosteneinschätzung in unter 2 Minuten</p>
                 </div>
               </div>
 
@@ -73,8 +73,8 @@ export const AICalculatorShowcase = () => {
                   <Target className="h-5 w-5 text-secondary" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">98% Genauigkeit</h3>
-                  <p className="text-muted-foreground text-sm">KI-basierte Analyse für präzise Kosteneinschätzung</p>
+                  <h3 className="font-bold text-lg mb-1">Bessere Firmen zuerst</h3>
+                  <p className="text-muted-foreground text-sm">AI-Ranking zeigt dir die qualitativ besten Anbieter</p>
                 </div>
               </div>
 
@@ -83,8 +83,8 @@ export const AICalculatorShowcase = () => {
                   <Shield className="h-5 w-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Geprüfte Firmen</h3>
-                  <p className="text-muted-foreground text-sm">Nur verifizierte und versicherte Umzugsunternehmen</p>
+                  <h3 className="font-bold text-lg mb-1">Kein Spam – du wählst</h3>
+                  <p className="text-muted-foreground text-sm">Nur ausgewählte Firmen kontaktieren dich, keine Anrufflut</p>
                 </div>
               </div>
             </div>

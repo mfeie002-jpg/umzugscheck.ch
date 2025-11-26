@@ -2,16 +2,16 @@ import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { RedesignHero } from "@/components/home/RedesignHero";
+import { SocialProofSimple } from "@/components/home/SocialProofSimple";
 import { RedesignHowItWorks } from "@/components/home/RedesignHowItWorks";
 import { AICalculatorShowcase } from "@/components/home/AICalculatorShowcase";
-import { ServicesGrid } from "@/components/home/ServicesGrid";
-import { FeaturedCompanies } from "@/components/home/FeaturedCompanies";
-import { USPGrid } from "@/components/home/USPGrid";
-import { CostExamples } from "@/components/home/CostExamples";
-import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
+import { ServicesGridCompact } from "@/components/home/ServicesGridCompact";
+import { TopCompaniesCards } from "@/components/home/TopCompaniesCards";
+import { CostExamplesCompact } from "@/components/home/CostExamplesCompact";
+import { WhyUsCards } from "@/components/home/WhyUsCards";
+import { FAQCompact } from "@/components/home/FAQCompact";
+import { RegionsButtons } from "@/components/home/RegionsButtons";
 import { ProviderCTA } from "@/components/home/ProviderCTA";
-import { FAQSection } from "@/components/home/FAQSection";
-import { RegionsSection } from "@/components/home/RegionsSection";
 import { Helmet } from "react-helmet";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 
@@ -48,38 +48,38 @@ const Index = () => {
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* 1. Hero mit AI-Rechner */}
+        {/* 1. Hero - Centered with AI Calculator */}
         <RedesignHero />
         
-        {/* 2. So funktioniert's - 4 Steps */}
+        {/* 2. Social Proof - Immediate Trust */}
+        <SocialProofSimple />
+        
+        {/* 3. How It Works - 3 Steps */}
         <RedesignHowItWorks />
         
-        {/* 3. AI-Rechner Showcase */}
+        {/* 4. AI Calculator Highlight */}
         <AICalculatorShowcase />
         
-        {/* 4. Services Grid */}
-        <ServicesGrid />
+        {/* 5. Services - 6 Cards */}
+        <ServicesGridCompact />
         
-        {/* 5. Top Umzugsfirmen mit Filter */}
-        <FeaturedCompanies />
+        {/* 6. Top Companies - 3 Cards with Filters */}
+        <TopCompaniesCards />
         
-        {/* 6. Warum umzugscheck.ch - 4 USPs */}
-        <USPGrid />
+        {/* 7. Cost Examples - Ultra-Compact */}
+        <CostExamplesCompact />
         
-        {/* 7. Kostenbeispiele */}
-        <CostExamples />
+        {/* 8. Why We're Better - 4 USPs */}
+        <WhyUsCards />
         
-        {/* 8. Testimonials Slider */}
-        <TestimonialsSlider />
+        {/* 9. FAQ - 5 Questions */}
+        <FAQCompact />
         
-        {/* 9. Für Umzugsfirmen CTA */}
+        {/* 10. Regions - Main Buttons */}
+        <RegionsButtons />
+        
+        {/* 11. For Companies - Mini Section */}
         <ProviderCTA />
-        
-        {/* 10. FAQ - 2 Spalten Desktop */}
-        <FAQSection />
-        
-        {/* 11. Regionen */}
-        <RegionsSection />
       </main>
       
       {/* 12. Mobile Sticky CTA */}

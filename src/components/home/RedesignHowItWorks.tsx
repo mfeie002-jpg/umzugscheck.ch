@@ -5,26 +5,20 @@ const steps = [
   {
     icon: ClipboardList,
     number: "1",
-    title: "Umzug beschreiben",
-    description: "Geben Sie Ihre Umzugsdetails in 2 Minuten ein"
-  },
-  {
-    icon: Mail,
-    number: "2",
-    title: "Offerten erhalten",
-    description: "Bis zu 5 Angebote von geprüften Firmen"
+    title: "Anfrage starten",
+    description: "Umzugsdetails in 2 Minuten eingeben"
   },
   {
     icon: BarChart3,
-    number: "3",
-    title: "Vergleichen",
-    description: "Preise, Bewertungen und Leistungen prüfen"
+    number: "2",
+    title: "AI-Matching & Preisanalyse",
+    description: "Sofortige Preisspanne & passende Firmen"
   },
   {
     icon: CheckCircle,
-    number: "4",
-    title: "Buchen",
-    description: "Beste Firma auswählen und entspannt umziehen"
+    number: "3",
+    title: "Angebote vergleichen & buchen",
+    description: "Beste Firma wählen und entspannt umziehen"
   }
 ];
 
@@ -42,11 +36,11 @@ export const RedesignHowItWorks = () => {
             So funktioniert's
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            In 4 einfachen Schritten zum günstigsten Umzugsangebot
+            In 3 einfachen Schritten zum günstigsten Umzugsangebot
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {steps.map((step, index) => (
             <motion.div
               key={index}
@@ -78,6 +72,20 @@ export const RedesignHowItWorks = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Mini CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-8"
+        >
+          <a href="/rechner">
+            <button className="px-8 py-3 bg-primary text-white rounded-full font-semibold hover:scale-105 transition-transform shadow-medium">
+              Jetzt starten
+            </button>
+          </a>
+        </motion.div>
       </div>
     </section>
   );
