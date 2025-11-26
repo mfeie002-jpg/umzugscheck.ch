@@ -80,8 +80,8 @@ export const FAQ = () => {
       </Helmet>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="mb-4">Häufig gestellte Fragen</h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <h2 className="mb-4 text-foreground">Häufig gestellte Fragen</h2>
+          <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto">
             Alles, was Sie über Umzugscheck.ch wissen müssen.
           </p>
         </div>
@@ -97,7 +97,7 @@ export const FAQ = () => {
                 <AccordionTrigger className="text-left hover:no-underline py-6">
                   <span className="font-semibold text-foreground">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
+                <AccordionContent className="text-foreground/70 leading-relaxed pb-6">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

@@ -38,12 +38,12 @@ export const HowItWorks = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16 md:mb-20">
-          <div className="inline-flex items-center gap-2 bg-success/10 px-4 py-2 rounded-full text-sm font-semibold text-success mb-6">
+          <div className="inline-flex items-center gap-2 bg-success/10 px-4 py-2 rounded-full text-sm font-semibold text-success mb-6 border border-success/20">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
             <span>Einfacher Prozess</span>
           </div>
-          <h2 className="mb-6">So einfach geht's</h2>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <h2 className="mb-6 text-foreground">So einfach geht's</h2>
+          <p className="text-xl md:text-2xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
             In nur <strong className="text-foreground">4 Schritten</strong> zur perfekten Umzugsfirma – 
             transparent, einfach und 100% kostenlos.
           </p>
@@ -71,8 +71,8 @@ export const HowItWorks = () => {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl md:text-2xl font-bold mb-4 group-hover:text-primary transition-colors">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed text-base">{step.description}</p>
+                <h3 className="text-xl md:text-2xl font-bold mb-4 group-hover:text-primary transition-colors text-foreground">{step.title}</h3>
+                <p className="text-foreground/70 leading-relaxed text-base">{step.description}</p>
               </div>
             </div>
           ))}
@@ -86,7 +86,7 @@ export const HowItWorks = () => {
               <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
-          <p className="text-sm text-muted-foreground mt-4 flex items-center justify-center gap-2">
+          <p className="text-sm text-foreground/70 mt-4 flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-success" />
             Keine Anmeldung erforderlich • Dauert nur 2 Minuten
           </p>

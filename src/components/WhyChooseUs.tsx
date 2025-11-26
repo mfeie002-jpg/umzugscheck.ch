@@ -42,12 +42,12 @@ export const WhyChooseUs = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16 md:mb-20">
-          <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full text-sm font-semibold text-primary mb-6">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full text-sm font-semibold text-primary mb-6 border border-primary/20">
             <CheckCircle2 className="w-4 h-4" />
             <span>Ihr Vorteil</span>
           </div>
-          <h2 className="mb-6">Warum Umzugscheck.ch?</h2>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <h2 className="mb-6 text-foreground">Warum Umzugscheck.ch?</h2>
+          <p className="text-xl md:text-2xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
             Die führende Schweizer Vergleichsplattform für stressfreie Umzüge – 
             transparent, schnell und 100% kostenlos.
           </p>
@@ -63,8 +63,8 @@ export const WhyChooseUs = () => {
               <div className="w-14 h-14 rounded-2xl gradient-hero flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-soft">
                 <benefit.icon className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-3 group-hover:text-primary transition-colors">{benefit.title}</h3>
-              <p className="text-muted-foreground leading-relaxed text-base">{benefit.description}</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-3 group-hover:text-primary transition-colors text-foreground">{benefit.title}</h3>
+              <p className="text-foreground/70 leading-relaxed text-base">{benefit.description}</p>
             </div>
           ))}
         </div>
