@@ -87,9 +87,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Genève",
     description: "Die internationale Stadt am Genfersee mit erfahrenen mehrsprachigen Umzugsteams.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 850–1'250" },
-      { size: "3 Zimmer", price: "CHF 1'250–1'900" },
-      { size: "4+ Zimmer", price: "CHF 1'900–3'200" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 850–1'250", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'250–1'900", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'900–3'200", icon: "dollar" }
     ],
     advantages: [
       "Internationale Erfahrung",
@@ -109,9 +109,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Vaud",
     description: "Die Olympiastadt am Genfersee bietet qualifizierte Umzugsfirmen mit regionaler Expertise.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 800–1'200" },
-      { size: "3 Zimmer", price: "CHF 1'200–1'800" },
-      { size: "4+ Zimmer", price: "CHF 1'800–3'000" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 800–1'200", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'200–1'800", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'800–3'000", icon: "dollar" }
     ],
     advantages: [
       "Regionale Expertise",
@@ -131,9 +131,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Luzern",
     description: "Die Zentralschweizer Stadt bietet professionelle Umzugsfirmen mit regionaler Kompetenz.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 750–1'150" },
-      { size: "3 Zimmer", price: "CHF 1'150–1'750" },
-      { size: "4+ Zimmer", price: "CHF 1'750–2'900" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 750–1'150", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'150–1'750", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'750–2'900", icon: "dollar" }
     ],
     advantages: [
       "Zentrale Lage in der Schweiz",
@@ -153,9 +153,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Zürich",
     description: "Die grösste Stadt im Kanton Zürich ausserhalb der Hauptstadt bietet erstklassige Umzugsservices.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 750–1'100" },
-      { size: "3 Zimmer", price: "CHF 1'100–1'700" },
-      { size: "4+ Zimmer", price: "CHF 1'700–2'800" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 750–1'100", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'100–1'700", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'700–2'800", icon: "dollar" }
     ],
     advantages: [
       "Günstigere Preise als Zürich",
@@ -175,9 +175,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "St. Gallen",
     description: "Die Ostschweizer Metropole mit erfahrenen Umzugsfirmen und regionaler Expertise.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 700–1'050" },
-      { size: "3 Zimmer", price: "CHF 1'050–1'650" },
-      { size: "4+ Zimmer", price: "CHF 1'650–2'700" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 700–1'050", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'050–1'650", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'650–2'700", icon: "dollar" }
     ],
     advantages: [
       "Regionale Expertise Ostschweiz",
@@ -197,9 +197,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Zug",
     description: "Die wohlhabende Zuger Wirtschaftsmetropole mit Premium-Umzugsservices.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 800–1'200" },
-      { size: "3 Zimmer", price: "CHF 1'200–1'850" },
-      { size: "4+ Zimmer", price: "CHF 1'850–3'100" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 800–1'200", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'200–1'850", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'850–3'100", icon: "dollar" }
     ],
     advantages: [
       "Premium-Services",
@@ -219,9 +219,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Ticino",
     description: "Die grösste Stadt im Tessin mit italienischsprachigen Umzugsteams.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 750–1'150" },
-      { size: "3 Zimmer", price: "CHF 1'150–1'750" },
-      { size: "4+ Zimmer", price: "CHF 1'750–2'900" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 750–1'150", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'150–1'750", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'750–2'900", icon: "dollar" }
     ],
     advantages: [
       "Italienischsprachige Teams",
@@ -241,9 +241,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Bern",
     description: "Die zweisprachige Stadt mit französisch- und deutschsprachigen Umzugsteams.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 700–1'050" },
-      { size: "3 Zimmer", price: "CHF 1'050–1'600" },
-      { size: "4+ Zimmer", price: "CHF 1'600–2'700" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 700–1'050", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'050–1'600", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'600–2'700", icon: "dollar" }
     ],
     advantages: [
       "Zweisprachige Teams (DE/FR)",
@@ -263,9 +263,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Aargau",
     description: "Die Aargauer Kantonshauptstadt mit professionellen Umzugsservices.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 700–1'050" },
-      { size: "3 Zimmer", price: "CHF 1'050–1'650" },
-      { size: "4+ Zimmer", price: "CHF 1'650–2'750" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 700–1'050", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'050–1'650", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'650–2'750", icon: "dollar" }
     ],
     advantages: [
       "Zentrale Lage Mittelland",
@@ -285,9 +285,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Schaffhausen",
     description: "Die nördlichste Stadt der Schweiz mit regionalen Umzugsexperten.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 650–1'000" },
-      { size: "3 Zimmer", price: "CHF 1'000–1'550" },
-      { size: "4+ Zimmer", price: "CHF 1'550–2'600" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 650–1'000", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'000–1'550", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'550–2'600", icon: "dollar" }
     ],
     advantages: [
       "Günstige Preise",
@@ -307,9 +307,9 @@ export const swissCities: Record<string, CityData> = {
     canton: "Graubünden",
     description: "Die älteste Stadt der Schweiz mit erfahrenen Bergumzugs-Spezialisten.",
     priceExamples: [
-      { size: "2 Zimmer", price: "CHF 750–1'100" },
-      { size: "3 Zimmer", price: "CHF 1'100–1'700" },
-      { size: "4+ Zimmer", price: "CHF 1'700–2'850" }
+      { size: "2 Zimmer", distance: "innerorts", priceRange: "CHF 750–1'100", icon: "home" },
+      { size: "3 Zimmer", distance: "bis 20km", priceRange: "CHF 1'100–1'700", icon: "trending" },
+      { size: "4+ Zimmer", distance: "bis 50km", priceRange: "CHF 1'700–2'850", icon: "dollar" }
     ],
     advantages: [
       "Bergumzugs-Spezialisten",
