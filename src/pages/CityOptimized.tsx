@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Shield, CheckCircle2, ArrowRight, Phone, Mail, Calculator, Users } from "lucide-react";
+import { Star, CheckCircle2, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
@@ -16,80 +16,11 @@ import { InternalLinks } from "@/components/InternalLinks";
 import { CTABlock } from "@/components/home/CTABlock";
 import { motion } from "framer-motion";
 import { initPerformanceOptimizations } from "@/lib/performance";
-
-const cityData: Record<string, {
-  name: string;
-  canton: string;
-  description: string;
-  priceExamples: { size: string; price: string }[];
-  advantages: string[];
-  faqs: { question: string; answer: string }[];
-}> = {
-  "zuerich": {
-    name: "Zürich",
-    canton: "Zürich",
-    description: "Die grösste Stadt der Schweiz bietet eine Vielzahl an professionellen Umzugsfirmen mit exzellenter Qualität.",
-    priceExamples: [
-      { size: "2 Zimmer", price: "CHF 800–1'200" },
-      { size: "3 Zimmer", price: "CHF 1'200–1'800" },
-      { size: "4+ Zimmer", price: "CHF 1'800–3'000" }
-    ],
-    advantages: [
-      "Kurzfristige Verfügbarkeit",
-      "Lokale Teams mit Ortskenntnissen",
-      "Faire Preise durch Wettbewerb"
-    ],
-    faqs: [
-      { question: "Was kostet ein Umzug in Zürich?", answer: "Ein 3-Zimmer-Umzug innerorts kostet durchschnittlich CHF 1'200–1'800, abhängig von Stockwerk, Distanz und Zusatzservices." },
-      { question: "Welche Umzugsfirmen sind in Zürich empfehlenswert?", answer: "Auf umzugscheck.ch finden Sie die am besten bewerteten Zürcher Umzugsfirmen mit echten Kundenbewertungen." },
-      { question: "Wie lange im Voraus sollte ich buchen?", answer: "2-4 Wochen im Voraus ist ideal. Express-Umzüge sind bei manchen Anbietern auch kurzfristiger möglich." }
-    ]
-  },
-  "bern": {
-    name: "Bern",
-    canton: "Bern",
-    description: "Die Bundesstadt kombiniert historischen Charme mit moderner Infrastruktur und erfahrenen Umzugsprofis.",
-    priceExamples: [
-      { size: "2 Zimmer", price: "CHF 750–1'100" },
-      { size: "3 Zimmer", price: "CHF 1'100–1'700" },
-      { size: "4+ Zimmer", price: "CHF 1'700–2'800" }
-    ],
-    advantages: [
-      "Altstadtkompetenz der lokalen Firmen",
-      "Faire Preise für Qualität",
-      "Schnelle Verfügbarkeit"
-    ],
-    faqs: [
-      { question: "Was kostet ein Umzug in Bern?", answer: "Ein 3-Zimmer-Umzug kostet in Bern durchschnittlich CHF 1'100–1'700." },
-      { question: "Können Umzüge in der Altstadt durchgeführt werden?", answer: "Ja, lokale Firmen kennen sich mit Altstadtumzügen und Parkbewilligungen aus." },
-      { question: "Welche Services sind verfügbar?", answer: "Umzug, Reinigung, Entsorgung, Lagerung und Möbelmontage." }
-    ]
-  },
-  "basel": {
-    name: "Basel",
-    canton: "Basel-Stadt",
-    description: "Basel im Dreiländereck bietet erstklassige Umzugsfirmen für nationale und internationale Umzüge.",
-    priceExamples: [
-      { size: "2 Zimmer", price: "CHF 800–1'150" },
-      { size: "3 Zimmer", price: "CHF 1'150–1'750" },
-      { size: "4+ Zimmer", price: "CHF 1'750–2'900" }
-    ],
-    advantages: [
-      "Internationale Umzugserfahrung",
-      "Mehrsprachige Teams",
-      "Moderne Infrastruktur"
-    ],
-    faqs: [
-      { question: "Was kostet ein Umzug in Basel?", answer: "Ein 3-Zimmer-Umzug innerorts kostet durchschnittlich CHF 1'150–1'750." },
-      { question: "Sind internationale Umzüge möglich?", answer: "Ja, viele Basler Firmen sind auf grenzüberschreitende Umzüge spezialisiert." },
-      { question: "Wie weit im Voraus sollte ich buchen?", answer: "2-3 Wochen Vorlaufzeit ist optimal. Express-Service ist oft verfügbar." }
-    ]
-  }
-};
+import { getCityData, getAllCitySlugs } from "@/data/cities-complete";
 
 export default function CityOptimized() {
   const { city: citySlug } = useParams<{ city: string }>();
-  const cityInfo = citySlug ? cityData[citySlug] : null;
+  const cityInfo = citySlug ? getCityData(citySlug) : null;
   const [companies, setCompanies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
