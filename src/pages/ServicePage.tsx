@@ -87,6 +87,15 @@ const serviceDatabase: { [key: string]: ServiceData } = {
     priceRange: "CHF 80–400",
     backgroundImage: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=80",
     serviceType: "transport"
+  },
+  "umzug-mit-reinigung": {
+    name: "Umzug mit Reinigung",
+    title: "Professionelle Umzug + Reinigung in der Schweiz – kostenlos vergleichen",
+    description: "Geprüfte Kombi-Anbieter, faire Preise, sofort verfügbar",
+    icon: "🚚🧹",
+    priceRange: "CHF 900–3'500",
+    backgroundImage: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80",
+    serviceType: "moving"
   }
 };
 

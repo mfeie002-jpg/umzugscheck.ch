@@ -125,6 +125,46 @@ const cityDatabase: { [key: string]: CityData } = {
       threeRooms: { min: 1200, max: 2100 },
       office: { min: 2700 }
     }
+  },
+  biel: {
+    name: "Biel",
+    canton: "Bern",
+    districts: ["Altstadt", "Mett", "Bözingen", "Madretsch"],
+    priceRanges: {
+      twoRooms: { min: 650, max: 1200 },
+      threeRooms: { min: 1100, max: 1900 },
+      office: { min: 2500 }
+    }
+  },
+  aarau: {
+    name: "Aarau",
+    canton: "Aargau",
+    districts: ["Altstadt", "Telli", "Gönhard", "Rohr"],
+    priceRanges: {
+      twoRooms: { min: 650, max: 1200 },
+      threeRooms: { min: 1100, max: 1900 },
+      office: { min: 2500 }
+    }
+  },
+  schaffhausen: {
+    name: "Schaffhausen",
+    canton: "Schaffhausen",
+    districts: ["Altstadt", "Breite", "Herblingen", "Buchthalen"],
+    priceRanges: {
+      twoRooms: { min: 650, max: 1200 },
+      threeRooms: { min: 1100, max: 1900 },
+      office: { min: 2500 }
+    }
+  },
+  chur: {
+    name: "Chur",
+    canton: "Graubünden",
+    districts: ["Altstadt", "Obere Au", "Untere Au", "Masans"],
+    priceRanges: {
+      twoRooms: { min: 650, max: 1200 },
+      threeRooms: { min: 1100, max: 1900 },
+      office: { min: 2500 }
+    }
   }
 };
 
