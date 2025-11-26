@@ -26,6 +26,7 @@ import { TrustMicroSignals } from "@/components/trust/TrustMicroSignals";
 import { SecurityBadges } from "@/components/trust/SecurityBadges";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { VerifiedPartners } from "@/components/trust/VerifiedPartners";
+import { SkipToContent } from "@/components/SkipToContent";
 import { 
   generateOrganizationSchema, 
   generateServiceSchema, 
@@ -74,8 +75,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <SkipToContent />
+      
       {/* Animated Background Gradients with Parallax */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
         <div 
           className="absolute top-0 -left-4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" 
           style={{ 
@@ -119,8 +122,10 @@ const Index = () => {
 
       <Navigation />
       
-      {/* 1. Hero Section with CTAs */}
-      <Hero />
+      {/* Main Content */}
+      <main id="main-content" role="main">
+        {/* 1. Hero Section with CTAs */}
+        <Hero />
       
       {/* Trust Line under Hero */}
       <ScrollReveal>
@@ -220,6 +225,7 @@ const Index = () => {
       <ScrollReveal delay={320}>
         <CTASection />
       </ScrollReveal>
+      </main>
 
       <Footer />
       

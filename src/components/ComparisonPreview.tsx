@@ -61,15 +61,15 @@ export const ComparisonPreview = () => {
         {/* Comparison Table - Desktop */}
         <div className="hidden lg:block max-w-6xl mx-auto mb-8">
           <div className="bg-white rounded-2xl border border-border shadow-strong overflow-hidden">
-            <table className="w-full">
+            <table className="w-full" role="table" aria-label="Vergleich von Umzugsfirmen">
               <thead>
                 <tr className="bg-secondary">
-                  <th className="px-6 py-4 text-left font-semibold text-foreground">Firma</th>
-                  <th className="px-6 py-4 text-left font-semibold text-foreground">Bewertung</th>
-                  <th className="px-6 py-4 text-left font-semibold text-foreground">Preisniveau</th>
-                  <th className="px-6 py-4 text-left font-semibold text-foreground">Services</th>
-                  <th className="px-6 py-4 text-left font-semibold text-foreground">Region</th>
-                  <th className="px-6 py-4 text-center font-semibold text-foreground">Aktion</th>
+                  <th scope="col" className="px-6 py-4 text-left font-semibold text-foreground">Firma</th>
+                  <th scope="col" className="px-6 py-4 text-left font-semibold text-foreground">Bewertung</th>
+                  <th scope="col" className="px-6 py-4 text-left font-semibold text-foreground">Preisniveau</th>
+                  <th scope="col" className="px-6 py-4 text-left font-semibold text-foreground">Services</th>
+                  <th scope="col" className="px-6 py-4 text-left font-semibold text-foreground">Region</th>
+                  <th scope="col" className="px-6 py-4 text-center font-semibold text-foreground">Aktion</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,10 +95,10 @@ export const ComparisonPreview = () => {
                     </td>
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-2">
-                        <Star className="w-5 h-5 fill-accent text-accent" />
+                        <Star className="w-5 h-5 fill-accent text-accent" aria-hidden="true" />
                         <span className="font-semibold text-foreground">{company.rating}</span>
                         <span className="text-sm text-foreground/60">
-                          ({company.reviews})
+                          ({company.reviews} <span className="sr-only">Bewertungen</span>)
                         </span>
                       </div>
                     </td>
@@ -118,12 +118,12 @@ export const ComparisonPreview = () => {
                     </td>
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-1 text-sm text-foreground/70">
-                        <MapPin className="w-4 h-4" />
+                        <MapPin className="w-4 h-4" aria-hidden="true" />
                         <span>{company.region}</span>
                       </div>
                     </td>
                     <td className="px-6 py-5 text-center">
-                      <Link to="/rechner">
+                      <Link to="/rechner" aria-label={`Offerte von ${company.name} anfordern`}>
                         <Button size="sm" className="shadow-accent">
                           Offerte
                         </Button>
@@ -154,10 +154,10 @@ export const ComparisonPreview = () => {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <Star className="w-4 h-4 fill-accent text-accent" />
+                        <Star className="w-4 h-4 fill-accent text-accent" aria-hidden="true" />
                         <span className="font-semibold text-sm text-foreground">{company.rating}</span>
                         <span className="text-xs text-foreground/60">
-                          ({company.reviews})
+                          ({company.reviews} <span className="sr-only">Bewertungen</span>)
                         </span>
                       </div>
                     </div>
@@ -186,13 +186,13 @@ export const ComparisonPreview = () => {
                   <div>
                     <div className="text-xs text-foreground/60 mb-1">Region</div>
                     <div className="flex items-center gap-1 text-sm text-foreground">
-                      <MapPin className="w-4 h-4" />
+                      <MapPin className="w-4 h-4" aria-hidden="true" />
                       <span>{company.region}</span>
                     </div>
                   </div>
                 </div>
 
-                <Link to="/rechner" className="block">
+                <Link to="/rechner" className="block" aria-label={`Offerte von ${company.name} anfordern`}>
                   <Button className="w-full shadow-accent">
                     Offerte anfragen
                   </Button>
@@ -207,10 +207,10 @@ export const ComparisonPreview = () => {
           <p className="text-foreground/70 mb-6 font-medium">
             Über 150 geprüfte Umzugsfirmen warten auf Ihre Anfrage
           </p>
-          <Link to="/firmen">
+          <Link to="/firmen" aria-label="Alle Umzugsfirmen vergleichen">
             <Button size="lg" variant="outline" className="group">
               Alle Umzugsfirmen vergleichen
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </Button>
           </Link>
         </div>

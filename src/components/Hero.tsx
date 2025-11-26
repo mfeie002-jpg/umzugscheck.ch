@@ -189,9 +189,10 @@ export const Hero = () => {
                   size="lg" 
                   className="w-full h-12 sm:h-14 text-sm sm:text-base bg-accent hover:bg-accent-dark text-white font-bold"
                   onClick={() => trigger('medium')}
+                  aria-label="Umzugskosten mit KI-Rechner berechnen"
                 >
                   <span>Umzugskosten berechnen</span>
-                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                 </Button>
               </Link>
               <Link to="/firmen" className="w-full">
@@ -200,6 +201,7 @@ export const Hero = () => {
                   variant="outline" 
                   className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-white/40 bg-white/10 text-white hover:bg-white/20"
                   onClick={() => trigger('light')}
+                  aria-label="Umzugsfirmen vergleichen und bewerten"
                 >
                   Umzugsfirmen vergleichen
                 </Button>
@@ -208,7 +210,7 @@ export const Hero = () => {
 
             <div className="pt-2 sm:pt-4">
               <p className="text-white/90 text-xs sm:text-sm flex items-center gap-2">
-                <Shield className="w-4 h-4 flex-shrink-0" />
+                <Shield className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
                 <span>Kostenlos & unverbindlich. Ihre Daten werden nur für Ihre Offerten-Anfrage verwendet.</span>
               </p>
             </div>

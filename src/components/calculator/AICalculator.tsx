@@ -182,15 +182,16 @@ export const AICalculator = () => {
               disabled={files.length === 0 || isAnalyzing}
               className="w-full bg-accent hover:bg-accent/90 shadow-accent group"
               size="lg"
+              aria-label={isAnalyzing ? "KI analysiert Ihre Dateien" : "Mit KI analysieren"}
             >
               {isAnalyzing ? (
                 <>
-                  <Loader2 className="mr-2 w-5 h-5 animate-spin" />
+                  <Loader2 className="mr-2 w-5 h-5 animate-spin" aria-hidden="true" />
                   KI analysiert...
                 </>
               ) : (
                 <>
-                  <Sparkles className="mr-2 w-5 h-5" />
+                  <Sparkles className="mr-2 w-5 h-5" aria-hidden="true" />
                   Mit KI analysieren
                 </>
               )}
@@ -279,6 +280,7 @@ export const AICalculator = () => {
                   setFiles([]);
                 }}
                 className="flex-1"
+                aria-label="Neue Analyse starten"
               >
                 Neu analysieren
               </Button>
@@ -291,6 +293,7 @@ export const AICalculator = () => {
                     description: "Sie werden zu den Umzugsfirmen weitergeleitet.",
                   });
                 }}
+                aria-label="Offerten von Umzugsfirmen erhalten"
               >
                 Offerten erhalten
               </Button>

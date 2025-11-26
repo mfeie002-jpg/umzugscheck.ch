@@ -32,13 +32,14 @@ export const Navigation = () => {
   const [isRatgeberDropdownOpen, setIsRatgeberDropdownOpen] = useState(false);
 
   return (
-    <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
+    <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-16 sm:h-20 md:h-24">
           {/* Logo */}
           <Link 
             to="/" 
             className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0"
+            aria-label="Zur Startseite von Umzugscheck.ch"
           >
             <img 
               src={logo} 
@@ -69,9 +70,38 @@ export const Navigation = () => {
                       if (item.dropdownType === "companies") setIsCompaniesDropdownOpen(false);
                       if (item.dropdownType === "ratgeber") setIsRatgeberDropdownOpen(false);
                     }}
+                    onClick={() => {
+                      if (item.dropdownType === "calculators") setIsMegaDropdownOpen(!isMegaDropdownOpen);
+                      if (item.dropdownType === "regions") setIsRegionsDropdownOpen(!isRegionsDropdownOpen);
+                      if (item.dropdownType === "services") setIsServicesDropdownOpen(!isServicesDropdownOpen);
+                      if (item.dropdownType === "provider") setIsProviderDropdownOpen(!isProviderDropdownOpen);
+                      if (item.dropdownType === "companies") setIsCompaniesDropdownOpen(!isCompaniesDropdownOpen);
+                      if (item.dropdownType === "ratgeber") setIsRatgeberDropdownOpen(!isRatgeberDropdownOpen);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (item.dropdownType === "calculators") setIsMegaDropdownOpen(!isMegaDropdownOpen);
+                        if (item.dropdownType === "regions") setIsRegionsDropdownOpen(!isRegionsDropdownOpen);
+                        if (item.dropdownType === "services") setIsServicesDropdownOpen(!isServicesDropdownOpen);
+                        if (item.dropdownType === "provider") setIsProviderDropdownOpen(!isProviderDropdownOpen);
+                        if (item.dropdownType === "companies") setIsCompaniesDropdownOpen(!isCompaniesDropdownOpen);
+                        if (item.dropdownType === "ratgeber") setIsRatgeberDropdownOpen(!isRatgeberDropdownOpen);
+                      }
+                    }}
                     className={cn(
                       "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
                     )}
+                    aria-expanded={
+                      (item.dropdownType === "calculators" && isMegaDropdownOpen) || 
+                      (item.dropdownType === "regions" && isRegionsDropdownOpen) ||
+                      (item.dropdownType === "services" && isServicesDropdownOpen) ||
+                      (item.dropdownType === "provider" && isProviderDropdownOpen) ||
+                      (item.dropdownType === "companies" && isCompaniesDropdownOpen) ||
+                      (item.dropdownType === "ratgeber" && isRatgeberDropdownOpen)
+                    }
+                    aria-haspopup="true"
+                    aria-label={`${item.label} Menü öffnen`}
                   >
                     {item.label}
                     <ChevronDown className={cn(
@@ -82,7 +112,8 @@ export const Navigation = () => {
                       (item.dropdownType === "provider" && isProviderDropdownOpen) ||
                       (item.dropdownType === "companies" && isCompaniesDropdownOpen) ||
                       (item.dropdownType === "ratgeber" && isRatgeberDropdownOpen) ? "rotate-180" : ""
-                    )} />
+                    )} 
+                    aria-hidden="true" />
                   </button>
                 ) : (
                   <Link
@@ -98,7 +129,7 @@ export const Navigation = () => {
 
           {/* Mobile Menu Button & CTA - Visible on Mobile */}
           <div className="flex lg:hidden items-center gap-2">
-            <Link to="/umzugsofferten">
+            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten erhalten">
               <Button 
                 size="sm"
                 className="bg-destructive hover:bg-destructive/90 text-white shadow-sm font-bold text-xs sm:text-sm px-3 sm:px-4"
@@ -111,16 +142,18 @@ export const Navigation = () => {
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="relative z-50"
-              aria-label="Toggle menu"
+              aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
             </Button>
           </div>
 
           {/* CTA Buttons - Desktop */}
           <div className="hidden lg:flex items-center gap-3">
             <DarkModeToggle />
-            <Link to="/umzugsofferten">
+            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten erhalten">
               <Button className="bg-destructive hover:bg-destructive/90 text-white shadow-medium font-bold">
                 Offerten erhalten
               </Button>
