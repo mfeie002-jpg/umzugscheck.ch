@@ -17,7 +17,7 @@ import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { PushNotificationPrompt } from "./components/PushNotificationPrompt";
 import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
-import Index from "./pages/Index";
+import Index from "./pages/NewIndex";
 import Sitemap from "./pages/Sitemap";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
