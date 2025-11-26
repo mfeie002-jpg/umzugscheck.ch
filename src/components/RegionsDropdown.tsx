@@ -313,33 +313,33 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
       />
       
       {/* Dropdown Content */}
-      <div className="absolute left-0 right-0 top-full mt-0 bg-white border-t border-border shadow-strong z-50 animate-fade-in">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-foreground mb-1">Regionen & Kantone</h3>
-              <p className="text-sm text-muted-foreground mb-4">
+      <div className="absolute left-0 right-0 top-full mt-0 bg-white border-t border-border shadow-strong z-50 animate-fade-in max-h-[85vh] md:max-h-[70vh] overflow-hidden">
+        <div className="container mx-auto px-3 md:px-4 py-4 md:py-6 h-full">
+          <div className="max-w-7xl mx-auto h-full flex flex-col">
+            <div className="mb-3 md:mb-4 flex-shrink-0">
+              <h3 className="text-base md:text-lg font-bold text-foreground mb-1">Regionen & Kantone</h3>
+              <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
                 Finden Sie Umzugsfirmen in Ihrer Region
               </p>
 
               {/* Filters and Search Row */}
-              <div className="flex flex-col md:flex-row gap-3 mb-4">
+              <div className="flex flex-col gap-2 md:gap-3 mb-3 md:mb-4">
                 {/* Search Input */}
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <div className="relative flex-1 min-w-0">
+                  <Search className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="Kanton oder Stadt suchen..."
+                    placeholder="Kanton suchen..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-8 md:pl-10 text-sm h-9 md:h-10"
                   />
                 </div>
 
-                {/* Service Type Filter */}
+                {/* Service Type Filter - Hidden on mobile */}
                 <Select value={serviceFilter} onValueChange={setServiceFilter}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <Filter className="w-4 h-4 mr-2" />
+                  <SelectTrigger className="hidden md:flex w-40 h-9 md:h-10">
+                    <Filter className="w-3.5 h-3.5 md:w-4 md:h-4 mr-2" />
                     <SelectValue placeholder="Service" />
                   </SelectTrigger>
                   <SelectContent>
@@ -352,69 +352,60 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
                   </SelectContent>
                 </Select>
 
-                {/* Availability Toggle */}
-                <Button
-                  variant={availabilityFilter ? "default" : "outline"}
-                  onClick={() => setAvailabilityFilter(!availabilityFilter)}
-                  className="whitespace-nowrap"
-                >
-                  <Badge variant="secondary" className="mr-2">
-                    {availabilityFilter ? "✓" : ""}
-                  </Badge>
-                  Nur verfügbare
-                </Button>
-
-                {/* Geolocation Button */}
+                {/* Geolocation Button - Compact on mobile */}
                 <Button
                   variant="outline"
                   onClick={requestLocation}
                   disabled={geoLoading}
-                  className="whitespace-nowrap"
+                  className="whitespace-nowrap h-9 md:h-10 px-3 md:px-4"
+                  size="sm"
                 >
-                  <Navigation2 className="w-4 h-4 mr-2" />
-                  {nearestCanton ? `Nähe: ${nearestCanton}` : "Mein Standort"}
+                  <Navigation2 className="w-3.5 h-3.5 md:w-4 md:h-4 md:mr-2" />
+                  <span className="hidden md:inline">
+                    {nearestCanton ? `Nähe: ${nearestCanton}` : "Mein Standort"}
+                  </span>
                 </Button>
               </div>
             </div>
 
-            <Tabs defaultValue="list" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 mb-4">
-                <TabsTrigger value="list">Liste</TabsTrigger>
-                <TabsTrigger value="map">Karte</TabsTrigger>
-                <TabsTrigger value="routes">Routen</TabsTrigger>
-                <TabsTrigger value="insights">Insights</TabsTrigger>
+            <Tabs defaultValue="list" className="w-full flex-1 flex flex-col min-h-0">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-3 md:mb-4 h-9 md:h-10 flex-shrink-0">
+                <TabsTrigger value="list" className="text-xs md:text-sm">Liste</TabsTrigger>
+                <TabsTrigger value="map" className="text-xs md:text-sm">Karte</TabsTrigger>
+                <TabsTrigger value="routes" className="hidden md:flex text-xs md:text-sm">Routen</TabsTrigger>
+                <TabsTrigger value="insights" className="hidden md:flex text-xs md:text-sm">Insights</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="list">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-[60vh] overflow-y-auto">
+              <TabsContent value="list" className="flex-1 min-h-0 mt-0">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-2 max-h-full overflow-y-auto pb-2">
                   {sortedCantons.map((canton) => (
                     <Link
                       key={canton.code}
                       to={canton.href}
                       onClick={onClose}
                       className={cn(
-                        "group px-3 py-2 rounded-lg border border-border bg-background",
+                        "group px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg border border-border bg-background",
                         "hover:border-primary/40 hover:shadow-soft transition-all duration-200",
-                        "flex items-center gap-2",
+                        "flex items-center gap-1.5 md:gap-2",
                         nearestCanton === canton.code && "border-primary bg-primary/5"
                       )}
                     >
-                      <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                        <MapPin className="w-3.5 h-3.5 text-primary" />
+                      <div className="w-6 h-6 md:w-7 md:h-7 rounded-md md:rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                        <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors truncate">
+                        <div className="flex items-center gap-1">
+                          <h4 className="font-semibold text-foreground text-xs md:text-sm group-hover:text-primary transition-colors truncate">
                             {canton.name}
                           </h4>
                           {nearestCanton === canton.code && (
-                            <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
+                            <Badge variant="secondary" className="text-[9px] md:text-[10px] px-1 py-0 h-3.5 md:h-4">
                               Nächste
                             </Badge>
                           )}
                         </div>
                         {!loading && companyCounts[canton.code] > 0 && (
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-[10px] md:text-xs text-muted-foreground">
                             {companyCounts[canton.code]} Firmen
                           </p>
                         )}
@@ -424,13 +415,13 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
                 </div>
 
                 {sortedCantons.length === 0 && (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <p>Keine Regionen gefunden</p>
+                  <div className="text-center py-8 md:py-12 text-muted-foreground">
+                    <p className="text-sm">Keine Regionen gefunden</p>
                   </div>
                 )}
               </TabsContent>
 
-              <TabsContent value="map">
+              <TabsContent value="map" className="flex-1 min-h-0 mt-0">
                 <SwitzerlandMap
                   onCantonClick={handleCantonClick}
                   companyCounts={companyCounts}
@@ -438,13 +429,16 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
                 />
               </TabsContent>
 
-              <TabsContent value="routes">
-                <PopularMovingRoutes />
+              <TabsContent value="routes" className="flex-1 min-h-0 mt-0">
+                <div className="max-h-full overflow-y-auto">
+                  <PopularMovingRoutes />
+                </div>
               </TabsContent>
 
-              <TabsContent value="insights" className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+              <TabsContent value="insights" className="flex-1 min-h-0 mt-0">
+                <div className="space-y-3 md:space-y-4 max-h-full overflow-y-auto pr-1 md:pr-2 pb-2">
                 {/* Row 1: Quick Tools */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-3 md:gap-4">
                   <QuickCalculator />
                   <RoutePlanner />
                 </div>
@@ -499,20 +493,21 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
                 <SmartMovingChecklist />
 
                 {/* Row 10: Final Insights */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-3 md:gap-4">
                   <SeasonalPricing />
                   <RegionalReviews />
+                </div>
                 </div>
               </TabsContent>
             </Tabs>
 
-            <div className="mt-6 pt-6 border-t border-border">
+            <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-border flex-shrink-0">
               <Link
                 to="/regionen"
                 onClick={onClose}
-                className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
+                className="inline-flex items-center gap-1.5 md:gap-2 text-primary hover:text-primary/80 font-medium transition-colors text-sm"
               >
-                <MapPin className="w-4 h-4" />
+                <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 Alle Regionen anzeigen
               </Link>
             </div>
