@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
 import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard";
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
@@ -181,8 +179,6 @@ export default function BesteFirmen() {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">
-        <Navigation />
-        
         <main className="flex-1">
           {/* Hero Section */}
           <section className="bg-gradient-to-br from-primary/5 via-background to-primary/5 py-12 sm:py-16 md:py-24">
@@ -346,8 +342,6 @@ export default function BesteFirmen() {
             </div>
           </section>
         </main>
-
-        <Footer />
         
         {/* Mobile Sticky CTA */}
         <StickyMobileCTA />
