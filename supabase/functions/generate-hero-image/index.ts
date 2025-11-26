@@ -1,3 +1,6 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -11,7 +14,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log("Starting image generation...");
+    console.log("Starting hero image generation...");
     
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -24,7 +27,7 @@ Deno.serve(async (req) => {
         messages: [
           {
             role: "user",
-            content: "Generate a warm, emotional, professional photograph for a Swiss moving company website hero background. Show a happy, relieved family (parents and 2 children) standing in front of their beautiful new modern Swiss house, smiling warmly and watching with peace and satisfaction as professional movers in blue uniforms carefully carry furniture and moving boxes. The family (mother, father, boy, girl) should look relaxed, happy, and relieved - conveying they are NOT doing the hard work themselves. Professional movers working in the background carrying boxes and furniture. Bright, sunny day with warm natural lighting. Modern Swiss/European architectural style house. The mood: relief, happiness, trust, professional service, new beginnings, family joy. Photorealistic photography style, 16:9 landscape aspect ratio, soft focus suitable for website background with text overlay. Ultra high resolution, natural colors, warm atmosphere."
+            content: "Generate a warm, emotional, professional photograph for a Swiss moving company website hero background. Show a happy, relieved family (parents with 2 children, ages 6-10) standing in front of their beautiful modern Swiss house on a sunny day, smiling warmly and peacefully watching professional movers in blue work uniforms carefully carrying furniture and moving boxes. The family (mother, father, daughter, son) should look relaxed, happy, and deeply relieved - conveying the feeling that they are NOT doing the hard physical work themselves but trusting professionals to handle everything. Professional movers working diligently in the background carrying boxes and furniture. Bright sunny day with warm natural golden hour lighting. Clean modern Swiss/European architectural style house with mountains visible in far background. The overall mood: profound relief, happiness, trust in professionals, new beginnings, family joy and peace of mind. Photorealistic professional photography style, 16:9 landscape aspect ratio, soft focus suitable for website background with text overlay capability. Ultra high resolution 1920x1080, natural warm colors, inviting atmosphere that makes viewers feel the emotional weight lifted off their shoulders."
           }
         ],
         modalities: ["image", "text"]
