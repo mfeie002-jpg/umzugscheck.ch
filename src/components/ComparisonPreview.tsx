@@ -42,17 +42,17 @@ const exampleCompanies = [
 
 export const ComparisonPreview = () => {
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-b from-white to-secondary/20">
+    <section className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-3 sm:mb-4">
+          <div className="inline-flex items-center gap-2 bg-accent/15 text-accent px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-3 sm:mb-4 border border-accent/20">
             <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Intelligent vergleichen & sparen</span>
           </div>
-          <h2 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold">
+          <h2 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
             Intelligenter Vergleich – auf jeden Kanton zugeschnitten
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
+          <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto px-4">
             <span className="font-semibold text-foreground">KI-gestützte Sortierung</span> für perfekte Resultate – 
             vergleichen Sie Preise, Bewertungen und Services für Ihre Region
           </p>
@@ -63,13 +63,13 @@ export const ComparisonPreview = () => {
           <div className="bg-white rounded-2xl border border-border shadow-strong overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-secondary/30">
-                  <th className="px-6 py-4 text-left font-semibold">Firma</th>
-                  <th className="px-6 py-4 text-left font-semibold">Bewertung</th>
-                  <th className="px-6 py-4 text-left font-semibold">Preisniveau</th>
-                  <th className="px-6 py-4 text-left font-semibold">Services</th>
-                  <th className="px-6 py-4 text-left font-semibold">Region</th>
-                  <th className="px-6 py-4 text-center font-semibold">Aktion</th>
+                <tr className="bg-secondary">
+                  <th className="px-6 py-4 text-left font-semibold text-foreground">Firma</th>
+                  <th className="px-6 py-4 text-left font-semibold text-foreground">Bewertung</th>
+                  <th className="px-6 py-4 text-left font-semibold text-foreground">Preisniveau</th>
+                  <th className="px-6 py-4 text-left font-semibold text-foreground">Services</th>
+                  <th className="px-6 py-4 text-left font-semibold text-foreground">Region</th>
+                  <th className="px-6 py-4 text-center font-semibold text-foreground">Aktion</th>
                 </tr>
               </thead>
               <tbody>
@@ -80,11 +80,11 @@ export const ComparisonPreview = () => {
                   >
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg bg-secondary/30 flex items-center justify-center text-2xl">
+                        <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center text-2xl">
                           {company.logo}
                         </div>
                         <div>
-                          <div className="font-semibold flex items-center gap-2">
+                          <div className="font-semibold flex items-center gap-2 text-foreground">
                             {company.name}
                             {company.verified && (
                               <CheckCircle2 className="w-4 h-4 text-success" />
@@ -96,8 +96,8 @@ export const ComparisonPreview = () => {
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-2">
                         <Star className="w-5 h-5 fill-accent text-accent" />
-                        <span className="font-semibold">{company.rating}</span>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="font-semibold text-foreground">{company.rating}</span>
+                        <span className="text-sm text-foreground/60">
                           ({company.reviews})
                         </span>
                       </div>
@@ -117,7 +117,7 @@ export const ComparisonPreview = () => {
                       </div>
                     </td>
                     <td className="px-6 py-5">
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1 text-sm text-foreground/70">
                         <MapPin className="w-4 h-4" />
                         <span>{company.region}</span>
                       </div>
@@ -141,13 +141,13 @@ export const ComparisonPreview = () => {
           {exampleCompanies.map((company) => (
             <Card key={company.id} className="hover:shadow-medium transition-shadow">
               <CardContent className="p-6 space-y-4">
-                <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-secondary/30 flex items-center justify-center text-2xl">
+                    <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center text-2xl">
                       {company.logo}
                     </div>
                     <div>
-                      <div className="font-semibold flex items-center gap-2">
+                      <div className="font-semibold flex items-center gap-2 text-foreground">
                         {company.name}
                         {company.verified && (
                           <CheckCircle2 className="w-4 h-4 text-success" />
@@ -155,8 +155,8 @@ export const ComparisonPreview = () => {
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <Star className="w-4 h-4 fill-accent text-accent" />
-                        <span className="font-semibold text-sm">{company.rating}</span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="font-semibold text-sm text-foreground">{company.rating}</span>
+                        <span className="text-xs text-foreground/60">
                           ({company.reviews})
                         </span>
                       </div>
@@ -166,14 +166,14 @@ export const ComparisonPreview = () => {
 
                 <div className="space-y-2">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">Preisniveau</div>
+                    <div className="text-xs text-foreground/60 mb-1">Preisniveau</div>
                     <Badge variant="secondary" className="font-semibold">
                       {company.priceLevel}
                     </Badge>
                   </div>
 
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">Services</div>
+                    <div className="text-xs text-foreground/60 mb-1">Services</div>
                     <div className="flex flex-wrap gap-1">
                       {company.services.map((service, i) => (
                         <Badge key={i} variant="outline" className="text-xs">
@@ -184,8 +184,8 @@ export const ComparisonPreview = () => {
                   </div>
 
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">Region</div>
-                    <div className="flex items-center gap-1 text-sm">
+                    <div className="text-xs text-foreground/60 mb-1">Region</div>
+                    <div className="flex items-center gap-1 text-sm text-foreground">
                       <MapPin className="w-4 h-4" />
                       <span>{company.region}</span>
                     </div>
@@ -204,7 +204,7 @@ export const ComparisonPreview = () => {
 
         {/* CTA */}
         <div className="text-center">
-          <p className="text-muted-foreground mb-6">
+          <p className="text-foreground/70 mb-6 font-medium">
             Über 150 geprüfte Umzugsfirmen warten auf Ihre Anfrage
           </p>
           <Link to="/firmen">
