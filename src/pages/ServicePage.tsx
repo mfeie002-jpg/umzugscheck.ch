@@ -1,30 +1,47 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Star, CheckCircle2, ArrowRight, Shield, Zap, Clock } from "lucide-react";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
-import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { supabase } from "@/integrations/supabase/client";
-import { motion } from "framer-motion";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { ScrollReveal } from "@/components/ScrollReveal";
+import { AirbnbCompanyCard } from "@/components/home/AirbnbCompanyCard";
+import { MiniCalculator } from "@/components/home/MiniCalculator";
+import { USPCard } from "@/components/home/USPCard";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { InstantCalculator } from "@/components/home/InstantCalculator";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Button } from "@/components/ui/button";
+import { Shield, Clock, Award } from "lucide-react";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 
 interface ServiceData {
   name: string;
   title: string;
-  description: string;
-  icon: string;
-  priceRange: string;
+  subtitle: string;
+  ctaText: string;
   backgroundImage: string;
-  serviceType: string;
+  howItWorks: {
+    step: string;
+    description: string;
+  }[];
+  topProviders: {
+    name: string;
+    image: string;
+    rating: number;
+    reviewCount: number;
+    priceFrom: number;
+    badges: string[];
+  }[];
+  priceExamples: {
+    description: string;
+    price: string;
+  }[];
+  usps: {
+    icon: any;
+    title: string;
+    description: string;
+  }[];
+  faqs: {
+    question: string;
+    answer: string;
+  }[];
 }
 
-const serviceDatabase: { [key: string]: ServiceData } = {
+const serviceData: Record<string, ServiceData> = {
   umzug: {
     name: "Umzug",
     title: "Professionelle Umzüge in der Schweiz – kostenlos vergleichen",
