@@ -11,6 +11,7 @@ import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { MiniCalculator } from "@/components/home/MiniCalculator";
 import { LiveSignal } from "@/components/common/LiveSignal";
 import { SEOHead } from "@/components/SEOHead";
+import { KICalculatorShowcase } from "@/components/home/KICalculatorShowcase";
 import { Star, DollarSign, Zap } from "lucide-react";
 import { useFullAnalytics } from "@/hooks/use-analytics";
 import { Navigation } from "@/components/Navigation";
@@ -146,6 +147,9 @@ export const HomePage = () => {
           <LiveSignal />
         </div>
       </StandardHero>
+
+      {/* KI Calculator Showcase - Most Important USP */}
+      <KICalculatorShowcase />
 
       {/* USPs */}
       <section className="py-16 md:py-20 bg-background">
