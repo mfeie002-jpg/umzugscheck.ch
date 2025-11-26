@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video, MapPin, Search } from "lucide-react";
+import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video, MapPin, Search, Home, Building2, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -89,6 +89,21 @@ const cantons = [
   { name: "Jura", code: "JU", href: "/jura/umzugsfirmen", cities: [] }
 ];
 
+const services = [
+  { icon: Home, title: "Privatumzug", href: "/services/privatumzug" },
+  { icon: Building2, title: "Firmenumzug", href: "/services/firmenumzug" },
+  { icon: Sparkles, title: "Reinigung", href: "/services/reinigung" },
+  { icon: Trash2, title: "Entsorgung", href: "/services/entsorgung" },
+  { icon: Box, title: "Lagerung", href: "/services/lagerung" },
+  { icon: Wrench, title: "Möbelmontage", href: "/services/moebelmontage" }
+];
+
+const providerLinks = [
+  { title: "Anbieter werden", href: "/anbieter-werden" },
+  { title: "Login", href: "/anbieter/login" },
+  { title: "Preise & Modelle", href: "/anbieter-preise" }
+];
+
 const mainNavItems = [
   { label: "Startseite", href: "/" },
   { label: "Ratgeber", href: "/blog" },
@@ -99,6 +114,8 @@ const mainNavItems = [
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const [isCalculatorsOpen, setIsCalculatorsOpen] = useState(false);
   const [isCompaniesOpen, setIsCompaniesOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isProviderOpen, setIsProviderOpen] = useState(false);
   const [isRegionsOpen, setIsRegionsOpen] = useState(false);
   const [regionSearch, setRegionSearch] = useState("");
   const [companyCounts, setCompanyCounts] = useState<Record<string, number>>({});
@@ -250,6 +267,74 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 <MapPin className="w-4 h-4 text-primary" />
                 <span className="text-sm">Alle Umzugsfirmen</span>
               </Link>
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Services Accordion */}
+          <Collapsible
+            open={isServicesOpen}
+            onOpenChange={setIsServicesOpen}
+          >
+            <CollapsibleTrigger 
+              className="flex items-center justify-between w-full px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium"
+              aria-expanded={isServicesOpen}
+              aria-controls="services-menu"
+              aria-label="Services Menü öffnen"
+            >
+              <span>Services</span>
+              <ChevronDown className={cn(
+                "w-4 h-4 transition-transform",
+                isServicesOpen && "rotate-180"
+              )} 
+              aria-hidden="true" />
+            </CollapsibleTrigger>
+            <CollapsibleContent id="services-menu" className="mt-2 space-y-1">
+              {services.map((service) => (
+                <Link
+                  key={service.title}
+                  to={service.href}
+                  onClick={onClose}
+                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                  aria-label={service.title}
+                >
+                  <service.icon className="w-4 h-4 text-primary" aria-hidden="true" />
+                  <span className="text-sm">{service.title}</span>
+                </Link>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Für Firmen Accordion */}
+          <Collapsible
+            open={isProviderOpen}
+            onOpenChange={setIsProviderOpen}
+          >
+            <CollapsibleTrigger 
+              className="flex items-center justify-between w-full px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium"
+              aria-expanded={isProviderOpen}
+              aria-controls="provider-menu"
+              aria-label="Für Firmen Menü öffnen"
+            >
+              <span>Für Firmen</span>
+              <ChevronDown className={cn(
+                "w-4 h-4 transition-transform",
+                isProviderOpen && "rotate-180"
+              )} 
+              aria-hidden="true" />
+            </CollapsibleTrigger>
+            <CollapsibleContent id="provider-menu" className="mt-2 space-y-1">
+              {providerLinks.map((link) => (
+                <Link
+                  key={link.title}
+                  to={link.href}
+                  onClick={onClose}
+                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                  aria-label={link.title}
+                >
+                  <Briefcase className="w-4 h-4 text-primary" aria-hidden="true" />
+                  <span className="text-sm">{link.title}</span>
+                </Link>
+              ))}
             </CollapsibleContent>
           </Collapsible>
 
