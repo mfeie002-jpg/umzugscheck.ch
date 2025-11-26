@@ -45,9 +45,9 @@ export const Hero = () => {
   return (
     <>
       {/* MOBILE-FIRST HERO SECTION */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-x-hidden">
         {/* Mobile Hero with Background Image */}
-        <div className="lg:hidden relative min-h-[70vh] flex items-center">
+        <div className="lg:hidden relative h-[85vh] max-h-screen flex items-center">
           {/* Background Image with Dark Overlay */}
           <div className="absolute inset-0 z-0">
             {heroImage ? (
@@ -66,13 +66,13 @@ export const Hero = () => {
           </div>
 
           {/* Content */}
-          <div className="container mx-auto px-4 py-12 relative z-10">
-            <div className="text-center text-white space-y-6">
+          <div className="container mx-auto px-4 py-8 relative z-10">
+            <div className="text-center text-white space-y-5 max-w-2xl mx-auto">
               {/* Headline - Max 3 Lines */}
               <motion.h1 
                 className="text-4xl sm:text-5xl font-bold leading-tight"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
               >
                 Ihr Umzug zum<br />besten Preis.
@@ -81,19 +81,19 @@ export const Hero = () => {
               {/* Subline */}
               <motion.p 
                 className="text-lg sm:text-xl leading-relaxed text-white/90"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
               >
                 In 2 Minuten Angebote vergleichen<br />und bis zu 40% sparen.
               </motion.p>
 
               {/* CTAs */}
               <motion.div 
-                className="flex flex-col gap-3 pt-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                className="flex flex-col gap-3 pt-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
               >
                 <Link to="/firmen" className="w-full">
                   <Button 
@@ -125,10 +125,10 @@ export const Hero = () => {
 
               {/* Social Proof Badges */}
               <motion.div 
-                className="flex flex-col gap-3 pt-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex flex-col gap-3 pt-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
               >
                 <div className="flex items-center justify-center gap-6 text-sm">
                   <div className="flex items-center gap-1">

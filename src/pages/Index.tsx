@@ -34,11 +34,20 @@ import {
 } from "@/lib/schema-markup";
 
 const Index = () => {
-  // Different parallax speeds for depth effect
-  const parallax1 = useParallax(0.15);
-  const parallax2 = useParallax(0.25);
-  const parallax3 = useParallax(0.1);
-  const parallax4 = useParallax(0.3);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  // Different parallax speeds for depth effect - disabled on mobile
+  const parallax1 = useParallax(isMobile ? 0 : 0.15);
+  const parallax2 = useParallax(isMobile ? 0 : 0.25);
+  const parallax3 = useParallax(isMobile ? 0 : 0.1);
+  const parallax4 = useParallax(isMobile ? 0 : 0.3);
 
   useEffect(() => {
     // Inject structured data for homepage
