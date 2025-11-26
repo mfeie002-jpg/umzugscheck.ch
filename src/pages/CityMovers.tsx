@@ -115,6 +115,226 @@ const cityDatabase: Record<string, CityData> = {
       { question: 'Was kostet ein Umzug in Genf?', answer: 'Ein 3-Zimmer-Umzug kostet in Genf durchschnittlich CHF 950–1600.' },
       { question: 'Brauche ich eine Parkbewilligung in Genf?', answer: 'Ja, für die meisten Quartiere wird eine Halteverbotszone empfohlen. Unsere Partner organisieren dies für Sie.' }
     ]
+  },
+  lausanne: {
+    name: 'lausanne',
+    displayName: 'Lausanne',
+    heroTitle: 'Die besten Umzugsfirmen in Lausanne im Vergleich',
+    heroSubtitle: 'Erhalte kostenlose Offerten von geprüften Umzugsteams aus Lausanne.',
+    liveSignal: '8 Personen aus Lausanne vergleichen gerade Umzüge',
+    liveCount: 8,
+    backgroundImage: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1920&q=80',
+    advantages: [
+      { title: 'Erfahrung in steilen Quartieren', description: 'Spezialisiert auf Hanglage und steile Zufahrten', icon: Zap },
+      { title: 'Regionale Preise Vaud', description: 'Faire Konditionen für Waadt', icon: MapPin },
+      { title: 'Schnelle Termine', description: 'Flexible Verfügbarkeit dank lokalem Team', icon: Clock }
+    ],
+    districts: ['Ouchy', 'Chailly', 'Centre-Ville'],
+    priceExamples: [
+      { route: '3 Zimmer Lausanne → Renens', price: 'CHF 900–1550' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Lausanne?', answer: 'Ein 3-Zimmer-Umzug kostet in Lausanne durchschnittlich CHF 900–1550.' },
+      { question: 'Sind Umzugsfirmen in Lausanne auf steile Quartiere spezialisiert?', answer: 'Ja, lokale Teams kennen die Hanglage und verfügen über entsprechende Erfahrung und Ausrüstung.' }
+    ]
+  },
+  luzern: {
+    name: 'luzern',
+    displayName: 'Luzern',
+    heroTitle: 'Die besten Umzugsfirmen in Luzern im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von geprüften Luzerner Profis.',
+    liveSignal: '7 Personen aus Luzern vergleichen gerade Umzüge',
+    liveCount: 7,
+    backgroundImage: 'https://images.unsplash.com/photo-1527576539890-dfa815648363?w=1920&q=80',
+    advantages: [
+      { title: 'Erfahrung Altstadt / Seenähe', description: 'Lokale Expertise für historische Quartiere', icon: Shield },
+      { title: 'Regionale Preise', description: 'Transparente Preisgestaltung Zentralschweiz', icon: MapPin },
+      { title: 'Enge Gassen Handling', description: 'Professionelle Lösungen für schmale Zufahrten', icon: Zap }
+    ],
+    districts: ['Littau', 'Reussbühl', 'Tribschen'],
+    priceExamples: [
+      { route: '2 Zimmer Luzern → Kriens', price: 'CHF 690–1100' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Luzern?', answer: 'Ein 2-Zimmer-Umzug kostet in Luzern durchschnittlich CHF 690–1100.' },
+      { question: 'Können Umzugsfirmen in der Luzerner Altstadt arbeiten?', answer: 'Ja, lokale Teams kennen die engen Gassen und organisieren Parkbewilligungen.' }
+    ]
+  },
+  winterthur: {
+    name: 'winterthur',
+    displayName: 'Winterthur',
+    heroTitle: 'Die besten Umzugsfirmen in Winterthur im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von lokalen Winti-Profis.',
+    liveSignal: '9 Personen aus Winterthur vergleichen gerade Umzüge',
+    liveCount: 9,
+    backgroundImage: 'https://images.unsplash.com/photo-1559564484-e48bf5f64a75?w=1920&q=80',
+    advantages: [
+      { title: 'Regionale Preise Winterthur', description: 'Faire Konditionen für Stadt und Agglo', icon: MapPin },
+      { title: 'Teams für Winterthurer Altstadt', description: 'Expertise für historische Quartiere', icon: Shield },
+      { title: 'Gute Express-Verfügbarkeit', description: 'Kurzfristige Termine möglich', icon: Clock }
+    ],
+    districts: ['Oberwinterthur', 'Seen', 'Mattenbach'],
+    priceExamples: [
+      { route: '2 Zimmer Winterthur → Töss', price: 'CHF 650–1150' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Winterthur?', answer: 'Ein 2-Zimmer-Umzug kostet in Winterthur durchschnittlich CHF 650–1150.' },
+      { question: 'Wie schnell kann ich einen Umzugstermin bekommen?', answer: 'Lokale Teams bieten oft kurzfristige Verfügbarkeit, idealerweise 2-3 Wochen im Voraus buchen.' }
+    ]
+  },
+  stgallen: {
+    name: 'stgallen',
+    displayName: 'St. Gallen',
+    heroTitle: 'Die besten Umzugsfirmen in St. Gallen im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von geprüften Teams.',
+    liveSignal: '6 Personen aus St. Gallen vergleichen gerade Umzüge',
+    liveCount: 6,
+    backgroundImage: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1920&q=80',
+    advantages: [
+      { title: 'Regionale Preise Ostschweiz', description: 'Transparente Preisgestaltung', icon: MapPin },
+      { title: 'Erfahrung mit Hanglagen', description: 'Spezialisiert auf steile Zufahrten', icon: Zap },
+      { title: 'Schnelle Verfügbarkeit', description: 'Lokale Teams mit flexiblen Terminen', icon: Clock }
+    ],
+    districts: ['Bruggen', 'Rotmonten', 'St. Fiden'],
+    priceExamples: [
+      { route: '3 Zimmer St. Gallen → Gossau', price: 'CHF 880–1480' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in St. Gallen?', answer: 'Ein 3-Zimmer-Umzug kostet in St. Gallen durchschnittlich CHF 880–1480.' },
+      { question: 'Können Umzugsfirmen mit Hanglagen umgehen?', answer: 'Ja, lokale Teams haben Erfahrung mit steilen Quartieren und entsprechende Ausrüstung.' }
+    ]
+  },
+  zug: {
+    name: 'zug',
+    displayName: 'Zug',
+    heroTitle: 'Die besten Umzugsfirmen in Zug im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von Premium-Umzugsfirmen im Kanton Zug.',
+    liveSignal: '4 Personen aus Zug vergleichen gerade Umzüge',
+    liveCount: 4,
+    backgroundImage: 'https://images.unsplash.com/photo-1527576539890-dfa815648363?w=1920&q=80',
+    advantages: [
+      { title: 'Erfahrung Altstadt Zug', description: 'Expertise für historisches Zentrum', icon: Shield },
+      { title: 'Hochwertige Haushalte', description: 'Spezialisiert auf gehobene Ansprüche', icon: Star },
+      { title: 'Diskrete Umzugsservices', description: 'Professionell und vertraulich', icon: Clock }
+    ],
+    districts: ['Baar', 'Cham', 'Neuheim'],
+    priceExamples: [
+      { route: '3 Zimmer Zug → Cham', price: 'CHF 1100–1700' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Zug?', answer: 'Ein 3-Zimmer-Umzug kostet in Zug durchschnittlich CHF 1100–1700.' },
+      { question: 'Bieten Umzugsfirmen in Zug Premium-Service?', answer: 'Ja, viele Anbieter sind auf hochwertige Haushalte und diskrete Umzüge spezialisiert.' }
+    ]
+  },
+  lugano: {
+    name: 'lugano',
+    displayName: 'Lugano',
+    heroTitle: 'Le migliori ditte di trasloco a Lugano – confronto immediato',
+    heroSubtitle: 'Preventivi gratuiti da professionisti verificati.',
+    liveSignal: '5 persone di Lugano stanno confrontando traslochi',
+    liveCount: 5,
+    backgroundImage: 'https://images.unsplash.com/photo-1559564484-e48bf5f64a75?w=1920&q=80',
+    advantages: [
+      { title: 'Esperti locali in Ticino', description: 'Conoscenza regionale approfondita', icon: Shield },
+      { title: 'Prezzi regionali', description: 'Tariffe trasparenti per il Ticino', icon: MapPin },
+      { title: 'Disponibilità veloce', description: 'Team locali con appuntamenti flessibili', icon: Clock }
+    ],
+    districts: ['Paradiso', 'Cassarate', 'Pregassona'],
+    priceExamples: [
+      { route: '2.5 Locali Lugano → Paradiso', price: 'CHF 700–1150' }
+    ],
+    faq: [
+      { question: 'Quanto costa un trasloco a Lugano?', answer: 'Un trasloco di 2.5 locali a Lugano costa in media CHF 700–1150.' },
+      { question: 'Le ditte di trasloco parlano italiano?', answer: 'Sì, tutti i team in Ticino sono madrelingua italiana.' }
+    ]
+  },
+  biel: {
+    name: 'biel',
+    displayName: 'Biel/Bienne',
+    heroTitle: 'Die besten Umzugsfirmen in Biel im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von zweisprachigen Teams.',
+    liveSignal: '5 Personen aus Biel vergleichen gerade Umzüge',
+    liveCount: 5,
+    backgroundImage: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1920&q=80',
+    advantages: [
+      { title: 'Zweisprachige Anbieter', description: 'Deutsch und Französisch fliessend', icon: Shield },
+      { title: 'Regionale Preise', description: 'Faire Konditionen für Biel und Umgebung', icon: MapPin },
+      { title: 'Express-Teams', description: 'Schnelle Verfügbarkeit', icon: Clock }
+    ],
+    districts: ['Mett', 'Bözingen', 'Vingelz'],
+    priceExamples: [
+      { route: '3 Zimmer Biel → Nidau', price: 'CHF 780–1300' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Biel?', answer: 'Ein 3-Zimmer-Umzug kostet in Biel durchschnittlich CHF 780–1300.' },
+      { question: 'Sind die Umzugsfirmen zweisprachig?', answer: 'Ja, alle Teams in Biel sprechen Deutsch und Französisch.' }
+    ]
+  },
+  aarau: {
+    name: 'aarau',
+    displayName: 'Aarau',
+    heroTitle: 'Die besten Umzugsfirmen in Aarau im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von regionalen Aargauer Teams.',
+    liveSignal: '3 Personen aus Aarau vergleichen gerade Umzüge',
+    liveCount: 3,
+    backgroundImage: 'https://images.unsplash.com/photo-1527576539890-dfa815648363?w=1920&q=80',
+    advantages: [
+      { title: 'Regionale Preise Aargau', description: 'Transparente Preisgestaltung', icon: MapPin },
+      { title: 'Einfache Terminfindung', description: 'Flexible Verfügbarkeit', icon: Clock },
+      { title: 'Erfahrung Landquartiere', description: 'Expertise für Zuzüge in ländliche Gebiete', icon: Zap }
+    ],
+    districts: ['Rohr', 'Telli', 'Gönhard'],
+    priceExamples: [
+      { route: '2 Zimmer Aarau → Suhr', price: 'CHF 620–990' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Aarau?', answer: 'Ein 2-Zimmer-Umzug kostet in Aarau durchschnittlich CHF 620–990.' },
+      { question: 'Können Umzugsfirmen auch in ländliche Gebiete umziehen?', answer: 'Ja, lokale Teams haben Erfahrung mit Umzügen in Landquartiere und kleinere Gemeinden.' }
+    ]
+  },
+  schaffhausen: {
+    name: 'schaffhausen',
+    displayName: 'Schaffhausen',
+    heroTitle: 'Die besten Umzugsfirmen in Schaffhausen im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von lokalen Profis.',
+    liveSignal: '2 Personen aus Schaffhausen vergleichen gerade Umzüge',
+    liveCount: 2,
+    backgroundImage: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1920&q=80',
+    advantages: [
+      { title: 'Regionale Anbieter', description: 'Teams aus der Region', icon: MapPin },
+      { title: 'Erfahrung mit engen Gassen', description: 'Altstadt-Expertise', icon: Shield },
+      { title: 'Gute Expressverfügbarkeit', description: 'Kurzfristige Termine möglich', icon: Clock }
+    ],
+    districts: ['Herblingen', 'Buchthalen', 'Breite'],
+    priceExamples: [
+      { route: '3 Zimmer Schaffhausen → Neuhausen', price: 'CHF 750–1250' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Schaffhausen?', answer: 'Ein 3-Zimmer-Umzug kostet in Schaffhausen durchschnittlich CHF 750–1250.' },
+      { question: 'Haben Umzugsfirmen Erfahrung mit der Altstadt?', answer: 'Ja, lokale Teams kennen die engen Gassen und organisieren Parkbewilligungen.' }
+    ]
+  },
+  chur: {
+    name: 'chur',
+    displayName: 'Chur',
+    heroTitle: 'Die besten Umzugsfirmen in Chur im Vergleich',
+    heroSubtitle: 'Kostenlose Offerten von Bündner Umzugsprofis.',
+    liveSignal: '3 Personen aus Chur vergleichen gerade Umzüge',
+    liveCount: 3,
+    backgroundImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80',
+    advantages: [
+      { title: 'Erfahrung Bergregion', description: 'Spezialisiert auf alpine Zufahrten', icon: Zap },
+      { title: 'Regionale Preise Graubünden', description: 'Faire Konditionen für GR', icon: MapPin },
+      { title: 'Teams für enge Altstadt', description: 'Expertise für historisches Zentrum', icon: Shield }
+    ],
+    districts: ['Masans', 'Sand', 'Lürlibad'],
+    priceExamples: [
+      { route: '2.5 Zimmer Chur → Domat/Ems', price: 'CHF 690–1150' }
+    ],
+    faq: [
+      { question: 'Was kostet ein Umzug in Chur?', answer: 'Ein 2.5-Zimmer-Umzug kostet in Chur durchschnittlich CHF 690–1150.' },
+      { question: 'Haben Umzugsfirmen Erfahrung mit Bergregionen?', answer: 'Ja, Teams in Graubünden sind auf alpine Zufahrten und Berggebiete spezialisiert.' }
+    ]
   }
 };
 
