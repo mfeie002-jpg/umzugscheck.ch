@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
 import { OnboardingHint } from "@/components/OnboardingHint";
 import { OffertenCTA } from "@/components/OffertenCTA";
 import { Button } from "@/components/ui/button";
@@ -264,8 +262,7 @@ const Companies = () => {
         pullDistance={pullDistance}
         threshold={threshold}
       />
-      <Navigation />
-
+      
       <main className="flex-1">
         {/* Header */}
         <section className="py-12 sm:py-16 md:py-20 lg:py-28 gradient-hero text-white relative overflow-hidden">
@@ -678,8 +675,6 @@ const Companies = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };

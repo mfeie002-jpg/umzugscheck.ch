@@ -1,6 +1,4 @@
 import { Helmet } from "react-helmet";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QuickCalculator } from "@/components/calculator/QuickCalculator";
@@ -61,7 +59,7 @@ const Calculator = () => {
   });
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Helmet>
         <title>Umzugsrechner - Kostenlose Kostenschätzung | Umzugscheck.ch</title>
         <meta name="description" content="Berechnen Sie Ihre Umzugskosten in 60 Sekunden. Schnell-Rechner, detaillierter Rechner oder KI-Analyse mit Fotos. ✓ Kostenlos ✓ Unverbindlich ✓ Präzise Schätzung" />
@@ -73,9 +71,7 @@ const Calculator = () => {
         </script>
       </Helmet>
 
-      <Navigation />
-      
-      <main className="flex-1 bg-gradient-light">
+      <div className="flex-1 bg-gradient-light">
         {/* Breadcrumbs */}
         <div className="container mx-auto px-4 pt-4">
           <Breadcrumbs
@@ -157,13 +153,11 @@ const Calculator = () => {
         
         {/* Other Calculators */}
         <OtherCalculators currentPath="/rechner" />
-      </main>
-
-      <Footer />
+      </div>
       
       {/* PWA Install Prompt */}
       <PWAInstallPrompt />
-    </div>
+    </>
   );
 };
 

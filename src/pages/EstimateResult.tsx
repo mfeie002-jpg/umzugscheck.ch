@@ -5,8 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
 import { Loader2, Package, Clock, TrendingUp, Star, ArrowRight, MapPin, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { formatCurrency, getMoveSize } from "@/lib/pricing";
@@ -221,8 +219,6 @@ export default function EstimateResult() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navigation />
-      
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-5xl mx-auto space-y-8">
           {/* Header */}
@@ -423,8 +419,6 @@ export default function EstimateResult() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
