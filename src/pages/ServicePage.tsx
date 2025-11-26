@@ -9,6 +9,8 @@ import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { InternalLinks } from "@/components/InternalLinks";
 
 interface ServiceData {
   name: string;
@@ -223,11 +225,30 @@ const ServicePage = () => {
   const serviceInfo = serviceData[serviceKey] || serviceData.umzug;
   const ServiceIcon = serviceInfo.icon;
 
+  // Generate SEO meta data
+  const metaData = generateMetaData({ type: 'service', service: serviceKey });
+  const currentUrl = `https://umzugscheck.ch/${serviceKey}/`;
+  const ogTags = generateOGTags(metaData, currentUrl);
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>{serviceInfo.title} | Umzugscheck.ch</title>
-        <meta name="description" content={`${serviceInfo.subtitle}. ✓ Kostenlose Offerten ✓ Geprüfte Profis ✓ Faire Preise.`} />
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        
+        {/* OpenGraph Tags */}
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
       </Helmet>
 
       {/* Hero */}
@@ -374,6 +395,9 @@ const ServicePage = () => {
             </div>
           </section>
         </ScrollReveal>
+
+        {/* Internal Links */}
+        <InternalLinks type="service" currentService={serviceKey} />
 
         {/* Final CTA */}
         <section className="py-12 md:py-16 relative overflow-hidden">
