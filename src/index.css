@@ -30,6 +30,7 @@ All colors MUST be HSL.
     --primary-foreground: 0 0% 100%;
     --primary-light: 213 90% 95%;
     --primary-glow: 213 94% 65%;
+    --primary-dark: 213 94% 38%;
     
     /* Secondary: Soft Gray-Blue */
     --secondary: 214 20% 95%;
@@ -38,8 +39,11 @@ All colors MUST be HSL.
     --muted: 214 20% 96%;
     --muted-foreground: 215 15% 46%;
     
-    --accent: 213 94% 96%;
-    --accent-foreground: 213 94% 48%;
+    /* Accent: Swiss Red/Orange for CTAs */
+    --accent: 14 100% 57%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 14 100% 95%;
+    --accent-dark: 14 100% 47%;
     
     /* Success: Swiss Green */
     --success: 142 76% 36%;
@@ -55,14 +59,18 @@ All colors MUST be HSL.
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(213 94% 48%) 0%, hsl(213 94% 38%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(14 100% 57%) 0%, hsl(25 100% 50%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(14 100% 57%) 0%, hsl(25 100% 50%) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(213 94% 98%) 0%, hsl(214 20% 98%) 100%);
     --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(214 20% 98%) 100%);
+    --gradient-light: linear-gradient(180deg, hsl(214 20% 98%) 0%, hsl(0 0% 100%) 100%);
     
     /* Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(215 25% 15% / 0.08);
     --shadow-medium: 0 4px 16px -4px hsl(215 25% 15% / 0.12);
     --shadow-strong: 0 8px 24px -6px hsl(215 25% 15% / 0.16);
     --shadow-hover: 0 12px 32px -8px hsl(215 25% 15% / 0.20);
+    --shadow-accent: 0 8px 24px -6px hsl(14 100% 57% / 0.25);
     
     --chart-1: 213 94% 48%;
     --chart-2: 142 76% 36%;
@@ -183,20 +191,36 @@ All colors MUST be HSL.
     background: var(--gradient-hero);
   }
 
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
   .gradient-accent {
     background: var(--gradient-accent);
+  }
+  
+  .gradient-cta {
+    background: var(--gradient-cta);
   }
 
   .gradient-light {
     background: var(--gradient-light);
   }
   
-  .gradient-premium {
-    background: var(--gradient-premium);
+  .gradient-soft {
+    background: var(--gradient-soft);
   }
   
-  .gradient-subtle {
-    background: var(--gradient-subtle);
+  .shadow-hover {
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .transition-base {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-medium;
   }
 
   .transition-base {

@@ -76,7 +76,7 @@ export const MiniCalculator = () => {
           <Button 
             type="submit" 
             size="lg" 
-            className="w-full h-14 bg-accent hover:bg-accent/90 text-white font-bold shadow-lg text-lg"
+            className="w-full h-14 gradient-cta text-white font-bold shadow-accent text-lg hover:scale-105 transition-all"
           >
             Jetzt vergleichen
             <ArrowRight className="ml-2 h-5 w-5" />
