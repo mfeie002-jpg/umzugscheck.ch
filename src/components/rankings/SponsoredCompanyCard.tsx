@@ -74,14 +74,14 @@ export const SponsoredCompanyCard = ({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
-        <Link to={`/umzugsfirmen/${id}`} className="flex-1">
-          <Button variant="outline" size="lg" className="w-full">
+      <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3">
+        <Link to={`/umzugsfirmen/${id}`} className="w-full">
+          <Button variant="outline" size="lg" className="w-full h-12 sm:h-auto">
             Firma ansehen
           </Button>
         </Link>
-        <Link to="/rechner" className="flex-1">
-          <Button size="lg" className="w-full">
+        <Link to="/rechner" className="w-full">
+          <Button size="lg" className="w-full h-12 sm:h-auto">
             Offerte anfordern
           </Button>
         </Link>

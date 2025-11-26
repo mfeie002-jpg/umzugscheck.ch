@@ -89,15 +89,15 @@ export const OrganicCompanyCard = ({
 
           <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{description}</p>
 
-          <div className="flex gap-2">
-            <Link to={`/umzugsfirmen/${id}`}>
-              <Button variant="outline" size="sm">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Link to={`/umzugsfirmen/${id}`} className="w-full sm:w-auto sm:flex-1">
+              <Button variant="outline" size="sm" className="w-full h-10 sm:h-auto">
                 Profil ansehen
               </Button>
             </Link>
-            <Link to="/rechner">
-              <Button size="sm">
-                Offerte
+            <Link to="/rechner" className="w-full sm:w-auto sm:flex-1">
+              <Button size="sm" className="w-full h-10 sm:h-auto">
+                Offerte anfordern
               </Button>
             </Link>
           </div>

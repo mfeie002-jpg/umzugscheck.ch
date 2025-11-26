@@ -96,7 +96,27 @@ export const Navigation = () => {
             ))}
           </div>
 
-          {/* CTA Buttons */}
+          {/* Mobile Menu Button & CTA - Visible on Mobile */}
+          <div className="flex lg:hidden items-center gap-2">
+            <Link to="/umzugsofferten">
+              <Button 
+                size="sm"
+                className="bg-accent hover:bg-accent/90 text-white shadow-accent"
+              >
+                Offerten erhalten
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="relative z-50"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </Button>
+          </div>
+
+          {/* CTA Buttons - Desktop */}
           <div className="hidden lg:flex items-center gap-3">
             <DarkModeToggle />
             <Link to="/umzugsofferten">
