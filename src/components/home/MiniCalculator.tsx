@@ -1,61 +1,91 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MapPin, ArrowRight } from "lucide-react";
 
 export const MiniCalculator = () => {
-  const [fromAddress, setFromAddress] = useState('');
-  const [toAddress, setToAddress] = useState('');
+  const [fromAddress, setFromAddress] = useState("");
+  const [toAddress, setToAddress] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (fromAddress && toAddress) {
-      navigate('/rechner');
+      navigate("/rechner");
     }
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 border border-border/50 max-w-3xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-        <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-          {/* From Address */}
+    <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-2xl max-w-3xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+          Kostenloses Angebot in 3 Schritten
+        </h2>
+        <p className="text-muted-foreground">
+          Schnell, einfach, unverbindlich
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Step 1: Von Adresse */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            1. Startadresse
+          </label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <MapPin className="h-5 w-5 text-primary" />
+            </div>
             <Input
-              placeholder="Von (PLZ oder Ort)"
+              type="text"
+              placeholder="PLZ oder Ort (z.B. 8001 Zürich)"
               value={fromAddress}
               onChange={(e) => setFromAddress(e.target.value)}
-              className="pl-9 sm:pl-10 h-11 sm:h-12 border-border/50 focus:border-primary text-sm sm:text-base"
-            />
-          </div>
-
-          {/* To Address */}
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
-            <Input
-              placeholder="Nach (PLZ oder Ort)"
-              value={toAddress}
-              onChange={(e) => setToAddress(e.target.value)}
-              className="pl-9 sm:pl-10 h-11 sm:h-12 border-border/50 focus:border-primary text-sm sm:text-base"
+              className="pl-10 h-12 bg-white border-border text-foreground placeholder:text-muted-foreground"
+              required
             />
           </div>
         </div>
 
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full h-11 sm:h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all group text-sm sm:text-base"
-        >
-          Jetzt vergleichen
-          <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
-        </Button>
+        {/* Step 2: Nach Adresse */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            2. Zieladresse
+          </label>
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <MapPin className="h-5 w-5 text-primary" />
+            </div>
+            <Input
+              type="text"
+              placeholder="PLZ oder Ort (z.B. 3011 Bern)"
+              value={toAddress}
+              onChange={(e) => setToAddress(e.target.value)}
+              className="pl-10 h-12 bg-white border-border text-foreground placeholder:text-muted-foreground"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Step 3: Submit */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            3. Offerten erhalten
+          </label>
+          <Button 
+            type="submit" 
+            size="lg" 
+            className="w-full h-14 bg-accent hover:bg-accent/90 text-white font-bold shadow-lg text-lg"
+          >
+            Jetzt vergleichen
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
       </form>
 
-      <p className="text-center text-xs sm:text-sm text-muted-foreground mt-3 sm:mt-4">
-        100% kostenlos & unverbindlich
+      <p className="text-center text-sm text-muted-foreground mt-4">
+        ✓ 100% kostenlos & unverbindlich
       </p>
     </div>
   );
