@@ -154,32 +154,32 @@ export const Hero = () => {
               
               {/* White Banner Overlay - Left Side */}
               <div className="absolute left-6 bottom-6">
-                <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-2xl p-4 w-80 border border-primary/10">
+                <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-2xl p-3 w-56 border border-primary/10">
                   {/* Red Badge */}
-                  <div className="mb-3">
-                    <Badge className="bg-accent hover:bg-accent text-white px-2.5 py-0.5 text-xs">
+                  <div className="mb-2">
+                    <Badge className="bg-accent hover:bg-accent text-white px-2 py-0.5 text-[10px]">
                       🚀 KI-Rechner
                     </Badge>
                   </div>
                   
                   {/* Headline */}
-                  <h3 className="text-lg font-bold text-foreground mb-3">
+                  <h3 className="text-base font-bold text-foreground mb-2">
                     Jetzt mit <span className="text-accent">KI</span><br />
                     bis zu 40% sparen
                   </h3>
                   
                   {/* Calculator Button */}
                   <Link to="/rechner">
-                    <div className="bg-gradient-to-br from-blue-50 to-white border border-primary/20 rounded-lg p-3 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="bg-gradient-to-br from-blue-50 to-white border border-primary/20 rounded-lg p-2 hover:shadow-lg transition-all cursor-pointer group">
                       <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Sparkles className="w-5 h-5 text-primary" />
+                        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Sparkles className="w-4 h-4 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-bold text-foreground text-xs">Umzugsrechner</p>
-                          <p className="text-xs text-muted-foreground truncate">KI-Analyse</p>
+                          <p className="font-bold text-foreground text-[11px]">Umzugsrechner</p>
+                          <p className="text-[10px] text-muted-foreground truncate">KI-Analyse</p>
                         </div>
-                        <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                        <ArrowRight className="w-3 h-3 text-primary group-hover:translate-x-1 transition-transform flex-shrink-0" />
                       </div>
                     </div>
                   </Link>
