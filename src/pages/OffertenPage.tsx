@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, MapPin, Home, User, Mail, Phone, ArrowRight, Sparkles } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { useToast } from "@/hooks/use-toast";
@@ -99,30 +100,34 @@ const OffertenPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <main>
-        {/* Hero */}
-        <section className="py-16 bg-gradient-to-b from-secondary/20 to-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <Badge className="mb-4 bg-success/10 text-success border-success/20">
-                <CheckCircle2 className="w-3 h-3 mr-1" />
-                100% Kostenlos
+        <section className="relative py-20 md:py-28 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-accent/90 to-primary/90 z-0" />
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay"
+            style={{
+              backgroundImage: "url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80')"
+            }}
+          />
+
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-4xl mx-auto text-center text-white mb-12">
+              <Badge className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                100% Kostenlos & Unverbindlich
               </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 Erhalte jetzt kostenlose Umzugsofferten
               </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                Nur geprüfte Schweizer Profis. Keine versteckten Kosten.
+
+              <p className="text-xl md:text-2xl mb-10 text-white/90">
+                Nur geprüfte Schweizer Profis. 100% unverbindlich.
               </p>
-              <img
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
-                alt="Happy movers helping family"
-                className="rounded-2xl shadow-xl mx-auto"
-              />
             </div>
 
-            {/* Main Form */}
             <div className="max-w-2xl mx-auto">
-              <div className="bg-card rounded-3xl shadow-2xl p-8 border border-border">
+              <Card className="shadow-2xl">
+                <CardContent className="p-8">
                 {/* Progress Bar */}
                 <div className="mb-8">
                   <div className="flex justify-between text-sm mb-2">
@@ -281,25 +286,26 @@ const OffertenPage = () => {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
 
               {/* Why Fill This Out */}
               <div className="mt-8 grid md:grid-cols-3 gap-6">
-                <div className="text-center p-6">
+                <Card className="text-center p-6 bg-white/80 backdrop-blur-sm border-white/50">
                   <CheckCircle2 className="h-10 w-10 text-success mx-auto mb-3" />
-                  <h3 className="font-bold mb-2">Gratis & unverbindlich</h3>
+                  <h3 className="font-bold mb-2 text-foreground">Gratis & unverbindlich</h3>
                   <p className="text-sm text-muted-foreground">Keine Kosten, keine Verpflichtung</p>
-                </div>
-                <div className="text-center p-6">
+                </Card>
+                <Card className="text-center p-6 bg-white/80 backdrop-blur-sm border-white/50">
                   <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" />
-                  <h3 className="font-bold mb-2">Schnelle Antwort</h3>
+                  <h3 className="font-bold mb-2 text-foreground">Schnelle Antwort</h3>
                   <p className="text-sm text-muted-foreground">Offerten innerhalb 24h</p>
-                </div>
-                <div className="text-center p-6">
+                </Card>
+                <Card className="text-center p-6 bg-white/80 backdrop-blur-sm border-white/50">
                   <CheckCircle2 className="h-10 w-10 text-accent mx-auto mb-3" />
-                  <h3 className="font-bold mb-2">Bessere Preise</h3>
-                  <p className="text-sm text-muted-foreground">Bis zu 40% sparen</p>
-                </div>
+                  <h3 className="font-bold mb-2 text-foreground">Nur geprüfte Firmen</h3>
+                  <p className="text-sm text-muted-foreground">Verifizierte Schweizer Profis</p>
+                </Card>
               </div>
 
               {/* Recent Activity */}
