@@ -57,29 +57,45 @@ export default function CompanyProfile() {
         <Navigation />
         
         <main className="flex-1">
-          {/* Hero Section */}
-          <section className="bg-gradient-to-br from-primary/5 via-background to-primary/5 py-8 sm:py-12">
+          {/* Hero Section - Mobile Optimized */}
+          <section className="bg-gradient-to-br from-primary/5 via-background to-primary/5 py-6 sm:py-12">
             <div className="container mx-auto px-4">
               <div className="max-w-5xl mx-auto">
                 {company.is_featured && (
-                  <Badge className="mb-4 bg-primary text-primary-foreground">
+                  <Badge className="mb-3 sm:mb-4 bg-primary text-primary-foreground">
                     Empfohlener Partner
                   </Badge>
                 )}
                 
-                <div className="flex flex-col sm:flex-row items-start gap-6">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white dark:bg-muted rounded-lg shadow-md flex items-center justify-center text-4xl flex-shrink-0">
-                    {company.logo_url || "🏢"}
+                <div className="flex flex-col gap-4 sm:gap-6">
+                  {/* Mobile: Logo and Name stacked */}
+                  <div className="flex items-center gap-4 sm:hidden">
+                    <div className="w-16 h-16 bg-white dark:bg-muted rounded-lg shadow-md flex items-center justify-center text-3xl flex-shrink-0">
+                      {company.logo_url || "🏢"}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h1 className="text-2xl font-bold mb-1 break-words">{company.name}</h1>
+                    </div>
                   </div>
-                  
-                  <div className="flex-1">
-                    <h1 className="text-3xl sm:text-4xl font-bold mb-3">{company.name}</h1>
+
+                  {/* Desktop: Logo and full info side by side */}
+                  <div className="hidden sm:flex items-start gap-6">
+                    <div className="w-24 h-24 bg-white dark:bg-muted rounded-lg shadow-md flex items-center justify-center text-4xl flex-shrink-0">
+                      {company.logo_url || "🏢"}
+                    </div>
                     
-                    <div className="flex flex-wrap items-center gap-4 mb-4">
+                    <div className="flex-1">
+                      <h1 className="text-3xl sm:text-4xl font-bold mb-3">{company.name}</h1>
+                    </div>
+                  </div>
+
+                  {/* Info Section - Same for both */}
+                  <div className="space-y-3 sm:space-y-4 sm:ml-[120px]">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                       <div className="flex items-center">
                         <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                         <span className="ml-1 font-bold text-lg">{company.rating.toFixed(1)}</span>
-                        <span className="ml-2 text-muted-foreground">
+                        <span className="ml-2 text-sm sm:text-base text-muted-foreground">
                           ({company.review_count} Bewertungen)
                         </span>
                       </div>
@@ -90,26 +106,26 @@ export default function CompanyProfile() {
                       </Badge>
                       
                       {company.success_rate && (
-                        <div className="flex items-center text-sm">
+                        <div className="flex items-center text-xs sm:text-sm">
                           <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
                           <span>{company.success_rate}% Erfolgsrate</span>
                         </div>
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                      <MapPin className="w-4 h-4" />
-                      <span>{company.service_areas.join(" • ")}</span>
+                    <div className="flex items-start gap-2 text-sm sm:text-base text-muted-foreground">
+                      <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                      <span className="break-words">{company.service_areas.join(" • ")}</span>
                     </div>
 
                     {company.short_description && (
-                      <p className="text-lg mb-4">{company.short_description}</p>
+                      <p className="text-base sm:text-lg leading-relaxed">{company.short_description}</p>
                     )}
 
                     {company.certifications && company.certifications.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="flex flex-wrap gap-2">
                         {company.certifications.map((cert, idx) => (
-                          <Badge key={idx} variant="secondary" className="gap-1">
+                          <Badge key={idx} variant="secondary" className="gap-1 text-xs">
                             <Shield className="w-3 h-3" />
                             {cert}
                           </Badge>
@@ -119,24 +135,24 @@ export default function CompanyProfile() {
                   </div>
                 </div>
 
-                {/* CTA Buttons */}
+                {/* CTA Buttons - Mobile Optimized */}
                 <div className="flex flex-col sm:flex-row gap-3 mt-6 w-full">
-                  <Link to="/rechner" className="flex-1">
-                    <Button size="lg" className="w-full">
-                      Offerte anfordern
+                  <Link to="/rechner" className="w-full sm:flex-1">
+                    <Button size="lg" className="w-full h-12 sm:h-auto text-base">
+                      Offerte von dieser Firma erhalten
                     </Button>
                   </Link>
                   {company.phone_tracking_number && (
                     <Button 
                       size="lg" 
                       variant="outline" 
-                      className="flex-1 gap-2"
+                      className="w-full sm:flex-1 gap-2 h-12 sm:h-auto text-base"
                       onClick={() => {
                         window.location.href = `tel:${company.phone_tracking_number}`;
                       }}
                     >
-                      <Phone className="w-4 h-4" />
-                      Jetzt anrufen
+                      <Phone className="w-5 h-5" />
+                      Firma anrufen
                     </Button>
                   )}
                 </div>

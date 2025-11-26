@@ -15,6 +15,7 @@ import { useHaptic } from "@/hooks/use-haptic";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 import { RankingFilters, FilterState } from "@/components/rankings/RankingFilters";
+import { MobileFilterSheet } from "@/components/rankings/MobileFilterSheet";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { toast } from "sonner";
 
@@ -273,18 +274,35 @@ export default function GuenstigeFirmen() {
                   💡 Tipp: Nutzen Sie die Filter oben, um die passenden günstigen Umzugsfirmen zu finden
                 </p>
 
-                {/* Filters */}
-                <RankingFilters
-                  filters={filters}
-                  onFilterChange={setFilters}
-                  onReset={() => setFilters({
-                    region: "all",
-                    services: [],
-                    priceLevel: "günstig",
-                    minRating: "0",
-                    sortBy: "price",
-                  })}
-                />
+                {/* Filters - Desktop */}
+                <div className="hidden lg:block">
+                  <RankingFilters
+                    filters={filters}
+                    onFilterChange={setFilters}
+                    onReset={() => setFilters({
+                      region: "all",
+                      services: [],
+                      priceLevel: "günstig",
+                      minRating: "0",
+                      sortBy: "price",
+                    })}
+                  />
+                </div>
+
+                {/* Filters - Mobile */}
+                <div className="lg:hidden mb-6">
+                  <MobileFilterSheet
+                    filters={filters}
+                    onFilterChange={setFilters}
+                    onReset={() => setFilters({
+                      region: "all",
+                      services: [],
+                      priceLevel: "günstig",
+                      minRating: "0",
+                      sortBy: "price",
+                    })}
+                  />
+                </div>
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
