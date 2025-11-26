@@ -70,10 +70,10 @@ export const NewHero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mb-10 md:mb-12"
           >
-            <Link to="/umzugsofferten">
+            <Link to="/umzugsofferten" className="inline-block">
               <Button 
                 size="lg"
-                className="h-14 md:h-16 px-8 md:px-12 text-base md:text-lg font-bold bg-accent hover:bg-accent/90 text-white shadow-2xl hover:shadow-accent/50 transition-all hover:scale-105"
+                className="h-14 md:h-16 px-8 md:px-12 text-base md:text-lg font-bold gradient-cta text-white shadow-strong hover:shadow-accent transition-all hover:scale-105"
               >
                 JETZT GRATIS OFFERTEN VERGLEICHEN
                 <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6" />

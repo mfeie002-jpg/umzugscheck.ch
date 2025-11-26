@@ -58,6 +58,7 @@ import Umzugsofferten from "./pages/Umzugsofferten";
 import ZurichMovers from "./pages/ZurichMovers";
 import Pricing from "./pages/Pricing";
 import OffertenPage from "./pages/OffertenPage";
+import OffertenOptimized from "./pages/OffertenOptimized";
 
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
@@ -222,7 +223,7 @@ const App = () => (
             <Route path="/:city/:service" element={<ServicePage />} />
             
             <Route path="/preise" element={<Pricing />} />
-            <Route path="/offerten" element={<OffertenPage />} />
+            <Route path="/offerten" element={<OffertenOptimized />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
