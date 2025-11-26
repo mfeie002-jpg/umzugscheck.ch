@@ -230,7 +230,7 @@ export const Hero = () => {
                   <Sparkles className="w-5 h-5 text-accent" />
                   KI-Umzugsrechner
                 </h3>
-                <p className="text-xs text-muted-foreground">📸 Foto oder 🎥 Video hochladen – KI analysiert automatisch</p>
+                <p className="text-xs text-foreground/80">📸 Foto oder 🎥 Video hochladen – KI analysiert automatisch</p>
               </div>
               <AICalculator />
               <div className="mt-3 flex items-center gap-2 text-xs text-success justify-center font-medium">
@@ -245,9 +245,9 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="relative z-20 pb-8 border-t border-white/20 mt-8">
+      <div className="relative z-20 pb-8 border-t border-white/30 mt-8 bg-primary/20 backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <p className="text-center text-white font-medium mb-6">Bekannt aus & geprüft von:</p>
+          <p className="text-center text-white font-semibold mb-6 text-sm sm:text-base">Bekannt aus & geprüft von:</p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
             <div className="relative flex items-center justify-center px-4 py-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all group min-h-[110px]">
               <img src={logo20min} alt="20 Minuten" className="max-h-16 max-w-full object-contain group-hover:scale-105 transition-transform" />

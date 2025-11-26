@@ -34,12 +34,12 @@ export const LiveActivityIndicator = () => {
     <div className="fixed bottom-6 left-6 z-40 hidden md:block">
       <div 
         className={cn(
-          "bg-card border-2 border-success/20 rounded-xl shadow-strong p-4 max-w-sm transition-all duration-500",
+          "bg-card border-2 border-success/30 rounded-xl shadow-strong p-4 max-w-sm transition-all duration-500",
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
             <CheckCircle2 className="w-5 h-5 text-success" />
           </div>
           <div className="flex-1 min-w-0">
@@ -48,7 +48,7 @@ export const LiveActivityIndicator = () => {
               <span className="text-xs font-semibold text-success uppercase tracking-wide">Live</span>
             </div>
             <p className="text-sm font-medium text-foreground mb-1">{activity.text}</p>
-            <p className="text-xs text-muted-foreground">{activity.time}</p>
+            <p className="text-xs text-foreground/70">{activity.time}</p>
           </div>
         </div>
       </div>

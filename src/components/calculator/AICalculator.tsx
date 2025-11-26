@@ -97,11 +97,11 @@ export const AICalculator = () => {
   return (
     <Card className="shadow-strong">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-foreground">
           <Sparkles className="w-6 h-6 text-accent" />
           KI-gestützter Rechner
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-foreground/70">
           Laden Sie Fotos oder Videos Ihrer Wohnung hoch. Unsere KI schätzt automatisch das Volumen und erstellt eine detaillierte Inventarliste.
         </CardDescription>
       </CardHeader>
@@ -120,7 +120,7 @@ export const AICalculator = () => {
                       Dateien hochladen
                     </span>
                   </Label>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-foreground/70 mt-1">
                     Fotos oder Videos (max. 10 Dateien, je max. 10MB)
                   </p>
                 </div>
@@ -132,7 +132,7 @@ export const AICalculator = () => {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <div className="flex gap-4 text-sm text-muted-foreground">
+                <div className="flex gap-4 text-sm text-foreground/70">
                   <div className="flex items-center gap-1">
                     <ImageIcon className="w-4 h-4" />
                     JPG, PNG, HEIC
@@ -148,18 +148,18 @@ export const AICalculator = () => {
             {/* File List */}
             {files.length > 0 && (
               <div className="space-y-2">
-                <Label>Hochgeladene Dateien ({files.length})</Label>
+                <Label className="text-foreground">Hochgeladene Dateien ({files.length})</Label>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {files.map((file, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-secondary rounded-lg">
                       <div className="flex items-center gap-2">
                         {file.type.startsWith('image/') ? (
-                          <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                          <ImageIcon className="w-4 h-4 text-foreground/70" />
                         ) : (
-                          <Video className="w-4 h-4 text-muted-foreground" />
+                          <Video className="w-4 h-4 text-foreground/70" />
                         )}
-                        <span className="text-sm truncate max-w-xs">{file.name}</span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-sm truncate max-w-xs text-foreground">{file.name}</span>
+                        <span className="text-xs text-foreground/70">
                           ({(file.size / 1024 / 1024).toFixed(1)} MB)
                         </span>
                       </div>
@@ -196,12 +196,12 @@ export const AICalculator = () => {
               )}
             </Button>
 
-            <div className="bg-accent-light border border-accent/20 rounded-lg p-4">
+            <div className="bg-accent/10 border border-accent/30 rounded-lg p-4">
               <div className="flex gap-3">
                 <Sparkles className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                 <div className="text-sm space-y-2">
                   <p className="font-semibold text-accent">So funktioniert's:</p>
-                  <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+                  <ol className="list-decimal list-inside space-y-1 text-foreground/80">
                     <li>Machen Sie Fotos von jedem Zimmer (verschiedene Winkel)</li>
                     <li>Optional: Video-Rundgang durch die Wohnung</li>
                     <li>Unsere KI analysiert Möbel, Kartons und Volumen</li>
@@ -224,14 +224,14 @@ export const AICalculator = () => {
             {/* Volume Estimate */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Geschätztes Umzugsvolumen</CardTitle>
+                <CardTitle className="text-lg text-foreground">Geschätztes Umzugsvolumen</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-bold text-primary">{analysis.estimatedVolume}</span>
-                  <span className="text-muted-foreground">Kubikmeter</span>
+                  <span className="text-foreground/70">Kubikmeter</span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-foreground/70 mt-2">
                   Konfidenz: {(analysis.confidence * 100).toFixed(0)}%
                 </p>
               </CardContent>
@@ -239,14 +239,14 @@ export const AICalculator = () => {
 
             {/* Room Breakdown */}
             <div className="space-y-3">
-              <Label>Zimmer-Analyse</Label>
+              <Label className="text-foreground">Zimmer-Analyse</Label>
               {analysis.rooms.map((room: any, index: number) => (
                 <Card key={index}>
                   <CardContent className="pt-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-semibold">{room.name}</div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="font-semibold text-foreground">{room.name}</div>
+                        <div className="text-sm text-foreground/70">
                           {room.items} Gegenstände erkannt
                         </div>
                       </div>
@@ -261,10 +261,10 @@ export const AICalculator = () => {
 
             {/* Large Items */}
             <div className="space-y-3">
-              <Label>Grosse Möbelstücke</Label>
+              <Label className="text-foreground">Grosse Möbelstücke</Label>
               <div className="flex flex-wrap gap-2">
                 {analysis.largeItems.map((item: string, index: number) => (
-                  <div key={index} className="px-3 py-1 bg-secondary rounded-full text-sm">
+                  <div key={index} className="px-3 py-1 bg-secondary rounded-full text-sm text-foreground">
                     {item}
                   </div>
                 ))}
