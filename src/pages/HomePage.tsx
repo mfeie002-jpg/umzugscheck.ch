@@ -17,6 +17,8 @@ import { useFullAnalytics } from "@/hooks/use-analytics";
 import { Navigation } from "@/components/Navigation";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { RegionCard } from "@/components/home/RegionCard";
+import { ServiceCard } from "@/components/home/ServiceCard";
 
 /**
  * Homepage - Complete Rebuild
@@ -232,72 +234,140 @@ export const HomePage = () => {
         </div>
       </section>
 
-      {/* Internal Links for SEO */}
+      {/* Regions with Rich Content */}
       <section className="py-16 bg-secondary/20">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-            Umzugsfirmen nach Region
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {[
-              { name: "Zürich", slug: "/zuerich/umzugsfirmen" },
-              { name: "Bern", slug: "/bern/umzugsfirmen" },
-              { name: "Basel", slug: "/basel/umzugsfirmen" },
-              { name: "Genf", slug: "/genf/umzugsfirmen" },
-              { name: "Lausanne", slug: "/lausanne/umzugsfirmen" },
-              { name: "Luzern", slug: "/luzern/umzugsfirmen" },
-              { name: "St. Gallen", slug: "/stgallen/umzugsfirmen" },
-              { name: "Winterthur", slug: "/winterthur/umzugsfirmen" },
-            ].map((city) => (
-              <Link
-                key={city.slug}
-                to={city.slug}
-                className="no-underline p-4 bg-background rounded-lg border border-border hover:border-primary hover:shadow-medium transition-all text-center"
-              >
-                <span className="text-foreground font-medium hover:text-primary transition-colors">
-                  {city.name}
-                </span>
-              </Link>
-            ))}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Umzugsfirmen nach Region
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Finde geprüfte Umzugsfirmen in deiner Region und spare bis zu 40% durch unseren Vergleich
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
+            <RegionCard
+              name="Zürich"
+              slug="/zuerich/umzugsfirmen"
+              description="Die grösste Stadt der Schweiz mit höchster Umzugsdichte. Profitiere von starker Konkurrenz."
+              imageUrl="https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'800-3'200"
+              savings="bis 40%"
+            />
+            <RegionCard
+              name="Bern"
+              slug="/bern/umzugsfirmen"
+              description="Hauptstadt mit breitem Angebot an professionellen Umzugsunternehmen zu fairen Preisen."
+              imageUrl="https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'600-2'800"
+              savings="bis 35%"
+            />
+            <RegionCard
+              name="Basel"
+              slug="/basel/umzugsfirmen"
+              description="Grenzregion mit internationaler Erfahrung und attraktiven Preisen durch Wettbewerb."
+              imageUrl="https://images.unsplash.com/photo-1565008576549-57569a49371d?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'700-2'900"
+              savings="bis 38%"
+            />
+            <RegionCard
+              name="Genf"
+              slug="/genf/umzugsfirmen"
+              description="Internationale Stadt mit mehrsprachigen Umzugsteams und Premium-Service."
+              imageUrl="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'900-3'400"
+              savings="bis 42%"
+            />
           </div>
           
-          <div className="text-center mt-8">
+          <div className="text-center">
             <Link to="/regionen" className="no-underline">
               <Button variant="outline" size="lg">
-                Alle Regionen ansehen
+                Alle 26 Kantone ansehen
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Services Internal Links */}
+      {/* Services with Rich Content */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-            Unsere Dienstleistungen
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {[
-              { name: "Umzug", slug: "/umzug" },
-              { name: "Reinigung", slug: "/reinigung" },
-              { name: "Entsorgung", slug: "/entsorgung" },
-              { name: "Lagerung", slug: "/lagerung" },
-              { name: "Firmenumzug", slug: "/firmenumzug" },
-              { name: "Transport", slug: "/transport" },
-              { name: "Räumung", slug: "/raeumung" },
-              { name: "Umzug mit Reinigung", slug: "/umzug-mit-reinigung" },
-            ].map((service) => (
-              <Link
-                key={service.slug}
-                to={service.slug}
-                className="no-underline p-6 bg-secondary/40 rounded-lg hover:bg-primary/10 hover:shadow-medium transition-all text-center group"
-              >
-                <span className="text-foreground font-medium group-hover:text-primary transition-colors">
-                  {service.name}
-                </span>
-              </Link>
-            ))}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Unsere Dienstleistungen
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Alle Umzugsdienstleistungen an einem Ort – transparent, günstig und verlässlich
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            <ServiceCard
+              name="Privatumzug"
+              slug="/umzug"
+              description="Professioneller Umzug für Privathaushalte mit Komplettservice von A bis Z."
+              imageUrl="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'200-2'500"
+              savings="bis 40%"
+            />
+            <ServiceCard
+              name="Endreinigung"
+              slug="/reinigung"
+              description="Professionelle Wohnungsreinigung nach Mietvertrag – abnahmegarantiert."
+              imageUrl="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&auto=format&fit=crop"
+              averageCost="CHF 350-800"
+              savings="bis 30%"
+            />
+            <ServiceCard
+              name="Entsorgung"
+              slug="/entsorgung"
+              description="Fachgerechte Entrümpelung und Entsorgung von Möbeln und Hausrat."
+              imageUrl="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&auto=format&fit=crop"
+              averageCost="CHF 400-1'200"
+              savings="bis 35%"
+            />
+            <ServiceCard
+              name="Lagerung"
+              slug="/lagerung"
+              description="Sichere Möbellagerung in klimatisierten Lagerräumen ab CHF 50/Monat."
+              imageUrl="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop"
+              averageCost="CHF 150-400/Mt"
+              savings="bis 25%"
+            />
+            <ServiceCard
+              name="Firmenumzug"
+              slug="/firmenumzug"
+              description="Büroumzug mit minimalem Betriebsausfall – termingerecht und effizient."
+              imageUrl="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop"
+              averageCost="CHF 3'500-8'000"
+              savings="bis 35%"
+            />
+            <ServiceCard
+              name="Möbeltransport"
+              slug="/transport"
+              description="Einzeltransporte von Möbeln und sperrigen Gütern – schnell und sicher."
+              imageUrl="https://images.unsplash.com/photo-1586864387634-700a61161b76?w=800&auto=format&fit=crop"
+              averageCost="CHF 200-600"
+              savings="bis 30%"
+            />
+            <ServiceCard
+              name="Räumung"
+              slug="/raeumung"
+              description="Komplette Haushaltsauflösung und Wohnungsräumung inkl. Entsorgung."
+              imageUrl="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop"
+              averageCost="CHF 800-2'000"
+              savings="bis 40%"
+            />
+            <ServiceCard
+              name="Kombi-Service"
+              slug="/umzug-mit-reinigung"
+              description="Umzug + Reinigung als Paket – alles aus einer Hand zum Sparpreis."
+              imageUrl="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'800-3'500"
+              savings="bis 45%"
+            />
           </div>
         </div>
       </section>
