@@ -216,7 +216,6 @@ export const HomePage = () => {
         </div>
       </section>
 
-      <SimplifiedFooter />
       <StickyMobileCTA text="Kostenlose Offerten – jetzt starten" link="/umzugsofferten" />
     </>
   );

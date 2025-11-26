@@ -123,10 +123,11 @@ const App = () => (
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                   </div>
                 }>
-                  <Routes>
-          <Route path="/" element={<HomeOptimized />} />
+                   <Routes>
+          <Route path="/" element={<HomePage />} />
           <Route path="/old-home" element={<Index />} />
-          <Route path="/v2" element={<NewIndex />} />
+          <Route path="/v2" element={<HomeOptimized />} />
+          <Route path="/v3" element={<NewIndex />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
