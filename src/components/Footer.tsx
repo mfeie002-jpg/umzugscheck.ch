@@ -60,18 +60,40 @@ export const Footer = () => {
             </p>
           </div>
 
+          {/* Umzug planen */}
+          <div>
+            <h4 className="font-bold mb-4">Umzug planen</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/rechner" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Umzugskosten berechnen
+                </Link>
+              </li>
+              <li>
+                <Link to="/umzugsofferten" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Umzugsofferten vergleichen
+                </Link>
+              </li>
+              <li>
+                <Link to="/beste-umzugsfirma" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Beste Umzugsfirmen 2025
+                </Link>
+              </li>
+              <li>
+                <Link to="/guenstige-umzugsfirma" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Günstige Umzugsfirmen
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Quick Links */}
           <div>
             <h4 className="font-bold mb-4">Schnelllinks</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/rechner" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Preisrechner
-                </Link>
-              </li>
-              <li>
                 <Link to="/firmen" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Umzugsfirmen
+                  Alle Umzugsfirmen
                 </Link>
               </li>
               <li>

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -6,8 +7,7 @@ import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
 import { Button } from "@/components/ui/button";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { TrendingDown, DollarSign, CheckCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { TrendingDown, DollarSign, CheckCircle, ArrowRight } from "lucide-react";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
 import { getRankedCompanies } from "@/lib/ranking-service";
 import { trackLeadConversion } from "@/lib/bidding-engine";
@@ -15,6 +15,7 @@ import { useHaptic } from "@/hooks/use-haptic";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 import { RankingFilters, FilterState } from "@/components/rankings/RankingFilters";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { toast } from "sonner";
 
 export default function GuenstigeFirmen() {
@@ -309,18 +310,19 @@ export default function GuenstigeFirmen() {
           </section>
 
           {/* CTA Section */}
-          <section className="py-16 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/20 dark:to-green-900/20">
+          <section className="py-12 sm:py-16 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/20 dark:to-green-900/20">
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Finden Sie Ihr persönliches Sparangebot
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
+                  Unsicher, welche Umzugsfirma am besten zu Ihnen passt?
                 </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  Vergleichen Sie kostenlos mehrere Umzugsfirmen und sparen Sie bis zu 40%.
+                <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
+                  Statt lange zu vergleichen, können Sie mit einer Anfrage mehrere Offerten von geprüften Umzugsfirmen erhalten.
                 </p>
-                <Link to="/rechner">
-                  <Button size="lg" className="text-lg px-8">
-                    Kostenlos Preise vergleichen
+                <Link to="/umzugsofferten">
+                  <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-14 w-full sm:w-auto">
+                    Jetzt Umzugsofferten vergleichen
+                    <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </Link>
               </div>
@@ -329,6 +331,9 @@ export default function GuenstigeFirmen() {
         </main>
 
         <Footer />
+        
+        {/* Mobile Sticky CTA */}
+        <StickyMobileCTA />
         
         {/* Multi-select Selection Bar */}
         <CompanySelectionBar

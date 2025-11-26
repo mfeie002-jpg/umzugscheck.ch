@@ -147,20 +147,20 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10"></div>
       </div>
         
-      <div className="container mx-auto px-4 py-12 sm:py-16 md:py-24 lg:py-32 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-7xl mx-auto">
-          <div className="space-y-6 sm:space-y-8 lg:pr-8">
+      <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24 relative z-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-center max-w-7xl mx-auto">
+          <div className="space-y-4 sm:space-y-6 lg:pr-8 w-full">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium">
               <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-success animate-pulse flex-shrink-0" />
-              <span className="truncate">100% kostenlos & unverbindlich · In 2 Minuten zu 3–5 Offerten</span>
+              <span className="text-xs sm:text-sm">100% kostenlos & unverbindlich · In 2 Minuten zu 3–5 Offerten</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-              Ihren Umzug in der Schweiz<br />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tight">
+              Ihren Umzug in der Schweiz<br className="hidden sm:inline" />
               <span className="text-accent drop-shadow-lg">in 60 Sekunden vergleichen</span>
             </h1>
 
-            <p className="text-base sm:text-lg md:text-xl text-white/95 leading-relaxed max-w-2xl">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/95 leading-relaxed">
               Füllen Sie einmal Ihr Umzugsprofil aus und erhalten Sie in kurzer Zeit passende Angebote von geprüften Umzugsfirmen. Transparent, fair und ohne Telefon-Spam.
             </p>
 
@@ -182,22 +182,22 @@ export const Hero = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
-              <Link to="/rechner" className="flex-1">
+            <div className="flex flex-col gap-3 pt-2 sm:pt-4">
+              <Link to="/rechner" className="w-full">
                 <Button 
                   size="lg" 
-                  className="w-full h-12 sm:h-14 text-sm sm:text-lg bg-accent hover:bg-accent-dark text-white"
+                  className="w-full h-12 sm:h-14 text-sm sm:text-base bg-accent hover:bg-accent-dark text-white font-bold"
                   onClick={() => trigger('medium')}
                 >
                   <span>Umzugskosten berechnen</span>
                   <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </Link>
-              <Link to="/firmen" className="flex-1">
+              <Link to="/firmen" className="w-full">
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="w-full h-12 sm:h-14 text-sm sm:text-lg border-2 border-white/40 bg-white/10 text-white"
+                  className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-white/40 bg-white/10 text-white hover:bg-white/20"
                   onClick={() => trigger('light')}
                 >
                   Umzugsfirmen vergleichen
@@ -215,22 +215,22 @@ export const Hero = () => {
             <SecurityBadges />
           </div>
 
-          <div className="lg:ml-auto w-full max-w-md">
-            <div className="backdrop-blur-lg bg-white/98 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border-2 border-white/30 relative">
-              <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+          <div className="w-full lg:ml-auto lg:max-w-md order-first lg:order-last">
+            <div className="backdrop-blur-lg bg-white/98 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 border-2 border-white/30 relative">
+              <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
                 <PopularBadge variant="popular" />
               </div>
-              <div className="mb-4 sm:mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-1 sm:mb-2">Schnell-Rechner</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">In 60 Sekunden zu Ihrer Kostenschätzung.</p>
+              <div className="mb-3 sm:mb-4">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1">Schnell-Rechner</h3>
+                <p className="text-xs text-muted-foreground">In 60 Sekunden zu Ihrer Kostenschätzung.</p>
               </div>
               <QuickCalculator embedded />
-              <div className="mt-3 sm:mt-4 flex items-center gap-2 text-xs sm:text-sm text-muted-foreground justify-center">
-                <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+              <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground justify-center">
+                <Clock className="w-3 h-3" />
                 <span>Antwort: 3–24 Stunden</span>
               </div>
             </div>
-            <div className="mt-3 sm:mt-4">
+            <div className="mt-3 hidden lg:block">
               <LiveActivityIndicator />
             </div>
           </div>
