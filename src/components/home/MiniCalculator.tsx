@@ -12,7 +12,7 @@ export const MiniCalculator = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (fromAddress && toAddress) {
-      navigate("/rechner");
+      navigate(`/rechner?from=${encodeURIComponent(fromAddress)}&to=${encodeURIComponent(toAddress)}`);
     }
   };
 
