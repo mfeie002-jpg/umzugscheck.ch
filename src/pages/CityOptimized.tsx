@@ -238,7 +238,7 @@ export default function CityOptimized() {
                 {cityInfo.priceExamples.map((example, idx) => (
                   <Card key={idx} className="text-center p-8 shadow-medium">
                     <div className="text-sm text-muted-foreground mb-2">{example.size}</div>
-                    <div className="text-3xl font-bold text-accent mb-4">{example.price}</div>
+                    <div className="text-3xl font-bold text-accent mb-4">{example.priceRange}</div>
                     <div className="text-xs text-muted-foreground">Richtwert</div>
                   </Card>
                 ))}
