@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, MapPin, Home, CheckCircle2, AlertCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { calculatorApi } from "@/lib/api";
 import { useAnalytics } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
@@ -29,12 +29,26 @@ const formSchema = z.object({
   hasElevatorTo: z.boolean(),
 });
 
+const parseAddress = (address: string): { postal: string; city: string } => {
+  const match = address.match(/^(\d{4,5})\s+(.+)$/);
+  if (match) {
+    return { postal: match[1], city: match[2] };
+  }
+  return { postal: "", city: address };
+};
+
 export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const analytics = useAnalytics();
+  const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const fromParam = searchParams.get("from") || "";
+  const toParam = searchParams.get("to") || "";
+  const fromAddress = parseAddress(fromParam);
+  const toAddress = parseAddress(toParam);
 
   useEffect(() => {
     analytics.trackCalculatorStarted('quick');
@@ -43,10 +57,10 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fromPostal: "",
-      fromCity: "",
-      toPostal: "",
-      toCity: "",
+      fromPostal: fromAddress.postal,
+      fromCity: fromAddress.city,
+      toPostal: toAddress.postal,
+      toCity: toAddress.city,
       rooms: "",
       movingType: "local",
       floorsFrom: "0",
