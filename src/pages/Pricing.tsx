@@ -10,7 +10,7 @@ import { GradientCTA } from "@/components/home/GradientCTA";
 import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
-import { generateServiceSchema, generateBreadcrumbSchema, injectSchema } from "@/lib/schema-markup";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Helmet } from "react-helmet";
 
@@ -52,26 +52,17 @@ const examples = [
 ];
 
 const Pricing = () => {
-  useEffect(() => {
-    const schemas = [
-      generateServiceSchema(
-        "Umzugskosten Schweiz",
-        "Transparente Richtpreise für Umzüge in der Schweiz. Vergleichen Sie echte Offerten.",
-        "CHF 450-2500"
-      ),
-      generateBreadcrumbSchema([
-        { name: "Startseite", url: "https://umzugscheck.ch" },
-        { name: "Preise", url: "https://umzugscheck.ch/preise" }
-      ])
-    ];
-    injectSchema(schemas);
-  }, []);
+  const schemas = generatePageSchemas(
+    { type: 'preise', url: 'https://www.umzugscheck.ch/preise' }
+  );
+  const schemaScript = generateSchemaScript(schemas);
 
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Was kostet ein Umzug in der Schweiz? Preise & Kosten | Umzugscheck.ch</title>
         <meta name="description" content="Transparente Umzugspreise für die Schweiz. ✓ Richtpreise nach Wohnungsgrösse ✓ Einflussfaktoren ✓ Echte Beispiele. Jetzt informieren!" />
+        <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
 
       {/* Breadcrumbs */}

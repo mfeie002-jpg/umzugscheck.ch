@@ -26,12 +26,10 @@ import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { VerifiedPartners } from "@/components/trust/VerifiedPartners";
 import { SkipToContent } from "@/components/SkipToContent";
 import { 
-  generateOrganizationSchema, 
-  generateServiceSchema, 
-  generateFAQSchema,
-  generateBreadcrumbSchema,
-  injectSchema 
+  generatePageSchemas,
+  generateSchemaScript
 } from "@/lib/schema-markup";
+import { Helmet } from "react-helmet";
 
 const Index = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -49,39 +47,32 @@ const Index = () => {
   const parallax3 = useParallax(isMobile ? 0 : 0.1);
   const parallax4 = useParallax(isMobile ? 0 : 0.3);
 
-  useEffect(() => {
-    // Inject structured data for homepage
-    const schemas = [
-      generateOrganizationSchema(),
-      generateServiceSchema(
-        "Umzugsvergleich",
-        "Vergleichen Sie Umzugsofferten von über 200 geprüften Umzugsfirmen in der Schweiz",
-        "CHF 850-1500"
-      ),
-      generateFAQSchema([
-        {
-          question: "Wie funktioniert Umzugscheck.ch?",
-          answer: "Geben Sie Ihre Umzugsdetails ein, erhalten Sie kostenlose Offerten von bis zu 5 Umzugsfirmen, vergleichen Sie Preise und Bewertungen, und wählen Sie die beste Firma für Ihren Umzug."
-        },
-        {
-          question: "Ist der Service wirklich kostenlos?",
-          answer: "Ja, Umzugscheck.ch ist für Privatkunden 100% kostenlos. Sie bezahlen nur die Umzugsfirma, die Sie beauftragen."
-        },
-        {
-          question: "Wie schnell erhalte ich Offerten?",
-          answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
-        }
-      ]),
-      generateBreadcrumbSchema([
-        { name: "Startseite", url: "https://umzugscheck.ch" }
-      ])
-    ];
-    
-    injectSchema(schemas);
-  }, []);
+  const faqData = [
+    {
+      question: "Wie funktioniert Umzugscheck.ch?",
+      answer: "Geben Sie Ihre Umzugsdetails ein, erhalten Sie kostenlose Offerten von bis zu 5 Umzugsfirmen, vergleichen Sie Preise und Bewertungen, und wählen Sie die beste Firma für Ihren Umzug."
+    },
+    {
+      question: "Ist der Service wirklich kostenlos?",
+      answer: "Ja, Umzugscheck.ch ist für Privatkunden 100% kostenlos. Sie bezahlen nur die Umzugsfirma, die Sie beauftragen."
+    },
+    {
+      question: "Wie schnell erhalte ich Offerten?",
+      answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
+    }
+  ];
+
+  const schemas = generatePageSchemas(
+    { type: 'home', url: 'https://www.umzugscheck.ch/' },
+    faqData
+  );
+  const schemaScript = generateSchemaScript(schemas);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <Helmet>
+        <script type="application/ld+json">{schemaScript}</script>
+      </Helmet>
       <SkipToContent />
       
       {/* Animated Background Gradients with Parallax */}

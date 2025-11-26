@@ -15,7 +15,8 @@ import { GradientCTA } from "@/components/home/GradientCTA";
 import { FAQ } from "@/components/FAQ";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
-import { generateServiceSchema, generateBreadcrumbSchema, injectSchema } from "@/lib/schema-markup";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { Helmet } from "react-helmet";
 
 interface Company {
   id: string;
@@ -55,7 +56,6 @@ const ZurichMovers = () => {
 
   useEffect(() => {
     fetchCompanies();
-    injectSchemaData();
   }, [cityInfo.name]);
 
   const fetchCompanies = async () => {
@@ -76,21 +76,22 @@ const ZurichMovers = () => {
     }
   };
 
-  const injectSchemaData = () => {
-    const schemas = [
-      generateServiceSchema(
-        `Umzugsfirmen ${cityInfo.name}`,
-        `Die besten Umzugsfirmen in ${cityInfo.name} vergleichen. Kostenlose Offerten von geprüften lokalen Profis.`,
-        `CHF ${cityInfo.priceRanges.oneRoom.min}-${cityInfo.priceRanges.fourPlusRooms.max}`
-      ),
-      generateBreadcrumbSchema([
-        { name: "Startseite", url: "https://umzugscheck.ch" },
-        { name: cityInfo.name, url: `https://umzugscheck.ch/${cityKey}` },
-        { name: "Umzugsfirmen", url: `https://umzugscheck.ch/${cityKey}/umzugsfirmen` }
-      ])
-    ];
-    injectSchema(schemas);
-  };
+  const companyData = companies.map(c => ({
+    name: c.name,
+    rating: c.rating,
+    reviewCount: c.review_count
+  }));
+
+  const schemas = generatePageSchemas(
+    { 
+      type: 'city', 
+      city: cityKey,
+      url: `https://www.umzugscheck.ch/${cityKey}/umzugsfirmen` 
+    },
+    undefined,
+    companyData
+  );
+  const schemaScript = generateSchemaScript(schemas);
 
   const displayedCompanies = showAll ? companies : companies.slice(0, 5);
 
@@ -135,6 +136,9 @@ const ZurichMovers = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <script type="application/ld+json">{schemaScript}</script>
+      </Helmet>
       {/* 1. Hero */}
       <EmotionalHero
         title={`Die besten Umzugsfirmen in ${cityInfo.name} im Vergleich`}
