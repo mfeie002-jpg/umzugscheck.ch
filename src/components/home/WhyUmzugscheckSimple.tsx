@@ -74,24 +74,24 @@ const usps = [
 
 export const WhyUmzugscheckSimple = () => {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-background via-secondary/10 to-background">
+    <section className="py-16 md:py-28 bg-gradient-to-b from-background via-secondary/10 to-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4 md:mb-6">
             Warum umzugscheck.ch?
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Nicht nur ein Vergleichsportal – Ihr komplettes Umzugs-Ökosystem für einen stressfreien Start ins neue Zuhause
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
           {usps.map((usp, index) => (
             <motion.div
               key={index}
@@ -102,45 +102,46 @@ export const WhyUmzugscheckSimple = () => {
               className="group relative bg-card rounded-2xl overflow-hidden border border-border/50 hover:border-primary/30 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
               {/* Image with overlay */}
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-48 md:h-52 overflow-hidden">
                 <img 
                   src={usp.image} 
                   alt={usp.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
                 
                 {/* Number Badge */}
-                <div className="absolute top-4 left-4 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
+                <div className="absolute top-4 left-4 bg-primary text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-2xl md:text-3xl font-bold shadow-lg">
                   {usp.number}
                 </div>
 
                 {/* Icon Badge */}
-                <div className="absolute top-4 right-4 bg-primary/90 backdrop-blur-sm p-3 rounded-xl shadow-lg">
-                  <usp.icon className="h-6 w-6 text-white" />
+                <div className="absolute top-4 right-4 bg-primary/90 backdrop-blur-sm p-2.5 md:p-3 rounded-xl shadow-lg">
+                  <usp.icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
                 </div>
 
                 {/* Highlight Badge */}
                 <div className="absolute bottom-4 left-4 right-4">
-                  <span className="inline-block bg-accent/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                  <span className="inline-block bg-accent/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full line-clamp-1">
                     {usp.highlight}
                   </span>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
+              <div className="p-5 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors line-clamp-2">
                   {usp.title}
                 </h3>
-                <p className="text-sm font-medium text-primary mb-3">
+                <p className="text-xs md:text-sm font-medium text-primary mb-3 line-clamp-2">
                   {usp.subtitle}
                 </p>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                <p className="text-muted-foreground text-xs md:text-sm leading-relaxed mb-4 line-clamp-3 md:line-clamp-4">
                   {usp.description}
                 </p>
                 <Link to={usp.ctaLink}>
-                  <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-white transition-colors">
+                  <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-white transition-colors text-xs md:text-sm">
                     {usp.ctaText}
                   </Button>
                 </Link>
@@ -158,9 +159,9 @@ export const WhyUmzugscheckSimple = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-center mt-16"
+          className="text-center mt-12 md:mt-16"
         >
-          <p className="text-lg text-muted-foreground mb-6">
+          <p className="text-base md:text-lg text-muted-foreground mb-6">
             <strong className="text-foreground">Das schweizweit führende, faire, KI-getriebene Umzugs- & Service-Ökosystem</strong>
           </p>
         </motion.div>

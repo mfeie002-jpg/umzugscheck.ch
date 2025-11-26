@@ -34,7 +34,7 @@ export const StandardHero = ({
   children
 }: StandardHeroProps) => {
   return (
-    <section className={`relative min-h-[80vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 ${className}`}>
+    <section className={`relative min-h-[75vh] md:min-h-[80vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 ${className}`}>
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -48,14 +48,14 @@ export const StandardHero = ({
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+      <div className="container mx-auto px-4 py-10 md:py-16 relative z-10">
         <div className="max-w-6xl mx-auto text-center">
           {/* Main Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white mb-4 md:mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-3 md:mb-6 px-2"
           >
             {h1}
           </motion.h1>
@@ -65,7 +65,7 @@ export const StandardHero = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-lg md:text-xl text-white/95 mb-6 md:mb-8 max-w-2xl mx-auto"
+            className="text-base sm:text-lg md:text-xl text-white/95 mb-6 md:mb-8 max-w-2xl mx-auto px-2"
           >
             {subtitle}
           </motion.p>
@@ -76,18 +76,18 @@ export const StandardHero = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-8 text-white text-sm md:text-base"
+              className="flex flex-wrap justify-center items-center gap-3 md:gap-6 mb-6 md:mb-8 text-white text-xs sm:text-sm md:text-base px-2"
             >
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
                 <span className="font-semibold">4.8 / 5</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-400" />
-                <span>15'000+ Umzüge</span>
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
+                <span className="whitespace-nowrap">15'000+ Umzüge</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-400" />
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
                 <span>100% kostenlos</span>
               </div>
             </motion.div>
@@ -98,23 +98,23 @@ export const StandardHero = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-10 md:mb-12"
+            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-8 md:mb-12 px-2"
           >
-            <Link to={ctaLink}>
+            <Link to={ctaLink} className="w-full sm:w-auto">
               <Button 
                 size="lg"
-                className="h-14 md:h-16 px-8 md:px-12 text-base md:text-lg font-bold gradient-cta text-white shadow-strong hover:shadow-accent transition-all hover:scale-105 w-full sm:w-auto"
+                className="h-12 sm:h-14 md:h-16 px-6 sm:px-8 md:px-12 text-sm sm:text-base md:text-lg font-bold gradient-cta text-white shadow-strong hover:shadow-accent transition-all hover:scale-105 w-full"
               >
                 {ctaText}
-                <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6" />
+                <ArrowRight className="ml-2 h-4 w-4 md:h-6 md:w-6" />
               </Button>
             </Link>
             {secondaryCtaText && secondaryCtaLink && (
-              <Link to={secondaryCtaLink}>
+              <Link to={secondaryCtaLink} className="w-full sm:w-auto">
                 <Button 
                   variant="outline"
                   size="lg"
-                  className="h-14 md:h-16 px-8 md:px-12 text-base md:text-lg font-bold bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20 w-full sm:w-auto"
+                  className="h-12 sm:h-14 md:h-16 px-6 sm:px-8 md:px-12 text-sm sm:text-base md:text-lg font-bold bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20 w-full"
                 >
                   {secondaryCtaText}
                 </Button>
@@ -128,6 +128,7 @@ export const StandardHero = ({
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
+              className="px-2"
             >
               {children}
             </motion.div>
