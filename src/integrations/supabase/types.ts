@@ -244,6 +244,57 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_analytics: {
+        Row: {
+          city: string
+          company_id: string | null
+          conversion_type: string
+          created_at: string | null
+          id: string
+          lead_id: string | null
+          metadata: Json | null
+          service: string
+          source_page: string | null
+        }
+        Insert: {
+          city: string
+          company_id?: string | null
+          conversion_type: string
+          created_at?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          service: string
+          source_page?: string | null
+        }
+        Update: {
+          city?: string
+          company_id?: string | null
+          conversion_type?: string
+          created_at?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          service?: string
+          source_page?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversion_analytics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversion_analytics_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_automation_settings: {
         Row: {
           alert_type: string
@@ -279,6 +330,102 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      email_campaigns: {
+        Row: {
+          body_template: string
+          campaign_type: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          sent_count: number | null
+          subject: string
+          trigger_delay_hours: number | null
+          trigger_event: string
+        }
+        Insert: {
+          body_template: string
+          campaign_type: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          sent_count?: number | null
+          subject: string
+          trigger_delay_hours?: number | null
+          trigger_event: string
+        }
+        Update: {
+          body_template?: string
+          campaign_type?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          sent_count?: number | null
+          subject?: string
+          trigger_delay_hours?: number | null
+          trigger_event?: string
+        }
+        Relationships: []
+      }
+      email_queue: {
+        Row: {
+          campaign_id: string | null
+          created_at: string | null
+          error_message: string | null
+          id: string
+          lead_id: string | null
+          metadata: Json | null
+          recipient_email: string
+          recipient_name: string | null
+          scheduled_for: string
+          sent_at: string | null
+          status: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          recipient_email: string
+          recipient_name?: string | null
+          scheduled_for: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          recipient_email?: string
+          recipient_name?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_queue_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_queue_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       estimate_sessions: {
         Row: {
@@ -806,6 +953,47 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_availability: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          is_available: boolean | null
+          provider_id: string
+          slots_available: number | null
+          slots_booked: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id?: string
+          is_available?: boolean | null
+          provider_id: string
+          slots_available?: number | null
+          slots_booked?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          is_available?: boolean | null
+          provider_id?: string
+          slots_available?: number | null
+          slots_booked?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_availability_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_click_events: {
         Row: {
           created_at: string | null
@@ -1131,6 +1319,38 @@ export type Database = {
           },
         ]
       }
+      review_photos: {
+        Row: {
+          display_order: number | null
+          id: string
+          photo_url: string
+          review_id: string | null
+          uploaded_at: string | null
+        }
+        Insert: {
+          display_order?: number | null
+          id?: string
+          photo_url: string
+          review_id?: string | null
+          uploaded_at?: string | null
+        }
+        Update: {
+          display_order?: number | null
+          id?: string
+          photo_url?: string
+          review_id?: string | null
+          uploaded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_photos_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_requests: {
         Row: {
           created_at: string | null
@@ -1414,6 +1634,7 @@ export type Database = {
           avg_completion_time_hours: number | null
           bidding_active: boolean | null
           billing_model: string | null
+          booking_calendar_url: string | null
           call_price_chf: number | null
           call_tracking_enabled: boolean | null
           cantons_served: string[]
@@ -1463,9 +1684,11 @@ export type Database = {
           street: string
           subscription_plan: string | null
           success_rate: number | null
+          team_members: Json | null
           updated_at: string
           verification_status: Database["public"]["Enums"]["verification_status"]
           website: string | null
+          working_hours: Json | null
           zip: string
         }
         Insert: {
@@ -1473,6 +1696,7 @@ export type Database = {
           avg_completion_time_hours?: number | null
           bidding_active?: boolean | null
           billing_model?: string | null
+          booking_calendar_url?: string | null
           call_price_chf?: number | null
           call_tracking_enabled?: boolean | null
           cantons_served?: string[]
@@ -1522,9 +1746,11 @@ export type Database = {
           street: string
           subscription_plan?: string | null
           success_rate?: number | null
+          team_members?: Json | null
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
           website?: string | null
+          working_hours?: Json | null
           zip: string
         }
         Update: {
@@ -1532,6 +1758,7 @@ export type Database = {
           avg_completion_time_hours?: number | null
           bidding_active?: boolean | null
           billing_model?: string | null
+          booking_calendar_url?: string | null
           call_price_chf?: number | null
           call_tracking_enabled?: boolean | null
           cantons_served?: string[]
@@ -1581,9 +1808,11 @@ export type Database = {
           street?: string
           subscription_plan?: string | null
           success_rate?: number | null
+          team_members?: Json | null
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
           website?: string | null
+          working_hours?: Json | null
           zip?: string
         }
         Relationships: []
