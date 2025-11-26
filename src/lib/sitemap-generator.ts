@@ -10,8 +10,8 @@ interface SitemapUrl {
 const BASE_URL = 'https://umzugscheck.ch';
 
 const cities = [
-  'zuerich', 'basel', 'bern', 'luzern', 'stgallen', 'winterthur',
-  'lausanne', 'genf', 'zug', 'lugano', 'biel', 'aarau',
+  'zuerich', 'basel', 'bern', 'genf', 'lausanne', 'luzern', 
+  'winterthur', 'stgallen', 'zug', 'lugano', 'biel', 'aarau',
   'schaffhausen', 'chur'
 ];
 
