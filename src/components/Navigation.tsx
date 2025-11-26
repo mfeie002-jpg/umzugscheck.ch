@@ -8,17 +8,17 @@ import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { ServicesDropdown } from "@/components/ServicesDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
 import { CompaniesDropdown } from "@/components/CompaniesDropdown";
+import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { MobileMenu } from "@/components/MobileMenu";
 import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Preisrechner", href: "/rechner", hasDropdown: true, dropdownType: "calculators" },
-  { label: "Umzugsofferten", href: "/rechner" },
   { label: "Umzugsfirmen", href: "/firmen", hasDropdown: true, dropdownType: "companies" },
   { label: "Services", href: "#", hasDropdown: true, dropdownType: "services" },
   { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
-  { label: "Ratgeber", href: "/blog" },
+  { label: "Ratgeber", href: "/blog", hasDropdown: true, dropdownType: "ratgeber" },
   { label: "Für Firmen", href: "/anbieter-werden", hasDropdown: true, dropdownType: "provider" }
 ];
 
@@ -29,6 +29,7 @@ export const Navigation = () => {
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
   const [isCompaniesDropdownOpen, setIsCompaniesDropdownOpen] = useState(false);
+  const [isRatgeberDropdownOpen, setIsRatgeberDropdownOpen] = useState(false);
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
@@ -58,6 +59,7 @@ export const Navigation = () => {
                       setIsServicesDropdownOpen(item.dropdownType === "services");
                       setIsProviderDropdownOpen(item.dropdownType === "provider");
                       setIsCompaniesDropdownOpen(item.dropdownType === "companies");
+                      setIsRatgeberDropdownOpen(item.dropdownType === "ratgeber");
                     }}
                     onMouseLeave={() => {
                       if (item.dropdownType === "calculators") setIsMegaDropdownOpen(false);
@@ -65,6 +67,7 @@ export const Navigation = () => {
                       if (item.dropdownType === "services") setIsServicesDropdownOpen(false);
                       if (item.dropdownType === "provider") setIsProviderDropdownOpen(false);
                       if (item.dropdownType === "companies") setIsCompaniesDropdownOpen(false);
+                      if (item.dropdownType === "ratgeber") setIsRatgeberDropdownOpen(false);
                     }}
                     className={cn(
                       "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
@@ -77,7 +80,8 @@ export const Navigation = () => {
                       (item.dropdownType === "regions" && isRegionsDropdownOpen) ||
                       (item.dropdownType === "services" && isServicesDropdownOpen) ||
                       (item.dropdownType === "provider" && isProviderDropdownOpen) ||
-                      (item.dropdownType === "companies" && isCompaniesDropdownOpen) ? "rotate-180" : ""
+                      (item.dropdownType === "companies" && isCompaniesDropdownOpen) ||
+                      (item.dropdownType === "ratgeber" && isRatgeberDropdownOpen) ? "rotate-180" : ""
                     )} />
                   </button>
                 ) : (
@@ -164,6 +168,17 @@ export const Navigation = () => {
           <CompaniesDropdown 
             isOpen={isCompaniesDropdownOpen} 
             onClose={() => setIsCompaniesDropdownOpen(false)} 
+          />
+        </div>
+
+        {/* Ratgeber Dropdown */}
+        <div
+          onMouseEnter={() => setIsRatgeberDropdownOpen(true)}
+          onMouseLeave={() => setIsRatgeberDropdownOpen(false)}
+        >
+          <RatgeberDropdown 
+            isOpen={isRatgeberDropdownOpen} 
+            onClose={() => setIsRatgeberDropdownOpen(false)} 
           />
         </div>
       </div>
