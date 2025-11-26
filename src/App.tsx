@@ -208,6 +208,7 @@ const App = () => (
             <Route path="/entsorgung" element={<ServicePage />} />
             <Route path="/lagerung" element={<ServicePage />} />
             <Route path="/transport" element={<ServicePage />} />
+            <Route path="/umzug-mit-reinigung" element={<ServicePage />} />
             
             {/* City + Service Combinations */}
             <Route path="/:city/:service" element={<ServicePage />} />
