@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, ArrowRight, Search, TrendingUp, BookOpen, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { OffertenCTA } from "@/components/OffertenCTA";
 
 const BLOG_POSTS = [
   {
@@ -273,6 +274,18 @@ const Blog = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="pb-16">
+          <div className="container mx-auto px-4">
+            <OffertenCTA
+              title="Bereit für Ihren Umzug?"
+              description="Nutzen Sie unser Wissen und finden Sie die beste Umzugsfirma für Ihren Bedarf. Kostenlos vergleichen und bis zu 40% sparen."
+              buttonText="Jetzt Offerten vergleichen"
+              buttonLink="/umzugsofferten"
+              variant="primary"
+            />
           </div>
         </section>
       </main>

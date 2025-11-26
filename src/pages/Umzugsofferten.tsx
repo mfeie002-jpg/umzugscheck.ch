@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ENHANCED_COMPANIES } from "@/data/enhanced-companies";
 import { useEffect } from "react";
+import { Footer } from "@/components/Footer";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { 
   generateOrganizationSchema, 
   generateServiceSchema, 
@@ -369,6 +371,9 @@ export default function Umzugsofferten() {
           </div>
         </div>
       </section>
+
+      <StickyMobileCTA />
+      <Footer />
     </div>
   );
 }
