@@ -2,89 +2,103 @@ import { Button } from "@/components/ui/button";
 import { Star, CheckCircle2, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { InstantCalculator } from "./InstantCalculator";
+import { MiniCalculator } from "./MiniCalculator";
 import { LiveSignals } from "./LiveSignals";
 
 export const NewHero = () => {
   return (
-    <section className="relative min-h-[90vh] lg:min-h-[85vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
       {/* Emotional Background */}
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80&auto=format&fit=crop"
-          alt="Glückliche Familie beim Umzug"
+          alt="Glückliche Menschen beim Umzug - Profis helfen beim Tragen"
           className="w-full h-full object-cover"
+          loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/40" />
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Text Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-white space-y-6"
-            >
-              {/* Main Headline */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Dein stressfreier Umzug beginnt hier.
-              </h1>
+      <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+        <div className="max-w-6xl mx-auto text-center">
+          {/* Main Headline - Mobile Optimized (max 3 lines) */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white mb-4 md:mb-6"
+          >
+            Dein stressfreier Umzug beginnt hier
+          </motion.h1>
 
-              {/* Subtitle */}
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
-                Vergleiche geprüfte Schweizer Umzugsfirmen und erhalte kostenlose Offerten in 2 Minuten.
-              </p>
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-lg md:text-xl text-white/95 mb-6 md:mb-8 max-w-2xl mx-auto"
+          >
+            Vergleiche geprüfte Schweizer Umzugsfirmen & erhalte kostenlose Offerten in 2 Minuten
+          </motion.p>
 
-              {/* Trust Badges */}
-              <div className="flex flex-wrap items-center gap-6 py-4">
-                <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="text-lg font-semibold">4.8 / 5</span>
-                  <span className="text-white/80 text-sm">basierend auf echten Kundenbewertungen</span>
-                </div>
-              </div>
+          {/* Trust Row - Directly under subtitle */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-8 text-white text-sm md:text-base"
+          >
+            <div className="flex items-center gap-2">
+              <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+              <span className="font-semibold">4.8 / 5</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-400" />
+              <span>15'000+ Umzüge</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-400" />
+              <span>100% kostenlos</span>
+            </div>
+          </motion.div>
 
-              <div className="flex flex-wrap items-center gap-6 text-sm md:text-base">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0" />
-                  <span>15'000+ vermittelte Umzüge</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0" />
-                  <span>100% kostenlos & unverbindlich</span>
-                </div>
-              </div>
+          {/* Primary CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mb-10 md:mb-12"
+          >
+            <Link to="/umzugsofferten">
+              <Button 
+                size="lg"
+                className="h-14 md:h-16 px-8 md:px-12 text-base md:text-lg font-bold bg-accent hover:bg-accent/90 text-white shadow-2xl hover:shadow-accent/50 transition-all hover:scale-105"
+              >
+                JETZT GRATIS OFFERTEN VERGLEICHEN
+                <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6" />
+              </Button>
+            </Link>
+          </motion.div>
 
-              {/* CTA Button */}
-              <div className="pt-4">
-                <Link to="/firmen">
-                  <Button 
-                    size="lg"
-                    className="h-16 px-10 text-lg font-bold bg-accent hover:bg-accent/90 shadow-2xl hover:shadow-accent/50 transition-all hover:scale-105"
-                  >
-                    JETZT GRATIS OFFERTEN VERGLEICHEN
-                    <ArrowRight className="ml-2 h-6 w-6" />
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
+          {/* Integrated 3-Step Mini Calculator */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <MiniCalculator />
+          </motion.div>
 
-            {/* Right: Instant Calculator */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <InstantCalculator />
-            </motion.div>
-          </div>
-
-          {/* Live Signals */}
-          <LiveSignals />
+          {/* Live Signals - Below Calculator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="mt-6"
+          >
+            <LiveSignals />
+          </motion.div>
         </div>
       </div>
     </section>
