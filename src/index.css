@@ -39,15 +39,22 @@ All colors MUST be HSL.
     --muted: 214 20% 96%;
     --muted-foreground: 215 15% 46%;
     
-    /* Accent: Swiss Red/Orange for CTAs */
-    --accent: 14 100% 57%;
+    /* Accent: Vibrant Orange for CTAs */
+    --accent: 25 95% 55%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 14 100% 95%;
-    --accent-dark: 14 100% 47%;
+    --accent-light: 25 100% 95%;
+    --accent-dark: 25 95% 45%;
     
-    /* Success: Swiss Green */
-    --success: 142 76% 36%;
+    /* Success: Happy Green */
+    --success: 142 76% 45%;
     --success-foreground: 0 0% 100%;
+    
+    /* Happy colors - vibrant and cheerful */
+    --happy-yellow: 45 100% 60%;
+    --happy-pink: 340 85% 65%;
+    --happy-purple: 270 70% 65%;
+    --happy-teal: 180 70% 55%;
+    --happy-coral: 15 85% 65%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -57,13 +64,14 @@ All colors MUST be HSL.
     --ring: 213 94% 48%;
     --radius: 0.75rem;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(213 94% 48%) 0%, hsl(213 94% 38%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(14 100% 57%) 0%, hsl(25 100% 50%) 100%);
-    --gradient-cta: linear-gradient(135deg, hsl(14 100% 57%) 0%, hsl(25 100% 50%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(213 94% 98%) 0%, hsl(214 20% 98%) 100%);
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(214 20% 98%) 100%);
-    --gradient-light: linear-gradient(180deg, hsl(214 20% 98%) 0%, hsl(0 0% 100%) 100%);
+    /* Gradients - More vibrant */
+    --gradient-primary: linear-gradient(135deg, hsl(213 94% 48%) 0%, hsl(180 70% 55%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(25 95% 55%) 0%, hsl(340 85% 65%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(25 95% 55%) 0%, hsl(15 85% 65%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(213 94% 98%) 0%, hsl(180 70% 98%) 100%);
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(45 100% 98%) 100%);
+    --gradient-light: linear-gradient(180deg, hsl(340 85% 98%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-happy: linear-gradient(135deg, hsl(45 100% 60%) 0%, hsl(340 85% 65%) 50%, hsl(270 70% 65%) 100%);
     
     /* Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(215 25% 15% / 0.08);
