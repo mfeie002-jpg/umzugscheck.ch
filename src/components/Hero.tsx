@@ -6,6 +6,8 @@ import { SecurityBadges } from "@/components/trust/SecurityBadges";
 import { LiveActivityIndicator } from "@/components/trust/LiveActivityIndicator";
 import { PopularBadge } from "@/components/trust/PopularBadge";
 import { useHaptic } from "@/hooks/use-haptic";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 // Import partner logos
 import logo20min from "@/assets/logos/20min-logo.png";
@@ -17,11 +19,57 @@ import logoASTAG from "@/assets/logos/astag-logo.png";
 
 export const Hero = () => {
   const { trigger } = useHaptic();
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Try to load cached image first
+    const cachedImage = localStorage.getItem('hero-background-image');
+    if (cachedImage) {
+      setBackgroundImage(cachedImage);
+    } else {
+      // Generate new image
+      generateHeroBackground();
+    }
+
+    // Listen for background updates
+    const handleBackgroundUpdate = (e: CustomEvent) => {
+      setBackgroundImage(e.detail);
+    };
+    window.addEventListener('hero-background-updated', handleBackgroundUpdate as EventListener);
+    return () => {
+      window.removeEventListener('hero-background-updated', handleBackgroundUpdate as EventListener);
+    };
+  }, []);
+
+  const generateHeroBackground = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-hero-image');
+      if (error) throw error;
+      if (data?.imageUrl) {
+        setBackgroundImage(data.imageUrl);
+        localStorage.setItem('hero-background-image', data.imageUrl);
+      }
+    } catch (error) {
+      console.error('Error generating hero background:', error);
+    }
+  };
   
   return (
     <section className="relative overflow-hidden gradient-hero text-white">
+      {/* Photographic Background - Happy Family with Movers */}
+      {backgroundImage && (
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={backgroundImage} 
+            alt="Happy family moving into new home with professional movers"
+            className="w-full h-full object-cover object-center opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/80 to-primary/70"></div>
+        </div>
+      )}
+      
       {/* Enhanced Emotional Background with Dynamic Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/90 to-primary-dark/95">
         
         {/* Large Warm Gradient Blobs - MORE VISIBLE */}
         <div className="absolute -top-32 -right-32 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/40 via-amber-400/35 to-yellow-400/30 rounded-full blur-3xl animate-blob opacity-70"></div>
