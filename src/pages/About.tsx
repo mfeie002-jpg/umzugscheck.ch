@@ -10,8 +10,19 @@ import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const About = () => {
+  const currentUrl = 'https://www.umzugscheck.ch/ueber-uns/';
+  const metaData = generateMetaData('about');
+  const ogTags = generateOGTags('about', undefined, currentUrl);
+  const keywords = getKeywordsForPage('about');
+  
+  const schemas = generatePageSchemas({ type: 'home', url: currentUrl });
+  const schemaScript = generateSchemaScript(schemas);
+  
   const stats = [
     { number: "15'000+", label: "Vermittelte Umzüge", color: "from-blue-500 to-cyan-500" },
     { number: "4.8/5", label: "Durchschnittsbewertung", color: "from-yellow-500 to-orange-500" },
@@ -61,11 +72,28 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Über uns - Umzugscheck.ch | Dein stressfreier Umzug</title>
-        <meta 
-          name="description" 
-          content="Wir machen Umzüge stressfrei. Seit 2018 helfen wir Menschen in der Schweiz, die besten Umzugsfirmen zu finden. 100% kostenlos & unabhängig."
-        />
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        <meta name="keywords" content={keywords.join(', ')} />
+        
+        {/* OpenGraph Tags */}
+        <meta property="og:title" content={ogTags.title} />
+        <meta property="og:description" content={ogTags.description} />
+        <meta property="og:type" content={ogTags.type} />
+        <meta property="og:url" content={ogTags.url} />
+        <meta property="og:image" content={ogTags.image} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={ogTags.title} />
+        <meta name="twitter:description" content={ogTags.description} />
+        <meta name="twitter:image" content={ogTags.image} />
+        
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">
+          {schemaScript}
+        </script>
       </Helmet>
 
       {/* Breadcrumbs */}

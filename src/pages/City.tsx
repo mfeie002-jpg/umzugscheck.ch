@@ -22,6 +22,10 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
+import { Helmet } from "react-helmet";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const cityData: Record<string, {
   name: string;
@@ -145,8 +149,51 @@ const City = () => {
     );
   }
 
+  const currentUrl = `https://www.umzugscheck.ch/${slug}/umzugsfirmen/`;
+  const metaData = generateMetaData('city', city.name);
+  const ogTags = generateOGTags('city', city.name, currentUrl);
+  const keywords = getKeywordsForPage('city', city.name);
+  
+  const companyList = companies.map(c => ({
+    name: c.name,
+    rating: c.rating,
+    reviewCount: c.review_count
+  }));
+  
+  const schemas = generatePageSchemas(
+    { type: 'city', city: slug!, url: currentUrl },
+    undefined,
+    companyList
+  );
+  const schemaScript = generateSchemaScript(schemas);
+
   return (
     <div className="min-h-screen flex-col">
+      <Helmet>
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        <meta name="keywords" content={keywords.join(', ')} />
+        
+        {/* OpenGraph Tags */}
+        <meta property="og:title" content={ogTags.title} />
+        <meta property="og:description" content={ogTags.description} />
+        <meta property="og:type" content={ogTags.type} />
+        <meta property="og:url" content={ogTags.url} />
+        <meta property="og:image" content={ogTags.image} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={ogTags.title} />
+        <meta name="twitter:description" content={ogTags.description} />
+        <meta name="twitter:image" content={ogTags.image} />
+        
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">
+          {schemaScript}
+        </script>
+      </Helmet>
+      
       <Navigation />
       
       <main className="flex-1">
