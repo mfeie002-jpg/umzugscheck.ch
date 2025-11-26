@@ -5,49 +5,49 @@ const usps = [
   {
     icon: Clock,
     title: "Live-Preis & Kapazitäts-Check",
-    subtitle: "Echtzeit-Verfügbarkeit statt Formular-Spam",
-    description: "Sehen Sie sofort verfügbare Firmen, Zeitfenster und realistische Preise. Unsere KI kalkuliert präzise basierend auf Wohnungsgrösse, Etage, Distanz und Spezialobjekten.",
-    highlight: "Keine Wartezeit auf E-Mails",
+    subtitle: "Der einzige Umzugsvergleich, der wirklich sagt: Wer kann mich WANN, WO und für WIE VIEL zügeln?",
+    description: "Nutzer sehen sofort verfügbare Umzugsfirmen, Zeitfenster, Fahrstrecken, geschätzte Dauer und Preisbandbreite. Die AI-Kalkulation berücksichtigt Wohnungsgrösse, Etage, Lift, Distanz und Spezialobjekte (Piano, Tresor, Aquarium). Firmen hinterlegen ihre Kapazitäten & Routen – das System matcht freie Kapazitäten und optimiert Leerfahrten.",
+    highlight: "Halb live, halb AI – alles in einer Oberfläche",
     image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&auto=format&fit=crop"
   },
   {
     icon: Heart,
-    title: "Ihr persönlicher Umzugs-Coach",
-    subtitle: "Begleitung durch den gesamten Prozess",
-    description: "Nicht nur Firmen vergleichen – wir führen Sie durch jeden Schritt. Personalisierte Checklisten, Erinnerungen und interaktive Tools für einen stressfreien Umzug.",
-    highlight: "Von Kündigung bis Adressänderung",
+    title: "Der Umzugs-Coach",
+    subtitle: "Nicht nur Firmen anzeigen, sondern Menschen durch ihren Umzug führen",
+    description: "Personalisierter Umzugsfahrplan mit automatisch generierter To-do-Liste & Timeline (Kündigungsfristen, Nachsendeauftrag, Versicherungen, Adressänderungen). Checklisten, Erinnerungen per E-Mail/SMS, interaktive Pack-Anleitungen, Raumplaner und PDF-Checklisten zum Ausdrucken. Ihr Begleiter durch eine der stressigsten Phasen.",
+    highlight: "Nicht allein gelassen mit 5 PDFs und 20 Mails",
     image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop"
   },
   {
     icon: Award,
     title: "Fairer Qualitäts-Score",
-    subtitle: "Echte Leistung statt gekaufter Sterne",
-    description: "Unser datenbasierter Score berücksichtigt verifizierte Bewertungen, Schadensquote, Pünktlichkeit und Reaktionszeit. Nur nach echten Umzügen bewertbar.",
-    highlight: "Manipulationssicher & transparent",
+    subtitle: "Endlich ein Rating-System, das nicht jeder kaufen oder faken kann",
+    description: "Eigener Umzugscheck-Score pro Firma basierend auf verifizierten Kundenbewertungen, Schadensquote, Pünktlichkeitsrate, Reaktionszeit und Stornorate. Nur nach tatsächlich abgewickelten Umzügen über die Plattform darf bewertet werden. Datenbasierter, manipulationsarmer Qualitätsindex statt kurzfristiger 5-Stern-Spam-Bewertungen.",
+    highlight: "Ähnlich Trustpilot + Telemetrie für Umzugsfirmen",
     image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&auto=format&fit=crop"
   },
   {
     icon: TrendingUp,
     title: "Performance-Marktplatz",
-    subtitle: "Firmen zahlen nur für Ergebnisse",
-    description: "Kein Lead-Spam. Umzugsfirmen zahlen nur für qualifizierte Buchungen mit klarem ROI. Pay-per-Auftrag oder Abo-Modelle mit transparenten Kosten.",
-    highlight: "Messbare Ergebnisse garantiert",
+    subtitle: "Firmen zahlen nur für das, was ihnen wirklich Geld bringt",
+    description: "Kein 'Wir verkaufen dir 20 Anfragen und du schaust, was passiert'. Verschiedene Modelle: Pay-per-Buchung (Fixbetrag oder % vom Auftrag), Pay-per-verbindliche Offerte (Kunde vollständig ausgefüllt & kaufbereit), oder Abo-Modell mit inkludierten qualifizierten Leads. Firmen sehen Kosten pro Auftrag, durchschnittlicher Auftragswert und ROI pro Monat.",
+    highlight: "Klarer ROI, planbare Lead-Pipelines",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop"
   },
   {
     icon: Leaf,
     title: "Fair & Green",
-    subtitle: "Das Gewissen der Umzugsbranche",
-    description: "Filtern Sie nach fairen Löhnen, CO₂-optimierten Routen und Recycling-Partnern. Sehen Sie genau, wie viel CO₂ Ihr Umzug verursacht und wie viel kompensiert wird.",
-    highlight: "Nachhaltig & sozial verantwortlich",
+    subtitle: "Nicht nur günstig – auch fair zu Menschen & Umwelt",
+    description: "Firmen können sich zertifizieren lassen mit Badges: Faire Löhne/Schweizer Sozialstandards, CO₂-optimierte Routen, Recycling/Entsorgung mit Partnerbetrieben. Nutzer können filtern nach Fair-Pay-Label und CO₂-Kompensation. Transparente Infos: wie viele Kilo CO₂ der Umzug verursacht und wie viel davon kompensiert wird.",
+    highlight: "Preis, Qualität, Fairness, Umwelt auf einen Blick",
     image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop"
   },
   {
     icon: Package,
-    title: "Komplettes Service-Ökosystem",
-    subtitle: "Vom Umzug zur kompletten Lebensumstellung",
-    description: "Nicht nur zügeln, sondern ankommen. Reinigung, Malerarbeiten, Möbelmontage, Internet-Setup, Versicherungen – alles aus einer Hand mit All-in-One-Paketen.",
-    highlight: "Ein Ansprechpartner für alles",
+    title: "Service-Ökosystem",
+    subtitle: "Ein Umzug ist nicht nur ein Auftrag, sondern der Start eines neuen Lebenskapitels",
+    description: "Umzugscheck wird zur Zentrale für: Reinigung (Endreinigung mit Abgabegarantie), Malerarbeiten/kleine Reparaturen, Möbelmontage/Handyman, Selfstorage, Internet/TV/Strom/Versicherungen, Möbel- & Deko-Shops. Nutzer können Pakete buchen: All-in-One-Umzugspaket oder Stressfrei-Komplettservice inkl. Reinigung & Internet-Setup.",
+    highlight: "Nicht nur zügeln. Ankommen.",
     image: "https://images.unsplash.com/photo-1556912167-f556f1f39faa?w=800&auto=format&fit=crop"
   }
 ];
