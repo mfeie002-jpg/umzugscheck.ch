@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, TrendingDown, Award } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackProfileView } from "@/lib/monetization-events";
 
 interface OrganicCompanyCardProps {
   id: string;
@@ -91,7 +92,12 @@ export const OrganicCompanyCard = ({
 
           <div className="flex flex-col sm:flex-row gap-2">
             <Link to={`/umzugsfirmen/${id}`} className="w-full sm:w-auto sm:flex-1">
-              <Button variant="outline" size="sm" className="w-full h-10 sm:h-auto">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full h-10 sm:h-auto"
+                onClick={() => trackProfileView(id)}
+              >
                 Profil ansehen
               </Button>
             </Link>
