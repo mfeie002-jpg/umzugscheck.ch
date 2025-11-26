@@ -135,7 +135,7 @@ export const Navigation = () => {
                 className="bg-happy-teal hover:bg-happy-teal/90 text-white shadow-sm font-bold text-xs sm:text-sm px-3 sm:px-4"
               >
                 <MessageCircle className="w-4 h-4 sm:mr-1" aria-hidden="true" />
-                <span className="hidden sm:inline">Chat</span>
+                <span className="hidden sm:inline">Live Chat</span>
               </Button>
             </Link>
             <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten erhalten">
