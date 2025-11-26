@@ -49,10 +49,12 @@ export const ComparisonPreview = () => {
             <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Intelligent vergleichen & sparen</span>
           </div>
-          <h2 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl">So vergleichen Sie Umzugsfirmen</h2>
+          <h2 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold">
+            Intelligenter Vergleich – auf jeden Kanton zugeschnitten
+          </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-            Transparente Gegenüberstellung von Preisen, Bewertungen und Services – 
-            damit Sie die beste Entscheidung treffen können.
+            <span className="font-semibold text-foreground">KI-gestützte Sortierung</span> für perfekte Resultate – 
+            vergleichen Sie Preise, Bewertungen und Services für Ihre Region
           </p>
         </div>
 

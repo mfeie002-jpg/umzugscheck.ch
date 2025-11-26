@@ -143,6 +143,11 @@ const Index = () => {
         <CalculatorSection />
       </ScrollReveal>
 
+      {/* 2.5 Comparison Feature - Second Most Important USP */}
+      <ScrollReveal delay={90}>
+        <ComparisonPreview />
+      </ScrollReveal>
+
       {/* First CTA after Calculator */}
       <ScrollReveal delay={100}>
         <CTASection />
@@ -151,11 +156,6 @@ const Index = () => {
       {/* 3. "So funktioniert es" Section (How It Works) */}
       <ScrollReveal delay={120}>
         <HowItWorks />
-      </ScrollReveal>
-
-      {/* 3.5 Comparison Preview Section */}
-      <ScrollReveal delay={130}>
-        <ComparisonPreview />
       </ScrollReveal>
 
       {/* 4. Top Umzugsfirmen Section */}
