@@ -1,45 +1,49 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, DollarSign, Zap } from "lucide-react";
+import { Brain, ShieldCheck, Award, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 
 const features = [
   {
-    icon: Star,
-    title: "Geprüfte Qualität",
-    description: "Nur verifizierte & bewertete Schweizer Umzugsfirmen",
-    gradient: "from-yellow-500 to-orange-500",
+    icon: Brain,
+    title: "Schweizer AI statt Werbeliste",
+    description: "Intelligente Firmen-Matches basierend auf deinen Anforderungen, nicht auf Werbebudget",
   },
   {
-    icon: DollarSign,
-    title: "100% Kostenlos",
-    description: "Du zahlst nichts. Die Firmen bewerben sich bei dir",
-    gradient: "from-green-500 to-emerald-500",
+    icon: ShieldCheck,
+    title: "Keine Fake-Bewertungen",
+    description: "Nur echte, verifizierte Kundenbewertungen von abgeschlossenen Umzügen",
   },
   {
-    icon: Zap,
-    title: "Schnell & unkompliziert",
-    description: "Offerten in Minuten statt Tagen",
-    gradient: "from-blue-500 to-purple-500",
+    icon: Award,
+    title: "Geprüfte Partner",
+    description: "Alle Firmen sind versichert, zertifiziert und mehrfach überprüft",
+  },
+  {
+    icon: Eye,
+    title: "Transparent & unabhängig",
+    description: "Vollständige Preistransparenz, keine versteckten Gebühren oder Provisionen",
   },
 ];
 
 export const WhyUsCards = () => {
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-secondary/20 to-background">
+    <section className="py-12 md:py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Warum Umzugscheck.ch?
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">
+            Warum wir besser sind
           </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Umzugscheck.ch unterscheidet sich fundamental von anderen Plattformen
+          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (
@@ -48,19 +52,15 @@ export const WhyUsCards = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                transition={{ delay: idx * 0.1 }}
               >
-                <Card className="text-center h-full hover:shadow-strong transition-all duration-300 hover:-translate-y-2 border-border/50">
-                  <CardContent className="p-8 space-y-4">
-                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-medium mb-2`}>
-                      <Icon className="h-8 w-8 text-white" />
+                <Card className="h-full hover:shadow-medium transition-all text-center">
+                  <CardContent className="p-6">
+                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                      <Icon className="h-7 w-7 text-primary" />
                     </div>
-                    <h3 className="text-xl font-bold text-foreground">
-                      {feature.title}
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {feature.description}
-                    </p>
+                    <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+                    <p className="text-sm text-muted-foreground">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

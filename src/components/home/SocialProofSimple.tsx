@@ -1,93 +1,114 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
 const testimonials = [
   {
-    name: "Sarah M.",
+    name: "Thomas M.",
     location: "Zürich",
     rating: 5,
-    text: "Super Service! Habe 3 Offerten erhalten und über CHF 800 gespart. Kann ich nur empfehlen!",
+    text: "Superschnell, faire Preise und professionelle Firmen. Genau so sollte ein Umzug laufen!"
   },
   {
-    name: "Marco B.",
+    name: "Sarah K.",
     location: "Bern",
     rating: 5,
-    text: "Sehr einfach und schnell. Innerhalb von 24 Stunden hatte ich mehrere Angebote und konnte vergleichen.",
+    text: "Die AI-Preisberechnung war genau! Drei Angebote erhalten und die beste Firma gewählt."
   },
   {
-    name: "Julia K.",
+    name: "Marco R.",
     location: "Basel",
     rating: 5,
-    text: "Professionelle Firmen, faire Preise. Der Umzug lief reibungslos. Danke!",
+    text: "Transparent, keine versteckten Kosten. Die Vergleichsfunktion hat uns viel Geld gespart."
   },
+  {
+    name: "Lisa B.",
+    location: "Luzern",
+    rating: 5,
+    text: "Einfacher geht's nicht. In 2 Minuten alle Infos eingegeben und am nächsten Tag Offerten erhalten."
+  },
+  {
+    name: "Peter S.",
+    location: "St. Gallen",
+    rating: 5,
+    text: "Alle Firmen waren geprüft und versichert. Das gibt ein gutes Gefühl beim Umzug."
+  }
 ];
 
 export const SocialProofSimple = () => {
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-background to-secondary/20">
+    <section className="py-12 md:py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Was unsere Nutzer sagen
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            Vertrauen durch echte Schweizer Kunden
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Über 15'000 zufriedene Kunden in der ganzen Schweiz
-          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
-          {testimonials.map((testimonial, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-            >
-              <Card className="h-full hover:shadow-medium transition-shadow duration-300 border-border/50">
-                <CardContent className="p-6 space-y-4">
-                  <Quote className="h-8 w-8 text-accent/30" />
-                  
-                  <div className="flex gap-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
+        <div className="grid lg:grid-cols-[2fr,1fr] gap-8 max-w-7xl mx-auto items-center">
+          
+          {/* Reviews Slider */}
+          <div className="overflow-x-auto pb-4">
+            <div className="flex gap-4 min-w-max lg:grid lg:grid-cols-3 lg:min-w-0">
+              {testimonials.slice(0, 5).map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="w-[280px] lg:w-auto"
+                >
+                  <Card className="h-full">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-1 mb-2">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                        ))}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
+                        "{testimonial.text}"
+                      </p>
+                      <div className="text-xs font-semibold text-foreground">
+                        {testimonial.name}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {testimonial.location}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
 
-                  <p className="text-foreground/90 leading-relaxed">
-                    "{testimonial.text}"
-                  </p>
+          {/* Trust Badges */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-soft">
+              <Star className="h-6 w-6 text-yellow-500" />
+              <span className="font-semibold text-foreground">Google Reviews</span>
+            </div>
+            <div className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-soft">
+              <Shield className="h-6 w-6 text-success" />
+              <span className="font-semibold text-foreground">Verifizierte Firmen</span>
+            </div>
+            <div className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-soft">
+              <Quote className="h-6 w-6 text-secondary" />
+              <span className="font-semibold text-foreground">Schweizer Plattform</span>
+            </div>
+          </motion.div>
 
-                  <div className="pt-4 border-t border-border">
-                    <p className="font-semibold text-foreground">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
         </div>
-
-        {/* Review Logos */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-8 opacity-60"
-        >
-          <div className="text-sm font-medium">Bewertet auf:</div>
-          <div className="font-bold text-lg">Google Reviews</div>
-          <div className="font-bold text-lg">ProvenExpert</div>
-          <div className="font-bold text-lg">Trustpilot</div>
-        </motion.div>
       </div>
     </section>
   );
