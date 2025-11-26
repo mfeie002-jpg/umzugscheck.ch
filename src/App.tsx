@@ -48,6 +48,8 @@ import VideoEstimator from "./pages/VideoEstimator";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import BecomeProvider from "./pages/BecomeProvider";
+import CityMovers from "./pages/CityMovers";
+import ServicePage from "./pages/ServicePage";
 import ReviewSubmission from "./pages/ReviewSubmission";
 import BesteFirmen from "./pages/BesteFirmen";
 import GuenstigeFirmen from "./pages/GuenstigeFirmen";
@@ -180,8 +182,36 @@ const App = () => (
             <Route path="/firmen-portal/dashboard" element={<ProviderDashboard />} />
             <Route path="/umzugsofferten" element={<Umzugsofferten />} />
             <Route path="/umzugsofferten/:region" element={<Umzugsofferten />} />
-            <Route path="/zuerich/umzugsfirmen" element={<ZurichMovers />} />
-            <Route path="/:city/umzugsfirmen" element={<ZurichMovers />} />
+            
+            {/* City Pages */}
+            <Route path="/zuerich/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/basel/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/bern/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/luzern/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/stgallen/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/winterthur/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/lausanne/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/genf/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/zug/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/lugano/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/biel/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/schaffhausen/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/chur/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/aarau/umzugsfirmen" element={<CityMovers />} />
+            <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
+            
+            {/* Service Pages */}
+            <Route path="/umzug" element={<ServicePage />} />
+            <Route path="/reinigung" element={<ServicePage />} />
+            <Route path="/raeumung" element={<ServicePage />} />
+            <Route path="/firmenumzug" element={<ServicePage />} />
+            <Route path="/entsorgung" element={<ServicePage />} />
+            <Route path="/lagerung" element={<ServicePage />} />
+            <Route path="/transport" element={<ServicePage />} />
+            
+            {/* City + Service Combinations */}
+            <Route path="/:city/:service" element={<ServicePage />} />
+            
             <Route path="/preise" element={<Pricing />} />
             <Route path="/offerten" element={<OffertenPage />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
