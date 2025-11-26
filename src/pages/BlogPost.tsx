@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -6,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, Clock, ArrowLeft } from "lucide-react";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const BLOG_CONTENT: Record<string, {
   title: string;
@@ -89,6 +92,23 @@ const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const post = slug ? BLOG_CONTENT[slug] : null;
 
+  // Generate SEO meta data
+  const currentUrl = `https://www.umzugscheck.ch/blog/${slug}/`;
+  const metaData = post ? {
+    title: `${post.title} | umzugscheck.ch`,
+    description: post.content[0].substring(0, 160),
+    canonicalUrl: currentUrl,
+    ogImage: 'https://www.umzugscheck.ch/assets/umzugscheck-logo.png'
+  } : {
+    title: 'Artikel nicht gefunden | umzugscheck.ch',
+    description: 'Dieser Blogartikel existiert nicht.',
+    canonicalUrl: currentUrl,
+    ogImage: 'https://www.umzugscheck.ch/assets/umzugscheck-logo.png'
+  };
+  
+  const ogTags = generateOGTags(metaData, currentUrl);
+  const keywords = post ? getKeywordsForPage('', undefined, 'ratgeber') : [];
+
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -112,6 +132,27 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        
+        {keywords && keywords.length > 0 && (
+          <meta name="keywords" content={keywords.join(', ')} />
+        )}
+        
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
+        
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
+      </Helmet>
+
       <Navigation />
 
       <main className="flex-1">

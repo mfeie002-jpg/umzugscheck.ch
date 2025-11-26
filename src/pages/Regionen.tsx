@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -5,6 +6,9 @@ import { Link } from "react-router-dom";
 import { MapPin, TrendingUp, Users } from "lucide-react";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const cantons = [
   { name: "Zürich", slug: "zuerich", companies: 42, moves: "1'200+" },
@@ -36,8 +40,46 @@ const cantons = [
 ];
 
 const Regionen = () => {
+  // Generate SEO meta data
+  const currentUrl = 'https://www.umzugscheck.ch/regionen/';
+  const metaData = {
+    title: 'Umzugsfirmen in allen Regionen der Schweiz | umzugscheck.ch',
+    description: 'Finden Sie geprüfte Umzugsfirmen in allen 26 Schweizer Kantonen. Transparente Preise, echte Kundenbewertungen und kostenlose Offerten.',
+    canonicalUrl: currentUrl,
+    ogImage: 'https://www.umzugscheck.ch/assets/umzugscheck-logo.png'
+  };
+  const ogTags = generateOGTags(metaData, currentUrl);
+  const keywords = getKeywordsForPage('vergleich');
+
+  // Generate Schema.org structured data
+  const schemas = generatePageSchemas({ type: 'vergleich', url: currentUrl });
+  const schemaScript = generateSchemaScript(schemas);
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        
+        {keywords && keywords.length > 0 && (
+          <meta name="keywords" content={keywords.join(', ')} />
+        )}
+        
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
+        
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
+
+        <script type="application/ld+json">{schemaScript}</script>
+      </Helmet>
+
       <Navigation />
 
       {/* Hero Section */}

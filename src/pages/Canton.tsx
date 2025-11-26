@@ -13,6 +13,9 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { OffertenCTA } from "@/components/OffertenCTA";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const CANTON_INFO: Record<string, {
   name: string;
@@ -315,6 +318,29 @@ const Canton = () => {
   const [companies, setCompanies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Generate SEO meta data
+  const currentUrl = `https://www.umzugscheck.ch/umzug/${cantonKey}/`;
+  const metaData = generateMetaData({ 
+    type: 'city', 
+    city: cantonKey
+  });
+  const ogTags = generateOGTags(metaData, currentUrl);
+  const keywords = getKeywordsForPage('', cantonKey);
+
+  // Generate Schema.org structured data with company list
+  const companyItems = companies.map(c => ({
+    name: c.name,
+    rating: c.rating,
+    reviewCount: c.review_count
+  }));
+  
+  const schemas = generatePageSchemas(
+    { type: 'city', city: cantonKey, url: currentUrl },
+    undefined,
+    companyItems
+  );
+  const schemaScript = generateSchemaScript(schemas);
+
   useEffect(() => {
     if (info) {
       fetchCompanies();
@@ -462,59 +488,27 @@ const Canton = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* SEO Meta Tags */}
       <Helmet>
-        <title>Umzug {info.name} – Offerten vergleichen | Umzugscheck.ch</title>
-        <meta 
-          name="description" 
-          content={`Umzugsfirmen in ${info.name} vergleichen. ${info.description} ⭐ ${averageRating}/5 Durchschnittsbewertung. Kostenlose Offerten von geprüften Umzugsunternehmen.`} 
-        />
-        <meta name="keywords" content={`Umzug ${info.name}, Umzugsfirma ${info.name}, Umzugskosten ${info.name}, ${info.cities.join(', ')}`} />
-        <link rel="canonical" href={`https://umzugscheck.ch/umzug/${cantonKey}`} />
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
         
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={`Umzug ${info.name} – Die besten Umzugsfirmen vergleichen`} />
-        <meta property="og:description" content={`${info.description} ⭐ ${averageRating}/5 basierend auf ${totalReviews} Bewertungen.`} />
-        <meta property="og:url" content={`https://umzugscheck.ch/umzug/${cantonKey}`} />
+        {keywords && keywords.length > 0 && (
+          <meta name="keywords" content={keywords.join(', ')} />
+        )}
         
-        {/* Structured Data - FAQ Schema */}
-        <script type="application/ld+json">
-          {JSON.stringify(faqSchema)}
-        </script>
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
         
-        {/* Structured Data - Aggregate Rating Schema */}
-        <script type="application/ld+json">
-          {JSON.stringify(aggregateRatingSchema)}
-        </script>
-        
-        {/* Structured Data - BreadcrumbList */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Startseite",
-                "item": "https://umzugscheck.ch"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Regionen",
-                "item": "https://umzugscheck.ch/regionen"
-              },
-              {
-                "@type": "ListItem",
-                "position": 3,
-                "name": `Kanton ${info.name}`,
-                "item": `https://umzugscheck.ch/umzug/${cantonKey}`
-              }
-            ]
-          })}
-        </script>
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
+
+        <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
 
       <Navigation />
