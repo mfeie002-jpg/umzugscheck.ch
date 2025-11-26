@@ -19,6 +19,7 @@ import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
 import Index from "./pages/Index";
 import NewIndex from "./pages/NewIndex";
+import HomeOptimized from "./pages/HomeOptimized";
 import Sitemap from "./pages/Sitemap";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
@@ -50,6 +51,8 @@ import FAQ from "./pages/FAQ";
 import BecomeProvider from "./pages/BecomeProvider";
 import CityMovers from "./pages/CityMovers";
 import ServicePage from "./pages/ServicePage";
+import ServiceOptimized from "./pages/ServiceOptimized";
+import CityOptimized from "./pages/CityOptimized";
 import ReviewSubmission from "./pages/ReviewSubmission";
 import BesteFirmen from "./pages/BesteFirmen";
 import GuenstigeFirmen from "./pages/GuenstigeFirmen";
@@ -119,8 +122,9 @@ const App = () => (
                   </div>
                 }>
                   <Routes>
-          <Route path="/" element={<NewIndex />} />
+          <Route path="/" element={<HomeOptimized />} />
           <Route path="/old-home" element={<Index />} />
+          <Route path="/v2" element={<NewIndex />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
@@ -192,35 +196,35 @@ const App = () => (
             <Route path="/umzugsofferten" element={<Umzugsofferten />} />
             <Route path="/umzugsofferten/:region" element={<Umzugsofferten />} />
             
-            {/* City Pages */}
-            <Route path="/zuerich/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/basel/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/bern/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/luzern/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/stgallen/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/winterthur/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/lausanne/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/genf/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/zug/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/lugano/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/biel/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/schaffhausen/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/chur/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/aarau/umzugsfirmen" element={<CityMovers />} />
-            <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
+            {/* City Pages - Optimized */}
+            <Route path="/zuerich/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/basel/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/bern/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/luzern/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/stgallen/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/winterthur/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/lausanne/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/genf/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/zug/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/lugano/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/biel/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/schaffhausen/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/chur/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/aarau/umzugsfirmen" element={<CityOptimized />} />
+            <Route path="/:city/umzugsfirmen" element={<CityOptimized />} />
             
-            {/* Service Pages */}
-            <Route path="/umzug" element={<ServicePage />} />
-            <Route path="/reinigung" element={<ServicePage />} />
-            <Route path="/raeumung" element={<ServicePage />} />
-            <Route path="/firmenumzug" element={<ServicePage />} />
-            <Route path="/entsorgung" element={<ServicePage />} />
-            <Route path="/lagerung" element={<ServicePage />} />
-            <Route path="/transport" element={<ServicePage />} />
-            <Route path="/umzug-mit-reinigung" element={<ServicePage />} />
+            {/* Service Pages - Optimized */}
+            <Route path="/umzug" element={<ServiceOptimized />} />
+            <Route path="/reinigung" element={<ServiceOptimized />} />
+            <Route path="/raeumung" element={<ServiceOptimized />} />
+            <Route path="/firmenumzug" element={<ServiceOptimized />} />
+            <Route path="/entsorgung" element={<ServiceOptimized />} />
+            <Route path="/lagerung" element={<ServiceOptimized />} />
+            <Route path="/transport" element={<ServiceOptimized />} />
+            <Route path="/umzug-mit-reinigung" element={<ServiceOptimized />} />
             
-            {/* City + Service Combinations */}
-            <Route path="/:city/:service" element={<ServicePage />} />
+            {/* City + Service Combinations - Optimized */}
+            <Route path="/:city/:service" element={<ServiceOptimized />} />
             
             <Route path="/preise" element={<Pricing />} />
             <Route path="/offerten" element={<OffertenOptimized />} />
