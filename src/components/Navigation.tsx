@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
@@ -129,6 +129,15 @@ export const Navigation = () => {
 
           {/* Mobile Menu Button & CTA - Visible on Mobile */}
           <div className="flex lg:hidden items-center gap-2">
+            <Link to="/kontakt" aria-label="Live Chat starten">
+              <Button 
+                size="sm"
+                className="bg-happy-teal hover:bg-happy-teal/90 text-white shadow-sm font-bold text-xs sm:text-sm px-3 sm:px-4"
+              >
+                <MessageCircle className="w-4 h-4 sm:mr-1" aria-hidden="true" />
+                <span className="hidden sm:inline">Chat</span>
+              </Button>
+            </Link>
             <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten erhalten">
               <Button 
                 size="sm"
