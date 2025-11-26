@@ -50,6 +50,7 @@ import ReviewSubmission from "./pages/ReviewSubmission";
 import BesteFirmen from "./pages/BesteFirmen";
 import GuenstigeFirmen from "./pages/GuenstigeFirmen";
 import ProviderPortal from "./pages/ProviderPortal";
+import Umzugsofferten from "./pages/Umzugsofferten";
 
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
@@ -168,6 +169,8 @@ const App = () => (
             <Route path="/anbieter/preise" element={<ProviderPricing />} />
             <Route path="/firmen-portal" element={<ProviderPortal />} />
             <Route path="/firmen-portal/dashboard" element={<ProviderDashboard />} />
+            <Route path="/umzugsofferten" element={<Umzugsofferten />} />
+            <Route path="/umzugsofferten/:region" element={<Umzugsofferten />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
