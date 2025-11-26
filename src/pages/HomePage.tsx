@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { RegionCard } from "@/components/home/RegionCard";
 import { ServiceCard } from "@/components/home/ServiceCard";
 import { WhyUmzugscheckSimple } from "@/components/home/WhyUmzugscheckSimple";
+import { TopCompaniesWithLogos } from "@/components/home/TopCompaniesWithLogos";
 
 /**
  * Homepage - Complete Rebuild
@@ -179,127 +180,8 @@ export const HomePage = () => {
         </div>
       </StandardHero>
 
-      {/* KI Calculator Showcase - Most Important USP */}
-      <KICalculatorShowcase />
-
-      {/* Why Umzugscheck - 6 USPs */}
-      <WhyUmzugscheckSimple />
-
-      {/* Top Companies */}
-      <section className="py-16 md:py-20 bg-secondary/20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Top Umzugsfirmen in der Schweiz
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Von Kunden empfohlen, von uns geprüft
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {topCompanies.map((company) => (
-              <CompanyCard key={company.id} {...company} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <HowItWorksSimple />
-
-      {/* Price Examples */}
-      <PriceExampleBlock
-        title="Was kostet ein Umzug?"
-        subtitle="Transparente Preisbeispiele für die Schweiz"
-        examples={priceExamples}
-      />
-
-      {/* Social Proof */}
-      <SocialProofSimple />
-
-      {/* CTA Block */}
-      <CTABlock
-        title="Bereit für deinen stressfreien Umzug?"
-        description="Vergleiche jetzt kostenlos und spare bis zu 40% auf deinem Umzug"
-        buttonText="Jetzt Offerten vergleichen"
-        buttonLink="/umzugsofferten"
-      />
-
-      {/* FAQ */}
-      <section className="py-16 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Häufig gestellte Fragen
-            </h2>
-          </div>
-
-          <div className="max-w-3xl mx-auto">
-            <FAQAccordion items={faqItems} />
-          </div>
-        </div>
-      </section>
-
-      {/* Regions with Rich Content */}
-      <section className="py-16 bg-secondary/20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Umzugsfirmen nach Region
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Finde geprüfte Umzugsfirmen in deiner Region und spare bis zu 40% durch unseren Vergleich
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
-            <RegionCard
-              name="Zürich"
-              slug="/zuerich/umzugsfirmen"
-              description="Die grösste Stadt der Schweiz mit höchster Umzugsdichte. Profitiere von starker Konkurrenz."
-              imageUrl="https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800&auto=format&fit=crop"
-              averageCost="CHF 1'800-3'200"
-              savings="bis 40%"
-            />
-            <RegionCard
-              name="Bern"
-              slug="/bern/umzugsfirmen"
-              description="Hauptstadt mit breitem Angebot an professionellen Umzugsunternehmen zu fairen Preisen."
-              imageUrl="https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=800&auto=format&fit=crop"
-              averageCost="CHF 1'600-2'800"
-              savings="bis 35%"
-            />
-            <RegionCard
-              name="Basel"
-              slug="/basel/umzugsfirmen"
-              description="Grenzregion mit internationaler Erfahrung und attraktiven Preisen durch Wettbewerb."
-              imageUrl="https://images.unsplash.com/photo-1565008576549-57569a49371d?w=800&auto=format&fit=crop"
-              averageCost="CHF 1'700-2'900"
-              savings="bis 38%"
-            />
-            <RegionCard
-              name="Genf"
-              slug="/genf/umzugsfirmen"
-              description="Internationale Stadt mit mehrsprachigen Umzugsteams und Premium-Service."
-              imageUrl="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop"
-              averageCost="CHF 1'900-3'400"
-              savings="bis 42%"
-            />
-          </div>
-          
-          <div className="text-center">
-            <Link to="/regionen" className="no-underline">
-              <Button variant="outline" size="lg">
-                Alle 26 Kantone ansehen
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Services with Rich Content */}
-      <section className="py-16 bg-background">
+      {/* Services with Rich Content - MOVED UP (Priority #1 after hero) */}
+      <section className="py-16 bg-gradient-to-br from-happy-yellow/10 via-happy-pink/10 to-happy-purple/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -378,6 +260,109 @@ export const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* KI Calculator Showcase */}
+      <KICalculatorShowcase />
+
+      {/* Top Companies with Real Logos and People */}
+      <TopCompaniesWithLogos />
+
+      {/* Why Umzugscheck - 6 USPs */}
+      <WhyUmzugscheckSimple />
+
+      {/* How It Works */}
+      <HowItWorksSimple />
+
+      {/* Price Examples */}
+      <PriceExampleBlock
+        title="Was kostet ein Umzug?"
+        subtitle="Transparente Preisbeispiele für die Schweiz"
+        examples={priceExamples}
+      />
+
+      {/* Social Proof */}
+      <SocialProofSimple />
+
+      {/* CTA Block */}
+      <CTABlock
+        title="Bereit für deinen stressfreien Umzug?"
+        description="Vergleiche jetzt kostenlos und spare bis zu 40% auf deinem Umzug"
+        buttonText="Jetzt Offerten vergleichen"
+        buttonLink="/umzugsofferten"
+      />
+
+      {/* FAQ */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Häufig gestellte Fragen
+            </h2>
+          </div>
+
+          <div className="max-w-3xl mx-auto">
+            <FAQAccordion items={faqItems} />
+          </div>
+        </div>
+      </section>
+
+      {/* Regions with Rich Content */}
+      <section className="py-16 bg-gradient-to-br from-happy-coral/10 to-secondary/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Umzugsfirmen nach Region
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Finde geprüfte Umzugsfirmen in deiner Region und spare bis zu 40% durch unseren Vergleich
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
+            <RegionCard
+              name="Zürich"
+              slug="/zuerich/umzugsfirmen"
+              description="Die grösste Stadt der Schweiz mit höchster Umzugsdichte. Profitiere von starker Konkurrenz."
+              imageUrl="https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'800-3'200"
+              savings="bis 40%"
+            />
+            <RegionCard
+              name="Bern"
+              slug="/bern/umzugsfirmen"
+              description="Hauptstadt mit breitem Angebot an professionellen Umzugsunternehmen zu fairen Preisen."
+              imageUrl="https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'600-2'800"
+              savings="bis 35%"
+            />
+            <RegionCard
+              name="Basel"
+              slug="/basel/umzugsfirmen"
+              description="Grenzregion mit internationaler Erfahrung und attraktiven Preisen durch Wettbewerb."
+              imageUrl="https://images.unsplash.com/photo-1565008576549-57569a49371d?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'700-2'900"
+              savings="bis 38%"
+            />
+            <RegionCard
+              name="Genf"
+              slug="/genf/umzugsfirmen"
+              description="Internationale Stadt mit mehrsprachigen Umzugsteams und Premium-Service."
+              imageUrl="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop"
+              averageCost="CHF 1'900-3'400"
+              savings="bis 42%"
+            />
+          </div>
+          
+          <div className="text-center">
+            <Link to="/regionen" className="no-underline">
+              <Button variant="outline" size="lg">
+                Alle 26 Kantone ansehen
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
 
       <StickyMobileCTA text="Kostenlose Offerten – jetzt starten" link="/umzugsofferten" />
     </>

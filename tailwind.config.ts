@@ -52,6 +52,13 @@ export default {
           foreground: "hsl(var(--success-foreground))",
           light: "hsl(var(--success-light))",
         },
+        happy: {
+          yellow: "hsl(var(--happy-yellow))",
+          pink: "hsl(var(--happy-pink))",
+          purple: "hsl(var(--happy-purple))",
+          teal: "hsl(var(--happy-teal))",
+          coral: "hsl(var(--happy-coral))",
+        },
         warning: {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
