@@ -99,7 +99,7 @@ export const Navigation = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <DarkModeToggle />
-            <Link to="/rechner">
+            <Link to="/umzugsofferten">
               <Button className="bg-destructive hover:bg-destructive/90 text-white shadow-medium font-bold">
                 Offerten erhalten
               </Button>
