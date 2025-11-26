@@ -14,6 +14,8 @@ import { SEOHead } from "@/components/SEOHead";
 import { Star, DollarSign, Zap } from "lucide-react";
 import { useFullAnalytics } from "@/hooks/use-analytics";
 import { Navigation } from "@/components/Navigation";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 /**
  * Homepage - Complete Rebuild
@@ -116,9 +118,19 @@ export const HomePage = () => {
         pageType="home"
         url="https://www.umzugscheck.ch/"
         faqs={faqItems}
+        companies={topCompanies}
       />
 
       <Navigation />
+
+      {/* Breadcrumb for SEO */}
+      <div className="bg-background border-b border-border">
+        <div className="container mx-auto px-4 py-2">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="text-foreground font-medium">Startseite</span>
+          </nav>
+        </div>
+      </div>
 
       {/* Hero Section */}
       <StandardHero
@@ -212,6 +224,76 @@ export const HomePage = () => {
 
           <div className="max-w-3xl mx-auto">
             <FAQAccordion items={faqItems} />
+          </div>
+        </div>
+      </section>
+
+      {/* Internal Links for SEO */}
+      <section className="py-16 bg-secondary/20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+            Umzugsfirmen nach Region
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            {[
+              { name: "Zürich", slug: "/zuerich/umzugsfirmen" },
+              { name: "Bern", slug: "/bern/umzugsfirmen" },
+              { name: "Basel", slug: "/basel/umzugsfirmen" },
+              { name: "Genf", slug: "/genf/umzugsfirmen" },
+              { name: "Lausanne", slug: "/lausanne/umzugsfirmen" },
+              { name: "Luzern", slug: "/luzern/umzugsfirmen" },
+              { name: "St. Gallen", slug: "/stgallen/umzugsfirmen" },
+              { name: "Winterthur", slug: "/winterthur/umzugsfirmen" },
+            ].map((city) => (
+              <Link
+                key={city.slug}
+                to={city.slug}
+                className="no-underline p-4 bg-background rounded-lg border border-border hover:border-primary hover:shadow-medium transition-all text-center"
+              >
+                <span className="text-foreground font-medium hover:text-primary transition-colors">
+                  {city.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+          
+          <div className="text-center mt-8">
+            <Link to="/regionen" className="no-underline">
+              <Button variant="outline" size="lg">
+                Alle Regionen ansehen
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Internal Links */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+            Unsere Dienstleistungen
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {[
+              { name: "Umzug", slug: "/umzug" },
+              { name: "Reinigung", slug: "/reinigung" },
+              { name: "Entsorgung", slug: "/entsorgung" },
+              { name: "Lagerung", slug: "/lagerung" },
+              { name: "Firmenumzug", slug: "/firmenumzug" },
+              { name: "Transport", slug: "/transport" },
+              { name: "Räumung", slug: "/raeumung" },
+              { name: "Umzug mit Reinigung", slug: "/umzug-mit-reinigung" },
+            ].map((service) => (
+              <Link
+                key={service.slug}
+                to={service.slug}
+                className="no-underline p-6 bg-secondary/40 rounded-lg hover:bg-primary/10 hover:shadow-medium transition-all text-center group"
+              >
+                <span className="text-foreground font-medium group-hover:text-primary transition-colors">
+                  {service.name}
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
