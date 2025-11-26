@@ -46,10 +46,10 @@ export const OffertenCTA = ({
             <h3 className="font-bold text-lg mb-1">{defaultTitle}</h3>
             <p className="text-sm text-muted-foreground">{defaultDescription}</p>
           </div>
-          <Link to={finalLink}>
-            <Button size="lg" className="bg-destructive hover:bg-destructive/90 whitespace-nowrap">
-              {buttonText}
-              <ArrowRight className="ml-2 w-4 h-4" />
+          <Link to={finalLink} className="w-full sm:w-auto">
+            <Button size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/90 text-sm sm:text-base px-4 sm:px-6 h-12 whitespace-normal sm:whitespace-nowrap">
+              <span className="line-clamp-2 sm:line-clamp-1">{buttonText}</span>
+              <ArrowRight className="ml-2 w-4 h-4 flex-shrink-0" />
             </Button>
           </Link>
         </div>
@@ -81,13 +81,13 @@ export const OffertenCTA = ({
           </div>
         )}
 
-        <Link to={finalLink}>
+        <Link to={finalLink} className="w-full sm:w-auto inline-block">
           <Button 
             size="lg" 
-            className={`w-full sm:w-auto text-sm sm:text-base ${variant === "primary" ? "bg-destructive hover:bg-destructive/90 shadow-accent" : ""}`}
+            className={`w-full sm:w-auto text-sm sm:text-base px-4 sm:px-6 h-12 sm:h-14 ${variant === "primary" ? "bg-destructive hover:bg-destructive/90 shadow-accent" : ""}`}
           >
-            {buttonText}
-            <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="line-clamp-2 sm:line-clamp-1">{buttonText}</span>
+            <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
           </Button>
         </Link>
       </div>
