@@ -176,6 +176,7 @@ const App = () => (
             <Route path="/umzugsofferten" element={<Umzugsofferten />} />
             <Route path="/umzugsofferten/:region" element={<Umzugsofferten />} />
             <Route path="/zuerich/umzugsfirmen" element={<ZurichMovers />} />
+            <Route path="/:city/umzugsfirmen" element={<ZurichMovers />} />
             <Route path="/preise" element={<Pricing />} />
             <Route path="/offerten" element={<OffertenPage />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
