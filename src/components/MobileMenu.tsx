@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, Calculator, Sparkles, Trash2, Package, Wrench, Box, Settings, Video, MapPin, Search, Home, Building2, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -112,6 +112,7 @@ const mainNavItems = [
 ];
 
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
+  const location = useLocation();
   const [isCalculatorsOpen, setIsCalculatorsOpen] = useState(false);
   const [isCompaniesOpen, setIsCompaniesOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -119,6 +120,8 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const [isRegionsOpen, setIsRegionsOpen] = useState(false);
   const [regionSearch, setRegionSearch] = useState("");
   const [companyCounts, setCompanyCounts] = useState<Record<string, number>>({});
+
+  const isActive = (path: string) => location.pathname === path;
 
   useEffect(() => {
     if (isOpen && isRegionsOpen) {
@@ -182,7 +185,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               key={item.label}
               to={item.href}
               onClick={onClose}
-              className="block px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium"
+              className={cn(
+                "block px-4 py-3 rounded-lg transition-colors font-medium",
+                isActive(item.href)
+                  ? "bg-primary/10 text-primary border-l-4 border-primary"
+                  : "text-foreground hover:bg-secondary"
+              )}
             >
               {item.label}
             </Link>
@@ -212,7 +220,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   key={calc.title}
                   to={calc.href}
                   onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                    isActive(calc.href)
+                      ? "bg-primary/10 text-primary border-l-4 border-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  )}
                   aria-label={calc.title}
                 >
                   <calc.icon className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -244,7 +257,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               <Link
                 to="/beste-umzugsfirma"
                 onClick={onClose}
-                className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                  isActive("/beste-umzugsfirma")
+                    ? "bg-primary/10 text-primary border-l-4 border-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                )}
                 aria-label="Beste Umzugsfirmen 2025"
               >
                 <Badge variant="secondary" className="text-xs">Top</Badge>
@@ -253,7 +271,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               <Link
                 to="/guenstige-umzugsfirma"
                 onClick={onClose}
-                className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                  isActive("/guenstige-umzugsfirma")
+                    ? "bg-primary/10 text-primary border-l-4 border-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                )}
                 aria-label="Günstige Umzugsfirmen finden"
               >
                 <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">€</Badge>
@@ -262,7 +285,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               <Link
                 to="/firmen"
                 onClick={onClose}
-                className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                  isActive("/firmen")
+                    ? "bg-primary/10 text-primary border-l-4 border-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                )}
               >
                 <MapPin className="w-4 h-4 text-primary" />
                 <span className="text-sm">Alle Umzugsfirmen</span>
@@ -294,7 +322,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   key={service.title}
                   to={service.href}
                   onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                    isActive(service.href)
+                      ? "bg-primary/10 text-primary border-l-4 border-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  )}
                   aria-label={service.title}
                 >
                   <service.icon className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -328,7 +361,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   key={link.title}
                   to={link.href}
                   onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                    isActive(link.href)
+                      ? "bg-primary/10 text-primary border-l-4 border-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  )}
                   aria-label={link.title}
                 >
                   <Briefcase className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -372,7 +410,12 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                     <Link
                       to={canton.href}
                       onClick={onClose}
-                      className="flex items-center justify-between gap-3 px-4 py-3 ml-4 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                      className={cn(
+                        "flex items-center justify-between gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                        isActive(canton.href)
+                          ? "bg-primary/10 text-primary border-l-4 border-primary"
+                          : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      )}
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
