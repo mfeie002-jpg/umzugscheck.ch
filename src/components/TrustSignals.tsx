@@ -39,8 +39,8 @@ export const TrustSignals = () => {
                   <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-secondary group-hover:bg-primary/10 transition-all duration-300 mb-4 group-hover:scale-110">
                     <stat.icon className={`w-7 h-7 md:w-8 md:h-8 ${stat.color} group-hover:scale-110 transition-transform`} />
                   </div>
-                  <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-1 bg-gradient-premium bg-clip-text text-transparent">{stat.number}</div>
-                  <div className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
+                  <div className="text-2xl md:text-3xl lg:text-4xl font-bold mb-1 text-primary">{stat.number}</div>
+                  <div className="text-sm md:text-base text-foreground font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
