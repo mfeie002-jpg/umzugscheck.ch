@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { MapPin, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
 
-export const InstantCalculator = () => {
+interface InstantCalculatorProps {
+  cityName?: string;
+  activityMessage?: string;
+}
+
+export const InstantCalculator = ({ cityName, activityMessage }: InstantCalculatorProps = {}) => {
   const [fromAddress, setFromAddress] = useState("");
   const [toAddress, setToAddress] = useState("");
   const navigate = useNavigate();
@@ -23,73 +30,60 @@ export const InstantCalculator = () => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border-2 border-white/20">
-      <div className="space-y-6">
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold text-foreground mb-2">
-            Umzugsrechner starten
-          </h3>
-          <p className="text-muted-foreground">
-            In 3 Schritten zur kostenlosen Offerte
-          </p>
-        </div>
+    <div className="max-w-2xl mx-auto">
+      {activityMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-6"
+        >
+          <div className="inline-flex items-center gap-2 text-sm bg-success/10 text-success px-4 py-2 rounded-full border border-success/20">
+            <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
+            {activityMessage}
+          </div>
+        </motion.div>
+      )}
 
-        {/* Step 1 */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground flex items-center gap-2">
-            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold">1</span>
-            Startadresse eingeben
-          </label>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="z.B. Zürich, Bahnhofstrasse 1"
-              value={fromAddress}
-              onChange={(e) => setFromAddress(e.target.value)}
-              className="pl-11 h-12 text-base"
-            />
+      <Card className="shadow-strong border-border/50 overflow-hidden">
+        <div className="bg-gradient-to-br from-primary/5 to-accent/5 p-6 md:p-8">
+          <div className="space-y-4">
+
+            <div>
+              <label className="text-sm font-semibold mb-2 block text-foreground">Startadresse</label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder={cityName ? `z.B. Bahnhofstrasse 1, ${cityName}` : "z.B. Zürich Hauptbahnhof"}
+                  value={fromAddress}
+                  onChange={(e) => setFromAddress(e.target.value)}
+                  className="h-12 pl-11 text-base border-2 focus:border-primary"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-sm font-semibold mb-2 block text-foreground">Zieladresse</label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Neue Adresse eingeben"
+                  value={toAddress}
+                  onChange={(e) => setToAddress(e.target.value)}
+                  className="h-12 pl-11 text-base border-2 focus:border-primary"
+                />
+              </div>
+            </div>
+            
+            <Button 
+              onClick={handleStart}
+              className="w-full h-14 text-lg font-bold bg-gradient-accent hover:opacity-90 transition-opacity shadow-accent"
+            >
+              Jetzt vergleichen
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
           </div>
         </div>
-
-        {/* Step 2 */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground flex items-center gap-2">
-            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold">2</span>
-            Zieladresse eingeben
-          </label>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="z.B. Bern, Bundesplatz 3"
-              value={toAddress}
-              onChange={(e) => setToAddress(e.target.value)}
-              className="pl-11 h-12 text-base"
-            />
-          </div>
-        </div>
-
-        {/* Step 3 */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground flex items-center gap-2">
-            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold">3</span>
-            Umzug starten
-          </label>
-          <Button 
-            onClick={handleStart}
-            className="w-full h-14 text-lg font-bold bg-accent hover:bg-accent/90 shadow-lg"
-          >
-            Kostenlose Offerten erhalten
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-        </div>
-
-        {/* Progress Indicator */}
-        <div className="flex gap-2 justify-center pt-2">
-          <div className={`h-1.5 rounded-full flex-1 transition-colors ${fromAddress ? 'bg-primary' : 'bg-muted'}`} />
-          <div className={`h-1.5 rounded-full flex-1 transition-colors ${toAddress ? 'bg-primary' : 'bg-muted'}`} />
-          <div className={`h-1.5 rounded-full flex-1 transition-colors ${fromAddress && toAddress ? 'bg-primary' : 'bg-muted'}`} />
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };

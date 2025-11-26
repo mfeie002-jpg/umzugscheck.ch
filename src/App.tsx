@@ -17,7 +17,8 @@ import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { PushNotificationPrompt } from "./components/PushNotificationPrompt";
 import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
-import Index from "./pages/NewIndex";
+import Index from "./pages/Index";
+import NewIndex from "./pages/NewIndex";
 import Sitemap from "./pages/Sitemap";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
@@ -110,7 +111,8 @@ const App = () => (
                   </div>
                 }>
                   <Routes>
-            <Route path="/" element={<Index />} />
+          <Route path="/" element={<NewIndex />} />
+          <Route path="/old-home" element={<Index />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
