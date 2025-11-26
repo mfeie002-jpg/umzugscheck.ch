@@ -10,6 +10,8 @@ import {
   generatePageSchemas,
   generateSchemaScript
 } from "@/lib/schema-markup";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 import { Helmet } from "react-helmet";
 
 const topCompanies = ENHANCED_COMPANIES
@@ -56,8 +58,17 @@ const faqs = [
 ];
 
 export default function Umzugsofferten() {
+  // Generate SEO meta data
+  const metaData = generateMetaData({ type: 'main-page', pageName: 'offerten' });
+  const currentUrl = 'https://www.umzugscheck.ch/umzugsofferten';
+  const ogTags = generateOGTags(metaData, currentUrl);
+  
+  // Generate keywords
+  const keywords = getKeywordsForPage('offerten');
+  
+  // Generate Schema.org structured data
   const schemas = generatePageSchemas(
-    { type: 'offerten', url: 'https://www.umzugscheck.ch/umzugsofferten' },
+    { type: 'offerten', url: currentUrl },
     faqs
   );
   const schemaScript = generateSchemaScript(schemas);
@@ -65,6 +76,29 @@ export default function Umzugsofferten() {
   return (
     <div className="min-h-screen">
       <Helmet>
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        
+        {/* Keywords */}
+        {keywords && keywords.length > 0 && (
+          <meta name="keywords" content={keywords.join(', ')} />
+        )}
+        
+        {/* OpenGraph Tags */}
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
+
+        {/* Schema.org JSON-LD */}
         <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
       {/* Hero Section */}
