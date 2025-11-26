@@ -24,6 +24,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
+import { OffertenCTA } from "@/components/OffertenCTA";
 
 const formSchema = z.object({
   furnitureItems: z.object({
@@ -405,9 +406,19 @@ const AssemblyCalculator = () => {
                     <li>✓ Lampenmontage</li>
                     <li>✓ Fachgerecht nach Herstellervorgaben</li>
                   </ul>
-                </div>
               </div>
             </div>
+
+            {/* Offerten CTA */}
+            <div className="mt-12">
+              <OffertenCTA 
+                title="Umzug mit Möbelmontage kombinieren?"
+                description="Lassen Sie Ihre Möbel professionell auf- und abbauen. Holen Sie sich kombinierte Offerten für Umzug und Montage."
+                buttonText="Kombinierte Offerten anfordern"
+                buttonLink="/umzugsofferten"
+              />
+            </div>
+          </div>
           </div>
         </div>
       </main>

@@ -24,6 +24,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
+import { OffertenCTA } from "@/components/OffertenCTA";
 
 const formSchema = z.object({
   volumeM3: z.number().min(1).max(50),
@@ -374,6 +375,16 @@ const DisposalCalculator = () => {
                   </ul>
                 </div>
               </div>
+            </div>
+
+            {/* Offerten CTA */}
+            <div className="mt-12">
+              <OffertenCTA 
+                title="Umzug mit Entsorgung kombinieren?"
+                description="Planen Sie einen Umzug und benötigen Entsorgung alter Möbel? Holen Sie sich kombinierte Offerten."
+                buttonText="Kombinierte Offerten anfordern"
+                buttonLink="/umzugsofferten"
+              />
             </div>
           </div>
         </div>
