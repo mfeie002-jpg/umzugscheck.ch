@@ -14,7 +14,7 @@ export const InternalLink = ({ to, children, className, showArrow = false }: Int
     <Link
       to={to}
       className={cn(
-        "inline-flex items-center gap-1 text-primary hover:text-primary/80 font-medium transition-colors link-underline",
+        "inline-flex items-center gap-1 text-primary hover:text-primary/80 font-medium transition-colors no-underline hover:underline",
         className
       )}
     >

@@ -359,6 +359,18 @@ All colors MUST be HSL.
     @apply scale-x-100;
   }
 
+  /* Global link underline for all clickable links */
+  a:not(.no-underline) {
+    @apply underline decoration-primary/30 hover:decoration-primary decoration-1 underline-offset-2 transition-colors duration-200;
+  }
+
+  /* Remove underline from buttons and specific components */
+  button a,
+  .btn a,
+  nav a {
+    @apply no-underline;
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out;
   }
