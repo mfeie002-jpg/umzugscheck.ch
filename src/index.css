@@ -13,6 +13,10 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Typography - Performance Optimized */
+    --font-body: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-heading: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    
     /* Swiss-inspired color palette */
     --background: 0 0% 100%;
     --foreground: 215 25% 15%;

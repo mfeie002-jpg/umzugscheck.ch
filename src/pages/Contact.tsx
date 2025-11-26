@@ -11,6 +11,10 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { FAQAccordion, type FAQItem } from "@/components/FAQAccordion";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const contactFAQs: FAQItem[] = [
   {

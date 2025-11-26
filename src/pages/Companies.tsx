@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { OnboardingHint } from "@/components/OnboardingHint";
 import { OffertenCTA } from "@/components/OffertenCTA";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useHaptic } from "@/hooks/use-haptic";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
+import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 interface Company {
   id: string;
@@ -58,6 +62,32 @@ const Companies = () => {
   const [selectedRating, setSelectedRating] = useState("Alle");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // SEO Data
+  const currentUrl = 'https://www.umzugscheck.ch/firmen/';
+  const metaData = generateMetaData({ type: 'main-page', pageName: 'vergleich' });
+  const ogTags = generateOGTags(metaData, currentUrl);
+  const keywords = getKeywordsForPage('vergleich');
+  
+  // Schema.org - Generate company list schema when companies are loaded
+  const companySchemas = useMemo(() => {
+    if (companies.length > 0) {
+      const companyItems = companies.slice(0, 10).map(c => ({
+        name: c.name,
+        rating: c.rating,
+        reviewCount: c.review_count
+      }));
+      
+      return generatePageSchemas(
+        { type: 'vergleich' as const, url: currentUrl },
+        undefined,
+        companyItems
+      );
+    }
+    return generatePageSchemas({ type: 'vergleich' as const, url: currentUrl });
+  }, [companies, currentUrl]);
+  
+  const schemaScript = generateSchemaScript(companySchemas);
 
   const handleRefresh = async () => {
     await fetchCompanies();
@@ -256,6 +286,31 @@ const Companies = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{metaData.title}</title>
+        <meta name="description" content={metaData.description} />
+        <link rel="canonical" href={currentUrl} />
+        <meta name="keywords" content={keywords.join(', ')} />
+        
+        {/* OpenGraph Tags */}
+        <meta property="og:title" content={ogTags['og:title']} />
+        <meta property="og:description" content={ogTags['og:description']} />
+        <meta property="og:type" content={ogTags['og:type']} />
+        <meta property="og:url" content={ogTags['og:url']} />
+        <meta property="og:image" content={ogTags['og:image']} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content={ogTags['twitter:card']} />
+        <meta name="twitter:title" content={ogTags['twitter:title']} />
+        <meta name="twitter:description" content={ogTags['twitter:description']} />
+        <meta name="twitter:image" content={ogTags['twitter:image']} />
+        
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">
+          {schemaScript}
+        </script>
+      </Helmet>
+      
       <PullToRefreshIndicator 
         isPulling={isPulling}
         isRefreshing={isRefreshing}
