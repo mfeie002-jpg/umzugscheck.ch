@@ -35,7 +35,7 @@ const cityNames: Record<string, string> = {
 // Service display names
 const serviceNames: Record<string, string> = {
   'umzug': 'Umzug',
-  'reinigung': 'Endreinigung',
+  'reinigung': 'Reinigung',
   'raeumung': 'Räumung',
   'firmenumzug': 'Firmenumzug',
   'transport': 'Möbeltransport',
@@ -44,7 +44,7 @@ const serviceNames: Record<string, string> = {
   'umzug-mit-reinigung': 'Umzug + Reinigung'
 };
 
-// Main pages meta data
+// Main pages meta data (8 pages)
 const mainPagesMeta: Record<string, MetaData> = {
   'home': {
     title: 'Umzugsvergleich Schweiz | Kostenlos Offerten erhalten',
@@ -78,7 +78,7 @@ const mainPagesMeta: Record<string, MetaData> = {
   }
 };
 
-// Service-specific meta data
+// Service-specific meta data (8 services)
 const serviceMeta: Record<string, MetaData> = {
   'umzug': {
     title: 'Umzug Schweiz | Beste Umzugsfirmen vergleichen',
@@ -87,17 +87,17 @@ const serviceMeta: Record<string, MetaData> = {
   },
   'reinigung': {
     title: 'Endreinigung mit Abnahmegarantie | Preise & Firmen',
-    description: 'Reinigung mit Abnahmegarantie. Fixpreise vergleichen & Angebote einholen.',
+    description: 'Reinigung + Abnahmegarantie. Vergleiche geprüfte Reinigungsfirmen & sichere Fixpreise.',
     ogImage: '/og-images/service_reinigung.jpg'
   },
   'raeumung': {
     title: 'Räumung & Entrümpelung Schweiz | Preise & Angebote',
-    description: 'Räumungsfirmen vergleichen. Schnell, sauber und kostenlos Offerten erhalten.',
+    description: 'Schnell, sauber, zuverlässig. Vergleiche Räumungsfirmen & erhalte kostenlose Offerten.',
     ogImage: '/og-images/service_raeumung.jpg'
   },
   'firmenumzug': {
     title: 'Firmenumzug Schweiz | Profis für Büro-Umzüge',
-    description: 'Planung, Transport & Montage. Beste Firmenumzugsanbieter vergleichen.',
+    description: 'Planung, Transport & Montage. Top Anbieter für Firmenumzüge vergleichen.',
     ogImage: '/og-images/service_firmenumzug.jpg'
   },
   'transport': {
@@ -107,12 +107,12 @@ const serviceMeta: Record<string, MetaData> = {
   },
   'lagerung': {
     title: 'Möbellager & Selfstorage Schweiz | Preise & Anbieter',
-    description: 'Sichere Lagerplätze ab CHF 90/Monat. Jetzt Lagerangebote vergleichen.',
+    description: 'Sichere Lagerplätze ab CHF 90/Monat. Vergleiche jetzt Angebote.',
     ogImage: '/og-images/service_lagerung.jpg'
   },
   'entsorgung': {
     title: 'Entsorgung & Sperrgut Schweiz | Sofort Offerten',
-    description: 'Schnelle Sperrgutentsorgung ab CHF 90. Anbieter vergleichen und sparen.',
+    description: 'Schnelle Sperrgutentsorgung ab CHF 90. Anbieter vergleichen & Offerte sichern.',
     ogImage: '/og-images/service_entsorgung.jpg'
   },
   'umzug-mit-reinigung': {
@@ -122,76 +122,76 @@ const serviceMeta: Record<string, MetaData> = {
   }
 };
 
-// City-specific meta data
+// City-specific meta data (14 cities)
 const cityMeta: Record<string, MetaData> = {
   'zuerich': {
     title: 'Umzugsfirmen Zürich | Preise & Offerten 2025',
-    description: 'Beste Umzugsfirmen in Zürich vergleichen. Kostenlose Offerten, lokale Profis.',
+    description: 'Beste Umzugsfirmen in Zürich vergleichen. Kostenlose Offerten, lokale Profis, schnelle Termine.',
     ogImage: '/og-images/city_zuerich.jpg'
   },
   'bern': {
     title: 'Umzugsfirmen Bern | Gratis Offerten vergleichen',
-    description: 'Top-Bewertete Umzugsfirmen in Bern. Preise vergleichen & sparen.',
+    description: 'Top-Bewertete Umzugsfirmen in Bern. Preise vergleichen & kostenlos Offerten erhalten.',
     ogImage: '/og-images/city_bern.jpg'
   },
   'basel': {
     title: 'Umzugsfirmen Basel | Preise & Bewertungen',
-    description: 'Geprüfte Firmen in Basel vergleichen. Gratis Angebote.',
+    description: 'Vergleiche geprüfte Firmen in Basel. Gratis Angebote in 2 Minuten.',
     ogImage: '/og-images/city_basel.jpg'
   },
   'genf': {
     title: 'Umzugsfirmen Genf | Offerten & Preise 2025',
-    description: 'Professionelle Umzugsfirmen in Genf vergleichen. Sofort Offerten sichern.',
+    description: 'Professionelle Umzugsfirmen in Genf vergleichen. Sofort kostenlose Offerten sichern.',
     ogImage: '/og-images/city_genf.jpg'
   },
   'lausanne': {
     title: 'Umzugsfirmen Lausanne | Kostenlose Angebote',
-    description: 'Umzüge in Lausanne vergleichen & passende Firma finden.',
+    description: 'Top-Anbieter für Umzüge in Lausanne. Vergleich starten & sparen.',
     ogImage: '/og-images/city_lausanne.jpg'
   },
   'lugano': {
     title: 'Ditte di Trasloco Lugano | Preventivi Gratuiti',
-    description: 'Confronta ditte verificate a Lugano. Preventivi rapidi.',
+    description: 'Confronta ditte verificate a Lugano. Preventivi rapidi e affidabili.',
     ogImage: '/og-images/city_lugano.jpg'
   },
   'luzern': {
     title: 'Umzugsfirmen Luzern | Preise & Angebote',
-    description: 'Regionale Luzerner Umzugsfirmen vergleichen. Gratis Offerten.',
+    description: 'Regionale Luzerner Umzugsfirmen vergleichen. Offerten gratis erhalten.',
     ogImage: '/og-images/city_luzern.jpg'
   },
   'winterthur': {
     title: 'Umzugsfirmen Winterthur | Gratis Offerten',
-    description: 'Winti-Umzugsfirmen vergleichen & freie Termine sichern.',
+    description: 'Lokale Winti-Umzugsfirmen vergleichen & passende Angebote sichern.',
     ogImage: '/og-images/city_winterthur.jpg'
   },
   'st-gallen': {
     title: 'Umzugsfirmen St. Gallen | Offerten & Preise',
-    description: 'Transparente Angebote für St. Gallen. Schnell Offerten vergleichen.',
+    description: 'Transparente Angebote für Umzüge in St. Gallen. Kostenlos vergleichen.',
     ogImage: '/og-images/city_stgallen.jpg'
   },
   'zug': {
     title: 'Umzugsfirmen Zug | Premium Umzugsofferten',
-    description: 'Regionale Premium-Firmen vergleichen. Gratis Angebote.',
+    description: 'Regionale Premium-Umzugsfirmen im Kanton Zug. Kostenlose Vergleichsangebote.',
     ogImage: '/og-images/city_zug.jpg'
   },
   'biel': {
     title: 'Umzugsfirmen Biel/Bienne | Offerten Vergleich',
-    description: 'Zweisprachige Umzugsfirmen vergleichen & sparen.',
+    description: 'Zweisprachige Umzugsfirmen in Biel vergleichen & sparen.',
     ogImage: '/og-images/city_biel.jpg'
   },
   'aarau': {
     title: 'Umzugsfirmen Aarau | Kostenlose Angebote',
-    description: 'Professionelle Umzüge in Aarau vergleichen.',
+    description: 'Professionelle Umzugsfirmen aus Aarau vergleichen.',
     ogImage: '/og-images/city_aarau.jpg'
   },
   'schaffhausen': {
     title: 'Umzugsfirmen Schaffhausen | Preise & Firmen',
-    description: 'Regionale SH-Umzugsfirmen vergleichen. Gratis Offerten.',
+    description: 'Regionale Umzugsfirmen aus SH vergleichen. Gratis Offerten.',
     ogImage: '/og-images/city_schaffhausen.jpg'
   },
   'chur': {
     title: 'Umzugsfirmen Chur | Angebote & Preise',
-    description: 'Lokale Umzugsteams vergleichen. Sofort Offerten einholen.',
+    description: 'Lokale Umzugsteams aus Chur vergleichen. Gratis Offerten sichern.',
     ogImage: '/og-images/city_chur.jpg'
   }
 };
@@ -217,11 +217,12 @@ export function generateMetaData(pageData: PageData): MetaData {
     return cityMeta[pageData.city] || cityMeta.zuerich;
   }
 
-  // City × Service combinations (dynamic template)
+  // City × Service combinations (112 pages - dynamic template)
   if (pageData.type === 'city-service' && pageData.city && pageData.service) {
     const cityDisplay = cityNames[pageData.city] || pageData.city;
     const serviceDisplay = serviceNames[pageData.service] || pageData.service;
     
+    // Master template for all 112 city×service combinations
     return {
       title: `${serviceDisplay} in ${cityDisplay} | Preise & Offerten 2025`,
       description: `Top Anbieter für ${serviceDisplay} in ${cityDisplay} vergleichen. Kostenlose Offerten, regionale Profis, schnelle Termine.`,
