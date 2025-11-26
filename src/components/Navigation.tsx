@@ -33,17 +33,17 @@ export const Navigation = () => {
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20 md:h-24">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="flex items-center justify-between h-16 sm:h-20 md:h-24">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center hover:opacity-90 transition-opacity"
+            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0"
           >
             <img 
               src={logo} 
               alt="Umzugscheck.ch Logo" 
-              className="h-14 md:h-20 w-auto" 
+              className="h-10 sm:h-14 md:h-20 w-auto" 
             />
           </Link>
 
@@ -101,9 +101,9 @@ export const Navigation = () => {
             <Link to="/umzugsofferten">
               <Button 
                 size="sm"
-                className="bg-accent hover:bg-accent/90 text-white shadow-accent"
+                className="bg-destructive hover:bg-destructive/90 text-white shadow-sm font-bold text-xs sm:text-sm px-3 sm:px-4"
               >
-                Offerten erhalten
+                Offerten
               </Button>
             </Link>
             <Button
@@ -111,6 +111,7 @@ export const Navigation = () => {
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="relative z-50"
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
@@ -125,15 +126,6 @@ export const Navigation = () => {
               </Button>
             </Link>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-            className="lg:hidden p-2 text-foreground hover:bg-secondary rounded-lg transition-colors" 
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
 
         {/* Mega Dropdown */}
