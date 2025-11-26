@@ -141,11 +141,30 @@ export default function EstimateResult() {
   const fetchEstimateSession = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.functions.invoke('get-estimate-session', {
-        body: { id },
-      });
+      
+      // Get the function URL and append query parameter
+      const { data: { session } } = await supabase.auth.getSession();
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/get-estimate-session?id=${id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseKey}`,
+            'apikey': supabaseKey,
+          },
+        }
+      );
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error?.message || 'Failed to fetch estimate');
+      }
+
+      const data = await response.json();
 
       if (data?.success && data?.data) {
         setSession(data.data);
