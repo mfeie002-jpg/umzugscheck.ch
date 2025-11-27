@@ -1,44 +1,43 @@
-import { Home, Building2, Sparkles, Package, Piano, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
 const services = [
   {
-    icon: Home,
     title: "Privatumzug",
     description: "Komplettservice für Ihren privaten Umzug",
-    link: "/dienstleistungen/privatumzug"
+    link: "/dienstleistungen/privatumzug",
+    image: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&h=300&fit=crop"
   },
   {
-    icon: Building2,
     title: "Firmenumzug",
     description: "Professionelle Büro- und Geschäftsumzüge",
-    link: "/dienstleistungen/firmenumzug"
+    link: "/dienstleistungen/firmenumzug",
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop"
   },
   {
-    icon: Sparkles,
     title: "Reinigung",
     description: "End- und Umzugsreinigung nach Standard",
-    link: "/dienstleistungen/reinigung"
+    link: "/dienstleistungen/reinigung",
+    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop"
   },
   {
-    icon: Package,
     title: "Lagerung",
     description: "Sichere Möbellagerung, kurz- oder langfristig",
-    link: "/dienstleistungen/lagerung"
+    link: "/dienstleistungen/lagerung",
+    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop"
   },
   {
-    icon: Piano,
     title: "Klavier / Spezialtransport",
     description: "Sichere Transporte für empfindliche Gegenstände",
-    link: "/dienstleistungen/spezialtransport"
+    link: "/dienstleistungen/spezialtransport",
+    image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400&h=300&fit=crop"
   },
   {
-    icon: Trash2,
     title: "Räumung / Entsorgung",
     description: "Entrümpelung und fachgerechte Entsorgung",
-    link: "/dienstleistungen/entsorgung"
+    link: "/dienstleistungen/entsorgung",
+    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&h=300&fit=crop"
   }
 ];
 
@@ -71,11 +70,15 @@ export const ServicesGridCompact = () => {
               transition={{ delay: index * 0.1 }}
             >
               <Link to={service.link}>
-                <Card className="h-full hover:shadow-medium transition-all group cursor-pointer">
+                <Card className="h-full hover:shadow-medium transition-all group cursor-pointer overflow-hidden">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <service.icon className="h-6 w-6 text-primary" />
-                    </div>
                     <h3 className="text-xl font-bold mb-2">{service.title}</h3>
                     <p className="text-sm text-muted-foreground">{service.description}</p>
                   </CardContent>
@@ -87,7 +90,7 @@ export const ServicesGridCompact = () => {
 
         {/* Mobile Slider */}
         <div className="md:hidden overflow-x-auto pb-4">
-          <div className="flex gap-4 min-w-max">
+          <div className="flex gap-4 min-w-max px-4">
             {services.map((service, index) => (
               <motion.div
                 key={index}
@@ -98,11 +101,15 @@ export const ServicesGridCompact = () => {
                 className="w-[280px]"
               >
                 <Link to={service.link}>
-                  <Card className="h-full hover:shadow-medium transition-all">
+                  <Card className="h-full hover:shadow-medium transition-all overflow-hidden">
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img 
+                        src={service.image} 
+                        alt={service.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <CardContent className="p-6">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                        <service.icon className="h-6 w-6 text-primary" />
-                      </div>
                       <h3 className="text-xl font-bold mb-2">{service.title}</h3>
                       <p className="text-sm text-muted-foreground">{service.description}</p>
                     </CardContent>
