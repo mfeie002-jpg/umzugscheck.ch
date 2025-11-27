@@ -55,7 +55,7 @@ export const ServicesGridCompact = () => {
             Unsere Dienstleistungen
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Alles aus einer Hand – vom Umzug bis zur Reinigung
+            Professionelle Services für jeden Umzug
           </p>
         </motion.div>
 
