@@ -22,6 +22,7 @@ import NewIndex from "./pages/NewIndex";
 import { HomePage } from "./pages/HomePage";
 import { CityPage } from "./pages/CityPage";
 import HomeOptimized from "./pages/HomeOptimized";
+import IndexPremium from "./pages/IndexPremium";
 import Sitemap from "./pages/Sitemap";
 import Calculator from "./pages/Calculator";
 import CalculatorResults from "./pages/CalculatorResults";
@@ -124,10 +125,11 @@ const App = () => (
                   </div>
                 }>
                    <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<IndexPremium />} />
           <Route path="/old-home" element={<Index />} />
           <Route path="/v2" element={<HomeOptimized />} />
           <Route path="/v3" element={<NewIndex />} />
+          <Route path="/v4" element={<HomePage />} />
             <Route path="/rechner" element={<Calculator />} />
             <Route path="/rechner/ai" element={<AIUpload />} />
             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
