@@ -12,7 +12,7 @@ export const PremiumHero = () => {
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-swiss-gold/10 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="container-premium relative z-10">
+      <div className="w-full max-w-[1350px] mx-auto px-6 md:px-12 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Side - Content */}
           <motion.div
@@ -22,7 +22,7 @@ export const PremiumHero = () => {
             className="space-y-8"
           >
             {/* Headline */}
-            <h1 className="text-premium-h1 lg:text-premium-h1-lg text-swiss-noir">
+            <h1 className="text-premium-h1 lg:text-premium-h1-lg text-swiss-noir leading-tight">
               Der exklusivste Weg,<br />
               Ihren Umzug zu planen.
             </h1>
