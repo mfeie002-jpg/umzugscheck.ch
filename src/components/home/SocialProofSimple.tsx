@@ -1,41 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Quote, Shield } from "lucide-react";
+import { Star } from "lucide-react";
 import { motion } from "framer-motion";
-
-const testimonials = [
-  {
-    name: "Thomas M.",
-    location: "Zürich",
-    rating: 5,
-    text: "Superschnell, faire Preise und professionelle Firmen. Genau so sollte ein Umzug laufen!"
-  },
-  {
-    name: "Sarah K.",
-    location: "Bern",
-    rating: 5,
-    text: "Die AI-Preisberechnung war genau! Drei Angebote erhalten und die beste Firma gewählt."
-  },
-  {
-    name: "Marco R.",
-    location: "Basel",
-    rating: 5,
-    text: "Transparent, keine versteckten Kosten. Die Vergleichsfunktion hat uns viel Geld gespart."
-  },
-  {
-    name: "Lisa B.",
-    location: "Luzern",
-    rating: 5,
-    text: "Einfacher geht's nicht. In 2 Minuten alle Infos eingegeben und am nächsten Tag Offerten erhalten."
-  },
-  {
-    name: "Peter S.",
-    location: "St. Gallen",
-    rating: 5,
-    text: "Alle Firmen waren geprüft und versichert. Das gibt ein gutes Gefühl beim Umzug."
-  }
-];
+import { getHomepageContent } from "@/lib/content";
 
 export const SocialProofSimple = () => {
+  const content = getHomepageContent().socialProof;
   return (
     <section className="py-16 md:py-20 bg-slate-50">
       <div className="container mx-auto px-4">
@@ -47,18 +16,12 @@ export const SocialProofSimple = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto"
         >
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">25'000+</div>
-            <p className="text-slate-600 font-medium">Erfolgreiche Umzüge seit 2020</p>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">4.9/5</div>
-            <p className="text-slate-600 font-medium">Durchschnittliche Kundenbewertung</p>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">100%</div>
-            <p className="text-slate-600 font-medium">Zertifizierte Schweizer Firmen</p>
-          </div>
+          {content.stats.map((stat, index) => (
+            <div key={index} className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">{stat.value}</div>
+              <p className="text-slate-600 font-medium">{stat.label}</p>
+            </div>
+          ))}
         </motion.div>
 
         {/* Reviews Carousel */}
@@ -69,7 +32,7 @@ export const SocialProofSimple = () => {
           className="overflow-x-auto pb-4"
         >
           <div className="flex gap-6 min-w-max md:grid md:grid-cols-3 md:min-w-0 max-w-6xl mx-auto">
-            {testimonials.slice(0, 3).map((testimonial, index) => (
+            {content.testimonials.slice(0, 3).map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}

@@ -1,0 +1,168 @@
+{
+  "hero": {
+    "headline": "Der schnellste Weg zu Ihrem",
+    "highlightedText": "perfekten Umzug",
+    "subheadline": "Vergleichen Sie geprüfte Umzugsfirmen, nutzen Sie unseren KI-Rechner und sparen Sie bis zu 40%",
+    "primaryCTA": "Jetzt gratis vergleichen",
+    "secondaryCTA": "KI-Rechner starten",
+    "trustIndicators": {
+      "rating": "4.9/5 Bewertung",
+      "movesCount": "25'000+ Umzüge",
+      "verifiedText": "Geprüfte Firmen"
+    },
+    "calculator": {
+      "title": "KI-Rechner",
+      "subtitle": "In 60 Sekunden zur Schätzung",
+      "fromLabel": "Von (PLZ)",
+      "fromPlaceholder": "z.B. 8001",
+      "toLabel": "Nach (PLZ)",
+      "toPlaceholder": "z.B. 3011",
+      "roomsLabel": "Zimmer",
+      "roomsPlaceholder": "z.B. 3",
+      "submitButton": "Kostenlose Schätzung erhalten",
+      "disclaimer": "✓ 100% kostenlos & unverbindlich • Keine Kreditkarte erforderlich"
+    }
+  },
+  "socialProof": {
+    "stats": [
+      {
+        "value": "25'000+",
+        "label": "Erfolgreiche Umzüge seit 2020"
+      },
+      {
+        "value": "4.9/5",
+        "label": "Durchschnittliche Kundenbewertung"
+      },
+      {
+        "value": "100%",
+        "label": "Zertifizierte Schweizer Firmen"
+      }
+    ],
+    "testimonials": [
+      {
+        "name": "Thomas M.",
+        "location": "Zürich",
+        "rating": 5,
+        "text": "Superschnell, faire Preise und professionelle Firmen. Genau so sollte ein Umzug laufen!"
+      },
+      {
+        "name": "Sarah K.",
+        "location": "Bern",
+        "rating": 5,
+        "text": "Die AI-Preisberechnung war genau! Drei Angebote erhalten und die beste Firma gewählt."
+      },
+      {
+        "name": "Marco R.",
+        "location": "Basel",
+        "rating": 5,
+        "text": "Transparent, keine versteckten Kosten. Die Vergleichsfunktion hat uns viel Geld gespart."
+      },
+      {
+        "name": "Lisa B.",
+        "location": "Luzern",
+        "rating": 5,
+        "text": "Einfacher geht's nicht. In 2 Minuten alle Infos eingegeben und am nächsten Tag Offerten erhalten."
+      },
+      {
+        "name": "Peter S.",
+        "location": "St. Gallen",
+        "rating": 5,
+        "text": "Alle Firmen waren geprüft und versichert. Das gibt ein gutes Gefühl beim Umzug."
+      }
+    ]
+  },
+  "howItWorks": {
+    "title": "So funktioniert's",
+    "subtitle": "In 3 einfachen Schritten zum besten Angebot",
+    "steps": [
+      {
+        "number": 1,
+        "icon": "Mail",
+        "title": "Anfrage stellen",
+        "description": "Beschreiben Sie Ihren Umzug in 2 Minuten"
+      },
+      {
+        "number": 2,
+        "icon": "Users",
+        "title": "Offerten erhalten",
+        "description": "Bis zu 5 geprüfte Schweizer Umzugsfirmen melden sich"
+      },
+      {
+        "number": 3,
+        "icon": "TrendingDown",
+        "title": "Vergleichen & sparen",
+        "description": "Bewertungen prüfen, Preise vergleichen, bis 40% sparen"
+      }
+    ]
+  },
+  "aiCalculator": {
+    "badge": "Schweizer KI-Innovation",
+    "headline": "Unser",
+    "highlightedText": "KI-Rechner",
+    "description": "Modernste Künstliche Intelligenz berechnet Ihre Umzugskosten in Sekunden – basierend auf Entfernung, Volumen, Aufwand und historischen Daten",
+    "benefits": [
+      {
+        "icon": "Clock",
+        "title": "Sofortige Preisspanne",
+        "description": "Erhalten Sie Ihre Kosteneinschätzung in unter 60 Sekunden"
+      },
+      {
+        "icon": "Target",
+        "title": "Bessere Firmen zuerst",
+        "description": "KI-Ranking zeigt Ihnen die qualitativ besten Anbieter"
+      },
+      {
+        "icon": "Shield",
+        "title": "Sie entscheiden",
+        "description": "Nur ausgewählte Firmen kontaktieren Sie – kein Spam"
+      }
+    ],
+    "ctaButton": "KI-Schätzung jetzt erhalten",
+    "imageUrl": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80&auto=format&fit=crop"
+  },
+  "services": {
+    "title": "Unsere Dienstleistungen",
+    "subtitle": "Alles rund um Ihren Umzug"
+  },
+  "topCompanies": {
+    "title": "Top Umzugsfirmen",
+    "subtitle": "Geprüfte Partner in Ihrer Region"
+  },
+  "costExamples": {
+    "title": "Preisbeispiele",
+    "subtitle": "Transparente Kosten für jeden Umzug"
+  },
+  "whyUs": {
+    "title": "Warum umzugscheck.ch?",
+    "subtitle": "Ihre Vorteile auf einen Blick"
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "subtitle": "Alles was Sie wissen müssen"
+  },
+  "regions": {
+    "title": "Regionen",
+    "subtitle": "Finden Sie Umzugsfirmen in Ihrer Region"
+  },
+  "providerCTA": {
+    "badge": "Für Umzugsfirmen",
+    "title": "Werden Sie Partner von umzugscheck.ch",
+    "description": "Erhalten Sie qualifizierte Anfragen und wachsen Sie mit uns",
+    "stats": [
+      {
+        "value": "500+",
+        "label": "Partner"
+      },
+      {
+        "value": "3'000+",
+        "label": "Leads/Monat"
+      },
+      {
+        "value": "85%",
+        "label": "Conversion"
+      }
+    ],
+    "primaryButton": "Jetzt Partner werden",
+    "secondaryButton": "Mehr erfahren"
+  }
+}

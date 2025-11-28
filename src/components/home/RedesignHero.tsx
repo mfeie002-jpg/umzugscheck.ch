@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getHomepageContent } from "@/lib/content";
 
 export const RedesignHero = () => {
+  const content = getHomepageContent().hero;
   const [fromPostal, setFromPostal] = useState("");
   const [toPostal, setToPostal] = useState("");
   const [rooms, setRooms] = useState("");
@@ -40,15 +42,15 @@ export const RedesignHero = () => {
               className="text-center lg:text-left"
             >
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-slate-900 mb-6">
-                Der schnellste Weg zu Ihrem{" "}
+                {content.headline}{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
-                  perfekten Umzug
+                  {content.highlightedText}
                 </span>{" "}
                 in der Schweiz
               </h1>
               
               <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Vergleichen Sie geprüfte Umzugsfirmen, nutzen Sie unseren KI-Rechner und sparen Sie bis zu 40%
+                {content.subheadline}
               </p>
 
               {/* CTA Buttons */}
@@ -58,7 +60,7 @@ export const RedesignHero = () => {
                   size="lg"
                   className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all"
                 >
-                  Jetzt gratis vergleichen
+                  {content.primaryCTA}
                 </Button>
                 <Link to="/rechner">
                   <Button 
@@ -66,7 +68,7 @@ export const RedesignHero = () => {
                     size="lg"
                     className="h-14 px-8 text-lg font-semibold border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
                   >
-                    KI-Rechner starten
+                    {content.secondaryCTA}
                   </Button>
                 </Link>
               </div>
@@ -75,15 +77,15 @@ export const RedesignHero = () => {
               <div className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-slate-600">
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">4.9/5 Bewertung</span>
+                  <span className="font-semibold">{content.trustIndicators.rating}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span>25'000+ Umzüge</span>
+                  <span>{content.trustIndicators.movesCount}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-blue-600" />
-                  <span>Geprüfte Firmen</span>
+                  <span>{content.trustIndicators.verifiedText}</span>
                 </div>
               </div>
             </motion.div>
@@ -105,16 +107,16 @@ export const RedesignHero = () => {
                       <TrendingDown className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-slate-900">KI-Rechner</h3>
-                      <p className="text-sm text-slate-600">In 60 Sekunden zur Schätzung</p>
+                      <h3 className="text-2xl font-bold text-slate-900">{content.calculator.title}</h3>
+                      <p className="text-sm text-slate-600">{content.calculator.subtitle}</p>
                     </div>
                   </div>
 
                   <div className="space-y-4 mb-6">
                     <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-2 block">Von (PLZ)</label>
+                      <label className="text-sm font-semibold text-slate-700 mb-2 block">{content.calculator.fromLabel}</label>
                       <Input 
-                        placeholder="z.B. 8001"
+                        placeholder={content.calculator.fromPlaceholder}
                         value={fromPostal}
                         onChange={(e) => setFromPostal(e.target.value)}
                         className="h-12 border-slate-200 focus:border-blue-500"
@@ -122,9 +124,9 @@ export const RedesignHero = () => {
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-2 block">Nach (PLZ)</label>
+                      <label className="text-sm font-semibold text-slate-700 mb-2 block">{content.calculator.toLabel}</label>
                       <Input 
-                        placeholder="z.B. 3011"
+                        placeholder={content.calculator.toPlaceholder}
                         value={toPostal}
                         onChange={(e) => setToPostal(e.target.value)}
                         className="h-12 border-slate-200 focus:border-blue-500"
@@ -132,10 +134,10 @@ export const RedesignHero = () => {
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-2 block">Zimmer</label>
+                      <label className="text-sm font-semibold text-slate-700 mb-2 block">{content.calculator.roomsLabel}</label>
                       <Input 
                         type="number"
-                        placeholder="z.B. 3"
+                        placeholder={content.calculator.roomsPlaceholder}
                         value={rooms}
                         onChange={(e) => setRooms(e.target.value)}
                         className="h-12 border-slate-200 focus:border-blue-500"
@@ -148,11 +150,11 @@ export const RedesignHero = () => {
                     className="w-full h-14 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all"
                     disabled={!fromPostal || !toPostal || !rooms}
                   >
-                    Kostenlose Schätzung erhalten
+                    {content.calculator.submitButton}
                   </Button>
 
                   <p className="text-xs text-center text-slate-500 mt-4">
-                    ✓ 100% kostenlos & unverbindlich • Keine Kreditkarte erforderlich
+                    {content.calculator.disclaimer}
                   </p>
                 </div>
               </div>
