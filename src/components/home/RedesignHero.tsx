@@ -19,108 +19,146 @@ export const RedesignHero = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-secondary/5 via-background to-primary/5">
-      {/* Emotional Background - Right Side */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 z-0 hidden lg:block">
-        <img 
-          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80&auto=format&fit=crop"
-          alt="Professionelle Umzugshelfer"
-          className="w-full h-full object-cover opacity-30"
-          loading="eager"
-        />
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+      {/* Modern Background Pattern */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100 rounded-full blur-3xl opacity-20" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-100 rounded-full blur-3xl opacity-20" />
       </div>
 
-      <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
+        <div className="max-w-6xl mx-auto">
           
-          {/* Centered Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-4">
-              Schweizer Umzug buchen – in <span className="text-primary">2 Minuten</span>, mit AI-Unterstützung
-            </h1>
+          {/* Hero Content Grid */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Erhalte Sofort-Preise, geprüfte Firmen & transparente Vergleiche
-            </p>
-
-            {/* Centered AI Calculator */}
+            {/* Left: Main Content */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="w-full max-w-2xl mx-auto mb-8"
+              transition={{ duration: 0.7 }}
+              className="text-center lg:text-left"
             >
-              <div className="bg-card rounded-3xl shadow-strong p-6 md:p-8 border border-border/50">
-                <div className="flex items-center justify-center gap-2 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <TrendingDown className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold text-foreground">AI-Schnellrechner</h3>
-                </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-slate-900 mb-6">
+                Der schnellste Weg zu Ihrem{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
+                  perfekten Umzug
+                </span>{" "}
+                in der Schweiz
+              </h1>
+              
+              <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                Vergleichen Sie geprüfte Umzugsfirmen, nutzen Sie unseren KI-Rechner und sparen Sie bis zu 40%
+              </p>
 
-                <div className="grid md:grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Von PLZ</label>
-                    <Input 
-                      placeholder="z.B. 8001"
-                      value={fromPostal}
-                      onChange={(e) => setFromPostal(e.target.value)}
-                      className="h-12"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Nach PLZ</label>
-                    <Input 
-                      placeholder="z.B. 3011"
-                      value={toPostal}
-                      onChange={(e) => setToPostal(e.target.value)}
-                      className="h-12"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Zimmer</label>
-                    <Input 
-                      type="number"
-                      placeholder="z.B. 3"
-                      value={rooms}
-                      onChange={(e) => setRooms(e.target.value)}
-                      className="h-12"
-                    />
-                  </div>
-                </div>
-
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
                 <Button 
                   onClick={handleCalculate}
-                  className="w-full h-14 text-lg font-bold shadow-medium hover:shadow-strong transition-all"
-                  disabled={!fromPostal || !toPostal || !rooms}
+                  size="lg"
+                  className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all"
                 >
-                  Sofort-Preis berechnen
+                  Jetzt gratis vergleichen
                 </Button>
+                <Link to="/rechner">
+                  <Button 
+                    variant="outline"
+                    size="lg"
+                    className="h-14 px-8 text-lg font-semibold border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                  >
+                    KI-Rechner starten
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-slate-600">
+                <div className="flex items-center gap-2">
+                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <span className="font-semibold">4.9/5 Bewertung</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <span>25'000+ Umzüge</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  <span>Geprüfte Firmen</span>
+                </div>
               </div>
             </motion.div>
 
-            {/* Trust Bar Below Calculator */}
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-sm md:text-base">
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 fill-primary text-primary" />
-                <span className="font-semibold">⭐ 4.8 / 5</span>
+            {/* Right: AI Calculator Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="bg-white rounded-3xl shadow-2xl p-8 border border-slate-100 relative overflow-hidden">
+                {/* Glow Effect */}
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-20" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
+                      <TrendingDown className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-slate-900">KI-Rechner</h3>
+                      <p className="text-sm text-slate-600">In 60 Sekunden zur Schätzung</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 mb-6">
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700 mb-2 block">Von (PLZ)</label>
+                      <Input 
+                        placeholder="z.B. 8001"
+                        value={fromPostal}
+                        onChange={(e) => setFromPostal(e.target.value)}
+                        className="h-12 border-slate-200 focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700 mb-2 block">Nach (PLZ)</label>
+                      <Input 
+                        placeholder="z.B. 3011"
+                        value={toPostal}
+                        onChange={(e) => setToPostal(e.target.value)}
+                        className="h-12 border-slate-200 focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700 mb-2 block">Zimmer</label>
+                      <Input 
+                        type="number"
+                        placeholder="z.B. 3"
+                        value={rooms}
+                        onChange={(e) => setRooms(e.target.value)}
+                        className="h-12 border-slate-200 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={handleCalculate}
+                    className="w-full h-14 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all"
+                    disabled={!fromPostal || !toPostal || !rooms}
+                  >
+                    Kostenlose Schätzung erhalten
+                  </Button>
+
+                  <p className="text-xs text-center text-slate-500 mt-4">
+                    ✓ 100% kostenlos & unverbindlich • Keine Kreditkarte erforderlich
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-success" />
-                <span>15'000+ Umzüge</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-secondary" />
-                <span>8 Jahre Erfahrung</span>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+
+          </div>
 
         </div>
       </div>

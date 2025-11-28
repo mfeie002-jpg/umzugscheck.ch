@@ -5,62 +5,61 @@ import { Link } from "react-router-dom";
 const services = [
   {
     title: "Privatumzug",
-    description: "Komplettservice für Ihren privaten Umzug",
+    description: "Kompletter Service für Ihren privaten Umzug",
     link: "/dienstleistungen/privatumzug",
-    image: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&h=300&fit=crop"
+    icon: "🏠"
   },
   {
     title: "Firmenumzug",
     description: "Professionelle Büro- und Geschäftsumzüge",
     link: "/dienstleistungen/firmenumzug",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop"
+    icon: "🏢"
   },
   {
     title: "Reinigung",
     description: "End- und Umzugsreinigung nach Standard",
     link: "/dienstleistungen/reinigung",
-    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop"
+    icon: "✨"
   },
   {
-    title: "Lagerung",
-    description: "Sichere Möbellagerung, kurz- oder langfristig",
-    link: "/dienstleistungen/lagerung",
-    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop"
-  },
-  {
-    title: "Klavier / Spezialtransport",
-    description: "Sichere Transporte für empfindliche Gegenstände",
-    link: "/dienstleistungen/spezialtransport",
-    image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400&h=300&fit=crop"
-  },
-  {
-    title: "Räumung / Entsorgung",
-    description: "Entrümpelung und fachgerechte Entsorgung",
+    title: "Entsorgung",
+    description: "Fachgerechte Entsorgung & Räumung",
     link: "/dienstleistungen/entsorgung",
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&h=300&fit=crop"
+    icon: "♻️"
+  },
+  {
+    title: "Möbellift",
+    description: "Professioneller Möbellift-Service",
+    link: "/dienstleistungen/moebellift",
+    icon: "🏗️"
+  },
+  {
+    title: "Verpackung",
+    description: "Professioneller Packservice",
+    link: "/dienstleistungen/verpackung",
+    icon: "📦"
   }
 ];
 
 export const ServicesGridCompact = () => {
   return (
-    <section className="py-12 md:py-16 bg-background">
+    <section className="py-20 md:py-28 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
             Unsere Dienstleistungen
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
             Professionelle Services für jeden Umzug
           </p>
         </motion.div>
 
-        {/* Desktop Grid */}
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {services.map((service, index) => (
             <motion.div
               key={index}
@@ -70,54 +69,16 @@ export const ServicesGridCompact = () => {
               transition={{ delay: index * 0.1 }}
             >
               <Link to={service.link}>
-                <Card className="h-full hover:shadow-medium transition-all group cursor-pointer overflow-hidden">
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img 
-                      src={service.image} 
-                      alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                    <p className="text-sm text-muted-foreground">{service.description}</p>
+                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer border-slate-200">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-5xl mb-4">{service.icon}</div>
+                    <h3 className="text-lg font-bold mb-2 text-slate-900">{service.title}</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">{service.description}</p>
                   </CardContent>
                 </Card>
               </Link>
             </motion.div>
           ))}
-        </div>
-
-        {/* Mobile Slider */}
-        <div className="md:hidden overflow-x-auto pb-4">
-          <div className="flex gap-4 min-w-max px-4">
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="w-[280px]"
-              >
-                <Link to={service.link}>
-                  <Card className="h-full hover:shadow-medium transition-all overflow-hidden">
-                    <div className="aspect-[4/3] overflow-hidden">
-                      <img 
-                        src={service.image} 
-                        alt={service.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                      <p className="text-sm text-muted-foreground">{service.description}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </div>
     </section>

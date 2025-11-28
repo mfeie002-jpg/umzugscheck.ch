@@ -5,9 +5,13 @@ import { motion } from "framer-motion";
 
 export const AICalculatorShowcase = () => {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-br from-secondary/5 to-primary/5">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+    <section className="py-20 md:py-28 bg-gradient-to-br from-blue-50 via-cyan-50 to-white relative overflow-hidden">
+      {/* Glow Effects */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400 rounded-full blur-3xl opacity-10" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-400 rounded-full blur-3xl opacity-10" />
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
           
           {/* Left: Screenshot/Visual */}
           <motion.div
@@ -45,53 +49,55 @@ export const AICalculatorShowcase = () => {
             viewport={{ once: true }}
             className="order-1 lg:order-2"
           >
-            <div className="inline-block mb-4 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold">
-              🚀 Schweizer Innovation
+            <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full text-sm font-bold">
+              <Sparkles className="h-4 w-4" />
+              Schweizer KI-Innovation
             </div>
             
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Der erste <span className="text-primary">KI-Umzugsrechner</span> der Schweiz
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-slate-900 leading-tight">
+              Unser <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">KI-Rechner</span> analysiert über 25'000 Umzüge
             </h2>
             
-            <p className="text-lg text-muted-foreground mb-8">
-              Nutzen Sie modernste Künstliche Intelligenz für präzise Kostenberechnungen und sofortige Angebote
+            <p className="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed">
+              Modernste Künstliche Intelligenz berechnet Ihre Umzugskosten in Sekunden – basierend auf Entfernung, Volumen, Aufwand und historischen Daten
             </p>
 
-            <div className="space-y-4 mb-8">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Clock className="h-5 w-5 text-primary" />
+            <div className="space-y-6 mb-10">
+              <div className="flex items-start gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Clock className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Sofortige Preisspanne</h3>
-                  <p className="text-muted-foreground text-sm">Erhalte deine Kosteneinschätzung in unter 2 Minuten</p>
+                  <h3 className="font-bold text-xl mb-2 text-slate-900">Sofortige Preisspanne</h3>
+                  <p className="text-slate-600">Erhalten Sie Ihre Kosteneinschätzung in unter 60 Sekunden</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                  <Target className="h-5 w-5 text-secondary" />
+              <div className="flex items-start gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Target className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Bessere Firmen zuerst</h3>
-                  <p className="text-muted-foreground text-sm">AI-Ranking zeigt dir die qualitativ besten Anbieter</p>
+                  <h3 className="font-bold text-xl mb-2 text-slate-900">Bessere Firmen zuerst</h3>
+                  <p className="text-slate-600">KI-Ranking zeigt Ihnen die qualitativ besten Anbieter</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                  <Shield className="h-5 w-5 text-accent" />
+              <div className="flex items-start gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Shield className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Kein Spam – du wählst</h3>
-                  <p className="text-muted-foreground text-sm">Nur ausgewählte Firmen kontaktieren dich, keine Anrufflut</p>
+                  <h3 className="font-bold text-xl mb-2 text-slate-900">Sie entscheiden</h3>
+                  <p className="text-slate-600">Nur ausgewählte Firmen kontaktieren Sie – kein Spam</p>
                 </div>
               </div>
             </div>
 
             <Link to="/rechner">
-              <Button size="lg" className="h-14 px-8 text-lg font-bold shadow-strong">
-                KI-Rechner testen
+              <Button size="lg" className="h-16 px-10 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all">
+                <Sparkles className="mr-2 h-5 w-5" />
+                KI-Schätzung jetzt erhalten
               </Button>
             </Link>
           </motion.div>
