@@ -1,0 +1,34 @@
+{
+  "global": {
+    "siteName": "umzugscheck.ch",
+    "defaultTitleSuffix": " | umzugscheck.ch",
+    "defaultDescription": "Vergleichen Sie Schweizer Umzugsfirmen, nutzen Sie unseren KI-Rechner und sparen Sie bis zu 40%. Kostenlos, unverbindlich, geprüft.",
+    "defaultImage": "/og-image.jpg"
+  },
+  "pages": {
+    "home": {
+      "title": "Umzugsfirmen vergleichen & bis zu 40% sparen",
+      "description": "Schweizer Umzugsvergleich mit KI-Rechner. Geprüfte Firmen, transparente Preise, 25'000+ erfolgreiche Umzüge. Jetzt kostenlos vergleichen!",
+      "canonicalPath": "/",
+      "schemaType": "WebSite"
+    },
+    "calculator": {
+      "title": "KI-Umzugskostenrechner - Sofortige Preisschätzung",
+      "description": "Berechnen Sie Ihre Umzugskosten in 60 Sekunden. KI-gestützt, präzise, kostenlos. Basierend auf 25'000+ analysierten Umzügen.",
+      "canonicalPath": "/rechner",
+      "schemaType": "WebApplication"
+    },
+    "companies": {
+      "title": "Umzugsfirmen Schweiz - Geprüfte Partner im Vergleich",
+      "description": "Alle geprüften Schweizer Umzugsfirmen auf einen Blick. Bewertungen, Preise, Services. Finden Sie die beste Firma für Ihren Umzug.",
+      "canonicalPath": "/umzugsfirmen",
+      "schemaType": "ItemList"
+    },
+    "pricing": {
+      "title": "Umzugskosten Schweiz - Preise & Kostenübersicht 2025",
+      "description": "Was kostet ein Umzug in der Schweiz? Aktuelle Preise, Kostenbeispiele und Spartipps. Transparent und vergleichbar.",
+      "canonicalPath": "/preise",
+      "schemaType": "Article"
+    }
+  }
+}

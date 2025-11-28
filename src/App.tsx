@@ -69,6 +69,7 @@ import OffertenOptimized from "./pages/OffertenOptimized";
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const Admin = lazy(() => import("./pages/Admin"));
 const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const CompaniesAdmin = lazy(() => import("./pages/admin/Companies"));
 const LeadsAdmin = lazy(() => import("./pages/admin/Leads"));
@@ -160,7 +161,8 @@ const App = () => (
             <Route path="/faq" element={<FAQ />} />
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/companies" element={<CompaniesAdmin />} />
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/leads" element={<LeadsAdmin />} />

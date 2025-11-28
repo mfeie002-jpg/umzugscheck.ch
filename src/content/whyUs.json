@@ -1,0 +1,30 @@
+[
+  {
+    "id": "verified",
+    "icon": "Brain",
+    "title": "Geprüfte Umzugsfirmen",
+    "description": "Alle Partner sind versichert, zertifiziert und mehrfach überprüft",
+    "order": 1
+  },
+  {
+    "id": "savings",
+    "icon": "ShieldCheck",
+    "title": "Bis zu 40% sparen",
+    "description": "Durch intelligenten Vergleich sparen Sie durchschnittlich 40% der Kosten",
+    "order": 2
+  },
+  {
+    "id": "ai",
+    "icon": "Award",
+    "title": "KI-gestützte Kostenschätzung",
+    "description": "Präzise Preisberechnung basierend auf 25'000+ analysierten Umzügen",
+    "order": 3
+  },
+  {
+    "id": "support",
+    "icon": "Eye",
+    "title": "Schweizer Support & Qualität",
+    "description": "Lokaler Support und höchste Schweizer Qualitätsstandards",
+    "order": 4
+  }
+]

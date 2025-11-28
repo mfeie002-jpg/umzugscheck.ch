@@ -1,0 +1,37 @@
+[
+  {
+    "id": "how-it-works",
+    "question": "Wie funktioniert umzugscheck.ch?",
+    "answer": "Anfrage eingeben → AI berechnet Preis → Passende Firmen erhalten → Angebote vergleichen → Beste Firma buchen.",
+    "category": "general",
+    "order": 1
+  },
+  {
+    "id": "is-free",
+    "question": "Ist der Service wirklich kostenlos?",
+    "answer": "Ja, 100% kostenlos und unverbindlich für Privatkunden. Sie bezahlen nur die gewählte Umzugsfirma.",
+    "category": "pricing",
+    "order": 2
+  },
+  {
+    "id": "how-fast",
+    "question": "Wie schnell erhalte ich Offerten?",
+    "answer": "Sofort nach Eingabe sehen Sie die Preisspanne. Detaillierte Offerten erhalten Sie innerhalb von 24 Stunden.",
+    "category": "process",
+    "order": 3
+  },
+  {
+    "id": "verified-companies",
+    "question": "Sind alle Firmen geprüft?",
+    "answer": "Ja, alle Partner sind versichert, zertifiziert und werden regelmäßig überprüft.",
+    "category": "quality",
+    "order": 4
+  },
+  {
+    "id": "choose-companies",
+    "question": "Kann ich selbst wählen, welche Firmen mich kontaktieren?",
+    "answer": "Absolut. Sie wählen aus den Matches aus, welche Firmen Ihnen Offerten senden dürfen.",
+    "category": "process",
+    "order": 5
+  }
+]
