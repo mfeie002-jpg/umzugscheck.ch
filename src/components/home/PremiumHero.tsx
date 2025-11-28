@@ -12,7 +12,7 @@ export const PremiumHero = () => {
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-swiss-gold/10 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="w-full max-w-[1350px] mx-auto px-6 md:px-12 relative z-10">
+      <div className="w-full mx-auto px-4 sm:px-6 md:px-12 max-w-7xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Side - Content */}
           <motion.div
@@ -22,47 +22,47 @@ export const PremiumHero = () => {
             className="space-y-8"
           >
             {/* Headline */}
-            <h1 className="text-premium-h1 lg:text-premium-h1-lg text-swiss-noir leading-tight">
+            <h1 className="text-[36px] sm:text-[44px] md:text-premium-h1 lg:text-premium-h1-lg text-swiss-noir leading-tight font-extrabold break-words">
               Der exklusivste Weg,<br />
               Ihren Umzug zu planen.
             </h1>
 
             {/* Subline */}
-            <p className="text-premium-body lg:text-premium-body-lg text-platinum max-w-2xl">
+            <p className="text-base sm:text-premium-body lg:text-premium-body-lg text-platinum max-w-2xl break-words">
               AI-gestützte Schweizer Premium-Vergleiche.<br />
               Transparente Preise. Handverlesene Firmen.
             </p>
 
             {/* Trust Bar - below headline */}
-            <div className="flex flex-wrap gap-6 py-4">
+            <div className="flex flex-wrap gap-3 sm:gap-6 py-4">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="flex items-center gap-2 px-5 py-3 bg-white rounded-2xl shadow-premium"
+                className="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-white rounded-2xl shadow-premium text-sm sm:text-base"
               >
-                <Star className="w-5 h-5 text-swiss-gold fill-swiss-gold" />
-                <span className="font-semibold text-swiss-noir">4.8 / 5</span>
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-swiss-gold fill-swiss-gold" />
+                <span className="font-semibold text-swiss-noir whitespace-nowrap">4.8 / 5</span>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="flex items-center gap-2 px-5 py-3 bg-white rounded-2xl shadow-premium"
+                className="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-white rounded-2xl shadow-premium text-sm sm:text-base"
               >
-                <Users className="w-5 h-5 text-copper" />
-                <span className="font-semibold text-swiss-noir">15'000+ Umzüge</span>
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
+                <span className="font-semibold text-swiss-noir whitespace-nowrap">15'000+ Umzüge</span>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="flex items-center gap-2 px-5 py-3 bg-white rounded-2xl shadow-premium"
+                className="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-white rounded-2xl shadow-premium text-sm sm:text-base"
               >
-                <Shield className="w-5 h-5 text-success" />
-                <span className="font-semibold text-swiss-noir">Nur geprüfte Partner</span>
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-success" />
+                <span className="font-semibold text-swiss-noir whitespace-nowrap">Nur geprüfte Partner</span>
               </motion.div>
             </div>
 
@@ -98,9 +98,9 @@ export const PremiumHero = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-            className="relative"
+            className="relative w-full"
           >
-            <div className="bg-white rounded-3xl shadow-deep p-10 border border-border">
+            <div className="bg-white rounded-3xl shadow-deep p-6 sm:p-8 md:p-10 border border-border">
               <div className="space-y-6">
                 <div>
                   <h3 className="text-premium-h3 text-swiss-noir mb-2">
