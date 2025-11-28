@@ -23,8 +23,7 @@ export const PremiumHero = () => {
           >
             {/* Headline */}
             <h1 className="text-[36px] sm:text-[44px] md:text-premium-h1 lg:text-premium-h1-lg text-swiss-noir leading-tight font-extrabold break-words">
-              Der exklusivste Weg,<br />
-              Ihren Umzug zu planen.
+              Der beste Weg Ihr Umzug zu planen
             </h1>
 
             {/* Subline */}
