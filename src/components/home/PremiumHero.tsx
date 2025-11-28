@@ -71,11 +71,12 @@ export const PremiumHero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
+                className="w-full sm:w-auto"
               >
-                <ButtonPremium size="lg" variant="copper" asChild>
+                <ButtonPremium size="default" variant="copper" asChild className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-14">
                   <Link to="/rechner">
                     Jetzt gratis Offerten vergleichen
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Link>
                 </ButtonPremium>
               </motion.div>
@@ -84,8 +85,9 @@ export const PremiumHero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7, duration: 0.6 }}
+                className="w-full sm:w-auto"
               >
-                <ButtonPremium size="lg" variant="copper-outline" asChild>
+                <ButtonPremium size="default" variant="copper-outline" asChild className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-14">
                   <Link to="/fuer-firmen">Für Umzugsfirmen</Link>
                 </ButtonPremium>
               </motion.div>
