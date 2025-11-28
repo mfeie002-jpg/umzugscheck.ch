@@ -5,41 +5,41 @@ import { motion } from "framer-motion";
 const features = [
   {
     icon: Brain,
-    title: "Schweizer AI statt Werbeliste",
-    description: "Intelligente Firmen-Matches basierend auf deinen Anforderungen, nicht auf Werbebudget",
+    title: "Geprüfte Umzugsfirmen",
+    description: "Alle Partner sind versichert, zertifiziert und mehrfach überprüft",
   },
   {
     icon: ShieldCheck,
-    title: "Keine Fake-Bewertungen",
-    description: "Nur echte, verifizierte Kundenbewertungen von abgeschlossenen Umzügen",
+    title: "Bis zu 40% sparen",
+    description: "Durch intelligenten Vergleich sparen Sie durchschnittlich 40% der Kosten",
   },
   {
     icon: Award,
-    title: "Geprüfte Partner",
-    description: "Alle Firmen sind versichert, zertifiziert und mehrfach überprüft",
+    title: "KI-gestützte Kostenschätzung",
+    description: "Präzise Preisberechnung basierend auf 25'000+ analysierten Umzügen",
   },
   {
     icon: Eye,
-    title: "Transparent & unabhängig",
-    description: "Vollständige Preistransparenz, keine versteckten Gebühren oder Provisionen",
+    title: "Schweizer Support & Qualität",
+    description: "Lokaler Support und höchste Schweizer Qualitätsstandards",
   },
 ];
 
 export const WhyUsCards = () => {
   return (
-    <section className="py-12 md:py-16 bg-muted/30">
+    <section className="py-20 md:py-28 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Warum wir besser sind
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+            Warum umzugscheck.ch?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Umzugscheck.ch unterscheidet sich fundamental von anderen Plattformen
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+            Ihre Vorteile auf einen Blick
           </p>
         </motion.div>
 
@@ -54,13 +54,13 @@ export const WhyUsCards = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <Card className="h-full hover:shadow-medium transition-all text-center">
+                <Card className="h-full hover:shadow-lg transition-all text-center border-slate-200 bg-white">
                   <CardContent className="p-6">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                      <Icon className="h-7 w-7 text-primary" />
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4 shadow-md">
+                      <Icon className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    <h3 className="text-lg font-bold mb-2 text-slate-900">{feature.title}</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

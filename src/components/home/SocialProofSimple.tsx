@@ -37,78 +37,76 @@ const testimonials = [
 
 export const SocialProofSimple = () => {
   return (
-    <section className="py-12 md:py-16 bg-muted/30">
+    <section className="py-16 md:py-20 bg-slate-50">
       <div className="container mx-auto px-4">
+        
+        {/* Stats Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-2">
-            Vertrauen durch echte Schweizer Kunden
-          </h2>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">25'000+</div>
+            <p className="text-slate-600 font-medium">Erfolgreiche Umzüge seit 2020</p>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">4.9/5</div>
+            <p className="text-slate-600 font-medium">Durchschnittliche Kundenbewertung</p>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">100%</div>
+            <p className="text-slate-600 font-medium">Zertifizierte Schweizer Firmen</p>
+          </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-[2fr,1fr] gap-8 max-w-7xl mx-auto items-center">
-          
-          {/* Reviews Slider */}
-          <div className="overflow-x-auto pb-4">
-            <div className="flex gap-4 min-w-max lg:grid lg:grid-cols-3 lg:min-w-0">
-              {testimonials.slice(0, 5).map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="w-[280px] lg:w-auto"
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-1 mb-2">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                        ))}
+        {/* Reviews Carousel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="overflow-x-auto pb-4"
+        >
+          <div className="flex gap-6 min-w-max md:grid md:grid-cols-3 md:min-w-0 max-w-6xl mx-auto">
+            {testimonials.slice(0, 3).map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="w-[300px] md:w-auto"
+              >
+                <Card className="h-full bg-white border-slate-200 hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-1 mb-3">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <p className="text-slate-700 mb-4 leading-relaxed">
+                      "{testimonial.text}"
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold">
+                        {testimonial.name[0]}
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
-                        "{testimonial.text}"
-                      </p>
-                      <div className="text-xs font-semibold text-foreground">
-                        {testimonial.name}
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">
+                          {testimonial.name}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {testimonial.location}
+                        </div>
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {testimonial.location}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
-
-          {/* Trust Badges */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-4"
-          >
-            <div className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-soft">
-              <Star className="h-6 w-6 text-yellow-500" />
-              <span className="font-semibold text-foreground">Google Reviews</span>
-            </div>
-            <div className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-soft">
-              <Shield className="h-6 w-6 text-success" />
-              <span className="font-semibold text-foreground">Verifizierte Firmen</span>
-            </div>
-            <div className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-soft">
-              <Quote className="h-6 w-6 text-secondary" />
-              <span className="font-semibold text-foreground">Schweizer Plattform</span>
-            </div>
-          </motion.div>
-
-        </div>
+        </motion.div>
       </div>
     </section>
   );

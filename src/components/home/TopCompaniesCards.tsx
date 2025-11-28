@@ -49,31 +49,31 @@ export const TopCompaniesCards = () => {
   const [activeFilter, setActiveFilter] = useState("quality");
 
   return (
-    <section className="py-12 md:py-16 bg-muted/30">
+    <section className="py-20 md:py-28 bg-slate-50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Top Umzugsfirmen
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+            Top bewertete Umzugsfirmen
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-            Geprüfte und versicherte Umzugsunternehmen
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-8">
+            Geprüfte und versicherte Partner
           </p>
 
           {/* Filter Chips */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-3 mb-12">
             {filterOptions.map((filter) => (
               <button
                 key={filter.value}
                 onClick={() => setActiveFilter(filter.value)}
-                className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+                className={`px-6 py-3 rounded-full font-bold text-sm transition-all shadow-md ${
                   activeFilter === filter.value
-                    ? "bg-primary text-white shadow-medium"
-                    : "bg-card text-muted-foreground hover:bg-muted"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg scale-105"
+                    : "bg-white text-slate-700 hover:bg-slate-100"
                 }`}
               >
                 {filter.label}
@@ -83,7 +83,7 @@ export const TopCompaniesCards = () => {
         </motion.div>
 
         {/* Companies Grid */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {topCompanies.map((company, index) => (
             <motion.div
               key={index}
@@ -92,45 +92,46 @@ export const TopCompaniesCards = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="overflow-hidden hover:shadow-strong transition-all group">
-                <div className="relative h-48 overflow-hidden">
+              <Card className="overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all group border-slate-200 bg-white">
+                <div className="relative h-56 overflow-hidden">
                   <img
                     src={company.image}
                     alt={company.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-white/95 text-foreground backdrop-blur-sm">
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-white/95 text-slate-900 backdrop-blur-sm font-bold shadow-md px-3 py-1">
                       {company.priceLevel}
                     </Badge>
                   </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-2">{company.name}</h3>
+                  <h3 className="text-xl font-bold mb-3 text-slate-900">{company.name}</h3>
                   
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-4">
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-primary text-primary" />
-                      <span className="font-semibold">{company.rating}</span>
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <span className="font-bold text-lg text-slate-900">{company.rating}</span>
                     </div>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-slate-600">
                       ({company.reviewCount} Bewertungen)
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-2 mb-5">
                     {company.badges.slice(0, 2).map((badge, i) => (
-                      <Badge key={i} variant="outline" className="text-xs">
-                        {badge === "Geprüft" && <CheckCircle className="h-3 w-3 mr-1" />}
-                        {badge === "Versichert" && <Shield className="h-3 w-3 mr-1" />}
-                        {badge.includes("Seit") && <Calendar className="h-3 w-3 mr-1" />}
+                      <Badge key={i} variant="outline" className="text-xs font-semibold border-slate-300">
+                        {badge === "Geprüft" && <CheckCircle className="h-3 w-3 mr-1 text-green-600" />}
+                        {badge === "Versichert" && <Shield className="h-3 w-3 mr-1 text-blue-600" />}
+                        {badge.includes("Seit") && <Calendar className="h-3 w-3 mr-1 text-slate-600" />}
                         {badge}
                       </Badge>
                     ))}
                   </div>
 
-                  <Button className="w-full" size="lg">
+                  <Button className="w-full h-12 font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all">
                     Offerte anfragen
                   </Button>
                 </CardContent>
@@ -144,11 +145,11 @@ export const TopCompaniesCards = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-8"
+          className="text-center mt-12"
         >
           <Link to="/firmen">
-            <Button variant="outline" size="lg" className="px-8">
-              Alle 20 Umzugsfirmen anzeigen
+            <Button variant="outline" size="lg" className="px-10 h-14 text-lg font-bold border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600">
+              Alle Umzugsfirmen anzeigen
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
