@@ -1,14 +1,19 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# umzugscheck.ch - Production robots.txt
 User-agent: *
 Allow: /
+
+# Disallow admin and auth pages
+Disallow: /admin/
+Disallow: /auth
+Disallow: /anbieter/dashboard
+Disallow: /firmen-dashboard
+Disallow: /anbieter/profil
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://umzugscheck.ch/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

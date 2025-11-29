@@ -4,6 +4,7 @@
  */
 
 const isDevelopment = import.meta.env.DEV;
+const isProduction = import.meta.env.PROD;
 
 interface LogContext {
   [key: string]: any;
@@ -13,7 +14,7 @@ interface LogContext {
  * Sanitize sensitive data from log context
  */
 const sanitizeContext = (context: LogContext): LogContext => {
-  const sensitiveKeys = ['password', 'token', 'apiKey', 'secret', 'email', 'phone'];
+  const sensitiveKeys = ['password', 'token', 'apiKey', 'secret', 'email', 'phone', 'authorization', 'api_key'];
   const sanitized: LogContext = {};
   
   for (const [key, value] of Object.entries(context)) {
@@ -43,17 +44,17 @@ export const logger = {
   },
   
   error: (message: string, error?: Error | unknown, context?: LogContext) => {
-    // Always log errors, but sanitize in production
+    // Always log errors with sanitized data
     const sanitizedContext = context ? sanitizeContext(context) : {};
     
-    if (isDevelopment) {
-      console.error(`[ERROR] ${message}`, error, sanitizedContext);
-    } else {
-      // In production, only log generic error info
+    if (isProduction) {
+      // In production, log minimal error info
       console.error(`[ERROR] ${message}`, {
         error: error instanceof Error ? error.message : 'Unknown error',
         ...sanitizedContext,
       });
+    } else {
+      console.error(`[ERROR] ${message}`, error, sanitizedContext);
     }
   },
   
