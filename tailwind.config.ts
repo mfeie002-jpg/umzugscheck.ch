@@ -93,8 +93,12 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         copper: {
-          DEFAULT: "hsl(29, 62%, 51%)",
-          dark: "hsl(29, 92%, 35%)",
+          DEFAULT: "hsl(0, 85%, 55%)",
+          dark: "hsl(0, 85%, 45%)",
+        },
+        'swiss-blue': {
+          DEFAULT: "hsl(210, 100%, 50%)",
+          light: "hsl(210, 100%, 95%)",
         },
         'swiss-noir': "hsl(215, 25%, 13%)",
         'executive-graphite': "hsl(220, 17%, 22%)",
@@ -122,7 +126,7 @@ export default {
       },
       boxShadow: {
         'premium': '0 14px 40px rgba(0, 0, 0, 0.06)',
-        'copper': '0 10px 30px rgba(198, 124, 62, 0.28)',
+        'copper': '0 10px 30px rgba(230, 60, 60, 0.28)',
         'deep': '0 30px 80px rgba(0, 0, 0, 0.08)',
         'lift': '0 20px 60px rgba(0, 0, 0, 0.10)',
       },

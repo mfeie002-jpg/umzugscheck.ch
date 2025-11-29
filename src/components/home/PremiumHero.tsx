@@ -14,8 +14,8 @@ export const PremiumHero = () => {
           alt="Happy family moving to new home with professional movers" 
           className="w-full h-full object-cover"
         />
-        {/* Gradient Overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70"></div>
+        {/* Lighter Gradient Overlay for better image visibility */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background/75 via-background/50 to-transparent"></div>
       </div>
 
       <div className="w-full mx-auto px-4 sm:px-6 md:px-12 max-w-7xl relative z-10">
