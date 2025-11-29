@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+import { Navigation } from "@/components/Navigation";
+import { EnhancedFooter } from "@/components/home/EnhancedFooter";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import zugHero from "@/assets/zug-hero.jpg";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -278,7 +282,7 @@ const Zug = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Umzug Zug: Umzugsfirmen vergleichen & Offerten erhalten"
         description="Vergleiche Umzugsfirmen im Kanton Zug, prüfe Bewertungen und erhalte gratis Offerten. Privat- und Firmenumzüge, Reinigung, Entsorgung und mehr – alles auf einen Blick."
@@ -287,9 +291,23 @@ const Zug = () => {
         schemaMarkup={schemaMarkup}
       />
 
+      <Navigation />
+
+      <main id="main-content" role="main">
+        {/* Breadcrumbs for SEO */}
+        <div className="container mx-auto px-4">
+          <Breadcrumbs
+            items={[
+              { label: "Schweiz", href: "/" },
+              { label: "Kantone", href: "/regionen" },
+              { label: "Kanton Zug" }
+            ]}
+          />
+        </div>
+
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-background via-secondary/5 to-background py-16 md:py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <section id="hero-form" className="relative bg-gradient-to-br from-background via-secondary/5 to-background py-16 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             {/* Left: Text + Form */}
@@ -776,27 +794,12 @@ const Zug = () => {
         </div>
       </section>
 
-      {/* Mobile Sticky CTA */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t shadow-strong z-40">
-        <Button size="lg" className="w-full">
-          Offerten vergleichen
-          <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
-      </div>
+      </main>
 
-      {/* Desktop Floating CTA */}
-      <div className="hidden md:block fixed bottom-8 right-8 z-40">
-        <Button 
-          size="lg" 
-          className="shadow-strong hover:shadow-lift rounded-full px-8"
-        >
-          Offerten vergleichen
-          <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
-      </div>
-
-      <SimplifiedFooter />
-    </>
+      <EnhancedFooter />
+      <StickyMobileCTA text="Gratis Offerten" link="#hero-form" />
+      <ScrollToTop />
+    </div>
   );
 };
 
