@@ -6,6 +6,25 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import { Suspense, lazy } from "react";
+
+// Service pages
+const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
+const PrivateMoving = lazy(() => import("./pages/services/PrivateMoving"));
+const BusinessMoving = lazy(() => import("./pages/services/BusinessMoving"));
+const CleaningService = lazy(() => import("./pages/services/CleaningService"));
+const DisposalService = lazy(() => import("./pages/services/DisposalService"));
+const FurnitureLift = lazy(() => import("./pages/services/FurnitureLift"));
+const InternationalMoving = lazy(() => import("./pages/services/InternationalMoving"));
+
+// City pages
+const ZurichMoving = lazy(() => import("./pages/city/ZurichMoving"));
+const BernMoving = lazy(() => import("./pages/city/BernMoving"));
+const BaselMoving = lazy(() => import("./pages/city/BaselMoving"));
+const LuzernMoving = lazy(() => import("./pages/city/LuzernMoving"));
+
+// Provider pages
+const ProviderPricingPage = lazy(() => import("./pages/provider/ProviderPricing"));
+const ProviderFAQPage = lazy(() => import("./pages/provider/ProviderFAQ"));
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
