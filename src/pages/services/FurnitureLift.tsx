@@ -1,12 +1,30 @@
-import { Helmet } from "react-helmet";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { ArrowUp, Clock, Shield, DollarSign, Wrench, TrendingUp, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Warehouse, Shield, Clock, TrendingUp, CheckCircle } from "lucide-react";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { motion } from "framer-motion";
 
 export default function FurnitureLift() {
+  const benefits = [
+    { icon: Clock, title: "Zeitersparnis", description: "Viel schneller als Tragen über Treppen" },
+    { icon: Shield, title: "Sicher", description: "Keine Beschädigungen an Möbeln oder Wänden" },
+    { icon: DollarSign, title: "Kosteneffizient", description: "Spart Personalkosten und Zeit" },
+    { icon: Wrench, title: "Professionell", description: "Erfahrene Bedienung durch Fachpersonal" },
+    { icon: TrendingUp, title: "Höhe", description: "Bis zu 30 Meter und höher möglich" },
+    { icon: ArrowUp, title: "Schwere Lasten", description: "Für Klaviere, Tresore, grosse Schränke" },
+  ];
+
+  const situations = [
+    { title: "Enge Treppenhäuser", description: "Wenn Möbel nicht durch Treppenhaus passen" },
+    { title: "Schwere Gegenstände", description: "Klaviere, Tresore, grosse Schränke" },
+    { title: "Hohe Stockwerke", description: "Ab 3. Stock ohne Lift empfehlenswert" },
+    { title: "Zeitersparnis", description: "Schneller als Tragen über Treppe" }
+  ];
+
   const faqs = [
     {
       question: "Was kostet ein Möbellift in der Schweiz?",
@@ -27,106 +45,128 @@ export default function FurnitureLift() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Möbellift Schweiz – Spezialtransporte für schwere Möbel | umzugscheck.ch</title>
-        <meta 
-          name="description" 
-          content="Möbellift für schwere und sperrige Möbel in der Schweiz. Professionelle Spezialtransporte. Jetzt Offerten vergleichen und bis zu 40% sparen." 
-        />
-        <meta name="keywords" content="Möbellift Schweiz, Spezialtransport, Klaviertransport, schwere Möbel" />
-        <link rel="canonical" href="https://umzugscheck.ch/moebellift-schweiz" />
-      </Helmet>
+    <>
+      <OptimizedSEO
+        title="Möbellift mieten - Schnell & sicher"
+        description="Möbellift für Ihren Umzug mieten. Schneller Transport schwerer Möbel über Balkon oder Fenster. Sicher, zeitsparend und rückenschonend."
+        keywords="möbellift mieten, möbellift umzug, möbellift schweiz, aussenlift"
+        canonicalUrl="https://umzugscheck.ch/moebellift"
+      />
 
-      {/* Hero */}
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6">
-              <Warehouse className="h-8 w-8 text-primary" />
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="gradient-hero text-white py-16 md:py-24">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <div className="max-w-4xl mx-auto text-center">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                    Möbellift mieten
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 text-white/90">
+                    Schwere Möbel sicher und schnell transportieren
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                      <Link to="/rechner">Jetzt Offerte anfragen</Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
+                      <Link to="/umzugsfirmen">Umzugsfirmen vergleichen</Link>
+                    </Button>
+                  </div>
+                </div>
+              </ScrollReveal>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Möbellift & <span className="text-primary">Spezialtransporte</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
-              Sicherer Transport schwerer Möbel über den Möbellift. Perfekt bei engen Treppenhäusern oder hohen Stockwerken.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/umzug-offerte">
-                <Button size="lg" className="h-14 px-8 text-lg">
-                  Jetzt Offerten vergleichen
+          </section>
+
+          {/* Benefits Section */}
+          <section className="py-16 gradient-light">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                  Vorteile eines Möbellifts
+                </h2>
+              </ScrollReveal>
+              <div className="grid md:grid-cols-3 gap-8">
+                {benefits.map((benefit, index) => (
+                  <ScrollReveal key={index} delay={index * 0.1}>
+                    <Card variant="elevated" className="h-full hover-lift">
+                      <CardHeader>
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                          <benefit.icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <CardTitle>{benefit.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">{benefit.description}</p>
+                      </CardContent>
+                    </Card>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* When to use Section */}
+          <section className="py-16 bg-white">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                  Wann braucht man einen Möbellift?
+                </h2>
+              </ScrollReveal>
+              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {situations.map((situation, index) => (
+                  <ScrollReveal key={index} delay={index * 0.1}>
+                    <Card className="hover-lift">
+                      <CardContent className="p-6">
+                        <CheckCircle className="h-6 w-6 text-green-600 mb-3" />
+                        <h3 className="text-lg font-bold mb-2">{situation.title}</h3>
+                        <p className="text-sm text-muted-foreground">{situation.description}</p>
+                      </CardContent>
+                    </Card>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ Section */}
+          <section className="py-16 bg-secondary/5">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <div className="max-w-3xl mx-auto">
+                  <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                    Häufige Fragen zum Möbellift
+                  </h2>
+                  <FAQAccordion items={faqs} variant="compact" />
+                </div>
+              </ScrollReveal>
+            </div>
+          </section>
+
+          {/* CTA Section */}
+          <section className="py-16 gradient-cta text-white">
+            <div className="container mx-auto px-4 text-center">
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Möbellift für Ihren Umzug benötigt?
+                </h2>
+                <p className="text-xl mb-8 text-white/90">
+                  Holen Sie sich jetzt Offerten von Umzugsfirmen mit Möbellift-Service
+                </p>
+                <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                  <Link to="/rechner">Jetzt Offerte anfragen</Link>
                 </Button>
-              </Link>
+              </ScrollReveal>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </section>
+        </main>
 
-      {/* Wann braucht man einen Möbellift */}
-      <section className="py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Wann braucht man einen Möbellift?</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {[
-                { title: "Enge Treppenhäuser", description: "Wenn Möbel nicht durch Treppenhaus passen" },
-                { title: "Schwere Gegenstände", description: "Klaviere, Tresore, grosse Schränke" },
-                { title: "Hohe Stockwerke", description: "Ab 3. Stock ohne Lift empfehlenswert" },
-                { title: "Zeitersparnis", description: "Schneller als Tragen über Treppe" }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Card>
-                    <CardContent className="p-6">
-                      <CheckCircle className="h-6 w-6 text-green-600 mb-3" />
-                      <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-16 md:py-20 bg-secondary/10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Häufige Fragen zum Möbellift
-            </h2>
-            <FAQAccordion items={faqs} variant="compact" />
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-primary via-primary/90 to-accent text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Benötigen Sie einen Möbellift?
-          </h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Vergleichen Sie jetzt Angebote für Möbellift und Spezialtransporte
-          </p>
-          <Link to="/umzug-offerte">
-            <Button size="lg" variant="secondary" className="h-14 px-8 text-lg">
-              Jetzt Offerten erhalten
-            </Button>
-          </Link>
-        </div>
-      </section>
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 }
