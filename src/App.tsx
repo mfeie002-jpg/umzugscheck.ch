@@ -55,7 +55,7 @@ import CompanyProfile from "./pages/CompanyProfile";
 import Compare from "./pages/Compare";
 import Canton from "./pages/Canton";
 import City from "./pages/City";
-import Regionen from "./pages/Regionen";
+import RegionenPage from "./pages/Regionen";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
@@ -70,6 +70,9 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import Zug from "./pages/Zug";
+import RegionenOverview from "./pages/Regionen";
+import FuerFirmen from "./pages/FuerFirmen";
+import ServicePlaceholder from "./pages/ServicePlaceholder";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import BecomeProvider from "./pages/BecomeProvider";
@@ -175,7 +178,8 @@ const App = () => (
             <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
             <Route path="/vergleich" element={<Compare />} />
-            <Route path="/regionen" element={<Regionen />} />
+            <Route path="/regionen" element={<RegionenOverview />} />
+            <Route path="/fuer-firmen" element={<FuerFirmen />} />
             <Route path="/kanton/:slug" element={<Canton />} />
             <Route path="/umzug/:canton" element={<Canton />} />
             <Route path="/stadt/:slug" element={<City />} />
@@ -259,6 +263,13 @@ const App = () => (
             
             {/* Service Pages - Optimized */}
             <Route path="/services" element={<ServicesOverview />} />
+            <Route path="/privatumzug" element={<ServicePlaceholder serviceName="Privatumzug" slug="privatumzug" description="Professionelle Umzugsservices für Privathaushalte in der ganzen Schweiz. Vergleichen Sie Angebote und sparen Sie Zeit und Geld." />} />
+            <Route path="/firmenumzug" element={<ServicePlaceholder serviceName="Firmenumzug" slug="firmenumzug" description="Spezialisierte Firmenumzüge mit minimalem Ausfall. Büros, Geschäfte und Betriebe – schnell und zuverlässig." />} />
+            <Route path="/umzug-mit-reinigung" element={<ServicePlaceholder serviceName="Umzug mit Reinigung" slug="umzug-mit-reinigung" description="Komplettpaket: Umzug und Endreinigung aus einer Hand mit Abnahmegarantie." />} />
+            <Route path="/reinigung" element={<ServicePlaceholder serviceName="Reinigung" slug="reinigung" description="Professionelle Umzugsreinigung und Endreinigung mit Abgabegarantie für Vermieter." />} />
+            <Route path="/entsorgung-raeumung" element={<ServicePlaceholder serviceName="Entsorgung & Räumung" slug="entsorgung-raeumung" description="Entrümpelung, Entsorgung und Räumungen für Wohnungen, Häuser und Keller." />} />
+            <Route path="/moebellift" element={<ServicePlaceholder serviceName="Möbellift" slug="moebellift" description="Außenlift-Service für große Möbel und schwere Gegenstände – ideal bei engen Zugängen." />} />
+            <Route path="/einlagerung" element={<ServicePlaceholder serviceName="Einlagerung" slug="einlagerung" description="Sichere Möbellager und Einlagerungslösungen für kurz- und langfristige Aufbewahrung." />} />
             <Route path="/umzug" element={<ServiceOptimized />} />
             <Route path="/umzug-schweiz" element={<ServiceOptimized />} />
             <Route path="/reinigung" element={<ServiceOptimized />} />

@@ -3,34 +3,23 @@ import { Menu, X, ChevronDown, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
-import { MegaDropdown } from "@/components/MegaDropdown";
-import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { ServicesDropdown } from "@/components/ServicesDropdown";
-import { ProviderDropdown } from "@/components/ProviderDropdown";
-import { CompaniesDropdown } from "@/components/CompaniesDropdown";
-import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { MobileMenu } from "@/components/MobileMenu";
 import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Umzug vergleichen", href: "/umzug-offerte", hasDropdown: false },
-  { label: "Preisrechner", href: "/umzugsrechner", hasDropdown: true, dropdownType: "calculators" },
-  { label: "Umzugsfirmen", href: "/umzugsfirmen-schweiz", hasDropdown: true, dropdownType: "companies" },
+  { label: "Preisrechner", href: "/umzugsrechner", hasDropdown: false },
+  { label: "Umzugsfirmen", href: "/umzugsfirmen", hasDropdown: false },
   { label: "Services", href: "/services", hasDropdown: true, dropdownType: "services" },
-  { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
-  { label: "Ratgeber", href: "/ratgeber", hasDropdown: true, dropdownType: "ratgeber" },
-  { label: "Für Firmen", href: "/anbieter", hasDropdown: true, dropdownType: "provider" }
+  { label: "Regionen", href: "/regionen", hasDropdown: false },
+  { label: "Ratgeber", href: "/ratgeber", hasDropdown: false },
+  { label: "Für Firmen", href: "/fuer-firmen", hasDropdown: false }
 ];
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMegaDropdownOpen, setIsMegaDropdownOpen] = useState(false);
-  const [isRegionsDropdownOpen, setIsRegionsDropdownOpen] = useState(false);
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
-  const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
-  const [isCompaniesDropdownOpen, setIsCompaniesDropdownOpen] = useState(false);
-  const [isRatgeberDropdownOpen, setIsRatgeberDropdownOpen] = useState(false);
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
@@ -56,63 +45,31 @@ export const Navigation = () => {
                 {item.hasDropdown ? (
                   <button
                     onMouseEnter={() => {
-                      setIsMegaDropdownOpen(item.dropdownType === "calculators");
-                      setIsRegionsDropdownOpen(item.dropdownType === "regions");
                       setIsServicesDropdownOpen(item.dropdownType === "services");
-                      setIsProviderDropdownOpen(item.dropdownType === "provider");
-                      setIsCompaniesDropdownOpen(item.dropdownType === "companies");
-                      setIsRatgeberDropdownOpen(item.dropdownType === "ratgeber");
                     }}
                     onMouseLeave={() => {
-                      if (item.dropdownType === "calculators") setIsMegaDropdownOpen(false);
-                      if (item.dropdownType === "regions") setIsRegionsDropdownOpen(false);
                       if (item.dropdownType === "services") setIsServicesDropdownOpen(false);
-                      if (item.dropdownType === "provider") setIsProviderDropdownOpen(false);
-                      if (item.dropdownType === "companies") setIsCompaniesDropdownOpen(false);
-                      if (item.dropdownType === "ratgeber") setIsRatgeberDropdownOpen(false);
                     }}
                     onClick={() => {
-                      if (item.dropdownType === "calculators") setIsMegaDropdownOpen(!isMegaDropdownOpen);
-                      if (item.dropdownType === "regions") setIsRegionsDropdownOpen(!isRegionsDropdownOpen);
                       if (item.dropdownType === "services") setIsServicesDropdownOpen(!isServicesDropdownOpen);
-                      if (item.dropdownType === "provider") setIsProviderDropdownOpen(!isProviderDropdownOpen);
-                      if (item.dropdownType === "companies") setIsCompaniesDropdownOpen(!isCompaniesDropdownOpen);
-                      if (item.dropdownType === "ratgeber") setIsRatgeberDropdownOpen(!isRatgeberDropdownOpen);
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        if (item.dropdownType === "calculators") setIsMegaDropdownOpen(!isMegaDropdownOpen);
-                        if (item.dropdownType === "regions") setIsRegionsDropdownOpen(!isRegionsDropdownOpen);
                         if (item.dropdownType === "services") setIsServicesDropdownOpen(!isServicesDropdownOpen);
-                        if (item.dropdownType === "provider") setIsProviderDropdownOpen(!isProviderDropdownOpen);
-                        if (item.dropdownType === "companies") setIsCompaniesDropdownOpen(!isCompaniesDropdownOpen);
-                        if (item.dropdownType === "ratgeber") setIsRatgeberDropdownOpen(!isRatgeberDropdownOpen);
                       }
                     }}
                     className={cn(
                       "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
                     )}
-                    aria-expanded={
-                      (item.dropdownType === "calculators" && isMegaDropdownOpen) || 
-                      (item.dropdownType === "regions" && isRegionsDropdownOpen) ||
-                      (item.dropdownType === "services" && isServicesDropdownOpen) ||
-                      (item.dropdownType === "provider" && isProviderDropdownOpen) ||
-                      (item.dropdownType === "companies" && isCompaniesDropdownOpen) ||
-                      (item.dropdownType === "ratgeber" && isRatgeberDropdownOpen)
-                    }
+                    aria-expanded={item.dropdownType === "services" && isServicesDropdownOpen}
                     aria-haspopup="true"
                     aria-label={`${item.label} Menü öffnen`}
                   >
                     {item.label}
                     <ChevronDown className={cn(
                       "w-4 h-4 transition-transform",
-                      (item.dropdownType === "calculators" && isMegaDropdownOpen) || 
-                      (item.dropdownType === "regions" && isRegionsDropdownOpen) ||
-                      (item.dropdownType === "services" && isServicesDropdownOpen) ||
-                      (item.dropdownType === "provider" && isProviderDropdownOpen) ||
-                      (item.dropdownType === "companies" && isCompaniesDropdownOpen) ||
-                      (item.dropdownType === "ratgeber" && isRatgeberDropdownOpen) ? "rotate-180" : ""
+                      (item.dropdownType === "services" && isServicesDropdownOpen) ? "rotate-180" : ""
                     )} 
                     aria-hidden="true" />
                   </button>
@@ -163,34 +120,12 @@ export const Navigation = () => {
           {/* CTA Buttons - Desktop */}
           <div className="hidden lg:flex items-center gap-3">
             <DarkModeToggle />
-            <Link to="/umzug-offerte" aria-label="Kostenlose Umzugsofferten erhalten">
+            <Link to="/" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button className="bg-destructive hover:bg-destructive/90 text-white shadow-medium font-bold">
                 Offerten vergleichen
               </Button>
             </Link>
           </div>
-        </div>
-
-        {/* Mega Dropdown */}
-        <div
-          onMouseEnter={() => setIsMegaDropdownOpen(true)}
-          onMouseLeave={() => setIsMegaDropdownOpen(false)}
-        >
-          <MegaDropdown 
-            isOpen={isMegaDropdownOpen} 
-            onClose={() => setIsMegaDropdownOpen(false)} 
-          />
-        </div>
-
-        {/* Regions Dropdown */}
-        <div
-          onMouseEnter={() => setIsRegionsDropdownOpen(true)}
-          onMouseLeave={() => setIsRegionsDropdownOpen(false)}
-        >
-          <RegionsDropdown 
-            isOpen={isRegionsDropdownOpen} 
-            onClose={() => setIsRegionsDropdownOpen(false)} 
-          />
         </div>
 
         {/* Services Dropdown */}
@@ -201,39 +136,6 @@ export const Navigation = () => {
           <ServicesDropdown 
             isOpen={isServicesDropdownOpen} 
             onClose={() => setIsServicesDropdownOpen(false)} 
-          />
-        </div>
-
-        {/* Provider Dropdown */}
-        <div
-          onMouseEnter={() => setIsProviderDropdownOpen(true)}
-          onMouseLeave={() => setIsProviderDropdownOpen(false)}
-        >
-          <ProviderDropdown 
-            isOpen={isProviderDropdownOpen} 
-            onClose={() => setIsProviderDropdownOpen(false)} 
-          />
-        </div>
-
-        {/* Companies Dropdown */}
-        <div
-          onMouseEnter={() => setIsCompaniesDropdownOpen(true)}
-          onMouseLeave={() => setIsCompaniesDropdownOpen(false)}
-        >
-          <CompaniesDropdown 
-            isOpen={isCompaniesDropdownOpen} 
-            onClose={() => setIsCompaniesDropdownOpen(false)} 
-          />
-        </div>
-
-        {/* Ratgeber Dropdown */}
-        <div
-          onMouseEnter={() => setIsRatgeberDropdownOpen(true)}
-          onMouseLeave={() => setIsRatgeberDropdownOpen(false)}
-        >
-          <RatgeberDropdown 
-            isOpen={isRatgeberDropdownOpen} 
-            onClose={() => setIsRatgeberDropdownOpen(false)} 
           />
         </div>
       </div>
