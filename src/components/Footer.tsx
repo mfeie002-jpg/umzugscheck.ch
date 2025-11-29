@@ -65,23 +65,23 @@ export const Footer = () => {
             <h4 className="font-bold mb-4">Umzug planen</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/rechner" className="text-primary-foreground/80 hover:text-white transition-base">
+                <Link to="/umzugsrechner" className="text-primary-foreground/80 hover:text-white transition-base">
                   Umzugskosten berechnen
                 </Link>
               </li>
               <li>
-                <Link to="/umzugsofferten" className="text-primary-foreground/80 hover:text-white transition-base">
+                <Link to="/umzug-offerte" className="text-primary-foreground/80 hover:text-white transition-base">
                   Umzugsofferten vergleichen
                 </Link>
               </li>
               <li>
-                <Link to="/beste-umzugsfirma" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Beste Umzugsfirmen 2025
+                <Link to="/umzugsfirmen-schweiz" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Alle Umzugsfirmen
                 </Link>
               </li>
               <li>
-                <Link to="/guenstige-umzugsfirma" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Günstige Umzugsfirmen
+                <Link to="/regionen" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Umzug nach Region
                 </Link>
               </li>
             </ul>
@@ -89,16 +89,70 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-bold mb-4">Schnelllinks</h4>
+            <h4 className="font-bold mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/firmen" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Alle Umzugsfirmen
+                <Link to="/umzug-schweiz" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Privatumzug
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-primary-foreground/80 hover:text-white transition-base">
+                <Link to="/firmenumzug-schweiz" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Firmenumzug
+                </Link>
+              </li>
+              <li>
+                <Link to="/umzugsreinigung-schweiz" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Umzugsreinigung
+                </Link>
+              </li>
+              <li>
+                <Link to="/entsorgung-schweiz" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Räumung & Entsorgung
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Informationen */}
+          <div>
+            <h4 className="font-bold mb-4">Informationen</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/ratgeber" className="text-primary-foreground/80 hover:text-white transition-base">
                   Ratgeber
+                </Link>
+              </li>
+              <li>
+                <Link to="/so-funktionierts" className="text-primary-foreground/80 hover:text-white transition-base">
+                  So funktioniert's
+                </Link>
+              </li>
+              <li>
+                <Link to="/ueber-uns" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Über uns
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="text-primary-foreground/80 hover:text-white transition-base">
+                  FAQ
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Für Firmen */}
+          <div>
+            <h4 className="font-bold mb-4">Für Firmen</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/anbieter" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Partner werden
+                </Link>
+              </li>
+              <li>
+                <Link to="/anbieter/login" className="text-primary-foreground/80 hover:text-white transition-base">
+                  Anbieter Login
                 </Link>
               </li>
               <li>
@@ -109,55 +163,6 @@ export const Footer = () => {
               <li>
                 <Link to="/auth" className="text-primary-foreground/80 hover:text-white transition-base">
                   Admin Login
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Popular Cities */}
-          <div>
-            <h4 className="font-bold mb-4">Beliebte Städte</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/stadt/zuerich" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Zürich
-                </Link>
-              </li>
-              <li>
-                <Link to="/stadt/bern" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Bern
-                </Link>
-              </li>
-              <li>
-                <Link to="/stadt/basel" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Basel
-                </Link>
-              </li>
-              <li>
-                <Link to="/stadt/winterthur" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Winterthur
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Kantone */}
-          <div>
-            <h4 className="font-bold mb-4">Beliebte Kantone</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/kanton/zuerich" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Zürich
-                </Link>
-              </li>
-              <li>
-                <Link to="/kanton/bern" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Bern
-                </Link>
-              </li>
-              <li>
-                <Link to="/kanton/basel" className="text-primary-foreground/80 hover:text-white transition-base">
-                  Basel
                 </Link>
               </li>
             </ul>

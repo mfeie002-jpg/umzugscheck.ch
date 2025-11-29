@@ -1,26 +1,26 @@
 {
   "hero": {
-    "headline": "Der schnellste Weg zu Ihrem",
-    "highlightedText": "perfekten Umzug",
-    "subheadline": "Vergleichen Sie geprüfte Umzugsfirmen, nutzen Sie unseren KI-Rechner und sparen Sie bis zu 40%",
-    "primaryCTA": "Jetzt gratis vergleichen",
-    "secondaryCTA": "KI-Rechner starten",
+    "headline": "Der beste Weg, Ihren Umzug",
+    "highlightedText": "in der Schweiz zu planen",
+    "subheadline": "Vergleichen Sie geprüfte Umzugsfirmen, erhalten Sie mehrere Offerten und sparen Sie Zeit, Geld und Nerven.",
+    "primaryCTA": "Offerten vergleichen",
+    "secondaryCTA": "Preis berechnen",
     "trustIndicators": {
-      "rating": "4.9/5 Bewertung",
-      "movesCount": "25'000+ Umzüge",
-      "verifiedText": "Geprüfte Firmen"
+      "rating": "4.9/5 Sterne",
+      "movesCount": "25'000+ begleitete Umzüge",
+      "verifiedText": "100% kostenlos"
     },
     "calculator": {
-      "title": "KI-Rechner",
-      "subtitle": "In 60 Sekunden zur Schätzung",
-      "fromLabel": "Von (PLZ)",
+      "title": "Schnell-Rechner",
+      "subtitle": "In 2 Minuten zur Schätzung",
+      "fromLabel": "PLZ von",
       "fromPlaceholder": "z.B. 8001",
-      "toLabel": "Nach (PLZ)",
+      "toLabel": "PLZ nach",
       "toPlaceholder": "z.B. 3011",
-      "roomsLabel": "Zimmer",
-      "roomsPlaceholder": "z.B. 3",
-      "submitButton": "Kostenlose Schätzung erhalten",
-      "disclaimer": "✓ 100% kostenlos & unverbindlich • Keine Kreditkarte erforderlich"
+      "roomsLabel": "Wohnungsgrösse / Zimmer",
+      "roomsPlaceholder": "z.B. 3 Zimmer",
+      "submitButton": "Offerten vergleichen",
+      "disclaimer": "100% kostenlos & unverbindlich"
     }
   },
   "socialProof": {
