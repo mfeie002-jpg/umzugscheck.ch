@@ -1,4 +1,5 @@
-import { Helmet } from "react-helmet";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -131,16 +132,13 @@ const PackingCalculator = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Helmet>
-        <title>Packservice-Rechner - Verpackung Kosten berechnen | Umzugscheck.ch</title>
-        <meta name="description" content="Berechnen Sie die Kosten für professionellen Packservice. Teil- oder Vollservice, Schutz für fragile Gegenstände. ✓ Kostenlose Schätzung ✓ Sicherer Transport" />
-        <meta name="keywords" content="Packservice Rechner, Verpackung Kosten, Umzugskartons Schweiz, Packservice Preis" />
-        <link rel="canonical" href="https://umzugscheck.ch/packservice-rechner" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify(SERVICE_SCHEMA)}
-        </script>
-      </Helmet>
+      <OptimizedSEO
+        title="Packservice-Rechner - Verpackung Kosten berechnen"
+        description="Berechnen Sie die Kosten für professionellen Packservice. Teil- oder Vollservice, Schutz für fragile Gegenstände. ✓ Kostenlose Schätzung ✓ Sicherer Transport"
+        canonicalUrl="https://umzugscheck.ch/packservice-rechner"
+        keywords="Packservice Rechner, Verpackung Kosten, Umzugskartons Schweiz, Packservice Preis"
+        schemaMarkup={SERVICE_SCHEMA}
+      />
 
       <Navigation />
       
@@ -171,7 +169,7 @@ const PackingCalculator = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Form Card */}
-              <Card className="p-4 sm:p-6">
+              <Card className="p-4 sm:p-6" variant="elevated">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     {/* Rooms */}
@@ -273,7 +271,7 @@ const PackingCalculator = () => {
               </Card>
 
               {/* Results Card */}
-              <Card className="p-6">
+              <Card className="p-6" variant="elevated">
                 {result ? (
                   <div className="space-y-6">
                     <div>

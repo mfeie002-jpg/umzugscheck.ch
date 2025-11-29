@@ -1,4 +1,5 @@
-import { Helmet } from "react-helmet";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -126,16 +127,13 @@ const DisposalCalculator = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Helmet>
-        <title>Entsorgungsrechner - Entrümpelung Kosten berechnen | Umzugscheck.ch</title>
-        <meta name="description" content="Berechnen Sie die Kosten für Entsorgung und Entrümpelung. Möbel, Elektronik, Sondermüll. ✓ Kostenlose Schätzung ✓ Transparente Preise" />
-        <meta name="keywords" content="Entsorgungsrechner, Entrümpelung Kosten, Räumung Preis, Sperrmüll Entsorgung Schweiz" />
-        <link rel="canonical" href="https://umzugscheck.ch/entsorgungsrechner" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify(SERVICE_SCHEMA)}
-        </script>
-      </Helmet>
+      <OptimizedSEO
+        title="Entsorgungsrechner - Entrümpelung Kosten berechnen"
+        description="Berechnen Sie die Kosten für Entsorgung und Entrümpelung. Möbel, Elektronik, Sondermüll. ✓ Kostenlose Schätzung ✓ Transparente Preise"
+        canonicalUrl="https://umzugscheck.ch/entsorgungsrechner"
+        keywords="Entsorgungsrechner, Entrümpelung Kosten, Räumung Preis, Sperrmüll Entsorgung Schweiz"
+        schemaMarkup={SERVICE_SCHEMA}
+      />
 
       <Navigation />
       
@@ -166,7 +164,7 @@ const DisposalCalculator = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Form Card */}
-              <Card className="p-4 sm:p-6">
+              <Card className="p-4 sm:p-6" variant="elevated">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     {/* Volume */}
@@ -282,7 +280,7 @@ const DisposalCalculator = () => {
               </Card>
 
               {/* Results Card */}
-              <Card className="p-6">
+              <Card className="p-6" variant="elevated">
                 {result ? (
                   <div className="space-y-6">
                     <div>
