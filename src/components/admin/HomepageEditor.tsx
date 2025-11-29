@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,8 +9,15 @@ import { getHomepageContent } from "@/lib/content";
 import type { HomepageContent } from "@/content/types";
 
 export const HomepageEditor = () => {
-  const [content, setContent] = useState<HomepageContent>(() => getHomepageContent());
+  const [content, setContent] = useState<HomepageContent>(() => {
+    console.log('Loading homepage content...');
+    const data = getHomepageContent();
+    console.log('Homepage content loaded:', data);
+    return data;
+  });
   const [saving, setSaving] = useState(false);
+
+  console.log('HomepageEditor rendering with content:', content);
 
   const handleSave = async () => {
     setSaving(true);
