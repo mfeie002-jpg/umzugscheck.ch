@@ -1,18 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Shield, Clock, TrendingDown, ArrowRight, Star, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ENHANCED_COMPANIES } from "@/data/enhanced-companies";
 import { useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { 
-  generatePageSchemas,
-  generateSchemaScript
-} from "@/lib/schema-markup";
-import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
-import { getKeywordsForPage } from "@/lib/seo-keywords";
-import { Helmet } from "react-helmet";
+import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 
 const topCompanies = ENHANCED_COMPANIES
   .filter(c => c.is_featured)
@@ -58,51 +54,24 @@ const faqs = [
 ];
 
 export default function Umzugsofferten() {
-  // Generate SEO meta data
-  const metaData = generateMetaData({ type: 'main-page', pageName: 'offerten' });
   const currentUrl = 'https://www.umzugscheck.ch/umzugsofferten';
-  const ogTags = generateOGTags(metaData, currentUrl);
-  
-  // Generate keywords
-  const keywords = getKeywordsForPage('offerten');
-  
-  // Generate Schema.org structured data
-  const schemas = generatePageSchemas(
-    { type: 'offerten', url: currentUrl },
-    faqs
-  );
+  const schemas = generatePageSchemas({ type: 'offerten', url: currentUrl }, faqs);
   const schemaScript = generateSchemaScript(schemas);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>{metaData.title}</title>
-        <meta name="description" content={metaData.description} />
-        <link rel="canonical" href={currentUrl} />
-        
-        {/* Keywords */}
-        {keywords && keywords.length > 0 && (
-          <meta name="keywords" content={keywords.join(', ')} />
-        )}
-        
-        {/* OpenGraph Tags */}
-        <meta property="og:title" content={ogTags['og:title']} />
-        <meta property="og:description" content={ogTags['og:description']} />
-        <meta property="og:type" content={ogTags['og:type']} />
-        <meta property="og:url" content={ogTags['og:url']} />
-        <meta property="og:image" content={ogTags['og:image']} />
-        
-        {/* Twitter Card Tags */}
-        <meta name="twitter:card" content={ogTags['twitter:card']} />
-        <meta name="twitter:title" content={ogTags['twitter:title']} />
-        <meta name="twitter:description" content={ogTags['twitter:description']} />
-        <meta name="twitter:image" content={ogTags['twitter:image']} />
-
-        {/* Schema.org JSON-LD */}
-        <script type="application/ld+json">{schemaScript}</script>
-      </Helmet>
+    <>
+      <OptimizedSEO
+        title="Umzugsofferten vergleichen und bis zu 40% sparen"
+        description="Erhalten Sie kostenlose Offerten von geprüften Schweizer Umzugsfirmen – schnell, transparent und unverbindlich."
+        keywords="umzugsofferten, umzug offerte, umzugsangebot, umzug schweiz offerten"
+        canonicalUrl={currentUrl}
+        schemaMarkup={schemas}
+      />
+      
+      <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="gradient-hero text-white py-16 md:py-24">
+      <ScrollReveal>
+        <section className="gradient-hero text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -134,12 +103,14 @@ export default function Umzugsofferten() {
                 <span className="text-sm font-medium">Kostenlos & unverbindlich</span>
               </div>
             </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* Why Multiple Offers */}
-      <section className="py-16 md:py-20 bg-background">
+      <ScrollReveal>
+        <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -193,9 +164,11 @@ export default function Umzugsofferten() {
           </div>
         </div>
       </section>
+      </ScrollReveal>
 
       {/* 3-Step Process */}
-      <section className="py-16 md:py-20">
+      <ScrollReveal delay={100}>
+        <section className="py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -247,11 +220,13 @@ export default function Umzugsofferten() {
               </Button>
             </Link>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Mini-Ranking Section */}
-      <section className="py-16 md:py-20 bg-background">
+      <ScrollReveal delay={200}>
+        <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -311,11 +286,13 @@ export default function Umzugsofferten() {
               </Button>
             </Link>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Region Links */}
-      <section className="py-16 md:py-20">
+      <ScrollReveal delay={300}>
+        <section className="py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -340,11 +317,13 @@ export default function Umzugsofferten() {
               </Link>
             ))}
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-20 bg-background">
+      <ScrollReveal delay={400}>
+        <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
@@ -373,11 +352,13 @@ export default function Umzugsofferten() {
               ))}
             </Accordion>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Final CTA Block */}
-      <section className="py-16 md:py-20 gradient-hero text-white">
+      <ScrollReveal delay={500}>
+        <section className="py-16 md:py-20 gradient-cta text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -395,10 +376,12 @@ export default function Umzugsofferten() {
             </Link>
           </div>
         </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
-      <StickyMobileCTA />
       <Footer />
+      <StickyMobileCTA />
     </div>
+    </>
   );
 }

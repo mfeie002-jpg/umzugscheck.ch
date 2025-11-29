@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -87,8 +89,16 @@ const Blog = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
+    <>
+      <OptimizedSEO
+        title="Umzugsratgeber Schweiz - Tipps, Guides & Checklisten"
+        description="Tipps, Guides und Checklisten für Ihren perfekten Umzug in der Schweiz. Von Kostenplanung bis Organisation - alle Infos an einem Ort."
+        keywords="umzug ratgeber, umzugstipps, umzugscheckliste, umzugsguide schweiz"
+        canonicalUrl="https://umzugscheck.ch/ratgeber"
+      />
+      
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
 
       <main className="flex-1">
         {/* Hero */}
@@ -290,9 +300,10 @@ const Blog = () => {
         </section>
       </main>
 
-      <Footer />
-      <StickyMobileCTA />
-    </div>
+        <Footer />
+        <StickyMobileCTA />
+      </div>
+    </>
   );
 };
 

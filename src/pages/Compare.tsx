@@ -11,10 +11,8 @@ import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { motion } from "framer-motion";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { Helmet } from "react-helmet";
-import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
-import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 interface Company {
   id: string;
@@ -33,10 +31,6 @@ const Compare = () => {
   const [loading, setLoading] = useState(true);
   
   const currentUrl = 'https://www.umzugscheck.ch/vergleich/';
-  const metaData = generateMetaData({ type: 'main-page', pageName: 'vergleich' });
-  const ogTags = generateOGTags(metaData, currentUrl);
-  const keywords = getKeywordsForPage('vergleich');
-  
   const schemas = generatePageSchemas({ type: 'vergleich', url: currentUrl });
   const schemaScript = generateSchemaScript(schemas);
 
@@ -93,31 +87,16 @@ const Compare = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>{metaData.title}</title>
-        <meta name="description" content={metaData.description} />
-        <link rel="canonical" href={currentUrl} />
-        <meta name="keywords" content={keywords.join(', ')} />
-        
-        {/* OpenGraph Tags */}
-        <meta property="og:title" content={ogTags['og:title']} />
-        <meta property="og:description" content={ogTags['og:description']} />
-        <meta property="og:type" content={ogTags['og:type']} />
-        <meta property="og:url" content={ogTags['og:url']} />
-        <meta property="og:image" content={ogTags['og:image']} />
-        
-        {/* Twitter Card */}
-        <meta name="twitter:card" content={ogTags['twitter:card']} />
-        <meta name="twitter:title" content={ogTags['twitter:title']} />
-        <meta name="twitter:description" content={ogTags['twitter:description']} />
-        <meta name="twitter:image" content={ogTags['twitter:image']} />
-        
-        {/* Schema.org JSON-LD */}
-        <script type="application/ld+json">
-          {schemaScript}
-        </script>
-      </Helmet>
+    <>
+      <OptimizedSEO
+        title="Umzugsfirmen vergleichen – Transparent, schnell & kostenlos"
+        description="Finde die besten Umzugsangebote für deinen Umzug in der Schweiz. Kostenloser Vergleich von Preisen, Bewertungen und Services."
+        keywords="umzugsfirmen vergleichen, umzug vergleich, umzugsangebote vergleichen"
+        canonicalUrl={currentUrl}
+        schemaMarkup={schemas}
+      />
+      
+      <div className="min-h-screen bg-background">
 
       {/* Breadcrumbs */}
       <div className="container mx-auto px-4 pt-4">
@@ -459,6 +438,7 @@ const Compare = () => {
       <SimplifiedFooter />
       <StickyMobileCTA />
     </div>
+    </>
   );
 };
 
