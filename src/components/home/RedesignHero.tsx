@@ -16,7 +16,7 @@ export const RedesignHero = () => {
 
   const handleCalculate = () => {
     if (fromPostal && toPostal && rooms) {
-      navigate(`/rechner?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}&rooms=${rooms}`);
+      navigate(`/umzugsrechner?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}&rooms=${rooms}`);
     }
   };
 
@@ -68,7 +68,7 @@ export const RedesignHero = () => {
                 >
                   {content.primaryCTA}
                 </Button>
-                <Link to="/rechner">
+                <Link to="/umzugsrechner">
                   <Button 
                     variant="outline"
                     size="lg"

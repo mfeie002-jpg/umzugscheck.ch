@@ -5,23 +5,23 @@ import { motion } from "framer-motion";
 const features = [
   {
     icon: Brain,
-    title: "Geprüfte Umzugsfirmen",
-    description: "Alle Partner sind versichert, zertifiziert und mehrfach überprüft",
+    title: "Mehrere Offerten statt nur einer",
+    description: "Erhalten Sie bis zu 5 Angebote und wählen Sie das beste für Sie",
   },
   {
     icon: ShieldCheck,
-    title: "Bis zu 40% sparen",
-    description: "Durch intelligenten Vergleich sparen Sie durchschnittlich 40% der Kosten",
+    title: "Geprüfte & bewertete Umzugsfirmen",
+    description: "Alle Partner sind versichert, zertifiziert und mehrfach überprüft",
   },
   {
     icon: Award,
-    title: "KI-gestützte Kostenschätzung",
-    description: "Präzise Preisberechnung basierend auf 25'000+ analysierten Umzügen",
+    title: "Schweizer Plattform mit Qualitätsfokus",
+    description: "Lokaler Support und höchste Schweizer Qualitätsstandards",
   },
   {
     icon: Eye,
-    title: "Schweizer Support & Qualität",
-    description: "Lokaler Support und höchste Schweizer Qualitätsstandards",
+    title: "Zeitersparnis: eine Anfrage, viele Angebote",
+    description: "In 2 Minuten mehrere Offerten statt mühsamer Einzelanfragen",
   },
 ];
 

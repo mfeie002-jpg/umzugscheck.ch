@@ -55,11 +55,11 @@ export const AICalculatorShowcase = () => {
             </div>
             
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-slate-900 leading-tight">
-              Unser <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">KI-Rechner</span> analysiert über 25'000 Umzüge
+              Der intelligente <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">Umzugsrechner</span> für die Schweiz
             </h2>
             
             <p className="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed">
-              Modernste Künstliche Intelligenz berechnet Ihre Umzugskosten in Sekunden – basierend auf Entfernung, Volumen, Aufwand und historischen Daten
+              Erhalten Sie eine präzise Kostenschätzung basierend auf Distanz, Volumen, Etage, Datum und mehr – in nur 2 Minuten
             </p>
 
             <div className="space-y-6 mb-10">
@@ -94,10 +94,10 @@ export const AICalculatorShowcase = () => {
               </div>
             </div>
 
-            <Link to="/rechner">
+            <Link to="/umzugsrechner">
               <Button size="lg" className="h-16 px-10 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all">
                 <Sparkles className="mr-2 h-5 w-5" />
-                KI-Schätzung jetzt erhalten
+                Jetzt Preis berechnen
               </Button>
             </Link>
           </motion.div>

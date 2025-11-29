@@ -8,16 +8,16 @@ interface ServicesDropdownProps {
 }
 
 const services = [
-  { icon: Truck, label: "Umzug", href: "/rechner", description: "Kompletter Umzugsservice" },
-  { icon: Sparkles, label: "Reinigung", href: "/rechner/reinigung", description: "Endreinigung mit Garantie" },
-  { icon: Trash2, label: "Entsorgung", href: "/rechner/entsorgung", description: "Entrümpelung & Entsorgung" },
-  { icon: Box, label: "Lagerung", href: "/rechner/lager", description: "Sichere Lagerlösungen" },
-  { icon: Wrench, label: "Möbelmontage", href: "/rechner/moebelmontage", description: "Auf- und Abbau Service" },
-  { icon: Home, label: "Wohnungsabgabe", href: "/rechner/konfigurator", description: "Komplettservice für Übergabe" },
-  { icon: Building2, label: "Räumungen", href: "/rechner/entsorgung", description: "Wohnungs- & Kellerräumung" },
-  { icon: Globe, label: "Firmenumzug", href: "/rechner", description: "Business Relocation" },
-  { icon: Globe, label: "Internationale Umzüge", href: "/rechner", description: "Grenzüberschreitend" },
-  { icon: Piano, label: "Klaviertransport", href: "/rechner", description: "Spezialtransporte" }
+  { icon: Truck, label: "Privatumzug", href: "/umzug-schweiz", description: "Kompletter Umzugsservice" },
+  { icon: Building2, label: "Firmenumzug", href: "/firmenumzug-schweiz", description: "Büro- und Geschäftsumzüge" },
+  { icon: Sparkles, label: "Umzugsreinigung", href: "/umzugsreinigung-schweiz", description: "Endreinigung mit Garantie" },
+  { icon: Trash2, label: "Räumung & Entsorgung", href: "/entsorgung-schweiz", description: "Entrümpelung & Entsorgung" },
+  { icon: Piano, label: "Spezialtransporte", href: "/umzugsrechner", description: "Klaviere, Tresore & mehr" },
+  { icon: Package, label: "Möbellift", href: "/moebellift-schweiz", description: "Außenlift für große Objekte" },
+  { icon: Box, label: "Lagerung", href: "/umzugsrechner", description: "Sichere Lagerlösungen" },
+  { icon: Wrench, label: "Möbelmontage", href: "/umzugsrechner", description: "Auf- und Abbau Service" },
+  { icon: Home, label: "Wohnungsabgabe", href: "/umzugsrechner", description: "Komplettservice für Übergabe" },
+  { icon: Globe, label: "Internationale Umzüge", href: "/umzugsrechner", description: "Grenzüberschreitend" }
 ];
 
 export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => {

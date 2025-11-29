@@ -23,15 +23,15 @@ export const ProviderCTA = () => {
             <Building2 className="h-16 w-16 mx-auto mb-6 text-cyan-400" />
             
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-              Sind Sie eine Umzugsfirma?
+              Mehr qualifizierte Anfragen für Ihre Umzugsfirma
             </h2>
             
             <p className="text-xl md:text-2xl text-slate-300 mb-4">
-              Wir schicken Ihnen qualifizierte Aufträge
+              Werden Sie Partner von umzugscheck.ch
             </p>
 
             <p className="text-lg text-slate-400 mb-12 max-w-2xl mx-auto">
-              Profitieren Sie von unserer Plattform mit über 25'000 Umzügen und werden Sie Teil unseres Netzwerks geprüfter Partner
+              Profitieren Sie von unserer Plattform mit über 25'000 Umzügen und erhalten Sie planbare, qualifizierte Umzugsanfragen aus Ihrer Region
             </p>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
@@ -39,7 +39,7 @@ export const ProviderCTA = () => {
                 <div className="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-4">
                   <TrendingUp className="h-8 w-8 text-blue-400" />
                 </div>
-                <div className="font-bold text-xl mb-2">Mehr Aufträge</div>
+                <div className="font-bold text-xl mb-2">Planbare Umzugsanfragen</div>
                 <div className="text-slate-400">Qualifizierte Leads aus Ihrer Region</div>
               </div>
 
@@ -47,28 +47,23 @@ export const ProviderCTA = () => {
                 <div className="w-16 h-16 rounded-2xl bg-cyan-500/20 flex items-center justify-center mb-4">
                   <Users className="h-8 w-8 text-cyan-400" />
                 </div>
-                <div className="font-bold text-xl mb-2">25'000+ Nutzer</div>
-                <div className="text-slate-400">Zugriff auf große Kundenbasis</div>
+                <div className="font-bold text-xl mb-2">Transparente Konditionen</div>
+                <div className="text-slate-400">Faire Preise, keine versteckten Kosten</div>
               </div>
 
               <div className="flex flex-col items-center">
                 <div className="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-4">
                   <Building2 className="h-8 w-8 text-blue-400" />
                 </div>
-                <div className="font-bold text-xl mb-2">Fair & transparent</div>
-                <div className="text-slate-400">Keine versteckten Kosten</div>
+                <div className="font-bold text-xl mb-2">Sichtbarkeit bei interessierten Kunden</div>
+                <div className="text-slate-400">Zugriff auf große Kundenbasis</div>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/fuer-firmen">
+              <Link to="/anbieter">
                 <Button size="lg" className="h-16 px-10 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-xl">
-                  Jetzt Partner werden
-                </Button>
-              </Link>
-              <Link to="/fuer-firmen/preise">
-                <Button size="lg" variant="outline" className="h-16 px-10 text-lg font-semibold border-2 border-white text-white hover:bg-white hover:text-slate-900">
-                  Preise & Modelle ansehen
+                  Partner werden
                 </Button>
               </Link>
             </div>

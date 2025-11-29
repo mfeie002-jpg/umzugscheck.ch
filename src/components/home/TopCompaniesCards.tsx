@@ -147,7 +147,7 @@ export const TopCompaniesCards = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Link to="/firmen">
+          <Link to="/umzugsfirmen-schweiz">
             <Button variant="outline" size="lg" className="px-10 h-14 text-lg font-bold border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600">
               Alle Umzugsfirmen anzeigen
               <ArrowRight className="ml-2 h-5 w-5" />

@@ -83,7 +83,7 @@ const Index = () => {
       </main>
       
       {/* 12. Mobile Sticky CTA */}
-      <StickyMobileCTA text="Gratis Angebote erhalten" />
+      <StickyMobileCTA text="Offerten vergleichen" link="/umzug-offerte" />
       
       <ScrollToTop />
     </div>

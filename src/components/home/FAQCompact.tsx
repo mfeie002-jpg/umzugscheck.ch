@@ -4,23 +4,23 @@ import { motion } from "framer-motion";
 const faqs = [
   {
     question: "Wie funktioniert umzugscheck.ch?",
-    answer: "Anfrage eingeben → AI berechnet Preis → Passende Firmen erhalten → Angebote vergleichen → Beste Firma buchen."
+    answer: "Geben Sie Ihre Umzugsdetails ein, erhalten Sie kostenlose Offerten von bis zu 5 geprüften Umzugsfirmen, vergleichen Sie Preise und Bewertungen, und wählen Sie die beste Firma für Ihren Umzug."
   },
   {
     question: "Ist der Service wirklich kostenlos?",
-    answer: "Ja, 100% kostenlos und unverbindlich für Privatkunden. Sie bezahlen nur die gewählte Umzugsfirma."
+    answer: "Ja, umzugscheck.ch ist für Privatkunden 100% kostenlos und unverbindlich. Sie bezahlen nur die Umzugsfirma, die Sie beauftragen."
   },
   {
     question: "Wie schnell erhalte ich Offerten?",
-    answer: "Sofort nach Eingabe sehen Sie die Preisspanne. Detaillierte Offerten erhalten Sie innerhalb von 24 Stunden."
+    answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
   },
   {
-    question: "Sind alle Firmen geprüft?",
-    answer: "Ja, alle Partner sind versichert, zertifiziert und werden regelmäßig überprüft."
+    question: "Sind die Umzugsfirmen geprüft?",
+    answer: "Ja, alle Umzugsfirmen auf umzugscheck.ch sind versichert, zertifiziert und wurden mehrfach überprüft. Nur seriöse Schweizer Anbieter."
   },
   {
-    question: "Kann ich selbst wählen, welche Firmen mich kontaktieren?",
-    answer: "Absolut. Sie wählen aus den Matches aus, welche Firmen Ihnen Offerten senden dürfen."
+    question: "Kann ich kurzfristig umziehen?",
+    answer: "Ja, viele Umzugsfirmen bieten auch kurzfristige Termine an. Geben Sie einfach Ihr gewünschtes Datum ein und Sie sehen verfügbare Anbieter."
   }
 ];
 
@@ -35,10 +35,10 @@ export const FAQCompact = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
-            Häufig gestellte Fragen
+            Häufige Fragen
           </h2>
           <p className="text-lg text-slate-600">
-            Alles was Sie wissen müssen
+            Alles, was Sie über umzugscheck.ch wissen müssen
           </p>
         </motion.div>
 

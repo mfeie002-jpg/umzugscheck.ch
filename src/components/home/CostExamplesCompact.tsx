@@ -71,11 +71,9 @@ export const CostExamplesCompact = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Link to="/rechner">
-            <Button size="lg" className="h-14 px-10 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg">
-              Exakte Kosten jetzt berechnen
-            </Button>
-          </Link>
+          <p className="text-lg text-slate-400 text-center max-w-md mx-auto mt-6">
+            <em>Dies sind Richtwerte. Exakte Preise erhalten Sie mit Ihrer Offertenanfrage.</em>
+          </p>
         </motion.div>
       </div>
     </section>

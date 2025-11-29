@@ -14,12 +14,12 @@ import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Preisrechner", href: "/rechner", hasDropdown: true, dropdownType: "calculators" },
-  { label: "Umzugsfirmen", href: "/firmen", hasDropdown: true, dropdownType: "companies" },
+  { label: "Preisrechner", href: "/umzugsrechner", hasDropdown: true, dropdownType: "calculators" },
+  { label: "Umzugsfirmen", href: "/umzugsfirmen-schweiz", hasDropdown: true, dropdownType: "companies" },
   { label: "Services", href: "#", hasDropdown: true, dropdownType: "services" },
   { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
-  { label: "Ratgeber", href: "/blog", hasDropdown: true, dropdownType: "ratgeber" },
-  { label: "Für Firmen", href: "/anbieter-werden", hasDropdown: true, dropdownType: "provider" }
+  { label: "Ratgeber", href: "/ratgeber", hasDropdown: true, dropdownType: "ratgeber" },
+  { label: "Für Firmen", href: "/anbieter", hasDropdown: true, dropdownType: "provider" }
 ];
 
 export const Navigation = () => {
@@ -138,7 +138,7 @@ export const Navigation = () => {
                 <span className="hidden sm:inline">Live Chat</span>
               </Button>
             </Link>
-            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten erhalten">
+            <Link to="/umzug-offerte" aria-label="Kostenlose Umzugsofferten erhalten">
               <Button 
                 size="sm"
                 className="bg-destructive hover:bg-destructive/90 text-white shadow-sm font-bold text-xs sm:text-sm px-3 sm:px-4"
@@ -162,9 +162,9 @@ export const Navigation = () => {
           {/* CTA Buttons - Desktop */}
           <div className="hidden lg:flex items-center gap-3">
             <DarkModeToggle />
-            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten erhalten">
+            <Link to="/umzug-offerte" aria-label="Kostenlose Umzugsofferten erhalten">
               <Button className="bg-destructive hover:bg-destructive/90 text-white shadow-medium font-bold">
-                Offerten erhalten
+                Offerten vergleichen
               </Button>
             </Link>
           </div>
