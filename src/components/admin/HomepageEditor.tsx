@@ -9,21 +9,12 @@ import { getHomepageContent } from "@/lib/content";
 import type { HomepageContent } from "@/content/types";
 
 export const HomepageEditor = () => {
-  const [content, setContent] = useState<HomepageContent>(() => {
-    console.log('Loading homepage content...');
-    const data = getHomepageContent();
-    console.log('Homepage content loaded:', data);
-    return data;
-  });
+  const [content, setContent] = useState<HomepageContent>(() => getHomepageContent());
   const [saving, setSaving] = useState(false);
-
-  console.log('HomepageEditor rendering with content:', content);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      // In production, this would save to Supabase or an API
-      // For now, we'll just show success and update localStorage
       localStorage.setItem("homepage_content", JSON.stringify(content));
       toast.success("Änderungen gespeichert!");
     } catch (error) {
@@ -47,7 +38,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="hero-headline">Überschrift</Label>
             <Input
               id="hero-headline"
-              value={content.hero.headline}
+              value={content.hero?.headline || ""}
               onChange={(e) => setContent({
                 ...content,
                 hero: { ...content.hero, headline: e.target.value }
@@ -59,7 +50,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="hero-highlighted">Hervorgehobener Text</Label>
             <Input
               id="hero-highlighted"
-              value={content.hero.highlightedText}
+              value={content.hero?.highlightedText || ""}
               onChange={(e) => setContent({
                 ...content,
                 hero: { ...content.hero, highlightedText: e.target.value }
@@ -71,7 +62,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="hero-subheadline">Unterüberschrift</Label>
             <Textarea
               id="hero-subheadline"
-              value={content.hero.subheadline}
+              value={content.hero?.subheadline || ""}
               onChange={(e) => setContent({
                 ...content,
                 hero: { ...content.hero, subheadline: e.target.value }
@@ -85,7 +76,7 @@ export const HomepageEditor = () => {
               <Label htmlFor="hero-primary-cta">Primärer Button</Label>
               <Input
                 id="hero-primary-cta"
-                value={content.hero.primaryCTA}
+                value={content.hero?.primaryCTA || ""}
                 onChange={(e) => setContent({
                   ...content,
                   hero: { ...content.hero, primaryCTA: e.target.value }
@@ -96,7 +87,7 @@ export const HomepageEditor = () => {
               <Label htmlFor="hero-secondary-cta">Sekundärer Button</Label>
               <Input
                 id="hero-secondary-cta"
-                value={content.hero.secondaryCTA}
+                value={content.hero?.secondaryCTA || ""}
                 onChange={(e) => setContent({
                   ...content,
                   hero: { ...content.hero, secondaryCTA: e.target.value }
@@ -118,7 +109,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="trust-rating">Bewertung</Label>
             <Input
               id="trust-rating"
-              value={content.hero.trustIndicators.rating}
+              value={content.hero?.trustIndicators?.rating || ""}
               onChange={(e) => setContent({
                 ...content,
                 hero: {
@@ -136,7 +127,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="trust-moves">Anzahl Umzüge</Label>
             <Input
               id="trust-moves"
-              value={content.hero.trustIndicators.movesCount}
+              value={content.hero?.trustIndicators?.movesCount || ""}
               onChange={(e) => setContent({
                 ...content,
                 hero: {
@@ -154,7 +145,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="trust-verified">Verifiziert Text</Label>
             <Input
               id="trust-verified"
-              value={content.hero.trustIndicators.verifiedText}
+              value={content.hero?.trustIndicators?.verifiedText || ""}
               onChange={(e) => setContent({
                 ...content,
                 hero: {
@@ -181,7 +172,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="how-title">Titel</Label>
             <Input
               id="how-title"
-              value={content.howItWorks.title}
+              value={content.howItWorks?.title || ""}
               onChange={(e) => setContent({
                 ...content,
                 howItWorks: { ...content.howItWorks, title: e.target.value }
@@ -193,7 +184,7 @@ export const HomepageEditor = () => {
             <Label htmlFor="how-subtitle">Untertitel</Label>
             <Input
               id="how-subtitle"
-              value={content.howItWorks.subtitle}
+              value={content.howItWorks?.subtitle || ""}
               onChange={(e) => setContent({
                 ...content,
                 howItWorks: { ...content.howItWorks, subtitle: e.target.value }
@@ -201,7 +192,7 @@ export const HomepageEditor = () => {
             />
           </div>
 
-          {content.howItWorks.steps.map((step, index) => (
+          {content.howItWorks?.steps?.map((step, index) => (
             <div key={index} className="border-t pt-4">
               <h4 className="font-semibold mb-3">Schritt {step.number}</h4>
               <div className="space-y-2">
