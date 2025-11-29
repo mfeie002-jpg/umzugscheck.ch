@@ -136,16 +136,16 @@ const BecomeProvider = () => {
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                   Mehr Umzugsaufträge durch Umzugscheck.ch
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+                <p className="text-xl md:text-2xl text-white/90 mb-8">
                   Werden Sie Partner und profitieren Sie von qualifizierten Umzugsanfragen aus allen Schweizer Kantonen
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button asChild size="lg" className="text-lg">
+                  <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-premium">
                     <Link to="/anbieter/registrieren">
                       Jetzt als Partner registrieren
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="text-lg">
+                  <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                     <Link to="/anbieter/login">
                       Login für Partner
                     </Link>
@@ -157,7 +157,7 @@ const BecomeProvider = () => {
         </section>
 
         {/* Benefits Section */}
-        <section className="py-16 lg:py-24">
+        <section className="py-16 lg:py-24 gradient-light">
           <div className="container mx-auto px-4">
             <ScrollReveal>
               <div className="text-center mb-12">

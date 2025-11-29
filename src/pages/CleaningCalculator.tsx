@@ -1,4 +1,5 @@
-import { Helmet } from "react-helmet";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -143,48 +144,50 @@ const CleaningCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Helmet>
-        <title>Reinigungsrechner - Endreinigung Kosten berechnen | Umzugscheck.ch</title>
-        <meta name="description" content="Berechnen Sie die Kosten für Ihre Wohnungsendreinigung. Endreinigung, normale Reinigung oder Tiefenreinigung. ✓ Kostenlose Schätzung ✓ Sofort Ergebnis" />
-        <meta name="keywords" content="Reinigungsrechner, Endreinigung Kosten, Wohnungsreinigung Preis, Umzugsreinigung Schweiz" />
-        <link rel="canonical" href="https://umzugscheck.ch/reinigungsrechner" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify(SERVICE_SCHEMA)}
-        </script>
-      </Helmet>
+    <div className="min-h-screen bg-gradient-light flex flex-col">
+      <OptimizedSEO
+        title="Reinigungsrechner - Endreinigung Kosten berechnen"
+        description="Berechnen Sie die Kosten für Ihre Wohnungsendreinigung. Endreinigung, normale Reinigung oder Tiefenreinigung. ✓ Kostenlose Schätzung ✓ Sofort Ergebnis"
+        keywords="Reinigungsrechner, Endreinigung Kosten, Wohnungsreinigung Preis, Umzugsreinigung Schweiz"
+        canonicalUrl="https://umzugscheck.ch/reinigungsrechner"
+        schemaMarkup={SERVICE_SCHEMA}
+      />
 
       <Navigation />
       
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-6 sm:py-8 md:py-16">
+        {/* Hero Section */}
+        <section className="gradient-hero text-white py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="max-w-3xl mx-auto text-center">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                  Reinigungsrechner
+                </h1>
+                <p className="text-lg md:text-xl text-white/90">
+                  Berechnen Sie die Kosten für Ihre Endreinigung in wenigen Klicks
+                </p>
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
+
+        <div className="container mx-auto px-4 py-8 md:py-12">
           <Link 
             to="/rechner"
-            className="inline-flex items-center gap-2 text-sm sm:text-base text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8"
+            className="inline-flex items-center gap-2 text-sm sm:text-base text-muted-foreground hover:text-primary transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
             Zurück zu allen Rechnern
           </Link>
 
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-6 sm:mb-8">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-              </div>
-              
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-3">
-                Reinigungsrechner
-              </h1>
-              
-              <p className="text-base sm:text-lg text-muted-foreground px-4">
-                Berechnen Sie die Kosten für Ihre Endreinigung
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Form Card */}
-              <Card className="p-4 sm:p-6">
+              <Card variant="elevated" className="p-6">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
                     {/* Cleaning Type */}
@@ -386,7 +389,7 @@ const CleaningCalculator = () => {
               </Card>
 
               {/* Results Card */}
-              <Card className="p-4 sm:p-6">
+              <Card variant="elevated" className="p-6">
                 {result ? (
                   <div className="space-y-4 sm:space-y-6">
                     <div>
