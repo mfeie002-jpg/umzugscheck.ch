@@ -1,27 +1,15 @@
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { Shield, Users, Target, TrendingUp, Heart, Award, CheckCircle2 } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
-import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
-import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const About = () => {
-  const currentUrl = 'https://www.umzugscheck.ch/ueber-uns/';
-  const metaData = generateMetaData({ type: 'main-page', pageName: 'ueber-uns' });
-  const ogTags = generateOGTags(metaData, currentUrl);
-  const keywords = getKeywordsForPage('ueber-uns');
-  
-  const schemas = generatePageSchemas({ type: 'home', url: currentUrl });
-  const schemaScript = generateSchemaScript(schemas);
   
   const stats = [
     { number: "15'000+", label: "Vermittelte Umzüge", color: "from-blue-500 to-cyan-500" },
@@ -70,54 +58,38 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>{metaData.title}</title>
-        <meta name="description" content={metaData.description} />
-        <link rel="canonical" href={currentUrl} />
-        <meta name="keywords" content={keywords.join(', ')} />
-        
-        {/* OpenGraph Tags */}
-        <meta property="og:title" content={ogTags['og:title']} />
-        <meta property="og:description" content={ogTags['og:description']} />
-        <meta property="og:type" content={ogTags['og:type']} />
-        <meta property="og:url" content={ogTags['og:url']} />
-        <meta property="og:image" content={ogTags['og:image']} />
-        
-        {/* Twitter Card */}
-        <meta name="twitter:card" content={ogTags['twitter:card']} />
-        <meta name="twitter:title" content={ogTags['twitter:title']} />
-        <meta name="twitter:description" content={ogTags['twitter:description']} />
-        <meta name="twitter:image" content={ogTags['twitter:image']} />
-        
-        {/* Schema.org JSON-LD */}
-        <script type="application/ld+json">
-          {schemaScript}
-        </script>
-      </Helmet>
-
-      {/* Breadcrumbs */}
-      <div className="container mx-auto px-4 pt-4">
-        <Breadcrumbs items={[{ label: "Über uns" }]} />
-      </div>
-
-      {/* Hero */}
-      <EmotionalHero
-        title="Wir machen Umzüge stressfrei"
-        subtitle="Seit 2018 helfen wir Menschen in der Schweiz, die besten Umzugsfirmen zu finden."
-        primaryCTA={{
-          text: "Starte deinen stressfreien Umzug",
-          link: "/umzugsofferten"
-        }}
-        badgeText="Über 15'000 zufriedene Kunden"
-        trustBadges={false}
-        backgroundImage="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80"
+    <>
+      <OptimizedSEO
+        title="Über uns - Umzugscheck.ch"
+        description="Seit 2018 helfen wir Menschen in der Schweiz, die besten Umzugsfirmen zu finden. Transparent, unabhängig und kostenlos."
+        keywords="über uns, umzugscheck schweiz, umzugsvergleich"
+        canonicalUrl="https://umzugscheck.ch/ueber-uns"
       />
 
-      <main>
-        {/* Mission */}
-        <ScrollReveal>
-          <section className="py-16 md:py-20 bg-gradient-to-b from-secondary/20 to-background">
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        
+        <main className="flex-1">
+          {/* Hero */}
+          <section className="gradient-hero text-white py-16 md:py-24">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <div className="max-w-4xl mx-auto text-center">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                    Wir machen Umzüge stressfrei
+                  </h1>
+                  <p className="text-xl md:text-2xl text-white/90 mb-8">
+                    Seit 2018 helfen wir Menschen in der Schweiz, die besten Umzugsfirmen zu finden
+                  </p>
+                  <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                    <Link to="/umzugsofferten">Starte deinen stressfreien Umzug</Link>
+                  </Button>
+                </div>
+              </ScrollReveal>
+            </div>
+          </section>
+          {/* Mission */}
+          <section className="py-16 md:py-20 gradient-light">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12">
@@ -129,7 +101,7 @@ const About = () => {
                   </h2>
                 </div>
 
-                <Card className="shadow-strong">
+                <Card variant="elevated">
                   <CardContent className="p-8 md:p-12">
                     <p className="text-lg text-foreground/90 mb-6 leading-relaxed">
                       Umzugscheck.ch wurde gegründet, um den Umzugsprozess in der Schweiz transparenter, 
@@ -150,11 +122,9 @@ const About = () => {
               </div>
             </div>
           </section>
-        </ScrollReveal>
 
-        {/* Stats */}
-        <ScrollReveal>
-          <section className="py-16 md:py-20">
+          {/* Stats */}
+          <section className="py-16 md:py-20 bg-white">
             <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -167,14 +137,8 @@ const About = () => {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto">
                 {stats.map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
-                    <Card className="text-center p-6 md:p-8 hover:shadow-strong transition-all h-full">
+                  <ScrollReveal key={index} delay={index * 0.1}>
+                    <Card variant="elevated" className="text-center p-6 md:p-8 h-full hover-lift">
                       <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.color} shadow-medium mb-4`}>
                         <CheckCircle2 className="h-8 w-8 text-white" />
                       </div>
@@ -185,16 +149,14 @@ const About = () => {
                         {stat.label}
                       </div>
                     </Card>
-                  </motion.div>
+                  </ScrollReveal>
                 ))}
               </div>
             </div>
           </section>
-        </ScrollReveal>
 
-        {/* Values */}
-        <ScrollReveal>
-          <section className="py-16 md:py-20 bg-gradient-to-b from-secondary/20 to-background">
+          {/* Values */}
+          <section className="py-16 md:py-20 gradient-light">
             <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -209,31 +171,23 @@ const About = () => {
                 {values.map((value, index) => {
                   const Icon = value.icon;
                   return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
-                      <Card className="p-6 hover:shadow-strong transition-all h-full border-border/50">
+                    <ScrollReveal key={index} delay={index * 0.1}>
+                      <Card variant="elevated" className="p-6 h-full hover-lift">
                         <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${value.gradient} shadow-medium mb-4`}>
                           <Icon className="h-7 w-7 text-white" />
                         </div>
                         <h3 className="text-xl font-bold mb-3">{value.title}</h3>
                         <p className="text-muted-foreground leading-relaxed">{value.description}</p>
                       </Card>
-                    </motion.div>
+                    </ScrollReveal>
                   );
                 })}
               </div>
             </div>
           </section>
-        </ScrollReveal>
 
-        {/* How it Works */}
-        <ScrollReveal>
-          <section className="py-16 md:py-20">
+          {/* How it Works */}
+          <section className="py-16 md:py-20 bg-white">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12">
@@ -250,27 +204,21 @@ const About = () => {
                     {
                       number: 1,
                       title: "Kostenlos Preise berechnen",
-                      description: "Nutze unsere KI-Rechner für eine realistische Kostenschätzung – in wenigen Minuten und völlig kostenlos."
+                      description: "Nutzen Sie unsere KI-Rechner für eine realistische Kostenschätzung – in wenigen Minuten und völlig kostenlos."
                     },
                     {
                       number: 2,
                       title: "Umzugsfirmen vergleichen",
-                      description: "Vergleiche geprüfte Firmen aus deiner Region. Bewertungen, Leistungen und Preise auf einen Blick."
+                      description: "Vergleichen Sie geprüfte Firmen aus Ihrer Region. Bewertungen, Leistungen und Preise auf einen Blick."
                     },
                     {
                       number: 3,
                       title: "Offerten erhalten",
-                      description: "Erhalte kostenlose Offerten und wähle die beste Firma für deinen Umzug aus."
+                      description: "Erhalten Sie kostenlose Offerten und wählen Sie die beste Firma für Ihren Umzug aus."
                     }
                   ].map((step, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
-                      <Card className="shadow-medium hover:shadow-strong transition-all">
+                    <ScrollReveal key={index} delay={index * 0.1}>
+                      <Card variant="elevated" className="hover-lift">
                         <CardContent className="p-6 md:p-8">
                           <div className="flex items-start gap-4">
                             <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl shadow-medium">
@@ -283,55 +231,40 @@ const About = () => {
                           </div>
                         </CardContent>
                       </Card>
-                    </motion.div>
+                    </ScrollReveal>
                   ))}
                 </div>
               </div>
             </div>
           </section>
-        </ScrollReveal>
 
-        {/* Final CTA */}
-        <section className="py-16 md:py-20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary opacity-95" />
-          <div className="absolute inset-0 overflow-hidden opacity-30">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl animate-blob" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white rounded-full blur-3xl animate-blob-reverse" />
-          </div>
+          {/* Final CTA */}
+          <section className="py-16 md:py-20 gradient-cta text-white">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <div className="text-center max-w-3xl mx-auto">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                    Bereit für Ihren stressfreien Umzug?
+                  </h2>
+                  <p className="text-xl mb-10 text-white/90">
+                    Starten Sie jetzt und erhalten Sie kostenlose Offerten von geprüften Profis
+                  </p>
+                  <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                    <Link to="/umzugsofferten">Jetzt kostenlose Offerten erhalten</Link>
+                  </Button>
+                  <p className="text-sm mt-6 text-white/80">
+                    ✓ 100% kostenlos  ✓ Unverbindlich  ✓ In 2 Minuten
+                  </p>
+                </div>
+              </ScrollReveal>
+            </div>
+          </section>
+        </main>
 
-          <div className="container mx-auto px-4 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center text-white max-w-3xl mx-auto"
-            >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-                Bereit für deinen stressfreien Umzug?
-              </h2>
-              <p className="text-lg md:text-xl mb-10 text-white/90">
-                Starte jetzt und erhalte kostenlose Offerten von geprüften Profis
-              </p>
-              <Link to="/umzugsofferten">
-                <Button 
-                  size="lg" 
-                  className="h-14 px-10 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-strong"
-                >
-                  Jetzt kostenlose Offerten erhalten
-                </Button>
-              </Link>
-              <p className="text-sm mt-6 text-white/80">
-                ✓ 100% kostenlos  ✓ Unverbindlich  ✓ In 2 Minuten
-              </p>
-            </motion.div>
-          </div>
-        </section>
-      </main>
-
-      <SimplifiedFooter />
-      <StickyMobileCTA />
-    </div>
+        <Footer />
+        <StickyMobileCTA />
+      </div>
+    </>
   );
 };
 

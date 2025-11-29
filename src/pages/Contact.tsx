@@ -1,20 +1,17 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, MapPin, Send, Clock, MessageSquare, Calculator, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { FAQAccordion, type FAQItem } from "@/components/FAQAccordion";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
-import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
-import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
-import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const contactFAQs: FAQItem[] = [
   {
@@ -55,29 +52,40 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
-      
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="gradient-hero text-white py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="mb-6">Kontaktieren Sie uns</h1>
-              <p className="text-lg md:text-xl text-white/90">
-                Haben Sie Fragen zu Ihrem Umzug oder unserem Service? 
-                Wir sind für Sie da und helfen Ihnen gerne weiter.
-              </p>
-            </div>
-          </div>
-        </section>
+    <>
+      <OptimizedSEO
+        title="Kontakt - Wir helfen Ihnen gerne weiter"
+        description="Haben Sie Fragen zu Ihrem Umzug? Kontaktieren Sie uns – wir sind für Sie da und helfen Ihnen gerne weiter."
+        keywords="umzug kontakt, umzugsberatung, umzugshilfe"
+        canonicalUrl="https://umzugscheck.ch/kontakt"
+      />
 
-        {/* Contact Form & Info */}
-        <section className="py-16 md:py-24 bg-gradient-light">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
-              {/* Contact Form */}
-              <Card className="lg:col-span-2 shadow-strong">
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="gradient-hero text-white py-16 md:py-24">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <div className="max-w-3xl mx-auto text-center">
+                  <h1 className="mb-6 text-4xl md:text-5xl lg:text-6xl font-bold">Kontaktieren Sie uns</h1>
+                  <p className="text-xl md:text-2xl text-white/90">
+                    Haben Sie Fragen zu Ihrem Umzug oder unserem Service? 
+                    Wir sind für Sie da und helfen Ihnen gerne weiter.
+                  </p>
+                </div>
+              </ScrollReveal>
+            </div>
+          </section>
+
+          {/* Contact Form & Info */}
+          <section className="py-16 md:py-24 bg-gradient-light">
+            <div className="container mx-auto px-4">
+              <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+                {/* Contact Form */}
+                <ScrollReveal>
+                  <Card variant="elevated" className="lg:col-span-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Send className="w-6 h-6 text-primary" />
@@ -138,21 +146,24 @@ const Contact = () => {
                       />
                     </div>
 
-                    <Button 
-                      type="submit" 
-                      className="w-full md:w-auto bg-accent hover:bg-accent/90 shadow-accent"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? "Wird gesendet..." : "Nachricht senden"}
-                      <Send className="ml-2 w-4 h-4" />
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
+                      <Button 
+                        type="submit" 
+                        size="lg"
+                        className="w-full md:w-auto shadow-premium"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? "Wird gesendet..." : "Nachricht senden"}
+                        <Send className="ml-2 w-4 h-4" />
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </ScrollReveal>
 
               {/* Contact Info */}
               <div className="space-y-6">
-                <Card className="shadow-medium">
+                <ScrollReveal delay={0.1}>
+                  <Card variant="elevated">
                   <CardHeader>
                     <CardTitle className="text-xl">Kontaktinformationen</CardTitle>
                   </CardHeader>
@@ -198,23 +209,27 @@ const Contact = () => {
                         </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </ScrollReveal>
 
-                <Card className="shadow-medium bg-success/5 border-success/20">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="flex items-center gap-2 text-success font-semibold">
-                      <Clock className="w-5 h-5" />
-                      Schnelle Antwort garantiert
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Wir beantworten Ihre Anfrage in der Regel innerhalb von 24 Stunden an Werktagen.
-                    </p>
-                  </CardContent>
-                </Card>
+                <ScrollReveal delay={0.2}>
+                  <Card variant="elevated" className="bg-success/5 border-success/20">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="flex items-center gap-2 text-success font-semibold">
+                        <Clock className="w-5 h-5" />
+                        Schnelle Antwort garantiert
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Wir beantworten Ihre Anfrage in der Regel innerhalb von 24 Stunden an Werktagen.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </ScrollReveal>
 
                 {/* Quick Links */}
-                <Card className="shadow-medium">
+                <ScrollReveal delay={0.3}>
+                  <Card variant="elevated">
                   <CardHeader>
                     <CardTitle className="text-lg">Schnellzugriff</CardTitle>
                   </CardHeader>
@@ -239,40 +254,46 @@ const Contact = () => {
                         <div className="font-medium group-hover:text-primary transition-colors">FAQ</div>
                         <div className="text-xs text-muted-foreground">Häufige Fragen</div>
                       </div>
-                    </Link>
-                  </CardContent>
-                </Card>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </ScrollReveal>
               </div>
             </div>
 
-            {/* Map Placeholder */}
-            <div className="max-w-6xl mx-auto mt-12">
-              <Card className="shadow-strong overflow-hidden">
-                <div className="h-64 md:h-80 bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border-b">
-                  <div className="text-center">
-                    <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
-                    <p className="text-muted-foreground font-medium">Standort Zürich</p>
-                    <p className="text-sm text-muted-foreground">Musterstrasse 123, 8000 Zürich</p>
-                  </div>
+              {/* Map Placeholder */}
+              <ScrollReveal>
+                <div className="max-w-6xl mx-auto mt-12">
+                  <Card variant="elevated" className="overflow-hidden">
+                    <div className="h-64 md:h-80 bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border-b">
+                      <div className="text-center">
+                        <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
+                        <p className="text-muted-foreground font-medium">Standort Zürich</p>
+                        <p className="text-sm text-muted-foreground">Musterstrasse 123, 8000 Zürich</p>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
-              </Card>
-            </div>
+              </ScrollReveal>
 
-            {/* FAQ Section */}
-            <div id="faq" className="max-w-6xl mx-auto mt-16">
-              <FAQAccordion
-                items={contactFAQs}
-                title="Häufig gestellte Fragen"
-                subtitle="Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage."
-                variant="compact"
-              />
+              {/* FAQ Section */}
+              <ScrollReveal>
+                <div id="faq" className="max-w-6xl mx-auto mt-16">
+                  <FAQAccordion
+                    items={contactFAQs}
+                    title="Häufig gestellte Fragen"
+                    subtitle="Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage."
+                    variant="compact"
+                  />
+                </div>
+              </ScrollReveal>
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 };
 
