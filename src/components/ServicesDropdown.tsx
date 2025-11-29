@@ -8,16 +8,13 @@ interface ServicesDropdownProps {
 }
 
 const services = [
-  { icon: Truck, label: "Privatumzug", href: "/umzug-schweiz", description: "Kompletter Umzugsservice" },
-  { icon: Building2, label: "Firmenumzug", href: "/firmenumzug-schweiz", description: "Büro- und Geschäftsumzüge" },
-  { icon: Sparkles, label: "Umzugsreinigung", href: "/umzugsreinigung-schweiz", description: "Endreinigung mit Garantie" },
-  { icon: Trash2, label: "Räumung & Entsorgung", href: "/entsorgung-schweiz", description: "Entrümpelung & Entsorgung" },
-  { icon: Package, label: "Möbellift", href: "/moebellift-schweiz", description: "Außenlift für große Objekte" },
-  { icon: Globe, label: "Internationale Umzüge", href: "/internationaler-umzug", description: "Grenzüberschreitend" },
-  { icon: Box, label: "Lagerung", href: "/lagerung", description: "Sichere Lagerlösungen" },
-  { icon: Wrench, label: "Möbelmontage", href: "/services", description: "Auf- und Abbau Service" },
-  { icon: Home, label: "Wohnungsabgabe", href: "/services", description: "Komplettservice für Übergabe" },
-  { icon: Piano, label: "Spezialtransporte", href: "/services", description: "Klaviere, Tresore & mehr" }
+  { icon: Home, title: "Privatumzug", href: "/privatumzug" },
+  { icon: Building2, title: "Firmenumzug", href: "/firmenumzug" },
+  { icon: Sparkles, title: "Umzug mit Reinigung", href: "/umzug-mit-reinigung" },
+  { icon: Sparkles, title: "Reinigung", href: "/reinigung" },
+  { icon: Trash2, title: "Entsorgung & Räumung", href: "/entsorgung-raeumung" },
+  { icon: Wrench, title: "Möbellift", href: "/moebellift" },
+  { icon: Box, title: "Einlagerung", href: "/einlagerung" },
 ];
 
 export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => {
@@ -25,33 +22,21 @@ export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => 
 
   return (
     <div className="hidden lg:block absolute left-0 right-0 top-full bg-white border-t border-border shadow-xl z-50 animate-in slide-in-from-top-2 duration-200">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {services.map((service) => {
-            const Icon = service.icon;
-            return (
-              <Link
-                key={service.label}
-                to={service.href}
-                onClick={onClose}
-                className={cn(
-                  "flex flex-col items-start gap-3 p-4 rounded-xl hover:bg-secondary/50 transition-all duration-200 group border border-transparent hover:border-primary/20"
-                )}
-              >
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <Icon className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors mb-1">
-                    {service.label}
-                  </h4>
-                  <p className="text-xs text-muted-foreground line-clamp-2">
-                    {service.description}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {services.map((service) => (
+            <Link
+              key={service.title}
+              to={service.href}
+              onClick={onClose}
+              className="flex items-center gap-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors group"
+            >
+              <service.icon className="w-5 h-5 text-primary flex-shrink-0" aria-hidden="true" />
+              <span className="text-sm font-medium text-foreground group-hover:text-primary">
+                {service.title}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
