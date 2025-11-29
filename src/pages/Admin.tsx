@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Home, Settings, FileText, MapPin, HelpCircle, DollarSign, Award, LogOut } from "lucide-react";
+import { HomepageEditor } from "@/components/admin/HomepageEditor";
 
 // Check if user is authenticated
 const checkAuth = () => {
@@ -140,22 +141,7 @@ export default function Admin() {
           </TabsList>
 
           <TabsContent value="homepage" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Homepage Inhalte</CardTitle>
-                <CardDescription>
-                  Bearbeiten Sie die Inhalte der Startseite
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12 text-slate-600">
-                  <p className="mb-4">Content-Editor wird geladen...</p>
-                  <p className="text-sm">
-                    Die vollständige Admin-Oberfläche mit Formularen für alle Bereiche wurde erstellt.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <HomepageEditor />
           </TabsContent>
 
           <TabsContent value="services" className="space-y-6">
