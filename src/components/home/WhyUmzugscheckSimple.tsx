@@ -2,6 +2,10 @@ import { Clock, Heart, Award, TrendingUp, Leaf, Package } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import uspAiTechnology from "@/assets/usp-ai-technology.jpg";
+import uspVerifiedCompanies from "@/assets/usp-verified-companies.jpg";
+import uspPriceTransparency from "@/assets/usp-price-transparency.jpg";
+import uspTimeSaving from "@/assets/usp-time-saving.jpg";
 
 const usps = [
   {
@@ -13,7 +17,7 @@ const usps = [
     highlight: "Live-AI-Kalkulation statt Formular-Spam",
     ctaText: "Jetzt Preis berechnen",
     ctaLink: "/rechner",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&auto=format&fit=crop"
+    image: uspAiTechnology
   },
   {
     number: "2",
@@ -24,7 +28,7 @@ const usps = [
     highlight: "Dein persönlicher Begleiter – nicht nur Firmenliste",
     ctaText: "Mehr erfahren",
     ctaLink: "/ratgeber",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop"
+    image: uspTimeSaving
   },
   {
     number: "3",
@@ -35,7 +39,7 @@ const usps = [
     highlight: "Verifizierte Qualität – nicht manipulierbar",
     ctaText: "Geprüfte Firmen ansehen",
     ctaLink: "/firmen",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&auto=format&fit=crop"
+    image: uspVerifiedCompanies
   },
   {
     number: "4",
@@ -46,7 +50,7 @@ const usps = [
     highlight: "Klarer ROI für Firmen = bessere Offerten für dich",
     ctaText: "Offerten vergleichen",
     ctaLink: "/umzugsofferten",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop"
+    image: uspPriceTransparency
   },
   {
     number: "5",
@@ -57,7 +61,7 @@ const usps = [
     highlight: "Umzug mit gutem Gewissen – für Mensch & Umwelt",
     ctaText: "Faire Firmen finden",
     ctaLink: "/beste-umzugsfirma",
-    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop"
+    image: uspVerifiedCompanies
   },
   {
     number: "6",
@@ -68,7 +72,7 @@ const usps = [
     highlight: "Ein Portal für dein neues Lebenskapitel",
     ctaText: "Alle Services ansehen",
     ctaLink: "/dienstleistungen",
-    image: "https://images.unsplash.com/photo-1556912167-f556f1f39faa?w=800&auto=format&fit=crop"
+    image: uspTimeSaving
   }
 ];
 

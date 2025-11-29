@@ -1,27 +1,24 @@
-import { Home, Building, Truck } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import apartment15Room from "@/assets/apartment-1-5-room.jpg";
+import apartment25Room from "@/assets/apartment-2-5-room.jpg";
+import apartment45Room from "@/assets/apartment-4-5-room.jpg";
 
 const examples = [
   {
-    icon: Home,
+    image: apartment15Room,
     title: "1.5-Zimmer Wohnung",
-    price: "ab CHF 680",
-    color: "bg-blue-100 text-blue-600"
+    price: "ab CHF 680"
   },
   {
-    icon: Building,
+    image: apartment25Room,
     title: "2.5-Zimmer Wohnung",
-    price: "ab CHF 980",
-    color: "bg-cyan-100 text-cyan-600"
+    price: "ab CHF 980"
   },
   {
-    icon: Home,
+    image: apartment45Room,
     title: "4.5-Zimmer Wohnung",
-    price: "ab CHF 1'650",
-    color: "bg-blue-100 text-blue-600"
+    price: "ab CHF 1'650"
   }
 ];
 
@@ -52,13 +49,19 @@ export const CostExamplesCompact = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="text-center hover:shadow-lg transition-all border-slate-200 bg-white">
-                <CardContent className="p-8">
-                  <div className={`w-20 h-20 rounded-3xl ${example.color} flex items-center justify-center mx-auto mb-6 shadow-md`}>
-                    <example.icon className="h-10 w-10" />
+              <Card className="text-center hover:shadow-lg transition-all border-slate-200 bg-white overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="relative bg-slate-50 p-8 flex items-center justify-center min-h-[200px]">
+                    <img 
+                      src={example.image} 
+                      alt={example.title}
+                      className="max-w-full h-auto max-h-[180px] object-contain"
+                    />
                   </div>
-                  <h3 className="text-lg font-bold mb-3 text-slate-900">{example.title}</h3>
-                  <p className="text-3xl font-bold text-blue-600">{example.price}</p>
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold mb-3 text-slate-900">{example.title}</h3>
+                    <p className="text-3xl font-bold text-blue-600">{example.price}</p>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>

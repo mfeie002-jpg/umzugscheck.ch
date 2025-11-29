@@ -1,43 +1,35 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import servicePrivatumzug from "@/assets/service-privatumzug.jpg";
+import serviceFirmenumzug from "@/assets/service-firmenumzug.jpg";
+import serviceReinigung from "@/assets/service-reinigung.jpg";
+import serviceEntsorgung from "@/assets/service-entsorgung.jpg";
 
 const services = [
   {
     title: "Privatumzug",
     description: "Kompletter Service für Ihren privaten Umzug",
     link: "/dienstleistungen/privatumzug",
-    icon: "🏠"
+    image: servicePrivatumzug
   },
   {
     title: "Firmenumzug",
     description: "Professionelle Büro- und Geschäftsumzüge",
     link: "/dienstleistungen/firmenumzug",
-    icon: "🏢"
+    image: serviceFirmenumzug
   },
   {
     title: "Reinigung",
     description: "End- und Umzugsreinigung nach Standard",
     link: "/dienstleistungen/reinigung",
-    icon: "✨"
+    image: serviceReinigung
   },
   {
     title: "Entsorgung",
     description: "Fachgerechte Entsorgung & Räumung",
     link: "/dienstleistungen/entsorgung",
-    icon: "♻️"
-  },
-  {
-    title: "Möbellift",
-    description: "Professioneller Möbellift-Service",
-    link: "/dienstleistungen/moebellift",
-    icon: "🏗️"
-  },
-  {
-    title: "Verpackung",
-    description: "Professioneller Packservice",
-    link: "/dienstleistungen/verpackung",
-    icon: "📦"
+    image: serviceEntsorgung
   }
 ];
 
@@ -59,7 +51,7 @@ export const ServicesGridCompact = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {services.map((service, index) => (
             <motion.div
               key={index}
@@ -69,9 +61,16 @@ export const ServicesGridCompact = () => {
               transition={{ delay: index * 0.1 }}
             >
               <Link to={service.link}>
-                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer border-slate-200">
+                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer border-slate-200 overflow-hidden">
+                  <div className="relative h-40 overflow-hidden">
+                    <img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  </div>
                   <CardContent className="p-6 text-center">
-                    <div className="text-5xl mb-4">{service.icon}</div>
                     <h3 className="text-lg font-bold mb-2 text-slate-900">{service.title}</h3>
                     <p className="text-sm text-slate-600 leading-relaxed">{service.description}</p>
                   </CardContent>
