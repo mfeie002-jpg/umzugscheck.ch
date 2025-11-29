@@ -9,32 +9,49 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Home, Settings, FileText, MapPin, HelpCircle, DollarSign, Award, LogOut } from "lucide-react";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
-
-// Check if user is authenticated
-const checkAuth = () => {
-  return sessionStorage.getItem("admin_authenticated") === "true";
-};
+import { supabase } from "@/integrations/supabase/client";
 
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simple password check - in production, this should be server-side
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || "admin123";
-    
-    if (password === adminPassword) {
-      sessionStorage.setItem("admin_authenticated", "true");
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      // Check if user has admin role
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', authData.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (roleError) throw roleError;
+
+      if (!roleData) {
+        await supabase.auth.signOut();
+        toast.error("Keine Admin-Berechtigung");
+        return;
+      }
+
       toast.success("Login erfolgreich");
       onLogin();
-    } else {
-      toast.error("Falsches Passwort");
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast.error(error.message || "Login fehlgeschlagen");
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -42,10 +59,21 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Admin Login</CardTitle>
-          <CardDescription>Geben Sie das Admin-Passwort ein</CardDescription>
+          <CardDescription>Melden Sie sich mit Ihrem Admin-Konto an</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <Label htmlFor="email">E-Mail</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@example.com"
+                required
+              />
+            </div>
             <div>
               <Label htmlFor="password">Passwort</Label>
               <Input
@@ -53,7 +81,8 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Admin-Passwort"
+                placeholder="Passwort"
+                required
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
@@ -68,21 +97,61 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
 
 export default function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("homepage");
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAuthenticated(checkAuth());
+    checkAuth();
   }, []);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("admin_authenticated");
-    setAuthenticated(false);
-    toast.success("Erfolgreich abgemeldet");
+  const checkAuth = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setAuthenticated(false);
+        setLoading(false);
+        return;
+      }
+
+      // Check if user has admin role
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      setAuthenticated(!!roleData);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setAuthenticated(false);
+      toast.success("Erfolgreich abgemeldet");
+    } catch (error) {
+      toast.error("Fehler beim Abmelden");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Wird geladen...</div>
+      </div>
+    );
+  }
+
   if (!authenticated) {
-    return <AdminLogin onLogin={() => setAuthenticated(true)} />;
+    return <AdminLogin onLogin={() => checkAuth()} />;
   }
 
   return (

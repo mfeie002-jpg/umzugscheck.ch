@@ -17,18 +17,22 @@ verify_jwt = false
 
 [functions.provider-profile]
 verify_jwt = false
+# Note: Uses custom JWT verification with JWT_SECRET for provider portal auth
 
 [functions.provider-leads]
 verify_jwt = false
+# Note: Uses custom JWT verification with JWT_SECRET for provider portal auth
 
 [functions.admin-verify-provider]
 verify_jwt = true
 
   [functions.provider-subscription]
   verify_jwt = false
+  # Note: Uses custom JWT verification with JWT_SECRET for provider portal auth
 
 [functions.purchase-lead]
 verify_jwt = false
+# Note: Uses custom JWT verification with JWT_SECRET for provider portal auth
 
 [functions.notify-price-drop]
 verify_jwt = false
@@ -38,6 +42,7 @@ verify_jwt = false
 
 [functions.place-bid]
 verify_jwt = false
+# Note: Uses custom JWT verification with JWT_SECRET for provider portal auth
 
 [functions.process-bid-closures]
 verify_jwt = false
