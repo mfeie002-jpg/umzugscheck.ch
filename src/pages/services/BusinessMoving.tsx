@@ -1,10 +1,10 @@
-import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Building2, Shield, Clock, Users, CheckCircle, Package } from "lucide-react";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { motion } from "framer-motion";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 export default function BusinessMoving() {
   const faqs = [
@@ -28,108 +28,105 @@ export default function BusinessMoving() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Firmenumzug Schweiz – Büroumzug professionell planen | umzugscheck.ch</title>
-        <meta 
-          name="description" 
-          content="Firmenumzug in der Schweiz planen? Vergleichen Sie geprüfte Umzugsfirmen für Büro- und Geschäftsumzüge. Kostenlose Offerten und bis zu 40% sparen." 
-        />
-        <meta name="keywords" content="Firmenumzug Schweiz, Büroumzug, Geschäftsumzug, Firmenumzug Offerten" />
-        <link rel="canonical" href="https://umzugscheck.ch/firmenumzug-schweiz" />
-      </Helmet>
+      <OptimizedSEO
+        title="Firmenumzug Schweiz – Büroumzug professionell planen"
+        description="Firmenumzug in der Schweiz planen? Vergleichen Sie geprüfte Umzugsfirmen für Büro- und Geschäftsumzüge. Kostenlose Offerten und bis zu 40% sparen."
+        canonicalUrl="https://umzugscheck.ch/firmenumzug-schweiz"
+        keywords="Firmenumzug Schweiz, Büroumzug, Geschäftsumzug, Firmenumzug Offerten"
+      />
 
       {/* Hero */}
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <section className="relative py-20 md:py-28 gradient-hero text-white">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6">
-              <Building2 className="h-8 w-8 text-primary" />
+          <ScrollReveal className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-6">
+              <Building2 className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Firmenumzug in der <span className="text-primary">Schweiz</span> planen
+              Firmenumzug in der Schweiz planen
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed">
               Professionelle Büro- und Geschäftsumzüge mit minimierten Ausfallzeiten. Vergleichen Sie spezialisierte Umzugsfirmen.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/umzug-offerte">
-                <Button size="lg" className="h-14 px-8 text-lg">
+                <Button size="lg" variant="cta" className="h-14 px-8 text-lg">
                   Jetzt Offerten vergleichen
                 </Button>
               </Link>
               <Link to="/umzugsrechner">
-                <Button size="lg" variant="outline" className="h-14 px-8 text-lg">
+                <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-white/20 bg-white/10 hover:bg-white/20 text-white">
                   Kosten berechnen
                 </Button>
               </Link>
             </div>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Besonderheiten */}
-      <section className="py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">Besonderheiten beim Firmenumzug</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {[
-                {
-                  title: "Minimale Ausfallzeit",
-                  description: "Umzug an Wochenenden oder nachts möglich"
-                },
-                {
-                  title: "IT-Spezialtransport",
-                  description: "Sicherer Transport von Servern und Hardware"
-                },
-                {
-                  title: "Projektmanagement",
-                  description: "Dedizierter Ansprechpartner koordiniert alles"
-                },
-                {
-                  title: "Archivumzug",
-                  description: "Sichere Handhabung vertraulicher Dokumente"
-                }
-              ].map((item, index) => (
-                <Card key={index}>
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
+      <ScrollReveal>
+        <section className="py-16 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Besonderheiten beim Firmenumzug</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "Minimale Ausfallzeit",
+                    description: "Umzug an Wochenenden oder nachts möglich"
+                  },
+                  {
+                    title: "IT-Spezialtransport",
+                    description: "Sicherer Transport von Servern und Hardware"
+                  },
+                  {
+                    title: "Projektmanagement",
+                    description: "Dedizierter Ansprechpartner koordiniert alles"
+                  },
+                  {
+                    title: "Archivumzug",
+                    description: "Sichere Handhabung vertraulicher Dokumente"
+                  }
+                ].map((item, index) => (
+                  <Card key={index} variant="elevated">
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground">{item.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* FAQ */}
-      <section className="py-16 md:py-20 bg-secondary/10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Häufige Fragen zum Firmenumzug
-            </h2>
-            <FAQAccordion items={faqs} variant="compact" />
+      <ScrollReveal>
+        <section className="py-16 md:py-20 gradient-light">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                Häufige Fragen zum Firmenumzug
+              </h2>
+              <FAQAccordion items={faqs} variant="compact" />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* CTA */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-primary via-primary/90 to-accent text-white">
+      <section className="py-16 md:py-20 gradient-cta text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Planen Sie jetzt Ihren Firmenumzug
           </h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
+          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-white/90">
             Erhalten Sie kostenlose Offerten von spezialisierten Umzugsfirmen
           </p>
           <Link to="/umzug-offerte">
-            <Button size="lg" variant="secondary" className="h-14 px-8 text-lg">
+            <Button size="lg" variant="cta" className="h-14 px-8 text-lg bg-white text-primary hover:bg-white/90">
               Jetzt Offerten erhalten
             </Button>
           </Link>
