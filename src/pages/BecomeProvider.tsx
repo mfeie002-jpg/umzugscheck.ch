@@ -1,10 +1,12 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { CheckCircle2, TrendingUp, Calendar, Users, Shield, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { FAQAccordion } from "@/components/FAQAccordion";
 
 const BecomeProvider = () => {
   const benefits = [
@@ -111,21 +113,23 @@ const BecomeProvider = () => {
     }
   ];
 
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Helmet>
-        <title>Partner werden - Umzugscheck.ch | Mehr Umzugsaufträge für Ihre Firma</title>
-        <meta 
-          name="description" 
-          content="Werden Sie Partner bei Umzugscheck.ch und erhalten Sie qualifizierte Umzugsanfragen aus Ihrer Region. Mehr Aufträge, planbare Auslastung, keine Marketingkosten."
-        />
-      </Helmet>
+  const faqItems = faqs.map(f => ({ question: f.question, answer: f.answer }));
 
-      <Navigation />
-      
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative py-20 lg:py-32 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
+  return (
+    <>
+      <OptimizedSEO
+        title="Partner werden - Mehr Umzugsaufträge für Ihre Firma"
+        description="Werden Sie Partner bei Umzugscheck.ch und erhalten Sie qualifizierte Umzugsanfragen aus Ihrer Region. Mehr Aufträge, planbare Auslastung, keine Marketingkosten."
+        keywords="umzugsfirma partner, umzugsaufträge, leads umzug, umzugsfirma marketing"
+        canonicalUrl="https://umzugscheck.ch/anbieter-werden"
+      />
+
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="gradient-hero text-white py-20 lg:py-32">
           <div className="container mx-auto px-4">
             <ScrollReveal>
               <div className="max-w-4xl mx-auto text-center">
@@ -169,11 +173,11 @@ const BecomeProvider = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {benefits.map((benefit, index) => (
                 <ScrollReveal key={index} delay={index * 0.1}>
-                  <div className="p-6 rounded-lg border bg-card hover:shadow-md transition-shadow">
+                  <Card variant="elevated" className="p-6 hover-lift">
                     <div className="mb-4">{benefit.icon}</div>
                     <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
                     <p className="text-muted-foreground">{benefit.description}</p>
-                  </div>
+                  </Card>
                 </ScrollReveal>
               ))}
             </div>
@@ -181,7 +185,7 @@ const BecomeProvider = () => {
         </section>
 
         {/* How It Works */}
-        <section className="py-16 lg:py-24 bg-muted/30">
+        <section className="py-16 lg:py-24 gradient-light">
           <div className="container mx-auto px-4">
             <ScrollReveal>
               <div className="text-center mb-12">
@@ -245,7 +249,7 @@ const BecomeProvider = () => {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 lg:py-24 bg-muted/30">
+        <section className="py-16 lg:py-24 bg-white">
           <div className="container mx-auto px-4">
             <ScrollReveal>
               <div className="text-center mb-12">
@@ -258,14 +262,14 @@ const BecomeProvider = () => {
             <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {testimonials.map((testimonial, index) => (
                 <ScrollReveal key={index} delay={index * 0.1}>
-                  <div className="p-6 rounded-lg border bg-card">
+                  <Card variant="elevated" className="p-6">
                     <p className="text-lg mb-4 italic">"{testimonial.quote}"</p>
                     <div className="border-t pt-4">
                       <p className="font-semibold">{testimonial.name}</p>
                       <p className="text-sm text-muted-foreground">{testimonial.company}</p>
                       <p className="text-sm text-muted-foreground">{testimonial.canton}</p>
                     </div>
-                  </div>
+                  </Card>
                 </ScrollReveal>
               ))}
             </div>
@@ -273,31 +277,23 @@ const BecomeProvider = () => {
         </section>
 
         {/* FAQ */}
-        <section className="py-16 lg:py-24">
+        <section className="py-16 lg:py-24 gradient-light">
           <div className="container mx-auto px-4">
             <ScrollReveal>
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Häufige Fragen
-                </h2>
+              <div className="max-w-3xl mx-auto">
+                <FAQAccordion
+                  items={faqItems}
+                  title="Häufige Fragen"
+                  subtitle="Antworten für Partner-Interessenten"
+                  variant="compact"
+                />
               </div>
             </ScrollReveal>
-
-            <div className="max-w-3xl mx-auto space-y-6">
-              {faqs.map((faq, index) => (
-                <ScrollReveal key={index}>
-                  <div className="p-6 rounded-lg border bg-card">
-                    <h3 className="text-lg font-semibold mb-2">{faq.question}</h3>
-                    <p className="text-muted-foreground">{faq.answer}</p>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
           </div>
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 lg:py-24 bg-primary text-primary-foreground">
+        <section className="py-16 lg:py-24 gradient-cta text-white">
           <div className="container mx-auto px-4">
             <ScrollReveal>
               <div className="max-w-3xl mx-auto text-center">
@@ -307,7 +303,7 @@ const BecomeProvider = () => {
                 <p className="text-xl mb-8 opacity-90">
                   Registrieren Sie sich in wenigen Minuten und erhalten Sie schon bald Ihre ersten Anfragen
                 </p>
-                <Button asChild size="lg" variant="secondary" className="text-lg">
+                <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-premium text-lg">
                   <Link to="/anbieter/registrieren">
                     Jetzt kostenlos registrieren
                   </Link>
@@ -316,10 +312,11 @@ const BecomeProvider = () => {
             </ScrollReveal>
           </div>
         </section>
-      </main>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 };
 

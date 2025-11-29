@@ -1,14 +1,13 @@
-import { Helmet } from "react-helmet";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { MapPin, TrendingUp, Users } from "lucide-react";
+import { MapPin, TrendingUp, Users, Calculator, Building2 } from "lucide-react";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
-import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
-import { getKeywordsForPage } from "@/lib/seo-keywords";
 
 const cantons = [
   { name: "Zürich", slug: "zuerich", companies: 42, moves: "1'200+" },
@@ -40,95 +39,74 @@ const cantons = [
 ];
 
 const Regionen = () => {
-  // Generate SEO meta data
-  const currentUrl = 'https://www.umzugscheck.ch/regionen/';
-  const metaData = {
-    title: 'Umzugsfirmen in allen Regionen der Schweiz | umzugscheck.ch',
-    description: 'Finden Sie geprüfte Umzugsfirmen in allen 26 Schweizer Kantonen. Transparente Preise, echte Kundenbewertungen und kostenlose Offerten.',
-    canonicalUrl: currentUrl,
-    ogImage: 'https://www.umzugscheck.ch/assets/umzugscheck-logo.png'
-  };
-  const ogTags = generateOGTags(metaData, currentUrl);
-  const keywords = getKeywordsForPage('vergleich');
-
-  // Generate Schema.org structured data
-  const schemas = generatePageSchemas({ type: 'vergleich', url: currentUrl });
-  const schemaScript = generateSchemaScript(schemas);
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <Helmet>
-        <title>{metaData.title}</title>
-        <meta name="description" content={metaData.description} />
-        <link rel="canonical" href={currentUrl} />
-        
-        {keywords && keywords.length > 0 && (
-          <meta name="keywords" content={keywords.join(', ')} />
-        )}
-        
-        <meta property="og:title" content={ogTags['og:title']} />
-        <meta property="og:description" content={ogTags['og:description']} />
-        <meta property="og:type" content={ogTags['og:type']} />
-        <meta property="og:url" content={ogTags['og:url']} />
-        <meta property="og:image" content={ogTags['og:image']} />
-        
-        <meta name="twitter:card" content={ogTags['twitter:card']} />
-        <meta name="twitter:title" content={ogTags['twitter:title']} />
-        <meta name="twitter:description" content={ogTags['twitter:description']} />
-        <meta name="twitter:image" content={ogTags['twitter:image']} />
+    <>
+      <OptimizedSEO
+        title="Umzugsfirmen in allen Regionen der Schweiz"
+        description="Finden Sie geprüfte Umzugsfirmen in allen 26 Schweizer Kantonen. Transparente Preise, echte Kundenbewertungen und kostenlose Offerten."
+        keywords="umzugsfirmen schweiz, umzug kantone, umzugsfirmen region"
+        canonicalUrl="https://umzugscheck.ch/regionen"
+      />
 
-        <script type="application/ld+json">{schemaScript}</script>
-      </Helmet>
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
 
-      <Navigation />
-
-      {/* Hero Section */}
-      <section className="gradient-hero text-white py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="mb-6">Umzugsfirmen in allen Regionen der Schweiz</h1>
-            <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto">
-              Finden Sie geprüfte Umzugsfirmen in Ihrem Kanton – transparente Preise und echte Kundenbewertungen
-            </p>
+        {/* Hero Section */}
+        <section className="gradient-hero text-white py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="max-w-4xl mx-auto text-center">
+                <h1 className="mb-6 text-4xl md:text-5xl lg:text-6xl font-bold">
+                  Umzugsfirmen in allen Regionen der Schweiz
+                </h1>
+                <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto">
+                  Finden Sie geprüfte Umzugsfirmen in Ihrem Kanton – transparente Preise und echte Kundenbewertungen
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Key Stats */}
-      <section className="py-12 bg-white border-b border-border">
-        <div className="container mx-auto px-4">
-          <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
-            <div>
-              <div className="text-4xl font-bold text-primary mb-2">26</div>
-              <div className="text-muted-foreground">Alle Kantone</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-primary mb-2">600+</div>
-              <div className="text-muted-foreground">Umzugsfirmen</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-primary mb-2">15'000+</div>
-              <div className="text-muted-foreground">Vermittelte Umzüge</div>
-            </div>
+        {/* Key Stats */}
+        <section className="py-12 bg-white border-b border-border">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
+                <Card variant="elevated" className="p-6">
+                  <div className="text-4xl font-bold text-primary mb-2">26</div>
+                  <div className="text-muted-foreground">Alle Kantone</div>
+                </Card>
+                <Card variant="elevated" className="p-6">
+                  <div className="text-4xl font-bold text-primary mb-2">600+</div>
+                  <div className="text-muted-foreground">Umzugsfirmen</div>
+                </Card>
+                <Card variant="elevated" className="p-6">
+                  <div className="text-4xl font-bold text-primary mb-2">15'000+</div>
+                  <div className="text-muted-foreground">Vermittelte Umzüge</div>
+                </Card>
+              </div>
+            </ScrollReveal>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Cantons Grid */}
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="mb-4">Wählen Sie Ihren Kanton</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Umzugsfirmen in Ihrer Region vergleichen – lokale Expertise, faire Preise
-              </p>
-            </div>
+        {/* Cantons Grid */}
+        <section className="py-16 md:py-24 gradient-light">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <ScrollReveal>
+                <div className="text-center mb-12">
+                  <h2 className="mb-4 text-3xl md:text-4xl font-bold">Wählen Sie Ihren Kanton</h2>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Umzugsfirmen in Ihrer Region vergleichen – lokale Expertise, faire Preise
+                  </p>
+                </div>
+              </ScrollReveal>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cantons.map((canton) => (
-                <Link key={canton.slug} to={`/umzug/${canton.slug}`}>
-                  <Card className="p-6 hover:shadow-strong transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/30">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {cantons.map((canton, index) => (
+                  <ScrollReveal key={canton.slug} delay={index * 0.02}>
+                    <Link to={`/umzug/${canton.slug}`}>
+                      <Card variant="elevated" className="p-6 hover-lift border-2 hover:border-primary/30">
                     <div className="flex items-start gap-4 mb-4">
                       <div className="w-12 h-12 rounded-xl gradient-hero flex items-center justify-center flex-shrink-0">
                         <MapPin className="w-6 h-6 text-white" />
@@ -151,42 +129,48 @@ const Regionen = () => {
                         <span className="text-muted-foreground">Umzüge</span>
                       </div>
                     </div>
-                  </Card>
-                </Link>
-              ))}
+                      </Card>
+                    </Link>
+                  </ScrollReveal>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA Section */}
-      <section className="py-16 gradient-light">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="mb-6">Bereit für Ihren Umzug?</h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Erhalten Sie kostenlose Offerten von geprüften Umzugsfirmen in Ihrer Region
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/rechner">
-                <button className="px-8 py-4 bg-accent hover:bg-accent-dark text-white rounded-lg font-semibold shadow-medium hover:shadow-strong transition-all">
-                  Jetzt Kosten berechnen
-                </button>
-              </Link>
-              <Link to="/firmen">
-                <button className="px-8 py-4 bg-white hover:bg-secondary text-foreground rounded-lg font-semibold border-2 border-border hover:border-primary/30 transition-all">
-                  Firmen vergleichen
-                </button>
-              </Link>
-            </div>
+        {/* CTA Section */}
+        <section className="py-16 gradient-cta text-white">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <div className="max-w-3xl mx-auto text-center">
+                <h2 className="mb-6 text-3xl md:text-4xl font-bold">Bereit für Ihren Umzug?</h2>
+                <p className="text-xl mb-8 text-white/90">
+                  Erhalten Sie kostenlose Offerten von geprüften Umzugsfirmen in Ihrer Region
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                    <Link to="/rechner">
+                      <Calculator className="w-5 h-5 mr-2" />
+                      Jetzt Kosten berechnen
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
+                    <Link to="/firmen">
+                      <Building2 className="w-5 h-5 mr-2" />
+                      Firmen vergleichen
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <Footer />
-      <ScrollToTop />
-      <StickyMobileCTA />
-    </div>
+        <Footer />
+        <ScrollToTop />
+        <StickyMobileCTA />
+      </div>
+    </>
   );
 };
 
