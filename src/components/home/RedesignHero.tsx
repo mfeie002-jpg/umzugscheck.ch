@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getHomepageContent } from "@/lib/content";
+import heroMovingFamily from "@/assets/hero-moving-family.jpg";
 
 export const RedesignHero = () => {
   const content = getHomepageContent().hero;
@@ -25,8 +26,8 @@ export const RedesignHero = () => {
       {/* Emotional Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2073&auto=format&fit=crop"
-          alt="Happy family moving into new home"
+          src={heroMovingFamily}
+          alt="Glückliche Familie bei ihrem Umzug mit professionellen Umzugshelfern"
           className="w-full h-full object-cover"
         />
         {/* Gradient Overlay for Text Readability */}
