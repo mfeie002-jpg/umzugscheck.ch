@@ -49,7 +49,7 @@ export const TopCompaniesCards = () => {
   const [activeFilter, setActiveFilter] = useState("quality");
 
   return (
-    <section className="py-20 md:py-28 bg-slate-50">
+    <section className="py-20 md:py-28 bg-gradient-elegant">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,11 +57,11 @@ export const TopCompaniesCards = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
             Top bewertete Umzugsfirmen
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-8">
-            Geprüfte und versicherte Partner
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-8 body-premium">
+            Geprüfte und versicherte Schweizer Partner
           </p>
 
           {/* Filter Chips */}
@@ -70,10 +70,10 @@ export const TopCompaniesCards = () => {
               <button
                 key={filter.value}
                 onClick={() => setActiveFilter(filter.value)}
-                className={`px-6 py-3 rounded-full font-bold text-sm transition-all shadow-md ${
+                className={`px-6 py-3 rounded-full font-bold text-sm transition-all duration-300 ${
                   activeFilter === filter.value
-                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg scale-105"
-                    : "bg-white text-slate-700 hover:bg-slate-100"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-medium scale-105"
+                    : "bg-white text-slate-700 hover:bg-slate-100 shadow-soft hover:shadow-medium"
                 }`}
               >
                 {filter.label}
@@ -83,7 +83,7 @@ export const TopCompaniesCards = () => {
         </motion.div>
 
         {/* Companies Grid */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
           {topCompanies.map((company, index) => (
             <motion.div
               key={index}
@@ -92,23 +92,23 @@ export const TopCompaniesCards = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all group border-slate-200 bg-white">
-                <div className="relative h-56 overflow-hidden">
+              <Card variant="elevated" className="overflow-hidden hover:shadow-strong hover:-translate-y-2 transition-all duration-300 group border-0 bg-white">
+                <div className="relative h-48 md:h-56 overflow-hidden">
                   <img
                     src={company.image}
                     alt={company.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-white/95 text-slate-900 backdrop-blur-sm font-bold shadow-md px-3 py-1">
+                    <Badge className="bg-white/95 text-slate-900 backdrop-blur-sm font-bold shadow-medium px-3 py-1.5">
                       {company.priceLevel}
                     </Badge>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
                 
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-3 text-slate-900">{company.name}</h3>
+                <CardContent className="p-5 md:p-6">
+                  <h3 className="text-lg md:text-xl font-bold mb-3 text-slate-900 group-hover:text-blue-600 transition-colors">{company.name}</h3>
                   
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex items-center gap-1">
@@ -122,7 +122,7 @@ export const TopCompaniesCards = () => {
 
                   <div className="flex flex-wrap gap-2 mb-5">
                     {company.badges.slice(0, 2).map((badge, i) => (
-                      <Badge key={i} variant="outline" className="text-xs font-semibold border-slate-300">
+                      <Badge key={i} variant="outline" className="text-xs font-semibold border-slate-300 bg-slate-50">
                         {badge === "Geprüft" && <CheckCircle className="h-3 w-3 mr-1 text-green-600" />}
                         {badge === "Versichert" && <Shield className="h-3 w-3 mr-1 text-blue-600" />}
                         {badge.includes("Seit") && <Calendar className="h-3 w-3 mr-1 text-slate-600" />}
@@ -131,7 +131,7 @@ export const TopCompaniesCards = () => {
                     ))}
                   </div>
 
-                  <Button className="w-full h-12 font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all">
+                  <Button className="w-full h-12 font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-medium hover:shadow-strong transition-all">
                     Offerte anfragen
                   </Button>
                 </CardContent>
@@ -148,7 +148,7 @@ export const TopCompaniesCards = () => {
           className="text-center mt-12"
         >
           <Link to="/umzugsfirmen-schweiz">
-            <Button variant="outline" size="lg" className="px-10 h-14 text-lg font-bold border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600">
+            <Button variant="outline" size="lg" className="px-10 h-14 text-lg font-bold border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 shadow-soft hover:shadow-medium">
               Alle Umzugsfirmen anzeigen
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>

@@ -99,7 +99,9 @@ export default {
         'swiss-blue': {
           DEFAULT: "hsl(210, 100%, 50%)",
           light: "hsl(210, 100%, 95%)",
+          dark: "hsl(210, 100%, 40%)",
         },
+        'happy-teal': "hsl(180, 60%, 50%)",
         'swiss-noir': "hsl(215, 25%, 13%)",
         'executive-graphite': "hsl(220, 17%, 22%)",
         'platinum-shadow': "hsl(218, 11%, 34%)",

@@ -24,7 +24,7 @@ const examples = [
 
 export const CostExamplesCompact = () => {
   return (
-    <section className="py-20 md:py-28 bg-slate-50">
+    <section className="py-20 md:py-28 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -32,10 +32,10 @@ export const CostExamplesCompact = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
             Transparente Preisbeispiele
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto body-premium">
             Realistische Kostenübersicht für Umzüge in der Schweiz
           </p>
         </motion.div>
@@ -49,18 +49,18 @@ export const CostExamplesCompact = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="text-center hover:shadow-lg transition-all border-slate-200 bg-white overflow-hidden">
+              <Card variant="elevated" className="text-center hover:shadow-strong hover:-translate-y-1 transition-all duration-300 border-0 bg-white overflow-hidden group">
                 <CardContent className="p-0">
-                  <div className="relative bg-slate-50 p-8 flex items-center justify-center min-h-[200px]">
+                  <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 p-8 flex items-center justify-center min-h-[200px] overflow-hidden">
                     <img 
                       src={example.image} 
                       alt={example.title}
-                      className="max-w-full h-auto max-h-[180px] object-contain"
+                      className="max-w-full h-auto max-h-[180px] object-contain group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 bg-white">
                     <h3 className="text-lg font-bold mb-3 text-slate-900">{example.title}</h3>
-                    <p className="text-3xl font-bold text-blue-600">{example.price}</p>
+                    <p className="text-3xl md:text-4xl font-bold text-gradient-blue">{example.price}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -74,8 +74,8 @@ export const CostExamplesCompact = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <p className="text-lg text-slate-400 text-center max-w-md mx-auto mt-6">
-            <em>Dies sind Richtwerte. Exakte Preise erhalten Sie mit Ihrer Offertenanfrage.</em>
+          <p className="text-base text-slate-500 text-center max-w-lg mx-auto italic">
+            Dies sind Richtwerte. Exakte Preise erhalten Sie mit Ihrer Offertenanfrage.
           </p>
         </motion.div>
       </div>

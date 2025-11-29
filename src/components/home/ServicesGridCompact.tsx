@@ -35,7 +35,7 @@ const services = [
 
 export const ServicesGridCompact = () => {
   return (
-    <section className="py-20 md:py-28 bg-white">
+    <section className="py-20 md:py-28 bg-gradient-elegant">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,15 +43,15 @@ export const ServicesGridCompact = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
             Unsere Dienstleistungen
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-            Professionelle Services für jeden Umzug
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto body-premium">
+            Professionelle Services für jeden Umzug – alles aus einer Hand
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
           {services.map((service, index) => (
             <motion.div
               key={index}
@@ -61,18 +61,20 @@ export const ServicesGridCompact = () => {
               transition={{ delay: index * 0.1 }}
             >
               <Link to={service.link}>
-                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer border-slate-200 overflow-hidden">
-                  <div className="relative h-40 overflow-hidden">
+                <Card variant="elevated" className="h-full hover:shadow-strong hover:-translate-y-2 transition-all duration-300 group cursor-pointer overflow-hidden border-0">
+                  <div className="relative h-36 md:h-40 overflow-hidden">
                     <img 
                       src={service.image} 
                       alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <h3 className="text-base md:text-lg font-bold text-white drop-shadow-lg">{service.title}</h3>
+                    </div>
                   </div>
-                  <CardContent className="p-6 text-center">
-                    <h3 className="text-lg font-bold mb-2 text-slate-900">{service.title}</h3>
-                    <p className="text-sm text-slate-600 leading-relaxed">{service.description}</p>
+                  <CardContent className="p-4 md:p-5 text-center bg-white">
+                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{service.description}</p>
                   </CardContent>
                 </Card>
               </Link>

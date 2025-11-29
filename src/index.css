@@ -234,104 +234,61 @@
     background: var(--gradient-hero);
   }
   
-  .gradient-red {
-    background: var(--gradient-red);
+  .gradient-cta {
+    background: linear-gradient(135deg, hsl(0 85% 55%) 0%, hsl(0 85% 45%) 100%);
   }
   
-  .gradient-elegant {
-    background: var(--gradient-elegant);
+  /* Text Gradients */
+  .text-gradient-primary {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-hover;
   }
   
-  /* Premium Hover Effects */
+  .text-gradient-blue {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600;
+  }
+  
+  .text-gradient-premium {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-primary-hover;
+  }
+
+  /* Hover Effects */
   .hover-lift {
-    @apply transition-all duration-300;
+    @apply hover:-translate-y-1 hover:shadow-medium transition-all duration-300;
   }
   
-  .hover-lift:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: var(--shadow-lift);
+  .hover-scale {
+    @apply hover:scale-[1.02] transition-all duration-300;
   }
   
-  .hover-copper {
-    @apply transition-all duration-300;
+  .hover-glow {
+    @apply hover:shadow-accent transition-all duration-300;
   }
-  
-  .hover-copper:hover {
-    background-color: hsl(0, 85%, 45%);
-    box-shadow: var(--shadow-red);
-  }
-  
-  /* Premium Spacing */
+
+  /* Layout Utilities */
   .section-spacing {
-    @apply py-20 md:py-32;
+    @apply py-16 md:py-24 lg:py-32;
   }
   
-  .container-premium {
-    @apply container mx-auto px-6 md:px-8;
-    max-width: 1320px;
+  .content-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Typography */
+  .text-balance {
+    text-wrap: balance;
   }
   
-  /* Premium Card Styling */
-  .card-premium {
-    @apply bg-white rounded-3xl shadow-premium border border-muted;
-    padding: 38px 48px;
+  .heading-premium {
+    @apply font-bold tracking-tight text-balance;
   }
   
-  @media (max-width: 768px) {
-    .card-premium {
-      padding: 24px 28px;
-    }
+  .body-premium {
+    @apply leading-relaxed text-muted-foreground;
   }
-  
-  /* Smooth Transitions */
-  .transition-premium {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  /* Animation Utilities */
-  .fade-in {
-    animation: fadeIn 0.6s ease-out;
-  }
-  
-  .slide-up {
-    animation: slideUp 0.6s ease-out;
-  }
-  
-  .scale-in {
-    animation: scaleIn 0.5s ease-out;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(60px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes scaleIn {
-    from {
-      opacity: 0;
-      transform: scale(0.92);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20;
   }
 }
 
