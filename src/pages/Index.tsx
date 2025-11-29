@@ -12,6 +12,7 @@ import { WhyUsCards } from "@/components/home/WhyUsCards";
 import { FAQCompact } from "@/components/home/FAQCompact";
 import { RegionsButtons } from "@/components/home/RegionsButtons";
 import { ProviderCTA } from "@/components/home/ProviderCTA";
+import { EnhancedFooter } from "@/components/home/EnhancedFooter";
 import { Helmet } from "react-helmet";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 
@@ -91,6 +92,8 @@ const Index = () => {
         {/* 11. For Companies - Mini Section */}
         <ProviderCTA />
       </main>
+
+      <EnhancedFooter />
       
       {/* 12. Mobile Sticky CTA */}
       <StickyMobileCTA text="Offerten vergleichen" link="/umzug-offerte" />
