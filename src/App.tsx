@@ -69,6 +69,7 @@ import PackingCalculator from "./pages/PackingCalculator";
 import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
+import Zug from "./pages/Zug";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import BecomeProvider from "./pages/BecomeProvider";
@@ -167,6 +168,7 @@ const App = () => (
             <Route path="/rechner/moebelmontage" element={<AssemblyCalculator />} />
             <Route path="/rechner/konfigurator" element={<TotalPriceConfigurator />} />
             <Route path="/rechner/video" element={<VideoEstimator />} />
+            <Route path="/zug" element={<Zug />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
