@@ -14,9 +14,10 @@ import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
 const navItems = [
+  { label: "Umzug vergleichen", href: "/umzug-offerte", hasDropdown: false },
   { label: "Preisrechner", href: "/umzugsrechner", hasDropdown: true, dropdownType: "calculators" },
   { label: "Umzugsfirmen", href: "/umzugsfirmen-schweiz", hasDropdown: true, dropdownType: "companies" },
-  { label: "Services", href: "#", hasDropdown: true, dropdownType: "services" },
+  { label: "Services", href: "/services", hasDropdown: true, dropdownType: "services" },
   { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
   { label: "Ratgeber", href: "/ratgeber", hasDropdown: true, dropdownType: "ratgeber" },
   { label: "Für Firmen", href: "/anbieter", hasDropdown: true, dropdownType: "provider" }
