@@ -24,7 +24,7 @@ const steps = [
 
 export const RedesignHowItWorks = () => {
   return (
-    <section className="py-20 md:py-28 bg-white">
+    <section className="py-20 md:py-28 bg-gradient-elegant">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -32,10 +32,10 @@ export const RedesignHowItWorks = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-slate-900">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
             So einfach funktioniert's
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto body-premium">
             In 3 Schritten zum perfekten Umzug
           </p>
         </motion.div>
@@ -52,14 +52,12 @@ export const RedesignHowItWorks = () => {
             >
               <div className="text-center">
                 <div className="relative inline-flex mb-6">
-                  {/* Number Circle */}
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white text-3xl font-bold shadow-medium">
                     {step.number}
                   </div>
                 </div>
                 
-                {/* Icon */}
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-5 shadow-soft">
                   <step.icon className="h-8 w-8 text-blue-600" />
                 </div>
                 
@@ -67,7 +65,6 @@ export const RedesignHowItWorks = () => {
                 <p className="text-slate-600 leading-relaxed">{step.description}</p>
               </div>
               
-              {/* Connector Arrow (desktop only) */}
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5">
                   <div className="w-full h-full bg-gradient-to-r from-blue-400 via-cyan-400 to-transparent" />
@@ -78,15 +75,14 @@ export const RedesignHowItWorks = () => {
           ))}
         </div>
 
-        {/* Mini CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-8"
+          className="text-center mt-12"
         >
           <a href="/umzugsrechner">
-            <button className="px-8 py-3 bg-primary text-white rounded-full font-semibold hover:scale-105 transition-transform shadow-medium">
+            <button className="px-10 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full font-bold text-lg hover:scale-105 hover:shadow-strong transition-all duration-300 shadow-medium">
               Jetzt starten
             </button>
           </a>

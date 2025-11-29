@@ -5,23 +5,27 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-soft",
-        outline: "border border-input bg-background hover:bg-secondary hover:text-secondary-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-medium shadow-soft",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-medium shadow-soft",
+        outline: "border border-input bg-background hover:bg-secondary hover:text-secondary-foreground hover:border-primary/30",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-soft",
         ghost: "hover:bg-secondary hover:text-secondary-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        accent: "gradient-cta text-white hover:opacity-90 shadow-accent",
-        cta: "gradient-cta text-white hover:opacity-90 shadow-accent hover:shadow-hover transition-all",
+        accent: "gradient-cta text-white hover:opacity-90 shadow-accent hover:shadow-hover",
+        cta: "gradient-cta text-white hover:opacity-90 hover:scale-[1.02] shadow-accent hover:shadow-hover",
+        premium: "bg-gradient-to-r from-primary via-primary to-accent text-white hover:opacity-95 hover:shadow-strong shadow-medium",
+        success: "bg-green-600 text-white hover:bg-green-700 hover:shadow-medium shadow-soft",
+        warning: "bg-orange-500 text-white hover:bg-orange-600 hover:shadow-medium shadow-soft",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-12 rounded-lg px-8 text-base",
+        sm: "h-9 rounded-md px-3 text-xs",
+        lg: "h-12 rounded-lg px-8 text-base font-semibold",
+        xl: "h-14 rounded-xl px-10 text-lg font-bold",
         icon: "h-10 w-10",
       },
     },

@@ -35,10 +35,10 @@ export const WhyUsCards = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
             Warum umzugscheck.ch?
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto body-premium">
             Ihre Vorteile auf einen Blick
           </p>
         </motion.div>
@@ -54,12 +54,12 @@ export const WhyUsCards = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <Card className="h-full hover:shadow-lg transition-all text-center border-slate-200 bg-white">
+                <Card variant="elevated" className="h-full hover:shadow-strong hover:-translate-y-1 transition-all duration-300 text-center border-0 bg-white">
                   <CardContent className="p-6">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4 shadow-md">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-5 shadow-medium">
                       <Icon className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold mb-2 text-slate-900">{feature.title}</h3>
+                    <h3 className="text-base md:text-lg font-bold mb-3 text-slate-900 leading-tight">{feature.title}</h3>
                     <p className="text-sm text-slate-600 leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>

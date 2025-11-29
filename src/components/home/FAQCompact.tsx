@@ -26,7 +26,7 @@ const faqs = [
 
 export const FAQCompact = () => {
   return (
-    <section className="py-20 md:py-28 bg-slate-50">
+    <section className="py-20 md:py-28 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -34,10 +34,10 @@ export const FAQCompact = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
             Häufige Fragen
           </h2>
-          <p className="text-lg text-slate-600">
+          <p className="text-lg md:text-xl text-slate-600 body-premium">
             Alles, was Sie über umzugscheck.ch wissen müssen
           </p>
         </motion.div>
@@ -50,11 +50,11 @@ export const FAQCompact = () => {
         >
           <Accordion type="single" collapsible className="w-full space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="bg-white border-slate-200 rounded-2xl px-6 shadow-sm">
-                <AccordionTrigger className="text-left font-bold text-slate-900 hover:text-blue-600 py-5">
+              <AccordionItem key={index} value={`item-${index}`} className="bg-gradient-elegant border-0 rounded-2xl px-6 shadow-medium hover:shadow-strong transition-shadow">
+                <AccordionTrigger className="text-left font-bold text-slate-900 hover:text-blue-600 py-6 text-base md:text-lg">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-slate-600 pb-5 leading-relaxed">
+                <AccordionContent className="text-slate-600 pb-6 leading-relaxed text-base">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
