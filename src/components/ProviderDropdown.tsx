@@ -11,7 +11,7 @@ const providerLinks = [
   { 
     icon: Briefcase, 
     label: "Anbieter werden", 
-    href: "/anbieter-werden", 
+    href: "/anbieter", 
     description: "Jetzt Partner werden" 
   },
   { 
@@ -22,21 +22,21 @@ const providerLinks = [
   },
   { 
     icon: DollarSign, 
-    label: "Preise & Modelle", 
+    label: "Preise & Konditionen", 
     href: "/anbieter/preise", 
     description: "Transparente Konditionen" 
   },
   { 
-    icon: Award, 
-    label: "Vorteile", 
-    href: "/anbieter-werden#vorteile", 
-    description: "Ihre Benefits als Partner" 
+    icon: HelpCircle, 
+    label: "Häufige Fragen", 
+    href: "/anbieter/faq", 
+    description: "Antworten für Partnerfirmen" 
   },
   { 
-    icon: HelpCircle, 
-    label: "Wie funktioniert's?", 
-    href: "/anbieter-werden#funktionsweise", 
-    description: "So arbeiten wir zusammen" 
+    icon: Award, 
+    label: "Vorteile", 
+    href: "/anbieter#vorteile", 
+    description: "Ihre Benefits als Partner" 
   }
 ];
 

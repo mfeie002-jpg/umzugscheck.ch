@@ -12,12 +12,12 @@ const services = [
   { icon: Building2, label: "Firmenumzug", href: "/firmenumzug-schweiz", description: "Büro- und Geschäftsumzüge" },
   { icon: Sparkles, label: "Umzugsreinigung", href: "/umzugsreinigung-schweiz", description: "Endreinigung mit Garantie" },
   { icon: Trash2, label: "Räumung & Entsorgung", href: "/entsorgung-schweiz", description: "Entrümpelung & Entsorgung" },
-  { icon: Piano, label: "Spezialtransporte", href: "/umzugsrechner", description: "Klaviere, Tresore & mehr" },
   { icon: Package, label: "Möbellift", href: "/moebellift-schweiz", description: "Außenlift für große Objekte" },
-  { icon: Box, label: "Lagerung", href: "/umzugsrechner", description: "Sichere Lagerlösungen" },
-  { icon: Wrench, label: "Möbelmontage", href: "/umzugsrechner", description: "Auf- und Abbau Service" },
-  { icon: Home, label: "Wohnungsabgabe", href: "/umzugsrechner", description: "Komplettservice für Übergabe" },
-  { icon: Globe, label: "Internationale Umzüge", href: "/umzugsrechner", description: "Grenzüberschreitend" }
+  { icon: Globe, label: "Internationale Umzüge", href: "/internationaler-umzug", description: "Grenzüberschreitend" },
+  { icon: Box, label: "Lagerung", href: "/lagerung", description: "Sichere Lagerlösungen" },
+  { icon: Wrench, label: "Möbelmontage", href: "/services", description: "Auf- und Abbau Service" },
+  { icon: Home, label: "Wohnungsabgabe", href: "/services", description: "Komplettservice für Übergabe" },
+  { icon: Piano, label: "Spezialtransporte", href: "/services", description: "Klaviere, Tresore & mehr" }
 ];
 
 export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => {
