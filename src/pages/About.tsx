@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
@@ -67,7 +66,6 @@ const About = () => {
       />
 
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         
         <main className="flex-1">
           {/* Hero */}

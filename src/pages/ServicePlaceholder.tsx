@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/Navigation";
 import { EnhancedFooter } from "@/components/home/EnhancedFooter";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
@@ -20,8 +19,6 @@ const ServicePlaceholder = ({ serviceName, slug, description }: ServicePlacehold
         canonicalUrl={`https://umzugscheck.ch/${slug}`}
         keywords={`${serviceName}, ${serviceName} Schweiz, ${serviceName} Offerten`}
       />
-
-      <Navigation />
 
       <main id="main-content" role="main">
         <section className="py-16 md:py-24 bg-gradient-to-br from-background via-secondary/5 to-background">

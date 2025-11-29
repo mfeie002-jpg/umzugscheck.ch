@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Navigation } from "@/components/Navigation";
 import { EnhancedFooter } from "@/components/home/EnhancedFooter";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -290,8 +289,6 @@ const Zug = () => {
         keywords="Umzug Zug, Umzugsfirma Zug, Umzugsunternehmen Kanton Zug, Umzug Baar, Umzug Cham, Umzug Steinhausen, Umzug Rotkreuz"
         schemaMarkup={schemaMarkup}
       />
-
-      <Navigation />
 
       <main id="main-content" role="main">
         {/* Breadcrumbs for SEO */}

@@ -47,7 +47,6 @@ export default function InternationalMoving() {
       />
 
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         
         <main className="flex-1">
           {/* Hero Section */}

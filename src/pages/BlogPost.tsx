@@ -112,7 +112,6 @@ const BlogPost = () => {
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-2">Artikel nicht gefunden</h2>
@@ -152,8 +151,6 @@ const BlogPost = () => {
         <meta name="twitter:description" content={ogTags['twitter:description']} />
         <meta name="twitter:image" content={ogTags['twitter:image']} />
       </Helmet>
-
-      <Navigation />
 
       <main className="flex-1">
         {/* Breadcrumbs */}

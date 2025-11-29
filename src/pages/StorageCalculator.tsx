@@ -142,8 +142,6 @@ const StorageCalculator = () => {
         schemaMarkup={SERVICE_SCHEMA}
       />
 
-      <Navigation />
-      
       <main className="flex-1">
         <div className="container mx-auto px-4 py-6 sm:py-8 md:py-16">
           <Link 

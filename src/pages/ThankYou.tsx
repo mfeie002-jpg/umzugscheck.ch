@@ -81,7 +81,6 @@ export default function ThankYou() {
   if (!lead) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Anfrage nicht gefunden</h1>
@@ -106,7 +105,6 @@ export default function ThankYou() {
       />
       
       <div className="min-h-screen flex flex-col bg-background">
-        <Navigation />
         
         <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
           <div className="max-w-3xl mx-auto space-y-8">

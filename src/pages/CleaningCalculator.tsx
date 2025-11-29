@@ -1,6 +1,5 @@
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -153,8 +152,6 @@ const CleaningCalculator = () => {
         schemaMarkup={SERVICE_SCHEMA}
       />
 
-      <Navigation />
-      
       <main className="flex-1">
         {/* Hero Section */}
         <section className="gradient-hero text-white py-12 md:py-16">

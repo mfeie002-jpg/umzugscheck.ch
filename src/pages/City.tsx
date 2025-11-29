@@ -135,7 +135,6 @@ const City = () => {
   if (!city) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="mb-4">Stadt nicht gefunden</h1>
@@ -193,8 +192,6 @@ const City = () => {
           {schemaScript}
         </script>
       </Helmet>
-      
-      <Navigation />
       
       <main className="flex-1">
         {/* Breadcrumbs */}

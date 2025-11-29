@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,8 +82,6 @@ const ProviderDashboard = () => {
         <title>Dashboard - {provider.company_name} | Umzugscheck.ch</title>
       </Helmet>
 
-      <Navigation />
-      
       <main className="flex-1 py-8">
         <div className="container max-w-6xl mx-auto px-4">
           {/* Header */}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -146,8 +145,6 @@ const ProviderProfile = () => {
         <title>Profil bearbeiten - {provider.company_name} | Umzugscheck.ch</title>
       </Helmet>
 
-      <Navigation />
-      
       <main className="flex-1 py-12">
         <div className="container max-w-3xl mx-auto px-4">
           <div className="mb-8">

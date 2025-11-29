@@ -24,7 +24,6 @@ export default function CompanyProfile() {
   if (!company) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-4">Firma nicht gefunden</h1>
@@ -57,7 +56,6 @@ export default function CompanyProfile() {
       />
 
       <div className="min-h-screen flex flex-col bg-background">
-        <Navigation />
         
         <main className="flex-1">
           {/* Hero Section - Mobile Optimized */}

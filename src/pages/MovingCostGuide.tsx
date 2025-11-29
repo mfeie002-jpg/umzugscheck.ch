@@ -135,7 +135,6 @@ const MovingCostGuide = () => {
       />
       
       <div className="min-h-screen flex flex-col">
-        <Navigation />
 
       {/* Hero Section */}
       <section className="relative py-20 md:py-28 text-white overflow-hidden">
