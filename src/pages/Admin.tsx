@@ -141,7 +141,17 @@ export default function Admin() {
           </TabsList>
 
           <TabsContent value="homepage" className="space-y-6">
-            <HomepageEditor />
+            <Card>
+              <CardHeader>
+                <CardTitle>Homepage Inhalt bearbeiten</CardTitle>
+                <CardDescription>
+                  Ändern Sie Texte, Überschriften und andere Inhalte der Startseite
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <HomepageEditor />
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="services" className="space-y-6">

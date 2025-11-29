@@ -13,9 +13,14 @@ export const HomepageEditor = () => {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    // Load existing content
-    const existingContent = getHomepageContent();
-    setContent(existingContent);
+    try {
+      // Load existing content
+      const existingContent = getHomepageContent();
+      setContent(existingContent);
+    } catch (error) {
+      console.error("Error loading homepage content:", error);
+      toast.error("Fehler beim Laden der Inhalte");
+    }
   }, []);
 
   const handleSave = async () => {
