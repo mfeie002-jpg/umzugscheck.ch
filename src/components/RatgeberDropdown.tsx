@@ -11,37 +11,37 @@ const ratgeberItems = [
     icon: DollarSign,
     title: "Kosten & Preise",
     description: "Was kostet ein Umzug?",
-    href: "/umzugskosten-guide"
+    href: "/ratgeber/kosten"
   },
   {
     icon: CheckSquare,
     title: "Umzugscheckliste",
     description: "Schritt-für-Schritt Guide",
-    href: "/blog/umzugscheckliste"
+    href: "/ratgeber/checklisten"
+  },
+  {
+    icon: Lightbulb,
+    title: "Umzugstipps",
+    description: "Praktische Tipps für Ihren Umzug",
+    href: "/ratgeber/umzugstipps"
   },
   {
     icon: Package,
     title: "Verpackungsratgeber",
     description: "Richtig packen & schützen",
-    href: "/blog/verpackungstipps"
+    href: "/ratgeber/umzugstipps"
   },
   {
     icon: FileText,
     title: "Reinigung & Abnahme",
     description: "Wohnungsübergabe perfekt",
-    href: "/blog/endreinigung-tipps"
+    href: "/ratgeber/umzugstipps"
   },
   {
     icon: Trash2,
     title: "Räumung & Entsorgung",
     description: "Entrümpelung & Entsorgung",
-    href: "/blog/entsorgungs-ratgeber"
-  },
-  {
-    icon: Lightbulb,
-    title: "Tipps & Tricks",
-    description: "Alle Ratgeber-Artikel",
-    href: "/blog"
+    href: "/ratgeber/kosten"
   }
 ];
 

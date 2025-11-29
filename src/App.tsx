@@ -206,6 +206,13 @@ const App = () => (
           <Route path="/admin/email-automation" element={<EmailAutomation />} />
           <Route path="/admin/ab-testing" element={<ABTesting />} />
           <Route path="/admin/availability" element={<ProviderAvailability />} />
+            <Route path="/ratgeber/umzugstipps" element={<Blog />} />
+            <Route path="/ratgeber/kosten" element={<Blog />} />
+            <Route path="/ratgeber/checklisten" element={<Blog />} />
+            <Route path="/ratgeber/:category/:slug" element={<BlogPost />} />
+            <Route path="/ratgeber/umzugskosten-3-zimmer-wohnung" element={<BlogPost />} />
+            <Route path="/ratgeber/umzugscheckliste-download" element={<BlogPost />} />
+            <Route path="/ratgeber/umzug-mit-kindern" element={<BlogPost />} />
             <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
             <Route path="/beste-umzugsfirma" element={<BesteFirmen />} />
             <Route path="/beste-umzugsfirma/:region" element={<BesteFirmen />} />
@@ -221,7 +228,8 @@ const App = () => (
             <Route path="/anbieter/dashboard" element={<ProviderDashboard />} />
             <Route path="/firmen-dashboard" element={<ProviderDashboard />} />
             <Route path="/anbieter/profil" element={<ProviderProfile />} />
-            <Route path="/anbieter/preise" element={<ProviderPricing />} />
+            <Route path="/anbieter/preise" element={<ProviderPricingPage />} />
+            <Route path="/anbieter/faq" element={<ProviderFAQPage />} />
             <Route path="/firmen-portal" element={<ProviderPortal />} />
             <Route path="/firmen-portal/dashboard" element={<ProviderDashboard />} />
             <Route path="/umzugsofferten" element={<Umzugsofferten />} />
@@ -246,6 +254,7 @@ const App = () => (
             <Route path="/:city/umzugsfirmen" element={<CityOptimized />} />
             
             {/* Service Pages - Optimized */}
+            <Route path="/services" element={<ServicesOverview />} />
             <Route path="/umzug" element={<ServiceOptimized />} />
             <Route path="/umzug-schweiz" element={<ServiceOptimized />} />
             <Route path="/reinigung" element={<ServiceOptimized />} />
@@ -258,6 +267,7 @@ const App = () => (
             <Route path="/lagerung" element={<ServiceOptimized />} />
             <Route path="/transport" element={<ServiceOptimized />} />
             <Route path="/moebellift-schweiz" element={<ServiceOptimized />} />
+            <Route path="/internationaler-umzug" element={<InternationalMoving />} />
             <Route path="/umzug-mit-reinigung" element={<ServiceOptimized />} />
             
             {/* City + Service Combinations - Optimized */}

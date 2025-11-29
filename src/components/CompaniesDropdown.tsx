@@ -25,17 +25,15 @@ export const CompaniesDropdown = ({ isOpen, onClose }: CompaniesDropdownProps) =
       title: "Umzugsfirmen Schweiz",
       description: "Alle geprüften Umzugsfirmen im Überblick",
       icon: Building2,
-      href: "/firmen",
+      href: "/umzugsfirmen-schweiz",
     },
   ];
 
   const regionalLinks = [
-    { label: "Zürich", href: "/beste-umzugsfirma/zuerich" },
-    { label: "Bern", href: "/beste-umzugsfirma/bern" },
-    { label: "Basel", href: "/beste-umzugsfirma/basel" },
-    { label: "Luzern", href: "/beste-umzugsfirma/luzern" },
-    { label: "St. Gallen", href: "/beste-umzugsfirma/st-gallen" },
-    { label: "Winterthur", href: "/beste-umzugsfirma/winterthur" },
+    { label: "Zürich", href: "/zuerich/umzugsfirmen" },
+    { label: "Bern", href: "/bern/umzugsfirmen" },
+    { label: "Basel", href: "/basel/umzugsfirmen" },
+    { label: "Luzern", href: "/luzern/umzugsfirmen" },
   ];
 
   return (
