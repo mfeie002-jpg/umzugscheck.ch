@@ -2,14 +2,20 @@ import { motion } from "framer-motion";
 import { ButtonPremium } from "@/components/ui/button-premium";
 import { Link } from "react-router-dom";
 import { Star, Users, Shield, ArrowRight } from "lucide-react";
+import heroImage from "@/assets/hero-moving-family.jpg";
 
 export const PremiumHero = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center gradient-hero overflow-hidden">
-      {/* Background Blur Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-copper/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-swiss-gold/10 rounded-full blur-3xl"></div>
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <img 
+          src={heroImage} 
+          alt="Happy family moving to new home with professional movers" 
+          className="w-full h-full object-cover"
+        />
+        {/* Gradient Overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70"></div>
       </div>
 
       <div className="w-full mx-auto px-4 sm:px-6 md:px-12 max-w-7xl relative z-10">
