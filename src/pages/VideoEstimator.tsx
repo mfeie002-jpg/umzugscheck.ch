@@ -695,7 +695,12 @@ export default function VideoEstimator() {
                             <div className="grid grid-cols-2 gap-3">
                               <div>
                                 <Label htmlFor="fromPostal" className="text-sm mb-2 block">Von PLZ</Label>
-                                <Popover open={fromPostalOpen} onOpenChange={setFromPostalOpen}>
+                                <Popover open={fromPostalOpen} onOpenChange={(open) => {
+                                  setFromPostalOpen(open);
+                                  if (open && !fromPostal) {
+                                    setFromPostalSearch("");
+                                  }
+                                }}>
                                   <PopoverTrigger asChild>
                                     <Button
                                       variant="outline"
@@ -719,7 +724,11 @@ export default function VideoEstimator() {
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
                                     <Command>
-                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
+                                      <CommandInput 
+                                        placeholder="PLZ oder Ort suchen..." 
+                                        value={fromPostalSearch}
+                                        onValueChange={setFromPostalSearch}
+                                      />
                                       <CommandList>
                                         <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
                                         <CommandGroup>
@@ -746,7 +755,12 @@ export default function VideoEstimator() {
                               </div>
                               <div>
                                 <Label htmlFor="toPostal" className="text-sm mb-2 block">Nach PLZ</Label>
-                                <Popover open={toPostalOpen} onOpenChange={setToPostalOpen}>
+                                <Popover open={toPostalOpen} onOpenChange={(open) => {
+                                  setToPostalOpen(open);
+                                  if (open && !toPostal) {
+                                    setToPostalSearch("");
+                                  }
+                                }}>
                                   <PopoverTrigger asChild>
                                     <Button
                                       variant="outline"
@@ -770,7 +784,11 @@ export default function VideoEstimator() {
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
                                     <Command>
-                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
+                                      <CommandInput 
+                                        placeholder="PLZ oder Ort suchen..." 
+                                        value={toPostalSearch}
+                                        onValueChange={setToPostalSearch}
+                                      />
                                       <CommandList>
                                         <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
                                         <CommandGroup>
