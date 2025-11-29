@@ -9,19 +9,8 @@ import { getHomepageContent } from "@/lib/content";
 import type { HomepageContent } from "@/content/types";
 
 export const HomepageEditor = () => {
-  const [content, setContent] = useState<HomepageContent | null>(null);
+  const [content, setContent] = useState<HomepageContent>(() => getHomepageContent());
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    try {
-      // Load existing content
-      const existingContent = getHomepageContent();
-      setContent(existingContent);
-    } catch (error) {
-      console.error("Error loading homepage content:", error);
-      toast.error("Fehler beim Laden der Inhalte");
-    }
-  }, []);
 
   const handleSave = async () => {
     setSaving(true);
@@ -37,10 +26,6 @@ export const HomepageEditor = () => {
       setSaving(false);
     }
   };
-
-  if (!content) {
-    return <div>Lädt...</div>;
-  }
 
   return (
     <div className="space-y-6">
