@@ -74,7 +74,7 @@ export default function Umzugsofferten() {
   const schemaScript = generateSchemaScript(schemas);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Helmet>
         <title>{metaData.title}</title>
         <meta name="description" content={metaData.description} />
@@ -102,7 +102,7 @@ export default function Umzugsofferten() {
         <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary via-primary to-primary-dark text-white py-16 md:py-24">
+      <section className="gradient-hero text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -113,7 +113,7 @@ export default function Umzugsofferten() {
             </p>
             
             <Link to="/rechner" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent-dark text-white h-12 sm:h-14 text-base sm:text-lg px-6 sm:px-8 shadow-xl">
+              <Button size="lg" className="w-full sm:w-auto bg-white hover:bg-white/90 text-primary h-12 sm:h-14 text-base sm:text-lg px-6 sm:px-8 shadow-xl">
                 <span className="hidden sm:inline">Jetzt Offerten erhalten</span>
                 <span className="sm:hidden">Offerten erhalten</span>
                 <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
@@ -139,7 +139,7 @@ export default function Umzugsofferten() {
       </section>
 
       {/* Why Multiple Offers */}
-      <section className="py-16 md:py-20 bg-secondary/30">
+      <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -251,7 +251,7 @@ export default function Umzugsofferten() {
       </section>
 
       {/* Mini-Ranking Section */}
-      <section className="py-16 md:py-20 bg-secondary/30">
+      <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -344,7 +344,7 @@ export default function Umzugsofferten() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-20 bg-secondary/30">
+      <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
@@ -377,7 +377,7 @@ export default function Umzugsofferten() {
       </section>
 
       {/* Final CTA Block */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-primary via-primary to-primary-dark text-white">
+      <section className="py-16 md:py-20 gradient-hero text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -388,7 +388,7 @@ export default function Umzugsofferten() {
               Sparen Sie Zeit und Geld mit unserem kostenlosen Vergleichsservice
             </p>
             <Link to="/rechner" className="w-full sm:w-auto inline-block">
-              <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent-dark text-white h-12 sm:h-14 text-base sm:text-lg px-6 sm:px-8">
+              <Button size="lg" className="w-full sm:w-auto bg-white hover:bg-white/90 text-primary h-12 sm:h-14 text-base sm:text-lg px-6 sm:px-8">
                 Offerten erhalten
                 <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
