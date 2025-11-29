@@ -21,11 +21,17 @@ export const RedesignHero = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      {/* Modern Background Pattern */}
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Emotional Background Image */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100 rounded-full blur-3xl opacity-20" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-100 rounded-full blur-3xl opacity-20" />
+        <img 
+          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2073&auto=format&fit=crop"
+          alt="Happy family moving into new home"
+          className="w-full h-full object-cover"
+        />
+        {/* Gradient Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/90 to-white/75" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-cyan-50/30" />
       </div>
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
