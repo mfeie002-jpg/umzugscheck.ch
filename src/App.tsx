@@ -55,7 +55,6 @@ import CompanyProfile from "./pages/CompanyProfile";
 import Compare from "./pages/Compare";
 import Canton from "./pages/Canton";
 import City from "./pages/City";
-import RegionenPage from "./pages/Regionen";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
@@ -178,8 +177,9 @@ const App = () => (
             <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
             <Route path="/vergleich" element={<Compare />} />
-            <Route path="/regionen" element={<RegionenOverview />} />
-            <Route path="/fuer-firmen" element={<FuerFirmen />} />
+          <Route path="/regionen" element={<RegionenOverview />} />
+          <Route path="/zug" element={<Zug />} />
+          <Route path="/fuer-firmen" element={<FuerFirmen />} />
             <Route path="/kanton/:slug" element={<Canton />} />
             <Route path="/umzug/:canton" element={<Canton />} />
             <Route path="/stadt/:slug" element={<City />} />
