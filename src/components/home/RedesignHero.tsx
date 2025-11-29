@@ -30,9 +30,8 @@ export const RedesignHero = () => {
           alt="Glückliche Familie bei ihrem Umzug mit professionellen Umzugshelfern"
           className="w-full h-full object-cover"
         />
-        {/* Gradient Overlay for Text Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/90 to-white/75" />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-cyan-50/30" />
+        {/* Gradient Overlay for Text Readability - reduced opacity to show emotional image */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-slate-900/40 to-transparent" />
       </div>
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
