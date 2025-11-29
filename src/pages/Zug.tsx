@@ -306,28 +306,28 @@ const Zug = () => {
         </div>
 
       {/* Hero Section */}
-      <section id="hero-form" className="relative bg-gradient-to-br from-background via-secondary/5 to-background py-16 md:py-24 overflow-hidden">
+      <section id="hero-form" className="relative bg-gradient-to-br from-background via-secondary/5 to-background py-8 sm:py-12 md:py-16 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
             {/* Left: Text + Form */}
             <ScrollReveal direction="right">
-              <div className="space-y-6">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+              <div className="space-y-4 sm:space-y-6">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight">
                   Umzug in Zug vergleichen – Offerten von geprüften Umzugsfirmen
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed">
                   Du planst einen Umzug in Zug, Baar oder Cham? Über umzugscheck.ch vergleichst du geprüfte Umzugsfirmen im Kanton Zug, sparst Zeit, Nerven und oft mehrere hundert Franken.
                 </p>
 
                 {/* Mini Form Stepper */}
                 <Card className="shadow-strong border-primary/10">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
+                  <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+                    <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-sm font-medium mb-2">Von</label>
                         <select 
-                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                           value={selectedFrom}
                           onChange={(e) => setSelectedFrom(e.target.value)}
                         >
@@ -340,7 +340,7 @@ const Zug = () => {
                       <div>
                         <label className="block text-sm font-medium mb-2">Nach</label>
                         <select 
-                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                           value={selectedTo}
                           onChange={(e) => setSelectedTo(e.target.value)}
                         >
@@ -355,7 +355,7 @@ const Zug = () => {
                     <div>
                       <label className="block text-sm font-medium mb-2">Wohnungsgrösse</label>
                       <select 
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         value={roomSize}
                         onChange={(e) => setRoomSize(e.target.value)}
                       >
@@ -370,7 +370,7 @@ const Zug = () => {
 
                     <div>
                       <label className="block text-sm font-medium mb-2">Zusatzservices</label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3">
                         <label className="flex items-center space-x-2 cursor-pointer">
                           <input type="checkbox" className="rounded border-border" />
                           <span className="text-sm">Reinigung</span>
@@ -390,11 +390,11 @@ const Zug = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                      <Button size="lg" className="flex-1">
-                        Gratis Offerten für Umzug in Zug anfordern
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4">
+                      <Button size="lg" className="flex-1 text-sm sm:text-base h-11 sm:h-12">
+                        Gratis Offerten anfordern
                       </Button>
-                      <Button size="lg" variant="outline" className="flex-1">
+                      <Button size="lg" variant="outline" className="flex-1 text-sm sm:text-base h-11 sm:h-12">
                         Preise ansehen
                       </Button>
                     </div>
@@ -402,17 +402,17 @@ const Zug = () => {
                 </Card>
 
                 {/* Trust Badges */}
-                <div className="flex flex-wrap gap-4 pt-4">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                    <span className="font-medium">Ø Bewertung: 4.8 / 5</span>
+                <div className="flex flex-wrap gap-3 sm:gap-4 pt-3 sm:pt-4">
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                    <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 fill-yellow-500" />
+                    <span className="font-medium">Ø 4.8 / 5</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Users className="w-5 h-5 text-primary" />
-                    <span className="font-medium">15'000+ vermittelte Umzüge</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                    <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                    <span className="font-medium">15'000+ Umzüge</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Shield className="w-5 h-5 text-primary" />
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     <span className="font-medium">Geprüfte Firmen</span>
                   </div>
                 </div>
@@ -421,11 +421,11 @@ const Zug = () => {
 
             {/* Right: Hero Image */}
             <ScrollReveal direction="left" delay={200}>
-              <div className="relative rounded-3xl overflow-hidden shadow-strong">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-strong">
                 <img 
                   src={zugHero}
                   alt="Kanton Zug mit Zugersee und Bergpanorama"
-                  className="w-full h-[400px] md:h-[600px] object-cover"
+                  className="w-full h-[280px] sm:h-[350px] md:h-[500px] lg:h-[600px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               </div>
@@ -435,14 +435,14 @@ const Zug = () => {
       </section>
 
       {/* Company Comparison Section */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-background">
+        <div className="container mx-auto px-4 sm:px-6">
           <ScrollReveal>
-            <div className="text-center mb-12 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4">
                 Top Umzugsfirmen im Kanton Zug
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground">
                 Vergleiche geprüfte Umzugsfirmen und finde den perfekten Partner für deinen Umzug
               </p>
             </div>
@@ -450,44 +450,44 @@ const Zug = () => {
 
           {/* Filter Bar */}
           <ScrollReveal delay={0.1}>
-            <div className="mb-8 space-y-4 max-w-6xl mx-auto">
+            <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4 max-w-6xl mx-auto">
               <div>
-                <p className="text-sm font-medium mb-2">Orte filtern:</p>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors">Alle</Badge>
+                <p className="text-xs sm:text-sm font-medium mb-2">Orte filtern:</p>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  <Badge variant="secondary" className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm">Alle</Badge>
                   {locations.map(loc => (
-                    <Badge key={loc} variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">{loc}</Badge>
+                    <Badge key={loc} variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">{loc}</Badge>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-sm font-medium mb-2">Leistungen:</p>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Privatumzug</Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Firmenumzug</Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Umzug + Reinigung</Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Entsorgung/Räumung</Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Einlagerung</Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Möbellift</Badge>
+                <p className="text-xs sm:text-sm font-medium mb-2">Leistungen:</p>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Privatumzug</Badge>
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Firmenumzug</Badge>
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Umzug + Reinigung</Badge>
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Entsorgung/Räumung</Badge>
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Einlagerung</Badge>
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Möbellift</Badge>
                 </div>
               </div>
               <div>
-                <p className="text-sm font-medium mb-2">Preisniveau:</p>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Günstig</Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Mittel</Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors">Premium</Badge>
+                <p className="text-xs sm:text-sm font-medium mb-2">Preisniveau:</p>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Günstig</Badge>
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Mittel</Badge>
+                  <Badge variant="outline" className="cursor-pointer hover:bg-secondary transition-colors text-xs sm:text-sm">Premium</Badge>
                 </div>
               </div>
             </div>
           </ScrollReveal>
 
           {/* Company Cards */}
-          <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6 max-w-6xl mx-auto">
             {companies.map((company, index) => (
               <ScrollReveal key={company.name} delay={0.1 * (index % 4)}>
                 <Card className="h-full hover:shadow-strong transition-all duration-300 hover:-translate-y-1 relative">
-                  <CardContent className="p-6 space-y-4">
+                  <CardContent className="p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
                     {/* Ranking Number and Promoted Badge */}
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3">
@@ -503,8 +503,8 @@ const Zug = () => {
                     </div>
 
                     <div>
-                      <h3 className="text-xl font-bold text-foreground mb-1">{company.name}</h3>
-                      <p className="text-sm text-muted-foreground">{company.tagline}</p>
+                      <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1">{company.name}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{company.tagline}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
@@ -529,7 +529,7 @@ const Zug = () => {
                       </div>
                     </div>
 
-                    <Button className="w-full" size="lg">
+                    <Button className="w-full text-sm sm:text-base" size="lg">
                       Offerte anfragen
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
@@ -542,33 +542,33 @@ const Zug = () => {
       </section>
 
       {/* Price Examples Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-secondary/10 via-background to-secondary/5">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-gradient-to-br from-secondary/10 via-background to-secondary/5">
+        <div className="container mx-auto px-4 sm:px-6">
           <ScrollReveal>
-            <div className="text-center mb-12 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4">
                 Was kostet ein Umzug in Zug?
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground">
                 Typische Preisbeispiele für deinen Umzug im Kanton Zug
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-6xl mx-auto">
             {priceExamples.map((example, index) => (
               <ScrollReveal key={example.title} delay={0.1 * index}>
                 <Card className="h-full hover:shadow-strong transition-all duration-300">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <example.icon className="w-6 h-6 text-primary" />
+                  <CardContent className="p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
+                      <example.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                     </div>
-                    <h3 className="text-lg font-bold text-foreground">{example.title}</h3>
-                    <p className="text-sm text-muted-foreground">{example.description}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-foreground">{example.title}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{example.description}</p>
                     <p className="text-xs text-muted-foreground">{example.info}</p>
-                    <div className="pt-4 border-t">
-                      <p className="text-sm font-medium text-muted-foreground mb-1">Typischer Kostenbereich:</p>
-                      <p className="text-xl font-bold text-primary">{example.priceRange}</p>
+                    <div className="pt-3 sm:pt-4 border-t">
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Typischer Kostenbereich:</p>
+                      <p className="text-lg sm:text-xl font-bold text-primary">{example.priceRange}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -586,32 +586,32 @@ const Zug = () => {
       </section>
 
       {/* Services Grid Section */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-background">
+        <div className="container mx-auto px-4 sm:px-6">
           <ScrollReveal>
-            <div className="text-center mb-12 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4">
                 Beliebte Services im Kanton Zug
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground">
                 Entdecke spezialisierte Umzugs- und Zusatzservices
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-6xl mx-auto">
             {services.map((service, index) => (
               <ScrollReveal key={service.title} delay={0.1 * (index % 3)}>
                 <Card className="h-full hover:shadow-strong transition-all duration-300 hover:-translate-y-1 group cursor-pointer">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <service.icon className="w-6 h-6" />
+                  <CardContent className="p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <service.icon className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
-                    <h3 className="text-lg font-bold text-foreground">{service.title}</h3>
-                    <p className="text-sm text-muted-foreground">{service.description}</p>
-                    <div className="flex items-center gap-2 text-primary font-medium text-sm pt-2">
+                    <h3 className="text-base sm:text-lg font-bold text-foreground">{service.title}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{service.description}</p>
+                    <div className="flex items-center gap-2 text-primary font-medium text-xs sm:text-sm pt-2">
                       Mehr erfahren
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </CardContent>
                 </Card>
@@ -622,25 +622,25 @@ const Zug = () => {
       </section>
 
       {/* USPs Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-primary/5">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-gradient-to-br from-primary/5 via-background to-primary/5">
+        <div className="container mx-auto px-4 sm:px-6">
           <ScrollReveal>
-            <div className="text-center mb-12 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4">
                 Warum umzugscheck.ch für deinen Umzug in Zug?
               </h2>
             </div>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8 max-w-6xl mx-auto">
             {usps.map((usp, index) => (
               <ScrollReveal key={usp.title} delay={0.1 * (index % 3)}>
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <usp.icon className="w-8 h-8 text-primary" />
+                <div className="text-center space-y-3 sm:space-y-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                    <usp.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">{usp.title}</h3>
-                  <p className="text-muted-foreground">{usp.description}</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">{usp.title}</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">{usp.description}</p>
                 </div>
               </ScrollReveal>
             ))}
@@ -649,20 +649,20 @@ const Zug = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-background">
+        <div className="container mx-auto px-4 sm:px-6">
           <ScrollReveal>
-            <div className="text-center mb-12 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4">
                 So funktioniert umzugscheck.ch in Zug
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground">
                 In nur 3 Schritten zur passenden Umzugsfirma
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+          <div className="grid sm:grid-cols-3 gap-6 sm:gap-7 md:gap-8 max-w-5xl mx-auto mb-8 sm:mb-10 md:mb-12">
             {[
               {
                 step: "1",
@@ -681,12 +681,12 @@ const Zug = () => {
               },
             ].map((step, index) => (
               <ScrollReveal key={step.step} delay={0.1 * index}>
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto text-2xl font-bold">
+                <div className="text-center space-y-3 sm:space-y-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold">
                     {step.step}
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">{step.title}</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">{step.description}</p>
                 </div>
               </ScrollReveal>
             ))}
@@ -694,12 +694,12 @@ const Zug = () => {
 
           <ScrollReveal delay={0.3}>
             <Card className="max-w-2xl mx-auto bg-gradient-cta text-white shadow-strong">
-              <CardContent className="p-8 text-center space-y-4">
-                <h3 className="text-2xl font-bold">Bereit für deinen Umzug in Zug?</h3>
-                <p className="text-white/90">Die Anfrage ist kostenlos und unverbindlich</p>
-                <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
-                  Jetzt Offerten für Umzug in Zug anfordern
-                  <ArrowRight className="w-5 h-5 ml-2" />
+              <CardContent className="p-5 sm:p-6 md:p-8 text-center space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold">Bereit für deinen Umzug in Zug?</h3>
+                <p className="text-sm sm:text-base text-white/90">Die Anfrage ist kostenlos und unverbindlich</p>
+                <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90 w-full sm:w-auto text-sm sm:text-base h-11 sm:h-12">
+                  Jetzt Offerten anfordern
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
                 </Button>
               </CardContent>
             </Card>
@@ -708,46 +708,46 @@ const Zug = () => {
       </section>
 
       {/* Local Info Section */}
-      <section className="py-16 md:py-24 bg-secondary/5">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-secondary/5">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
             <ScrollReveal>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-6 sm:mb-8">
                 Umziehen im Kanton Zug: Das musst du wissen
               </h2>
             </ScrollReveal>
 
             <ScrollReveal delay={0.1}>
-              <div className="prose prose-lg max-w-none space-y-6">
+              <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none space-y-4 sm:space-y-6">
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-3">An- und Abmeldung beim Einwohneramt</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-2 sm:mb-3">An- und Abmeldung beim Einwohneramt</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                     Bei einem Umzug innerhalb der Schweiz – also auch im Kanton Zug – musst du dich beim Einwohneramt deiner bisherigen Gemeinde abmelden und beim Einwohneramt der neuen Gemeinde anmelden. Dies sollte in der Regel innerhalb von 14 Tagen nach dem Umzug erfolgen. Die genauen Fristen und Prozesse können je nach Gemeinde leicht variieren.
                   </p>
-                  <p className="text-muted-foreground leading-relaxed mt-4">
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-3 sm:mt-4">
                     Im Kanton Zug gibt es elf Gemeinden: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch/Rotkreuz, Walchwil, Menzingen, Neuheim, Oberägeri und Unterägeri. Jede Gemeinde hat ihre eigene Einwohnerkontrolle mit teilweise unterschiedlichen Öffnungszeiten und Online-Services. Wir empfehlen, dich rechtzeitig auf der Website deiner neuen Wohngemeinde zu informieren, welche Dokumente du mitbringen musst (üblicherweise Ausweis, Wohnungsbestätigung, allenfalls Familienausweis).
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-3">Parkieren und Zufahrt für den Umzug</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-2 sm:mb-3">Parkieren und Zufahrt für den Umzug</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                     Gerade in der Altstadt von Zug oder in dicht bebauten Quartieren kann das Parkieren des Umzugslastwagens eine Herausforderung sein. In vielen Fällen ist es sinnvoll oder sogar notwendig, ein kurzfristiges Halteverbot oder eine spezielle Parkbewilligung zu organisieren, damit der LKW direkt vor dem Haus stehen kann.
                   </p>
-                  <p className="text-muted-foreground leading-relaxed mt-4">
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-3 sm:mt-4">
                     Wir empfehlen, dies rechtzeitig – idealerweise 2–4 Wochen vor dem Umzug – mit der Gemeinde, der Hausverwaltung oder dem Vermieter abzuklären. Viele professionelle Umzugsfirmen im Kanton Zug unterstützen dich auch bei der Organisation der nötigen Bewilligungen. So stellst du sicher, dass der Umzugstag reibungslos abläuft und keine unnötigen Tragewege entstehen.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-3">Typische Umzugssituationen im Kanton Zug</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-2 sm:mb-3">Typische Umzugssituationen im Kanton Zug</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                     Der Kanton Zug ist vielfältig: Von modernen Stadtwohnungen in Zug und Baar über Einfamilienhäuser in Hünenberg, Menzingen oder Walchwil bis hin zu Neubauquartieren in Steinhausen und Risch/Rotkreuz. Jede Wohnsituation hat ihre eigenen Anforderungen an den Umzug.
                   </p>
-                  <p className="text-muted-foreground leading-relaxed mt-4">
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-3 sm:mt-4">
                     Professionelle Umzugsfirmen kennen diese unterschiedlichen Gegebenheiten: enge Zufahrten in der Altstadt, mehrgeschossige Häuser ohne Lift, Seezugang oder hügelige Lagen. In solchen Fällen kommen oft Möbellifte zum Einsatz, um schwere Möbel sicher und effizient über das Fenster zu transportieren. Auch bei langen Tragewegen – etwa vom Parkplatz bis zur Wohnung – wissen erfahrene Teams, wie sie Zeit und Kraft optimal einsetzen.
                   </p>
-                  <p className="text-muted-foreground leading-relaxed mt-4">
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-3 sm:mt-4">
                     Falls du spezielle Anforderungen hast (z.B. Klaviertransport, empfindliche Kunstwerke oder besonders enge Treppenhäuser), lohnt es sich, dies bereits in der Offertanfrage zu erwähnen. So können die Umzugsfirmen dir massgeschneiderte Lösungen und realistische Preise anbieten.
                   </p>
                 </div>
@@ -758,32 +758,32 @@ const Zug = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-background">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto">
             <ScrollReveal>
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              <div className="text-center mb-8 sm:mb-10 md:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
                   Häufige Fragen zum Umzug in Zug
                 </h2>
-                <p className="text-lg text-muted-foreground">
+                <p className="text-base sm:text-lg text-muted-foreground">
                   Antworten auf die wichtigsten Fragen
                 </p>
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={0.1}>
-              <Accordion type="single" collapsible className="space-y-4">
+              <Accordion type="single" collapsible className="space-y-3 sm:space-y-4">
                 {faqs.map((faq, index) => (
                   <AccordionItem 
                     key={index} 
                     value={`item-${index}`}
-                    className="border rounded-lg px-6 bg-card hover:shadow-medium transition-shadow"
+                    className="border rounded-lg px-4 sm:px-5 md:px-6 bg-card hover:shadow-medium transition-shadow"
                   >
-                    <AccordionTrigger className="text-left hover:no-underline py-5">
-                      <span className="font-semibold text-foreground">{faq.question}</span>
+                    <AccordionTrigger className="text-left hover:no-underline py-4 sm:py-5">
+                      <span className="font-semibold text-foreground text-sm sm:text-base">{faq.question}</span>
                     </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
+                    <AccordionContent className="text-muted-foreground pb-4 sm:pb-5 leading-relaxed text-xs sm:text-sm">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>
