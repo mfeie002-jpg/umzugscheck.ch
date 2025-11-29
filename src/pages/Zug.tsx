@@ -336,16 +336,13 @@ const Zug = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-2">Nach</label>
-                        <select 
+                        <input 
+                          type="text"
+                          placeholder="PLZ oder Ort eingeben"
                           className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                           value={selectedTo}
                           onChange={(e) => setSelectedTo(e.target.value)}
-                        >
-                          <option value="">Ort wählen</option>
-                          {locations.map(loc => (
-                            <option key={loc} value={loc}>{loc}</option>
-                          ))}
-                        </select>
+                        />
                       </div>
                     </div>
 
