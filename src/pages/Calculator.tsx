@@ -1,5 +1,6 @@
-import { Helmet } from "react-helmet";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QuickCalculator } from "@/components/calculator/QuickCalculator";
 import { AdvancedCalculator } from "@/components/calculator/AdvancedCalculator";
@@ -60,16 +61,13 @@ const Calculator = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Umzugsrechner - Kostenlose Kostenschätzung | Umzugscheck.ch</title>
-        <meta name="description" content="Berechnen Sie Ihre Umzugskosten in 60 Sekunden. Schnell-Rechner, detaillierter Rechner oder KI-Analyse mit Fotos. ✓ Kostenlos ✓ Unverbindlich ✓ Präzise Schätzung" />
-        <meta name="keywords" content="Umzugsrechner, Umzugskosten berechnen, Umzug Kostenrechner Schweiz, Umzugskalkulator" />
-        <link rel="canonical" href="https://umzugscheck.ch/rechner" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify(SERVICE_SCHEMA)}
-        </script>
-      </Helmet>
+      <OptimizedSEO
+        title="Umzugsrechner - Kostenlose Kostenschätzung"
+        description="Berechnen Sie Ihre Umzugskosten in 60 Sekunden. Schnell-Rechner, detaillierter Rechner oder KI-Analyse mit Fotos. ✓ Kostenlos ✓ Unverbindlich ✓ Präzise Schätzung"
+        keywords="Umzugsrechner, Umzugskosten berechnen, Umzug Kostenrechner Schweiz, Umzugskalkulator"
+        canonicalUrl="https://umzugscheck.ch/rechner"
+        schemaMarkup={SERVICE_SCHEMA}
+      />
 
       <div className="flex-1 bg-gradient-light">
         {/* Breadcrumbs */}
@@ -85,13 +83,15 @@ const Calculator = () => {
         {/* Header */}
         <section className="py-8 sm:py-12 md:py-16 gradient-hero text-white">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Umzugskosten berechnen</h1>
-              <p className="text-base sm:text-lg md:text-xl text-white/90">
-                Wählen Sie Ihren Rechner – von schnell bis präzise. 
-                Erhalten Sie sofort eine Kostenschätzung.
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="max-w-3xl mx-auto text-center">
+                <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Umzugskosten berechnen</h1>
+                <p className="text-base sm:text-lg md:text-xl text-white/90">
+                  Wählen Sie Ihren Rechner – von schnell bis präzise. 
+                  Erhalten Sie sofort eine Kostenschätzung.
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
 

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { Loader2, CheckCircle, MapPin, Package, Clock, ArrowRight, FileText, Home } from "lucide-react";
 import { formatCurrency } from "@/lib/pricing";
 
@@ -96,13 +98,21 @@ export default function ThankYou() {
   const estimate = lead.calculator_output;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navigation />
+    <>
+      <OptimizedSEO
+        title="Vielen Dank für Ihre Anfrage"
+        description="Ihre Umzugsanfrage wurde erfolgreich versendet. Die ausgewählten Firmen werden sich innerhalb von 24 Stunden bei Ihnen melden."
+        canonicalUrl="https://umzugscheck.ch/danke"
+      />
       
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
-        <div className="max-w-3xl mx-auto space-y-8">
-          {/* Success Header */}
-          <div className="text-center space-y-4">
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navigation />
+        
+        <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
+          <div className="max-w-3xl mx-auto space-y-8">
+            {/* Success Header */}
+            <ScrollReveal>
+              <div className="text-center space-y-4">
             <div className="flex justify-center">
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
@@ -111,11 +121,13 @@ export default function ThankYou() {
             </h1>
             <p className="text-lg text-muted-foreground">
               Ihre Anfrage wurde erfolgreich an die ausgewählten Firmen gesendet
-            </p>
-          </div>
+              </p>
+            </div>
+            </ScrollReveal>
 
-          {/* Companies Contacted */}
-          <Card>
+            {/* Companies Contacted */}
+            <ScrollReveal delay={100}>
+              <Card variant="elevated">
             <CardHeader>
               <CardTitle>Kontaktierte Firmen</CardTitle>
             </CardHeader>
@@ -149,11 +161,13 @@ export default function ThankYou() {
                   <li>✓ Vergleichen Sie die Angebote und wählen Sie das beste aus</li>
                 </ul>
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+            </ScrollReveal>
 
-          {/* Move Summary */}
-          <Card>
+            {/* Move Summary */}
+            <ScrollReveal delay={200}>
+              <Card variant="elevated">
             <CardHeader>
               <CardTitle>Zusammenfassung Ihres Umzugs</CardTitle>
             </CardHeader>
@@ -197,11 +211,13 @@ export default function ThankYou() {
                   </>
                 )}
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+            </ScrollReveal>
 
-          {/* Next Steps */}
-          <Card>
+            {/* Next Steps */}
+            <ScrollReveal delay={300}>
+              <Card variant="elevated">
             <CardHeader>
               <CardTitle>Weitere hilfreiche Ressourcen</CardTitle>
             </CardHeader>
@@ -229,23 +245,27 @@ export default function ThankYou() {
                   <ArrowRight className="h-4 w-4 ml-auto" />
                 </Link>
               </Button>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+            </ScrollReveal>
 
-          {/* Contact Info */}
-          <div className="text-center text-sm text-muted-foreground">
-            <p>Bestätigungsmail gesendet an: <strong>{lead.email}</strong></p>
-            <p className="mt-2">
-              Fragen? Kontaktieren Sie uns unter{" "}
-              <a href="mailto:info@umzugscheck.ch" className="text-primary hover:underline">
-                info@umzugscheck.ch
-              </a>
-            </p>
+            {/* Contact Info */}
+            <ScrollReveal delay={400}>
+              <div className="text-center text-sm text-muted-foreground">
+                <p>Bestätigungsmail gesendet an: <strong>{lead.email}</strong></p>
+                <p className="mt-2">
+                  Fragen? Kontaktieren Sie uns unter{" "}
+                  <a href="mailto:info@umzugscheck.ch" className="text-primary hover:underline">
+                    info@umzugscheck.ch
+                  </a>
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
-        </div>
-      </main>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 }

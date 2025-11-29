@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { OnboardingHint } from "@/components/OnboardingHint";
 import { OffertenCTA } from "@/components/OffertenCTA";
 import { Button } from "@/components/ui/button";
@@ -65,9 +65,6 @@ const Companies = () => {
 
   // SEO Data
   const currentUrl = 'https://www.umzugscheck.ch/firmen/';
-  const metaData = generateMetaData({ type: 'main-page', pageName: 'vergleich' });
-  const ogTags = generateOGTags(metaData, currentUrl);
-  const keywords = getKeywordsForPage('vergleich');
   
   // Schema.org - Generate company list schema when companies are loaded
   const companySchemas = useMemo(() => {
@@ -285,31 +282,16 @@ const Companies = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Helmet>
-        <title>{metaData.title}</title>
-        <meta name="description" content={metaData.description} />
-        <link rel="canonical" href={currentUrl} />
-        <meta name="keywords" content={keywords.join(', ')} />
-        
-        {/* OpenGraph Tags */}
-        <meta property="og:title" content={ogTags['og:title']} />
-        <meta property="og:description" content={ogTags['og:description']} />
-        <meta property="og:type" content={ogTags['og:type']} />
-        <meta property="og:url" content={ogTags['og:url']} />
-        <meta property="og:image" content={ogTags['og:image']} />
-        
-        {/* Twitter Card */}
-        <meta name="twitter:card" content={ogTags['twitter:card']} />
-        <meta name="twitter:title" content={ogTags['twitter:title']} />
-        <meta name="twitter:description" content={ogTags['twitter:description']} />
-        <meta name="twitter:image" content={ogTags['twitter:image']} />
-        
-        {/* Schema.org JSON-LD */}
-        <script type="application/ld+json">
-          {schemaScript}
-        </script>
-      </Helmet>
+    <>
+      <OptimizedSEO
+        title="Umzugsfirmen in der Schweiz vergleichen – 200+ geprüfte Anbieter"
+        description="Finden Sie geprüfte Umzugsunternehmen in Ihrer Region. Vergleichen Sie Preise, Bewertungen und Services – kostenlos & unverbindlich."
+        keywords="umzugsfirmen schweiz, umzugsunternehmen, umzugsfirmen vergleichen"
+        canonicalUrl={currentUrl}
+        schemaMarkup={companySchemas}
+      />
+      
+      <div className="min-h-screen flex flex-col">
       
       <PullToRefreshIndicator 
         isPulling={isPulling}
@@ -731,6 +713,7 @@ const Companies = () => {
         </section>
       </main>
     </div>
+    </>
   );
 };
 

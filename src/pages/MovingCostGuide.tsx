@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Breadcrumbs, BreadcrumbItem } from "@/components/Breadcrumbs";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -125,8 +126,16 @@ const MovingCostGuide = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
+    <>
+      <OptimizedSEO
+        title="Umzugskosten Schweiz 2025 - Der komplette Preis-Guide"
+        description="Der ultimative Kosten-Guide: Was ein Umzug in der Schweiz wirklich kostet und wie Sie bis zu 40% sparen können. Alle Preise, Tipps und Spartricks."
+        keywords="umzugskosten schweiz, umzug kosten, umzugspreise, umzug sparen"
+        canonicalUrl="https://umzugscheck.ch/umzugskosten-guide"
+      />
+      
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
 
       {/* Hero Section */}
       <section className="relative py-20 md:py-28 text-white overflow-hidden">
@@ -363,8 +372,9 @@ const MovingCostGuide = () => {
         </ScrollReveal>
       </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 };
 
