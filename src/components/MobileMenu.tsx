@@ -105,10 +105,7 @@ const providerLinks = [
 ];
 
 const mainNavItems = [
-  { label: "Startseite", href: "/" },
-  { label: "Ratgeber", href: "/ratgeber" },
-  { label: "Über uns", href: "/ueber-uns" },
-  { label: "Kontakt", href: "/kontakt" }
+  { label: "Ratgeber", href: "/ratgeber" }
 ];
 
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
@@ -179,23 +176,6 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         className="fixed top-16 sm:top-20 right-0 bottom-0 w-[min(320px,85vw)] bg-white border-l border-border z-50 overflow-y-auto shadow-strong animate-slide-in-right lg:hidden"
       >
         <div className="p-6 space-y-2">
-          {/* Main Nav Items */}
-          {mainNavItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.href}
-              onClick={onClose}
-              className={cn(
-                "block px-4 py-3 rounded-lg transition-colors font-medium",
-                isActive(item.href)
-                  ? "bg-primary/10 text-primary border-l-4 border-primary"
-                  : "text-foreground hover:bg-secondary"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-
           {/* Calculators Accordion */}
           <Collapsible
             open={isCalculatorsOpen}
@@ -337,45 +317,6 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             </CollapsibleContent>
           </Collapsible>
 
-          {/* Für Firmen Accordion */}
-          <Collapsible
-            open={isProviderOpen}
-            onOpenChange={setIsProviderOpen}
-          >
-            <CollapsibleTrigger 
-              className="flex items-center justify-between w-full px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium"
-              aria-expanded={isProviderOpen}
-              aria-controls="provider-menu"
-              aria-label="Für Firmen Menü öffnen"
-            >
-              <span>Für Firmen</span>
-              <ChevronDown className={cn(
-                "w-4 h-4 transition-transform",
-                isProviderOpen && "rotate-180"
-              )} 
-              aria-hidden="true" />
-            </CollapsibleTrigger>
-            <CollapsibleContent id="provider-menu" className="mt-2 space-y-1">
-              {providerLinks.map((link) => (
-                <Link
-                  key={link.title}
-                  to={link.href}
-                  onClick={onClose}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
-                    isActive(link.href)
-                      ? "bg-primary/10 text-primary border-l-4 border-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                  )}
-                  aria-label={link.title}
-                >
-                  <Briefcase className="w-4 h-4 text-primary" aria-hidden="true" />
-                  <span className="text-sm">{link.title}</span>
-                </Link>
-              ))}
-            </CollapsibleContent>
-          </Collapsible>
-
           {/* Regions Accordion */}
           <Collapsible
             open={isRegionsOpen}
@@ -452,6 +393,62 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   Keine Regionen gefunden
                 </div>
               )}
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Main Nav Items - Ratgeber */}
+          {mainNavItems.map((item) => (
+            <Link
+              key={item.label}
+              to={item.href}
+              onClick={onClose}
+              className={cn(
+                "block px-4 py-3 rounded-lg transition-colors font-medium",
+                isActive(item.href)
+                  ? "bg-primary/10 text-primary border-l-4 border-primary"
+                  : "text-foreground hover:bg-secondary"
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+
+          {/* Für Firmen Accordion */}
+          <Collapsible
+            open={isProviderOpen}
+            onOpenChange={setIsProviderOpen}
+          >
+            <CollapsibleTrigger 
+              className="flex items-center justify-between w-full px-4 py-3 text-foreground hover:bg-secondary rounded-lg transition-colors font-medium"
+              aria-expanded={isProviderOpen}
+              aria-controls="provider-menu"
+              aria-label="Für Firmen Menü öffnen"
+            >
+              <span>Für Firmen</span>
+              <ChevronDown className={cn(
+                "w-4 h-4 transition-transform",
+                isProviderOpen && "rotate-180"
+              )} 
+              aria-hidden="true" />
+            </CollapsibleTrigger>
+            <CollapsibleContent id="provider-menu" className="mt-2 space-y-1">
+              {providerLinks.map((link) => (
+                <Link
+                  key={link.title}
+                  to={link.href}
+                  onClick={onClose}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                    isActive(link.href)
+                      ? "bg-primary/10 text-primary border-l-4 border-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  )}
+                  aria-label={link.title}
+                >
+                  <Briefcase className="w-4 h-4 text-primary" aria-hidden="true" />
+                  <span className="text-sm">{link.title}</span>
+                </Link>
+              ))}
             </CollapsibleContent>
           </Collapsible>
 
