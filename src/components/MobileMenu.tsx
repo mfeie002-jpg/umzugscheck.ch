@@ -21,42 +21,42 @@ const calculators = [
   {
     icon: Calculator,
     title: "Umzugsrechner",
-    href: "/rechner"
+    href: "/umzugsrechner"
   },
   {
     icon: Sparkles,
     title: "Reinigungsrechner",
-    href: "/rechner/reinigung"
+    href: "/umzugsrechner"
   },
   {
     icon: Trash2,
     title: "Entsorgungsrechner",
-    href: "/rechner/entsorgung"
+    href: "/umzugsrechner"
   },
   {
     icon: Box,
     title: "Lagerrechner",
-    href: "/rechner/lager"
+    href: "/umzugsrechner"
   },
   {
     icon: Package,
     title: "Packservice-Rechner",
-    href: "/rechner/packservice"
+    href: "/umzugsrechner"
   },
   {
     icon: Wrench,
     title: "Möbelmontage-Rechner",
-    href: "/rechner/moebelmontage"
+    href: "/umzugsrechner"
   },
   {
     icon: Settings,
     title: "Gesamtpreis-Konfigurator",
-    href: "/rechner/konfigurator"
+    href: "/umzugsrechner"
   },
   {
     icon: Video,
     title: "Video-Umzugsrechner",
-    href: "/rechner/video"
+    href: "/umzugsrechner"
   }
 ];
 
@@ -90,23 +90,23 @@ const cantons = [
 ];
 
 const services = [
-  { icon: Home, title: "Privatumzug", href: "/services/privatumzug" },
-  { icon: Building2, title: "Firmenumzug", href: "/services/firmenumzug" },
-  { icon: Sparkles, title: "Reinigung", href: "/services/reinigung" },
-  { icon: Trash2, title: "Entsorgung", href: "/services/entsorgung" },
-  { icon: Box, title: "Lagerung", href: "/services/lagerung" },
-  { icon: Wrench, title: "Möbelmontage", href: "/services/moebelmontage" }
+  { icon: Home, title: "Privatumzug", href: "/umzug-schweiz" },
+  { icon: Building2, title: "Firmenumzug", href: "/firmenumzug-schweiz" },
+  { icon: Sparkles, title: "Umzugsreinigung", href: "/umzugsreinigung-schweiz" },
+  { icon: Trash2, title: "Räumung & Entsorgung", href: "/entsorgung-schweiz" },
+  { icon: Box, title: "Lagerung", href: "/umzugsrechner" },
+  { icon: Wrench, title: "Möbelmontage", href: "/umzugsrechner" }
 ];
 
 const providerLinks = [
-  { title: "Anbieter werden", href: "/anbieter-werden" },
+  { title: "Partner werden", href: "/anbieter" },
   { title: "Login", href: "/anbieter/login" },
-  { title: "Preise & Modelle", href: "/anbieter-preise" }
+  { title: "Preise & Modelle", href: "/anbieter" }
 ];
 
 const mainNavItems = [
   { label: "Startseite", href: "/" },
-  { label: "Ratgeber", href: "/blog" },
+  { label: "Ratgeber", href: "/ratgeber" },
   { label: "Über uns", href: "/ueber-uns" },
   { label: "Kontakt", href: "/kontakt" }
 ];
@@ -283,11 +283,11 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 <span className="text-sm">Günstige Umzugsfirmen</span>
               </Link>
               <Link
-                to="/firmen"
+                to="/umzugsfirmen-schweiz"
                 onClick={onClose}
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
-                  isActive("/firmen")
+                  isActive("/umzugsfirmen-schweiz")
                     ? "bg-primary/10 text-primary border-l-4 border-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                 )}

@@ -28,6 +28,14 @@ const Index = () => {
     {
       question: "Wie schnell erhalte ich Offerten?",
       answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
+    },
+    {
+      question: "Sind die Umzugsfirmen geprüft?",
+      answer: "Ja, alle Umzugsfirmen auf umzugscheck.ch sind versichert, zertifiziert und wurden mehrfach überprüft. Nur seriöse Schweizer Anbieter."
+    },
+    {
+      question: "Kann ich kurzfristig umziehen?",
+      answer: "Ja, viele Umzugsfirmen bieten auch kurzfristige Termine an. Geben Sie einfach Ihr gewünschtes Datum ein und Sie sehen verfügbare Anbieter."
     }
   ];
 
@@ -40,8 +48,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Umzugscheck.ch - Umzugsofferten vergleichen & bis 40% sparen</title>
-        <meta name="description" content="Vergleichen Sie kostenlos Offerten von geprüften Schweizer Umzugsfirmen. In 2 Minuten bis zu 5 Angebote erhalten und bis 40% sparen." />
+        <title>Umzugsfirmen vergleichen & bis zu 40% sparen | umzugscheck.ch</title>
+        <meta name="description" content="Vergleichen Sie geprüfte Schweizer Umzugsfirmen kostenlos. In 2 Minuten bis zu 5 Angebote erhalten und bis zu 40% sparen. Über 25'000 erfolgreiche Umzüge." />
+        <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, günstige Umzüge" />
+        <link rel="canonical" href="https://umzugscheck.ch/" />
         <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
       
