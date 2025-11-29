@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import { Suspense, lazy } from "react";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -120,15 +121,16 @@ const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <ProviderAuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <div className="flex flex-col min-h-screen bg-background">
-              <Navigation />
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ProviderAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <div className="flex flex-col min-h-screen bg-background">
+                <Navigation />
           <AIMovingAssistant />
           <PWAInstallPrompt />
           <PushNotificationPrompt />
@@ -280,13 +282,14 @@ const App = () => (
           </Routes>
                 </Suspense>
               </main>
-              <Footer />
-            </div>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ProviderAuthProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+                <Footer />
+              </div>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ProviderAuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

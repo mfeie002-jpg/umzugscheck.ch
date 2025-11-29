@@ -27,7 +27,7 @@ class Analytics {
 
   constructor() {
     this.sessionId = this.generateSessionId();
-    this.isEnabled = import.meta.env.PROD; // Only in production
+    this.isEnabled = true; // Always enabled for production
   }
 
   private generateSessionId(): string {
@@ -42,13 +42,9 @@ class Analytics {
       sessionId: this.sessionId,
     };
 
-    // Console log for debugging
-    console.log('📊 Analytics Event:', payload);
-
-    // Future: Send to analytics service
-    // if (this.isEnabled) {
-    //   this.sendToAnalytics(payload);
-    // }
+    if (this.isEnabled) {
+      this.sendToAnalytics(payload);
+    }
   }
 
   // Specific tracking methods
@@ -113,19 +109,14 @@ class Analytics {
     });
   }
 
-  // Future: Send to analytics service
-  private async sendToAnalytics(payload: AnalyticsPayload) {
-    // Example: Google Analytics 4
-    // gtag('event', payload.event, payload.properties);
-    
-    // Example: Mixpanel
-    // mixpanel.track(payload.event, payload.properties);
-    
-    // Example: Custom endpoint
-    // await fetch('/api/analytics', {
-    //   method: 'POST',
-    //   body: JSON.stringify(payload),
-    // });
+  private sendToAnalytics(payload: AnalyticsPayload) {
+    // Send to Google Analytics 4
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', payload.event, {
+        ...payload.properties,
+        session_id: payload.sessionId,
+      });
+    }
   }
 }
 
