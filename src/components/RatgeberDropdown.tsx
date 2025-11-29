@@ -49,7 +49,15 @@ export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => 
   if (!isOpen) return null;
 
   return (
-    <div className="hidden lg:block absolute left-0 right-0 top-full bg-white border-t border-border shadow-xl z-50 animate-in slide-in-from-top-2 duration-200">
+    <>
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black/5 z-40 hidden lg:block"
+        onClick={onClose}
+      />
+      
+      {/* Dropdown Content */}
+      <div className="hidden lg:block absolute left-0 right-0 top-full mt-0 bg-white border-t border-border shadow-strong z-50 animate-fade-in">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {ratgeberItems.map((item) => (
@@ -74,6 +82,7 @@ export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => 
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
