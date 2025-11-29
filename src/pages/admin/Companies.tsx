@@ -64,7 +64,6 @@ const CompaniesAdmin = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4">

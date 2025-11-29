@@ -17,8 +17,6 @@ const FuerFirmen = () => {
         keywords="Umzugsfirmen Partner, Umzugsaufträge, Leads für Umzugsfirmen, B2B Umzug"
       />
 
-      <Navigation />
-
       <main id="main-content" role="main">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-background via-primary/5 to-background py-16 md:py-24">

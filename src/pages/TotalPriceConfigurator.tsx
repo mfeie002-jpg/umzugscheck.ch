@@ -359,8 +359,6 @@ const TotalPriceConfigurator = () => {
         </script>
       </Helmet>
 
-      <Navigation />
-      
       <main className="flex-1">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <Link 

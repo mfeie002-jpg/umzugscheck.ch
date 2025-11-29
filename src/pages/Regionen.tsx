@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -47,9 +46,8 @@ const Regionen = () => {
         keywords="umzugsfirmen schweiz, umzug kantone, umzugsfirmen region"
         canonicalUrl="https://umzugscheck.ch/regionen"
       />
-
+      
       <div className="min-h-screen flex flex-col">
-        <Navigation />
 
         {/* Hero Section */}
         <section className="gradient-hero text-white py-16 md:py-24">

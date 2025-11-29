@@ -173,7 +173,6 @@ const ProviderDetail = () => {
   if (!provider) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
@@ -245,7 +244,6 @@ const ProviderDetail = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
 
       <main className="flex-1 bg-gradient-light">
         {/* Header */}

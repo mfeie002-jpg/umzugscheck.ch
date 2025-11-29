@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
@@ -57,7 +56,6 @@ const Pricing = () => {
       />
 
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         
         <main className="flex-1">
           {/* Hero */}

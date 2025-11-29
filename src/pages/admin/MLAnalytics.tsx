@@ -76,7 +76,6 @@ const MLAnalytics = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
 
       <main className="flex-1 bg-gradient-light">
         <section className="gradient-hero text-white py-12">

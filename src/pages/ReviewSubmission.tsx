@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -86,7 +85,6 @@ export default function ReviewSubmission() {
   if (submitted) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center p-4">
           <Card className="max-w-md w-full">
             <CardContent className="pt-12 pb-12 text-center">
@@ -107,7 +105,6 @@ export default function ReviewSubmission() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
 
       <main className="flex-1 bg-gradient-light py-12">
         <div className="container mx-auto px-4 max-w-2xl">

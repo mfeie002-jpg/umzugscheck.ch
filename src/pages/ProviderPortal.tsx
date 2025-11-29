@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -53,7 +52,6 @@ export default function ProviderPortal() {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">
-        <Navigation />
         
         <main className="flex-1 py-12">
           <div className="container mx-auto px-4">

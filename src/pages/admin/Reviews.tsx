@@ -215,7 +215,6 @@ const AdminReviews = () => {
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center">
           <Alert variant="destructive" className="max-w-md">
             <AlertCircle className="h-4 w-4" />
@@ -231,7 +230,6 @@ const AdminReviews = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
 
       <main className="flex-1 py-12">
         <div className="container mx-auto px-4">

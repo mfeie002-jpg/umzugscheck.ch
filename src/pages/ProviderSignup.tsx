@@ -121,8 +121,6 @@ const ProviderSignup = () => {
         <title>Partner Registrierung - Umzugscheck.ch</title>
       </Helmet>
 
-      <Navigation />
-      
       <main className="flex-1 py-12">
         <div className="container max-w-3xl mx-auto px-4">
           <div className="mb-8">

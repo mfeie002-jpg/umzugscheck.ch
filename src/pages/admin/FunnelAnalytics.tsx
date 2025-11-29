@@ -96,7 +96,6 @@ export default function FunnelAnalytics() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navigation />
       
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto space-y-8">

@@ -1,7 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
@@ -372,7 +371,6 @@ const Canton = () => {
   if (!info) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navigation />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-2">Kanton nicht gefunden</h2>
@@ -510,8 +508,6 @@ const Canton = () => {
 
         <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
-
-      <Navigation />
 
       <main className="flex-1">
         {/* Breadcrumbs */}

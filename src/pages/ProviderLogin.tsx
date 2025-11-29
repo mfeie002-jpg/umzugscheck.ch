@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,8 +46,6 @@ const ProviderLogin = () => {
         <title>Partner Login - Umzugscheck.ch</title>
       </Helmet>
 
-      <Navigation />
-      
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">

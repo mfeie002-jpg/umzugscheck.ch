@@ -132,8 +132,6 @@ export const CityPage = () => {
         companies={topCompanies}
       />
 
-      <Navigation />
-
       {/* Hero */}
       <StandardHero
         h1={`Umzugsfirmen in ${cityData.name}`}
