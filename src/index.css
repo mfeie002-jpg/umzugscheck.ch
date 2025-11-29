@@ -29,21 +29,21 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 13%;
     
-    /* Copper Gold Premium - Primary Accent */
-    --primary: 29 62% 51%; /* #C67C3E */
+    /* Swiss Red - Primary Accent */
+    --primary: 0 85% 55%; /* Swiss Red */
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 29 92% 35%; /* #B45309 Dark Copper */
+    --primary-hover: 0 85% 45%; /* Darker Red */
     
-    /* Executive Graphite - Secondary */
-    --secondary: 220 17% 22%; /* #1F2937 */
+    /* Swiss Blue - Secondary */
+    --secondary: 210 100% 50%; /* Swiss Blue */
     --secondary-foreground: 0 0% 100%;
     
     /* Platinum Shadow - Muted Elements */
     --muted: 214 14% 98%; /* #F9FAFB */
     --muted-foreground: 218 11% 34%; /* #374151 */
     
-    /* Soft Cream Gold - Light Backgrounds */
-    --accent: 38 73% 91%; /* #F7E7CE */
+    /* Soft Light Blue - Light Backgrounds */
+    --accent: 210 100% 95%; /* Light Blue */
     --accent-foreground: 215 25% 13%;
     
     /* Swiss Gold - Trust & Ratings */
@@ -61,13 +61,13 @@
     --radius: 1.5rem;
     
     /* Premium Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(38 73% 91%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-copper: linear-gradient(135deg, hsl(29 62% 51%) 0%, hsl(29 92% 35%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(210 100% 95%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-red: linear-gradient(135deg, hsl(0 85% 55%) 0%, hsl(0 85% 45%) 100%);
     --gradient-elegant: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(214 14% 98%) 100%);
     
     /* Premium Shadows */
     --shadow-premium: 0 14px 40px rgba(0, 0, 0, 0.06);
-    --shadow-copper: 0 10px 30px rgba(198, 124, 62, 0.28);
+    --shadow-red: 0 10px 30px rgba(230, 60, 60, 0.28);
     --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.08);
     --shadow-lift: 0 20px 60px rgba(0, 0, 0, 0.10);
     
@@ -190,15 +190,23 @@
   
   /* Premium Color Utilities */
   .text-copper {
-    color: hsl(29, 62%, 51%);
+    color: hsl(0, 85%, 55%);
   }
   
   .bg-copper {
-    background-color: hsl(29, 62%, 51%);
+    background-color: hsl(0, 85%, 55%);
   }
   
   .border-copper {
-    border-color: hsl(29, 62%, 51%);
+    border-color: hsl(0, 85%, 55%);
+  }
+  
+  .text-swiss-blue {
+    color: hsl(210, 100%, 50%);
+  }
+  
+  .bg-swiss-blue {
+    background-color: hsl(210, 100%, 50%);
   }
   
   .text-swiss-noir {
@@ -226,8 +234,8 @@
     background: var(--gradient-hero);
   }
   
-  .gradient-copper {
-    background: var(--gradient-copper);
+  .gradient-red {
+    background: var(--gradient-red);
   }
   
   .gradient-elegant {
@@ -249,8 +257,8 @@
   }
   
   .hover-copper:hover {
-    background-color: hsl(29, 92%, 35%);
-    box-shadow: var(--shadow-copper);
+    background-color: hsl(0, 85%, 45%);
+    box-shadow: var(--shadow-red);
   }
   
   /* Premium Spacing */
