@@ -9,7 +9,7 @@ interface StickyMobileCTAProps {
   link?: string;
 }
 
-export const StickyMobileCTA = ({ text = "Offerte erhalten", link = "/umzugsofferten" }: StickyMobileCTAProps) => {
+export const StickyMobileCTA = ({ text = "Offerten vergleichen", link = "/umzug-offerte" }: StickyMobileCTAProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {

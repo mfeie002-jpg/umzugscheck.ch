@@ -5,20 +5,20 @@ const steps = [
   {
     icon: ClipboardList,
     number: "1",
-    title: "Anfrage stellen",
+    title: "Anfrage ausfüllen",
     description: "Beschreiben Sie Ihren Umzug in 2 Minuten"
   },
   {
     icon: Mail,
     number: "2",
-    title: "Offerten erhalten",
-    description: "Bis zu 5 geprüfte Schweizer Umzugsfirmen melden sich"
+    title: "Offerten erhalten & vergleichen",
+    description: "Sie erhalten mehrere Angebote von geprüften Umzugsfirmen"
   },
   {
     icon: CheckCircle,
     number: "3",
-    title: "Vergleichen & sparen",
-    description: "Bewertungen prüfen, Preise vergleichen, bis 40% sparen"
+    title: "Beste Umzugsfirma wählen",
+    description: "Vergleichen Sie Preise und Bewertungen und treffen Sie Ihre Wahl"
   }
 ];
 
@@ -85,7 +85,7 @@ export const RedesignHowItWorks = () => {
           viewport={{ once: true }}
           className="text-center mt-8"
         >
-          <a href="/rechner">
+          <a href="/umzugsrechner">
             <button className="px-8 py-3 bg-primary text-white rounded-full font-semibold hover:scale-105 transition-transform shadow-medium">
               Jetzt starten
             </button>
