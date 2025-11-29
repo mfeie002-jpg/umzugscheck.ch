@@ -36,15 +36,11 @@ export const CompaniesDropdown = ({ isOpen, onClose }: CompaniesDropdownProps) =
     { label: "Luzern", href: "/luzern/umzugsfirmen" },
   ];
 
+  if (!isOpen) return null;
+
   return (
-    <div
-      className={cn(
-        "hidden lg:block absolute left-0 right-0 top-full mt-2 bg-background border border-border rounded-lg shadow-xl transition-all duration-200 z-50",
-        isOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"
-      )}
-      style={{ width: "600px", marginLeft: "0" }}
-    >
-      <div className="p-6">
+    <div className="hidden lg:block absolute left-0 right-0 top-full bg-white border-t border-border shadow-xl z-50 animate-in slide-in-from-top-2 duration-200">
+      <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 gap-6">
           {/* Main Rankings */}
           <div>
