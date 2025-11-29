@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Navigation } from "@/components/Navigation";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
+import zugHero from "@/assets/zug-hero.jpg";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -287,8 +287,6 @@ const Zug = () => {
         schemaMarkup={schemaMarkup}
       />
 
-      <Navigation />
-
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-background via-secondary/5 to-background py-16 md:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -407,8 +405,8 @@ const Zug = () => {
             <ScrollReveal direction="left" delay={200}>
               <div className="relative rounded-3xl overflow-hidden shadow-strong">
                 <img 
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop"
-                  alt="Professioneller Umzug in Zug"
+                  src={zugHero}
+                  alt="Kanton Zug mit Zugersee und Bergpanorama"
                   className="w-full h-[400px] md:h-[600px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -470,8 +468,22 @@ const Zug = () => {
           <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
             {companies.map((company, index) => (
               <ScrollReveal key={company.name} delay={0.1 * (index % 4)}>
-                <Card className="h-full hover:shadow-strong transition-all duration-300 hover:-translate-y-1">
+                <Card className="h-full hover:shadow-strong transition-all duration-300 hover:-translate-y-1 relative">
                   <CardContent className="p-6 space-y-4">
+                    {/* Ranking Number and Promoted Badge */}
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-lg font-bold text-primary">#{index + 1}</span>
+                        </div>
+                        {index < 2 && (
+                          <Badge className="bg-yellow-500 text-white hover:bg-yellow-600">
+                            Gesponsert
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
                     <div>
                       <h3 className="text-xl font-bold text-foreground mb-1">{company.name}</h3>
                       <p className="text-sm text-muted-foreground">{company.tagline}</p>
