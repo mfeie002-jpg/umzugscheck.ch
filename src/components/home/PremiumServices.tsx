@@ -7,25 +7,25 @@ const services = [
     title: "Privatumzug",
     description: "Komplettservice für Ihren privaten Umzug",
     link: "/dienstleistungen/privatumzug",
-    image: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=600&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1527891751199-7225231a68dd?w=600&h=400&fit=crop",
   },
   {
     title: "Firmenumzug",
     description: "Professionelle Büro- und Geschäftsumzüge",
     link: "/dienstleistungen/firmenumzug",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&h=400&fit=crop",
   },
   {
     title: "Premium-Reinigung",
     description: "End- und Umzugsreinigung nach höchstem Standard",
     link: "/dienstleistungen/reinigung",
-    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=600&h=400&fit=crop",
   },
   {
     title: "Lagerung",
     description: "Sichere Möbellagerung, kurz- oder langfristig",
     link: "/dienstleistungen/lagerung",
-    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600&h=400&fit=crop",
   },
   {
     title: "Spezialtransporte",
@@ -37,7 +37,7 @@ const services = [
     title: "Räumung / Entsorgung",
     description: "Entrümpelung und fachgerechte Entsorgung",
     link: "/dienstleistungen/entsorgung",
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=600&h=400&fit=crop",
   },
 ];
 
