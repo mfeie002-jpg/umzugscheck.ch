@@ -1,4 +1,4 @@
-import { MapPin, Search } from "lucide-react";
+import { MapPin, Search, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
@@ -379,38 +379,60 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
               <TabsContent value="list" className="flex-1 min-h-0 mt-0">
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-2 max-h-full overflow-y-auto pb-2">
                   {sortedCantons.map((canton) => (
-                    <Link
-                      key={canton.code}
-                      to={canton.href}
-                      onClick={onClose}
-                      className={cn(
-                        "group px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg border border-border bg-background",
-                        "hover:border-primary/40 hover:shadow-soft transition-all duration-200",
-                        "flex items-center gap-1.5 md:gap-2",
-                        nearestCanton === canton.code && "border-primary bg-primary/5"
-                      )}
-                    >
-                      <div className="w-6 h-6 md:w-7 md:h-7 rounded-md md:rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                        <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1">
-                          <h4 className="font-semibold text-foreground text-xs md:text-sm group-hover:text-primary transition-colors truncate">
-                            {canton.name}
-                          </h4>
-                          {nearestCanton === canton.code && (
-                            <Badge variant="secondary" className="text-[9px] md:text-[10px] px-1 py-0 h-3.5 md:h-4">
-                              Nächste
-                            </Badge>
+                    <div key={canton.code} className="relative group/canton">
+                      <Link
+                        to={canton.href}
+                        onClick={onClose}
+                        className={cn(
+                          "group px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg border border-border bg-background",
+                          "hover:border-primary/40 hover:shadow-soft transition-all duration-200",
+                          "flex items-center gap-1.5 md:gap-2",
+                          nearestCanton === canton.code && "border-primary bg-primary/5"
+                        )}
+                      >
+                        <div className="w-6 h-6 md:w-7 md:h-7 rounded-md md:rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                          <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1">
+                            <h4 className="font-semibold text-foreground text-xs md:text-sm group-hover:text-primary transition-colors truncate">
+                              {canton.name}
+                            </h4>
+                            {nearestCanton === canton.code && (
+                              <Badge variant="secondary" className="text-[9px] md:text-[10px] px-1 py-0 h-3.5 md:h-4">
+                                Nächste
+                              </Badge>
+                            )}
+                          </div>
+                          {!loading && companyCounts[canton.code] > 0 && (
+                            <p className="text-[10px] md:text-xs text-muted-foreground">
+                              {companyCounts[canton.code]} Firmen
+                            </p>
                           )}
                         </div>
-                        {!loading && companyCounts[canton.code] > 0 && (
-                          <p className="text-[10px] md:text-xs text-muted-foreground">
-                            {companyCounts[canton.code]} Firmen
-                          </p>
+                        {canton.cities && canton.cities.length > 0 && (
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
                         )}
-                      </div>
-                    </Link>
+                      </Link>
+                      
+                      {/* Cities Dropdown */}
+                      {canton.cities && canton.cities.length > 0 && (
+                        <div className="absolute left-0 top-full mt-1 w-full bg-white border border-border rounded-lg shadow-lg z-10 opacity-0 invisible group-hover/canton:opacity-100 group-hover/canton:visible transition-all duration-200">
+                          <div className="p-2 space-y-1">
+                            {canton.cities.map((city) => (
+                              <Link
+                                key={city}
+                                to={`/${city.toLowerCase().replace(/\s+/g, '-')}/umzugsfirmen`}
+                                onClick={onClose}
+                                className="block px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded transition-colors"
+                              >
+                                {city}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
 

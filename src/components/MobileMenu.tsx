@@ -348,41 +348,65 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               <div className="max-h-96 overflow-y-auto space-y-1">
                 {filteredCantons.map((canton) => (
                   <div key={canton.code}>
-                    <Link
-                      to={canton.href}
-                      onClick={onClose}
-                      className={cn(
-                        "flex items-center justify-between gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
-                        isActive(canton.href)
-                          ? "bg-primary/10 text-primary border-l-4 border-primary"
-                          : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                      )}
-                    >
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span className="text-sm truncate">{canton.name}</span>
-                      </div>
-                      {companyCounts[canton.code] > 0 && (
-                        <Badge variant="secondary" className="text-xs">
-                          {companyCounts[canton.code]}
-                        </Badge>
-                      )}
-                    </Link>
-                    
-                    {/* Cities */}
-                    {canton.cities.length > 0 && (
-                      <div className="ml-16 space-y-1 mt-1">
-                        {canton.cities.map((city) => (
+                    {canton.cities.length > 0 ? (
+                      <Collapsible>
+                        <div className="flex items-center gap-1">
                           <Link
-                            key={city}
-                            to={`/${city.toLowerCase().replace(/\s+/g, '-')}/umzugsfirmen`}
+                            to={canton.href}
                             onClick={onClose}
-                            className="block text-xs text-muted-foreground hover:text-foreground py-1"
+                            className={cn(
+                              "flex items-center gap-3 px-4 py-3 ml-4 rounded-lg transition-colors flex-1",
+                              isActive(canton.href)
+                                ? "bg-primary/10 text-primary border-l-4 border-primary"
+                                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                            )}
                           >
-                            • {city}
+                            <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                            <span className="text-sm truncate flex-1">{canton.name}</span>
+                            {companyCounts[canton.code] > 0 && (
+                              <Badge variant="secondary" className="text-xs">
+                                {companyCounts[canton.code]}
+                              </Badge>
+                            )}
                           </Link>
-                        ))}
-                      </div>
+                          <CollapsibleTrigger className="px-2 py-3 text-muted-foreground hover:text-foreground">
+                            <ChevronDown className="w-4 h-4 transition-transform ui-expanded:rotate-180" />
+                          </CollapsibleTrigger>
+                        </div>
+                        <CollapsibleContent className="ml-12 space-y-1 mt-1 pl-4 border-l-2 border-border/50">
+                          {canton.cities.map((city) => (
+                            <Link
+                              key={city}
+                              to={`/${city.toLowerCase().replace(/\s+/g, '-')}/umzugsfirmen`}
+                              onClick={onClose}
+                              className="block text-xs text-muted-foreground hover:text-foreground py-1.5 hover:bg-secondary/30 rounded px-2"
+                            >
+                              {city}
+                            </Link>
+                          ))}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    ) : (
+                      <Link
+                        to={canton.href}
+                        onClick={onClose}
+                        className={cn(
+                          "flex items-center justify-between gap-3 px-4 py-3 ml-4 rounded-lg transition-colors",
+                          isActive(canton.href)
+                            ? "bg-primary/10 text-primary border-l-4 border-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                        )}
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                          <span className="text-sm truncate">{canton.name}</span>
+                        </div>
+                        {companyCounts[canton.code] > 0 && (
+                          <Badge variant="secondary" className="text-xs">
+                            {companyCounts[canton.code]}
+                          </Badge>
+                        )}
+                      </Link>
                     )}
                   </div>
                 ))}
