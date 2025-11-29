@@ -1,12 +1,23 @@
-import { Helmet } from "react-helmet";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { ScrollReveal } from "@/components/ScrollReveal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Globe, Shield, FileCheck, Truck, Clock, Package } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Globe, Shield, FileCheck, Truck, CheckCircle } from "lucide-react";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { motion } from "framer-motion";
 
 export default function InternationalMoving() {
+  const benefits = [
+    { icon: Globe, title: "Weltweiter Service", description: "Umzüge in alle Länder weltweit" },
+    { icon: Shield, title: "Vollversichert", description: "Kompletter Versicherungsschutz" },
+    { icon: FileCheck, title: "Zollabwicklung", description: "Komplette Dokumentenabwicklung" },
+    { icon: Truck, title: "See- oder Luftfracht", description: "Je nach Zielland und Dringlichkeit" },
+    { icon: Clock, title: "Erfahrene Partner", description: "Spezialisierte Umzugsfirmen" },
+    { icon: Package, title: "Professionelle Verpackung", description: "Sichere Transportverpackung" },
+  ];
+
   const faqs = [
     {
       question: "Was kostet ein internationaler Umzug ab Schweiz?",
@@ -27,108 +38,104 @@ export default function InternationalMoving() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Internationaler Umzug Schweiz – Weltweit umziehen | umzugscheck.ch</title>
-        <meta 
-          name="description" 
-          content="Internationaler Umzug ab der Schweiz? Vergleichen Sie spezialisierte Umzugsfirmen für weltweite Umzüge. Professionell, versichert und günstig." 
-        />
-        <meta name="keywords" content="Internationaler Umzug Schweiz, Auslandsumzug, Überseeumzug, Umzug ins Ausland" />
-        <link rel="canonical" href="https://umzugscheck.ch/internationaler-umzug" />
-      </Helmet>
+    <>
+      <OptimizedSEO
+        title="Internationale Umzüge - Weltweit umziehen"
+        description="Internationale Umzüge in die ganze Welt. Professionelle Planung, Zollabwicklung und sichere Verpackung für Ihren Auslandsumzug."
+        keywords="internationaler umzug, auslandsumzug, umzug ins ausland, weltweit umziehen"
+        canonicalUrl="https://umzugscheck.ch/internationale-umzuege"
+      />
 
-      {/* Hero */}
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6">
-              <Globe className="h-8 w-8 text-primary" />
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="gradient-hero text-white py-16 md:py-24">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <div className="max-w-4xl mx-auto text-center">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                    Internationale Umzüge
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 text-white/90">
+                    Ihr Umzug ins Ausland - professionell geplant und durchgeführt
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                      <Link to="/rechner">Jetzt Offerte anfragen</Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
+                      <Link to="/umzugsfirmen">Umzugsfirmen vergleichen</Link>
+                    </Button>
+                  </div>
+                </div>
+              </ScrollReveal>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Internationaler <span className="text-primary">Umzug</span> ab der Schweiz
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
-              Professioneller Auslandsumzug mit spezialisierten Umzugsfirmen. Weltweit versichert und zuverlässig.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/umzug-offerte">
-                <Button size="lg" className="h-14 px-8 text-lg">
-                  Jetzt Offerten vergleichen
+          </section>
+
+          {/* Benefits Section */}
+          <section className="py-16 gradient-light">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                  Warum internationale Umzüge mit uns?
+                </h2>
+              </ScrollReveal>
+              <div className="grid md:grid-cols-3 gap-8">
+                {benefits.map((benefit, index) => (
+                  <ScrollReveal key={index} delay={index * 0.1}>
+                    <Card variant="elevated" className="h-full hover-lift">
+                      <CardHeader>
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                          <benefit.icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <CardTitle>{benefit.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">{benefit.description}</p>
+                      </CardContent>
+                    </Card>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ Section */}
+          <section className="py-16 bg-secondary/5">
+            <div className="container mx-auto px-4">
+              <ScrollReveal>
+                <div className="max-w-3xl mx-auto">
+                  <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                    Häufige Fragen
+                  </h2>
+                  <FAQAccordion items={faqs} variant="compact" />
+                </div>
+              </ScrollReveal>
+            </div>
+          </section>
+
+          {/* CTA Section */}
+          <section className="py-16 gradient-cta text-white">
+            <div className="container mx-auto px-4 text-center">
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Bereit für Ihren internationalen Umzug?
+                </h2>
+                <p className="text-xl mb-8 text-white/90">
+                  Holen Sie sich jetzt kostenlose Offerten von erfahrenen Umzugsfirmen
+                </p>
+                <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                  <Link to="/rechner">Jetzt Offerte anfragen</Link>
                 </Button>
-              </Link>
+              </ScrollReveal>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </section>
+        </main>
 
-      {/* Was beachten */}
-      <section className="py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Das müssen Sie beachten
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {[
-              { icon: FileCheck, title: "Zolldokumente", description: "Inventarliste und Formulare vorbereiten" },
-              { icon: Shield, title: "Versicherung", description: "Vollkasko für internationale Transporte" },
-              { icon: Truck, title: "Transportweg", description: "See- oder Luftfracht je nach Zielland" },
-              { icon: Globe, title: "Planung", description: "6-12 Wochen Vorlauf empfohlen" }
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="h-full text-center">
-                  <CardContent className="p-6">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                      <item.icon className="h-7 w-7 text-primary" />
-                    </div>
-                    <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-16 md:py-20 bg-secondary/10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Häufige Fragen zum internationalen Umzug
-            </h2>
-            <FAQAccordion items={faqs} variant="compact" />
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-primary via-primary/90 to-accent text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Planen Sie Ihren internationalen Umzug
-          </h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Erhalten Sie kostenlose Offerten von spezialisierten Umzugsfirmen
-          </p>
-          <Link to="/umzug-offerte">
-            <Button size="lg" variant="secondary" className="h-14 px-8 text-lg">
-              Jetzt Offerten erhalten
-            </Button>
-          </Link>
-        </div>
-      </section>
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 }
