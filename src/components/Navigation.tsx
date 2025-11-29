@@ -4,22 +4,27 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { ServicesDropdown } from "@/components/ServicesDropdown";
+import { CompaniesDropdown } from "@/components/CompaniesDropdown";
+import { RegionsDropdown } from "@/components/RegionsDropdown";
+import { RatgeberDropdown } from "@/components/RatgeberDropdown";
+import { ProviderDropdown } from "@/components/ProviderDropdown";
+import { MegaDropdown } from "@/components/MegaDropdown";
 import { MobileMenu } from "@/components/MobileMenu";
 import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Preisrechner", href: "/umzugsrechner", hasDropdown: false },
-  { label: "Umzugsfirmen", href: "/umzugsfirmen", hasDropdown: false },
+  { label: "Preisrechner", href: "/umzugsrechner", hasDropdown: true, dropdownType: "calculators" },
+  { label: "Umzugsfirmen", href: "/umzugsfirmen", hasDropdown: true, dropdownType: "companies" },
   { label: "Services", href: "/services", hasDropdown: true, dropdownType: "services" },
-  { label: "Regionen", href: "/regionen", hasDropdown: false },
-  { label: "Ratgeber", href: "/ratgeber", hasDropdown: false },
-  { label: "Für Firmen", href: "/fuer-firmen", hasDropdown: false }
+  { label: "Regionen", href: "/regionen", hasDropdown: true, dropdownType: "regions" },
+  { label: "Ratgeber", href: "/ratgeber", hasDropdown: true, dropdownType: "ratgeber" },
+  { label: "Für Firmen", href: "/fuer-firmen", hasDropdown: true, dropdownType: "provider" }
 ];
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
@@ -44,32 +49,26 @@ export const Navigation = () => {
               <div key={item.label} className="relative">
                 {item.hasDropdown ? (
                   <button
-                    onMouseEnter={() => {
-                      setIsServicesDropdownOpen(item.dropdownType === "services");
-                    }}
-                    onMouseLeave={() => {
-                      if (item.dropdownType === "services") setIsServicesDropdownOpen(false);
-                    }}
-                    onClick={() => {
-                      if (item.dropdownType === "services") setIsServicesDropdownOpen(!isServicesDropdownOpen);
-                    }}
+                    onMouseEnter={() => setActiveDropdown(item.dropdownType)}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                    onClick={() => setActiveDropdown(activeDropdown === item.dropdownType ? null : item.dropdownType)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        if (item.dropdownType === "services") setIsServicesDropdownOpen(!isServicesDropdownOpen);
+                        setActiveDropdown(activeDropdown === item.dropdownType ? null : item.dropdownType);
                       }
                     }}
                     className={cn(
                       "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
                     )}
-                    aria-expanded={item.dropdownType === "services" && isServicesDropdownOpen}
+                    aria-expanded={activeDropdown === item.dropdownType}
                     aria-haspopup="true"
                     aria-label={`${item.label} Menü öffnen`}
                   >
                     {item.label}
                     <ChevronDown className={cn(
                       "w-4 h-4 transition-transform",
-                      (item.dropdownType === "services" && isServicesDropdownOpen) ? "rotate-180" : ""
+                      activeDropdown === item.dropdownType ? "rotate-180" : ""
                     )} 
                     aria-hidden="true" />
                   </button>
@@ -128,14 +127,34 @@ export const Navigation = () => {
           </div>
         </div>
 
-        {/* Services Dropdown */}
+        {/* All Dropdowns */}
         <div
-          onMouseEnter={() => setIsServicesDropdownOpen(true)}
-          onMouseLeave={() => setIsServicesDropdownOpen(false)}
+          onMouseEnter={() => {}}
+          onMouseLeave={() => setActiveDropdown(null)}
         >
+          <MegaDropdown 
+            isOpen={activeDropdown === "calculators"} 
+            onClose={() => setActiveDropdown(null)} 
+          />
+          <CompaniesDropdown 
+            isOpen={activeDropdown === "companies"} 
+            onClose={() => setActiveDropdown(null)} 
+          />
           <ServicesDropdown 
-            isOpen={isServicesDropdownOpen} 
-            onClose={() => setIsServicesDropdownOpen(false)} 
+            isOpen={activeDropdown === "services"} 
+            onClose={() => setActiveDropdown(null)} 
+          />
+          <RegionsDropdown 
+            isOpen={activeDropdown === "regions"} 
+            onClose={() => setActiveDropdown(null)} 
+          />
+          <RatgeberDropdown 
+            isOpen={activeDropdown === "ratgeber"} 
+            onClose={() => setActiveDropdown(null)} 
+          />
+          <ProviderDropdown 
+            isOpen={activeDropdown === "provider"} 
+            onClose={() => setActiveDropdown(null)} 
           />
         </div>
       </div>
