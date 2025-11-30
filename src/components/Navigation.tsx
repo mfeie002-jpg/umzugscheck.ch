@@ -50,8 +50,10 @@ export const Navigation = () => {
                 {item.hasDropdown ? (
                   <button
                     onMouseEnter={() => setActiveDropdown(item.dropdownType)}
-                    onMouseLeave={() => setActiveDropdown(null)}
-                    onClick={() => setActiveDropdown(activeDropdown === item.dropdownType ? null : item.dropdownType)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveDropdown(activeDropdown === item.dropdownType ? null : item.dropdownType);
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
