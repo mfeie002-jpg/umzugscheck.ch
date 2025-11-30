@@ -711,7 +711,7 @@ export default function VideoEstimator() {
                                         fromPostalValid === true ? 'border-green-500' : ''
                                       }`}
                                     >
-                                      {fromPostalSearch || <span className="text-muted-foreground">PLZ suchen...</span>}
+                                      {fromPostal ? fromPostalSearch : <span className="text-muted-foreground">PLZ suchen...</span>}
                                       {fromPostal ? (
                                         <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
                                           e.stopPropagation();
@@ -771,7 +771,7 @@ export default function VideoEstimator() {
                                         toPostalValid === true ? 'border-green-500' : ''
                                       }`}
                                     >
-                                      {toPostalSearch || <span className="text-muted-foreground">PLZ suchen...</span>}
+                                      {toPostal ? toPostalSearch : <span className="text-muted-foreground">PLZ suchen...</span>}
                                       {toPostal ? (
                                         <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
                                           e.stopPropagation();
