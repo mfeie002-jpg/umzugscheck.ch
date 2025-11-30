@@ -303,17 +303,21 @@ export default function VideoEstimator() {
   };
 
   const filterPostalCodes = (query: string): PostalCodeEntry[] => {
-    if (!query || query.length < 1) return swissPostalCodes.slice(0, 100);
+    if (!query || query.trim().length < 1) {
+      // Show diverse selection from different cantons
+      return swissPostalCodes.filter((_, index) => index % 10 === 0).slice(0, 50);
+    }
     
-    const lowerQuery = query.toLowerCase();
+    const lowerQuery = query.toLowerCase().trim();
     
     return swissPostalCodes
       .filter(entry => 
-        entry.code.includes(query) || 
+        entry.code.startsWith(lowerQuery) || 
+        entry.city.toLowerCase().startsWith(lowerQuery) ||
         entry.city.toLowerCase().includes(lowerQuery) ||
-        entry.canton.toLowerCase().includes(lowerQuery)
+        entry.canton.toLowerCase() === lowerQuery
       )
-      .slice(0, 100);
+      .slice(0, 50);
   };
 
   const handleReset = () => {
@@ -712,35 +716,44 @@ export default function VideoEstimator() {
                             <div className="grid grid-cols-2 gap-3">
                               <div>
                                 <Label htmlFor="fromPostal" className="text-sm mb-2 block">Von PLZ</Label>
-                                <div className="relative">
-                                  <Input
-                                    id="fromPostal"
-                                    type="text"
-                                    placeholder="PLZ oder Ort eingeben..."
-                                    value={fromPostalSearchQuery}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
-                                      setFromPostalSearchQuery(value);
-                                      // Try to match as user types
-                                      const matches = filterPostalCodes(value);
-                                      if (matches.length > 0 && value.includes(matches[0].code)) {
-                                        handleFromPostalSelect(matches[0]);
-                                      }
-                                    }}
-                                    list="fromPostalList"
-                                    className={`pr-8 ${
-                                      fromPostalValid === false ? 'border-destructive' : 
-                                      fromPostalValid === true ? 'border-green-500' : ''
-                                    }`}
-                                  />
-                                  <datalist id="fromPostalList">
-                                    {filterPostalCodes(fromPostalSearchQuery).map((entry) => (
-                                      <option 
-                                        key={entry.code} 
-                                        value={`${entry.code} - ${entry.city} (${entry.canton})`}
-                                      />
-                                    ))}
-                                  </datalist>
+              <div className="relative">
+                <Input
+                  id="fromPostal"
+                  type="text"
+                  placeholder="PLZ oder Ort eingeben..."
+                  value={fromPostalSearchQuery}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFromPostalSearchQuery(value);
+                    
+                    // Check if user selected from datalist (format: "CODE - CITY (CANTON)")
+                    const match = value.match(/^(\d{4})\s*-\s*([^(]+)\s*\(([^)]+)\)$/);
+                    if (match) {
+                      const [, code, city] = match;
+                      const entry = swissPostalCodes.find(e => e.code === code);
+                      if (entry) {
+                        handleFromPostalSelect(entry);
+                      }
+                    } else {
+                      // Reset validation if user is typing
+                      setFromPostal("");
+                      setFromPostalValid(null);
+                    }
+                  }}
+                  list="fromPostalList"
+                  className={`pr-8 ${
+                    fromPostalValid === false ? 'border-destructive' : 
+                    fromPostalValid === true ? 'border-green-500' : ''
+                  }`}
+                />
+                <datalist id="fromPostalList">
+                  {filterPostalCodes(fromPostalSearchQuery).map((entry) => (
+                    <option 
+                      key={entry.code} 
+                      value={`${entry.code} - ${entry.city} (${entry.canton})`}
+                    />
+                  ))}
+                </datalist>
                                   {fromPostal && (
                                     <button
                                       type="button"
@@ -754,35 +767,44 @@ export default function VideoEstimator() {
                               </div>
                               <div>
                                 <Label htmlFor="toPostal" className="text-sm mb-2 block">Nach PLZ</Label>
-                                <div className="relative">
-                                  <Input
-                                    id="toPostal"
-                                    type="text"
-                                    placeholder="PLZ oder Ort eingeben..."
-                                    value={toPostalSearchQuery}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
-                                      setToPostalSearchQuery(value);
-                                      // Try to match as user types
-                                      const matches = filterPostalCodes(value);
-                                      if (matches.length > 0 && value.includes(matches[0].code)) {
-                                        handleToPostalSelect(matches[0]);
-                                      }
-                                    }}
-                                    list="toPostalList"
-                                    className={`pr-8 ${
-                                      toPostalValid === false ? 'border-destructive' : 
-                                      toPostalValid === true ? 'border-green-500' : ''
-                                    }`}
-                                  />
-                                  <datalist id="toPostalList">
-                                    {filterPostalCodes(toPostalSearchQuery).map((entry) => (
-                                      <option 
-                                        key={entry.code} 
-                                        value={`${entry.code} - ${entry.city} (${entry.canton})`}
-                                      />
-                                    ))}
-                                  </datalist>
+              <div className="relative">
+                <Input
+                  id="toPostal"
+                  type="text"
+                  placeholder="PLZ oder Ort eingeben..."
+                  value={toPostalSearchQuery}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setToPostalSearchQuery(value);
+                    
+                    // Check if user selected from datalist (format: "CODE - CITY (CANTON)")
+                    const match = value.match(/^(\d{4})\s*-\s*([^(]+)\s*\(([^)]+)\)$/);
+                    if (match) {
+                      const [, code, city] = match;
+                      const entry = swissPostalCodes.find(e => e.code === code);
+                      if (entry) {
+                        handleToPostalSelect(entry);
+                      }
+                    } else {
+                      // Reset validation if user is typing
+                      setToPostal("");
+                      setToPostalValid(null);
+                    }
+                  }}
+                  list="toPostalList"
+                  className={`pr-8 ${
+                    toPostalValid === false ? 'border-destructive' : 
+                    toPostalValid === true ? 'border-green-500' : ''
+                  }`}
+                />
+                <datalist id="toPostalList">
+                  {filterPostalCodes(toPostalSearchQuery).map((entry) => (
+                    <option 
+                      key={entry.code} 
+                      value={`${entry.code} - ${entry.city} (${entry.canton})`}
+                    />
+                  ))}
+                </datalist>
                                   {toPostal && (
                                     <button
                                       type="button"
