@@ -6,6 +6,9 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+
 export default function PrivateMoving() {
   const faqs = [
     {
@@ -27,7 +30,9 @@ export default function PrivateMoving() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Privatumzug Schweiz – Umzugsfirmen vergleichen"
         description="Privatumzug in der Schweiz planen? Vergleichen Sie geprüfte Umzugsfirmen kostenlos. Bis zu 5 Offerten erhalten und bis zu 40% sparen."
@@ -173,6 +178,8 @@ export default function PrivateMoving() {
           </Link>
         </div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

@@ -115,6 +115,13 @@ const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
 const ABTesting = lazy(() => import("./pages/admin/ABTesting"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
 
+// Lazy load legal/info pages
+const Datenschutz = lazy(() => import("./pages/Datenschutz"));
+const AGB = lazy(() => import("./pages/AGB"));
+const Impressum = lazy(() => import("./pages/Impressum"));
+const UeberUns = lazy(() => import("./pages/UeberUns"));
+const SoFunktionierts = lazy(() => import("./pages/SoFunktionierts"));
+
 // Lazy load provider pages for code splitting
 const ProviderSignup = lazy(() => import("./pages/ProviderSignup"));
 const ProviderLogin = lazy(() => import("./pages/ProviderLogin"));
@@ -191,8 +198,12 @@ const App = () => (
             <Route path="/ratgeber" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/ratgeber/:slug" element={<BlogPost />} />
-            <Route path="/ueber-uns" element={<About />} />
+            <Route path="/ueber-uns" element={<UeberUns />} />
             <Route path="/about" element={<About />} />
+            <Route path="/so-funktionierts" element={<SoFunktionierts />} />
+            <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/agb" element={<AGB />} />
+            <Route path="/impressum" element={<Impressum />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />

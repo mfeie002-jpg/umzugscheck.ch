@@ -6,6 +6,9 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+
 export default function BusinessMoving() {
   const faqs = [
     {
@@ -27,7 +30,9 @@ export default function BusinessMoving() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Firmenumzug Schweiz – Büroumzug professionell planen"
         description="Firmenumzug in der Schweiz planen? Vergleichen Sie geprüfte Umzugsfirmen für Büro- und Geschäftsumzüge. Kostenlose Offerten und bis zu 40% sparen."
@@ -132,6 +137,8 @@ export default function BusinessMoving() {
           </Link>
         </div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

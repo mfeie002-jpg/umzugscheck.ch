@@ -70,12 +70,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/umzug-offerte" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/umzugsofferten" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Umzugsofferten vergleichen
                 </Link>
               </li>
               <li>
-                <Link to="/umzugsfirmen-schweiz" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/umzugsfirmen" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Alle Umzugsfirmen
                 </Link>
               </li>
@@ -92,23 +92,33 @@ export const Footer = () => {
             <h4 className="font-bold mb-4 text-primary-foreground">Services</h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link to="/umzug-schweiz" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/privatumzug" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Privatumzug
                 </Link>
               </li>
               <li>
-                <Link to="/firmenumzug-schweiz" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/firmenumzug" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Firmenumzug
                 </Link>
               </li>
               <li>
-                <Link to="/umzugsreinigung-schweiz" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/reinigung" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Umzugsreinigung
                 </Link>
               </li>
               <li>
-                <Link to="/entsorgung-schweiz" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/entsorgung-raeumung" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Räumung & Entsorgung
+                </Link>
+              </li>
+              <li>
+                <Link to="/einlagerung" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Möbellager
+                </Link>
+              </li>
+              <li>
+                <Link to="/moebellift" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Möbellift
                 </Link>
               </li>
             </ul>
@@ -119,13 +129,13 @@ export const Footer = () => {
             <h4 className="font-bold mb-4 text-primary-foreground">Informationen</h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link to="/ratgeber" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
-                  Ratgeber
+                <Link to="/so-funktionierts" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  So funktioniert's
                 </Link>
               </li>
               <li>
-                <Link to="/so-funktionierts" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
-                  So funktioniert's
+                <Link to="/ratgeber" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Ratgeber
                 </Link>
               </li>
               <li>
