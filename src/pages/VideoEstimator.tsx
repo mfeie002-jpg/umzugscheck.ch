@@ -8,12 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp, MapPin, Search, X } from "lucide-react";
+import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, Box, TrendingUp, MapPin, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { calculateVideoBasedPrice, formatCurrency, estimateDistance } from "@/lib/pricing";
 import { swissPostalCodes, validatePostalCode, PostalCodeEntry } from "@/lib/swiss-postal-codes";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AnalysisResult {
@@ -58,8 +57,6 @@ export default function VideoEstimator() {
   const [fromPostal, setFromPostal] = useState<string>("");
   const [toPostal, setToPostal] = useState<string>("");
   const [usePostalCodes, setUsePostalCodes] = useState(false);
-  const [fromPostalOpen, setFromPostalOpen] = useState(false);
-  const [toPostalOpen, setToPostalOpen] = useState(false);
   const [fromPostalDisplay, setFromPostalDisplay] = useState<string>("");
   const [toPostalDisplay, setToPostalDisplay] = useState<string>("");
   const [fromPostalSearchQuery, setFromPostalSearchQuery] = useState<string>("");
@@ -249,9 +246,8 @@ export default function VideoEstimator() {
   const handleFromPostalSelect = (entry: PostalCodeEntry) => {
     setFromPostal(entry.code);
     setFromPostalDisplay(`${entry.code} - ${entry.city}`);
+    setFromPostalSearchQuery(`${entry.code} - ${entry.city} (${entry.canton})`);
     setFromPostalValid(true);
-    setFromPostalOpen(false);
-    setFromPostalSearchQuery("");
     
     if (toPostal && validatePostalCode(toPostal) && analysisResult) {
       calculateDistanceAndPrice(entry.code, toPostal);
@@ -261,9 +257,8 @@ export default function VideoEstimator() {
   const handleToPostalSelect = (entry: PostalCodeEntry) => {
     setToPostal(entry.code);
     setToPostalDisplay(`${entry.code} - ${entry.city}`);
+    setToPostalSearchQuery(`${entry.code} - ${entry.city} (${entry.canton})`);
     setToPostalValid(true);
-    setToPostalOpen(false);
-    setToPostalSearchQuery("");
     
     if (fromPostal && validatePostalCode(fromPostal) && analysisResult) {
       calculateDistanceAndPrice(fromPostal, entry.code);
@@ -308,7 +303,7 @@ export default function VideoEstimator() {
   };
 
   const filterPostalCodes = (query: string): PostalCodeEntry[] => {
-    if (!query || query.length < 1) return swissPostalCodes.slice(0, 50);
+    if (!query || query.length < 1) return swissPostalCodes.slice(0, 100);
     
     const lowerQuery = query.toLowerCase();
     
@@ -318,7 +313,7 @@ export default function VideoEstimator() {
         entry.city.toLowerCase().includes(lowerQuery) ||
         entry.canton.toLowerCase().includes(lowerQuery)
       )
-      .slice(0, 50);
+      .slice(0, 100);
   };
 
   const handleReset = () => {
@@ -717,113 +712,87 @@ export default function VideoEstimator() {
                             <div className="grid grid-cols-2 gap-3">
                               <div>
                                 <Label htmlFor="fromPostal" className="text-sm mb-2 block">Von PLZ</Label>
-                                <Popover open={fromPostalOpen} onOpenChange={setFromPostalOpen}>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      role="combobox"
-                                      aria-expanded={fromPostalOpen}
-                                      className={`w-full justify-between text-left font-normal ${
-                                        fromPostalValid === false ? 'border-destructive' : 
-                                        fromPostalValid === true ? 'border-green-500' : ''
-                                      }`}
-                                    >
-                                      {fromPostal ? fromPostalDisplay : <span className="text-muted-foreground">PLZ suchen...</span>}
-                                      {fromPostal ? (
-                                        <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
-                                          e.stopPropagation();
-                                          clearFromPostal();
-                                        }} />
-                                      ) : (
-                                        <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                      )}
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
-                                    <Command shouldFilter={false}>
-                                      <CommandInput 
-                                        placeholder="PLZ oder Ort suchen..." 
-                                        value={fromPostalSearchQuery}
-                                        onValueChange={setFromPostalSearchQuery}
+                                <div className="relative">
+                                  <Input
+                                    id="fromPostal"
+                                    type="text"
+                                    placeholder="PLZ oder Ort eingeben..."
+                                    value={fromPostalSearchQuery}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      setFromPostalSearchQuery(value);
+                                      // Try to match as user types
+                                      const matches = filterPostalCodes(value);
+                                      if (matches.length > 0 && value.includes(matches[0].code)) {
+                                        handleFromPostalSelect(matches[0]);
+                                      }
+                                    }}
+                                    list="fromPostalList"
+                                    className={`pr-8 ${
+                                      fromPostalValid === false ? 'border-destructive' : 
+                                      fromPostalValid === true ? 'border-green-500' : ''
+                                    }`}
+                                  />
+                                  <datalist id="fromPostalList">
+                                    {filterPostalCodes(fromPostalSearchQuery).map((entry) => (
+                                      <option 
+                                        key={entry.code} 
+                                        value={`${entry.code} - ${entry.city} (${entry.canton})`}
                                       />
-                                      <CommandList>
-                                        <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
-                                        <CommandGroup>
-                                          {filterPostalCodes(fromPostalSearchQuery).map((entry) => (
-                                            <CommandItem
-                                              key={entry.code}
-                                              value={`${entry.code} ${entry.city}`}
-                                              onSelect={() => handleFromPostalSelect(entry)}
-                                            >
-                                              <CheckCircle className={`mr-2 h-4 w-4 ${
-                                                fromPostal === entry.code ? 'opacity-100' : 'opacity-0'
-                                              }`} />
-                                              <div>
-                                                <div className="font-medium">{entry.code} - {entry.city}</div>
-                                                <div className="text-xs text-muted-foreground">{entry.canton}</div>
-                                              </div>
-                                            </CommandItem>
-                                          ))}
-                                        </CommandGroup>
-                                      </CommandList>
-                                    </Command>
-                                  </PopoverContent>
-                                </Popover>
+                                    ))}
+                                  </datalist>
+                                  {fromPostal && (
+                                    <button
+                                      type="button"
+                                      onClick={clearFromPostal}
+                                      className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                               <div>
                                 <Label htmlFor="toPostal" className="text-sm mb-2 block">Nach PLZ</Label>
-                                <Popover open={toPostalOpen} onOpenChange={setToPostalOpen}>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      role="combobox"
-                                      aria-expanded={toPostalOpen}
-                                      className={`w-full justify-between text-left font-normal ${
-                                        toPostalValid === false ? 'border-destructive' : 
-                                        toPostalValid === true ? 'border-green-500' : ''
-                                      }`}
-                                    >
-                                      {toPostal ? toPostalDisplay : <span className="text-muted-foreground">PLZ suchen...</span>}
-                                      {toPostal ? (
-                                        <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
-                                          e.stopPropagation();
-                                          clearToPostal();
-                                        }} />
-                                      ) : (
-                                        <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                      )}
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
-                                    <Command shouldFilter={false}>
-                                      <CommandInput 
-                                        placeholder="PLZ oder Ort suchen..." 
-                                        value={toPostalSearchQuery}
-                                        onValueChange={setToPostalSearchQuery}
+                                <div className="relative">
+                                  <Input
+                                    id="toPostal"
+                                    type="text"
+                                    placeholder="PLZ oder Ort eingeben..."
+                                    value={toPostalSearchQuery}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      setToPostalSearchQuery(value);
+                                      // Try to match as user types
+                                      const matches = filterPostalCodes(value);
+                                      if (matches.length > 0 && value.includes(matches[0].code)) {
+                                        handleToPostalSelect(matches[0]);
+                                      }
+                                    }}
+                                    list="toPostalList"
+                                    className={`pr-8 ${
+                                      toPostalValid === false ? 'border-destructive' : 
+                                      toPostalValid === true ? 'border-green-500' : ''
+                                    }`}
+                                  />
+                                  <datalist id="toPostalList">
+                                    {filterPostalCodes(toPostalSearchQuery).map((entry) => (
+                                      <option 
+                                        key={entry.code} 
+                                        value={`${entry.code} - ${entry.city} (${entry.canton})`}
                                       />
-                                      <CommandList>
-                                        <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
-                                        <CommandGroup>
-                                          {filterPostalCodes(toPostalSearchQuery).map((entry) => (
-                                            <CommandItem
-                                              key={entry.code}
-                                              value={`${entry.code} ${entry.city}`}
-                                              onSelect={() => handleToPostalSelect(entry)}
-                                            >
-                                              <CheckCircle className={`mr-2 h-4 w-4 ${
-                                                toPostal === entry.code ? 'opacity-100' : 'opacity-0'
-                                              }`} />
-                                              <div>
-                                                <div className="font-medium">{entry.code} - {entry.city}</div>
-                                                <div className="text-xs text-muted-foreground">{entry.canton}</div>
-                                              </div>
-                                            </CommandItem>
-                                          ))}
-                                        </CommandGroup>
-                                      </CommandList>
-                                    </Command>
-                                  </PopoverContent>
-                                </Popover>
+                                    ))}
+                                  </datalist>
+                                  {toPostal && (
+                                    <button
+                                      type="button"
+                                      onClick={clearToPostal}
+                                      className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                             </div>
                             {usePostalCodes && (
