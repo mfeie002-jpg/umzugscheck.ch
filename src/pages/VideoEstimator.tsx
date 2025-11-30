@@ -726,24 +726,23 @@ export default function VideoEstimator() {
                   type="text"
                   placeholder="PLZ oder Ort eingeben..."
                   value={fromPostalSearchQuery}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setFromPostalSearchQuery(value);
-                    
-                    // Check if user selected from datalist (format: "CODE - CITY (CANTON)")
-                    const match = value.match(/^(\d{4})\s*-\s*([^(]+)\s*\(([^)]+)\)$/);
-                    if (match) {
-                      const [, code, city] = match;
-                      const entry = swissPostalCodes.find(e => e.code === code);
-                      if (entry) {
-                        handleFromPostalSelect(entry);
-                      }
-                    } else {
-                      // Reset validation if user is typing
-                      setFromPostal("");
-                      setFromPostalValid(null);
-                    }
-                  }}
+                   onChange={(e) => {
+                     const value = e.target.value;
+                     setFromPostalSearchQuery(value);
+                     
+                     // Check if user selected from datalist (format: "CODE - CITY (CANTON)")
+                     const match = value.match(/^(\d{4})\s*-\s*([^(]+)\s*\(([^)]+)\)$/);
+                     if (match) {
+                       const [, code] = match;
+                       const entry = swissPostalCodes.find(e => e.code === code);
+                       if (entry) {
+                         handleFromPostalSelect(entry);
+                       }
+                     } else if (value.trim() === "") {
+                       // Only clear if user explicitly emptied the field
+                       clearFromPostal();
+                     }
+                   }}
                   list="fromPostalList"
                   className={`pr-8 ${
                     fromPostalValid === false ? 'border-destructive' : 
@@ -777,24 +776,23 @@ export default function VideoEstimator() {
                   type="text"
                   placeholder="PLZ oder Ort eingeben..."
                   value={toPostalSearchQuery}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setToPostalSearchQuery(value);
-                    
-                    // Check if user selected from datalist (format: "CODE - CITY (CANTON)")
-                    const match = value.match(/^(\d{4})\s*-\s*([^(]+)\s*\(([^)]+)\)$/);
-                    if (match) {
-                      const [, code, city] = match;
-                      const entry = swissPostalCodes.find(e => e.code === code);
-                      if (entry) {
-                        handleToPostalSelect(entry);
-                      }
-                    } else {
-                      // Reset validation if user is typing
-                      setToPostal("");
-                      setToPostalValid(null);
-                    }
-                  }}
+                   onChange={(e) => {
+                     const value = e.target.value;
+                     setToPostalSearchQuery(value);
+                     
+                     // Check if user selected from datalist (format: "CODE - CITY (CANTON)")
+                     const match = value.match(/^(\d{4})\s*-\s*([^(]+)\s*\(([^)]+)\)$/);
+                     if (match) {
+                       const [, code] = match;
+                       const entry = swissPostalCodes.find(e => e.code === code);
+                       if (entry) {
+                         handleToPostalSelect(entry);
+                       }
+                     } else if (value.trim() === "") {
+                       // Only clear if user explicitly emptied the field
+                       clearToPostal();
+                     }
+                   }}
                   list="toPostalList"
                   className={`pr-8 ${
                     toPostalValid === false ? 'border-destructive' : 
