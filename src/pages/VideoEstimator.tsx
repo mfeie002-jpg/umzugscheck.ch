@@ -62,6 +62,8 @@ export default function VideoEstimator() {
   const [toPostalOpen, setToPostalOpen] = useState(false);
   const [fromPostalDisplay, setFromPostalDisplay] = useState<string>("");
   const [toPostalDisplay, setToPostalDisplay] = useState<string>("");
+  const [fromPostalSearchQuery, setFromPostalSearchQuery] = useState<string>("");
+  const [toPostalSearchQuery, setToPostalSearchQuery] = useState<string>("");
   const [fromPostalValid, setFromPostalValid] = useState<boolean | null>(null);
   const [toPostalValid, setToPostalValid] = useState<boolean | null>(null);
   
@@ -249,6 +251,7 @@ export default function VideoEstimator() {
     setFromPostalDisplay(`${entry.code} - ${entry.city}`);
     setFromPostalValid(true);
     setFromPostalOpen(false);
+    setFromPostalSearchQuery("");
     
     if (toPostal && validatePostalCode(toPostal) && analysisResult) {
       calculateDistanceAndPrice(entry.code, toPostal);
@@ -260,6 +263,7 @@ export default function VideoEstimator() {
     setToPostalDisplay(`${entry.code} - ${entry.city}`);
     setToPostalValid(true);
     setToPostalOpen(false);
+    setToPostalSearchQuery("");
     
     if (fromPostal && validatePostalCode(fromPostal) && analysisResult) {
       calculateDistanceAndPrice(fromPostal, entry.code);
@@ -290,6 +294,7 @@ export default function VideoEstimator() {
   const clearFromPostal = () => {
     setFromPostal("");
     setFromPostalDisplay("");
+    setFromPostalSearchQuery("");
     setFromPostalValid(null);
     setUsePostalCodes(false);
   };
@@ -297,8 +302,23 @@ export default function VideoEstimator() {
   const clearToPostal = () => {
     setToPostal("");
     setToPostalDisplay("");
+    setToPostalSearchQuery("");
     setToPostalValid(null);
     setUsePostalCodes(false);
+  };
+
+  const filterPostalCodes = (query: string): PostalCodeEntry[] => {
+    if (!query || query.length < 1) return swissPostalCodes.slice(0, 50);
+    
+    const lowerQuery = query.toLowerCase();
+    
+    return swissPostalCodes
+      .filter(entry => 
+        entry.code.includes(query) || 
+        entry.city.toLowerCase().includes(lowerQuery) ||
+        entry.canton.toLowerCase().includes(lowerQuery)
+      )
+      .slice(0, 50);
   };
 
   const handleReset = () => {
@@ -312,6 +332,8 @@ export default function VideoEstimator() {
     setToPostal("");
     setFromPostalDisplay("");
     setToPostalDisplay("");
+    setFromPostalSearchQuery("");
+    setToPostalSearchQuery("");
     setFromPostalValid(null);
     setToPostalValid(null);
     setUsePostalCodes(false);
@@ -719,11 +741,15 @@ export default function VideoEstimator() {
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
                                     <Command shouldFilter={false}>
-                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
+                                      <CommandInput 
+                                        placeholder="PLZ oder Ort suchen..." 
+                                        value={fromPostalSearchQuery}
+                                        onValueChange={setFromPostalSearchQuery}
+                                      />
                                       <CommandList>
                                         <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
                                         <CommandGroup>
-                                          {swissPostalCodes.map((entry) => (
+                                          {filterPostalCodes(fromPostalSearchQuery).map((entry) => (
                                             <CommandItem
                                               key={entry.code}
                                               value={`${entry.code} ${entry.city}`}
@@ -770,11 +796,15 @@ export default function VideoEstimator() {
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
                                     <Command shouldFilter={false}>
-                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
+                                      <CommandInput 
+                                        placeholder="PLZ oder Ort suchen..." 
+                                        value={toPostalSearchQuery}
+                                        onValueChange={setToPostalSearchQuery}
+                                      />
                                       <CommandList>
                                         <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
                                         <CommandGroup>
-                                          {swissPostalCodes.map((entry) => (
+                                          {filterPostalCodes(toPostalSearchQuery).map((entry) => (
                                             <CommandItem
                                               key={entry.code}
                                               value={`${entry.code} ${entry.city}`}
