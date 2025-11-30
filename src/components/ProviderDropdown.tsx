@@ -8,36 +8,11 @@ interface ProviderDropdownProps {
 }
 
 const providerLinks = [
-  { 
-    icon: Briefcase, 
-    label: "Anbieter werden", 
-    href: "/anbieter", 
-    description: "Jetzt Partner werden" 
-  },
-  { 
-    icon: LogIn, 
-    label: "Anbieter Login", 
-    href: "/anbieter/login", 
-    description: "Zugang für Partner" 
-  },
-  { 
-    icon: DollarSign, 
-    label: "Preise & Konditionen", 
-    href: "/anbieter/preise", 
-    description: "Transparente Konditionen" 
-  },
-  { 
-    icon: HelpCircle, 
-    label: "Häufige Fragen", 
-    href: "/anbieter/faq", 
-    description: "Antworten für Partnerfirmen" 
-  },
-  { 
-    icon: Award, 
-    label: "Vorteile", 
-    href: "/anbieter#vorteile", 
-    description: "Ihre Benefits als Partner" 
-  }
+  { icon: Briefcase, title: "Anbieter werden", href: "/anbieter" },
+  { icon: LogIn, title: "Anbieter Login", href: "/anbieter/login" },
+  { icon: DollarSign, title: "Preise & Konditionen", href: "/anbieter/preise" },
+  { icon: HelpCircle, title: "Häufige Fragen", href: "/anbieter/faq" },
+  { icon: Award, title: "Vorteile", href: "/anbieter#vorteile" }
 ];
 
 export const ProviderDropdown = ({ isOpen, onClose }: ProviderDropdownProps) => {
@@ -53,33 +28,21 @@ export const ProviderDropdown = ({ isOpen, onClose }: ProviderDropdownProps) => 
       
       {/* Dropdown Content */}
       <div className="hidden lg:block absolute left-0 right-0 top-full mt-0 bg-white border-t border-border shadow-strong z-50 animate-fade-in">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-4xl">
-          {providerLinks.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.label}
-                to={item.href}
-                onClick={onClose}
-                className={cn(
-                  "flex flex-col items-start gap-3 p-4 rounded-xl hover:bg-secondary/50 transition-all duration-200 group border border-transparent hover:border-primary/20"
-                )}
-              >
-                <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                  <Icon className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sm text-foreground group-hover:text-accent transition-colors mb-1">
-                    {item.label}
-                  </h4>
-                  <p className="text-xs text-muted-foreground line-clamp-2">
-                    {item.description}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {providerLinks.map((link) => (
+            <Link
+              key={link.title}
+              to={link.href}
+              onClick={onClose}
+              className="flex items-center gap-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors group"
+            >
+              <link.icon className="w-5 h-5 text-primary flex-shrink-0" aria-hidden="true" />
+              <span className="text-sm font-medium text-foreground group-hover:text-primary">
+                {link.title}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
       </div>
