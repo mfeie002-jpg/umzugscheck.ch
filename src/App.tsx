@@ -31,6 +31,7 @@ const ProviderFAQPage = lazy(() => import("./pages/provider/ProviderFAQ"));
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
 import { AIMovingAssistant } from "./components/AIMovingAssistant";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import { QuickActionBar } from "./components/QuickActionBar";
@@ -139,6 +140,7 @@ const App = () => (
           <AIMovingAssistant />
           <PWAInstallPrompt />
           <PushNotificationPrompt />
+          <ScrollToTopOnRoute />
           <CustomerOnboarding />
           <ProviderOnboarding />
           <ScrollToTop />
