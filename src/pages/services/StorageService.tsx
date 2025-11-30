@@ -6,6 +6,9 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+
 export default function StorageService() {
   const faqs = [
     {
@@ -27,7 +30,9 @@ export default function StorageService() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Möbellager & Einlagerung Schweiz – sicher & flexibel"
         description="Sichere Möbellagerung in der Schweiz. Klimatisierte Lager mit 24/7 Zugang. Vergleichen Sie Angebote und finden Sie das passende Lager für Ihre Bedürfnisse."
@@ -199,6 +204,8 @@ export default function StorageService() {
           </Link>
         </div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

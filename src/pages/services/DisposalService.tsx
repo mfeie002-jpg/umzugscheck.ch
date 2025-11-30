@@ -6,6 +6,9 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+
 export default function DisposalService() {
   const faqs = [
     {
@@ -27,7 +30,9 @@ export default function DisposalService() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Entsorgung & Räumung Schweiz – Fachgerecht entsorgen"
         description="Professionelle Entsorgung und Wohnungsräumung in der Schweiz. Umweltfreundlich, fachgerecht und günstig. Jetzt Offerten vergleichen."
@@ -134,6 +139,8 @@ export default function DisposalService() {
           </Link>
         </div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }
