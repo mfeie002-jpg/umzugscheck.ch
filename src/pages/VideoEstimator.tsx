@@ -249,7 +249,8 @@ export default function VideoEstimator() {
     setFromPostalSearchQuery(`${entry.code} - ${entry.city} (${entry.canton})`);
     setFromPostalValid(true);
     
-    if (toPostal && validatePostalCode(toPostal) && analysisResult) {
+    // Calculate distance if destination postal code is also selected
+    if (toPostal && validatePostalCode(toPostal)) {
       calculateDistanceAndPrice(entry.code, toPostal);
     }
   };
@@ -260,30 +261,33 @@ export default function VideoEstimator() {
     setToPostalSearchQuery(`${entry.code} - ${entry.city} (${entry.canton})`);
     setToPostalValid(true);
     
-    if (fromPostal && validatePostalCode(fromPostal) && analysisResult) {
+    // Calculate distance if source postal code is also selected
+    if (fromPostal && validatePostalCode(fromPostal)) {
       calculateDistanceAndPrice(fromPostal, entry.code);
     }
   };
 
   const calculateDistanceAndPrice = (from: string, to: string) => {
-    if (!analysisResult) return;
-    
+    // Always calculate distance when both postal codes are selected
     const calculatedDistance = estimateDistance(from, to);
     setCustomDistance(calculatedDistance.toString());
     setUsePostalCodes(true);
     setIsCustomDistance(true);
     
-    const priceCalc = calculateVideoBasedPrice(
-      analysisResult.estimatedVolumeM3,
-      analysisResult.difficultyScore,
-      calculatedDistance
-    );
-    setPriceEstimate({
-      minPrice: priceCalc.priceMin,
-      maxPrice: priceCalc.priceMax,
-      estimatedHours: priceCalc.estimatedHours,
-      breakdown: priceCalc.breakdown
-    });
+    // Only calculate price if video/image analysis is complete
+    if (analysisResult) {
+      const priceCalc = calculateVideoBasedPrice(
+        analysisResult.estimatedVolumeM3,
+        analysisResult.difficultyScore,
+        calculatedDistance
+      );
+      setPriceEstimate({
+        minPrice: priceCalc.priceMin,
+        maxPrice: priceCalc.priceMax,
+        estimatedHours: priceCalc.estimatedHours,
+        breakdown: priceCalc.breakdown
+      });
+    }
   };
 
   const clearFromPostal = () => {
