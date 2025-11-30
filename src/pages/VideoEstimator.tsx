@@ -12,7 +12,7 @@ import { Upload, Video, CheckCircle, AlertCircle, Loader2, Home, Package, Sofa, 
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { calculateVideoBasedPrice, formatCurrency, estimateDistance } from "@/lib/pricing";
-import { searchPostalCodes, validatePostalCode, PostalCodeEntry } from "@/lib/swiss-postal-codes";
+import { swissPostalCodes, validatePostalCode, PostalCodeEntry } from "@/lib/swiss-postal-codes";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -60,8 +60,8 @@ export default function VideoEstimator() {
   const [usePostalCodes, setUsePostalCodes] = useState(false);
   const [fromPostalOpen, setFromPostalOpen] = useState(false);
   const [toPostalOpen, setToPostalOpen] = useState(false);
-  const [fromPostalSearch, setFromPostalSearch] = useState<string>("");
-  const [toPostalSearch, setToPostalSearch] = useState<string>("");
+  const [fromPostalDisplay, setFromPostalDisplay] = useState<string>("");
+  const [toPostalDisplay, setToPostalDisplay] = useState<string>("");
   const [fromPostalValid, setFromPostalValid] = useState<boolean | null>(null);
   const [toPostalValid, setToPostalValid] = useState<boolean | null>(null);
   
@@ -246,7 +246,7 @@ export default function VideoEstimator() {
 
   const handleFromPostalSelect = (entry: PostalCodeEntry) => {
     setFromPostal(entry.code);
-    setFromPostalSearch(`${entry.code} - ${entry.city}`);
+    setFromPostalDisplay(`${entry.code} - ${entry.city}`);
     setFromPostalValid(true);
     setFromPostalOpen(false);
     
@@ -257,7 +257,7 @@ export default function VideoEstimator() {
 
   const handleToPostalSelect = (entry: PostalCodeEntry) => {
     setToPostal(entry.code);
-    setToPostalSearch(`${entry.code} - ${entry.city}`);
+    setToPostalDisplay(`${entry.code} - ${entry.city}`);
     setToPostalValid(true);
     setToPostalOpen(false);
     
@@ -289,14 +289,14 @@ export default function VideoEstimator() {
 
   const clearFromPostal = () => {
     setFromPostal("");
-    setFromPostalSearch("");
+    setFromPostalDisplay("");
     setFromPostalValid(null);
     setUsePostalCodes(false);
   };
 
   const clearToPostal = () => {
     setToPostal("");
-    setToPostalSearch("");
+    setToPostalDisplay("");
     setToPostalValid(null);
     setUsePostalCodes(false);
   };
@@ -310,8 +310,8 @@ export default function VideoEstimator() {
     setIsCustomDistance(false);
     setFromPostal("");
     setToPostal("");
-    setFromPostalSearch("");
-    setToPostalSearch("");
+    setFromPostalDisplay("");
+    setToPostalDisplay("");
     setFromPostalValid(null);
     setToPostalValid(null);
     setUsePostalCodes(false);
@@ -695,12 +695,7 @@ export default function VideoEstimator() {
                             <div className="grid grid-cols-2 gap-3">
                               <div>
                                 <Label htmlFor="fromPostal" className="text-sm mb-2 block">Von PLZ</Label>
-                                <Popover open={fromPostalOpen} onOpenChange={(open) => {
-                                  setFromPostalOpen(open);
-                                  if (open && !fromPostal) {
-                                    setFromPostalSearch("");
-                                  }
-                                }}>
+                                <Popover open={fromPostalOpen} onOpenChange={setFromPostalOpen}>
                                   <PopoverTrigger asChild>
                                     <Button
                                       variant="outline"
@@ -711,7 +706,7 @@ export default function VideoEstimator() {
                                         fromPostalValid === true ? 'border-green-500' : ''
                                       }`}
                                     >
-                                      {fromPostal ? fromPostalSearch : <span className="text-muted-foreground">PLZ suchen...</span>}
+                                      {fromPostal ? fromPostalDisplay : <span className="text-muted-foreground">PLZ suchen...</span>}
                                       {fromPostal ? (
                                         <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
                                           e.stopPropagation();
@@ -723,16 +718,12 @@ export default function VideoEstimator() {
                                     </Button>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
-                                    <Command>
-                                      <CommandInput 
-                                        placeholder="PLZ oder Ort suchen..." 
-                                        value={fromPostalSearch}
-                                        onValueChange={setFromPostalSearch}
-                                      />
+                                    <Command shouldFilter={false}>
+                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
                                       <CommandList>
                                         <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
                                         <CommandGroup>
-                                          {searchPostalCodes(fromPostalSearch).map((entry) => (
+                                          {swissPostalCodes.map((entry) => (
                                             <CommandItem
                                               key={entry.code}
                                               value={`${entry.code} ${entry.city}`}
@@ -755,12 +746,7 @@ export default function VideoEstimator() {
                               </div>
                               <div>
                                 <Label htmlFor="toPostal" className="text-sm mb-2 block">Nach PLZ</Label>
-                                <Popover open={toPostalOpen} onOpenChange={(open) => {
-                                  setToPostalOpen(open);
-                                  if (open && !toPostal) {
-                                    setToPostalSearch("");
-                                  }
-                                }}>
+                                <Popover open={toPostalOpen} onOpenChange={setToPostalOpen}>
                                   <PopoverTrigger asChild>
                                     <Button
                                       variant="outline"
@@ -771,7 +757,7 @@ export default function VideoEstimator() {
                                         toPostalValid === true ? 'border-green-500' : ''
                                       }`}
                                     >
-                                      {toPostal ? toPostalSearch : <span className="text-muted-foreground">PLZ suchen...</span>}
+                                      {toPostal ? toPostalDisplay : <span className="text-muted-foreground">PLZ suchen...</span>}
                                       {toPostal ? (
                                         <X className="ml-2 h-4 w-4 shrink-0 opacity-50" onClick={(e) => {
                                           e.stopPropagation();
@@ -783,16 +769,12 @@ export default function VideoEstimator() {
                                     </Button>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[300px] p-0 bg-popover" align="start">
-                                    <Command>
-                                      <CommandInput 
-                                        placeholder="PLZ oder Ort suchen..." 
-                                        value={toPostalSearch}
-                                        onValueChange={setToPostalSearch}
-                                      />
+                                    <Command shouldFilter={false}>
+                                      <CommandInput placeholder="PLZ oder Ort suchen..." />
                                       <CommandList>
                                         <CommandEmpty>Keine Postleitzahl gefunden.</CommandEmpty>
                                         <CommandGroup>
-                                          {searchPostalCodes(toPostalSearch).map((entry) => (
+                                          {swissPostalCodes.map((entry) => (
                                             <CommandItem
                                               key={entry.code}
                                               value={`${entry.code} ${entry.city}`}
