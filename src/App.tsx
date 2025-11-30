@@ -16,6 +16,8 @@ const CleaningService = lazy(() => import("./pages/services/CleaningService"));
 const DisposalService = lazy(() => import("./pages/services/DisposalService"));
 const FurnitureLift = lazy(() => import("./pages/services/FurnitureLift"));
 const InternationalMoving = lazy(() => import("./pages/services/InternationalMoving"));
+const MovingWithCleaning = lazy(() => import("./pages/services/MovingWithCleaning"));
+const StorageService = lazy(() => import("./pages/services/StorageService"));
 
 // City pages
 const ZurichMoving = lazy(() => import("./pages/city/ZurichMoving"));
@@ -261,15 +263,15 @@ const App = () => (
             <Route path="/aarau/umzugsfirmen" element={<CityOptimized />} />
             <Route path="/:city/umzugsfirmen" element={<CityOptimized />} />
             
-            {/* Service Pages - Optimized */}
+            {/* Service Pages - Complete */}
             <Route path="/services" element={<ServicesOverview />} />
-            <Route path="/privatumzug" element={<ServicePlaceholder serviceName="Privatumzug" slug="privatumzug" description="Professionelle Umzugsservices für Privathaushalte in der ganzen Schweiz. Vergleichen Sie Angebote und sparen Sie Zeit und Geld." />} />
-            <Route path="/firmenumzug" element={<ServicePlaceholder serviceName="Firmenumzug" slug="firmenumzug" description="Spezialisierte Firmenumzüge mit minimalem Ausfall. Büros, Geschäfte und Betriebe – schnell und zuverlässig." />} />
-            <Route path="/umzug-mit-reinigung" element={<ServicePlaceholder serviceName="Umzug mit Reinigung" slug="umzug-mit-reinigung" description="Komplettpaket: Umzug und Endreinigung aus einer Hand mit Abnahmegarantie." />} />
-            <Route path="/reinigung" element={<ServicePlaceholder serviceName="Reinigung" slug="reinigung" description="Professionelle Umzugsreinigung und Endreinigung mit Abgabegarantie für Vermieter." />} />
-            <Route path="/entsorgung-raeumung" element={<ServicePlaceholder serviceName="Entsorgung & Räumung" slug="entsorgung-raeumung" description="Entrümpelung, Entsorgung und Räumungen für Wohnungen, Häuser und Keller." />} />
-            <Route path="/moebellift" element={<ServicePlaceholder serviceName="Möbellift" slug="moebellift" description="Außenlift-Service für große Möbel und schwere Gegenstände – ideal bei engen Zugängen." />} />
-            <Route path="/einlagerung" element={<ServicePlaceholder serviceName="Einlagerung" slug="einlagerung" description="Sichere Möbellager und Einlagerungslösungen für kurz- und langfristige Aufbewahrung." />} />
+            <Route path="/privatumzug" element={<PrivateMoving />} />
+            <Route path="/firmenumzug" element={<BusinessMoving />} />
+            <Route path="/umzug-mit-reinigung" element={<MovingWithCleaning />} />
+            <Route path="/reinigung" element={<CleaningService />} />
+            <Route path="/entsorgung-raeumung" element={<DisposalService />} />
+            <Route path="/moebellift" element={<FurnitureLift />} />
+            <Route path="/einlagerung" element={<StorageService />} />
             <Route path="/umzug" element={<ServiceOptimized />} />
             <Route path="/umzug-schweiz" element={<ServiceOptimized />} />
             <Route path="/reinigung" element={<ServiceOptimized />} />
