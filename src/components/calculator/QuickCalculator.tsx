@@ -15,6 +15,7 @@ import { useAnalytics } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { swissPostalCodes, PostalCodeEntry } from "@/lib/swiss-postal-codes";
 
 const formSchema = z.object({
   fromPostal: z.string().min(4, "Bitte gültige PLZ eingeben").max(10),
@@ -30,11 +31,33 @@ const formSchema = z.object({
 });
 
 const parseAddress = (address: string): { postal: string; city: string } => {
-  const match = address.match(/^(\d{4,5})\s+(.+)$/);
-  if (match) {
-    return { postal: match[1], city: match[2] };
+  // Try to match "CODE - CITY" format from datalist selection
+  const datalistMatch = address.match(/^(\d{4})\s*-\s*(.+)$/);
+  if (datalistMatch) {
+    return { postal: datalistMatch[1], city: datalistMatch[2].trim() };
+  }
+  // Try to match "CODE CITY" format
+  const spaceMatch = address.match(/^(\d{4,5})\s+(.+)$/);
+  if (spaceMatch) {
+    return { postal: spaceMatch[1], city: spaceMatch[2] };
   }
   return { postal: "", city: address };
+};
+
+const filterPostalCodes = (query: string): PostalCodeEntry[] => {
+  if (!query || query.trim().length < 1) {
+    return swissPostalCodes.slice(0, 30);
+  }
+  
+  const lowerQuery = query.toLowerCase().trim();
+  
+  return swissPostalCodes
+    .filter(entry => 
+      entry.code.startsWith(lowerQuery) || 
+      entry.city.toLowerCase().startsWith(lowerQuery) ||
+      entry.city.toLowerCase().includes(lowerQuery)
+    )
+    .slice(0, 50);
 };
 
 export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) => {
@@ -44,6 +67,8 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
   const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fromPostalQuery, setFromPostalQuery] = useState("");
+  const [toPostalQuery, setToPostalQuery] = useState("");
 
   const fromParam = searchParams.get("from") || "";
   const toParam = searchParams.get("to") || "";
@@ -186,9 +211,35 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                 name="fromPostal"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium">Von (PLZ)</FormLabel>
+                    <FormLabel className="text-sm font-medium">Von (PLZ/Ort)</FormLabel>
                     <FormControl>
-                      <Input placeholder="z.B. 8001" {...field} className="h-11" />
+                      <>
+                        <Input 
+                          placeholder="PLZ oder Ort eingeben..." 
+                          {...field}
+                          value={fromPostalQuery || field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setFromPostalQuery(value);
+                            // Check if user selected from datalist
+                            const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                            if (match) {
+                              const [, code, city] = match;
+                              field.onChange(code);
+                              form.setValue('fromCity', city.trim());
+                            } else {
+                              field.onChange(value);
+                            }
+                          }}
+                          list="fromPostalListEmbedded"
+                          className="h-11" 
+                        />
+                        <datalist id="fromPostalListEmbedded">
+                          {filterPostalCodes(fromPostalQuery || field.value).map((entry) => (
+                            <option key={`${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                          ))}
+                        </datalist>
+                      </>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -214,9 +265,35 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                 name="toPostal"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium">Nach (PLZ)</FormLabel>
+                    <FormLabel className="text-sm font-medium">Nach (PLZ/Ort)</FormLabel>
                     <FormControl>
-                      <Input placeholder="z.B. 3000" {...field} className="h-11" />
+                      <>
+                        <Input 
+                          placeholder="PLZ oder Ort eingeben..." 
+                          {...field}
+                          value={toPostalQuery || field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setToPostalQuery(value);
+                            // Check if user selected from datalist
+                            const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                            if (match) {
+                              const [, code, city] = match;
+                              field.onChange(code);
+                              form.setValue('toCity', city.trim());
+                            } else {
+                              field.onChange(value);
+                            }
+                          }}
+                          list="toPostalListEmbedded"
+                          className="h-11" 
+                        />
+                        <datalist id="toPostalListEmbedded">
+                          {filterPostalCodes(toPostalQuery || field.value).map((entry) => (
+                            <option key={`${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                          ))}
+                        </datalist>
+                      </>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -310,9 +387,33 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                   name="fromPostal"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>PLZ</FormLabel>
+                      <FormLabel>PLZ / Ort</FormLabel>
                       <FormControl>
-                        <Input placeholder="z.B. 8001" {...field} />
+                        <>
+                          <Input 
+                            placeholder="PLZ oder Ort eingeben..." 
+                            {...field}
+                            value={fromPostalQuery || field.value}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setFromPostalQuery(value);
+                              const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                              if (match) {
+                                const [, code, city] = match;
+                                field.onChange(code);
+                                form.setValue('fromCity', city.trim());
+                              } else {
+                                field.onChange(value);
+                              }
+                            }}
+                            list="fromPostalListFull"
+                          />
+                          <datalist id="fromPostalListFull">
+                            {filterPostalCodes(fromPostalQuery || field.value).map((entry) => (
+                              <option key={`f-${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                            ))}
+                          </datalist>
+                        </>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -346,9 +447,33 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                   name="toPostal"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>PLZ</FormLabel>
+                      <FormLabel>PLZ / Ort</FormLabel>
                       <FormControl>
-                        <Input placeholder="z.B. 3000" {...field} />
+                        <>
+                          <Input 
+                            placeholder="PLZ oder Ort eingeben..." 
+                            {...field}
+                            value={toPostalQuery || field.value}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setToPostalQuery(value);
+                              const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                              if (match) {
+                                const [, code, city] = match;
+                                field.onChange(code);
+                                form.setValue('toCity', city.trim());
+                              } else {
+                                field.onChange(value);
+                              }
+                            }}
+                            list="toPostalListFull"
+                          />
+                          <datalist id="toPostalListFull">
+                            {filterPostalCodes(toPostalQuery || field.value).map((entry) => (
+                              <option key={`t-${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                            ))}
+                          </datalist>
+                        </>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
