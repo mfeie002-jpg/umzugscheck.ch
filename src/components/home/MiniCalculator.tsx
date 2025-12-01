@@ -3,14 +3,86 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, ArrowRight } from "lucide-react";
+import { swissPostalCodes, PostalCodeEntry } from "@/lib/swiss-postal-codes";
 
 export const MiniCalculator = () => {
-  const [fromAddress, setFromAddress] = useState("");
-  const [toAddress, setToAddress] = useState("");
+  const [fromQuery, setFromQuery] = useState("");
+  const [toQuery, setToQuery] = useState("");
+  const [fromSelected, setFromSelected] = useState<PostalCodeEntry | null>(null);
+  const [toSelected, setToSelected] = useState<PostalCodeEntry | null>(null);
   const navigate = useNavigate();
+
+  const filterPostalCodes = (query: string): PostalCodeEntry[] => {
+    if (!query || query.trim().length < 1) {
+      return swissPostalCodes.slice(0, 20);
+    }
+    
+    const lowerQuery = query.toLowerCase().trim();
+    
+    return swissPostalCodes
+      .filter(entry => 
+        entry.code.startsWith(lowerQuery) || 
+        entry.city.toLowerCase().startsWith(lowerQuery) ||
+        entry.city.toLowerCase().includes(lowerQuery)
+      )
+      .slice(0, 50);
+  };
+
+  const handleFromChange = (value: string) => {
+    setFromQuery(value);
+    
+    // Check if user selected from datalist (format: "CODE - CITY")
+    const match = value.match(/^(\d{4})\s*-\s*(.+)$/);
+    if (match) {
+      const [, code, city] = match;
+      const entry = swissPostalCodes.find(e => e.code === code && e.city === city.trim());
+      if (entry) {
+        setFromSelected(entry);
+      }
+    } else {
+      // Try direct postal code match
+      const directMatch = swissPostalCodes.find(e => e.code === value.trim());
+      if (directMatch) {
+        setFromSelected(directMatch);
+      } else {
+        setFromSelected(null);
+      }
+    }
+  };
+
+  const handleToChange = (value: string) => {
+    setToQuery(value);
+    
+    // Check if user selected from datalist (format: "CODE - CITY")
+    const match = value.match(/^(\d{4})\s*-\s*(.+)$/);
+    if (match) {
+      const [, code, city] = match;
+      const entry = swissPostalCodes.find(e => e.code === code && e.city === city.trim());
+      if (entry) {
+        setToSelected(entry);
+      }
+    } else {
+      // Try direct postal code match
+      const directMatch = swissPostalCodes.find(e => e.code === value.trim());
+      if (directMatch) {
+        setToSelected(directMatch);
+      } else {
+        setToSelected(null);
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Build address strings for navigation
+    const fromAddress = fromSelected 
+      ? `${fromSelected.code} ${fromSelected.city}`
+      : fromQuery;
+    const toAddress = toSelected 
+      ? `${toSelected.code} ${toSelected.city}`
+      : toQuery;
+    
     if (fromAddress && toAddress) {
       navigate(`/rechner?from=${encodeURIComponent(fromAddress)}&to=${encodeURIComponent(toAddress)}`);
     }
@@ -39,13 +111,27 @@ export const MiniCalculator = () => {
             </div>
             <Input
               type="text"
-              placeholder="PLZ oder Ort (z.B. 8001 Zürich)"
-              value={fromAddress}
-              onChange={(e) => setFromAddress(e.target.value)}
+              placeholder="PLZ oder Ort (z.B. 8001 oder Zürich)"
+              value={fromQuery}
+              onChange={(e) => handleFromChange(e.target.value)}
+              list="fromPostalList"
               className="pl-10 h-12 bg-white border-border text-foreground placeholder:text-muted-foreground"
               required
             />
+            <datalist id="fromPostalList">
+              {filterPostalCodes(fromQuery).map((entry) => (
+                <option 
+                  key={`${entry.code}-${entry.city}`} 
+                  value={`${entry.code} - ${entry.city}`}
+                />
+              ))}
+            </datalist>
           </div>
+          {fromSelected && (
+            <p className="text-xs text-success mt-1 flex items-center gap-1">
+              ✓ {fromSelected.code} {fromSelected.city} ({fromSelected.canton})
+            </p>
+          )}
         </div>
 
         {/* Step 2: Nach Adresse */}
@@ -59,13 +145,27 @@ export const MiniCalculator = () => {
             </div>
             <Input
               type="text"
-              placeholder="PLZ oder Ort (z.B. 3011 Bern)"
-              value={toAddress}
-              onChange={(e) => setToAddress(e.target.value)}
+              placeholder="PLZ oder Ort (z.B. 3011 oder Bern)"
+              value={toQuery}
+              onChange={(e) => handleToChange(e.target.value)}
+              list="toPostalList"
               className="pl-10 h-12 bg-white border-border text-foreground placeholder:text-muted-foreground"
               required
             />
+            <datalist id="toPostalList">
+              {filterPostalCodes(toQuery).map((entry) => (
+                <option 
+                  key={`${entry.code}-${entry.city}`} 
+                  value={`${entry.code} - ${entry.city}`}
+                />
+              ))}
+            </datalist>
           </div>
+          {toSelected && (
+            <p className="text-xs text-success mt-1 flex items-center gap-1">
+              ✓ {toSelected.code} {toSelected.city} ({toSelected.canton})
+            </p>
+          )}
         </div>
 
         {/* Step 3: Submit */}
