@@ -183,6 +183,7 @@ const App = () => (
             <Route path="/rechner/video" element={<VideoEstimator />} />
             <Route path="/zug" element={<Zug />} />
             <Route path="/firmen" element={<Companies />} />
+            <Route path="/umzugsfirmen" element={<Companies />} />
             <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
             <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
