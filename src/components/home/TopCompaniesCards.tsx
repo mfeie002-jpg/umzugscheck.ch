@@ -83,7 +83,7 @@ export const TopCompaniesCards = () => {
         </motion.div>
 
         {/* Companies Grid */}
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
           {topCompanies.map((company, index) => (
             <motion.div
               key={index}
