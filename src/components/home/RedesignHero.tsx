@@ -35,8 +35,8 @@ export const RedesignHero = () => {
           alt="Glückliche Familie bei ihrem Umzug mit professionellen Umzugshelfern"
           className="w-full h-full object-cover"
         />
-        {/* Gradient Overlay for Text Readability - reduced opacity to show emotional image */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-slate-900/40 to-transparent" />
+        {/* Gradient Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/60 to-slate-900/40" />
       </div>
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
@@ -52,15 +52,15 @@ export const RedesignHero = () => {
               transition={{ duration: 0.7 }}
               className="text-center lg:text-left"
             >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-slate-900 mb-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-6">
                 {content.headline}{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                   {content.highlightedText}
                 </span>{" "}
                 in der Schweiz
               </h1>
               
-              <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 {content.subheadline}
               </p>
 
@@ -86,17 +86,17 @@ export const RedesignHero = () => {
               </div>
 
               {/* Trust Indicators */}
-              <div className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-slate-600">
+              <div className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-white/90">
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">{content.trustIndicators.rating}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <CheckCircle className="h-5 w-5 text-green-400" />
                   <span>{content.trustIndicators.movesCount}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-blue-600" />
+                  <Shield className="h-5 w-5 text-blue-400" />
                   <span>{content.trustIndicators.verifiedText}</span>
                 </div>
               </div>
