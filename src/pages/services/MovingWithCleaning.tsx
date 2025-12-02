@@ -6,9 +6,6 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
-
 export default function MovingWithCleaning() {
   const faqs = [
     {
@@ -30,9 +27,7 @@ export default function MovingWithCleaning() {
   ];
 
   return (
-    <>
-      <Navigation />
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Umzug mit Reinigung Schweiz – Komplettpaket"
         description="Umzug und Endreinigung aus einer Hand. Vergleichen Sie Komplettangebote und sparen Sie bis zu 40%. Mit Abgabegarantie für stressfreien Wohnungswechsel."
@@ -225,8 +220,6 @@ export default function MovingWithCleaning() {
           </Link>
         </div>
       </section>
-      </div>
-      <Footer />
-    </>
+    </div>
   );
 }
