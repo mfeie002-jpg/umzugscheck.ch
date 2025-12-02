@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenu } from "@/components/MobileMenu";
 import { MegaDropdown } from "@/components/MegaDropdown";
@@ -17,8 +17,27 @@ type DropdownType = 'calculator' | 'companies' | 'services' | 'regions' | 'ratge
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const closeAllDropdowns = () => setActiveDropdown(null);
+  const closeAllDropdowns = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setActiveDropdown(null);
+  };
+
+  const handleMouseEnter = (dropdown: DropdownType) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setActiveDropdown(dropdown);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 150); // Small delay to allow moving to dropdown
+  };
 
   const handleDropdownToggle = (dropdown: DropdownType) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
@@ -32,7 +51,8 @@ export const Navigation = () => {
     children: React.ReactNode;
   }) => (
     <button
-      onMouseEnter={() => setActiveDropdown(dropdown)}
+      onMouseEnter={() => handleMouseEnter(dropdown)}
+      onMouseLeave={handleMouseLeave}
       onClick={(e) => {
         e.preventDefault();
         handleDropdownToggle(dropdown);
@@ -159,7 +179,12 @@ export const Navigation = () => {
 
         {/* Dropdowns Container */}
         <div
-          onMouseLeave={closeAllDropdowns}
+          onMouseEnter={() => {
+            if (timeoutRef.current) {
+              clearTimeout(timeoutRef.current);
+            }
+          }}
+          onMouseLeave={handleMouseLeave}
         >
           <MegaDropdown 
             isOpen={activeDropdown === 'calculator'} 
