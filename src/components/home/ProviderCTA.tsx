@@ -17,7 +17,7 @@ export const ProviderCTA = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-5xl mx-auto"
+          className="max-w-6xl mx-auto"
         >
           <div className="text-center text-white">
             <Building2 className="h-16 w-16 mx-auto mb-6 text-cyan-400" />

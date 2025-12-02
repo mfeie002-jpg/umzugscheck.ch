@@ -43,7 +43,7 @@ export const WhyUsCards = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (
