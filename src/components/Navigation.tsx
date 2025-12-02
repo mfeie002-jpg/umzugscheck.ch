@@ -3,13 +3,63 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenu } from "@/components/MobileMenu";
+import { MegaDropdown } from "@/components/MegaDropdown";
+import { CompaniesDropdown } from "@/components/CompaniesDropdown";
 import { ServicesDropdown } from "@/components/ServicesDropdown";
+import { RatgeberDropdown } from "@/components/RatgeberDropdown";
+import { ProviderDropdown } from "@/components/ProviderDropdown";
 import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
+type DropdownType = 'calculator' | 'companies' | 'services' | 'ratgeber' | 'provider' | null;
+
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
+
+  const closeAllDropdowns = () => setActiveDropdown(null);
+
+  const handleDropdownToggle = (dropdown: DropdownType) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
+  const NavButton = ({ 
+    dropdown, 
+    children 
+  }: { 
+    dropdown: DropdownType; 
+    children: React.ReactNode;
+  }) => (
+    <button
+      onMouseEnter={() => setActiveDropdown(dropdown)}
+      onClick={(e) => {
+        e.preventDefault();
+        handleDropdownToggle(dropdown);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleDropdownToggle(dropdown);
+        }
+        if (e.key === 'Escape') {
+          closeAllDropdowns();
+        }
+      }}
+      className={cn(
+        "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50",
+        activeDropdown === dropdown && "text-primary bg-secondary/50"
+      )}
+      aria-expanded={activeDropdown === dropdown}
+      aria-haspopup="true"
+    >
+      {children}
+      <ChevronDown className={cn(
+        "w-4 h-4 transition-transform",
+        activeDropdown === dropdown ? "rotate-180" : ""
+      )} 
+      aria-hidden="true" />
+    </button>
+  );
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
@@ -30,50 +80,25 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {/* Preisrechner - Direct Link */}
-            <Link
-              to="/umzugsrechner"
-              className="px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
-            >
-              Preisrechner
-            </Link>
+            {/* Preisrechner - Dropdown */}
+            <div className="relative">
+              <NavButton dropdown="calculator">
+                Preisrechner
+              </NavButton>
+            </div>
 
-            {/* Umzugsfirmen - Direct Link */}
-            <Link
-              to="/umzugsfirmen"
-              className="px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
-            >
-              Umzugsfirmen
-            </Link>
+            {/* Umzugsfirmen - Dropdown */}
+            <div className="relative">
+              <NavButton dropdown="companies">
+                Umzugsfirmen
+              </NavButton>
+            </div>
 
             {/* Services - Dropdown */}
             <div className="relative">
-              <button
-                onMouseEnter={() => setIsServicesOpen(true)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsServicesOpen(!isServicesOpen);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setIsServicesOpen(!isServicesOpen);
-                  }
-                }}
-                className={cn(
-                  "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
-                )}
-                aria-expanded={isServicesOpen}
-                aria-haspopup="true"
-                aria-label="Services Menü öffnen"
-              >
+              <NavButton dropdown="services">
                 Services
-                <ChevronDown className={cn(
-                  "w-4 h-4 transition-transform",
-                  isServicesOpen ? "rotate-180" : ""
-                )} 
-                aria-hidden="true" />
-              </button>
+              </NavButton>
             </div>
 
             {/* Regionen - Direct Link */}
@@ -84,21 +109,19 @@ export const Navigation = () => {
               Regionen
             </Link>
 
-            {/* Ratgeber - Direct Link */}
-            <Link
-              to="/ratgeber"
-              className="px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
-            >
-              Ratgeber
-            </Link>
+            {/* Ratgeber - Dropdown */}
+            <div className="relative">
+              <NavButton dropdown="ratgeber">
+                Ratgeber
+              </NavButton>
+            </div>
 
-            {/* Für Firmen - Direct Link */}
-            <Link
-              to="/fuer-firmen"
-              className="px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
-            >
-              Für Firmen
-            </Link>
+            {/* Für Firmen - Dropdown */}
+            <div className="relative">
+              <NavButton dropdown="provider">
+                Für Firmen
+              </NavButton>
+            </div>
           </div>
 
           {/* Mobile Menu Button & CTA - Visible on Mobile */}
@@ -134,14 +157,29 @@ export const Navigation = () => {
           </div>
         </div>
 
-        {/* Services Dropdown */}
+        {/* Dropdowns Container */}
         <div
-          onMouseEnter={() => {}}
-          onMouseLeave={() => setIsServicesOpen(false)}
+          onMouseLeave={closeAllDropdowns}
         >
+          <MegaDropdown 
+            isOpen={activeDropdown === 'calculator'} 
+            onClose={closeAllDropdowns} 
+          />
+          <CompaniesDropdown 
+            isOpen={activeDropdown === 'companies'} 
+            onClose={closeAllDropdowns} 
+          />
           <ServicesDropdown 
-            isOpen={isServicesOpen} 
-            onClose={() => setIsServicesOpen(false)} 
+            isOpen={activeDropdown === 'services'} 
+            onClose={closeAllDropdowns} 
+          />
+          <RatgeberDropdown 
+            isOpen={activeDropdown === 'ratgeber'} 
+            onClose={closeAllDropdowns} 
+          />
+          <ProviderDropdown 
+            isOpen={activeDropdown === 'provider'} 
+            onClose={closeAllDropdowns} 
           />
         </div>
       </div>
