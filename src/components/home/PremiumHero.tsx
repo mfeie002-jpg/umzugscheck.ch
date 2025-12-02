@@ -1,10 +1,25 @@
 import { motion } from "framer-motion";
 import { ButtonPremium } from "@/components/ui/button-premium";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Star, Users, Shield, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-moving-family.jpg";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const PremiumHero = () => {
+  const [fromPostal, setFromPostal] = useState("");
+  const [toPostal, setToPostal] = useState("");
+  const navigate = useNavigate();
+
+  const handleCalculate = () => {
+    if (!fromPostal || !toPostal) {
+      toast.error("Bitte füllen Sie beide Felder aus", {
+        description: "Geben Sie Start- und Zieladresse ein."
+      });
+      return;
+    }
+    navigate(`/rechner?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}`);
+  };
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background Image */}
@@ -127,6 +142,8 @@ export const PremiumHero = () => {
                     <input
                       type="text"
                       placeholder="z.B. 8001 Zürich"
+                      value={fromPostal}
+                      onChange={(e) => setFromPostal(e.target.value)}
                       className="w-full h-14 px-5 rounded-2xl border-2 border-border focus:border-copper focus:ring-2 focus:ring-copper/20 transition-all outline-none text-swiss-noir"
                     />
                   </div>
@@ -138,6 +155,8 @@ export const PremiumHero = () => {
                     <input
                       type="text"
                       placeholder="z.B. 3011 Bern"
+                      value={toPostal}
+                      onChange={(e) => setToPostal(e.target.value)}
                       className="w-full h-14 px-5 rounded-2xl border-2 border-border focus:border-copper focus:ring-2 focus:ring-copper/20 transition-all outline-none text-swiss-noir"
                     />
                   </div>
@@ -146,7 +165,7 @@ export const PremiumHero = () => {
                     <label className="text-sm font-semibold text-swiss-noir mb-2 block">
                       3. Offerten erhalten
                     </label>
-                    <ButtonPremium className="w-full" size="lg" variant="copper">
+                    <ButtonPremium className="w-full" size="lg" variant="copper" onClick={handleCalculate}>
                       Jetzt vergleichen
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </ButtonPremium>
