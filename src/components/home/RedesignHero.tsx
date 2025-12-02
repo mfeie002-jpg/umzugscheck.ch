@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getHomepageContent } from "@/lib/content";
 import heroMovingFamily from "@/assets/hero-moving-family.jpg";
+import { toast } from "sonner";
 
 export const RedesignHero = () => {
   const content = getHomepageContent().hero;
@@ -16,9 +17,13 @@ export const RedesignHero = () => {
   const navigate = useNavigate();
 
   const handleCalculate = () => {
-    if (fromPostal && toPostal && rooms) {
-      navigate(`/umzugsrechner?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}&rooms=${rooms}`);
+    if (!fromPostal || !toPostal || !rooms) {
+      toast.error("Bitte füllen Sie alle Felder aus", {
+        description: "Geben Sie Start-PLZ, Ziel-PLZ und Zimmeranzahl ein."
+      });
+      return;
     }
+    navigate(`/umzugsrechner?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}&rooms=${rooms}`);
   };
 
   return (
@@ -61,14 +66,15 @@ export const RedesignHero = () => {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-                <Button 
-                  onClick={handleCalculate}
-                  size="lg"
-                  className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all"
-                >
-                  {content.primaryCTA}
-                </Button>
                 <Link to="/umzugsrechner">
+                  <Button 
+                    size="lg"
+                    className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all"
+                  >
+                    {content.primaryCTA}
+                  </Button>
+                </Link>
+                <Link to="/fuer-firmen">
                   <Button 
                     variant="outline"
                     size="lg"
@@ -154,7 +160,6 @@ export const RedesignHero = () => {
                   <Button 
                     onClick={handleCalculate}
                     className="w-full h-14 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all"
-                    disabled={!fromPostal || !toPostal || !rooms}
                   >
                     {content.calculator.submitButton}
                   </Button>
