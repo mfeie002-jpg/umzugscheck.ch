@@ -11,7 +11,7 @@ export const AICalculatorShowcase = () => {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-400 rounded-full blur-3xl opacity-10" />
       
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
           
           {/* Left: Screenshot/Visual */}
           <motion.div

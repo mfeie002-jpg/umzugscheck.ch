@@ -38,7 +38,7 @@ export const RegionsButtons = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto"
+          className="flex flex-wrap justify-center gap-3 max-w-6xl mx-auto"
         >
           {mainRegions.map((region, index) => (
             <Link key={index} to={region.link}>
