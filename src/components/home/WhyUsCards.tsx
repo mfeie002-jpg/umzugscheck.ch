@@ -43,7 +43,7 @@ export const WhyUsCards = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 max-w-6xl mx-auto">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (
@@ -55,12 +55,12 @@ export const WhyUsCards = () => {
                 transition={{ delay: idx * 0.1 }}
               >
                 <Card variant="elevated" className="h-full hover:shadow-strong hover:-translate-y-1 transition-all duration-300 text-center border-0 bg-white">
-                  <CardContent className="p-6">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-5 shadow-medium">
-                      <Icon className="h-8 w-8 text-white" />
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-3 md:mb-5 shadow-medium">
+                      <Icon className="h-6 w-6 md:h-8 md:w-8 text-white" />
                     </div>
-                    <h3 className="text-base md:text-lg font-bold mb-3 text-slate-900 leading-tight">{feature.title}</h3>
-                    <p className="text-sm text-slate-600 leading-relaxed">{feature.description}</p>
+                    <h3 className="text-sm md:text-lg font-bold mb-2 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
+                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

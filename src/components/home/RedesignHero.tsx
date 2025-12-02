@@ -27,7 +27,7 @@ export const RedesignHero = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative min-h-screen lg:min-h-[90vh] flex items-center overflow-hidden py-8 lg:py-0">
       {/* Emotional Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -52,7 +52,7 @@ export const RedesignHero = () => {
               transition={{ duration: 0.7 }}
               className="text-center lg:text-left"
             >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-4 md:mb-6">
                 {content.headline}{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                   {content.highlightedText}
@@ -60,25 +60,25 @@ export const RedesignHero = () => {
                 in der Schweiz
               </h1>
               
-              <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-base md:text-lg lg:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 {content.subheadline}
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-                <Link to="/umzugsrechner">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
+                <Link to="/umzugsrechner" className="w-full sm:w-auto">
                   <Button 
                     size="lg"
-                    className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all"
+                    className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all"
                   >
                     {content.primaryCTA}
                   </Button>
                 </Link>
-                <Link to="/fuer-firmen">
+                <Link to="/fuer-firmen" className="w-full sm:w-auto">
                   <Button 
                     variant="outline"
                     size="lg"
-                    className="h-14 px-8 text-lg font-semibold border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                    className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-semibold border-2 border-white/80 text-white hover:bg-white/10"
                   >
                     {content.secondaryCTA}
                   </Button>
@@ -86,17 +86,17 @@ export const RedesignHero = () => {
               </div>
 
               {/* Trust Indicators */}
-              <div className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-white/90">
-                <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+              <div className="flex flex-wrap gap-4 md:gap-6 justify-center lg:justify-start text-xs md:text-sm text-white/90">
+                <div className="flex items-center gap-1.5 md:gap-2 bg-white/10 px-3 py-1.5 rounded-full">
+                  <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">{content.trustIndicators.rating}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
+                <div className="flex items-center gap-1.5 md:gap-2 bg-white/10 px-3 py-1.5 rounded-full">
+                  <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
                   <span>{content.trustIndicators.movesCount}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-blue-400" />
+                <div className="flex items-center gap-1.5 md:gap-2 bg-white/10 px-3 py-1.5 rounded-full">
+                  <Shield className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
                   <span>{content.trustIndicators.verifiedText}</span>
                 </div>
               </div>
@@ -104,67 +104,67 @@ export const RedesignHero = () => {
 
             {/* Right: AI Calculator Card */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative"
+              className="relative mt-8 lg:mt-0"
             >
-              <div className="bg-white rounded-3xl shadow-2xl p-8 border border-slate-100 relative overflow-hidden">
+              <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border border-slate-100 relative overflow-hidden">
                 {/* Glow Effect */}
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-20" />
                 
                 <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
-                      <TrendingDown className="h-6 w-6 text-white" />
+                  <div className="flex items-center gap-3 mb-4 md:mb-6">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
+                      <TrendingDown className="h-5 w-5 md:h-6 md:w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-slate-900">{content.calculator.title}</h3>
-                      <p className="text-sm text-slate-600">{content.calculator.subtitle}</p>
+                      <h3 className="text-xl md:text-2xl font-bold text-slate-900">{content.calculator.title}</h3>
+                      <p className="text-xs md:text-sm text-slate-600">{content.calculator.subtitle}</p>
                     </div>
                   </div>
 
-                  <div className="space-y-4 mb-6">
+                  <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
                     <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-2 block">{content.calculator.fromLabel}</label>
+                      <label className="text-xs md:text-sm font-semibold text-slate-700 mb-1.5 md:mb-2 block">{content.calculator.fromLabel}</label>
                       <Input 
                         placeholder={content.calculator.fromPlaceholder}
                         value={fromPostal}
                         onChange={(e) => setFromPostal(e.target.value)}
-                        className="h-12 border-slate-200 focus:border-blue-500"
+                        className="h-11 md:h-12 border-slate-200 focus:border-blue-500"
                       />
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-2 block">{content.calculator.toLabel}</label>
+                      <label className="text-xs md:text-sm font-semibold text-slate-700 mb-1.5 md:mb-2 block">{content.calculator.toLabel}</label>
                       <Input 
                         placeholder={content.calculator.toPlaceholder}
                         value={toPostal}
                         onChange={(e) => setToPostal(e.target.value)}
-                        className="h-12 border-slate-200 focus:border-blue-500"
+                        className="h-11 md:h-12 border-slate-200 focus:border-blue-500"
                       />
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-2 block">{content.calculator.roomsLabel}</label>
+                      <label className="text-xs md:text-sm font-semibold text-slate-700 mb-1.5 md:mb-2 block">{content.calculator.roomsLabel}</label>
                       <Input 
                         type="number"
                         placeholder={content.calculator.roomsPlaceholder}
                         value={rooms}
                         onChange={(e) => setRooms(e.target.value)}
-                        className="h-12 border-slate-200 focus:border-blue-500"
+                        className="h-11 md:h-12 border-slate-200 focus:border-blue-500"
                       />
                     </div>
                   </div>
 
                   <Button 
                     onClick={handleCalculate}
-                    className="w-full h-14 text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all"
+                    className="w-full h-12 md:h-14 text-base md:text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all"
                   >
                     {content.calculator.submitButton}
                   </Button>
 
-                  <p className="text-xs text-center text-slate-500 mt-4">
+                  <p className="text-xs text-center text-slate-500 mt-3 md:mt-4">
                     {content.calculator.disclaimer}
                   </p>
                 </div>
