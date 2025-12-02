@@ -6,9 +6,6 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
-
 export default function CleaningService() {
   const faqs = [
     {
@@ -30,9 +27,7 @@ export default function CleaningService() {
   ];
 
   return (
-    <>
-      <Navigation />
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Umzugsreinigung Schweiz mit Abgabegarantie"
         description="Professionelle Umzugsreinigung in der Schweiz mit Abgabegarantie. Vergleichen Sie Angebote und sparen Sie bis zu 40%. End- und Endreinigung für stressfreie Wohnungsabgabe."
@@ -170,8 +165,6 @@ export default function CleaningService() {
           </Link>
         </div>
       </section>
-      </div>
-      <Footer />
-    </>
+    </div>
   );
 }
