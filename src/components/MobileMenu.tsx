@@ -55,6 +55,16 @@ const ratgeber = [
   { icon: FileText, title: "Alle Ratgeber", href: "/ratgeber" },
 ];
 
+const regions = [
+  { icon: MapPin, title: "Zürich", href: "/zuerich/umzugsfirmen" },
+  { icon: MapPin, title: "Bern", href: "/bern/umzugsfirmen" },
+  { icon: MapPin, title: "Basel", href: "/basel/umzugsfirmen" },
+  { icon: MapPin, title: "Luzern", href: "/luzern/umzugsfirmen" },
+  { icon: MapPin, title: "Aargau", href: "/aargau/umzugsfirmen" },
+  { icon: MapPin, title: "St. Gallen", href: "/st-gallen/umzugsfirmen" },
+  { icon: MapPin, title: "Alle Regionen", href: "/regionen" },
+];
+
 const provider = [
   { icon: Briefcase, title: "Anbieter werden", href: "/anbieter" },
   { icon: LogIn, title: "Anbieter Login", href: "/anbieter/login" },
@@ -152,19 +162,8 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           {/* Services Accordion */}
           <CollapsibleSection title="Services" section="services" items={services} />
 
-          {/* Regionen - Direct Link */}
-          <Link
-            to="/regionen"
-            onClick={onClose}
-            className={cn(
-              "flex items-center w-full px-4 py-3 rounded-lg transition-colors font-medium",
-              isActive("/regionen")
-                ? "bg-primary/10 text-primary"
-                : "text-foreground hover:bg-secondary"
-            )}
-          >
-            Regionen
-          </Link>
+          {/* Regionen Accordion */}
+          <CollapsibleSection title="Regionen" section="regions" items={regions} />
 
           {/* Ratgeber Accordion */}
           <CollapsibleSection title="Ratgeber" section="ratgeber" items={ratgeber} />

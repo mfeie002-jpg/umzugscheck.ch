@@ -6,12 +6,13 @@ import { MobileMenu } from "@/components/MobileMenu";
 import { MegaDropdown } from "@/components/MegaDropdown";
 import { CompaniesDropdown } from "@/components/CompaniesDropdown";
 import { ServicesDropdown } from "@/components/ServicesDropdown";
+import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
 import logo from "@/assets/umzugscheck-logo.png";
 import { cn } from "@/lib/utils";
 
-type DropdownType = 'calculator' | 'companies' | 'services' | 'ratgeber' | 'provider' | null;
+type DropdownType = 'calculator' | 'companies' | 'services' | 'regions' | 'ratgeber' | 'provider' | null;
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -101,13 +102,12 @@ export const Navigation = () => {
               </NavButton>
             </div>
 
-            {/* Regionen - Direct Link */}
-            <Link
-              to="/regionen"
-              className="px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50"
-            >
-              Regionen
-            </Link>
+            {/* Regionen - Dropdown */}
+            <div className="relative">
+              <NavButton dropdown="regions">
+                Regionen
+              </NavButton>
+            </div>
 
             {/* Ratgeber - Dropdown */}
             <div className="relative">
@@ -173,7 +173,11 @@ export const Navigation = () => {
             isOpen={activeDropdown === 'services'} 
             onClose={closeAllDropdowns} 
           />
-          <RatgeberDropdown 
+          <RegionsDropdown 
+            isOpen={activeDropdown === 'regions'} 
+            onClose={closeAllDropdowns} 
+          />
+          <RatgeberDropdown
             isOpen={activeDropdown === 'ratgeber'} 
             onClose={closeAllDropdowns} 
           />
