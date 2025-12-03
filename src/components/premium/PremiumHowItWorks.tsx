@@ -11,7 +11,7 @@ const steps = [
     title: "Umzugsdetails eingeben",
     description: "Geben Sie in wenigen Schritten Ihre Umzugsdetails ein: Adressen, Wohnungsgrösse, gewünschte Services und Ihr Wunschdatum.",
     highlight: "2 Minuten",
-    gradient: "from-amber-400 to-orange-500"
+    gradient: "from-primary to-primary-hover"
   },
   {
     number: "02",
@@ -19,7 +19,7 @@ const steps = [
     title: "AI-Analyse & passende Firmen",
     description: "Unser intelligentes System analysiert Ihre Anforderungen und findet die bestpassenden, geprüften Umzugsfirmen in Ihrer Region.",
     highlight: "200+ Firmen",
-    gradient: "from-blue-400 to-indigo-500"
+    gradient: "from-primary to-primary/80"
   },
   {
     number: "03",
@@ -27,7 +27,7 @@ const steps = [
     title: "Offerten vergleichen & wählen",
     description: "Vergleichen Sie transparente Offerten, Kundenbewertungen und Leistungen – und wählen Sie die beste Firma für Ihren Umzug.",
     highlight: "Bis 40% sparen",
-    gradient: "from-emerald-400 to-teal-500"
+    gradient: "from-secondary to-secondary/80"
   }
 ];
 
@@ -149,7 +149,7 @@ export const PremiumHowItWorks = () => {
           className="text-center"
         >
           <Link to="/umzugsofferten">
-            <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold shadow-copper hover:shadow-lift transition-all group">
+            <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold shadow-cta hover:shadow-lift transition-all group">
               <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform" />
               Jetzt starten
               <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />

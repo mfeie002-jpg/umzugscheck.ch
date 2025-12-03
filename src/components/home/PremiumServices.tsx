@@ -55,7 +55,7 @@ export const PremiumServices = () => {
           <h2 className="text-premium-h2 lg:text-premium-h2-lg text-swiss-noir mb-4">
             Premium Services
           </h2>
-          <p className="text-premium-body text-platinum max-w-2xl mx-auto">
+          <p className="text-premium-body text-muted-foreground max-w-2xl mx-auto">
             Alles aus einer Hand – mit Schweizer Qualität
           </p>
         </motion.div>
@@ -86,10 +86,10 @@ export const PremiumServices = () => {
                     <h3 className="text-premium-h3 text-swiss-noir mb-3">
                       {service.title}
                     </h3>
-                    <p className="text-premium-small text-platinum mb-4">
+                    <p className="text-premium-small text-muted-foreground mb-4">
                       {service.description}
                     </p>
-                    <div className="flex items-center text-copper font-semibold group-hover:gap-3 transition-all">
+                    <div className="flex items-center text-primary font-semibold group-hover:gap-3 transition-all">
                       Mehr erfahren
                       <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -125,7 +125,7 @@ export const PremiumServices = () => {
                       <h3 className="text-xl font-bold text-swiss-noir mb-2">
                         {service.title}
                       </h3>
-                      <p className="text-sm text-platinum">
+                      <p className="text-sm text-muted-foreground">
                         {service.description}
                       </p>
                     </div>

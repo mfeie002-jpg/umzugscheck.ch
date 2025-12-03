@@ -32,9 +32,9 @@ export const PremiumAIShowcase = () => {
             className="space-y-8"
           >
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-cream-gold rounded-full mb-6">
-                <Sparkles className="w-4 h-4 text-copper" />
-                <span className="text-sm font-semibold text-copper">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent rounded-full mb-6">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-primary">
                   AI-Powered
                 </span>
               </div>
@@ -43,7 +43,7 @@ export const PremiumAIShowcase = () => {
                 Der erste Schweizer AI-Umzugsrechner auf Premium-Niveau
               </h2>
 
-              <p className="text-premium-body text-platinum">
+              <p className="text-premium-body text-muted-foreground">
                 Unsere künstliche Intelligenz analysiert Ihren Umzug in Echtzeit und liefert 
                 präzise Kostenschätzungen basierend auf tausenden erfolgreich durchgeführten 
                 Umzügen in der Schweiz.
@@ -63,8 +63,8 @@ export const PremiumAIShowcase = () => {
                     transition={{ delay: index * 0.1 + 0.3, duration: 0.6 }}
                     className="flex items-center gap-4 p-5 bg-muted rounded-2xl"
                   >
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-cream-gold flex items-center justify-center">
-                      <Icon className="w-6 h-6 text-copper" />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent flex items-center justify-center">
+                      <Icon className="w-6 h-6 text-primary" />
                     </div>
                     <p className="text-premium-small font-medium text-swiss-noir">
                       {benefit.text}
@@ -74,7 +74,7 @@ export const PremiumAIShowcase = () => {
               })}
             </div>
 
-            <ButtonPremium size="lg" variant="copper" asChild>
+            <ButtonPremium size="lg" variant="default" asChild>
               <Link to="/rechner">
                 Jetzt AI-Rechner testen
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -102,8 +102,8 @@ export const PremiumAIShowcase = () => {
                 <div className="space-y-4">
                   <div className="h-4 bg-muted rounded w-3/4"></div>
                   <div className="h-4 bg-muted rounded w-1/2"></div>
-                  <div className="h-16 bg-cream-gold rounded-2xl flex items-center justify-center">
-                    <Sparkles className="w-8 h-8 text-copper" />
+                  <div className="h-16 bg-accent rounded-2xl flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-primary" />
                   </div>
                   <div className="h-4 bg-muted rounded w-2/3"></div>
                   <div className="h-4 bg-muted rounded w-5/6"></div>
@@ -113,13 +113,13 @@ export const PremiumAIShowcase = () => {
                   <div className="flex justify-between items-center">
                     <div className="space-y-2">
                       <div className="h-3 bg-muted rounded w-24"></div>
-                      <div className="h-6 bg-copper/20 rounded w-32 flex items-center justify-center">
-                        <span className="text-xs font-bold text-copper">
+                      <div className="h-6 bg-primary/20 rounded w-32 flex items-center justify-center">
+                        <span className="text-xs font-bold text-primary">
                           CHF 2'400 - 2'800
                         </span>
                       </div>
                     </div>
-                    <div className="w-12 h-12 bg-copper rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center">
                       <ArrowRight className="w-6 h-6 text-white" />
                     </div>
                   </div>
@@ -128,7 +128,7 @@ export const PremiumAIShowcase = () => {
             </div>
 
             {/* Decorative Glow */}
-            <div className="absolute -z-10 -inset-4 bg-gradient-to-br from-copper/20 to-swiss-gold/20 rounded-3xl blur-2xl"></div>
+            <div className="absolute -z-10 -inset-4 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl blur-2xl"></div>
           </motion.div>
         </div>
       </div>
