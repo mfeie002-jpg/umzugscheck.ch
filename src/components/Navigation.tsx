@@ -145,7 +145,7 @@ export const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button & CTA - Visible on Mobile */}
-          <div className="flex lg:hidden items-center gap-2 -mr-2 sm:mr-0">
+          <div className="flex lg:hidden items-center gap-1 -mr-3 sm:mr-0">
             <Link to="/" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button 
                 size="sm"
