@@ -34,12 +34,12 @@ export const StickyMobileCTA = ({ text = "Offerten vergleichen", link = "/umzug-
       {/* Gradient overlay for smooth transition */}
       <div className="absolute inset-x-0 -top-12 h-12 bg-gradient-to-t from-background/95 via-background/50 to-transparent pointer-events-none" />
       
-      <div className="bg-background/98 backdrop-blur-xl border-t-2 border-primary/20 shadow-2xl">
+      <div className="bg-background/98 backdrop-blur-xl border-t-2 border-secondary/30 shadow-2xl">
         <div className="container mx-auto px-4 py-3 safe-bottom">
           <Link to={link} className="block">
             <Button 
               size="lg" 
-              className="w-full h-14 text-base font-bold shadow-lg hover:scale-[1.02] transition-transform active:scale-95"
+              className="w-full h-14 text-base font-bold bg-secondary text-secondary-foreground shadow-cta hover:bg-secondary/90 hover:scale-[1.02] transition-transform active:scale-95"
             >
               {text}
               <ArrowRight className="ml-2 w-5 h-5" />

@@ -43,10 +43,10 @@ export const ServicesGridCompact = () => {
           viewport={{ once: true }}
           className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-4 text-slate-900 heading-premium">
+          <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-4 text-foreground heading-premium">
             Unsere Dienstleistungen
           </h2>
-          <p className="text-sm md:text-xl text-slate-600 max-w-2xl mx-auto body-premium">
+          <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto body-premium">
             Professionelle Services für jeden Umzug – alles aus einer Hand
           </p>
         </motion.div>
@@ -61,7 +61,7 @@ export const ServicesGridCompact = () => {
               transition={{ delay: index * 0.1 }}
             >
               <Link to={service.link}>
-                <Card variant="elevated" className="h-full hover:shadow-strong hover:-translate-y-2 transition-all duration-300 group cursor-pointer overflow-hidden border-0">
+                <Card variant="elevated" className="h-full hover:shadow-lift hover:-translate-y-2 transition-all duration-300 group cursor-pointer overflow-hidden border-0">
                   <div className="relative h-28 md:h-40 overflow-hidden">
                     <img 
                       src={service.image} 
@@ -73,8 +73,8 @@ export const ServicesGridCompact = () => {
                       <h3 className="text-sm md:text-lg font-bold text-white drop-shadow-lg">{service.title}</h3>
                     </div>
                   </div>
-                  <CardContent className="p-3 md:p-5 text-center bg-white">
-                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{service.description}</p>
+                  <CardContent className="p-3 md:p-5 text-center bg-card">
+                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{service.description}</p>
                   </CardContent>
                 </Card>
               </Link>
