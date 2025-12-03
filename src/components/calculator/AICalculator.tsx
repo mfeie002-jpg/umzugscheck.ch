@@ -273,65 +273,79 @@ export const AICalculator = () => {
           </div>
         )}
 
-        {/* Analysis Results */}
+        {/* Analysis Results - Premium Display */}
         {analysis && (
-          <div className="space-y-6">
-            <div className="flex items-center gap-2 text-success">
-              <CheckCircle2 className="w-5 h-5" />
-              <span className="font-semibold">Analyse abgeschlossen!</span>
+          <div className="space-y-8">
+            {/* Success Header */}
+            <div className="text-center py-6 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-2xl border border-emerald-200 dark:border-emerald-800">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2">KI-Analyse abgeschlossen!</h3>
+              <p className="text-muted-foreground">Basierend auf Ihren Dateien haben wir folgende Schätzung erstellt</p>
             </div>
 
-            {/* Volume Estimate */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg text-foreground">Geschätztes Umzugsvolumen</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-primary">{analysis.estimatedVolume}</span>
-                  <span className="text-foreground/70">Kubikmeter</span>
+            {/* Main Volume Card - Hero Style */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 border-2 border-primary/20 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative">
+                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">Geschätztes Umzugsvolumen</p>
+                <div className="flex items-baseline gap-3 mb-4">
+                  <span className="text-6xl md:text-7xl font-bold text-primary">{analysis.estimatedVolume?.replace(' m³', '') || analysis.estimatedVolume}</span>
+                  <span className="text-2xl text-muted-foreground">m³</span>
                 </div>
-                <p className="text-sm text-foreground/70 mt-2">
-                  Konfidenz: {(analysis.confidence * 100).toFixed(0)}%
-                </p>
-              </CardContent>
-            </Card>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-background/80 rounded-full">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="text-foreground">Konfidenz: <strong>{(analysis.confidence * 100).toFixed(0)}%</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            {/* Room Breakdown */}
-            <div className="space-y-3">
-              <Label className="text-foreground">Zimmer-Analyse</Label>
-              {analysis.rooms.map((room: any, index: number) => (
-                <Card key={index}>
-                  <CardContent className="pt-4">
-                    <div className="flex items-center justify-between">
+            {/* Room Breakdown Grid */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1 h-6 bg-primary rounded-full" />
+                Zimmer-Analyse
+              </h4>
+              <div className="grid gap-3">
+                {analysis.rooms.map((room: any, index: number) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-secondary/50 rounded-xl border border-border hover:bg-secondary transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <span className="text-lg font-bold text-primary">{index + 1}</span>
+                      </div>
                       <div>
                         <div className="font-semibold text-foreground">{room.name}</div>
-                        <div className="text-sm text-foreground/70">
-                          {room.items} Gegenstände erkannt
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-semibold text-primary">{room.volume}</div>
+                        <div className="text-sm text-muted-foreground">{room.items} Gegenstände erkannt</div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-primary">{room.volume}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Large Items */}
-            <div className="space-y-3">
-              <Label className="text-foreground">Grosse Möbelstücke</Label>
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1 h-6 bg-accent rounded-full" />
+                Grosse Möbelstücke
+              </h4>
               <div className="flex flex-wrap gap-2">
                 {analysis.largeItems.map((item: string, index: number) => (
-                  <div key={index} className="px-3 py-1 bg-secondary rounded-full text-sm text-foreground">
+                  <div key={index} className="px-4 py-2 bg-accent/10 border border-accent/20 rounded-full text-sm font-medium text-foreground">
                     {item}
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex gap-3">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -339,21 +353,21 @@ export const AICalculator = () => {
                   setFiles([]);
                 }}
                 className="flex-1"
-                aria-label="Neue Analyse starten"
+                size="lg"
               >
                 Neu analysieren
               </Button>
               <Button
-                className="flex-1 bg-primary hover:bg-primary/90"
+                className="flex-1 bg-accent hover:bg-accent/90 shadow-lg shadow-accent/25"
+                size="lg"
                 onClick={() => {
-                  // Navigate to results or next step
                   toast({
                     title: "Weiter zur Offerte",
                     description: "Sie werden zu den Umzugsfirmen weitergeleitet.",
                   });
                 }}
-                aria-label="Offerten von Umzugsfirmen erhalten"
               >
+                <Sparkles className="mr-2 w-5 h-5" />
                 Offerten erhalten
               </Button>
             </div>
