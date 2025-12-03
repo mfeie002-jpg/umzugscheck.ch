@@ -12,7 +12,7 @@ import { PremiumCostExamples } from "@/components/premium/PremiumCostExamples";
 import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
+
 import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
 
 // New logo options for preview
@@ -179,8 +179,6 @@ const IndexPremium = () => {
         {/* 11. Provider CTA */}
         <PremiumProviderCTA />
       </main>
-
-      <PremiumFooter />
       
       {/* Mobile Sticky CTA */}
       <StickyMobileCTA text="Offerten vergleichen" link="/umzugsofferten" />
