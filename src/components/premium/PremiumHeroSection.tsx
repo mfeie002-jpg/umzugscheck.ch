@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Star, Shield, CheckCircle, Users, Clock } from "lucide-react";
+import { ArrowRight, Star, Shield, CheckCircle, Users, Clock, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
+import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
 
 export const PremiumHeroSection = () => {
   const navigate = useNavigate();
@@ -90,6 +91,11 @@ export const PremiumHeroSection = () => {
               </div>
             </div>
             
+            {/* Live Activity Badge */}
+            <div className="pt-2">
+              <LiveActivityBadge />
+            </div>
+            
             {/* Desktop CTAs */}
             <div className="hidden lg:flex items-center gap-4 pt-2">
               <Link to="/umzugsofferten">
@@ -171,10 +177,11 @@ export const PremiumHeroSection = () => {
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="w-full h-14 text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                    className="w-full h-14 text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all animate-pulse-subtle group"
                   >
+                    <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
                     Offerten vergleichen
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>
                 

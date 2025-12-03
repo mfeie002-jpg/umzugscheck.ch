@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
   id: string;
@@ -19,7 +20,7 @@ export const AIMovingAssistant = () => {
     {
       id: "1",
       role: "assistant",
-      content: "Hallo! Ich bin Ihr KI-Umzugsassistent. Wie kann ich Ihnen heute helfen?",
+      content: "Hallo! 👋 Ich bin Ihr KI-Umzugsassistent. Wie kann ich Ihnen heute helfen? Fragen Sie mich zu Umzugskosten, Firmenempfehlungen oder Tipps!",
       timestamp: new Date(),
     },
   ]);
@@ -86,31 +87,53 @@ export const AIMovingAssistant = () => {
 
   if (!isOpen) {
     return (
-      <Button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
-        size="icon"
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        className="fixed bottom-6 right-6 z-50"
       >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 hover:scale-110 transition-transform group"
+          size="icon"
+        >
+          <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
+        </Button>
+        {/* Pulse ring */}
+        <span className="absolute inset-0 rounded-full animate-ping bg-primary/30 pointer-events-none" />
+      </motion.div>
     );
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-2xl z-50 flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="flex items-center gap-2">
-          <Bot className="h-5 w-5" />
-          KI-Umzugsassistent
-        </CardTitle>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsOpen(false)}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </CardHeader>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      >
+        <Card className="fixed bottom-6 right-6 w-[360px] md:w-96 h-[500px] shadow-2xl z-50 flex flex-col border-primary/20 overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground">
+            <CardTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div>
+                <span className="text-base">KI-Assistent</span>
+                <span className="text-xs block opacity-80">Online • Sofort verfügbar</span>
+              </div>
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsOpen(false)}
+              className="text-primary-foreground hover:bg-white/20"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </CardHeader>
       <CardContent className="flex-1 flex flex-col p-0">
         <ScrollArea className="flex-1 px-4" ref={scrollRef}>
           <div className="space-y-4 pb-4">
@@ -183,7 +206,9 @@ export const AIMovingAssistant = () => {
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
+    </AnimatePresence>
   );
 };
