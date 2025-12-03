@@ -16,9 +16,9 @@ import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
 
 // New logo options for preview
-import logoUmzugscheck4 from "@/assets/logo-umzugscheck-4.png";
-import logoUmzugscheck5 from "@/assets/logo-umzugscheck-5.png";
-import logoUmzugscheck6 from "@/assets/logo-umzugscheck-6.png";
+import logoUmzugscheck7 from "@/assets/logo-umzugscheck-7.png";
+import logoUmzugscheck8 from "@/assets/logo-umzugscheck-8.png";
+import logoUmzugscheck9 from "@/assets/logo-umzugscheck-9.png";
 
 const IndexPremium = () => {
   const faqItems = [
@@ -134,22 +134,22 @@ const IndexPremium = () => {
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center text-foreground mb-4">🎨 Neue Logo-Vorschläge</h2>
-            <p className="text-center text-muted-foreground mb-12">Checkmark + Umzugs-Element für "umzugscheck.ch"</p>
+            <p className="text-center text-muted-foreground mb-12">Premium-Qualität mit Checkmark + Umzugs-Element</p>
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoUmzugscheck4} alt="Logo Option 4" className="h-24 w-auto mx-auto mb-4 object-contain" />
-                <h3 className="font-bold text-lg text-foreground">Option 4</h3>
-                <p className="text-sm text-muted-foreground mt-2">Checkmark + Umzugswagen</p>
+                <img src={logoUmzugscheck7} alt="Logo Option 7" className="h-24 w-auto mx-auto mb-4 object-contain" />
+                <h3 className="font-bold text-lg text-foreground">Option 7</h3>
+                <p className="text-sm text-muted-foreground mt-2">Umzugskarton + grüner Checkmark</p>
               </div>
               <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoUmzugscheck5} alt="Logo Option 5" className="h-24 w-auto mx-auto mb-4 object-contain" />
-                <h3 className="font-bold text-lg text-foreground">Option 5</h3>
-                <p className="text-sm text-muted-foreground mt-2">Doppel-Check + Kartonbox</p>
+                <img src={logoUmzugscheck8} alt="Logo Option 8" className="h-24 w-auto mx-auto mb-4 object-contain" />
+                <h3 className="font-bold text-lg text-foreground">Option 8</h3>
+                <p className="text-sm text-muted-foreground mt-2">Haus-Icon mit Checkmark-Dach</p>
               </div>
               <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoUmzugscheck6} alt="Logo Option 6" className="h-24 w-auto mx-auto mb-4 object-contain" />
-                <h3 className="font-bold text-lg text-foreground">Option 6</h3>
-                <p className="text-sm text-muted-foreground mt-2">Haus + Checkmark + Bewegungspfeil</p>
+                <img src={logoUmzugscheck9} alt="Logo Option 9" className="h-24 w-auto mx-auto mb-4 object-contain" />
+                <h3 className="font-bold text-lg text-foreground">Option 9</h3>
+                <p className="text-sm text-muted-foreground mt-2">Umzugswagen + Swiss Red Checkmark</p>
               </div>
             </div>
           </div>
