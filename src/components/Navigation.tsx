@@ -9,8 +9,6 @@ import { ServicesDropdown } from "@/components/ServicesDropdown";
 import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
-import logo from "@/assets/umzugscheck-logo.png";
-import logoNew from "@/assets/umzugscheck-logo-new.png";
 import { cn } from "@/lib/utils";
 
 type DropdownType = 'calculator' | 'companies' | 'services' | 'regions' | 'ratgeber' | 'provider' | null;
@@ -93,11 +91,9 @@ export const Navigation = () => {
             className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0"
             aria-label="Zur Startseite von Umzugscheck.ch"
           >
-            <img 
-              src={logo} 
-              alt="Umzugscheck.ch Logo" 
-              className="h-12 sm:h-16 md:h-24 w-auto" 
-            />
+            <span className="text-xl sm:text-2xl font-bold text-primary">
+              Umzugscheck<span className="text-secondary">.ch</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -168,18 +164,13 @@ export const Navigation = () => {
             </Button>
           </div>
 
-          {/* CTA Button & Logo - Desktop */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* CTA Button - Desktop */}
+          <div className="hidden lg:flex items-center gap-3">
             <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold animate-pulse-subtle">
                 Offerten erhalten
               </Button>
             </Link>
-            <img 
-              src={logoNew} 
-              alt="Umzugscheck.ch" 
-              className="h-10 w-auto" 
-            />
           </div>
         </div>
 
