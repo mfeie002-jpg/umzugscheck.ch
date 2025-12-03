@@ -23,6 +23,15 @@ export const AICalculator = () => {
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Check if file is an image (more robust than just MIME type)
+  const isImageFile = (file: File): boolean => {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif', '.bmp', '.tiff'];
+    const fileName = file.name.toLowerCase();
+    const hasImageExtension = imageExtensions.some(ext => fileName.endsWith(ext));
+    const hasImageMimeType = file.type.startsWith('image/');
+    return hasImageExtension || hasImageMimeType;
+  };
+
   const analyzeWithAI = async () => {
     if (files.length === 0) {
       toast({
@@ -36,13 +45,21 @@ export const AICalculator = () => {
     setIsAnalyzing(true);
     
     try {
-      // Convert all images to base64
-      const imagePromises = files
-        .filter(file => file.type.startsWith('image/'))
-        .slice(0, 5) // Limit to first 5 images for performance
-        .map(file => fileToBase64(file));
+      // Filter for image files using robust check
+      const imageFiles = files.filter(isImageFile).slice(0, 5);
       
-      const images = await Promise.all(imagePromises);
+      if (imageFiles.length === 0) {
+        toast({
+          title: "Keine Bilder gefunden",
+          description: "Bitte laden Sie mindestens ein Foto hoch (JPG, PNG, HEIC). Videos werden noch nicht unterstützt.",
+          variant: "destructive",
+        });
+        setIsAnalyzing(false);
+        return;
+      }
+
+      // Convert all images to base64
+      const images = await Promise.all(imageFiles.map(file => fileToBase64(file)));
       
       console.log('Sending', images.length, 'images for analysis');
 
