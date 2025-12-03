@@ -51,7 +51,7 @@ export const PremiumHowItWorks = () => {
             <CheckCircle2 className="h-5 w-5" />
             So funktioniert's
           </motion.span>
-          <h2 className="text-3xl md:text-5xl font-bold text-swiss-noir mb-6">
+          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
             In 3 einfachen Schritten zum perfekten Umzug
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -102,7 +102,7 @@ export const PremiumHowItWorks = () => {
                       Schritt {step.number}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-swiss-noir mb-4 group-hover:text-primary transition-colors">
+                  <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
                     {step.title}
                   </h3>
                   <p className="text-muted-foreground text-lg leading-relaxed">

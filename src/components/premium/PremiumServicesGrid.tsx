@@ -197,7 +197,7 @@ export const PremiumServicesGrid = () => {
           className="text-center mt-12"
         >
           <Link to="/dienstleistungen">
-            <Button variant="outline" size="lg" className="h-11 sm:h-12 px-5 sm:px-8 text-sm sm:text-base font-semibold border-2 group">
+            <Button variant="secondary" size="lg" className="h-11 sm:h-12 px-5 sm:px-8 text-sm sm:text-base font-semibold group">
               <span className="hidden sm:inline">Alle Services ansehen</span>
               <span className="sm:hidden">Mehr Services</span>
               <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />

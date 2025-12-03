@@ -67,8 +67,8 @@ export const Navigation = () => {
         }
       }}
       className={cn(
-        "flex items-center gap-1 px-4 py-2 text-swiss-noir hover:text-swiss-noir/80 transition-colors font-medium rounded-lg hover:bg-accent",
-        activeDropdown === dropdown && "text-swiss-noir bg-accent"
+        "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-accent",
+        activeDropdown === dropdown && "text-primary bg-accent"
       )}
       aria-expanded={activeDropdown === dropdown}
       aria-haspopup="true"
@@ -83,7 +83,7 @@ export const Navigation = () => {
   );
 
   return (
-    <nav className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm" aria-label="Hauptnavigation">
+    <nav className="bg-background border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
           {/* Logo */}

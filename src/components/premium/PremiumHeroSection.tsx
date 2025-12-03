@@ -60,26 +60,26 @@ export const PremiumHeroSection = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-premium border border-border"
+              className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-medium border border-border"
             >
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary">
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary">
                 <Check className="h-6 w-6 text-white stroke-[3]" />
               </div>
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Wir checken für Sie</p>
-                <p className="text-sm font-bold text-swiss-noir">200+ geprüfte Umzugsfirmen</p>
+                <p className="text-sm font-bold text-foreground">200+ geprüfte Umzugsfirmen</p>
               </div>
             </motion.div>
             
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
-              <span className="text-swiss-noir">Umzugsfirmen vergleichen.</span>
+              <span className="text-foreground">Umzugsfirmen vergleichen.</span>
               <span className="block text-primary mt-2">In wenigen Minuten.</span>
             </h1>
             
             {/* Subheadline with CHECK emphasis */}
-            <p className="text-base sm:text-lg md:text-xl text-foreground/70 max-w-xl leading-relaxed">
-              Wir <span className="inline-flex items-center gap-1 text-secondary font-bold"><CheckCircle2 className="h-5 w-5" />checken</span> für Sie: 
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+              Wir <span className="inline-flex items-center gap-1 text-secondary font-semibold"><CheckCircle2 className="h-5 w-5" />checken</span> für Sie: 
               AI-gestützte Analyse, geprüfte Schweizer Partner, transparente Offerten – kostenlos und unverbindlich.
             </p>
             
@@ -109,14 +109,14 @@ export const PremiumHeroSection = () => {
             {/* Desktop CTAs */}
             <div className="hidden lg:flex items-center gap-4 pt-2">
               <Link to="/umzugsofferten">
-                <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all">
                   <CheckCircle2 className="mr-2 h-5 w-5" />
                   Jetzt checken lassen
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/umzugsrechner">
-                <Button size="lg" variant="outline" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold border-2 hover:bg-primary/5">
+                <Button size="lg" variant="secondary" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold">
                   Kosten berechnen
                 </Button>
               </Link>

@@ -119,7 +119,7 @@ export const CompanyCard = ({
             {services.slice(0, 2).map((service, index) => (
               <span 
                 key={index}
-                className="text-xs px-2.5 py-1 bg-secondary/10 border border-secondary/20 rounded-full text-secondary-foreground font-medium"
+                className="text-xs px-2.5 py-1 bg-primary/10 border border-primary/20 rounded-full text-primary font-medium"
               >
                 {service}
               </span>
