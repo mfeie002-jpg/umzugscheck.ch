@@ -1,80 +1,82 @@
-import { Home, Building2, Sparkles, Trash2, Package, Truck, Heart, Globe, ArrowRight, Star, TrendingUp } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
+// Service images
+import servicePrivatumzug from "@/assets/service-privatumzug.jpg";
+import serviceFirmenumzug from "@/assets/service-firmenumzug-new.jpg";
+import serviceReinigung from "@/assets/service-reinigung-new.jpg";
+import serviceEntsorgung from "@/assets/service-entsorgung-new.jpg";
+import serviceLagerung from "@/assets/service-lagerung.jpg";
+import serviceUmzug from "@/assets/service-umzug.jpg";
+import serviceMontage from "@/assets/service-montage.jpg";
+import serviceInternational from "@/assets/service-international.jpg";
+
 const services = [
   {
-    icon: Home,
     title: "Privatumzug",
     description: "Kompletter Umzugsservice für Ihren Wohnungswechsel – vom Einpacken bis zum Aufbau.",
     link: "/privatumzug",
-    color: "primary",
+    image: servicePrivatumzug,
     badge: "Beliebt",
-    badgeColor: "bg-success/10 text-success"
+    badgeColor: "bg-green-500"
   },
   {
-    icon: Building2,
     title: "Firmenumzug",
     description: "Professionelle Büroumzüge mit minimaler Betriebsunterbrechung für KMUs und Grossfirmen.",
     link: "/firmenumzug",
-    color: "secondary",
+    image: serviceFirmenumzug,
     badge: null,
     badgeColor: ""
   },
   {
-    icon: Sparkles,
     title: "Endreinigung",
     description: "Professionelle Wohnungsreinigung mit Abnahmegarantie für eine reibungslose Übergabe.",
     link: "/reinigung",
-    color: "primary",
+    image: serviceReinigung,
     badge: "Top-Service",
-    badgeColor: "bg-primary/10 text-primary"
+    badgeColor: "bg-primary"
   },
   {
-    icon: Trash2,
     title: "Entsorgung & Räumung",
     description: "Fachgerechte Entsorgung von Möbeln, Elektrogeräten und Hausrat.",
     link: "/entsorgung",
-    color: "secondary",
+    image: serviceEntsorgung,
     badge: null,
     badgeColor: ""
   },
   {
-    icon: Package,
     title: "Möbellagerung",
     description: "Sichere und flexible Lagerboxen für kurz- oder langfristige Einlagerung.",
     link: "/lagerung",
-    color: "primary",
+    image: serviceLagerung,
     badge: null,
     badgeColor: ""
   },
   {
-    icon: Truck,
     title: "Spezialtransporte",
     description: "Sicherer Transport von Klavieren, Tresoren, Kunst und sensiblen Gütern.",
     link: "/spezialtransporte",
-    color: "secondary",
+    image: serviceUmzug,
     badge: null,
     badgeColor: ""
   },
   {
-    icon: Heart,
-    title: "Seniorenumzug",
-    description: "Einfühlsamer Rundum-Service für ältere Menschen mit besonderer Betreuung.",
-    link: "/seniorenumzug",
-    color: "primary",
+    title: "Möbelmontage",
+    description: "Professioneller Auf- und Abbau Ihrer Möbel durch erfahrene Handwerker.",
+    link: "/montage",
+    image: serviceMontage,
     badge: null,
     badgeColor: ""
   },
   {
-    icon: Globe,
     title: "Internationale Umzüge",
     description: "Weltweite Umzugsservices mit Zollabwicklung und internationaler Logistik.",
     link: "/internationale-umzuege",
-    color: "secondary",
+    image: serviceInternational,
     badge: "Neu",
-    badgeColor: "bg-secondary/10 text-secondary"
+    badgeColor: "bg-secondary"
   }
 ];
 
@@ -115,62 +117,55 @@ export const PremiumServicesGrid = () => {
         
         {/* Services Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, idx) => {
-            const Icon = service.icon;
-            const isBlue = service.color === "secondary";
-            
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
+          {services.map((service, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.05 }}
+            >
+              <Link 
+                to={service.link}
+                className="group relative block h-full bg-card rounded-2xl overflow-hidden shadow-premium border border-border/50 hover:shadow-lift hover:border-primary/20 transition-all duration-300"
               >
-                <Link 
-                  to={service.link}
-                  className="group relative block h-full bg-card rounded-2xl p-6 shadow-premium border border-border/50 hover:shadow-lift hover:border-primary/20 transition-all duration-300 overflow-hidden"
-                >
-                  {/* Gradient Overlay on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Image */}
+                <div className="relative h-44 overflow-hidden">
+                  <img 
+                    src={service.image} 
+                    alt={service.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                   
                   {/* Badge */}
                   {service.badge && (
-                    <motion.span
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: idx * 0.05 + 0.2 }}
-                      className={`absolute top-4 right-4 px-2.5 py-1 rounded-full text-xs font-semibold ${service.badgeColor}`}
-                    >
+                    <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white ${service.badgeColor}`}>
                       {service.badge}
-                    </motion.span>
+                    </span>
                   )}
                   
-                  {/* Icon */}
-                  <div className={`relative w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110 ${
-                    isBlue ? 'bg-secondary/10' : 'bg-primary/10'
-                  }`}>
-                    <Icon className={`h-7 w-7 ${isBlue ? 'text-secondary' : 'text-primary'}`} />
-                  </div>
-                  
-                  {/* Content */}
-                  <h3 className="relative text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                  {/* Title on Image */}
+                  <h3 className="absolute bottom-3 left-4 right-4 text-lg font-bold text-white drop-shadow-lg">
                     {service.title}
                   </h3>
-                  <p className="relative text-sm text-muted-foreground leading-relaxed mb-4">
+                </div>
+                
+                {/* Content */}
+                <div className="p-5">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                     {service.description}
                   </p>
                   
                   {/* Link */}
-                  <span className="relative inline-flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                  <span className="inline-flex items-center text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
                     Mehr erfahren
                     <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </span>
-                </Link>
-              </motion.div>
-            );
-          })}
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </div>
         
         {/* Stats Row */}
