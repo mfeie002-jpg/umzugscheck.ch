@@ -89,7 +89,7 @@ export const Navigation = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-6 sm:ml-0"
+            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-3 sm:ml-0"
             aria-label="Zur Startseite von Umzugscheck.ch"
           >
             <img 
