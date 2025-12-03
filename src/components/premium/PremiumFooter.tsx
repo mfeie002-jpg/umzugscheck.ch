@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
+import logoNew from "@/assets/umzugscheck-logo-new.png";
 
 const footerLinks = {
   services: [
@@ -44,9 +45,11 @@ export const PremiumFooter = () => {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-6">
-              <span className="text-2xl font-bold text-background">
-                Umzugscheck<span className="text-primary">.ch</span>
-              </span>
+              <img 
+                src={logoNew} 
+                alt="Umzugscheck.ch" 
+                className="h-12 w-auto brightness-0 invert" 
+              />
             </Link>
             <p className="text-background/70 mb-6 max-w-sm leading-relaxed">
               Die führende Schweizer Plattform für den Vergleich von Umzugsfirmen. 
