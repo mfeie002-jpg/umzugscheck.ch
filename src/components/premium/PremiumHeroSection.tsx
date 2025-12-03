@@ -63,7 +63,7 @@ export const PremiumHeroSection = () => {
             
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
-              <span className="text-foreground">Umzugsfirmen vergleichen.</span>
+              <span className="text-swiss-noir">Umzugsfirmen vergleichen.</span>
               <span className="block text-primary mt-2">In wenigen Minuten.</span>
             </h1>
             
