@@ -12,7 +12,7 @@ import { PremiumCostExamples } from "@/components/premium/PremiumCostExamples";
 import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
+
 
 const Index = () => {
   const faqItems = [
@@ -61,7 +61,6 @@ const Index = () => {
         <PremiumProviderCTA />
       </main>
 
-      <PremiumFooter />
       <StickyMobileCTA text="Offerten vergleichen" link="/umzugsofferten" />
       <ScrollToTop />
     </div>
