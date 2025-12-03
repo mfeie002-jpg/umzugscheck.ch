@@ -1,4 +1,4 @@
-import { FileText, Cpu, CheckSquare, ArrowRight, Sparkles } from "lucide-react";
+import { Home, Search, PartyPopper, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -7,24 +7,27 @@ import moversTeamImg from "@/assets/movers-team-working.jpg";
 const steps = [
   {
     number: "01",
-    icon: FileText,
+    icon: Home,
     title: "Umzugsdetails eingeben",
     description: "Geben Sie in wenigen Schritten Ihre Umzugsdetails ein: Adressen, Wohnungsgrösse, gewünschte Services und Ihr Wunschdatum.",
-    highlight: "2 Minuten"
+    highlight: "2 Minuten",
+    gradient: "from-amber-400 to-orange-500"
   },
   {
     number: "02",
-    icon: Cpu,
+    icon: Search,
     title: "AI-Analyse & passende Firmen",
     description: "Unser intelligentes System analysiert Ihre Anforderungen und findet die bestpassenden, geprüften Umzugsfirmen in Ihrer Region.",
-    highlight: "200+ Firmen"
+    highlight: "200+ Firmen",
+    gradient: "from-blue-400 to-indigo-500"
   },
   {
     number: "03",
-    icon: CheckSquare,
+    icon: PartyPopper,
     title: "Offerten vergleichen & wählen",
     description: "Vergleichen Sie transparente Offerten, Kundenbewertungen und Leistungen – und wählen Sie die beste Firma für Ihren Umzug.",
-    highlight: "Bis 40% sparen"
+    highlight: "Bis 40% sparen",
+    gradient: "from-emerald-400 to-teal-500"
   }
 ];
 
@@ -96,18 +99,18 @@ export const PremiumHowItWorks = () => {
                   <div className="relative inline-flex items-center justify-center w-28 h-28 mb-6">
                     {/* Pulse Ring */}
                     <motion.div
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3 }}
-                      className="absolute inset-0 rounded-2xl bg-primary/20"
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0, 0.4] }}
+                      transition={{ duration: 2.5, repeat: Infinity, delay: idx * 0.4 }}
+                      className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${step.gradient} opacity-30`}
                     />
                     {/* Main Icon Box */}
-                    <div className="relative w-24 h-24 rounded-2xl bg-card border border-border/50 shadow-premium flex items-center justify-center group-hover:shadow-lift group-hover:border-primary/30 transition-all duration-300">
-                      <Icon className="h-10 w-10 text-primary" />
+                    <div className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${step.gradient} shadow-xl flex items-center justify-center group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300`}>
+                      <Icon className="h-11 w-11 text-white drop-shadow-md" />
                     </div>
                     {/* Number Badge */}
                     <motion.span 
                       whileHover={{ scale: 1.1 }}
-                      className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-primary to-secondary text-primary-foreground rounded-xl flex items-center justify-center text-sm font-bold shadow-copper cursor-default"
+                      className="absolute -top-2 -right-2 w-10 h-10 bg-white text-foreground border-2 border-border/20 rounded-full flex items-center justify-center text-sm font-bold shadow-lg cursor-default"
                     >
                       {step.number}
                     </motion.span>
