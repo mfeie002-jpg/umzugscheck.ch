@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Twitter, Shield, Award, CheckCircle } from "lucide-react";
 import { Helmet } from "react-helmet";
+import logo from "@/assets/logo.png";
 
 const ORGANIZATION_SCHEMA = {
   "@context": "https://schema.org",
@@ -68,9 +69,11 @@ export const Footer = () => {
           {/* Company Info */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center hover:opacity-90 transition-opacity">
-              <span className="text-2xl font-bold text-primary-foreground">
-                Umzugscheck<span className="text-secondary">.ch</span>
-              </span>
+              <img 
+                src={logo} 
+                alt="Umzugscheck.ch Logo" 
+                className="h-12 w-auto brightness-0 invert"
+              />
             </Link>
             <p className="text-primary-foreground/90 text-sm leading-relaxed max-w-sm">
               Die führende Vergleichsplattform für Umzüge in der Schweiz. 
