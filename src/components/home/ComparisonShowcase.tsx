@@ -144,9 +144,9 @@ const SplitComparison = () => (
       </div>
       <h3 className="text-2xl font-bold text-foreground mb-4">Vergleichen lohnt sich!</h3>
       <p className="text-muted-foreground mb-6">Finden Sie die beste Firma zum besten Preis in Ihrer Region.</p>
-      <Button size="lg" className="bg-primary hover:bg-primary/90">
-        Jetzt vergleichen
-        <ArrowRight className="ml-2 h-5 w-5" />
+      <Button size="lg" className="bg-primary hover:bg-primary/90 h-11 sm:h-12 px-5 sm:px-6 text-sm sm:text-base">
+        Vergleichen
+        <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
       </Button>
     </div>
   </div>
@@ -185,10 +185,11 @@ const PremiumComparison = () => (
             </div>
           ))}
         </div>
-        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 mt-4">
+        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 mt-4 h-11 sm:h-12 px-4 sm:px-6 text-sm sm:text-base">
           <Link to="/firmen">
-            Alle Firmen vergleichen
-            <ArrowRight className="ml-2 h-5 w-5" />
+            <span className="hidden sm:inline">Alle Firmen vergleichen</span>
+            <span className="sm:hidden">Firmen ansehen</span>
+            <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
           </Link>
         </Button>
       </div>

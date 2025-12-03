@@ -135,10 +135,10 @@ export const PremiumHowItWorks = () => {
           className="text-center"
         >
           <Link to="/umzugsofferten">
-            <Button size="lg" className="h-14 px-10 text-lg font-semibold shadow-copper hover:shadow-lift transition-all group">
-              <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
+            <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold shadow-copper hover:shadow-lift transition-all group">
+              <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform" />
               Jetzt starten
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
           <p className="mt-4 text-sm text-muted-foreground">

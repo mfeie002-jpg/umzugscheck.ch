@@ -91,22 +91,23 @@ export const PremiumProviderCTA = () => {
               </div>
               
               {/* CTA */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/fuer-firmen">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link to="/fuer-firmen" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
-                    className="h-14 px-8 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-copper group w-full sm:w-auto"
+                    className="h-12 sm:h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-copper group w-full"
                   >
-                    <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                    Partner werden
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform" />
+                    <span className="hidden sm:inline">Partner werden</span>
+                    <span className="sm:hidden">Partner</span>
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/provider-login">
+                <Link to="/provider-login" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="h-14 px-8 text-lg font-semibold bg-transparent border-2 border-background/30 text-background hover:bg-background/10 w-full sm:w-auto"
+                    className="h-12 sm:h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold bg-transparent border-2 border-background/30 text-background hover:bg-background/10 w-full"
                   >
                     Einloggen
                   </Button>

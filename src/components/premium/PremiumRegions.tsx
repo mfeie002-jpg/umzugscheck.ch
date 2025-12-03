@@ -157,9 +157,10 @@ export const PremiumRegions = () => {
           className="text-center"
         >
           <Link to="/regionen">
-            <Button variant="outline" size="lg" className="h-12 px-8 font-semibold border-2 group">
-              Alle Regionen anzeigen
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <Button variant="outline" size="lg" className="h-11 sm:h-12 px-5 sm:px-8 text-sm sm:text-base font-semibold border-2 group">
+              <span className="hidden sm:inline">Alle Regionen anzeigen</span>
+              <span className="sm:hidden">Alle Regionen</span>
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
         </motion.div>
