@@ -23,13 +23,18 @@ export const AICalculator = () => {
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  // Check if file is an image (more robust than just MIME type)
+  // Check if file is an image
   const isImageFile = (file: File): boolean => {
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif', '.bmp', '.tiff'];
     const fileName = file.name.toLowerCase();
-    const hasImageExtension = imageExtensions.some(ext => fileName.endsWith(ext));
-    const hasImageMimeType = file.type.startsWith('image/');
-    return hasImageExtension || hasImageMimeType;
+    return imageExtensions.some(ext => fileName.endsWith(ext)) || file.type.startsWith('image/');
+  };
+
+  // Check if file is a video
+  const isVideoFile = (file: File): boolean => {
+    const videoExtensions = ['.mp4', '.mov', '.avi', '.webm', '.mkv'];
+    const fileName = file.name.toLowerCase();
+    return videoExtensions.some(ext => fileName.endsWith(ext)) || file.type.startsWith('video/');
   };
 
   const analyzeWithAI = async () => {
@@ -45,25 +50,62 @@ export const AICalculator = () => {
     setIsAnalyzing(true);
     
     try {
-      // Filter for image files using robust check
       const imageFiles = files.filter(isImageFile).slice(0, 5);
-      
+      const videoFiles = files.filter(isVideoFile);
+
+      // If we have a video, analyze it first
+      if (videoFiles.length > 0) {
+        const videoFile = videoFiles[0]; // Use first video
+        const videoBase64 = await fileToBase64(videoFile);
+        
+        console.log('Sending video for analysis');
+        
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-moving-video`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({ video: videoBase64 }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(errorData.error || `HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.success && result.data) {
+          // Transform video analysis to match expected format
+          setAnalysis({
+            estimatedVolume: `${result.data.estimatedVolumeM3} m³`,
+            confidence: result.data.confidence,
+            rooms: [{ name: "Video-Analyse", items: Object.values(result.data.itemCounts || {}).reduce((a: number, b: any) => a + (b || 0), 0), volume: `${result.data.estimatedVolumeM3} m³` }],
+            largeItems: Object.entries(result.data.itemCounts || {}).filter(([_, v]) => (v as number) > 0).map(([k, v]) => `${v}x ${k}`),
+          });
+          toast({ title: "Video-Analyse abgeschlossen!", description: "Ihre Umzugsgrösse wurde geschätzt." });
+          return;
+        }
+        throw new Error(result.error || 'Video analysis failed');
+      }
+
+      // Fall back to image analysis
       if (imageFiles.length === 0) {
         toast({
           title: "Keine Bilder gefunden",
-          description: "Bitte laden Sie mindestens ein Foto hoch (JPG, PNG, HEIC). Videos werden noch nicht unterstützt.",
+          description: "Bitte laden Sie Fotos hoch (JPG, PNG, HEIC) oder ein Video (MP4, MOV).",
           variant: "destructive",
         });
         setIsAnalyzing(false);
         return;
       }
 
-      // Convert all images to base64
       const images = await Promise.all(imageFiles.map(file => fileToBase64(file)));
-      
       console.log('Sending', images.length, 'images for analysis');
 
-      // Call Lovable Cloud edge function for AI analysis
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-moving-photos`,
         {
