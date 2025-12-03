@@ -18,32 +18,32 @@
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
     
-    /* Premium Swiss Color Palette - Petrol/Teal + Warm Accent */
+    /* Premium Swiss Color Palette - Blue + Red Accent */
     --background: 0 0% 100%;
-    --foreground: 210 20% 15%; /* Dark navy text */
+    --foreground: 215 84% 25%; /* Dark blue text */
     
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 15%;
+    --card-foreground: 215 84% 25%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 15%;
+    --popover-foreground: 215 84% 25%;
     
-    /* Primary: Deep Petrol/Teal - Trust & Authority */
-    --primary: 195 70% 32%; /* Deep Petrol #1A6B7A */
+    /* Primary: Deep Blue - Trust & Authority #0d4a96 */
+    --primary: 215 84% 32%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 195 75% 25%; /* Darker Petrol */
+    --primary-hover: 215 84% 25%; /* Darker Blue */
     
-    /* Secondary: Warm Amber/Orange - CTAs & Actions */
-    --secondary: 32 95% 55%; /* Warm Amber #F59E0B */
+    /* Secondary: Bold Red - CTAs & Actions #e02020 */
+    --secondary: 0 80% 50%;
     --secondary-foreground: 0 0% 100%;
     
     /* Muted: Light grays */
     --muted: 210 20% 98%; /* Near white */
     --muted-foreground: 210 15% 45%; /* Medium gray */
     
-    /* Accent: Very light petrol tint */
-    --accent: 195 40% 96%; /* Light petrol wash */
-    --accent-foreground: 210 20% 15%;
+    /* Accent: Very light blue tint */
+    --accent: 215 40% 96%; /* Light blue wash */
+    --accent-foreground: 215 84% 25%;
     
     /* Swiss Gold for ratings/stars */
     --swiss-gold: 45 93% 47%;
@@ -54,29 +54,29 @@
     /* Borders & Inputs */
     --border: 210 20% 90%;
     --input: 210 20% 90%;
-    --ring: 195 70% 32%;
+    --ring: 215 84% 32%;
     
     /* Premium Border Radius */
     --radius: 1rem;
     
     /* Premium Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(195 40% 97%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-cta: linear-gradient(135deg, hsl(32 95% 55%) 0%, hsl(28 95% 50%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(215 40% 97%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(0 80% 50%) 0%, hsl(0 80% 45%) 100%);
     --gradient-elegant: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
     
     /* Premium Shadows */
     --shadow-premium: 0 14px 40px rgba(0, 0, 0, 0.06);
-    --shadow-cta: 0 10px 30px rgba(245, 158, 11, 0.3);
+    --shadow-cta: 0 10px 30px rgba(224, 32, 32, 0.3);
     --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.08);
     --shadow-lift: 0 20px 60px rgba(0, 0, 0, 0.10);
     
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 210 20% 15%;
-    --sidebar-primary: 195 70% 32%;
+    --sidebar-foreground: 215 84% 25%;
+    --sidebar-primary: 215 84% 32%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 20% 98%;
-    --sidebar-accent-foreground: 210 20% 15%;
+    --sidebar-accent-foreground: 215 84% 25%;
     --sidebar-border: 210 20% 90%;
   }
 
@@ -87,21 +87,21 @@
     --card-foreground: 210 20% 98%;
     --popover: 210 20% 16%;
     --popover-foreground: 210 20% 98%;
-    --primary: 195 60% 45%;
+    --primary: 215 70% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 32 95% 55%;
+    --secondary: 0 80% 55%;
     --secondary-foreground: 0 0% 100%;
     --muted: 210 15% 20%;
     --muted-foreground: 210 15% 70%;
-    --accent: 195 30% 20%;
+    --accent: 215 30% 20%;
     --accent-foreground: 210 20% 98%;
     --border: 210 15% 25%;
     --input: 210 15% 25%;
-    --ring: 195 60% 45%;
+    --ring: 215 70% 45%;
     
     --sidebar-background: 210 20% 12%;
     --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 195 60% 45%;
+    --sidebar-primary: 215 70% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 20% 16%;
     --sidebar-accent-foreground: 210 20% 98%;
@@ -180,7 +180,7 @@
   }
   
   .shadow-copper {
-    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 10px 30px rgba(224, 32, 32, 0.3);
   }
   
   .shadow-deep {
@@ -193,23 +193,23 @@
   
   /* Premium Color Utilities */
   .text-petrol {
-    color: hsl(195, 70%, 32%);
+    color: hsl(215, 84%, 32%);
   }
   
   .bg-petrol {
-    background-color: hsl(195, 70%, 32%);
+    background-color: hsl(215, 84%, 32%);
   }
   
   .border-petrol {
-    border-color: hsl(195, 70%, 32%);
+    border-color: hsl(215, 84%, 32%);
   }
   
   .text-amber {
-    color: hsl(32, 95%, 55%);
+    color: hsl(0, 80%, 50%);
   }
   
   .bg-amber {
-    background-color: hsl(32, 95%, 55%);
+    background-color: hsl(0, 80%, 50%);
   }
   
   .text-swiss-noir {
@@ -234,7 +234,7 @@
   }
   
   .gradient-cta {
-    background: linear-gradient(135deg, hsl(32 95% 55%) 0%, hsl(28 95% 50%) 100%);
+    background: linear-gradient(135deg, hsl(0 80% 50%) 0%, hsl(0 80% 45%) 100%);
   }
   
   /* Text Gradients */
@@ -244,12 +244,12 @@
   
   .text-gradient-petrol {
     @apply text-transparent bg-clip-text;
-    background-image: linear-gradient(135deg, hsl(195, 70%, 32%) 0%, hsl(195, 60%, 45%) 100%);
+    background-image: linear-gradient(135deg, hsl(215, 84%, 32%) 0%, hsl(215, 70%, 45%) 100%);
   }
   
   .text-gradient-premium {
     @apply text-transparent bg-clip-text;
-    background-image: linear-gradient(135deg, hsl(195, 70%, 32%) 0%, hsl(32, 95%, 55%) 100%);
+    background-image: linear-gradient(135deg, hsl(215, 84%, 32%) 0%, hsl(0, 80%, 50%) 100%);
   }
 
   /* Hover Effects */
@@ -275,7 +275,7 @@
   }
   
   .hover-glow:hover {
-    box-shadow: 0 0 30px rgba(198, 124, 62, 0.3);
+    box-shadow: 0 0 30px rgba(224, 32, 32, 0.3);
   }
 
   /* Layout Utilities */
@@ -365,10 +365,10 @@
 /* Subtle pulse animation for CTAs */
 @keyframes pulse-subtle {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 0 rgba(224, 32, 32, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+    box-shadow: 0 0 0 8px rgba(224, 32, 32, 0);
   }
 }
 
@@ -482,7 +482,7 @@
 }
 
 .text-gradient-animated {
-  background: linear-gradient(90deg, hsl(195, 70%, 32%), hsl(32, 95%, 55%), hsl(195, 70%, 32%));
+  background: linear-gradient(90deg, hsl(215, 84%, 32%), hsl(0, 80%, 50%), hsl(215, 84%, 32%));
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
