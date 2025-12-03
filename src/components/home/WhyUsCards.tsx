@@ -27,7 +27,7 @@ const features = [
 
 export const WhyUsCards = () => {
   return (
-    <section className="py-20 md:py-28 bg-white">
+    <section className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -35,10 +35,10 @@ export const WhyUsCards = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
             Warum umzugscheck.ch?
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto body-premium">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Ihre Vorteile auf einen Blick
           </p>
         </motion.div>
@@ -54,13 +54,13 @@ export const WhyUsCards = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <Card variant="elevated" className="h-full hover:shadow-strong hover:-translate-y-1 transition-all duration-300 text-center border-0 bg-white">
+                <Card className="h-full hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center border bg-card">
                   <CardContent className="p-4 md:p-6">
-                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-3 md:mb-5 shadow-medium">
-                      <Icon className="h-6 w-6 md:h-8 md:w-8 text-white" />
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary flex items-center justify-center mx-auto mb-3 md:mb-5 shadow-md">
+                      <Icon className="h-6 w-6 md:h-8 md:w-8 text-primary-foreground" />
                     </div>
-                    <h3 className="text-sm md:text-lg font-bold mb-2 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
-                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{feature.description}</p>
+                    <h3 className="text-sm md:text-lg font-bold mb-2 md:mb-3 text-foreground leading-tight">{feature.title}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
