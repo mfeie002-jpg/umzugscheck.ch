@@ -144,7 +144,7 @@ const App = () => (
                 <Navigation />
           <AIMovingAssistant />
           <ScrollToTopOnRoute />
-          <CustomerOnboarding />
+          
           <ProviderOnboarding />
           <ScrollToTop />
           <OfflineIndicator />
