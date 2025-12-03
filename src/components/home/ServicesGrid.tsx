@@ -1,73 +1,74 @@
-import { Truck, Sparkles, Trash2, Package, Home, Wrench, Building2, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useSwipeable } from "react-swipeable";
 
+// Service images
+import serviceUmzug from "@/assets/service-umzug.jpg";
+import serviceReinigung from "@/assets/service-reinigung-new.jpg";
+import serviceEntsorgung from "@/assets/service-entsorgung-new.jpg";
+import serviceLagerung from "@/assets/service-lagerung.jpg";
+import serviceMontage from "@/assets/service-montage.jpg";
+import serviceWohnungsabgabe from "@/assets/service-wohnungsabgabe.jpg";
+import serviceFirmenumzug from "@/assets/service-firmenumzug-new.jpg";
+import serviceInternational from "@/assets/service-international.jpg";
+
 const services = [
   {
-    icon: Truck,
     title: "Umzug",
     description: "Professionelle Umzüge mit erfahrenen Teams",
     price: "Ab CHF 450",
     link: "/dienstleistungen/umzug",
-    color: "primary"
+    image: serviceUmzug
   },
   {
-    icon: Sparkles,
     title: "Reinigung",
     description: "Abnahmegarantierte Endreinigung",
     price: "Ab CHF 280",
     link: "/dienstleistungen/reinigung",
-    color: "secondary"
+    image: serviceReinigung
   },
   {
-    icon: Trash2,
     title: "Entsorgung",
     description: "Fachgerechte Entsorgung von Möbeln",
     price: "Ab CHF 150",
     link: "/dienstleistungen/entsorgung",
-    color: "accent"
+    image: serviceEntsorgung
   },
   {
-    icon: Package,
     title: "Lagerung",
     description: "Sichere Lagerräume für Ihre Möbel",
     price: "Ab CHF 120/Monat",
     link: "/dienstleistungen/lagerung",
-    color: "success"
+    image: serviceLagerung
   },
   {
-    icon: Wrench,
     title: "Möbelmontage",
     description: "Auf- und Abbau von Möbeln",
     price: "Ab CHF 80",
     link: "/dienstleistungen/montage",
-    color: "happy-purple"
+    image: serviceMontage
   },
   {
-    icon: Home,
     title: "Wohnungsabgabe",
     description: "Komplette Abgabevorbereitung",
     price: "Ab CHF 350",
     link: "/dienstleistungen/wohnungsabgabe",
-    color: "happy-teal"
+    image: serviceWohnungsabgabe
   },
   {
-    icon: Building2,
     title: "Firmenumzug",
     description: "Business-Umzüge mit Minimalausfallzeit",
     price: "Auf Anfrage",
     link: "/dienstleistungen/firmenumzug",
-    color: "primary"
+    image: serviceFirmenumzug
   },
   {
-    icon: Globe,
     title: "International",
     description: "Weltweite Umzüge organisiert",
     price: "Auf Anfrage",
     link: "/dienstleistungen/international",
-    color: "secondary"
+    image: serviceInternational
   }
 ];
 
@@ -115,13 +116,22 @@ export const ServicesGrid = () => {
               transition={{ delay: index * 0.05 }}
             >
               <Link to={service.link}>
-                <div className="group bg-card rounded-2xl p-6 shadow-soft hover:shadow-strong transition-all h-full border border-border/50 hover:-translate-y-1">
-                  <div className={`w-14 h-14 rounded-xl bg-${service.color}/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <service.icon className={`h-7 w-7 text-${service.color}`} />
+                <div className="group bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-strong transition-all h-full border border-border/50 hover:-translate-y-1">
+                  <div className="relative h-40 overflow-hidden">
+                    <img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    <div className="absolute bottom-3 left-4 right-4">
+                      <h3 className="text-xl font-bold text-white drop-shadow-lg">{service.title}</h3>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-3">{service.description}</p>
-                  <div className="text-primary font-bold">{service.price}</div>
+                  <div className="p-5">
+                    <p className="text-muted-foreground text-sm mb-3">{service.description}</p>
+                    <div className="text-primary font-bold">{service.price}</div>
+                  </div>
                 </div>
               </Link>
             </motion.div>
@@ -137,13 +147,22 @@ export const ServicesGrid = () => {
         >
           {services.map((service, index) => (
             <Link key={index} to={service.link} className="flex-shrink-0 w-[280px] snap-start">
-              <div className="bg-card rounded-2xl p-6 shadow-soft border border-border/50 h-full">
-                <div className={`w-14 h-14 rounded-xl bg-${service.color}/10 flex items-center justify-center mb-4`}>
-                  <service.icon className={`h-7 w-7 text-${service.color}`} />
+              <div className="bg-card rounded-2xl overflow-hidden shadow-soft border border-border/50 h-full">
+                <div className="relative h-36 overflow-hidden">
+                  <img 
+                    src={service.image} 
+                    alt={service.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                  <div className="absolute bottom-3 left-4 right-4">
+                    <h3 className="text-lg font-bold text-white drop-shadow-lg">{service.title}</h3>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                <p className="text-muted-foreground text-sm mb-3">{service.description}</p>
-                <div className="text-primary font-bold">{service.price}</div>
+                <div className="p-4">
+                  <p className="text-muted-foreground text-sm mb-2">{service.description}</p>
+                  <div className="text-primary font-bold">{service.price}</div>
+                </div>
               </div>
             </Link>
           ))}
