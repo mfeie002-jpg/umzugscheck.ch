@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowRight, Star, Shield, CheckCircle, Users, Clock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 
 export const PremiumHeroSection = () => {
   const navigate = useNavigate();
@@ -23,11 +24,21 @@ export const PremiumHeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/30">
-      {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 opacity-40">
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroFamilyMoving})` }}
+      />
+      
+      {/* Gradient Overlay - makes image subtle */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80" />
+      
+      {/* Subtle Pattern Overlay */}
+      <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.15) 1px, transparent 0)`,
+          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.1) 1px, transparent 0)`,
           backgroundSize: '32px 32px'
         }} />
       </div>
