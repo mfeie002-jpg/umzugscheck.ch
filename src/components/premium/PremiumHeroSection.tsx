@@ -55,11 +55,19 @@ export const PremiumHeroSection = () => {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            {/* CHECK Badge - Brand Highlight */}
+            {/* CHECK Badge - Brand Highlight - Floating */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              animate={{ 
+                opacity: 1, 
+                scale: 1,
+                y: [0, -8, 0]
+              }}
+              transition={{ 
+                opacity: { delay: 0.2, duration: 0.5 },
+                scale: { delay: 0.2, duration: 0.5 },
+                y: { delay: 0.7, duration: 3, repeat: Infinity, ease: "easeInOut" }
+              }}
               className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-medium border border-border"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary">
@@ -123,11 +131,17 @@ export const PremiumHeroSection = () => {
             </div>
           </motion.div>
           
-          {/* Right Column - Quick Quote Form */}
+          {/* Right Column - Quick Quote Form - Floating */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            animate={{ 
+              opacity: 1, 
+              y: [0, -10, 0]
+            }}
+            transition={{ 
+              opacity: { duration: 0.6, delay: 0.2 },
+              y: { delay: 0.8, duration: 4, repeat: Infinity, ease: "easeInOut" }
+            }}
           >
             <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8">
               <div className="space-y-5">
