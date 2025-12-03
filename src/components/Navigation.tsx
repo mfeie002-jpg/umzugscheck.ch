@@ -67,8 +67,8 @@ export const Navigation = () => {
         }
       }}
       className={cn(
-        "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-accent",
-        activeDropdown === dropdown && "text-primary bg-accent"
+        "flex items-center gap-1 px-4 py-2 text-swiss-noir hover:text-swiss-noir/80 transition-colors font-medium rounded-lg hover:bg-accent",
+        activeDropdown === dropdown && "text-swiss-noir bg-accent"
       )}
       aria-expanded={activeDropdown === dropdown}
       aria-haspopup="true"
