@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
-import { Star, Quote, Image, CheckCircle2 } from "lucide-react";
+import { Star, Quote, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface Review {
   id: string;
@@ -29,7 +36,6 @@ const stats = [
   { value: "26", label: "Kantone abgedeckt" }
 ];
 
-// Fallback testimonials if no real reviews exist
 const fallbackTestimonials = [
   {
     id: "fallback-1",
@@ -37,7 +43,7 @@ const fallbackTestimonials = [
     location: "Zürich",
     type: "Privatumzug 3.5-Zimmer",
     rating: 5,
-    text: "Der Vergleich war unglaublich einfach. Innerhalb eines Tages hatte ich drei faire Offerten und konnte in Ruhe vergleichen. Absolut empfehlenswert!",
+    text: "Der Vergleich war unglaublich einfach. Innerhalb eines Tages hatte ich drei faire Offerten und konnte in Ruhe vergleichen.",
     verified: true,
     photos: []
   },
@@ -47,7 +53,7 @@ const fallbackTestimonials = [
     location: "Basel",
     type: "Firmenumzug 15 Arbeitsplätze",
     rating: 5,
-    text: "Als KMU-Inhaber war mir Zuverlässigkeit wichtig. Die vorgeschlagenen Firmen waren alle top – professionell, pünktlich und fair im Preis.",
+    text: "Als KMU-Inhaber war mir Zuverlässigkeit wichtig. Die vorgeschlagenen Firmen waren alle top – professionell und fair.",
     verified: true,
     photos: []
   },
@@ -57,7 +63,7 @@ const fallbackTestimonials = [
     location: "Bern",
     type: "Privatumzug 4.5-Zimmer",
     rating: 5,
-    text: "Endlich ein Portal, das hält, was es verspricht. Transparente Preise, keine nervigen Anrufe, nur seriöse Angebote. Genau so sollte es sein.",
+    text: "Endlich ein Portal, das hält, was es verspricht. Transparente Preise, keine nervigen Anrufe, nur seriöse Angebote.",
     verified: true,
     photos: []
   },
@@ -67,7 +73,7 @@ const fallbackTestimonials = [
     location: "Luzern",
     type: "Privatumzug 2.5-Zimmer",
     rating: 5,
-    text: "Ich war skeptisch, aber positiv überrascht. Die AI-Analyse hat genau die richtigen Firmen gefunden. Sehr moderne und effiziente Plattform.",
+    text: "Ich war skeptisch, aber positiv überrascht. Die AI-Analyse hat genau die richtigen Firmen gefunden.",
     verified: true,
     photos: []
   }
@@ -76,8 +82,8 @@ const fallbackTestimonials = [
 export const PremiumSocialProof = () => {
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [reviewCount, setReviewCount] = useState(2847);
   const [avgRating, setAvgRating] = useState(4.8);
+  const [reviewCount, setReviewCount] = useState(2847);
 
   useEffect(() => {
     fetchReviews();
@@ -85,17 +91,10 @@ export const PremiumSocialProof = () => {
 
   const fetchReviews = async () => {
     try {
-      // Fetch real reviews from database
       const { data, error } = await supabase
         .from("reviews")
         .select(`
-          id,
-          rating,
-          title,
-          comment,
-          photos,
-          verified,
-          created_at,
+          id, rating, title, comment, photos, verified, created_at,
           profiles:user_id(full_name),
           companies:company_id(name)
         `)
@@ -121,24 +120,17 @@ export const PremiumSocialProof = () => {
         setReviews(fallbackTestimonials);
       }
 
-      // Get review stats
       const { count } = await supabase
         .from("reviews")
         .select("*", { count: "exact", head: true });
       
-      if (count && count > 0) {
-        setReviewCount(count + 2800); // Add baseline
-      }
+      if (count && count > 0) setReviewCount(count + 2800);
 
-      const { data: avgData } = await supabase
-        .from("reviews")
-        .select("rating");
-      
+      const { data: avgData } = await supabase.from("reviews").select("rating");
       if (avgData && avgData.length > 0) {
         const avg = avgData.reduce((sum, r) => sum + r.rating, 0) / avgData.length;
         setAvgRating(Math.round(avg * 10) / 10);
       }
-
     } catch (error) {
       console.error("Error fetching reviews:", error);
       setReviews(fallbackTestimonials);
@@ -154,21 +146,69 @@ export const PremiumSocialProof = () => {
     { value: "26", label: "Kantone abgedeckt" }
   ];
 
+  const ReviewCard = ({ testimonial, idx }: { testimonial: any; idx: number }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: idx * 0.1 }}
+      className="bg-card rounded-2xl p-5 md:p-6 shadow-premium border border-border/50 hover:shadow-lift transition-shadow h-full"
+    >
+      <Quote className="h-6 w-6 md:h-8 md:w-8 text-primary/20 mb-3" />
+      <div className="flex gap-1 mb-3">
+        {[...Array(testimonial.rating)].map((_, i) => (
+          <Star key={i} className="h-3.5 w-3.5 md:h-4 md:w-4 fill-swiss-gold text-swiss-gold" />
+        ))}
+      </div>
+      <p className="text-foreground mb-4 leading-relaxed text-sm line-clamp-3">
+        "{testimonial.text}"
+      </p>
+      {testimonial.photos && testimonial.photos.length > 0 && (
+        <div className="flex gap-2 mb-3">
+          {testimonial.photos.slice(0, 2).map((photo: string, photoIdx: number) => (
+            <Dialog key={photoIdx}>
+              <DialogTrigger asChild>
+                <button className="relative w-10 h-10 rounded-lg overflow-hidden border border-border hover:opacity-80 transition-opacity">
+                  <img src={photo} alt={`Review photo ${photoIdx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl">
+                <img src={photo} alt={`Review photo ${photoIdx + 1}`} className="w-full h-auto rounded-lg" />
+              </DialogContent>
+            </Dialog>
+          ))}
+        </div>
+      )}
+      <div className="border-t border-border pt-3">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-foreground text-sm">{testimonial.name}</span>
+          {testimonial.verified && (
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-success/10 text-success">
+              <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" />
+              Verifiziert
+            </Badge>
+          )}
+        </div>
+        <div className="text-xs text-muted-foreground">{testimonial.location}</div>
+        <div className="text-xs text-primary mt-0.5">{testimonial.type}</div>
+      </div>
+    </motion.div>
+  );
+
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
+    <section className="py-12 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
         {/* Stats Row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10 md:mb-16"
         >
           {displayStats.map((stat, idx) => (
             <div key={idx} className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-foreground mb-1">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
+              <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">{stat.value}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
             </div>
           ))}
         </motion.div>
@@ -178,104 +218,59 @@ export const PremiumSocialProof = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3 md:mb-4">
             Das sagen unsere Kunden
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Tausende zufriedene Kunden haben mit Umzugscheck.ch den passenden Partner für ihren Umzug gefunden.
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            Tausende zufriedene Kunden haben mit Umzugscheck.ch den passenden Partner gefunden.
           </p>
         </motion.div>
         
-        {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {loading ? (
-            // Loading skeletons
-            [...Array(4)].map((_, idx) => (
-              <div key={idx} className="bg-card rounded-2xl p-6 shadow-premium border border-border/50">
-                <Skeleton className="h-8 w-8 mb-4" />
-                <Skeleton className="h-4 w-20 mb-4" />
-                <Skeleton className="h-20 w-full mb-6" />
+        {/* Mobile: Carousel / Desktop: Grid */}
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(4)].map((_, idx) => (
+              <div key={idx} className="bg-card rounded-2xl p-5 shadow-premium border border-border/50">
+                <Skeleton className="h-6 w-6 mb-3" />
+                <Skeleton className="h-4 w-20 mb-3" />
+                <Skeleton className="h-16 w-full mb-4" />
                 <Skeleton className="h-4 w-24 mb-2" />
                 <Skeleton className="h-3 w-16" />
               </div>
-            ))
-          ) : (
-            reviews.map((testimonial, idx) => (
-              <motion.div
-                key={testimonial.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-card rounded-2xl p-6 shadow-premium border border-border/50 hover:shadow-lift transition-shadow"
+            ))}
+          </div>
+        ) : (
+          <>
+            {/* Mobile Carousel */}
+            <div className="md:hidden">
+              <Carousel
+                opts={{ align: "start", loop: true }}
+                className="w-full"
               >
-                {/* Quote Icon */}
-                <Quote className="h-8 w-8 text-primary/20 mb-4" />
-                
-                {/* Stars */}
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-swiss-gold text-swiss-gold" />
+                <CarouselContent className="-ml-2">
+                  {reviews.map((testimonial, idx) => (
+                    <CarouselItem key={testimonial.id} className="pl-2 basis-[85%]">
+                      <ReviewCard testimonial={testimonial} idx={idx} />
+                    </CarouselItem>
                   ))}
+                </CarouselContent>
+                <div className="flex justify-center gap-2 mt-4">
+                  <CarouselPrevious className="static translate-y-0 h-8 w-8" />
+                  <CarouselNext className="static translate-y-0 h-8 w-8" />
                 </div>
-                
-                {/* Text */}
-                <p className="text-foreground mb-4 leading-relaxed text-sm line-clamp-4">
-                  "{testimonial.text}"
-                </p>
-
-                {/* Photos */}
-                {testimonial.photos && testimonial.photos.length > 0 && (
-                  <div className="flex gap-2 mb-4">
-                    {testimonial.photos.slice(0, 3).map((photo: string, photoIdx: number) => (
-                      <Dialog key={photoIdx}>
-                        <DialogTrigger asChild>
-                          <button className="relative w-12 h-12 rounded-lg overflow-hidden border border-border hover:opacity-80 transition-opacity">
-                            <img
-                              src={photo}
-                              alt={`Review photo ${photoIdx + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                            {testimonial.photos.length > 3 && photoIdx === 2 && (
-                              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                <span className="text-white text-xs font-medium">+{testimonial.photos.length - 3}</span>
-                              </div>
-                            )}
-                          </button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-3xl">
-                          <img
-                            src={photo}
-                            alt={`Review photo ${photoIdx + 1}`}
-                            className="w-full h-auto rounded-lg"
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    ))}
-                  </div>
-                )}
-                
-                {/* Author */}
-                <div className="border-t border-border pt-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-foreground">{testimonial.name}</span>
-                    {testimonial.verified && (
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-success/10 text-success">
-                        <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" />
-                        Verifiziert
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="text-sm text-muted-foreground">{testimonial.location}</div>
-                  <div className="text-xs text-primary mt-1">{testimonial.type}</div>
-                </div>
-              </motion.div>
-            ))
-          )}
-        </div>
+              </Carousel>
+            </div>
+            
+            {/* Desktop Grid */}
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {reviews.map((testimonial, idx) => (
+                <ReviewCard key={testimonial.id} testimonial={testimonial} idx={idx} />
+              ))}
+            </div>
+          </>
+        )}
         
         {/* Average Rating */}
         <motion.div
@@ -283,16 +278,16 @@ export const PremiumSocialProof = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-12 text-center"
+          className="mt-8 md:mt-12 text-center"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-card rounded-full border border-border shadow-sm">
-            <div className="flex gap-1">
+          <div className="inline-flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 bg-card rounded-full border border-border shadow-sm">
+            <div className="flex gap-0.5 md:gap-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-5 w-5 fill-swiss-gold text-swiss-gold" />
+                <Star key={i} className="h-4 w-4 md:h-5 md:w-5 fill-swiss-gold text-swiss-gold" />
               ))}
             </div>
-            <span className="font-semibold text-foreground">{avgRating} von 5</span>
-            <span className="text-muted-foreground">basierend auf {reviewCount.toLocaleString("de-CH")} Bewertungen</span>
+            <span className="font-semibold text-foreground text-sm md:text-base">{avgRating} von 5</span>
+            <span className="text-muted-foreground text-xs md:text-sm hidden sm:inline">basierend auf {reviewCount.toLocaleString("de-CH")} Bewertungen</span>
           </div>
         </motion.div>
       </div>
