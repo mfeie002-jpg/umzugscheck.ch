@@ -10,6 +10,7 @@ import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
 import logo from "@/assets/umzugscheck-logo.png";
+import logoNew from "@/assets/umzugscheck-logo-new.png";
 import { cn } from "@/lib/utils";
 
 type DropdownType = 'calculator' | 'companies' | 'services' | 'regions' | 'ratgeber' | 'provider' | null;
@@ -167,13 +168,18 @@ export const Navigation = () => {
             </Button>
           </div>
 
-          {/* CTA Button - Desktop */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* CTA Button & Logo - Desktop */}
+          <div className="hidden lg:flex items-center gap-4">
             <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold animate-pulse-subtle">
                 Offerten erhalten
               </Button>
             </Link>
+            <img 
+              src={logoNew} 
+              alt="Umzugscheck.ch" 
+              className="h-10 w-auto" 
+            />
           </div>
         </div>
 
