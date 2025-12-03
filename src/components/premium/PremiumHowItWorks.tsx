@@ -1,143 +1,117 @@
-import { Home, Search, PartyPopper, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import moversTeamImg from "@/assets/movers-team-working.jpg";
+import step1Img from "@/assets/step-1-form.jpg";
+import step2Img from "@/assets/step-2-analysis.jpg";
+import step3Img from "@/assets/step-3-choose.jpg";
 
 const steps = [
   {
-    number: "01",
-    icon: Home,
+    number: "1",
+    image: step1Img,
     title: "Umzugsdetails eingeben",
-    description: "Geben Sie in wenigen Schritten Ihre Umzugsdetails ein: Adressen, Wohnungsgrösse, gewünschte Services und Ihr Wunschdatum.",
-    highlight: "2 Minuten",
-    gradient: "from-primary to-primary-hover"
+    description: "Füllen Sie in nur 2 Minuten unser einfaches Formular aus: Von wo nach wo, Wohnungsgrösse und Ihr Wunschdatum.",
+    highlight: "Nur 2 Minuten",
   },
   {
-    number: "02",
-    icon: Search,
-    title: "AI-Analyse & passende Firmen",
-    description: "Unser intelligentes System analysiert Ihre Anforderungen und findet die bestpassenden, geprüften Umzugsfirmen in Ihrer Region.",
-    highlight: "200+ Firmen",
-    gradient: "from-primary to-primary/80"
+    number: "2",
+    image: step2Img,
+    title: "Wir checken für Sie",
+    description: "Unser intelligentes System analysiert 200+ geprüfte Umzugsfirmen und findet die besten Partner für Ihre Anforderungen.",
+    highlight: "200+ Firmen gecheckt",
   },
   {
-    number: "03",
-    icon: PartyPopper,
-    title: "Offerten vergleichen & wählen",
-    description: "Vergleichen Sie transparente Offerten, Kundenbewertungen und Leistungen – und wählen Sie die beste Firma für Ihren Umzug.",
+    number: "3",
+    image: step3Img,
+    title: "Vergleichen & sparen",
+    description: "Erhalten Sie transparente Offerten, vergleichen Sie Preise und Bewertungen – und sparen Sie bis zu 40%.",
     highlight: "Bis 40% sparen",
-    gradient: "from-secondary to-secondary/80"
   }
 ];
 
 export const PremiumHowItWorks = () => {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/30 overflow-hidden relative">
-      {/* Background Image - Subtle */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <img 
-          src={moversTeamImg} 
-          alt="" 
-          className="w-full h-full object-cover"
-          aria-hidden="true"
-        />
-      </div>
-      
-      <div className="container mx-auto px-4 relative">
+    <section className="py-20 md:py-32 bg-muted/30 overflow-hidden">
+      <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-16 md:mb-20"
         >
           <motion.span 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary font-semibold text-sm uppercase tracking-wider mb-4"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary/10 rounded-full text-primary font-semibold text-sm uppercase tracking-wider mb-6"
           >
-            <Sparkles className="h-4 w-4" />
+            <CheckCircle2 className="h-5 w-5" />
             So funktioniert's
           </motion.span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold text-swiss-noir mb-6">
             In 3 einfachen Schritten zum perfekten Umzug
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Kein Stress, keine endlosen Telefonate – unser System macht die Arbeit für Sie.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+            Wir <span className="font-bold text-primary">checken</span> für Sie – kein Stress, keine endlosen Telefonate.
           </p>
         </motion.div>
         
-        {/* Steps Grid */}
-        <div className="grid md:grid-cols-3 gap-8 md:gap-6 mb-16 relative">
-          {/* Animated Connector Line (Desktop) */}
-          <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-0.5">
-            <motion.div 
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
+        {/* Steps - Large Image Cards */}
+        <div className="grid md:grid-cols-3 gap-8 md:gap-10 mb-16">
+          {steps.map((step, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="h-full bg-gradient-to-r from-primary/20 via-primary to-primary/20 origin-left"
-            />
-          </div>
-          
-          {steps.map((step, idx) => {
-            const Icon = step.icon;
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.2 }}
-                className="relative group"
-              >
-                <div className="text-center">
-                  {/* Step Number with Pulse Ring */}
-                  <div className="relative inline-flex items-center justify-center w-28 h-28 mb-6">
-                    {/* Pulse Ring */}
-                    <motion.div
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0, 0.4] }}
-                      transition={{ duration: 2.5, repeat: Infinity, delay: idx * 0.4 }}
-                      className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${step.gradient} opacity-30`}
-                    />
-                    {/* Main Icon Box */}
-                    <div className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${step.gradient} shadow-xl flex items-center justify-center group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300`}>
-                      <Icon className="h-11 w-11 text-white drop-shadow-md" />
+              transition={{ duration: 0.6, delay: idx * 0.2 }}
+              className="group"
+            >
+              <div className="bg-white rounded-3xl overflow-hidden shadow-premium hover:shadow-deep transition-all duration-500 border border-border">
+                {/* Large Image */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img 
+                    src={step.image} 
+                    alt={step.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  {/* Step Number Overlay */}
+                  <div className="absolute top-4 left-4">
+                    <div className="w-14 h-14 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                      <span className="text-2xl font-bold text-primary">
+                        {step.number}
+                      </span>
                     </div>
-                    {/* Number Badge */}
-                    <motion.span 
-                      whileHover={{ scale: 1.1 }}
-                      className="absolute -top-2 -right-2 w-10 h-10 bg-white text-foreground border-2 border-border/20 rounded-full flex items-center justify-center text-sm font-bold shadow-lg cursor-default"
-                    >
-                      {step.number}
-                    </motion.span>
                   </div>
-                  
                   {/* Highlight Badge */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: idx * 0.2 + 0.3 }}
-                    className="inline-flex items-center px-3 py-1 bg-success/10 text-success text-xs font-semibold rounded-full mb-4"
-                  >
-                    {step.highlight}
-                  </motion.div>
-                  
-                  {/* Content */}
-                  <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                  <div className="absolute bottom-4 right-4">
+                    <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/95 backdrop-blur-sm rounded-full text-sm font-bold text-secondary shadow-lg">
+                      <CheckCircle2 className="h-4 w-4" />
+                      {step.highlight}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className="p-8">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                      Schritt {step.number}
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-swiss-noir mb-4 group-hover:text-primary transition-colors">
                     {step.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground text-lg leading-relaxed">
                     {step.description}
                   </p>
                 </div>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          ))}
         </div>
         
         {/* CTA */}
@@ -149,14 +123,14 @@ export const PremiumHowItWorks = () => {
           className="text-center"
         >
           <Link to="/umzugsofferten">
-            <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold shadow-cta hover:shadow-lift transition-all group">
-              <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform" />
-              Jetzt starten
-              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+            <Button size="lg" className="h-14 sm:h-16 px-8 sm:px-12 text-lg sm:text-xl font-semibold shadow-cta hover:shadow-lift transition-all group">
+              <CheckCircle2 className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
+              Jetzt checken lassen
+              <ArrowRight className="ml-2 h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Kostenlos & unverbindlich – dauert nur 2 Minuten
+          <p className="mt-5 text-base text-muted-foreground">
+            ✓ 100% kostenlos & unverbindlich – dauert nur 2 Minuten
           </p>
         </motion.div>
       </div>

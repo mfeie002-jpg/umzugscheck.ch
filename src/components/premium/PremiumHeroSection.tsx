@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Star, Shield, CheckCircle, Users, Clock, Sparkles } from "lucide-react";
+import { ArrowRight, Star, Shield, CheckCircle2, Users, Clock, Sparkles, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
@@ -55,11 +55,21 @@ export const PremiumHeroSection = () => {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            {/* Trust Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/15 border border-secondary/30 rounded-full text-sm text-secondary font-semibold">
-              <Shield className="h-4 w-4" />
-              <span>Schweizer Qualität seit 2020</span>
-            </div>
+            {/* CHECK Badge - Brand Highlight */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-premium border border-border"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary">
+                <Check className="h-6 w-6 text-white stroke-[3]" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Wir checken für Sie</p>
+                <p className="text-sm font-bold text-swiss-noir">200+ geprüfte Umzugsfirmen</p>
+              </div>
+            </motion.div>
             
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
@@ -67,26 +77,26 @@ export const PremiumHeroSection = () => {
               <span className="block text-primary mt-2">In wenigen Minuten.</span>
             </h1>
             
-            {/* Subheadline */}
+            {/* Subheadline with CHECK emphasis */}
             <p className="text-base sm:text-lg md:text-xl text-foreground/70 max-w-xl leading-relaxed">
-              Die intelligenteste Art, Ihren Umzug zu planen. AI-gestützte Analyse, 
-              geprüfte Schweizer Partner, transparente Offerten – kostenlos und unverbindlich.
+              Wir <span className="inline-flex items-center gap-1 text-secondary font-bold"><CheckCircle2 className="h-5 w-5" />checken</span> für Sie: 
+              AI-gestützte Analyse, geprüfte Schweizer Partner, transparente Offerten – kostenlos und unverbindlich.
             </p>
             
-            {/* Trust Metrics Row */}
+            {/* Trust Metrics Row with Checks */}
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
               <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+                <Star className="h-5 w-5 fill-swiss-gold text-swiss-gold" />
                 <span className="font-bold text-foreground">4.8/5</span>
                 <span className="text-foreground/60">Bewertung</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-secondary" />
+                <CheckCircle2 className="h-5 w-5 text-secondary" />
                 <span className="font-bold text-foreground">15'000+</span>
-                <span className="text-foreground/60">Umzüge</span>
+                <span className="text-foreground/60">Umzüge gecheckt</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-emerald-500" />
+                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
                 <span className="text-foreground/60">100% kostenlos</span>
               </div>
             </div>
@@ -100,7 +110,8 @@ export const PremiumHeroSection = () => {
             <div className="hidden lg:flex items-center gap-4 pt-2">
               <Link to="/umzugsofferten">
                 <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
-                  Offerten vergleichen
+                  <CheckCircle2 className="mr-2 h-5 w-5" />
+                  Jetzt checken lassen
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -120,7 +131,7 @@ export const PremiumHeroSection = () => {
           >
             <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8">
               <div className="space-y-5">
-                {/* Form Header */}
+                {/* Form Header with Check */}
                 <div className="text-center space-y-2">
                   <div className="inline-flex items-center gap-2 text-sm text-primary font-semibold">
                     <Clock className="h-4 w-4" />
@@ -179,21 +190,21 @@ export const PremiumHeroSection = () => {
                     size="lg" 
                     className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all animate-pulse-subtle group"
                   >
-                    <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform" />
-                    <span className="hidden sm:inline">Offerten vergleichen</span>
-                    <span className="sm:hidden">Vergleichen</span>
+                    <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className="hidden sm:inline">Jetzt checken lassen</span>
+                    <span className="sm:hidden">Checken</span>
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>
                 
-                {/* Trust Microcopy */}
+                {/* Trust Microcopy with Checks */}
                 <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-foreground/60">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle className="h-4 w-4 text-emerald-500" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                     Kostenlos
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle className="h-4 w-4 text-emerald-500" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                     Unverbindlich
                   </span>
                   <span className="flex items-center gap-1.5">
