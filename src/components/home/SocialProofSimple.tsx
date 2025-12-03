@@ -14,12 +14,12 @@ export const SocialProofSimple = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto"
+          className="grid grid-cols-3 gap-4 md:gap-8 mb-10 md:mb-16 max-w-6xl mx-auto"
         >
           {content.stats.map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">{stat.value}</div>
-              <p className="text-slate-600 font-medium">{stat.label}</p>
+              <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-blue-600 mb-1 md:mb-2">{stat.value}</div>
+              <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium">{stat.label}</p>
             </div>
           ))}
         </motion.div>
@@ -29,9 +29,9 @@ export const SocialProofSimple = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="overflow-x-auto pb-4"
+          className="overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0"
         >
-          <div className="flex gap-6 min-w-max md:grid md:grid-cols-3 md:min-w-0 max-w-6xl mx-auto">
+          <div className="flex gap-4 md:gap-6 min-w-max md:grid md:grid-cols-3 md:min-w-0 max-w-6xl mx-auto">
             {content.testimonials.slice(0, 3).map((testimonial, index) => (
               <motion.div
                 key={index}
@@ -39,10 +39,10 @@ export const SocialProofSimple = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="w-[300px] md:w-auto"
+                className="w-[260px] md:w-auto flex-shrink-0"
               >
                 <Card className="h-full bg-white border-slate-200 hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 md:p-6">
                     <div className="flex items-center gap-1 mb-3">
                       {[...Array(testimonial.rating)].map((_, i) => (
                         <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
