@@ -49,28 +49,28 @@ export const TopCompaniesCards = () => {
   const [activeFilter, setActiveFilter] = useState("quality");
 
   return (
-    <section className="py-20 md:py-28 bg-gradient-elegant">
+    <section className="py-12 md:py-28 bg-gradient-elegant">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
+          <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-4 text-slate-900 heading-premium">
             Top bewertete Umzugsfirmen
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-8 body-premium">
+          <p className="text-sm md:text-xl text-slate-600 max-w-2xl mx-auto mb-6 md:mb-8 body-premium">
             Geprüfte und versicherte Schweizer Partner
           </p>
 
           {/* Filter Chips */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12">
             {filterOptions.map((filter) => (
               <button
                 key={filter.value}
                 onClick={() => setActiveFilter(filter.value)}
-                className={`px-6 py-3 rounded-full font-bold text-sm transition-all duration-300 ${
+                className={`px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-xs md:text-sm transition-all duration-300 ${
                   activeFilter === filter.value
                     ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-medium scale-105"
                     : "bg-white text-slate-700 hover:bg-slate-100 shadow-soft hover:shadow-medium"
@@ -93,45 +93,45 @@ export const TopCompaniesCards = () => {
               transition={{ delay: index * 0.1 }}
             >
               <Card variant="elevated" className="overflow-hidden hover:shadow-strong hover:-translate-y-2 transition-all duration-300 group border-0 bg-white">
-                <div className="relative h-48 md:h-56 overflow-hidden">
+                <div className="relative h-40 md:h-56 overflow-hidden">
                   <img
                     src={company.image}
                     alt={company.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-white/95 text-slate-900 backdrop-blur-sm font-bold shadow-medium px-3 py-1.5">
+                  <div className="absolute top-3 md:top-4 right-3 md:right-4">
+                    <Badge className="bg-white/95 text-slate-900 backdrop-blur-sm font-bold shadow-medium px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm">
                       {company.priceLevel}
                     </Badge>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
                 
-                <CardContent className="p-5 md:p-6">
-                  <h3 className="text-lg md:text-xl font-bold mb-3 text-slate-900 group-hover:text-blue-600 transition-colors">{company.name}</h3>
+                <CardContent className="p-4 md:p-6">
+                  <h3 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-slate-900 group-hover:text-blue-600 transition-colors">{company.name}</h3>
                   
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-2 mb-3 md:mb-4">
                     <div className="flex items-center gap-1">
-                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                      <span className="font-bold text-lg text-slate-900">{company.rating}</span>
+                      <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+                      <span className="font-bold text-base md:text-lg text-slate-900">{company.rating}</span>
                     </div>
-                    <span className="text-sm text-slate-600">
+                    <span className="text-xs md:text-sm text-slate-600">
                       ({company.reviewCount} Bewertungen)
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-5">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2 mb-4 md:mb-5">
                     {company.badges.slice(0, 2).map((badge, i) => (
-                      <Badge key={i} variant="outline" className="text-xs font-semibold border-slate-300 bg-slate-50">
-                        {badge === "Geprüft" && <CheckCircle className="h-3 w-3 mr-1 text-green-600" />}
-                        {badge === "Versichert" && <Shield className="h-3 w-3 mr-1 text-blue-600" />}
-                        {badge.includes("Seit") && <Calendar className="h-3 w-3 mr-1 text-slate-600" />}
+                      <Badge key={i} variant="outline" className="text-[10px] md:text-xs font-semibold border-slate-300 bg-slate-50 px-1.5 md:px-2 py-0.5">
+                        {badge === "Geprüft" && <CheckCircle className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5 md:mr-1 text-green-600" />}
+                        {badge === "Versichert" && <Shield className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5 md:mr-1 text-blue-600" />}
+                        {badge.includes("Seit") && <Calendar className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5 md:mr-1 text-slate-600" />}
                         {badge}
                       </Badge>
                     ))}
                   </div>
 
-                  <Button className="w-full h-12 font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-medium hover:shadow-strong transition-all">
+                  <Button className="w-full h-10 md:h-12 font-bold text-sm md:text-base bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-medium hover:shadow-strong transition-all">
                     Offerte anfragen
                   </Button>
                 </CardContent>
@@ -145,12 +145,12 @@ export const TopCompaniesCards = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-8 md:mt-12"
         >
           <Link to="/umzugsfirmen-schweiz">
-            <Button variant="outline" size="lg" className="px-10 h-14 text-lg font-bold border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 shadow-soft hover:shadow-medium">
+            <Button variant="outline" size="lg" className="px-6 md:px-10 h-12 md:h-14 text-sm md:text-lg font-bold border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 shadow-soft hover:shadow-medium">
               Alle Umzugsfirmen anzeigen
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
             </Button>
           </Link>
         </motion.div>

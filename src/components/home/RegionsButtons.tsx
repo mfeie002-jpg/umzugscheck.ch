@@ -18,18 +18,18 @@ const mainRegions = [
 
 export const RegionsButtons = () => {
   return (
-    <section className="py-20 md:py-28 bg-white">
+    <section className="py-12 md:py-28 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
+          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-slate-900">
             Umzugsfirmen in Ihrer Region
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-sm md:text-xl text-slate-600 max-w-2xl mx-auto">
             Finden Sie geprüfte Firmen in allen Schweizer Kantonen
           </p>
         </motion.div>
@@ -38,16 +38,16 @@ export const RegionsButtons = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-3 max-w-6xl mx-auto"
+          className="flex flex-wrap justify-center gap-2 md:gap-3 max-w-6xl mx-auto"
         >
           {mainRegions.map((region, index) => (
             <Link key={index} to={region.link}>
               <Button 
                 variant="outline" 
-                size="lg" 
-                className="gap-2 h-12 px-6 border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-all font-semibold"
+                size="default" 
+                className="gap-1.5 md:gap-2 h-10 md:h-12 px-3 md:px-6 border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-all font-semibold text-sm md:text-base"
               >
-                <MapPin className="h-4 w-4" />
+                <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 {region.name}
               </Button>
             </Link>

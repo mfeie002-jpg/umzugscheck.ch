@@ -26,18 +26,18 @@ const faqs = [
 
 export const FAQCompact = () => {
   return (
-    <section className="py-20 md:py-28 bg-white">
+    <section className="py-12 md:py-28 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-slate-900 heading-premium">
+          <h2 className="text-2xl md:text-5xl font-bold mb-3 md:mb-4 text-slate-900 heading-premium">
             Häufige Fragen
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 body-premium">
+          <p className="text-sm md:text-xl text-slate-600 body-premium">
             Alles, was Sie über umzugscheck.ch wissen müssen
           </p>
         </motion.div>
@@ -48,13 +48,13 @@ export const FAQCompact = () => {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <Accordion type="single" collapsible className="w-full space-y-4">
+          <Accordion type="single" collapsible className="w-full space-y-3 md:space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="bg-gradient-elegant border-0 rounded-2xl px-6 shadow-medium hover:shadow-strong transition-shadow">
-                <AccordionTrigger className="text-left font-bold text-slate-900 hover:text-blue-600 py-6 text-base md:text-lg">
+              <AccordionItem key={index} value={`item-${index}`} className="bg-gradient-elegant border-0 rounded-xl md:rounded-2xl px-4 md:px-6 shadow-medium hover:shadow-strong transition-shadow">
+                <AccordionTrigger className="text-left font-bold text-slate-900 hover:text-blue-600 py-4 md:py-6 text-sm md:text-lg">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-slate-600 pb-6 leading-relaxed text-base">
+                <AccordionContent className="text-slate-600 pb-4 md:pb-6 leading-relaxed text-sm md:text-base">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
