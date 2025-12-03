@@ -9,7 +9,6 @@ import { Calculator as CalculatorIcon, Wrench, Sparkles } from "lucide-react";
 import { OtherCalculators } from "@/components/OtherCalculators";
 import { useSwipeable } from "react-swipeable";
 import { useState } from "react";
-import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 const SERVICE_SCHEMA = {
   "@context": "https://schema.org",
@@ -154,9 +153,6 @@ const Calculator = () => {
         {/* Other Calculators */}
         <OtherCalculators currentPath="/rechner" />
       </div>
-      
-      {/* PWA Install Prompt */}
-      <PWAInstallPrompt />
     </>
   );
 };
