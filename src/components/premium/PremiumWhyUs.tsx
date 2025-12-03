@@ -1,5 +1,6 @@
 import { Shield, Clock, Eye, Users, Headphones, Award, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import customerSupportImg from "@/assets/customer-support-woman.jpg";
 
 const usps = [
   {
@@ -64,36 +65,70 @@ export const PremiumWhyUs = () => {
           </p>
         </motion.div>
         
-        {/* USPs Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {usps.map((usp, idx) => {
-            const Icon = usp.icon;
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.08 }}
-                className="group bg-card rounded-2xl p-6 shadow-sm border border-border/50 hover:shadow-lift hover:border-primary/20 transition-all"
-              >
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <Icon className="h-7 w-7 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-foreground text-lg">{usp.title}</h3>
-                      <span className="flex-shrink-0 text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">
-                        {usp.stat}
-                      </span>
+        {/* Content Grid: USPs + Image */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* USPs - 2 columns on larger screens */}
+          <div className="lg:col-span-2 grid md:grid-cols-2 gap-6">
+            {usps.map((usp, idx) => {
+              const Icon = usp.icon;
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.08 }}
+                  className="group bg-card rounded-2xl p-6 shadow-sm border border-border/50 hover:shadow-lift hover:border-primary/20 transition-all"
+                >
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{usp.description}</p>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <h3 className="font-bold text-foreground">{usp.title}</h3>
+                        <span className="flex-shrink-0 text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                          {usp.stat}
+                        </span>
+                      </div>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{usp.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+          
+          {/* Image Column */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="hidden lg:block relative"
+          >
+            <div className="sticky top-24">
+              <div className="relative rounded-3xl overflow-hidden shadow-deep">
+                <img 
+                  src={customerSupportImg} 
+                  alt="Freundlicher Kundenservice" 
+                  className="w-full h-[500px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+                    <div className="flex items-center gap-3">
+                      <Headphones className="h-5 w-5 text-primary" />
+                      <div>
+                        <div className="font-semibold text-foreground text-sm">Persönlicher Support</div>
+                        <div className="text-xs text-muted-foreground">Mo-Fr 8:00-18:00 Uhr</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
+              </div>
+            </div>
+          </motion.div>
         </div>
         
         {/* Trust Footer */}

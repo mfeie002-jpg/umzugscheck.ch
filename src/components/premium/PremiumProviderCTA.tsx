@@ -2,6 +2,7 @@ import { Building2, TrendingUp, Users, ArrowRight, CheckCircle, Sparkles, Star }
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import moversTeamImg from "@/assets/movers-team-working.jpg";
 
 const benefits = [
   {
@@ -26,13 +27,13 @@ const stats = [
 
 export const PremiumProviderCTA = () => {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-br from-foreground via-foreground to-foreground/95 text-background relative overflow-hidden">
+    <section className="py-20 md:py-28 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-secondary/20 rounded-full blur-3xl" />
       
       {/* Grid Pattern */}
-      <div className="absolute inset-0 opacity-5" style={{
+      <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
         backgroundSize: '40px 40px'
       }} />
@@ -52,18 +53,18 @@ export const PremiumProviderCTA = () => {
                 initial={{ opacity: 0, y: -10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-background/10 border border-background/20 rounded-full text-sm font-medium mb-8"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full text-sm font-medium mb-8 text-white"
               >
                 <Building2 className="h-4 w-4" />
                 <span>Für Umzugsfirmen</span>
               </motion.div>
               
               {/* Header */}
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
                 Sie sind Umzugsfirma?
                 <span className="block text-primary mt-2">Werden Sie Partner.</span>
               </h2>
-              <p className="text-lg text-background/80 mb-8">
+              <p className="text-lg text-white/90 mb-8">
                 Schliessen Sie sich über 200 geprüften Schweizer Umzugsfirmen an und erhalten Sie 
                 qualifizierte Kundenanfragen direkt in Ihre Inbox.
               </p>
@@ -81,10 +82,10 @@ export const PremiumProviderCTA = () => {
                       transition={{ duration: 0.3, delay: idx * 0.1 }}
                       className="flex items-center gap-4"
                     >
-                      <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-lg bg-primary/30 flex items-center justify-center flex-shrink-0">
                         <Icon className="h-5 w-5 text-primary" />
                       </div>
-                      <span className="text-background/90">{benefit.text}</span>
+                      <span className="text-white">{benefit.text}</span>
                     </motion.div>
                   );
                 })}
@@ -107,7 +108,7 @@ export const PremiumProviderCTA = () => {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="h-12 sm:h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold bg-transparent border-2 border-background/30 text-background hover:bg-background/10 w-full"
+                    className="h-12 sm:h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold bg-transparent border-2 border-white/40 text-white hover:bg-white/10 w-full"
                   >
                     Einloggen
                   </Button>
@@ -115,7 +116,7 @@ export const PremiumProviderCTA = () => {
               </div>
             </motion.div>
             
-            {/* Right Content - Stats Card */}
+            {/* Right Content - Image + Stats Card */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -123,15 +124,25 @@ export const PremiumProviderCTA = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="relative"
             >
-              <div className="bg-background/10 backdrop-blur-sm rounded-3xl p-8 border border-background/20">
+              {/* Image */}
+              <div className="relative rounded-3xl overflow-hidden shadow-deep mb-6">
+                <img 
+                  src={moversTeamImg} 
+                  alt="Professionelle Umzugshelfer" 
+                  className="w-full h-[200px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-primary/30 flex items-center justify-center">
                     <Star className="h-6 w-6 text-primary fill-primary" />
                   </div>
                   <div>
-                    <div className="font-bold text-lg">Partner-Vorteile</div>
-                    <div className="text-sm text-background/60">Ihr Weg zu mehr Aufträgen</div>
+                    <div className="font-bold text-lg text-white">Partner-Vorteile</div>
+                    <div className="text-sm text-white/70">Ihr Weg zu mehr Aufträgen</div>
                   </div>
                 </div>
                 
@@ -144,10 +155,10 @@ export const PremiumProviderCTA = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: 0.3 + idx * 0.1 }}
-                      className="text-center p-4 bg-background/5 rounded-xl"
+                      className="text-center p-4 bg-white/10 rounded-xl"
                     >
                       <div className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
-                      <div className="text-xs text-background/60">{stat.label}</div>
+                      <div className="text-xs text-white/70">{stat.label}</div>
                     </motion.div>
                   ))}
                 </div>
@@ -168,8 +179,8 @@ export const PremiumProviderCTA = () => {
                       transition={{ duration: 0.2, delay: 0.5 + idx * 0.05 }}
                       className="flex items-center gap-3 text-sm"
                     >
-                      <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
-                      <span className="text-background/80">{feature}</span>
+                      <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                      <span className="text-white/90">{feature}</span>
                     </motion.div>
                   ))}
                 </div>
