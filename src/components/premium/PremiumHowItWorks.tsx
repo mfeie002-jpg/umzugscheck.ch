@@ -2,6 +2,7 @@ import { FileText, Cpu, CheckSquare, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import moversTeamImg from "@/assets/movers-team-working.jpg";
 
 const steps = [
   {
@@ -29,8 +30,18 @@ const steps = [
 
 export const PremiumHowItWorks = () => {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
-      <div className="container mx-auto px-4">
+    <section className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/30 overflow-hidden relative">
+      {/* Background Image - Subtle */}
+      <div className="absolute inset-0 opacity-[0.03]">
+        <img 
+          src={moversTeamImg} 
+          alt="" 
+          className="w-full h-full object-cover"
+          aria-hidden="true"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 relative">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -12,6 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import happyCoupleImg from "@/assets/happy-couple-moving.jpg";
 
 interface Review {
   id: string;
@@ -198,20 +199,68 @@ export const PremiumSocialProof = () => {
   return (
     <section className="py-12 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
-        {/* Stats Row */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10 md:mb-16"
-        >
-          {displayStats.map((stat, idx) => (
-            <div key={idx} className="text-center">
-              <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">{stat.value}</div>
-              <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
+        {/* Header with Image */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-10 md:mb-16">
+          {/* Left: Image */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative hidden lg:block"
+          >
+            <div className="relative rounded-3xl overflow-hidden shadow-deep">
+              <img 
+                src={happyCoupleImg} 
+                alt="Glückliche Kunden nach ihrem Umzug" 
+                className="w-full h-[400px] object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-swiss-gold text-swiss-gold" />
+                      ))}
+                    </div>
+                    <span className="font-semibold text-foreground">15'000+ zufriedene Kunden</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          ))}
-        </motion.div>
+          </motion.div>
+          
+          {/* Right: Stats */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+              Tausende Schweizer vertrauen uns
+            </h2>
+            <p className="text-muted-foreground text-lg mb-8">
+              Seit 2020 helfen wir Menschen dabei, den perfekten Umzugspartner zu finden – transparent, unabhängig und kostenlos.
+            </p>
+            <div className="grid grid-cols-2 gap-4 md:gap-6">
+              {displayStats.map((stat, idx) => (
+                <motion.div 
+                  key={idx} 
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="bg-card rounded-xl p-4 border border-border/50"
+                >
+                  <div className="text-2xl md:text-3xl font-bold text-primary mb-1">{stat.value}</div>
+                  <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
         
         {/* Section Header */}
         <motion.div
@@ -220,11 +269,11 @@ export const PremiumSocialProof = () => {
           viewport={{ once: true }}
           className="text-center mb-8 md:mb-12"
         >
-          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3 md:mb-4">
+          <h3 className="text-xl md:text-3xl font-bold text-foreground mb-3 md:mb-4">
             Das sagen unsere Kunden
-          </h2>
-          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Tausende zufriedene Kunden haben mit Umzugscheck.ch den passenden Partner gefunden.
+          </h3>
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
+            Echte Bewertungen von echten Kunden.
           </p>
         </motion.div>
         
