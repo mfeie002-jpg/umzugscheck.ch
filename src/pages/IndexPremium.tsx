@@ -16,9 +16,9 @@ import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
 
 // New logo options for preview
-import logoOption1 from "@/assets/logo-option-1.png";
-import logoOption2 from "@/assets/logo-option-2.png";
-import logoOption3 from "@/assets/logo-option-3.png";
+import logoUmzugscheck1 from "@/assets/logo-umzugscheck-1.png";
+import logoUmzugscheck2 from "@/assets/logo-umzugscheck-2.png";
+import logoUmzugscheck3 from "@/assets/logo-umzugscheck-3.png";
 
 const IndexPremium = () => {
   const faqItems = [
@@ -134,22 +134,22 @@ const IndexPremium = () => {
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center text-foreground mb-4">🎨 Neue Logo-Vorschläge</h2>
-            <p className="text-center text-muted-foreground mb-12">Wählen Sie Ihren Favoriten</p>
+            <p className="text-center text-muted-foreground mb-12">Wählen Sie Ihren Favoriten für "umzugscheck.ch"</p>
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoOption1} alt="Logo Option 1" className="h-32 w-auto mx-auto mb-4 object-contain" />
+                <img src={logoUmzugscheck1} alt="Logo Option 1" className="h-24 w-auto mx-auto mb-4 object-contain" />
                 <h3 className="font-bold text-lg text-foreground">Option 1</h3>
-                <p className="text-sm text-muted-foreground mt-2">Checkmark + Haus, Swiss Red</p>
+                <p className="text-sm text-muted-foreground mt-2">Haus + Checkmark, Swiss Red & Navy</p>
               </div>
               <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoOption2} alt="Logo Option 2" className="h-32 w-auto mx-auto mb-4 object-contain" />
+                <img src={logoUmzugscheck2} alt="Logo Option 2" className="h-24 w-auto mx-auto mb-4 object-contain" />
                 <h3 className="font-bold text-lg text-foreground">Option 2</h3>
-                <p className="text-sm text-muted-foreground mt-2">Pfeil/Bewegung, Orange & Navy</p>
+                <p className="text-sm text-muted-foreground mt-2">Pfeil-Dynamik, Navy & Orange</p>
               </div>
               <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoOption3} alt="Logo Option 3" className="h-32 w-auto mx-auto mb-4 object-contain" />
+                <img src={logoUmzugscheck3} alt="Logo Option 3" className="h-24 w-auto mx-auto mb-4 object-contain" />
                 <h3 className="font-bold text-lg text-foreground">Option 3</h3>
-                <p className="text-sm text-muted-foreground mt-2">Premium Badge, Navy & Gold</p>
+                <p className="text-sm text-muted-foreground mt-2">Premium Badge, Red & Gold</p>
               </div>
             </div>
           </div>
