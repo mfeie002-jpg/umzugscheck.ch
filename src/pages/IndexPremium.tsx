@@ -13,6 +13,12 @@ import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
+
+// Logo imports for preview
+import logoSwiss from "@/assets/logo-swiss-minimal.png";
+import logoTech from "@/assets/logo-modern-tech.png";
+import logoClassic from "@/assets/logo-classic-trust.png";
 
 const IndexPremium = () => {
   const faqItems = [
@@ -123,6 +129,34 @@ const IndexPremium = () => {
         
         {/* 3. How It Works - 3 Steps */}
         <PremiumHowItWorks />
+
+        {/* LOGO PREVIEW SECTION - Temporary for review */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center text-foreground mb-4">🎨 Logo-Vorschläge zur Auswahl</h2>
+            <p className="text-center text-muted-foreground mb-12">Wählen Sie Ihren bevorzugten Stil</p>
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              <div className="bg-background rounded-2xl p-8 shadow-sm border border-border text-center hover:shadow-lg transition-shadow">
+                <img src={logoSwiss} alt="Logo Swiss Minimal" className="h-28 w-auto mx-auto mb-4 object-contain" />
+                <h3 className="font-bold text-lg text-foreground">1. Minimalistisch Swiss</h3>
+                <p className="text-sm text-muted-foreground mt-2">Clean, geometrisch, Berge-Motiv, Rot-Weiss</p>
+              </div>
+              <div className="bg-background rounded-2xl p-8 shadow-sm border border-border text-center hover:shadow-lg transition-shadow">
+                <img src={logoTech} alt="Logo Modern Tech" className="h-28 w-auto mx-auto mb-4 object-contain" />
+                <h3 className="font-bold text-lg text-foreground">2. Modern Tech</h3>
+                <p className="text-sm text-muted-foreground mt-2">Gradient, dynamisch, AI/Digital-Touch</p>
+              </div>
+              <div className="bg-background rounded-2xl p-8 shadow-sm border border-border text-center hover:shadow-lg transition-shadow">
+                <img src={logoClassic} alt="Logo Classic Trust" className="h-28 w-auto mx-auto mb-4 object-contain" />
+                <h3 className="font-bold text-lg text-foreground">3. Vertrauenswürdig Classic</h3>
+                <p className="text-sm text-muted-foreground mt-2">Seriös, Schild-Symbol, Navy & Gold</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* COMPARISON SHOWCASE - All 4 Variants for review */}
+        <ComparisonShowcase variant="all" />
         
         {/* 4. AI Calculator Showcase */}
         <PremiumAIShowcase />
