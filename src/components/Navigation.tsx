@@ -89,7 +89,7 @@ export const Navigation = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-4 sm:ml-0"
+            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-6 sm:ml-0"
             aria-label="Zur Startseite von Umzugscheck.ch"
           >
             <img 
@@ -145,7 +145,7 @@ export const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button & CTA - Visible on Mobile */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-2 -mr-2 sm:mr-0">
             <Link to="/" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button 
                 size="sm"
