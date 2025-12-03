@@ -14,7 +14,7 @@ export const SimplifiedFooter = () => {
               <img 
                 src={logo}
                 alt="Umzugscheck.ch" 
-                className="h-8 brightness-0 invert"
+                className="h-10"
               />
             </Link>
             <p className="text-sm text-uc-footer-text/70">
