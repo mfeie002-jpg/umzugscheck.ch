@@ -9,6 +9,7 @@ import { ServicesDropdown } from "@/components/ServicesDropdown";
 import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
+import logo from "@/assets/logo.png";
 import { cn } from "@/lib/utils";
 
 type DropdownType = 'calculator' | 'companies' | 'services' | 'regions' | 'ratgeber' | 'provider' | null;
@@ -91,9 +92,11 @@ export const Navigation = () => {
             className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0"
             aria-label="Zur Startseite von Umzugscheck.ch"
           >
-            <span className="text-xl sm:text-2xl font-bold text-primary">
-              Umzugscheck<span className="text-secondary">.ch</span>
-            </span>
+            <img 
+              src={logo} 
+              alt="Umzugscheck.ch Logo" 
+              className="h-10 sm:h-12 md:h-14 w-auto" 
+            />
           </Link>
 
           {/* Desktop Navigation */}

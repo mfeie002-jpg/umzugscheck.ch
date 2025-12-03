@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export const EnhancedFooter = () => {
   const currentYear = new Date().getFullYear();
@@ -12,9 +13,11 @@ export const EnhancedFooter = () => {
           {/* Logo & Company Info */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-6" aria-label="Zur Startseite">
-              <span className="text-2xl font-bold text-foreground">
-                Umzugscheck<span className="text-secondary">.ch</span>
-              </span>
+              <img 
+                src={logo} 
+                alt="Umzugscheck.ch - Schweizer Umzugsvergleichsportal" 
+                className="h-10 w-auto"
+              />
             </Link>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed max-w-md">
               Die führende Vergleichsplattform für Umzüge in der Schweiz. 
