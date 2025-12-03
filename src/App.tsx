@@ -36,8 +36,6 @@ import { AIMovingAssistant } from "./components/AIMovingAssistant";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import { QuickActionBar } from "./components/QuickActionBar";
 import { StickyContactBar } from "./components/StickyContactBar";
-import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
-import { PushNotificationPrompt } from "./components/PushNotificationPrompt";
 import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
 import Index from "./pages/Index";
@@ -145,8 +143,6 @@ const App = () => (
               <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
           <AIMovingAssistant />
-          <PWAInstallPrompt />
-          <PushNotificationPrompt />
           <ScrollToTopOnRoute />
           <CustomerOnboarding />
           <ProviderOnboarding />
