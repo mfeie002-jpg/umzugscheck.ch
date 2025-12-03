@@ -304,6 +304,21 @@ const App = () => (
             {/* City + Service Combinations - Optimized */}
             <Route path="/:city/:service" element={<ServiceOptimized />} />
             
+            {/* Dienstleistungen Routes - Aliases */}
+            <Route path="/dienstleistungen" element={<ServicesOverview />} />
+            <Route path="/dienstleistungen/privatumzug" element={<PrivateMoving />} />
+            <Route path="/dienstleistungen/umzug" element={<PrivateMoving />} />
+            <Route path="/dienstleistungen/firmenumzug" element={<BusinessMoving />} />
+            <Route path="/dienstleistungen/reinigung" element={<CleaningService />} />
+            <Route path="/dienstleistungen/entsorgung" element={<DisposalService />} />
+            <Route path="/dienstleistungen/raeumung" element={<DisposalService />} />
+            <Route path="/dienstleistungen/lagerung" element={<StorageService />} />
+            <Route path="/dienstleistungen/moebellift" element={<FurnitureLift />} />
+            <Route path="/dienstleistungen/international" element={<InternationalMoving />} />
+            <Route path="/dienstleistungen/spezialtransport" element={<ServiceOptimized />} />
+            <Route path="/dienstleistungen/montage" element={<ServiceOptimized />} />
+            <Route path="/dienstleistungen/wohnungsabgabe" element={<ServiceOptimized />} />
+            
             <Route path="/preise" element={<Pricing />} />
             <Route path="/offerten" element={<OffertenOptimized />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
