@@ -1,19 +1,36 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Star, Shield, CheckCircle2, Users, Clock, Sparkles, Check } from "lucide-react";
+import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
+import { swissPostalCodes } from "@/lib/swiss-postal-codes";
+
+// Filter postal codes based on query
+const filterPostalCodes = (query: string) => {
+  if (!query || query.length < 2) return [];
+  const lowerQuery = query.toLowerCase();
+  return swissPostalCodes
+    .filter(entry => 
+      entry.code.includes(query) || 
+      entry.city.toLowerCase().includes(lowerQuery)
+    )
+    .slice(0, 100);
+};
 
 export const PremiumHeroSection = () => {
   const navigate = useNavigate();
   const [fromPostal, setFromPostal] = useState("");
   const [toPostal, setToPostal] = useState("");
   const [rooms, setRooms] = useState("");
+
+  // Memoize filtered results
+  const fromOptions = useMemo(() => filterPostalCodes(fromPostal), [fromPostal]);
+  const toOptions = useMemo(() => filterPostalCodes(toPostal), [toPostal]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,24 +179,38 @@ export const PremiumHeroSection = () => {
                     <Label htmlFor="from" className="text-foreground font-medium text-sm">Von (PLZ oder Ort)</Label>
                     <Input
                       id="from"
-                      placeholder="z.B. 8001 Zürich"
+                      list="from-options"
+                      placeholder="z.B. 8001 oder Zürich"
                       value={fromPostal}
                       onChange={(e) => setFromPostal(e.target.value)}
                       className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      autoComplete="off"
                       required
                     />
+                    <datalist id="from-options">
+                      {fromOptions.map((option) => (
+                        <option key={`from-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                      ))}
+                    </datalist>
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="to" className="text-foreground font-medium text-sm">Nach (PLZ oder Ort)</Label>
                     <Input
                       id="to"
-                      placeholder="z.B. 3011 Bern"
+                      list="to-options"
+                      placeholder="z.B. 3011 oder Bern"
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
                       className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      autoComplete="off"
                       required
                     />
+                    <datalist id="to-options">
+                      {toOptions.map((option) => (
+                        <option key={`to-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                      ))}
+                    </datalist>
                   </div>
                   
                   <div className="space-y-2">
