@@ -83,9 +83,9 @@ export const Navigation = () => {
   );
 
   return (
-    <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
+    <nav className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm" aria-label="Hauptnavigation">
       <div className="container mx-auto px-3 sm:px-4">
-        <div className="flex items-center justify-between h-16 sm:h-20 md:h-24">
+        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
           {/* Logo */}
           <Link 
             to="/" 
@@ -169,9 +169,9 @@ export const Navigation = () => {
 
           {/* CTA Button - Desktop */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link to="/" aria-label="Kostenlose Umzugsofferten vergleichen">
-              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold">
-                Offerten vergleichen
+            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
+              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold animate-pulse-subtle">
+                Offerten erhalten
               </Button>
             </Link>
           </div>

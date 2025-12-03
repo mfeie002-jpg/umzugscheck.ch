@@ -101,17 +101,18 @@ const IndexPremium = () => {
     <div className="min-h-screen bg-background">
       <ScrollProgress />
       <Helmet>
-        <title>Umzugsfirmen vergleichen Schweiz – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
+        <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
         <meta 
           name="description" 
-          content="Vergleichen Sie Schweizer Umzugsfirmen kostenlos. AI-gestützte Analyse, geprüfte Partner, transparente Preise. Jetzt unverbindlich bis zu 5 Offerten erhalten." 
+          content="Vergleichen Sie 200+ geprüfte Schweizer Umzugsfirmen kostenlos. KI-gestützte Preisanalyse, echte Bewertungen, bis zu 40% sparen. Jetzt unverbindlich bis zu 5 Offerten erhalten!" 
         />
-        <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, günstige Umzüge Schweiz" />
+        <meta name="keywords" content="Umzug Schweiz 2025, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten Rechner, günstige Umzugsfirma, beste Umzugsfirma Schweiz" />
         <link rel="canonical" href="https://umzugscheck.ch/" />
-        <meta property="og:title" content="Umzugsfirmen vergleichen – Kostenlos & unverbindlich | Umzugscheck.ch" />
-        <meta property="og:description" content="Die führende Schweizer Plattform für Umzugsvergleiche. AI-gestützt, transparent, vertrauenswürdig." />
+        <meta property="og:title" content="Umzugsfirmen vergleichen Schweiz – Die Nr. 1 Plattform | Umzugscheck.ch" />
+        <meta property="og:description" content="200+ geprüfte Umzugsfirmen. KI-Preisrechner. Echte Bewertungen. Bis zu 40% sparen!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/" />
+        <meta property="og:image" content="https://umzugscheck.ch/lovable-uploads/d4aa8c36-01f9-47b7-8e18-bd2a8e22467a.png" />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
       
