@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet";
 import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
 import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
@@ -98,6 +99,7 @@ const IndexPremium = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollProgress />
       <Helmet>
         <title>Umzugsfirmen vergleichen Schweiz – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
         <meta 
