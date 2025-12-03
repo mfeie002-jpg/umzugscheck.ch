@@ -8,12 +8,21 @@ Disallow: /auth
 Disallow: /anbieter/dashboard
 Disallow: /firmen-dashboard
 Disallow: /anbieter/profil
+Disallow: /provider/
 
 # Disallow API endpoints
 Disallow: /api/
 
+# Allow important bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 # Sitemap location
 Sitemap: https://umzugscheck.ch/sitemap.xml
 
-# Crawl delay
+# Crawl delay for other bots
+User-agent: *
 Crawl-delay: 1

@@ -30,10 +30,10 @@ interface Review {
 }
 
 const stats = [
-  { value: "15'000+", label: "Erfolgreiche Umzüge" },
-  { value: "4.8/5", label: "Durchschnittsbewertung" },
-  { value: "200+", label: "Geprüfte Partner" },
-  { value: "26", label: "Kantone abgedeckt" }
+  { value: "15'847", label: "Erfolgreiche Umzüge" },
+  { value: "4.8/5", label: "Kundenbewertung" },
+  { value: "247", label: "Geprüfte Partner" },
+  { value: "26", label: "Kantone" }
 ];
 
 const fallbackTestimonials = [
