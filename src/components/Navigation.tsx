@@ -67,8 +67,8 @@ export const Navigation = () => {
         }
       }}
       className={cn(
-        "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-secondary/50",
-        activeDropdown === dropdown && "text-primary bg-secondary/50"
+        "flex items-center gap-1 px-4 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-accent",
+        activeDropdown === dropdown && "text-primary bg-accent"
       )}
       aria-expanded={activeDropdown === dropdown}
       aria-haspopup="true"
@@ -149,7 +149,7 @@ export const Navigation = () => {
             <Link to="/" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button 
                 size="sm"
-                className="bg-destructive hover:bg-destructive/90 text-white shadow-sm font-bold text-xs sm:text-sm px-3 sm:px-4"
+                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold text-xs sm:text-sm px-3 sm:px-4"
               >
                 Offerten vergleichen
               </Button>
@@ -170,7 +170,7 @@ export const Navigation = () => {
           {/* CTA Button - Desktop */}
           <div className="hidden lg:flex items-center gap-3">
             <Link to="/" aria-label="Kostenlose Umzugsofferten vergleichen">
-              <Button className="bg-destructive hover:bg-destructive/90 text-white shadow-medium font-bold">
+              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold">
                 Offerten vergleichen
               </Button>
             </Link>

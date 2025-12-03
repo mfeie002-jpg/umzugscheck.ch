@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-medium shadow-soft",
+        default: "bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:shadow-lift shadow-cta",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-medium shadow-soft",
-        outline: "border border-input bg-background hover:bg-secondary hover:text-secondary-foreground hover:border-primary/30",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-soft",
-        ghost: "hover:bg-secondary hover:text-secondary-foreground",
+        outline: "border border-border bg-background hover:bg-accent hover:text-primary hover:border-primary/30",
+        secondary: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-medium shadow-soft",
+        ghost: "hover:bg-accent hover:text-primary",
         link: "text-primary underline-offset-4 hover:underline",
-        accent: "gradient-cta text-white hover:opacity-90 shadow-accent hover:shadow-hover",
-        cta: "gradient-cta text-white hover:opacity-90 hover:scale-[1.02] shadow-accent hover:shadow-hover",
-        premium: "bg-gradient-to-r from-primary via-primary to-accent text-white hover:opacity-95 hover:shadow-strong shadow-medium",
+        accent: "bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-cta hover:shadow-lift",
+        cta: "bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:scale-[1.02] shadow-cta hover:shadow-lift",
+        premium: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lift shadow-premium",
         success: "bg-green-600 text-white hover:bg-green-700 hover:shadow-medium shadow-soft",
-        warning: "bg-orange-500 text-white hover:bg-orange-600 hover:shadow-medium shadow-soft",
+        warning: "bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:shadow-medium shadow-soft",
       },
       size: {
         default: "h-10 px-4 py-2",
