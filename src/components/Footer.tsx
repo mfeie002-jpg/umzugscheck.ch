@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Twitter, Shield, Award, CheckCircle } from "lucide-react";
 import { Helmet } from "react-helmet";
 import logo from "@/assets/umzugscheck-logo.png";
 
@@ -43,6 +43,27 @@ export const Footer = () => {
           {JSON.stringify(ORGANIZATION_SCHEMA)}
         </script>
       </Helmet>
+      
+      {/* Trust Bar */}
+      <div className="border-b border-primary-foreground/10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-sm text-primary-foreground/80">
+            <span className="flex items-center gap-1.5">
+              <Shield className="h-4 w-4" />
+              SSL-verschlüsselt
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="h-4 w-4" />
+              DSGVO-konform
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Award className="h-4 w-4" />
+              Swiss Made
+            </span>
+          </div>
+        </div>
+      </div>
+      
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
           {/* Company Info */}
@@ -208,9 +229,45 @@ export const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-primary-foreground/20 pt-8 mt-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-            <p className="text-primary-foreground/70">© {currentYear} Umzugscheck.ch – Alle Rechte vorbehalten</p>
-            <div className="flex flex-wrap justify-center gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            {/* Copyright */}
+            <p className="text-primary-foreground/70 text-sm">
+              © {currentYear} Umzugscheck.ch – Alle Rechte vorbehalten
+            </p>
+            
+            {/* Social Icons */}
+            <div className="flex items-center gap-4">
+              <a 
+                href="https://facebook.com/umzugscheck" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a 
+                href="https://linkedin.com/company/umzugscheck" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+              <a 
+                href="https://instagram.com/umzugscheck" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-4 h-4" />
+              </a>
+            </div>
+            
+            {/* Legal Links */}
+            <div className="flex flex-wrap justify-center gap-6 text-sm">
               <Link to="/datenschutz" className="text-primary-foreground/80 hover:text-white transition-colors">
                 Datenschutz
               </Link>
