@@ -1,103 +1,68 @@
+import { Helmet } from "react-helmet";
 import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { RedesignHero } from "@/components/home/RedesignHero";
-import { SocialProofSimple } from "@/components/home/SocialProofSimple";
-import { RedesignHowItWorks } from "@/components/home/RedesignHowItWorks";
-import { AICalculatorShowcase } from "@/components/home/AICalculatorShowcase";
-import { ServicesGridCompact } from "@/components/home/ServicesGridCompact";
-import { TopCompaniesCards } from "@/components/home/TopCompaniesCards";
-import { CostExamplesCompact } from "@/components/home/CostExamplesCompact";
-import { WhyUsCards } from "@/components/home/WhyUsCards";
-import { FAQCompact } from "@/components/home/FAQCompact";
-import { RegionsButtons } from "@/components/home/RegionsButtons";
-import { ProviderCTA } from "@/components/home/ProviderCTA";
-import { EnhancedFooter } from "@/components/home/EnhancedFooter";
-import { Helmet } from "react-helmet";
-import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
+import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
+import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
+import { PremiumAIShowcase } from "@/components/premium/PremiumAIShowcase";
+import { PremiumServicesGrid } from "@/components/premium/PremiumServicesGrid";
+import { PremiumRegions } from "@/components/premium/PremiumRegions";
+import { PremiumCostExamples } from "@/components/premium/PremiumCostExamples";
+import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
+import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
+import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
 
 const Index = () => {
-  const faqData = [
-    {
-      question: "Wie funktioniert umzugscheck.ch?",
-      answer: "Geben Sie Ihre Umzugsdetails ein, erhalten Sie kostenlose Offerten von bis zu 5 geprüften Umzugsfirmen, vergleichen Sie Preise und Bewertungen, und wählen Sie die beste Firma für Ihren Umzug."
-    },
-    {
-      question: "Ist der Service wirklich kostenlos?",
-      answer: "Ja, umzugscheck.ch ist für Privatkunden 100% kostenlos und unverbindlich. Sie bezahlen nur die Umzugsfirma, die Sie beauftragen."
-    },
-    {
-      question: "Wie schnell erhalte ich Offerten?",
-      answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
-    },
-    {
-      question: "Sind die Umzugsfirmen geprüft?",
-      answer: "Ja, alle Umzugsfirmen auf umzugscheck.ch sind versichert, zertifiziert und wurden mehrfach überprüft. Nur seriöse Schweizer Anbieter."
-    },
-    {
-      question: "Kann ich kurzfristig umziehen?",
-      answer: "Ja, viele Umzugsfirmen bieten auch kurzfristige Termine an. Geben Sie einfach Ihr gewünschtes Datum ein und Sie sehen verfügbare Anbieter."
-    }
+  const faqItems = [
+    { question: "Wie funktioniert der Vergleich genau?", answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser AI-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten." },
+    { question: "Kostet mich der Service etwas?", answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen." },
+    { question: "Wie werden die Umzugsfirmen ausgewählt?", answer: "Alle Partner durchlaufen einen strengen Prüfprozess. Wir verifizieren Versicherungen, Bewilligungen, Kundenbewertungen und Qualitätsstandards." },
+    { question: "Wie schnell erhalte ich Angebote?", answer: "In der Regel erhalten Sie innerhalb von 24-48 Stunden mehrere Offerten von passenden Umzugsfirmen." },
+    { question: "Sind die Angebote verbindlich?", answer: "Die Offerten sind Richtangebote basierend auf Ihren Angaben. Nach einer Besichtigung erstellt die Firma ein verbindliches Angebot." },
+    { question: "Was passiert, wenn etwas beschädigt wird?", answer: "Alle unsere Partnerfirmen sind vollumfänglich versichert. Im unwahrscheinlichen Fall eines Schadens sind Sie geschützt." },
+    { question: "Kann ich auch Firmenumzüge vergleichen?", answer: "Ja, unser Service deckt sowohl Privatumzüge als auch Firmen- und Büroumzüge ab." },
+    { question: "In welchen Regionen ist der Service verfügbar?", answer: "Unser Service ist schweizweit verfügbar. Wir haben Partner in allen 26 Kantonen." }
   ];
 
-  const schemas = generatePageSchemas(
-    { type: 'home', url: 'https://www.umzugscheck.ch/' },
-    faqData
-  );
-  const schemaScript = generateSchemaScript(schemas);
+  const schemaOrg = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "Organization", "@id": "https://umzugscheck.ch/#organization", "name": "Umzugscheck.ch", "url": "https://umzugscheck.ch", "description": "Die führende Schweizer Plattform für den Vergleich von Umzugsfirmen.", "areaServed": "CH" },
+      { "@type": "WebSite", "@id": "https://umzugscheck.ch/#website", "url": "https://umzugscheck.ch", "name": "Umzugscheck.ch" },
+      { "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.question, "acceptedAnswer": { "@type": "Answer", "text": item.answer } })) },
+      { "@type": "AggregateRating", "itemReviewed": { "@type": "Organization", "name": "Umzugscheck.ch" }, "ratingValue": "4.8", "bestRating": "5", "ratingCount": "2847" }
+    ]
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Umzugsfirmen vergleichen & bis zu 40% sparen | umzugscheck.ch</title>
-        <meta name="description" content="Vergleichen Sie geprüfte Schweizer Umzugsfirmen kostenlos. In 2 Minuten bis zu 5 Angebote erhalten und bis zu 40% sparen. Über 25'000 erfolgreiche Umzüge." />
-        <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, günstige Umzüge" />
+        <title>Umzugsfirmen vergleichen Schweiz – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
+        <meta name="description" content="Vergleichen Sie Schweizer Umzugsfirmen kostenlos. AI-gestützte Analyse, geprüfte Partner, transparente Preise. Jetzt unverbindlich bis zu 5 Offerten erhalten." />
+        <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten" />
         <link rel="canonical" href="https://umzugscheck.ch/" />
-        <script type="application/ld+json">{schemaScript}</script>
+        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
       
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* 1. Hero - Centered with AI Calculator */}
-        <RedesignHero />
-        
-        {/* 2. Social Proof - Immediate Trust */}
-        <SocialProofSimple />
-        
-        {/* 3. How It Works - 3 Steps */}
-        <RedesignHowItWorks />
-        
-        {/* 4. AI Calculator Highlight */}
-        <AICalculatorShowcase />
-        
-        {/* 5. Services - 6 Cards */}
-        <ServicesGridCompact />
-        
-        {/* 6. Top Companies - 3 Cards with Filters */}
-        <TopCompaniesCards />
-        
-        {/* 7. Cost Examples - Ultra-Compact */}
-        <CostExamplesCompact />
-        
-        {/* 8. Why We're Better - 4 USPs */}
-        <WhyUsCards />
-        
-        {/* 9. FAQ - 5 Questions */}
-        <FAQCompact />
-        
-        {/* 10. Regions - Main Buttons */}
-        <RegionsButtons />
-        
-        {/* 11. For Companies - Mini Section */}
-        <ProviderCTA />
+        <PremiumHeroSection />
+        <PremiumSocialProof />
+        <PremiumHowItWorks />
+        <PremiumAIShowcase />
+        <PremiumServicesGrid />
+        <PremiumRegions />
+        <PremiumCostExamples />
+        <PremiumWhyUs />
+        <PremiumFAQ items={faqItems} />
+        <PremiumProviderCTA />
       </main>
 
-      <EnhancedFooter />
-      
-      {/* 12. Mobile Sticky CTA */}
-      <StickyMobileCTA text="Offerten vergleichen" link="/umzug-offerte" />
-      
+      <PremiumFooter />
+      <StickyMobileCTA text="Offerten vergleichen" link="/umzugsofferten" />
       <ScrollToTop />
     </div>
   );
