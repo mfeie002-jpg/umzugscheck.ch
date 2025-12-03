@@ -94,14 +94,14 @@ export default {
         },
         // Premium Swiss Colors
         petrol: {
-          DEFAULT: "hsl(195, 70%, 32%)",
-          light: "hsl(195, 40%, 96%)",
-          dark: "hsl(195, 75%, 25%)",
+          DEFAULT: "hsl(215, 84%, 32%)",
+          light: "hsl(215, 40%, 96%)",
+          dark: "hsl(215, 84%, 25%)",
         },
         amber: {
-          DEFAULT: "hsl(32, 95%, 55%)",
-          light: "hsl(32, 95%, 90%)",
-          dark: "hsl(28, 95%, 50%)",
+          DEFAULT: "hsl(0, 80%, 50%)",
+          light: "hsl(0, 80%, 90%)",
+          dark: "hsl(0, 80%, 45%)",
         },
         'swiss-noir': "hsl(210, 20%, 15%)",
         'swiss-gold': "hsl(45, 93%, 47%)",
@@ -126,8 +126,8 @@ export default {
       },
       boxShadow: {
         'premium': '0 14px 40px rgba(0, 0, 0, 0.06)',
-        'copper': '0 10px 30px rgba(245, 158, 11, 0.3)',
-        'cta': '0 10px 30px rgba(245, 158, 11, 0.3)',
+        'copper': '0 10px 30px rgba(224, 32, 32, 0.3)',
+        'cta': '0 10px 30px rgba(224, 32, 32, 0.3)',
         'deep': '0 30px 80px rgba(0, 0, 0, 0.08)',
         'lift': '0 20px 60px rgba(0, 0, 0, 0.10)',
       },
