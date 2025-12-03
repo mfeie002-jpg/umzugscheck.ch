@@ -173,10 +173,11 @@ export const PremiumCostExamples = () => {
           className="text-center"
         >
           <Link to="/umzugsrechner">
-            <Button size="lg" className="h-14 px-10 text-lg font-semibold shadow-copper hover:shadow-lift transition-all group">
-              <Calculator className="mr-2 h-5 w-5" />
-              Meine Umzugskosten berechnen
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <Button size="lg" className="h-12 sm:h-14 px-5 sm:px-10 text-sm sm:text-lg font-semibold shadow-copper hover:shadow-lift transition-all group">
+              <Calculator className="mr-1.5 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline">Meine Umzugskosten berechnen</span>
+              <span className="sm:hidden">Kosten berechnen</span>
+              <ArrowRight className="ml-1.5 sm:ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
           <p className="mt-4 text-sm text-muted-foreground">

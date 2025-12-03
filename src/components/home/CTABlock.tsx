@@ -40,21 +40,22 @@ export const CTABlock = ({
             {description}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Link to={buttonLink}>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-6">
+            <Link to={buttonLink} className="w-full sm:w-auto">
               <Button 
                 size="lg"
-                className="w-full sm:w-auto h-14 px-10 text-lg bg-white text-primary hover:bg-white/90 shadow-xl"
+                className="w-full sm:w-auto h-12 sm:h-14 px-5 sm:px-8 text-base sm:text-lg bg-white text-primary hover:bg-white/90 shadow-xl"
               >
-                {buttonText}
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <span className="hidden sm:inline">{buttonText}</span>
+                <span className="sm:hidden">Offerten starten</span>
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
-            <Link to="/rechner">
+            <Link to="/rechner" className="w-full sm:w-auto">
               <Button 
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto h-14 px-10 text-lg bg-transparent text-white border-2 border-white hover:bg-white/10"
+                className="w-full sm:w-auto h-12 sm:h-14 px-5 sm:px-8 text-base sm:text-lg bg-transparent text-white border-2 border-white hover:bg-white/10"
               >
                 Kosten berechnen
               </Button>

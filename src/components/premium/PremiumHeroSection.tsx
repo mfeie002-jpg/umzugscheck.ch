@@ -99,14 +99,14 @@ export const PremiumHeroSection = () => {
             {/* Desktop CTAs */}
             <div className="hidden lg:flex items-center gap-4 pt-2">
               <Link to="/umzugsofferten">
-                <Button size="lg" className="h-14 px-8 text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
-                  Jetzt Offerten vergleichen
+                <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                  Offerten vergleichen
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/umzugsrechner">
-                <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold border-2 hover:bg-primary/5">
-                  Umzugskosten berechnen
+                <Button size="lg" variant="outline" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold border-2 hover:bg-primary/5">
+                  Kosten berechnen
                 </Button>
               </Link>
             </div>
@@ -177,11 +177,12 @@ export const PremiumHeroSection = () => {
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="w-full h-14 text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all animate-pulse-subtle group"
+                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all animate-pulse-subtle group"
                   >
-                    <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                    Offerten vergleichen
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform" />
+                    <span className="hidden sm:inline">Offerten vergleichen</span>
+                    <span className="sm:hidden">Vergleichen</span>
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>
                 
@@ -206,8 +207,8 @@ export const PremiumHeroSection = () => {
             {/* Mobile CTAs */}
             <div className="flex flex-col gap-3 mt-6 lg:hidden">
               <Link to="/umzugsrechner" className="w-full">
-                <Button size="lg" variant="outline" className="w-full h-12 font-semibold border-2 hover:bg-primary/5">
-                  Umzugskosten berechnen
+                <Button size="lg" variant="outline" className="w-full h-11 text-sm font-semibold border-2 hover:bg-primary/5">
+                  Kosten berechnen
                 </Button>
               </Link>
             </div>

@@ -79,9 +79,10 @@ export const PremiumAIShowcase = () => {
             
             {/* CTA */}
             <Link to="/umzugsrechner">
-              <Button size="lg" className="h-14 px-8 text-lg font-semibold shadow-copper hover:shadow-lift transition-all">
-                Zum Preisrechner
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="lg" className="h-12 sm:h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold shadow-copper hover:shadow-lift transition-all">
+                <span className="hidden sm:inline">Zum Preisrechner</span>
+                <span className="sm:hidden">Rechner</span>
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
           </motion.div>
