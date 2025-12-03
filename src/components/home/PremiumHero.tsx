@@ -48,7 +48,7 @@ export const PremiumHero = () => {
             </h1>
 
             {/* Subline */}
-            <p className="text-base sm:text-premium-body lg:text-premium-body-lg text-platinum max-w-2xl break-words">
+            <p className="text-base sm:text-premium-body lg:text-premium-body-lg text-muted-foreground max-w-2xl break-words">
               AI-gestützte Schweizer Premium-Vergleiche.<br />
               Transparente Preise. Handverlesene Firmen.
             </p>
@@ -71,7 +71,7 @@ export const PremiumHero = () => {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-white rounded-2xl shadow-premium text-sm sm:text-base"
               >
-                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 <span className="font-semibold text-swiss-noir whitespace-nowrap">15'000+ Umzüge</span>
               </motion.div>
 
@@ -94,7 +94,7 @@ export const PremiumHero = () => {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="w-full sm:w-auto"
               >
-                <ButtonPremium size="default" variant="copper" asChild className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-14">
+                <ButtonPremium size="default" variant="default" asChild className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-14">
                   <Link to="/rechner">
                     Jetzt gratis Offerten vergleichen
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
@@ -108,7 +108,7 @@ export const PremiumHero = () => {
                 transition={{ delay: 0.7, duration: 0.6 }}
                 className="w-full sm:w-auto"
               >
-                <ButtonPremium size="default" variant="copper-outline" asChild className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-14">
+                <ButtonPremium size="default" variant="outline" asChild className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-14">
                   <Link to="/fuer-firmen">Für Umzugsfirmen</Link>
                 </ButtonPremium>
               </motion.div>
@@ -128,7 +128,7 @@ export const PremiumHero = () => {
                   <h3 className="text-premium-h3 text-swiss-noir mb-2">
                     AI-Umzugsrechner
                   </h3>
-                  <p className="text-platinum text-premium-small">
+                  <p className="text-muted-foreground text-premium-small">
                     Exklusiv, schnell, zuverlässig.
                   </p>
                 </div>
@@ -144,7 +144,7 @@ export const PremiumHero = () => {
                       placeholder="z.B. 8001 Zürich"
                       value={fromPostal}
                       onChange={(e) => setFromPostal(e.target.value)}
-                      className="w-full h-14 px-5 rounded-2xl border-2 border-border focus:border-copper focus:ring-2 focus:ring-copper/20 transition-all outline-none text-swiss-noir"
+                      className="w-full h-14 px-5 rounded-2xl border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none text-swiss-noir"
                     />
                   </div>
 
@@ -157,7 +157,7 @@ export const PremiumHero = () => {
                       placeholder="z.B. 3011 Bern"
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
-                      className="w-full h-14 px-5 rounded-2xl border-2 border-border focus:border-copper focus:ring-2 focus:ring-copper/20 transition-all outline-none text-swiss-noir"
+                      className="w-full h-14 px-5 rounded-2xl border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none text-swiss-noir"
                     />
                   </div>
 
@@ -165,21 +165,21 @@ export const PremiumHero = () => {
                     <label className="text-sm font-semibold text-swiss-noir mb-2 block">
                       3. Offerten erhalten
                     </label>
-                    <ButtonPremium className="w-full" size="lg" variant="copper" onClick={handleCalculate}>
+                    <ButtonPremium className="w-full" size="lg" variant="default" onClick={handleCalculate}>
                       Jetzt vergleichen
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </ButtonPremium>
                   </div>
                 </div>
 
-                <p className="text-sm text-center text-platinum">
+                <p className="text-sm text-center text-muted-foreground">
                   ✓ 100% kostenlos & unverbindlich
                 </p>
               </div>
             </div>
 
             {/* Decorative element */}
-            <div className="absolute -z-10 -top-4 -right-4 w-full h-full bg-copper/5 rounded-3xl"></div>
+            <div className="absolute -z-10 -top-4 -right-4 w-full h-full bg-primary/5 rounded-3xl"></div>
           </motion.div>
         </div>
       </div>

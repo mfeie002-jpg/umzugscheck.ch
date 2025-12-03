@@ -33,7 +33,7 @@ export const PremiumHowItWorks = () => {
           <h2 className="text-premium-h2 lg:text-premium-h2-lg text-swiss-noir mb-4">
             So funktioniert es
           </h2>
-          <p className="text-premium-body text-platinum max-w-2xl mx-auto">
+          <p className="text-premium-body text-muted-foreground max-w-2xl mx-auto">
             Drei einfache Schritte zu Ihrem perfekten Umzug
           </p>
         </motion.div>
@@ -52,12 +52,12 @@ export const PremiumHowItWorks = () => {
               >
                 <div className="bg-white rounded-3xl p-10 shadow-premium border border-border hover-lift">
                   {/* Icon */}
-                  <div className="w-16 h-16 rounded-2xl bg-cream-gold flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <Icon className="w-8 h-8 text-copper" />
+                  <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Icon className="w-8 h-8 text-primary" />
                   </div>
 
                   {/* Step Number */}
-                  <div className="text-sm font-bold text-copper mb-3">
+                  <div className="text-sm font-bold text-secondary mb-3">
                     Schritt {index + 1}
                   </div>
 
@@ -67,7 +67,7 @@ export const PremiumHowItWorks = () => {
                   </h3>
 
                   {/* Description */}
-                  <p className="text-premium-small text-platinum leading-relaxed">
+                  <p className="text-premium-small text-muted-foreground leading-relaxed">
                     {step.description}
                   </p>
                 </div>

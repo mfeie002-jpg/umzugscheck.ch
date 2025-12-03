@@ -32,9 +32,9 @@ export const PremiumHeroSection = () => {
         style={{ backgroundImage: `url(${heroFamilyMoving})` }}
       />
       
-      {/* Gradient Overlay - makes image subtle */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80" />
+      {/* Gradient Overlay - reduced to make image more visible */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
       
       {/* Subtle Pattern Overlay */}
       <div className="absolute inset-0 opacity-30">

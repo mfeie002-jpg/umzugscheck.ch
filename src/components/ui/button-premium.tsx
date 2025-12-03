@@ -8,20 +8,23 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary Copper Gold Button
-        copper: "bg-copper text-white shadow-copper hover:bg-copper-dark hover:shadow-lift hover:scale-105 active:scale-100",
+        // Primary Red Button (Main CTA)
+        default: "bg-secondary text-white shadow-cta hover:bg-secondary/90 hover:shadow-lift hover:scale-105 active:scale-100",
         
-        // Secondary Outline Copper
-        "copper-outline": "border-2 border-copper text-copper bg-transparent hover:bg-cream-gold hover:border-copper-dark hover:shadow-premium",
+        // Secondary Outline Red
+        outline: "border-2 border-secondary text-secondary bg-transparent hover:bg-secondary/10 hover:shadow-premium",
+        
+        // Primary Blue Button
+        primary: "bg-primary text-white shadow-premium hover:bg-primary-hover hover:shadow-lift hover:scale-105 active:scale-100",
         
         // Swiss Noir Premium
-        noir: "bg-swiss-noir text-white shadow-premium hover:bg-executive-graphite hover:shadow-lift",
+        noir: "bg-swiss-noir text-white shadow-premium hover:bg-swiss-noir/90 hover:shadow-lift",
         
         // Ghost Minimal
         ghost: "text-swiss-noir hover:bg-muted hover:text-foreground",
         
         // Link Style
-        link: "text-copper underline-offset-4 hover:underline hover:text-copper-dark",
+        link: "text-primary underline-offset-4 hover:underline hover:text-primary-hover",
       },
       size: {
         default: "h-14 px-8 py-4 text-lg",
@@ -31,7 +34,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "copper",
+      variant: "default",
       size: "default",
     },
   }
