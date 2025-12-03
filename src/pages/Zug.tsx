@@ -453,12 +453,12 @@ const Zug = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2">Zusatzservices</label>
+                        <label className="block text-sm font-medium mb-3">Zusatzservices</label>
                         <div className="grid grid-cols-2 gap-3">
                           {["Reinigung", "Entsorgung", "Möbellift", "Einlagerung"].map(service => (
-                            <label key={service} className="flex items-center space-x-2 cursor-pointer">
-                              <Checkbox id={service} />
-                              <span className="text-sm">{service}</span>
+                            <label key={service} className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                              <Checkbox id={service} className="h-5 w-5" />
+                              <span className="text-sm font-medium">{service}</span>
                             </label>
                           ))}
                         </div>
