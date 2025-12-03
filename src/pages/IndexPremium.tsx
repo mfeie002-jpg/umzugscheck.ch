@@ -15,11 +15,6 @@ import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 
 import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
 
-// New logo options for preview
-import logoUmzugscheck7 from "@/assets/logo-umzugscheck-7.png";
-import logoUmzugscheck8 from "@/assets/logo-umzugscheck-8.png";
-import logoUmzugscheck9 from "@/assets/logo-umzugscheck-9.png";
-
 const IndexPremium = () => {
   const faqItems = [
     {
@@ -129,31 +124,6 @@ const IndexPremium = () => {
         
         {/* 3. How It Works - 3 Steps */}
         <PremiumHowItWorks />
-
-        {/* NEW LOGO OPTIONS - Temporary for review */}
-        <section className="py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center text-foreground mb-4">🎨 Neue Logo-Vorschläge</h2>
-            <p className="text-center text-muted-foreground mb-12">Premium-Qualität mit Checkmark + Umzugs-Element</p>
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoUmzugscheck7} alt="Logo Option 7" className="h-24 w-auto mx-auto mb-4 object-contain" />
-                <h3 className="font-bold text-lg text-foreground">Option 7</h3>
-                <p className="text-sm text-muted-foreground mt-2">Umzugskarton + grüner Checkmark</p>
-              </div>
-              <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoUmzugscheck8} alt="Logo Option 8" className="h-24 w-auto mx-auto mb-4 object-contain" />
-                <h3 className="font-bold text-lg text-foreground">Option 8</h3>
-                <p className="text-sm text-muted-foreground mt-2">Haus-Icon mit Checkmark-Dach</p>
-              </div>
-              <div className="bg-background rounded-2xl p-8 shadow-sm border-2 border-border text-center hover:border-primary hover:shadow-lg transition-all cursor-pointer">
-                <img src={logoUmzugscheck9} alt="Logo Option 9" className="h-24 w-auto mx-auto mb-4 object-contain" />
-                <h3 className="font-bold text-lg text-foreground">Option 9</h3>
-                <p className="text-sm text-muted-foreground mt-2">Umzugswagen + Swiss Red Checkmark</p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* 4. Comparison Feature - Premium Showcase (Option 4) */}
         <ComparisonShowcase variant="premium" />
