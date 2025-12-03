@@ -92,20 +92,18 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        copper: {
-          DEFAULT: "hsl(0, 85%, 55%)",
-          dark: "hsl(0, 85%, 45%)",
+        // Premium Swiss Colors
+        petrol: {
+          DEFAULT: "hsl(195, 70%, 32%)",
+          light: "hsl(195, 40%, 96%)",
+          dark: "hsl(195, 75%, 25%)",
         },
-        'swiss-blue': {
-          DEFAULT: "hsl(210, 100%, 50%)",
-          light: "hsl(210, 100%, 95%)",
-          dark: "hsl(210, 100%, 40%)",
+        amber: {
+          DEFAULT: "hsl(32, 95%, 55%)",
+          light: "hsl(32, 95%, 90%)",
+          dark: "hsl(28, 95%, 50%)",
         },
-        'happy-teal': "hsl(180, 60%, 50%)",
-        'swiss-noir': "hsl(215, 25%, 13%)",
-        'executive-graphite': "hsl(220, 17%, 22%)",
-        'platinum-shadow': "hsl(218, 11%, 34%)",
-        'cream-gold': "hsl(38, 73%, 91%)",
+        'swiss-noir': "hsl(210, 20%, 15%)",
         'swiss-gold': "hsl(45, 93%, 47%)",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -128,7 +126,8 @@ export default {
       },
       boxShadow: {
         'premium': '0 14px 40px rgba(0, 0, 0, 0.06)',
-        'copper': '0 10px 30px rgba(230, 60, 60, 0.28)',
+        'copper': '0 10px 30px rgba(245, 158, 11, 0.3)',
+        'cta': '0 10px 30px rgba(245, 158, 11, 0.3)',
         'deep': '0 30px 80px rgba(0, 0, 0, 0.08)',
         'lift': '0 20px 60px rgba(0, 0, 0, 0.10)',
       },

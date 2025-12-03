@@ -18,95 +18,94 @@
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
     
-    /* Ultra-Premium Swiss Color Palette */
-    /* Primary Swiss Noir Tones */
+    /* Premium Swiss Color Palette - Petrol/Teal + Warm Accent */
     --background: 0 0% 100%;
-    --foreground: 215 25% 13%; /* #111827 Swiss Noir */
+    --foreground: 210 20% 15%; /* Dark navy text */
     
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 13%;
+    --card-foreground: 210 20% 15%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 13%;
+    --popover-foreground: 210 20% 15%;
     
-    /* Swiss Red - Primary Accent */
-    --primary: 0 85% 55%; /* Swiss Red */
+    /* Primary: Deep Petrol/Teal - Trust & Authority */
+    --primary: 195 70% 32%; /* Deep Petrol #1A6B7A */
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 0 85% 45%; /* Darker Red */
+    --primary-hover: 195 75% 25%; /* Darker Petrol */
     
-    /* Swiss Blue - Secondary */
-    --secondary: 210 100% 50%; /* Swiss Blue */
+    /* Secondary: Warm Amber/Orange - CTAs & Actions */
+    --secondary: 32 95% 55%; /* Warm Amber #F59E0B */
     --secondary-foreground: 0 0% 100%;
     
-    /* Platinum Shadow - Muted Elements */
-    --muted: 214 14% 98%; /* #F9FAFB */
-    --muted-foreground: 218 11% 34%; /* #374151 */
+    /* Muted: Light grays */
+    --muted: 210 20% 98%; /* Near white */
+    --muted-foreground: 210 15% 45%; /* Medium gray */
     
-    /* Soft Light Blue - Light Backgrounds */
-    --accent: 210 100% 95%; /* Light Blue */
-    --accent-foreground: 215 25% 13%;
+    /* Accent: Very light petrol tint */
+    --accent: 195 40% 96%; /* Light petrol wash */
+    --accent-foreground: 210 20% 15%;
     
-    /* Swiss Gold - Trust & Ratings */
-    --swiss-gold: 45 93% 47%; /* #EAB308 */
+    /* Swiss Gold for ratings/stars */
+    --swiss-gold: 45 93% 47%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    /* Ultra-fine Borders */
-    --border: 220 13% 91%; /* #E5E7EB */
-    --input: 220 13% 91%;
-    --ring: 29 62% 51%; /* Copper Gold */
+    /* Borders & Inputs */
+    --border: 210 20% 90%;
+    --input: 210 20% 90%;
+    --ring: 195 70% 32%;
     
-    /* Premium Border Radius - 24px */
-    --radius: 1.5rem;
+    /* Premium Border Radius */
+    --radius: 1rem;
     
     /* Premium Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(210 100% 95%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-red: linear-gradient(135deg, hsl(0 85% 55%) 0%, hsl(0 85% 45%) 100%);
-    --gradient-elegant: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(214 14% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(195 40% 97%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(32 95% 55%) 0%, hsl(28 95% 50%) 100%);
+    --gradient-elegant: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
     
     /* Premium Shadows */
     --shadow-premium: 0 14px 40px rgba(0, 0, 0, 0.06);
-    --shadow-red: 0 10px 30px rgba(230, 60, 60, 0.28);
+    --shadow-cta: 0 10px 30px rgba(245, 158, 11, 0.3);
     --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.08);
     --shadow-lift: 0 20px 60px rgba(0, 0, 0, 0.10);
     
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 215 25% 13%;
-    --sidebar-primary: 29 62% 51%;
+    --sidebar-foreground: 210 20% 15%;
+    --sidebar-primary: 195 70% 32%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 14% 98%;
-    --sidebar-accent-foreground: 215 25% 13%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-accent: 210 20% 98%;
+    --sidebar-accent-foreground: 210 20% 15%;
+    --sidebar-border: 210 20% 90%;
   }
 
   .dark {
-    --background: 215 25% 13%; /* Swiss Noir */
-    --foreground: 214 14% 98%;
-    --card: 220 17% 22%;
-    --card-foreground: 214 14% 98%;
-    --popover: 220 17% 22%;
-    --popover-foreground: 214 14% 98%;
-    --primary: 29 62% 51%;
+    --background: 210 20% 12%;
+    --foreground: 210 20% 98%;
+    --card: 210 20% 16%;
+    --card-foreground: 210 20% 98%;
+    --popover: 210 20% 16%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 195 60% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 218 11% 34%;
+    --secondary: 32 95% 55%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 218 11% 34%;
-    --muted-foreground: 214 14% 98%;
-    --accent: 218 11% 34%;
-    --accent-foreground: 214 14% 98%;
-    --border: 218 11% 34%;
-    --input: 218 11% 34%;
-    --ring: 29 62% 51%;
+    --muted: 210 15% 20%;
+    --muted-foreground: 210 15% 70%;
+    --accent: 195 30% 20%;
+    --accent-foreground: 210 20% 98%;
+    --border: 210 15% 25%;
+    --input: 210 15% 25%;
+    --ring: 195 60% 45%;
     
-    --sidebar-background: 215 25% 13%;
-    --sidebar-foreground: 214 14% 98%;
-    --sidebar-primary: 29 62% 51%;
+    --sidebar-background: 210 20% 12%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 195 60% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 17% 22%;
-    --sidebar-accent-foreground: 214 14% 98%;
-    --sidebar-border: 218 11% 34%;
+    --sidebar-accent: 210 20% 16%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 210 15% 25%;
   }
 }
 
@@ -176,8 +175,12 @@
     box-shadow: var(--shadow-premium);
   }
   
+  .shadow-cta {
+    box-shadow: var(--shadow-cta);
+  }
+  
   .shadow-copper {
-    box-shadow: var(--shadow-copper);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
   }
   
   .shadow-deep {
@@ -189,40 +192,36 @@
   }
   
   /* Premium Color Utilities */
-  .text-copper {
-    color: hsl(0, 85%, 55%);
+  .text-petrol {
+    color: hsl(195, 70%, 32%);
   }
   
-  .bg-copper {
-    background-color: hsl(0, 85%, 55%);
+  .bg-petrol {
+    background-color: hsl(195, 70%, 32%);
   }
   
-  .border-copper {
-    border-color: hsl(0, 85%, 55%);
+  .border-petrol {
+    border-color: hsl(195, 70%, 32%);
   }
   
-  .text-swiss-blue {
-    color: hsl(210, 100%, 50%);
+  .text-amber {
+    color: hsl(32, 95%, 55%);
   }
   
-  .bg-swiss-blue {
-    background-color: hsl(210, 100%, 50%);
+  .bg-amber {
+    background-color: hsl(32, 95%, 55%);
   }
   
   .text-swiss-noir {
-    color: hsl(215, 25%, 13%);
+    color: hsl(210, 20%, 15%);
   }
   
   .bg-swiss-noir {
-    background-color: hsl(215, 25%, 13%);
+    background-color: hsl(210, 20%, 15%);
   }
   
   .text-platinum {
-    color: hsl(218, 11%, 34%);
-  }
-  
-  .bg-cream-gold {
-    background-color: hsl(38, 73%, 91%);
+    color: hsl(210, 15%, 45%);
   }
   
   .text-swiss-gold {
@@ -235,7 +234,7 @@
   }
   
   .gradient-cta {
-    background: linear-gradient(135deg, hsl(0 85% 55%) 0%, hsl(0 85% 45%) 100%);
+    background: linear-gradient(135deg, hsl(32 95% 55%) 0%, hsl(28 95% 50%) 100%);
   }
   
   /* Text Gradients */
@@ -243,12 +242,14 @@
     @apply text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-hover;
   }
   
-  .text-gradient-blue {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600;
+  .text-gradient-petrol {
+    @apply text-transparent bg-clip-text;
+    background-image: linear-gradient(135deg, hsl(195, 70%, 32%) 0%, hsl(195, 60%, 45%) 100%);
   }
   
   .text-gradient-premium {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-primary-hover;
+    @apply text-transparent bg-clip-text;
+    background-image: linear-gradient(135deg, hsl(195, 70%, 32%) 0%, hsl(32, 95%, 55%) 100%);
   }
 
   /* Hover Effects */

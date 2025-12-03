@@ -2,96 +2,154 @@ import { Helmet } from "react-helmet";
 import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { PremiumHero } from "@/components/home/PremiumHero";
-import { PremiumHowItWorks } from "@/components/home/PremiumHowItWorks";
-import { PremiumAIShowcase } from "@/components/home/PremiumAIShowcase";
-import { PremiumServices } from "@/components/home/PremiumServices";
-import { SocialProofSimple } from "@/components/home/SocialProofSimple";
-import { TopCompaniesCards } from "@/components/home/TopCompaniesCards";
-import { CostExamplesCompact } from "@/components/home/CostExamplesCompact";
-import { WhyUsCards } from "@/components/home/WhyUsCards";
-import { FAQCompact } from "@/components/home/FAQCompact";
-import { RegionsButtons } from "@/components/home/RegionsButtons";
-import { ProviderCTA } from "@/components/home/ProviderCTA";
-import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
+import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
+import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
+import { PremiumAIShowcase } from "@/components/premium/PremiumAIShowcase";
+import { PremiumServicesGrid } from "@/components/premium/PremiumServicesGrid";
+import { PremiumRegions } from "@/components/premium/PremiumRegions";
+import { PremiumCostExamples } from "@/components/premium/PremiumCostExamples";
+import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
+import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
+import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
 
 const IndexPremium = () => {
-  const faqData = [
+  const faqItems = [
     {
-      question: "Wie funktioniert umzugscheck.ch?",
-      answer: "Geben Sie Ihre Umzugsdetails ein, erhalten Sie kostenlose Offerten von bis zu 5 geprüften Umzugsfirmen, vergleichen Sie Preise und Bewertungen, und wählen Sie die beste Firma für Ihren Umzug."
+      question: "Wie funktioniert der Vergleich genau?",
+      answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser AI-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen in Ihrer Region. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten zum Vergleichen."
     },
     {
-      question: "Ist der Service wirklich kostenlos?",
-      answer: "Ja, umzugscheck.ch ist für Privatkunden 100% kostenlos und unverbindlich. Sie bezahlen nur die Umzugsfirma, die Sie beauftragen."
+      question: "Kostet mich der Service etwas?",
+      answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen durch die Anfrage."
     },
     {
-      question: "Wie schnell erhalte ich Offerten?",
-      answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
+      question: "Wie werden die Umzugsfirmen ausgewählt?",
+      answer: "Alle Partner auf unserer Plattform durchlaufen einen strengen Prüfprozess. Wir verifizieren Versicherungen, Bewilligungen, Kundenbewertungen und Qualitätsstandards. Nur seriöse Schweizer Unternehmen werden aufgenommen."
     },
     {
-      question: "Sind die Umzugsfirmen geprüft?",
-      answer: "Ja, alle Partnerunternehmen durchlaufen einen strengen Qualifizierungsprozess und werden regelmäßig überprüft."
+      question: "Wie schnell erhalte ich Angebote?",
+      answer: "In der Regel erhalten Sie innerhalb von 24-48 Stunden mehrere Offerten von passenden Umzugsfirmen. Bei dringenden Anfragen kann es auch schneller gehen."
     },
     {
-      question: "Kann ich auch kurzfristig einen Umzug buchen?",
-      answer: "Ja, viele unserer Partner bieten auch kurzfristige Umzüge an. Geben Sie einfach Ihr gewünschtes Datum an."
+      question: "Sind die Angebote verbindlich?",
+      answer: "Die Offerten, die Sie erhalten, sind Richtangebote basierend auf Ihren Angaben. Nach einer Besichtigung oder detaillierten Abklärung erstellt die gewählte Firma ein verbindliches Angebot."
+    },
+    {
+      question: "Was passiert, wenn etwas beschädigt wird?",
+      answer: "Alle unsere Partnerfirmen sind vollumfänglich versichert. Im unwahrscheinlichen Fall eines Schadens sind Sie durch die Transportversicherung der Umzugsfirma geschützt. Wir arbeiten nur mit versicherten Partnern zusammen."
+    },
+    {
+      question: "Kann ich auch Firmenumzüge vergleichen?",
+      answer: "Ja, unser Service deckt sowohl Privatumzüge als auch Firmen- und Büroumzüge ab. Wir haben spezialisierte Partner für jeden Umzugstyp."
+    },
+    {
+      question: "In welchen Regionen ist der Service verfügbar?",
+      answer: "Unser Service ist schweizweit verfügbar. Wir haben Partner in allen 26 Kantonen und decken sowohl städtische als auch ländliche Gebiete ab."
     }
   ];
 
-  const schemas = generatePageSchemas(
-    { type: 'home', url: 'https://www.umzugscheck.ch/' },
-    faqData
-  );
-  const schemaScript = generateSchemaScript(schemas);
+  const schemaOrg = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://umzugscheck.ch/#organization",
+        "name": "Umzugscheck.ch",
+        "url": "https://umzugscheck.ch",
+        "logo": "https://umzugscheck.ch/logo.png",
+        "description": "Die führende Schweizer Plattform für den Vergleich von Umzugsfirmen.",
+        "areaServed": "CH",
+        "sameAs": []
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://umzugscheck.ch/#website",
+        "url": "https://umzugscheck.ch",
+        "name": "Umzugscheck.ch",
+        "publisher": { "@id": "https://umzugscheck.ch/#organization" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqItems.map(item => ({
+          "@type": "Question",
+          "name": item.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": item.answer
+          }
+        }))
+      },
+      {
+        "@type": "AggregateRating",
+        "itemReviewed": {
+          "@type": "Organization",
+          "name": "Umzugscheck.ch"
+        },
+        "ratingValue": "4.8",
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "2847"
+      }
+    ]
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Umzugscheck.ch - Der exklusivste Weg, Ihren Umzug zu planen</title>
-        <meta name="description" content="AI-gestützte Schweizer Premium-Vergleiche. Transparente Preise. Handverlesene Firmen. Der erste Schweizer AI-Umzugsrechner auf Premium-Niveau." />
-        <script type="application/ld+json">{schemaScript}</script>
+        <title>Umzugsfirmen vergleichen Schweiz – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
+        <meta 
+          name="description" 
+          content="Vergleichen Sie Schweizer Umzugsfirmen kostenlos. AI-gestützte Analyse, geprüfte Partner, transparente Preise. Jetzt unverbindlich bis zu 5 Offerten erhalten." 
+        />
+        <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, günstige Umzüge Schweiz" />
+        <link rel="canonical" href="https://umzugscheck.ch/" />
+        <meta property="og:title" content="Umzugsfirmen vergleichen – Kostenlos & unverbindlich | Umzugscheck.ch" />
+        <meta property="og:description" content="Die führende Schweizer Plattform für Umzugsvergleiche. AI-gestützt, transparent, vertrauenswürdig." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://umzugscheck.ch/" />
+        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
       
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* 1. Hero - Ultra Premium with AI Calculator */}
-        <PremiumHero />
+        {/* 1. Hero Section */}
+        <PremiumHeroSection />
         
-        {/* 2. Social Proof - Immediate Trust */}
-        <SocialProofSimple />
+        {/* 2. Social Proof & Testimonials */}
+        <PremiumSocialProof />
         
-        {/* 3. How It Works - 3 Premium Steps */}
+        {/* 3. How It Works - 3 Steps */}
         <PremiumHowItWorks />
         
-        {/* 4. AI Calculator Highlight */}
+        {/* 4. AI Calculator Showcase */}
         <PremiumAIShowcase />
         
-        {/* 5. Premium Services - 6 Cards */}
-        <PremiumServices />
+        {/* 5. Services Grid */}
+        <PremiumServicesGrid />
         
-        {/* 6. Top Companies - Handverlesen */}
-        <TopCompaniesCards />
+        {/* 6. Regions */}
+        <PremiumRegions />
         
-        {/* 7. Cost Examples - Ultra-Compact */}
-        <CostExamplesCompact />
+        {/* 7. Cost Examples */}
+        <PremiumCostExamples />
         
-        {/* 8. Why We're Better - 4 USPs */}
-        <WhyUsCards />
+        {/* 8. Why Us / USPs */}
+        <PremiumWhyUs />
         
-        {/* 9. FAQ - 5 Questions */}
-        <FAQCompact />
+        {/* 9. FAQ */}
+        <PremiumFAQ items={faqItems} />
         
-        {/* 10. Regions - Main Buttons */}
-        <RegionsButtons />
-        
-        {/* 11. For Companies - Premium CTA */}
-        <ProviderCTA />
+        {/* 10. Provider CTA */}
+        <PremiumProviderCTA />
       </main>
+
+      <PremiumFooter />
       
-      {/* 12. Mobile Sticky CTA */}
-      <StickyMobileCTA text="Gratis Premium-Angebote erhalten" />
+      {/* Mobile Sticky CTA */}
+      <StickyMobileCTA text="Offerten vergleichen" link="/umzugsofferten" />
       
       <ScrollToTop />
     </div>
