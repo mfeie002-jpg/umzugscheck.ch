@@ -11,3 +11,7 @@ export { TouchRipple } from './TouchRipple';
 export { SafeAreaView } from './SafeAreaView';
 export { MobileOptimizedInput } from './MobileOptimizedInput';
 export { SwipeToAction } from './SwipeToAction';
+export { VoiceInputButton } from './VoiceInputButton';
+export { InstallPWABanner } from './InstallPWABanner';
+export { ShareButton } from './ShareButton';
+export { NotificationPermissionBanner } from './NotificationPermissionBanner';
