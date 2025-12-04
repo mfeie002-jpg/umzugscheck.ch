@@ -1,4 +1,4 @@
-import { EnhancedFooter } from "@/components/home/EnhancedFooter";
+
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -48,7 +48,7 @@ const ServicePlaceholder = ({ serviceName, slug, description }: ServicePlacehold
         </section>
       </main>
 
-      <EnhancedFooter />
+      
     </div>
   );
 };

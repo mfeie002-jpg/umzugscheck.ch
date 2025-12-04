@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -143,7 +143,6 @@ const City = () => {
             </Link>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -476,7 +475,7 @@ const City = () => {
         </section>
       </main>
 
-      <Footer />
+      
     </div>
   );
 };

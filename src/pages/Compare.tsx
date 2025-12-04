@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { motion } from "framer-motion";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -435,7 +435,7 @@ const Compare = () => {
         </section>
       </main>
 
-      <SimplifiedFooter />
+      
       <StickyMobileCTA />
     </div>
     </>

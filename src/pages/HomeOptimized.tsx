@@ -10,7 +10,7 @@ import { HowItWorksSimple } from "@/components/home/HowItWorksSimple";
 import { SocialProofSimple } from "@/components/home/SocialProofSimple";
 import { GradientCTA } from "@/components/home/GradientCTA";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { initPerformanceOptimizations } from "@/lib/performance";
@@ -161,8 +161,6 @@ export default function HomeOptimized() {
         </section>
       </ScrollReveal>
 
-      {/* Footer */}
-      <SimplifiedFooter />
 
       {/* Sticky Mobile CTA */}
       <StickyMobileCTA />

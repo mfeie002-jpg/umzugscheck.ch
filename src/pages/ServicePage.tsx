@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Clock, Award, CheckCircle2, ArrowRight, Truck, Sparkles, Package, Building2, Home, Recycle } from "lucide-react";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
@@ -460,7 +460,7 @@ const ServicePage = () => {
         </section>
       </main>
 
-      <SimplifiedFooter />
+      
       <StickyMobileCTA />
     </div>
   );

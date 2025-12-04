@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, CheckCircle2, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -278,7 +278,7 @@ export default function CityOptimized() {
       {/* Internal Links */}
       <InternalLinks type="city" currentCity={citySlug} />
 
-      <SimplifiedFooter />
+      
       <StickyMobileCTA />
     </div>
   );

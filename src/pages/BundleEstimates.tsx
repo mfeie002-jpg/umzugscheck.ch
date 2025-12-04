@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+
 import { Loader2, Package, Plus, ArrowRight, X } from "lucide-react";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/pricing";
@@ -216,7 +216,7 @@ export default function BundleEstimates() {
         </div>
       </main>
 
-      <Footer />
+      
     </div>
   );
 }

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ENHANCED_COMPANIES } from "@/data/enhanced-companies";
-import { Footer } from "@/components/Footer";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { generatePageSchemas } from "@/lib/schema-markup";
 import { motion, AnimatePresence } from "framer-motion";
@@ -901,7 +901,7 @@ export default function Umzugsofferten() {
           </Button>
         </div>
 
-        <Footer />
+        
         <StickyMobileCTA />
       </div>
     </>

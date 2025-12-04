@@ -1,4 +1,4 @@
-import { Footer } from "@/components/Footer";
+
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
@@ -289,7 +289,7 @@ const Contact = () => {
           </section>
         </main>
 
-        <Footer />
+        
       </div>
     </>
   );

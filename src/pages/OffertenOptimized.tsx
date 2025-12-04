@@ -3,7 +3,7 @@ import { CheckCircle2, Shield, Clock, TrendingDown, ArrowRight, Star, MapPin } f
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { motion } from "framer-motion";
@@ -280,7 +280,7 @@ export default function OffertenOptimized() {
         </section>
       </main>
 
-      <SimplifiedFooter />
+      
       <StickyMobileCTA />
     </div>
   );

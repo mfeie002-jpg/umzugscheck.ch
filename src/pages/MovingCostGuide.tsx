@@ -1,5 +1,5 @@
 import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+
 import { Breadcrumbs, BreadcrumbItem } from "@/components/Breadcrumbs";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -371,7 +371,7 @@ const MovingCostGuide = () => {
         </ScrollReveal>
       </main>
 
-        <Footer />
+        
       </div>
     </>
   );

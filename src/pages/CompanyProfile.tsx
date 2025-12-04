@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -32,7 +32,6 @@ export default function CompanyProfile() {
             </Link>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -309,7 +308,7 @@ export default function CompanyProfile() {
           </section>
         </main>
 
-        <Footer />
+        
       </div>
     </>
   );

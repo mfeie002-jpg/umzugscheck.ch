@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Truck, Sparkles, Package, Building2, Recycle, CheckCircle2 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -296,7 +296,7 @@ export default function ServiceOptimized() {
       {/* Internal Links */}
       <InternalLinks type="service" currentService={serviceKey} />
 
-      <SimplifiedFooter />
+      
       <StickyMobileCTA />
     </div>
   );
