@@ -18,3 +18,4 @@ export { CantonTestimonials } from './CantonTestimonials';
 export { CantonRelatedServices } from './CantonRelatedServices';
 export { CantonPartnersSection } from './CantonPartnersSection';
 export { CantonCompanyFilters } from './CantonCompanyFilters';
+export { CantonPriceCalculatorMini } from './CantonPriceCalculatorMini';

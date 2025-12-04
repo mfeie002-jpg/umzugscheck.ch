@@ -20,3 +20,9 @@ export { Schaffhausen } from './Schaffhausen';
 export { Appenzell } from './Appenzell';
 export { Neuchatel } from './Neuchatel';
 export { Jura } from './Jura';
+
+// New enhanced canton pages using reusable template
+export { BaselNew } from './BaselNew';
+export { AargauNew } from './AargauNew';
+export { LuzernNew } from './LuzernNew';
+export { StGallenNew } from './StGallenNew';
