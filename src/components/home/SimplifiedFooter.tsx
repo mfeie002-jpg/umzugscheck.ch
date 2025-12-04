@@ -15,6 +15,8 @@ export const SimplifiedFooter = () => {
                 src={logo}
                 alt="Umzugscheck.ch" 
                 className="h-10"
+                width={164}
+                height={40}
               />
             </Link>
             <p className="text-sm text-uc-footer-text/70">

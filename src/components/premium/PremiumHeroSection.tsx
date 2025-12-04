@@ -43,10 +43,15 @@ export const PremiumHeroSection = () => {
 
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroFamilyMoving})` }}
+      {/* Background Image - Using img element for LCP optimization */}
+      <img 
+        src={heroFamilyMoving}
+        alt=""
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+        width={1920}
+        height={1080}
       />
       
       {/* Gradient Overlay - reduced to make image more visible */}
