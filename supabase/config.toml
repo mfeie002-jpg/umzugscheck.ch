@@ -26,9 +26,9 @@ verify_jwt = false
 [functions.admin-verify-provider]
 verify_jwt = true
 
-  [functions.provider-subscription]
-  verify_jwt = false
-  # Note: Uses custom JWT verification with JWT_SECRET for provider portal auth
+[functions.provider-subscription]
+verify_jwt = false
+# Note: Uses custom JWT verification with JWT_SECRET for provider portal auth
 
 [functions.purchase-lead]
 verify_jwt = false
@@ -60,4 +60,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.create-bundled-estimate]
+verify_jwt = false
+
+[functions.availability-notification]
 verify_jwt = false

@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { OnboardingHint } from "@/components/OnboardingHint";
 import { OffertenCTA } from "@/components/OffertenCTA";
@@ -7,12 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3, Calendar, Clock } from "lucide-react";
+import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3, Calendar as CalendarIcon, Clock, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useAnalytics } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
+import AvailabilityNotificationDialog from "@/components/AvailabilityNotificationDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingSkeletonCompany } from "@/components/LoadingSkeletonCompany";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
@@ -88,6 +94,7 @@ const Companies = () => {
   const [selectedRating, setSelectedRating] = useState("Alle");
   const [selectedPriceLevel, setSelectedPriceLevel] = useState("Alle Preisstufen");
   const [selectedService, setSelectedService] = useState("Alle Services");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [sortBy, setSortBy] = useState("empfohlen");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -131,13 +138,14 @@ const Companies = () => {
 
   useEffect(() => {
     // Track filter changes
-    if (searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen" || selectedService !== "Alle Services") {
+    if (searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen" || selectedService !== "Alle Services" || selectedDate) {
       analytics.trackFilterApplied({
         search: searchTerm,
         canton: selectedCanton,
         rating: selectedRating,
         priceLevel: selectedPriceLevel,
         service: selectedService,
+        date: selectedDate?.toISOString(),
         sortBy: sortBy,
       });
     }
@@ -150,7 +158,7 @@ const Companies = () => {
     }, 150);
     
     return () => clearTimeout(timer);
-  }, [companies, searchTerm, selectedCanton, selectedRating, selectedPriceLevel, selectedService, sortBy]);
+  }, [companies, searchTerm, selectedCanton, selectedRating, selectedPriceLevel, selectedService, selectedDate, sortBy]);
 
   const fetchCompanies = async () => {
     setError(null);
@@ -243,6 +251,17 @@ const Companies = () => {
       );
     }
 
+    // Date availability filter - prioritize available companies
+    if (selectedDate) {
+      // Sort by availability status when date is selected
+      filtered.sort((a, b) => {
+        const statusOrder = { 'available': 0, 'limited': 1, 'busy': 2 };
+        const aOrder = statusOrder[a.availability?.status || 'busy'];
+        const bOrder = statusOrder[b.availability?.status || 'busy'];
+        return aOrder - bOrder;
+      });
+    }
+
     // Sorting
     switch (sortBy) {
       case "rating":
@@ -268,10 +287,11 @@ const Companies = () => {
     setSelectedRating("Alle");
     setSelectedPriceLevel("Alle Preisstufen");
     setSelectedService("Alle Services");
+    setSelectedDate(undefined);
     setSortBy("empfohlen");
   };
 
-  const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen" || selectedService !== "Alle Services";
+  const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen" || selectedService !== "Alle Services" || selectedDate;
 
   // Calculate company counts per canton
   const cantonCounts = useMemo(() => {
@@ -390,6 +410,54 @@ const Companies = () => {
         </Select>
       </div>
 
+      {/* Moving Date Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+          <CalendarIcon className="w-4 h-4" />
+          Umzugsdatum
+          <OnboardingHint content="Zeigen Sie Firmen, die an Ihrem Wunschdatum verfügbar sind." />
+        </label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal h-12",
+                !selectedDate && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {selectedDate ? (
+                format(selectedDate, "PPP", { locale: de })
+              ) : (
+                <span>Datum wählen</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              disabled={(date) => date < new Date()}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
+        {selectedDate && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-2 h-8 text-xs"
+            onClick={() => setSelectedDate(undefined)}
+          >
+            <X className="w-3 h-3 mr-1" />
+            Datum entfernen
+          </Button>
+        )}
+      </div>
+
       {/* Sort By */}
       <div>
         <label className="text-sm font-medium mb-2 block">Sortierung</label>
@@ -406,6 +474,22 @@ const Companies = () => {
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      {/* Notification Signup */}
+      <div className="pt-2 border-t">
+        <AvailabilityNotificationDialog
+          canton={selectedCanton !== "Alle Kantone" ? selectedCanton : undefined}
+          triggerButton={
+            <Button variant="outline" className="w-full gap-2">
+              <Bell className="w-4 h-4" />
+              Benachrichtigung aktivieren
+            </Button>
+          }
+        />
+        <p className="text-xs text-muted-foreground mt-2 text-center">
+          Erhalten Sie eine E-Mail bei neuen Verfügbarkeiten
+        </p>
       </div>
 
       {/* Clear Filters */}
@@ -850,17 +934,32 @@ const Companies = () => {
                             </div>
                           </div>
 
-                          {/* CTA Button */}
-                          <Link 
-                            to={`/firmen/${company.id}`} 
-                            className="mt-4 sm:mt-5"
-                            onClick={() => analytics.trackCompanyClicked(company.id, company.name, 'view_profile')}
-                          >
-                            <Button className="w-full h-11 sm:h-12 bg-primary hover:bg-primary-dark shadow-medium group text-sm sm:text-base">
-                              Profil ansehen
-                              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                          </Link>
+                          {/* CTA Buttons */}
+                          <div className="mt-4 sm:mt-5 space-y-2">
+                            <Link 
+                              to={`/firmen/${company.id}`} 
+                              onClick={() => analytics.trackCompanyClicked(company.id, company.name, 'view_profile')}
+                            >
+                              <Button className="w-full h-11 sm:h-12 bg-primary hover:bg-primary-dark shadow-medium group text-sm sm:text-base">
+                                Profil ansehen
+                                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                              </Button>
+                            </Link>
+                            
+                            {/* Notification button for busy companies */}
+                            {company.availability?.status === 'busy' && (
+                              <AvailabilityNotificationDialog
+                                companyName={company.name}
+                                canton={company.service_areas[0]}
+                                triggerButton={
+                                  <Button variant="outline" className="w-full h-10 gap-2 text-sm">
+                                    <Bell className="w-4 h-4" />
+                                    Benachrichtigen wenn verfügbar
+                                  </Button>
+                                }
+                              />
+                            )}
+                          </div>
                         </CardContent>
                       </Card>
                     </ScrollReveal>
