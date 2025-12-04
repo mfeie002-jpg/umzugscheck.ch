@@ -26,3 +26,8 @@ export { AnimatedCounter } from './AnimatedCounter';
 export { ParallaxSection, ParallaxImage } from './ParallaxSection';
 export { GradientText } from './GradientText';
 export { RevealOnScroll, StaggerReveal } from './RevealOnScroll';
+export { ImageGallery } from './ImageGallery';
+export { ContactPickerButton } from './ContactPickerButton';
+export { FileUploadButton } from './FileUploadButton';
+export { CountdownTimer } from './CountdownTimer';
+export { IdleWarning } from './IdleWarning';
