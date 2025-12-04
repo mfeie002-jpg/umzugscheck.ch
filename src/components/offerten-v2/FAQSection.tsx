@@ -1,9 +1,16 @@
 /**
  * FAQSection - Frequently asked questions with accordion
  * Includes JSON-LD schema markup for SEO
+ * 
+ * OPTIMIZATIONS:
+ * 33. Numbered questions with badges
+ * 34. Enhanced accordion styling
+ * 35. Better visual feedback on open
+ * 36. Icon indicators
  */
 
 import { motion } from "framer-motion";
+import { HelpCircle, ChevronDown } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -58,8 +65,11 @@ export default function FAQSection() {
   };
   
   return (
-    <section className="py-16 md:py-24 bg-background">
-      <div className="container mx-auto px-4 max-w-3xl">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
+      
+      <div className="container mx-auto px-4 max-w-3xl relative z-10">
         {/* JSON-LD Schema */}
         <script
           type="application/ld+json"
@@ -72,10 +82,20 @@ export default function FAQSection() {
           viewport={{ once: true }}
           className="text-center mb-10"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+          <motion.div
+            initial={{ scale: 0 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mb-4"
+          >
+            <HelpCircle className="w-7 h-7 text-primary" />
+          </motion.div>
+          
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Häufige Fragen zum Offertenvergleich
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-lg">
             Alles, was Sie über unseren Service wissen müssen
           </p>
         </motion.div>
@@ -87,20 +107,50 @@ export default function FAQSection() {
         >
           <Accordion type="single" collapsible className="space-y-3">
             {faqs.map((faq, index) => (
-              <AccordionItem
+              <motion.div
                 key={index}
-                value={`faq-${index}`}
-                className="bg-card border rounded-xl px-6 data-[state=open]:shadow-md transition-shadow"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
               >
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-5">
-                  <h3 className="pr-4">{faq.question}</h3>
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+                <AccordionItem
+                  value={`faq-${index}`}
+                  className="bg-card border-2 border-border/50 rounded-xl px-0 overflow-hidden data-[state=open]:border-primary/30 data-[state=open]:shadow-lg transition-all duration-300"
+                >
+                  <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-5 px-6 group [&[data-state=open]>div>.chevron]:rotate-180">
+                    <div className="flex items-start gap-4 w-full pr-4">
+                      <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm group-data-[state=open]:bg-primary group-data-[state=open]:text-white transition-colors">
+                        {index + 1}
+                      </span>
+                      <h3 className="flex-1 text-left">{faq.question}</h3>
+                      <ChevronDown className="chevron w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-300" />
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground pb-6 px-6 leading-relaxed">
+                    <div className="pl-12 border-l-2 border-primary/20 ml-4">
+                      {faq.answer}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </motion.div>
             ))}
           </Accordion>
+        </motion.div>
+        
+        {/* Help text */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mt-10"
+        >
+          <p className="text-sm text-muted-foreground">
+            Haben Sie weitere Fragen?{" "}
+            <a href="/kontakt" className="text-primary hover:underline font-medium">
+              Kontaktieren Sie uns
+            </a>
+          </p>
         </motion.div>
       </div>
     </section>
