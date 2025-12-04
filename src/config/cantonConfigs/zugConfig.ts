@@ -1,126 +1,68 @@
 import { CantonConfig } from '@/components/canton/CantonTemplate';
+import { Home, Building2, Sparkles, Trash2, ArrowUpFromLine, Package, Percent, Waves, TrendingUp, Train } from 'lucide-react';
 
 export const zugConfig: CantonConfig = {
   name: "Zug",
-  code: "ZG",
   slug: "zug",
-  heroTitle: "Umzugsfirmen in Zug vergleichen",
-  heroSubtitle: "Finden Sie die besten Umzugsunternehmen im wohlhabenden Kanton Zug. Kostenlos Offerten vergleichen.",
+  tagline: "Umzug im Steuerkanton – Crypto Valley",
+  icon: TrendingUp,
+  iconColor: "text-blue-700",
+  cities: ["Zug", "Baar", "Cham", "Steinhausen", "Risch-Rotkreuz", "Hünenberg", "Oberägeri", "Unterägeri"],
   
   companies: [
-    {
-      id: "zg-1",
-      name: "Zug Premium Movers",
-      rating: 4.9,
-      reviewCount: 234,
-      priceLevel: "premium",
-      services: ["Privatumzug", "Firmenumzug", "Kunsttransport"],
-      description: "Premium-Service für anspruchsvolle Kunden",
-      isSponsored: true,
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "zg-2",
-      name: "Crypto Valley Moving",
-      rating: 4.8,
-      reviewCount: 187,
-      priceLevel: "premium",
-      services: ["Firmenumzug", "IT-Transport", "Tresor"],
-      description: "Spezialisiert auf Tech-Unternehmen",
-      isSponsored: true,
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "zg-3",
-      name: "Zuger Umzüge",
-      rating: 4.7,
-      reviewCount: 156,
-      priceLevel: "fair",
-      services: ["Privatumzug", "Seniorenumzug"],
-      description: "Familienunternehmen seit 1985",
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "zg-4",
-      name: "See-Umzüge Zug",
-      rating: 4.6,
-      reviewCount: 134,
-      priceLevel: "fair",
-      services: ["Privatumzug", "Möbellift"],
-      description: "Umzüge rund um den Zugersee",
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "zg-5",
-      name: "International Relocation Zug",
-      rating: 4.8,
-      reviewCount: 98,
-      priceLevel: "premium",
-      services: ["Internationaler Umzug", "Expat-Service"],
-      description: "Expat-Umzüge weltweit",
-      logo: "/placeholder.svg"
-    }
+    { name: "Zuger Umzüge AG", rating: 4.9, reviews: 234, priceLevel: "premium", sponsored: true, available: true, badge: "Top bewertet" },
+    { name: "Baar Moving Services", rating: 4.8, reviews: 178, priceLevel: "fair", sponsored: true, available: true, badge: null },
+    { name: "Crypto Valley Movers", rating: 4.7, reviews: 145, priceLevel: "premium", sponsored: false, available: true, badge: "International" },
+    { name: "Ägerisee Transport", rating: 4.6, reviews: 98, priceLevel: "fair", sponsored: false, available: true, badge: null },
+    { name: "Zugersee Express", rating: 4.7, reviews: 87, priceLevel: "fair", sponsored: false, available: false, badge: null }
   ],
   
   priceExamples: [
-    { size: "1-Zimmer Wohnung", priceRange: "CHF 700 - 1'000", details: "Premium-Qualität" },
-    { size: "3-Zimmer Wohnung", priceRange: "CHF 1'400 - 2'200", details: "Full-Service" },
-    { size: "5-Zimmer Villa", priceRange: "CHF 3'000 - 5'000", details: "White-Glove-Service" }
+    { size: "1-Zimmer Wohnung", range: "CHF 600 - 950", avg: "CHF 775" },
+    { size: "3-Zimmer Wohnung", range: "CHF 1'200 - 1'900", avg: "CHF 1'550" },
+    { size: "5-Zimmer Villa", range: "CHF 2'800 - 4'500", avg: "CHF 3'650" }
   ],
   
   services: [
-    { name: "Privatumzug", icon: "Home", link: "/privatumzug" },
-    { name: "Firmenumzug", icon: "Building2", link: "/firmenumzug" },
-    { name: "International", icon: "Globe", link: "/international" },
-    { name: "Kunsttransport", icon: "Palette", link: "/kunsttransport" },
-    { name: "Tresor-Transport", icon: "Lock", link: "/tresortransport" },
-    { name: "Lagerung", icon: "Package", link: "/lagerung" }
+    { name: "Privatumzug", icon: Home, link: "/privatumzug" },
+    { name: "Firmenumzug", icon: Building2, link: "/firmenumzug" },
+    { name: "Reinigung", icon: Sparkles, link: "/reinigung" },
+    { name: "Entsorgung", icon: Trash2, link: "/entsorgung" },
+    { name: "Möbellift", icon: ArrowUpFromLine, link: "/moebellift" },
+    { name: "Lagerung", icon: Package, link: "/lagerung" }
   ],
   
   usps: [
-    { title: "Crypto Valley", description: "Spezialisiert auf Tech-Startups", icon: "Cpu" },
-    { title: "Tiefe Steuern", description: "Viele Expat-Umzüge", icon: "Percent" },
-    { title: "Premium-Service", description: "White-Glove-Behandlung", icon: "Crown" },
-    { title: "Zugersee", description: "Seeanstösser-Expertise", icon: "Waves" }
+    { title: "Tiefste Steuern", desc: "Schweizweit attraktivste Steuerbelastung", icon: Percent },
+    { title: "Crypto Valley", desc: "Hub für Blockchain & Fintech", icon: TrendingUp },
+    { title: "Zugersee", desc: "Traumhafte Seelage", icon: Waves },
+    { title: "Nähe Zürich", desc: "25 Min. zur Grossstadt", icon: Train }
   ],
   
   faqs: [
-    {
-      question: "Was kostet ein Umzug in Zug?",
-      answer: "Umzüge in Zug sind tendenziell hochpreisiger (CHF 700 - 5'000) aufgrund der Premium-Ansprüche und internationalen Klientel."
-    },
-    {
-      question: "Gibt es Umzugsfirmen für internationale Expats?",
-      answer: "Ja, Zug hat viele auf Expat-Relocation spezialisierte Firmen mit mehrsprachigem Service und weltweitem Netzwerk."
-    },
-    {
-      question: "Wie funktioniert ein Firmenumzug im Crypto Valley?",
-      answer: "Spezialisierte Firmen bieten IT-Equipment-Transport, sichere Datenhandhabung und Wochenend-Umzüge für Startups."
-    },
-    {
-      question: "Brauche ich spezielle Versicherung für wertvolle Güter?",
-      answer: "Ja, bei Kunstwerken, Antiquitäten oder Tresoren empfehlen wir eine erweiterte Transportversicherung."
-    },
-    {
-      question: "Wann muss ich mich in Zug anmelden?",
-      answer: "Die Anmeldung bei der Einwohnerkontrolle muss innerhalb von 14 Tagen nach dem Umzug erfolgen."
-    }
+    { question: "Was kostet ein Umzug in Zug?", answer: "Ein Umzug in Zug kostet CHF 600 - 4'500. Die hohe Nachfrage und Premium-Immobilien erhöhen die Preise." },
+    { question: "Warum ist Zug so beliebt?", answer: "Zug bietet tiefste Steuern, internationale Unternehmen, schöne Lage und perfekte Anbindung an Zürich." },
+    { question: "Gibt es Firmen für internationale Umzüge?", answer: "Ja, viele Zuger Firmen sind auf internationale Relocation für Expats spezialisiert." },
+    { question: "Wie melde ich mich in Zug an?", answer: "Die Anmeldung erfolgt bei der Einwohnerkontrolle innerhalb von 14 Tagen nach dem Umzug." },
+    { question: "Wie ist die Verkehrsanbindung?", answer: "Zug liegt an der A4 und hat direkten Bahnanschluss nach Zürich (25 Min.) und Luzern (20 Min.)." }
   ],
   
-  localInfo: `
-    <h3>Umziehen im Kanton Zug</h3>
-    <p>Der Kanton Zug ist bekannt für tiefe Steuern und das Crypto Valley - ein Hotspot für Blockchain-Unternehmen und internationale Firmen.</p>
-    
-    <h4>An- und Abmeldung</h4>
-    <p>Die Anmeldung erfolgt bei der Einwohnerkontrolle innerhalb von 14 Tagen. Expats benötigen zusätzliche Dokumente.</p>
-    
-    <h4>Internationale Community</h4>
-    <p>Zug hat einen hohen Anteil internationaler Einwohner. Viele Umzugsfirmen bieten mehrsprachigen Service und Expat-Pakete.</p>
-    
-    <h4>Beliebte Wohnlagen</h4>
-    <p>Die Stadt Zug, Baar, Cham und die Seeanliegergemeinden sind besonders gefragt. Villenlagen am Zugersee gehören zu den teuersten der Schweiz.</p>
-  `,
+  seo: {
+    title: "Umzugsfirmen Zug vergleichen | Tiefste Steuern | Umzugscheck.ch",
+    description: "Vergleichen Sie die besten Umzugsfirmen im Kanton Zug. Crypto Valley & tiefste Steuern. Bis zu 5 unverbindliche Offerten.",
+    keywords: "Umzugsfirma Zug, Umzug Zug, Crypto Valley Umzug"
+  },
   
-  metaTitle: "Umzugsfirmen Zug vergleichen | Premium-Service | Umzugscheck.ch",
-  metaDescription: "Vergleichen Sie die besten Umzugsfirmen in Zug. Premium-Service für Expats und Unternehmen. Bis zu 5 unverbindliche Offerten."
+  localInfo: {
+    title: "Umziehen im Kanton Zug",
+    paragraphs: [
+      { text: "Der Kanton Zug ist einer der kleinsten aber wohlhabendsten Kantone der Schweiz, bekannt als Crypto Valley und Steueroase." },
+      { title: "An- und Abmeldung", text: "Die Anmeldung erfolgt bei der Einwohnerkontrolle Ihrer Gemeinde innerhalb von 14 Tagen." },
+      { title: "Wirtschaftszentrum", text: "Zug ist Sitz vieler internationaler Unternehmen und Blockchain-Firmen. Entsprechend hoch ist die Nachfrage nach Wohnraum." },
+      { title: "Gemeinden", text: "Zug (Hauptort), Baar, Cham, Steinhausen, Risch-Rotkreuz, Hünenberg und die Ägerisee-Gemeinden." }
+    ]
+  },
+  
+  notificationCity: "Zug",
+  activeUsersBase: 12
 };
