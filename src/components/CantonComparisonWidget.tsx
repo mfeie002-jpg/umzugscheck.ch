@@ -2,8 +2,10 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, TrendingUp, TrendingDown, Star, Building2, ArrowRight, X, Download } from "lucide-react";
+import { MapPin, TrendingUp, TrendingDown, Star, Building2, ArrowRight, X, Download, Calculator, Home } from "lucide-react";
 import { getAllCantonConfigs } from "@/lib/cantonConfigMap";
 import { Link } from "react-router-dom";
 
@@ -18,6 +20,9 @@ interface CantonData {
 const CantonComparisonWidget = () => {
   const [selectedCantons, setSelectedCantons] = useState<string[]>([]);
   const [isExporting, setIsExporting] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
+  const [rooms, setRooms] = useState("3");
+  const [distance, setDistance] = useState("20");
 
   const cantonConfigs = getAllCantonConfigs();
 
@@ -65,23 +70,35 @@ const CantonComparisonWidget = () => {
     .map(slug => cantonData.find(c => c.slug === slug))
     .filter(Boolean) as CantonData[];
 
-  // Find cheapest and most expensive
+  // Calculate personalized price based on rooms and distance
+  const calculatePersonalizedPrice = (basePrice: number) => {
+    const roomMultiplier = parseInt(rooms) * 0.25 + 0.5; // 1 room = 0.75x, 5 rooms = 1.75x
+    const distanceMultiplier = 1 + (parseInt(distance) * 0.005); // 20km = 1.1x, 50km = 1.25x
+    return Math.round(basePrice * roomMultiplier * distanceMultiplier);
+  };
+
+  // Find cheapest and most expensive with personalized prices
   const priceStats = useMemo(() => {
     if (selectedCantonData.length < 2) return null;
-    const sorted = [...selectedCantonData].sort((a, b) => a.avgPrice - b.avgPrice);
+    const withPersonalized = selectedCantonData.map(c => ({
+      ...c,
+      personalizedPrice: calculatePersonalizedPrice(c.avgPrice)
+    }));
+    const sorted = [...withPersonalized].sort((a, b) => a.personalizedPrice - b.personalizedPrice);
     return {
       cheapest: sorted[0],
       mostExpensive: sorted[sorted.length - 1],
-      savings: sorted[sorted.length - 1].avgPrice - sorted[0].avgPrice,
+      savings: sorted[sorted.length - 1].personalizedPrice - sorted[0].personalizedPrice,
     };
-  }, [selectedCantonData]);
+  }, [selectedCantonData, rooms, distance]);
 
   const exportToCSV = () => {
     setIsExporting(true);
-    const headers = ["Kanton", "Ø Preis (CHF)", "Firmen", "Ø Bewertung"];
+    const headers = ["Kanton", "Ø Preis (CHF)", "Personalisiert (CHF)", "Firmen", "Ø Bewertung"];
     const rows = selectedCantonData.map(c => [
       c.name,
       c.avgPrice.toString(),
+      calculatePersonalizedPrice(c.avgPrice).toString(),
       c.companyCount.toString(),
       c.avgRating.toString(),
     ]);
@@ -109,6 +126,59 @@ const CantonComparisonWidget = () => {
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Mini Calculator Toggle */}
+        <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+          <div className="flex items-center gap-2">
+            <Calculator className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium">Personalisierte Schätzung</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowCalculator(!showCalculator)}
+          >
+            {showCalculator ? "Ausblenden" : "Anpassen"}
+          </Button>
+        </div>
+
+        {/* Mini Calculator */}
+        {showCalculator && (
+          <div className="grid grid-cols-2 gap-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
+            <div className="space-y-2">
+              <Label className="text-xs flex items-center gap-1">
+                <Home className="w-3 h-3" />
+                Zimmer
+              </Label>
+              <Select value={rooms} onValueChange={setRooms}>
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1, 2, 3, 4, 5, 6].map(n => (
+                    <SelectItem key={n} value={n.toString()}>
+                      {n} {n === 1 ? "Zimmer" : "Zimmer"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                Distanz (km)
+              </Label>
+              <Input
+                type="number"
+                value={distance}
+                onChange={(e) => setDistance(e.target.value)}
+                min="1"
+                max="200"
+                className="h-9"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Canton Selector */}
         <div className="space-y-3">
           <label className="text-sm font-medium">
@@ -160,46 +230,60 @@ const CantonComparisonWidget = () => {
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-2 font-medium" scope="col">Kanton</th>
-                  <th className="text-right py-2 font-medium" scope="col">Ø Preis</th>
+                  <th className="text-right py-2 font-medium" scope="col">
+                    {showCalculator ? "Schätzung" : "Ø Preis"}
+                  </th>
                   <th className="text-right py-2 font-medium" scope="col">Firmen</th>
                   <th className="text-right py-2 font-medium" scope="col">Bewertung</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedCantonData.map(canton => (
-                  <tr key={canton.slug} className="border-b last:border-0">
-                    <td className="py-3">
-                      <Link 
-                        to={`/canton/${canton.slug}`}
-                        className="flex items-center gap-2 hover:text-primary transition-colors"
-                      >
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        {canton.name}
-                        {priceStats?.cheapest.slug === canton.slug && (
-                          <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
-                            <TrendingDown className="w-3 h-3 mr-1" />
-                            Günstigster
-                          </Badge>
+                {selectedCantonData.map(canton => {
+                  const personalizedPrice = calculatePersonalizedPrice(canton.avgPrice);
+                  const isCheapest = priceStats?.cheapest.slug === canton.slug;
+                  
+                  return (
+                    <tr key={canton.slug} className="border-b last:border-0">
+                      <td className="py-3">
+                        <Link 
+                          to={`/canton/${canton.slug}`}
+                          className="flex items-center gap-2 hover:text-primary transition-colors"
+                        >
+                          <MapPin className="w-4 h-4 text-muted-foreground" />
+                          {canton.name}
+                          {isCheapest && (
+                            <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
+                              <TrendingDown className="w-3 h-3 mr-1" />
+                              Günstigster
+                            </Badge>
+                          )}
+                        </Link>
+                      </td>
+                      <td className="py-3 text-right font-semibold">
+                        <span className={isCheapest ? "text-green-600" : ""}>
+                          CHF {showCalculator ? personalizedPrice : canton.avgPrice}
+                        </span>
+                        {showCalculator && (
+                          <span className="block text-xs text-muted-foreground font-normal">
+                            Basis: CHF {canton.avgPrice}
+                          </span>
                         )}
-                      </Link>
-                    </td>
-                    <td className="py-3 text-right font-semibold">
-                      CHF {canton.avgPrice}
-                    </td>
-                    <td className="py-3 text-right">
-                      <span className="flex items-center justify-end gap-1">
-                        <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
-                        {canton.companyCount}
-                      </span>
-                    </td>
-                    <td className="py-3 text-right">
-                      <span className="flex items-center justify-end gap-1">
-                        <Star className="w-3.5 h-3.5 fill-accent text-accent" />
-                        {canton.avgRating}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-3 text-right">
+                        <span className="flex items-center justify-end gap-1">
+                          <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                          {canton.companyCount}
+                        </span>
+                      </td>
+                      <td className="py-3 text-right">
+                        <span className="flex items-center justify-end gap-1">
+                          <Star className="w-3.5 h-3.5 fill-accent text-accent" />
+                          {canton.avgRating}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -217,7 +301,7 @@ const CantonComparisonWidget = () => {
                   Mögliche Ersparnis: CHF {priceStats.savings}
                 </p>
                 <p className="text-sm text-green-700">
-                  Ein Umzug in {priceStats.cheapest.name} ist im Durchschnitt günstiger als in {priceStats.mostExpensive.name}
+                  Ein Umzug in {priceStats.cheapest.name} ist {showCalculator ? "für Ihre Angaben" : "im Durchschnitt"} günstiger als in {priceStats.mostExpensive.name}
                 </p>
               </div>
             </div>
