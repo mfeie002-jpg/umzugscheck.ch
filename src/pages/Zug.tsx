@@ -31,6 +31,18 @@ import { ZugInteractiveMap } from "@/components/zug/ZugInteractiveMap";
 import { ZugStatsCounter } from "@/components/zug/ZugStatsCounter";
 import { ZugUrgencyBanner } from "@/components/zug/ZugUrgencyBanner";
 import { CompanyBadges, SponsoredBadge, SavingsBadge, AvailabilityBadge } from "@/components/zug/ZugCompanyBadges";
+import { ZugPriceCalculatorMini } from "@/components/zug/ZugPriceCalculatorMini";
+import { ZugServiceComparison } from "@/components/zug/ZugServiceComparison";
+import { ZugTrustSignals } from "@/components/zug/ZugTrustSignals";
+import { ZugVideoSection } from "@/components/zug/ZugVideoSection";
+import { ZugReviewsShowcase } from "@/components/zug/ZugReviewsShowcase";
+import { ZugContactSection } from "@/components/zug/ZugContactSection";
+import { ZugChecklist } from "@/components/zug/ZugChecklist";
+import { ZugNewsletter } from "@/components/zug/ZugNewsletter";
+import { ZugSocialProof } from "@/components/zug/ZugSocialProof";
+import { ZugPartnersSection } from "@/components/zug/ZugPartnersSection";
+import { ZugBreadcrumb } from "@/components/zug/ZugBreadcrumb";
+import { ZugRelatedServices } from "@/components/zug/ZugRelatedServices";
 
 /**
  * Zug Canton Landing Page - Enhanced with 25+ Optimizations
