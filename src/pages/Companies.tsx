@@ -34,6 +34,8 @@ import PriceHistoryChart from "@/components/PriceHistoryChart";
 import FavoriteCompanies, { useFavorites } from "@/components/FavoriteCompanies";
 import CompanyCertifications from "@/components/CompanyCertifications";
 import CompanyMatchScore from "@/components/CompanyMatchScore";
+import SmartSearchFilters from "@/components/SmartSearchFilters";
+import SavedSearches from "@/components/SavedSearches";
 
 interface Company {
   id: string;
@@ -802,55 +804,70 @@ const Companies = () => {
           </section>
         )}
 
-        {/* Companies Grid */}
+        {/* Companies Grid with Sidebar */}
         <section className="py-12 md:py-16 bg-gradient-light">
           <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              {error && (
-                <Alert variant="destructive" className="mb-6">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    {error}
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={fetchCompanies}
-                      className="ml-4"
-                    >
-                      Erneut versuchen
-                    </Button>
-                  </AlertDescription>
-                </Alert>
-              )}
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col lg:flex-row gap-8">
+                {/* Sidebar - Desktop Only */}
+                <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6">
+                  <SmartSearchFilters onSearch={(filters) => {
+                    if (filters.query) setSearchTerm(filters.query);
+                    if (filters.minRating) setSelectedRating(filters.minRating.toString());
+                  }} />
+                  <SavedSearches onSearchSelect={(search) => {
+                    if (search.filters.region) setSelectedCanton(search.filters.region);
+                    if (search.filters.maxPrice) setSelectedPriceLevel(search.filters.maxPrice < 2000 ? "günstig" : search.filters.maxPrice < 4000 ? "fair" : "premium");
+                  }} />
+                </aside>
 
-              {loading ? (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {[...Array(6)].map((_, index) => (
-                    <LoadingSkeletonCompany key={index} />
-                  ))}
-                </div>
-              ) : filteredCompanies.length === 0 ? (
-                <Card className="text-center py-16">
-                  <CardContent>
-                    <div className="max-w-md mx-auto space-y-4">
-                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
-                        <Search className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                      <h3 className="text-xl font-semibold">Keine Firmen gefunden</h3>
-                      <p className="text-muted-foreground">
-                        Versuchen Sie, Ihre Filter anzupassen oder eine andere Suche durchzuführen.
-                      </p>
-                      {hasActiveFilters && (
-                        <Button onClick={clearFilters} variant="outline">
-                          <X className="w-4 h-4 mr-2" />
-                          Filter zurücksetzen
+                {/* Main Content */}
+                <div className="flex-1 min-w-0">
+                  {error && (
+                    <Alert variant="destructive" className="mb-6">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        {error}
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={fetchCompanies}
+                          className="ml-4"
+                        >
+                          Erneut versuchen
                         </Button>
-                      )}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {loading ? (
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {[...Array(6)].map((_, index) => (
+                        <LoadingSkeletonCompany key={index} />
+                      ))}
                     </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+                  ) : filteredCompanies.length === 0 ? (
+                    <Card className="text-center py-16">
+                      <CardContent>
+                        <div className="max-w-md mx-auto space-y-4">
+                          <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
+                            <Search className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                          <h3 className="text-xl font-semibold">Keine Firmen gefunden</h3>
+                          <p className="text-muted-foreground">
+                            Versuchen Sie, Ihre Filter anzupassen oder eine andere Suche durchzuführen.
+                          </p>
+                          {hasActiveFilters && (
+                            <Button onClick={clearFilters} variant="outline">
+                              <X className="w-4 h-4 mr-2" />
+                              Filter zurücksetzen
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
                   {filteredCompanies.map((company, index) => (
                     <ScrollReveal key={company.id} delay={index * 50}>
                       <Card className="h-full hover-lift border-2 hover:border-primary/20 transition-all duration-300 bg-white">
@@ -1034,8 +1051,10 @@ const Companies = () => {
                       </Card>
                     </ScrollReveal>
                   ))}
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </section>
