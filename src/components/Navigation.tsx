@@ -146,7 +146,7 @@ export const Navigation = () => {
 
           {/* Mobile Menu Button & CTA - Visible on Mobile */}
           <div className="flex lg:hidden items-center gap-1 -mr-3 sm:mr-0">
-            <Link to="/" aria-label="Kostenlose Umzugsofferten vergleichen">
+            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button 
                 size="sm"
                 className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold text-xs sm:text-sm px-3 sm:px-4"
