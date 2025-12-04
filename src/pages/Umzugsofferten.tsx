@@ -578,6 +578,190 @@ export default function Umzugsofferten() {
           </div>
         </section>
 
+        {/* ===== PRICE EXAMPLES SECTION ===== */}
+        <section className="py-12 md:py-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">Was kostet ein Umzug in der Schweiz?</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Durchschnittliche Umzugskosten je nach Wohnungsgrösse – basierend auf über 15'000 Umzügen
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {[
+                { size: "2.5 Zimmer", subtitle: "Studio/kleine Wohnung", min: 650, max: 1200, savings: "bis CHF 350" },
+                { size: "3.5 Zimmer", subtitle: "Familienwohnung", min: 1100, max: 2000, savings: "bis CHF 580", popular: true },
+                { size: "4.5+ Zimmer", subtitle: "Haus/grosse Wohnung", min: 1800, max: 3500, savings: "bis CHF 950" }
+              ].map((item, i) => (
+                <Card key={i} className={`p-6 relative ${item.popular ? "border-primary shadow-lg" : ""}`}>
+                  {item.popular && (
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Beliebt</Badge>
+                  )}
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold mb-1">{item.size}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{item.subtitle}</p>
+                    <div className="text-3xl font-bold text-primary mb-2">
+                      CHF {item.min.toLocaleString()} - {item.max.toLocaleString()}
+                    </div>
+                    <p className="text-sm text-green-600 font-medium">Ersparnis {item.savings}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            <p className="text-center text-sm text-muted-foreground mt-6">
+              * Preise variieren je nach Distanz, Stockwerk und Zusatzleistungen
+            </p>
+          </div>
+        </section>
+
+        {/* ===== STATISTICS SECTION ===== */}
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+              {[
+                { value: "15'247", label: "Umzüge verglichen", icon: Truck },
+                { value: "4.8/5", label: "Durchschnittsbewertung", icon: Star },
+                { value: "127+", label: "Geprüfte Umzugsfirmen", icon: BadgeCheck },
+                { value: "38%", label: "Durchschnittliche Ersparnis", icon: TrendingDown }
+              ].map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <stat.icon className="w-7 h-7 text-primary" />
+                  </div>
+                  <div className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</div>
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SEO CONTENT SECTION ===== */}
+        <section className="py-12 md:py-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto prose prose-slate">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+                Umzugsofferten vergleichen: So finden Sie die beste Umzugsfirma
+              </h2>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Warum lohnt sich ein Umzugsvergleich?</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Ein Umzug in der Schweiz kann schnell teuer werden. Die Preise variieren stark zwischen 
+                    verschiedenen Umzugsfirmen – oft um 30-40%. Durch einen kostenlosen Vergleich mehrerer 
+                    Offerten sparen Sie nicht nur Geld, sondern finden auch die Firma, die am besten zu 
+                    Ihren Bedürfnissen passt.
+                  </p>
+                  <p className="text-muted-foreground">
+                    Bei umzugscheck.ch vergleichen Sie Angebote von geprüften Schweizer Umzugsfirmen. 
+                    Alle Partner sind versichert, im Handelsregister eingetragen und haben positive 
+                    Kundenbewertungen.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">So funktioniert der Offerten-Vergleich</h3>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Füllen Sie das kurze Formular mit Start, Ziel und Wohnungsgrösse aus</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Vergleichen Sie Preise, Leistungen und Kundenbewertungen</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Wählen Sie die beste Firma für Ihren Umzug – ohne Verpflichtung</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== INTERNAL LINKS SECTION ===== */}
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">Weitere Umzugs-Services</h2>
+              <p className="text-muted-foreground">Entdecken Sie alle Möglichkeiten rund um Ihren Umzug</p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+              {[
+                { title: "Umzugsrechner", desc: "Kosten sofort berechnen", link: "/rechner", icon: Users },
+                { title: "Reinigung", desc: "Endreinigung & Abgabe", link: "/reinigung", icon: Home },
+                { title: "Entsorgung", desc: "Möbel & Sperrgut entsorgen", link: "/entsorgung", icon: Truck },
+                { title: "Firmenumzug", desc: "Büro & Geschäft umziehen", link: "/firmenumzug", icon: Building2 }
+              ].map((item, i) => (
+                <Link
+                  key={i}
+                  to={item.link}
+                  className="group flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <item.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold group-hover:text-primary transition-colors">{item.title}</p>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground ml-auto group-hover:text-primary transition-colors" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== UMZUG TIPPS SECTION ===== */}
+        <section className="py-12 md:py-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
+                5 Tipps für einen günstigen Umzug
+              </h2>
+              
+              <div className="space-y-4">
+                {[
+                  { num: 1, title: "Offerten vergleichen", text: "Holen Sie mindestens 3-5 Offerten ein und vergleichen Sie nicht nur Preise, sondern auch Leistungen und Bewertungen." },
+                  { num: 2, title: "Flexible Termine wählen", text: "Umzüge unter der Woche oder Mitte des Monats sind oft günstiger als an Wochenenden oder zum Monatsersten." },
+                  { num: 3, title: "Selbst vorarbeiten", text: "Packen Sie selbst, entsorgen Sie Unnötiges vorab und bauen Sie Möbel ab – das spart Arbeitsstunden." },
+                  { num: 4, title: "Früh planen", text: "Buchen Sie 4-6 Wochen im Voraus für bessere Preise und mehr Auswahl bei den Terminen." },
+                  { num: 5, title: "Versicherung prüfen", text: "Achten Sie auf ausreichenden Versicherungsschutz und klären Sie Haftungsfragen vor dem Umzug." }
+                ].map((tip, i) => (
+                  <div key={i} className="flex gap-4 p-4 rounded-xl bg-muted/30">
+                    <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold flex-shrink-0">
+                      {tip.num}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{tip.title}</h3>
+                      <p className="text-sm text-muted-foreground">{tip.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center mt-8">
+                <Button variant="outline" asChild>
+                  <Link to="/ratgeber">
+                    Mehr Umzugstipps im Ratgeber
+                    <ChevronRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ===== FINAL CTA SECTION ===== */}
         <section className="py-16 md:py-20 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4">
