@@ -351,33 +351,38 @@ const Zug = () => {
 
   const faqs = [
     {
-      question: "Was kostet ein Umzug in Zug ungefähr?",
-      answer: "Die Kosten hängen von mehreren Faktoren ab: Anzahl Zimmer, Etage, Distanz, Zugang und Zusatzleistungen. Ein 2.5-Zimmer-Umzug innerhalb von Zug kostet typischerweise CHF 800–1'400, ein 3.5-Zimmer-Umzug zwischen CHF 1'200–2'200.",
+      question: "Was kostet ein Umzug in Zug?",
+      answer: "Die Kosten hängen von mehreren Faktoren ab: Anzahl Zimmer, Etage, Distanz, Zugang und Zusatzleistungen. Ein 2.5-Zimmer-Umzug innerhalb von Zug kostet typischerweise CHF 800–1'400, ein 3.5-Zimmer-Umzug zwischen CHF 1'200–2'200. Für grössere Wohnungen oder Häuser rechne mit CHF 2'500–4'500.",
       category: "Kosten",
     },
     {
-      question: "Wie früh sollte ich eine Umzugsfirma buchen?",
-      answer: "Idealerweise 4–8 Wochen im Voraus. Bei Umzügen am Monatsende oder in der Hochsaison (April–September) empfehlen wir 8–12 Wochen Vorlauf.",
+      question: "Wie früh sollte ich eine Umzugsfirma im Kanton Zug buchen?",
+      answer: "Idealerweise 4–8 Wochen im Voraus. Bei Umzügen am Monatsende oder in der Hochsaison (April–September) empfehlen wir 8–12 Wochen Vorlauf. Besonders im wirtschaftsstarken Kanton Zug sind gute Umzugsfirmen oft früh ausgebucht.",
       category: "Planung",
     },
     {
-      question: "Bietet ihr Umzug + Reinigung mit Abgabegarantie an?",
-      answer: "Ja, mehrere unserer Partnerfirmen im Kanton Zug bieten kombinierte Umzugs- und Reinigungspakete mit Abgabegarantie an.",
+      question: "Gibt es Umzugsfirmen mit Reinigung und Abgabegarantie?",
+      answer: "Ja, mehrere unserer Partnerfirmen im Kanton Zug bieten kombinierte Umzugs- und Reinigungspakete mit Abgabegarantie an. Das bedeutet: Falls die Verwaltung die Reinigung nicht abnimmt, wird kostenlos nachgereinigt.",
       category: "Services",
     },
     {
-      question: "Könnt ihr Firmenumzüge organisieren?",
-      answer: "Ja, Firmenumzüge sind ein wichtiger Schwerpunkt. Unsere Partnerfirmen verfügen über spezialisiertes Equipment für Geschäftsumzüge.",
+      question: "Wie finde ich eine zuverlässige Umzugsfirma in Zug?",
+      answer: "Über umzugscheck.ch vergleichst du geprüfte Umzugsfirmen im Kanton Zug. Achte auf Bewertungen, Erfahrungsberichte und das Leistungsspektrum. Hol dir mehrere Offerten und vergleiche Preise sowie inkludierte Leistungen.",
+      category: "Vergleich",
+    },
+    {
+      question: "Wie funktioniert der Firmenumzug im Kanton Zug über umzugscheck.ch?",
+      answer: "Firmenumzüge sind ein wichtiger Schwerpunkt. Beschreibe dein Projekt (Bürogrösse, IT-Equipment, Zeitrahmen), und du erhältst massgeschneiderte Offerten von spezialisierten Umzugsfirmen. Viele bieten Wochenend-Umzüge an, um Ausfallzeiten zu minimieren.",
       category: "Services",
     },
     {
-      question: "Brauche ich eine Parkbewilligung?",
-      answer: "Das hängt vom Standort ab. In der Altstadt von Zug oder bei engen Quartieren kann eine Parkbewilligung nötig sein. Erkundige dich frühzeitig bei der Gemeinde.",
+      question: "Brauche ich eine Parkbewilligung für den Umzug in Zug?",
+      answer: "Das hängt vom Standort ab. In der Altstadt von Zug oder bei engen Quartieren kann eine Parkbewilligung oder ein temporäres Halteverbot nötig sein. Erkundige dich frühzeitig bei der Gemeinde oder frage deine Umzugsfirma – viele übernehmen das für dich.",
       category: "Planung",
     },
     {
-      question: "Fixpreise oder Stundenansätze?",
-      answer: "Beides ist möglich. Einige Firmen arbeiten mit Fixpreisen, andere nach Stunden. In den Offerten siehst du klar, welches Modell angeboten wird.",
+      question: "Bieten die Umzugsfirmen Fixpreise oder Stundenansätze an?",
+      answer: "Beides ist möglich. Einige Firmen arbeiten mit Fixpreisen (besonders bei Standardumzügen), andere nach Stunden. In den Offerten siehst du klar, welches Modell angeboten wird. Fixpreise bieten mehr Planungssicherheit, Stundenansätze können bei kleineren Umzügen günstiger sein.",
       category: "Kosten",
     },
   ];
@@ -446,13 +451,25 @@ const Zug = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Umzug Zug: Umzugsfirmen vergleichen &amp; Offerten erhalten | umzugscheck.ch</title>
-        <meta name="description" content="Vergleiche Umzugsfirmen im Kanton Zug, prüfe Bewertungen und erhalte gratis Offerten. Privat- und Firmenumzüge, Reinigung, Entsorgung und mehr." />
-        <meta name="keywords" content="Umzug Zug, Umzugsfirma Zug, Umzugsunternehmen Kanton Zug, Umzug Baar, Umzug Cham" />
+        <title>Umzugsfirma Zug: Umzugsfirmen vergleichen &amp; Offerten erhalten | umzugscheck.ch</title>
+        <meta name="description" content="Finde die beste Umzugsfirma in Zug: Vergleiche geprüfte Umzugsfirmen im Kanton Zug, erhalte kostenlose Offerten und spare Zeit & Geld beim Umzug. Privatumzug, Firmenumzug & Reinigung mit Abgabegarantie." />
+        <meta name="keywords" content="Umzugsfirma Zug, Umzug Zug, Umzugsfirmen Kanton Zug, Umzugsunternehmen Zug, Umzug Baar, Umzug Cham, Umzug Steinhausen" />
         <link rel="canonical" href="https://umzugscheck.ch/zug" />
-        <meta property="og:title" content="Umzug Zug: Umzugsfirmen vergleichen & Offerten erhalten" />
-        <meta property="og:description" content="Vergleiche Umzugsfirmen im Kanton Zug und erhalte gratis Offerten." />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Umzugsfirma Zug: Umzugsfirmen vergleichen & Offerten erhalten | umzugscheck.ch" />
+        <meta property="og:description" content="Finde die beste Umzugsfirma in Zug: Vergleiche geprüfte Umzugsfirmen im Kanton Zug, erhalte kostenlose Offerten und spare Zeit & Geld beim Umzug." />
         <meta property="og:url" content="https://umzugscheck.ch/zug" />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="de_CH" />
+        <meta property="og:site_name" content="umzugscheck.ch" />
+        
+        {/* GEO Meta Tags */}
+        <meta name="geo.region" content="CH-ZG" />
+        <meta name="geo.placename" content="Kanton Zug, Schweiz" />
+        <meta name="geo.position" content="47.1662;8.5155" />
+        <meta name="ICBM" content="47.1662, 8.5155" />
+        
         <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>
       </Helmet>
 
@@ -1262,45 +1279,107 @@ const Zug = () => {
           </div>
         </section>
 
-        {/* Local Info Section */}
+        {/* SEO Content Block: Kanton Zug & wichtige Orte */}
         <section className="py-12 sm:py-16 lg:py-20 bg-secondary/5">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <ScrollReveal>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-8">
-                  Umziehen im Kanton Zug: Das musst du wissen
+                  Umzug im Kanton Zug: Das solltest du wissen
                 </h2>
               </ScrollReveal>
 
               <ScrollReveal delay={0.1}>
                 <div className="prose prose-sm sm:prose-base max-w-none space-y-6">
+                  <p className="text-muted-foreground leading-relaxed text-base">
+                    Der Kanton Zug gehört zu den wirtschaftsstärksten und attraktivsten Regionen der Schweiz. Mit seiner zentralen Lage zwischen Zürich und Luzern, den tiefen Steuern und der hohen Lebensqualität zieht er jedes Jahr tausende neue Einwohner an. Das bedeutet: Die Nachfrage nach professionellen Umzugsfirmen ist hoch, und eine frühzeitige Planung lohnt sich.
+                  </p>
+
+                  <div className="bg-background rounded-xl p-6 shadow-sm border">
+                    <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-primary" />
+                      Umzug in der Stadt Zug
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-3">
+                      Die Stadt Zug ist das pulsierende Zentrum des Kantons. Mit ihrer malerischen Altstadt, dem Zugersee und der kompakten Grösse bietet sie hohe Lebensqualität – bringt aber auch Herausforderungen für Umzüge mit sich.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed mb-3">
+                      Die engen Gassen der Altstadt erfordern oft Sondergenehmigungen für Umzugsfahrzeuge. Ein Möbellift ist bei älteren Gebäuden ohne Lift oft unverzichtbar. Lokale Umzugsfirmen kennen diese Besonderheiten und können entsprechend planen.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      <strong>Tipp:</strong> Über umzugscheck.ch findest du Umzugsfirmen, die regelmässig in der Stadt Zug umziehen und die lokalen Gegebenheiten kennen.
+                    </p>
+                  </div>
+
+                  <div className="bg-background rounded-xl p-6 shadow-sm border">
+                    <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-primary" />
+                      Umzug in Baar
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-3">
+                      Baar ist mit über 25'000 Einwohnern die grösste Gemeinde im Kanton Zug und bietet eine attraktive Mischung aus urbanem Leben und ländlicher Umgebung. Viele internationale Unternehmen haben hier ihren Sitz, was zu einer hohen Nachfrage nach Wohnraum führt.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Umzüge in Baar sind meist unkomplizierter als in der Zuger Altstadt. Die gute Verkehrsanbindung (Autobahn A4, Bahnhof) macht den Transport effizient. Dennoch empfehlen wir, mehrere Offerten zu vergleichen – die Preise können stark variieren.
+                    </p>
+                  </div>
+
+                  <div className="bg-background rounded-xl p-6 shadow-sm border">
+                    <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
+                      <Home className="w-5 h-5 text-primary" />
+                      Umzug in Cham
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-3">
+                      Cham liegt idyllisch am Zugersee und bietet Familien ein attraktives Umfeld. Die Gemeinde wächst stetig, und viele Neubauprojekte entstehen. Für Umzüge bedeutet das: gute Zufahrtsmöglichkeiten bei Neubauten, aber teilweise enge Verhältnisse im historischen Ortskern.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      <strong>Tipp:</strong> Falls du an den See ziehst, kläre frühzeitig die Parkmöglichkeiten für den Umzugstag – am Wochenende kann es eng werden.
+                    </p>
+                  </div>
+
+                  <div className="bg-background rounded-xl p-6 shadow-sm border">
+                    <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                      Umzug mit Reinigung und Abgabegarantie im Kanton Zug
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-3">
+                      Im Kanton Zug sind die Anforderungen an die Wohnungsabgabe oft hoch. Eine professionelle Endreinigung mit Abgabegarantie gibt dir Sicherheit: Falls die Verwaltung die Reinigung nicht abnimmt, wird kostenlos nachgereinigt.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Mehrere Umzugsfirmen auf umzugscheck.ch bieten kombinierte Pakete aus Umzug und Reinigung an. Das spart Zeit, Nerven und oft auch Geld im Vergleich zu getrennten Buchungen.
+                    </p>
+                  </div>
+
+                  <div className="bg-background rounded-xl p-6 shadow-sm border">
+                    <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-primary" />
+                      Firmenumzug im Kanton Zug
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-3">
+                      Der Kanton Zug ist ein bedeutender Wirtschaftsstandort mit zahlreichen internationalen Unternehmen. Firmenumzüge erfordern spezielle Expertise: IT-Equipment, sensible Dokumente, enge Zeitfenster.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Über umzugscheck.ch findest du Umzugsfirmen, die auf Geschäftsumzüge spezialisiert sind. Viele bieten Wochenend-Umzüge an, um Betriebsunterbrechungen zu minimieren. Beschreibe dein Projekt detailliert, um passende Offerten zu erhalten.
+                    </p>
+                  </div>
+
                   <div className="bg-background rounded-xl p-6 shadow-sm border">
                     <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
                       <CheckCircle2 className="w-5 h-5 text-primary" />
                       An- und Abmeldung beim Einwohneramt
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Bei einem Umzug innerhalb der Schweiz musst du dich beim Einwohneramt deiner bisherigen Gemeinde abmelden und bei der neuen Gemeinde anmelden. Dies sollte innerhalb von 14 Tagen nach dem Umzug erfolgen.
+                      Bei einem Umzug innerhalb der Schweiz musst du dich beim Einwohneramt deiner bisherigen Gemeinde abmelden und bei der neuen Gemeinde anmelden. Dies sollte innerhalb von 14 Tagen nach dem Umzug erfolgen. Im Kanton Zug kannst du viele Formalitäten auch online erledigen.
                     </p>
                   </div>
 
                   <div className="bg-background rounded-xl p-6 shadow-sm border">
                     <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
-                      <MapPin className="w-5 h-5 text-primary" />
+                      <Truck className="w-5 h-5 text-primary" />
                       Parkbewilligungen & Halteverbote
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      In der Altstadt von Zug oder bei engen Quartieren kann eine Parkbewilligung oder ein Halteverbot nötig sein. Erkundige dich frühzeitig bei der Gemeinde oder deinem Vermieter.
-                    </p>
-                  </div>
-
-                  <div className="bg-background rounded-xl p-6 shadow-sm border">
-                    <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-primary" />
-                      Besonderheiten im Kanton Zug
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Der Kanton Zug ist einer der wirtschaftsstärksten Kantone der Schweiz mit hoher Nachfrage nach Wohnraum. Lokale Umzugsfirmen kennen die örtlichen Gegebenheiten bestens.
+                      In der Altstadt von Zug oder bei engen Quartieren kann eine Parkbewilligung oder ein temporäres Halteverbot nötig sein. Die Kosten liegen typischerweise bei CHF 50–150. Erkundige dich frühzeitig bei der Gemeinde oder frage deine Umzugsfirma – viele übernehmen die Beantragung als Service.
                     </p>
                   </div>
                 </div>
@@ -1365,7 +1444,133 @@ const Zug = () => {
             </div>
           </div>
         </section>
+
+        {/* Final CTA Section */}
+        <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-primary-foreground relative overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-white/5 rounded-full blur-2xl" />
+          </div>
+          
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <ScrollReveal>
+              <div className="max-w-3xl mx-auto text-center space-y-6">
+                <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  Kostenlos & unverbindlich
+                </Badge>
+                
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  Bereit für deinen Umzug im Kanton Zug?
+                </h2>
+                
+                <p className="text-lg sm:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
+                  Vergleiche jetzt geprüfte Umzugsfirmen, spare bis zu 40% und ziehe entspannt um. 
+                  Die Anfrage dauert nur 2 Minuten.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                  <Link to="/umzugsofferten">
+                    <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90 shadow-xl group text-base px-8 py-6">
+                      <span>Jetzt Gratis-Offerten erhalten</span>
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                  <Link to="/rechner">
+                    <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 text-base px-8 py-6">
+                      <Calculator className="w-5 h-5 mr-2" />
+                      Preise berechnen
+                    </Button>
+                  </Link>
+                </div>
+                
+                <div className="flex flex-wrap justify-center gap-6 pt-6 text-sm text-primary-foreground/80">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>100% kostenlos</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Unverbindliche Offerten</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Geprüfte Schweizer Firmen</span>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
       </main>
+
+      {/* Sticky Comparison Bar */}
+      <AnimatePresence>
+        {selectedCompanies.length > 0 && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-2xl p-4 sm:hidden"
+          >
+            <div className="container mx-auto">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Layers className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{selectedCompanies.length}/3 ausgewählt</p>
+                    <p className="text-xs text-muted-foreground">Zum Vergleich</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {selectedCompanies.length >= 2 && (
+                    <Button size="sm" className="group">
+                      Vergleichen
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Desktop Sticky Comparison Bar */}
+      <AnimatePresence>
+        {selectedCompanies.length > 0 && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 hidden sm:block"
+          >
+            <div className="bg-background border border-border rounded-full shadow-2xl px-6 py-3 flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Layers className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-sm font-medium">{selectedCompanies.length} von 3 Firmen ausgewählt</span>
+              </div>
+              <div className="h-6 w-px bg-border" />
+              <div className="flex gap-2">
+                <Button variant="ghost" size="sm" onClick={() => setSelectedCompanies([])}>
+                  Löschen
+                </Button>
+                {selectedCompanies.length >= 2 && (
+                  <Button size="sm" className="group">
+                    Ausgewählte vergleichen
+                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Floating Action Buttons */}
       <div className="fixed right-4 bottom-20 sm:bottom-8 z-40 flex flex-col gap-3">
