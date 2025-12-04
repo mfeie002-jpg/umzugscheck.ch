@@ -5,11 +5,63 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
 import { swissPostalCodes } from "@/lib/swiss-postal-codes";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+
+// Animated Counter Component
+const AnimatedCounter = ({ 
+  value, 
+  suffix = "", 
+  decimals = 0,
+  duration = 2 
+}: { 
+  value: number; 
+  suffix?: string; 
+  decimals?: number;
+  duration?: number;
+}) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (isInView && !hasAnimated.current) {
+      hasAnimated.current = true;
+      const startTime = Date.now();
+      
+      const animate = () => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic for smooth deceleration
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const currentValue = easeOut * value;
+        setCount(currentValue);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          setCount(value);
+        }
+      };
+      
+      requestAnimationFrame(animate);
+    }
+  }, [isInView, value, duration]);
+
+  const formattedValue = decimals > 0 
+    ? count.toFixed(decimals) 
+    : Math.floor(count).toLocaleString("de-CH");
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {formattedValue}{suffix}
+    </span>
+  );
+};
 
 // Filter postal codes based on query
 const filterPostalCodes = (query: string) => {
@@ -136,22 +188,44 @@ export const PremiumHeroSection = () => {
               AI-gestützte Analyse, geprüfte Schweizer Partner, transparente Offerten – kostenlos und unverbindlich.
             </p>
             
-            {/* Trust Metrics Row with Checks */}
+            {/* Trust Metrics Row with Animated Counters */}
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
-              <div className="flex items-center gap-2">
+              <motion.div 
+                className="flex items-center gap-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
                 <Star className="h-5 w-5 fill-swiss-gold text-swiss-gold" />
-                <span className="font-bold text-foreground">4.8/5</span>
+                <span className="font-bold text-foreground">
+                  <AnimatedCounter value={4.8} decimals={1} duration={1.5} />/5
+                </span>
                 <span className="text-foreground/60">Bewertung</span>
-              </div>
-              <div className="flex items-center gap-2">
+              </motion.div>
+              <motion.div 
+                className="flex items-center gap-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
                 <CheckCircle2 className="h-5 w-5 text-secondary" />
-                <span className="font-bold text-foreground">15'000+</span>
+                <span className="font-bold text-foreground">
+                  <AnimatedCounter value={15000} suffix="+" duration={2} />
+                </span>
                 <span className="text-foreground/60">Umzüge gecheckt</span>
-              </div>
-              <div className="flex items-center gap-2">
+              </motion.div>
+              <motion.div 
+                className="flex items-center gap-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
                 <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                <span className="text-foreground/60">100% kostenlos</span>
-              </div>
+                <span className="font-bold text-foreground">
+                  <AnimatedCounter value={100} suffix="%" duration={1} />
+                </span>
+                <span className="text-foreground/60">kostenlos</span>
+              </motion.div>
             </div>
             
             {/* Live Activity Badge */}
