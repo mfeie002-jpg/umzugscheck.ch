@@ -1,9 +1,13 @@
 /**
  * TestimonialsSection - Customer reviews and social proof
  * Carousel on mobile, grid on desktop
+ * 
+ * OPTIMIZATIONS:
+ * 17. Enhanced card design with gradient quote
+ * 18. Better carousel indicators
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -43,6 +47,14 @@ const testimonials = [
 export default function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   
+  // Auto-advance carousel on mobile
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+  
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
@@ -52,7 +64,7 @@ export default function TestimonialsSection() {
   };
   
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-muted/50 to-background">
       <div className="container mx-auto px-4 max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -60,10 +72,10 @@ export default function TestimonialsSection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Erfahrungen von Kundinnen und Kunden
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-lg">
             Basierend auf echten Umzugserfahrungen über umzugscheck.ch
           </p>
         </motion.div>
@@ -91,26 +103,32 @@ export default function TestimonialsSection() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
             >
               <TestimonialCard testimonial={testimonials[currentIndex]} />
             </motion.div>
             
-            <div className="flex justify-center gap-4 mt-6">
+            <div className="flex justify-center items-center gap-4 mt-6">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={prevSlide}
                 aria-label="Vorherige Bewertung"
+                className="h-10 w-10 rounded-full"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-5 h-5" />
               </Button>
               <div className="flex items-center gap-2">
                 {testimonials.map((_, index) => (
-                  <div
+                  <button
                     key={index}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentIndex ? "bg-primary" : "bg-muted-foreground/30"
+                    onClick={() => setCurrentIndex(index)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      index === currentIndex 
+                        ? "bg-primary w-6" 
+                        : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
                     }`}
+                    aria-label={`Gehe zu Bewertung ${index + 1}`}
                   />
                 ))}
               </div>
@@ -119,8 +137,9 @@ export default function TestimonialsSection() {
                 size="icon"
                 onClick={nextSlide}
                 aria-label="Nächste Bewertung"
+                className="h-10 w-10 rounded-full"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-5 h-5" />
               </Button>
             </div>
           </div>
@@ -132,36 +151,41 @@ export default function TestimonialsSection() {
 
 function TestimonialCard({ testimonial }: { testimonial: typeof testimonials[0] }) {
   return (
-    <Card className="h-full border-0 shadow-lg">
-      <CardContent className="p-6">
-        <Quote className="w-8 h-8 text-primary/20 mb-3" />
-        
-        <div className="flex gap-0.5 mb-3">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={`w-4 h-4 ${
-                i < testimonial.rating
-                  ? "fill-yellow-400 text-yellow-400"
-                  : "text-muted-foreground/30"
-              }`}
-            />
-          ))}
+    <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+      <CardContent className="p-0">
+        {/* Quote Header */}
+        <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4">
+          <Quote className="w-8 h-8 text-primary/40" />
         </div>
         
-        <p className="text-sm text-foreground mb-4 leading-relaxed">
-          "{testimonial.text}"
-        </p>
-        
-        <div className="pt-4 border-t border-border">
-          <div className="font-semibold text-foreground">
-            {testimonial.name}
+        <div className="p-5 pt-0">
+          <div className="flex gap-0.5 mb-3">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`w-4 h-4 ${
+                  i < testimonial.rating
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-muted-foreground/20"
+                }`}
+              />
+            ))}
           </div>
-          <div className="text-xs text-muted-foreground">
-            {testimonial.location}
-          </div>
-          <div className="text-xs text-primary mt-1">
-            {testimonial.moveType}
+          
+          <p className="text-sm text-foreground mb-4 leading-relaxed">
+            "{testimonial.text}"
+          </p>
+          
+          <div className="pt-4 border-t border-border/50">
+            <div className="font-semibold text-foreground">
+              {testimonial.name}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {testimonial.location}
+            </div>
+            <div className="text-xs text-primary mt-1 font-medium">
+              {testimonial.moveType}
+            </div>
           </div>
         </div>
       </CardContent>
