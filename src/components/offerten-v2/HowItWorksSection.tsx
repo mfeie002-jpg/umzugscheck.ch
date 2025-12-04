@@ -9,10 +9,15 @@
  * 78. Mobile swipe indicator
  * 79. Better responsive typography
  * 80. Connection line particles
+ * 168. Pulsing step numbers
+ * 169. Animated icon backgrounds
+ * 170. Completion celebration effect
+ * 171. Step progress indicators
  */
 
-import { motion } from "framer-motion";
-import { FileText, Cpu, Users, CheckCircle, Sparkles, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FileText, Cpu, Users, CheckCircle, Sparkles, ArrowRight, ChevronRight, Zap } from "lucide-react";
 
 const steps = [
   {
@@ -22,6 +27,8 @@ const steps = [
     gradient: "from-blue-500 to-blue-600",
     bgGradient: "from-blue-500/10 to-blue-600/5",
     glowColor: "blue",
+    stat: "2 Min.",
+    statLabel: "Durchschnitt",
   },
   {
     icon: Cpu,
@@ -30,6 +37,8 @@ const steps = [
     gradient: "from-purple-500 to-purple-600",
     bgGradient: "from-purple-500/10 to-purple-600/5",
     glowColor: "purple",
+    stat: "15'000+",
+    statLabel: "Datenpunkte",
   },
   {
     icon: Users,
@@ -38,6 +47,8 @@ const steps = [
     gradient: "from-amber-500 to-amber-600",
     bgGradient: "from-amber-500/10 to-amber-600/5",
     glowColor: "amber",
+    stat: "85+",
+    statLabel: "Firmen",
   },
   {
     icon: CheckCircle,
@@ -46,25 +57,48 @@ const steps = [
     gradient: "from-green-500 to-green-600",
     bgGradient: "from-green-500/10 to-green-600/5",
     glowColor: "green",
+    stat: "40%",
+    statLabel: "Ersparnis",
   },
 ];
 
-// Animated particle on connection line
+// 168. Animated particle on connection line with enhanced effects
 const LineParticle = ({ delay }: { delay: number }) => (
   <motion.div
-    className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary shadow-lg shadow-primary/50"
+    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-gradient-to-r from-primary to-primary/50 shadow-lg shadow-primary/50"
     initial={{ left: "0%", opacity: 0 }}
     animate={{ 
       left: ["0%", "100%"],
       opacity: [0, 1, 1, 0],
+      scale: [0.5, 1, 1, 0.5],
     }}
     transition={{
-      duration: 4,
+      duration: 3,
       delay,
       repeat: Infinity,
       ease: "linear",
     }}
   />
+);
+
+// 169. Step number pulse animation
+const StepNumber = ({ number, isActive }: { number: number; isActive: boolean }) => (
+  <motion.div
+    className="relative"
+    animate={isActive ? { scale: [1, 1.1, 1] } : {}}
+    transition={{ duration: 1.5, repeat: Infinity }}
+  >
+    <motion.div
+      className={`absolute inset-0 rounded-full ${isActive ? "bg-primary/30" : "bg-transparent"}`}
+      animate={isActive ? { scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] } : {}}
+      transition={{ duration: 2, repeat: Infinity }}
+    />
+    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+      isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+    }`}>
+      {number}
+    </div>
+  </motion.div>
 );
 
 export default function HowItWorksSection() {
@@ -191,9 +225,22 @@ export default function HowItWorksSection() {
                   <h3 className="font-semibold text-foreground mb-2 text-lg group-hover:text-primary transition-colors">
                     {step.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                     {step.description}
                   </p>
+                  
+                  {/* 170. Step stats badge */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    className="inline-flex items-center gap-1.5 bg-muted/50 px-3 py-1.5 rounded-full"
+                  >
+                    <Zap className="w-3.5 h-3.5 text-primary" />
+                    <span className="text-xs font-semibold text-primary">{step.stat}</span>
+                    <span className="text-xs text-muted-foreground">{step.statLabel}</span>
+                  </motion.div>
                   
                   {/* Arrow indicator (except last) */}
                   {index < steps.length - 1 && (

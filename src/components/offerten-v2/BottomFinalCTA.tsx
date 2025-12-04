@@ -36,15 +36,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-// Floating decoration icons
+// 161. Enhanced floating decoration icons with rotation
 const floatingIcons = [
-  { Icon: Package, x: "8%", y: "15%", delay: 0, size: 48 },
-  { Icon: Shield, x: "88%", y: "12%", delay: 0.5, size: 44 },
-  { Icon: Users, x: "12%", y: "75%", delay: 1, size: 40 },
-  { Icon: TrendingUp, x: "92%", y: "80%", delay: 1.5, size: 52 },
-  { Icon: Star, x: "5%", y: "45%", delay: 0.8, size: 36 },
-  { Icon: Award, x: "95%", y: "45%", delay: 1.2, size: 42 },
+  { Icon: Package, x: "8%", y: "15%", delay: 0, size: 48, rotate: 12 },
+  { Icon: Shield, x: "88%", y: "12%", delay: 0.5, size: 44, rotate: -8 },
+  { Icon: Users, x: "12%", y: "75%", delay: 1, size: 40, rotate: 6 },
+  { Icon: TrendingUp, x: "92%", y: "80%", delay: 1.5, size: 52, rotate: -12 },
+  { Icon: Star, x: "5%", y: "45%", delay: 0.8, size: 36, rotate: 15 },
+  { Icon: Award, x: "95%", y: "45%", delay: 1.2, size: 42, rotate: -6 },
 ];
+
+// 162. Countdown timer data
+const getTimeUntilEndOfDay = () => {
+  const now = new Date();
+  const endOfDay = new Date(now);
+  endOfDay.setHours(23, 59, 59, 999);
+  const diff = endOfDay.getTime() - now.getTime();
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return { hours, minutes };
+};
 
 // Social proof names for marquee
 const recentUsers = [
@@ -59,6 +70,15 @@ export default function BottomFinalCTA() {
   const [activeUsers, setActiveUsers] = useState(23);
   const [currentProof, setCurrentProof] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(getTimeUntilEndOfDay());
+  
+  // 163. Update countdown timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(getTimeUntilEndOfDay());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
   
   // Simulate live user count
   useEffect(() => {
@@ -125,22 +145,30 @@ export default function BottomFinalCTA() {
       />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary/5 rounded-full blur-3xl" />
       
-      {/* Floating icons */}
-      {floatingIcons.map(({ Icon, x, y, delay, size }, i) => (
+      {/* 166. Enhanced floating icons with glow */}
+      {floatingIcons.map(({ Icon, x, y, delay, size, rotate }, i) => (
         <motion.div
           key={i}
           className="absolute hidden md:block"
           style={{ left: x, top: y }}
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 0.12, scale: 1 }}
+          initial={{ opacity: 0, scale: 0, rotate: 0 }}
+          whileInView={{ opacity: 0.15, scale: 1, rotate }}
           viewport={{ once: true }}
-          transition={{ delay }}
+          transition={{ delay, type: "spring" }}
           animate={{
             y: [0, -15, 0],
-            rotate: [0, 8, -8, 0],
+            rotate: [rotate, rotate + 8, rotate - 8, rotate],
+            scale: [1, 1.05, 1],
           }}
         >
-          <Icon style={{ width: size, height: size }} className="text-primary" />
+          <div className="relative">
+            <motion.div 
+              className="absolute inset-0 bg-primary/20 rounded-full blur-xl"
+              animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, delay: i * 0.2 }}
+            />
+            <Icon style={{ width: size, height: size }} className="text-primary relative z-10" />
+          </div>
         </motion.div>
       ))}
       
@@ -206,7 +234,7 @@ export default function BottomFinalCTA() {
             </span>
           </motion.div>
           
-          {/* Badge row */}
+          {/* 164. Enhanced badge row with countdown */}
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -233,11 +261,44 @@ export default function BottomFinalCTA() {
               <Gift className="w-4 h-4" />
               <span className="text-sm font-semibold">Bis 40% sparen</span>
             </motion.div>
+            
+            {/* 165. Urgency countdown badge */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-red-50 text-red-700 px-4 py-2 rounded-full border border-red-200"
+            >
+              <Timer className="w-4 h-4" />
+              <span className="text-sm font-semibold">
+                Noch {timeLeft.hours}h {timeLeft.minutes}m für Tagesangebote
+              </span>
+            </motion.div>
           </div>
           
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-            Bereit für Ihren Umzug?
-          </h2>
+          {/* 167. Animated headline with gradient */}
+          <motion.h2 
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Bereit für Ihren{" "}
+            <span className="relative inline-block">
+              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+                Umzug
+              </span>
+              <motion.span
+                className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50 rounded-full"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              />
+            </span>
+            ?
+          </motion.h2>
           
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
             Geben Sie Ihre Daten einmal ein und erhalten Sie mehrere Offerten von 
