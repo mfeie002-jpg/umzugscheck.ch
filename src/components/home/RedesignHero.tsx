@@ -8,13 +8,16 @@ import { useNavigate } from "react-router-dom";
 import { getHomepageContent } from "@/lib/content";
 import heroMovingFamily from "@/assets/hero-moving-family.jpg";
 import { toast } from "sonner";
-
+import { useTypewriter } from "@/hooks/useTypewriter";
 export const RedesignHero = () => {
   const content = getHomepageContent().hero;
   const [fromPostal, setFromPostal] = useState("");
   const [toPostal, setToPostal] = useState("");
   const [rooms, setRooms] = useState("");
   const navigate = useNavigate();
+  
+  const fullHeadline = `${content.headline} ${content.highlightedText} in der Schweiz`;
+  const { displayedText, isComplete } = useTypewriter({ text: fullHeadline, speed: 40, delay: 300 });
 
   const handleCalculate = () => {
     if (!fromPostal || !toPostal || !rooms) {
@@ -52,12 +55,24 @@ export const RedesignHero = () => {
               transition={{ duration: 0.7 }}
               className="text-center lg:text-left"
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-4 md:mb-6">
-                {content.headline}{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-                  {content.highlightedText}
-                </span>{" "}
-                in der Schweiz
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-4 md:mb-6 min-h-[2.5em] sm:min-h-[2em]">
+                {displayedText.split(content.highlightedText).map((part, index, arr) => (
+                  <span key={index}>
+                    {part}
+                    {index < arr.length - 1 && (
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                        {content.highlightedText}
+                      </span>
+                    )}
+                  </span>
+                ))}
+                {!isComplete && (
+                  <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                    className="inline-block w-[3px] h-[1em] bg-white ml-1 align-middle"
+                  />
+                )}
               </h1>
               
               <p className="text-base md:text-lg lg:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
