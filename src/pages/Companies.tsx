@@ -765,6 +765,43 @@ const Companies = () => {
           </div>
         </section>
 
+        {/* Enhanced Toolbar */}
+        <section className="py-3 bg-muted/30 border-b">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <FavoriteCompanies />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPriceChart(!showPriceChart)}
+                  className={showPriceChart ? "bg-primary/10 border-primary" : ""}
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Preistrends
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">
+                  <Clock className="w-3 h-3 mr-1" />
+                  Aktualisiert: heute
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Price Chart Panel */}
+        {showPriceChart && (
+          <section className="py-6 bg-white border-b">
+            <div className="container mx-auto px-4">
+              <div className="max-w-4xl mx-auto">
+                <PriceHistoryChart selectedCanton={selectedCanton !== "Alle Kantone" ? selectedCanton : "Zürich"} />
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Companies Grid */}
         <section className="py-12 md:py-16 bg-gradient-light">
           <div className="container mx-auto px-4">
@@ -819,20 +856,27 @@ const Companies = () => {
                       <Card className="h-full hover-lift border-2 hover:border-primary/20 transition-all duration-300 bg-white">
                         <CardContent className="p-4 sm:p-6 h-full flex flex-col">
                           <div className="space-y-4 sm:space-y-5 flex-1">
-                            {/* Header */}
+                            {/* Header with Favorite Button */}
                             <div className="flex items-start gap-3 sm:gap-4">
                               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-primary-light to-primary/5 flex items-center justify-center text-2xl sm:text-4xl shadow-soft flex-shrink-0">
-                                {company.logo}
+                                {company.logo || company.name.charAt(0)}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                                <div className="flex items-start justify-between gap-2 mb-2">
                                   <h3 className="font-bold text-lg sm:text-xl leading-tight truncate">{company.name}</h3>
-                                  {company.verified && (
-                                    <Badge className="bg-success text-white border-0 flex-shrink-0 self-start">
-                                      <CheckCircle2 className="w-3 h-3 mr-1" />
-                                      Geprüft
-                                    </Badge>
-                                  )}
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 flex-shrink-0"
+                                    onClick={() => toggleFavorite({
+                                      id: company.id,
+                                      name: company.name,
+                                      rating: company.rating,
+                                      price_level: company.price_level
+                                    })}
+                                  >
+                                    <Heart className={`w-5 h-5 ${isFavorite(company.id) ? "fill-red-500 text-red-500" : "text-muted-foreground"}`} />
+                                  </Button>
                                 </div>
                                 <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
                                   <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
@@ -843,6 +887,26 @@ const Companies = () => {
                                 </div>
                               </div>
                             </div>
+
+                            {/* Certifications */}
+                            <CompanyCertifications 
+                              companyId={company.id}
+                              isVerified={company.verified}
+                              yearsInBusiness={10 + (index % 15)}
+                              certifications={index % 2 === 0 ? ["iso9001", "famo"] : ["astag"]}
+                              isEcoFriendly={index % 3 === 0}
+                            />
+
+                            {/* Match Score */}
+                            <CompanyMatchScore
+                              companyId={company.id}
+                              companyName={company.name}
+                              userCanton={selectedCanton !== "Alle Kantone" ? selectedCanton : "Zürich"}
+                              companyAreas={company.service_areas}
+                              companyServices={company.services}
+                              companyRating={company.rating}
+                              isVerified={company.verified}
+                            />
 
                             {/* Rating */}
                             <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-accent-light/30 rounded-lg">
@@ -860,7 +924,7 @@ const Companies = () => {
                               </div>
                               <span className="font-bold text-base sm:text-lg">{company.rating}</span>
                               <span className="text-xs sm:text-sm text-muted-foreground">
-                                ({company.review_count})
+                                ({company.review_count} Bewertungen)
                               </span>
                             </div>
 
@@ -901,7 +965,7 @@ const Companies = () => {
                                   company.availability.status === 'available' ? 'bg-green-500' :
                                   company.availability.status === 'limited' ? 'bg-amber-500' : 'bg-red-500'
                                 }`} />
-                                <Calendar className="w-3.5 h-3.5" />
+                                <CalendarIcon className="w-3.5 h-3.5" />
                                 <span className="font-medium">
                                   {company.availability.status === 'available' && (
                                     <>{company.availability.slotsThisWeek} Termine diese Woche</>
