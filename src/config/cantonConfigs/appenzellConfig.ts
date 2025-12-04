@@ -1,126 +1,57 @@
-import { CantonConfig } from '@/components/canton/CantonTemplate';
+import { CantonConfig } from "@/components/canton/CantonTemplate";
+import { Building2, Truck, Sparkles, Trash2, Package, Wrench, Shield, Clock, TrendingUp, CheckCircle, Mountain } from "lucide-react";
 
 export const appenzellConfig: CantonConfig = {
   name: "Appenzell",
-  code: "AI/AR",
   slug: "appenzell",
-  heroTitle: "Umzugsfirmen in Appenzell vergleichen",
-  heroSubtitle: "Finden Sie die besten Umzugsunternehmen im Appenzellerland. Kostenlos Offerten vergleichen.",
-  
+  tagline: "Ihr Umzug im Appenzellerland",
+  icon: Mountain,
+  iconColor: "text-amber-600",
+  cities: ["Appenzell", "Herisau", "Teufen", "Speicher", "Heiden", "Bühler", "Urnäsch"],
   companies: [
-    {
-      id: "ai-1",
-      name: "Appenzeller Umzüge",
-      rating: 4.7,
-      reviewCount: 89,
-      priceLevel: "fair",
-      services: ["Privatumzug", "Bergumzug", "Reinigung"],
-      description: "Traditionsunternehmen im Appenzellerland",
-      isSponsored: true,
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "ai-2",
-      name: "Herisau Transport",
-      rating: 4.6,
-      reviewCount: 67,
-      priceLevel: "fair",
-      services: ["Privatumzug", "Firmenumzug"],
-      description: "Grösste Gemeinde AR",
-      isSponsored: true,
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "ai-3",
-      name: "Säntis Moving",
-      rating: 4.8,
-      reviewCount: 56,
-      priceLevel: "premium",
-      services: ["Chaletumzug", "Berghütte"],
-      description: "Spezialist Säntis-Region",
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "ai-4",
-      name: "Teufen Express",
-      rating: 4.5,
-      reviewCount: 45,
-      priceLevel: "fair",
-      services: ["Privatumzug", "Expressumzug"],
-      description: "Schnelle Umzüge Teufen-Region",
-      logo: "/placeholder.svg"
-    },
-    {
-      id: "ai-5",
-      name: "Innerrhoder Umzüge",
-      rating: 4.6,
-      reviewCount: 34,
-      priceLevel: "fair",
-      services: ["Privatumzug", "Tradition"],
-      description: "Familienbetrieb Appenzell Innerrhoden",
-      logo: "/placeholder.svg"
-    }
+    { name: "Appenzeller Umzüge", rating: 4.7, reviews: 67, priceLevel: "fair", sponsored: true, available: true, badge: "Top bewertet" },
+    { name: "Säntis Moving", rating: 4.6, reviews: 54, priceLevel: "günstig", sponsored: true, available: true, badge: "Beliebt" },
+    { name: "Ausserrhoden Trans", rating: 4.5, reviews: 43, priceLevel: "fair", sponsored: false, available: true, badge: null },
+    { name: "Innerrhoden Express", rating: 4.4, reviews: 38, priceLevel: "günstig", sponsored: false, available: true, badge: null },
   ],
-  
   priceExamples: [
-    { size: "1-Zimmer Wohnung", priceRange: "CHF 450 - 700", details: "Günstig" },
-    { size: "3-Zimmer Wohnung", priceRange: "CHF 900 - 1'400", details: "Standard" },
-    { size: "Bauernhaus", priceRange: "CHF 2'000 - 3'500", details: "Speziell" }
+    { size: "1-2 Zimmer", range: "CHF 550 - 950", avg: "CHF 750" },
+    { size: "3-4 Zimmer", range: "CHF 1'000 - 1'800", avg: "CHF 1'400" },
+    { size: "5+ Zimmer", range: "CHF 2'000 - 3'500", avg: "CHF 2'750" },
   ],
-  
   services: [
-    { name: "Privatumzug", icon: "Home", link: "/privatumzug" },
-    { name: "Bergumzug", icon: "Mountain", link: "/bergumzug" },
-    { name: "Reinigung", icon: "Sparkles", link: "/reinigung" },
-    { name: "Entsorgung", icon: "Trash2", link: "/entsorgung" },
-    { name: "Möbellift", icon: "ArrowUpFromLine", link: "/moebellift" },
-    { name: "Lagerung", icon: "Package", link: "/lagerung" }
+    { name: "Privatumzug", icon: Truck, link: "/privatumzug" },
+    { name: "Firmenumzug", icon: Building2, link: "/firmenumzug" },
+    { name: "Reinigung", icon: Sparkles, link: "/reinigung" },
+    { name: "Entsorgung", icon: Trash2, link: "/entsorgung" },
+    { name: "Lagerung", icon: Package, link: "/lagerung" },
+    { name: "Montage", icon: Wrench, link: "/montage" },
   ],
-  
   usps: [
-    { title: "Tradition", description: "Landsgemeinde & Brauchtum", icon: "Flag" },
-    { title: "Säntis", description: "Alpstein-Bergwelt", icon: "Mountain" },
-    { title: "Zwei Halbkantone", description: "AR & AI", icon: "Users" },
-    { title: "St. Gallen-Nähe", description: "Gute Anbindung", icon: "Train" }
+    { title: "Geprüfte Firmen", desc: "Alle Appenzeller Umzugsfirmen sind verifiziert", icon: Shield },
+    { title: "Lokale Expertise", desc: "Erfahrene Teams kennen jedes Dorf", icon: Mountain },
+    { title: "Beste Preise", desc: "Transparente Preise ohne versteckte Kosten", icon: TrendingUp },
+    { title: "Qualitätsgarantie", desc: "100% Zufriedenheit oder Geld zurück", icon: CheckCircle },
   ],
-  
   faqs: [
-    {
-      question: "Was kostet ein Umzug in Appenzell?",
-      answer: "Ein Umzug im Appenzellerland kostet CHF 450 - 3'500 - günstig mit ländlichem Charme."
-    },
-    {
-      question: "Was ist der Unterschied zwischen AR und AI?",
-      answer: "Appenzell Ausserrhoden (AR) ist reformiert und grösser, Innerrhoden (AI) ist katholisch und hat die Landsgemeinde."
-    },
-    {
-      question: "Gibt es Firmen für Bauernhaus-Umzüge?",
-      answer: "Ja, lokale Firmen kennen die traditionellen Appenzeller Häuser und ihre besonderen Anforderungen."
-    },
-    {
-      question: "Wie melde ich mich in Appenzell an?",
-      answer: "Die Anmeldung erfolgt bei der Einwohnerkontrolle Ihrer Gemeinde innerhalb von 14 Tagen."
-    },
-    {
-      question: "Ist das Appenzellerland gut erreichbar?",
-      answer: "Ja, über die Appenzeller Bahnen und die A1 ist die Region gut an St. Gallen und Zürich angebunden."
-    }
+    { question: "Was kostet ein Umzug in Appenzell?", answer: "Ein Umzug kostet zwischen CHF 550 und CHF 3'500 je nach Wohnungsgrösse." },
+    { question: "Wie finde ich eine günstige Umzugsfirma?", answer: "Vergleichen Sie kostenlos Offerten auf umzugscheck.ch." },
+    { question: "Wann ist die beste Zeit für einen Umzug?", answer: "Frühling und Herbst sind ideal." },
+    { question: "Brauche ich eine Umzugsbewilligung?", answer: "Für Halteverbotszonen benötigen Sie eine Bewilligung der Gemeinde." },
+    { question: "Wie lange dauert ein Umzug?", answer: "Ein lokaler Umzug dauert je nach Grösse 3-6 Stunden." },
   ],
-  
-  localInfo: `
-    <h3>Umziehen im Appenzellerland</h3>
-    <p>Das Appenzellerland besteht aus zwei Halbkantonen: Appenzell Ausserrhoden (AR) und Appenzell Innerrhoden (AI), mit reicher Tradition und Brauchtum.</p>
-    
-    <h4>An- und Abmeldung</h4>
-    <p>Die Anmeldung erfolgt bei der Einwohnerkontrolle Ihrer Gemeinde innerhalb von 14 Tagen.</p>
-    
-    <h4>Zwei Halbkantone</h4>
-    <p>AR (Hauptort Herisau) und AI (Hauptort Appenzell) haben unterschiedliche Verwaltungen und Steuersätze.</p>
-    
-    <h4>Gemeinden</h4>
-    <p>Herisau, Teufen, Speicher (AR) und Appenzell (AI) sind die Hauptorte. Die Bergregion Säntis/Alpstein bietet spektakuläre Lagen.</p>
-  `,
-  
-  metaTitle: "Umzugsfirmen Appenzell vergleichen | Tradition | Umzugscheck.ch",
-  metaDescription: "Vergleichen Sie die besten Umzugsfirmen im Appenzellerland (AR/AI). Tradition trifft Service. Bis zu 5 unverbindliche Offerten."
+  seo: {
+    title: "Umzugsfirmen Appenzell vergleichen | Bis 40% sparen",
+    description: "Die besten Umzugsfirmen in Appenzell vergleichen. Kostenlose Offerten, faire Preise.",
+    keywords: "Umzug Appenzell, Umzugsfirma Appenzell, Appenzell Umzug Kosten",
+  },
+  localInfo: {
+    title: "Umzug in Appenzell - Was Sie wissen müssen",
+    paragraphs: [
+      { title: "An- und Abmeldung", text: "Die Anmeldung muss innerhalb von 14 Tagen bei der Einwohnerkontrolle erfolgen." },
+      { text: "Das Appenzellerland ist bekannt für seine hügelige Landschaft. Die Umzugsfirmen kennen alle Orte." },
+    ],
+  },
+  notificationCity: "Appenzell",
+  activeUsersBase: 8,
 };
