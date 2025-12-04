@@ -10,6 +10,27 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { Link } from "react-router-dom";
 import { Star, Shield, Clock, TrendingUp, CheckCircle, ArrowRight, MapPin, Users, Truck, Zap, ChevronRight, Building2, Home, Package, Landmark } from "lucide-react";
 
+// Import Zürich components
+import { ZuerichBreadcrumb } from "@/components/zuerich/ZuerichBreadcrumb";
+import { ZuerichUrgencyBanner } from "@/components/zuerich/ZuerichUrgencyBanner";
+import { ZuerichTrustSignals } from "@/components/zuerich/ZuerichTrustSignals";
+import { ZuerichStatsCounter } from "@/components/zuerich/ZuerichStatsCounter";
+import { ZuerichCompanyFilters } from "@/components/zuerich/ZuerichCompanyFilters";
+import { ZuerichTestimonials } from "@/components/zuerich/ZuerichTestimonials";
+import { ZuerichMovingTips } from "@/components/zuerich/ZuerichMovingTips";
+import { ZuerichInteractiveMap } from "@/components/zuerich/ZuerichInteractiveMap";
+import { ZuerichServiceComparison } from "@/components/zuerich/ZuerichServiceComparison";
+import { ZuerichPriceCalculatorMini } from "@/components/zuerich/ZuerichPriceCalculatorMini";
+import { ZuerichReviewsShowcase } from "@/components/zuerich/ZuerichReviewsShowcase";
+import { ZuerichChecklist } from "@/components/zuerich/ZuerichChecklist";
+import { ZuerichRelatedServices } from "@/components/zuerich/ZuerichRelatedServices";
+import { ZuerichContactSection } from "@/components/zuerich/ZuerichContactSection";
+import { ZuerichNewsletter } from "@/components/zuerich/ZuerichNewsletter";
+import { ZuerichPartnersSection } from "@/components/zuerich/ZuerichPartnersSection";
+import { ZuerichQuickActions } from "@/components/zuerich/ZuerichQuickActions";
+import { ZuerichSocialProof } from "@/components/zuerich/ZuerichSocialProof";
+import { ZuerichWeatherWidget } from "@/components/zuerich/ZuerichWeatherWidget";
+
 const zuerichCities = ["Zürich", "Winterthur", "Uster", "Dübendorf", "Dietikon", "Wetzikon", "Kloten", "Bülach", "Horgen", "Wädenswil"];
 
 const topCompanies = [
@@ -40,13 +61,6 @@ const services = [
   { name: "Kleintransporte", icon: Truck, link: "/kleintransporte" },
 ];
 
-const usps = [
-  { title: "Grösste Auswahl", desc: "Die meisten Umzugsfirmen der Schweiz", icon: Landmark },
-  { title: "Bis 40% sparen", desc: "Vergleichen Sie Preise von Zürcher Firmen", icon: TrendingUp },
-  { title: "Schnelle Offerten", desc: "Erhalten Sie bis zu 5 Angebote in 24h", icon: Clock },
-  { title: "Geprüfte Partner", desc: "Alle Firmen sind versichert und verifiziert", icon: Shield },
-];
-
 const faqs = [
   { question: "Was kostet ein Umzug in Zürich?", answer: "Ein Umzug in Zürich kostet zwischen CHF 590 und CHF 3'790 je nach Wohnungsgrösse. Zürich hat die höchsten Umzugspreise der Schweiz aufgrund der hohen Nachfrage." },
   { question: "Welche Umzugsfirma ist die beste in Zürich?", answer: "Die besten Umzugsfirmen in Zürich haben Bewertungen von 4.8 oder höher. Vergleichen Sie Preise und Leistungen auf unserer Plattform." },
@@ -55,6 +69,8 @@ const faqs = [
   { question: "Sind die Umzugsfirmen versichert?", answer: "Alle Unternehmen auf unserer Plattform sind vollständig versichert und verifiziert." },
 ];
 
+const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
+
 export const Zuerich = () => {
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
@@ -62,28 +78,24 @@ export const Zuerich = () => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [activeUsers, setActiveUsers] = useState(18);
   const [showNotification, setShowNotification] = useState(false);
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
 
   useEffect(() => { const i = setInterval(() => setActiveUsers(p => Math.max(12, p + Math.floor(Math.random() * 3) - 1)), 5000); return () => clearInterval(i); }, []);
   useEffect(() => { const t = setTimeout(() => setShowNotification(true), 3000); return () => clearTimeout(t); }, []);
 
   const handleServiceToggle = (s: string) => setSelectedServices(p => p.includes(s) ? p.filter(x => x !== s) : [...p, s]);
+  const toggleCompanySelection = (name: string) => setSelectedCompanies(p => p.includes(name) ? p.filter(n => n !== name) : [...p, name]);
 
   return (
     <div className="min-h-screen bg-background">
       <OptimizedSEO title="Umzugsfirmen Zürich – Vergleichen & bis zu 40% sparen" description="Vergleichen Sie Umzugsfirmen in Zürich. Kostenlose Offerten von geprüften Unternehmen. ✓ Grösste Auswahl ✓ 100% gratis" canonicalUrl="https://umzugscheck.ch/zuerich" keywords="Umzug Zürich, Umzugsfirma Zürich, Zügelfirma Zürich, Umzugsunternehmen Zürich" />
 
-      <AnimatePresence>
-        {showNotification && (
-          <motion.div initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} className="fixed bottom-4 right-4 z-50 bg-card border border-border rounded-lg shadow-lg p-4 max-w-sm">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center"><CheckCircle className="h-5 w-5 text-success" /></div>
-              <div><p className="text-sm font-medium">Neue Buchung in Zürich</p><p className="text-xs text-muted-foreground">vor 1 Minute</p></div>
-              <button onClick={() => setShowNotification(false)} className="text-muted-foreground hover:text-foreground">×</button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ZuerichUrgencyBanner />
+      <ZuerichBreadcrumb />
+      <ZuerichQuickActions />
+      <ZuerichSocialProof />
 
+      {/* Hero Section */}
       <section className="relative py-12 md:py-20 overflow-hidden bg-gradient-to-br from-background via-muted/30 to-background">
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -98,7 +110,6 @@ export const Zuerich = () => {
                   </motion.div>
                 ))}
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground"><span className="w-2 h-2 bg-success rounded-full animate-pulse" /><span>{activeUsers} Personen vergleichen gerade in Zürich</span></div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
@@ -122,34 +133,74 @@ export const Zuerich = () => {
         </div>
       </section>
 
+      <ZuerichTrustSignals />
+      <ZuerichStatsCounter />
+
+      {/* Companies Section */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Top 10 Umzugsfirmen in Zürich</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">Top 10 Umzugsfirmen in Zürich</h2>
+          <ZuerichCompanyFilters />
           <div className="space-y-3">
             {topCompanies.map((c, i) => (
-              <Card key={c.name} className={`hover:shadow-lg transition-all ${c.sponsored ? 'border-primary/30 bg-primary/5' : ''}`}>
+              <Card key={c.name} className={`hover:shadow-lg transition-all ${c.sponsored ? 'border-primary/30 bg-primary/5' : ''} ${selectedCompanies.includes(c.name) ? 'ring-2 ring-primary' : ''}`}>
                 <CardContent className="p-4"><div className="flex items-center gap-4">
+                  <Checkbox checked={selectedCompanies.includes(c.name)} onCheckedChange={() => toggleCompanySelection(c.name)} />
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i < 3 ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{i + 1}</div>
-                  <div className="flex-1"><div className="flex items-center gap-2 flex-wrap"><h3 className="font-semibold">{c.name}</h3>{c.sponsored && <Badge variant="outline" className="text-xs bg-primary/10">Gesponsert</Badge>}{c.badge && <Badge variant="secondary" className="text-xs">{c.badge}</Badge>}</div><div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground"><Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />{c.rating} ({c.reviews} Bewertungen)<Badge variant="outline" className="text-xs">{c.priceLevel}</Badge></div></div>
+                  <div className="flex-1"><div className="flex items-center gap-2 flex-wrap"><h3 className="font-semibold">{c.name}</h3>{c.sponsored && <Badge variant="outline" className="text-xs bg-primary/10">Gesponsert</Badge>}{c.badge && <Badge variant="secondary" className="text-xs">{c.badge}</Badge>}</div><div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground"><Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />{c.rating} ({c.reviews})<Badge variant="outline" className="text-xs">{c.priceLevel}</Badge></div></div>
                   <div className="flex items-center gap-2">{c.available ? <Badge className="bg-success/10 text-success">Verfügbar</Badge> : <Badge variant="outline">Ausgebucht</Badge>}<Button size="sm" className="bg-primary">Offerte</Button></div>
                 </div></CardContent>
               </Card>
             ))}
           </div>
-          <div className="text-center mt-6"><Link to="/firmen?region=zuerich"><Button variant="outline" size="lg">Alle Umzugsfirmen<ChevronRight className="ml-2 h-4 w-4" /></Button></Link></div>
+          {selectedCompanies.length > 0 && (
+            <div className="sticky bottom-4 mt-6 bg-card border-2 border-primary rounded-xl p-4 shadow-xl flex items-center justify-between">
+              <span className="font-medium">{selectedCompanies.length} Firma(en) ausgewählt</span>
+              <Link to={`/zuerich/vergleich?companies=${selectedCompanies.join(',')}`}><Button>Vergleichen<ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
+            </div>
+          )}
         </div>
       </section>
 
-      <section className="py-12"><div className="container mx-auto px-4"><h2 className="text-2xl font-bold text-center mb-8">Umzugspreise in Zürich</h2><div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">{priceExamples.map(p => <Card key={p.size} className="text-center"><CardContent className="p-6"><Home className="h-8 w-8 mx-auto mb-3 text-primary" /><h3 className="font-semibold mb-2">{p.size}</h3><p className="text-2xl font-bold text-primary">{p.avg}</p><p className="text-sm text-muted-foreground">{p.range}</p></CardContent></Card>)}</div></div></section>
+      <ZuerichTestimonials />
+      <ZuerichServiceComparison />
+      
+      {/* Price Examples & Calculator */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
+            <div>
+              <h2 className="text-2xl font-bold mb-6">Umzugspreise in Zürich</h2>
+              <div className="space-y-4">
+                {priceExamples.map(p => (
+                  <Card key={p.size}>
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Home className="h-8 w-8 text-primary" />
+                      <div className="flex-1"><h3 className="font-semibold">{p.size}</h3><p className="text-sm text-muted-foreground">{p.range}</p></div>
+                      <p className="text-xl font-bold text-primary">{p.avg}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            <ZuerichPriceCalculatorMini />
+          </div>
+        </div>
+      </section>
 
-      <section className="py-12 bg-muted/30"><div className="container mx-auto px-4"><div className="grid grid-cols-2 md:grid-cols-6 gap-4">{services.map(s => <Link key={s.name} to={s.link}><Card className="hover:shadow-lg hover:border-primary/30 transition-all h-full"><CardContent className="p-4 text-center"><s.icon className="h-8 w-8 mx-auto mb-2 text-primary" /><p className="text-sm font-medium">{s.name}</p></CardContent></Card></Link>)}</div></div></section>
+      <ZuerichMovingTips />
+      <ZuerichInteractiveMap />
+      <ZuerichReviewsShowcase />
+      <ZuerichChecklist />
+      <ZuerichRelatedServices />
+      <ZuerichContactSection />
+      <ZuerichNewsletter />
+      <ZuerichPartnersSection />
 
-      <section className="py-12"><div className="container mx-auto px-4"><div className="grid md:grid-cols-4 gap-6">{usps.map(u => <Card key={u.title} className="h-full"><CardContent className="p-6"><div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4"><u.icon className="h-6 w-6 text-primary" /></div><h3 className="font-semibold mb-2">{u.title}</h3><p className="text-sm text-muted-foreground">{u.desc}</p></CardContent></Card>)}</div></div></section>
-
-      <section className="py-12 bg-muted/30"><div className="container mx-auto px-4 max-w-4xl"><h2 className="text-2xl font-bold mb-6">Umzug in Zürich – Informationen</h2><div className="prose prose-gray max-w-none text-muted-foreground"><p className="mb-4">Zürich ist die grösste Stadt der Schweiz und ein wichtiges Wirtschaftszentrum. Mit über 400'000 Einwohnern ist der Umzugsmarkt entsprechend gross und wettbewerbsintensiv.</p><h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">Umzug in der Stadt</h3><p className="mb-4">In Zürich sind Umzüge aufgrund der dichten Bebauung und Parkplatzsituation oft herausfordernd. Professionelle Umzugsfirmen kennen die örtlichen Gegebenheiten und haben entsprechende Lösungen.</p><h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">Parkbewilligung</h3><p>Für Umzüge in Zürich ist eine Parkbewilligung beim Tiefbauamt erforderlich. Die Umzugsfirmen können diese für Sie beantragen.</p></div></div></section>
-
+      {/* FAQ */}
       <section className="py-12"><div className="container mx-auto px-4 max-w-3xl"><h2 className="text-2xl font-bold text-center mb-8">Häufige Fragen</h2><FAQAccordion items={faqs} /></div></section>
 
+      {/* Final CTA */}
       <section className="py-12 bg-primary text-primary-foreground"><div className="container mx-auto px-4 text-center"><h2 className="text-2xl font-bold mb-4">Bereit für Ihren Umzug in Zürich?</h2><p className="mb-6 opacity-90">Vergleichen Sie jetzt kostenlos die besten Umzugsfirmen</p><Link to="/umzug-offerte"><Button size="lg" variant="secondary" className="h-12 px-8">Jetzt vergleichen<ArrowRight className="ml-2 h-4 w-4" /></Button></Link></div></section>
     </div>
   );
