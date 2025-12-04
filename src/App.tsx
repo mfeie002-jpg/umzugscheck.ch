@@ -35,6 +35,7 @@ import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
+import { ScrollProgressBar } from "./components/ScrollProgressBar";
 import { AIMovingAssistant } from "./components/AIMovingAssistant";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import { QuickActionBar } from "./components/QuickActionBar";
@@ -154,6 +155,7 @@ const App = () => (
               <PreloadResources />
               <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
+                <ScrollProgressBar />
           <AIMovingAssistant />
           <ScrollToTopOnRoute />
           
