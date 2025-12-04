@@ -13,10 +13,13 @@
  * 118. Share testimonial button
  * 119. Date display
  * 120. Slide transition effects
+ * 190. Touch swipe carousel for mobile
+ * 191. Mobile-optimized card sizing
+ * 192. Swipe indicator dots
  */
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight, Quote, CheckCircle2, Shield, Award, TrendingUp, BadgeCheck, MapPin, Calendar, Share2, Play } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -131,6 +134,16 @@ export default function TestimonialsSection() {
     setProgress(0);
   };
   
+  // 190. Touch swipe handler for mobile
+  const handleDragEnd = (_: any, info: PanInfo) => {
+    const swipeThreshold = 50;
+    if (info.offset.x < -swipeThreshold) {
+      nextSlide();
+    } else if (info.offset.x > swipeThreshold) {
+      prevSlide();
+    }
+  };
+  
   const slideVariants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 300 : -300,
@@ -228,7 +241,7 @@ export default function TestimonialsSection() {
           ))}
         </div>
         
-        {/* Mobile: Carousel with slide transitions */}
+        {/* Mobile: Carousel with swipe support */}
         <div className="md:hidden">
           <div className="relative">
             {/* Progress bar */}
@@ -239,7 +252,25 @@ export default function TestimonialsSection() {
               />
             </div>
             
-            <div className="overflow-hidden">
+            {/* 190. Swipe hint for mobile */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-muted-foreground flex items-center gap-1"
+            >
+              <ChevronLeft className="w-3 h-3" />
+              <span>Swipe</span>
+              <ChevronRight className="w-3 h-3" />
+            </motion.div>
+            
+            {/* 191. Touch-enabled carousel container */}
+            <motion.div 
+              className="overflow-hidden touch-pan-y"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={handleDragEnd}
+            >
               <AnimatePresence initial={false} custom={direction} mode="wait">
                 <motion.div
                   key={currentIndex}
@@ -248,12 +279,13 @@ export default function TestimonialsSection() {
                   initial="enter"
                   animate="center"
                   exit="exit"
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="px-1"
                 >
                   <TestimonialCard testimonial={testimonials[currentIndex]} index={currentIndex} />
                 </motion.div>
               </AnimatePresence>
-            </div>
+            </motion.div>
             
             <div className="flex justify-center items-center gap-4 mt-6">
               <Button
