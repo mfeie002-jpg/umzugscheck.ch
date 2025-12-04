@@ -1,14 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
 import { swissPostalCodes } from "@/lib/swiss-postal-codes";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 // Filter postal codes based on query
 const filterPostalCodes = (query: string) => {
@@ -27,6 +28,19 @@ export const PremiumHeroSection = () => {
   const [fromPostal, setFromPostal] = useState("");
   const [toPostal, setToPostal] = useState("");
   const [rooms, setRooms] = useState("");
+  const prefersReducedMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax scroll effect
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Transform scroll progress to parallax movement (slower than scroll)
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.5], [0.85, 0.95]);
 
   // Memoize filtered results
   const fromOptions = useMemo(() => filterPostalCodes(fromPostal), [fromPostal]);
@@ -42,18 +56,26 @@ export const PremiumHeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-      {/* Background Image - Using img element for LCP optimization */}
-      <img 
-        src={heroFamilyMoving}
-        alt=""
-        fetchPriority="high"
-        decoding="sync"
-        sizes="100vw"
-        className="absolute inset-0 w-full h-full object-cover object-center"
-        width={1920}
-        height={1080}
-      />
+    <section ref={sectionRef} className="relative min-h-[85vh] flex items-center overflow-hidden">
+      {/* Background Image with Parallax Effect */}
+      <motion.div
+        className="absolute inset-0 w-full h-full"
+        style={prefersReducedMotion ? {} : { 
+          y: backgroundY,
+          scale: backgroundScale
+        }}
+      >
+        <img 
+          src={heroFamilyMoving}
+          alt=""
+          fetchPriority="high"
+          decoding="sync"
+          sizes="100vw"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          width={1920}
+          height={1080}
+        />
+      </motion.div>
       
       {/* Gradient Overlay - reduced to make image more visible */}
       <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/60 to-transparent" />
