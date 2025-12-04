@@ -5,12 +5,16 @@
  * OPTIMIZATIONS:
  * 37. "Empfohlen" badge for top company
  * 38. Better row highlighting with gradient
- * 39. Animated rank numbers
+ * 39. Animated rank numbers with medals
  * 40. Enhanced mobile card design
+ * 41. Hover effects on rows
+ * 42. Savings highlight badges
+ * 43. Trust verification badges
+ * 44. Response time indicators
  */
 
 import { motion } from "framer-motion";
-import { Star, Clock, CheckCircle2, ChevronRight, Award, TrendingUp, Sparkles } from "lucide-react";
+import { Star, Clock, CheckCircle2, ChevronRight, Award, TrendingUp, Sparkles, Medal, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,6 +32,7 @@ const mockCompanies = [
     highlight: true,
     recommended: true,
     savings: "Bis 35% günstiger",
+    medal: "gold",
   },
   {
     name: "Swiss Move Express",
@@ -41,6 +46,7 @@ const mockCompanies = [
     highlight: false,
     recommended: false,
     savings: null,
+    medal: "silver",
   },
   {
     name: "Budget Umzüge GmbH",
@@ -54,8 +60,15 @@ const mockCompanies = [
     highlight: false,
     recommended: false,
     savings: "Günstigster Anbieter",
+    medal: "bronze",
   },
 ];
+
+const medalColors = {
+  gold: "from-amber-400 to-amber-500",
+  silver: "from-gray-300 to-gray-400",
+  bronze: "from-amber-600 to-amber-700",
+};
 
 const PriceIndicator = ({ level }: { level: number }) => (
   <div className="flex gap-0.5">
@@ -77,6 +90,7 @@ export default function ComparisonShowcase() {
     <section className="py-16 md:py-24 bg-gradient-to-b from-muted/50 to-muted/20 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-4 max-w-6xl relative z-10">
         <motion.div
@@ -108,7 +122,7 @@ export default function ComparisonShowcase() {
         <div className="hidden lg:block overflow-hidden rounded-2xl border border-border/50 shadow-xl bg-card">
           {/* Header */}
           <div className="grid grid-cols-7 gap-4 p-5 bg-muted/50 border-b border-border/50 font-semibold text-sm text-muted-foreground">
-            <div className="text-center">#</div>
+            <div className="text-center">Rang</div>
             <div className="col-span-2">Umzugsfirma</div>
             <div>Spezialisierung</div>
             <div>Preislevel</div>
@@ -124,37 +138,48 @@ export default function ComparisonShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className={`grid grid-cols-7 gap-4 p-5 items-center transition-all duration-300 hover:bg-muted/30 ${
+              whileHover={{ backgroundColor: "rgba(var(--primary), 0.02)" }}
+              className={`grid grid-cols-7 gap-4 p-5 items-center transition-all duration-300 ${
                 index !== mockCompanies.length - 1 ? "border-b border-border/50" : ""
               } ${company.highlight ? "bg-gradient-to-r from-primary/5 via-primary/3 to-transparent" : ""}`}
             >
-              {/* Rank */}
+              {/* Rank with medal */}
               <div className="flex justify-center">
                 <motion.div 
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg ${
-                    index === 0 ? "bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-lg" :
-                    index === 1 ? "bg-gradient-to-br from-gray-300 to-gray-400 text-white" :
-                    "bg-muted text-muted-foreground"
-                  }`}
-                  whileHover={{ scale: 1.1 }}
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${medalColors[company.medal as keyof typeof medalColors]} flex items-center justify-center shadow-lg relative`}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
                 >
-                  {index + 1}
+                  {index === 0 ? (
+                    <Trophy className="w-6 h-6 text-white" />
+                  ) : (
+                    <span className="font-bold text-lg text-white">{index + 1}</span>
+                  )}
                 </motion.div>
               </div>
               
               <div className="col-span-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center font-bold text-primary text-lg border border-border/50">
+                  <motion.div 
+                    className="w-12 h-12 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center font-bold text-primary text-lg border border-border/50"
+                    whileHover={{ scale: 1.05 }}
+                  >
                     {company.name.charAt(0)}
-                  </div>
+                  </motion.div>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-foreground">{company.name}</span>
                       {company.recommended && (
-                        <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 text-xs px-2 py-0.5">
-                          <Award className="w-3 h-3 mr-1" />
-                          Empfohlen
-                        </Badge>
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                        >
+                          <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 text-xs px-2 py-0.5 shadow-sm">
+                            <Award className="w-3 h-3 mr-1" />
+                            Empfohlen
+                          </Badge>
+                        </motion.div>
                       )}
                       {company.verified && (
                         <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50 text-xs px-1.5 py-0">
@@ -165,7 +190,16 @@ export default function ComparisonShowcase() {
                     </div>
                     <div className="text-sm text-muted-foreground">{company.region}</div>
                     {company.savings && (
-                      <div className="text-xs text-green-600 font-medium mt-1">{company.savings}</div>
+                      <motion.div 
+                        className="text-xs text-green-600 font-medium mt-1 inline-flex items-center gap-1"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.1 + 0.2 }}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        {company.savings}
+                      </motion.div>
                     )}
                   </div>
                 </div>
@@ -189,7 +223,12 @@ export default function ComparisonShowcase() {
               </div>
               
               <div className="flex items-center gap-1.5">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.5)]" />
+                </motion.div>
                 <span className="font-semibold">{company.rating}</span>
                 <span className="text-sm text-muted-foreground">({company.reviews})</span>
               </div>
@@ -211,8 +250,9 @@ export default function ComparisonShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
             >
-              <Card className={`border-border/50 overflow-hidden ${company.highlight ? "ring-2 ring-primary/30 shadow-lg" : ""}`}>
+              <Card className={`border-border/50 overflow-hidden ${company.highlight ? "ring-2 ring-primary/30 shadow-lg" : "shadow-md"}`}>
                 {/* Recommended banner */}
                 {company.recommended && (
                   <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-2 flex items-center justify-center gap-2">
@@ -225,15 +265,18 @@ export default function ComparisonShowcase() {
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="relative">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center font-bold text-primary text-xl border border-border/50">
+                        <motion.div 
+                          className="w-14 h-14 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center font-bold text-primary text-xl border border-border/50"
+                          whileHover={{ scale: 1.05 }}
+                        >
                           {company.name.charAt(0)}
-                        </div>
-                        <div className={`absolute -top-2 -left-2 w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm ${
-                          index === 0 ? "bg-gradient-to-br from-amber-400 to-amber-500 text-white" :
-                          index === 1 ? "bg-gradient-to-br from-gray-300 to-gray-400 text-white" :
-                          "bg-muted text-muted-foreground"
-                        }`}>
-                          {index + 1}
+                        </motion.div>
+                        <div className={`absolute -top-2 -left-2 w-8 h-8 rounded-lg bg-gradient-to-br ${medalColors[company.medal as keyof typeof medalColors]} flex items-center justify-center shadow-lg`}>
+                          {index === 0 ? (
+                            <Trophy className="w-4 h-4 text-white" />
+                          ) : (
+                            <span className="font-bold text-sm text-white">{index + 1}</span>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -250,7 +293,8 @@ export default function ComparisonShowcase() {
                   </div>
                   
                   {company.savings && (
-                    <div className="text-sm text-green-600 font-medium mb-3 bg-green-50 px-3 py-1.5 rounded-lg inline-block">
+                    <div className="text-sm text-green-600 font-medium mb-3 bg-green-50 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
                       {company.savings}
                     </div>
                   )}
@@ -294,14 +338,16 @@ export default function ComparisonShowcase() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <Button
-            size="lg"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 h-12 px-8"
-          >
-            Jetzt Offerten anfordern
-            <ChevronRight className="w-4 h-4 ml-1" />
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button
+              size="lg"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 h-12 px-8"
+            >
+              Jetzt Offerten anfordern
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     </section>
