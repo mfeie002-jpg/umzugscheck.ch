@@ -27,6 +27,7 @@ import {
   FAQSection,
   BottomFinalCTA,
   BottomStickyCTA,
+  PageEnhancements,
 } from "@/components/offerten-v2";
 import { Link } from "react-router-dom";
 
@@ -65,6 +66,7 @@ const Umzugsofferten = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageEnhancements />
       <Helmet>
         <title>Umzugsofferten vergleichen mit KI | Gratis & unverbindlich | umzugscheck.ch</title>
         <meta

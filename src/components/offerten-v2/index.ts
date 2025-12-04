@@ -24,3 +24,4 @@ export { default as TestimonialsSection } from "./TestimonialsSection";
 export { default as FAQSection } from "./FAQSection";
 export { default as BottomFinalCTA } from "./BottomFinalCTA";
 export { default as BottomStickyCTA } from "./BottomStickyCTA";
+export { default as PageEnhancements, ScrollProgressBar, ReadingTimeEstimate, TableOfContents, BackToTopButton } from "./PageEnhancements";
