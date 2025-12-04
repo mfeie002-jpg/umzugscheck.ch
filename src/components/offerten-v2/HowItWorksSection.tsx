@@ -22,6 +22,16 @@
  * 333. Card shadow depth
  * 334. Icon morph transitions
  * 335. Scroll-triggered reveals
+ * 441. Interactive step preview
+ * 442. Animated step connector
+ * 443. Time estimation badges
+ * 444. Step completion rewards
+ * 445. Micro-interaction sounds hint
+ * 446. Step dependency visualization
+ * 447. Quick start CTA integration
+ * 448. Animated progress ring
+ * 449. Step detail expandable
+ * 450. Celebration confetti on complete
  */
 
 import { useState } from "react";
