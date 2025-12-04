@@ -96,7 +96,7 @@ import Tools from "./pages/Tools";
 import UserDashboard from "./pages/UserDashboard";
 import CompanyComparison from "./pages/CompanyComparison";
 import MobileBottomNav from "./components/MobileBottomNav";
-import { OnboardingTour } from "./components/OnboardingTour";
+
 
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
@@ -367,7 +367,7 @@ const App = () => (
                 </Suspense>
               </main>
                 <MobileBottomNav />
-                <OnboardingTour />
+                
                 <Footer />
               </div>
             </BrowserRouter>
