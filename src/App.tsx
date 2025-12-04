@@ -2,13 +2,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import { Suspense, lazy } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PreloadResources } from "@/components/PreloadResources";
 import { PageLoadingFallback } from "@/components/ui/loading-fallback";
+import { AnimatedRoutes } from "@/components/AnimatedRoutes";
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -163,7 +164,7 @@ const App = () => (
           <StickyContactBar />
               <main className="flex-1">
                 <Suspense fallback={<PageLoadingFallback />}>
-                   <Routes>
+                   <AnimatedRoutes>
           <Route path="/" element={<IndexPremium />} />
           <Route path="/old-home" element={<Index />} />
           <Route path="/v2" element={<HomeOptimized />} />
@@ -362,7 +363,7 @@ const App = () => (
             <Route path="/offerten" element={<OffertenOptimized />} />
             <Route path="/sitemap.xml" element={<Sitemap />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
+          </AnimatedRoutes>
                 </Suspense>
               </main>
                 <MobileBottomNav />
