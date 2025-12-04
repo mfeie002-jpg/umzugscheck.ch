@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, Lightbulb, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
+import { useHapticFeedback } from "@/hooks/useHapticFeedback";
 
 interface Tip {
   id: string;
@@ -54,16 +55,37 @@ const MOVING_TIPS: Tip[] = [
 
 export const MovingTipsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const { lightTap } = useHapticFeedback();
 
   const nextTip = () => {
+    lightTap();
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % MOVING_TIPS.length);
   };
 
   const prevTip = () => {
+    lightTap();
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + MOVING_TIPS.length) % MOVING_TIPS.length);
   };
 
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, { offset, velocity }: PanInfo) => {
+    const swipe = Math.abs(offset.x) * velocity.x;
+    if (swipe < -5000) {
+      nextTip();
+    } else if (swipe > 5000) {
+      prevTip();
+    }
+  };
+
   const currentTip = MOVING_TIPS[currentIndex];
+
+  const variants = {
+    enter: (dir: number) => ({ x: dir > 0 ? 100 : -100, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir < 0 ? 100 : -100, opacity: 0 }),
+  };
 
   return (
     <Card className="border-border/50 shadow-sm overflow-hidden">
@@ -91,14 +113,20 @@ export const MovingTipsCarousel = () => {
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentTip.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
             transition={{ duration: 0.2 }}
-            className="space-y-3"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.5}
+            onDragEnd={handleDragEnd}
+            className="space-y-3 cursor-grab active:cursor-grabbing touch-pan-y"
           >
             <div className="flex items-center gap-2">
               <Badge variant="secondary">{currentTip.category}</Badge>
@@ -117,10 +145,14 @@ export const MovingTipsCarousel = () => {
           {MOVING_TIPS.map((_, index) => (
             <button
               key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? "bg-primary" : "bg-muted-foreground/30"
+              className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                index === currentIndex ? "bg-primary w-4" : "bg-muted-foreground/30"
               }`}
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => {
+                lightTap();
+                setDirection(index > currentIndex ? 1 : -1);
+                setCurrentIndex(index);
+              }}
             />
           ))}
         </div>
