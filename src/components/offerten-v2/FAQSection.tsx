@@ -13,11 +13,14 @@
  * 108. Enhanced accordion animations
  * 109. Progress indicator
  * 110. Related questions
+ * 193. Mobile-optimized touch targets (min 44px)
+ * 194. Collapsible search on mobile
+ * 195. Sticky category tabs on mobile scroll
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { HelpCircle, ChevronDown, Search, Clock, ThumbsUp, Link2, ChevronUp, ChevronRight, Sparkles, MessageCircle } from "lucide-react";
+import { HelpCircle, ChevronDown, Search, Clock, ThumbsUp, Link2, ChevronUp, ChevronRight, Sparkles, MessageCircle, X } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -183,34 +186,47 @@ export default function FAQSection() {
           viewport={{ once: true }}
           className="mb-8 space-y-4"
         >
-          {/* Search input */}
+          {/* 194. Mobile-optimized search input with larger touch target */}
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               placeholder="Frage suchen..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-12 bg-card border-2 border-border/50 focus:border-primary/50 rounded-xl"
+              className="pl-12 h-14 md:h-12 text-base bg-card border-2 border-border/50 focus:border-primary/50 rounded-xl"
             />
+            {searchQuery && (
+              <motion.button
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-muted flex items-center justify-center"
+              >
+                <X className="w-4 h-4" />
+              </motion.button>
+            )}
           </div>
           
-          {/* Category tabs */}
-          <div className="flex flex-wrap gap-2 justify-center">
-            {categories.map((category) => (
-              <motion.button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  activeCategory === category
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                    : "bg-card text-muted-foreground hover:bg-muted border border-border/50"
-                }`}
-              >
-                {category}
-              </motion.button>
-            ))}
+          {/* 195. Horizontally scrollable category tabs for mobile */}
+          <div className="relative -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 md:flex-wrap md:justify-center scrollbar-hide snap-x snap-mandatory">
+              {categories.map((category) => (
+                <motion.button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  whileTap={{ scale: 0.95 }}
+                  className={`flex-shrink-0 snap-start px-5 py-3 md:px-4 md:py-2 rounded-full text-sm font-medium transition-all duration-300 min-h-[44px] ${
+                    activeCategory === category
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "bg-card text-muted-foreground hover:bg-muted border border-border/50"
+                  }`}
+                >
+                  {category}
+                </motion.button>
+              ))}
+            </div>
+            {/* Fade gradient on mobile */}
+            <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none md:hidden" />
           </div>
           
           {/* Expand/Collapse all */}
@@ -264,7 +280,8 @@ export default function FAQSection() {
                     value={`faq-${index}`}
                     className="bg-card border-2 border-border/50 rounded-xl px-0 overflow-hidden data-[state=open]:border-primary/30 data-[state=open]:shadow-lg data-[state=open]:shadow-primary/5 transition-all duration-300"
                   >
-                    <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-5 px-6 group [&[data-state=open]>div>.chevron]:rotate-180">
+                    {/* 193. Mobile-optimized touch target (min 44px padding area) */}
+                    <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-5 md:py-5 px-4 md:px-6 group [&[data-state=open]>div>.chevron]:rotate-180 min-h-[60px]">
                       <div className="flex items-start gap-4 w-full pr-4">
                         {/* Animated number badge */}
                         <motion.span 
@@ -321,9 +338,8 @@ export default function FAQSection() {
                           <div className="flex items-center gap-3">
                             <motion.button
                               onClick={() => handleHelpful(index)}
-                              whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                              className={`flex items-center gap-1.5 px-4 py-2.5 md:px-3 md:py-1.5 rounded-lg text-sm md:text-xs font-medium transition-colors min-h-[44px] md:min-h-0 ${
                                 helpfulVotes[index]
                                   ? "bg-green-100 text-green-700"
                                   : "bg-muted text-muted-foreground hover:bg-green-50 hover:text-green-600"
