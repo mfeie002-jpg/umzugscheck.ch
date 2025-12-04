@@ -29,6 +29,9 @@ import CompanySimilar from "@/components/CompanySimilar";
 import CompanyFAQ from "@/components/CompanyFAQ";
 import CompanyRatingsBreakdown from "@/components/CompanyRatingsBreakdown";
 import CompanyCertifications from "@/components/CompanyCertifications";
+import CompanyVideoShowcase from "@/components/CompanyVideoShowcase";
+import PriceGuaranteeWidget from "@/components/PriceGuaranteeWidget";
+import CompanyAwardsSection from "@/components/CompanyAwardsSection";
 
 export default function CompanyProfile() {
   const { slug } = useParams();
@@ -257,6 +260,15 @@ export default function CompanyProfile() {
                             companyName={company.name}
                             fleetSize={8}
                           />
+
+                          {/* Video Showcase */}
+                          <CompanyVideoShowcase companyName={company.name} />
+
+                          {/* Awards Section */}
+                          <CompanyAwardsSection companyName={company.name} />
+
+                          {/* Price Guarantee Widget */}
+                          <PriceGuaranteeWidget companyName={company.name} />
                         </div>
 
                         {/* Sidebar */}

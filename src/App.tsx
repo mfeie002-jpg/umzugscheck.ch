@@ -93,6 +93,8 @@ import Pricing from "./pages/Pricing";
 import OffertenPage from "./pages/OffertenPage";
 import OffertenOptimized from "./pages/OffertenOptimized";
 import Tools from "./pages/Tools";
+import UserDashboard from "./pages/UserDashboard";
+import MobileBottomNav from "./components/MobileBottomNav";
 
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
@@ -292,6 +294,8 @@ const App = () => (
             <Route path="/umzug-offerte" element={<Umzugsofferten />} />
             <Route path="/umzugsofferten/:region" element={<Umzugsofferten />} />
             <Route path="/tools" element={<Tools />} />
+            <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/mein-dashboard" element={<UserDashboard />} />
             
             {/* City Pages - Optimized */}
             <Route path="/zuerich/umzugsfirmen" element={<CityOptimized />} />
@@ -359,6 +363,7 @@ const App = () => (
           </Routes>
                 </Suspense>
               </main>
+                <MobileBottomNav />
                 <Footer />
               </div>
             </BrowserRouter>
