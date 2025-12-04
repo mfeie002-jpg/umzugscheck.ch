@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   CheckCircle2, Shield, Clock, TrendingDown, ArrowRight, Star, MapPin,
-  Users, Zap, Award, ChevronRight, Sparkles, ChevronLeft,
+  Users, Zap, Award, ChevronRight, ChevronLeft, Check,
   BadgeCheck, Building2, Home, Truck, Timer, 
   ThumbsUp, Quote, MessageCircle
 } from "lucide-react";
@@ -18,20 +20,19 @@ import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { generatePageSchemas } from "@/lib/schema-markup";
 import { motion, AnimatePresence } from "framer-motion";
 import { swissPostalCodes } from "@/lib/swiss-postal-codes";
-import heroImage from "@/assets/happy-couple-moving.jpg";
+import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
+import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 
 // Filter postal codes
-const filterPostalCodes = (query: string): string[] => {
-  if (!query || query.length < 1) return [];
-  const q = query.toLowerCase();
+const filterPostalCodes = (query: string) => {
+  if (!query || query.length < 2) return [];
+  const lowerQuery = query.toLowerCase();
   return swissPostalCodes
-    .filter(p => 
-      p.code.startsWith(q) || 
-      p.city.toLowerCase().includes(q) ||
-      `${p.code} - ${p.city}`.toLowerCase().includes(q)
+    .filter(entry => 
+      entry.code.includes(query) || 
+      entry.city.toLowerCase().includes(lowerQuery)
     )
-    .slice(0, 100)
-    .map(p => `${p.code} - ${p.city} (${p.canton})`);
+    .slice(0, 100);
 };
 
 // Testimonials data
@@ -74,7 +75,7 @@ const faqs = [
   },
   {
     question: "Wie viel kann ich wirklich sparen?",
-    answer: "Unsere Daten zeigen durchschnittliche Einsparungen von 25-40%. Bei grösseren Umzügen oft CHF 500-1'000+."
+    answer: "Unsere Daten zeigen durchschnittliche Einsparungen von 25-40%. Bei grösseren Umzügen oft CHF 500-1000+."
   },
   {
     question: "Sind alle Firmen geprüft?",
@@ -113,16 +114,16 @@ export default function Umzugsofferten() {
   const [searchParams] = useSearchParams();
   
   // Form state
-  const [fromLocation, setFromLocation] = useState(searchParams.get("from") || "");
-  const [toLocation, setToLocation] = useState(searchParams.get("to") || "");
-  const [rooms, setRooms] = useState(searchParams.get("rooms") || "3.5");
+  const [fromPostal, setFromPostal] = useState(searchParams.get("from") || "");
+  const [toPostal, setToPostal] = useState(searchParams.get("to") || "");
+  const [rooms, setRooms] = useState(searchParams.get("rooms") || "");
   
   // Testimonial slider
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
-  // Postal code suggestions
-  const fromSuggestions = fromLocation.length >= 1 ? filterPostalCodes(fromLocation) : [];
-  const toSuggestions = toLocation.length >= 1 ? filterPostalCodes(toLocation) : [];
+  // Memoize filtered results
+  const fromOptions = useMemo(() => filterPostalCodes(fromPostal), [fromPostal]);
+  const toOptions = useMemo(() => filterPostalCodes(toPostal), [toPostal]);
 
   // Testimonial rotation
   useEffect(() => {
@@ -134,16 +135,18 @@ export default function Umzugsofferten() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (fromLocation && toLocation) {
-      navigate(`/rechner?from=${encodeURIComponent(fromLocation)}&to=${encodeURIComponent(toLocation)}&rooms=${rooms}`);
-    }
+    const params = new URLSearchParams();
+    if (fromPostal) params.set("from", fromPostal);
+    if (toPostal) params.set("to", toPostal);
+    if (rooms) params.set("rooms", rooms);
+    navigate(`/rechner?${params.toString()}`);
   };
 
   const nextTestimonial = () => setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
   const prevTestimonial = () => setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
 
-  const currentUrl = 'https://www.umzugscheck.ch/umzugsofferten';
-  const schemas = generatePageSchemas({ type: 'offerten', url: currentUrl }, faqs);
+  const currentUrl = "https://www.umzugscheck.ch/umzugsofferten";
+  const schemas = generatePageSchemas({ type: "offerten", url: currentUrl }, faqs);
 
   return (
     <>
@@ -156,152 +159,236 @@ export default function Umzugsofferten() {
       
       <div className="min-h-screen bg-background">
         
-        {/* ===== HERO SECTION ===== */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-muted/30 via-background to-primary/5">
-          <div className="container mx-auto px-4 py-12 md:py-20">
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
+        {/* ===== HERO SECTION - Matching Homepage Style ===== */}
+        <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${heroFamilyMoving})` }}
+          />
+          
+          {/* Gradient Overlays - Same as Homepage */}
+          <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
+          
+          {/* Subtle Pattern Overlay */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.1) 1px, transparent 0)`,
+              backgroundSize: "32px 32px"
+            }} />
+          </div>
+          
+          {/* Content Container */}
+          <div className="container mx-auto px-4 py-12 md:py-20 lg:py-24 relative z-10">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               
-              {/* Left: Image + Content */}
+              {/* Left Column - Text & CTAs */}
               <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
                 className="space-y-6"
               >
-                {/* Emotional Image */}
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3] lg:aspect-[16/10]">
-                  <img 
-                    src={heroImage} 
-                    alt="Glückliches Paar beim Umzug" 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <Badge className="bg-white/95 text-foreground shadow-lg">
-                      <Sparkles className="w-3.5 h-3.5 mr-1.5 text-primary" />
-                      Nr. 1 Umzugsvergleich der Schweiz
-                    </Badge>
+                {/* Floating Badge - Same as Homepage */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    y: [0, -8, 0]
+                  }}
+                  transition={{ 
+                    opacity: { delay: 0.2, duration: 0.5 },
+                    scale: { delay: 0.2, duration: 0.5 },
+                    y: { delay: 0.7, duration: 3, repeat: Infinity, ease: "easeInOut" }
+                  }}
+                  className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-medium border border-border"
+                >
+                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary">
+                    <Check className="h-6 w-6 text-white stroke-[3]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Offerten vergleichen</p>
+                    <p className="text-sm font-bold text-foreground">Bis zu 40% sparen</p>
+                  </div>
+                </motion.div>
+                
+                {/* Main Headline */}
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
+                  <span className="text-foreground">Umzugsofferten vergleichen.</span>
+                  <span className="block text-primary mt-2">Kostenlos & unverbindlich.</span>
+                </h1>
+                
+                {/* Subheadline */}
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+                  Wir <span className="inline-flex items-center gap-1 text-secondary font-semibold"><CheckCircle2 className="h-5 w-5" />checken</span> für Sie: 
+                  Gratis Offerten von geprüften Schweizer Umzugsfirmen – schnell, transparent und unverbindlich.
+                </p>
+                
+                {/* Trust Metrics Row */}
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Star className="h-5 w-5 fill-swiss-gold text-swiss-gold" />
+                    <span className="font-bold text-foreground">4.8/5</span>
+                    <span className="text-foreground/60">Bewertung</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-secondary" />
+                    <span className="font-bold text-foreground">15'000+</span>
+                    <span className="text-foreground/60">Umzüge gecheckt</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                    <span className="text-foreground/60">100% kostenlos</span>
                   </div>
                 </div>
-
-                {/* Headline */}
-                <div className="space-y-4">
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-                    Umzugsofferten vergleichen und{" "}
-                    <span className="text-primary">bis zu 40% sparen</span>
-                  </h1>
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    Gratis Offerten von geprüften Schweizer Umzugsfirmen – schnell, transparent und unverbindlich.
-                  </p>
+                
+                {/* Live Activity Badge */}
+                <div className="pt-2">
+                  <LiveActivityBadge />
+                </div>
+                
+                {/* Desktop CTAs */}
+                <div className="hidden lg:flex items-center gap-4 pt-2">
+                  <Button 
+                    size="lg" 
+                    className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all"
+                    onClick={() => document.getElementById("offerten-form")?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    <CheckCircle2 className="mr-2 h-5 w-5" />
+                    Jetzt Offerten erhalten
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Link to="/umzugsrechner">
+                    <Button size="lg" variant="secondary" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold">
+                      Kosten berechnen
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
-
-              {/* Right: Form */}
+              
+              {/* Right Column - Form Card - Floating */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                id="offerten-form"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: [0, -10, 0]
+                }}
+                transition={{ 
+                  opacity: { duration: 0.6, delay: 0.2 },
+                  y: { delay: 0.8, duration: 4, repeat: Infinity, ease: "easeInOut" }
+                }}
               >
-                <Card className="shadow-2xl border-0 overflow-hidden">
-                  <div className="bg-primary px-6 py-4 text-primary-foreground">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <Zap className="w-5 h-5" />
+                <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8">
+                  <div className="space-y-5">
+                    {/* Form Header */}
+                    <div className="text-center space-y-2">
+                      <div className="inline-flex items-center gap-2 text-sm text-primary font-semibold">
+                        <Clock className="h-4 w-4" />
+                        In 2 Minuten zum Vergleich
                       </div>
-                      <div>
-                        <h2 className="font-bold text-lg">Jetzt Offerten erhalten</h2>
-                        <p className="text-primary-foreground/80 text-sm">Kostenlos & unverbindlich</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                        Kostenlos Offerten erhalten
+                      </h2>
+                    </div>
+                    
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="from" className="text-foreground font-medium text-sm">Von (PLZ oder Ort)</Label>
+                        <Input
+                          id="from"
+                          list="from-options"
+                          placeholder="z.B. 8001 oder Zürich"
+                          value={fromPostal}
+                          onChange={(e) => setFromPostal(e.target.value)}
+                          className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          autoComplete="off"
+                          required
+                        />
+                        <datalist id="from-options">
+                          {fromOptions.map((option) => (
+                            <option key={`from-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                          ))}
+                        </datalist>
                       </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="to" className="text-foreground font-medium text-sm">Nach (PLZ oder Ort)</Label>
+                        <Input
+                          id="to"
+                          list="to-options"
+                          placeholder="z.B. 3011 oder Bern"
+                          value={toPostal}
+                          onChange={(e) => setToPostal(e.target.value)}
+                          className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          autoComplete="off"
+                          required
+                        />
+                        <datalist id="to-options">
+                          {toOptions.map((option) => (
+                            <option key={`to-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                          ))}
+                        </datalist>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="rooms" className="text-foreground font-medium text-sm">Wohnungsgrösse</Label>
+                        <Select value={rooms} onValueChange={setRooms}>
+                          <SelectTrigger className="h-12 text-base bg-background border-border/60">
+                            <SelectValue placeholder="Wählen Sie..." />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-border">
+                            <SelectItem value="1">1 - 1.5 Zimmer</SelectItem>
+                            <SelectItem value="2">2 - 2.5 Zimmer</SelectItem>
+                            <SelectItem value="3">3 - 3.5 Zimmer</SelectItem>
+                            <SelectItem value="4">4 - 4.5 Zimmer</SelectItem>
+                            <SelectItem value="5">5+ Zimmer / Haus</SelectItem>
+                            <SelectItem value="office">Büro / Firma</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <Button 
+                        type="submit" 
+                        size="lg" 
+                        className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all animate-pulse-subtle group"
+                      >
+                        <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                        <span className="hidden sm:inline">Jetzt Offerten erhalten</span>
+                        <span className="sm:hidden">Offerten erhalten</span>
+                        <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </form>
+                    
+                    {/* Trust Microcopy */}
+                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-foreground/60">
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                        Kostenlos
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                        Unverbindlich
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Shield className="h-4 w-4 text-secondary" />
+                        Datenschutz
+                      </span>
                     </div>
                   </div>
-
-                  <CardContent className="p-6">
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      {/* From */}
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium">Start-PLZ/Ort</label>
-                        <div className="relative">
-                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                          <Input
-                            type="text"
-                            placeholder="z.B. 8001 Zürich"
-                            value={fromLocation}
-                            onChange={(e) => setFromLocation(e.target.value)}
-                            className="pl-10 h-12"
-                            list="from-suggestions"
-                            required
-                          />
-                          <datalist id="from-suggestions">
-                            {fromSuggestions.slice(0, 8).map((s, i) => (
-                              <option key={i} value={s} />
-                            ))}
-                          </datalist>
-                        </div>
-                      </div>
-
-                      {/* To */}
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium">Ziel-PLZ/Ort</label>
-                        <div className="relative">
-                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                          <Input
-                            type="text"
-                            placeholder="z.B. 3011 Bern"
-                            value={toLocation}
-                            onChange={(e) => setToLocation(e.target.value)}
-                            className="pl-10 h-12"
-                            list="to-suggestions"
-                            required
-                          />
-                          <datalist id="to-suggestions">
-                            {toSuggestions.slice(0, 8).map((s, i) => (
-                              <option key={i} value={s} />
-                            ))}
-                          </datalist>
-                        </div>
-                      </div>
-
-                      {/* Rooms */}
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium">Zimmerzahl</label>
-                        <div className="grid grid-cols-5 gap-2">
-                          {["1.5", "2.5", "3.5", "4.5", "5.5+"].map((size) => (
-                            <button
-                              key={size}
-                              type="button"
-                              onClick={() => setRooms(size)}
-                              className={`py-3 rounded-lg text-sm font-medium transition-all border ${
-                                rooms === size 
-                                  ? "bg-primary text-primary-foreground border-primary" 
-                                  : "bg-muted/50 text-foreground border-border hover:border-primary/50"
-                              }`}
-                            >
-                              {size}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Submit */}
-                      <Button type="submit" size="lg" className="w-full h-14 text-lg mt-2">
-                        Jetzt Offerten erhalten
-                        <ArrowRight className="ml-2 w-5 h-5" />
-                      </Button>
-
-                      {/* Trust hints */}
-                      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2">
-                        <span className="flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-                          100% kostenlos
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Shield className="w-3.5 h-3.5 text-blue-500" />
-                          Unverbindlich
-                        </span>
-                      </div>
-                    </form>
-                  </CardContent>
-                </Card>
+                </div>
+                
+                {/* Mobile CTAs */}
+                <div className="flex flex-col gap-3 mt-6 lg:hidden">
+                  <Link to="/umzugsrechner" className="w-full">
+                    <Button size="lg" variant="outline" className="w-full h-11 text-sm font-semibold border-2 hover:bg-primary/5">
+                      Kosten berechnen
+                    </Button>
+                  </Link>
+                </div>
               </motion.div>
             </div>
           </div>
