@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3 } from "lucide-react";
+import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3, Calendar, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useAnalytics } from "@/lib/analytics";
@@ -39,6 +39,11 @@ interface Company {
   phone: string;
   email: string;
   website: string;
+  availability?: {
+    status: 'available' | 'limited' | 'busy';
+    nextAvailable: string;
+    slotsThisWeek: number;
+  };
 }
 
 const SWISS_CANTONS = [
@@ -155,8 +160,25 @@ const Companies = () => {
       // Import demo companies
       const { DEMO_COMPANIES } = await import("@/data/companies");
       
+      // Generate simulated availability data
+      const generateAvailability = (index: number) => {
+        const statuses: Array<'available' | 'limited' | 'busy'> = ['available', 'limited', 'busy'];
+        const status = statuses[index % 3];
+        const daysFromNow = Math.floor(Math.random() * 14) + 1;
+        const nextDate = new Date();
+        nextDate.setDate(nextDate.getDate() + daysFromNow);
+        const slotsThisWeek = status === 'available' ? Math.floor(Math.random() * 5) + 3 : 
+                             status === 'limited' ? Math.floor(Math.random() * 2) + 1 : 0;
+        
+        return {
+          status,
+          nextAvailable: nextDate.toLocaleDateString('de-CH', { day: 'numeric', month: 'short' }),
+          slotsThisWeek,
+        };
+      };
+      
       // Transform to match Companies interface
-      const transformed = DEMO_COMPANIES.map(c => ({
+      const transformed = DEMO_COMPANIES.map((c, index) => ({
         id: c.id,
         name: c.name,
         logo: "",
@@ -170,6 +192,7 @@ const Companies = () => {
         phone: "+41 44 123 45 67",
         email: `info@${c.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.ch`,
         website: `https://www.${c.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.ch`,
+        availability: generateAvailability(index),
       }));
       
       setCompanies(transformed);
@@ -774,6 +797,34 @@ const Companies = () => {
                                 )}
                               </div>
                             </div>
+
+                            {/* Availability Indicator */}
+                            {company.availability && (
+                              <div className={`flex items-center gap-2 p-2.5 rounded-lg text-xs sm:text-sm ${
+                                company.availability.status === 'available' 
+                                  ? 'bg-green-50 text-green-700 border border-green-100' 
+                                  : company.availability.status === 'limited'
+                                  ? 'bg-amber-50 text-amber-700 border border-amber-100'
+                                  : 'bg-red-50 text-red-700 border border-red-100'
+                              }`}>
+                                <div className={`w-2 h-2 rounded-full animate-pulse ${
+                                  company.availability.status === 'available' ? 'bg-green-500' :
+                                  company.availability.status === 'limited' ? 'bg-amber-500' : 'bg-red-500'
+                                }`} />
+                                <Calendar className="w-3.5 h-3.5" />
+                                <span className="font-medium">
+                                  {company.availability.status === 'available' && (
+                                    <>{company.availability.slotsThisWeek} Termine diese Woche</>
+                                  )}
+                                  {company.availability.status === 'limited' && (
+                                    <>Nur {company.availability.slotsThisWeek} Platz frei</>
+                                  )}
+                                  {company.availability.status === 'busy' && (
+                                    <>Nächster Termin: {company.availability.nextAvailable}</>
+                                  )}
+                                </span>
+                              </div>
+                            )}
 
                             {/* Price & Contact Info */}
                             <div className="pt-3 sm:pt-4 border-t space-y-2 sm:space-y-3">
