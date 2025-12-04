@@ -48,7 +48,8 @@ export const PremiumHeroSection = () => {
         src={heroFamilyMoving}
         alt=""
         fetchPriority="high"
-        decoding="async"
+        decoding="sync"
+        sizes="100vw"
         className="absolute inset-0 w-full h-full object-cover object-center"
         width={1920}
         height={1080}

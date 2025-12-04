@@ -43,7 +43,7 @@ export const OrganicCompanyCard = ({
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2 gap-2">
             <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
               {logo ? (
-                <img src={logo} alt={name} loading="lazy" className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded flex-shrink-0" />
+                <img src={logo} alt={name} loading="lazy" sizes="(max-width: 640px) 40px, 48px" className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded flex-shrink-0" />
               ) : (
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted rounded flex items-center justify-center flex-shrink-0">
                   <Award className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />

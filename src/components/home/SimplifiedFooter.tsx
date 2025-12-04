@@ -15,6 +15,7 @@ export const SimplifiedFooter = () => {
                 src={logo}
                 alt="Umzugscheck.ch" 
                 className="h-10"
+                sizes="164px"
                 width={164}
                 height={40}
                 loading="lazy"

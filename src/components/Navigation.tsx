@@ -96,6 +96,7 @@ export const Navigation = () => {
               src={logo} 
               alt="Umzugscheck.ch Logo" 
               className="h-8 sm:h-10 md:h-12 w-auto"
+              sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 196px"
               width={196}
               height={48}
             />
