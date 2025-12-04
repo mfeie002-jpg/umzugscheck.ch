@@ -413,44 +413,156 @@ export const zugConfig: CantonConfig = {
   },
 };
 
-// Helper function to get canton config by slug
-export const getCantonConfig = (slug: string): CantonConfig | undefined => {
-  const configs: Record<string, CantonConfig> = {
-    zug: zugConfig,
-    // Add more canton configs here as they are created
-  };
-  return configs[slug];
+// Zürich Canton Config
+export const zuerichConfig: CantonConfig = {
+  slug: "zuerich",
+  name: "Kanton Zürich",
+  shortName: "Zürich",
+  mainCity: "Zürich",
+  locations: ["Zürich", "Winterthur", "Uster", "Dübendorf", "Dietikon", "Wetzikon", "Kloten", "Bülach", "Horgen", "Wädenswil"],
+  seo: {
+    title: "Umzugsfirma Zürich: Umzugsfirmen vergleichen & Offerten erhalten | umzugscheck.ch",
+    description: "Finde die beste Umzugsfirma in Zürich: Vergleiche geprüfte Umzugsfirmen im Kanton Zürich, erhalte kostenlose Offerten und spare bis zu 40% beim Umzug.",
+    keywords: "Umzugsfirma Zürich, Umzug Zürich, Umzugsfirmen Kanton Zürich, Umzugsunternehmen Zürich, Umzug Winterthur",
+    geoRegion: "CH-ZH",
+    geoPlacename: "Kanton Zürich, Schweiz",
+    position: { lat: 47.3769, lng: 8.5417 }
+  },
+  companies: [
+    { name: "Zürich Umzüge AG", tagline: "Premium-Service in der Limmatstadt", regions: ["Zürich", "Winterthur", "Uster"], services: ["Privatumzug", "Firmenumzug", "Reinigung"], priceLevel: "Mittel", rating: 4.9, reviewCount: 456, highlight: "Top bewertet", availability: "Verfügbar ab 10. Dez", isPopular: true, savingsPercent: 20 },
+    { name: "Limmattal Moving", tagline: "Günstig & zuverlässig", regions: ["Dietikon", "Zürich", "Schlieren"], services: ["Privatumzug", "Entsorgung"], priceLevel: "Günstig", rating: 4.9, reviewCount: 387, highlight: "Preistipp", availability: "Sofort verfügbar", isBestPrice: true, savingsPercent: 35 },
+    { name: "Premium Relocation Zürich", tagline: "Luxus-Umzüge mit Vollservice", regions: ["Zürich", "Zollikon", "Küsnacht"], services: ["Privatumzug", "International", "Kunst"], priceLevel: "Premium", rating: 4.8, reviewCount: 312, highlight: "Premium Service", availability: "Verfügbar ab 15. Dez", isPremium: true, savingsPercent: 10 },
+    { name: "Winterthur Express", tagline: "Schnell im Grossraum Winterthur", regions: ["Winterthur", "Kloten", "Bülach"], services: ["Privatumzug", "Kleintransporte"], priceLevel: "Mittel", rating: 4.8, reviewCount: 276, highlight: "Express verfügbar", availability: "Heute verfügbar", savingsPercent: 25 },
+    { name: "Zürisee Transporte", tagline: "Am See zu Hause", regions: ["Horgen", "Wädenswil", "Meilen"], services: ["Privatumzug", "Lagerung"], priceLevel: "Günstig", rating: 4.7, reviewCount: 234, highlight: "Beliebt", availability: "Ab nächster Woche", savingsPercent: 30 },
+    { name: "Unterland Umzüge", tagline: "Zürcher Unterland Experten", regions: ["Bülach", "Kloten", "Opfikon"], services: ["Privatumzug"], priceLevel: "Mittel", rating: 4.7, reviewCount: 198, highlight: "Regional stark", availability: "Ausgebucht", savingsPercent: 20 },
+    { name: "Oberland Moving GmbH", tagline: "Zürcher Oberland Spezialisten", regions: ["Uster", "Wetzikon", "Pfäffikon"], services: ["Privatumzug", "Entsorgung"], priceLevel: "Günstig", rating: 4.6, reviewCount: 167, highlight: "Lokal", availability: "Verfügbar", savingsPercent: 28 },
+    { name: "City Zürich Transporte", tagline: "Innerstädtische Umzüge", regions: ["Zürich Kreis 1-12"], services: ["Firmenumzug", "Spezialtransporte"], priceLevel: "Premium", rating: 4.6, reviewCount: 143, highlight: "City-Experten", availability: "Verfügbar", savingsPercent: 12 },
+    { name: "Glatttal Umzüge", tagline: "Glatttal & Umgebung", regions: ["Dübendorf", "Wallisellen", "Opfikon"], services: ["Privatumzug"], priceLevel: "Mittel", rating: 4.5, reviewCount: 121, highlight: "Schnell", availability: "Verfügbar", savingsPercent: 22 },
+    { name: "Sihltal Express", tagline: "Sihltal Spezialist", regions: ["Adliswil", "Langnau", "Thalwil"], services: ["Privatumzug", "Kleintransporte"], priceLevel: "Günstig", rating: 4.5, reviewCount: 98, highlight: "Budget-freundlich", availability: "Ausgebucht", savingsPercent: 32 },
+  ],
+  priceExamples: [
+    { title: "1-2 Zimmer", subtitle: "Studio / Kleinwohnung", description: "Ideal für Singles oder Paare mit wenig Hausrat", info: "Inkl. Transport, Be- & Entladung", priceRange: "CHF 590 – 990", avgSavings: "Ø 25% Ersparnis", icon: Home },
+    { title: "3-4 Zimmer", subtitle: "Familienwohnung", description: "Standard-Wohnung für Familien", info: "Inkl. Verpackungsmaterial", priceRange: "CHF 1'190 – 1'990", avgSavings: "Ø 30% Ersparnis", icon: Home },
+    { title: "5+ Zimmer", subtitle: "Grosshaushalt / Villa", description: "Grosse Wohnungen oder Häuser", info: "Inkl. Möbelmontage", priceRange: "CHF 2'190 – 3'790", avgSavings: "Ø 35% Ersparnis", icon: Building2 },
+  ],
+  services: [
+    { title: "Umzug + Reinigung", description: "Komplettpaket mit Abgabegarantie", link: "/umzug-mit-reinigung", icon: Home, popularity: 95 },
+    { title: "Firmenumzug", description: "Professionelle Büroumzüge", link: "/firmenumzug-schweiz", icon: Building2, popularity: 80 },
+    { title: "Möbellift", description: "Aussenlifter für schwere Möbel", link: "/moebellift", icon: Truck, popularity: 60 },
+    { title: "Entsorgung", description: "Räumung & Entsorgung", link: "/entsorgung-raeumung", icon: Trash2, popularity: 70 },
+    { title: "Einlagerung", description: "Sichere Möbellagerung", link: "/einlagerung", icon: Package, popularity: 65 },
+    { title: "Kleintransporte", description: "Einzelmöbel & kleine Transporte", link: "/kleintransporte", icon: Truck, popularity: 55 },
+  ],
+  usps: [
+    { title: "Grösste Auswahl", description: "Die meisten Umzugsfirmen der Schweiz", icon: Layers, stat: "156+", statLabel: "Partnerfirmen" },
+    { title: "Bis 40% sparen", description: "Durch direkten Preisvergleich", icon: TrendingUp, stat: "40%", statLabel: "Ersparnis" },
+    { title: "Schnelle Offerten", description: "Bis zu 5 Angebote in 24h", icon: Clock, stat: "24h", statLabel: "Antwortzeit" },
+    { title: "Geprüfte Partner", description: "Alle Firmen versichert & verifiziert", icon: Shield, stat: "100%", statLabel: "Versichert" },
+  ],
+  faqs: [
+    { question: "Was kostet ein Umzug in Zürich?", answer: "Ein Umzug in Zürich kostet zwischen CHF 590 und CHF 3'790 je nach Wohnungsgrösse. Zürich hat die höchsten Umzugspreise der Schweiz.", category: "Kosten" },
+    { question: "Welche Umzugsfirma ist die beste in Zürich?", answer: "Die besten Umzugsfirmen in Zürich haben Bewertungen von 4.8 oder höher. Vergleichen Sie auf unserer Plattform.", category: "Auswahl" },
+    { question: "Brauche ich eine Parkbewilligung für den Umzug?", answer: "Ja, in Zürich ist eine Parkbewilligung beim Tiefbauamt erforderlich. Die meisten Umzugsfirmen kümmern sich darum.", category: "Administrativ" },
+    { question: "Sind die Umzugsfirmen versichert?", answer: "Alle Unternehmen auf unserer Plattform sind vollständig versichert und verifiziert.", category: "Sicherheit" },
+    { question: "Wie lange dauert ein Umzug in Zürich?", answer: "Ein durchschnittlicher 3-Zimmer-Umzug dauert 4-6 Stunden. Bei grösseren Wohnungen entsprechend länger.", category: "Ablauf" },
+  ],
+  seoContent: {
+    intro: "Zürich ist die grösste Stadt der Schweiz und ein bedeutendes Wirtschaftszentrum. Der Umzugsmarkt ist entsprechend gross und wettbewerbsintensiv. Mit über 150 aktiven Umzugsfirmen finden Sie garantiert den passenden Partner für Ihren Umzug.",
+    cityInfo: [
+      { title: "Umzug in Zürich Stadt", content: "Die Stadt Zürich mit ihren 12 Kreisen bietet unterschiedliche Herausforderungen: Enge Gassen in der Altstadt, Parkplatzmangel in Aussersihl oder steile Hügel in Höngg. Professionelle Umzugsfirmen kennen diese lokalen Gegebenheiten." },
+      { title: "Umzug nach Winterthur", content: "Winterthur ist die zweitgrösste Stadt im Kanton. Der Umzugsmarkt ist hier ebenfalls aktiv, mit spezialisierten lokalen Anbietern für die Region." },
+    ],
+    additionalServices: [
+      { title: "Umzug mit Reinigung in Zürich", content: "Kombipakete aus Umzug und Endreinigung sind in Zürich besonders beliebt. Viele Anbieter garantieren die Wohnungsabnahme." },
+      { title: "Firmenumzug in Zürich", content: "Als Wirtschaftsstandort sind Firmenumzüge in Zürich häufig. Spezialisierte Anbieter bieten Wochenend-Service für minimale Ausfallzeiten." },
+    ],
+  },
 };
 
-// All Swiss cantons for the RegionsDropdown
+// Bern Canton Config  
+export const bernConfig: CantonConfig = {
+  slug: "bern",
+  name: "Kanton Bern",
+  shortName: "Bern",
+  mainCity: "Bern",
+  locations: ["Bern", "Biel/Bienne", "Thun", "Köniz", "Burgdorf", "Langenthal", "Interlaken", "Spiez", "Münsingen", "Worb"],
+  seo: {
+    title: "Umzugsfirma Bern: Umzugsfirmen vergleichen & Offerten erhalten | umzugscheck.ch",
+    description: "Finde die beste Umzugsfirma in Bern: Vergleiche geprüfte Umzugsfirmen im Kanton Bern, erhalte kostenlose Offerten und spare bis zu 40% beim Umzug.",
+    keywords: "Umzugsfirma Bern, Umzug Bern, Umzugsfirmen Kanton Bern, Umzugsunternehmen Bern, Umzug Thun",
+    geoRegion: "CH-BE",
+    geoPlacename: "Kanton Bern, Schweiz",
+    position: { lat: 46.9480, lng: 7.4474 }
+  },
+  companies: [
+    { name: "Berner Umzüge AG", tagline: "Tradition seit 1985", regions: ["Bern", "Köniz", "Ostermundigen"], services: ["Privatumzug", "Firmenumzug"], priceLevel: "Mittel", rating: 4.9, reviewCount: 342, highlight: "Top bewertet", availability: "Verfügbar ab 12. Dez", isPopular: true, savingsPercent: 22 },
+    { name: "Aaretransporte GmbH", tagline: "Günstig an der Aare", regions: ["Bern", "Thun", "Münsingen"], services: ["Privatumzug", "Entsorgung"], priceLevel: "Günstig", rating: 4.8, reviewCount: 287, highlight: "Preistipp", availability: "Sofort verfügbar", isBestPrice: true, savingsPercent: 38 },
+    { name: "Premium Moving Bern", tagline: "Vollservice für Anspruchsvolle", regions: ["Bern", "Muri", "Belp"], services: ["Privatumzug", "International"], priceLevel: "Premium", rating: 4.8, reviewCount: 234, highlight: "Premium Service", availability: "Verfügbar", isPremium: true, savingsPercent: 12 },
+    { name: "Thunersee Transporte", tagline: "Berner Oberland Spezialisten", regions: ["Thun", "Spiez", "Interlaken"], services: ["Privatumzug"], priceLevel: "Mittel", rating: 4.7, reviewCount: 198, highlight: "Lokal", availability: "Verfügbar", savingsPercent: 25 },
+    { name: "Oberland Umzüge", tagline: "Vom Thunersee bis zum Brienzersee", regions: ["Interlaken", "Thun", "Spiez"], services: ["Privatumzug", "Lagerung"], priceLevel: "Günstig", rating: 4.7, reviewCount: 167, highlight: "Beliebt", availability: "Ab nächster Woche", savingsPercent: 30 },
+    { name: "Seeland Moving", tagline: "Seeland & Biel Region", regions: ["Biel", "Lyss", "Aarberg"], services: ["Privatumzug"], priceLevel: "Mittel", rating: 4.6, reviewCount: 143, highlight: "Regional", availability: "Verfügbar", savingsPercent: 20 },
+    { name: "Emmental Express", tagline: "Schnell durchs Emmental", regions: ["Burgdorf", "Langenthal", "Langnau"], services: ["Privatumzug", "Kleintransporte"], priceLevel: "Günstig", rating: 4.6, reviewCount: 121, highlight: "Schnell", availability: "Ausgebucht", savingsPercent: 28 },
+    { name: "Mittelland Transporte", tagline: "Flexibel im Mittelland", regions: ["Bern", "Burgdorf", "Langenthal"], services: ["Privatumzug"], priceLevel: "Mittel", rating: 4.5, reviewCount: 98, highlight: "Flexibel", availability: "Verfügbar", savingsPercent: 18 },
+  ],
+  priceExamples: [
+    { title: "1-2 Zimmer", subtitle: "Studio / Kleinwohnung", description: "Ideal für Singles oder Paare", info: "Inkl. Transport, Be- & Entladung", priceRange: "CHF 490 – 890", avgSavings: "Ø 28% Ersparnis", icon: Home },
+    { title: "3-4 Zimmer", subtitle: "Familienwohnung", description: "Standard-Wohnung für Familien", info: "Inkl. Verpackungsmaterial", priceRange: "CHF 990 – 1'690", avgSavings: "Ø 32% Ersparnis", icon: Home },
+    { title: "5+ Zimmer", subtitle: "Grosshaushalt / Haus", description: "Grosse Wohnungen oder Häuser", info: "Inkl. Möbelmontage", priceRange: "CHF 1'890 – 3'290", avgSavings: "Ø 35% Ersparnis", icon: Building2 },
+  ],
+  services: [
+    { title: "Umzug + Reinigung", description: "Komplettpaket mit Abgabegarantie", link: "/umzug-mit-reinigung", icon: Home, popularity: 92 },
+    { title: "Firmenumzug", description: "Professionelle Büroumzüge", link: "/firmenumzug-schweiz", icon: Building2, popularity: 75 },
+    { title: "Möbellift", description: "Aussenlifter für Altstadt", link: "/moebellift", icon: Truck, popularity: 70 },
+    { title: "Entsorgung", description: "Räumung & Entsorgung", link: "/entsorgung-raeumung", icon: Trash2, popularity: 68 },
+    { title: "Einlagerung", description: "Sichere Möbellagerung", link: "/einlagerung", icon: Package, popularity: 62 },
+    { title: "Kleintransporte", description: "Einzelmöbel & kleine Transporte", link: "/kleintransporte", icon: Truck, popularity: 58 },
+  ],
+  usps: [
+    { title: "Bundesstadt-Experten", description: "Lokale Firmen kennen Bern", icon: MapPin, stat: "85+", statLabel: "Partnerfirmen" },
+    { title: "Bis 40% sparen", description: "Durch direkten Preisvergleich", icon: TrendingUp, stat: "38%", statLabel: "Ersparnis" },
+    { title: "Schnelle Offerten", description: "Bis zu 5 Angebote in 24h", icon: Clock, stat: "24h", statLabel: "Antwortzeit" },
+    { title: "Geprüfte Partner", description: "Alle Firmen versichert", icon: Shield, stat: "100%", statLabel: "Versichert" },
+  ],
+  faqs: [
+    { question: "Was kostet ein Umzug in Bern?", answer: "Ein Umzug in Bern kostet zwischen CHF 490 und CHF 3'290 je nach Wohnungsgrösse. Bern ist günstiger als Zürich.", category: "Kosten" },
+    { question: "Welche Umzugsfirma ist die beste in Bern?", answer: "Die besten Umzugsfirmen in Bern haben Bewertungen von 4.8 oder höher.", category: "Auswahl" },
+    { question: "Brauche ich eine Parkbewilligung in der Altstadt?", answer: "Ja, in der Berner Altstadt (UNESCO-Welterbe) ist eine spezielle Bewilligung erforderlich.", category: "Administrativ" },
+    { question: "Gibt es Spezialisten für Altstadt-Umzüge?", answer: "Ja, mehrere unserer Partner sind auf die engen Gassen der Berner Altstadt spezialisiert.", category: "Spezial" },
+    { question: "Wie lange dauert ein Umzug in Bern?", answer: "Ein durchschnittlicher 3-Zimmer-Umzug dauert 4-5 Stunden. In der Altstadt kann es länger dauern.", category: "Ablauf" },
+  ],
+  seoContent: {
+    intro: "Bern ist die Bundesstadt der Schweiz und Hauptstadt des gleichnamigen Kantons. Die UNESCO-geschützte Altstadt stellt besondere Anforderungen an Umzugsfirmen.",
+    cityInfo: [
+      { title: "Umzug in der Berner Altstadt", content: "Die mittelalterliche Altstadt mit ihren Laubengängen erfordert erfahrene Umzugsfirmen. Enge Gassen und fehlende Parkplätze machen spezielle Planung notwendig." },
+      { title: "Umzug nach Thun", content: "Thun am Thunersee ist die zweitgrösste Stadt im Kanton. Die Region ist bei Familien beliebt und hat einen aktiven Umzugsmarkt." },
+    ],
+    additionalServices: [
+      { title: "Umzug mit Reinigung in Bern", content: "Kombipakete aus Umzug und Endreinigung sind sehr beliebt. Viele Anbieter garantieren die Wohnungsabnahme." },
+      { title: "Firmenumzug in Bern", content: "Als Verwaltungsstadt sind Büroumzüge häufig. Spezialisierte Anbieter bieten diskrete Wochenend-Services." },
+    ],
+  },
+};
+
+const cantonConfigs: Record<string, CantonConfig> = {
+  zug: zugConfig,
+  zuerich: zuerichConfig,
+  bern: bernConfig,
+};
+
+export const getCantonConfig = (slug: string): CantonConfig | undefined => {
+  return cantonConfigs[slug.toLowerCase()];
+};
+
 export const allCantons = [
-  { slug: "zuerich", name: "Zürich", code: "ZH" },
-  { slug: "bern", name: "Bern", code: "BE" },
-  { slug: "luzern", name: "Luzern", code: "LU" },
-  { slug: "uri", name: "Uri", code: "UR" },
-  { slug: "schwyz", name: "Schwyz", code: "SZ" },
-  { slug: "obwalden", name: "Obwalden", code: "OW" },
-  { slug: "nidwalden", name: "Nidwalden", code: "NW" },
-  { slug: "glarus", name: "Glarus", code: "GL" },
-  { slug: "zug", name: "Zug", code: "ZG" },
-  { slug: "fribourg", name: "Fribourg", code: "FR" },
-  { slug: "solothurn", name: "Solothurn", code: "SO" },
-  { slug: "basel", name: "Basel", code: "BS" },
-  { slug: "schaffhausen", name: "Schaffhausen", code: "SH" },
-  { slug: "appenzell", name: "Appenzell", code: "AR" },
-  { slug: "stgallen", name: "St. Gallen", code: "SG" },
-  { slug: "graubuenden", name: "Graubünden", code: "GR" },
-  { slug: "aargau", name: "Aargau", code: "AG" },
-  { slug: "thurgau", name: "Thurgau", code: "TG" },
-  { slug: "tessin", name: "Tessin", code: "TI" },
-  { slug: "waadt", name: "Waadt", code: "VD" },
-  { slug: "wallis", name: "Wallis", code: "VS" },
-  { slug: "neuchatel", name: "Neuenburg", code: "NE" },
-  { slug: "geneve", name: "Genf", code: "GE" },
-  { slug: "jura", name: "Jura", code: "JU" },
+  { slug: "zuerich", name: "Zürich" },
+  { slug: "bern", name: "Bern" },
+  { slug: "zug", name: "Zug" },
+  { slug: "luzern", name: "Luzern" },
+  { slug: "aargau", name: "Aargau" },
+  { slug: "basel", name: "Basel" },
+  { slug: "stgallen", name: "St. Gallen" },
 ];
 
-// Price level color helper
 export const getPriceLevelColor = (level: string): string => {
   switch (level) {
     case "Günstig": return "bg-green-100 text-green-800 border-green-200";
