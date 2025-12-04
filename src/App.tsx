@@ -70,7 +70,7 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import Zug from "./pages/Zug";
-import { Luzern, Zuerich, Bern, StGallen, Aargau, Basel, Thurgau, Solothurn, Graubuenden, Wallis, Tessin, Fribourg, Schwyz, Geneve } from "./pages/cantons";
+import { Luzern, Zuerich, Bern, StGallen, Aargau, Basel, Thurgau, Solothurn, Graubuenden, Wallis, Tessin, Fribourg, Schwyz, Geneve, Uri, Obwalden, Nidwalden, Glarus, Schaffhausen, Appenzell, Neuchatel, Jura } from "./pages/cantons";
 import RegionenOverview from "./pages/Regionen";
 import FuerFirmen from "./pages/FuerFirmen";
 import ServicePlaceholder from "./pages/ServicePlaceholder";
@@ -193,6 +193,14 @@ const App = () => (
             <Route path="/fribourg" element={<Fribourg />} />
             <Route path="/schwyz" element={<Schwyz />} />
             <Route path="/geneve" element={<Geneve />} />
+            <Route path="/uri" element={<Uri />} />
+            <Route path="/obwalden" element={<Obwalden />} />
+            <Route path="/nidwalden" element={<Nidwalden />} />
+            <Route path="/glarus" element={<Glarus />} />
+            <Route path="/schaffhausen" element={<Schaffhausen />} />
+            <Route path="/appenzell" element={<Appenzell />} />
+            <Route path="/neuchatel" element={<Neuchatel />} />
+            <Route path="/jura" element={<Jura />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/umzugsfirmen" element={<Companies />} />
