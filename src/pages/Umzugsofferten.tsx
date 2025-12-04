@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
@@ -9,18 +9,23 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   CheckCircle2, Shield, Clock, TrendingDown, ArrowRight, Star, MapPin,
-  Users, Zap, Award, ChevronRight, ChevronLeft, Check,
-  BadgeCheck, Building2, Home, Truck, Timer, 
-  ThumbsUp, Quote, MessageCircle
+  Users, Zap, Award, ChevronRight, Check, Truck, Sparkles, Package,
+  BadgeCheck, Building2, Home, Timer, ThumbsUp, Quote, Phone, Globe,
+  FileText, Calculator, Trash2, Warehouse, HelpCircle
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { ENHANCED_COMPANIES } from "@/data/enhanced-companies";
-
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { generatePageSchemas } from "@/lib/schema-markup";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { swissPostalCodes } from "@/lib/swiss-postal-codes";
-import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 
 // Filter postal codes
@@ -38,28 +43,44 @@ const filterPostalCodes = (query: string) => {
 // Testimonials data
 const testimonials = [
   {
-    name: "Sarah M.",
+    id: "1",
+    name: "Sandra K.",
     location: "Zürich → Basel",
+    type: "Privatumzug 3.5-Zimmer",
     rating: 5,
-    text: "Innerhalb von 24h hatte ich 4 Offerten. Die Ersparnis von CHF 650 war enorm!",
+    text: "Der Vergleich war unglaublich einfach. Innerhalb eines Tages hatte ich drei faire Offerten und konnte CHF 650 sparen!",
     saved: "CHF 650",
-    avatar: "SM"
+    verified: true
   },
   {
+    id: "2",
     name: "Marco B.",
-    location: "Bern → Luzern", 
+    location: "Bern → Luzern",
+    type: "Privatumzug 4.5-Zimmer",
     rating: 5,
-    text: "Super einfach! 3 Minuten Formular, 5 Offerten erhalten, beste Firma gewählt.",
+    text: "Super einfach! 3 Minuten Formular ausgefüllt, 5 Offerten erhalten. Die beste Firma war 40% günstiger als erwartet.",
     saved: "CHF 420",
-    avatar: "MB"
+    verified: true
   },
   {
-    name: "Lisa K.",
+    id: "3",
+    name: "Lisa W.",
     location: "Winterthur → Zürich",
+    type: "Privatumzug 2.5-Zimmer",
     rating: 5,
-    text: "Die Vergleichsmöglichkeit war Gold wert. Konnte Preise direkt vergleichen.",
+    text: "Die Vergleichsmöglichkeit war Gold wert. Konnte Preise direkt vergleichen und die beste Qualität wählen.",
     saved: "CHF 380",
-    avatar: "LK"
+    verified: true
+  },
+  {
+    id: "4",
+    name: "Thomas M.",
+    location: "Basel",
+    type: "Firmenumzug 15 Arbeitsplätze",
+    rating: 5,
+    text: "Als KMU-Inhaber war mir Zuverlässigkeit wichtig. Die vorgeschlagenen Firmen waren alle top – professionell und fair.",
+    saved: "CHF 1'200",
+    verified: true
   }
 ];
 
@@ -67,71 +88,124 @@ const testimonials = [
 const faqs = [
   {
     question: "Ist der Vergleich wirklich kostenlos?",
-    answer: "Ja, 100% kostenlos und unverbindlich. Umzugscheck.ch wird von den Umzugsfirmen finanziert, nicht von Ihnen."
+    answer: "Ja, 100% kostenlos und unverbindlich. Umzugscheck.ch wird von den Umzugsfirmen finanziert, nicht von Ihnen. Sie erhalten mehrere Offerten ohne jegliche Kosten."
   },
   {
     question: "Wie schnell erhalte ich Offerten?",
-    answer: "Die meisten Nutzer erhalten innerhalb von 24 Stunden 3-5 konkrete Offerten per E-Mail."
+    answer: "Die meisten Nutzer erhalten innerhalb von 24 Stunden 3-5 konkrete Offerten per E-Mail. Bei dringenden Anfragen kann es auch schneller gehen."
   },
   {
     question: "Wie viel kann ich wirklich sparen?",
-    answer: "Unsere Daten zeigen durchschnittliche Einsparungen von 25-40%. Bei grösseren Umzügen oft CHF 500-1000+."
+    answer: "Unsere Daten zeigen durchschnittliche Einsparungen von 25-40%. Bei grösseren Umzügen sparen Kunden oft CHF 500-1'500 im Vergleich zum erstbesten Angebot."
   },
   {
     question: "Sind alle Firmen geprüft?",
-    answer: "Ja. Jede Partnerfirma durchläuft unsere Qualitätsprüfung: Versicherungsnachweis, Handelsregister-Eintrag und Bewertungen."
+    answer: "Ja. Jede Partnerfirma durchläuft unsere strenge Qualitätsprüfung: Versicherungsnachweis, Handelsregister-Eintrag, Referenzen und laufende Kundenbewertungen."
   },
   {
     question: "Muss ich eine Offerte annehmen?",
-    answer: "Nein, absolut keine Verpflichtung. Sie vergleichen in Ruhe und entscheiden selbst."
+    answer: "Nein, absolut keine Verpflichtung. Sie vergleichen in Ruhe alle Angebote und entscheiden selbst, ob und welche Firma Sie beauftragen möchten."
   }
 ];
 
 // Regions
 const regions = [
-  { name: "Zürich", slug: "zuerich", count: 42 },
-  { name: "Bern", slug: "bern", count: 28 },
-  { name: "Basel", slug: "basel", count: 24 },
-  { name: "Luzern", slug: "luzern", count: 18 },
-  { name: "Aargau", slug: "aargau", count: 22 },
-  { name: "St. Gallen", slug: "st-gallen", count: 16 },
-  { name: "Zug", slug: "zug", count: 12 },
-  { name: "Schwyz", slug: "schwyz", count: 8 },
-  { name: "Thurgau", slug: "thurgau", count: 10 },
-  { name: "Solothurn", slug: "solothurn", count: 11 },
-  { name: "Graubünden", slug: "graubuenden", count: 9 },
-  { name: "Wallis", slug: "wallis", count: 14 }
+  { name: "Zürich", slug: "zuerich", count: 42, icon: "🏙️" },
+  { name: "Bern", slug: "bern", count: 28, icon: "🏛️" },
+  { name: "Basel", slug: "basel", count: 24, icon: "🌉" },
+  { name: "Luzern", slug: "luzern", count: 18, icon: "⛰️" },
+  { name: "Aargau", slug: "aargau", count: 22, icon: "🏘️" },
+  { name: "St. Gallen", slug: "st-gallen", count: 16, icon: "📍" },
+  { name: "Zug", slug: "zug", count: 12, icon: "💼" },
+  { name: "Schwyz", slug: "schwyz", count: 8, icon: "🏔️" },
+  { name: "Thurgau", slug: "thurgau", count: 10, icon: "🌳" },
+  { name: "Solothurn", slug: "solothurn", count: 9, icon: "🏰" },
+  { name: "Graubünden", slug: "graubuenden", count: 7, icon: "🎿" },
+  { name: "Wallis", slug: "wallis", count: 11, icon: "🏔️" }
 ];
 
-// Top companies
-const topCompanies = ENHANCED_COMPANIES
-  .filter(c => c.is_featured && c.rating && c.rating >= 4.5)
-  .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-  .slice(0, 3);
+// Benefits
+const benefits = [
+  {
+    icon: TrendingDown,
+    title: "Preisvorteil",
+    description: "Sparen Sie bis zu 40% durch direkten Preisvergleich mehrerer Anbieter.",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-50"
+  },
+  {
+    icon: Clock,
+    title: "Schnelle Terminfindung",
+    description: "Verfügbarkeit und Termine direkt vergleichen – auch kurzfristig.",
+    color: "text-primary",
+    bgColor: "bg-primary/10"
+  },
+  {
+    icon: Shield,
+    title: "Seriöse Anbieter",
+    description: "Nur geprüfte, versicherte Schweizer Umzugsfirmen mit Top-Bewertungen.",
+    color: "text-secondary",
+    bgColor: "bg-secondary/10"
+  },
+  {
+    icon: Award,
+    title: "Bessere Qualität",
+    description: "Transparente Bewertungen helfen Ihnen, die beste Firma zu wählen.",
+    color: "text-swiss-gold",
+    bgColor: "bg-amber-50"
+  }
+];
+
+// Price examples
+const priceExamples = [
+  {
+    size: "2.5-Zimmer",
+    priceRange: "CHF 650 – 950",
+    details: "Ideal für Singles & Paare",
+    popular: false
+  },
+  {
+    size: "3.5-Zimmer",
+    priceRange: "CHF 950 – 1'400",
+    details: "Am häufigsten gewählt",
+    popular: true
+  },
+  {
+    size: "4.5+ Zimmer",
+    priceRange: "CHF 1'400 – 2'200",
+    details: "Für Familien & grössere Haushalte",
+    popular: false
+  }
+];
+
+// Services
+const services = [
+  { icon: Calculator, title: "Umzugsrechner", description: "Kosten sofort berechnen", href: "/umzugsrechner" },
+  { icon: Sparkles, title: "Reinigung", description: "Endreinigung & Abgabe", href: "/reinigung" },
+  { icon: Trash2, title: "Entsorgung", description: "Räumung & Entsorgung", href: "/entsorgung-raeumung" },
+  { icon: Building2, title: "Firmenumzug", description: "Büro- & Geschäftsumzüge", href: "/firmenumzug" }
+];
+
+// Tips
+const tips = [
+  "Holen Sie mindestens 3 Offerten ein und vergleichen Sie nicht nur den Preis",
+  "Planen Sie Ihren Umzug unter der Woche – Wochenenden sind oft teurer",
+  "Entrümpeln Sie vor dem Umzug – weniger Volumen = tiefere Kosten",
+  "Buchen Sie frühzeitig – besonders in der Hauptsaison (April-September)",
+  "Fragen Sie nach Pauschalpreisen statt Stundentarifen für mehr Kostensicherheit"
+];
 
 export default function Umzugsofferten() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
-  // Form state
   const [fromPostal, setFromPostal] = useState(searchParams.get("from") || "");
   const [toPostal, setToPostal] = useState(searchParams.get("to") || "");
   const [rooms, setRooms] = useState(searchParams.get("rooms") || "");
-  
-  // Testimonial slider
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
-  // Memoize filtered results
   const fromOptions = useMemo(() => filterPostalCodes(fromPostal), [fromPostal]);
   const toOptions = useMemo(() => filterPostalCodes(toPostal), [toPostal]);
 
-  // Testimonial rotation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
+  const topCompanies = ENHANCED_COMPANIES.filter(c => c.rating >= 4.5).slice(0, 4);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,766 +216,811 @@ export default function Umzugsofferten() {
     navigate(`/rechner?${params.toString()}`);
   };
 
-  const nextTestimonial = () => setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-  const prevTestimonial = () => setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-
-  const currentUrl = "https://www.umzugscheck.ch/umzugsofferten";
-  const schemas = generatePageSchemas({ type: "offerten", url: currentUrl }, faqs);
+  const schemaOrg = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Umzugsofferten vergleichen",
+    "description": "Vergleichen Sie kostenlos Umzugsofferten von über 200 geprüften Schweizer Firmen.",
+    "url": "https://umzugscheck.ch/umzugsofferten"
+  };
 
   return (
     <>
       <Helmet>
-        <title>Umzugsofferten vergleichen & bis zu 40% sparen | umzugscheck.ch</title>
-        <meta name="description" content="Gratis Offerten von geprüften Schweizer Umzugsfirmen – schnell, transparent und unverbindlich. Vergleichen und sparen Sie bis zu 40%." />
-        <link rel="canonical" href={currentUrl} />
-        <script type="application/ld+json">{JSON.stringify(schemas)}</script>
+        <title>Umzugsofferten vergleichen | Kostenlos & unverbindlich | Umzugscheck.ch</title>
+        <meta name="description" content="Vergleichen Sie kostenlos Umzugsofferten von über 200 geprüften Schweizer Firmen. Bis zu 40% sparen. Unverbindlich in 2 Minuten." />
+        <meta name="keywords" content="Umzugsofferten, Umzug Schweiz, Umzugsfirma vergleichen, Umzugskosten, günstig umziehen" />
+        <link rel="canonical" href="https://umzugscheck.ch/umzugsofferten" />
+        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
-      
+
       <div className="min-h-screen bg-background">
         
-        {/* ===== HERO SECTION - Matching Homepage Style ===== */}
-        <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+        {/* ==================== HERO SECTION ==================== */}
+        <section className="relative min-h-[90vh] flex items-center overflow-hidden">
           {/* Background Image */}
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${heroFamilyMoving})` }}
           />
           
-          {/* Gradient Overlays - Same as Homepage */}
-          <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
+          {/* Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/70" />
           
-          {/* Subtle Pattern Overlay */}
-          <div className="absolute inset-0 opacity-30">
+          {/* Pattern Overlay */}
+          <div className="absolute inset-0 opacity-20">
             <div className="absolute inset-0" style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.1) 1px, transparent 0)`,
-              backgroundSize: "32px 32px"
+              backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.15) 1px, transparent 0)`,
+              backgroundSize: '32px 32px'
             }} />
           </div>
           
-          {/* Content Container */}
-          <div className="container mx-auto px-4 py-12 md:py-20 lg:py-24 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               
-              {/* Left Column - Text & CTAs */}
+              {/* Left: Content */}
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 className="space-y-6"
               >
-                {/* Floating Badge - Same as Homepage */}
+                {/* Floating Badge */}
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: 1,
-                    y: [0, -8, 0]
-                  }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
                   transition={{ 
-                    opacity: { delay: 0.2, duration: 0.5 },
-                    scale: { delay: 0.2, duration: 0.5 },
+                    opacity: { delay: 0.2 },
                     y: { delay: 0.7, duration: 3, repeat: Infinity, ease: "easeInOut" }
                   }}
-                  className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-medium border border-border"
+                  className="inline-flex items-center gap-3 px-4 py-2.5 bg-white rounded-2xl shadow-medium border border-border"
                 >
-                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary">
-                    <Check className="h-6 w-6 text-white stroke-[3]" />
+                  <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary">
+                    <Check className="h-5 w-5 text-white stroke-[3]" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Offerten vergleichen</p>
-                    <p className="text-sm font-bold text-foreground">Bis zu 40% sparen</p>
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Wir checken für Sie</p>
+                    <p className="text-sm font-bold text-foreground">200+ geprüfte Schweizer Firmen</p>
                   </div>
                 </motion.div>
                 
                 {/* Main Headline */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
                   <span className="text-foreground">Umzugsofferten vergleichen.</span>
-                  <span className="block text-primary mt-2">Kostenlos & unverbindlich.</span>
+                  <span className="block text-secondary mt-2">Kostenlos & unverbindlich.</span>
                 </h1>
                 
                 {/* Subheadline */}
                 <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
-                  Wir <span className="inline-flex items-center gap-1 text-secondary font-semibold"><CheckCircle2 className="h-5 w-5" />checken</span> für Sie: 
-                  Gratis Offerten von geprüften Schweizer Umzugsfirmen – schnell, transparent und unverbindlich.
+                  Vergleichen Sie jetzt <span className="font-semibold text-foreground">über 200 geprüfte Schweizer Umzugsfirmen</span> und sparen Sie bis zu 40% – komplett kostenlos und ohne Verpflichtung.
                 </p>
                 
-                {/* Trust Metrics Row */}
-                <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
+                {/* Trust Badges */}
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                   <div className="flex items-center gap-2">
-                    <Star className="h-5 w-5 fill-swiss-gold text-swiss-gold" />
-                    <span className="font-bold text-foreground">4.8/5</span>
-                    <span className="text-foreground/60">Bewertung</span>
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    </div>
+                    <span className="text-sm font-medium text-foreground">Geprüfte Firmen</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-secondary" />
-                    <span className="font-bold text-foreground">15'000+</span>
-                    <span className="text-foreground/60">Umzüge gecheckt</span>
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
+                      <TrendingDown className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-sm font-medium text-foreground">Bis 40% sparen</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                    <span className="text-foreground/60">100% kostenlos</span>
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary/10">
+                      <Shield className="h-4 w-4 text-secondary" />
+                    </div>
+                    <span className="text-sm font-medium text-foreground">100% kostenlos</span>
                   </div>
                 </div>
-                
-                {/* Live Activity Badge */}
-                <div className="pt-2">
-                  <LiveActivityBadge />
-                </div>
-                
+
                 {/* Desktop CTAs */}
-                <div className="hidden lg:flex items-center gap-4 pt-2">
+                <div className="hidden lg:flex items-center gap-4 pt-4">
                   <Button 
                     size="lg" 
-                    className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all"
-                    onClick={() => document.getElementById("offerten-form")?.scrollIntoView({ behavior: "smooth" })}
+                    onClick={() => document.getElementById('hero-form')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="h-14 px-8 text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all"
                   >
                     <CheckCircle2 className="mr-2 h-5 w-5" />
                     Jetzt Offerten erhalten
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                   <Link to="/umzugsrechner">
-                    <Button size="lg" variant="secondary" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold">
+                    <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold border-2">
+                      <Calculator className="mr-2 h-5 w-5" />
                       Kosten berechnen
                     </Button>
                   </Link>
                 </div>
               </motion.div>
               
-              {/* Right Column - Form Card - Floating */}
-              <motion.div
-                id="offerten-form"
+              {/* Right: Form Card */}
+              <motion.div 
+                id="hero-form"
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: [0, -10, 0]
-                }}
-                transition={{ 
-                  opacity: { duration: 0.6, delay: 0.2 },
-                  y: { delay: 0.8, duration: 4, repeat: Infinity, ease: "easeInOut" }
-                }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8">
-                  <div className="space-y-5">
-                    {/* Form Header */}
-                    <div className="text-center space-y-2">
-                      <div className="inline-flex items-center gap-2 text-sm text-primary font-semibold">
-                        <Clock className="h-4 w-4" />
-                        In 2 Minuten zum Vergleich
-                      </div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                        Kostenlos Offerten erhalten
-                      </h2>
-                    </div>
-                    
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                <Card className="bg-white/95 backdrop-blur-sm shadow-premium border-border/50 rounded-3xl overflow-hidden">
+                  <div className="bg-gradient-to-r from-primary to-primary/90 px-6 py-4">
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Zap className="h-5 w-5" />
+                      Kostenlose Offerten in 2 Minuten
+                    </h2>
+                    <p className="text-sm text-white/80">Unverbindlich vergleichen & sparen</p>
+                  </div>
+                  
+                  <CardContent className="p-6">
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                      {/* From */}
                       <div className="space-y-2">
-                        <Label htmlFor="from" className="text-foreground font-medium text-sm">Von (PLZ oder Ort)</Label>
+                        <Label htmlFor="from" className="text-sm font-medium flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          Start-PLZ / Ort
+                        </Label>
                         <Input
                           id="from"
-                          list="from-options"
-                          placeholder="z.B. 8001 oder Zürich"
+                          placeholder="z.B. 8001 Zürich"
                           value={fromPostal}
                           onChange={(e) => setFromPostal(e.target.value)}
-                          className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                          autoComplete="off"
-                          required
+                          list="from-options"
+                          className="h-12 text-base rounded-xl border-2 focus:border-primary"
                         />
                         <datalist id="from-options">
-                          {fromOptions.map((option) => (
-                            <option key={`from-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                          {fromOptions.map(opt => (
+                            <option key={opt.code} value={`${opt.code} - ${opt.city} (${opt.canton})`} />
                           ))}
                         </datalist>
                       </div>
                       
+                      {/* To */}
                       <div className="space-y-2">
-                        <Label htmlFor="to" className="text-foreground font-medium text-sm">Nach (PLZ oder Ort)</Label>
+                        <Label htmlFor="to" className="text-sm font-medium flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-secondary" />
+                          Ziel-PLZ / Ort
+                        </Label>
                         <Input
                           id="to"
-                          list="to-options"
-                          placeholder="z.B. 3011 oder Bern"
+                          placeholder="z.B. 3011 Bern"
                           value={toPostal}
                           onChange={(e) => setToPostal(e.target.value)}
-                          className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                          autoComplete="off"
-                          required
+                          list="to-options"
+                          className="h-12 text-base rounded-xl border-2 focus:border-primary"
                         />
                         <datalist id="to-options">
-                          {toOptions.map((option) => (
-                            <option key={`to-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                          {toOptions.map(opt => (
+                            <option key={opt.code} value={`${opt.code} - ${opt.city} (${opt.canton})`} />
                           ))}
                         </datalist>
                       </div>
                       
+                      {/* Rooms */}
                       <div className="space-y-2">
-                        <Label htmlFor="rooms" className="text-foreground font-medium text-sm">Wohnungsgrösse</Label>
+                        <Label htmlFor="rooms" className="text-sm font-medium flex items-center gap-2">
+                          <Home className="h-4 w-4 text-primary" />
+                          Wohnungsgrösse
+                        </Label>
                         <Select value={rooms} onValueChange={setRooms}>
-                          <SelectTrigger className="h-12 text-base bg-background border-border/60">
-                            <SelectValue placeholder="Wählen Sie..." />
+                          <SelectTrigger className="h-12 text-base rounded-xl border-2">
+                            <SelectValue placeholder="Anzahl Zimmer wählen" />
                           </SelectTrigger>
-                          <SelectContent className="bg-card border-border">
-                            <SelectItem value="1">1 - 1.5 Zimmer</SelectItem>
-                            <SelectItem value="2">2 - 2.5 Zimmer</SelectItem>
-                            <SelectItem value="3">3 - 3.5 Zimmer</SelectItem>
-                            <SelectItem value="4">4 - 4.5 Zimmer</SelectItem>
+                          <SelectContent>
+                            <SelectItem value="1">1-Zimmer Studio</SelectItem>
+                            <SelectItem value="2">2-Zimmer Wohnung</SelectItem>
+                            <SelectItem value="2.5">2.5-Zimmer Wohnung</SelectItem>
+                            <SelectItem value="3">3-Zimmer Wohnung</SelectItem>
+                            <SelectItem value="3.5">3.5-Zimmer Wohnung</SelectItem>
+                            <SelectItem value="4">4-Zimmer Wohnung</SelectItem>
+                            <SelectItem value="4.5">4.5-Zimmer Wohnung</SelectItem>
                             <SelectItem value="5">5+ Zimmer / Haus</SelectItem>
-                            <SelectItem value="office">Büro / Firma</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       
-                      <Button 
-                        type="submit" 
-                        size="lg" 
-                        className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all animate-pulse-subtle group"
-                      >
-                        <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                        <span className="hidden sm:inline">Jetzt Offerten erhalten</span>
-                        <span className="sm:hidden">Offerten erhalten</span>
-                        <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                      {/* Submit */}
+                      <Button type="submit" size="lg" className="w-full h-14 text-lg font-bold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all rounded-xl">
+                        Jetzt Offerten erhalten
+                        <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
+                      
+                      {/* Trust line */}
+                      <p className="text-xs text-center text-muted-foreground pt-2">
+                        <Shield className="inline h-3 w-3 mr-1" />
+                        100% kostenlos • Keine Verpflichtung • SSL-verschlüsselt
+                      </p>
                     </form>
-                    
-                    {/* Trust Microcopy */}
-                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-foreground/60">
-                      <span className="flex items-center gap-1.5">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        Kostenlos
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        Unverbindlich
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Shield className="h-4 w-4 text-secondary" />
-                        Datenschutz
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Mobile CTAs */}
-                <div className="flex flex-col gap-3 mt-6 lg:hidden">
-                  <Link to="/umzugsrechner" className="w-full">
-                    <Button size="lg" variant="outline" className="w-full h-11 text-sm font-semibold border-2 hover:bg-primary/5">
-                      Kosten berechnen
-                    </Button>
-                  </Link>
-                </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             </div>
           </div>
         </section>
 
-        {/* ===== TRUST BAR ===== */}
-        <section className="border-y border-border bg-muted/30 py-6">
+        {/* ==================== STATS BAR ==================== */}
+        <section className="py-6 bg-muted/50 border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
-              <div className="flex items-center gap-2">
-                <BadgeCheck className="w-5 h-5 text-primary" />
-                <span className="font-medium">Geprüfte Firmen</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-                <span className="font-medium">100% kostenlos</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <TrendingDown className="w-5 h-5 text-primary" />
-                <span className="font-medium">Bis zu 40% sparen</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-amber-500" />
-                <span className="font-medium">Offerten in 24h</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== TESTIMONIALS SLIDER ===== */}
-        <section className="py-12 md:py-16 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold mb-2">Das sagen unsere Kunden</h2>
-                <div className="flex items-center justify-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
-                  ))}
-                  <span className="ml-2 text-muted-foreground">4.8/5 Bewertung</span>
-                </div>
-              </div>
-
-              <div className="relative">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentTestimonial}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Card className="p-6 md:p-8">
-                      <div className="flex flex-col md:flex-row gap-6 items-center">
-                        <div className="flex-shrink-0">
-                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-xl font-bold text-primary">
-                            {testimonials[currentTestimonial].avatar}
-                          </div>
-                        </div>
-                        <div className="flex-1 text-center md:text-left">
-                          <Quote className="w-8 h-8 text-primary/20 mb-2 mx-auto md:mx-0" />
-                          <p className="text-lg text-foreground mb-4">
-                            "{testimonials[currentTestimonial].text}"
-                          </p>
-                          <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
-                            <div>
-                              <p className="font-semibold">{testimonials[currentTestimonial].name}</p>
-                              <p className="text-sm text-muted-foreground">{testimonials[currentTestimonial].location}</p>
-                            </div>
-                            <Badge variant="secondary" className="w-fit mx-auto md:mx-0">
-                              Gespart: {testimonials[currentTestimonial].saved}
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Navigation */}
-                <div className="flex items-center justify-center gap-4 mt-6">
-                  <Button variant="outline" size="icon" onClick={prevTestimonial}>
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
-                  <div className="flex gap-2">
-                    {testimonials.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentTestimonial(i)}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                          i === currentTestimonial ? "bg-primary w-6" : "bg-muted-foreground/30"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <Button variant="outline" size="icon" onClick={nextTestimonial}>
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== BENEFITS SECTION ===== */}
-        <section className="py-12 md:py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">Warum Offerten vergleichen?</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Sparen Sie Zeit und Geld mit unserem kostenlosen Vergleichsservice
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
               {[
-                { icon: TrendingDown, title: "Preisvorteil", desc: "Sparen Sie durchschnittlich 25-40% durch Vergleichen mehrerer Angebote" },
-                { icon: Timer, title: "Schnelle Terminfindung", desc: "Erhalten Sie innerhalb von 24h konkrete Offerten mit Terminen" },
-                { icon: BadgeCheck, title: "Seriöse Anbieter", desc: "Alle Firmen sind geprüft, versichert und haben positive Bewertungen" },
-                { icon: ThumbsUp, title: "Bessere Qualität", desc: "Vergleichen Sie nicht nur Preise, sondern auch Leistungen und Bewertungen" }
-              ].map((item, i) => (
-                <Card key={i} className="p-6 text-center hover:shadow-lg transition-shadow">
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <item.icon className="w-7 h-7 text-primary" />
+                { icon: Star, value: "4.8/5", label: "Bewertung", color: "text-swiss-gold" },
+                { icon: Users, value: "15'000+", label: "Umzüge", color: "text-primary" },
+                { icon: Shield, value: "200+", label: "Geprüfte Partner", color: "text-secondary" },
+                { icon: CheckCircle2, value: "100%", label: "Kostenlos", color: "text-emerald-500" }
+              ].map((stat, idx) => (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-center gap-3"
+                >
+                  <stat.icon className={`h-6 w-6 ${stat.color} ${stat.icon === Star ? 'fill-swiss-gold' : ''}`} />
+                  <div>
+                    <span className="font-bold text-foreground">{stat.value}</span>
+                    <span className="text-muted-foreground ml-1.5 text-sm">{stat.label}</span>
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </Card>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ===== PROCESS SECTION ===== */}
-        <section className="py-12 md:py-16 bg-background">
+        {/* ==================== BENEFITS SECTION ==================== */}
+        <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">So einfach geht's</h2>
-              <p className="text-muted-foreground">In 3 Schritten zu Ihren Umzugsofferten</p>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                Warum mit Umzugscheck.ch vergleichen?
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Profitieren Sie von unserer unabhängigen Plattform – für einen stressfreien Umzug zum besten Preis.
+              </p>
+            </motion.div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {benefits.map((benefit, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Card className="h-full p-6 hover:shadow-premium transition-shadow duration-300 border-border/50 rounded-2xl group">
+                    <div className={`w-14 h-14 rounded-2xl ${benefit.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                      <benefit.icon className={`h-7 w-7 ${benefit.color}`} />
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{benefit.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{benefit.description}</p>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
+          </div>
+        </section>
 
+        {/* ==================== TESTIMONIALS SECTION ==================== */}
+        <section className="py-16 md:py-24 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                Das sagen unsere Kunden
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Echte Bewertungen von echten Umzügen in der Schweiz.
+              </p>
+            </motion.div>
+            
+            {/* Mobile Carousel */}
+            <div className="md:hidden">
+              <Carousel opts={{ align: "start", loop: true }} className="w-full">
+                <CarouselContent className="-ml-2">
+                  {testimonials.map((t, idx) => (
+                    <CarouselItem key={t.id} className="pl-2 basis-[85%]">
+                      <Card className="h-full p-5 rounded-2xl border-border/50 shadow-premium">
+                        <Quote className="h-6 w-6 text-primary/20 mb-3" />
+                        <div className="flex gap-0.5 mb-3">
+                          {[...Array(t.rating)].map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-swiss-gold text-swiss-gold" />
+                          ))}
+                        </div>
+                        <p className="text-foreground text-sm leading-relaxed mb-4">"{t.text}"</p>
+                        {t.saved && (
+                          <Badge className="bg-emerald-100 text-emerald-700 mb-3">
+                            Gespart: {t.saved}
+                          </Badge>
+                        )}
+                        <div className="border-t border-border pt-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-foreground text-sm">{t.name}</span>
+                            {t.verified && (
+                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-emerald-100 text-emerald-700">
+                                <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" />
+                                Verifiziert
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground">{t.location}</div>
+                          <div className="text-xs text-primary mt-0.5">{t.type}</div>
+                        </div>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="flex justify-center gap-2 mt-4">
+                  <CarouselPrevious className="static translate-y-0 h-8 w-8" />
+                  <CarouselNext className="static translate-y-0 h-8 w-8" />
+                </div>
+              </Carousel>
+            </div>
+            
+            {/* Desktop Grid */}
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {testimonials.map((t, idx) => (
+                <motion.div
+                  key={t.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Card className="h-full p-5 rounded-2xl border-border/50 shadow-premium hover:shadow-lift transition-shadow">
+                    <Quote className="h-6 w-6 text-primary/20 mb-3" />
+                    <div className="flex gap-0.5 mb-3">
+                      {[...Array(t.rating)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-swiss-gold text-swiss-gold" />
+                      ))}
+                    </div>
+                    <p className="text-foreground text-sm leading-relaxed mb-4">"{t.text}"</p>
+                    {t.saved && (
+                      <Badge className="bg-emerald-100 text-emerald-700 mb-3">
+                        Gespart: {t.saved}
+                      </Badge>
+                    )}
+                    <div className="border-t border-border pt-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-foreground text-sm">{t.name}</span>
+                        {t.verified && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-emerald-100 text-emerald-700">
+                            <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" />
+                            Verifiziert
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="text-xs text-muted-foreground">{t.location}</div>
+                      <div className="text-xs text-primary mt-0.5">{t.type}</div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Average Rating */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="mt-10 text-center"
+            >
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-card rounded-full border border-border shadow-sm">
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 fill-swiss-gold text-swiss-gold" />
+                  ))}
+                </div>
+                <span className="font-semibold text-foreground">4.8 von 5</span>
+                <span className="text-muted-foreground text-sm hidden sm:inline">basierend auf 2'847 Bewertungen</span>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ==================== PROCESS SECTION ==================== */}
+        <section className="py-16 md:py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                So einfach funktioniert's
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                In drei einfachen Schritten zu Ihrem besten Umzugsangebot.
+              </p>
+            </motion.div>
+            
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {[
-                { step: 1, title: "Formular ausfüllen", desc: "Geben Sie Start, Ziel und Wohnungsgrösse ein – dauert nur 2 Minuten", icon: Home },
-                { step: 2, title: "Offerten erhalten", desc: "Erhalten Sie innerhalb von 24h bis zu 5 unverbindliche Offerten per E-Mail", icon: Truck },
-                { step: 3, title: "Beste Firma wählen", desc: "Vergleichen Sie Preise, Bewertungen und wählen Sie Ihren Favoriten", icon: Award }
-              ].map((item, i) => (
-                <div key={i} className="relative">
-                  {i < 2 && (
-                    <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/50 to-primary/10" />
+                { step: 1, icon: FileText, title: "Formular ausfüllen", description: "Geben Sie in nur 2 Minuten Ihre Umzugsdetails ein – kostenlos und unverbindlich." },
+                { step: 2, icon: Truck, title: "Offerten erhalten", description: "Innerhalb von 24-48 Stunden erhalten Sie mehrere konkrete Angebote von geprüften Firmen." },
+                { step: 3, icon: ThumbsUp, title: "Beste Firma wählen", description: "Vergleichen Sie Preise & Bewertungen und wählen Sie die beste Firma für Ihren Umzug." }
+              ].map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.15 }}
+                  className="relative text-center"
+                >
+                  {/* Connector Line */}
+                  {idx < 2 && (
+                    <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-primary/10" />
                   )}
-                  <div className="text-center">
-                    <div className="relative inline-flex">
-                      <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                        <item.icon className="w-10 h-10 text-primary" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                        {item.step}
-                      </div>
+                  
+                  {/* Step Number */}
+                  <div className="relative inline-flex mb-6">
+                    <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                      <item.icon className="h-9 w-9 text-primary" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center font-bold text-sm shadow-cta">
+                      {item.step}
+                    </div>
                   </div>
-                </div>
+                  
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto">{item.description}</p>
+                </motion.div>
               ))}
             </div>
+            
+            {/* CTA */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              className="text-center mt-12"
+            >
+              <Link to="/rechner">
+                <Button size="lg" className="h-14 px-8 text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all">
+                  Jetzt starten – kostenlos
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </motion.div>
           </div>
         </section>
 
-        {/* ===== TOP PARTNERS SECTION ===== */}
-        <section className="py-12 md:py-16 bg-muted/30">
+        {/* ==================== PRICE EXAMPLES ==================== */}
+        <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">Top-bewertete Umzugsfirmen</h2>
-              <p className="text-muted-foreground">Unsere bestbewerteten Partner</p>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                Umzugskosten im Überblick
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Typische Preise für Umzüge innerhalb der Schweiz (lokal, ca. 20-30 km).
+              </p>
+            </motion.div>
+            
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {priceExamples.map((example, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Card className={`h-full p-6 rounded-2xl border-2 transition-all hover:shadow-premium ${
+                    example.popular 
+                      ? 'border-primary bg-primary/5 shadow-premium' 
+                      : 'border-border/50 bg-card'
+                  }`}>
+                    {example.popular && (
+                      <Badge className="bg-primary text-white mb-4">
+                        <Star className="w-3 h-3 mr-1 fill-white" />
+                        Beliebt
+                      </Badge>
+                    )}
+                    <h3 className="text-xl font-bold text-foreground mb-2">{example.size}</h3>
+                    <p className="text-3xl font-bold text-primary mb-2">{example.priceRange}</p>
+                    <p className="text-sm text-muted-foreground mb-4">{example.details}</p>
+                    <div className="flex items-center gap-2 text-sm text-emerald-600">
+                      <TrendingDown className="h-4 w-4" />
+                      <span>Mögliche Ersparnis: bis CHF 400</span>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
+            
+            <p className="text-center text-sm text-muted-foreground mt-8">
+              * Richtpreise. Endpreis abhängig von Distanz, Stockwerk, Lift, Zusatzleistungen etc.
+            </p>
+          </div>
+        </section>
 
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {topCompanies.map((company, i) => (
-                <Card key={i} className="overflow-hidden hover:shadow-xl transition-shadow">
-                  <div className="p-6">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Building2 className="w-7 h-7 text-primary" />
+        {/* ==================== TOP COMPANIES ==================== */}
+        <section className="py-16 md:py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                Top bewertete Umzugsfirmen
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Unsere bestbewerteten Partner für Ihren nächsten Umzug.
+              </p>
+            </motion.div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {topCompanies.map((company, idx) => (
+                <motion.div
+                  key={company.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Card className="h-full p-5 rounded-2xl border-border/50 hover:shadow-premium transition-all group">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Truck className="h-6 w-6 text-primary" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold truncate">{company.name}</h3>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                          <span className="font-medium">{company.rating}</span>
-                          <span className="text-muted-foreground text-sm">({company.review_count} Bewertungen)</span>
+                      <div>
+                        <h3 className="font-bold text-foreground text-sm">{company.name}</h3>
+                        <div className="flex items-center gap-1">
+                          <Star className="h-3.5 w-3.5 fill-swiss-gold text-swiss-gold" />
+                          <span className="text-sm font-medium">{company.rating}</span>
+                          <span className="text-xs text-muted-foreground">({company.review_count})</span>
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      Professionelle Umzugsfirma mit langjähriger Erfahrung in der Schweiz.
-                    </p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="flex-1" asChild>
-                        <Link to={`/umzugsfirmen/${company.slug}`}>
-                          Firma ansehen
-                        </Link>
-                      </Button>
-                      <Button size="sm" className="flex-1" asChild>
-                        <Link to={`/rechner?company=${company.id}`}>
-                          Offerte anfordern
-                        </Link>
-                      </Button>
+                    
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {company.service_areas?.slice(0, 2).map((region, i) => (
+                        <Badge key={i} variant="outline" className="text-xs">
+                          <MapPin className="h-2.5 w-2.5 mr-1" />
+                          {region}
+                        </Badge>
+                      ))}
                     </div>
-                  </div>
-                </Card>
+                    
+                    <div className="flex gap-2">
+                      <Link to={`/umzugsfirmen/${company.slug}`} className="flex-1">
+                        <Button variant="outline" size="sm" className="w-full text-xs">
+                          Firma ansehen
+                        </Button>
+                      </Link>
+                      <Link to="/rechner" className="flex-1">
+                        <Button size="sm" className="w-full text-xs">
+                          Offerte
+                        </Button>
+                      </Link>
+                    </div>
+                  </Card>
+                </motion.div>
               ))}
             </div>
-
-            <div className="text-center mt-8">
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/umzugsfirmen">
+            
+            <div className="text-center mt-10">
+              <Link to="/umzugsfirmen">
+                <Button variant="outline" size="lg" className="font-semibold">
                   Alle Firmen anzeigen
-                  <ChevronRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* ===== REGIONAL SECTION ===== */}
-        <section className="py-12 md:py-16 bg-background">
+        {/* ==================== REGIONS ==================== */}
+        <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">Umzugsfirmen in Ihrer Region</h2>
-              <p className="text-muted-foreground">Finden Sie lokale Umzugsexperten</p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-w-5xl mx-auto">
-              {regions.map((region, i) => (
-                <Link
-                  key={i}
-                  to={`/${region.slug}`}
-                  className="group p-4 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all text-center"
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                Umzugsfirmen nach Region
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Finden Sie lokale Umzugspartner in Ihrer Region.
+              </p>
+            </motion.div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+              {regions.map((region, idx) => (
+                <motion.div
+                  key={region.slug}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.03 }}
                 >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-primary/20 transition-colors">
-                    <MapPin className="w-5 h-5 text-primary" />
-                  </div>
-                  <p className="font-medium text-sm">{region.name}</p>
-                  <p className="text-xs text-muted-foreground">{region.count} Firmen</p>
-                </Link>
+                  <Link to={`/${region.slug}/umzugsfirmen`}>
+                    <Card className="p-4 rounded-xl border-border/50 hover:border-primary/30 hover:shadow-medium transition-all text-center group cursor-pointer">
+                      <span className="text-2xl mb-2 block">{region.icon}</span>
+                      <h3 className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">{region.name}</h3>
+                      <p className="text-xs text-muted-foreground">{region.count} Firmen</p>
+                    </Card>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ===== FAQ SECTION ===== */}
-        <section className="py-12 md:py-16 bg-muted/30">
+        {/* ==================== SERVICES & TIPS ==================== */}
+        <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-bold mb-3">Häufige Fragen</h2>
-                <p className="text-muted-foreground">Alles was Sie wissen müssen</p>
-              </div>
+            <div className="grid lg:grid-cols-2 gap-12">
+              {/* Services */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
+                  Weitere Services
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {services.map((service, idx) => (
+                    <Link key={idx} to={service.href}>
+                      <Card className="p-5 rounded-xl border-border/50 hover:border-primary/30 hover:shadow-medium transition-all group h-full">
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <service.icon className="h-6 w-6 text-primary" />
+                        </div>
+                        <h3 className="font-bold text-foreground mb-1 group-hover:text-primary transition-colors">{service.title}</h3>
+                        <p className="text-sm text-muted-foreground">{service.description}</p>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </motion.div>
+              
+              {/* Tips */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
+                  5 Tipps für einen günstigen Umzug
+                </h2>
+                <div className="space-y-4">
+                  {tips.map((tip, idx) => (
+                    <div key={idx} className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-bold text-white">{idx + 1}</span>
+                      </div>
+                      <p className="text-muted-foreground text-sm leading-relaxed pt-1">{tip}</p>
+                    </div>
+                  ))}
+                </div>
+                
+                <Link to="/ratgeber" className="inline-flex items-center gap-2 mt-6 text-primary font-medium hover:underline">
+                  Mehr Tipps im Ratgeber
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </motion.div>
+            </div>
+          </div>
+        </section>
 
+        {/* ==================== FAQ ==================== */}
+        <section className="py-16 md:py-24 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                Häufig gestellte Fragen
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Alles, was Sie über unseren Offerten-Vergleich wissen müssen.
+              </p>
+            </motion.div>
+            
+            <div className="max-w-3xl mx-auto">
               <Accordion type="single" collapsible className="space-y-3">
-                {faqs.map((faq, i) => (
-                  <AccordionItem key={i} value={`faq-${i}`} className="bg-card border rounded-xl px-6">
-                    <AccordionTrigger className="text-left font-medium hover:no-underline">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
+                {faqs.map((faq, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
+                    <AccordionItem value={`faq-${idx}`} className="bg-card border border-border/50 rounded-xl px-6 overflow-hidden">
+                      <AccordionTrigger className="py-5 text-left font-semibold text-foreground hover:no-underline hover:text-primary">
+                        <span className="flex items-center gap-3">
+                          <HelpCircle className="h-5 w-5 text-primary flex-shrink-0" />
+                          {faq.question}
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-5 text-muted-foreground leading-relaxed pl-8">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </motion.div>
                 ))}
               </Accordion>
             </div>
           </div>
         </section>
 
-        {/* ===== PRICE EXAMPLES SECTION ===== */}
-        <section className="py-12 md:py-16 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">Was kostet ein Umzug in der Schweiz?</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Durchschnittliche Umzugskosten je nach Wohnungsgrösse – basierend auf über 15'000 Umzügen
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {[
-                { size: "2.5 Zimmer", subtitle: "Studio/kleine Wohnung", min: 650, max: 1200, savings: "bis CHF 350" },
-                { size: "3.5 Zimmer", subtitle: "Familienwohnung", min: 1100, max: 2000, savings: "bis CHF 580", popular: true },
-                { size: "4.5+ Zimmer", subtitle: "Haus/grosse Wohnung", min: 1800, max: 3500, savings: "bis CHF 950" }
-              ].map((item, i) => (
-                <Card key={i} className={`p-6 relative ${item.popular ? "border-primary shadow-lg" : ""}`}>
-                  {item.popular && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Beliebt</Badge>
-                  )}
-                  <div className="text-center">
-                    <h3 className="text-xl font-bold mb-1">{item.size}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">{item.subtitle}</p>
-                    <div className="text-3xl font-bold text-primary mb-2">
-                      CHF {item.min.toLocaleString()} - {item.max.toLocaleString()}
-                    </div>
-                    <p className="text-sm text-green-600 font-medium">Ersparnis {item.savings}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              * Preise variieren je nach Distanz, Stockwerk und Zusatzleistungen
-            </p>
+        {/* ==================== FINAL CTA ==================== */}
+        <section className="py-16 md:py-24 bg-gradient-to-br from-primary via-primary to-primary/90 relative overflow-hidden">
+          {/* Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: '24px 24px'
+            }} />
           </div>
-        </section>
-
-        {/* ===== STATISTICS SECTION ===== */}
-        <section className="py-12 md:py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-              {[
-                { value: "15'247", label: "Umzüge verglichen", icon: Truck },
-                { value: "4.8/5", label: "Durchschnittsbewertung", icon: Star },
-                { value: "127+", label: "Geprüfte Umzugsfirmen", icon: BadgeCheck },
-                { value: "38%", label: "Durchschnittliche Ersparnis", icon: TrendingDown }
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                    <stat.icon className="w-7 h-7 text-primary" />
-                  </div>
-                  <div className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ===== SEO CONTENT SECTION ===== */}
-        <section className="py-12 md:py-16 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto prose prose-slate">
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
-                Umzugsofferten vergleichen: So finden Sie die beste Umzugsfirma
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center max-w-3xl mx-auto"
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+                Bereit für Ihren Umzug?
               </h2>
+              <p className="text-lg text-white/80 mb-8">
+                Vergleichen Sie jetzt kostenlos und unverbindlich Offerten von über 200 geprüften Schweizer Umzugsfirmen.
+              </p>
               
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Warum lohnt sich ein Umzugsvergleich?</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Ein Umzug in der Schweiz kann schnell teuer werden. Die Preise variieren stark zwischen 
-                    verschiedenen Umzugsfirmen – oft um 30-40%. Durch einen kostenlosen Vergleich mehrerer 
-                    Offerten sparen Sie nicht nur Geld, sondern finden auch die Firma, die am besten zu 
-                    Ihren Bedürfnissen passt.
-                  </p>
-                  <p className="text-muted-foreground">
-                    Bei umzugscheck.ch vergleichen Sie Angebote von geprüften Schweizer Umzugsfirmen. 
-                    Alle Partner sind versichert, im Handelsregister eingetragen und haben positive 
-                    Kundenbewertungen.
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">So funktioniert der Offerten-Vergleich</h3>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Füllen Sie das kurze Formular mit Start, Ziel und Wohnungsgrösse aus</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Vergleichen Sie Preise, Leistungen und Kundenbewertungen</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Wählen Sie die beste Firma für Ihren Umzug – ohne Verpflichtung</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== INTERNAL LINKS SECTION ===== */}
-        <section className="py-12 md:py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">Weitere Umzugs-Services</h2>
-              <p className="text-muted-foreground">Entdecken Sie alle Möglichkeiten rund um Ihren Umzug</p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              {[
-                { title: "Umzugsrechner", desc: "Kosten sofort berechnen", link: "/rechner", icon: Users },
-                { title: "Reinigung", desc: "Endreinigung & Abgabe", link: "/reinigung", icon: Home },
-                { title: "Entsorgung", desc: "Möbel & Sperrgut entsorgen", link: "/entsorgung", icon: Truck },
-                { title: "Firmenumzug", desc: "Büro & Geschäft umziehen", link: "/firmenumzug", icon: Building2 }
-              ].map((item, i) => (
-                <Link
-                  key={i}
-                  to={item.link}
-                  className="group flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                    <item.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-semibold group-hover:text-primary transition-colors">{item.title}</p>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground ml-auto group-hover:text-primary transition-colors" />
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link to="/rechner">
+                  <Button size="lg" variant="secondary" className="h-14 px-8 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-lg">
+                    <CheckCircle2 className="mr-2 h-5 w-5" />
+                    Jetzt Offerten erhalten
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
                 </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ===== UMZUG TIPPS SECTION ===== */}
-        <section className="py-12 md:py-16 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
-                5 Tipps für einen günstigen Umzug
-              </h2>
+                <Link to="/umzugsrechner">
+                  <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold border-2 border-white text-white hover:bg-white/10">
+                    <Calculator className="mr-2 h-5 w-5" />
+                    Kosten berechnen
+                  </Button>
+                </Link>
+              </div>
               
-              <div className="space-y-4">
-                {[
-                  { num: 1, title: "Offerten vergleichen", text: "Holen Sie mindestens 3-5 Offerten ein und vergleichen Sie nicht nur Preise, sondern auch Leistungen und Bewertungen." },
-                  { num: 2, title: "Flexible Termine wählen", text: "Umzüge unter der Woche oder Mitte des Monats sind oft günstiger als an Wochenenden oder zum Monatsersten." },
-                  { num: 3, title: "Selbst vorarbeiten", text: "Packen Sie selbst, entsorgen Sie Unnötiges vorab und bauen Sie Möbel ab – das spart Arbeitsstunden." },
-                  { num: 4, title: "Früh planen", text: "Buchen Sie 4-6 Wochen im Voraus für bessere Preise und mehr Auswahl bei den Terminen." },
-                  { num: 5, title: "Versicherung prüfen", text: "Achten Sie auf ausreichenden Versicherungsschutz und klären Sie Haftungsfragen vor dem Umzug." }
-                ].map((tip, i) => (
-                  <div key={i} className="flex gap-4 p-4 rounded-xl bg-muted/30">
-                    <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold flex-shrink-0">
-                      {tip.num}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">{tip.title}</h3>
-                      <p className="text-sm text-muted-foreground">{tip.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="text-center mt-8">
-                <Button variant="outline" asChild>
-                  <Link to="/ratgeber">
-                    Mehr Umzugstipps im Ratgeber
-                    <ChevronRight className="ml-2 w-4 h-4" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
+              <p className="text-sm text-white/60 mt-6">
+                Bereits über 15'000 erfolgreiche Umzüge verglichen • 100% kostenlos
+              </p>
+            </motion.div>
           </div>
         </section>
 
-        {/* ===== FINAL CTA SECTION ===== */}
-        <section className="py-16 md:py-20 bg-primary text-primary-foreground">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
-                Jetzt kostenlose Umzugsofferten vergleichen
-              </h2>
-              <p className="text-lg text-primary-foreground/80 mb-8">
-                Sparen Sie Zeit und Geld mit unserem kostenlosen Vergleichsservice. 
-                Unverbindlich und ohne versteckte Kosten.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  variant="secondary"
-                  className="h-14 px-8 text-lg"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                >
-                  Offerten erhalten
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="h-14 px-8 text-lg border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
-                  asChild
-                >
-                  <Link to="/rechner">
-                    Zum Preisrechner
-                  </Link>
-                </Button>
-              </div>
-              <p className="text-sm text-primary-foreground/60 mt-6">
-                Bereits über 15'000 erfolgreiche Umzüge verglichen
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Live Chat Button */}
-        <div className="fixed bottom-20 md:bottom-6 right-4 z-40">
-          <Button 
-            size="lg" 
-            className="rounded-full w-14 h-14 shadow-xl"
-            asChild
-          >
-            <Link to="/kontakt">
-              <MessageCircle className="w-6 h-6" />
-            </Link>
-          </Button>
-        </div>
-
-        
         <StickyMobileCTA />
       </div>
     </>
