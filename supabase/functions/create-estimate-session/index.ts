@@ -36,6 +36,15 @@ interface Estimate {
   };
 }
 
+// Validation helpers
+const isValidPostalCode = (code: string): boolean => {
+  return typeof code === 'string' && /^\d{4,5}$/.test(code.trim());
+};
+
+const isValidString = (str: unknown, maxLength: number): boolean => {
+  return typeof str === 'string' && str.length <= maxLength;
+};
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -45,6 +54,26 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Rate limiting - 10 estimate sessions per hour per IP
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+
+    const { data: allowed } = await supabase.rpc('check_rate_limit', {
+      p_identifier: clientIP,
+      p_action_type: 'create_estimate_session',
+      p_max_attempts: 10,
+      p_window_minutes: 60
+    });
+
+    if (!allowed) {
+      console.log('Rate limit exceeded for estimate session, IP:', clientIP);
+      return new Response(
+        JSON.stringify({ success: false, error: { message: 'Zu viele Anfragen. Bitte warten Sie.', code: 'RATE_LIMIT' } }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     const { moveDetails, estimate } = await req.json() as {
       moveDetails: MoveDetails;
@@ -59,7 +88,36 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Creating estimate session with move details:', moveDetails);
+    // Validate postal codes
+    if (!isValidPostalCode(moveDetails.fromPostal) || !isValidPostalCode(moveDetails.toPostal)) {
+      return new Response(
+        JSON.stringify({ success: false, error: { message: 'Invalid postal code format', code: 'INVALID_INPUT' } }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate city names
+    if (!isValidString(moveDetails.fromCity, 100) || !isValidString(moveDetails.toCity, 100)) {
+      return new Response(
+        JSON.stringify({ success: false, error: { message: 'Invalid city name', code: 'INVALID_INPUT' } }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate estimate values
+    if (typeof estimate.priceMin !== 'number' || typeof estimate.priceMax !== 'number' ||
+        estimate.priceMin < 0 || estimate.priceMax < 0 || estimate.priceMin > 1000000 || estimate.priceMax > 1000000) {
+      return new Response(
+        JSON.stringify({ success: false, error: { message: 'Invalid price values', code: 'INVALID_INPUT' } }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Creating estimate session with move details:', {
+      from: moveDetails.fromPostal,
+      to: moveDetails.toPostal,
+      type: moveDetails.calculatorType
+    });
 
     // Determine service type from calculator type
     const calculatorType = moveDetails.calculatorType || 'quick';
@@ -108,7 +166,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log('Found matching companies for', serviceType, ':', matchingProviderIds);
+    console.log('Found matching companies for', serviceType, ':', matchingProviderIds.length);
 
     // Assign A/B test variant (simple random assignment)
     const variants = ['default', 'variant_a', 'variant_b'];
