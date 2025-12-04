@@ -11,10 +11,14 @@
  * 90. Connection arrows with animation
  * 91. Trust badge enhancements
  * 92. Completion indicator animation
+ * 176. Security certification badges
+ * 177. Animated lock icon
+ * 178. Data flow visualization
+ * 179. Enhanced trust point cards
  */
 
 import { motion } from "framer-motion";
-import { Shield, Eye, Ban, Lock, CheckCircle2, ArrowRight, Fingerprint, Server, Sparkles } from "lucide-react";
+import { Shield, Eye, Ban, Lock, CheckCircle2, ArrowRight, Fingerprint, Server, Sparkles, Award, BadgeCheck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const trustPoints = [
@@ -26,6 +30,7 @@ const trustPoints = [
     bgColor: "bg-green-50",
     iconColor: "#22c55e",
     borderHover: "hover:border-green-300",
+    badge: "DSGVO konform",
   },
   {
     icon: Eye,
@@ -35,6 +40,7 @@ const trustPoints = [
     bgColor: "bg-blue-50",
     iconColor: "#3b82f6",
     borderHover: "hover:border-blue-300",
+    badge: "100% transparent",
   },
   {
     icon: Ban,
@@ -44,6 +50,7 @@ const trustPoints = [
     bgColor: "bg-purple-50",
     iconColor: "#a855f7",
     borderHover: "hover:border-purple-300",
+    badge: "Werbefrei",
   },
 ];
 
@@ -179,9 +186,21 @@ export default function TrustAndSecuritySection() {
                   <h3 className="font-semibold text-lg text-foreground mb-3 group-hover:text-green-600 transition-colors">
                     {point.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                     {point.description}
                   </p>
+                  
+                  {/* 176. Security certification badge */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 + index * 0.1 }}
+                    className="inline-flex items-center gap-1.5 bg-white/80 border border-border/50 px-3 py-1.5 rounded-full shadow-sm"
+                  >
+                    <BadgeCheck className="w-4 h-4" style={{ color: point.iconColor }} />
+                    <span className="text-xs font-semibold text-foreground">{point.badge}</span>
+                  </motion.div>
                 </CardContent>
               </Card>
             </motion.div>

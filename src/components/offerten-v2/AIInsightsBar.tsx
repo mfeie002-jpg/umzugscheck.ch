@@ -11,11 +11,15 @@
  * 66. Better responsive spacing
  * 67. Background decorative elements
  * 68. Tooltip hints
+ * 180. Trending indicator animations
+ * 181. Comparison badges
+ * 182. Live update pulse
+ * 183. Enhanced metric cards
  */
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { TrendingUp, Clock, MapPin, BarChart3, Sparkles } from "lucide-react";
+import { TrendingUp, Clock, MapPin, BarChart3, Sparkles, ArrowUp, Zap } from "lucide-react";
 
 const insights = [
   {
@@ -25,6 +29,8 @@ const insights = [
     label: "Umzüge analysiert",
     gradient: "from-blue-500 to-blue-600",
     bgGradient: "from-blue-500/20 to-blue-600/10",
+    trend: "+12%",
+    trendLabel: "diesen Monat",
   },
   {
     icon: TrendingUp,
@@ -34,6 +40,8 @@ const insights = [
     label: "Ø Ersparnis",
     gradient: "from-green-500 to-green-600",
     bgGradient: "from-green-500/20 to-green-600/10",
+    trend: "Top",
+    trendLabel: "vs. Direktbuchung",
   },
   {
     icon: Clock,
@@ -43,6 +51,8 @@ const insights = [
     label: "Durchschn. Antwortzeit",
     gradient: "from-amber-500 to-amber-600",
     bgGradient: "from-amber-500/20 to-amber-600/10",
+    trend: "Schnell",
+    trendLabel: "Reaktionszeit",
   },
   {
     icon: MapPin,
@@ -51,6 +61,8 @@ const insights = [
     label: "Kantone abgedeckt",
     gradient: "from-primary to-primary/80",
     bgGradient: "from-primary/20 to-primary/10",
+    trend: "100%",
+    trendLabel: "Schweiz",
   },
 ];
 
@@ -113,6 +125,12 @@ export default function AIInsightsBar() {
           className="flex justify-center mb-6"
         >
           <div className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-background/50 px-3 py-1 rounded-full border border-border/50">
+            {/* 182. Live pulse indicator */}
+            <motion.div
+              className="w-2 h-2 rounded-full bg-green-500"
+              animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
             <Sparkles className="w-3 h-3 text-primary" />
             Live-Statistiken
           </div>
@@ -137,16 +155,33 @@ export default function AIInsightsBar() {
                 >
                   <insight.icon className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
                 </motion.div>
-                <div>
-                  <div className="text-lg md:text-2xl font-bold text-foreground">
-                    <AnimatedCounter 
-                      value={insight.value} 
-                      prefix={insight.prefix} 
-                      suffix={insight.suffix} 
-                    />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <div className="text-lg md:text-2xl font-bold text-foreground">
+                      <AnimatedCounter 
+                        value={insight.value} 
+                        prefix={insight.prefix} 
+                        suffix={insight.suffix} 
+                      />
+                    </div>
+                    {/* 180. Trend indicator */}
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + index * 0.1 }}
+                      className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full"
+                    >
+                      <ArrowUp className="w-2.5 h-2.5" />
+                      {insight.trend}
+                    </motion.span>
                   </div>
                   <div className="text-xs md:text-sm text-muted-foreground">
                     {insight.label}
+                  </div>
+                  {/* 181. Trend label */}
+                  <div className="text-[10px] text-muted-foreground/70 mt-0.5 hidden md:block">
+                    {insight.trendLabel}
                   </div>
                 </div>
               </div>

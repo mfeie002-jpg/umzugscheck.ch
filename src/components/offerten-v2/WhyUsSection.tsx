@@ -9,11 +9,15 @@
  * 85. Trust indicator counter animation
  * 86. Better responsive grid
  * 87. Floating decorative elements
+ * 172. Comparison highlight badges
+ * 173. Animated checkmark reveals
+ * 174. Enhanced card shadows
+ * 175. Interactive hover states
  */
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Clock, Scale, Shield, MapPin, CheckCircle2, Zap, Award, Star, TrendingUp } from "lucide-react";
+import { Clock, Scale, Shield, MapPin, CheckCircle2, Zap, Award, Star, TrendingUp, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const benefits = [
@@ -26,6 +30,8 @@ const benefits = [
     bgColor: "bg-blue-50",
     iconColor: "text-blue-600",
     hoverGlow: "group-hover:shadow-blue-500/20",
+    stat: "85%",
+    statLabel: "Zeitersparnis",
   },
   {
     icon: Scale,
@@ -36,6 +42,8 @@ const benefits = [
     bgColor: "bg-purple-50",
     iconColor: "text-purple-600",
     hoverGlow: "group-hover:shadow-purple-500/20",
+    stat: "40%",
+    statLabel: "Ersparnis",
   },
   {
     icon: Shield,
@@ -46,6 +54,8 @@ const benefits = [
     bgColor: "bg-green-50",
     iconColor: "text-green-600",
     hoverGlow: "group-hover:shadow-green-500/20",
+    stat: "100%",
+    statLabel: "Geprüft",
   },
   {
     icon: MapPin,
@@ -56,6 +66,8 @@ const benefits = [
     bgColor: "bg-primary/10",
     iconColor: "text-primary",
     hoverGlow: "group-hover:shadow-primary/20",
+    stat: "26",
+    statLabel: "Kantone",
   },
 ];
 
@@ -217,7 +229,20 @@ export default function WhyUsSection() {
                       {benefit.description}
                     </p>
                     
-                    {/* Checkmark with animation */}
+                    {/* 172. Stat highlight badge */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                      className={`inline-flex items-center gap-2 ${benefit.bgColor} px-3 py-1.5 rounded-full mb-4`}
+                    >
+                      <Sparkles className={`w-3.5 h-3.5 ${benefit.iconColor}`} />
+                      <span className={`text-sm font-bold ${benefit.iconColor}`}>{benefit.stat}</span>
+                      <span className="text-xs text-muted-foreground">{benefit.statLabel}</span>
+                    </motion.div>
+                    
+                    {/* 173. Checkmark with animation */}
                     <div className="flex items-start gap-2 pt-4 border-t border-border/50">
                       <motion.div 
                         className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5"

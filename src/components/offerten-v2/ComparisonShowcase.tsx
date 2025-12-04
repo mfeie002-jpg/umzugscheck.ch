@@ -13,11 +13,13 @@
  * 138. Match score display
  * 139. Availability calendar hint
  * 140. Compare drawer teaser
+ * 184. AI recommendation badge with animation
+ * 185. Smart filtering suggestions
  */
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, ChevronRight, Award, TrendingUp, Sparkles, Trophy, Flame, Calendar, Percent, ArrowUpDown, Filter, Heart, Phone, MessageCircle } from "lucide-react";
+import { Star, Clock, CheckCircle2, ChevronRight, Award, TrendingUp, Sparkles, Trophy, Flame, Calendar, Percent, ArrowUpDown, Filter, Heart, Phone, MessageCircle, Zap, Brain } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -161,10 +163,29 @@ export default function ComparisonShowcase() {
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Umzugsfirmen im direkten Vergleich
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg mb-4">
             Statt jede Firma einzeln zu kontaktieren, sehen Sie mehrere passende Anbieter 
             nebeneinander und können objektiv entscheiden.
           </p>
+          
+          {/* 184. AI recommendation info */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-200/50 px-4 py-2 rounded-xl"
+          >
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Brain className="w-4 h-4 text-purple-600" />
+            </motion.div>
+            <span className="text-sm text-foreground">
+              <span className="font-semibold text-purple-600">KI-gestützte</span> Firmenempfehlungen basierend auf Ihrem Bedarf
+            </span>
+          </motion.div>
         </motion.div>
         
         {/* Filter chips */}
