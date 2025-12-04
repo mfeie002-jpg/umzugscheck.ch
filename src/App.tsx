@@ -42,6 +42,7 @@ import { QuickActionBar } from "./components/QuickActionBar";
 import { StickyContactBar } from "./components/StickyContactBar";
 import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
+import { FloatingActionButton } from "./components/mobile/FloatingActionButton";
 import Index from "./pages/Index";
 import NewIndex from "./pages/NewIndex";
 import { HomePage } from "./pages/HomePage";
@@ -164,6 +165,7 @@ const App = () => (
           <OfflineIndicator />
           <QuickActionBar />
           <StickyContactBar />
+          <FloatingActionButton />
               <main className="flex-1">
                 <Suspense fallback={<PageLoadingFallback />}>
                    <AnimatedRoutes>
