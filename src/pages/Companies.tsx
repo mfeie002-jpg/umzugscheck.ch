@@ -13,7 +13,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3, Calendar as CalendarIcon, Clock, Bell } from "lucide-react";
+import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3, Calendar as CalendarIcon, Clock, Bell, Heart, Calculator, Scale } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useAnalytics } from "@/lib/analytics";
@@ -30,6 +30,10 @@ import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 import { getKeywordsForPage } from "@/lib/seo-keywords";
 import CantonComparisonWidget from "@/components/CantonComparisonWidget";
+import PriceHistoryChart from "@/components/PriceHistoryChart";
+import FavoriteCompanies, { useFavorites } from "@/components/FavoriteCompanies";
+import CompanyCertifications from "@/components/CompanyCertifications";
+import CompanyMatchScore from "@/components/CompanyMatchScore";
 
 interface Company {
   id: string;
@@ -85,6 +89,7 @@ const Companies = () => {
   const analytics = useAnalytics();
   const isMobile = useIsMobile();
   const { trigger } = useHaptic();
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,6 +103,7 @@ const Companies = () => {
   const [sortBy, setSortBy] = useState("empfohlen");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showPriceChart, setShowPriceChart] = useState(false);
 
   // SEO Data
   const currentUrl = 'https://www.umzugscheck.ch/firmen/';
