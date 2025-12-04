@@ -13,13 +13,20 @@ import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 
-// New Enhanced Components
+// Enhanced Components
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { InstantPriceEstimator } from "@/components/InstantPriceEstimator";
 import { MoveTimeline } from "@/components/MoveTimeline";
 import { RecentlyViewedCompanies } from "@/components/RecentlyViewedCompanies";
 import { MoveProgressTracker } from "@/components/MoveProgressTracker";
 import { QuickActionsWidget } from "@/components/QuickActionsWidget";
+import { CustomerSupportChat } from "@/components/CustomerSupportChat";
+import { SeasonalDealsWidget } from "@/components/SeasonalDealsWidget";
+import { MovingTipsCarousel } from "@/components/MovingTipsCarousel";
+import { MovingCostCalculatorMini } from "@/components/MovingCostCalculatorMini";
+import { QuoteComparisonTable } from "@/components/QuoteComparisonTable";
+import { NeighborhoodInsights } from "@/components/NeighborhoodInsights";
+import { UrgencyIndicator } from "@/components/UrgencyIndicator";
 
 const Index = () => {
   const faqItems = [
@@ -58,22 +65,32 @@ const Index = () => {
       <main id="main-content" role="main">
         <PremiumHeroSection />
         
-        {/* Quick Actions Widget */}
+        {/* Quick Actions */}
         <section className="container mx-auto px-4 -mt-6 relative z-10">
           <QuickActionsWidget />
+        </section>
+
+        {/* Urgency + Deals */}
+        <section className="py-6">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <UrgencyIndicator type="high" viewersCount={23} recentBookings={5} availableSlots={3} />
+              <SeasonalDealsWidget />
+            </div>
+          </div>
         </section>
         
         <PremiumSocialProof />
         
-        {/* Enhanced Tools Section */}
+        {/* Tools Section */}
         <section className="py-12 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-8">
               <h2 className="text-2xl md:text-3xl font-bold">Ihre Umzugs-Tools</h2>
-              <p className="text-muted-foreground mt-2">Alles was Sie für Ihren Umzug brauchen</p>
+              <p className="text-muted-foreground mt-2">Alles für Ihren perfekten Umzug</p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
-              <InstantPriceEstimator />
+              <MovingCostCalculatorMini />
               <LiveActivityFeed />
               <MoveProgressTracker />
             </div>
@@ -81,9 +98,31 @@ const Index = () => {
         </section>
         
         <PremiumHowItWorks />
+        
+        {/* Tips & Insights */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-6">
+              <MovingTipsCarousel />
+              <NeighborhoodInsights canton="Zürich" />
+            </div>
+          </div>
+        </section>
+        
         <PremiumAIShowcase />
         
-        {/* Recently Viewed & Timeline Section */}
+        {/* Quote Comparison Preview */}
+        <section className="py-12 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold">So sehen Ihre Offerten aus</h2>
+              <p className="text-muted-foreground mt-2">Transparenter Vergleich auf einen Blick</p>
+            </div>
+            <QuoteComparisonTable />
+          </div>
+        </section>
+        
+        {/* Timeline & Recently Viewed */}
         <section className="py-12">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-6">
@@ -101,6 +140,7 @@ const Index = () => {
         <PremiumProviderCTA />
       </main>
 
+      <CustomerSupportChat />
       <StickyMobileCTA text="Offerten vergleichen" link="/umzugsofferten" />
       <ScrollToTop />
     </div>
