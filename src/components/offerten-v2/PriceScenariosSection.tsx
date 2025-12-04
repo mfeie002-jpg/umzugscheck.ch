@@ -3,15 +3,19 @@
  * Helps users understand typical moving costs
  * 
  * OPTIMIZATIONS:
- * 41. "Beliebt" badge for popular scenarios
- * 42. Animated price display
- * 43. Better visual hierarchy
- * 44. Enhanced card interactions
+ * 41. "Beliebt" badge with flame icon
+ * 42. Animated price counter display
+ * 43. Better visual hierarchy with savings
+ * 44. Enhanced card hover interactions
+ * 45. Tab active state with shadow
+ * 46. Staggered card animations
+ * 47. Trust indicators below prices
+ * 48. Progress-style tab indicator
  */
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, ArrowUp, TrendingDown, Flame, Users, Building2, Home } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { CheckCircle2, ArrowUp, TrendingDown, Flame, Users, Building2, Home, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -101,18 +105,15 @@ const scenarios = {
 
 type TabKey = keyof typeof scenarios;
 
-const tabIcons: Record<TabKey, any> = {
-  "1.5–2.5": Users,
-  "3.5–4.5": Home,
-  "5.5+": Home,
-  "Firmen": Building2,
-};
-
 function AnimatedPrice({ min, max }: { min: number; max: number }) {
   const [displayMin, setDisplayMin] = useState(0);
   const [displayMax, setDisplayMax] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
   
   useEffect(() => {
+    if (!isInView) return;
+    
     const duration = 1000;
     const steps = 30;
     const stepTime = duration / steps;
@@ -132,14 +133,14 @@ function AnimatedPrice({ min, max }: { min: number; max: number }) {
     }, stepTime);
     
     return () => clearInterval(interval);
-  }, [min, max]);
+  }, [min, max, isInView]);
   
   const formatPrice = (price: number) => {
     return price.toLocaleString('de-CH');
   };
   
   return (
-    <span>CHF {formatPrice(displayMin)} – {formatPrice(displayMax)}</span>
+    <span ref={ref}>CHF {formatPrice(displayMin)} – {formatPrice(displayMax)}</span>
   );
 }
 
@@ -157,6 +158,7 @@ export default function PriceScenariosSection() {
     <section id="preisbeispiele" className="py-16 md:py-24 bg-background scroll-mt-20 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,_var(--tw-gradient-stops))] from-green-500/5 via-transparent to-transparent" />
       
       <div className="container mx-auto px-4 max-w-6xl relative z-10">
         <motion.div
@@ -184,24 +186,36 @@ export default function PriceScenariosSection() {
           </p>
         </motion.div>
         
-        {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {tabs.map((tab) => {
+        {/* Tabs with active indicator */}
+        <div className="flex flex-wrap justify-center gap-2 mb-10 relative">
+          {tabs.map((tab, index) => {
             const Icon = tab.icon;
+            const isActive = activeTab === tab.key;
             return (
               <motion.button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
                 className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                  activeTab === tab.key
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
                     : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border/50"
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 {tab.label}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTabIndicator"
+                    className="absolute inset-0 bg-primary rounded-full -z-10"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
               </motion.button>
             );
           })}
@@ -223,27 +237,36 @@ export default function PriceScenariosSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -8, transition: { duration: 0.2 } }}
                 className="group"
               >
                 <Card className="h-full border-2 border-border/50 hover:border-primary/30 hover:shadow-xl transition-all duration-300 overflow-hidden relative">
                   {/* Popular Badge */}
                   {scenario.popular && (
-                    <div className="absolute top-4 right-4 z-10">
+                    <motion.div 
+                      className="absolute top-4 right-4 z-10"
+                      initial={{ scale: 0, rotate: -20 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
                       <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg">
                         <Flame className="w-3 h-3 mr-1" />
                         Beliebt
                       </Badge>
-                    </div>
+                    </motion.div>
                   )}
                   
                   <CardContent className="p-0">
                     {/* Savings Badge */}
                     <div className="bg-gradient-to-r from-green-50 to-green-50/50 px-6 py-3 border-b border-green-100">
                       <div className="flex items-center gap-2 text-green-700">
-                        <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                        <motion.div 
+                          className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center"
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        >
                           <TrendingDown className="w-3.5 h-3.5" />
-                        </div>
+                        </motion.div>
                         <span className="text-sm font-semibold">{scenario.savings}</span>
                       </div>
                     </div>
@@ -260,12 +283,22 @@ export default function PriceScenariosSection() {
                       </p>
                       <ul className="space-y-3">
                         {scenario.features.map((feature, i) => (
-                          <li key={i} className="flex items-center gap-3 text-sm">
-                            <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                          <motion.li 
+                            key={i} 
+                            className="flex items-center gap-3 text-sm"
+                            initial={{ opacity: 0, x: -10 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                          >
+                            <motion.div 
+                              className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0"
+                              whileHover={{ scale: 1.1 }}
+                            >
                               <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
-                            </div>
+                            </motion.div>
                             <span className="text-foreground">{feature}</span>
-                          </li>
+                          </motion.li>
                         ))}
                       </ul>
                     </div>
@@ -283,15 +316,18 @@ export default function PriceScenariosSection() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <Button
-            size="lg"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 h-12 px-8"
-          >
-            <ArrowUp className="w-4 h-4 mr-2" />
-            Jetzt Ihre Situation eingeben
-          </Button>
-          <p className="text-sm text-muted-foreground mt-4">
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button
+              size="lg"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 h-12 px-8"
+            >
+              <ArrowUp className="w-4 h-4 mr-2" />
+              Jetzt Ihre Situation eingeben
+            </Button>
+          </motion.div>
+          <p className="text-sm text-muted-foreground mt-4 flex items-center justify-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
             Erhalten Sie Ihre persönliche Preisspanne in unter 2 Minuten
           </p>
         </motion.div>
