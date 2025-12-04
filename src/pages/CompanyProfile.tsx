@@ -132,7 +132,6 @@ export default function CompanyProfile() {
                           companyName={company.name}
                           phone={company.phone_tracking_number}
                         />
-                        />
                       </div>
 
                       {company.discount_offer && (
