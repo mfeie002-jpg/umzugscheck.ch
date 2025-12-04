@@ -3,6 +3,7 @@ import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { AnimatedSection } from "@/components/ui/animated-section";
 import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
 import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
@@ -119,38 +120,58 @@ const IndexPremium = () => {
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* 1. Hero Section */}
+        {/* 1. Hero Section - No animation, loads immediately */}
         <PremiumHeroSection />
         
         {/* 2. Social Proof & Testimonials */}
-        <PremiumSocialProof />
+        <AnimatedSection animation="fade-up" delay={0}>
+          <PremiumSocialProof />
+        </AnimatedSection>
         
         {/* 3. How It Works - 3 Steps */}
-        <PremiumHowItWorks />
+        <AnimatedSection animation="fade-up" delay={50}>
+          <PremiumHowItWorks />
+        </AnimatedSection>
 
-        {/* 4. Comparison Feature - Premium Showcase (Option 4) */}
-        <ComparisonShowcase variant="premium" />
+        {/* 4. Comparison Feature - Premium Showcase */}
+        <AnimatedSection animation="fade-in" delay={0}>
+          <ComparisonShowcase variant="premium" />
+        </AnimatedSection>
         
         {/* 5. AI Calculator Showcase */}
-        <PremiumAIShowcase />
+        <AnimatedSection animation="scale" delay={0}>
+          <PremiumAIShowcase />
+        </AnimatedSection>
         
         {/* 6. Services Grid */}
-        <PremiumServicesGrid />
+        <AnimatedSection animation="fade-up" delay={0}>
+          <PremiumServicesGrid />
+        </AnimatedSection>
         
         {/* 7. Regions */}
-        <PremiumRegions />
+        <AnimatedSection animation="slide-left" delay={0}>
+          <PremiumRegions />
+        </AnimatedSection>
         
         {/* 8. Cost Examples */}
-        <PremiumCostExamples />
+        <AnimatedSection animation="fade-up" delay={0}>
+          <PremiumCostExamples />
+        </AnimatedSection>
         
         {/* 9. Why Us / USPs */}
-        <PremiumWhyUs />
+        <AnimatedSection animation="scale" delay={0}>
+          <PremiumWhyUs />
+        </AnimatedSection>
         
         {/* 10. FAQ */}
-        <PremiumFAQ items={faqItems} />
+        <AnimatedSection animation="fade-in" delay={0}>
+          <PremiumFAQ items={faqItems} />
+        </AnimatedSection>
         
         {/* 11. Provider CTA */}
-        <PremiumProviderCTA />
+        <AnimatedSection animation="fade-up" delay={0}>
+          <PremiumProviderCTA />
+        </AnimatedSection>
       </main>
       
       {/* Mobile Sticky CTA */}
