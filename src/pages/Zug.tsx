@@ -22,6 +22,16 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
 
+// New enhanced Zug components
+import { ZugTestimonials } from "@/components/zug/ZugTestimonials";
+import { ZugMovingTips } from "@/components/zug/ZugMovingTips";
+import { ZugWeatherWidget } from "@/components/zug/ZugWeatherWidget";
+import { ZugQuickActions } from "@/components/zug/ZugQuickActions";
+import { ZugInteractiveMap } from "@/components/zug/ZugInteractiveMap";
+import { ZugStatsCounter } from "@/components/zug/ZugStatsCounter";
+import { ZugUrgencyBanner } from "@/components/zug/ZugUrgencyBanner";
+import { CompanyBadges, SponsoredBadge, SavingsBadge, AvailabilityBadge } from "@/components/zug/ZugCompanyBadges";
+
 /**
  * Zug Canton Landing Page - Enhanced with 25+ Optimizations
  * 
