@@ -1561,10 +1561,12 @@ const Zug = () => {
                   Löschen
                 </Button>
                 {selectedCompanies.length >= 2 && (
-                  <Button size="sm" className="group">
-                    Ausgewählte vergleichen
-                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <Link to={`/zug/vergleich?firmen=${encodeURIComponent(selectedCompanies.join(","))}`}>
+                    <Button size="sm" className="group">
+                      Ausgewählte vergleichen
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>
