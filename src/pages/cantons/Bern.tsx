@@ -10,6 +10,28 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { Link } from "react-router-dom";
 import { Star, Shield, Clock, TrendingUp, CheckCircle, ArrowRight, MapPin, Users, Truck, Zap, ChevronRight, Building2, Home, Package, Castle } from "lucide-react";
 
+// Bern-specific components
+import { BernBreadcrumb } from "@/components/bern/BernBreadcrumb";
+import { BernTrustSignals } from "@/components/bern/BernTrustSignals";
+import { BernUrgencyBanner } from "@/components/bern/BernUrgencyBanner";
+import { BernTestimonials } from "@/components/bern/BernTestimonials";
+import { BernMovingTips } from "@/components/bern/BernMovingTips";
+import { BernStatsCounter } from "@/components/bern/BernStatsCounter";
+import { BernCompanyFilters } from "@/components/bern/BernCompanyFilters";
+import { BernQuickActions } from "@/components/bern/BernQuickActions";
+import { BernSocialProof } from "@/components/bern/BernSocialProof";
+import { BernRelatedServices } from "@/components/bern/BernRelatedServices";
+import { BernPriceCalculatorMini } from "@/components/bern/BernPriceCalculatorMini";
+import { BernChecklist } from "@/components/bern/BernChecklist";
+import { BernNewsletter } from "@/components/bern/BernNewsletter";
+import { BernContactSection } from "@/components/bern/BernContactSection";
+import { BernVideoSection } from "@/components/bern/BernVideoSection";
+import { BernReviewsShowcase } from "@/components/bern/BernReviewsShowcase";
+import { BernServiceComparison } from "@/components/bern/BernServiceComparison";
+import { BernPartnersSection } from "@/components/bern/BernPartnersSection";
+import { BernWeatherWidget } from "@/components/bern/BernWeatherWidget";
+import { BernInteractiveMap } from "@/components/bern/BernInteractiveMap";
+
 const bernCities = ["Bern", "Biel/Bienne", "Thun", "Köniz", "Burgdorf", "Langenthal", "Ostermundigen", "Muri bei Bern", "Spiez", "Interlaken"];
 
 const topCompanies = [
@@ -72,6 +94,9 @@ export const Bern = () => {
     <div className="min-h-screen bg-background">
       <OptimizedSEO title="Umzugsfirmen Bern – Vergleichen & bis zu 40% sparen" description="Vergleichen Sie Umzugsfirmen in Bern. Kostenlose Offerten von geprüften Unternehmen. ✓ Bundesstadt-Experten ✓ 100% gratis" canonicalUrl="https://umzugscheck.ch/bern" keywords="Umzug Bern, Umzugsfirma Bern, Zügelfirma Bern, Umzugsunternehmen Bern" />
 
+      <BernUrgencyBanner />
+      <BernBreadcrumb />
+
       <AnimatePresence>
         {showNotification && (
           <motion.div initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} className="fixed bottom-4 right-4 z-50 bg-card border border-border rounded-lg shadow-lg p-4 max-w-sm">
@@ -122,10 +147,14 @@ export const Bern = () => {
         </div>
       </section>
 
+      <BernTrustSignals />
+      <BernStatsCounter />
+
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Top 10 Umzugsfirmen in Bern</h2>
-          <div className="space-y-3">
+          <BernCompanyFilters />
+          <div className="space-y-3 mt-6">
             {topCompanies.map((c, i) => (
               <Card key={c.name} className={`hover:shadow-lg transition-all ${c.sponsored ? 'border-primary/30 bg-primary/5' : ''}`}>
                 <CardContent className="p-4"><div className="flex items-center gap-4">
@@ -140,17 +169,57 @@ export const Bern = () => {
         </div>
       </section>
 
+      <BernServiceComparison />
+      <BernVideoSection />
+
       <section className="py-12"><div className="container mx-auto px-4"><h2 className="text-2xl font-bold text-center mb-8">Umzugspreise in Bern</h2><div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">{priceExamples.map(p => <Card key={p.size} className="text-center"><CardContent className="p-6"><Home className="h-8 w-8 mx-auto mb-3 text-primary" /><h3 className="font-semibold mb-2">{p.size}</h3><p className="text-2xl font-bold text-primary">{p.avg}</p><p className="text-sm text-muted-foreground">{p.range}</p></CardContent></Card>)}</div></div></section>
 
       <section className="py-12 bg-muted/30"><div className="container mx-auto px-4"><div className="grid grid-cols-2 md:grid-cols-6 gap-4">{services.map(s => <Link key={s.name} to={s.link}><Card className="hover:shadow-lg hover:border-primary/30 transition-all h-full"><CardContent className="p-4 text-center"><s.icon className="h-8 w-8 mx-auto mb-2 text-primary" /><p className="text-sm font-medium">{s.name}</p></CardContent></Card></Link>)}</div></div></section>
 
+      <BernReviewsShowcase />
+
       <section className="py-12"><div className="container mx-auto px-4"><div className="grid md:grid-cols-4 gap-6">{usps.map(u => <Card key={u.title} className="h-full"><CardContent className="p-6"><div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4"><u.icon className="h-6 w-6 text-primary" /></div><h3 className="font-semibold mb-2">{u.title}</h3><p className="text-sm text-muted-foreground">{u.desc}</p></CardContent></Card>)}</div></div></section>
 
-      <section className="py-12 bg-muted/30"><div className="container mx-auto px-4 max-w-4xl"><h2 className="text-2xl font-bold mb-6">Umzug in Bern – Informationen</h2><div className="prose prose-gray max-w-none text-muted-foreground"><p className="mb-4">Bern ist die Bundesstadt der Schweiz und Hauptort des gleichnamigen Kantons. Die UNESCO-Weltkulturerbe-Altstadt und die zentrale Lage machen Bern zu einem attraktiven Wohnort.</p><h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">Umzüge in der Altstadt</h3><p className="mb-4">Umzüge in der Berner Altstadt erfordern besondere Planung aufgrund der engen Gassen und historischen Gebäude. Professionelle lokale Umzugsfirmen kennen alle Herausforderungen.</p><h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">Parkbewilligung</h3><p>Für Umzüge in Bern empfehlen wir, eine temporäre Parkbewilligung bei der Stadt zu beantragen. Die Umzugsfirmen können Sie dabei unterstützen.</p></div></div></section>
+      <section className="py-12 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <BernInteractiveMap />
+            </div>
+            <div className="space-y-6">
+              <BernWeatherWidget />
+              <BernPriceCalculatorMini />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <BernMovingTips />
+      <BernQuickActions />
+
+      <section className="py-12 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <BernChecklist />
+            </div>
+            <BernNewsletter />
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12"><div className="container mx-auto px-4 max-w-4xl"><h2 className="text-2xl font-bold mb-6">Umzug in Bern – Informationen</h2><div className="prose prose-gray max-w-none text-muted-foreground"><p className="mb-4">Bern ist die Bundesstadt der Schweiz und Hauptort des gleichnamigen Kantons. Die UNESCO-Weltkulturerbe-Altstadt und die zentrale Lage machen Bern zu einem attraktiven Wohnort.</p><h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">Umzüge in der Altstadt</h3><p className="mb-4">Umzüge in der Berner Altstadt erfordern besondere Planung aufgrund der engen Gassen und historischen Gebäude. Professionelle lokale Umzugsfirmen kennen alle Herausforderungen.</p><h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">Parkbewilligung</h3><p>Für Umzüge in Bern empfehlen wir, eine temporäre Parkbewilligung bei der Stadt zu beantragen. Die Umzugsfirmen können Sie dabei unterstützen.</p></div></div></section>
+
+      <BernTestimonials />
+      <BernSocialProof />
+      <BernPartnersSection />
+      <BernContactSection />
 
       <section className="py-12"><div className="container mx-auto px-4 max-w-3xl"><h2 className="text-2xl font-bold text-center mb-8">Häufige Fragen</h2><FAQAccordion items={faqs} /></div></section>
 
-      <section className="py-12 bg-primary text-primary-foreground"><div className="container mx-auto px-4 text-center"><h2 className="text-2xl font-bold mb-4">Bereit für Ihren Umzug in Bern?</h2><p className="mb-6 opacity-90">Vergleichen Sie jetzt kostenlos die besten Umzugsfirmen</p><Link to="/umzug-offerte"><Button size="lg" variant="secondary" className="h-12 px-8">Jetzt vergleichen<ArrowRight className="ml-2 h-4 w-4" /></Button></Link></div></section>
+      <BernRelatedServices />
+
+      <section className="py-12 bg-primary text-primary-foreground"><div className="container mx-auto px-4 text-center"><h2 className="text-2xl font-bold mb-4">Bereit für Ihren Umzug in Bern?</h2><p className="mb-6 opacity-90">Vergleichen Sie jetzt kostenlos die besten Umzugsfirmen</p><div className="flex flex-wrap justify-center gap-4"><Link to="/umzug-offerte"><Button size="lg" variant="secondary" className="h-12 px-8">Jetzt vergleichen<ArrowRight className="ml-2 h-4 w-4" /></Button></Link><Link to="/bern/vergleich"><Button size="lg" variant="outline" className="h-12 px-8 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">Kantone vergleichen</Button></Link></div></div></section>
     </div>
   );
 };
