@@ -27,6 +27,7 @@ import UtilityTransferGuide from "@/components/UtilityTransferGuide";
 import MovingBudgetPlanner from "@/components/MovingBudgetPlanner";
 import PackingProgressTracker from "@/components/PackingProgressTracker";
 import MovingDayScheduler from "@/components/MovingDayScheduler";
+import { MovingCalendar } from "@/components/MovingCalendar";
 
 const toolCategories = [
   { id: "calculators", label: "Rechner", icon: Calculator, description: "Kostenrechner und Preisschätzer" },
@@ -128,6 +129,7 @@ export default function Tools() {
                   <CardHeader><CardTitle className="flex items-center gap-2"><Package className="h-5 w-5 text-primary" />Pack-Fortschritt</CardTitle></CardHeader>
                   <CardContent><PackingProgressTracker /></CardContent>
                 </Card>
+                <MovingCalendar />
               </TabsContent>
 
               <TabsContent value="comparison" className="space-y-8">

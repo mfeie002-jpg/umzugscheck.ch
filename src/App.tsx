@@ -94,7 +94,9 @@ import OffertenPage from "./pages/OffertenPage";
 import OffertenOptimized from "./pages/OffertenOptimized";
 import Tools from "./pages/Tools";
 import UserDashboard from "./pages/UserDashboard";
+import CompanyComparison from "./pages/CompanyComparison";
 import MobileBottomNav from "./components/MobileBottomNav";
+import { OnboardingTour } from "./components/OnboardingTour";
 
 // Lazy load admin pages for code splitting
 const Auth = lazy(() => import("./pages/Auth"));
@@ -222,6 +224,7 @@ const App = () => (
             <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
             <Route path="/vergleich" element={<Compare />} />
+            <Route path="/firmen-vergleich" element={<CompanyComparison />} />
           <Route path="/regionen" element={<RegionenOverview />} />
           <Route path="/zug" element={<Zug />} />
           <Route path="/fuer-firmen" element={<FuerFirmen />} />
@@ -364,6 +367,7 @@ const App = () => (
                 </Suspense>
               </main>
                 <MobileBottomNav />
+                <OnboardingTour />
                 <Footer />
               </div>
             </BrowserRouter>
