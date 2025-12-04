@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Star, CheckCircle, TrendingDown, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getHomepageContent } from "@/lib/content";
 import heroMovingFamily from "@/assets/hero-moving-family.jpg";
@@ -15,6 +15,14 @@ export const RedesignHero = () => {
   const [toPostal, setToPostal] = useState("");
   const [rooms, setRooms] = useState("");
   const navigate = useNavigate();
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   
   const fullHeadline = `${content.headline} ${content.highlightedText} in der Schweiz`;
   const { displayedText, isComplete } = useTypewriter({ text: fullHeadline, speed: 40, delay: 300 });
@@ -30,17 +38,20 @@ export const RedesignHero = () => {
   };
 
   return (
-    <section className="relative min-h-screen lg:min-h-[90vh] flex items-center overflow-hidden py-8 lg:py-0">
-      {/* Emotional Background Image */}
-      <div className="absolute inset-0 z-0">
+    <section ref={sectionRef} className="relative min-h-screen lg:min-h-[90vh] flex items-center overflow-hidden py-8 lg:py-0">
+      {/* Emotional Background Image with Parallax */}
+      <motion.div 
+        className="absolute inset-0 z-0"
+        style={{ y: backgroundY }}
+      >
         <img 
           src={heroMovingFamily}
           alt="Glückliche Familie bei ihrem Umzug mit professionellen Umzugshelfern"
-          className="w-full h-full object-cover"
+          className="w-full h-[120%] object-cover"
         />
         {/* Gradient Overlay for Text Readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/60 to-slate-900/40" />
-      </div>
+      </motion.div>
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
         <div className="max-w-6xl mx-auto">
