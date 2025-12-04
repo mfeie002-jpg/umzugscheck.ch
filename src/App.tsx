@@ -181,6 +181,7 @@ const App = () => (
             <Route path="/rechner/video" element={<VideoEstimator />} />
             <Route path="/zug" element={<Zug />} />
             <Route path="/zug/vergleich" element={<CantonComparison />} />
+            <Route path="/zuerich/vergleich" element={<CantonComparison />} />
             <Route path="/:canton/vergleich" element={<CantonComparison />} />
             <Route path="/luzern" element={<Luzern />} />
             <Route path="/zuerich" element={<Zuerich />} />
