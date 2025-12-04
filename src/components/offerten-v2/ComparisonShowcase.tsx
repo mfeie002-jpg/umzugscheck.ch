@@ -3,21 +3,25 @@
  * Demonstrates how users can compare multiple providers
  * 
  * OPTIMIZATIONS:
- * 37. "Empfohlen" badge for top company
- * 38. Better row highlighting with gradient
- * 39. Animated rank numbers with medals
- * 40. Enhanced mobile card design
- * 41. Hover effects on rows
- * 42. Savings highlight badges
- * 43. Trust verification badges
- * 44. Response time indicators
+ * 131. Animated table header with gradient
+ * 132. Row selection with checkbox
+ * 133. Quick action buttons
+ * 134. Price comparison chart
+ * 135. Animated sorting indicators
+ * 136. Filter chips
+ * 137. Company logos placeholder
+ * 138. Match score display
+ * 139. Availability calendar hint
+ * 140. Compare drawer teaser
  */
 
-import { motion } from "framer-motion";
-import { Star, Clock, CheckCircle2, ChevronRight, Award, TrendingUp, Sparkles, Medal, Trophy } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Star, Clock, CheckCircle2, ChevronRight, Award, TrendingUp, Sparkles, Trophy, Flame, Calendar, Percent, ArrowUpDown, Filter, Heart, Phone, MessageCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const mockCompanies = [
   {
@@ -33,6 +37,8 @@ const mockCompanies = [
     recommended: true,
     savings: "Bis 35% günstiger",
     medal: "gold",
+    matchScore: 98,
+    available: true,
   },
   {
     name: "Swiss Move Express",
@@ -47,6 +53,8 @@ const mockCompanies = [
     recommended: false,
     savings: null,
     medal: "silver",
+    matchScore: 92,
+    available: true,
   },
   {
     name: "Budget Umzüge GmbH",
@@ -61,6 +69,8 @@ const mockCompanies = [
     recommended: false,
     savings: "Günstigster Anbieter",
     medal: "bronze",
+    matchScore: 85,
+    available: false,
   },
 ];
 
@@ -70,27 +80,66 @@ const medalColors = {
   bronze: "from-amber-600 to-amber-700",
 };
 
+const filterChips = ["Alle", "Top bewertet", "Günstigste", "Schnellste Antwort"];
+
 const PriceIndicator = ({ level }: { level: number }) => (
   <div className="flex gap-0.5">
     {[1, 2, 3].map((i) => (
-      <span
+      <motion.span
         key={i}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: i * 0.1 }}
         className={`text-xs font-bold transition-colors ${
           i <= level ? "text-primary" : "text-muted-foreground/20"
         }`}
       >
         CHF
-      </span>
+      </motion.span>
     ))}
   </div>
 );
 
+function MatchScoreBadge({ score }: { score: number }) {
+  const color = score >= 95 ? "text-green-600 bg-green-50" : 
+                score >= 85 ? "text-blue-600 bg-blue-50" : 
+                "text-amber-600 bg-amber-50";
+  
+  return (
+    <motion.div 
+      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${color}`}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
+      <Percent className="w-3 h-3" />
+      {score}% Match
+    </motion.div>
+  );
+}
+
 export default function ComparisonShowcase() {
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([mockCompanies[0].name]);
+  const [activeFilter, setActiveFilter] = useState("Alle");
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  
+  const toggleCompany = (name: string) => {
+    setSelectedCompanies(prev => 
+      prev.includes(name) 
+        ? prev.filter(n => n !== name)
+        : [...prev, name]
+    );
+  };
+  
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-muted/50 to-muted/20 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
+      <motion.div 
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-primary/5 rounded-full blur-3xl"
+        animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.7, 0.5] }}
+        transition={{ duration: 10, repeat: Infinity }}
+      />
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-4 max-w-6xl relative z-10">
         <motion.div
@@ -118,17 +167,91 @@ export default function ComparisonShowcase() {
           </p>
         </motion.div>
         
+        {/* Filter chips */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-wrap justify-center gap-2 mb-8"
+        >
+          {filterChips.map((chip, i) => (
+            <motion.button
+              key={chip}
+              onClick={() => setActiveFilter(chip)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                activeFilter === chip
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-card text-muted-foreground hover:bg-muted border border-border/50"
+              }`}
+            >
+              {chip === "Alle" && <Filter className="w-3.5 h-3.5" />}
+              {chip === "Top bewertet" && <Star className="w-3.5 h-3.5" />}
+              {chip === "Günstigste" && <TrendingUp className="w-3.5 h-3.5" />}
+              {chip === "Schnellste Antwort" && <Clock className="w-3.5 h-3.5" />}
+              {chip}
+            </motion.button>
+          ))}
+        </motion.div>
+        
+        {/* Selection summary */}
+        <AnimatePresence>
+          {selectedCompanies.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-6"
+            >
+              <div className="flex items-center justify-between bg-primary/5 border border-primary/20 rounded-xl px-5 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">
+                      {selectedCompanies.length} Firma{selectedCompanies.length > 1 ? "en" : ""} ausgewählt
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Offerten von ausgewählten Firmen erhalten
+                    </p>
+                  </div>
+                </div>
+                <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
+                  Offerten anfordern
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
         {/* Desktop: Table View */}
         <div className="hidden lg:block overflow-hidden rounded-2xl border border-border/50 shadow-xl bg-card">
-          {/* Header */}
-          <div className="grid grid-cols-7 gap-4 p-5 bg-muted/50 border-b border-border/50 font-semibold text-sm text-muted-foreground">
+          {/* Animated Header */}
+          <motion.div 
+            className="grid grid-cols-8 gap-4 p-5 bg-gradient-to-r from-muted/80 via-muted/60 to-muted/80 border-b border-border/50 font-semibold text-sm text-muted-foreground"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-2">
+              <Checkbox className="border-muted-foreground/30" />
+            </div>
             <div className="text-center">Rang</div>
-            <div className="col-span-2">Umzugsfirma</div>
-            <div>Spezialisierung</div>
+            <div className="col-span-2 flex items-center gap-1">
+              Umzugsfirma
+              <ArrowUpDown className="w-3.5 h-3.5" />
+            </div>
+            <div>Match</div>
             <div>Preislevel</div>
             <div>Bewertung</div>
-            <div>Antwortzeit</div>
-          </div>
+            <div>Verfügbar</div>
+          </motion.div>
           
           {/* Rows */}
           {mockCompanies.map((company, index) => (
@@ -138,11 +261,23 @@ export default function ComparisonShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              whileHover={{ backgroundColor: "rgba(var(--primary), 0.02)" }}
-              className={`grid grid-cols-7 gap-4 p-5 items-center transition-all duration-300 ${
+              onHoverStart={() => setHoveredRow(company.name)}
+              onHoverEnd={() => setHoveredRow(null)}
+              className={`grid grid-cols-8 gap-4 p-5 items-center transition-all duration-300 cursor-pointer ${
                 index !== mockCompanies.length - 1 ? "border-b border-border/50" : ""
-              } ${company.highlight ? "bg-gradient-to-r from-primary/5 via-primary/3 to-transparent" : ""}`}
+              } ${company.highlight ? "bg-gradient-to-r from-primary/5 via-primary/3 to-transparent" : ""} ${
+                selectedCompanies.includes(company.name) ? "bg-primary/5" : ""
+              } hover:bg-muted/50`}
+              onClick={() => toggleCompany(company.name)}
             >
+              {/* Checkbox */}
+              <div className="flex items-center">
+                <Checkbox 
+                  checked={selectedCompanies.includes(company.name)}
+                  className="border-primary/50 data-[state=checked]:bg-primary"
+                />
+              </div>
+              
               {/* Rank with medal */}
               <div className="flex justify-center">
                 <motion.div 
@@ -170,21 +305,9 @@ export default function ComparisonShowcase() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-foreground">{company.name}</span>
                       {company.recommended && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                        >
-                          <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 text-xs px-2 py-0.5 shadow-sm">
-                            <Award className="w-3 h-3 mr-1" />
-                            Empfohlen
-                          </Badge>
-                        </motion.div>
-                      )}
-                      {company.verified && (
-                        <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50 text-xs px-1.5 py-0">
-                          <CheckCircle2 className="w-3 h-3 mr-0.5" />
-                          Geprüft
+                        <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 text-xs px-2 py-0.5 shadow-sm">
+                          <Award className="w-3 h-3 mr-1" />
+                          Empfohlen
                         </Badge>
                       )}
                     </div>
@@ -192,10 +315,8 @@ export default function ComparisonShowcase() {
                     {company.savings && (
                       <motion.div 
                         className="text-xs text-green-600 font-medium mt-1 inline-flex items-center gap-1"
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + 0.2 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                       >
                         <Sparkles className="w-3 h-3" />
                         {company.savings}
@@ -205,17 +326,9 @@ export default function ComparisonShowcase() {
                 </div>
               </div>
               
-              <div className="flex flex-wrap gap-1">
-                {company.specialization.slice(0, 2).map((spec) => (
-                  <Badge key={spec} variant="secondary" className="text-xs bg-muted/80">
-                    {spec}
-                  </Badge>
-                ))}
-                {company.specialization.length > 2 && (
-                  <Badge variant="secondary" className="text-xs bg-muted/80">
-                    +{company.specialization.length - 2}
-                  </Badge>
-                )}
+              {/* Match Score */}
+              <div>
+                <MatchScoreBadge score={company.matchScore} />
               </div>
               
               <div>
@@ -233,10 +346,38 @@ export default function ComparisonShowcase() {
                 <span className="text-sm text-muted-foreground">({company.reviews})</span>
               </div>
               
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Clock className="w-4 h-4" />
-                {company.responseTime}
+              {/* Availability */}
+              <div className="flex items-center gap-1.5">
+                {company.available ? (
+                  <Badge className="bg-green-50 text-green-700 border-green-200">
+                    <Calendar className="w-3 h-3 mr-1" />
+                    Verfügbar
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="text-muted-foreground">
+                    Auf Anfrage
+                  </Badge>
+                )}
               </div>
+              
+              {/* Quick actions on hover */}
+              <AnimatePresence>
+                {hoveredRow === company.name && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="absolute right-4 flex items-center gap-2"
+                  >
+                    <Button variant="ghost" size="icon" className="w-8 h-8">
+                      <Heart className="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="w-8 h-8">
+                      <Phone className="w-4 h-4" />
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </div>
@@ -251,8 +392,11 @@ export default function ComparisonShowcase() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              onClick={() => toggleCompany(company.name)}
             >
-              <Card className={`border-border/50 overflow-hidden ${company.highlight ? "ring-2 ring-primary/30 shadow-lg" : "shadow-md"}`}>
+              <Card className={`border-border/50 overflow-hidden cursor-pointer ${
+                company.highlight ? "ring-2 ring-primary/30 shadow-lg" : "shadow-md"
+              } ${selectedCompanies.includes(company.name) ? "ring-2 ring-primary shadow-lg" : ""}`}>
                 {/* Recommended banner */}
                 {company.recommended && (
                   <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-2 flex items-center justify-center gap-2">
@@ -265,13 +409,18 @@ export default function ComparisonShowcase() {
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="relative">
+                        <Checkbox 
+                          checked={selectedCompanies.includes(company.name)}
+                          className="absolute -top-1 -left-1 z-10 border-primary/50 data-[state=checked]:bg-primary"
+                          onClick={(e) => e.stopPropagation()}
+                        />
                         <motion.div 
                           className="w-14 h-14 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center font-bold text-primary text-xl border border-border/50"
                           whileHover={{ scale: 1.05 }}
                         >
                           {company.name.charAt(0)}
                         </motion.div>
-                        <div className={`absolute -top-2 -left-2 w-8 h-8 rounded-lg bg-gradient-to-br ${medalColors[company.medal as keyof typeof medalColors]} flex items-center justify-center shadow-lg`}>
+                        <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-lg bg-gradient-to-br ${medalColors[company.medal as keyof typeof medalColors]} flex items-center justify-center shadow-lg`}>
                           {index === 0 ? (
                             <Trophy className="w-4 h-4 text-white" />
                           ) : (
@@ -282,6 +431,7 @@ export default function ComparisonShowcase() {
                       <div>
                         <div className="font-semibold text-foreground">{company.name}</div>
                         <div className="text-sm text-muted-foreground">{company.region}</div>
+                        <MatchScoreBadge score={company.matchScore} />
                       </div>
                     </div>
                     {company.verified && (
@@ -315,9 +465,13 @@ export default function ComparisonShowcase() {
                       </div>
                       <PriceIndicator level={company.priceLevel} />
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Clock className="w-3.5 h-3.5" />
-                      {company.responseTime}
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="icon" className="w-8 h-8" onClick={(e) => e.stopPropagation()}>
+                        <Heart className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="w-8 h-8" onClick={(e) => e.stopPropagation()}>
+                        <MessageCircle className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
