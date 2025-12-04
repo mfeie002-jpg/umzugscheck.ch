@@ -108,7 +108,7 @@ export const PremiumHeroSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[85vh] flex items-center overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[100svh] md:min-h-[85vh] flex items-center overflow-hidden">
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"
@@ -129,12 +129,12 @@ export const PremiumHeroSection = () => {
         />
       </motion.div>
       
-      {/* Gradient Overlay - reduced to make image more visible */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/60 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
+      {/* Gradient Overlay - stronger on mobile for readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background/90 md:from-background/85 via-background/70 md:via-background/60 to-background/50 md:to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/50 md:from-background/40 via-transparent to-background/70 md:to-background/60" />
       
       {/* Subtle Pattern Overlay */}
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-30 hidden md:block">
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.1) 1px, transparent 0)`,
           backgroundSize: '32px 32px'
@@ -142,17 +142,18 @@ export const PremiumHeroSection = () => {
       </div>
       
       {/* Content Container */}
-      <div className="container mx-auto px-4 py-12 md:py-20 lg:py-24 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <div className="container mx-auto px-4 py-6 md:py-20 lg:py-24 relative z-10">
+        {/* Mobile: Form first, Desktop: Text first */}
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-6"
+            className="space-y-4 md:space-y-6 order-2 lg:order-1"
           >
-            {/* CHECK Badge - Brand Highlight - Floating */}
+            {/* CHECK Badge - Brand Highlight - Floating - Hidden on small mobile */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ 
@@ -165,10 +166,10 @@ export const PremiumHeroSection = () => {
                 scale: { delay: 0.2, duration: 0.5 },
                 y: { delay: 0.7, duration: 3, repeat: Infinity, ease: "easeInOut" }
               }}
-              className="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-medium border border-border"
+              className="hidden sm:inline-flex items-center gap-3 px-4 md:px-5 py-2 md:py-3 bg-white rounded-2xl shadow-medium border border-border"
             >
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary">
-                <Check className="h-6 w-6 text-white stroke-[3]" />
+              <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-primary">
+                <Check className="h-5 w-5 md:h-6 md:w-6 text-white stroke-[3]" />
               </div>
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Wir checken für Sie</p>
@@ -176,51 +177,51 @@ export const PremiumHeroSection = () => {
               </div>
             </motion.div>
             
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
+            {/* Main Headline - Smaller on mobile */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.15] tracking-tight">
               <span className="text-foreground">Umzugsfirmen vergleichen.</span>
-              <span className="block text-primary mt-2">In wenigen Minuten.</span>
+              <span className="block text-primary mt-1 md:mt-2">In wenigen Minuten.</span>
             </h1>
             
-            {/* Subheadline with CHECK emphasis */}
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
-              Wir <span className="inline-flex items-center gap-1 text-secondary font-semibold"><CheckCircle2 className="h-5 w-5" />checken</span> für Sie: 
-              AI-gestützte Analyse, geprüfte Schweizer Partner, transparente Offerten – kostenlos und unverbindlich.
+            {/* Subheadline - Compact on mobile */}
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed">
+              Wir <span className="inline-flex items-center gap-1 text-secondary font-semibold"><CheckCircle2 className="h-4 w-4 md:h-5 md:w-5" />checken</span> für Sie: 
+              AI-gestützte Analyse, geprüfte Partner, transparente Offerten.
             </p>
             
-            {/* Trust Metrics Row with Animated Counters */}
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
+            {/* Trust Metrics Row - 2 items on mobile, 3 on desktop */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm">
               <motion.div 
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5 sm:gap-2"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <Star className="h-5 w-5 fill-swiss-gold text-swiss-gold" />
+                <Star className="h-4 w-4 md:h-5 md:w-5 fill-swiss-gold text-swiss-gold" />
                 <span className="font-bold text-foreground">
                   <AnimatedCounter value={4.8} decimals={1} duration={1.5} />/5
                 </span>
-                <span className="text-foreground/60">Bewertung</span>
+                <span className="text-foreground/60 hidden xs:inline">Bewertung</span>
               </motion.div>
               <motion.div 
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5 sm:gap-2"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                <CheckCircle2 className="h-5 w-5 text-secondary" />
+                <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-secondary" />
                 <span className="font-bold text-foreground">
                   <AnimatedCounter value={15000} suffix="+" duration={2} />
                 </span>
-                <span className="text-foreground/60">Umzüge gecheckt</span>
+                <span className="text-foreground/60 hidden sm:inline">Umzüge</span>
               </motion.div>
               <motion.div 
-                className="flex items-center gap-2"
+                className="hidden sm:flex items-center gap-1.5 sm:gap-2"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-emerald-500" />
                 <span className="font-bold text-foreground">
                   <AnimatedCounter value={100} suffix="%" duration={1} />
                 </span>
@@ -228,8 +229,8 @@ export const PremiumHeroSection = () => {
               </motion.div>
             </div>
             
-            {/* Live Activity Badge */}
-            <div className="pt-2">
+            {/* Live Activity Badge - Hidden on very small screens */}
+            <div className="pt-1 md:pt-2 hidden sm:block">
               <LiveActivityBadge />
             </div>
             
@@ -250,42 +251,42 @@ export const PremiumHeroSection = () => {
             </div>
           </motion.div>
           
-          {/* Right Column - Quick Quote Form - Floating */}
+          {/* Right Column - Quick Quote Form - Shows FIRST on mobile */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ 
               opacity: 1, 
-              y: [0, -10, 0]
+              y: 0
             }}
             transition={{ 
-              opacity: { duration: 0.6, delay: 0.2 },
-              y: { delay: 0.8, duration: 4, repeat: Infinity, ease: "easeInOut" }
+              opacity: { duration: 0.5, delay: 0.1 }
             }}
+            className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8">
-              <div className="space-y-5">
-                {/* Form Header with Check */}
-                <div className="text-center space-y-2">
-                  <div className="inline-flex items-center gap-2 text-sm text-primary font-semibold">
-                    <Clock className="h-4 w-4" />
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-6 md:p-8">
+              <div className="space-y-4 md:space-y-5">
+                {/* Form Header */}
+                <div className="text-center space-y-1 md:space-y-2">
+                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-semibold">
+                    <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     In 2 Minuten zum Vergleich
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
                     Kostenlos Offerten erhalten
                   </h2>
                 </div>
                 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="from" className="text-foreground font-medium text-sm">Von (PLZ oder Ort)</Label>
+                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+                  <div className="space-y-1.5 md:space-y-2">
+                    <Label htmlFor="from" className="text-foreground font-medium text-xs sm:text-sm">Von (PLZ oder Ort)</Label>
                     <Input
                       id="from"
                       list="from-options"
                       placeholder="z.B. 8001 oder Zürich"
                       value={fromPostal}
                       onChange={(e) => setFromPostal(e.target.value)}
-                      className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
                       autoComplete="off"
                       required
                     />
@@ -296,15 +297,15 @@ export const PremiumHeroSection = () => {
                     </datalist>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="to" className="text-foreground font-medium text-sm">Nach (PLZ oder Ort)</Label>
+                  <div className="space-y-1.5 md:space-y-2">
+                    <Label htmlFor="to" className="text-foreground font-medium text-xs sm:text-sm">Nach (PLZ oder Ort)</Label>
                     <Input
                       id="to"
                       list="to-options"
                       placeholder="z.B. 3011 oder Bern"
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
-                      className="h-12 text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
                       autoComplete="off"
                       required
                     />
@@ -315,10 +316,10 @@ export const PremiumHeroSection = () => {
                     </datalist>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="rooms" className="text-foreground font-medium text-sm">Wohnungsgrösse</Label>
+                  <div className="space-y-1.5 md:space-y-2">
+                    <Label htmlFor="rooms" className="text-foreground font-medium text-xs sm:text-sm">Wohnungsgrösse</Label>
                     <Select value={rooms} onValueChange={setRooms}>
-                      <SelectTrigger className="h-12 text-base bg-background border-border/60">
+                      <SelectTrigger className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-border/60">
                         <SelectValue placeholder="Wählen Sie..." />
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
@@ -335,41 +336,45 @@ export const PremiumHeroSection = () => {
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all animate-pulse-subtle group"
+                    className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group"
                   >
                     <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="hidden sm:inline">Jetzt checken lassen</span>
-                    <span className="sm:hidden">Checken</span>
+                    Jetzt checken lassen
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>
                 
-                {/* Trust Microcopy with Checks */}
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-foreground/60">
-                  <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                {/* Trust Microcopy - Compact on mobile */}
+                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1 md:pt-2 text-xs sm:text-sm text-foreground/60">
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500" />
                     Kostenlos
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500" />
                     Unverbindlich
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <Shield className="h-4 w-4 text-secondary" />
+                  <span className="flex items-center gap-1">
+                    <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-secondary" />
                     Datenschutz
                   </span>
                 </div>
               </div>
             </div>
             
-            {/* Mobile CTAs */}
-            <div className="flex flex-col gap-3 mt-6 lg:hidden">
-              <Link to="/umzugsrechner" className="w-full">
-                <Button size="lg" variant="outline" className="w-full h-11 text-sm font-semibold border-2 hover:bg-primary/5">
-                  Kosten berechnen
-                </Button>
-              </Link>
-            </div>
+            {/* Mobile: Scroll indicator */}
+            <motion.div 
+              className="flex flex-col items-center mt-4 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, y: [0, 8, 0] }}
+              transition={{ 
+                opacity: { delay: 1, duration: 0.5 },
+                y: { delay: 1.5, duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+              }}
+            >
+              <span className="text-xs text-muted-foreground mb-1">Mehr entdecken</span>
+              <ArrowRight className="h-4 w-4 text-muted-foreground rotate-90" />
+            </motion.div>
           </motion.div>
         </div>
       </div>
