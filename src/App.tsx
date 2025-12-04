@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import { Suspense, lazy } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { PreloadResources } from "@/components/PreloadResources";
+import { PageLoadingFallback } from "@/components/ui/loading-fallback";
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -148,6 +150,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <PreloadResources />
               <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
           <AIMovingAssistant />
@@ -159,11 +162,7 @@ const App = () => (
           <QuickActionBar />
           <StickyContactBar />
               <main className="flex-1">
-                <Suspense fallback={
-                  <div className="flex items-center justify-center min-h-screen">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                  </div>
-                }>
+                <Suspense fallback={<PageLoadingFallback />}>
                    <Routes>
           <Route path="/" element={<IndexPremium />} />
           <Route path="/old-home" element={<Index />} />
