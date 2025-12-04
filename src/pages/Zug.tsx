@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { EnhancedFooter } from "@/components/home/EnhancedFooter";
+
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import zugHero from "@/assets/zug-hero.jpg";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -986,7 +986,7 @@ const Zug = () => {
         </a>
       </div>
 
-      <EnhancedFooter />
+      
       <StickyMobileCTA />
       <ScrollToTop />
     </div>

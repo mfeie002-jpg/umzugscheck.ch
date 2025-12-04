@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, MapPin, Home, User, Mail, Phone, ArrowRight, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -336,7 +336,7 @@ const OffertenPage = () => {
         </section>
       </main>
 
-      <SimplifiedFooter />
+      
       <StickyMobileCTA />
     </div>
   );

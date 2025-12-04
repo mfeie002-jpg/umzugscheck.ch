@@ -1,5 +1,4 @@
 import { Navigation } from "@/components/Navigation";
-import { EnhancedFooter } from "@/components/home/EnhancedFooter";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -173,7 +172,7 @@ const FuerFirmen = () => {
         </section>
       </main>
 
-      <EnhancedFooter />
+      
     </div>
   );
 };

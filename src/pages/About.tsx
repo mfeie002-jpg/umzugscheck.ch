@@ -1,4 +1,4 @@
-import { Footer } from "@/components/Footer";
+
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { Shield, Users, Target, TrendingUp, Heart, Award, CheckCircle2 } from "lucide-react";
@@ -259,7 +259,7 @@ const About = () => {
           </section>
         </main>
 
-        <Footer />
+        
         <StickyMobileCTA />
       </div>
     </>

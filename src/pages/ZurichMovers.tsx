@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Shield, Users, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { InstantCalculator } from "@/components/home/InstantCalculator";
@@ -375,7 +375,7 @@ const ZurichMovers = () => {
         />
       </main>
 
-      <SimplifiedFooter />
+      
       <StickyMobileCTA />
     </div>
   );

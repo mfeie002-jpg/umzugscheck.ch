@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -524,7 +524,7 @@ const CalculatorResults = () => {
         </section>
       </main>
 
-      <Footer />
+      
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { EmotionalHero } from "@/components/home/EmotionalHero";
 import { GradientCTA } from "@/components/home/GradientCTA";
@@ -231,7 +231,7 @@ const FAQ = () => {
         />
       </main>
 
-        <SimplifiedFooter />
+        
         <StickyMobileCTA />
       </div>
     </>
