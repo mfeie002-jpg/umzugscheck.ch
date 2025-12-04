@@ -34,3 +34,6 @@ export { IdleWarning } from './IdleWarning';
 export { DragDropUpload } from './DragDropUpload';
 export { TextToSpeech } from './TextToSpeech';
 export { AmbientLightIndicator } from './AmbientLightIndicator';
+export { NetworkStatusBadge } from './NetworkStatusBadge';
+export { GamepadIndicator } from './GamepadIndicator';
+export { OrientationLock } from './OrientationLock';
