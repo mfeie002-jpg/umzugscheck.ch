@@ -152,10 +152,17 @@ export const PremiumServicesGrid = () => {
                   }
                 }
               }}
+              whileHover={{ 
+                scale: 1.03,
+                y: -8,
+                transition: { type: "spring", stiffness: 400, damping: 25 }
+              }}
+              whileTap={{ scale: 0.98 }}
+              className="cursor-pointer"
             >
               <Link 
                 to={service.link}
-                className="group relative block h-full bg-card rounded-2xl overflow-hidden shadow-premium border border-border/50 hover:shadow-lift hover:border-primary/20 transition-all duration-300"
+                className="group relative block h-full bg-card rounded-2xl overflow-hidden shadow-premium border border-border/50 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] hover:border-primary/30 transition-all duration-300"
               >
                 {/* Image */}
                 <div className="relative h-44 overflow-hidden">
