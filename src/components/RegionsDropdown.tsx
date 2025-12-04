@@ -51,157 +51,139 @@ const cantons: Canton[] = [
   { 
     name: "Zürich", 
     code: "ZH", 
-    href: "/zuerich/umzugsfirmen",
+    href: "/zuerich",
     cities: ["Zürich", "Winterthur", "Uster"]
   },
   { 
     name: "Bern", 
     code: "BE", 
-    href: "/bern/umzugsfirmen",
+    href: "/bern",
     cities: ["Bern", "Biel", "Thun"]
   },
   { 
     name: "Luzern", 
     code: "LU", 
-    href: "/luzern/umzugsfirmen",
+    href: "/luzern",
     cities: ["Luzern", "Emmen", "Kriens"]
   },
   { 
     name: "Uri", 
     code: "UR", 
-    href: "/uri/umzugsfirmen",
+    href: "/uri",
     cities: ["Altdorf"]
   },
   { 
     name: "Schwyz", 
     code: "SZ", 
-    href: "/schwyz/umzugsfirmen",
+    href: "/schwyz",
     cities: ["Schwyz", "Einsiedeln"]
   },
   { 
     name: "Obwalden", 
     code: "OW", 
-    href: "/obwalden/umzugsfirmen",
+    href: "/obwalden",
     cities: ["Sarnen"]
   },
   { 
     name: "Nidwalden", 
     code: "NW", 
-    href: "/nidwalden/umzugsfirmen",
+    href: "/nidwalden",
     cities: ["Stans"]
   },
   { 
     name: "Glarus", 
     code: "GL", 
-    href: "/glarus/umzugsfirmen",
+    href: "/glarus",
     cities: ["Glarus"]
   },
   { 
     name: "Zug", 
     code: "ZG", 
-    href: "/zug/umzugsfirmen",
+    href: "/zug",
     cities: ["Zug", "Baar", "Cham"]
   },
   { 
     name: "Fribourg", 
     code: "FR", 
-    href: "/fribourg/umzugsfirmen",
+    href: "/fribourg",
     cities: ["Fribourg", "Bulle"]
   },
   { 
     name: "Solothurn", 
     code: "SO", 
-    href: "/solothurn/umzugsfirmen",
+    href: "/solothurn",
     cities: ["Solothurn", "Olten"]
   },
   { 
-    name: "Basel-Stadt", 
+    name: "Basel", 
     code: "BS", 
-    href: "/basel-stadt/umzugsfirmen",
+    href: "/basel",
     cities: ["Basel"]
-  },
-  { 
-    name: "Basel-Landschaft", 
-    code: "BL", 
-    href: "/basel-landschaft/umzugsfirmen",
-    cities: ["Liestal", "Allschwil"]
   },
   { 
     name: "Schaffhausen", 
     code: "SH", 
-    href: "/schaffhausen/umzugsfirmen",
+    href: "/schaffhausen",
     cities: ["Schaffhausen"]
   },
   { 
-    name: "Appenzell Ausserrhoden", 
+    name: "Appenzell", 
     code: "AR", 
-    href: "/appenzell-ausserrhoden/umzugsfirmen",
-    cities: ["Herisau"]
-  },
-  { 
-    name: "Appenzell Innerrhoden", 
-    code: "AI", 
-    href: "/appenzell-innerrhoden/umzugsfirmen",
-    cities: ["Appenzell"]
+    href: "/appenzell",
+    cities: ["Herisau", "Appenzell"]
   },
   { 
     name: "St. Gallen", 
     code: "SG", 
-    href: "/st-gallen/umzugsfirmen",
+    href: "/st-gallen",
     cities: ["St. Gallen", "Rapperswil"]
   },
   { 
     name: "Graubünden", 
     code: "GR", 
-    href: "/graubuenden/umzugsfirmen",
+    href: "/graubuenden",
     cities: ["Chur", "Davos"]
   },
   { 
     name: "Aargau", 
     code: "AG", 
-    href: "/aargau/umzugsfirmen",
+    href: "/aargau",
     cities: ["Aarau", "Baden", "Wettingen"]
   },
   { 
     name: "Thurgau", 
     code: "TG", 
-    href: "/thurgau/umzugsfirmen",
+    href: "/thurgau",
     cities: ["Frauenfeld", "Kreuzlingen"]
   },
   { 
-    name: "Ticino", 
+    name: "Tessin", 
     code: "TI", 
-    href: "/ticino/umzugsfirmen",
+    href: "/tessin",
     cities: ["Lugano", "Bellinzona", "Locarno"]
   },
   { 
-    name: "Vaud", 
-    code: "VD", 
-    href: "/vaud/umzugsfirmen",
-    cities: ["Lausanne", "Montreux", "Vevey"]
-  },
-  { 
-    name: "Valais", 
+    name: "Wallis", 
     code: "VS", 
-    href: "/valais/umzugsfirmen",
+    href: "/wallis",
     cities: ["Sion", "Martigny"]
   },
   { 
     name: "Neuchâtel", 
     code: "NE", 
-    href: "/neuchatel/umzugsfirmen",
+    href: "/neuchatel",
     cities: ["Neuchâtel", "La Chaux-de-Fonds"]
   },
   { 
     name: "Genève", 
     code: "GE", 
-    href: "/geneve/umzugsfirmen",
+    href: "/geneve",
     cities: ["Genève", "Carouge"]
   },
   { 
     name: "Jura", 
     code: "JU", 
-    href: "/jura/umzugsfirmen",
+    href: "/jura",
     cities: ["Delémont"]
   }
 ];
