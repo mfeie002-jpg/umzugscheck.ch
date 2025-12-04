@@ -50,6 +50,7 @@ export const PremiumFooter = () => {
                 src={logo} 
                 alt="Umzugscheck.ch" 
                 className="h-10 w-auto brightness-0 invert"
+                sizes="164px"
                 width={164}
                 height={40}
                 loading="lazy"
