@@ -70,6 +70,7 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import Zug from "./pages/Zug";
+import { Luzern, Zuerich, Bern, StGallen, Aargau, Basel, Thurgau, Solothurn, Graubuenden, Wallis, Tessin, Fribourg, Schwyz, Geneve } from "./pages/cantons";
 import RegionenOverview from "./pages/Regionen";
 import FuerFirmen from "./pages/FuerFirmen";
 import ServicePlaceholder from "./pages/ServicePlaceholder";
@@ -178,6 +179,21 @@ const App = () => (
             <Route path="/rechner/konfigurator" element={<TotalPriceConfigurator />} />
             <Route path="/rechner/video" element={<VideoEstimator />} />
             <Route path="/zug" element={<Zug />} />
+            <Route path="/luzern" element={<Luzern />} />
+            <Route path="/zuerich" element={<Zuerich />} />
+            <Route path="/bern" element={<Bern />} />
+            <Route path="/stgallen" element={<StGallen />} />
+            <Route path="/aargau" element={<Aargau />} />
+            <Route path="/basel" element={<Basel />} />
+            <Route path="/thurgau" element={<Thurgau />} />
+            <Route path="/solothurn" element={<Solothurn />} />
+            <Route path="/graubuenden" element={<Graubuenden />} />
+            <Route path="/wallis" element={<Wallis />} />
+            <Route path="/tessin" element={<Tessin />} />
+            <Route path="/fribourg" element={<Fribourg />} />
+            <Route path="/schwyz" element={<Schwyz />} />
+            <Route path="/geneve" element={<Geneve />} />
+            <Route path="/firmen" element={<Companies />} />
             <Route path="/firmen" element={<Companies />} />
             <Route path="/umzugsfirmen" element={<Companies />} />
             <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
