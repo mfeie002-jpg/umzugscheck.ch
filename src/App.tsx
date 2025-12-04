@@ -44,6 +44,7 @@ import { CustomerOnboarding } from "./components/CustomerOnboarding";
 import { ProviderOnboarding } from "./components/ProviderOnboarding";
 import { FloatingActionButton } from "./components/mobile/FloatingActionButton";
 import { MobilePullToRefresh } from "./components/MobilePullToRefresh";
+import { MobileBottomSheetNav } from "./components/mobile/MobileBottomSheetNav";
 import Index from "./pages/Index";
 import NewIndex from "./pages/NewIndex";
 import { HomePage } from "./pages/HomePage";
@@ -374,6 +375,7 @@ const App = () => (
               </main>
               </MobilePullToRefresh>
                 <MobileBottomNav />
+                <MobileBottomSheetNav />
                 
                 <Footer />
               </div>
