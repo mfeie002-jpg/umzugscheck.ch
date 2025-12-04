@@ -17,6 +17,7 @@ export const SimplifiedFooter = () => {
                 className="h-10"
                 width={164}
                 height={40}
+                loading="lazy"
               />
             </Link>
             <p className="text-sm text-uc-footer-text/70">

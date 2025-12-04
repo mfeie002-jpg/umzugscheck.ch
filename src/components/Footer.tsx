@@ -75,6 +75,7 @@ export const Footer = () => {
                 className="h-12 w-auto brightness-0 invert"
                 width={196}
                 height={48}
+                loading="lazy"
               />
             </Link>
             <p className="text-primary-foreground/90 text-sm leading-relaxed max-w-sm">

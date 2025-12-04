@@ -90,7 +90,7 @@ export const SocialProofBlock = () => {
             Bekannt aus & geprüft von:
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
-            <img src="/lovable-uploads/d4aa8c36-01f9-47b7-8e18-bd2a8e22467a.png" alt="Google" className="h-8 grayscale hover:grayscale-0 transition-all" />
+            <img src="/lovable-uploads/d4aa8c36-01f9-47b7-8e18-bd2a8e22467a.png" alt="Google" loading="lazy" className="h-8 grayscale hover:grayscale-0 transition-all" />
             <span className="text-2xl font-bold text-foreground/40">ProvenExpert</span>
             <span className="text-2xl font-bold text-foreground/40">Trustpilot</span>
           </div>

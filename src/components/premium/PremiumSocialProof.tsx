@@ -170,7 +170,7 @@ export const PremiumSocialProof = () => {
             <Dialog key={photoIdx}>
               <DialogTrigger asChild>
                 <button className="relative w-10 h-10 rounded-lg overflow-hidden border border-border hover:opacity-80 transition-opacity">
-                  <img src={photo} alt={`Review photo ${photoIdx + 1}`} className="w-full h-full object-cover" />
+                  <img src={photo} alt={`Review photo ${photoIdx + 1}`} loading="lazy" className="w-full h-full object-cover" />
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-3xl">

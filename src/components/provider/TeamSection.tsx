@@ -33,7 +33,7 @@ export const TeamSection = ({ teamMembers, teamSize }: TeamSectionProps) => {
             <div key={index} className="flex items-start gap-4">
               <Avatar className="h-16 w-16">
                 {member.photo ? (
-                  <img src={member.photo} alt={member.name} />
+                  <img src={member.photo} alt={member.name} loading="lazy" />
                 ) : (
                   <AvatarFallback className="text-lg">
                     {member.name.split(' ').map(n => n[0]).join('')}

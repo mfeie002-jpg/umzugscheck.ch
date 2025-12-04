@@ -52,6 +52,7 @@ export const PremiumFooter = () => {
                 className="h-10 w-auto brightness-0 invert"
                 width={164}
                 height={40}
+                loading="lazy"
               />
             </Link>
             <p className="text-uc-footer-text/70 mb-6 max-w-sm leading-relaxed">
