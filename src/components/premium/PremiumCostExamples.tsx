@@ -1,4 +1,4 @@
-import { Home, Building2, Briefcase, ArrowRight, Info, TrendingDown, Calculator } from "lucide-react";
+import { ArrowRight, TrendingDown, Calculator, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -11,46 +11,158 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 
+// SVG Apartment Floor Plans for each size
+const FloorPlanStudio = () => (
+  <svg viewBox="0 0 100 80" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="5" width="90" height="70" rx="2" className="fill-primary/5" />
+    <rect x="10" y="10" width="35" height="30" rx="1" strokeDasharray="3 2" /> {/* Living/Bedroom */}
+    <rect x="50" y="10" width="40" height="20" rx="1" strokeDasharray="3 2" /> {/* Kitchen */}
+    <rect x="50" y="35" width="20" height="15" rx="1" strokeDasharray="3 2" /> {/* Bath */}
+    <circle cx="27" cy="25" r="3" className="fill-primary/20" /> {/* Bed indicator */}
+    <rect x="55" y="15" width="8" height="5" rx="0.5" className="fill-primary/20" /> {/* Kitchen counter */}
+  </svg>
+);
+
+const FloorPlan1_5 = () => (
+  <svg viewBox="0 0 100 80" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="5" width="90" height="70" rx="2" className="fill-primary/5" />
+    <rect x="10" y="10" width="40" height="35" rx="1" strokeDasharray="3 2" /> {/* Living */}
+    <rect x="55" y="10" width="35" height="25" rx="1" strokeDasharray="3 2" /> {/* Kitchen */}
+    <rect x="55" y="40" width="20" height="15" rx="1" strokeDasharray="3 2" /> {/* Bath */}
+    <rect x="10" y="50" width="25" height="20" rx="1" strokeDasharray="3 2" /> {/* Small room */}
+    <circle cx="22" cy="60" r="3" className="fill-primary/20" />
+    <rect x="60" y="15" width="10" height="6" rx="0.5" className="fill-primary/20" />
+  </svg>
+);
+
+const FloorPlan2_5 = () => (
+  <svg viewBox="0 0 100 80" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="5" width="90" height="70" rx="2" className="fill-primary/5" />
+    <rect x="10" y="10" width="35" height="30" rx="1" strokeDasharray="3 2" /> {/* Living */}
+    <rect x="50" y="10" width="40" height="25" rx="1" strokeDasharray="3 2" /> {/* Kitchen/Dining */}
+    <rect x="10" y="45" width="25" height="25" rx="1" strokeDasharray="3 2" /> {/* Bedroom 1 */}
+    <rect x="40" y="45" width="25" height="25" rx="1" strokeDasharray="3 2" /> {/* Bedroom 2 */}
+    <rect x="70" y="40" width="20" height="15" rx="1" strokeDasharray="3 2" /> {/* Bath */}
+    <circle cx="22" cy="57" r="3" className="fill-primary/20" />
+    <circle cx="52" cy="57" r="3" className="fill-primary/20" />
+  </svg>
+);
+
+const FloorPlan3_5 = () => (
+  <svg viewBox="0 0 100 80" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="5" width="90" height="70" rx="2" className="fill-primary/5" />
+    <rect x="10" y="10" width="40" height="28" rx="1" strokeDasharray="3 2" /> {/* Living */}
+    <rect x="55" y="10" width="35" height="20" rx="1" strokeDasharray="3 2" /> {/* Kitchen */}
+    <rect x="10" y="43" width="22" height="27" rx="1" strokeDasharray="3 2" /> {/* Bedroom 1 */}
+    <rect x="37" y="43" width="22" height="27" rx="1" strokeDasharray="3 2" /> {/* Bedroom 2 */}
+    <rect x="64" y="43" width="22" height="27" rx="1" strokeDasharray="3 2" /> {/* Bedroom 3 */}
+    <rect x="55" y="33" width="15" height="12" rx="1" strokeDasharray="3 2" /> {/* Bath */}
+    <circle cx="21" cy="56" r="2.5" className="fill-primary/20" />
+    <circle cx="48" cy="56" r="2.5" className="fill-primary/20" />
+    <circle cx="75" cy="56" r="2.5" className="fill-primary/20" />
+  </svg>
+);
+
+const FloorPlan4_5 = () => (
+  <svg viewBox="0 0 100 80" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="5" width="90" height="70" rx="2" className="fill-primary/5" />
+    <rect x="10" y="10" width="45" height="25" rx="1" strokeDasharray="3 2" /> {/* Living */}
+    <rect x="60" y="10" width="30" height="18" rx="1" strokeDasharray="3 2" /> {/* Kitchen */}
+    <rect x="10" y="40" width="20" height="30" rx="1" strokeDasharray="3 2" /> {/* Bedroom 1 */}
+    <rect x="35" y="40" width="20" height="30" rx="1" strokeDasharray="3 2" /> {/* Bedroom 2 */}
+    <rect x="60" y="40" width="20" height="30" rx="1" strokeDasharray="3 2" /> {/* Bedroom 3 */}
+    <rect x="60" y="30" width="15" height="12" rx="1" strokeDasharray="3 2" /> {/* Bath 1 */}
+    <rect x="80" y="40" width="10" height="15" rx="1" strokeDasharray="3 2" /> {/* Bath 2 */}
+    <circle cx="20" cy="55" r="2" className="fill-primary/20" />
+    <circle cx="45" cy="55" r="2" className="fill-primary/20" />
+    <circle cx="70" cy="55" r="2" className="fill-primary/20" />
+    <rect x="82" y="60" width="6" height="8" rx="0.5" className="fill-primary/20" /> {/* Extra room */}
+  </svg>
+);
+
+const FloorPlan5_5 = () => (
+  <svg viewBox="0 0 100 80" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="5" width="90" height="70" rx="2" className="fill-primary/5" />
+    <rect x="10" y="10" width="50" height="22" rx="1" strokeDasharray="3 2" /> {/* Living */}
+    <rect x="65" y="10" width="25" height="15" rx="1" strokeDasharray="3 2" /> {/* Kitchen */}
+    <rect x="10" y="37" width="18" height="33" rx="1" strokeDasharray="3 2" /> {/* Bedroom 1 */}
+    <rect x="33" y="37" width="18" height="33" rx="1" strokeDasharray="3 2" /> {/* Bedroom 2 */}
+    <rect x="56" y="37" width="18" height="33" rx="1" strokeDasharray="3 2" /> {/* Bedroom 3 */}
+    <rect x="79" y="37" width="11" height="18" rx="1" strokeDasharray="3 2" /> {/* Bedroom 4 */}
+    <rect x="65" y="27" width="12" height="12" rx="1" strokeDasharray="3 2" /> {/* Bath 1 */}
+    <rect x="79" y="58" width="11" height="12" rx="1" strokeDasharray="3 2" /> {/* Bath 2 */}
+    <circle cx="19" cy="53" r="2" className="fill-primary/20" />
+    <circle cx="42" cy="53" r="2" className="fill-primary/20" />
+    <circle cx="65" cy="53" r="2" className="fill-primary/20" />
+    <circle cx="84" cy="46" r="1.5" className="fill-primary/20" />
+  </svg>
+);
+
+const FloorPlanOffice = () => (
+  <svg viewBox="0 0 100 80" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="5" width="90" height="70" rx="2" className="fill-primary/5" />
+    <rect x="10" y="10" width="55" height="35" rx="1" strokeDasharray="3 2" /> {/* Open Office */}
+    <rect x="70" y="10" width="20" height="20" rx="1" strokeDasharray="3 2" /> {/* Meeting room */}
+    <rect x="70" y="35" width="20" height="15" rx="1" strokeDasharray="3 2" /> {/* Office */}
+    <rect x="10" y="50" width="25" height="20" rx="1" strokeDasharray="3 2" /> {/* Kitchen */}
+    <rect x="40" y="50" width="15" height="12" rx="1" strokeDasharray="3 2" /> {/* WC */}
+    {/* Desks */}
+    <rect x="15" y="18" width="8" height="5" rx="0.5" className="fill-primary/20" />
+    <rect x="28" y="18" width="8" height="5" rx="0.5" className="fill-primary/20" />
+    <rect x="41" y="18" width="8" height="5" rx="0.5" className="fill-primary/20" />
+    <rect x="15" y="32" width="8" height="5" rx="0.5" className="fill-primary/20" />
+    <rect x="28" y="32" width="8" height="5" rx="0.5" className="fill-primary/20" />
+    <rect x="41" y="32" width="8" height="5" rx="0.5" className="fill-primary/20" />
+  </svg>
+);
+
 const costExamples = [
   {
-    icon: Home,
+    FloorPlan: FloorPlanStudio,
     title: "Studio",
+    subtitle: "ca. 25-35 m²",
     price: "ab CHF 450",
     details: ["1-2 Umzugshelfer", "Kleintransporter", "2-3 Stunden"]
   },
   {
-    icon: Home,
+    FloorPlan: FloorPlan1_5,
     title: "1.5-Zimmer",
+    subtitle: "ca. 35-45 m²",
     price: "ab CHF 680",
     details: ["2 Umzugshelfer", "Kleintransporter", "3-4 Stunden"]
   },
   {
-    icon: Home,
+    FloorPlan: FloorPlan2_5,
     title: "2.5-Zimmer",
+    subtitle: "ca. 50-65 m²",
     price: "ab CHF 980",
     details: ["2-3 Umzugshelfer", "Umzugswagen", "4-5 Stunden"]
   },
   {
-    icon: Building2,
+    FloorPlan: FloorPlan3_5,
     title: "3.5-Zimmer",
+    subtitle: "ca. 70-85 m²",
     price: "ab CHF 1'350",
     details: ["3 Umzugshelfer", "Umzugswagen", "5-7 Stunden"]
   },
   {
-    icon: Building2,
+    FloorPlan: FloorPlan4_5,
     title: "4.5-Zimmer",
+    subtitle: "ca. 90-110 m²",
     price: "ab CHF 1'650",
     details: ["3-4 Umzugshelfer", "LKW 3.5t", "6-8 Stunden"]
   },
   {
-    icon: Building2,
+    FloorPlan: FloorPlan5_5,
     title: "5.5-Zimmer",
+    subtitle: "ca. 120-150 m²",
     price: "ab CHF 2'200",
     details: ["4-5 Umzugshelfer", "LKW 7.5t", "8-10 Stunden"]
   },
   {
-    icon: Briefcase,
+    FloorPlan: FloorPlanOffice,
     title: "KMU-Büroumzug",
+    subtitle: "ca. 100-200 m²",
     price: "ab CHF 2'800",
     details: ["4-6 Umzugshelfer", "LKW + Möbellift", "1-2 Tage"]
   }
@@ -89,8 +201,8 @@ export const PremiumCostExamples = () => {
           </p>
         </motion.div>
         
-        {/* Carousel */}
-        <div className="max-w-6xl mx-auto mb-12">
+        {/* Carousel with visible arrows */}
+        <div className="max-w-6xl mx-auto mb-12 relative px-12 md:px-16">
           <Carousel
             opts={{
               align: "start",
@@ -110,15 +222,19 @@ export const PremiumCostExamples = () => {
                   >
                     <Card className="h-full text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border bg-card overflow-hidden group">
                       <CardContent className="p-0 h-full flex flex-col">
-                        <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 flex items-center justify-center">
-                          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <example.icon className="h-7 w-7 text-primary" />
+                        {/* Floor Plan Visual */}
+                        <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-4 flex items-center justify-center">
+                          <div className="w-24 h-20 text-primary group-hover:scale-105 transition-transform duration-300">
+                            <example.FloorPlan />
                           </div>
                         </div>
-                        <div className="p-4 md:p-6 flex-1 flex flex-col">
-                          <h3 className="text-sm md:text-lg font-bold mb-2 text-foreground">
+                        <div className="p-4 md:p-5 flex-1 flex flex-col">
+                          <h3 className="text-base md:text-lg font-bold mb-0.5 text-foreground">
                             {example.title}
                           </h3>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            {example.subtitle}
+                          </p>
                           <p className="text-2xl md:text-3xl font-bold text-primary mb-4">
                             {example.price}
                           </p>
@@ -137,9 +253,18 @@ export const PremiumCostExamples = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12" />
-            <CarouselNext className="hidden md:flex -right-12" />
+            
+            {/* Always visible arrow buttons */}
+            <CarouselPrevious className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 border-2 border-primary/20 bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-md" />
+            <CarouselNext className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 border-2 border-primary/20 bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-md" />
           </Carousel>
+          
+          {/* Swipe hint for mobile */}
+          <p className="text-center text-xs text-muted-foreground mt-4 md:hidden flex items-center justify-center gap-1">
+            <ChevronLeft className="h-3 w-3" />
+            Wischen zum Durchblättern
+            <ChevronRight className="h-3 w-3" />
+          </p>
         </div>
         
         {/* Disclaimer */}
