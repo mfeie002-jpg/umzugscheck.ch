@@ -19,6 +19,7 @@ export const EnhancedFooter = () => {
                 className="h-10 w-auto"
                 width={164}
                 height={40}
+                loading="lazy"
               />
             </Link>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed max-w-md">

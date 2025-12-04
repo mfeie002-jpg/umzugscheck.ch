@@ -58,7 +58,7 @@ export const CompanyCard = ({
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary/5 to-accent/5">
             {logo ? (
-              <img src={logo} alt={name} className="max-w-[60%] max-h-[60%] object-contain" />
+              <img src={logo} alt={name} loading="lazy" className="max-w-[60%] max-h-[60%] object-contain" />
             ) : (
               <span className="text-2xl font-bold text-muted-foreground">{name}</span>
             )}
