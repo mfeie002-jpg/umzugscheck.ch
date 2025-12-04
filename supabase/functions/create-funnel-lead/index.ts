@@ -21,6 +21,26 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Rate limiting - 3 leads per hour per IP
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+
+    const { data: allowed } = await supabase.rpc('check_rate_limit', {
+      p_identifier: clientIP,
+      p_action_type: 'create_lead',
+      p_max_attempts: 3,
+      p_window_minutes: 60
+    });
+
+    if (!allowed) {
+      console.log('Rate limit exceeded for lead creation, IP:', clientIP);
+      return new Response(
+        JSON.stringify({ success: false, error: { message: 'Zu viele Anfragen. Bitte warten Sie eine Stunde.', code: 'RATE_LIMIT' } }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { estimateSessionId, selectedCompanyIds, contact, message } = await req.json() as {
       estimateSessionId: string;
       selectedCompanyIds: string[];

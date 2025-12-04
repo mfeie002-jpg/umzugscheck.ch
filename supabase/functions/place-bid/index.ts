@@ -161,8 +161,24 @@ serve(async (req) => {
     }
   } catch (error: any) {
     console.error("Error in place-bid:", error);
+    
+    // Sanitize error messages - don't expose internal details
+    const knownErrors: Record<string, string> = {
+      'Bidding is not enabled': 'Gebote sind für diesen Lead nicht aktiviert',
+      'Bidding has closed': 'Die Gebotsphase ist beendet',
+      'Missing required fields': 'Erforderliche Felder fehlen',
+    };
+    
+    let safeMessage = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
+    for (const [key, value] of Object.entries(knownErrors)) {
+      if (error.message?.includes(key)) {
+        safeMessage = value;
+        break;
+      }
+    }
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: safeMessage }),
       {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
