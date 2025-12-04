@@ -48,6 +48,14 @@ const SWISS_CANTONS = [
   "Ticino", "Uri", "Vaud", "Valais", "Zug", "Zürich"
 ];
 
+const PRICE_LEVELS = ["Alle Preisstufen", "günstig", "fair", "premium"];
+const SORT_OPTIONS = [
+  { value: "empfohlen", label: "Empfohlen" },
+  { value: "rating", label: "Beste Bewertung" },
+  { value: "reviews", label: "Meiste Bewertungen" },
+  { value: "guenstig", label: "Günstigste zuerst" },
+];
+
 const Companies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const analytics = useAnalytics();
@@ -58,8 +66,10 @@ const Companies = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCanton, setSelectedCanton] = useState(searchParams.get("canton") || "Alle Kantone");
+  const [selectedCanton, setSelectedCanton] = useState(searchParams.get("canton") || searchParams.get("region") || "Alle Kantone");
   const [selectedRating, setSelectedRating] = useState("Alle");
+  const [selectedPriceLevel, setSelectedPriceLevel] = useState("Alle Preisstufen");
+  const [sortBy, setSortBy] = useState("empfohlen");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -102,11 +112,13 @@ const Companies = () => {
 
   useEffect(() => {
     // Track filter changes
-    if (searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle") {
+    if (searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen") {
       analytics.trackFilterApplied({
         search: searchTerm,
         canton: selectedCanton,
         rating: selectedRating,
+        priceLevel: selectedPriceLevel,
+        sortBy: sortBy,
       });
     }
 
@@ -118,7 +130,7 @@ const Companies = () => {
     }, 150);
     
     return () => clearTimeout(timer);
-  }, [companies, searchTerm, selectedCanton, selectedRating]);
+  }, [companies, searchTerm, selectedCanton, selectedRating, selectedPriceLevel, sortBy]);
 
   const fetchCompanies = async () => {
     setError(null);
@@ -181,6 +193,27 @@ const Companies = () => {
       filtered = filtered.filter((company) => company.rating >= minRating);
     }
 
+    // Price level filter
+    if (selectedPriceLevel !== "Alle Preisstufen") {
+      filtered = filtered.filter((company) => company.price_level === selectedPriceLevel);
+    }
+
+    // Sorting
+    switch (sortBy) {
+      case "rating":
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case "reviews":
+        filtered.sort((a, b) => b.review_count - a.review_count);
+        break;
+      case "guenstig":
+        const priceOrder = { "günstig": 1, "fair": 2, "premium": 3 };
+        filtered.sort((a, b) => (priceOrder[a.price_level as keyof typeof priceOrder] || 2) - (priceOrder[b.price_level as keyof typeof priceOrder] || 2));
+        break;
+      default: // empfohlen - combine rating and reviews
+        filtered.sort((a, b) => (b.rating * 10 + Math.log(b.review_count + 1)) - (a.rating * 10 + Math.log(a.review_count + 1)));
+    }
+
     setFilteredCompanies(filtered);
   };
 
@@ -188,9 +221,11 @@ const Companies = () => {
     setSearchTerm("");
     setSelectedCanton("Alle Kantone");
     setSelectedRating("Alle");
+    setSelectedPriceLevel("Alle Preisstufen");
+    setSortBy("empfohlen");
   };
 
-  const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle";
+  const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen";
 
   // Calculate company counts per canton
   const cantonCounts = useMemo(() => {
@@ -263,6 +298,45 @@ const Companies = () => {
             <SelectItem value="4.5">4.5+ Sterne</SelectItem>
             <SelectItem value="4.0">4.0+ Sterne</SelectItem>
             <SelectItem value="3.5">3.5+ Sterne</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Price Level Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+          Preisstufe
+          <OnboardingHint content="Filtern Sie nach Preiskategorie: günstig, fair oder premium." />
+        </label>
+        <Select value={selectedPriceLevel} onValueChange={setSelectedPriceLevel}>
+          <SelectTrigger className="h-12">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {PRICE_LEVELS.map((level) => (
+              <SelectItem key={level} value={level}>
+                {level === "Alle Preisstufen" ? level : level.charAt(0).toUpperCase() + level.slice(1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Sort By */}
+      <div>
+        <label className="text-sm font-medium mb-2 block">Sortierung</label>
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="h-12">
+            <SlidersHorizontal className="w-4 h-4 mr-2" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SORT_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
