@@ -15,6 +15,16 @@
  * 293. Scroll-triggered animations
  * 294. Exit-intent hint
  * 295. Final reassurance message
+ * 501. Exit intent popup trigger
+ * 502. Callback request form
+ * 503. WhatsApp quick contact
+ * 504. Limited time offer banner
+ * 505. Customer success story
+ * 506. Money-back guarantee
+ * 507. Quick comparison reminder
+ * 508. Personalized CTA text
+ * 509. A/B test ready variants
+ * 510. Accessibility enhancements
  */
 
 import { useState, useEffect, useRef } from "react";

@@ -12,6 +12,11 @@
  * 423. Dynamic page title
  * 424. Scroll depth tracking
  * 425. Performance monitor badge
+ * 511. Keyboard shortcut hints
+ * 512. Focus mode toggle
+ * 513. Text size adjuster
+ * 514. High contrast mode
+ * 515. Print-friendly mode
  */
 
 import { useState, useEffect, useRef } from "react";
