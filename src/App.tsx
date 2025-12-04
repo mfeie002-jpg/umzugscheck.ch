@@ -70,6 +70,7 @@ import AssemblyCalculator from "./pages/AssemblyCalculator";
 import TotalPriceConfigurator from "./pages/TotalPriceConfigurator";
 import VideoEstimator from "./pages/VideoEstimator";
 import Zug from "./pages/Zug";
+import CantonComparison from "./pages/CantonComparison";
 import { Luzern, Zuerich, Bern, StGallen, Aargau, Basel, Thurgau, Solothurn, Graubuenden, Wallis, Tessin, Fribourg, Schwyz, Geneve, Uri, Obwalden, Nidwalden, Glarus, Schaffhausen, Appenzell, Neuchatel, Jura } from "./pages/cantons";
 import RegionenOverview from "./pages/Regionen";
 import FuerFirmen from "./pages/FuerFirmen";
@@ -179,6 +180,8 @@ const App = () => (
             <Route path="/rechner/konfigurator" element={<TotalPriceConfigurator />} />
             <Route path="/rechner/video" element={<VideoEstimator />} />
             <Route path="/zug" element={<Zug />} />
+            <Route path="/zug/vergleich" element={<CantonComparison />} />
+            <Route path="/:canton/vergleich" element={<CantonComparison />} />
             <Route path="/luzern" element={<Luzern />} />
             <Route path="/zuerich" element={<Zuerich />} />
             <Route path="/bern" element={<Bern />} />
