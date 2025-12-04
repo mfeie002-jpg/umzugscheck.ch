@@ -17,6 +17,8 @@ export const EnhancedFooter = () => {
                 src={logo} 
                 alt="Umzugscheck.ch - Schweizer Umzugsvergleichsportal" 
                 className="h-10 w-auto"
+                width={164}
+                height={40}
               />
             </Link>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed max-w-md">

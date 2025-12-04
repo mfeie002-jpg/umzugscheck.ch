@@ -49,7 +49,9 @@ export const PremiumFooter = () => {
               <img 
                 src={logo} 
                 alt="Umzugscheck.ch" 
-                className="h-10 w-auto brightness-0 invert" 
+                className="h-10 w-auto brightness-0 invert"
+                width={164}
+                height={40}
               />
             </Link>
             <p className="text-uc-footer-text/70 mb-6 max-w-sm leading-relaxed">

@@ -73,6 +73,8 @@ export const Footer = () => {
                 src={logo} 
                 alt="Umzugscheck.ch Logo" 
                 className="h-12 w-auto brightness-0 invert"
+                width={196}
+                height={48}
               />
             </Link>
             <p className="text-primary-foreground/90 text-sm leading-relaxed max-w-sm">
