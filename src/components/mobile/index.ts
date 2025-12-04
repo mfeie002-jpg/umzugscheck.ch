@@ -31,3 +31,6 @@ export { ContactPickerButton } from './ContactPickerButton';
 export { FileUploadButton } from './FileUploadButton';
 export { CountdownTimer } from './CountdownTimer';
 export { IdleWarning } from './IdleWarning';
+export { DragDropUpload } from './DragDropUpload';
+export { TextToSpeech } from './TextToSpeech';
+export { AmbientLightIndicator } from './AmbientLightIndicator';

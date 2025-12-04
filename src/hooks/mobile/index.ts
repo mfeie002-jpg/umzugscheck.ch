@@ -46,3 +46,6 @@ export { useTextSelection } from '../useTextSelection';
 export { useCountdown } from '../useCountdown';
 export { useDebounce, useDebouncedCallback } from '../useDebounce';
 export { useThrottle, useThrottledCallback } from '../useThrottle';
+export { useDragAndDrop } from '../useDragAndDrop';
+export { useSpeechSynthesis } from '../useSpeechSynthesis';
+export { useAmbientLight } from '../useAmbientLight';
