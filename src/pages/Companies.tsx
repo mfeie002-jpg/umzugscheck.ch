@@ -23,6 +23,7 @@ import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 import { getKeywordsForPage } from "@/lib/seo-keywords";
+import CantonComparisonWidget from "@/components/CantonComparisonWidget";
 
 interface Company {
   id: string;
@@ -49,6 +50,18 @@ const SWISS_CANTONS = [
 ];
 
 const PRICE_LEVELS = ["Alle Preisstufen", "günstig", "fair", "premium"];
+
+const SERVICE_TYPES = [
+  "Alle Services",
+  "Umzug",
+  "Firmenumzug",
+  "Reinigung",
+  "Lagerung",
+  "Packservice",
+  "Entsorgung",
+  "Möbelmontage",
+];
+
 const SORT_OPTIONS = [
   { value: "empfohlen", label: "Empfohlen" },
   { value: "rating", label: "Beste Bewertung" },
@@ -69,6 +82,7 @@ const Companies = () => {
   const [selectedCanton, setSelectedCanton] = useState(searchParams.get("canton") || searchParams.get("region") || "Alle Kantone");
   const [selectedRating, setSelectedRating] = useState("Alle");
   const [selectedPriceLevel, setSelectedPriceLevel] = useState("Alle Preisstufen");
+  const [selectedService, setSelectedService] = useState("Alle Services");
   const [sortBy, setSortBy] = useState("empfohlen");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -112,12 +126,13 @@ const Companies = () => {
 
   useEffect(() => {
     // Track filter changes
-    if (searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen") {
+    if (searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen" || selectedService !== "Alle Services") {
       analytics.trackFilterApplied({
         search: searchTerm,
         canton: selectedCanton,
         rating: selectedRating,
         priceLevel: selectedPriceLevel,
+        service: selectedService,
         sortBy: sortBy,
       });
     }
@@ -130,7 +145,7 @@ const Companies = () => {
     }, 150);
     
     return () => clearTimeout(timer);
-  }, [companies, searchTerm, selectedCanton, selectedRating, selectedPriceLevel, sortBy]);
+  }, [companies, searchTerm, selectedCanton, selectedRating, selectedPriceLevel, selectedService, sortBy]);
 
   const fetchCompanies = async () => {
     setError(null);
@@ -198,6 +213,13 @@ const Companies = () => {
       filtered = filtered.filter((company) => company.price_level === selectedPriceLevel);
     }
 
+    // Service type filter
+    if (selectedService !== "Alle Services") {
+      filtered = filtered.filter((company) => 
+        company.services.some(s => s.toLowerCase().includes(selectedService.toLowerCase()))
+      );
+    }
+
     // Sorting
     switch (sortBy) {
       case "rating":
@@ -222,10 +244,11 @@ const Companies = () => {
     setSelectedCanton("Alle Kantone");
     setSelectedRating("Alle");
     setSelectedPriceLevel("Alle Preisstufen");
+    setSelectedService("Alle Services");
     setSortBy("empfohlen");
   };
 
-  const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen";
+  const hasActiveFilters = searchTerm || selectedCanton !== "Alle Kantone" || selectedRating !== "Alle" || selectedPriceLevel !== "Alle Preisstufen" || selectedService !== "Alle Services";
 
   // Calculate company counts per canton
   const cantonCounts = useMemo(() => {
@@ -317,6 +340,27 @@ const Companies = () => {
             {PRICE_LEVELS.map((level) => (
               <SelectItem key={level} value={level}>
                 {level === "Alle Preisstufen" ? level : level.charAt(0).toUpperCase() + level.slice(1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Service Type Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+          Service-Typ
+          <OnboardingHint content="Filtern Sie nach angebotenen Services." />
+        </label>
+        <Select value={selectedService} onValueChange={setSelectedService}>
+          <SelectTrigger className="h-12">
+            <CheckCircle2 className="w-4 h-4 mr-2" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SERVICE_TYPES.map((service) => (
+              <SelectItem key={service} value={service}>
+                {service}
               </SelectItem>
             ))}
           </SelectContent>
@@ -772,6 +816,15 @@ const Companies = () => {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </section>
+
+        {/* Canton Comparison Widget */}
+        <section className="py-12 md:py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl mx-auto">
+              <CantonComparisonWidget />
             </div>
           </div>
         </section>
