@@ -115,15 +115,43 @@ export const PremiumServicesGrid = () => {
           </p>
         </motion.div>
         
-        {/* Services Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Services Grid with Staggered Cascade Animation */}
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.1
+              }
+            }
+          }}
+        >
           {services.map((service, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.05 }}
+              variants={{
+                hidden: { 
+                  opacity: 0, 
+                  y: 40,
+                  scale: 0.95
+                },
+                visible: { 
+                  opacity: 1, 
+                  y: 0,
+                  scale: 1,
+                  transition: {
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15,
+                    mass: 0.8
+                  }
+                }
+              }}
             >
               <Link 
                 to={service.link}
@@ -134,15 +162,22 @@ export const PremiumServicesGrid = () => {
                   <img 
                     src={service.image} 
                     alt={service.title}
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                   
                   {/* Badge */}
                   {service.badge && (
-                    <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white ${service.badgeColor}`}>
+                    <motion.span 
+                      className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white ${service.badgeColor}`}
+                      initial={{ scale: 0, opacity: 0 }}
+                      whileInView={{ scale: 1, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + idx * 0.1, type: "spring", stiffness: 200 }}
+                    >
                       {service.badge}
-                    </span>
+                    </motion.span>
                   )}
                   
                   {/* Title on Image */}
@@ -166,7 +201,7 @@ export const PremiumServicesGrid = () => {
               </Link>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
         
         {/* Stats Row */}
         <motion.div
