@@ -13,6 +13,13 @@ import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 
+// New Enhanced Components
+import { LiveActivityFeed } from "@/components/LiveActivityFeed";
+import { InstantPriceEstimator } from "@/components/InstantPriceEstimator";
+import { MoveTimeline } from "@/components/MoveTimeline";
+import { RecentlyViewedCompanies } from "@/components/RecentlyViewedCompanies";
+import { MoveProgressTracker } from "@/components/MoveProgressTracker";
+import { QuickActionsWidget } from "@/components/QuickActionsWidget";
 
 const Index = () => {
   const faqItems = [
@@ -50,9 +57,42 @@ const Index = () => {
       
       <main id="main-content" role="main">
         <PremiumHeroSection />
+        
+        {/* Quick Actions Widget */}
+        <section className="container mx-auto px-4 -mt-6 relative z-10">
+          <QuickActionsWidget />
+        </section>
+        
         <PremiumSocialProof />
+        
+        {/* Enhanced Tools Section */}
+        <section className="py-12 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold">Ihre Umzugs-Tools</h2>
+              <p className="text-muted-foreground mt-2">Alles was Sie für Ihren Umzug brauchen</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              <InstantPriceEstimator />
+              <LiveActivityFeed />
+              <MoveProgressTracker />
+            </div>
+          </div>
+        </section>
+        
         <PremiumHowItWorks />
         <PremiumAIShowcase />
+        
+        {/* Recently Viewed & Timeline Section */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-6">
+              <RecentlyViewedCompanies />
+              <MoveTimeline />
+            </div>
+          </div>
+        </section>
+        
         <PremiumServicesGrid />
         <PremiumRegions />
         <PremiumCostExamples />
