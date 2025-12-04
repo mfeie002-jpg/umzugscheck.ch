@@ -472,3 +472,50 @@
   background: hsl(var(--uc-blue) / 0.2);
   color: hsl(var(--uc-blue));
 }
+
+/* Safe area padding for mobile devices with notches/home indicators */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Mobile bottom navigation spacing */
+@media (max-width: 767px) {
+  .has-bottom-nav {
+    padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  
+  main {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent text selection on interactive elements on mobile */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling for pull-to-refresh */
+.overscroll-contain {
+  overscroll-behavior: contain;
+}
+
+/* Active state for touch devices */
+@media (hover: none) {
+  .active\:scale-95:active {
+    transform: scale(0.95);
+  }
+}
