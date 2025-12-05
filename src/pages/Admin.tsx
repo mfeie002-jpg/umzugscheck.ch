@@ -6,12 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Home, Settings, FileText, MapPin, HelpCircle, DollarSign, Award, LogOut, Building2, Users, CreditCard, BarChart3 } from "lucide-react";
+import { Home, Settings, FileText, MapPin, HelpCircle, DollarSign, Award, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Download, Target } from "lucide-react";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
 import { ProviderManagement } from "@/components/admin/ProviderManagement";
 import { LeadManagement } from "@/components/admin/LeadManagement";
 import { PaymentManagement } from "@/components/admin/PaymentManagement";
 import { AdminStatistics } from "@/components/admin/AdminStatistics";
+import { EmailTemplateEditor } from "@/components/admin/EmailTemplateEditor";
+import { LeadQualityDashboard } from "@/components/admin/LeadQualityDashboard";
+import { RevenueAnalytics } from "@/components/admin/RevenueAnalytics";
+import { LeadExport } from "@/components/admin/LeadExport";
 import { supabase } from "@/integrations/supabase/client";
 
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
@@ -181,26 +185,38 @@ export default function Admin() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-5 w-full">
+          <TabsList className="grid grid-cols-4 lg:grid-cols-8 w-full gap-1">
             <TabsTrigger value="dashboard">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Dashboard
+              <BarChart3 className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Dashboard</span>
             </TabsTrigger>
             <TabsTrigger value="providers">
-              <Building2 className="h-4 w-4 mr-2" />
-              Anbieter
+              <Building2 className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Anbieter</span>
             </TabsTrigger>
             <TabsTrigger value="leads">
-              <Users className="h-4 w-4 mr-2" />
-              Leads
+              <Users className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Leads</span>
+            </TabsTrigger>
+            <TabsTrigger value="quality">
+              <Target className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Qualität</span>
             </TabsTrigger>
             <TabsTrigger value="payments">
-              <CreditCard className="h-4 w-4 mr-2" />
-              Zahlungen
+              <CreditCard className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Zahlungen</span>
+            </TabsTrigger>
+            <TabsTrigger value="revenue">
+              <DollarSign className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Umsatz</span>
+            </TabsTrigger>
+            <TabsTrigger value="emails">
+              <Mail className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">E-Mails</span>
             </TabsTrigger>
             <TabsTrigger value="homepage">
-              <Home className="h-4 w-4 mr-2" />
-              Content
+              <Home className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Content</span>
             </TabsTrigger>
           </TabsList>
 
@@ -213,11 +229,26 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="leads">
-            <LeadManagement />
+            <div className="space-y-6">
+              <LeadManagement />
+              <LeadExport />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="quality">
+            <LeadQualityDashboard />
           </TabsContent>
 
           <TabsContent value="payments">
             <PaymentManagement />
+          </TabsContent>
+
+          <TabsContent value="revenue">
+            <RevenueAnalytics />
+          </TabsContent>
+
+          <TabsContent value="emails">
+            <EmailTemplateEditor />
           </TabsContent>
 
           <TabsContent value="homepage">
