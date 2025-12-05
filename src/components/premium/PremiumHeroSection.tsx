@@ -133,27 +133,27 @@ export const PremiumHeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 md:from-background/85 via-background/70 md:via-background/60 to-background/50 md:to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/50 md:from-background/40 via-transparent to-background/70 md:to-background/60" />
       
-      {/* Großes Checkmark LINKS - Brand Icon */}
+      {/* Großes Checkmark LINKS - Brand Icon - DOMINANT VERSION */}
       <motion.div
         initial={{ opacity: 0, scale: 0.5, rotate: -25 }}
         animate={{ opacity: 1, scale: 1, rotate: 0 }}
         transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
-        className="absolute left-[-2%] md:left-[1%] lg:left-[3%] top-[20%] md:top-[25%] z-[1] pointer-events-none"
+        className="absolute left-[-5%] md:left-[0%] lg:left-[2%] top-[15%] md:top-[20%] z-[1] pointer-events-none"
       >
-        {/* Glow Effect hinter dem Checkmark */}
+        {/* Starker Glow Effect */}
         <motion.div
-          className="absolute inset-0 blur-3xl"
+          className="absolute inset-0 blur-[80px]"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
+          animate={{ opacity: 0.5 }}
           transition={{ duration: 1.5, delay: 0.5 }}
         >
-          <Check className="w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] md:w-[280px] md:h-[280px] lg:w-[350px] lg:h-[350px] text-primary stroke-[1.5]" />
+          <Check className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] text-primary stroke-[2]" />
         </motion.div>
         
-        {/* Hauptcheckmark */}
+        {/* Hauptcheckmark - GRÖSSER & STÄRKER */}
         <motion.div
           animate={{ 
-            y: [0, -8, 0],
+            y: [0, -12, 0],
           }}
           transition={{ 
             duration: 4, 
@@ -161,17 +161,27 @@ export const PremiumHeroSection = () => {
             ease: "easeInOut" 
           }}
         >
-          <Check className="w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] md:w-[280px] md:h-[280px] lg:w-[350px] lg:h-[350px] text-primary/15 stroke-[1.5]" />
+          <Check className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] text-primary/30 stroke-[2]" />
         </motion.div>
         
-        {/* Kleines sekundäres Checkmark */}
+        {/* Zweites Medium Checkmark */}
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="absolute -bottom-4 -right-4 md:bottom-0 md:right-0"
+          className="absolute bottom-0 right-0 md:bottom-5 md:right-5"
         >
-          <Check className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] md:w-[100px] md:h-[100px] text-secondary/20 stroke-[2]" />
+          <Check className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] md:w-[140px] md:h-[140px] text-primary/40 stroke-[2.5]" />
+        </motion.div>
+        
+        {/* Drittes kleines Checkmark oben */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 1 }}
+          className="absolute top-10 right-0 md:top-20 md:right-10"
+        >
+          <Check className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[80px] md:h-[80px] text-secondary/35 stroke-[2]" />
         </motion.div>
       </motion.div>
       
