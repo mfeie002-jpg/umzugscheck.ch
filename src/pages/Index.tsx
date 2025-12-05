@@ -38,6 +38,40 @@ import { InteractiveSwissMap } from "@/components/homepage/InteractiveSwissMap";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 
+// Premium Components
+import {
+  PremiumLiveChat,
+  PremiumPriceAlert,
+  PremiumSavingsCalculator,
+  PremiumMovingTimeline,
+  PremiumCompanyComparison,
+  PremiumSuccessStories,
+  PremiumStatistics,
+  PremiumUrgentBanner,
+  PremiumExitIntent,
+  PremiumTrustPilot,
+  PremiumVideoHero,
+  PremiumBeforeAfter,
+  PremiumPartnerBadges,
+  PremiumGuarantee,
+  PremiumCountdown,
+  PremiumRecentActivity,
+  PremiumMobileAppBanner,
+  PremiumQuickQuote,
+  PremiumFloatingCTA,
+  PremiumSocialShare,
+} from "@/components/premium";
+
+// Feature Components
+import {
+  LiveActivityFeed,
+  AIChatAssistant,
+  TrustMetrics,
+  SeasonalInsights,
+  MovingChecklist,
+  NewsletterSignup,
+} from "@/components/features";
+
 const Index = () => {
   useSmoothScroll();
   useKeyboardNavigation();
@@ -82,46 +116,125 @@ const Index = () => {
         </Helmet>
 
         <SkipToContent />
+        <PremiumUrgentBanner />
         <ScrollProgressBar />
         <StickyCTABar />
         <Header />
 
         <main id="main-content" role="main" className="pb-20 md:pb-0">
           <HeroSection />
+          
+          {/* Quick Quote Box */}
+          <div className="container mx-auto px-4">
+            <PremiumQuickQuote />
+          </div>
+
+          <PremiumTrustPilot />
           <PartnerLogos />
           <LiveActivityBanner />
           <GuaranteeBadges />
+          
+          {/* Statistics Section */}
+          <PremiumStatistics />
+          
           <TrustBadges />
           <SocialProofSection />
-          <CompanyLogosCarousel />
+          
+          {/* How It Works Video */}
+          <PremiumVideoHero />
+          
           <HowItWorksSection />
+          
+          {/* Savings Calculator */}
+          <PremiumSavingsCalculator />
+          
+          <CompanyLogosCarousel />
           <ServicesSection />
+          
+          {/* Before/After Comparison */}
+          <PremiumBeforeAfter />
+          
           <ServiceComparisonTable />
+          
+          {/* Company Comparison Table */}
+          <PremiumCompanyComparison />
+          
           <CostExamplesSection />
+          
+          {/* Moving Timeline */}
+          <PremiumMovingTimeline />
+          
           <CompanyHighlight />
+          
+          {/* Success Stories */}
+          <PremiumSuccessStories />
+          
           <VideoTestimonial />
           <TestimonialsSection />
+          
           <div className="container mx-auto px-4 py-8">
             <TestimonialRatingBreakdown />
           </div>
+          
+          {/* Countdown Offer */}
+          <PremiumCountdown />
+          
           <RegionalAvailabilityMap />
+          
           <div className="container mx-auto px-4 py-12">
             <InteractiveSwissMap />
           </div>
+          
           <RegionsSection />
+          
+          {/* Guarantee Section */}
+          <PremiumGuarantee />
+          
           <USPSection />
+          
+          {/* Price Alert */}
+          <PremiumPriceAlert />
+          
           <MovingTipsCarousel />
+          
+          {/* Seasonal Insights */}
+          <div className="container mx-auto px-4 py-12">
+            <SeasonalInsights />
+          </div>
+          
           <SeasonalBanner />
+          
+          {/* Mobile App Banner */}
+          <PremiumMobileAppBanner />
+          
           <CTASection />
+          
+          {/* Social Share */}
+          <PremiumSocialShare />
+          
           <FAQSection />
+          
           <NewsletterSection />
+          
+          {/* Trust Metrics */}
+          <div className="container mx-auto px-4 py-12">
+            <TrustMetrics />
+          </div>
         </main>
 
         <SimplifiedFooter />
+        
+        {/* Floating Elements */}
         <FloatingElements />
         <MobileBottomNav />
         <BackToTop />
         <CookieConsent />
+        
+        {/* Premium Interactive Elements */}
+        <PremiumLiveChat />
+        <PremiumRecentActivity />
+        <PremiumFloatingCTA />
+        <PremiumExitIntent />
       </div>
     </ErrorBoundary>
   );
