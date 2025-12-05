@@ -64,3 +64,9 @@ verify_jwt = false
 
 [functions.availability-notification]
 verify_jwt = false
+
+[functions.send-review-notification]
+verify_jwt = false
+
+[functions.send-review-reminder]
+verify_jwt = false
