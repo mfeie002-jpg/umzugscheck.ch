@@ -23,6 +23,7 @@ import { NotificationCenter } from "@/components/provider/NotificationCenter";
 import { CompetitorPriceAlerts } from "@/components/provider/CompetitorPriceAlerts";
 import { WeatherRecommendations } from "@/components/provider/WeatherRecommendations";
 import { PeakHourOptimization } from "@/components/provider/PeakHourOptimization";
+import { OnboardingWizard } from "@/components/provider/OnboardingWizard";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -86,6 +87,9 @@ const ProviderDashboard = () => {
       <Helmet>
         <title>Dashboard - {provider.company_name} | Umzugscheck.ch</title>
       </Helmet>
+
+      {/* Onboarding Wizard */}
+      <OnboardingWizard />
 
       <main className="flex-1 py-8">
         <div className="container max-w-6xl mx-auto px-4">
