@@ -19,6 +19,7 @@ import { MLPredictions } from "@/components/provider/MLPredictions";
 import { BiddingManagement } from "@/components/provider/BiddingManagement";
 import { PricingSettings } from "@/components/provider/PricingSettings";
 import { ReviewStatistics } from "@/components/provider/ReviewStatistics";
+import { NotificationCenter } from "@/components/provider/NotificationCenter";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -257,16 +258,21 @@ const ProviderDashboard = () => {
           {/* Profile Optimization and Competitor Analysis */}
           {isApproved && (
             <div className="space-y-8 mb-8">
-              <Tabs defaultValue="optimization" className="w-full">
-                <TabsList className="grid w-full grid-cols-7 gap-1">
-                  <TabsTrigger value="optimization">Profil-Optimierung</TabsTrigger>
+              <Tabs defaultValue="notifications" className="w-full">
+                <TabsList className="grid w-full grid-cols-8 gap-1">
+                  <TabsTrigger value="notifications">Benachrichtigungen</TabsTrigger>
+                  <TabsTrigger value="optimization">Profil</TabsTrigger>
                   <TabsTrigger value="competitors">Wettbewerb</TabsTrigger>
                   <TabsTrigger value="reviews">Bewertungen</TabsTrigger>
-                  <TabsTrigger value="pricing">Preise & Sichtbarkeit</TabsTrigger>
+                  <TabsTrigger value="pricing">Preise</TabsTrigger>
                   <TabsTrigger value="bidding">Werbung</TabsTrigger>
                   <TabsTrigger value="analytics">Analytics</TabsTrigger>
                   <TabsTrigger value="ml">KI</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="notifications">
+                  <NotificationCenter providerId={provider.id} />
+                </TabsContent>
 
                 <TabsContent value="optimization">
                   <ProfileOptimizationSuggestions provider={{
