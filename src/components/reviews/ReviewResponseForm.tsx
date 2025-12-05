@@ -64,7 +64,6 @@ export const ReviewResponseForm = ({
       }
 
       if (existingResponse) {
-        // Update existing response
         const { error } = await supabase
           .from("review_responses")
           .update({
@@ -79,7 +78,6 @@ export const ReviewResponseForm = ({
           description: "Ihre Antwort wurde erfolgreich aktualisiert.",
         });
       } else {
-        // Create new response
         const { error } = await supabase
           .from("review_responses")
           .insert({
