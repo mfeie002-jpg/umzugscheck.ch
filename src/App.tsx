@@ -104,6 +104,7 @@ import OffertenOptimized from "./pages/OffertenOptimized";
 import Tools from "./pages/Tools";
 import UserDashboard from "./pages/UserDashboard";
 import CompanyComparison from "./pages/CompanyComparison";
+import UmzugsfirmenPage from "./pages/UmzugsfirmenPage";
 import MobileBottomNav from "./components/MobileBottomNav";
 
 
@@ -231,6 +232,7 @@ const App = () => (
             <Route path="/firmen" element={<Companies />} />
             <Route path="/umzugsfirmen" element={<Companies />} />
             <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
+            <Route path="/umzugsfirmen-suche" element={<UmzugsfirmenPage />} />
             <Route path="/firmen/:id" element={<CompanyProfile />} />
             <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
             <Route path="/vergleichen" element={<Compare />} />
