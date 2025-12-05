@@ -24,6 +24,15 @@ import { CompetitorPriceAlerts } from "@/components/provider/CompetitorPriceAler
 import { WeatherRecommendations } from "@/components/provider/WeatherRecommendations";
 import { PeakHourOptimization } from "@/components/provider/PeakHourOptimization";
 import { OnboardingWizard } from "@/components/provider/OnboardingWizard";
+import { AvailabilityCalendarEnhanced } from "@/components/provider/AvailabilityCalendarEnhanced";
+import { ResponseTimeTracker } from "@/components/provider/ResponseTimeTracker";
+import { LeadConversionFunnel } from "@/components/provider/LeadConversionFunnel";
+import { QuickActionsMenu } from "@/components/provider/QuickActionsMenu";
+import { TeamManagement } from "@/components/provider/TeamManagement";
+import { CertificateBadges } from "@/components/provider/CertificateBadges";
+import { PerformanceScoreCard } from "@/components/provider/PerformanceScoreCard";
+import { LeadSourceAnalytics } from "@/components/provider/LeadSourceAnalytics";
+import { CommunicationHub } from "@/components/provider/CommunicationHub";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -274,12 +283,20 @@ const ProviderDashboard = () => {
                   <TabsTrigger value="pricing">Preise</TabsTrigger>
                   <TabsTrigger value="bidding">Werbung</TabsTrigger>
                 </TabsList>
-                <TabsList className="grid w-full grid-cols-5 gap-1">
+                <TabsList className="grid w-full grid-cols-6 gap-1">
                   <TabsTrigger value="analytics">Analytics</TabsTrigger>
                   <TabsTrigger value="ml">KI</TabsTrigger>
+                  <TabsTrigger value="calendar">Kalender</TabsTrigger>
+                  <TabsTrigger value="funnel">Funnel</TabsTrigger>
+                  <TabsTrigger value="team">Team</TabsTrigger>
+                  <TabsTrigger value="badges">Zertifikate</TabsTrigger>
+                </TabsList>
+                <TabsList className="grid w-full grid-cols-5 gap-1 mt-1">
                   <TabsTrigger value="price-alerts">Preisalarme</TabsTrigger>
                   <TabsTrigger value="weather">Wetter</TabsTrigger>
                   <TabsTrigger value="peak-hours">Peak-Hours</TabsTrigger>
+                  <TabsTrigger value="sources">Quellen</TabsTrigger>
+                  <TabsTrigger value="messages">Nachrichten</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="notifications">
@@ -363,7 +380,42 @@ const ProviderDashboard = () => {
                 <TabsContent value="peak-hours">
                   <PeakHourOptimization providerId={provider.id} />
                 </TabsContent>
+
+                <TabsContent value="calendar">
+                  <AvailabilityCalendarEnhanced providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="funnel">
+                  <div className="grid lg:grid-cols-2 gap-6">
+                    <LeadConversionFunnel providerId={provider.id} />
+                    <div className="space-y-6">
+                      <ResponseTimeTracker providerId={provider.id} />
+                      <PerformanceScoreCard providerId={provider.id} />
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="team">
+                  <TeamManagement providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="badges">
+                  <CertificateBadges providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="sources">
+                  <LeadSourceAnalytics providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="messages">
+                  <CommunicationHub providerId={provider.id} />
+                </TabsContent>
               </Tabs>
+
+              {/* Quick Actions Sidebar */}
+              <div className="mt-6">
+                <QuickActionsMenu providerId={provider.id} />
+              </div>
             </div>
           )}
 
