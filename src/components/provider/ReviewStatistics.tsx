@@ -4,18 +4,33 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Star, TrendingUp, TrendingDown, MessageSquare, ThumbsUp, Clock, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ReviewWithResponse } from "@/components/reviews/ReviewWithResponse";
+
+interface ReviewWithProfile {
+  id: string;
+  rating: number;
+  title: string;
+  comment: string;
+  created_at: string;
+  user_id: string;
+  profiles?: {
+    full_name: string | null;
+  };
+}
+
+interface ReviewResponse {
+  id: string;
+  review_id: string;
+  response: string;
+  created_at: string;
+}
 
 interface ReviewStats {
   totalReviews: number;
   averageRating: number;
   ratingDistribution: { [key: number]: number };
-  recentReviews: Array<{
-    id: string;
-    rating: number;
-    title: string;
-    comment: string;
-    created_at: string;
-  }>;
+  recentReviews: ReviewWithProfile[];
+  reviewResponses: { [key: string]: ReviewResponse };
   trend: 'up' | 'down' | 'stable';
   responseRate: number;
   avgResponseTime: number;
@@ -36,14 +51,32 @@ export const ReviewStatistics = ({ providerId, companyId }: ReviewStatisticsProp
 
   const fetchReviewStats = async () => {
     try {
-      // Fetch reviews for this company/provider
+      // Fetch reviews for this company/provider with profiles
       const { data: reviews, error } = await supabase
         .from('reviews')
-        .select('*')
+        .select(`
+          *,
+          profiles:user_id (
+            full_name
+          )
+        `)
         .eq('company_id', companyId || providerId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+
+      // Fetch all responses for these reviews
+      const reviewIds = reviews?.map(r => r.id) || [];
+      const { data: responses } = await supabase
+        .from('review_responses')
+        .select('*')
+        .in('review_id', reviewIds);
+
+      // Map responses by review_id
+      const reviewResponses: { [key: string]: ReviewResponse } = {};
+      responses?.forEach(r => {
+        reviewResponses[r.review_id] = r;
+      });
 
       // Calculate statistics
       const totalReviews = reviews?.length || 0;
@@ -60,13 +93,15 @@ export const ReviewStatistics = ({ providerId, companyId }: ReviewStatisticsProp
         }
       });
 
-      // Recent reviews (last 5)
-      const recentReviews = reviews?.slice(0, 5).map(r => ({
+      // Recent reviews (last 10 for response management)
+      const recentReviews: ReviewWithProfile[] = reviews?.slice(0, 10).map(r => ({
         id: r.id,
         rating: r.rating,
         title: r.title,
         comment: r.comment,
-        created_at: r.created_at
+        created_at: r.created_at,
+        user_id: r.user_id,
+        profiles: r.profiles as { full_name: string | null } | undefined
       })) || [];
 
       // Calculate trend (compare last month to previous month)
@@ -91,14 +126,8 @@ export const ReviewStatistics = ({ providerId, companyId }: ReviewStatisticsProp
       if (lastMonthAvg > previousMonthAvg + 0.2) trend = 'up';
       else if (lastMonthAvg < previousMonthAvg - 0.2) trend = 'down';
 
-      // Fetch response rate from review_responses
-      const { data: responses } = await supabase
-        .from('review_responses')
-        .select('review_id')
-        .eq('company_id', companyId || providerId);
-
       const responseRate = totalReviews > 0 
-        ? ((responses?.length || 0) / totalReviews) * 100 
+        ? (Object.keys(reviewResponses).length / totalReviews) * 100 
         : 0;
 
       setStats({
@@ -106,6 +135,7 @@ export const ReviewStatistics = ({ providerId, companyId }: ReviewStatisticsProp
         averageRating: Math.round(averageRating * 10) / 10,
         ratingDistribution,
         recentReviews,
+        reviewResponses,
         trend,
         responseRate: Math.round(responseRate),
         avgResponseTime: 24 // Placeholder - would calculate from actual response times
@@ -225,11 +255,11 @@ export const ReviewStatistics = ({ providerId, companyId }: ReviewStatisticsProp
         </CardContent>
       </Card>
 
-      {/* Recent Reviews */}
+      {/* Reviews with Response Management */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Neueste Bewertungen</CardTitle>
-          <CardDescription>Die letzten 5 Kundenbewertungen</CardDescription>
+          <CardTitle className="text-lg">Bewertungen verwalten</CardTitle>
+          <CardDescription>Antworten Sie auf Kundenbewertungen</CardDescription>
         </CardHeader>
         <CardContent>
           {stats.recentReviews.length === 0 ? (
@@ -239,30 +269,14 @@ export const ReviewStatistics = ({ providerId, companyId }: ReviewStatisticsProp
           ) : (
             <div className="space-y-4">
               {stats.recentReviews.map(review => (
-                <div key={review.id} className="border-b last:border-0 pb-4 last:pb-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map(star => (
-                          <Star
-                            key={star}
-                            className={`h-4 w-4 ${star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted'}`}
-                          />
-                        ))}
-                      </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {review.rating.toFixed(1)}
-                      </Badge>
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(review.created_at).toLocaleDateString('de-CH')}
-                    </span>
-                  </div>
-                  <h4 className="font-medium text-sm">{review.title}</h4>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                    {review.comment}
-                  </p>
-                </div>
+                <ReviewWithResponse
+                  key={review.id}
+                  review={review}
+                  companyId={companyId || providerId}
+                  existingResponse={stats.reviewResponses[review.id]}
+                  canRespond={true}
+                  onResponseUpdated={fetchReviewStats}
+                />
               ))}
             </div>
           )}
