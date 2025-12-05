@@ -226,12 +226,12 @@ export const PremiumHeroSection = () => {
           </motion.div>
         </motion.div>
         
-        {/* Viertes Checkmark - Unten links - ROT */}
+        {/* Viertes Checkmark - Unten rechts - ROT */}
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 1.2 }}
-          className="absolute bottom-[-30px] left-[30%] md:bottom-[-50px] md:left-[35%]"
+          className="absolute bottom-[-30px] left-[55%] md:bottom-[-50px] md:left-[60%]"
         >
           <motion.div
             animate={{ 
