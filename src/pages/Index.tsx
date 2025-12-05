@@ -34,6 +34,7 @@ import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { GuaranteeBadges } from "@/components/homepage/GuaranteeBadges";
 import { MovingTipsCarousel } from "@/components/homepage/MovingTipsCarousel";
 import { CompanyHighlight } from "@/components/homepage/CompanyHighlight";
+import { InteractiveSwissMap } from "@/components/homepage/InteractiveSwissMap";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 
@@ -104,6 +105,9 @@ const Index = () => {
             <TestimonialRatingBreakdown />
           </div>
           <RegionalAvailabilityMap />
+          <div className="container mx-auto px-4 py-12">
+            <InteractiveSwissMap />
+          </div>
           <RegionsSection />
           <USPSection />
           <MovingTipsCarousel />
