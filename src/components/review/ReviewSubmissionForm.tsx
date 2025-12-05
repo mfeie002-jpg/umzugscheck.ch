@@ -49,6 +49,21 @@ export const ReviewSubmissionForm = ({ companyId, companyName, onSuccess }: Revi
 
       if (error) throw error;
 
+      // Send email notification to company
+      try {
+        await supabase.functions.invoke('send-review-notification', {
+          body: {
+            companyId,
+            companyName,
+            rating,
+            title: title.trim(),
+            comment: comment.trim()
+          }
+        });
+      } catch (notifyError) {
+        console.log('Notification skipped:', notifyError);
+      }
+
       toast.success("Vielen Dank für Ihre Bewertung!");
       setRating(0);
       setTitle("");
