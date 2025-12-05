@@ -28,7 +28,7 @@ export const PremiumFloatingCTA = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
-          className="fixed bottom-24 right-4 z-40 md:bottom-8"
+          className="fixed bottom-20 right-4 z-40 hidden md:block"
         >
           <div className="bg-card rounded-2xl shadow-2xl border p-4 max-w-[300px]">
             <button

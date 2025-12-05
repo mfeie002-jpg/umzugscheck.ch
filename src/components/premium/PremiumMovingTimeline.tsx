@@ -55,7 +55,7 @@ export const PremiumMovingTimeline = () => {
             {/* Timeline line */}
             <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-orange-500 to-green-500 rounded-full" />
 
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {timelineSteps.map((step, index) => (
                 <motion.div
                   key={step.title}
@@ -65,21 +65,21 @@ export const PremiumMovingTimeline = () => {
                   transition={{ delay: index * 0.1 }}
                   className="relative"
                 >
-                  <div className="bg-card rounded-2xl p-6 shadow-lg border h-full">
+                  <div className="bg-card rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border h-full">
                     {/* Icon */}
-                    <div className={`w-14 h-14 ${step.color} rounded-xl flex items-center justify-center mb-4 shadow-lg`}>
-                      <step.icon className="w-7 h-7 text-white" />
+                    <div className={`w-10 h-10 md:w-14 md:h-14 ${step.color} rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 shadow-lg`}>
+                      <step.icon className="w-5 h-5 md:w-7 md:h-7 text-white" />
                     </div>
 
                     {/* Timeline dot for desktop */}
                     <div className={`hidden md:block absolute top-[5.5rem] left-1/2 -translate-x-1/2 w-4 h-4 ${step.color} rounded-full border-4 border-background shadow-lg`} />
 
-                    <h3 className="font-bold text-lg mb-3">{step.title}</h3>
+                    <h3 className="font-bold text-sm md:text-lg mb-2 md:mb-3">{step.title}</h3>
 
-                    <ul className="space-y-2">
+                    <ul className="space-y-1 md:space-y-2">
                       {step.tasks.map((task) => (
-                        <li key={task} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <li key={task} className="flex items-start gap-1.5 md:gap-2 text-xs md:text-sm text-muted-foreground">
+                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500 mt-0.5 flex-shrink-0" />
                           <span>{task}</span>
                         </li>
                       ))}

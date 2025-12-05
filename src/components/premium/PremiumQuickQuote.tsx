@@ -21,7 +21,7 @@ export const PremiumQuickQuote = () => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="bg-card rounded-3xl shadow-2xl border p-6 md:p-8 max-w-4xl mx-auto -mt-16 relative z-20"
+      className="bg-card rounded-2xl md:rounded-3xl shadow-2xl border p-4 md:p-8 max-w-4xl mx-auto -mt-8 md:-mt-16 relative z-20"
     >
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -33,7 +33,7 @@ export const PremiumQuickQuote = () => {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <div className="relative">
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
           <Input

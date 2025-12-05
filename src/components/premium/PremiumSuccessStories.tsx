@@ -75,7 +75,7 @@ export const PremiumSuccessStories = () => {
             >
               <div className="grid md:grid-cols-2">
                 {/* Image */}
-                <div className="relative h-64 md:h-auto">
+                <div className="relative h-48 md:h-auto">
                   <img
                     src={stories[current].image}
                     alt={stories[current].name}
@@ -96,9 +96,9 @@ export const PremiumSuccessStories = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-8 flex flex-col justify-center">
-                  <Quote className="w-12 h-12 text-primary/20 mb-4" />
-                  <p className="text-lg md:text-xl mb-6 leading-relaxed">
+                <div className="p-5 md:p-8 flex flex-col justify-center">
+                  <Quote className="w-8 h-8 md:w-12 md:h-12 text-primary/20 mb-3 md:mb-4" />
+                  <p className="text-base md:text-xl mb-4 md:mb-6 leading-relaxed">
                     "{stories[current].quote}"
                   </p>
 
