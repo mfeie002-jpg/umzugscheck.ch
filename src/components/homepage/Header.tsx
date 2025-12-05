@@ -1,47 +1,205 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ChevronDown, Calculator, Building2, Sparkles, MapPin, FileText, Users, Truck, Trash2, Package, Sofa, Home, Briefcase, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "Preisrechner", href: "/rechner", hasDropdown: true },
-  { label: "Umzugsfirmen", href: "/umzugsfirmen", hasDropdown: true },
-  { label: "Services", href: "/dienstleistungen", hasDropdown: true },
-  { label: "Regionen", href: "/regionen", hasDropdown: true },
-  { label: "Ratgeber", href: "/ratgeber", hasDropdown: true },
-  { label: "Für Firmen", href: "/fuer-firmen", hasDropdown: true },
+  { 
+    label: "Preisrechner", 
+    href: "/rechner",
+    icon: Calculator,
+    dropdown: [
+      { label: "Umzugsrechner", href: "/rechner", icon: Truck },
+      { label: "Reinigungsrechner", href: "/reinigungsrechner", icon: Sparkles },
+      { label: "Entsorgungsrechner", href: "/entsorgungsrechner", icon: Trash2 },
+      { label: "Firmenumzug-Rechner", href: "/firmenumzug-rechner", icon: Briefcase },
+    ]
+  },
+  { 
+    label: "Umzugsfirmen", 
+    href: "/umzugsfirmen",
+    icon: Building2,
+    dropdown: [
+      { label: "Alle Umzugsfirmen", href: "/umzugsfirmen", icon: Building2 },
+      { label: "Beste Umzugsfirmen", href: "/beste-umzugsfirma", icon: Sparkles },
+      { label: "Günstige Umzugsfirmen", href: "/guenstige-umzugsfirma", icon: Package },
+    ]
+  },
+  { 
+    label: "Services", 
+    href: "/dienstleistungen",
+    icon: Package,
+    dropdown: [
+      { label: "Privatumzug", href: "/privatumzug", icon: Home },
+      { label: "Firmenumzug", href: "/firmenumzug", icon: Briefcase },
+      { label: "Reinigung", href: "/reinigung", icon: Sparkles },
+      { label: "Entsorgung & Räumung", href: "/entsorgung", icon: Trash2 },
+      { label: "Möbelmontage", href: "/moebelmontage", icon: Sofa },
+      { label: "Einlagerung", href: "/lagerung", icon: Package },
+      { label: "Internationale Umzüge", href: "/international", icon: Globe },
+    ]
+  },
+  { 
+    label: "Regionen", 
+    href: "/regionen",
+    icon: MapPin,
+    dropdown: [
+      { label: "Zürich", href: "/zuerich", icon: MapPin },
+      { label: "Bern", href: "/bern", icon: MapPin },
+      { label: "Basel", href: "/basel", icon: MapPin },
+      { label: "Luzern", href: "/luzern", icon: MapPin },
+      { label: "Aargau", href: "/aargau", icon: MapPin },
+      { label: "St. Gallen", href: "/st-gallen", icon: MapPin },
+      { label: "Alle Regionen", href: "/regionen", icon: MapPin },
+    ]
+  },
+  { 
+    label: "Ratgeber", 
+    href: "/ratgeber",
+    icon: FileText,
+    dropdown: [
+      { label: "Umzug Checkliste", href: "/ratgeber/checkliste", icon: FileText },
+      { label: "Umzugskosten", href: "/ratgeber/kosten", icon: Calculator },
+      { label: "Tipps & Tricks", href: "/ratgeber/tipps", icon: Sparkles },
+    ]
+  },
+  { 
+    label: "Für Firmen", 
+    href: "/fuer-firmen",
+    icon: Users,
+    dropdown: [
+      { label: "Anbieter werden", href: "/fuer-firmen", icon: Users },
+      { label: "Partner Login", href: "/login", icon: Building2 },
+    ]
+  },
 ];
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setActiveDropdown(null);
+  }, [location]);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur-lg border-b border-border shadow-soft">
+    <header className={cn(
+      "sticky top-0 z-50 w-full transition-all duration-300",
+      scrolled 
+        ? "bg-card/98 backdrop-blur-lg border-b border-border shadow-soft" 
+        : "bg-card/95 backdrop-blur-sm border-b border-transparent"
+    )}>
       <div className="container">
         <div className="flex items-center justify-between h-16 md:h-18">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          {/* Animated Logo */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <motion.div 
+              className="relative w-10 h-10 bg-secondary rounded-xl flex items-center justify-center shadow-cta overflow-hidden"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {/* Animated Check */}
+              <motion.svg 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none"
+                className="text-white relative z-10"
+              >
+                <motion.path
+                  d="M5 13l4 4L19 7"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
+              </motion.svg>
+              {/* Moving Box Animation */}
+              <motion.div 
+                className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-sm"
+                animate={{ 
+                  y: [0, -2, 0],
+                  rotate: [0, 5, 0]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            </motion.div>
             <div className="flex items-center">
-              <span className="text-xl font-bold text-primary">Umzugs</span>
-              <span className="text-xl font-bold text-secondary">check</span>
+              <span className="text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">Umzugs</span>
+              <span className="text-xl font-bold text-secondary group-hover:text-secondary/80 transition-colors">check</span>
               <span className="text-xl font-bold text-muted-foreground">.ch</span>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation with Dropdowns */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link
+              <div 
                 key={link.href}
-                to={link.href}
-                className="group flex items-center gap-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
+                className="relative"
+                onMouseEnter={() => setActiveDropdown(link.label)}
+                onMouseLeave={() => setActiveDropdown(null)}
               >
-                {link.label}
-                {link.hasDropdown && (
-                  <ChevronDown className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-                )}
-              </Link>
+                <Link
+                  to={link.href}
+                  className={cn(
+                    "group flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors rounded-lg",
+                    activeDropdown === link.label
+                      ? "text-foreground bg-muted/50"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                >
+                  {link.label}
+                  {link.dropdown && (
+                    <ChevronDown className={cn(
+                      "w-4 h-4 transition-transform",
+                      activeDropdown === link.label && "rotate-180"
+                    )} />
+                  )}
+                </Link>
+                
+                {/* Dropdown Menu */}
+                <AnimatePresence>
+                  {link.dropdown && activeDropdown === link.label && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full left-0 mt-1 w-56 bg-card rounded-xl border border-border shadow-premium p-2 z-50"
+                    >
+                      {link.dropdown.map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
+                        >
+                          <item.icon className="w-4 h-4 text-secondary" />
+                          {item.label}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
           </nav>
 
@@ -49,7 +207,7 @@ export const Header = () => {
           <div className="hidden lg:flex items-center gap-3">
             <Button
               asChild
-              className="bg-secondary/10 text-secondary hover:bg-secondary/20 font-semibold animate-pulse-subtle"
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-cta animate-pulse-subtle"
             >
               <Link to="/umzugsofferten">
                 Offerten erhalten
@@ -62,11 +220,10 @@ export const Header = () => {
             <Button
               asChild
               size="sm"
-              variant="secondary"
-              className="font-semibold"
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold"
             >
               <Link to="/umzugsofferten">
-                Offerten vergleichen
+                Offerten
               </Link>
             </Button>
             <Button
@@ -81,24 +238,62 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-card">
-          <nav className="container py-4 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className="flex items-center justify-between px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-                {link.hasDropdown && <ChevronDown className="w-4 h-4 opacity-50" />}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+      {/* Mobile Menu with Accordions */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden border-t border-border bg-card overflow-hidden"
+          >
+            <nav className="container py-4 space-y-1">
+              {navLinks.map((link) => (
+                <div key={link.href}>
+                  <button
+                    className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
+                    onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
+                  >
+                    <span className="flex items-center gap-2">
+                      <link.icon className="w-4 h-4" />
+                      {link.label}
+                    </span>
+                    {link.dropdown && (
+                      <ChevronDown className={cn(
+                        "w-4 h-4 transition-transform",
+                        activeDropdown === link.label && "rotate-180"
+                      )} />
+                    )}
+                  </button>
+                  
+                  <AnimatePresence>
+                    {link.dropdown && activeDropdown === link.label && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pl-6 space-y-1 overflow-hidden"
+                      >
+                        {link.dropdown.map((item) => (
+                          <Link
+                            key={item.href}
+                            to={item.href}
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <item.icon className="w-4 h-4 text-secondary" />
+                            {item.label}
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
