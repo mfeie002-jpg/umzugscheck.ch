@@ -133,6 +133,69 @@ export const PremiumHeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 md:from-background/85 via-background/70 md:via-background/60 to-background/50 md:to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/50 md:from-background/40 via-transparent to-background/70 md:to-background/60" />
       
+      {/* Animated Floating Shapes - Dezenter Hintergrund-Effekt */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Schwebender Kreis - Links oben */}
+        <motion.div
+          className="absolute top-[10%] left-[5%] w-32 h-32 md:w-48 md:h-48 rounded-full bg-primary/5 blur-2xl"
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 10, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        
+        {/* Schwebender Kreis - Rechts Mitte */}
+        <motion.div
+          className="absolute top-[40%] right-[10%] w-24 h-24 md:w-40 md:h-40 rounded-full bg-secondary/5 blur-2xl"
+          animate={{
+            y: [0, 15, 0],
+            x: [0, -15, 0],
+            scale: [1, 1.15, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+        
+        {/* Schwebender Kreis - Unten links */}
+        <motion.div
+          className="absolute bottom-[20%] left-[15%] w-20 h-20 md:w-32 md:h-32 rounded-full bg-destructive/5 blur-2xl"
+          animate={{
+            y: [0, -25, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+        
+        {/* Schwebender Kreis - Mitte */}
+        <motion.div
+          className="absolute top-[60%] left-[50%] w-16 h-16 md:w-24 md:h-24 rounded-full bg-primary/[0.03] blur-xl"
+          animate={{
+            y: [0, 20, 0],
+            x: [0, -10, 0],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.5,
+          }}
+        />
+      </div>
       
       {/* Subtle Pattern Overlay */}
       <div className="absolute inset-0 opacity-30 hidden md:block">
