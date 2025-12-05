@@ -225,6 +225,31 @@ export const PremiumHeroSection = () => {
             <Check className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[80px] md:h-[80px] text-primary stroke-[2.5]" />
           </motion.div>
         </motion.div>
+        
+        {/* Viertes Checkmark - Unten links - ROT */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 1.2 }}
+          className="absolute bottom-[-30px] left-[30%] md:bottom-[-50px] md:left-[35%]"
+        >
+          <motion.div
+            animate={{ 
+              opacity: [0.3, 0.45, 0.3],
+              y: [0, -6, 0]
+            }}
+            transition={{ 
+              duration: 2.8, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+            style={{
+              filter: 'drop-shadow(0 4px 18px hsl(var(--destructive) / 0.45))'
+            }}
+          >
+            <Check className="w-[60px] h-[60px] sm:w-[70px] sm:h-[70px] md:w-[100px] md:h-[100px] text-destructive stroke-[2.5]" />
+          </motion.div>
+        </motion.div>
       </motion.div>
       
       {/* Subtle Pattern Overlay */}
