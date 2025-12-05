@@ -57,16 +57,16 @@ export const PremiumLiveChat = () => {
 
   return (
     <>
-      {/* Chat Button */}
+      {/* Chat Button - Hidden on mobile to avoid overlap */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-4 z-50 bg-primary text-primary-foreground p-4 rounded-full shadow-2xl md:bottom-8"
+        className="fixed bottom-8 right-4 z-50 bg-primary text-primary-foreground p-3 md:p-4 rounded-full shadow-2xl hidden md:flex items-center justify-center"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ scale: 0 }}
         animate={{ scale: isOpen ? 0 : 1 }}
       >
-        <MessageCircle className="w-6 h-6" />
+        <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
         <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
           1
         </span>

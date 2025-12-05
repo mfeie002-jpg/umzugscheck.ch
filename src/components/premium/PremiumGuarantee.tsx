@@ -36,26 +36,26 @@ const guarantees = [
 
 export const PremiumGuarantee = () => {
   return (
-    <section className="py-16 bg-gradient-to-b from-primary/5 to-background">
+    <section className="py-10 md:py-16 bg-gradient-to-b from-primary/5 to-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mb-6">
-            <Shield className="w-10 h-10 text-primary" />
+          <div className="inline-flex items-center justify-center w-14 h-14 md:w-20 md:h-20 bg-primary/10 rounded-full mb-4 md:mb-6">
+            <Shield className="w-7 h-7 md:w-10 md:h-10 text-primary" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
             Unsere Garantien für Sie
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
             Wir stehen für Qualität, Transparenz und Kundenzufriedenheit
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 max-w-5xl mx-auto">
           {guarantees.map((guarantee, index) => (
             <motion.div
               key={guarantee.title}
@@ -63,13 +63,13 @@ export const PremiumGuarantee = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-card rounded-2xl p-6 shadow-sm border hover:shadow-lg transition-shadow"
+              className="bg-card rounded-xl md:rounded-2xl p-4 md:p-6 shadow-sm border hover:shadow-lg transition-shadow"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
-                <guarantee.icon className="w-6 h-6 text-primary" />
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                <guarantee.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               </div>
-              <h3 className="font-bold text-lg mb-2">{guarantee.title}</h3>
-              <p className="text-muted-foreground text-sm">{guarantee.description}</p>
+              <h3 className="font-bold text-sm md:text-lg mb-1 md:mb-2">{guarantee.title}</h3>
+              <p className="text-muted-foreground text-xs md:text-sm">{guarantee.description}</p>
             </motion.div>
           ))}
         </div>

@@ -7,18 +7,18 @@ export const PremiumVideoHero = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="py-16 bg-gradient-to-b from-background to-muted/30">
+    <section className="py-10 md:py-16 bg-gradient-to-b from-background to-muted/30">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8"
+          className="text-center mb-6 md:mb-8"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
             So einfach funktioniert's
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
             Sehen Sie in 60 Sekunden, wie Sie mit Umzugscheck.ch den besten Preis finden
           </p>
         </motion.div>

@@ -47,7 +47,7 @@ export const PremiumRecentActivity = () => {
           initial={{ opacity: 0, x: -100, y: 0 }}
           animate={{ opacity: 1, x: 0, y: 0 }}
           exit={{ opacity: 0, x: -100, y: 0 }}
-          className="fixed bottom-24 left-4 z-40 md:bottom-8"
+          className="fixed bottom-20 left-4 z-40 hidden md:block"
         >
           <div className="bg-card rounded-xl shadow-2xl border p-4 max-w-[280px]">
             <div className="flex items-start gap-3">

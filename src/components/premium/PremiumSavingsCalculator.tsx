@@ -39,7 +39,7 @@ export const PremiumSavingsCalculator = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-card rounded-3xl p-8 shadow-xl border"
+            className="bg-card rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-xl border"
           >
             <div className="grid md:grid-cols-2 gap-8">
               {/* Sliders */}
