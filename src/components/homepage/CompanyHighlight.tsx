@@ -1,20 +1,26 @@
 import { motion } from "framer-motion";
-import { Star, Shield, Clock, ArrowRight } from "lucide-react";
+import { Star, Shield, Clock, ArrowRight, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFeaturedCompanies } from "@/hooks/useCompanies";
 
-const featuredCompany = {
+const fallbackCompany = {
+  id: "featured",
   name: "Swiss Move Pro AG",
   logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop",
   rating: 4.9,
-  reviews: 342,
+  review_count: 342,
   description: "Ihr Premium-Partner für stressfreie Umzüge in der ganzen Schweiz.",
-  badges: ["Top bewertet", "Express verfügbar"],
-  responseTime: "< 2h",
-  priceRange: "ab CHF 590"
+  services: ["Top bewertet", "Express verfügbar"],
+  price_level: "fair",
+  verified: true
 };
 
 export const CompanyHighlight = () => {
+  const { data: featuredCompanies } = useFeaturedCompanies();
+  
+  const company = featuredCompanies?.[0] || fallbackCompany;
+
   return (
     <section className="py-12 bg-gradient-to-br from-primary/5 to-background">
       <div className="container mx-auto px-4">
@@ -31,18 +37,26 @@ export const CompanyHighlight = () => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-6 items-start">
-            <img
-              src={featuredCompany.logo}
-              alt={featuredCompany.name}
-              className="w-20 h-20 rounded-xl object-cover"
-            />
+            {company.logo ? (
+              <img
+                src={company.logo}
+                alt={company.name}
+                className="w-20 h-20 rounded-xl object-cover"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Building2 className="h-10 w-10 text-primary" />
+              </div>
+            )}
             
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-foreground mb-2">{featuredCompany.name}</h3>
-              <p className="text-muted-foreground mb-4">{featuredCompany.description}</p>
+              <h3 className="text-xl font-bold text-foreground mb-2">{company.name}</h3>
+              <p className="text-muted-foreground mb-4">
+                {company.description || "Ihr Premium-Partner für stressfreie Umzüge in der ganzen Schweiz."}
+              </p>
               
               <div className="flex flex-wrap gap-2 mb-4">
-                {featuredCompany.badges.map((badge) => (
+                {(company.services || ["Top bewertet", "Express verfügbar"]).slice(0, 3).map((badge) => (
                   <span
                     key={badge}
                     className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full"
@@ -55,12 +69,12 @@ export const CompanyHighlight = () => {
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="flex items-center gap-2">
                   <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                  <span className="text-sm font-medium">{featuredCompany.rating}</span>
-                  <span className="text-xs text-muted-foreground">({featuredCompany.reviews})</span>
+                  <span className="text-sm font-medium">{company.rating?.toFixed(1) || "4.9"}</span>
+                  <span className="text-xs text-muted-foreground">({company.review_count || 0})</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{featuredCompany.responseTime}</span>
+                  <span className="text-sm">&lt; 2h</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-green-500" />
@@ -71,15 +85,22 @@ export const CompanyHighlight = () => {
 
             <div className="flex flex-col items-end gap-3 w-full md:w-auto">
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Preis</p>
-                <p className="text-xl font-bold text-foreground">{featuredCompany.priceRange}</p>
+                <p className="text-sm text-muted-foreground">Preislevel</p>
+                <p className="text-xl font-bold text-foreground capitalize">{company.price_level || "Fair"}</p>
               </div>
-              <Link to="/umzugsofferten">
-                <Button className="gap-2 w-full md:w-auto">
-                  Offerte anfragen
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+              <div className="flex gap-2">
+                <Link to={`/firmen/${company.id}`}>
+                  <Button variant="outline" className="gap-2">
+                    Profil ansehen
+                  </Button>
+                </Link>
+                <Link to="/umzugsofferten">
+                  <Button className="gap-2">
+                    Offerte anfragen
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </motion.div>
