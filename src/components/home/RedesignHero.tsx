@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Star, CheckCircle, TrendingDown, Shield } from "lucide-react";
+import { Star, CheckCircle, TrendingDown, Shield, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { getHomepageContent } from "@/lib/content";
 import heroMovingFamily from "@/assets/hero-moving-family.jpg";
 import { toast } from "sonner";
 import { useTypewriter } from "@/hooks/useTypewriter";
+
 export const RedesignHero = () => {
   const content = getHomepageContent().hero;
   const [fromPostal, setFromPostal] = useState("");
@@ -53,6 +54,16 @@ export const RedesignHero = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/60 to-slate-900/40" />
       </motion.div>
 
+      {/* OPTION 1: Large Watermark Checkmark in Background */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.08, scale: 1 }}
+        transition={{ duration: 1.5, delay: 0.5 }}
+        className="absolute right-[5%] top-1/2 -translate-y-1/2 z-[1] pointer-events-none hidden lg:block"
+      >
+        <Check className="w-[400px] h-[400px] text-white stroke-[1.5]" />
+      </motion.div>
+
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
         <div className="max-w-6xl mx-auto">
           
@@ -66,6 +77,24 @@ export const RedesignHero = () => {
               transition={{ duration: 0.7 }}
               className="text-center lg:text-left"
             >
+              {/* OPTION 2: Animated Checkmark Badge next to mini-headline */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-4"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10, delay: 1 }}
+                  className="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center"
+                >
+                  <Check className="w-4 h-4 text-white stroke-[3]" />
+                </motion.div>
+                <span className="text-white text-sm font-medium">In 2 Minuten zum Vergleich</span>
+              </motion.div>
+
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-4 md:mb-6 min-h-[2.5em] sm:min-h-[2em]">
                 {displayedText.split(content.highlightedText).map((part, index, arr) => (
                   <span key={index}>
@@ -135,6 +164,17 @@ export const RedesignHero = () => {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="relative mt-8 lg:mt-0"
             >
+              {/* OPTION 3: Floating Badge on Calculator Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0, rotate: -12 }}
+                animate={{ opacity: 1, scale: 1, rotate: -12 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15, delay: 1.2 }}
+                className="absolute -top-4 -right-4 z-20 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full w-16 h-16 md:w-20 md:h-20 flex flex-col items-center justify-center shadow-lg"
+              >
+                <Check className="w-6 h-6 md:w-8 md:h-8 stroke-[3]" />
+                <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">Geprüft</span>
+              </motion.div>
+
               <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border border-slate-100 relative overflow-hidden">
                 {/* Glow Effect */}
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-20" />
