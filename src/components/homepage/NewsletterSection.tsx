@@ -1,21 +1,44 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, ArrowRight, CheckCircle, Gift } from "lucide-react";
+import { Mail, ArrowRight, CheckCircle, Gift, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const NewsletterSection = () => {
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setIsSubmitted(true);
-      toast.success("Vielen Dank! Sie erhalten bald unsere Tipps.");
-      setEmail("");
-      setTimeout(() => setIsSubmitted(false), 3000);
+    if (!email) return;
+
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from("newsletter_subscribers")
+        .insert({ email, source: "homepage" });
+
+      if (error) {
+        if (error.code === "23505") {
+          toast.info("Sie sind bereits für unseren Newsletter angemeldet.");
+        } else {
+          throw error;
+        }
+      } else {
+        setIsSubmitted(true);
+        toast.success("Vielen Dank! Sie erhalten bald unsere Tipps.");
+        setEmail("");
+        setTimeout(() => setIsSubmitted(false), 3000);
+      }
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      toast.error("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -50,14 +73,20 @@ export const NewsletterSection = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10 h-12 rounded-xl"
                 required
+                disabled={isSubmitting}
               />
             </div>
             <Button
               type="submit"
               className="h-12 px-6 rounded-xl bg-secondary hover:bg-secondary/90"
-              disabled={isSubmitted}
+              disabled={isSubmitting || isSubmitted}
             >
-              {isSubmitted ? (
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Wird gesendet...
+                </>
+              ) : isSubmitted ? (
                 <>
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Gesendet

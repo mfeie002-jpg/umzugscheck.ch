@@ -26,8 +26,21 @@ import { MobileBottomNav } from "@/components/homepage/MobileBottomNav";
 import { BackToTop } from "@/components/homepage/BackToTop";
 import { CookieConsent } from "@/components/homepage/CookieConsent";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+import { StickyCTABar } from "@/components/homepage/StickyCTABar";
+import { ServiceComparisonTable } from "@/components/homepage/ServiceComparisonTable";
+import { RegionalAvailabilityMap } from "@/components/homepage/RegionalAvailabilityMap";
+import { TestimonialRatingBreakdown } from "@/components/homepage/TestimonialRatingBreakdown";
+import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
+import { GuaranteeBadges } from "@/components/homepage/GuaranteeBadges";
+import { MovingTipsCarousel } from "@/components/homepage/MovingTipsCarousel";
+import { CompanyHighlight } from "@/components/homepage/CompanyHighlight";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 
 const Index = () => {
+  useSmoothScroll();
+  useKeyboardNavigation();
+
   const faqItems = [
     { question: "Wie funktioniert der Vergleich genau?", answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser AI-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten." },
     { question: "Kostet mich der Service etwas?", answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen." },
@@ -50,52 +63,63 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
-        <meta name="description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen. Jetzt vergleichen & sparen!" />
-        <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, Umzugsrechner" />
-        <link rel="canonical" href="https://umzugscheck.ch/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://umzugscheck.ch/" />
-        <meta property="og:title" content="Umzugscheck.ch – Die Nr. 1 für Umzugsvergleiche in der Schweiz" />
-        <meta property="og:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen." />
-        <meta property="og:image" content="https://umzugscheck.ch/og-image.jpg" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="robots" content="index, follow" />
-        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
-      </Helmet>
+    <ErrorBoundary>
+      <div className="min-h-screen bg-background">
+        <Helmet>
+          <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
+          <meta name="description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen. Jetzt vergleichen & sparen!" />
+          <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, Umzugsrechner" />
+          <link rel="canonical" href="https://umzugscheck.ch/" />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://umzugscheck.ch/" />
+          <meta property="og:title" content="Umzugscheck.ch – Die Nr. 1 für Umzugsvergleiche in der Schweiz" />
+          <meta property="og:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen." />
+          <meta property="og:image" content="https://umzugscheck.ch/og-image.jpg" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="robots" content="index, follow" />
+          <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
+        </Helmet>
 
-      <SkipToContent />
-      <ScrollProgressBar />
-      <Header />
+        <SkipToContent />
+        <ScrollProgressBar />
+        <StickyCTABar />
+        <Header />
 
-      <main id="main-content" role="main" className="pb-20 md:pb-0">
-        <HeroSection />
-        <PartnerLogos />
-        <LiveActivityBanner />
-        <TrustBadges />
-        <SocialProofSection />
-        <CompanyLogosCarousel />
-        <HowItWorksSection />
-        <ServicesSection />
-        <CostExamplesSection />
-        <VideoTestimonial />
-        <TestimonialsSection />
-        <RegionsSection />
-        <USPSection />
-        <SeasonalBanner />
-        <CTASection />
-        <FAQSection />
-        <NewsletterSection />
-      </main>
+        <main id="main-content" role="main" className="pb-20 md:pb-0">
+          <HeroSection />
+          <PartnerLogos />
+          <LiveActivityBanner />
+          <GuaranteeBadges />
+          <TrustBadges />
+          <SocialProofSection />
+          <CompanyLogosCarousel />
+          <HowItWorksSection />
+          <ServicesSection />
+          <ServiceComparisonTable />
+          <CostExamplesSection />
+          <CompanyHighlight />
+          <VideoTestimonial />
+          <TestimonialsSection />
+          <div className="container mx-auto px-4 py-8">
+            <TestimonialRatingBreakdown />
+          </div>
+          <RegionalAvailabilityMap />
+          <RegionsSection />
+          <USPSection />
+          <MovingTipsCarousel />
+          <SeasonalBanner />
+          <CTASection />
+          <FAQSection />
+          <NewsletterSection />
+        </main>
 
-      <SimplifiedFooter />
-      <FloatingElements />
-      <MobileBottomNav />
-      <BackToTop />
-      <CookieConsent />
-    </div>
+        <SimplifiedFooter />
+        <FloatingElements />
+        <MobileBottomNav />
+        <BackToTop />
+        <CookieConsent />
+      </div>
+    </ErrorBoundary>
   );
 };
 
