@@ -133,14 +133,14 @@ export const PremiumHeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 md:from-background/85 via-background/70 md:via-background/60 to-background/50 md:to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/50 md:from-background/40 via-transparent to-background/70 md:to-background/60" />
       
-      {/* OPTION 1: Large Watermark Checkmark in Background */}
+      {/* OPTION 1: Großes Checkmark LINKS neben der Headline */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.06, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.5 }}
-        className="absolute right-[5%] top-1/2 -translate-y-1/2 z-[1] pointer-events-none hidden lg:block"
+        initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
+        animate={{ opacity: 0.12, scale: 1, rotate: 0 }}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="absolute left-[2%] md:left-[5%] top-[30%] z-[1] pointer-events-none hidden md:block"
       >
-        <Check className="w-[350px] h-[350px] xl:w-[450px] xl:h-[450px] text-primary stroke-[1.5]" />
+        <Check className="w-[200px] h-[200px] lg:w-[280px] lg:h-[280px] text-primary stroke-[2]" />
       </motion.div>
       
       {/* Subtle Pattern Overlay */}
@@ -273,39 +273,50 @@ export const PremiumHeroSection = () => {
             }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-6 md:p-8 relative">
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-6 md:p-8 relative overflow-visible">
               
-              {/* OPTION 3: Floating Badge on Calculator Card */}
+              {/* OPTION 2: Checkmark-Ecke oben links im Calculator */}
               <motion.div
-                initial={{ opacity: 0, scale: 0, rotate: -12 }}
-                animate={{ opacity: 1, scale: 1, rotate: -12 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.8 }}
-                className="absolute -top-4 -right-4 z-20 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-full w-14 h-14 md:w-18 md:h-18 flex flex-col items-center justify-center shadow-lg"
+                initial={{ opacity: 0, x: -20, y: -20 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.5 }}
+                className="absolute -top-3 -left-3 z-20"
               >
-                <Check className="w-5 h-5 md:w-7 md:h-7 stroke-[3]" />
-                <span className="text-[7px] md:text-[9px] font-bold uppercase tracking-tight">Geprüft</span>
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-primary shadow-lg flex items-center justify-center rotate-[-8deg]">
+                  <Check className="w-7 h-7 md:w-8 md:h-8 text-white stroke-[3]" />
+                </div>
               </motion.div>
               
+              {/* OPTION 3: Animierter Checkmark-Ring um "In 2 Minuten" */}
               <div className="space-y-4 md:space-y-5">
                 {/* Form Header */}
                 <div className="text-center space-y-1 md:space-y-2">
-                  {/* OPTION 2: Animated Checkmark Badge next to mini-headline */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4, delay: 0.6 }}
-                    className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-semibold bg-primary/5 rounded-full px-3 py-1.5"
+                    className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold"
                   >
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 10, delay: 0.9 }}
-                      className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center"
+                      transition={{ type: "spring", stiffness: 400, damping: 10, delay: 0.8 }}
+                      className="relative"
                     >
-                      <Check className="w-3 h-3 text-white stroke-[3]" />
+                      <div className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center">
+                        <Check className="w-4 h-4 text-primary stroke-[3]" />
+                      </div>
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-primary"
+                        initial={{ scale: 1, opacity: 0.8 }}
+                        animate={{ scale: 1.5, opacity: 0 }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+                      />
                     </motion.div>
-                    <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    In 2 Minuten zum Vergleich
+                    <span className="text-primary">
+                      <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 inline mr-1" />
+                      In 2 Minuten zum Vergleich
+                    </span>
                   </motion.div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
                     Kostenlos Offerten erhalten
