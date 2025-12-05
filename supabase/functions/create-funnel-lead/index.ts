@@ -162,6 +162,31 @@ Deno.serve(async (req) => {
 
     console.log('Created funnel lead:', lead.id);
 
+    // Auto-trigger email notifications to assigned providers
+    if (selectedCompanyIds.length > 0) {
+      try {
+        const notifyResponse = await fetch(
+          `${supabaseUrl}/functions/v1/send-new-lead-notification`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseKey}`,
+            },
+            body: JSON.stringify({
+              leadId: lead.id,
+              providerIds: selectedCompanyIds,
+            }),
+          }
+        );
+        const notifyResult = await notifyResponse.json();
+        console.log('Lead notification sent:', notifyResult);
+      } catch (notifyError) {
+        // Don't fail lead creation if notification fails
+        console.error('Error sending lead notification:', notifyError);
+      }
+    }
+
     return new Response(
       JSON.stringify({ success: true, data: lead }),
       { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

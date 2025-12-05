@@ -14,11 +14,12 @@ export const usePushNotifications = () => {
   });
 
   useEffect(() => {
-    const isSupported = 'Notification' in window && 'serviceWorker' in navigator;
+    const isSupported = 'Notification' in window;
     setState(prev => ({
       ...prev,
       isSupported,
       permission: isSupported ? Notification.permission : 'denied',
+      isSubscribed: isSupported && Notification.permission === 'granted',
     }));
   }, []);
 
@@ -27,7 +28,11 @@ export const usePushNotifications = () => {
 
     try {
       const permission = await Notification.requestPermission();
-      setState(prev => ({ ...prev, permission }));
+      setState(prev => ({ 
+        ...prev, 
+        permission,
+        isSubscribed: permission === 'granted',
+      }));
       return permission === 'granted';
     } catch (error) {
       console.error('Error requesting notification permission:', error);
@@ -42,18 +47,66 @@ export const usePushNotifications = () => {
     }
 
     try {
-      const registration = await navigator.serviceWorker.ready;
-      await registration.showNotification(title, {
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
-        ...options,
-      });
-      return true;
+      // Try service worker notification first
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification(title, {
+          icon: '/favicon.ico',
+          badge: '/favicon.ico',
+          ...options,
+        });
+        return true;
+      }
     } catch (error) {
       // Fallback to basic notification
-      return new Notification(title, options);
     }
+    
+    // Fallback to basic Notification API
+    const notification = new Notification(title, {
+      icon: '/favicon.ico',
+      ...options,
+    });
+    
+    notification.onclick = () => {
+      window.focus();
+      notification.close();
+    };
+    
+    return notification;
   }, [state.permission, requestPermission]);
+
+  const showLeadNotification = useCallback((lead: {
+    fromCity: string;
+    toCity: string;
+    leadId: string;
+  }) => {
+    return showNotification('🚚 Neue Umzugsanfrage!', {
+      body: `Umzug von ${lead.fromCity} nach ${lead.toCity}`,
+      tag: `lead-${lead.leadId}`,
+      requireInteraction: true,
+    });
+  }, [showNotification]);
+
+  const showReviewNotification = useCallback((review: {
+    rating: number;
+    title: string;
+    reviewId: string;
+  }) => {
+    return showNotification('⭐ Neue Bewertung erhalten!', {
+      body: `${review.rating}/5 Sterne - "${review.title}"`,
+      tag: `review-${review.reviewId}`,
+    });
+  }, [showNotification]);
+
+  const showBidNotification = useCallback((bid: {
+    amount: number;
+    leadId: string;
+  }) => {
+    return showNotification('💰 Neues Gebot auf Lead!', {
+      body: `CHF ${bid.amount.toFixed(2)} auf Ihre Anfrage`,
+      tag: `bid-${bid.leadId}`,
+    });
+  }, [showNotification]);
 
   const scheduleNotification = useCallback((title: string, options: NotificationOptions, delayMs: number) => {
     return setTimeout(() => {
@@ -65,6 +118,9 @@ export const usePushNotifications = () => {
     ...state,
     requestPermission,
     showNotification,
+    showLeadNotification,
+    showReviewNotification,
+    showBidNotification,
     scheduleNotification,
   };
 };
