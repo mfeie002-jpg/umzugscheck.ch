@@ -133,7 +133,7 @@ export const PremiumHeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 md:from-background/85 via-background/70 md:via-background/60 to-background/50 md:to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/50 md:from-background/40 via-transparent to-background/70 md:to-background/60" />
       
-      {/* Großes Checkmark LINKS - Brand Icon - DOMINANT VERSION */}
+      {/* Großes Checkmark LINKS - Brand Icon - DOMINANT VERSION mit Schatten */}
       <motion.div
         initial={{ opacity: 0, scale: 0.5, rotate: -25 }}
         animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -150,7 +150,7 @@ export const PremiumHeroSection = () => {
           <Check className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] text-primary stroke-[2]" />
         </motion.div>
         
-        {/* Hauptcheckmark - GRÖSSER & STÄRKER */}
+        {/* Hauptcheckmark - mit Schatten für Tiefe */}
         <motion.div
           animate={{ 
             y: [0, -12, 0],
@@ -160,28 +160,37 @@ export const PremiumHeroSection = () => {
             repeat: Infinity, 
             ease: "easeInOut" 
           }}
+          style={{
+            filter: 'drop-shadow(0 8px 32px hsl(var(--primary) / 0.4)) drop-shadow(0 4px 16px hsl(var(--primary) / 0.3))'
+          }}
         >
-          <Check className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] text-primary/30 stroke-[2]" />
+          <Check className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] text-primary/35 stroke-[2.5]" />
         </motion.div>
         
-        {/* Zweites Medium Checkmark */}
+        {/* Zweites Medium Checkmark mit Schatten */}
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
           className="absolute bottom-0 right-0 md:bottom-5 md:right-5"
+          style={{
+            filter: 'drop-shadow(0 4px 16px hsl(var(--primary) / 0.35))'
+          }}
         >
-          <Check className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] md:w-[140px] md:h-[140px] text-primary/40 stroke-[2.5]" />
+          <Check className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] md:w-[140px] md:h-[140px] text-primary/45 stroke-[3]" />
         </motion.div>
         
-        {/* Drittes kleines Checkmark oben */}
+        {/* Drittes kleines Checkmark oben mit Schatten */}
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 1 }}
           className="absolute top-10 right-0 md:top-20 md:right-10"
+          style={{
+            filter: 'drop-shadow(0 3px 12px hsl(var(--secondary) / 0.3))'
+          }}
         >
-          <Check className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[80px] md:h-[80px] text-secondary/35 stroke-[2]" />
+          <Check className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[80px] md:h-[80px] text-secondary/40 stroke-[2.5]" />
         </motion.div>
       </motion.div>
       
