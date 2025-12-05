@@ -20,6 +20,9 @@ import { BiddingManagement } from "@/components/provider/BiddingManagement";
 import { PricingSettings } from "@/components/provider/PricingSettings";
 import { ReviewStatistics } from "@/components/provider/ReviewStatistics";
 import { NotificationCenter } from "@/components/provider/NotificationCenter";
+import { CompetitorPriceAlerts } from "@/components/provider/CompetitorPriceAlerts";
+import { WeatherRecommendations } from "@/components/provider/WeatherRecommendations";
+import { PeakHourOptimization } from "@/components/provider/PeakHourOptimization";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -259,15 +262,20 @@ const ProviderDashboard = () => {
           {isApproved && (
             <div className="space-y-8 mb-8">
               <Tabs defaultValue="notifications" className="w-full">
-                <TabsList className="grid w-full grid-cols-8 gap-1">
+                <TabsList className="grid w-full grid-cols-6 gap-1 mb-2">
                   <TabsTrigger value="notifications">Benachrichtigungen</TabsTrigger>
                   <TabsTrigger value="optimization">Profil</TabsTrigger>
                   <TabsTrigger value="competitors">Wettbewerb</TabsTrigger>
                   <TabsTrigger value="reviews">Bewertungen</TabsTrigger>
                   <TabsTrigger value="pricing">Preise</TabsTrigger>
                   <TabsTrigger value="bidding">Werbung</TabsTrigger>
+                </TabsList>
+                <TabsList className="grid w-full grid-cols-5 gap-1">
                   <TabsTrigger value="analytics">Analytics</TabsTrigger>
                   <TabsTrigger value="ml">KI</TabsTrigger>
+                  <TabsTrigger value="price-alerts">Preisalarme</TabsTrigger>
+                  <TabsTrigger value="weather">Wetter</TabsTrigger>
+                  <TabsTrigger value="peak-hours">Peak-Hours</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="notifications">
@@ -338,6 +346,18 @@ const ProviderDashboard = () => {
 
                 <TabsContent value="ml">
                   <MLPredictions providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="price-alerts">
+                  <CompetitorPriceAlerts providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="weather">
+                  <WeatherRecommendations providerId={provider.id} />
+                </TabsContent>
+
+                <TabsContent value="peak-hours">
+                  <PeakHourOptimization providerId={provider.id} />
                 </TabsContent>
               </Tabs>
             </div>

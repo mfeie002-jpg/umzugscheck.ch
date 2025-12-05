@@ -68,3 +68,12 @@ verify_jwt = false
 
 [functions.send-new-lead-notification]
 verify_jwt = false
+
+[functions.send-email-digest]
+verify_jwt = false
+
+[functions.send-sms-notification]
+verify_jwt = false
+
+[functions.send-satisfaction-survey]
+verify_jwt = false
