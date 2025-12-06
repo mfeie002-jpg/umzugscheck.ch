@@ -69,3 +69,27 @@ export { ComparisonTable } from './ComparisonTable';
 export { TagCloud } from './TagCloud';
 export { EmptyState } from './EmptyState';
 export { NotificationBadge } from './NotificationBadge';
+
+// Wave 5 - Advanced Animation Components
+export { GradientBorder } from './GradientBorder';
+export { BlurReveal } from './BlurReveal';
+export { MagneticButton } from './MagneticButton';
+export { TextReveal } from './TextReveal';
+export { NumberTicker } from './NumberTicker';
+export { Marquee } from './Marquee';
+export { FloatingDock } from './FloatingDock';
+export { BentoGrid, BentoCard } from './BentoGrid';
+export { GlowingCard } from './GlowingCard';
+export { StackedCards } from './StackedCards';
+export { Confetti } from './Confetti';
+export { AnimatedCounter } from './AnimatedCounter';
+export { Beam } from './Beam';
+export { SplitText } from './SplitText';
+export { Dock, DockIcon } from './Dock';
+export { HeroGradient } from './HeroGradient';
+export { GridPattern } from './GridPattern';
+export { DotPattern } from './DotPattern';
+export { FloatingIcon } from './FloatingIcon';
+export { BorderBeam } from './BorderBeam';
+export { ShinyText } from './ShinyText';
+export { RetroGrid } from './RetroGrid';
