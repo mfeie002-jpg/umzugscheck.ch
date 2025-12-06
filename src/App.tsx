@@ -14,6 +14,10 @@ import { CriticalCSS } from "@/components/performance/CriticalCSS";
 import { ResourceHints } from "@/components/performance/ResourceHints";
 import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { PrefetchManager } from "@/components/performance/PrefetchManager";
+import { CriticalCSSLoader } from "@/components/performance/CriticalCSSLoader";
+import { PerformanceOptimizer, PerformanceDebugOverlay } from "@/components/performance/PerformanceOptimizer";
+import { WebVitalsReporter } from "@/hooks/useWebVitals";
 
 // ============================================
 // LAZY LOADED PAGES - Code Splitting
@@ -222,10 +226,14 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <CriticalCSS />
+              <CriticalCSSLoader />
               <ResourceHints />
+              <PrefetchManager />
               <PerformanceMonitor />
+              <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
               <PreloadResources />
               <PWAInstallPrompt />
+              <PerformanceDebugOverlay />
               <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
                 <ScrollProgressBar />
