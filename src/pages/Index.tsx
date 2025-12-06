@@ -1,81 +1,35 @@
 import { Helmet } from "react-helmet";
+import { lazy, Suspense } from "react";
 import { SkipToContent } from "@/components/SkipToContent";
 
-// Homepage Components
+// Core Components (Always loaded)
 import { Header } from "@/components/homepage/Header";
-import { ScrollProgressBar } from "@/components/homepage/ScrollProgressBar";
 import { HeroSection } from "@/components/homepage/HeroSection";
-import { PartnerLogos } from "@/components/homepage/PartnerLogos";
-import { LiveActivityBanner } from "@/components/homepage/LiveActivityBanner";
-import { TrustBadges } from "@/components/homepage/TrustBadges";
-import { SocialProofSection } from "@/components/homepage/SocialProofSection";
-import { CompanyLogosCarousel } from "@/components/homepage/CompanyLogosCarousel";
-import { TestimonialsSection } from "@/components/homepage/TestimonialsSection";
-import { VideoTestimonial } from "@/components/homepage/VideoTestimonial";
-import { HowItWorksSection } from "@/components/homepage/HowItWorksSection";
-import { ServicesSection } from "@/components/homepage/ServicesSection";
-import { RegionsSection } from "@/components/homepage/RegionsSection";
-import { CostExamplesSection } from "@/components/homepage/CostExamplesSection";
-import { USPSection } from "@/components/homepage/USPSection";
-import { SeasonalBanner } from "@/components/homepage/SeasonalBanner";
-import { NewsletterSection } from "@/components/homepage/NewsletterSection";
-import { FAQSection } from "@/components/homepage/FAQSection";
-import { CTASection } from "@/components/homepage/CTASection";
-import { FloatingElements } from "@/components/homepage/FloatingElements";
-import { MobileBottomNav } from "@/components/homepage/MobileBottomNav";
-import { BackToTop } from "@/components/homepage/BackToTop";
-import { CookieConsent } from "@/components/homepage/CookieConsent";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
-import { StickyCTABar } from "@/components/homepage/StickyCTABar";
-import { ServiceComparisonTable } from "@/components/homepage/ServiceComparisonTable";
-import { RegionalAvailabilityMap } from "@/components/homepage/RegionalAvailabilityMap";
-import { TestimonialRatingBreakdown } from "@/components/homepage/TestimonialRatingBreakdown";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
-import { GuaranteeBadges } from "@/components/homepage/GuaranteeBadges";
-import { MovingTipsCarousel } from "@/components/homepage/MovingTipsCarousel";
-import { CompanyHighlight } from "@/components/homepage/CompanyHighlight";
-import { InteractiveSwissMap } from "@/components/homepage/InteractiveSwissMap";
-import { useSmoothScroll } from "@/hooks/useSmoothScroll";
-import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 
-// Premium Components
-import {
-  PremiumLiveChat,
-  PremiumPriceAlert,
-  PremiumSavingsCalculator,
-  PremiumMovingTimeline,
-  PremiumCompanyComparison,
-  PremiumSuccessStories,
-  PremiumStatistics,
-  PremiumUrgentBanner,
-  PremiumExitIntent,
-  PremiumTrustPilot,
-  PremiumVideoHero,
-  PremiumBeforeAfter,
-  PremiumPartnerBadges,
-  PremiumGuarantee,
-  PremiumCountdown,
-  PremiumRecentActivity,
-  PremiumMobileAppBanner,
-  PremiumQuickQuote,
-  PremiumFloatingCTA,
-  PremiumSocialShare,
-} from "@/components/premium";
+// Lazy loaded components for performance
+const PartnerLogos = lazy(() => import("@/components/homepage/PartnerLogos").then(m => ({ default: m.PartnerLogos })));
+const TrustBadges = lazy(() => import("@/components/homepage/TrustBadges").then(m => ({ default: m.TrustBadges })));
+const HowItWorksSection = lazy(() => import("@/components/homepage/HowItWorksSection").then(m => ({ default: m.HowItWorksSection })));
+const ServicesSection = lazy(() => import("@/components/homepage/ServicesSection").then(m => ({ default: m.ServicesSection })));
+const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
+const RegionsSection = lazy(() => import("@/components/homepage/RegionsSection").then(m => ({ default: m.RegionsSection })));
+const FAQSection = lazy(() => import("@/components/homepage/FAQSection").then(m => ({ default: m.FAQSection })));
+const CTASection = lazy(() => import("@/components/homepage/CTASection").then(m => ({ default: m.CTASection })));
+const USPSection = lazy(() => import("@/components/homepage/USPSection").then(m => ({ default: m.USPSection })));
+const TestimonialsSection = lazy(() => import("@/components/homepage/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
+const SocialProofSection = lazy(() => import("@/components/homepage/SocialProofSection").then(m => ({ default: m.SocialProofSection })));
+const GuaranteeBadges = lazy(() => import("@/components/homepage/GuaranteeBadges").then(m => ({ default: m.GuaranteeBadges })));
 
-// Feature Components
-import {
-  LiveActivityFeed,
-  AIChatAssistant,
-  TrustMetrics,
-  SeasonalInsights,
-  MovingChecklist,
-  NewsletterSignup,
-} from "@/components/features";
+// Loading fallback
+const LoadingFallback = () => (
+  <div className="h-32 flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 const Index = () => {
-  useSmoothScroll();
-  useKeyboardNavigation();
-
   const faqItems = [
     { question: "Wie funktioniert der Vergleich genau?", answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser AI-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten." },
     { question: "Kostet mich der Service etwas?", answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen." },
@@ -90,10 +44,9 @@ const Index = () => {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "@id": "https://umzugscheck.ch/#organization", "name": "Umzugscheck.ch", "url": "https://umzugscheck.ch", "logo": "https://umzugscheck.ch/logo.png", "description": "Die führende Vergleichsplattform für Umzüge in der Schweiz.", "areaServed": { "@type": "Country", "name": "Switzerland" }, "contactPoint": { "@type": "ContactPoint", "contactType": "customer service", "availableLanguage": ["German", "French", "Italian"], "areaServed": "CH" } },
-      { "@type": "WebSite", "@id": "https://umzugscheck.ch/#website", "url": "https://umzugscheck.ch", "name": "Umzugscheck.ch", "potentialAction": { "@type": "SearchAction", "target": "https://umzugscheck.ch/umzugsfirmen?q={search_term_string}", "query-input": "required name=search_term_string" } },
-      { "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.question, "acceptedAnswer": { "@type": "Answer", "text": item.answer } })) },
-      { "@type": "AggregateRating", "itemReviewed": { "@type": "Organization", "name": "Umzugscheck.ch" }, "ratingValue": "4.8", "bestRating": "5", "ratingCount": "2847" }
+      { "@type": "Organization", "@id": "https://umzugscheck.ch/#organization", "name": "Umzugscheck.ch", "url": "https://umzugscheck.ch", "logo": "https://umzugscheck.ch/logo.png", "description": "Die führende Vergleichsplattform für Umzüge in der Schweiz.", "areaServed": { "@type": "Country", "name": "Switzerland" } },
+      { "@type": "WebSite", "@id": "https://umzugscheck.ch/#website", "url": "https://umzugscheck.ch", "name": "Umzugscheck.ch" },
+      { "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.question, "acceptedAnswer": { "@type": "Answer", "text": item.answer } })) }
     ]
   };
 
@@ -103,138 +56,68 @@ const Index = () => {
         <Helmet>
           <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
           <meta name="description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen. Jetzt vergleichen & sparen!" />
-          <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, Umzugsrechner" />
           <link rel="canonical" href="https://umzugscheck.ch/" />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://umzugscheck.ch/" />
           <meta property="og:title" content="Umzugscheck.ch – Die Nr. 1 für Umzugsvergleiche in der Schweiz" />
-          <meta property="og:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen." />
-          <meta property="og:image" content="https://umzugscheck.ch/og-image.jpg" />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="robots" content="index, follow" />
           <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
         </Helmet>
 
         <SkipToContent />
-        <PremiumUrgentBanner />
-        <ScrollProgressBar />
-        <StickyCTABar />
         <Header />
 
         <main id="main-content" role="main" className="pb-20 md:pb-0">
           <HeroSection />
           
-          {/* Quick Quote Box */}
-          <div className="container mx-auto px-4">
-            <PremiumQuickQuote />
-          </div>
-
-          <PremiumTrustPilot />
-          <PartnerLogos />
-          <LiveActivityBanner />
-          <GuaranteeBadges />
+          <Suspense fallback={<LoadingFallback />}>
+            <PartnerLogos />
+          </Suspense>
           
-          {/* Statistics Section */}
-          <PremiumStatistics />
+          <Suspense fallback={<LoadingFallback />}>
+            <GuaranteeBadges />
+          </Suspense>
           
-          <TrustBadges />
-          <SocialProofSection />
+          <Suspense fallback={<LoadingFallback />}>
+            <TrustBadges />
+          </Suspense>
           
-          {/* How It Works Video */}
-          <PremiumVideoHero />
+          <Suspense fallback={<LoadingFallback />}>
+            <SocialProofSection />
+          </Suspense>
           
-          <HowItWorksSection />
+          <Suspense fallback={<LoadingFallback />}>
+            <HowItWorksSection />
+          </Suspense>
           
-          {/* Savings Calculator */}
-          <PremiumSavingsCalculator />
+          <Suspense fallback={<LoadingFallback />}>
+            <ServicesSection />
+          </Suspense>
           
-          <CompanyLogosCarousel />
-          <ServicesSection />
+          <Suspense fallback={<LoadingFallback />}>
+            <CostExamplesSection />
+          </Suspense>
           
-          {/* Before/After Comparison */}
-          <PremiumBeforeAfter />
+          <Suspense fallback={<LoadingFallback />}>
+            <TestimonialsSection />
+          </Suspense>
           
-          <ServiceComparisonTable />
+          <Suspense fallback={<LoadingFallback />}>
+            <RegionsSection />
+          </Suspense>
           
-          {/* Company Comparison Table */}
-          <PremiumCompanyComparison />
+          <Suspense fallback={<LoadingFallback />}>
+            <USPSection />
+          </Suspense>
           
-          <CostExamplesSection />
+          <Suspense fallback={<LoadingFallback />}>
+            <FAQSection />
+          </Suspense>
           
-          {/* Moving Timeline */}
-          <PremiumMovingTimeline />
-          
-          <CompanyHighlight />
-          
-          {/* Success Stories */}
-          <PremiumSuccessStories />
-          
-          <VideoTestimonial />
-          <TestimonialsSection />
-          
-          <div className="container mx-auto px-4 py-8">
-            <TestimonialRatingBreakdown />
-          </div>
-          
-          {/* Countdown Offer */}
-          <PremiumCountdown />
-          
-          <RegionalAvailabilityMap />
-          
-          <div className="container mx-auto px-4 py-12">
-            <InteractiveSwissMap />
-          </div>
-          
-          <RegionsSection />
-          
-          {/* Guarantee Section */}
-          <PremiumGuarantee />
-          
-          <USPSection />
-          
-          {/* Price Alert */}
-          <PremiumPriceAlert />
-          
-          <MovingTipsCarousel />
-          
-          {/* Seasonal Insights */}
-          <div className="container mx-auto px-4 py-12">
-            <SeasonalInsights />
-          </div>
-          
-          <SeasonalBanner />
-          
-          {/* Mobile App Banner */}
-          <PremiumMobileAppBanner />
-          
-          <CTASection />
-          
-          {/* Social Share */}
-          <PremiumSocialShare />
-          
-          <FAQSection />
-          
-          <NewsletterSection />
-          
-          {/* Trust Metrics */}
-          <div className="container mx-auto px-4 py-12">
-            <TrustMetrics />
-          </div>
+          <Suspense fallback={<LoadingFallback />}>
+            <CTASection />
+          </Suspense>
         </main>
 
         <SimplifiedFooter />
-        
-        {/* Floating Elements */}
-        <FloatingElements />
-        <MobileBottomNav />
-        <BackToTop />
-        <CookieConsent />
-        
-        {/* Premium Interactive Elements */}
-        <PremiumLiveChat />
-        <PremiumRecentActivity />
-        <PremiumFloatingCTA />
-        <PremiumExitIntent />
       </div>
     </ErrorBoundary>
   );
