@@ -28,18 +28,18 @@ export const lazyLoadImages = () => {
 
 // Preload critical resources
 export const preloadCriticalAssets = () => {
-  // Preload critical fonts
-  const fonts = [
-    '/fonts/inter-var.woff2',
+  // Preconnect to external domains
+  const preconnects = [
+    'https://fonts.googleapis.com',
+    'https://fonts.gstatic.com',
+    'https://images.unsplash.com',
   ];
 
-  fonts.forEach((font) => {
+  preconnects.forEach((url) => {
     const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'font';
-    link.type = 'font/woff2';
+    link.rel = 'preconnect';
+    link.href = url;
     link.crossOrigin = 'anonymous';
-    link.href = font;
     document.head.appendChild(link);
   });
 };
@@ -47,45 +47,80 @@ export const preloadCriticalAssets = () => {
 // Measure and report Core Web Vitals
 export const measureCoreWebVitals = () => {
   if ('PerformanceObserver' in window) {
+    const metrics: Record<string, number> = {};
+
     // Largest Contentful Paint (LCP)
     try {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1] as any;
-        console.log('[LCP]', lastEntry.renderTime || lastEntry.loadTime);
+        const lastEntry = entries[entries.length - 1] as PerformanceEntry & { renderTime?: number; loadTime?: number };
+        metrics.lcp = lastEntry.renderTime || lastEntry.loadTime || 0;
       });
-      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+      lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
     } catch (e) {
-      console.error('LCP measurement failed', e);
+      // LCP not supported
     }
 
     // First Input Delay (FID)
     try {
       const fidObserver = new PerformanceObserver((list) => {
-        list.getEntries().forEach((entry: any) => {
-          console.log('[FID]', entry.processingStart - entry.startTime);
+        list.getEntries().forEach((entry: PerformanceEntry & { processingStart?: number }) => {
+          metrics.fid = (entry.processingStart || 0) - entry.startTime;
         });
       });
-      fidObserver.observe({ entryTypes: ['first-input'] });
+      fidObserver.observe({ type: 'first-input', buffered: true });
     } catch (e) {
-      console.error('FID measurement failed', e);
+      // FID not supported
     }
 
     // Cumulative Layout Shift (CLS)
     try {
       let clsValue = 0;
       const clsObserver = new PerformanceObserver((list) => {
-        list.getEntries().forEach((entry: any) => {
+        list.getEntries().forEach((entry: PerformanceEntry & { hadRecentInput?: boolean; value?: number }) => {
           if (!entry.hadRecentInput) {
-            clsValue += entry.value;
-            console.log('[CLS]', clsValue);
+            clsValue += entry.value || 0;
+            metrics.cls = clsValue;
           }
         });
       });
-      clsObserver.observe({ entryTypes: ['layout-shift'] });
+      clsObserver.observe({ type: 'layout-shift', buffered: true });
     } catch (e) {
-      console.error('CLS measurement failed', e);
+      // CLS not supported
     }
+
+    // First Contentful Paint (FCP)
+    try {
+      const fcpObserver = new PerformanceObserver((list) => {
+        list.getEntries().forEach((entry) => {
+          if (entry.name === 'first-contentful-paint') {
+            metrics.fcp = entry.startTime;
+          }
+        });
+      });
+      fcpObserver.observe({ type: 'paint', buffered: true });
+    } catch (e) {
+      // FCP not supported
+    }
+
+    // Time to First Byte (TTFB)
+    try {
+      const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      if (navEntry) {
+        metrics.ttfb = navEntry.responseStart - navEntry.requestStart;
+      }
+    } catch (e) {
+      // Navigation timing not supported
+    }
+
+    // Report metrics after page load
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(() => {
+        console.log('[Performance]', metrics);
+      }, 3000);
+    }
+
+    return metrics;
   }
 };
 
@@ -101,6 +136,39 @@ export const deferNonCriticalJS = () => {
   });
 };
 
+// Register service worker
+export const registerServiceWorker = async () => {
+  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      console.log('SW registered:', registration.scope);
+    } catch (error) {
+      console.log('SW registration failed:', error);
+    }
+  }
+};
+
+// Optimize long tasks
+export const breakLongTask = async (task: () => void) => {
+  return new Promise<void>((resolve) => {
+    if ('scheduler' in window && 'postTask' in (window as unknown as { scheduler: { postTask: (task: () => void) => void } }).scheduler) {
+      (window as unknown as { scheduler: { postTask: (task: () => void, options: { priority: string }) => Promise<void> } }).scheduler
+        .postTask(task, { priority: 'background' })
+        .then(resolve);
+    } else if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        task();
+        resolve();
+      });
+    } else {
+      setTimeout(() => {
+        task();
+        resolve();
+      }, 0);
+    }
+  });
+};
+
 // Initialize all performance optimizations
 export const initPerformanceOptimizations = () => {
   // Run on page load
@@ -108,6 +176,7 @@ export const initPerformanceOptimizations = () => {
     document.addEventListener('DOMContentLoaded', () => {
       lazyLoadImages();
       preloadCriticalAssets();
+      registerServiceWorker();
       if (process.env.NODE_ENV === 'development') {
         measureCoreWebVitals();
       }
@@ -115,6 +184,7 @@ export const initPerformanceOptimizations = () => {
   } else {
     lazyLoadImages();
     preloadCriticalAssets();
+    registerServiceWorker();
     if (process.env.NODE_ENV === 'development') {
       measureCoreWebVitals();
     }
@@ -127,5 +197,7 @@ export default {
   preloadCriticalAssets,
   measureCoreWebVitals,
   deferNonCriticalJS,
+  registerServiceWorker,
+  breakLongTask,
   initPerformanceOptimizations,
 };
