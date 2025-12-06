@@ -44,3 +44,28 @@ export { FAQItem } from './FAQItem';
 export { CompanyCardCompact } from './CompanyCardCompact';
 export { TypewriterText } from './TypewriterText';
 export { InfoBanner } from './InfoBanner';
+
+// Wave 4 - Animation & UX components
+export { AnimatedGradient } from './AnimatedGradient';
+export { RippleButton } from './RippleButton';
+export { ParallaxSection } from './ParallaxSection';
+export { CountdownTimer } from './CountdownTimer';
+export { HighlightText } from './HighlightText';
+export { StatCard } from './StatCard';
+export { ScrollIndicator } from './ScrollIndicator';
+export { AnimatedCheckmark } from './AnimatedCheckmark';
+export { FloatingLabel } from './FloatingLabel';
+export { ProgressSteps } from './ProgressSteps';
+export { Tooltip } from './Tooltip';
+export { Badge3D } from './Badge3D';
+export { AnimatedList } from './AnimatedList';
+export { PriceDisplay } from './PriceDisplay';
+export { QuoteCard } from './QuoteCard';
+export { FeatureList } from './FeatureList';
+export { AccordionCard } from './AccordionCard';
+export { InfoTooltip } from './InfoTooltip';
+export { LiveIndicator } from './LiveIndicator';
+export { ComparisonTable } from './ComparisonTable';
+export { TagCloud } from './TagCloud';
+export { EmptyState } from './EmptyState';
+export { NotificationBadge } from './NotificationBadge';
