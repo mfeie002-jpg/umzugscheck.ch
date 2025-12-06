@@ -32,75 +32,74 @@ const steps = [
 
 export const PremiumHowItWorks = () => {
   return (
-    <section className="py-16 md:py-24 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
+    <section className="py-14 md:py-20 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
       <div className="container mx-auto px-4">
-        {/* Section Header - More compact */}
+        {/* Section Header - Compact */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 md:mb-16"
+          transition={{ duration: 0.4 }}
+          className="text-center mb-10 md:mb-12"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary font-semibold text-sm uppercase tracking-wider mb-4">
-            <CheckCircle2 className="h-4 w-4" />
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full text-primary font-semibold text-xs sm:text-sm uppercase tracking-wider mb-3">
+            <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
             So funktioniert's
           </span>
-          <h2 id="how-it-works-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            In 3 einfachen Schritten zum perfekten Umzug
+          <h2 id="how-it-works-heading" className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
+            In 3 Schritten zum perfekten Umzug
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
             Wir <span className="font-bold text-primary">checken</span> für Sie – kein Stress, keine endlosen Telefonate.
           </p>
         </motion.div>
         
-        {/* Steps - Large Image Cards */}
-        <div className="grid md:grid-cols-3 gap-8 md:gap-10 mb-16">
+        {/* Steps Grid */}
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-10">
           {steps.map((step, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.2 }}
+              transition={{ duration: 0.5, delay: idx * 0.15 }}
               className="group"
             >
-              <div className="bg-white rounded-3xl overflow-hidden shadow-premium hover:shadow-deep transition-all duration-500 border border-border">
-                {/* Large Image */}
-                <div className="relative aspect-[4/3] overflow-hidden">
+              <div className="bg-card rounded-2xl overflow-hidden shadow-medium hover:shadow-premium transition-all duration-400 border border-border/50">
+                {/* Image */}
+                <div className="relative aspect-[16/10] overflow-hidden">
                   <img 
                     src={step.image} 
                     alt={step.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* Step Number Overlay */}
-                  <div className="absolute top-4 left-4">
-                    <div className="w-14 h-14 bg-white rounded-2xl shadow-lg flex items-center justify-center">
-                      <span className="text-2xl font-bold text-primary">
+                  {/* Step Number */}
+                  <div className="absolute top-3 left-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-card rounded-xl shadow-lg flex items-center justify-center">
+                      <span className="text-lg sm:text-xl font-bold text-primary">
                         {step.number}
                       </span>
                     </div>
                   </div>
                   {/* Highlight Badge */}
-                  <div className="absolute bottom-4 right-4">
-                    <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/95 backdrop-blur-sm rounded-full text-sm font-bold text-secondary shadow-lg">
-                      <CheckCircle2 className="h-4 w-4" />
+                  <div className="absolute bottom-3 right-3">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-card/95 backdrop-blur-sm rounded-full text-xs font-bold text-secondary shadow-lg">
+                      <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
                       {step.highlight}
                     </span>
                   </div>
                 </div>
                 
                 {/* Content */}
-                <div className="p-8">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
-                      Schritt {step.number}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                <div className="p-5 sm:p-6">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Schritt {step.number}
+                  </span>
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground mt-1 mb-2 group-hover:text-primary transition-colors">
                     {step.title}
                   </h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -111,21 +110,21 @@ export const PremiumHowItWorks = () => {
         
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.5 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
           className="text-center"
         >
           <Link to="/umzugsofferten">
-            <Button size="lg" className="h-14 sm:h-16 px-8 sm:px-12 text-lg sm:text-xl font-semibold shadow-cta hover:shadow-lift transition-all group">
-              <CheckCircle2 className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
+            <Button size="lg" className="h-11 sm:h-12 md:h-14 px-5 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg font-semibold shadow-cta hover:shadow-lift transition-all group">
+              <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
               Jetzt checken lassen
-              <ArrowRight className="ml-2 h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </Button>
           </Link>
-          <p className="mt-5 text-base text-muted-foreground">
-            ✓ 100% kostenlos & unverbindlich – dauert nur 2 Minuten
+          <p className="mt-3 text-xs sm:text-sm text-muted-foreground">
+            100% kostenlos & unverbindlich – dauert nur 2 Minuten
           </p>
         </motion.div>
       </div>
