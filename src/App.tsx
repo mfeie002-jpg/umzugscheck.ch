@@ -10,6 +10,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PreloadResources } from "@/components/PreloadResources";
 import { PageLoadingFallback } from "@/components/ui/loading-fallback";
 import { AnimatedRoutes } from "@/components/AnimatedRoutes";
+import { SecurityHeaders } from "@/components/security/SecurityHeaders";
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -159,6 +160,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <PreloadResources />
+              <SecurityHeaders />
               <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
                 <ScrollProgressBar />
