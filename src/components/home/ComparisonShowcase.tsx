@@ -313,20 +313,20 @@ export const ComparisonShowcase = ({ variant = 'premium' }: ComparisonShowcasePr
   };
 
   return (
-    <section className="py-20 bg-background">
+    <section className="py-16 md:py-20 bg-background" aria-labelledby="comparison-heading">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
-          <Badge className="mb-4 bg-primary/10 text-primary border-0">Firmen vergleichen</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <Badge className="mb-3 bg-primary/10 text-primary border-0">Firmen vergleichen</Badge>
+          <h2 id="comparison-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
             Umzugsfirmen transparent vergleichen
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Finden Sie die perfekte Umzugsfirma für Ihre Bedürfnisse – mit echten Bewertungen und transparenten Preisen.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Finden Sie die perfekte Umzugsfirma – mit echten Bewertungen und transparenten Preisen.
           </p>
         </motion.div>
         {renderVariant()}

@@ -82,85 +82,52 @@ const services = [
 
 export const PremiumServicesGrid = () => {
   return (
-    <section className="py-16 md:py-24 bg-background relative overflow-hidden" aria-labelledby="services-heading">
+    <section className="py-14 md:py-20 bg-background relative overflow-hidden" aria-labelledby="services-heading">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
         backgroundSize: '32px 32px'
-      }} />
+      }} aria-hidden="true" />
       
       <div className="container mx-auto px-4 relative">
-        {/* Section Header - Streamlined */}
+        {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10 md:mb-14"
+          transition={{ duration: 0.4 }}
+          className="text-center mb-8 md:mb-12"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 rounded-full text-secondary font-semibold text-sm uppercase tracking-wider mb-3">
-            <Star className="h-4 w-4" />
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-secondary/10 rounded-full text-secondary font-semibold text-xs sm:text-sm uppercase tracking-wider mb-3">
+            <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
             Unsere Services
           </span>
-          <h2 id="services-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
-            Alle Services rund um Ihren Umzug
+          <h2 id="services-heading" className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2">
+            Alle Services für Ihren Umzug
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Von der Endreinigung bis zum Spezialtransport – finden Sie den passenden Service.
+          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+            Von Endreinigung bis Spezialtransport – alles aus einer Hand.
           </p>
         </motion.div>
         
-        {/* Services Grid with Staggered Cascade Animation */}
-        <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.1
-              }
-            }
-          }}
-        >
+        {/* Services Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
           {services.map((service, idx) => (
             <motion.div
               key={idx}
-              variants={{
-                hidden: { 
-                  opacity: 0, 
-                  y: 40,
-                  scale: 0.95
-                },
-                visible: { 
-                  opacity: 1, 
-                  y: 0,
-                  scale: 1,
-                  transition: {
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 15,
-                    mass: 0.8
-                  }
-                }
-              }}
-              whileHover={{ 
-                scale: 1.03,
-                y: -8,
-                transition: { type: "spring", stiffness: 400, damping: 25 }
-              }}
-              whileTap={{ scale: 0.98 }}
-              className="cursor-pointer"
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.05 }}
+              whileHover={{ y: -6 }}
+              className="group"
             >
               <Link 
                 to={service.link}
-                className="group relative block h-full bg-card rounded-2xl overflow-hidden shadow-premium border border-border/50 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] hover:border-primary/30 transition-all duration-300"
+                className="relative block h-full bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-medium border border-border/50 hover:border-primary/30 transition-all duration-300"
               >
                 {/* Image */}
-                <div className="relative h-44 overflow-hidden">
+                <div className="relative h-28 sm:h-32 md:h-36 overflow-hidden">
                   <img 
                     src={service.image} 
                     alt={service.title}
@@ -171,73 +138,66 @@ export const PremiumServicesGrid = () => {
                   
                   {/* Badge */}
                   {service.badge && (
-                    <motion.span 
-                      className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white ${service.badgeColor}`}
-                      initial={{ scale: 0, opacity: 0 }}
-                      whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + idx * 0.1, type: "spring", stiffness: 200 }}
-                    >
+                    <span className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold text-white ${service.badgeColor}`}>
                       {service.badge}
-                    </motion.span>
+                    </span>
                   )}
                   
                   {/* Title on Image */}
-                  <h3 className="absolute bottom-3 left-4 right-4 text-lg font-bold text-white drop-shadow-lg">
+                  <h3 className="absolute bottom-2 left-3 right-3 text-sm sm:text-base font-bold text-white drop-shadow-lg">
                     {service.title}
                   </h3>
                 </div>
                 
                 {/* Content */}
-                <div className="p-5">
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                <div className="p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-2">
                     {service.description}
                   </p>
                   
                   {/* Link */}
-                  <span className="inline-flex items-center text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
+                  <span className="inline-flex items-center text-xs sm:text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
                     Mehr erfahren
-                    <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                   </span>
                 </div>
               </Link>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
         
         {/* Stats Row */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12 flex flex-wrap justify-center gap-8 md:gap-16"
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="mt-10 flex flex-wrap justify-center gap-6 md:gap-12"
         >
           {[
             { value: "8+", label: "Service-Kategorien" },
             { value: "200+", label: "Partner-Firmen" },
-            { value: "26", label: "Schweizer Kantone" }
+            { value: "26", label: "Kantone abgedeckt" }
           ].map((stat, idx) => (
             <div key={idx} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
+              <div className="text-xl md:text-2xl font-bold text-primary">{stat.value}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
             </div>
           ))}
         </motion.div>
         
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-12"
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="text-center mt-8"
         >
           <Link to="/dienstleistungen">
-            <Button variant="secondary" size="lg" className="h-11 sm:h-12 px-5 sm:px-8 text-sm sm:text-base font-semibold group">
-              <span className="hidden sm:inline">Alle Services ansehen</span>
-              <span className="sm:hidden">Mehr Services</span>
-              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+            <Button variant="secondary" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold group">
+              Alle Services ansehen
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </Button>
           </Link>
         </motion.div>

@@ -1,10 +1,11 @@
 import { Shield, Lock, Award, MapPin, Clock, BadgeCheck } from "lucide-react";
+import { memo } from "react";
 
 const badges = [
   {
     icon: Shield,
     title: "Geprüfte Firmen",
-    description: "Alle Partner sind versichert und zertifiziert"
+    description: "Alle Partner versichert & zertifiziert"
   },
   {
     icon: Lock,
@@ -13,54 +14,56 @@ const badges = [
   },
   {
     icon: BadgeCheck,
-    title: "Verifizierte Bewertungen",
-    description: "Nur echte Kundenmeinungen"
+    title: "Echte Bewertungen",
+    description: "Nur verifizierte Kundenmeinungen"
   },
   {
     icon: MapPin,
-    title: "Schweizweite Abdeckung",
+    title: "Schweizweit",
     description: "Service in allen 26 Kantonen"
   },
   {
     icon: Clock,
     title: "Schnelle Offerten",
-    description: "Angebote innerhalb 24 Stunden"
+    description: "Angebote in 24-48 Stunden"
   },
   {
     icon: Award,
-    title: "Beste Preise",
-    description: "Sparen Sie bis zu 40%"
+    title: "Bis 40% sparen",
+    description: "Durch direkten Vergleich"
   }
 ];
 
-export const TrustBadges = () => {
+export const TrustBadges = memo(() => {
   return (
-    <section className="py-12 md:py-16 bg-secondary/30 border-y">
+    <section className="py-10 md:py-14 bg-muted/30 border-y border-border" aria-label="Warum Umzugscheck.ch">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h3 className="text-2xl md:text-3xl font-bold mb-2">
+        <div className="text-center mb-8">
+          <h3 className="text-xl md:text-2xl font-bold mb-1.5 text-foreground">
             Warum Umzugscheck.ch?
           </h3>
-          <p className="text-muted-foreground">
+          <p className="text-sm md:text-base text-muted-foreground">
             Transparent, sicher und kostenlos
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
           {badges.map((badge, index) => (
             <div 
               key={index} 
-              className="flex flex-col items-center text-center p-4 rounded-xl bg-white shadow-soft hover:shadow-medium transition-shadow"
+              className="flex flex-col items-center text-center p-4 rounded-xl bg-card shadow-soft hover:shadow-medium transition-shadow border border-border/50"
             >
-              <div className="w-12 h-12 rounded-full bg-primary-light flex items-center justify-center mb-3">
-                <badge.icon className="w-6 h-6 text-primary" />
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2.5">
+                <badge.icon className="w-5 h-5 text-primary" aria-hidden="true" />
               </div>
-              <h4 className="font-semibold text-sm mb-1">{badge.title}</h4>
-              <p className="text-xs text-muted-foreground">{badge.description}</p>
+              <h4 className="font-semibold text-xs md:text-sm mb-0.5 text-foreground">{badge.title}</h4>
+              <p className="text-[10px] md:text-xs text-muted-foreground leading-tight">{badge.description}</p>
             </div>
           ))}
         </div>
       </div>
     </section>
   );
-};
+});
+
+TrustBadges.displayName = 'TrustBadges';

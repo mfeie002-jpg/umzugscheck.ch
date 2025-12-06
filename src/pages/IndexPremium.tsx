@@ -15,11 +15,8 @@ import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
-import { lazy, Suspense } from "react";
-
-// Lazy load below-the-fold sections for better LCP
-const LazyPremiumCostExamples = lazy(() => import("@/components/premium/PremiumCostExamples").then(m => ({ default: m.PremiumCostExamples })));
-const LazyPremiumProviderCTA = lazy(() => import("@/components/premium/PremiumProviderCTA").then(m => ({ default: m.PremiumProviderCTA })));
+import { TrustSignals } from "@/components/TrustSignals";
+import { memo, useMemo } from "react";
 
 const IndexPremium = () => {
   const faqItems = [
@@ -102,6 +99,9 @@ const IndexPremium = () => {
     ]
   };
 
+  // Memoize schema to prevent recalculation
+  const schemaScript = useMemo(() => JSON.stringify(schemaOrg), []);
+
   return (
     <div className="min-h-screen bg-background">
       <ScrollProgress />
@@ -134,43 +134,41 @@ const IndexPremium = () => {
         <meta name="geo.region" content="CH" />
         <meta name="geo.placename" content="Schweiz" />
         
-        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
+        <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
       
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* 1. Hero Section - No animation, loads immediately */}
+        {/* 1. Hero Section - Critical, no animation delay */}
         <PremiumHeroSection />
         
-        {/* 2. Social Proof & Testimonials */}
+        {/* 2. Trust Signals - Immediately after hero for credibility */}
+        <TrustSignals />
+        
+        {/* 3. Social Proof & Testimonials */}
         <AnimatedSection animation="fade-up" delay={0}>
           <PremiumSocialProof />
         </AnimatedSection>
         
-        {/* 3. How It Works - 3 Steps */}
-        <AnimatedSection animation="fade-up" delay={50}>
+        {/* 4. How It Works - 3 Steps */}
+        <AnimatedSection animation="fade-up" delay={0}>
           <PremiumHowItWorks />
         </AnimatedSection>
 
-        {/* 4. Comparison Feature - Premium Showcase */}
+        {/* 5. Comparison Feature - Premium Showcase */}
         <AnimatedSection animation="fade-in" delay={0}>
           <ComparisonShowcase variant="premium" />
         </AnimatedSection>
         
-        {/* 5. AI Calculator Showcase */}
+        {/* 6. AI Calculator Showcase */}
         <AnimatedSection animation="scale" delay={0}>
           <PremiumAIShowcase />
         </AnimatedSection>
         
-        {/* 6. Services Grid */}
+        {/* 7. Services Grid */}
         <AnimatedSection animation="fade-up" delay={0}>
           <PremiumServicesGrid />
-        </AnimatedSection>
-        
-        {/* 7. Regions */}
-        <AnimatedSection animation="slide-left" delay={0}>
-          <PremiumRegions />
         </AnimatedSection>
         
         {/* 8. Cost Examples */}
@@ -178,17 +176,22 @@ const IndexPremium = () => {
           <PremiumCostExamples />
         </AnimatedSection>
         
-        {/* 9. Why Us / USPs */}
+        {/* 9. Regions */}
+        <AnimatedSection animation="slide-left" delay={0}>
+          <PremiumRegions />
+        </AnimatedSection>
+        
+        {/* 10. Why Us / USPs */}
         <AnimatedSection animation="scale" delay={0}>
           <PremiumWhyUs />
         </AnimatedSection>
         
-        {/* 10. FAQ */}
+        {/* 11. FAQ */}
         <AnimatedSection animation="fade-in" delay={0}>
           <PremiumFAQ items={faqItems} />
         </AnimatedSection>
         
-        {/* 11. Provider CTA */}
+        {/* 12. Provider CTA */}
         <AnimatedSection animation="fade-up" delay={0}>
           <PremiumProviderCTA />
         </AnimatedSection>
@@ -202,4 +205,4 @@ const IndexPremium = () => {
   );
 };
 
-export default IndexPremium;
+export default memo(IndexPremium);
