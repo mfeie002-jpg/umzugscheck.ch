@@ -10,6 +10,9 @@ import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
 import { swissPostalCodes } from "@/lib/swiss-postal-codes";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { HeroGradient } from "@/components/common/HeroGradient";
+import { GridPattern } from "@/components/common/GridPattern";
+import { MagneticButton } from "@/components/common/MagneticButton";
 
 // Animated Counter Component
 const AnimatedCounter = ({ 
@@ -259,13 +262,8 @@ export const PremiumHeroSection = () => {
         ))}
       </div>
       
-      {/* Subtle Pattern Overlay */}
-      <div className="absolute inset-0 opacity-30 hidden md:block">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.1) 1px, transparent 0)`,
-          backgroundSize: '32px 32px'
-        }} />
-      </div>
+      {/* Grid Pattern Overlay */}
+      <GridPattern className="hidden md:block" size={32} fade />
       
       {/* Content Container */}
       <div className="container mx-auto px-4 py-6 md:py-20 lg:py-24 relative z-10">
@@ -360,20 +358,24 @@ export const PremiumHeroSection = () => {
               <LiveActivityBadge />
             </div>
             
-            {/* Desktop CTAs */}
+            {/* Desktop CTAs with MagneticButton */}
             <div className="hidden lg:flex items-center gap-4 pt-2">
-              <Link to="/umzugsofferten">
-                <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all">
-                  <CheckCircle2 className="mr-2 h-5 w-5" />
-                  Jetzt checken lassen
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/umzugsrechner">
-                <Button size="lg" variant="secondary" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold">
-                  Kosten berechnen
-                </Button>
-              </Link>
+              <MagneticButton strength={0.2}>
+                <Link to="/umzugsofferten">
+                  <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all">
+                    <CheckCircle2 className="mr-2 h-5 w-5" />
+                    Jetzt checken lassen
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </MagneticButton>
+              <MagneticButton strength={0.15}>
+                <Link to="/umzugsrechner">
+                  <Button size="lg" variant="secondary" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold">
+                    Kosten berechnen
+                  </Button>
+                </Link>
+              </MagneticButton>
             </div>
           </motion.div>
           

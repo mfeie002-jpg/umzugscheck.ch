@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Marquee } from "@/components/common/Marquee";
+import { GlowingCard } from "@/components/common/GlowingCard";
+import { NumberTicker } from "@/components/common/NumberTicker";
 import {
   Carousel,
   CarouselContent,
@@ -36,9 +39,9 @@ const displayStats = [
   { value: "26", label: "Kantone" }
 ];
 
-// Memoized review card
+// Memoized review card with GlowingCard
 const ReviewCard = memo(({ testimonial }: { testimonial: Testimonial }) => (
-  <div className="bg-card rounded-xl p-4 md:p-5 shadow-soft border border-border/50 h-full">
+  <GlowingCard className="h-full">
     <div className="flex gap-0.5 mb-2">
       {[...Array(testimonial.rating)].map((_, i) => (
         <Star key={i} className="h-3.5 w-3.5 fill-swiss-gold text-swiss-gold" />
@@ -57,7 +60,7 @@ const ReviewCard = memo(({ testimonial }: { testimonial: Testimonial }) => (
       )}
     </div>
     <div className="text-xs text-muted-foreground">{testimonial.location} • {testimonial.type}</div>
-  </div>
+  </GlowingCard>
 ));
 
 ReviewCard.displayName = 'ReviewCard';
@@ -101,11 +104,19 @@ export const PremiumSocialProof = memo(() => {
   return (
     <section className="py-10 md:py-14 bg-muted/30" aria-labelledby="social-proof-heading">
       <div className="container mx-auto px-4">
-        {/* Stats Row - Compact */}
+        {/* Stats Row with NumberTicker */}
         <div className="grid grid-cols-4 gap-2 md:gap-4 max-w-2xl mx-auto mb-8">
           {displayStats.map((stat, idx) => (
-            <div key={idx} className="text-center p-3 bg-card rounded-lg border border-border/40">
-              <div className="text-lg md:text-2xl font-bold text-primary">{stat.value}</div>
+            <div key={idx} className="text-center p-3 bg-card rounded-lg border border-border/40 hover:border-primary/30 transition-colors">
+              <div className="text-lg md:text-2xl font-bold text-primary">
+                {stat.value.includes("'") ? (
+                  <NumberTicker value={parseInt(stat.value.replace(/[^0-9]/g, ''))} suffix="+" />
+                ) : stat.value.includes("/") ? (
+                  stat.value
+                ) : (
+                  <NumberTicker value={parseInt(stat.value.replace(/[^0-9]/g, ''))} suffix={stat.value.includes("+") ? "+" : ""} />
+                )}
+              </div>
               <div className="text-[10px] md:text-xs text-muted-foreground">{stat.label}</div>
             </div>
           ))}

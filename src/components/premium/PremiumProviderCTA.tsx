@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { memo } from "react";
+import { NumberTicker } from "@/components/common/NumberTicker";
+import { BlurReveal } from "@/components/common/BlurReveal";
+import { HeroGradient } from "@/components/common/HeroGradient";
 
 const benefits = [
   { icon: Users, text: "Qualifizierte Kundenanfragen schweizweit" },
@@ -21,11 +24,14 @@ const stats = [
 export const PremiumProviderCTA = memo(() => {
   return (
     <section className="py-12 md:py-16 bg-gradient-to-br from-primary via-primary/95 to-primary/90 relative overflow-hidden" aria-labelledby="provider-cta-heading">
+      {/* HeroGradient Background */}
+      <HeroGradient variant="mesh" className="opacity-20" />
+      
       {/* Decorative */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" aria-hidden="true" />
       <div className="absolute bottom-0 right-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl" aria-hidden="true" />
       
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left */}
@@ -84,11 +90,17 @@ export const PremiumProviderCTA = memo(() => {
               transition={{ delay: 0.1 }}
             >
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 border border-white/20">
-                {/* Stats */}
+                {/* Stats with NumberTicker */}
                 <div className="grid grid-cols-3 gap-2 mb-4">
-                  {stats.map((s, i) => (
+                  {[
+                    { value: 200, label: "Partner", suffix: "+" },
+                    { value: 15000, label: "Vermittelt", suffix: "+" },
+                    { value: 98, label: "Zufrieden", suffix: "%" }
+                  ].map((s, i) => (
                     <div key={i} className="text-center p-2.5 bg-white/10 rounded-lg">
-                      <div className="text-xl font-bold text-primary">{s.value}</div>
+                      <div className="text-xl font-bold text-primary">
+                        <NumberTicker value={s.value} suffix={s.suffix} />
+                      </div>
                       <div className="text-[10px] text-white/70">{s.label}</div>
                     </div>
                   ))}
