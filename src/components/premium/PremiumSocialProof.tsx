@@ -197,10 +197,10 @@ export const PremiumSocialProof = () => {
   );
 
   return (
-    <section className="py-12 md:py-24 bg-muted/30">
+    <section className="py-12 md:py-20 bg-muted/30" aria-labelledby="social-proof-heading">
       <div className="container mx-auto px-4">
         {/* Header with Image */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-10 md:mb-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-10 md:mb-14">
           {/* Left: Image */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}

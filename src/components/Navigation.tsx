@@ -83,24 +83,27 @@ export const Navigation = () => {
   );
 
   return (
-    <nav className="bg-background border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
-      <div className="container mx-auto px-2 sm:px-4">
-        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
-          {/* Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-4 sm:ml-0"
-            aria-label="Zur Startseite von Umzugscheck.ch"
-          >
-            <img 
-              src={logo} 
-              alt="Umzugscheck.ch Logo" 
-              className="h-8 sm:h-10 md:h-12 w-auto"
-              sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 196px"
-              width={196}
-              height={48}
-            />
-          </Link>
+    <header>
+      <nav className="bg-background border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
+            {/* Logo */}
+            <Link 
+              to="/" 
+              className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-4 sm:ml-0"
+              aria-label="Zur Startseite von Umzugscheck.ch"
+            >
+              <img 
+                src={logo} 
+                alt="Umzugscheck.ch - Schweizer Umzugsvergleich" 
+                className="h-8 sm:h-10 md:h-12 w-auto"
+                sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 196px"
+                width={196}
+                height={48}
+                loading="eager"
+                fetchPriority="high"
+              />
+            </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
@@ -222,5 +225,6 @@ export const Navigation = () => {
         onClose={() => setIsMobileMenuOpen(false)} 
       />
     </nav>
+    </header>
   );
 };

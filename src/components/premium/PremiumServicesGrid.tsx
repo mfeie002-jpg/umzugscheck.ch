@@ -82,7 +82,7 @@ const services = [
 
 export const PremiumServicesGrid = () => {
   return (
-    <section className="py-20 md:py-28 bg-background relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-background relative overflow-hidden" aria-labelledby="services-heading">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
@@ -90,28 +90,23 @@ export const PremiumServicesGrid = () => {
       }} />
       
       <div className="container mx-auto px-4 relative">
-        {/* Section Header */}
+        {/* Section Header - Streamlined */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-14"
         >
-          <motion.span 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 rounded-full text-secondary font-semibold text-sm uppercase tracking-wider mb-4"
-          >
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 rounded-full text-secondary font-semibold text-sm uppercase tracking-wider mb-3">
             <Star className="h-4 w-4" />
             Unsere Services
-          </motion.span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          </span>
+          <h2 id="services-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
             Alle Services rund um Ihren Umzug
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Von der Endreinigung bis zum Spezialtransport – finden Sie den passenden Service für Ihre Bedürfnisse.
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            Von der Endreinigung bis zum Spezialtransport – finden Sie den passenden Service.
           </p>
         </motion.div>
         
