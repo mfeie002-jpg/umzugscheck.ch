@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 
 export const PremiumMobileAppBanner = () => {
   return (
-    <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground overflow-hidden">
+    <section className="py-10 md:py-16 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
           {/* Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.4 }}
             className="flex-1 text-center lg:text-left"
           >
             <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full text-sm mb-6">
@@ -47,12 +48,13 @@ export const PremiumMobileAppBanner = () => {
             </div>
           </motion.div>
 
-          {/* Phone mockup */}
+          {/* Phone mockup - hidden on mobile for performance */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex-shrink-0"
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.4 }}
+            className="flex-shrink-0 hidden md:block"
           >
             <div className="relative">
               <div className="w-64 h-[500px] bg-black rounded-[3rem] p-2 shadow-2xl">

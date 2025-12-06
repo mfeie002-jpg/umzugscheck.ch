@@ -120,8 +120,8 @@ export const PremiumHeroSection = () => {
         <img 
           src={heroFamilyMoving}
           alt=""
-          fetchPriority="high"
-          decoding="sync"
+          loading="eager"
+          decoding="async"
           sizes="100vw"
           className="absolute inset-0 w-full h-full object-cover object-center"
           width={1920}
