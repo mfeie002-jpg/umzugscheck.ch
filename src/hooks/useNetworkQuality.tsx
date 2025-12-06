@@ -4,32 +4,48 @@ interface NetworkInfo {
   effectiveType: '4g' | '3g' | '2g' | 'slow-2g';
   downlink: number;
   saveData: boolean;
+  isOnline: boolean;
 }
 
 export const useNetworkQuality = () => {
   const [networkInfo, setNetworkInfo] = useState<NetworkInfo>({
     effectiveType: '4g',
     downlink: 10,
-    saveData: false
+    saveData: false,
+    isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // @ts-ignore - Navigator connection API
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     
-    if (connection) {
-      const updateNetworkInfo = () => {
-        setNetworkInfo({
-          effectiveType: connection.effectiveType || '4g',
-          downlink: connection.downlink || 10,
-          saveData: connection.saveData || false
-        });
-      };
+    const updateNetworkInfo = () => {
+      setNetworkInfo({
+        effectiveType: connection?.effectiveType || '4g',
+        downlink: connection?.downlink || 10,
+        saveData: connection?.saveData || false,
+        isOnline: navigator.onLine
+      });
+      setIsLoading(false);
+    };
 
-      updateNetworkInfo();
+    updateNetworkInfo();
+
+    if (connection) {
       connection.addEventListener('change', updateNetworkInfo);
-      return () => connection.removeEventListener('change', updateNetworkInfo);
     }
+
+    window.addEventListener('online', updateNetworkInfo);
+    window.addEventListener('offline', updateNetworkInfo);
+
+    return () => {
+      if (connection) {
+        connection.removeEventListener('change', updateNetworkInfo);
+      }
+      window.removeEventListener('online', updateNetworkInfo);
+      window.removeEventListener('offline', updateNetworkInfo);
+    };
   }, []);
 
   const isSlowNetwork = networkInfo.effectiveType === '2g' || 
@@ -41,6 +57,7 @@ export const useNetworkQuality = () => {
   return {
     ...networkInfo,
     isSlowNetwork,
-    shouldReduceQuality
+    shouldReduceQuality,
+    isLoading
   };
 };
