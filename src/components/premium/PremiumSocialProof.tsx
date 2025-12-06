@@ -99,7 +99,7 @@ export const PremiumSocialProof = memo(() => {
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
   return (
-    <section className="py-12 md:py-16 bg-muted/30" aria-labelledby="social-proof-heading">
+    <section className="py-10 md:py-14 bg-muted/30" aria-labelledby="social-proof-heading">
       <div className="container mx-auto px-4">
         {/* Stats Row - Compact */}
         <div className="grid grid-cols-4 gap-2 md:gap-4 max-w-2xl mx-auto mb-8">

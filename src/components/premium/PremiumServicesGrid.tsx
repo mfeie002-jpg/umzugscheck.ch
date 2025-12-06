@@ -82,7 +82,7 @@ const services = [
 
 export const PremiumServicesGrid = () => {
   return (
-    <section className="py-14 md:py-20 bg-background relative overflow-hidden" aria-labelledby="services-heading">
+    <section className="py-12 md:py-16 bg-background relative overflow-hidden" aria-labelledby="services-heading">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,

@@ -32,7 +32,7 @@ const steps = [
 
 export const PremiumHowItWorks = () => {
   return (
-    <section className="py-14 md:py-20 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
+    <section className="py-12 md:py-16 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
       <div className="container mx-auto px-4">
         {/* Section Header - Compact */}
         <motion.div
