@@ -16,10 +16,22 @@ import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
 import { TrustSignals } from "@/components/TrustSignals";
-import { memo, useMemo } from "react";
+import { memo, useMemo, lazy, Suspense } from "react";
+
+// Lazy load below-fold sections for performance
+const LazyPremiumCostExamples = lazy(() => import("@/components/premium/PremiumCostExamples").then(m => ({ default: m.PremiumCostExamples })));
+const LazyPremiumProviderCTA = lazy(() => import("@/components/premium/PremiumProviderCTA").then(m => ({ default: m.PremiumProviderCTA })));
+
+// Section loading fallback
+const SectionLoader = () => (
+  <div className="py-16 flex justify-center" aria-hidden="true">
+    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 const IndexPremium = () => {
-  const faqItems = [
+  // FAQ data - memoized
+  const faqItems = useMemo(() => [
     {
       question: "Wie funktioniert der Vergleich genau?",
       answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser AI-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen in Ihrer Region. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten zum Vergleichen."
@@ -42,7 +54,7 @@ const IndexPremium = () => {
     },
     {
       question: "Was passiert, wenn etwas beschädigt wird?",
-      answer: "Alle unsere Partnerfirmen sind vollumfänglich versichert. Im unwahrscheinlichen Fall eines Schadens sind Sie durch die Transportversicherung der Umzugsfirma geschützt. Wir arbeiten nur mit versicherten Partnern zusammen."
+      answer: "Alle unsere Partnerfirmen sind vollumfänglich versichert. Im unwahrscheinlichen Fall eines Schadens sind Sie durch die Transportversicherung der Umzugsfirma geschützt."
     },
     {
       question: "Kann ich auch Firmenumzüge vergleichen?",
@@ -52,9 +64,10 @@ const IndexPremium = () => {
       question: "In welchen Regionen ist der Service verfügbar?",
       answer: "Unser Service ist schweizweit verfügbar. Wir haben Partner in allen 26 Kantonen und decken sowohl städtische als auch ländliche Gebiete ab."
     }
-  ];
+  ], []);
 
-  const schemaOrg = {
+  // Memoized schema
+  const schemaScript = useMemo(() => JSON.stringify({
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -64,8 +77,7 @@ const IndexPremium = () => {
         "url": "https://umzugscheck.ch",
         "logo": "https://umzugscheck.ch/logo.png",
         "description": "Die führende Schweizer Plattform für den Vergleich von Umzugsfirmen.",
-        "areaServed": "CH",
-        "sameAs": []
+        "areaServed": "CH"
       },
       {
         "@type": "WebSite",
@@ -79,43 +91,34 @@ const IndexPremium = () => {
         "mainEntity": faqItems.map(item => ({
           "@type": "Question",
           "name": item.question,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": item.answer
-          }
+          "acceptedAnswer": { "@type": "Answer", "text": item.answer }
         }))
       },
       {
         "@type": "AggregateRating",
-        "itemReviewed": {
-          "@type": "Organization",
-          "name": "Umzugscheck.ch"
-        },
+        "itemReviewed": { "@type": "Organization", "name": "Umzugscheck.ch" },
         "ratingValue": "4.8",
         "bestRating": "5",
         "worstRating": "1",
         "ratingCount": "2847"
       }
     ]
-  };
-
-  // Memoize schema to prevent recalculation
-  const schemaScript = useMemo(() => JSON.stringify(schemaOrg), []);
+  }), [faqItems]);
 
   return (
     <div className="min-h-screen bg-background">
       <ScrollProgress />
       <Helmet>
-        <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
+        <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten | Umzugscheck.ch</title>
         <meta 
           name="description" 
-          content="Vergleichen Sie 200+ geprüfte Schweizer Umzugsfirmen kostenlos. KI-gestützte Preisanalyse, echte Bewertungen, bis zu 40% sparen. Jetzt unverbindlich bis zu 5 Offerten erhalten!" 
+          content="Vergleichen Sie 200+ geprüfte Schweizer Umzugsfirmen kostenlos. KI-gestützte Preisanalyse, echte Bewertungen, bis zu 40% sparen. Jetzt unverbindlich Offerten erhalten!" 
         />
-        <meta name="keywords" content="Umzug Schweiz 2025, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten Rechner, günstige Umzugsfirma, beste Umzugsfirma Schweiz, Umzug Zürich, Umzug Bern, Umzug Basel" />
+        <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten Rechner, günstige Umzugsfirma, beste Umzugsfirma Schweiz" />
         <link rel="canonical" href="https://umzugscheck.ch/" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Umzugsfirmen vergleichen Schweiz – Die Nr. 1 Plattform | Umzugscheck.ch" />
+        <meta property="og:title" content="Umzugsfirmen vergleichen – Nr. 1 in der Schweiz | Umzugscheck.ch" />
         <meta property="og:description" content="200+ geprüfte Umzugsfirmen. KI-Preisrechner. Echte Bewertungen. Bis zu 40% sparen!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/" />
@@ -132,7 +135,6 @@ const IndexPremium = () => {
         <meta name="robots" content="index, follow, max-image-preview:large" />
         <meta name="author" content="Umzugscheck.ch" />
         <meta name="geo.region" content="CH" />
-        <meta name="geo.placename" content="Schweiz" />
         
         <script type="application/ld+json">{schemaScript}</script>
       </Helmet>
@@ -140,65 +142,69 @@ const IndexPremium = () => {
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* 1. Hero Section - Critical, no animation delay */}
+        {/* 1. Hero - Critical path, no lazy loading */}
         <PremiumHeroSection />
         
-        {/* 2. Trust Signals - Immediately after hero for credibility */}
+        {/* 2. Trust Signals - Immediate credibility */}
         <TrustSignals />
         
-        {/* 3. Social Proof & Testimonials */}
-        <AnimatedSection animation="fade-up" delay={0}>
+        {/* 3. Social Proof */}
+        <AnimatedSection animation="fade-up">
           <PremiumSocialProof />
         </AnimatedSection>
         
-        {/* 4. How It Works - 3 Steps */}
-        <AnimatedSection animation="fade-up" delay={0}>
+        {/* 4. How It Works */}
+        <AnimatedSection animation="fade-up">
           <PremiumHowItWorks />
         </AnimatedSection>
 
-        {/* 5. Comparison Feature - Premium Showcase */}
-        <AnimatedSection animation="fade-in" delay={0}>
+        {/* 5. Comparison Feature */}
+        <AnimatedSection animation="fade-in">
           <ComparisonShowcase variant="premium" />
         </AnimatedSection>
         
         {/* 6. AI Calculator Showcase */}
-        <AnimatedSection animation="scale" delay={0}>
+        <AnimatedSection animation="scale">
           <PremiumAIShowcase />
         </AnimatedSection>
         
         {/* 7. Services Grid */}
-        <AnimatedSection animation="fade-up" delay={0}>
+        <AnimatedSection animation="fade-up">
           <PremiumServicesGrid />
         </AnimatedSection>
         
-        {/* 8. Cost Examples */}
-        <AnimatedSection animation="fade-up" delay={0}>
-          <PremiumCostExamples />
-        </AnimatedSection>
+        {/* 8. Cost Examples - Lazy loaded */}
+        <Suspense fallback={<SectionLoader />}>
+          <AnimatedSection animation="fade-up">
+            <LazyPremiumCostExamples />
+          </AnimatedSection>
+        </Suspense>
         
         {/* 9. Regions */}
-        <AnimatedSection animation="slide-left" delay={0}>
+        <AnimatedSection animation="slide-left">
           <PremiumRegions />
         </AnimatedSection>
         
         {/* 10. Why Us / USPs */}
-        <AnimatedSection animation="scale" delay={0}>
+        <AnimatedSection animation="scale">
           <PremiumWhyUs />
         </AnimatedSection>
         
         {/* 11. FAQ */}
-        <AnimatedSection animation="fade-in" delay={0}>
+        <AnimatedSection animation="fade-in">
           <PremiumFAQ items={faqItems} />
         </AnimatedSection>
         
-        {/* 12. Provider CTA */}
-        <AnimatedSection animation="fade-up" delay={0}>
-          <PremiumProviderCTA />
-        </AnimatedSection>
+        {/* 12. Provider CTA - Lazy loaded */}
+        <Suspense fallback={<SectionLoader />}>
+          <AnimatedSection animation="fade-up">
+            <LazyPremiumProviderCTA />
+          </AnimatedSection>
+        </Suspense>
       </main>
       
       {/* Mobile Sticky CTA */}
-      <StickyMobileCTA text="Offerten vergleichen" link="/umzugsofferten" />
+      <StickyMobileCTA />
       
       <ScrollToTop />
     </div>

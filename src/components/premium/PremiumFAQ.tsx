@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { HelpCircle, MessageCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { memo, useMemo } from "react";
 
 interface FAQItem {
   question: string;
@@ -13,71 +14,67 @@ interface PremiumFAQProps {
   items: FAQItem[];
 }
 
-export const PremiumFAQ = ({ items }: PremiumFAQProps) => {
-  // Generate FAQ Schema
-  const faqSchema = {
+export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
+  // Memoize FAQ Schema
+  const faqSchemaScript = useMemo(() => JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": items.map(item => ({
       "@type": "Question",
       "name": item.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": item.answer
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": item.answer }
     }))
-  };
+  }), [items]);
 
   return (
-    <section className="py-16 md:py-20 bg-background relative overflow-hidden" aria-labelledby="faq-heading">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
+    <section className="py-14 md:py-20 bg-background" aria-labelledby="faq-heading">
+      {/* Decorative */}
+      <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" aria-hidden="true" />
       
-      <div className="container mx-auto px-4 relative">
-        <div className="max-w-3xl mx-auto">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="text-center mb-10"
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 rounded-full text-secondary font-semibold text-sm uppercase tracking-wider mb-4">
-              <HelpCircle className="h-4 w-4" aria-hidden="true" />
-              Häufige Fragen
-            </span>
-            <h2 id="faq-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
-              Fragen zum Umzugsvergleich
-            </h2>
-            <p className="text-base md:text-lg text-muted-foreground">
-              Alles, was Sie über unseren Service wissen müssen.
-            </p>
-          </motion.div>
-          
-          {/* FAQ Accordion */}
+      <div className="container mx-auto px-4">
+        <div className="max-w-2xl mx-auto">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            className="text-center mb-8"
           >
-            <Accordion type="single" collapsible className="space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-secondary/10 rounded-full text-secondary font-semibold text-xs uppercase tracking-wider mb-3">
+              <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" />
+              FAQ
+            </span>
+            <h2 id="faq-heading" className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Häufige Fragen
+            </h2>
+            <p className="text-sm md:text-base text-muted-foreground">
+              Alles Wichtige zu unserem Service.
+            </p>
+          </motion.div>
+          
+          {/* Accordion */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            <Accordion type="single" collapsible className="space-y-2">
               {items.map((item, idx) => (
                 <AccordionItem 
                   key={idx}
                   value={`item-${idx}`}
-                  className="bg-card rounded-xl border border-border/50 px-5 shadow-sm data-[state=open]:shadow-medium data-[state=open]:border-primary/20 transition-all"
+                  className="bg-card rounded-lg border border-border/50 px-4 shadow-sm data-[state=open]:shadow-soft data-[state=open]:border-primary/20 transition-all"
                 >
-                  <AccordionTrigger className="text-left font-semibold text-foreground hover:text-primary py-4 hover:no-underline group text-sm md:text-base">
-                    <div className="flex items-center gap-3">
-                      <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors" aria-hidden="true">
-                        {(idx + 1).toString().padStart(2, '0')}
+                  <AccordionTrigger className="text-left font-medium text-foreground hover:text-primary py-3 hover:no-underline text-sm">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex-shrink-0 w-6 h-6 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground" aria-hidden="true">
+                        {idx + 1}
                       </span>
                       <span>{item.question}</span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-4 pl-10 leading-relaxed text-sm md:text-base">
+                  <AccordionContent className="text-muted-foreground pb-3 pl-8 text-sm leading-relaxed">
                     {item.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -87,26 +84,20 @@ export const PremiumFAQ = ({ items }: PremiumFAQProps) => {
           
           {/* Contact CTA */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            className="mt-10 text-center"
+            transition={{ delay: 0.2 }}
+            className="mt-8 text-center"
           >
-            <div className="bg-muted/50 rounded-xl p-6 border border-border/50">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                <MessageCircle className="h-6 w-6 text-primary" aria-hidden="true" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">
-                Noch Fragen?
-              </h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Unser Team hilft Ihnen gerne weiter – kostenlos und unverbindlich.
-              </p>
+            <div className="bg-muted/50 rounded-lg p-5 border border-border/50 inline-block">
+              <MessageCircle className="h-5 w-5 text-primary mx-auto mb-2" aria-hidden="true" />
+              <p className="text-sm font-medium text-foreground mb-1">Noch Fragen?</p>
+              <p className="text-xs text-muted-foreground mb-3">Wir helfen gerne weiter.</p>
               <Link to="/kontakt">
-                <Button variant="outline" size="sm" className="group">
-                  Kontakt aufnehmen
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                <Button variant="outline" size="sm" className="text-xs h-8 group">
+                  Kontakt
+                  <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
                 </Button>
               </Link>
             </div>
@@ -114,8 +105,10 @@ export const PremiumFAQ = ({ items }: PremiumFAQProps) => {
         </div>
       </div>
 
-      {/* FAQ Schema Script */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      {/* Schema */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaScript }} />
     </section>
   );
-};
+});
+
+PremiumFAQ.displayName = 'PremiumFAQ';

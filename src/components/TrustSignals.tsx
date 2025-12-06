@@ -1,5 +1,6 @@
-import { Shield, Users, Star, Award, CheckCircle2, Clock } from "lucide-react";
+import { Shield, Users, Star, Award, CheckCircle2, Clock, Zap } from "lucide-react";
 import { memo } from "react";
+import { Link } from "react-router-dom";
 
 const stats = [
   {
@@ -11,61 +12,66 @@ const stats = [
   {
     icon: Award,
     number: "200+",
-    label: "Geprüfte Umzugsfirmen",
+    label: "Geprüfte Firmen",
     color: "text-secondary"
   },
   {
     icon: Star,
     number: "4.8/5",
-    label: "Ø Kundenbewertung",
+    label: "Ø Bewertung",
     color: "text-swiss-gold"
   },
   {
     icon: Shield,
     number: "100%",
-    label: "Kostenlos & unverbindlich",
+    label: "Kostenlos",
     color: "text-primary"
   }
 ];
 
+const quickTrust = [
+  { icon: CheckCircle2, text: "Schweizweit" },
+  { icon: Zap, text: "Offerten in 24h" },
+  { icon: Shield, text: "Versicherte Partner" },
+];
+
 export const TrustSignals = memo(() => {
   return (
-    <section className="py-8 md:py-12 bg-muted/30 border-y border-border" aria-label="Vertrauenssignale">
+    <section className="py-6 md:py-10 bg-muted/30 border-y border-border" aria-label="Vertrauenssignale">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {/* Stats Grid - More compact */}
+          <div className="grid grid-cols-4 gap-2 md:gap-4">
             {stats.map((stat, index) => (
               <div 
                 key={index} 
-                className="text-center p-4 rounded-xl bg-card border border-border/50 hover:shadow-soft transition-shadow"
+                className="text-center p-2 md:p-4 rounded-lg bg-card border border-border/40 hover:border-primary/30 transition-colors"
               >
-                <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-muted mb-3">
-                  <stat.icon className={`w-5 h-5 md:w-6 md:h-6 ${stat.color}`} aria-hidden="true" />
-                </div>
-                <div className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-0.5">
+                <stat.icon className={`w-5 h-5 md:w-6 md:h-6 ${stat.color} mx-auto mb-1.5`} aria-hidden="true" />
+                <div className="text-base md:text-xl lg:text-2xl font-bold text-foreground">
                   {stat.number}
                 </div>
-                <div className="text-xs md:text-sm text-muted-foreground font-medium">
+                <div className="text-[10px] md:text-xs text-muted-foreground font-medium leading-tight">
                   {stat.label}
                 </div>
               </div>
             ))}
           </div>
           
-          {/* Quick Trust Row */}
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 mt-6 pt-6 border-t border-border/50 text-xs md:text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
-              Schweizweit verfügbar
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
-              Offerten in 24-48h
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Shield className="h-4 w-4 text-primary" aria-hidden="true" />
-              Versicherte Partner
-            </span>
+          {/* Quick Trust Row - More compact */}
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 mt-4 pt-4 border-t border-border/40 text-xs text-muted-foreground">
+            {quickTrust.map((item, i) => (
+              <span key={i} className="flex items-center gap-1">
+                <item.icon className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                {item.text}
+              </span>
+            ))}
+            <Link 
+              to="/umzugsofferten" 
+              className="text-primary font-medium hover:underline underline-offset-2"
+            >
+              Jetzt vergleichen →
+            </Link>
           </div>
         </div>
       </div>
