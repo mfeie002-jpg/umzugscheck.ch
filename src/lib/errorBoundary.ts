@@ -2,7 +2,7 @@ import { logger } from './logger';
 
 export const handleError = (error: Error, errorInfo?: any) => {
   // Log error for debugging
-  logger.error('Application error:', { errorMessage: error.message, errorInfo });
+  logger.error('Application error:', { error: error.message, stack: error.stack, errorInfo });
   
   // Send to error tracking service in production
   if (import.meta.env.PROD) {

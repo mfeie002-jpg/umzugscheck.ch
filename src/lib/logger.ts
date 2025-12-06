@@ -43,33 +43,19 @@ export const logger = {
     }
   },
   
-  error: (message: string, errorOrContext?: Error | unknown | LogContext, context?: LogContext) => {
-    // Handle both signatures: (message, error, context) and (message, context)
-    let sanitizedContext: LogContext = {};
-    let errorMessage: string | undefined;
+  error: (message: string, error?: Error | unknown, context?: LogContext) => {
+    // Always log errors with sanitized data
+    const sanitizedContext = context ? sanitizeContext(context) : {};
     
-    if (errorOrContext instanceof Error) {
-      // First signature: logger.error("msg", error, context?)
-      errorMessage = errorOrContext.message;
-      sanitizedContext = context ? sanitizeContext(context) : {};
-    } else if (errorOrContext && typeof errorOrContext === 'object') {
-      // Check if it looks like an error-like object
-      const maybeError = errorOrContext as any;
-      if (maybeError.message && typeof maybeError.message === 'string') {
-        errorMessage = maybeError.message;
-        sanitizedContext = context ? sanitizeContext(context) : {};
-      } else {
-        // Second signature: logger.error("msg", context)
-        sanitizedContext = sanitizeContext(errorOrContext as LogContext);
-      }
+    if (isProduction) {
+      // In production, log minimal error info
+      console.error(`[ERROR] ${message}`, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        ...sanitizedContext,
+      });
+    } else {
+      console.error(`[ERROR] ${message}`, error, sanitizedContext);
     }
-    
-    const logPayload = errorMessage 
-      ? { error: errorMessage, ...sanitizedContext } 
-      : sanitizedContext;
-    
-    // Always log errors (both dev and prod)
-    console.error(`[ERROR] ${message}`, Object.keys(logPayload).length > 0 ? logPayload : '');
   },
   
   debug: (message: string, context?: LogContext) => {
