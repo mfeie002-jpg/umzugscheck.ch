@@ -1,5 +1,6 @@
+import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, CheckCircle, ArrowUpRight } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 
@@ -34,11 +35,11 @@ const footerLinks = {
   ]
 };
 
-export const PremiumFooter = () => {
-  const currentYear = new Date().getFullYear();
+export const PremiumFooter = memo(function PremiumFooter() {
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
   
   return (
-    <footer className="bg-uc-footer text-uc-footer-text">
+    <footer className="bg-uc-footer text-uc-footer-text" role="contentinfo">
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10">
@@ -86,9 +87,10 @@ export const PremiumFooter = () => {
                 <li key={idx}>
                   <Link 
                     to={link.href} 
-                    className="text-sm text-uc-footer-text/70 hover:text-white transition-colors"
+                    className="text-sm text-uc-footer-text/70 hover:text-white transition-colors inline-flex items-center gap-1 group"
                   >
                     {link.label}
+                    <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0.5 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
                   </Link>
                 </li>
               ))}
@@ -179,4 +181,4 @@ export const PremiumFooter = () => {
       </div>
     </footer>
   );
-};
+});

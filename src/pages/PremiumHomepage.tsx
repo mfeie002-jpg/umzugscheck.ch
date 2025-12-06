@@ -1,3 +1,4 @@
+import { memo, useMemo, Suspense, lazy } from "react";
 import { Helmet } from "react-helmet";
 import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -15,7 +16,7 @@ import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
 
-const PremiumHomepage = () => {
+const PremiumHomepage = memo(function PremiumHomepage() {
   const faqItems = [
     {
       question: "Wie funktioniert der Vergleich genau?",
@@ -51,7 +52,7 @@ const PremiumHomepage = () => {
     }
   ];
 
-  const schemaOrg = {
+  const schemaOrg = useMemo(() => ({
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -62,6 +63,12 @@ const PremiumHomepage = () => {
         "logo": "https://umzugscheck.ch/logo.png",
         "description": "Die führende Schweizer Plattform für den Vergleich von Umzugsfirmen.",
         "areaServed": "CH",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+41-44-500-12-34",
+          "contactType": "customer service",
+          "availableLanguage": ["German", "French", "Italian"]
+        },
         "sameAs": []
       },
       {
@@ -69,7 +76,12 @@ const PremiumHomepage = () => {
         "@id": "https://umzugscheck.ch/#website",
         "url": "https://umzugscheck.ch",
         "name": "Umzugscheck.ch",
-        "publisher": { "@id": "https://umzugscheck.ch/#organization" }
+        "publisher": { "@id": "https://umzugscheck.ch/#organization" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://umzugscheck.ch/suche?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
       },
       {
         "@type": "FAQPage",
@@ -92,9 +104,19 @@ const PremiumHomepage = () => {
         "bestRating": "5",
         "worstRating": "1",
         "ratingCount": "2847"
+      },
+      {
+        "@type": "Service",
+        "name": "Umzugsfirmen Vergleich Schweiz",
+        "provider": { "@id": "https://umzugscheck.ch/#organization" },
+        "areaServed": {
+          "@type": "Country",
+          "name": "Switzerland"
+        },
+        "serviceType": "Moving Service Comparison"
       }
     ]
-  };
+  }), [faqItems]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -158,6 +180,6 @@ const PremiumHomepage = () => {
       <ScrollToTop />
     </div>
   );
-};
+});
 
 export default PremiumHomepage;
