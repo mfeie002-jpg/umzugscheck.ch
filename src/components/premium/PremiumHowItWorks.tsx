@@ -32,29 +32,24 @@ const steps = [
 
 export const PremiumHowItWorks = () => {
   return (
-    <section className="py-20 md:py-32 bg-muted/30 overflow-hidden">
+    <section className="py-16 md:py-24 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
+        {/* Section Header - More compact */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-12 md:mb-16"
         >
-          <motion.span 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary/10 rounded-full text-primary font-semibold text-sm uppercase tracking-wider mb-6"
-          >
-            <CheckCircle2 className="h-5 w-5" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary font-semibold text-sm uppercase tracking-wider mb-4">
+            <CheckCircle2 className="h-4 w-4" />
             So funktioniert's
-          </motion.span>
-          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
+          </span>
+          <h2 id="how-it-works-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
             In 3 einfachen Schritten zum perfekten Umzug
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Wir <span className="font-bold text-primary">checken</span> für Sie – kein Stress, keine endlosen Telefonate.
           </p>
         </motion.div>

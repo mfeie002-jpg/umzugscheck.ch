@@ -23,9 +23,9 @@ export const PremiumRegions = () => {
   const otherRegions = regions.filter(r => !r.popular);
   
   return (
-    <section className="py-20 md:py-28 bg-muted/30 relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-muted/30 relative overflow-hidden" aria-labelledby="regions-heading">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
+      <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
       }} />
       
@@ -36,23 +36,17 @@ export const PremiumRegions = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-10 md:mb-12"
         >
-          <motion.span 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary font-semibold text-sm uppercase tracking-wider mb-4"
-          >
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary font-semibold text-sm uppercase tracking-wider mb-3">
             <MapPin className="h-4 w-4" />
             Schweizweite Abdeckung
-          </motion.span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          </span>
+          <h2 id="regions-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
             Umzugsfirmen in Ihrer Region
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Über 200 geprüfte Umzugsfirmen in allen 26 Kantonen. Finden Sie lokale Experten, 
-            die Ihre Region und deren Besonderheiten kennen.
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            Über 200 geprüfte Umzugsfirmen in allen 26 Kantonen – lokale Experten, die Ihre Region kennen.
           </p>
         </motion.div>
         

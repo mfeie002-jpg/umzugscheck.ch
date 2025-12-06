@@ -37,27 +37,27 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground">
+    <footer className="bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground" role="contentinfo">
       <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(ORGANIZATION_SCHEMA)}
         </script>
       </Helmet>
       
-      {/* Trust Bar */}
+      {/* Trust Bar - Enhanced */}
       <div className="border-b border-primary-foreground/10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-sm text-primary-foreground/80">
-            <span className="flex items-center gap-1.5">
-              <Shield className="h-4 w-4" />
+        <div className="container mx-auto px-4 py-5">
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm text-primary-foreground/90">
+            <span className="flex items-center gap-2 font-medium">
+              <Shield className="h-5 w-5" />
               SSL-verschlüsselt
             </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4" />
+            <span className="flex items-center gap-2 font-medium">
+              <CheckCircle className="h-5 w-5" />
               DSGVO-konform
             </span>
-            <span className="flex items-center gap-1.5">
-              <Award className="h-4 w-4" />
+            <span className="flex items-center gap-2 font-medium">
+              <Award className="h-5 w-5" />
               Swiss Made
             </span>
           </div>

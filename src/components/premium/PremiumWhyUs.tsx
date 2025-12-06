@@ -43,7 +43,7 @@ const usps = [
 
 export const PremiumWhyUs = () => {
   return (
-    <section className="py-20 md:py-28 bg-muted/30">
+    <section className="py-16 md:py-24 bg-muted/30" aria-labelledby="why-us-heading">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -51,17 +51,16 @@ export const PremiumWhyUs = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-4">
+          <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
             Ihre Vorteile
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 id="why-us-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Warum mit Umzugscheck.ch vergleichen?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Wir haben es uns zur Aufgabe gemacht, Umzüge in der Schweiz einfacher, 
-            transparenter und stressfreier zu gestalten.
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            Wir machen Umzüge in der Schweiz einfacher, transparenter und stressfreier.
           </p>
         </motion.div>
         
