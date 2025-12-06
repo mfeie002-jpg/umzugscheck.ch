@@ -1,64 +1,200 @@
-import { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, useRef, memo, ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
 interface DeferredContentProps {
   children: ReactNode;
-  delay?: number;
   fallback?: ReactNode;
+  delay?: number;
+  triggerOnInteraction?: boolean;
+  triggerOnScroll?: boolean;
+  rootMargin?: string;
+  className?: string;
 }
 
-// Defer non-critical content rendering
-export const DeferredContent = ({
+/**
+ * DeferredContent - Delays rendering of children until conditions are met
+ * Useful for below-the-fold content, heavy components, or third-party widgets
+ */
+export const DeferredContent = memo<DeferredContentProps>(({
   children,
+  fallback = null,
   delay = 0,
-  fallback = null
-}: DeferredContentProps) => {
-  const [shouldRender, setShouldRender] = useState(delay === 0);
+  triggerOnInteraction = false,
+  triggerOnScroll = true,
+  rootMargin = '200px',
+  className,
+}) => {
+  const [shouldRender, setShouldRender] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hasTriggered = useRef(false);
 
-  useEffect(() => {
-    if (delay === 0) return;
-
-    const timer = setTimeout(() => {
+  const triggerRender = () => {
+    if (hasTriggered.current) return;
+    hasTriggered.current = true;
+    
+    if (delay > 0) {
+      setTimeout(() => setShouldRender(true), delay);
+    } else {
       setShouldRender(true);
-    }, delay);
+    }
+  };
 
-    return () => clearTimeout(timer);
-  }, [delay]);
+  // Intersection Observer for scroll-based triggering
+  useEffect(() => {
+    if (!triggerOnScroll || shouldRender) return;
 
-  if (!shouldRender) {
-    return <>{fallback}</>;
-  }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            triggerRender();
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin, threshold: 0.01 }
+    );
 
-  return <>{children}</>;
-};
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
-// Idle callback for low-priority rendering
-export const IdleContent = ({
-  children,
-  fallback = null
-}: {
+    return () => observer.disconnect();
+  }, [triggerOnScroll, shouldRender, rootMargin]);
+
+  // User interaction triggering
+  useEffect(() => {
+    if (!triggerOnInteraction || shouldRender) return;
+
+    const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+    
+    const handleInteraction = () => {
+      triggerRender();
+      events.forEach((event) => {
+        window.removeEventListener(event, handleInteraction);
+      });
+    };
+
+    events.forEach((event) => {
+      window.addEventListener(event, handleInteraction, { once: true, passive: true });
+    });
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, handleInteraction);
+      });
+    };
+  }, [triggerOnInteraction, shouldRender]);
+
+  return (
+    <div ref={containerRef} className={className}>
+      {shouldRender ? children : fallback}
+    </div>
+  );
+});
+
+DeferredContent.displayName = 'DeferredContent';
+
+/**
+ * IdleContent - Renders content when browser is idle
+ */
+export const IdleContent: React.FC<{
   children: ReactNode;
   fallback?: ReactNode;
-}) => {
+  timeout?: number;
+}> = memo(({ children, fallback = null, timeout = 2000 }) => {
   const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
     if ('requestIdleCallback' in window) {
-      const id = requestIdleCallback(() => {
-        setShouldRender(true);
-      });
+      const id = requestIdleCallback(
+        () => setShouldRender(true),
+        { timeout }
+      );
       return () => cancelIdleCallback(id);
     } else {
-      // Fallback for Safari
-      const timer = setTimeout(() => {
-        setShouldRender(true);
-      }, 100);
+      const timer = setTimeout(() => setShouldRender(true), 100);
       return () => clearTimeout(timer);
     }
+  }, [timeout]);
+
+  return <>{shouldRender ? children : fallback}</>;
+});
+
+IdleContent.displayName = 'IdleContent';
+
+/**
+ * AfterHydration - Renders content only after React hydration is complete
+ */
+export const AfterHydration: React.FC<{
+  children: ReactNode;
+  fallback?: ReactNode;
+}> = memo(({ children, fallback = null }) => {
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
   }, []);
 
-  if (!shouldRender) {
-    return <>{fallback}</>;
-  }
+  return <>{hydrated ? children : fallback}</>;
+});
 
-  return <>{children}</>;
+AfterHydration.displayName = 'AfterHydration';
+
+/**
+ * Skeleton loader component
+ */
+export const SkeletonLoader: React.FC<{
+  width?: string | number;
+  height?: string | number;
+  className?: string;
+  rounded?: boolean;
+}> = memo(({ width = '100%', height = '20px', className, rounded = false }) => (
+  <div
+    className={cn(
+      'animate-pulse bg-muted',
+      rounded ? 'rounded-full' : 'rounded',
+      className
+    )}
+    style={{ width, height }}
+  />
+));
+
+SkeletonLoader.displayName = 'SkeletonLoader';
+
+/**
+ * Intersection trigger hook for manual control
+ */
+export const useIntersectionTrigger = (
+  options?: IntersectionObserverInit
+) => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasIntersected, setHasIntersected] = useState(false);
+  const ref = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsIntersecting(entry.isIntersecting);
+          if (entry.isIntersecting && !hasIntersected) {
+            setHasIntersected(true);
+          }
+        });
+      },
+      {
+        rootMargin: '100px',
+        threshold: 0.1,
+        ...options,
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasIntersected, options]);
+
+  return { ref, isIntersecting, hasIntersected };
 };
