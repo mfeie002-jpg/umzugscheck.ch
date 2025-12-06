@@ -22,3 +22,25 @@ export { CompactStats } from './CompactStats';
 export { MiniCarousel } from './MiniCarousel';
 export { StarRating } from './StarRating';
 export { PriceBadge } from './PriceBadge';
+
+// Advanced components
+export { OptimizedImage } from './OptimizedImage';
+export { AnimatedBadge } from './AnimatedBadge';
+export { CountUpNumber } from './CountUpNumber';
+export { SectionWrapper } from './SectionWrapper';
+export { CardHover } from './CardHover';
+export { CTAButton } from './CTAButton';
+export { LoadingSkeleton } from './LoadingSkeleton';
+export { TrustIndicator } from './TrustIndicator';
+export { FeatureCard } from './FeatureCard';
+export { StepCard } from './StepCard';
+export { ServiceCard } from './ServiceCard';
+export { StatsRow } from './StatsRow';
+export { BackgroundShapes } from './BackgroundShapes';
+export { ScrollToTopButton } from './ScrollToTopButton';
+export { TestimonialCard } from './TestimonialCard';
+export { RegionLink } from './RegionLink';
+export { FAQItem } from './FAQItem';
+export { CompanyCardCompact } from './CompanyCardCompact';
+export { TypewriterText } from './TypewriterText';
+export { InfoBanner } from './InfoBanner';
