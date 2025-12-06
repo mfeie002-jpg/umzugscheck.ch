@@ -7,10 +7,17 @@ import { Helmet } from 'react-helmet';
  * These meta tags provide additional client-side security.
  */
 export const SecurityHeaders: React.FC = () => {
+  // Skip security checks in development/preview mode
+  const isDevelopment = window.location.hostname.includes('lovableproject.com') || 
+                        window.location.hostname.includes('lovable.app') ||
+                        window.location.hostname === 'localhost';
+
   useEffect(() => {
+    // Only run clickjacking protection in production
+    if (isDevelopment) return;
+    
     // Prevent clickjacking by checking if we're in an iframe
     if (window.self !== window.top) {
-      // Allow only our own iframes (preview, etc.)
       const allowedOrigins = [
         'lovable.app',
         'lovableproject.com',
@@ -23,17 +30,21 @@ export const SecurityHeaders: React.FC = () => {
         
         if (!isAllowed && parentOrigin) {
           console.warn('Potential clickjacking attempt detected');
-          // Optionally break out of frame: window.top.location = window.self.location;
         }
       } catch (e) {
         // Cross-origin frame - might be malicious
       }
     }
-  }, []);
+  }, [isDevelopment]);
+
+  // Don't inject CSP in development/preview - it breaks hot reload and iframes
+  if (isDevelopment) {
+    return null;
+  }
 
   return (
     <Helmet>
-      {/* Content Security Policy */}
+      {/* Content Security Policy - only in production */}
       <meta
         httpEquiv="Content-Security-Policy"
         content={[
