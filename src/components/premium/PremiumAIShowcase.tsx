@@ -24,7 +24,7 @@ const benefits = [
 
 export const PremiumAIShowcase = memo(() => {
   return (
-    <section className="py-16 md:py-20 bg-muted/30 overflow-hidden" aria-labelledby="ai-showcase-heading">
+    <section className="py-14 md:py-18 bg-muted/30 overflow-hidden" aria-labelledby="ai-showcase-heading">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           

@@ -1,163 +1,127 @@
 import { Shield, Clock, Eye, Users, Headphones, Award, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import customerSupportImg from "@/assets/customer-support-woman.jpg";
+import { memo } from "react";
 
 const usps = [
   {
     icon: Shield,
-    title: "Nur geprüfte Partner",
-    description: "Jede Umzugsfirma wird auf Versicherung, Bewilligungen und Qualität geprüft, bevor sie aufgenommen wird.",
-    stat: "200+ Partner"
+    title: "Geprüfte Partner",
+    description: "Jede Firma wird auf Versicherung und Qualität geprüft.",
+    stat: "200+"
   },
   {
     icon: Eye,
     title: "Transparente Preise",
-    description: "Keine versteckten Kosten oder bösen Überraschungen. Sie erhalten klare, vergleichbare Offerten.",
-    stat: "100% transparent"
+    description: "Klare, vergleichbare Offerten ohne versteckte Kosten.",
+    stat: "100%"
   },
   {
     icon: Clock,
-    title: "Zeit & Nerven sparen",
-    description: "Statt dutzende Telefonate führen Sie eine Anfrage aus und erhalten mehrere Angebote.",
-    stat: "Ø 3 Std. gespart"
+    title: "Zeit sparen",
+    description: "Eine Anfrage, mehrere Angebote in 24-48h.",
+    stat: "3 Std."
   },
   {
     icon: Award,
-    title: "AI-gestützte Analyse",
-    description: "Unser intelligentes System findet die bestpassenden Firmen für Ihre spezifischen Anforderungen.",
-    stat: "98% Trefferquote"
+    title: "AI-Analyse",
+    description: "Intelligente Matching für die besten Firmen.",
+    stat: "98%"
   },
   {
     icon: Users,
-    title: "Lokale Schweizer Experten",
-    description: "Alle Partner sind etablierte Schweizer Unternehmen mit regionalem Know-how und Erfahrung.",
+    title: "Lokale Experten",
+    description: "Schweizer Firmen mit regionalem Know-how.",
     stat: "26 Kantone"
   },
   {
     icon: Headphones,
-    title: "Persönlicher Support",
-    description: "Bei Fragen sind wir für Sie da – per Telefon, E-Mail oder Chat. Schweizer Qualität im Service.",
-    stat: "< 2h Antwortzeit"
+    title: "Support",
+    description: "Persönliche Hilfe per Telefon, E-Mail oder Chat.",
+    stat: "< 2h"
   }
 ];
 
-export const PremiumWhyUs = () => {
+const trustBadges = [
+  { text: "100% kostenlos" },
+  { text: "Unverbindlich" },
+  { text: "Swiss Datenschutz" },
+  { text: "Kein Spam" },
+];
+
+export const PremiumWhyUs = memo(() => {
   return (
-    <section className="py-16 md:py-24 bg-muted/30" aria-labelledby="why-us-heading">
+    <section className="py-14 md:py-20 bg-muted/30" aria-labelledby="why-us-heading">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-10"
         >
-          <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+          <span className="inline-block text-primary font-semibold text-xs uppercase tracking-wider mb-2">
             Ihre Vorteile
           </span>
-          <h2 id="why-us-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            Warum mit Umzugscheck.ch vergleichen?
+          <h2 id="why-us-heading" className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            Warum Umzugscheck.ch?
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Wir machen Umzüge in der Schweiz einfacher, transparenter und stressfreier.
+          <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
+            Umzüge einfacher, transparenter und stressfreier.
           </p>
         </motion.div>
         
-        {/* Content Grid: USPs + Image */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* USPs - 2 columns on larger screens */}
-          <div className="lg:col-span-2 grid md:grid-cols-2 gap-6">
-            {usps.map((usp, idx) => {
-              const Icon = usp.icon;
-              return (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: idx * 0.08 }}
-                  className="group bg-card rounded-2xl p-6 shadow-sm border border-border/50 hover:shadow-lift hover:border-primary/20 transition-all"
-                >
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-bold text-foreground">{usp.title}</h3>
-                        <span className="flex-shrink-0 text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                          {usp.stat}
-                        </span>
-                      </div>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{usp.description}</p>
-                    </div>
+        {/* USPs Grid - Compact */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-4xl mx-auto">
+          {usps.map((usp, idx) => {
+            const Icon = usp.icon;
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: idx * 0.05 }}
+                className="bg-card rounded-xl p-4 border border-border/50 hover:border-primary/20 hover:shadow-soft transition-all"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Icon className="h-4 w-4 text-primary" />
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
-          
-          {/* Image Column */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="hidden lg:block relative"
-          >
-            <div className="sticky top-24">
-              <div className="relative rounded-3xl overflow-hidden shadow-deep">
-                <img 
-                  src={customerSupportImg} 
-                  alt="Freundlicher Kundenservice" 
-                  className="w-full h-[500px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
-                    <div className="flex items-center gap-3">
-                      <Headphones className="h-5 w-5 text-primary" />
-                      <div>
-                        <div className="font-semibold text-foreground text-sm">Persönlicher Support</div>
-                        <div className="text-xs text-muted-foreground">Mo-Fr 8:00-18:00 Uhr</div>
-                      </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <h3 className="font-semibold text-foreground text-sm truncate">{usp.title}</h3>
+                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded flex-shrink-0">
+                        {usp.stat}
+                      </span>
                     </div>
+                    <p className="text-muted-foreground text-xs leading-snug line-clamp-2">{usp.description}</p>
                   </div>
                 </div>
-              </div>
-            </div>
-          </motion.div>
+              </motion.div>
+            );
+          })}
         </div>
         
         {/* Trust Footer */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-12 text-center"
+          transition={{ delay: 0.3 }}
+          className="mt-8 text-center"
         >
-          <div className="inline-flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
-              100% kostenlos
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
-              Unverbindlich
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
-              Schweizer Datenschutz
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
-              Keine Spam-Anrufe
-            </span>
+          <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground">
+            {trustBadges.map((badge, i) => (
+              <span key={i} className="flex items-center gap-1">
+                <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
+                {badge.text}
+              </span>
+            ))}
           </div>
         </motion.div>
       </div>
     </section>
   );
-};
+});
+
+PremiumWhyUs.displayName = 'PremiumWhyUs';
