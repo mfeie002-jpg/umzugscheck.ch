@@ -11,3 +11,14 @@ export { SectionDivider } from './SectionDivider';
 export { IconBox } from './IconBox';
 export { FloatingElement } from './FloatingElement';
 export { ProgressBar } from './ProgressBar';
+
+// New optimized components
+export { ShimmerButton } from './ShimmerButton';
+export { GlassCard } from './GlassCard';
+export { FloatingBadge } from './FloatingBadge';
+export { TrustBadge } from './TrustBadge';
+export { SectionTitle } from './SectionTitle';
+export { CompactStats } from './CompactStats';
+export { MiniCarousel } from './MiniCarousel';
+export { StarRating } from './StarRating';
+export { PriceBadge } from './PriceBadge';
