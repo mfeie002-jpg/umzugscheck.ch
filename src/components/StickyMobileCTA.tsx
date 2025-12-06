@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState, memo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,15 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 interface StickyMobileCTAProps {
   text?: string;
   link?: string;
-  subtext?: string;
   showAfter?: number;
 }
 
 export const StickyMobileCTA = memo(({ 
-  text = "Jetzt Offerten vergleichen", 
+  text = "Offerten vergleichen", 
   link = "/umzugsofferten",
-  subtext = "Kostenlos & unverbindlich",
-  showAfter = 250
+  showAfter = 200
 }: StickyMobileCTAProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -33,32 +31,32 @@ export const StickyMobileCTA = memo(({
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ y: 80, opacity: 0 }}
+          initial={{ y: 60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 80, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 450, damping: 30 }}
+          exit={{ y: 60, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 35 }}
           className="md:hidden fixed bottom-0 left-0 right-0 z-50"
           role="complementary"
-          aria-label="Schnellzugriff Offerten"
+          aria-label="Schnellzugriff"
         >
-          {/* Fade gradient */}
-          <div className="absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-background to-transparent pointer-events-none" aria-hidden="true" />
+          <div className="absolute inset-x-0 -top-4 h-4 bg-gradient-to-t from-background to-transparent pointer-events-none" aria-hidden="true" />
           
-          <div className="bg-background/98 backdrop-blur-md border-t border-border shadow-xl">
-            <div className="container mx-auto px-3 py-2.5 pb-safe">
-              <Link to={link} className="block">
+          <div className="bg-background/98 backdrop-blur-lg border-t border-border/50">
+            <div className="px-3 py-2 pb-safe flex items-center gap-2">
+              <Link to={link} className="flex-1">
                 <Button 
-                  size="default" 
-                  className="w-full h-11 text-sm font-bold bg-secondary text-secondary-foreground shadow-cta hover:bg-secondary/90 active:scale-[0.98] transition-all"
+                  className="w-full h-10 text-sm font-bold bg-secondary text-secondary-foreground shadow-cta"
                 >
-                  <CheckCircle2 className="mr-1.5 w-4 h-4" aria-hidden="true" />
+                  <CheckCircle2 className="mr-1.5 w-3.5 h-3.5" aria-hidden="true" />
                   {text}
-                  <ArrowRight className="ml-1.5 w-4 h-4" aria-hidden="true" />
+                  <ArrowRight className="ml-1.5 w-3.5 h-3.5" aria-hidden="true" />
                 </Button>
               </Link>
-              <p className="text-center text-[10px] text-muted-foreground mt-1">
-                {subtext}
-              </p>
+              <Link to="/umzugsrechner">
+                <Button variant="outline" size="icon" className="h-10 w-10 border-primary/30">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                </Button>
+              </Link>
             </div>
           </div>
         </motion.div>

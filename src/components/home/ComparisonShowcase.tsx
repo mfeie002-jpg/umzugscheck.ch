@@ -1,11 +1,12 @@
+import { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Check, Star, Shield, Award, ArrowRight, Sparkles, Users, TrendingDown, BadgeCheck } from "lucide-react";
+import { Check, Star, Shield, ArrowRight, Sparkles, TrendingDown, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-// Sample companies for demo
+// Sample companies for demo - memoized
 const sampleCompanies = [
   { name: "Swiss Move AG", rating: 4.9, reviews: 234, price: "Ab CHF 590", badges: ["Top bewertet", "Versichert"], logo: "🏠" },
   { name: "Züri Umzüge", rating: 4.7, reviews: 189, price: "Ab CHF 520", badges: ["Günstig", "Express"], logo: "📦" },
@@ -251,49 +252,48 @@ interface ComparisonShowcaseProps {
   variant?: 'table' | 'cards' | 'split' | 'premium' | 'all';
 }
 
-export const ComparisonShowcase = ({ variant = 'premium' }: ComparisonShowcaseProps) => {
+export const ComparisonShowcase = memo(({ variant = 'premium' }: ComparisonShowcaseProps) => {
+  const renderVariant = useMemo(() => {
+    switch (variant) {
+      case 'table': return <TableComparison />;
+      case 'cards': return <CardComparison />;
+      case 'split': return <SplitComparison />;
+      case 'premium': return <PremiumComparison />;
+      default: return <PremiumComparison />;
+    }
+  }, [variant]);
+
   if (variant === 'all') {
     return (
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 space-y-24">
-          {/* Option 1: Table */}
+      <section className="py-14 md:py-16 bg-background">
+        <div className="container mx-auto px-4 space-y-20">
           <div>
-            <div className="text-center mb-8">
-              <Badge className="mb-4">Option 1</Badge>
-              <h2 className="text-2xl font-bold text-foreground">Vergleichstabelle</h2>
-              <p className="text-muted-foreground">Klassische Tabelle mit Features</p>
+            <div className="text-center mb-6">
+              <Badge className="mb-3">Option 1</Badge>
+              <h2 className="text-xl font-bold text-foreground">Vergleichstabelle</h2>
             </div>
-            <Card className="p-6">
+            <Card className="p-4">
               <TableComparison />
             </Card>
           </div>
-
-          {/* Option 2: Cards */}
           <div>
-            <div className="text-center mb-8">
-              <Badge className="mb-4">Option 2</Badge>
-              <h2 className="text-2xl font-bold text-foreground">Interaktive Karten</h2>
-              <p className="text-muted-foreground">Side-by-side mit Hover-Effekten</p>
+            <div className="text-center mb-6">
+              <Badge className="mb-3">Option 2</Badge>
+              <h2 className="text-xl font-bold text-foreground">Interaktive Karten</h2>
             </div>
             <CardComparison />
           </div>
-
-          {/* Option 3: Split */}
           <div>
-            <div className="text-center mb-8">
-              <Badge className="mb-4">Option 3</Badge>
-              <h2 className="text-2xl font-bold text-foreground">Split-Screen Preview</h2>
-              <p className="text-muted-foreground">Modernes 2-spaltiges Layout</p>
+            <div className="text-center mb-6">
+              <Badge className="mb-3">Option 3</Badge>
+              <h2 className="text-xl font-bold text-foreground">Split-Screen</h2>
             </div>
             <SplitComparison />
           </div>
-
-          {/* Option 4: Premium (Best) */}
           <div>
-            <div className="text-center mb-8">
-              <Badge className="mb-4 bg-primary">Option 4 - Empfohlen</Badge>
-              <h2 className="text-2xl font-bold text-foreground">Premium Showcase</h2>
-              <p className="text-muted-foreground">Beste Kombination aus Info & Conversion</p>
+            <div className="text-center mb-6">
+              <Badge className="mb-3 bg-primary">Empfohlen</Badge>
+              <h2 className="text-xl font-bold text-foreground">Premium</h2>
             </div>
             <PremiumComparison />
           </div>
@@ -302,37 +302,30 @@ export const ComparisonShowcase = ({ variant = 'premium' }: ComparisonShowcasePr
     );
   }
 
-  const renderVariant = () => {
-    switch (variant) {
-      case 'table': return <TableComparison />;
-      case 'cards': return <CardComparison />;
-      case 'split': return <SplitComparison />;
-      case 'premium': return <PremiumComparison />;
-      default: return <PremiumComparison />;
-    }
-  };
-
   return (
-    <section className="py-16 md:py-20 bg-background" aria-labelledby="comparison-heading">
+    <section className="py-12 md:py-16 bg-background" aria-labelledby="comparison-heading">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10"
+          transition={{ duration: 0.4 }}
+          className="text-center mb-8"
         >
-          <Badge className="mb-3 bg-primary/10 text-primary border-0">Firmen vergleichen</Badge>
-          <h2 id="comparison-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
+          <Badge className="mb-2 bg-primary/10 text-primary border-0 text-xs">Firmen vergleichen</Badge>
+          <h2 id="comparison-heading" className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
             Umzugsfirmen transparent vergleichen
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Finden Sie die perfekte Umzugsfirma – mit echten Bewertungen und transparenten Preisen.
+          <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
+            Echte Bewertungen & transparente Preise – finden Sie Ihre perfekte Umzugsfirma.
           </p>
         </motion.div>
-        {renderVariant()}
+        {renderVariant}
       </div>
     </section>
   );
-};
+});
+
+ComparisonShowcase.displayName = 'ComparisonShowcase';
 
 export default ComparisonShowcase;
