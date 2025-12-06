@@ -19,27 +19,24 @@ export const PremiumPriceAlert = () => {
   };
 
   return (
-    <section className="py-12 bg-gradient-to-r from-primary/5 via-background to-accent/5">
+    <section className="py-8 md:py-12 bg-gradient-to-r from-primary/5 via-background to-accent/5">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.4 }}
           className="max-w-4xl mx-auto"
         >
           <div className="bg-card rounded-3xl p-8 shadow-xl border relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
             
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-shrink-0">
-                <motion.div
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 2, repeatDelay: 3 }}
-                  className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center"
-                >
-                  <Bell className="w-10 h-10 text-primary" />
-                </motion.div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-8">
+              <div className="flex-shrink-0 hidden sm:block">
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center">
+                  <Bell className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                </div>
               </div>
 
               <div className="flex-1 text-center md:text-left">

@@ -43,12 +43,13 @@ export const PremiumCountdown = () => {
   );
 
   return (
-    <section className="py-10 md:py-12 bg-gradient-to-r from-primary/10 via-background to-accent/10">
+    <section className="py-8 md:py-12 bg-gradient-to-r from-primary/10 via-background to-accent/10">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.4 }}
           className="max-w-4xl mx-auto text-center"
         >
           <div className="inline-flex items-center gap-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6">

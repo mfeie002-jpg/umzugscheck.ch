@@ -20,12 +20,13 @@ export const PremiumSocialShare = () => {
   ];
 
   return (
-    <section className="py-12 bg-gradient-to-b from-background to-muted/30">
+    <section className="py-8 md:py-12 bg-gradient-to-b from-background to-muted/30">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.4 }}
           className="max-w-2xl mx-auto text-center"
         >
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
