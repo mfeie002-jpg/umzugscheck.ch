@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
 interface OptimizedImageProps {
@@ -11,7 +11,11 @@ interface OptimizedImageProps {
   placeholder?: 'blur' | 'empty';
   blurDataURL?: string;
   onLoad?: () => void;
+  sizes?: string;
+  quality?: number;
 }
+
+const BREAKPOINTS = [320, 480, 640, 768, 1024, 1280, 1920];
 
 export const OptimizedImage = ({
   src,
@@ -22,11 +26,13 @@ export const OptimizedImage = ({
   priority = false,
   placeholder = 'empty',
   blurDataURL,
-  onLoad
+  onLoad,
+  sizes = '100vw',
+  quality = 80
 }: OptimizedImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (priority) return;
@@ -53,7 +59,28 @@ export const OptimizedImage = ({
     onLoad?.();
   };
 
-  // Generate blur placeholder
+  const { webpSrcSet, webpSrc } = useMemo(() => {
+    const isUnsplash = src.includes('unsplash.com');
+    const isCloudinary = src.includes('cloudinary.com');
+
+    if (isUnsplash) {
+      const baseUrl = src.split('?')[0];
+      const srcSet = BREAKPOINTS
+        .map(w => `${baseUrl}?w=${w}&q=${quality}&fm=webp ${w}w`)
+        .join(', ');
+      return { webpSrcSet: srcSet, webpSrc: `${baseUrl}?w=${width || 1920}&q=${quality}&fm=webp` };
+    }
+
+    if (isCloudinary) {
+      const srcSet = BREAKPOINTS
+        .map(w => src.replace('/upload/', `/upload/w_${w},f_webp,q_${quality}/`) + ` ${w}w`)
+        .join(', ');
+      return { webpSrcSet: srcSet, webpSrc: src.replace('/upload/', `/upload/f_webp,q_${quality}/`) };
+    }
+
+    return { webpSrcSet: undefined, webpSrc: src };
+  }, [src, width, quality]);
+
   const defaultBlur = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+';
 
   return (
@@ -62,7 +89,6 @@ export const OptimizedImage = ({
       className={cn('relative overflow-hidden', className)}
       style={{ width, height }}
     >
-      {/* Blur placeholder */}
       {placeholder === 'blur' && !isLoaded && (
         <img
           src={blurDataURL || defaultBlur}
@@ -72,21 +98,30 @@ export const OptimizedImage = ({
         />
       )}
       
-      {/* Actual image */}
+      {placeholder === 'empty' && !isLoaded && (
+        <div className="absolute inset-0 bg-muted animate-pulse" />
+      )}
+      
       {isInView && (
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding={priority ? 'sync' : 'async'}
-          onLoad={handleLoad}
-          className={cn(
-            'w-full h-full object-cover transition-opacity duration-300',
-            isLoaded ? 'opacity-100' : 'opacity-0'
+        <picture>
+          {webpSrcSet && (
+            <source srcSet={webpSrcSet} sizes={sizes} type="image/webp" />
           )}
-        />
+          <img
+            src={webpSrc}
+            alt={alt}
+            width={width}
+            height={height}
+            sizes={sizes}
+            loading={priority ? 'eager' : 'lazy'}
+            decoding={priority ? 'sync' : 'async'}
+            onLoad={handleLoad}
+            className={cn(
+              'w-full h-full object-cover transition-opacity duration-300',
+              isLoaded ? 'opacity-100' : 'opacity-0'
+            )}
+          />
+        </picture>
       )}
     </div>
   );

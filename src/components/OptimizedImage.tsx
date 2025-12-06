@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
 interface OptimizedImageProps {
@@ -9,14 +9,14 @@ interface OptimizedImageProps {
   height?: number;
   priority?: boolean;
   objectFit?: 'cover' | 'contain' | 'fill' | 'none';
+  sizes?: string;
+  quality?: number;
 }
 
+const BREAKPOINTS = [320, 480, 640, 768, 1024, 1280, 1536, 1920];
+
 /**
- * Optimized image component for Core Web Vitals
- * - Lazy loading by default (unless priority=true)
- * - Explicit dimensions to prevent CLS
- * - Aspect ratio preservation
- * - WebP support hint via srcset
+ * Optimized image component with WebP and srcset support
  */
 export const OptimizedImage = ({
   src,
@@ -25,31 +25,68 @@ export const OptimizedImage = ({
   width,
   height,
   priority = false,
-  objectFit = 'cover'
+  objectFit = 'cover',
+  sizes = '100vw',
+  quality = 80
 }: OptimizedImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // Calculate aspect ratio for container
   const aspectRatio = width && height ? `${width} / ${height}` : undefined;
 
-  // Generate srcset for responsive images
-  const generateSrcSet = (baseSrc: string) => {
-    // If it's an external URL (unsplash, etc.), use their optimization params
-    if (baseSrc.includes('unsplash.com')) {
-      return `${baseSrc}&w=640 640w, ${baseSrc}&w=1024 1024w, ${baseSrc}&w=1920 1920w`;
-    }
-    // For local images, assume they're optimized
-    return undefined;
-  };
+  const { webpSrcSet, fallbackSrcSet, webpSrc } = useMemo(() => {
+    const isUnsplash = src.includes('unsplash.com');
+    const isCloudinary = src.includes('cloudinary.com');
 
-  const srcSet = generateSrcSet(src);
+    if (isUnsplash) {
+      const baseUrl = src.split('?')[0];
+      const webpSet = BREAKPOINTS
+        .filter(w => !width || w <= width * 2)
+        .map(w => `${baseUrl}?w=${w}&q=${quality}&fm=webp ${w}w`)
+        .join(', ');
+      const jpgSet = BREAKPOINTS
+        .filter(w => !width || w <= width * 2)
+        .map(w => `${baseUrl}?w=${w}&q=${quality}&fm=jpg ${w}w`)
+        .join(', ');
+      return {
+        webpSrcSet: webpSet,
+        fallbackSrcSet: jpgSet,
+        webpSrc: `${baseUrl}?w=${width || 1920}&q=${quality}&fm=webp`
+      };
+    }
+
+    if (isCloudinary) {
+      const webpSet = BREAKPOINTS
+        .filter(w => !width || w <= width * 2)
+        .map(w => src.replace('/upload/', `/upload/w_${w},f_webp,q_${quality}/`) + ` ${w}w`)
+        .join(', ');
+      const jpgSet = BREAKPOINTS
+        .filter(w => !width || w <= width * 2)
+        .map(w => src.replace('/upload/', `/upload/w_${w},f_jpg,q_${quality}/`) + ` ${w}w`)
+        .join(', ');
+      return {
+        webpSrcSet: webpSet,
+        fallbackSrcSet: jpgSet,
+        webpSrc: src.replace('/upload/', `/upload/f_webp,q_${quality}/`)
+      };
+    }
+
+    if (src.match(/\.(jpg|jpeg|png)$/i)) {
+      return {
+        webpSrcSet: undefined,
+        fallbackSrcSet: undefined,
+        webpSrc: src.replace(/\.(jpg|jpeg|png)$/i, '.webp')
+      };
+    }
+
+    return { webpSrcSet: undefined, fallbackSrcSet: undefined, webpSrc: src };
+  }, [src, width, quality]);
 
   if (hasError) {
     return (
       <div 
         className={cn(
-          "flex items-center justify-center bg-secondary text-muted-foreground",
+          "flex items-center justify-center bg-muted text-muted-foreground",
           className
         )}
         style={{ aspectRatio }}
@@ -60,37 +97,40 @@ export const OptimizedImage = ({
   }
 
   return (
-    <div 
-      className={cn("relative overflow-hidden", className)}
+    <picture 
+      className={cn("relative overflow-hidden block", className)}
       style={{ aspectRatio }}
     >
-      {/* Low-quality placeholder during loading */}
+      {webpSrcSet && (
+        <source srcSet={webpSrcSet} sizes={sizes} type="image/webp" />
+      )}
+      {fallbackSrcSet && (
+        <source srcSet={fallbackSrcSet} sizes={sizes} type="image/jpeg" />
+      )}
+      
       {!isLoaded && (
-        <div className="absolute inset-0 bg-secondary animate-pulse" />
+        <div className="absolute inset-0 bg-muted animate-pulse" />
       )}
 
       <img
-        src={src}
-        srcSet={srcSet}
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        src={webpSrc || src}
         alt={alt}
         width={width}
         height={height}
+        sizes={sizes}
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
+        fetchPriority={priority ? 'high' : 'auto'}
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
         className={cn(
-          "transition-opacity duration-300",
+          "transition-opacity duration-300 w-full h-full",
           isLoaded ? "opacity-100" : "opacity-0",
-          objectFit === 'cover' && "object-cover w-full h-full",
-          objectFit === 'contain' && "object-contain w-full h-full",
-          objectFit === 'fill' && "object-fill w-full h-full"
+          objectFit === 'cover' && "object-cover",
+          objectFit === 'contain' && "object-contain",
+          objectFit === 'fill' && "object-fill"
         )}
-        style={{
-          objectFit: objectFit
-        }}
       />
-    </div>
+    </picture>
   );
 };
