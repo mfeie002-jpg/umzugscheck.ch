@@ -43,18 +43,22 @@ export const logger = {
     }
   },
   
-  error: (message: string, error?: Error | unknown, context?: LogContext) => {
-    // Always log errors with sanitized data
-    const sanitizedContext = context ? sanitizeContext(context) : {};
+  error: (message: string, errorOrContext?: Error | unknown | LogContext, context?: LogContext) => {
+    // Handle both old signature (message, error, context) and new signature (message, context)
+    let sanitizedContext: LogContext = {};
+    let errorInfo: string | undefined;
+    
+    if (errorOrContext instanceof Error) {
+      errorInfo = errorOrContext.message;
+      sanitizedContext = context ? sanitizeContext(context) : {};
+    } else if (typeof errorOrContext === 'object' && errorOrContext !== null) {
+      sanitizedContext = sanitizeContext(errorOrContext as LogContext);
+    }
     
     if (isProduction) {
-      // In production, log minimal error info
-      console.error(`[ERROR] ${message}`, {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        ...sanitizedContext,
-      });
+      console.error(`[ERROR] ${message}`, errorInfo ? { error: errorInfo, ...sanitizedContext } : sanitizedContext);
     } else {
-      console.error(`[ERROR] ${message}`, error, sanitizedContext);
+      console.error(`[ERROR] ${message}`, errorInfo ? { error: errorInfo, ...sanitizedContext } : sanitizedContext);
     }
   },
   

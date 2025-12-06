@@ -115,10 +115,13 @@ export const useSecurityMonitor = () => {
       }
     });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    // Only observe if document.body exists
+    if (document.body) {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
 
     return () => {
       window.removeEventListener('resize', checkDevTools);
