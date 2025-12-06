@@ -109,6 +109,12 @@ export default {
         'premium': '0 14px 40px rgba(0, 0, 0, 0.06)',
         'cta': '0 8px 24px rgba(227, 32, 38, 0.25)',
         'lift': '0 20px 40px rgba(0, 0, 0, 0.10)',
+        'glow': '0 0 30px rgba(0, 80, 168, 0.15)',
+        'card': '0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04)',
+        'inner-soft': 'inset 0 2px 4px rgba(0, 0, 0, 0.05)',
+      },
+      transitionDuration: {
+        '400': '400ms',
       },
       keyframes: {
         "accordion-down": {
@@ -166,6 +172,8 @@ export default {
         "scale-in": "scale-in 0.4s ease-out",
         "shimmer": "shimmer 2s infinite",
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
+        "float": "float 3s ease-in-out infinite",
+        "bounce-slow": "bounce 2s ease-in-out infinite",
       },
     },
   },

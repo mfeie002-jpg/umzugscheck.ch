@@ -77,6 +77,13 @@
     --shadow-premium: 0 14px 40px rgba(0, 0, 0, 0.06);
     --shadow-cta: 0 8px 24px rgba(227, 32, 38, 0.25);
     --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.10);
+    --shadow-glow: 0 0 30px rgba(0, 80, 168, 0.15);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
@@ -287,6 +294,18 @@
   .body-text {
     @apply leading-relaxed text-muted-foreground;
   }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-primary to-secondary bg-clip-text text-transparent;
+  }
+  
+  /* Focus ring utility */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  /* Glassmorphism */
 
   /* Glassmorphism */
   .glass {
