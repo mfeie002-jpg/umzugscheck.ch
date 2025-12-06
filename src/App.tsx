@@ -10,6 +10,10 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PreloadResources } from "@/components/PreloadResources";
 import { PageLoadingFallback } from "@/components/ui/loading-fallback";
 import { AnimatedRoutes } from "@/components/AnimatedRoutes";
+import { CriticalCSS } from "@/components/performance/CriticalCSS";
+import { ResourceHints } from "@/components/performance/ResourceHints";
+import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -158,7 +162,11 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <CriticalCSS />
+              <ResourceHints />
+              <PerformanceMonitor />
               <PreloadResources />
+              <PWAInstallPrompt />
               <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
                 <ScrollProgressBar />
