@@ -39,6 +39,15 @@ const displayStats = [
   { value: "26", label: "Kantone" }
 ];
 
+const partnerLogos = [
+  { name: "20 Minuten", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/20_Minuten_Logo.svg/200px-20_Minuten_Logo.svg.png" },
+  { name: "Blick", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Blick_Logo_2020.svg/200px-Blick_Logo_2020.svg.png" },
+  { name: "Watson", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Watson_logo.svg/200px-Watson_logo.svg.png" },
+  { name: "TCS", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/TCS_Schweiz_Logo.svg/200px-TCS_Schweiz_Logo.svg.png" },
+  { name: "SRF", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Schweizer_Radio_und_Fernsehen_Logo.svg/200px-Schweizer_Radio_und_Fernsehen_Logo.svg.png" },
+  { name: "NZZ", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Neue_Z%C3%BCrcher_Zeitung_Logo.svg/200px-Neue_Z%C3%BCrcher_Zeitung_Logo.svg.png" },
+];
+
 // Memoized review card with GlowingCard
 const ReviewCard = memo(({ testimonial }: { testimonial: Testimonial }) => (
   <GlowingCard className="h-full">
@@ -182,6 +191,28 @@ export const PremiumSocialProof = memo(() => {
             </div>
             <span className="font-medium">{avgRating} von 5</span>
           </div>
+        </div>
+
+        {/* Partner Logos Marquee */}
+        <div className="mt-10 pt-8 border-t border-border/50">
+          <p className="text-center text-xs text-muted-foreground mb-4 uppercase tracking-wider">
+            Bekannt aus & geprüft von
+          </p>
+          <Marquee speed="slow" pauseOnHover className="py-2">
+            {partnerLogos.map((partner) => (
+              <div
+                key={partner.name}
+                className="flex items-center justify-center mx-8 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+              >
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="h-6 md:h-8 w-auto object-contain"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </Marquee>
         </div>
       </div>
     </section>
