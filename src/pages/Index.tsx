@@ -33,6 +33,10 @@ const PremiumTrustPilot = lazy(() => import("@/components/premium/PremiumTrustPi
 const PremiumCompanyComparison = lazy(() => import("@/components/premium/PremiumCompanyComparison").then(m => ({ default: m.PremiumCompanyComparison })));
 const PremiumMovingTimeline = lazy(() => import("@/components/premium/PremiumMovingTimeline").then(m => ({ default: m.PremiumMovingTimeline })));
 const PremiumVideoHero = lazy(() => import("@/components/premium/PremiumVideoHero").then(m => ({ default: m.PremiumVideoHero })));
+const PremiumPriceAlert = lazy(() => import("@/components/premium/PremiumPriceAlert").then(m => ({ default: m.PremiumPriceAlert })));
+const PremiumCountdown = lazy(() => import("@/components/premium/PremiumCountdown").then(m => ({ default: m.PremiumCountdown })));
+const PremiumSocialShare = lazy(() => import("@/components/premium/PremiumSocialShare").then(m => ({ default: m.PremiumSocialShare })));
+const PremiumMobileAppBanner = lazy(() => import("@/components/premium/PremiumMobileAppBanner").then(m => ({ default: m.PremiumMobileAppBanner })));
 
 // Lazy loaded floating/interactive elements (loaded last)
 const PremiumFloatingCTA = lazy(() => import("@/components/premium/PremiumFloatingCTA").then(m => ({ default: m.PremiumFloatingCTA })));
@@ -188,6 +192,26 @@ const Index = () => {
           
           <Suspense fallback={<LoadingFallback />}>
             <NewsletterSection />
+          </Suspense>
+          
+          {/* Countdown Offer */}
+          <Suspense fallback={<LoadingFallback />}>
+            <PremiumCountdown />
+          </Suspense>
+          
+          {/* Price Alert */}
+          <Suspense fallback={<LoadingFallback />}>
+            <PremiumPriceAlert />
+          </Suspense>
+          
+          {/* Social Share */}
+          <Suspense fallback={<LoadingFallback />}>
+            <PremiumSocialShare />
+          </Suspense>
+          
+          {/* Mobile App Banner */}
+          <Suspense fallback={<LoadingFallback />}>
+            <PremiumMobileAppBanner />
           </Suspense>
         </main>
 
