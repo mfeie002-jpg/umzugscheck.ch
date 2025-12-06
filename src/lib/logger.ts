@@ -44,22 +44,32 @@ export const logger = {
   },
   
   error: (message: string, errorOrContext?: Error | unknown | LogContext, context?: LogContext) => {
-    // Handle both old signature (message, error, context) and new signature (message, context)
+    // Handle both signatures: (message, error, context) and (message, context)
     let sanitizedContext: LogContext = {};
-    let errorInfo: string | undefined;
+    let errorMessage: string | undefined;
     
     if (errorOrContext instanceof Error) {
-      errorInfo = errorOrContext.message;
+      // First signature: logger.error("msg", error, context?)
+      errorMessage = errorOrContext.message;
       sanitizedContext = context ? sanitizeContext(context) : {};
-    } else if (typeof errorOrContext === 'object' && errorOrContext !== null) {
-      sanitizedContext = sanitizeContext(errorOrContext as LogContext);
+    } else if (errorOrContext && typeof errorOrContext === 'object') {
+      // Check if it looks like an error-like object
+      const maybeError = errorOrContext as any;
+      if (maybeError.message && typeof maybeError.message === 'string') {
+        errorMessage = maybeError.message;
+        sanitizedContext = context ? sanitizeContext(context) : {};
+      } else {
+        // Second signature: logger.error("msg", context)
+        sanitizedContext = sanitizeContext(errorOrContext as LogContext);
+      }
     }
     
-    if (isProduction) {
-      console.error(`[ERROR] ${message}`, errorInfo ? { error: errorInfo, ...sanitizedContext } : sanitizedContext);
-    } else {
-      console.error(`[ERROR] ${message}`, errorInfo ? { error: errorInfo, ...sanitizedContext } : sanitizedContext);
-    }
+    const logPayload = errorMessage 
+      ? { error: errorMessage, ...sanitizedContext } 
+      : sanitizedContext;
+    
+    // Always log errors (both dev and prod)
+    console.error(`[ERROR] ${message}`, Object.keys(logPayload).length > 0 ? logPayload : '');
   },
   
   debug: (message: string, context?: LogContext) => {
