@@ -2,6 +2,9 @@ import { ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { BlurReveal } from "@/components/common/BlurReveal";
+import { NumberTicker } from "@/components/common/NumberTicker";
+import { GradientBorder } from "@/components/common/GradientBorder";
 
 // Service images
 import servicePrivatumzug from "@/assets/service-privatumzug.jpg";
@@ -90,14 +93,8 @@ export const PremiumServicesGrid = () => {
       }} aria-hidden="true" />
       
       <div className="container mx-auto px-4 relative">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="text-center mb-8 md:mb-12"
-        >
+        {/* Section Header with BlurReveal */}
+        <BlurReveal className="text-center mb-8 md:mb-12">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-secondary/10 rounded-full text-secondary font-semibold text-xs sm:text-sm uppercase tracking-wider mb-3">
             <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
             Unsere Services
@@ -108,7 +105,7 @@ export const PremiumServicesGrid = () => {
           <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
             Von Endreinigung bis Spezialtransport – alles aus einer Hand.
           </p>
-        </motion.div>
+        </BlurReveal>
         
         {/* Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
@@ -166,25 +163,21 @@ export const PremiumServicesGrid = () => {
           ))}
         </div>
         
-        {/* Stats Row */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="mt-10 flex flex-wrap justify-center gap-6 md:gap-12"
-        >
+        {/* Stats Row with NumberTicker */}
+        <BlurReveal className="mt-10 flex flex-wrap justify-center gap-6 md:gap-12" delay={0.2}>
           {[
-            { value: "8+", label: "Service-Kategorien" },
-            { value: "200+", label: "Partner-Firmen" },
-            { value: "26", label: "Kantone abgedeckt" }
+            { value: 8, label: "Service-Kategorien", suffix: "+" },
+            { value: 200, label: "Partner-Firmen", suffix: "+" },
+            { value: 26, label: "Kantone abgedeckt", suffix: "" }
           ].map((stat, idx) => (
             <div key={idx} className="text-center">
-              <div className="text-xl md:text-2xl font-bold text-primary">{stat.value}</div>
+              <div className="text-xl md:text-2xl font-bold text-primary">
+                <NumberTicker value={stat.value} suffix={stat.suffix} />
+              </div>
               <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
             </div>
           ))}
-        </motion.div>
+        </BlurReveal>
         
         {/* CTA */}
         <motion.div
