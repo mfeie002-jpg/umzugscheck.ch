@@ -20,28 +20,28 @@ const stats = [
 
 export const PremiumProviderCTA = memo(() => {
   return (
-    <section className="py-14 md:py-20 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 relative overflow-hidden" aria-labelledby="provider-cta-heading">
+    <section className="py-12 md:py-16 bg-gradient-to-br from-primary via-primary/95 to-primary/90 relative overflow-hidden" aria-labelledby="provider-cta-heading">
       {/* Decorative */}
-      <div className="absolute top-0 left-0 w-48 h-48 bg-primary/20 rounded-full blur-3xl" aria-hidden="true" />
-      <div className="absolute bottom-0 right-0 w-32 h-32 bg-secondary/20 rounded-full blur-3xl" aria-hidden="true" />
+      <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-0 right-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl" aria-hidden="true" />
       
       <div className="container mx-auto px-4 relative">
         <div className="max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left */}
             <motion.div
-              initial={{ opacity: 0, x: -15 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-xs font-medium mb-4 text-white">
-                <Building2 className="h-3.5 w-3.5" />
+                <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Für Umzugsfirmen
               </div>
               
-              <h2 id="provider-cta-heading" className="text-2xl md:text-3xl font-bold mb-3 text-white">
-                Sie sind Umzugsfirma?
-                <span className="block text-primary mt-1">Werden Sie Partner.</span>
+              <h2 id="provider-cta-heading" className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white">
+                Werden Sie Partner
+                <span className="block text-secondary/90 mt-1">Qualifizierte Leads erhalten</span>
               </h2>
               <p className="text-sm md:text-base text-white/80 mb-5">
                 Über 200 geprüfte Schweizer Firmen erhalten qualifizierte Kundenanfragen.

@@ -50,7 +50,7 @@ const trustBadges = [
 
 export const PremiumWhyUs = memo(() => {
   return (
-    <section className="py-14 md:py-20 bg-muted/30" aria-labelledby="why-us-heading">
+    <section className="py-12 md:py-16 bg-muted/30" aria-labelledby="why-us-heading">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div

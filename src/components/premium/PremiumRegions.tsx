@@ -60,23 +60,23 @@ export const PremiumRegions = memo(() => {
   const otherRegions = regions.filter(r => !r.popular);
   
   return (
-    <section className="py-14 md:py-20 bg-muted/30" aria-labelledby="regions-heading">
+    <section className="py-12 md:py-16 bg-muted/30" aria-labelledby="regions-heading">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8 md:mb-10"
+          className="text-center mb-6 md:mb-8"
         >
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-full text-primary font-semibold text-xs uppercase tracking-wider mb-3">
-            <MapPin className="h-3.5 w-3.5" />
+            <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
             Schweizweit
           </span>
-          <h2 id="regions-heading" className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+          <h2 id="regions-heading" className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
             Umzugsfirmen in Ihrer Region
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm text-muted-foreground max-w-lg mx-auto">
             200+ geprüfte Partner in allen 26 Kantonen
           </p>
         </motion.div>

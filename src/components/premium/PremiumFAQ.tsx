@@ -27,28 +27,25 @@ export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
   }), [items]);
 
   return (
-    <section className="py-14 md:py-20 bg-background" aria-labelledby="faq-heading">
-      {/* Decorative */}
-      <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" aria-hidden="true" />
-      
+    <section className="py-12 md:py-16 bg-background relative" aria-labelledby="faq-heading">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-8"
+            className="text-center mb-6"
           >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-secondary/10 rounded-full text-secondary font-semibold text-xs uppercase tracking-wider mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-full text-primary font-semibold text-xs uppercase tracking-wider mb-3">
               <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" />
               FAQ
             </span>
-            <h2 id="faq-heading" className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Häufige Fragen
+            <h2 id="faq-heading" className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
+              Häufig gestellte Fragen
             </h2>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Alles Wichtige zu unserem Service.
+            <p className="text-sm text-muted-foreground">
+              Schnelle Antworten zu Umzugscheck.ch
             </p>
           </motion.div>
           

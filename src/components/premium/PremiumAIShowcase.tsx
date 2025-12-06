@@ -24,31 +24,31 @@ const benefits = [
 
 export const PremiumAIShowcase = memo(() => {
   return (
-    <section className="py-14 md:py-18 bg-muted/30 overflow-hidden" aria-labelledby="ai-showcase-heading">
+    <section className="py-12 md:py-16 bg-muted/30 overflow-hidden" aria-labelledby="ai-showcase-heading">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           
           {/* Left Column - Content */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
+            transition={{ duration: 0.4 }}
+            className="space-y-5"
           >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-sm text-primary font-medium">
-              <Sparkles className="h-4 w-4" aria-hidden="true" />
-              <span>KI-Powered</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-secondary/10 border border-secondary/20 rounded-full text-xs text-secondary font-semibold uppercase tracking-wider">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              Erster in der Schweiz
             </div>
             
             {/* Header */}
             <div>
-              <h2 id="ai-showcase-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
-                Intelligenter Umzugsrechner
+              <h2 id="ai-showcase-heading" className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
+                KI-gestützter Umzugsrechner
               </h2>
-              <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                Unser AI-System analysiert alle Parameter Ihres Umzugs und liefert präzise Kostenschätzungen – basierend auf echten Schweizer Umzugsdaten.
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                Laden Sie Fotos oder ein Video hoch – unsere AI berechnet Volumen, Aufwand und Kosten automatisch.
               </p>
             </div>
             
