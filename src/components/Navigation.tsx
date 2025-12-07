@@ -101,7 +101,6 @@ export const Navigation = () => {
                 width={196}
                 height={48}
                 loading="eager"
-                fetchPriority="high"
               />
             </Link>
 
