@@ -85,14 +85,14 @@ const services = [
 
 export const PremiumServicesGrid = () => {
   return (
-    <section className="py-12 md:py-16 bg-background relative overflow-hidden" aria-labelledby="services-heading">
+    <section className="py-10 sm:py-12 md:py-16 bg-background relative overflow-hidden" aria-labelledby="services-heading">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
         backgroundSize: '32px 32px'
       }} aria-hidden="true" />
       
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Section Header with BlurReveal */}
         <BlurReveal className="text-center mb-8 md:mb-12">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-secondary/10 rounded-full text-secondary font-semibold text-xs sm:text-sm uppercase tracking-wider mb-3">
@@ -108,7 +108,7 @@ export const PremiumServicesGrid = () => {
         </BlurReveal>
         
         {/* Services Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           {services.map((service, idx) => (
             <motion.div
               key={idx}
@@ -124,7 +124,7 @@ export const PremiumServicesGrid = () => {
                 className="relative block h-full bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-medium border border-border/50 hover:border-primary/30 transition-all duration-300"
               >
                 {/* Image */}
-                <div className="relative h-28 sm:h-32 md:h-36 overflow-hidden">
+                <div className="relative h-24 xs:h-28 sm:h-32 md:h-36 overflow-hidden">
                   <img 
                     src={service.image} 
                     alt={service.title}

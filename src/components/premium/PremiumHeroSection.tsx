@@ -111,7 +111,7 @@ export const PremiumHeroSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[100svh] md:min-h-[85vh] flex items-center overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[90svh] sm:min-h-[85vh] md:min-h-[85vh] flex items-center overflow-hidden pt-16 sm:pt-0">
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"
@@ -266,7 +266,7 @@ export const PremiumHeroSection = () => {
       <GridPattern className="hidden md:block" size={32} fade />
       
       {/* Content Container */}
-      <div className="container mx-auto px-4 py-6 md:py-20 lg:py-24 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 md:py-20 lg:py-24 relative z-10">
         {/* Mobile: Form first, Desktop: Text first */}
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
           
@@ -391,8 +391,8 @@ export const PremiumHeroSection = () => {
             }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-6 md:p-8 relative">
-              <div className="space-y-4 md:space-y-5">
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-5 md:p-8 relative">
+              <div className="space-y-3 sm:space-y-4 md:space-y-5">
                 {/* Form Header */}
                 <div className="text-center space-y-1 md:space-y-2">
                   <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-semibold">

@@ -170,12 +170,12 @@ const costExamples = [
 
 export const PremiumCostExamples = () => {
   return (
-    <section className="py-14 md:py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
+    <section className="py-10 sm:py-14 md:py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
       
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -193,16 +193,16 @@ export const PremiumCostExamples = () => {
             <TrendingDown className="h-4 w-4" />
             Preistransparenz
           </motion.span>
-          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
-            Was kostet ein Umzug in der Schweiz?
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4">
+            Was kostet ein Umzug?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Transparente Preisübersicht für alle Wohnungsgrössen
           </p>
         </motion.div>
         
         {/* Carousel with visible arrows */}
-        <div className="max-w-6xl mx-auto mb-12 relative px-12 md:px-16">
+        <div className="max-w-6xl mx-auto mb-8 sm:mb-12 relative px-8 sm:px-12 md:px-16">
           <Carousel
             opts={{
               align: "start",
@@ -212,7 +212,7 @@ export const PremiumCostExamples = () => {
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {costExamples.map((example, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-[85%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <CarouselItem key={index} className="pl-2 md:pl-4 basis-[75%] xs:basis-[80%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -255,8 +255,8 @@ export const PremiumCostExamples = () => {
             </CarouselContent>
             
             {/* Always visible arrow buttons */}
-            <CarouselPrevious className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 border-2 border-primary/20 bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-md" />
-            <CarouselNext className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 border-2 border-primary/20 bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-md" />
+            <CarouselPrevious className="absolute -left-1 sm:-left-2 md:-left-4 top-1/2 -translate-y-1/2 h-9 w-9 sm:h-10 sm:w-10 md:h-12 md:w-12 border-2 border-primary/20 bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-md active:scale-95 transition-transform" />
+            <CarouselNext className="absolute -right-1 sm:-right-2 md:-right-4 top-1/2 -translate-y-1/2 h-9 w-9 sm:h-10 sm:w-10 md:h-12 md:w-12 border-2 border-primary/20 bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-md active:scale-95 transition-transform" />
           </Carousel>
           
           {/* Swipe hint for mobile */}
