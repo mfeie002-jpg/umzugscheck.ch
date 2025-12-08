@@ -100,22 +100,22 @@ export const Header = () => {
         ? "bg-card/98 backdrop-blur-lg border-b border-border shadow-soft" 
         : "bg-card/95 backdrop-blur-sm border-b border-transparent"
     )}>
-      <div className="container">
-        <div className="flex items-center justify-between h-16 md:h-18">
+      <div className="container px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
           {/* Animated Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-1.5 sm:gap-2 group">
             <motion.div 
-              className="relative w-10 h-10 bg-secondary rounded-xl flex items-center justify-center shadow-cta overflow-hidden"
+              className="relative w-8 h-8 sm:w-10 sm:h-10 bg-secondary rounded-lg sm:rounded-xl flex items-center justify-center shadow-cta overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               {/* Animated Check */}
               <motion.svg 
-                width="24" 
-                height="24" 
+                width="20" 
+                height="20" 
                 viewBox="0 0 24 24" 
                 fill="none"
-                className="text-white relative z-10"
+                className="text-white relative z-10 w-5 h-5 sm:w-6 sm:h-6"
               >
                 <motion.path
                   d="M5 13l4 4L19 7"
@@ -130,7 +130,7 @@ export const Header = () => {
               </motion.svg>
               {/* Moving Box Animation */}
               <motion.div 
-                className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-sm"
+                className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-sm"
                 animate={{ 
                   y: [0, -2, 0],
                   rotate: [0, 5, 0]
@@ -143,9 +143,9 @@ export const Header = () => {
               />
             </motion.div>
             <div className="flex items-center">
-              <span className="text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">Umzugs</span>
-              <span className="text-xl font-bold text-secondary group-hover:text-secondary/80 transition-colors">check</span>
-              <span className="text-xl font-bold text-muted-foreground">.ch</span>
+              <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">Umzugs</span>
+              <span className="text-lg sm:text-xl font-bold text-secondary group-hover:text-secondary/80 transition-colors">check</span>
+              <span className="text-lg sm:text-xl font-bold text-muted-foreground">.ch</span>
             </div>
           </Link>
 
@@ -216,11 +216,11 @@ export const Header = () => {
           </div>
 
           {/* Mobile: CTA + Menu */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-2 sm:gap-3">
             <Button
               asChild
               size="sm"
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold"
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold h-9 px-3 sm:h-10 sm:px-4 text-xs sm:text-sm active:scale-95 transition-transform"
             >
               <Link to="/umzugsofferten">
                 Offerten
@@ -231,6 +231,7 @@ export const Header = () => {
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menu öffnen"
+              className="h-9 w-9 sm:h-10 sm:w-10 active:scale-95 transition-transform"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
@@ -247,11 +248,11 @@ export const Header = () => {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden border-t border-border bg-card overflow-hidden"
           >
-            <nav className="container py-4 space-y-1">
+            <nav className="container px-4 py-3 space-y-1 max-h-[70vh] overflow-y-auto">
               {navLinks.map((link) => (
                 <div key={link.href}>
                   <button
-                    className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
+                    className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-medium text-muted-foreground hover:text-foreground active:bg-muted/70 rounded-lg transition-colors"
                     onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
                   >
                     <span className="flex items-center gap-2">
@@ -272,13 +273,13 @@ export const Header = () => {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="pl-6 space-y-1 overflow-hidden"
+                        className="pl-4 space-y-0.5 overflow-hidden"
                       >
                         {link.dropdown.map((item) => (
                           <Link
                             key={item.href}
                             to={item.href}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-colors"
+                            className="flex items-center gap-2 px-3 py-3 text-sm text-muted-foreground hover:text-foreground active:bg-muted/50 rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             <item.icon className="w-4 h-4 text-secondary" />

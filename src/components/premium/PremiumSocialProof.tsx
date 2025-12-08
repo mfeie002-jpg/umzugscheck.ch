@@ -111,13 +111,13 @@ export const PremiumSocialProof = memo(() => {
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
   return (
-    <section className="py-10 md:py-14 bg-muted/30 min-h-[400px] md:min-h-[450px]" aria-labelledby="social-proof-heading">
-      <div className="container mx-auto px-4">
+    <section className="py-8 sm:py-10 md:py-14 bg-muted/30 min-h-[350px] sm:min-h-[400px] md:min-h-[450px]" aria-labelledby="social-proof-heading">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Stats Row with NumberTicker - Fixed height to prevent CLS */}
-        <div className="grid grid-cols-4 gap-2 md:gap-4 max-w-2xl mx-auto mb-8">
+        <div className="grid grid-cols-4 gap-1.5 xs:gap-2 md:gap-4 max-w-2xl mx-auto mb-6 sm:mb-8">
           {displayStats.map((stat, idx) => (
-            <div key={idx} className="text-center p-3 bg-card rounded-lg border border-border/40 hover:border-primary/30 transition-colors min-h-[72px] md:min-h-[80px]">
-              <div className="text-lg md:text-2xl font-bold text-primary">
+            <div key={idx} className="text-center p-2 xs:p-3 bg-card rounded-lg border border-border/40 hover:border-primary/30 transition-colors min-h-[60px] xs:min-h-[72px] md:min-h-[80px]">
+              <div className="text-sm xs:text-lg md:text-2xl font-bold text-primary">
                 {stat.value.includes("'") ? (
                   <NumberTicker value={parseInt(stat.value.replace(/[^0-9]/g, ''))} suffix="+" />
                 ) : stat.value.includes("/") ? (
@@ -126,7 +126,7 @@ export const PremiumSocialProof = memo(() => {
                   <NumberTicker value={parseInt(stat.value.replace(/[^0-9]/g, ''))} suffix={stat.value.includes("+") ? "+" : ""} />
                 )}
               </div>
-              <div className="text-[10px] md:text-xs text-muted-foreground">{stat.label}</div>
+              <div className="text-[9px] xs:text-[10px] md:text-xs text-muted-foreground">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -162,14 +162,14 @@ export const PremiumSocialProof = memo(() => {
               <Carousel opts={{ align: "start", loop: true }}>
                 <CarouselContent className="-ml-2">
                   {reviews.map((t) => (
-                    <CarouselItem key={t.id} className="pl-2 basis-[85%]">
+                    <CarouselItem key={t.id} className="pl-2 basis-[80%] xs:basis-[85%]">
                       <ReviewCard testimonial={t} />
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <div className="flex justify-center gap-2 mt-3">
-                  <CarouselPrevious className="static translate-y-0 h-7 w-7" />
-                  <CarouselNext className="static translate-y-0 h-7 w-7" />
+                <div className="flex justify-center gap-3 mt-4">
+                  <CarouselPrevious className="static translate-y-0 h-9 w-9 active:scale-95 transition-transform" />
+                  <CarouselNext className="static translate-y-0 h-9 w-9 active:scale-95 transition-transform" />
                 </div>
               </Carousel>
             </div>

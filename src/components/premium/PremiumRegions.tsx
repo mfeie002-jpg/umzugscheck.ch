@@ -60,8 +60,8 @@ export const PremiumRegions = memo(() => {
   const otherRegions = regions.filter(r => !r.popular);
   
   return (
-    <section className="py-12 md:py-16 bg-muted/30" aria-labelledby="regions-heading">
-      <div className="container mx-auto px-4">
+    <section className="py-10 sm:py-12 md:py-16 bg-muted/30" aria-labelledby="regions-heading">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -87,7 +87,7 @@ export const PremiumRegions = memo(() => {
             <TrendingUp className="h-3.5 w-3.5 text-primary" />
             Top Regionen
           </h3>
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {popularRegions.map((region, idx) => (
               <PopularRegionCard key={region.slug} region={region} index={idx} />
             ))}
@@ -95,7 +95,7 @@ export const PremiumRegions = memo(() => {
         </div>
         
         {/* Other Regions */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mb-8">
+        <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mb-8">
           {otherRegions.map((region, idx) => (
             <Link
               key={region.slug}

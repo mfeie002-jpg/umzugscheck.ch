@@ -53,7 +53,7 @@ const trustBadges = [
 
 export const PremiumWhyUs = memo(() => {
   return (
-    <section className="py-12 md:py-16 bg-muted/30 relative overflow-hidden" aria-labelledby="why-us-heading">
+    <section className="py-10 sm:py-12 md:py-16 bg-muted/30 relative overflow-hidden" aria-labelledby="why-us-heading">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
         <div className="absolute inset-0" style={{
@@ -62,7 +62,7 @@ export const PremiumWhyUs = memo(() => {
         }} />
       </div>
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header with BlurReveal */}
         <BlurReveal className="text-center mb-10">
           <span className="inline-block text-primary font-semibold text-xs uppercase tracking-wider mb-2">
@@ -77,7 +77,7 @@ export const PremiumWhyUs = memo(() => {
         </BlurReveal>
         
         {/* USPs Grid with GlowingCard */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-4xl mx-auto">
           {usps.map((usp, idx) => {
             const Icon = usp.icon;
             return (
