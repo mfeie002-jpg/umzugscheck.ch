@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
+import { PerformanceProvider } from "@/contexts/PerformanceContext";
 import { Suspense, lazy } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PreloadResources } from "@/components/PreloadResources";
@@ -221,10 +222,11 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ProviderAuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+          <PerformanceProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
               <CriticalCSS />
               <CriticalCSSLoader />
               <ResourceHints />
@@ -426,6 +428,7 @@ const App = () => (
               </div>
             </BrowserRouter>
           </TooltipProvider>
+        </PerformanceProvider>
         </ProviderAuthProvider>
       </AuthProvider>
     </QueryClientProvider>
