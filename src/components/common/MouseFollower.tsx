@@ -1,7 +1,8 @@
 import { memo, useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useIsMobile, usePrefersReducedMotion, useIsTouchDevice } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
+import { useIsTouchDevice } from "@/hooks/useMediaQuery";
 
 interface MouseFollowerProps {
   className?: string;
@@ -20,16 +21,15 @@ export const MouseFollower = memo(function MouseFollower({
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   
-  const isMobile = useIsMobile();
+  const { shouldShowBackgroundEffects, isMobile } = usePerformance();
   const isTouchDevice = useIsTouchDevice();
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   const springX = useSpring(mouseX, { damping: 25, stiffness: 100 });
   const springY = useSpring(mouseY, { damping: 25, stiffness: 100 });
 
   useEffect(() => {
-    // Don't initialize on mobile/touch devices
-    if (isMobile || isTouchDevice || prefersReducedMotion) return;
+    // Don't initialize on mobile/touch devices or when effects are disabled
+    if (isMobile || isTouchDevice || !shouldShowBackgroundEffects) return;
     
     setMounted(true);
     const handleMouseMove = (e: MouseEvent) => {
@@ -39,10 +39,10 @@ export const MouseFollower = memo(function MouseFollower({
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY, size, isMobile, isTouchDevice, prefersReducedMotion]);
+  }, [mouseX, mouseY, size, isMobile, isTouchDevice, shouldShowBackgroundEffects]);
 
-  // Don't render on mobile, touch devices, or when user prefers reduced motion
-  if (!mounted || isMobile || isTouchDevice || prefersReducedMotion) return null;
+  // Don't render on mobile, touch devices, or when effects are disabled
+  if (!mounted || isMobile || isTouchDevice || !shouldShowBackgroundEffects) return null;
 
   return (
     <motion.div

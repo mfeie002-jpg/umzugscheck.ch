@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { cn } from "@/lib/utils";
-import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
 
 interface RetroGridProps {
   className?: string;
@@ -11,11 +11,10 @@ export const RetroGrid = memo(function RetroGrid({
   className,
   angle = 65
 }: RetroGridProps) {
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { shouldShowBackgroundEffects } = usePerformance();
 
-  // Disable animation on mobile or reduced motion
-  const showAnimation = !isMobile && !prefersReducedMotion;
+  // Disable animation when background effects are disabled
+  const showAnimation = shouldShowBackgroundEffects;
 
   return (
     <div

@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
 
 interface AnimatedBackgroundProps {
   variant?: "dots" | "grid" | "waves" | "gradient" | "particles";
@@ -14,11 +14,10 @@ export const AnimatedBackground = memo(function AnimatedBackground({
   className,
   children
 }: AnimatedBackgroundProps) {
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { shouldShowBackgroundEffects, shouldReduceAnimations } = usePerformance();
 
-  // On mobile or reduced motion, show static backgrounds only
-  const showAnimations = !isMobile && !prefersReducedMotion;
+  // Show static backgrounds only when effects are disabled
+  const showAnimations = shouldShowBackgroundEffects;
 
   return (
     <div className={cn("relative overflow-hidden", className)}>
@@ -87,7 +86,7 @@ export const AnimatedBackground = memo(function AnimatedBackground({
       
       {variant === "particles" && showAnimations && (
         <div className="absolute inset-0 -z-10">
-          {[...Array(isMobile ? 8 : 20)].map((_, i) => (
+          {[...Array(shouldReduceAnimations ? 8 : 20)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute w-2 h-2 rounded-full bg-primary/20"
