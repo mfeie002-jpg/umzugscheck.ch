@@ -1,12 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Building2, Shield, Clock, Users, CheckCircle, Package } from "lucide-react";
+import { Building2, Shield, Clock, Users, Server, FileText, CheckCircle } from "lucide-react";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
-import { ScrollReveal } from "@/components/ScrollReveal";
+import { PageSection } from "@/components/ui/page-section";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { FeatureList } from "@/components/ui/feature-list";
+import { CTASection } from "@/components/CTASection";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { cn } from "@/lib/utils";
 
 export default function BusinessMoving() {
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
+  const { ref: featuresRef, isVisible: featuresVisible } = useScrollAnimation();
+  const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation();
+
   const faqs = [
     {
       question: "Was kostet ein Firmenumzug in der Schweiz?",
@@ -26,6 +35,22 @@ export default function BusinessMoving() {
     }
   ];
 
+  const features = [
+    "Minimale Ausfallzeiten – Umzug am Wochenende oder nachts",
+    "IT-Spezialtransport – Server und Hardware sicher transportiert",
+    "Projektmanagement – Ein Ansprechpartner koordiniert alles",
+    "Archivumzug – Sichere Handhabung vertraulicher Dokumente",
+    "Büromöbel-Montage – De- und Remontage inklusive",
+    "Versicherungsschutz – Vollständige Absicherung"
+  ];
+
+  const benefits = [
+    { icon: Clock, title: "Minimale Ausfallzeit", description: "Umzug an Wochenenden oder nachts möglich" },
+    { icon: Server, title: "IT-Spezialtransport", description: "Sicherer Transport von Servern und Hardware" },
+    { icon: Users, title: "Projektmanagement", description: "Dedizierter Ansprechpartner koordiniert alles" },
+    { icon: FileText, title: "Archivumzug", description: "Sichere Handhabung vertraulicher Dokumente" }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <OptimizedSEO
@@ -38,18 +63,24 @@ export default function BusinessMoving() {
       {/* Hero */}
       <section className="relative py-20 md:py-28 gradient-hero text-white">
         <div className="container mx-auto px-4">
-          <ScrollReveal className="max-w-4xl mx-auto text-center">
+          <div
+            ref={heroRef}
+            className={cn(
+              "max-w-4xl mx-auto text-center transition-all duration-700",
+              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            )}
+          >
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-6">
               <Building2 className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               Firmenumzug in der Schweiz planen
             </h1>
-            <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed">
+            <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto">
               Professionelle Büro- und Geschäftsumzüge mit minimierten Ausfallzeiten. Vergleichen Sie spezialisierte Umzugsfirmen.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/umzug-offerte">
+              <Link to="/umzugsofferten">
                 <Button size="lg" variant="cta" className="h-14 px-8 text-lg">
                   Jetzt Offerten vergleichen
                 </Button>
@@ -60,78 +91,75 @@ export default function BusinessMoving() {
                 </Button>
               </Link>
             </div>
-          </ScrollReveal>
+          </div>
         </div>
       </section>
 
-      {/* Besonderheiten */}
-      <ScrollReveal>
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Besonderheiten beim Firmenumzug</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: "Minimale Ausfallzeit",
-                    description: "Umzug an Wochenenden oder nachts möglich"
-                  },
-                  {
-                    title: "IT-Spezialtransport",
-                    description: "Sicherer Transport von Servern und Hardware"
-                  },
-                  {
-                    title: "Projektmanagement",
-                    description: "Dedizierter Ansprechpartner koordiniert alles"
-                  },
-                  {
-                    title: "Archivumzug",
-                    description: "Sichere Handhabung vertraulicher Dokumente"
-                  }
-                ].map((item, index) => (
-                  <Card key={index} variant="elevated">
-                    <CardContent className="p-6">
-                      <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
+      {/* Features */}
+      <PageSection variant="default">
+        <div
+          ref={featuresRef}
+          className={cn(
+            "max-w-4xl mx-auto transition-all duration-700",
+            featuresVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          <SectionHeading
+            title="Was ist im Firmenumzug enthalten?"
+            subtitle="Professioneller Service für Ihren Geschäftsumzug"
+            className="mb-12"
+          />
+          <FeatureList features={features} columns={2} size="md" />
+        </div>
+      </PageSection>
+
+      {/* Benefits */}
+      <PageSection variant="muted">
+        <div
+          ref={benefitsRef}
+          className={cn(
+            "transition-all duration-700",
+            benefitsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          <SectionHeading
+            title="Besonderheiten beim Firmenumzug"
+            className="mb-12"
+          />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {benefits.map((item, index) => (
+              <Card key={index} variant="elevated" className="text-center hover-lift">
+                <CardContent className="p-6">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <item.icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </section>
-      </ScrollReveal>
+        </div>
+      </PageSection>
 
       {/* FAQ */}
-      <ScrollReveal>
-        <section className="py-16 md:py-20 gradient-light">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                Häufige Fragen zum Firmenumzug
-              </h2>
-              <FAQAccordion items={faqs} variant="compact" />
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
+      <PageSection variant="default">
+        <div className="max-w-3xl mx-auto">
+          <SectionHeading
+            title="Häufige Fragen zum Firmenumzug"
+            className="mb-12"
+          />
+          <FAQAccordion items={faqs} variant="compact" />
+        </div>
+      </PageSection>
 
       {/* CTA */}
-      <section className="py-16 md:py-20 gradient-cta text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Planen Sie jetzt Ihren Firmenumzug
-          </h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-white/90">
-            Erhalten Sie kostenlose Offerten von spezialisierten Umzugsfirmen
-          </p>
-          <Link to="/umzug-offerte">
-            <Button size="lg" variant="cta" className="h-14 px-8 text-lg bg-white text-primary hover:bg-white/90">
-              Jetzt Offerten erhalten
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <CTASection
+        title="Planen Sie jetzt Ihren Firmenumzug"
+        description="Erhalten Sie kostenlose Offerten von spezialisierten Umzugsfirmen"
+        buttonText="Jetzt Offerten erhalten"
+        buttonLink="/umzugsofferten"
+      />
     </div>
   );
 }

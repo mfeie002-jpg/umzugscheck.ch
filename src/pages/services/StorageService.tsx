@@ -4,9 +4,18 @@ import { Link } from "react-router-dom";
 import { Box, Shield, Clock, ThermometerSun, CheckCircle, Package } from "lucide-react";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
-import { ScrollReveal } from "@/components/ScrollReveal";
+import { PageSection } from "@/components/ui/page-section";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { CTASection } from "@/components/CTASection";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { cn } from "@/lib/utils";
 
 export default function StorageService() {
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
+  const { ref: useCasesRef, isVisible: useCasesVisible } = useScrollAnimation();
+  const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation();
+  const { ref: stepsRef, isVisible: stepsVisible } = useScrollAnimation();
+
   const faqs = [
     {
       question: "Was kostet Möbellagerung in der Schweiz?",
@@ -26,6 +35,30 @@ export default function StorageService() {
     }
   ];
 
+  const useCases = [
+    { title: "Zwischenlagerung bei Umzug", description: "Überbrückung zwischen Auszug und Einzug" },
+    { title: "Renovierung oder Umbau", description: "Möbel sicher lagern während der Arbeiten" },
+    { title: "Auslandsaufenthalt", description: "Langzeitlagerung für Monate oder Jahre" },
+    { title: "Platzmangel", description: "Saisonale Gegenstände oder selten genutzte Möbel" },
+    { title: "Verkleinerung", description: "Übergangsphase bei Wohnungswechsel" },
+    { title: "Geschäftliche Nutzung", description: "Archivierung oder Lagerhaltung für Firmen" }
+  ];
+
+  const benefits = [
+    { icon: Shield, title: "Sicher & versichert", description: "Videoüberwachung und Alarmanlage 24/7" },
+    { icon: ThermometerSun, title: "Klimatisiert", description: "Optimale Temperatur und Luftfeuchtigkeit" },
+    { icon: Clock, title: "Flexibler Zugang", description: "24/7 Zugang zu Ihrem Lager möglich" },
+    { icon: Package, title: "Alle Grössen", description: "Von 1m² bis 100m² verfügbar" },
+    { icon: CheckCircle, title: "Kurz- & Langzeit", description: "Flexible Mietdauer nach Ihrem Bedarf" },
+    { icon: Box, title: "Transport inklusive", description: "Abholung und Lieferung buchbar" }
+  ];
+
+  const steps = [
+    { step: "1", title: "Lagergrösse wählen", description: "Berechnen Sie Ihren Platzbedarf" },
+    { step: "2", title: "Offerten vergleichen", description: "Erhalten Sie bis zu 5 kostenlose Angebote" },
+    { step: "3", title: "Einlagern", description: "Transport und Einlagerung organisieren" }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <OptimizedSEO
@@ -38,14 +71,20 @@ export default function StorageService() {
       {/* Hero */}
       <section className="relative py-20 md:py-28 gradient-hero text-white">
         <div className="container mx-auto px-4">
-          <ScrollReveal className="max-w-4xl mx-auto text-center">
+          <div
+            ref={heroRef}
+            className={cn(
+              "max-w-4xl mx-auto text-center transition-all duration-700",
+              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            )}
+          >
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-6">
               <Box className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               Möbellager & Einlagerung in der Schweiz
             </h1>
-            <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed">
+            <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto">
               Sichere und flexible Lagerlösungen für Ihre Möbel und Gegenstände. Klimatisiert, überwacht und versichert.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -60,145 +99,110 @@ export default function StorageService() {
                 </Button>
               </Link>
             </div>
-          </ScrollReveal>
+          </div>
         </div>
       </section>
 
-      {/* Anwendungsfälle */}
-      <ScrollReveal>
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-                Wann brauche ich ein Möbellager?
-              </h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: "Zwischenlagerung bei Umzug",
-                    description: "Überbrückung zwischen Auszug und Einzug"
-                  },
-                  {
-                    title: "Renovierung oder Umbau",
-                    description: "Möbel sicher lagern während der Arbeiten"
-                  },
-                  {
-                    title: "Auslandsaufenthalt",
-                    description: "Langzeitlagerung für Monate oder Jahre"
-                  },
-                  {
-                    title: "Platzmangel",
-                    description: "Saisonale Gegenstände oder selten genutzte Möbel"
-                  },
-                  {
-                    title: "Verkleinerung",
-                    description: "Übergangsphase bei Wohnungswechsel"
-                  },
-                  {
-                    title: "Geschäftliche Nutzung",
-                    description: "Archivierung oder Lagerhaltung für Firmen"
-                  }
-                ].map((item, index) => (
-                  <Card key={index} variant="elevated">
-                    <CardContent className="p-6">
-                      <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
+      {/* Use Cases */}
+      <PageSection variant="default">
+        <div
+          ref={useCasesRef}
+          className={cn(
+            "max-w-4xl mx-auto transition-all duration-700",
+            useCasesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          <SectionHeading
+            title="Wann brauche ich ein Möbellager?"
+            className="mb-12"
+          />
+          <div className="grid md:grid-cols-2 gap-6">
+            {useCases.map((item, index) => (
+              <Card key={index} variant="elevated" className="hover-lift">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </section>
-      </ScrollReveal>
+        </div>
+      </PageSection>
 
-      {/* Vorteile */}
-      <ScrollReveal>
-        <section className="py-16 md:py-20 gradient-light">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Vorteile professioneller Möbellagerung
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {[
-                { icon: Shield, title: "Sicher & versichert", description: "Videoüberwachung und Alarmanlage 24/7" },
-                { icon: ThermometerSun, title: "Klimatisiert", description: "Optimale Temperatur und Luftfeuchtigkeit" },
-                { icon: Clock, title: "Flexibler Zugang", description: "24/7 Zugang zu Ihrem Lager möglich" },
-                { icon: Package, title: "Alle Grössen", description: "Von 1m² bis 100m² verfügbar" },
-                { icon: CheckCircle, title: "Kurz- & Langzeit", description: "Flexible Mietdauer nach Ihrem Bedarf" },
-                { icon: Box, title: "Transport inklusive", description: "Abholung und Lieferung buchbar" }
-              ].map((item, index) => (
-                <Card key={index} variant="elevated" className="h-full hover-lift">
-                  <CardContent className="p-6">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                      <item.icon className="h-7 w-7 text-primary" />
-                    </div>
-                    <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* Ablauf */}
-      <ScrollReveal>
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              So funktioniert's
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {[
-                { step: "1", title: "Lagergrösse wählen", description: "Berechnen Sie Ihren Platzbedarf" },
-                { step: "2", title: "Offerten vergleichen", description: "Erhalten Sie bis zu 5 kostenlose Angebote" },
-                { step: "3", title: "Einlagern", description: "Transport und Einlagerung organisieren" }
-              ].map((item, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center text-3xl font-bold mx-auto mb-6">
-                    {item.step}
+      {/* Benefits */}
+      <PageSection variant="muted">
+        <div
+          ref={benefitsRef}
+          className={cn(
+            "transition-all duration-700",
+            benefitsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          <SectionHeading
+            title="Vorteile professioneller Möbellagerung"
+            className="mb-12"
+          />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {benefits.map((item, index) => (
+              <Card key={index} variant="elevated" className="h-full hover-lift">
+                <CardContent className="p-6">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                    <item.icon className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                  <p className="text-muted-foreground">{item.description}</p>
-                </div>
-              ))}
-            </div>
+                  <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </section>
-      </ScrollReveal>
+        </div>
+      </PageSection>
+
+      {/* Steps */}
+      <PageSection variant="default">
+        <div
+          ref={stepsRef}
+          className={cn(
+            "transition-all duration-700",
+            stepsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          <SectionHeading
+            title="So funktioniert's"
+            className="mb-12"
+          />
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {steps.map((item, index) => (
+              <div key={index} className="text-center">
+                <div className="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center text-3xl font-bold mx-auto mb-6">
+                  {item.step}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                <p className="text-muted-foreground">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </PageSection>
 
       {/* FAQ */}
-      <ScrollReveal>
-        <section className="py-16 md:py-20 gradient-light">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                Häufige Fragen zur Einlagerung
-              </h2>
-              <FAQAccordion items={faqs} variant="compact" />
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
+      <PageSection variant="muted">
+        <div className="max-w-3xl mx-auto">
+          <SectionHeading
+            title="Häufige Fragen zur Einlagerung"
+            className="mb-12"
+          />
+          <FAQAccordion items={faqs} variant="compact" />
+        </div>
+      </PageSection>
 
       {/* CTA */}
-      <section className="py-16 md:py-20 gradient-cta text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Bereit für sicheres Möbellager?
-          </h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-white/90">
-            Vergleichen Sie jetzt Angebote für Möbellager und finden Sie die beste Lösung
-          </p>
-          <Link to="/umzugsofferten">
-            <Button size="lg" variant="cta" className="h-14 px-8 text-lg bg-white text-primary hover:bg-white/90">
-              Jetzt Offerten erhalten
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <CTASection
+        title="Bereit für sicheres Möbellager?"
+        description="Vergleichen Sie jetzt Angebote für Möbellager und finden Sie die beste Lösung"
+        buttonText="Jetzt Offerten erhalten"
+        buttonLink="/umzugsofferten"
+      />
     </div>
   );
 }
