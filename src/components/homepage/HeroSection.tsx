@@ -1,11 +1,21 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { CheckCircle, ArrowRight, Star, Shield, Users, Sparkles, MapPin, Clock, TrendingUp } from "lucide-react";
+import { CheckCircle, ArrowRight, Star, Shield, MapPin, Clock, TrendingUp, Sparkles, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { PulsingBadge, TypewriterHeadline, AnimatedBackground, GlowingButton, SpotlightCard, FloatingParticles, MouseFollower } from "@/components/common";
+import { 
+  PulsingBadge, 
+  TypewriterHeadline, 
+  AnimatedBackground, 
+  GlowingButton, 
+  SpotlightCard, 
+  FloatingParticles, 
+  MouseFollower,
+  LiveDot,
+  AnimatedCounter
+} from "@/components/common";
 
 // Swiss postal codes for autocomplete
 const swissPostalCodes = [
@@ -31,7 +41,7 @@ const swissPostalCodes = [
   { code: "2500", city: "Biel/Bienne", canton: "BE" },
 ];
 
-export const HeroSection = () => {
+export const HeroSection = memo(function HeroSection() {
   const navigate = useNavigate();
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
@@ -86,14 +96,16 @@ export const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Mouse Follower Effect */}
-      <MouseFollower size={500} color="hsl(var(--primary) / 0.08)" />
+      {/* Mouse Follower Effect - Desktop only */}
+      <div className="hidden lg:block">
+        <MouseFollower size={500} color="hsl(var(--primary) / 0.08)" />
+      </div>
       
       {/* Floating Particles */}
-      <FloatingParticles count={30} color="bg-secondary/20" className="z-0" />
+      <FloatingParticles count={25} color="bg-secondary/15" className="z-0" />
       
       {/* Animated Background with Particles */}
-      <AnimatedBackground variant="particles" className="absolute inset-0 z-0 opacity-30" />
+      <AnimatedBackground variant="particles" className="absolute inset-0 z-0 opacity-20" />
       
       {/* Parallax Background */}
       <motion.div 
@@ -111,7 +123,7 @@ export const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
         {/* Dotted Pattern */}
         <div 
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: "radial-gradient(circle, hsl(var(--foreground)) 1px, transparent 1px)",
             backgroundSize: "24px 24px"
@@ -199,9 +211,12 @@ export const HeroSection = () => {
             </div>
 
             {/* Live Badge with Pulsing Animation */}
-            <PulsingBadge variant="success" pulse>
-              {liveCount} Offerten heute angefordert
-            </PulsingBadge>
+            <div className="flex items-center gap-3">
+              <PulsingBadge variant="success" pulse>
+                <LiveDot color="green" size="sm" className="mr-1" />
+                {liveCount} Offerten heute angefordert
+              </PulsingBadge>
+            </div>
 
             {/* Additional Trust Badges */}
             <div className="flex flex-wrap gap-2 pt-2">
@@ -358,4 +373,4 @@ export const HeroSection = () => {
       </motion.div>
     </section>
   );
-};
+});
