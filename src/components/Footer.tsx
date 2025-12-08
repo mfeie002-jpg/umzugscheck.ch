@@ -37,7 +37,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground" role="contentinfo">
+    <footer className="bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground pb-16 md:pb-0" role="contentinfo">
       <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(ORGANIZATION_SCHEMA)}
@@ -46,26 +46,26 @@ export const Footer = () => {
       
       {/* Trust Bar - Enhanced */}
       <div className="border-b border-primary-foreground/10">
-        <div className="container mx-auto px-4 py-5">
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm text-primary-foreground/90">
-            <span className="flex items-center gap-2 font-medium">
-              <Shield className="h-5 w-5" />
+        <div className="container mx-auto px-4 py-4 sm:py-5">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-10 text-xs sm:text-sm text-primary-foreground/90">
+            <span className="flex items-center gap-1.5 sm:gap-2 font-medium">
+              <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
               SSL-verschlüsselt
             </span>
-            <span className="flex items-center gap-2 font-medium">
-              <CheckCircle className="h-5 w-5" />
+            <span className="flex items-center gap-1.5 sm:gap-2 font-medium">
+              <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               DSGVO-konform
             </span>
-            <span className="flex items-center gap-2 font-medium">
-              <Award className="h-5 w-5" />
+            <span className="flex items-center gap-1.5 sm:gap-2 font-medium">
+              <Award className="h-4 w-4 sm:h-5 sm:w-5" />
               Swiss Made
             </span>
           </div>
         </div>
       </div>
       
-      <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
+      <div className="container mx-auto px-4 py-8 sm:py-10 md:py-12 lg:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8 mb-8 sm:mb-12">
           {/* Company Info */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center hover:opacity-90 transition-opacity">

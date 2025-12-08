@@ -84,20 +84,20 @@ export const Navigation = () => {
 
   return (
     <header>
-      <nav className="bg-background border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
-        <div className="container mx-auto px-2 sm:px-4">
-          <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
+      <nav className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
             {/* Logo */}
             <Link 
               to="/" 
-              className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-4 sm:ml-0"
+              className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-1 sm:ml-0"
               aria-label="Zur Startseite von Umzugscheck.ch"
             >
               <img 
                 src={logo} 
                 alt="Umzugscheck.ch - Schweizer Umzugsvergleich" 
-                className="h-8 sm:h-10 md:h-12 w-auto"
-                sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 196px"
+                className="h-7 sm:h-9 md:h-10 lg:h-12 w-auto"
+                sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 196px"
                 width={196}
                 height={48}
                 loading="eager"
@@ -150,25 +150,26 @@ export const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button & CTA - Visible on Mobile */}
-          <div className="flex lg:hidden items-center gap-1 -mr-3 sm:mr-0">
+          <div className="flex lg:hidden items-center gap-2 -mr-1 sm:mr-0">
             <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
               <Button 
                 size="sm"
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold text-xs sm:text-sm px-3 sm:px-4"
+                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold text-[11px] sm:text-xs px-2.5 sm:px-3 h-8 sm:h-9 active:scale-95 transition-transform"
               >
-                Offerten vergleichen
+                <span className="hidden xs:inline">Offerten</span>
+                <span className="xs:hidden">Offerten</span>
               </Button>
             </Link>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="relative z-50"
+              className="relative z-50 h-9 w-9 sm:h-10 sm:w-10 active:scale-95 transition-transform"
               aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />}
             </Button>
           </div>
 
