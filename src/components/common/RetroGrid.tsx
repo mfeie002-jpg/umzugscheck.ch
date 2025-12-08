@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { cn } from "@/lib/utils";
+import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 
 interface RetroGridProps {
   className?: string;
@@ -10,6 +11,12 @@ export const RetroGrid = memo(function RetroGrid({
   className,
   angle = 65
 }: RetroGridProps) {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  // Disable animation on mobile or reduced motion
+  const showAnimation = !isMobile && !prefersReducedMotion;
+
   return (
     <div
       className={cn(
@@ -21,7 +28,10 @@ export const RetroGrid = memo(function RetroGrid({
     >
       <div className="absolute inset-0 [transform:rotateX(var(--grid-angle))]">
         <div
-          className="animate-grid [background-repeat:repeat] [background-size:60px_60px] [height:300vh] [inset:0%_0px] [margin-left:-50%] [transform-origin:100%_0_0] [width:600vw]"
+          className={cn(
+            "[background-repeat:repeat] [background-size:60px_60px] [height:300vh] [inset:0%_0px] [margin-left:-50%] [transform-origin:100%_0_0] [width:600vw]",
+            showAnimation && "animate-grid"
+          )}
           style={{
             backgroundImage: `linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 0),
               linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 0)`

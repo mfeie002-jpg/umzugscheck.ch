@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 
 interface AnimatedBackgroundProps {
   variant?: "dots" | "grid" | "waves" | "gradient" | "particles";
@@ -13,21 +14,36 @@ export const AnimatedBackground = memo(function AnimatedBackground({
   className,
   children
 }: AnimatedBackgroundProps) {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  // On mobile or reduced motion, show static backgrounds only
+  const showAnimations = !isMobile && !prefersReducedMotion;
+
   return (
     <div className={cn("relative overflow-hidden", className)}>
       {variant === "gradient" && (
-        <motion.div
-          className="absolute inset-0 -z-10"
-          animate={{
-            background: [
-              "radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
-              "radial-gradient(circle at 80% 50%, hsl(var(--secondary) / 0.1) 0%, transparent 50%)",
-              "radial-gradient(circle at 50% 80%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
-              "radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
-            ]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-        />
+        showAnimations ? (
+          <motion.div
+            className="absolute inset-0 -z-10"
+            animate={{
+              background: [
+                "radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
+                "radial-gradient(circle at 80% 50%, hsl(var(--secondary) / 0.1) 0%, transparent 50%)",
+                "radial-gradient(circle at 50% 80%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
+                "radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
+              ]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          />
+        ) : (
+          <div 
+            className="absolute inset-0 -z-10"
+            style={{
+              background: "radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.08) 0%, transparent 50%)"
+            }}
+          />
+        )
       )}
       
       {variant === "dots" && (
@@ -53,7 +69,7 @@ export const AnimatedBackground = memo(function AnimatedBackground({
         />
       )}
       
-      {variant === "waves" && (
+      {variant === "waves" && showAnimations && (
         <svg className="absolute inset-0 -z-10 w-full h-full opacity-5" viewBox="0 0 1440 320">
           <motion.path
             fill="hsl(var(--primary))"
@@ -69,9 +85,9 @@ export const AnimatedBackground = memo(function AnimatedBackground({
         </svg>
       )}
       
-      {variant === "particles" && (
+      {variant === "particles" && showAnimations && (
         <div className="absolute inset-0 -z-10">
-          {[...Array(20)].map((_, i) => (
+          {[...Array(isMobile ? 8 : 20)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute w-2 h-2 rounded-full bg-primary/20"
