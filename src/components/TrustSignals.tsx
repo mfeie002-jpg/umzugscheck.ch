@@ -38,10 +38,10 @@ const quickTrust = [
 
 export const TrustSignals = memo(() => {
   return (
-    <section className="py-4 md:py-6 bg-muted/40 border-y border-border/50" aria-label="Vertrauenssignale">
+    <section className="py-4 md:py-6 bg-muted/40 border-y border-border/50 min-h-[120px] md:min-h-[140px]" aria-label="Vertrauenssignale">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
-          {/* Stats Grid - Ultra compact */}
+          {/* Stats Grid - Ultra compact - Fixed height for CLS prevention */}
           <div className="grid grid-cols-4 gap-1.5 md:gap-3">
             {stats.map((stat, index) => (
               <motion.div 
@@ -49,7 +49,7 @@ export const TrustSignals = memo(() => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="text-center p-2 md:p-3 rounded-lg bg-card border border-border/30 hover:border-primary/30 hover:shadow-soft transition-all"
+                className="text-center p-2 md:p-3 rounded-lg bg-card border border-border/30 hover:border-primary/30 hover:shadow-soft transition-all min-h-[64px] md:min-h-[80px]"
               >
                 <stat.icon className={`w-4 h-4 md:w-5 md:h-5 ${stat.color} mx-auto mb-1`} aria-hidden="true" />
                 <div className="text-sm md:text-lg lg:text-xl font-bold text-foreground">

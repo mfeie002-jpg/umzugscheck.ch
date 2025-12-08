@@ -7,25 +7,19 @@ import { AnimatedSection } from "@/components/ui/animated-section";
 import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
 import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
-import { PremiumAIShowcase } from "@/components/premium/PremiumAIShowcase";
-import { PremiumServicesGrid } from "@/components/premium/PremiumServicesGrid";
-import { PremiumRegions } from "@/components/premium/PremiumRegions";
-import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
-import { ComparisonShowcase } from "@/components/home/ComparisonShowcase";
 import { TrustSignals } from "@/components/TrustSignals";
 import { memo, useMemo, lazy, Suspense } from "react";
+import { SectionSkeleton } from "@/components/ui/section-skeleton";
 
-// Lazy load below-fold sections
+// Lazy load below-fold sections for better performance
 const LazyPremiumCostExamples = lazy(() => import("@/components/premium/PremiumCostExamples").then(m => ({ default: m.PremiumCostExamples })));
 const LazyPremiumProviderCTA = lazy(() => import("@/components/premium/PremiumProviderCTA").then(m => ({ default: m.PremiumProviderCTA })));
-
-// Compact loading placeholder
-const SectionLoader = () => (
-  <div className="py-12 flex justify-center" aria-hidden="true">
-    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-  </div>
-);
+const LazyPremiumAIShowcase = lazy(() => import("@/components/premium/PremiumAIShowcase").then(m => ({ default: m.PremiumAIShowcase })));
+const LazyPremiumServicesGrid = lazy(() => import("@/components/premium/PremiumServicesGrid").then(m => ({ default: m.PremiumServicesGrid })));
+const LazyPremiumRegions = lazy(() => import("@/components/premium/PremiumRegions").then(m => ({ default: m.PremiumRegions })));
+const LazyPremiumWhyUs = lazy(() => import("@/components/premium/PremiumWhyUs").then(m => ({ default: m.PremiumWhyUs })));
+const LazyComparisonShowcase = lazy(() => import("@/components/home/ComparisonShowcase").then(m => ({ default: m.ComparisonShowcase })));
 
 const IndexPremium = () => {
   // FAQ data - memoized
@@ -144,37 +138,47 @@ const IndexPremium = () => {
           <PremiumHowItWorks />
         </AnimatedSection>
 
-        {/* Comparison */}
-        <AnimatedSection animation="fade-in">
-          <ComparisonShowcase variant="premium" />
-        </AnimatedSection>
+        {/* Comparison - Lazy */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
+          <AnimatedSection animation="fade-in">
+            <LazyComparisonShowcase variant="premium" />
+          </AnimatedSection>
+        </Suspense>
         
-        {/* AI Calculator */}
-        <AnimatedSection animation="scale">
-          <PremiumAIShowcase />
-        </AnimatedSection>
+        {/* AI Calculator - Lazy */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[500px]" />}>
+          <AnimatedSection animation="scale">
+            <LazyPremiumAIShowcase />
+          </AnimatedSection>
+        </Suspense>
         
-        {/* Services */}
-        <AnimatedSection animation="fade-up">
-          <PremiumServicesGrid />
-        </AnimatedSection>
+        {/* Services - Lazy */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
+          <AnimatedSection animation="fade-up">
+            <LazyPremiumServicesGrid />
+          </AnimatedSection>
+        </Suspense>
         
         {/* Cost Examples - Lazy */}
-        <Suspense fallback={<SectionLoader />}>
+        <Suspense fallback={<SectionSkeleton height="min-h-[350px]" variant="cards" />}>
           <AnimatedSection animation="fade-up">
             <LazyPremiumCostExamples />
           </AnimatedSection>
         </Suspense>
         
-        {/* Regions */}
-        <AnimatedSection animation="slide-left">
-          <PremiumRegions />
-        </AnimatedSection>
+        {/* Regions - Lazy */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
+          <AnimatedSection animation="slide-left">
+            <LazyPremiumRegions />
+          </AnimatedSection>
+        </Suspense>
         
-        {/* Why Us */}
-        <AnimatedSection animation="scale">
-          <PremiumWhyUs />
-        </AnimatedSection>
+        {/* Why Us - Lazy */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
+          <AnimatedSection animation="scale">
+            <LazyPremiumWhyUs />
+          </AnimatedSection>
+        </Suspense>
         
         {/* FAQ */}
         <AnimatedSection animation="fade-in">
@@ -182,7 +186,7 @@ const IndexPremium = () => {
         </AnimatedSection>
         
         {/* Provider CTA - Lazy */}
-        <Suspense fallback={<SectionLoader />}>
+        <Suspense fallback={<SectionSkeleton height="min-h-[200px]" />}>
           <AnimatedSection animation="fade-up">
             <LazyPremiumProviderCTA />
           </AnimatedSection>

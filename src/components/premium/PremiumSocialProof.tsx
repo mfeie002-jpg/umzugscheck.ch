@@ -111,12 +111,12 @@ export const PremiumSocialProof = memo(() => {
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
   return (
-    <section className="py-10 md:py-14 bg-muted/30" aria-labelledby="social-proof-heading">
+    <section className="py-10 md:py-14 bg-muted/30 min-h-[400px] md:min-h-[450px]" aria-labelledby="social-proof-heading">
       <div className="container mx-auto px-4">
-        {/* Stats Row with NumberTicker */}
+        {/* Stats Row with NumberTicker - Fixed height to prevent CLS */}
         <div className="grid grid-cols-4 gap-2 md:gap-4 max-w-2xl mx-auto mb-8">
           {displayStats.map((stat, idx) => (
-            <div key={idx} className="text-center p-3 bg-card rounded-lg border border-border/40 hover:border-primary/30 transition-colors">
+            <div key={idx} className="text-center p-3 bg-card rounded-lg border border-border/40 hover:border-primary/30 transition-colors min-h-[72px] md:min-h-[80px]">
               <div className="text-lg md:text-2xl font-bold text-primary">
                 {stat.value.includes("'") ? (
                   <NumberTicker value={parseInt(stat.value.replace(/[^0-9]/g, ''))} suffix="+" />
@@ -146,9 +146,9 @@ export const PremiumSocialProof = memo(() => {
         
         {/* Reviews */}
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 min-h-[140px] md:min-h-[160px]">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-card rounded-xl p-4 border">
+              <div key={i} className="bg-card rounded-xl p-4 border min-h-[120px] md:min-h-[140px]">
                 <Skeleton className="h-4 w-16 mb-2" />
                 <Skeleton className="h-12 w-full mb-2" />
                 <Skeleton className="h-3 w-20" />
@@ -202,13 +202,16 @@ export const PremiumSocialProof = memo(() => {
             {partnerLogos.map((partner) => (
               <div
                 key={partner.name}
-                className="flex items-center justify-center mx-8 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+                className="flex items-center justify-center mx-8 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 h-8 md:h-10"
               >
                 <img
                   src={partner.logo}
                   alt={partner.name}
+                  width={120}
+                  height={32}
                   className="h-6 md:h-8 w-auto object-contain"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             ))}
