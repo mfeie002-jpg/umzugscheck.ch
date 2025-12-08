@@ -3,19 +3,27 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "rounded-lg text-card-foreground",
+  "rounded-lg text-card-foreground transition-all duration-200",
   {
     variants: {
       variant: {
-        default: "border bg-card shadow-sm",
-        elevated: "bg-card shadow-medium border-0",
-        outline: "border-2 bg-card",
-        ghost: "bg-transparent",
-        premium: "bg-gradient-to-br from-card to-card/80 shadow-strong border border-primary/10",
+        default: "border bg-card shadow-sm hover:shadow-soft",
+        elevated: "bg-card shadow-medium border-0 hover:shadow-lift",
+        outline: "border-2 bg-card hover:border-primary/30",
+        ghost: "bg-transparent hover:bg-accent/50",
+        premium: "bg-gradient-to-br from-card to-card/80 shadow-strong border border-primary/10 hover:shadow-lift",
+        interactive: "border bg-card shadow-sm hover:shadow-medium hover:-translate-y-1 cursor-pointer",
+        glass: "bg-white/80 backdrop-blur-lg border border-white/20 shadow-soft",
       },
+      padding: {
+        default: "",
+        none: "[&>*:first-child]:p-0 [&>*:last-child]:p-0",
+        compact: "[&>*:first-child]:p-4 [&>*:last-child]:p-4",
+      }
     },
     defaultVariants: {
       variant: "default",
+      padding: "default",
     },
   }
 );
