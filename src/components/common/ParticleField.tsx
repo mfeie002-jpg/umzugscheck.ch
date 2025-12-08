@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
 
 interface ParticleFieldProps {
   className?: string;
@@ -16,15 +16,16 @@ export const ParticleField = memo(function ParticleField({
   speed = 1
 }: ParticleFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { shouldShowParticles, shouldReduceAnimations, performanceLevel } = usePerformance();
 
-  // Reduce particle count on mobile
-  const actualCount = isMobile ? Math.min(particleCount, 15) : particleCount;
-  const actualSpeed = isMobile ? speed * 0.5 : speed;
+  // Reduce particle count based on performance level
+  const actualCount = shouldReduceAnimations 
+    ? Math.min(particleCount, performanceLevel === 'low' ? 10 : 15) 
+    : particleCount;
+  const actualSpeed = shouldReduceAnimations ? speed * 0.5 : speed;
 
-  // Don't render if user prefers reduced motion
-  if (prefersReducedMotion) {
+  // Don't render if performance is too low
+  if (!shouldShowParticles) {
     return null;
   }
 
@@ -81,8 +82,8 @@ export const ParticleField = memo(function ParticleField({
         ctx.fill();
       });
 
-      // Draw connections only on desktop for performance
-      if (!isMobile) {
+      // Draw connections only on high performance
+      if (!shouldReduceAnimations) {
         particles.forEach((p1, i) => {
           particles.slice(i + 1).forEach((p2) => {
             const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
@@ -106,7 +107,7 @@ export const ParticleField = memo(function ParticleField({
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationId);
     };
-  }, [actualCount, particleColor, actualSpeed, isMobile]);
+  }, [actualCount, particleColor, actualSpeed, shouldReduceAnimations]);
 
   return (
     <canvas

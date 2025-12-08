@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { cn } from "@/lib/utils";
-import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
 
 interface BorderBeamProps {
   className?: string;
@@ -15,11 +15,10 @@ export const BorderBeam = memo(function BorderBeam({
   duration = 15,
   delay = 0
 }: BorderBeamProps) {
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { shouldShowComplexAnimations } = usePerformance();
 
-  // Don't render on mobile or when reduced motion is preferred
-  if (isMobile || prefersReducedMotion) {
+  // Don't render on low performance or mobile
+  if (!shouldShowComplexAnimations) {
     return null;
   }
 

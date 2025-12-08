@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
 
 interface Particle {
   id: number;
@@ -24,14 +24,13 @@ export const FloatingParticles = memo(function FloatingParticles({
   color = "bg-primary/20"
 }: FloatingParticlesProps) {
   const [particles, setParticles] = useState<Particle[]>([]);
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { shouldShowParticles, shouldReduceAnimations, isMobile } = usePerformance();
 
-  // Reduce particle count on mobile for better performance
-  const actualCount = isMobile ? Math.min(count, 8) : count;
+  // Reduce particle count on mobile/low performance
+  const actualCount = shouldReduceAnimations ? Math.min(count, 8) : count;
 
-  // Don't render anything if user prefers reduced motion
-  if (prefersReducedMotion) {
+  // Don't render if performance is too low or user prefers reduced motion
+  if (!shouldShowParticles) {
     return null;
   }
 
@@ -59,7 +58,7 @@ export const FloatingParticles = memo(function FloatingParticles({
             width: particle.size,
             height: particle.size
           }}
-          animate={isMobile ? {
+          animate={shouldReduceAnimations ? {
             opacity: [0.3, 0.5, 0.3]
           } : {
             y: [0, -30, 0],
@@ -67,7 +66,7 @@ export const FloatingParticles = memo(function FloatingParticles({
             opacity: [0.3, 0.6, 0.3]
           }}
           transition={{
-            duration: isMobile ? particle.duration * 1.5 : particle.duration,
+            duration: shouldReduceAnimations ? particle.duration * 1.5 : particle.duration,
             delay: particle.delay,
             repeat: Infinity,
             ease: "easeInOut"
