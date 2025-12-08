@@ -1,14 +1,20 @@
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
-import { ScrollReveal } from "@/components/ScrollReveal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Clock, Shield, DollarSign, Wrench, TrendingUp, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FAQAccordion } from "@/components/FAQAccordion";
+import { PageSection } from "@/components/ui/page-section";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { CTASection } from "@/components/CTASection";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { cn } from "@/lib/utils";
 
 export default function FurnitureLift() {
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
+  const { ref: benefitsRef, isVisible: benefitsVisible } = useScrollAnimation();
+  const { ref: situationsRef, isVisible: situationsVisible } = useScrollAnimation();
+
   const benefits = [
     { icon: Clock, title: "Zeitersparnis", description: "Viel schneller als Tragen über Treppen" },
     { icon: Shield, title: "Sicher", description: "Keine Beschädigungen an Möbeln oder Wänden" },
@@ -45,7 +51,7 @@ export default function FurnitureLift() {
   ];
 
   return (
-    <>
+    <div className="min-h-screen bg-background">
       <OptimizedSEO
         title="Möbellift mieten - Schnell & sicher"
         description="Möbellift für Ihren Umzug mieten. Schneller Transport schwerer Möbel über Balkon oder Fenster. Sicher, zeitsparend und rückenschonend."
@@ -53,119 +59,113 @@ export default function FurnitureLift() {
         canonicalUrl="https://umzugscheck.ch/moebellift"
       />
 
-      <div className="min-h-screen flex flex-col">
-        
-        <main className="flex-1">
-          {/* Hero Section */}
-          <section className="gradient-hero text-white py-16 md:py-24">
-            <div className="container mx-auto px-4">
-              <ScrollReveal>
-                <div className="max-w-4xl mx-auto text-center">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                    Möbellift mieten
-                  </h1>
-                  <p className="text-xl md:text-2xl mb-8 text-white/90">
-                    Schwere Möbel sicher und schnell transportieren
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
-                      <Link to="/rechner">Jetzt Offerte anfragen</Link>
-                    </Button>
-                    <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
-                      <Link to="/umzugsfirmen">Umzugsfirmen vergleichen</Link>
-                    </Button>
+      {/* Hero Section */}
+      <section className="gradient-hero text-white py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <div
+            ref={heroRef}
+            className={cn(
+              "max-w-4xl mx-auto text-center transition-all duration-700",
+              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            )}
+          >
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-6">
+              <ArrowUp className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              Möbellift mieten
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
+              Schwere Möbel sicher und schnell transportieren
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
+                <Link to="/rechner">Jetzt Offerte anfragen</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
+                <Link to="/umzugsfirmen">Umzugsfirmen vergleichen</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <PageSection variant="muted">
+        <div
+          ref={benefitsRef}
+          className={cn(
+            "transition-all duration-700",
+            benefitsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          <SectionHeading
+            title="Vorteile eines Möbellifts"
+            className="mb-12"
+          />
+          <div className="grid md:grid-cols-3 gap-8">
+            {benefits.map((benefit, index) => (
+              <Card key={index} variant="elevated" className="h-full hover-lift">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                    <benefit.icon className="w-6 h-6 text-primary" />
                   </div>
-                </div>
-              </ScrollReveal>
-            </div>
-          </section>
+                  <CardTitle>{benefit.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </PageSection>
 
-          {/* Benefits Section */}
-          <section className="py-16 gradient-light">
-            <div className="container mx-auto px-4">
-              <ScrollReveal>
-                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                  Vorteile eines Möbellifts
-                </h2>
-              </ScrollReveal>
-              <div className="grid md:grid-cols-3 gap-8">
-                {benefits.map((benefit, index) => (
-                  <ScrollReveal key={index} delay={index * 0.1}>
-                    <Card variant="elevated" className="h-full hover-lift">
-                      <CardHeader>
-                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                          <benefit.icon className="w-6 h-6 text-primary" />
-                        </div>
-                        <CardTitle>{benefit.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground">{benefit.description}</p>
-                      </CardContent>
-                    </Card>
-                  </ScrollReveal>
-                ))}
-              </div>
-            </div>
-          </section>
+      {/* When to use Section */}
+      <PageSection variant="default">
+        <div
+          ref={situationsRef}
+          className={cn(
+            "transition-all duration-700",
+            situationsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}
+        >
+          <SectionHeading
+            title="Wann braucht man einen Möbellift?"
+            className="mb-12"
+          />
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {situations.map((situation, index) => (
+              <Card key={index} className="hover-lift">
+                <CardContent className="p-6">
+                  <CheckCircle className="h-6 w-6 text-green-600 mb-3" />
+                  <h3 className="text-lg font-bold mb-2">{situation.title}</h3>
+                  <p className="text-sm text-muted-foreground">{situation.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </PageSection>
 
-          {/* When to use Section */}
-          <section className="py-16 bg-white">
-            <div className="container mx-auto px-4">
-              <ScrollReveal>
-                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                  Wann braucht man einen Möbellift?
-                </h2>
-              </ScrollReveal>
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {situations.map((situation, index) => (
-                  <ScrollReveal key={index} delay={index * 0.1}>
-                    <Card className="hover-lift">
-                      <CardContent className="p-6">
-                        <CheckCircle className="h-6 w-6 text-green-600 mb-3" />
-                        <h3 className="text-lg font-bold mb-2">{situation.title}</h3>
-                        <p className="text-sm text-muted-foreground">{situation.description}</p>
-                      </CardContent>
-                    </Card>
-                  </ScrollReveal>
-                ))}
-              </div>
-            </div>
-          </section>
+      {/* FAQ Section */}
+      <PageSection variant="muted">
+        <div className="max-w-3xl mx-auto">
+          <SectionHeading
+            title="Häufige Fragen zum Möbellift"
+            className="mb-12"
+          />
+          <FAQAccordion items={faqs} variant="compact" />
+        </div>
+      </PageSection>
 
-          {/* FAQ Section */}
-          <section className="py-16 bg-secondary/5">
-            <div className="container mx-auto px-4">
-              <ScrollReveal>
-                <div className="max-w-3xl mx-auto">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                    Häufige Fragen zum Möbellift
-                  </h2>
-                  <FAQAccordion items={faqs} variant="compact" />
-                </div>
-              </ScrollReveal>
-            </div>
-          </section>
-
-          {/* CTA Section */}
-          <section className="py-16 gradient-cta text-white">
-            <div className="container mx-auto px-4 text-center">
-              <ScrollReveal>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Möbellift für Ihren Umzug benötigt?
-                </h2>
-                <p className="text-xl mb-8 text-white/90">
-                  Holen Sie sich jetzt Offerten von Umzugsfirmen mit Möbellift-Service
-                </p>
-                <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
-                  <Link to="/rechner">Jetzt Offerte anfragen</Link>
-                </Button>
-              </ScrollReveal>
-            </div>
-          </section>
-        </main>
-
-        <Footer />
-      </div>
-    </>
+      {/* CTA Section */}
+      <CTASection
+        title="Möbellift für Ihren Umzug benötigt?"
+        description="Holen Sie sich jetzt Offerten von Umzugsfirmen mit Möbellift-Service"
+        buttonText="Jetzt Offerte anfragen"
+        buttonLink="/rechner"
+      />
+    </div>
   );
 }
