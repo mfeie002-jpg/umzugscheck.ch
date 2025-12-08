@@ -244,7 +244,7 @@ const FloatingLabelInput = ({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className={`${Icon ? "pl-10" : ""} pr-16 h-12 transition-all duration-300 bg-transparent ${
+          className={`${Icon ? "pl-10" : ""} pr-16 h-11 sm:h-12 text-base transition-all duration-300 bg-transparent ${
             isFocused ? "ring-2 ring-primary/30 border-primary" : ""
           } ${error ? "border-red-500 ring-2 ring-red-200" : ""}`}
         />
@@ -362,14 +362,14 @@ const ProgressRingButton = ({ progress, children, onClick, disabled, loading }: 
       disabled={disabled || loading}
       whileHover={{ scale: disabled ? 1 : 1.02 }}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
-      className={`relative w-full h-14 rounded-xl font-semibold text-lg transition-all ${
+      className={`relative w-full h-12 sm:h-14 rounded-xl font-semibold text-base sm:text-lg transition-all active:scale-[0.98] ${
         disabled 
           ? "bg-muted text-muted-foreground cursor-not-allowed" 
           : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30"
       }`}
     >
       {/* Progress ring */}
-      <svg className="absolute -right-2 -top-2 w-12 h-12" viewBox="0 0 44 44">
+      <svg className="absolute -right-2 -top-2 w-10 h-10 sm:w-12 sm:h-12" viewBox="0 0 44 44">
         <circle
           cx="22"
           cy="22"
@@ -479,7 +479,7 @@ const TrustBadgeCarousel = () => {
   }, []);
   
   return (
-    <div className="flex flex-wrap gap-3 pt-4">
+    <div className="flex flex-wrap gap-2 sm:gap-3 pt-3 sm:pt-4">
       {trustBadges.map((badge, i) => (
         <motion.div
           key={badge.text}
@@ -491,12 +491,12 @@ const TrustBadgeCarousel = () => {
           }}
           transition={{ duration: 0.3 }}
           whileHover={{ y: -2 }}
-          className={`flex items-center gap-2 bg-card/50 backdrop-blur-sm px-3 py-2 rounded-lg border text-sm transition-colors ${
+          className={`flex items-center gap-1.5 sm:gap-2 bg-card/50 backdrop-blur-sm px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border text-xs sm:text-sm transition-colors ${
             i === index ? "border-primary/50 bg-primary/5" : "border-border/50"
           }`}
         >
-          <badge.icon className={`w-4 h-4 ${i === index ? "text-primary" : "text-muted-foreground"}`} />
-          <span className="text-muted-foreground">{badge.text}</span>
+          <badge.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${i === index ? "text-primary" : "text-muted-foreground"}`} />
+          <span className="text-muted-foreground hidden xs:inline">{badge.text}</span>
         </motion.div>
       ))}
     </div>
@@ -518,13 +518,13 @@ const RecentlyCompletedBadge = () => {
   
   return (
     <motion.div
-      className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-sm border border-blue-200"
+      className="inline-flex items-center gap-1.5 sm:gap-2 bg-blue-50 text-blue-700 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm border border-blue-200"
       animate={{ scale: [1, 1.02, 1] }}
       transition={{ duration: 0.3 }}
       key={count}
     >
-      <CheckCircle2 className="w-3.5 h-3.5" />
-      <span><strong>{count}</strong> Anfragen heute abgeschlossen</span>
+      <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+      <span><strong>{count}</strong> Anfragen heute</span>
     </motion.div>
   );
 };
@@ -649,7 +649,7 @@ export default function HeroAIQuoteCalculator() {
   const isPhoneValid = state.phone.length >= 10;
   
   return (
-    <section className="relative py-12 md:py-20 lg:py-24 overflow-hidden">
+    <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden">
       {/* 303. Multi-layer gradient background with mesh */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-primary/5" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/15 via-transparent to-transparent" />
@@ -685,8 +685,8 @@ export default function HeroAIQuoteCalculator() {
         />
       ))}
       
-      <div className="container mx-auto px-4 max-w-6xl relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
           {/* Left: Headlines */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -699,9 +699,9 @@ export default function HeroAIQuoteCalculator() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-3 mb-6"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6"
             >
-              <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-sm border border-green-200">
+              <div className="flex items-center gap-2 bg-green-50 text-green-700 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm border border-green-200">
                 <motion.div 
                   className="w-2 h-2 rounded-full bg-green-500"
                   animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
@@ -714,20 +714,20 @@ export default function HeroAIQuoteCalculator() {
             </motion.div>
             
             {/* Main headline */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
               <span className="bg-gradient-to-r from-primary via-primary to-blue-600 bg-clip-text text-transparent">
                 KI-gestützte
               </span>{" "}
               Umzugsofferten vergleichen
             </h1>
             
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
               Erhalten Sie in weniger als 2 Minuten eine realistische Preisspanne 
               und passende Offerten von geprüften Schweizer Umzugsfirmen.
             </p>
             
             {/* Key benefits */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+            <div className="flex flex-col xs:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start mb-6 sm:mb-8">
               {[
                 { icon: Zap, text: "Sofortige Preisschätzung" },
                 { icon: Shield, text: "100% kostenlos & unverbindlich" },
@@ -738,10 +738,10 @@ export default function HeroAIQuoteCalculator() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
-                  className="flex items-center gap-2 text-sm"
+                  className="flex items-center gap-2 text-xs sm:text-sm"
                 >
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <benefit.icon className="w-3.5 h-3.5 text-green-600" />
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <benefit.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-600" />
                   </div>
                   <span className="text-foreground font-medium">{benefit.text}</span>
                 </motion.div>
@@ -769,26 +769,26 @@ export default function HeroAIQuoteCalculator() {
                 transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
               />
               
-              <CardContent className="p-6 md:p-8 relative">
+              <CardContent className="p-4 sm:p-6 md:p-8 relative">
                 {/* Header with step indicator */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <motion.div 
-                      className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30"
                       whileHover={{ scale: 1.05, rotate: 5 }}
                     >
-                      <Calculator className="w-6 h-6 text-white" />
+                      <Calculator className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </motion.div>
                     <div>
-                      <h2 className="font-bold text-lg text-foreground">KI Umzugsrechner</h2>
-                      <p className="text-sm text-muted-foreground">Schritt {state.step} von 3</p>
+                      <h2 className="font-bold text-base sm:text-lg text-foreground">KI Umzugsrechner</h2>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Schritt {state.step} von 3</p>
                     </div>
                   </div>
                   <AutosaveIndicator saved={autosaved} />
                 </div>
                 
                 {/* Step progress bar */}
-                <div className="flex gap-2 mb-6">
+                <div className="flex gap-1.5 sm:gap-2 mb-4 sm:mb-6">
                   {[1, 2, 3].map((step) => (
                     <motion.div
                       key={step}

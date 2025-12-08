@@ -363,31 +363,31 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
 
   return (
     <Card className="shadow-strong">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Home className="w-6 h-6 text-primary" />
+      <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+          <Home className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
           Schnell-Rechner
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-sm">
           Grundlegende Angaben für eine erste Kostenschätzung. Dauert nur 60 Sekunden.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 sm:space-y-6">
             {/* From Location */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-muted-foreground">
                 <MapPin className="w-4 h-4" />
                 Von (Aktueller Wohnort)
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <FormField
                   control={form.control}
                   name="fromPostal"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>PLZ / Ort</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm">PLZ / Ort</FormLabel>
                       <FormControl>
                         <>
                           <Input 
@@ -407,6 +407,7 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                               }
                             }}
                             list="fromPostalListFull"
+                            className="h-11 sm:h-12 text-base"
                           />
                           <datalist id="fromPostalListFull">
                             {filterPostalCodes(fromPostalQuery || field.value).map((entry) => (
@@ -424,9 +425,9 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                   name="fromCity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ort</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm">Ort</FormLabel>
                       <FormControl>
-                        <Input placeholder="z.B. Zürich" {...field} />
+                        <Input placeholder="z.B. Zürich" {...field} className="h-11 sm:h-12 text-base" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -436,18 +437,18 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
             </div>
 
             {/* To Location */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-muted-foreground">
                 <MapPin className="w-4 h-4" />
                 Nach (Neuer Wohnort)
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <FormField
                   control={form.control}
                   name="toPostal"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>PLZ / Ort</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm">PLZ / Ort</FormLabel>
                       <FormControl>
                         <>
                           <Input 
@@ -467,6 +468,7 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                               }
                             }}
                             list="toPostalListFull"
+                            className="h-11 sm:h-12 text-base"
                           />
                           <datalist id="toPostalListFull">
                             {filterPostalCodes(toPostalQuery || field.value).map((entry) => (
@@ -484,9 +486,9 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                   name="toCity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ort</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm">Ort</FormLabel>
                       <FormControl>
-                        <Input placeholder="z.B. Bern" {...field} />
+                        <Input placeholder="z.B. Bern" {...field} className="h-11 sm:h-12 text-base" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -496,27 +498,27 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
             </div>
 
             {/* Rooms & Type */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <FormField
                 control={form.control}
                 name="rooms"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Wohnungsgrösse</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">Wohnungsgrösse</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-11 sm:h-12 text-base">
                           <SelectValue placeholder="Zimmer wählen" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="1">1 Zimmer (Studio)</SelectItem>
-                        <SelectItem value="2">2 Zimmer</SelectItem>
-                        <SelectItem value="3">3 Zimmer</SelectItem>
-                        <SelectItem value="4">4 Zimmer</SelectItem>
-                        <SelectItem value="5">5 Zimmer</SelectItem>
-                        <SelectItem value="6+">6+ Zimmer</SelectItem>
-                        <SelectItem value="house">Haus</SelectItem>
+                        <SelectItem value="1" className="py-3">1 Zimmer (Studio)</SelectItem>
+                        <SelectItem value="2" className="py-3">2 Zimmer</SelectItem>
+                        <SelectItem value="3" className="py-3">3 Zimmer</SelectItem>
+                        <SelectItem value="4" className="py-3">4 Zimmer</SelectItem>
+                        <SelectItem value="5" className="py-3">5 Zimmer</SelectItem>
+                        <SelectItem value="6+" className="py-3">6+ Zimmer</SelectItem>
+                        <SelectItem value="house" className="py-3">Haus</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -529,18 +531,18 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                 name="movingType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Umzugsart</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">Umzugsart</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-11 sm:h-12 text-base">
                           <SelectValue placeholder="Art wählen" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="local">Lokal (gleiche Stadt)</SelectItem>
-                        <SelectItem value="longDistance">Fernumzug</SelectItem>
-                        <SelectItem value="international">International</SelectItem>
-                        <SelectItem value="office">Büroumzug</SelectItem>
+                        <SelectItem value="local" className="py-3">Lokal (gleiche Stadt)</SelectItem>
+                        <SelectItem value="longDistance" className="py-3">Fernumzug</SelectItem>
+                        <SelectItem value="international" className="py-3">International</SelectItem>
+                        <SelectItem value="office" className="py-3">Büroumzug</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -550,29 +552,29 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
             </div>
 
             {/* Floors and Elevator */}
-            <div className="space-y-4">
-              <div className="text-sm font-semibold text-muted-foreground">Stockwerke & Lift</div>
-              <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="text-xs sm:text-sm font-semibold text-muted-foreground">Stockwerke & Lift</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3">
                   <FormField
                     control={form.control}
                     name="floorsFrom"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Stockwerk (von)</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">Stockwerk (von)</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-11 sm:h-12 text-base">
                               <SelectValue placeholder="Stockwerk" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="0">Erdgeschoss</SelectItem>
-                            <SelectItem value="1">1. Stock</SelectItem>
-                            <SelectItem value="2">2. Stock</SelectItem>
-                            <SelectItem value="3">3. Stock</SelectItem>
-                            <SelectItem value="4">4. Stock</SelectItem>
-                            <SelectItem value="5">5+ Stock</SelectItem>
+                            <SelectItem value="0" className="py-3">Erdgeschoss</SelectItem>
+                            <SelectItem value="1" className="py-3">1. Stock</SelectItem>
+                            <SelectItem value="2" className="py-3">2. Stock</SelectItem>
+                            <SelectItem value="3" className="py-3">3. Stock</SelectItem>
+                            <SelectItem value="4" className="py-3">4. Stock</SelectItem>
+                            <SelectItem value="5" className="py-3">5+ Stock</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -583,14 +585,15 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                     control={form.control}
                     name="hasElevatorFrom"
                     render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2 space-y-0">
+                      <FormItem className="flex items-center space-x-3 space-y-0 py-2">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
+                            className="h-5 w-5"
                           />
                         </FormControl>
-                        <FormLabel className="font-normal cursor-pointer">
+                        <FormLabel className="font-normal cursor-pointer text-sm">
                           Lift vorhanden
                         </FormLabel>
                       </FormItem>
@@ -604,20 +607,20 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                     name="floorsTo"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Stockwerk (nach)</FormLabel>
+                        <FormLabel className="text-xs sm:text-sm">Stockwerk (nach)</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-11 sm:h-12 text-base">
                               <SelectValue placeholder="Stockwerk" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="0">Erdgeschoss</SelectItem>
-                            <SelectItem value="1">1. Stock</SelectItem>
-                            <SelectItem value="2">2. Stock</SelectItem>
-                            <SelectItem value="3">3. Stock</SelectItem>
-                            <SelectItem value="4">4. Stock</SelectItem>
-                            <SelectItem value="5">5+ Stock</SelectItem>
+                            <SelectItem value="0" className="py-3">Erdgeschoss</SelectItem>
+                            <SelectItem value="1" className="py-3">1. Stock</SelectItem>
+                            <SelectItem value="2" className="py-3">2. Stock</SelectItem>
+                            <SelectItem value="3" className="py-3">3. Stock</SelectItem>
+                            <SelectItem value="4" className="py-3">4. Stock</SelectItem>
+                            <SelectItem value="5" className="py-3">5+ Stock</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -628,14 +631,15 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
                     control={form.control}
                     name="hasElevatorTo"
                     render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2 space-y-0">
+                      <FormItem className="flex items-center space-x-3 space-y-0 py-2">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
+                            className="h-5 w-5"
                           />
                         </FormControl>
-                        <FormLabel className="font-normal cursor-pointer">
+                        <FormLabel className="font-normal cursor-pointer text-sm">
                           Lift vorhanden
                         </FormLabel>
                       </FormItem>
@@ -647,7 +651,7 @@ export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) =>
 
             <Button 
               type="submit" 
-              className="w-full bg-primary hover:bg-primary/90 shadow-medium group" 
+              className="w-full bg-primary hover:bg-primary/90 shadow-medium group h-12 sm:h-14 text-base sm:text-lg active:scale-[0.98] transition-transform" 
               size="lg"
               disabled={isSubmitting}
             >
