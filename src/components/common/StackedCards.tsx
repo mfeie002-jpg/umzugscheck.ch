@@ -1,7 +1,7 @@
 import { memo, ReactNode } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
 
 interface StackedCardsProps {
   cards: ReactNode[];
@@ -12,8 +12,7 @@ export const StackedCards = memo(function StackedCards({
   cards,
   className
 }: StackedCardsProps) {
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { isMobile, shouldReduceAnimations } = usePerformance();
 
   // Simplified rendering on mobile - just show the top card
   if (isMobile) {
@@ -41,13 +40,13 @@ export const StackedCards = memo(function StackedCards({
           }}
           initial={{ y: 0, scale: 1 - (cards.length - 1 - i) * 0.05 }}
           whileHover={
-            prefersReducedMotion ? {} : (
+            shouldReduceAnimations ? {} : (
               i === cards.length - 1
                 ? { y: -8, scale: 1.02 }
                 : { scale: 1 - (cards.length - 1 - i) * 0.03 }
             )
           }
-          transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 300 }}
+          transition={shouldReduceAnimations ? { duration: 0 } : { type: "spring", stiffness: 300 }}
         >
           {i === cards.length - 1 && card}
         </motion.div>

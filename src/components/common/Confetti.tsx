@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+import { usePerformance } from "@/contexts/PerformanceContext";
 
 interface ConfettiProps {
   trigger: boolean;
@@ -17,17 +17,16 @@ export const Confetti = memo(function Confetti({
     color: string;
   }>>([]);
   
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { shouldShowComplexAnimations, shouldReduceAnimations } = usePerformance();
 
   useEffect(() => {
-    // Skip confetti on mobile or reduced motion preference
-    if (prefersReducedMotion) return;
+    // Skip confetti when animations are disabled
+    if (!shouldShowComplexAnimations) return;
     
     if (trigger) {
       const colors = ["#dc2626", "#2563eb", "#16a34a", "#eab308", "#8b5cf6"];
-      // Reduce particle count on mobile
-      const particleCount = isMobile ? 20 : 50;
+      // Reduce particle count when reducing animations
+      const particleCount = shouldReduceAnimations ? 20 : 50;
       const newParticles = Array.from({ length: particleCount }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
@@ -38,10 +37,10 @@ export const Confetti = memo(function Confetti({
       const timer = setTimeout(() => setParticles([]), duration);
       return () => clearTimeout(timer);
     }
-  }, [trigger, duration, isMobile, prefersReducedMotion]);
+  }, [trigger, duration, shouldShowComplexAnimations, shouldReduceAnimations]);
 
-  // Don't render if reduced motion is preferred
-  if (prefersReducedMotion) return null;
+  // Don't render when complex animations are disabled
+  if (!shouldShowComplexAnimations) return null;
 
   return (
     <AnimatePresence>
@@ -53,11 +52,11 @@ export const Confetti = memo(function Confetti({
           initial={{ top: -20, rotate: 0 }}
           animate={{
             top: "100vh",
-            rotate: isMobile ? Math.random() * 360 - 180 : Math.random() * 720 - 360,
-            x: isMobile ? Math.random() * 100 - 50 : Math.random() * 200 - 100
+            rotate: shouldReduceAnimations ? Math.random() * 360 - 180 : Math.random() * 720 - 360,
+            x: shouldReduceAnimations ? Math.random() * 100 - 50 : Math.random() * 200 - 100
           }}
           exit={{ opacity: 0 }}
-          transition={{ duration: isMobile ? 1.5 + Math.random() : 2 + Math.random(), ease: "easeIn" }}
+          transition={{ duration: shouldReduceAnimations ? 1.5 + Math.random() : 2 + Math.random(), ease: "easeIn" }}
         />
       ))}
     </AnimatePresence>
