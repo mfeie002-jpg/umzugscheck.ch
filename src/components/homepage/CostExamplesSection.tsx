@@ -1,8 +1,18 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Home, Building2, Briefcase, ArrowRight, TrendingDown, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { RevealOnScroll, InteractiveCard, AnimatedPrice, PulsingBadge, GlowingButton } from "@/components/common";
+import { 
+  RevealOnScroll, 
+  InteractiveCard, 
+  AnimatedPrice, 
+  PulsingBadge, 
+  GlowingButton,
+  DotPattern,
+  CountdownBadge,
+  Marquee,
+  AnimatedDivider
+} from "@/components/common";
 
 const examples = [
   {
@@ -44,15 +54,30 @@ const examples = [
   },
 ];
 
-export const CostExamplesSection = () => {
+const trustMarqueeItems = [
+  "✓ Versicherte Partner",
+  "✓ Schweizer Qualität",
+  "✓ 100% Kostenlos",
+  "✓ Unverbindlich",
+  "✓ 24-48h Antwort",
+  "✓ Datenschutz",
+];
+
+export const CostExamplesSection = memo(function CostExamplesSection() {
+  // Set countdown to 24 hours from now
+  const countdownTarget = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  
   return (
-    <section className="py-16 md:py-24 relative">
+    <section className="py-16 md:py-24 relative overflow-hidden">
+      {/* Dot Pattern Background */}
+      <DotPattern className="opacity-20" size={2} gap={24} />
+      
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-gradient-to-b from-muted/30 via-transparent to-muted/30 pointer-events-none" />
       
       <div className="container relative">
         {/* Header */}
-        <RevealOnScroll direction="up" className="text-center mb-12">
+        <RevealOnScroll direction="up" className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4" />
             Transparente Preise
@@ -60,10 +85,29 @@ export const CostExamplesSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
             Preisbeispiele für Ihren Umzug
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-4">
             Transparente Richtwerte – die genauen Kosten hängen von Ihren individuellen Anforderungen ab.
           </p>
+          
+          {/* Countdown Badge */}
+          <div className="flex justify-center">
+            <CountdownBadge 
+              targetDate={countdownTarget} 
+              label="Sonderaktion endet in:" 
+            />
+          </div>
         </RevealOnScroll>
+
+        {/* Marquee Trust Bar */}
+        <div className="mb-8 py-3 bg-muted/50 rounded-xl">
+          <Marquee speed="slow" pauseOnHover>
+            {trustMarqueeItems.map((item, i) => (
+              <span key={i} className="text-sm text-muted-foreground px-6 font-medium">
+                {item}
+              </span>
+            ))}
+          </Marquee>
+        </div>
 
         {/* Examples Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -128,6 +172,9 @@ export const CostExamplesSection = () => {
           ))}
         </div>
 
+        {/* Divider */}
+        <AnimatedDivider variant="wave" className="mb-8" />
+
         {/* CTA */}
         <RevealOnScroll direction="up" className="text-center">
           <GlowingButton asChild size="lg" className="bg-secondary hover:bg-secondary/90" glowIntensity="medium">
@@ -143,4 +190,4 @@ export const CostExamplesSection = () => {
       </div>
     </section>
   );
-};
+});

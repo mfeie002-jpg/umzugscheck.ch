@@ -1,12 +1,21 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
-import { HelpCircle, MessageCircle } from "lucide-react";
+import { HelpCircle, MessageCircle, Sparkles } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { RevealOnScroll, WaveSection } from "@/components/common";
+import { 
+  RevealOnScroll, 
+  WaveSection, 
+  BlurReveal, 
+  GlowEffect, 
+  AnimatedCheck,
+  MagneticButton
+} from "@/components/common";
+import { Button } from "@/components/ui/button";
 
 const faqs = [
   {
@@ -43,7 +52,7 @@ const faqs = [
   },
 ];
 
-export const FAQSection = () => {
+export const FAQSection = memo(function FAQSection() {
   return (
     <section className="py-16 md:py-24 bg-muted/30 relative overflow-hidden">
       {/* Wave Top */}
@@ -61,15 +70,17 @@ export const FAQSection = () => {
       <div className="container max-w-3xl relative">
         {/* Header */}
         <RevealOnScroll direction="up" className="text-center mb-12">
-          <motion.div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary/10 mb-4"
-            initial={{ scale: 0, rotate: -180 }}
-            whileInView={{ scale: 1, rotate: 0 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 200 }}
-          >
-            <HelpCircle className="w-8 h-8 text-secondary" />
-          </motion.div>
+          <GlowEffect color="hsl(var(--secondary))" size="sm" className="inline-block">
+            <motion.div
+              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary/10 mb-4"
+              initial={{ scale: 0, rotate: -180 }}
+              whileInView={{ scale: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 200 }}
+            >
+              <HelpCircle className="w-8 h-8 text-secondary" />
+            </motion.div>
+          </GlowEffect>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
             Häufig gestellte Fragen
           </h2>
@@ -87,43 +98,50 @@ export const FAQSection = () => {
         >
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05, duration: 0.4 }}
-              >
+              <BlurReveal key={index} delay={index * 0.05}>
                 <AccordionItem
                   value={`item-${index}`}
                   className="bg-card border border-border rounded-xl px-6 shadow-soft hover:shadow-medium transition-shadow group"
                 >
                   <AccordionTrigger className="text-left font-semibold hover:no-underline py-5 group-hover:text-secondary transition-colors">
                     <span className="flex items-center gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-bold">
+                      <motion.span 
+                        className="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-secondary/20 to-secondary/5 text-secondary flex items-center justify-center text-xs font-bold"
+                        whileHover={{ scale: 1.1, rotate: 10 }}
+                      >
                         {index + 1}
-                      </span>
+                      </motion.span>
                       {faq.question}
                     </span>
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-5 pl-9">
-                    {faq.answer}
+                  <AccordionContent className="text-muted-foreground pb-5 pl-10">
+                    <div className="flex items-start gap-2">
+                      <AnimatedCheck className="flex-shrink-0 mt-0.5" size={16} />
+                      <span>{faq.answer}</span>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
-              </motion.div>
+              </BlurReveal>
             ))}
           </Accordion>
         </motion.div>
 
         {/* Contact CTA */}
-        <RevealOnScroll direction="up" className="text-center mt-8">
-          <p className="text-muted-foreground text-sm">
-            Noch Fragen?{" "}
-            <a href="/kontakt" className="text-secondary font-medium hover:underline inline-flex items-center gap-1">
-              <MessageCircle className="w-4 h-4" />
-              Kontaktieren Sie uns
-            </a>
-          </p>
+        <RevealOnScroll direction="up" className="text-center mt-10">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-soft">
+            <Sparkles className="w-6 h-6 text-secondary mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm mb-4">
+              Noch Fragen? Wir sind für Sie da!
+            </p>
+            <MagneticButton>
+              <Button asChild variant="outline" className="group">
+                <a href="/kontakt" className="inline-flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4 group-hover:text-secondary transition-colors" />
+                  Kontaktieren Sie uns
+                </a>
+              </Button>
+            </MagneticButton>
+          </div>
         </RevealOnScroll>
       </div>
       
@@ -140,4 +158,4 @@ export const FAQSection = () => {
       </svg>
     </section>
   );
-};
+});
