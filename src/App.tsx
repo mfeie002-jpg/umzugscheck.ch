@@ -421,6 +421,11 @@ const App = () => (
                             <Route path="/international" element={<InternationalMoving />} />
                             <Route path="/provider/pricing" element={<ProviderPricingPage />} />
                             <Route path="/provider/faq" element={<ProviderFAQPage />} />
+                            {/* Provider route aliases */}
+                            <Route path="/provider/signup" element={<ProviderSignupNew />} />
+                            <Route path="/provider/login" element={<ProviderLogin />} />
+                            <Route path="/fuer-firmen/anmelden" element={<ProviderLogin />} />
+                            <Route path="/fuer-firmen/registrieren" element={<ProviderSignupNew />} />
                             <Route path="*" element={<NotFound />} />
                           </AnimatedRoutes>
                         </Suspense>
