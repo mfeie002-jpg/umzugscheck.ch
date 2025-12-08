@@ -363,11 +363,11 @@ export default function CityMovers() {
     const fetchCompanies = async () => {
       setLoading(true);
       try {
+        // Use public view that excludes sensitive data
         const { data, error } = await supabase
-          .from('service_providers')
+          .from('service_providers_public')
           .select('*')
           .contains('cities_served', [cityData.displayName])
-          .eq('verification_status', 'approved')
           .order('quality_score', { ascending: false })
           .limit(5);
 

@@ -76,12 +76,10 @@ export function CompetitorAnalysis({ provider }: { provider: Provider }) {
     setLoading(true);
 
     try {
-      // Fetch all approved active providers except current one
+      // Use public view that excludes sensitive data (password_hash, email, phone, billing)
       const { data: competitors, error } = await supabase
-        .from('service_providers')
+        .from('service_providers_public')
         .select('*')
-        .eq('verification_status', 'approved')
-        .eq('account_status', 'active')
         .neq('id', provider.id);
 
       if (error) throw error;
