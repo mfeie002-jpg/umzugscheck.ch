@@ -1,14 +1,15 @@
-
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { EmotionalHero } from "@/components/home/EmotionalHero";
-import { GradientCTA } from "@/components/home/GradientCTA";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ScrollReveal } from "@/components/ScrollReveal";
 import { Card } from "@/components/ui/card";
 import { HelpCircle } from "lucide-react";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
+import { PageSection } from "@/components/ui/page-section";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { CTASection } from "@/components/CTASection";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { cn } from "@/lib/utils";
 
 const faqCategories = [
   {
@@ -143,6 +144,48 @@ const faqCategories = [
   }
 ];
 
+interface FAQCategoryCardProps {
+  category: typeof faqCategories[0];
+  categoryIndex: number;
+}
+
+const FAQCategoryCard = ({ category, categoryIndex }: FAQCategoryCardProps) => {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "transition-all duration-500",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      )}
+    >
+      <Card className="mb-8 p-6 md:p-8 shadow-soft hover:shadow-medium transition-shadow">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-3xl" aria-hidden="true">{category.icon}</span>
+          <h2 className="text-xl md:text-2xl font-bold">{category.title}</h2>
+        </div>
+
+        <Accordion type="single" collapsible className="w-full">
+          {category.questions.map((faq, faqIndex) => (
+            <AccordionItem key={faqIndex} value={`item-${categoryIndex}-${faqIndex}`}>
+              <AccordionTrigger className="text-left text-base font-semibold hover:text-primary">
+                <div className="flex items-start gap-3">
+                  <HelpCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  <span>{faq.q}</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground pl-8 pt-2">
+                {faq.a}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </Card>
+    </div>
+  );
+};
+
 const FAQ = () => {
   const currentUrl = 'https://www.umzugscheck.ch/faq/';
   
@@ -155,7 +198,6 @@ const FAQ = () => {
     { type: 'faq', url: currentUrl },
     allFaqs
   );
-  const schemaScript = generateSchemaScript(schemas);
   
   return (
     <>
@@ -168,70 +210,50 @@ const FAQ = () => {
       />
       
       <div className="min-h-screen bg-background">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs items={[{ label: "FAQ" }]} />
+        </div>
 
-      {/* Breadcrumbs */}
-      <div className="container mx-auto px-4 pt-4">
-        <Breadcrumbs items={[{ label: "FAQ" }]} />
-      </div>
+        {/* Hero */}
+        <PageSection variant="primary" spacing="lg" className="bg-gradient-to-br from-primary via-primary to-primary/90 text-white">
+          <div className="max-w-3xl mx-auto text-center">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white mb-4">
+              Alles was du wissen musst
+            </span>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              Häufige Fragen zum Umzug
+            </h1>
+            <p className="text-lg md:text-xl text-white/90">
+              Hier findest du alle Antworten rund um Offerten, Preise und Ablauf.
+            </p>
+          </div>
+        </PageSection>
 
-      {/* Hero */}
-      <EmotionalHero
-        title="Häufige Fragen zum Umzug"
-        subtitle="Hier findest du alle Antworten rund um Offerten, Preise und Ablauf."
-        primaryCTA={{
-          text: "Kostenlose Offerte erhalten",
-          link: "/umzugsofferten"
-        }}
-        badgeText="Alles was du wissen musst"
-        trustBadges={false}
-        backgroundImage="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80"
-      />
-
-      <main>
-        {/* FAQ Categories */}
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
+        <main>
+          {/* FAQ Categories */}
+          <PageSection>
             <div className="max-w-4xl mx-auto">
               {faqCategories.map((category, categoryIndex) => (
-                <ScrollReveal key={categoryIndex}>
-                  <Card className="mb-8 p-6 md:p-8 shadow-medium hover:shadow-strong transition-shadow">
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className="text-4xl">{category.icon}</span>
-                      <h2 className="text-2xl md:text-3xl font-bold">{category.title}</h2>
-                    </div>
-
-                    <Accordion type="single" collapsible className="w-full">
-                      {category.questions.map((faq, faqIndex) => (
-                        <AccordionItem key={faqIndex} value={`item-${categoryIndex}-${faqIndex}`}>
-                          <AccordionTrigger className="text-left text-base md:text-lg font-semibold hover:text-primary">
-                            <div className="flex items-start gap-3">
-                              <HelpCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                              <span>{faq.q}</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="text-muted-foreground pl-8 pt-2">
-                            {faq.a}
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </Card>
-                </ScrollReveal>
+                <FAQCategoryCard 
+                  key={categoryIndex} 
+                  category={category} 
+                  categoryIndex={categoryIndex} 
+                />
               ))}
             </div>
-          </div>
-        </section>
+          </PageSection>
 
-        {/* CTA Block */}
-        <GradientCTA
-          title="Noch Fragen? Erhalte jetzt kostenlose Offerten."
-          description="Starte deinen stressfreien Umzug in nur 2 Minuten"
-          buttonText="Kostenlose Offerten starten"
-          buttonLink="/umzugsofferten"
-        />
-      </main>
+          {/* CTA */}
+          <CTASection
+            variant="compact"
+            title="Noch Fragen? Erhalte jetzt kostenlose Offerten."
+            description="Starte deinen stressfreien Umzug in nur 2 Minuten"
+            buttonText="Kostenlose Offerten starten"
+            buttonLink="/umzugsofferten"
+          />
+        </main>
 
-        
         <StickyMobileCTA />
       </div>
     </>

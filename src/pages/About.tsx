@@ -1,23 +1,59 @@
-
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { Shield, Users, Target, TrendingUp, Heart, Award, CheckCircle2 } from "lucide-react";
-import { ScrollReveal } from "@/components/ScrollReveal";
+import { Shield, Users, Target, TrendingUp, Heart, Award, LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { PageSection } from "@/components/ui/page-section";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { StatsGrid } from "@/components/ui/stat-card";
+import { FeatureList } from "@/components/ui/feature-list";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { CTASection } from "@/components/CTASection";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { cn } from "@/lib/utils";
+
+interface ValueCardProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  gradient: string;
+}
+
+const ValueCard = ({ icon: Icon, title, description, gradient }: ValueCardProps) => {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  
+  return (
+    <div 
+      ref={ref}
+      className={cn(
+        "transition-all duration-500",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      )}
+    >
+      <Card className="p-6 h-full hover:shadow-medium transition-shadow">
+        <div className={cn(
+          "inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br shadow-medium mb-4",
+          gradient
+        )}>
+          <Icon className="h-7 w-7 text-white" aria-hidden="true" />
+        </div>
+        <h3 className="text-xl font-bold mb-3">{title}</h3>
+        <p className="text-muted-foreground leading-relaxed">{description}</p>
+      </Card>
+    </div>
+  );
+};
 
 const About = () => {
-  
   const stats = [
-    { number: "15'000+", label: "Vermittelte Umzüge", color: "from-blue-500 to-cyan-500" },
-    { number: "4.8/5", label: "Durchschnittsbewertung", color: "from-yellow-500 to-orange-500" },
-    { number: "20+", label: "Geprüfte Partnerfirmen", color: "from-green-500 to-emerald-500" },
-    { number: "26", label: "Kantone abgedeckt", color: "from-purple-500 to-pink-500" }
+    { value: "15'000+", label: "Vermittelte Umzüge" },
+    { value: "4.8/5", label: "Durchschnittsbewertung" },
+    { value: "20+", label: "Geprüfte Partnerfirmen" },
+    { value: "26", label: "Kantone abgedeckt" }
   ];
 
-  const values = [
+  const values: ValueCardProps[] = [
     {
       icon: Shield,
       title: "Geprüfte Qualität",
@@ -56,6 +92,24 @@ const About = () => {
     }
   ];
 
+  const steps = [
+    {
+      number: 1,
+      title: "Kostenlos Preise berechnen",
+      description: "Nutzen Sie unsere KI-Rechner für eine realistische Kostenschätzung – in wenigen Minuten und völlig kostenlos."
+    },
+    {
+      number: 2,
+      title: "Umzugsfirmen vergleichen",
+      description: "Vergleichen Sie geprüfte Firmen aus Ihrer Region. Bewertungen, Leistungen und Preise auf einen Blick."
+    },
+    {
+      number: 3,
+      title: "Offerten erhalten",
+      description: "Erhalten Sie kostenlose Offerten und wählen Sie die beste Firma für Ihren Umzug aus."
+    }
+  ];
+
   return (
     <>
       <OptimizedSEO
@@ -66,200 +120,124 @@ const About = () => {
       />
 
       <div className="min-h-screen flex flex-col">
-        
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs items={[{ label: "Über uns" }]} />
+        </div>
+
         <main className="flex-1">
           {/* Hero */}
-          <section className="gradient-hero text-white py-16 md:py-24">
-            <div className="container mx-auto px-4">
-              <ScrollReveal>
-                <div className="max-w-4xl mx-auto text-center">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                    Wir machen Umzüge stressfrei
-                  </h1>
-                  <p className="text-xl md:text-2xl text-white/90 mb-8">
-                    Seit 2018 helfen wir Menschen in der Schweiz, die besten Umzugsfirmen zu finden
-                  </p>
-                  <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
-                    <Link to="/umzugsofferten">Starte deinen stressfreien Umzug</Link>
-                  </Button>
-                </div>
-              </ScrollReveal>
+          <PageSection variant="primary" spacing="xl" className="bg-gradient-to-br from-primary via-primary to-primary/90 text-white">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                Wir machen Umzüge stressfrei
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 mb-8">
+                Seit 2018 helfen wir Menschen in der Schweiz, die besten Umzugsfirmen zu finden
+              </p>
+              <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90">
+                <Link to="/umzugsofferten">Starte deinen stressfreien Umzug</Link>
+              </Button>
             </div>
-          </section>
-          {/* Mission */}
-          <section className="py-16 md:py-20 gradient-light">
-            <div className="container mx-auto px-4">
-              <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-12">
-                  <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
-                    Unsere Mission
-                  </Badge>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                    Niemand sollte beim Umzug über den Tisch gezogen werden
-                  </h2>
-                </div>
+          </PageSection>
 
-                <Card variant="elevated">
-                  <CardContent className="p-8 md:p-12">
-                    <p className="text-lg text-foreground/90 mb-6 leading-relaxed">
-                      Umzugscheck.ch wurde gegründet, um den Umzugsprozess in der Schweiz transparenter, 
-                      einfacher und kostengünstiger zu gestalten. Wir wissen, dass ein Umzug stressig sein 
-                      kann – von der Planung über die Kostenkalkulation bis zur Auswahl der richtigen Firma.
-                    </p>
-                    <p className="text-lg text-foreground/90 mb-6 leading-relaxed">
-                      Deshalb haben wir eine Plattform geschaffen, die dir hilft, in wenigen Minuten 
-                      mehrere Offerten von geprüften Umzugsfirmen zu vergleichen. Unsere KI-gestützten 
-                      Preisrechner geben dir sofort eine realistische Einschätzung deiner Umzugskosten.
-                    </p>
-                    <p className="text-lg text-foreground/90 leading-relaxed">
-                      Wir sorgen für <strong>klare Preise</strong>, <strong>geprüfte Firmen</strong> und 
-                      <strong> transparente Vergleiche</strong> – damit du die beste Entscheidung treffen kannst.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+          {/* Mission */}
+          <PageSection variant="muted">
+            <div className="max-w-4xl mx-auto">
+              <SectionHeading
+                title="Niemand sollte beim Umzug über den Tisch gezogen werden"
+                badge="Unsere Mission"
+                align="center"
+              />
+
+              <Card className="mt-10">
+                <CardContent className="p-8 md:p-12 space-y-6">
+                  <p className="text-lg text-foreground/90 leading-relaxed">
+                    Umzugscheck.ch wurde gegründet, um den Umzugsprozess in der Schweiz transparenter, 
+                    einfacher und kostengünstiger zu gestalten. Wir wissen, dass ein Umzug stressig sein 
+                    kann – von der Planung über die Kostenkalkulation bis zur Auswahl der richtigen Firma.
+                  </p>
+                  <p className="text-lg text-foreground/90 leading-relaxed">
+                    Deshalb haben wir eine Plattform geschaffen, die dir hilft, in wenigen Minuten 
+                    mehrere Offerten von geprüften Umzugsfirmen zu vergleichen. Unsere KI-gestützten 
+                    Preisrechner geben dir sofort eine realistische Einschätzung deiner Umzugskosten.
+                  </p>
+                  <FeatureList
+                    features={["Klare Preise", "Geprüfte Firmen", "Transparente Vergleiche"]}
+                    variant="check"
+                    size="lg"
+                    columns={3}
+                    className="pt-4"
+                  />
+                </CardContent>
+              </Card>
             </div>
-          </section>
+          </PageSection>
 
           {/* Stats */}
-          <section className="py-16 md:py-20 bg-white">
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Umzugscheck.ch in Zahlen
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  Vertrauen durch Transparenz und Ergebnisse
-                </p>
-              </div>
+          <PageSection>
+            <SectionHeading
+              title="Umzugscheck.ch in Zahlen"
+              subtitle="Vertrauen durch Transparenz und Ergebnisse"
+              align="center"
+            />
+            <div className="mt-10 max-w-4xl mx-auto">
+              <StatsGrid stats={stats} columns={4} />
+            </div>
+          </PageSection>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto">
-                {stats.map((stat, index) => (
-                  <ScrollReveal key={index} delay={index * 0.1}>
-                    <Card variant="elevated" className="text-center p-6 md:p-8 h-full hover-lift">
-                      <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.color} shadow-medium mb-4`}>
-                        <CheckCircle2 className="h-8 w-8 text-white" />
+          {/* Values */}
+          <PageSection variant="muted">
+            <SectionHeading
+              title="Warum Umzugscheck.ch?"
+              subtitle="Diese Werte leiten uns in allem, was wir tun"
+              align="center"
+            />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-10">
+              {values.map((value, index) => (
+                <ValueCard key={index} {...value} />
+              ))}
+            </div>
+          </PageSection>
+
+          {/* How it Works */}
+          <PageSection>
+            <div className="max-w-4xl mx-auto">
+              <SectionHeading
+                title="So einfach funktioniert's"
+                subtitle="In 3 Schritten zu deinem stressfreien Umzug"
+                align="center"
+              />
+
+              <div className="space-y-6 mt-10">
+                {steps.map((step) => (
+                  <Card key={step.number} className="hover:shadow-medium transition-shadow">
+                    <CardContent className="p-6 md:p-8">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-bold text-xl shadow-medium">
+                          {step.number}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                          <p className="text-muted-foreground">{step.description}</p>
+                        </div>
                       </div>
-                      <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                        {stat.number}
-                      </div>
-                      <div className="text-sm md:text-base text-muted-foreground">
-                        {stat.label}
-                      </div>
-                    </Card>
-                  </ScrollReveal>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
-          </section>
-
-          {/* Values */}
-          <section className="py-16 md:py-20 gradient-light">
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Warum Umzugscheck.ch?
-                </h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Diese Werte leiten uns in allem, was wir tun
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {values.map((value, index) => {
-                  const Icon = value.icon;
-                  return (
-                    <ScrollReveal key={index} delay={index * 0.1}>
-                      <Card variant="elevated" className="p-6 h-full hover-lift">
-                        <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${value.gradient} shadow-medium mb-4`}>
-                          <Icon className="h-7 w-7 text-white" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-3">{value.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed">{value.description}</p>
-                      </Card>
-                    </ScrollReveal>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          {/* How it Works */}
-          <section className="py-16 md:py-20 bg-white">
-            <div className="container mx-auto px-4">
-              <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                    So einfach funktioniert's
-                  </h2>
-                  <p className="text-lg text-muted-foreground">
-                    In 3 Schritten zu deinem stressfreien Umzug
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  {[
-                    {
-                      number: 1,
-                      title: "Kostenlos Preise berechnen",
-                      description: "Nutzen Sie unsere KI-Rechner für eine realistische Kostenschätzung – in wenigen Minuten und völlig kostenlos."
-                    },
-                    {
-                      number: 2,
-                      title: "Umzugsfirmen vergleichen",
-                      description: "Vergleichen Sie geprüfte Firmen aus Ihrer Region. Bewertungen, Leistungen und Preise auf einen Blick."
-                    },
-                    {
-                      number: 3,
-                      title: "Offerten erhalten",
-                      description: "Erhalten Sie kostenlose Offerten und wählen Sie die beste Firma für Ihren Umzug aus."
-                    }
-                  ].map((step, index) => (
-                    <ScrollReveal key={index} delay={index * 0.1}>
-                      <Card variant="elevated" className="hover-lift">
-                        <CardContent className="p-6 md:p-8">
-                          <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl shadow-medium">
-                              {step.number}
-                            </div>
-                            <div>
-                              <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                              <p className="text-muted-foreground">{step.description}</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </ScrollReveal>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
+          </PageSection>
 
           {/* Final CTA */}
-          <section className="py-16 md:py-20 gradient-cta text-white">
-            <div className="container mx-auto px-4">
-              <ScrollReveal>
-                <div className="text-center max-w-3xl mx-auto">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-                    Bereit für Ihren stressfreien Umzug?
-                  </h2>
-                  <p className="text-xl mb-10 text-white/90">
-                    Starten Sie jetzt und erhalten Sie kostenlose Offerten von geprüften Profis
-                  </p>
-                  <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
-                    <Link to="/umzugsofferten">Jetzt kostenlose Offerten erhalten</Link>
-                  </Button>
-                  <p className="text-sm mt-6 text-white/80">
-                    ✓ 100% kostenlos  ✓ Unverbindlich  ✓ In 2 Minuten
-                  </p>
-                </div>
-              </ScrollReveal>
-            </div>
-          </section>
+          <CTASection 
+            title="Bereit für Ihren stressfreien Umzug?"
+            description="Starten Sie jetzt und erhalten Sie kostenlose Offerten von geprüften Profis"
+            buttonText="Jetzt kostenlose Offerten erhalten"
+            buttonLink="/umzugsofferten"
+          />
         </main>
 
-        
         <StickyMobileCTA />
       </div>
     </>
