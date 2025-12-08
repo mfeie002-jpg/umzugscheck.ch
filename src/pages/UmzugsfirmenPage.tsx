@@ -10,13 +10,13 @@ const UmzugsfirmenPage = () => {
         <meta name="description" content="Finden Sie die besten Umzugsfirmen in der Schweiz. Vergleichen Sie Preise, Bewertungen und Services. Kostenlos Offerten erhalten." />
       </Helmet>
 
-      <main className="flex-1 py-8">
-        <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">
+      <main className="flex-1 py-4 sm:py-6 lg:py-8">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="mb-4 sm:mb-6 lg:mb-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
               Umzugsfirmen in der Schweiz
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
               Vergleichen Sie geprüfte Umzugsfirmen und finden Sie den perfekten Partner für Ihren Umzug.
             </p>
           </div>

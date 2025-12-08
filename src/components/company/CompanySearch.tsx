@@ -135,25 +135,51 @@ export const CompanySearch = () => {
 
   const activeFiltersCount = selectedCantons.length + selectedServices.length + selectedPriceLevels.length + (minRating !== "0" ? 1 : 0);
 
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
   return (
-    <div className="grid lg:grid-cols-4 gap-6">
-      {/* Filters Sidebar */}
-      <Card className="lg:col-span-1 h-fit sticky top-4">
-        <CardHeader className="pb-4">
+    <div className="grid lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* Mobile Filter Toggle */}
+      <div className="lg:hidden">
+        <Button 
+          variant="outline" 
+          className="w-full h-12 justify-between active:scale-[0.98] transition-transform"
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+        >
+          <span className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filter & Sortierung
+          </span>
+          {activeFiltersCount > 0 && (
+            <Badge variant="secondary" className="bg-primary text-primary-foreground">
+              {activeFiltersCount}
+            </Badge>
+          )}
+        </Button>
+      </div>
+
+      {/* Filters Sidebar - Desktop always visible, Mobile collapsible */}
+      <Card className={`lg:col-span-1 h-fit lg:sticky lg:top-4 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
+        <CardHeader className="pb-3 sm:pb-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <Filter className="h-5 w-5" />
               Filter
             </CardTitle>
             {activeFiltersCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearFilters}
+                className="h-10 px-3 active:scale-95 transition-transform"
+              >
                 <X className="h-4 w-4 mr-1" />
                 Zurücksetzen
               </Button>
             )}
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -161,23 +187,27 @@ export const CompanySearch = () => {
               placeholder="Firma suchen..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 h-11 sm:h-10"
             />
           </div>
 
           <Accordion type="multiple" defaultValue={["cantons", "services", "price"]}>
             {/* Canton Filter */}
             <AccordionItem value="cantons">
-              <AccordionTrigger className="text-sm font-medium">
+              <AccordionTrigger className="text-sm font-medium py-3 sm:py-2">
                 Kanton {selectedCantons.length > 0 && `(${selectedCantons.length})`}
               </AccordionTrigger>
               <AccordionContent>
-                <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                <div className="grid grid-cols-2 gap-1 max-h-48 overflow-y-auto">
                   {CANTONS.map(canton => (
-                    <label key={canton} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <label 
+                      key={canton} 
+                      className="flex items-center gap-2.5 text-sm cursor-pointer py-2.5 px-2 rounded-md hover:bg-muted active:bg-muted/80 transition-colors"
+                    >
                       <Checkbox
                         checked={selectedCantons.includes(canton)}
                         onCheckedChange={() => toggleCanton(canton)}
+                        className="h-5 w-5"
                       />
                       {canton}
                     </label>
@@ -188,16 +218,20 @@ export const CompanySearch = () => {
 
             {/* Service Filter */}
             <AccordionItem value="services">
-              <AccordionTrigger className="text-sm font-medium">
+              <AccordionTrigger className="text-sm font-medium py-3 sm:py-2">
                 Services {selectedServices.length > 0 && `(${selectedServices.length})`}
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {SERVICES.map(service => (
-                    <label key={service} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <label 
+                      key={service} 
+                      className="flex items-center gap-2.5 text-sm cursor-pointer py-2.5 px-2 rounded-md hover:bg-muted active:bg-muted/80 transition-colors"
+                    >
                       <Checkbox
                         checked={selectedServices.includes(service)}
                         onCheckedChange={() => toggleService(service)}
+                        className="h-5 w-5"
                       />
                       {service}
                     </label>
@@ -208,16 +242,20 @@ export const CompanySearch = () => {
 
             {/* Price Level Filter */}
             <AccordionItem value="price">
-              <AccordionTrigger className="text-sm font-medium">
+              <AccordionTrigger className="text-sm font-medium py-3 sm:py-2">
                 Preisniveau {selectedPriceLevels.length > 0 && `(${selectedPriceLevels.length})`}
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {PRICE_LEVELS.map(level => (
-                    <label key={level.value} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <label 
+                      key={level.value} 
+                      className="flex items-center gap-2.5 text-sm cursor-pointer py-2.5 px-2 rounded-md hover:bg-muted active:bg-muted/80 transition-colors"
+                    >
                       <Checkbox
                         checked={selectedPriceLevels.includes(level.value)}
                         onCheckedChange={() => togglePriceLevel(level.value)}
+                        className="h-5 w-5"
                       />
                       <Badge variant="secondary" className={level.color}>
                         {level.label}
@@ -230,43 +268,51 @@ export const CompanySearch = () => {
 
             {/* Rating Filter */}
             <AccordionItem value="rating">
-              <AccordionTrigger className="text-sm font-medium">
+              <AccordionTrigger className="text-sm font-medium py-3 sm:py-2">
                 Mindestbewertung
               </AccordionTrigger>
               <AccordionContent>
                 <Select value={minRating} onValueChange={setMinRating}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-11 sm:h-10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">Alle Bewertungen</SelectItem>
-                    <SelectItem value="3">⭐ 3.0+</SelectItem>
-                    <SelectItem value="3.5">⭐ 3.5+</SelectItem>
-                    <SelectItem value="4">⭐ 4.0+</SelectItem>
-                    <SelectItem value="4.5">⭐ 4.5+</SelectItem>
+                    <SelectItem value="0" className="py-3 sm:py-2">Alle Bewertungen</SelectItem>
+                    <SelectItem value="3" className="py-3 sm:py-2">⭐ 3.0+</SelectItem>
+                    <SelectItem value="3.5" className="py-3 sm:py-2">⭐ 3.5+</SelectItem>
+                    <SelectItem value="4" className="py-3 sm:py-2">⭐ 4.0+</SelectItem>
+                    <SelectItem value="4.5" className="py-3 sm:py-2">⭐ 4.5+</SelectItem>
                   </SelectContent>
                 </Select>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+          
+          {/* Mobile: Apply Filters Button */}
+          <Button 
+            className="w-full h-12 lg:hidden mt-4 active:scale-[0.98] transition-transform"
+            onClick={() => setShowMobileFilters(false)}
+          >
+            {filteredCompanies.length} Ergebnisse anzeigen
+          </Button>
         </CardContent>
       </Card>
 
       {/* Results */}
-      <div className="lg:col-span-3 space-y-4">
+      <div className="lg:col-span-3 space-y-3 sm:space-y-4">
         {/* Sort & Results Count */}
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground">
-            {filteredCompanies.length} Umzugsfirmen gefunden
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm sm:text-base text-muted-foreground">
+            {filteredCompanies.length} Firmen
           </p>
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-40 sm:w-48 h-11 sm:h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="rating">Beste Bewertung</SelectItem>
-              <SelectItem value="reviews">Meiste Bewertungen</SelectItem>
-              <SelectItem value="name">Name A-Z</SelectItem>
+              <SelectItem value="rating" className="py-3 sm:py-2">Beste Bewertung</SelectItem>
+              <SelectItem value="reviews" className="py-3 sm:py-2">Meiste Bewertungen</SelectItem>
+              <SelectItem value="name" className="py-3 sm:py-2">Name A-Z</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -310,15 +356,18 @@ const CompanyCard = ({ company }: { company: Company }) => {
   const priceLevel = PRICE_LEVELS.find(p => p.value === company.price_level);
 
   return (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/firmen/${company.id}`)}>
-      <CardContent className="p-6">
-        <div className="flex gap-4">
+    <Card 
+      className="hover:shadow-lg transition-all cursor-pointer active:scale-[0.99]" 
+      onClick={() => navigate(`/firmen/${company.id}`)}
+    >
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex gap-3 sm:gap-4">
           {/* Logo */}
-          <div className="w-20 h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
             {company.logo ? (
               <img src={company.logo} alt={company.name} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-muted-foreground">
+              <div className="w-full h-full flex items-center justify-center text-xl sm:text-2xl font-bold text-muted-foreground">
                 {company.name.charAt(0)}
               </div>
             )}
@@ -326,17 +375,18 @@ const CompanyCard = ({ company }: { company: Company }) => {
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  {company.name}
+            {/* Mobile: Stack layout, Desktop: Row layout */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-base sm:text-lg flex items-center gap-2 flex-wrap">
+                  <span className="truncate">{company.name}</span>
                   {company.verified && (
-                    <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
+                    <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs flex-shrink-0">
                       Geprüft
                     </Badge>
                   )}
                 </h3>
-                <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 sm:gap-3 mt-1 text-sm text-muted-foreground flex-wrap">
                   {company.rating && (
                     <span className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -353,35 +403,42 @@ const CompanyCard = ({ company }: { company: Company }) => {
                   )}
                 </div>
               </div>
-              <Button size="sm" onClick={(e) => { e.stopPropagation(); navigate(`/firmen/${company.id}`); }}>
+              {/* CTA Button - Full width on mobile */}
+              <Button 
+                size="sm" 
+                className="w-full sm:w-auto h-10 sm:h-9 mt-2 sm:mt-0 active:scale-[0.98] transition-transform"
+                onClick={(e) => { e.stopPropagation(); navigate(`/firmen/${company.id}`); }}
+              >
                 Offerte anfragen
               </Button>
             </div>
 
             {company.description && (
-              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2 hidden sm:block">
                 {company.description}
               </p>
             )}
 
-            <div className="flex flex-wrap gap-2 mt-3">
-              {company.services?.slice(0, 4).map(service => (
-                <Badge key={service} variant="outline" className="text-xs">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
+              {company.services?.slice(0, 3).map(service => (
+                <Badge key={service} variant="outline" className="text-xs py-1 px-2">
                   {service}
                 </Badge>
               ))}
-              {company.services && company.services.length > 4 && (
-                <Badge variant="outline" className="text-xs">
-                  +{company.services.length - 4} mehr
+              {company.services && company.services.length > 3 && (
+                <Badge variant="outline" className="text-xs py-1 px-2">
+                  +{company.services.length - 3}
                 </Badge>
               )}
             </div>
 
             {company.service_areas && company.service_areas.length > 0 && (
               <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                <MapPin className="h-3 w-3" />
-                {company.service_areas.slice(0, 3).join(", ")}
-                {company.service_areas.length > 3 && ` +${company.service_areas.length - 3}`}
+                <MapPin className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">
+                  {company.service_areas.slice(0, 2).join(", ")}
+                  {company.service_areas.length > 2 && ` +${company.service_areas.length - 2}`}
+                </span>
               </div>
             )}
           </div>
