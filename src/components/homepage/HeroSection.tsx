@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import { PulsingBadge, TypewriterHeadline, AnimatedBackground, GlowingButton, SpotlightCard } from "@/components/common";
 
 // Swiss postal codes for autocomplete
 const swissPostalCodes = [
@@ -85,6 +86,9 @@ export const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Animated Background with Particles */}
+      <AnimatedBackground variant="particles" className="absolute inset-0 z-0 opacity-30" />
+      
       {/* Parallax Background */}
       <motion.div 
         className="absolute inset-0 z-0"
@@ -121,7 +125,7 @@ export const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            {/* Badge */}
+            {/* Badge with Animation */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -137,13 +141,16 @@ export const HeroSection = () => {
               </div>
             </motion.div>
 
-            {/* Headline */}
+            {/* Headline with Typewriter Effect */}
             <div className="space-y-2">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
                 Umzugsfirmen vergleichen.
               </h1>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-secondary">
-                In wenigen Minuten.
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
+                <TypewriterHeadline 
+                  words={["In wenigen Minuten.", "Einfach & schnell.", "100% kostenlos."]}
+                  highlightClassName="text-secondary"
+                />
               </h1>
             </div>
 
@@ -157,11 +164,11 @@ export const HeroSection = () => {
               für Sie: AI-gestützte Analyse, geprüfte Partner, transparente Offerten.
             </p>
 
-            {/* Trust Row */}
+            {/* Trust Row with Hover Effects */}
             <div className="flex flex-wrap gap-3">
               <motion.div 
                 className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-border"
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.2)" }}
               >
                 <Star className="w-5 h-5 text-swiss-gold fill-swiss-gold" />
                 <span className="text-sm font-semibold">4.8/5</span>
@@ -169,7 +176,7 @@ export const HeroSection = () => {
               </motion.div>
               <motion.div 
                 className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-border"
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.2)" }}
               >
                 <TrendingUp className="w-5 h-5 text-primary" />
                 <span className="text-sm font-semibold">15'000+</span>
@@ -177,7 +184,7 @@ export const HeroSection = () => {
               </motion.div>
               <motion.div 
                 className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-border"
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.2)" }}
               >
                 <CheckCircle className="w-5 h-5 text-green-500" />
                 <span className="text-sm font-semibold">100%</span>
@@ -185,21 +192,10 @@ export const HeroSection = () => {
               </motion.div>
             </div>
 
-            {/* Live Badge */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.4 }}
-              className="inline-flex items-center gap-2 bg-green-50 dark:bg-green-950/30 rounded-full px-4 py-2 border border-green-200 dark:border-green-800"
-            >
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-              </span>
-              <span className="text-sm text-green-700 dark:text-green-300 font-medium">
-                {liveCount} Offerten heute angefordert
-              </span>
-            </motion.div>
+            {/* Live Badge with Pulsing Animation */}
+            <PulsingBadge variant="success" pulse>
+              {liveCount} Offerten heute angefordert
+            </PulsingBadge>
 
             {/* Additional Trust Badges */}
             <div className="flex flex-wrap gap-2 pt-2">
@@ -218,14 +214,14 @@ export const HeroSection = () => {
             </div>
           </motion.div>
 
-          {/* Right - Form Card */}
+          {/* Right - Form Card with Spotlight Effect */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
             className="relative"
           >
-            <div className="bg-card rounded-2xl border border-border shadow-premium p-6 md:p-8">
+            <SpotlightCard className="p-6 md:p-8" spotlightColor="rgba(198, 124, 62, 0.1)">
               {/* Form Header */}
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 text-xs text-muted-foreground mb-2">
@@ -322,15 +318,17 @@ export const HeroSection = () => {
                   </Select>
                 </div>
 
-                <Button
+                <GlowingButton
                   type="submit"
                   size="lg"
-                  className="w-full h-14 rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-base shadow-cta group"
+                  className="w-full h-14 rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-base"
+                  glowColor="hsl(var(--secondary))"
+                  glowIntensity="high"
                 >
                   <CheckCircle className="w-5 h-5 mr-2" />
                   Jetzt checken lassen
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                </GlowingButton>
               </form>
 
               {/* Trust Points */}
@@ -348,7 +346,7 @@ export const HeroSection = () => {
                   Datenschutz
                 </div>
               </div>
-            </div>
+            </SpotlightCard>
           </motion.div>
         </div>
       </motion.div>

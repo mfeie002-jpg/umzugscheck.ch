@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RevealOnScroll, RatingStars, InteractiveCard } from "@/components/common";
 
 const testimonials = [
   {
@@ -54,17 +55,20 @@ export const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-16 md:py-24">
-      <div className="container">
+    <section className="py-16 md:py-24 relative overflow-hidden">
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-secondary/5 via-transparent to-primary/5 pointer-events-none" />
+      
+      <div className="container relative">
         {/* Header */}
-        <div className="text-center mb-12">
+        <RevealOnScroll direction="up" className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
             Das sagen unsere Kunden
           </h2>
           <p className="text-muted-foreground text-lg">
             Echte Bewertungen von echten Kunden.
           </p>
-        </div>
+        </RevealOnScroll>
 
         {/* Desktop Grid */}
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -101,12 +105,14 @@ export const TestimonialsSection = () => {
             </Button>
             <div className="flex items-center gap-2">
               {testimonials.map((_, index) => (
-                <button
+                <motion.button
                   key={index}
                   className={`w-2 h-2 rounded-full transition-colors ${
                     index === currentIndex ? "bg-secondary" : "bg-border"
                   }`}
                   onClick={() => setCurrentIndex(index)}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
                 />
               ))}
             </div>
@@ -136,38 +142,48 @@ const TestimonialCard = ({ testimonial, index }: TestimonialCardProps) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ delay: index * 0.1, duration: 0.4 }}
-    className="bg-card rounded-2xl p-6 border border-border shadow-soft hover:shadow-medium transition-shadow h-full flex flex-col"
   >
-    {/* Quote Icon */}
-    <Quote className="w-8 h-8 text-secondary/20 mb-4" />
-    
-    {/* Stars */}
-    <div className="flex gap-1 mb-3">
-      {[...Array(testimonial.rating)].map((_, i) => (
-        <Star key={i} className="w-4 h-4 fill-swiss-gold text-swiss-gold" />
-      ))}
-    </div>
-    
-    {/* Text */}
-    <p className="text-foreground line-clamp-4 flex-1 mb-4">
-      "{testimonial.text}"
-    </p>
-    
-    {/* Footer */}
-    <div className="flex items-center justify-between pt-4 border-t border-border">
-      <div>
-        <p className="font-semibold text-sm">{testimonial.name}</p>
-        {testimonial.verified && (
-          <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-0.5 rounded-full mt-1">
-            <CheckCircle className="w-3 h-3" />
-            Verifiziert
-          </span>
-        )}
+    <InteractiveCard className="p-6 h-full flex flex-col group">
+      {/* Quote Icon */}
+      <motion.div
+        initial={{ scale: 0, rotate: -45 }}
+        whileInView={{ scale: 1, rotate: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: index * 0.1 + 0.2, type: "spring", stiffness: 200 }}
+      >
+        <Quote className="w-8 h-8 text-secondary/20 mb-4 group-hover:text-secondary/40 transition-colors" />
+      </motion.div>
+      
+      {/* Animated Stars */}
+      <RatingStars rating={testimonial.rating} size="sm" animate className="mb-3" />
+      
+      {/* Text */}
+      <p className="text-foreground line-clamp-4 flex-1 mb-4">
+        "{testimonial.text}"
+      </p>
+      
+      {/* Footer */}
+      <div className="flex items-center justify-between pt-4 border-t border-border">
+        <div>
+          <p className="font-semibold text-sm">{testimonial.name}</p>
+          {testimonial.verified && (
+            <motion.span 
+              className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-0.5 rounded-full mt-1"
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 + 0.3 }}
+            >
+              <CheckCircle className="w-3 h-3" />
+              Verifiziert
+            </motion.span>
+          )}
+        </div>
+        <div className="text-right text-xs text-muted-foreground">
+          <p>{testimonial.location}</p>
+          <p>{testimonial.type}</p>
+        </div>
       </div>
-      <div className="text-right text-xs text-muted-foreground">
-        <p>{testimonial.location}</p>
-        <p>{testimonial.type}</p>
-      </div>
-    </div>
+    </InteractiveCard>
   </motion.div>
 );

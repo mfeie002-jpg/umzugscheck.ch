@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
+import { HelpCircle, MessageCircle } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { RevealOnScroll, WaveSection } from "@/components/common";
 
 const faqs = [
   {
@@ -43,17 +45,38 @@ const faqs = [
 
 export const FAQSection = () => {
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
-      <div className="container max-w-3xl">
+    <section className="py-16 md:py-24 bg-muted/30 relative overflow-hidden">
+      {/* Wave Top */}
+      <svg
+        className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180"
+        viewBox="0 0 1440 50"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,0 C360,50 1080,50 1440,0 L1440,50 L0,50 Z"
+          fill="hsl(var(--background))"
+        />
+      </svg>
+      
+      <div className="container max-w-3xl relative">
         {/* Header */}
-        <div className="text-center mb-12">
+        <RevealOnScroll direction="up" className="text-center mb-12">
+          <motion.div
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary/10 mb-4"
+            initial={{ scale: 0, rotate: -180 }}
+            whileInView={{ scale: 1, rotate: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 200 }}
+          >
+            <HelpCircle className="w-8 h-8 text-secondary" />
+          </motion.div>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
             Häufig gestellte Fragen
           </h2>
           <p className="text-muted-foreground text-lg">
             Alles, was Sie über unseren Vergleichsservice wissen müssen.
           </p>
-        </div>
+        </RevealOnScroll>
 
         {/* FAQ Accordion */}
         <motion.div
@@ -64,22 +87,57 @@ export const FAQSection = () => {
         >
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem
+              <motion.div
                 key={index}
-                value={`item-${index}`}
-                className="bg-card border border-border rounded-xl px-6 shadow-soft"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05, duration: 0.4 }}
               >
-                <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-5">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+                <AccordionItem
+                  value={`item-${index}`}
+                  className="bg-card border border-border rounded-xl px-6 shadow-soft hover:shadow-medium transition-shadow group"
+                >
+                  <AccordionTrigger className="text-left font-semibold hover:no-underline py-5 group-hover:text-secondary transition-colors">
+                    <span className="flex items-center gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-bold">
+                        {index + 1}
+                      </span>
+                      {faq.question}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground pb-5 pl-9">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              </motion.div>
             ))}
           </Accordion>
         </motion.div>
+
+        {/* Contact CTA */}
+        <RevealOnScroll direction="up" className="text-center mt-8">
+          <p className="text-muted-foreground text-sm">
+            Noch Fragen?{" "}
+            <a href="/kontakt" className="text-secondary font-medium hover:underline inline-flex items-center gap-1">
+              <MessageCircle className="w-4 h-4" />
+              Kontaktieren Sie uns
+            </a>
+          </p>
+        </RevealOnScroll>
       </div>
+      
+      {/* Wave Bottom */}
+      <svg
+        className="absolute bottom-0 left-0 w-full overflow-hidden leading-none"
+        viewBox="0 0 1440 50"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,0 C360,50 1080,50 1440,0 L1440,50 L0,50 Z"
+          fill="hsl(var(--background))"
+        />
+      </svg>
     </section>
   );
 };
