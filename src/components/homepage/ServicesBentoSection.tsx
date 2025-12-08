@@ -2,7 +2,9 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { Truck, Sparkles, Trash2, Package, Sofa, Building2, ArrowRight, Star, Clock, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
-import { RevealOnScroll, AnimatedArrow, LiveDot, BadgeWithIcon } from "@/components/common";
+import { RevealOnScroll, AnimatedArrow, LiveDot, BadgeWithIcon, BorderBeam } from "@/components/common";
+import { HoverCard3D } from "@/components/common/HoverCard3D";
+import { Spotlight } from "@/components/common/Spotlight";
 
 const services = [
   {
@@ -124,15 +126,20 @@ export const ServicesBentoSection = memo(function ServicesBentoSection() {
               transition={{ delay: index * 0.08, duration: 0.5 }}
             >
               <Link to={service.href} className="group block h-full">
-                <motion.div 
-                  className={`relative h-full rounded-2xl border border-border/50 bg-card overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-primary/30`}
-                  whileHover={{ y: -5 }}
-                >
-                  {/* Gradient Background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
-                  
-                  {/* Content */}
-                  <div className="relative z-10 p-6 h-full flex flex-col">
+                <HoverCard3D intensity={5}>
+                  <Spotlight className="h-full">
+                    <motion.div 
+                      className={`relative h-full rounded-2xl border border-border/50 bg-card overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-primary/30`}
+                      whileHover={{ y: -5 }}
+                    >
+                      {/* BorderBeam for popular items */}
+                      {service.popular && <BorderBeam size={100} duration={10} />}
+                      
+                      {/* Gradient Background */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
+                      
+                      {/* Content */}
+                      <div className="relative z-10 p-6 h-full flex flex-col">
                     {/* Popular Badge */}
                     {service.popular && (
                       <motion.div 
@@ -183,11 +190,13 @@ export const ServicesBentoSection = memo(function ServicesBentoSection() {
                     </span>
                   </div>
                   
-                  {/* Hover Glow */}
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  />
-                </motion.div>
+                      {/* Hover Glow */}
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      />
+                    </motion.div>
+                  </Spotlight>
+                </HoverCard3D>
               </Link>
             </motion.div>
           ))}

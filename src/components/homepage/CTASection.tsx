@@ -11,6 +11,9 @@ import {
   AnimatedCheck,
   NumberTicker
 } from "@/components/common";
+import { ParticleField } from "@/components/common/ParticleField";
+import { FloatingDock } from "@/components/common/FloatingDock";
+import { Home, Calculator, Building2, Phone } from "lucide-react";
 
 export const CTASection = memo(function CTASection() {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -20,10 +23,20 @@ export const CTASection = memo(function CTASection() {
     setTimeout(() => setShowConfetti(false), 100);
   };
 
+  const dockItems = [
+    { icon: Home, label: "Home", href: "/" },
+    { icon: Calculator, label: "Rechner", href: "/umzugsrechner" },
+    { icon: Building2, label: "Firmen", href: "/umzugsfirmen" },
+    { icon: Phone, label: "Kontakt", href: "/kontakt" }
+  ];
+
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 md:py-24 relative">
       {/* Confetti Effect */}
       <Confetti trigger={showConfetti} />
+      
+      {/* Floating Dock Navigation */}
+      <FloatingDock items={dockItems} className="hidden md:flex" />
       
       <div className="container">
         <motion.div
@@ -33,6 +46,14 @@ export const CTASection = memo(function CTASection() {
           transition={{ duration: 0.5 }}
           className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-secondary/90 rounded-3xl p-8 md:p-12 text-center"
         >
+          {/* ParticleField Background */}
+          <ParticleField 
+            particleCount={30} 
+            particleColor="hsl(0 0% 100%)" 
+            speed={0.3} 
+            className="opacity-30"
+          />
+          
           {/* Border Beam Effect */}
           <BorderBeam size={300} duration={20} />
           

@@ -4,6 +4,9 @@ import { MapPin, ArrowRight, Building2, TrendingUp, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SmoothReveal, StaggerContainer, StaggerItem, LiveDot, AnimatedGradientText } from "@/components/common";
+import { RetroGrid } from "@/components/common/RetroGrid";
+import { GridPattern } from "@/components/common/GridPattern";
+import { ParallaxSection } from "@/components/mobile/ParallaxSection";
 
 const regions = [
   { name: "Zürich", count: 45, href: "/zuerich", trending: true, growth: "+12%" },
@@ -19,6 +22,12 @@ const regions = [
 export const EnhancedRegionsSection = memo(function EnhancedRegionsSection() {
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
+      {/* RetroGrid Background */}
+      <RetroGrid angle={70} className="opacity-30" />
+      
+      {/* GridPattern Overlay */}
+      <GridPattern size={60} fade className="opacity-20" />
+      
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
@@ -27,27 +36,28 @@ export const EnhancedRegionsSection = memo(function EnhancedRegionsSection() {
 
       <div className="container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Content */}
-          <SmoothReveal direction="left" className="space-y-6">
-            <motion.span 
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-sm font-medium"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-            >
-              <MapPin className="w-4 h-4" />
-              Schweizweit verfügbar
-            </motion.span>
+          {/* Left - Content with Parallax */}
+          <ParallaxSection speed={0.3} direction="up">
+            <SmoothReveal direction="left" className="space-y-6">
+              <motion.span 
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-sm font-medium"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+              >
+                <MapPin className="w-4 h-4" />
+                Schweizweit verfügbar
+              </motion.span>
 
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-              In allen{" "}
-              <AnimatedGradientText>26 Kantonen</AnimatedGradientText>
-              {" "}für Sie da
-            </h2>
-            
-            <p className="text-muted-foreground text-lg">
-              Egal ob Grossstadt oder ländliche Gemeinde – wir haben geprüfte Umzugspartner in Ihrer Nähe.
-            </p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+                In allen{" "}
+                <AnimatedGradientText>26 Kantonen</AnimatedGradientText>
+                {" "}für Sie da
+              </h2>
+              
+              <p className="text-muted-foreground text-lg">
+                Egal ob Grossstadt oder ländliche Gemeinde – wir haben geprüfte Umzugspartner in Ihrer Nähe.
+              </p>
             
             {/* Stats */}
             <div className="flex gap-8 py-4">
@@ -86,19 +96,20 @@ export const EnhancedRegionsSection = memo(function EnhancedRegionsSection() {
               </motion.div>
             </div>
             
-            <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 group">
-              <Link to="/regionen">
-                Alle Regionen ansehen
-                <motion.span
-                  className="ml-2"
-                  initial={{ x: 0 }}
-                  whileHover={{ x: 4 }}
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </motion.span>
-              </Link>
-            </Button>
-          </SmoothReveal>
+              <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 group">
+                <Link to="/regionen">
+                  Alle Regionen ansehen
+                  <motion.span
+                    className="ml-2"
+                    initial={{ x: 0 }}
+                    whileHover={{ x: 4 }}
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.span>
+                </Link>
+              </Button>
+            </SmoothReveal>
+          </ParallaxSection>
 
           {/* Right - Region Grid */}
           <StaggerContainer staggerDelay={0.05} className="grid grid-cols-2 gap-3">

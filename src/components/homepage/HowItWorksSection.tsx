@@ -11,6 +11,8 @@ import {
   Beam,
   BlurReveal
 } from "@/components/common";
+import { TextShimmer } from "@/components/common/TextShimmer";
+import { WaveSection } from "@/components/common/WaveSection";
 
 const steps = [
   {
@@ -58,7 +60,7 @@ export const HowItWorksSection = memo(function HowItWorksSection() {
         {/* Header */}
         <RevealOnScroll direction="up" className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-            Wie funktioniert der Vergleich?
+            <TextShimmer>Wie funktioniert der Vergleich?</TextShimmer>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             In nur 3 einfachen Schritten zu Ihren kostenlosen Umzugsofferten.
