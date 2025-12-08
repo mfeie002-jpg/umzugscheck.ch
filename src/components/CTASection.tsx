@@ -1,56 +1,114 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
-export const CTASection = () => {
+interface CTASectionProps {
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  badges?: string[];
+  variant?: 'default' | 'compact' | 'minimal';
+  className?: string;
+}
+
+export const CTASection = ({
+  title = "Bereit für Ihren stressfreien Umzug?",
+  description = "Vergleichen Sie jetzt kostenlos Umzugsofferten von geprüften Firmen und sparen Sie bis zu 40%.",
+  buttonText = "Jetzt kostenlos Preis berechnen",
+  buttonLink = "/rechner",
+  badges = ["100% kostenlos", "Nur geprüfte Firmen", "In 2 Minuten"],
+  variant = 'default',
+  className
+}: CTASectionProps) => {
+  if (variant === 'minimal') {
+    return (
+      <section className={cn("py-12 md:py-16 bg-muted/50", className)}>
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">{title}</h2>
+          <Link to={buttonLink}>
+            <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white">
+              {buttonText}
+              <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  if (variant === 'compact') {
+    return (
+      <section className={cn(
+        "py-10 md:py-14 bg-gradient-to-r from-primary to-primary/90 text-white",
+        className
+      )}>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
+              <p className="text-white/80 mt-1">{description}</p>
+            </div>
+            <Link to={buttonLink} className="flex-shrink-0">
+              <Button 
+                size="lg"
+                className="bg-white text-primary hover:bg-white/95"
+              >
+                {buttonText}
+                <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="py-20 md:py-28 gradient-accent text-white relative overflow-hidden">
-      {/* Animated gradient blobs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-white/20 to-transparent rounded-full blur-3xl animate-blob"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-accent-dark/40 to-transparent rounded-full blur-3xl animate-blob-reverse animation-delay-2000"></div>
-      
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtMy4zMTQgMi42ODYtNiA2LTZzNiAyLjY4NiA2IDYtMi42ODYgNi02IDYtNi0yLjY4Ni02LTZ6bTAgMjRjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnpNMTIgMThjMC0zLjMxNCAyLjY4Ni02IDYtNnM2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNnptMCAyNGMwLTMuMzE0IDIuNjg2LTYgNi02czYgMi42ODYgNiA2LTIuNjg2IDYtNiA2LTYtMi42ODYtNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
+    <section className={cn(
+      "py-20 md:py-28 bg-gradient-to-br from-primary via-primary to-primary/90 text-white relative overflow-hidden",
+      className
+    )}>
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-white/10 to-transparent rounded-full blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-primary-foreground/10 to-transparent rounded-full blur-3xl" aria-hidden="true" />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-white/20">
-            <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+            <span className="w-2 h-2 bg-white rounded-full animate-pulse" aria-hidden="true" />
             <span>Unverbindlich & kostenlos</span>
           </div>
           
-          <h2 className="mb-6 drop-shadow-lg">
-            Bereit für Ihren stressfreien Umzug?
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 drop-shadow-lg">
+            {title}
           </h2>
-          <p className="text-xl md:text-2xl text-white/95 mb-10 leading-relaxed">
-            Vergleichen Sie jetzt <strong className="text-white">kostenlos Umzugsofferten</strong> von geprüften Firmen 
-            und sparen Sie bis zu <strong className="text-white">40%</strong>.
+          <p className="text-lg md:text-xl text-white/90 mb-10 leading-relaxed max-w-2xl mx-auto">
+            {description}
           </p>
-          <Link to="/rechner" className="w-full sm:w-auto">
+          
+          <Link to={buttonLink}>
             <Button 
               size="lg" 
-              className="w-full sm:w-auto bg-white text-accent hover:bg-white/95 shadow-strong group text-base sm:text-lg px-6 sm:px-10 h-14 sm:h-16 hover-shine hover:scale-105 transition-all"
+              className="bg-white text-primary hover:bg-white/95 shadow-lg group text-base sm:text-lg px-8 sm:px-10 h-14 sm:h-16 hover:scale-[1.02] transition-all active:scale-[0.98]"
             >
-              <span className="relative z-10">
-                <span className="hidden sm:inline">Jetzt kostenlos Preis berechnen</span>
-                <span className="sm:hidden">Preis berechnen</span>
-              </span>
-              <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform relative z-10" />
+              <span className="hidden sm:inline">{buttonText}</span>
+              <span className="sm:hidden">Preis berechnen</span>
+              <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </Button>
           </Link>
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-white/90">
-            <span className="flex items-center gap-2 text-sm font-medium">
-              <CheckCircle2 className="w-5 h-5" />
-              100% kostenlos
-            </span>
-            <span className="flex items-center gap-2 text-sm font-medium">
-              <CheckCircle2 className="w-5 h-5" />
-              Nur geprüfte Firmen
-            </span>
-            <span className="flex items-center gap-2 text-sm font-medium">
-              <CheckCircle2 className="w-5 h-5" />
-              In 2 Minuten
-            </span>
-          </div>
+          
+          {badges.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 text-white/90">
+              {badges.map((badge, index) => (
+                <span key={index} className="flex items-center gap-2 text-sm font-medium">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+                  {badge}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
