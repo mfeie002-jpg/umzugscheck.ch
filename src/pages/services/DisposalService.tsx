@@ -10,6 +10,7 @@ import { FeatureList } from "@/components/ui/feature-list";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 export default function DisposalService() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -58,6 +59,17 @@ export default function DisposalService() {
         canonicalUrl="https://umzugscheck.ch/entsorgung-schweiz"
         keywords="Entsorgung Schweiz, Räumung, Sperrmüll, Möbelentsorgung, Haushaltsauflösung"
       />
+      <ServiceSchema
+        name="Entsorgung & Räumung Schweiz"
+        description="Fachgerechte und umweltfreundliche Entsorgung von Möbeln, Hausrat und Sperrmüll"
+        priceRange="CHF 200 - CHF 2'000"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Entsorgung", url: "https://umzugscheck.ch/entsorgung-schweiz" }
+      ]} />
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 gradient-hero text-white">

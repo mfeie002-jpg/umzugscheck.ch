@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 export default function StorageService() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -67,6 +68,17 @@ export default function StorageService() {
         keywords="möbellager, einlagerung schweiz, möbel lagern, lagerraum"
         canonicalUrl="https://www.umzugscheck.ch/einlagerung"
       />
+      <ServiceSchema
+        name="Möbellager & Einlagerung Schweiz"
+        description="Sichere und flexible Lagerlösungen für Möbel und Gegenstände. Klimatisiert, überwacht und versichert."
+        priceRange="CHF 100 - CHF 500 pro Monat"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Einlagerung", url: "https://umzugscheck.ch/einlagerung" }
+      ]} />
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 gradient-hero text-white">

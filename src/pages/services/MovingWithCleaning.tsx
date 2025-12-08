@@ -10,6 +10,7 @@ import { FeatureList } from "@/components/ui/feature-list";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 export default function MovingWithCleaning() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -71,6 +72,17 @@ export default function MovingWithCleaning() {
         keywords="umzug mit reinigung, umzug endreinigung, komplettpaket umzug"
         canonicalUrl="https://www.umzugscheck.ch/umzug-mit-reinigung"
       />
+      <ServiceSchema
+        name="Umzug mit Reinigung Schweiz"
+        description="Komplettpaket: Transport und professionelle Endreinigung mit Abgabegarantie"
+        priceRange="CHF 1'500 - CHF 3'500"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Umzug mit Reinigung", url: "https://umzugscheck.ch/umzug-mit-reinigung" }
+      ]} />
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 gradient-hero text-white">
