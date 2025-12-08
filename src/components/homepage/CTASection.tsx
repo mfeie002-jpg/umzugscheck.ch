@@ -1,11 +1,30 @@
+import { memo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowRight, CheckCircle, Sparkles, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { 
+  Confetti, 
+  BorderBeam, 
+  MagneticButton, 
+  ShinyText, 
+  AnimatedCheck,
+  NumberTicker
+} from "@/components/common";
 
-export const CTASection = () => {
+export const CTASection = memo(function CTASection() {
+  const [showConfetti, setShowConfetti] = useState(false);
+  
+  const handleHover = () => {
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 100);
+  };
+
   return (
     <section className="py-16 md:py-24">
+      {/* Confetti Effect */}
+      <Confetti trigger={showConfetti} />
+      
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -14,6 +33,9 @@ export const CTASection = () => {
           transition={{ duration: 0.5 }}
           className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-secondary/90 rounded-3xl p-8 md:p-12 text-center"
         >
+          {/* Border Beam Effect */}
+          <BorderBeam size={300} duration={20} />
+          
           {/* Background Pattern */}
           <div 
             className="absolute inset-0 opacity-10"
@@ -24,43 +46,76 @@ export const CTASection = () => {
           />
           
           <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+            {/* Badge */}
+            <motion.div
+              className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <Sparkles className="w-4 h-4" />
+              <NumberTicker value={15000} suffix="+" className="font-bold" /> zufriedene Kunden
+            </motion.div>
+            
             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-              Bereit für Ihren nächsten Umzug?
+              Bereit für Ihren nächsten <ShinyText className="text-white">Umzug</ShinyText>?
             </h2>
             <p className="text-white/90 text-lg">
               In 2 Minuten zu Ihren kostenlosen Offerten von geprüften Schweizer Umzugsfirmen.
             </p>
             
-            <Button
-              asChild
-              size="lg"
-              className="bg-white text-secondary hover:bg-white/90 font-bold text-base h-14 px-8 rounded-xl shadow-lift"
-            >
-              <Link to="/umzugsofferten">
-                <CheckCircle className="w-5 h-5 mr-2" />
-                Jetzt Offerten erhalten
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Link>
-            </Button>
+            <MagneticButton strength={0.2}>
+              <Button
+                asChild
+                size="lg"
+                className="bg-white text-secondary hover:bg-white/90 font-bold text-base h-14 px-8 rounded-xl shadow-lift group"
+                onMouseEnter={handleHover}
+              >
+                <Link to="/umzugsofferten">
+                  <CheckCircle className="w-5 h-5 mr-2" />
+                  Jetzt Offerten erhalten
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+            </MagneticButton>
             
-            {/* Trust Points */}
+            {/* Trust Points with Animated Checks */}
             <div className="flex flex-wrap justify-center gap-6 pt-4">
-              <div className="flex items-center gap-2 text-white/80 text-sm">
-                <CheckCircle className="w-4 h-4" />
+              <motion.div 
+                className="flex items-center gap-2 text-white/90 text-sm"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
+                <AnimatedCheck size={18} color="text-white" delay={0.4} />
                 100% kostenlos
-              </div>
-              <div className="flex items-center gap-2 text-white/80 text-sm">
-                <CheckCircle className="w-4 h-4" />
+              </motion.div>
+              <motion.div 
+                className="flex items-center gap-2 text-white/90 text-sm"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+              >
+                <AnimatedCheck size={18} color="text-white" delay={0.5} />
                 Unverbindlich
-              </div>
-              <div className="flex items-center gap-2 text-white/80 text-sm">
-                <CheckCircle className="w-4 h-4" />
+              </motion.div>
+              <motion.div 
+                className="flex items-center gap-2 text-white/90 text-sm"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+              >
+                <AnimatedCheck size={18} color="text-white" delay={0.6} />
                 In 2 Minuten fertig
-              </div>
+              </motion.div>
             </div>
           </div>
         </motion.div>
       </div>
     </section>
   );
-};
+});

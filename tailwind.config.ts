@@ -163,6 +163,22 @@ export default {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.85" },
         },
+        "marquee": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
+        "marquee-reverse": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        "shine": {
+          "0%": { backgroundPosition: "200% 50%" },
+          "100%": { backgroundPosition: "-200% 50%" },
+        },
+        "border-beam": {
+          "0%": { "--angle": "0deg" },
+          "100%": { "--angle": "360deg" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -174,6 +190,10 @@ export default {
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
         "float": "float 3s ease-in-out infinite",
         "bounce-slow": "bounce 2s ease-in-out infinite",
+        "marquee": "marquee 25s linear infinite",
+        "marquee-reverse": "marquee-reverse 25s linear infinite",
+        "shine": "shine 3s linear infinite",
+        "border-beam": "border-beam var(--duration) linear infinite",
       },
     },
   },
