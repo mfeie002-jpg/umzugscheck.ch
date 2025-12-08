@@ -257,7 +257,7 @@ const App = () => (
                 <Suspense fallback={null}>
                   <MobilePullToRefresh>
                     <SwipeNavigationWrapper>
-                      <main className="flex-1">
+                      <main className="flex-1 pb-16 md:pb-0">
                         <Suspense fallback={<PageLoadingFallback />}>
                           <AnimatedRoutes>
                             <Route path="/" element={<IndexPremium />} />
