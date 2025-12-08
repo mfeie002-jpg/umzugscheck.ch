@@ -54,11 +54,15 @@ export function AnimatedSection({
     <div
       ref={ref}
       className={cn(
-        "transition-all duration-700 ease-out",
+        "transition-all duration-700 ease-out contain-layout",
         isVisible ? animate : initial,
         className
       )}
-      style={{ transitionDelay: `${delay}ms` }}
+      style={{ 
+        transitionDelay: `${delay}ms`,
+        contentVisibility: 'auto',
+        containIntrinsicSize: 'auto 400px'
+      }}
     >
       {children}
     </div>

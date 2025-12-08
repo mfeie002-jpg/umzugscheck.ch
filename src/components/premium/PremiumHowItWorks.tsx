@@ -32,7 +32,7 @@ const steps = [
 
 export const PremiumHowItWorks = () => {
   return (
-    <section className="py-12 md:py-16 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
+    <section className="py-12 md:py-16 bg-muted/30 overflow-hidden min-h-[600px] md:min-h-[700px]" aria-labelledby="how-it-works-heading">
       <div className="container mx-auto px-4">
         {/* Section Header - Compact */}
         <motion.div
@@ -67,11 +67,14 @@ export const PremiumHowItWorks = () => {
             >
               <div className="bg-card rounded-2xl overflow-hidden shadow-medium hover:shadow-premium transition-all duration-400 border border-border/50">
                 {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden">
+                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                   <img 
                     src={step.image} 
                     alt={step.title}
                     loading={idx === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                    width={400}
+                    height={250}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   {/* Step Number */}

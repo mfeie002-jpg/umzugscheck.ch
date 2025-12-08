@@ -29,7 +29,7 @@ export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
   }), [items]);
 
   return (
-    <section className="py-12 md:py-16 bg-background relative" aria-labelledby="faq-heading">
+    <section className="py-12 md:py-16 bg-background relative min-h-[500px] md:min-h-[600px]" aria-labelledby="faq-heading">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           {/* Header with BlurReveal */}
