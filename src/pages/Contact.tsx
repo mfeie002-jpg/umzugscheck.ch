@@ -1,6 +1,4 @@
-
 import { OptimizedSEO } from "@/components/OptimizedSEO";
-import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +9,11 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { FAQAccordion, type FAQItem } from "@/components/FAQAccordion";
 import { Link } from "react-router-dom";
+import { PageSection } from "@/components/ui/page-section";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { cn } from "@/lib/utils";
 
 const contactFAQs: FAQItem[] = [
   {
@@ -31,6 +34,30 @@ const contactFAQs: FAQItem[] = [
   },
 ];
 
+interface AnimatedCardProps {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}
+
+const AnimatedCard = ({ children, delay = 0, className }: AnimatedCardProps) => {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "transition-all duration-500",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
+        className
+      )}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
 const Contact = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,7 +66,6 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     toast({
@@ -60,162 +86,146 @@ const Contact = () => {
       />
 
       <div className="min-h-screen flex flex-col">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs items={[{ label: "Kontakt" }]} />
+        </div>
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="gradient-hero text-white py-16 md:py-24">
-            <div className="container mx-auto px-4">
-              <ScrollReveal>
-                <div className="max-w-3xl mx-auto text-center">
-                  <h1 className="mb-6 text-4xl md:text-5xl lg:text-6xl font-bold">Kontaktieren Sie uns</h1>
-                  <p className="text-xl md:text-2xl text-white/90">
-                    Haben Sie Fragen zu Ihrem Umzug oder unserem Service? 
-                    Wir sind für Sie da und helfen Ihnen gerne weiter.
-                  </p>
-                </div>
-              </ScrollReveal>
+          <PageSection variant="primary" spacing="lg" className="bg-gradient-to-br from-primary via-primary to-primary/90 text-white">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                Kontaktieren Sie uns
+              </h1>
+              <p className="text-lg md:text-xl text-white/90">
+                Haben Sie Fragen zu Ihrem Umzug oder unserem Service? 
+                Wir sind für Sie da und helfen Ihnen gerne weiter.
+              </p>
             </div>
-          </section>
+          </PageSection>
 
           {/* Contact Form & Info */}
-          <section className="py-16 md:py-24 bg-gradient-light">
-            <div className="container mx-auto px-4">
-              <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
-                {/* Contact Form */}
-                <ScrollReveal>
-                  <Card variant="elevated" className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Send className="w-6 h-6 text-primary" />
-                    Nachricht senden
-                  </CardTitle>
-                  <CardDescription>
-                    Füllen Sie das Formular aus und wir melden uns schnellstmöglich bei Ihnen.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Vor- und Nachname *</Label>
-                        <Input 
-                          id="name" 
-                          placeholder="Max Mustermann" 
-                          required 
-                        />
+          <PageSection variant="muted">
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+              {/* Contact Form */}
+              <AnimatedCard className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Send className="w-6 h-6 text-primary" aria-hidden="true" />
+                      Nachricht senden
+                    </CardTitle>
+                    <CardDescription>
+                      Füllen Sie das Formular aus und wir melden uns schnellstmöglich bei Ihnen.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Vor- und Nachname *</Label>
+                          <Input id="name" placeholder="Max Mustermann" required />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">E-Mail-Adresse *</Label>
+                          <Input id="email" type="email" placeholder="max@beispiel.ch" required />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">E-Mail-Adresse *</Label>
-                        <Input 
-                          id="email" 
-                          type="email" 
-                          placeholder="max@beispiel.ch" 
-                          required 
-                        />
-                      </div>
-                    </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Telefonnummer</Label>
-                        <Input 
-                          id="phone" 
-                          type="tel" 
-                          placeholder="+41 79 123 45 67" 
-                        />
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Telefonnummer</Label>
+                          <Input id="phone" type="tel" placeholder="+41 79 123 45 67" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="subject">Betreff *</Label>
+                          <Input id="subject" placeholder="Ihre Anfrage" required />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Betreff *</Label>
-                        <Input 
-                          id="subject" 
-                          placeholder="Ihre Anfrage" 
-                          required 
-                        />
-                      </div>
-                    </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Nachricht *</Label>
-                      <Textarea 
-                        id="message" 
-                        placeholder="Beschreiben Sie Ihr Anliegen..."
-                        rows={6}
-                        required
-                      />
-                    </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="message">Nachricht *</Label>
+                        <Textarea 
+                          id="message" 
+                          placeholder="Beschreiben Sie Ihr Anliegen..."
+                          rows={6}
+                          required
+                        />
+                      </div>
 
                       <Button 
                         type="submit" 
                         size="lg"
-                        className="w-full md:w-auto shadow-premium"
+                        className="w-full md:w-auto"
                         disabled={isSubmitting}
                       >
                         {isSubmitting ? "Wird gesendet..." : "Nachricht senden"}
-                        <Send className="ml-2 w-4 h-4" />
+                        <Send className="ml-2 w-4 h-4" aria-hidden="true" />
                       </Button>
                     </form>
                   </CardContent>
                 </Card>
-              </ScrollReveal>
+              </AnimatedCard>
 
               {/* Contact Info */}
               <div className="space-y-6">
-                <ScrollReveal delay={0.1}>
-                  <Card variant="elevated">
-                  <CardHeader>
-                    <CardTitle className="text-xl">Kontaktinformationen</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <Mail className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold mb-1">E-Mail</div>
-                        <a href="mailto:info@umzugscheck.ch" className="text-muted-foreground hover:text-primary transition-colors">
-                          info@umzugscheck.ch
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <Phone className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold mb-1">Telefon</div>
-                        <a href="tel:+41445555555" className="text-muted-foreground hover:text-primary transition-colors">
-                          +41 44 555 55 55
-                        </a>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          Mo-Fr: 08:00 - 18:00 Uhr
+                <AnimatedCard delay={100}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-xl">Kontaktinformationen</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <Mail className="w-5 h-5 text-primary" aria-hidden="true" />
+                        </div>
+                        <div>
+                          <div className="font-semibold mb-1">E-Mail</div>
+                          <a href="mailto:info@umzugscheck.ch" className="text-muted-foreground hover:text-primary transition-colors">
+                            info@umzugscheck.ch
+                          </a>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <MapPin className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold mb-1">Adresse</div>
-                        <div className="text-muted-foreground">
-                          Umzugscheck GmbH<br />
-                          Musterstrasse 123<br />
-                          8000 Zürich<br />
-                          Schweiz
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <Phone className="w-5 h-5 text-primary" aria-hidden="true" />
+                        </div>
+                        <div>
+                          <div className="font-semibold mb-1">Telefon</div>
+                          <a href="tel:+41445555555" className="text-muted-foreground hover:text-primary transition-colors">
+                            +41 44 555 55 55
+                          </a>
+                          <div className="text-sm text-muted-foreground mt-1">
+                            Mo-Fr: 08:00 - 18:00 Uhr
+                          </div>
                         </div>
                       </div>
-                    </div>
+
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <MapPin className="w-5 h-5 text-primary" aria-hidden="true" />
+                        </div>
+                        <div>
+                          <div className="font-semibold mb-1">Adresse</div>
+                          <div className="text-muted-foreground">
+                            Umzugscheck GmbH<br />
+                            Musterstrasse 123<br />
+                            8000 Zürich<br />
+                            Schweiz
+                          </div>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
-                </ScrollReveal>
+                </AnimatedCard>
 
-                <ScrollReveal delay={0.2}>
-                  <Card variant="elevated" className="bg-success/5 border-success/20">
+                <AnimatedCard delay={200}>
+                  <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
                     <CardContent className="p-6 space-y-4">
-                      <div className="flex items-center gap-2 text-success font-semibold">
-                        <Clock className="w-5 h-5" />
+                      <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-semibold">
+                        <Clock className="w-5 h-5" aria-hidden="true" />
                         Schnelle Antwort garantiert
                       </div>
                       <p className="text-sm text-muted-foreground">
@@ -223,73 +233,68 @@ const Contact = () => {
                       </p>
                     </CardContent>
                   </Card>
-                </ScrollReveal>
+                </AnimatedCard>
 
                 {/* Quick Links */}
-                <ScrollReveal delay={0.3}>
-                  <Card variant="elevated">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Schnellzugriff</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Link to="/rechner" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
-                      <Calculator className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="font-medium group-hover:text-primary transition-colors">Kostenrechner</div>
-                        <div className="text-xs text-muted-foreground">Preise berechnen</div>
-                      </div>
-                    </Link>
-                    <Link to="/firmen" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
-                      <MessageSquare className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="font-medium group-hover:text-primary transition-colors">Firmen vergleichen</div>
-                        <div className="text-xs text-muted-foreground">Alle Anbieter</div>
-                      </div>
-                    </Link>
-                    <Link to="#faq" className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors group">
-                      <HelpCircle className="w-5 h-5 text-primary" />
-                      <div>
-                        <div className="font-medium group-hover:text-primary transition-colors">FAQ</div>
-                        <div className="text-xs text-muted-foreground">Häufige Fragen</div>
-                      </div>
+                <AnimatedCard delay={300}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Schnellzugriff</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Link to="/rechner" className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors group">
+                        <Calculator className="w-5 h-5 text-primary" aria-hidden="true" />
+                        <div>
+                          <div className="font-medium group-hover:text-primary transition-colors">Kostenrechner</div>
+                          <div className="text-xs text-muted-foreground">Preise berechnen</div>
+                        </div>
+                      </Link>
+                      <Link to="/firmen" className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors group">
+                        <MessageSquare className="w-5 h-5 text-primary" aria-hidden="true" />
+                        <div>
+                          <div className="font-medium group-hover:text-primary transition-colors">Firmen vergleichen</div>
+                          <div className="text-xs text-muted-foreground">Alle Anbieter</div>
+                        </div>
+                      </Link>
+                      <Link to="/faq" className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors group">
+                        <HelpCircle className="w-5 h-5 text-primary" aria-hidden="true" />
+                        <div>
+                          <div className="font-medium group-hover:text-primary transition-colors">FAQ</div>
+                          <div className="text-xs text-muted-foreground">Häufige Fragen</div>
+                        </div>
                       </Link>
                     </CardContent>
                   </Card>
-                </ScrollReveal>
+                </AnimatedCard>
               </div>
             </div>
 
-              {/* Map Placeholder */}
-              <ScrollReveal>
-                <div className="max-w-6xl mx-auto mt-12">
-                  <Card variant="elevated" className="overflow-hidden">
-                    <div className="h-64 md:h-80 bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border-b">
-                      <div className="text-center">
-                        <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
-                        <p className="text-muted-foreground font-medium">Standort Zürich</p>
-                        <p className="text-sm text-muted-foreground">Musterstrasse 123, 8000 Zürich</p>
-                      </div>
-                    </div>
-                  </Card>
+            {/* Map Placeholder */}
+            <AnimatedCard className="max-w-6xl mx-auto mt-12">
+              <Card className="overflow-hidden">
+                <div className="h-64 md:h-80 bg-gradient-to-br from-primary/5 to-primary/10 flex items-center justify-center border-b">
+                  <div className="text-center">
+                    <MapPin className="w-12 h-12 text-primary mx-auto mb-3" aria-hidden="true" />
+                    <p className="text-muted-foreground font-medium">Standort Zürich</p>
+                    <p className="text-sm text-muted-foreground">Musterstrasse 123, 8000 Zürich</p>
+                  </div>
                 </div>
-              </ScrollReveal>
+              </Card>
+            </AnimatedCard>
 
-              {/* FAQ Section */}
-              <ScrollReveal>
-                <div id="faq" className="max-w-6xl mx-auto mt-16">
-                  <FAQAccordion
-                    items={contactFAQs}
-                    title="Häufig gestellte Fragen"
-                    subtitle="Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage."
-                    variant="compact"
-                  />
-                </div>
-              </ScrollReveal>
+            {/* FAQ Section */}
+            <div className="max-w-6xl mx-auto mt-16">
+              <SectionHeading
+                title="Häufig gestellte Fragen"
+                subtitle="Vielleicht finden Sie hier bereits die Antwort auf Ihre Frage."
+                align="center"
+              />
+              <div className="mt-8">
+                <FAQAccordion items={contactFAQs} variant="compact" />
+              </div>
             </div>
-          </section>
+          </PageSection>
         </main>
-
-        
       </div>
     </>
   );
