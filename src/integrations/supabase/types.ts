@@ -114,6 +114,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "billing_records_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       bundled_estimates: {
@@ -177,6 +184,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_tracking_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -284,6 +298,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversion_analytics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
           {
@@ -545,6 +566,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lead_bids_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       lead_quality_factors: {
@@ -665,6 +693,13 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_transactions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -876,6 +911,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "payment_history_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       platform_analytics: {
@@ -1019,6 +1061,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "provider_availability_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       provider_click_events: {
@@ -1058,6 +1107,13 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_click_events_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1113,6 +1169,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "provider_performance_metrics_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       provider_subscriptions: {
@@ -1162,6 +1225,13 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_subscriptions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1241,6 +1311,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ranking_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       rate_limits: {
@@ -1303,6 +1380,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "realtime_ranking_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       regional_rankings: {
@@ -1342,6 +1426,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "regional_rankings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1431,6 +1522,13 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
           {
@@ -1889,6 +1987,13 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sponsored_plans_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       subscription_plans: {
@@ -1990,7 +2095,140 @@ export type Database = {
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lead_transactions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      service_providers_public: {
+        Row: {
+          account_status: Database["public"]["Enums"]["account_status"] | null
+          avg_completion_time_hours: number | null
+          booking_calendar_url: string | null
+          cantons_served: string[] | null
+          certifications: string[] | null
+          cities_served: string[] | null
+          city: string | null
+          company_name: string | null
+          contact_person_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          discount_offer: string | null
+          employees_count: number | null
+          featured_position: number | null
+          fleet_size: number | null
+          id: string | null
+          is_featured: boolean | null
+          logo_url: string | null
+          long_description: string | null
+          price_level: Database["public"]["Enums"]["price_level"] | null
+          profile_completeness: number | null
+          profile_gallery: string[] | null
+          quality_score: number | null
+          ranking_position: number | null
+          response_time_minutes: number | null
+          services_offered: string[] | null
+          short_description: string | null
+          slug: string | null
+          sponsored_tier: number | null
+          success_rate: number | null
+          team_members: Json | null
+          updated_at: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website: string | null
+          working_hours: Json | null
+          zip: string | null
+        }
+        Insert: {
+          account_status?: Database["public"]["Enums"]["account_status"] | null
+          avg_completion_time_hours?: number | null
+          booking_calendar_url?: string | null
+          cantons_served?: string[] | null
+          certifications?: string[] | null
+          cities_served?: string[] | null
+          city?: string | null
+          company_name?: string | null
+          contact_person_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          discount_offer?: string | null
+          employees_count?: number | null
+          featured_position?: number | null
+          fleet_size?: number | null
+          id?: string | null
+          is_featured?: boolean | null
+          logo_url?: string | null
+          long_description?: string | null
+          price_level?: Database["public"]["Enums"]["price_level"] | null
+          profile_completeness?: number | null
+          profile_gallery?: string[] | null
+          quality_score?: number | null
+          ranking_position?: number | null
+          response_time_minutes?: number | null
+          services_offered?: string[] | null
+          short_description?: string | null
+          slug?: string | null
+          sponsored_tier?: number | null
+          success_rate?: number | null
+          team_members?: Json | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website?: string | null
+          working_hours?: Json | null
+          zip?: string | null
+        }
+        Update: {
+          account_status?: Database["public"]["Enums"]["account_status"] | null
+          avg_completion_time_hours?: number | null
+          booking_calendar_url?: string | null
+          cantons_served?: string[] | null
+          certifications?: string[] | null
+          cities_served?: string[] | null
+          city?: string | null
+          company_name?: string | null
+          contact_person_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          discount_offer?: string | null
+          employees_count?: number | null
+          featured_position?: number | null
+          fleet_size?: number | null
+          id?: string | null
+          is_featured?: boolean | null
+          logo_url?: string | null
+          long_description?: string | null
+          price_level?: Database["public"]["Enums"]["price_level"] | null
+          profile_completeness?: number | null
+          profile_gallery?: string[] | null
+          quality_score?: number | null
+          ranking_position?: number | null
+          response_time_minutes?: number | null
+          services_offered?: string[] | null
+          short_description?: string | null
+          slug?: string | null
+          sponsored_tier?: number | null
+          success_rate?: number | null
+          team_members?: Json | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website?: string | null
+          working_hours?: Json | null
+          zip?: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
