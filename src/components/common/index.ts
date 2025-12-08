@@ -93,3 +93,27 @@ export { FloatingIcon } from './FloatingIcon';
 export { BorderBeam } from './BorderBeam';
 export { ShinyText } from './ShinyText';
 export { RetroGrid } from './RetroGrid';
+
+// Wave 6 - New Premium Components
+export { AnimatedBackground } from './AnimatedBackground';
+export { TypewriterHeadline } from './TypewriterHeadline';
+export { FloatingCard } from './FloatingCard';
+export { AnimatedPrice } from './AnimatedPrice';
+export { PulsingBadge } from './PulsingBadge';
+export { ScrollProgress } from './ScrollProgress';
+export { AnimatedGradientBorder } from './AnimatedGradientBorder';
+export { CountdownBadge } from './CountdownBadge';
+export { StaggeredList } from './StaggeredList';
+export { GlowingButton } from './GlowingButton';
+export { AnimatedIcon } from './AnimatedIcon';
+export { SpotlightCard } from './SpotlightCard';
+export { AnimatedCheckList } from './AnimatedCheckList';
+export { ParticleField } from './ParticleField';
+export { MorphingText } from './MorphingText';
+export { RatingStars } from './RatingStars';
+export { WaveSection } from './WaveSection';
+export { GlassmorphismCard } from './GlassmorphismCard';
+export { RevealOnScroll } from './RevealOnScroll';
+export { InteractiveCard } from './InteractiveCard';
+export { TextShimmer } from './TextShimmer';
+export { AnimatedArrow } from './AnimatedArrow';
