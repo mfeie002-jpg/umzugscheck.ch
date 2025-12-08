@@ -15,11 +15,11 @@ const TrustBadges = lazy(() => import("@/components/homepage/TrustBadges").then(
 const HowItWorksSection = lazy(() => import("@/components/homepage/HowItWorksSection").then(m => ({ default: m.HowItWorksSection })));
 const ServicesBentoSection = lazy(() => import("@/components/homepage/ServicesBentoSection").then(m => ({ default: m.ServicesBentoSection })));
 const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
-const RegionsSection = lazy(() => import("@/components/homepage/RegionsSection").then(m => ({ default: m.RegionsSection })));
+const EnhancedRegionsSection = lazy(() => import("@/components/homepage/EnhancedRegionsSection").then(m => ({ default: m.EnhancedRegionsSection })));
 const FAQSection = lazy(() => import("@/components/homepage/FAQSection").then(m => ({ default: m.FAQSection })));
 const CTASection = lazy(() => import("@/components/homepage/CTASection").then(m => ({ default: m.CTASection })));
 const USPSection = lazy(() => import("@/components/homepage/USPSection").then(m => ({ default: m.USPSection })));
-const TestimonialsSection = lazy(() => import("@/components/homepage/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
+const PremiumTestimonialsSection = lazy(() => import("@/components/homepage/PremiumTestimonialsSection").then(m => ({ default: m.PremiumTestimonialsSection })));
 const SocialProofSection = lazy(() => import("@/components/homepage/SocialProofSection").then(m => ({ default: m.SocialProofSection })));
 const GuaranteeBadges = lazy(() => import("@/components/homepage/GuaranteeBadges").then(m => ({ default: m.GuaranteeBadges })));
 const NewsletterSection = lazy(() => import("@/components/homepage/NewsletterSection").then(m => ({ default: m.NewsletterSection })));
@@ -168,11 +168,11 @@ const Index = () => {
           </Suspense>
           
           <Suspense fallback={<LoadingFallback />}>
-            <TestimonialsSection />
+            <PremiumTestimonialsSection />
           </Suspense>
           
           <Suspense fallback={<LoadingFallback />}>
-            <RegionsSection />
+            <EnhancedRegionsSection />
           </Suspense>
           
           {/* Guarantee Section */}

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { PulsingBadge, TypewriterHeadline, AnimatedBackground, GlowingButton, SpotlightCard } from "@/components/common";
+import { PulsingBadge, TypewriterHeadline, AnimatedBackground, GlowingButton, SpotlightCard, FloatingParticles, MouseFollower } from "@/components/common";
 
 // Swiss postal codes for autocomplete
 const swissPostalCodes = [
@@ -86,6 +86,12 @@ export const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Mouse Follower Effect */}
+      <MouseFollower size={500} color="hsl(var(--primary) / 0.08)" />
+      
+      {/* Floating Particles */}
+      <FloatingParticles count={30} color="bg-secondary/20" className="z-0" />
+      
       {/* Animated Background with Particles */}
       <AnimatedBackground variant="particles" className="absolute inset-0 z-0 opacity-30" />
       
