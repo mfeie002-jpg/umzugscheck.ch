@@ -117,3 +117,25 @@ export { RevealOnScroll } from './RevealOnScroll';
 export { InteractiveCard } from './InteractiveCard';
 export { TextShimmer } from './TextShimmer';
 export { AnimatedArrow } from './AnimatedArrow';
+
+// Wave 7 - Advanced Animation & UI Components
+export { FloatingParticles } from './FloatingParticles';
+export { GradientBorderCard } from './GradientBorderCard';
+export { SmoothReveal } from './SmoothReveal';
+export { MouseFollower } from './MouseFollower';
+export { AnimatedGradientText } from './AnimatedGradientText';
+export { PulseRing } from './PulseRing';
+export { TypingText } from './TypingText';
+export { ShineEffect } from './ShineEffect';
+export { StaggerContainer, StaggerItem } from './StaggerContainer';
+export { CountBadge } from './CountBadge';
+export { AnimatedDivider } from './AnimatedDivider';
+export { HoverScale } from './HoverScale';
+export { GlowEffect } from './GlowEffect';
+export { AnimatedBorder } from './AnimatedBorder';
+export { SectionBadge } from './SectionBadge';
+export { AnimatedCheck } from './AnimatedCheck';
+export { ScrollRevealSection } from './ScrollRevealSection';
+export { LiveDot } from './LiveDot';
+export { GradientBackground } from './GradientBackground';
+export { BadgeWithIcon } from './BadgeWithIcon';

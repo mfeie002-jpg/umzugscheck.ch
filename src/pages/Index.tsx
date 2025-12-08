@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
 import { SkipToContent } from "@/components/SkipToContent";
+import { ScrollProgress } from "@/components/common";
 
 // Core Components (Always loaded)
 import { Header } from "@/components/homepage/Header";
@@ -12,7 +13,7 @@ import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 const PartnerLogos = lazy(() => import("@/components/homepage/PartnerLogos").then(m => ({ default: m.PartnerLogos })));
 const TrustBadges = lazy(() => import("@/components/homepage/TrustBadges").then(m => ({ default: m.TrustBadges })));
 const HowItWorksSection = lazy(() => import("@/components/homepage/HowItWorksSection").then(m => ({ default: m.HowItWorksSection })));
-const ServicesSection = lazy(() => import("@/components/homepage/ServicesSection").then(m => ({ default: m.ServicesSection })));
+const ServicesBentoSection = lazy(() => import("@/components/homepage/ServicesBentoSection").then(m => ({ default: m.ServicesBentoSection })));
 const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
 const RegionsSection = lazy(() => import("@/components/homepage/RegionsSection").then(m => ({ default: m.RegionsSection })));
 const FAQSection = lazy(() => import("@/components/homepage/FAQSection").then(m => ({ default: m.FAQSection })));
@@ -75,6 +76,7 @@ const Index = () => {
 
   return (
     <ErrorBoundary>
+      <ScrollProgress />
       <div className="min-h-screen bg-background">
         <Helmet>
           <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
@@ -138,7 +140,7 @@ const Index = () => {
           </Suspense>
           
           <Suspense fallback={<LoadingFallback />}>
-            <ServicesSection />
+            <ServicesBentoSection />
           </Suspense>
           
           {/* Before/After Comparison */}
