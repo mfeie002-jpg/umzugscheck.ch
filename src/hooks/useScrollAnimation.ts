@@ -11,12 +11,12 @@ interface ScrollAnimationOptions {
  * Hook for triggering animations when element enters viewport
  * Respects reduced motion preferences
  */
-export const useScrollAnimation = <T extends HTMLElement = HTMLElement>({
+export const useScrollAnimation = <T extends HTMLElement = HTMLDivElement>({
   threshold = 0.1,
   rootMargin = '0px 0px -50px 0px',
   triggerOnce = true
 }: ScrollAnimationOptions = {}) => {
-  const ref = useRef<T>(null);
+  const ref = useRef<T | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const prefersReducedMotion = useReducedMotion();
