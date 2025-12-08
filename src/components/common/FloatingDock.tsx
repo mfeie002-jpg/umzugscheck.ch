@@ -2,6 +2,7 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 
 interface DockItem {
   icon: LucideIcon;
@@ -18,6 +19,14 @@ export const FloatingDock = memo(function FloatingDock({
   items,
   className
 }: FloatingDockProps) {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  // Don't render on mobile - too heavy for small screens
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <motion.div
       className={cn(
@@ -27,9 +36,9 @@ export const FloatingDock = memo(function FloatingDock({
         "shadow-lg",
         className
       )}
-      initial={{ y: 100, opacity: 0 }}
+      initial={prefersReducedMotion ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+      transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.5, type: "spring", stiffness: 200 }}
     >
       {items.map((item, i) => (
         <motion.a
@@ -40,8 +49,8 @@ export const FloatingDock = memo(function FloatingDock({
             "bg-muted/50 hover:bg-primary hover:text-primary-foreground",
             "transition-colors duration-200"
           )}
-          whileHover={{ scale: 1.2, y: -4 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={prefersReducedMotion ? {} : { scale: 1.2, y: -4 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
           title={item.label}
         >
           <item.icon className="h-5 w-5" />

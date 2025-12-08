@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 
 interface ParticleFieldProps {
   className?: string;
@@ -15,6 +16,17 @@ export const ParticleField = memo(function ParticleField({
   speed = 1
 }: ParticleFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  // Reduce particle count on mobile
+  const actualCount = isMobile ? Math.min(particleCount, 15) : particleCount;
+  const actualSpeed = isMobile ? speed * 0.5 : speed;
+
+  // Don't render if user prefers reduced motion
+  if (prefersReducedMotion) {
+    return null;
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -40,12 +52,12 @@ export const ParticleField = memo(function ParticleField({
       opacity: number;
     }> = [];
 
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < actualCount; i++) {
       particles.push({
         x: Math.random() * canvas.offsetWidth,
         y: Math.random() * canvas.offsetHeight,
-        vx: (Math.random() - 0.5) * speed,
-        vy: (Math.random() - 0.5) * speed,
+        vx: (Math.random() - 0.5) * actualSpeed,
+        vy: (Math.random() - 0.5) * actualSpeed,
         size: Math.random() * 2 + 1,
         opacity: Math.random() * 0.5 + 0.2,
       });
@@ -69,19 +81,21 @@ export const ParticleField = memo(function ParticleField({
         ctx.fill();
       });
 
-      // Draw connections
-      particles.forEach((p1, i) => {
-        particles.slice(i + 1).forEach((p2) => {
-          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-          if (dist < 100) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = particleColor.replace(")", ` / ${0.1 * (1 - dist / 100)})`).replace("hsl(", "hsla(");
-            ctx.stroke();
-          }
+      // Draw connections only on desktop for performance
+      if (!isMobile) {
+        particles.forEach((p1, i) => {
+          particles.slice(i + 1).forEach((p2) => {
+            const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = particleColor.replace(")", ` / ${0.1 * (1 - dist / 100)})`).replace("hsl(", "hsla(");
+              ctx.stroke();
+            }
+          });
         });
-      });
+      }
       
       animationId = requestAnimationFrame(animate);
     };
@@ -92,7 +106,7 @@ export const ParticleField = memo(function ParticleField({
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationId);
     };
-  }, [particleCount, particleColor, speed]);
+  }, [actualCount, particleColor, actualSpeed, isMobile]);
 
   return (
     <canvas

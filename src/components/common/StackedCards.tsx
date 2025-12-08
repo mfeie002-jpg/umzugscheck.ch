@@ -1,6 +1,7 @@
 import { memo, ReactNode } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useIsMobile, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 
 interface StackedCardsProps {
   cards: ReactNode[];
@@ -11,6 +12,20 @@ export const StackedCards = memo(function StackedCards({
   cards,
   className
 }: StackedCardsProps) {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  // Simplified rendering on mobile - just show the top card
+  if (isMobile) {
+    return (
+      <div className={cn("relative", className)}>
+        <div className="rounded-2xl border border-border/50 bg-card">
+          {cards[cards.length - 1]}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("relative", className)}>
       {cards.map((card, i) => (
@@ -26,11 +41,13 @@ export const StackedCards = memo(function StackedCards({
           }}
           initial={{ y: 0, scale: 1 - (cards.length - 1 - i) * 0.05 }}
           whileHover={
-            i === cards.length - 1
-              ? { y: -8, scale: 1.02 }
-              : { scale: 1 - (cards.length - 1 - i) * 0.03 }
+            prefersReducedMotion ? {} : (
+              i === cards.length - 1
+                ? { y: -8, scale: 1.02 }
+                : { scale: 1 - (cards.length - 1 - i) * 0.03 }
+            )
           }
-          transition={{ type: "spring", stiffness: 300 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 300 }}
         >
           {i === cards.length - 1 && card}
         </motion.div>
