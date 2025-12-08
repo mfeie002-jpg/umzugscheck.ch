@@ -10,7 +10,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
+import { HoneypotField } from "@/components/common/HoneypotField";
+import { useBotDetection } from "@/hooks/useBotDetection";
 
 const SWISS_CANTONS = [
   "Aargau", "Appenzell Ausserrhoden", "Appenzell Innerrhoden", "Basel-Landschaft", 
@@ -39,6 +41,7 @@ const PRICE_LEVELS = [
 const ProviderSignup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { honeypotValue, setHoneypotValue, checkSubmission } = useBotDetection(3000);
   const [formData, setFormData] = useState({
     companyName: "",
     contactPersonName: "",
@@ -77,6 +80,17 @@ const ProviderSignup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Bot detection check
+    const botCheck = checkSubmission();
+    if (!botCheck.isValid) {
+      console.log("Bot detected:", botCheck.reason);
+      // Silently fail for bots - don't give them feedback
+      toast.success("Registrierung erfolgreich!");
+      setTimeout(() => navigate("/anbieter/login"), 2000);
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -133,6 +147,9 @@ const ProviderSignup = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8 bg-card border rounded-lg p-6">
+            {/* Honeypot field for bot detection - hidden from users */}
+            <HoneypotField value={honeypotValue} onChange={setHoneypotValue} />
+            
             {/* Company Info */}
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold">Firmendaten</h2>
@@ -355,6 +372,10 @@ const ProviderSignup = () => {
               <p className="text-sm text-muted-foreground text-center mt-4">
                 Nach der Registrierung wird Ihr Account geprüft und innerhalb von 24 Stunden freigeschaltet.
               </p>
+              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground mt-2">
+                <ShieldCheck className="w-4 h-4 text-green-600" />
+                <span>Geschützt durch Anti-Bot-System</span>
+              </div>
             </div>
           </form>
         </div>
