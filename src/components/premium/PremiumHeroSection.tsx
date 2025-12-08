@@ -111,7 +111,7 @@ export const PremiumHeroSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[90svh] sm:min-h-[85vh] md:min-h-[85vh] flex items-center overflow-hidden pt-16 sm:pt-0">
+    <section ref={sectionRef} className="relative min-h-[90svh] sm:min-h-[85vh] md:min-h-[85vh] flex items-center overflow-hidden pt-16 sm:pt-0" style={{ position: 'relative' }}>
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"

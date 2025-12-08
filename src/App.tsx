@@ -410,6 +410,15 @@ const App = () => (
                             <Route path="/dienstleistungen/umzug-reinigung" element={<MovingWithCleaning />} />
                             <Route path="/dienstleistungen/einlagerung" element={<StorageService />} />
                             <Route path="/dienstleistungen/:service" element={<ServiceOptimized />} />
+                            {/* Service route aliases for shorter URLs */}
+                            <Route path="/privatumzug" element={<PrivateMoving />} />
+                            <Route path="/firmenumzug" element={<BusinessMoving />} />
+                            <Route path="/reinigung" element={<CleaningService />} />
+                            <Route path="/entsorgung-raeumung" element={<DisposalService />} />
+                            <Route path="/moebellift" element={<FurnitureLift />} />
+                            <Route path="/einlagerung" element={<StorageService />} />
+                            <Route path="/umzug-mit-reinigung" element={<MovingWithCleaning />} />
+                            <Route path="/international" element={<InternationalMoving />} />
                             <Route path="/provider/pricing" element={<ProviderPricingPage />} />
                             <Route path="/provider/faq" element={<ProviderFAQPage />} />
                             <Route path="*" element={<NotFound />} />
