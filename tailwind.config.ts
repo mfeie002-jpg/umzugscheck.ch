@@ -179,6 +179,14 @@ export default {
           "0%": { "--angle": "0deg" },
           "100%": { "--angle": "360deg" },
         },
+        "grid": {
+          "0%": { transform: "translateY(-50%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        "shimmer-text": {
+          "0%": { backgroundPosition: "200% 50%" },
+          "100%": { backgroundPosition: "-200% 50%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -194,6 +202,8 @@ export default {
         "marquee-reverse": "marquee-reverse 25s linear infinite",
         "shine": "shine 3s linear infinite",
         "border-beam": "border-beam var(--duration) linear infinite",
+        "grid": "grid 15s linear infinite",
+        "shimmer-text": "shimmer-text 2.5s ease-in-out infinite",
       },
     },
   },
