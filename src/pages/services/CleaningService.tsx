@@ -10,6 +10,7 @@ import { FeatureList } from "@/components/ui/feature-list";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 export default function CleaningService() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -58,6 +59,17 @@ export default function CleaningService() {
         canonicalUrl="https://umzugscheck.ch/umzugsreinigung-schweiz"
         keywords="Umzugsreinigung Schweiz, Endreinigung, Abgabegarantie, Wohnungsreinigung"
       />
+      <ServiceSchema
+        name="Umzugsreinigung Schweiz"
+        description="Professionelle End- und Umzugsreinigung mit Abgabegarantie für stressfreie Wohnungsabgabe"
+        priceRange="CHF 300 - CHF 800"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Umzugsreinigung", url: "https://umzugscheck.ch/umzugsreinigung-schweiz" }
+      ]} />
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 gradient-hero text-white">

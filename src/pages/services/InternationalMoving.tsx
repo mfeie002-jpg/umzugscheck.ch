@@ -10,6 +10,7 @@ import { FeatureList } from "@/components/ui/feature-list";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 export default function InternationalMoving() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -61,6 +62,17 @@ export default function InternationalMoving() {
         keywords="internationaler umzug, auslandsumzug, umzug ins ausland, weltweit umziehen"
         canonicalUrl="https://umzugscheck.ch/internationale-umzuege"
       />
+      <ServiceSchema
+        name="Internationale Umzüge"
+        description="Weltweite Umzüge ab der Schweiz mit professioneller Planung und Zollabwicklung"
+        priceRange="CHF 3'000 - CHF 20'000"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Internationale Umzüge", url: "https://umzugscheck.ch/internationale-umzuege" }
+      ]} />
 
       {/* Hero Section */}
       <section className="gradient-hero text-white py-16 md:py-24">

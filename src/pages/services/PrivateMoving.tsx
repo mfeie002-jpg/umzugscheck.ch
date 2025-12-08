@@ -10,6 +10,7 @@ import { CTASection } from "@/components/CTASection";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 interface BenefitCardProps {
   icon: LucideIcon;
@@ -86,6 +87,17 @@ export default function PrivateMoving() {
         keywords="privatumzug, privatumzug schweiz, umzug wohnung, wohnungsumzug"
         canonicalUrl="https://www.umzugscheck.ch/privatumzug"
       />
+      <ServiceSchema
+        name="Privatumzug Schweiz"
+        description="Kompletter Service für private Wohnungsumzüge in der ganzen Schweiz"
+        priceRange="CHF 500 - CHF 3'000"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Privatumzug", url: "https://umzugscheck.ch/privatumzug" }
+      ]} />
 
       {/* Breadcrumbs */}
       <div className="container mx-auto px-4 pt-4">

@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 export default function FurnitureLift() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -58,6 +59,17 @@ export default function FurnitureLift() {
         keywords="möbellift mieten, möbellift umzug, möbellift schweiz, aussenlift"
         canonicalUrl="https://umzugscheck.ch/moebellift"
       />
+      <ServiceSchema
+        name="Möbellift mieten Schweiz"
+        description="Schneller und sicherer Transport schwerer Möbel über Balkon oder Fenster"
+        priceRange="CHF 300 - CHF 800"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Möbellift", url: "https://umzugscheck.ch/moebellift" }
+      ]} />
 
       {/* Hero Section */}
       <section className="gradient-hero text-white py-16 md:py-24">

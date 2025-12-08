@@ -11,6 +11,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { OrganizationSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 import servicePrivatumzug from "@/assets/service-privatumzug.jpg";
 import serviceFirmenumzug from "@/assets/service-firmenumzug.jpg";
 import serviceReinigung from "@/assets/service-reinigung.jpg";
@@ -91,6 +92,11 @@ export default function ServicesOverview() {
         keywords="umzug dienstleistungen, umzug services, reinigung, entsorgung, lagerung"
         canonicalUrl="https://umzugscheck.ch/dienstleistungen"
       />
+      <OrganizationSchema />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Dienstleistungen", url: "https://umzugscheck.ch/dienstleistungen" }
+      ]} />
 
       {/* Hero Section */}
       <section className="gradient-hero text-white py-16 md:py-24">

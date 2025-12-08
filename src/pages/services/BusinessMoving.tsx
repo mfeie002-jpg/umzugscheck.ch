@@ -10,6 +10,7 @@ import { FeatureList } from "@/components/ui/feature-list";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/StructuredData";
 
 export default function BusinessMoving() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
@@ -59,6 +60,17 @@ export default function BusinessMoving() {
         canonicalUrl="https://umzugscheck.ch/firmenumzug-schweiz"
         keywords="Firmenumzug Schweiz, Büroumzug, Geschäftsumzug, Firmenumzug Offerten"
       />
+      <ServiceSchema
+        name="Firmenumzug Schweiz"
+        description="Professionelle Büro- und Geschäftsumzüge in der Schweiz mit minimalen Ausfallzeiten"
+        priceRange="CHF 3'000 - CHF 15'000"
+      />
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://umzugscheck.ch" },
+        { name: "Services", url: "https://umzugscheck.ch/dienstleistungen" },
+        { name: "Firmenumzug", url: "https://umzugscheck.ch/firmenumzug-schweiz" }
+      ]} />
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 gradient-hero text-white">
