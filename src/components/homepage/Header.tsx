@@ -246,17 +246,17 @@ export const Header = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-t border-border bg-card overflow-hidden"
+            className="lg:hidden border-t border-border bg-background overflow-hidden absolute top-full left-0 right-0 z-50 shadow-xl"
           >
-            <nav className="container px-4 py-3 space-y-1 max-h-[70vh] overflow-y-auto">
+            <nav className="container px-4 py-3 space-y-1 max-h-[70vh] overflow-y-auto bg-background">
               {navLinks.map((link) => (
-                <div key={link.href}>
+                <div key={link.href} className="bg-background">
                   <button
-                    className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-medium text-muted-foreground hover:text-foreground active:bg-muted/70 rounded-lg transition-colors"
+                    className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-medium text-foreground hover:text-primary active:bg-muted rounded-lg transition-colors bg-background"
                     onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
                   >
                     <span className="flex items-center gap-2">
-                      <link.icon className="w-4 h-4" />
+                      <link.icon className="w-4 h-4 text-secondary" />
                       {link.label}
                     </span>
                     {link.dropdown && (
@@ -273,13 +273,13 @@ export const Header = () => {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="pl-4 space-y-0.5 overflow-hidden"
+                        className="pl-4 space-y-0.5 overflow-hidden bg-muted/30 rounded-lg mx-2 mb-2"
                       >
                         {link.dropdown.map((item) => (
                           <Link
                             key={item.href}
                             to={item.href}
-                            className="flex items-center gap-2 px-3 py-3 text-sm text-muted-foreground hover:text-foreground active:bg-muted/50 rounded-lg transition-colors"
+                            className="flex items-center gap-2 px-3 py-3 text-sm text-muted-foreground hover:text-foreground active:bg-muted rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             <item.icon className="w-4 h-4 text-secondary" />
