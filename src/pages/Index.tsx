@@ -1,51 +1,25 @@
 import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
 import { SkipToContent } from "@/components/SkipToContent";
-import { ScrollProgress } from "@/components/common";
-
-// Core Components (Always loaded)
 import { Header } from "@/components/homepage/Header";
-import { HeroSection } from "@/components/homepage/HeroSection";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 
-// Lazy loaded homepage components
-const PartnerLogos = lazy(() => import("@/components/homepage/PartnerLogos").then(m => ({ default: m.PartnerLogos })));
-const TrustBadges = lazy(() => import("@/components/homepage/TrustBadges").then(m => ({ default: m.TrustBadges })));
+// Core Components
+import { ConversionHero } from "@/components/homepage/ConversionHero";
+import { TrustBand } from "@/components/homepage/TrustBand";
+
+// Lazy loaded components
 const HowItWorksSection = lazy(() => import("@/components/homepage/HowItWorksSection").then(m => ({ default: m.HowItWorksSection })));
-const ServicesBentoSection = lazy(() => import("@/components/homepage/ServicesBentoSection").then(m => ({ default: m.ServicesBentoSection })));
-const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
+const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection").then(m => ({ default: m.CompanyComparisonSection })));
+const ServicesGrid = lazy(() => import("@/components/homepage/ServicesGrid").then(m => ({ default: m.ServicesGrid })));
+const TestimonialsSlider = lazy(() => import("@/components/homepage/TestimonialsSlider").then(m => ({ default: m.TestimonialsSlider })));
 const EnhancedRegionsSection = lazy(() => import("@/components/homepage/EnhancedRegionsSection").then(m => ({ default: m.EnhancedRegionsSection })));
-const FAQSection = lazy(() => import("@/components/homepage/FAQSection").then(m => ({ default: m.FAQSection })));
-const CTASection = lazy(() => import("@/components/homepage/CTASection").then(m => ({ default: m.CTASection })));
-const USPSection = lazy(() => import("@/components/homepage/USPSection").then(m => ({ default: m.USPSection })));
-const PremiumTestimonialsSection = lazy(() => import("@/components/homepage/PremiumTestimonialsSection").then(m => ({ default: m.PremiumTestimonialsSection })));
-const SocialProofSection = lazy(() => import("@/components/homepage/SocialProofSection").then(m => ({ default: m.SocialProofSection })));
-const GuaranteeBadges = lazy(() => import("@/components/homepage/GuaranteeBadges").then(m => ({ default: m.GuaranteeBadges })));
-const NewsletterSection = lazy(() => import("@/components/homepage/NewsletterSection").then(m => ({ default: m.NewsletterSection })));
-
-// Lazy loaded premium components
-const PremiumStatistics = lazy(() => import("@/components/premium/PremiumStatistics").then(m => ({ default: m.PremiumStatistics })));
-const PremiumSavingsCalculator = lazy(() => import("@/components/premium/PremiumSavingsCalculator").then(m => ({ default: m.PremiumSavingsCalculator })));
-const PremiumSuccessStories = lazy(() => import("@/components/premium/PremiumSuccessStories").then(m => ({ default: m.PremiumSuccessStories })));
-const PremiumGuarantee = lazy(() => import("@/components/premium/PremiumGuarantee").then(m => ({ default: m.PremiumGuarantee })));
-const PremiumBeforeAfter = lazy(() => import("@/components/premium/PremiumBeforeAfter").then(m => ({ default: m.PremiumBeforeAfter })));
-const PremiumTrustPilot = lazy(() => import("@/components/premium/PremiumTrustPilot").then(m => ({ default: m.PremiumTrustPilot })));
-const PremiumCompanyComparison = lazy(() => import("@/components/premium/PremiumCompanyComparison").then(m => ({ default: m.PremiumCompanyComparison })));
-const PremiumMovingTimeline = lazy(() => import("@/components/premium/PremiumMovingTimeline").then(m => ({ default: m.PremiumMovingTimeline })));
-const PremiumVideoHero = lazy(() => import("@/components/premium/PremiumVideoHero").then(m => ({ default: m.PremiumVideoHero })));
-const PremiumPriceAlert = lazy(() => import("@/components/premium/PremiumPriceAlert").then(m => ({ default: m.PremiumPriceAlert })));
-const PremiumCountdown = lazy(() => import("@/components/premium/PremiumCountdown").then(m => ({ default: m.PremiumCountdown })));
-const PremiumSocialShare = lazy(() => import("@/components/premium/PremiumSocialShare").then(m => ({ default: m.PremiumSocialShare })));
-const PremiumMobileAppBanner = lazy(() => import("@/components/premium/PremiumMobileAppBanner").then(m => ({ default: m.PremiumMobileAppBanner })));
-
-// Lazy loaded floating/interactive elements (loaded last)
-const PremiumFloatingCTA = lazy(() => import("@/components/premium/PremiumFloatingCTA").then(m => ({ default: m.PremiumFloatingCTA })));
-const PremiumLiveChat = lazy(() => import("@/components/premium/PremiumLiveChat").then(m => ({ default: m.PremiumLiveChat })));
+const OptimizedFAQ = lazy(() => import("@/components/homepage/OptimizedFAQ").then(m => ({ default: m.OptimizedFAQ })));
+const FinalCTA = lazy(() => import("@/components/homepage/FinalCTA").then(m => ({ default: m.FinalCTA })));
 const BackToTop = lazy(() => import("@/components/homepage/BackToTop").then(m => ({ default: m.BackToTop })));
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
 
-// Loading fallback
 const LoadingFallback = () => (
   <div className="h-32 flex items-center justify-center">
     <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -76,161 +50,75 @@ const Index = () => {
 
   return (
     <ErrorBoundary>
-      <ScrollProgress />
       <div className="min-h-screen bg-background">
         <Helmet>
+          <html lang="de-CH" />
           <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
           <meta name="description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen. Jetzt vergleichen & sparen!" />
-          <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, Umzugsrechner" />
+          <meta name="robots" content="index, follow" />
           <link rel="canonical" href="https://umzugscheck.ch/" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://umzugscheck.ch/" />
           <meta property="og:title" content="Umzugscheck.ch – Die Nr. 1 für Umzugsvergleiche in der Schweiz" />
-          <meta property="og:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen." />
+          <meta property="og:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. Bis zu 40% sparen!" />
           <meta property="og:image" content="https://umzugscheck.ch/og-image.jpg" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="robots" content="index, follow" />
           <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
         </Helmet>
 
         <SkipToContent />
         <Header />
 
-        <main id="main-content" role="main" className="pb-20 md:pb-0">
-          <HeroSection />
+        <main id="main-content" role="main">
+          {/* Hero Section with Form */}
+          <ConversionHero />
           
-          {/* Trust Section */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumTrustPilot />
-          </Suspense>
+          {/* Trust Band with Stats */}
+          <TrustBand />
           
-          <Suspense fallback={<LoadingFallback />}>
-            <PartnerLogos />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <GuaranteeBadges />
-          </Suspense>
-          
-          {/* Statistics */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumStatistics />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <TrustBadges />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <SocialProofSection />
-          </Suspense>
-          
-          {/* Video Explanation */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumVideoHero />
-          </Suspense>
-          
+          {/* How It Works - 3 Steps */}
           <Suspense fallback={<LoadingFallback />}>
             <HowItWorksSection />
           </Suspense>
           
-          {/* Savings Calculator */}
+          {/* Company Comparison Section */}
           <Suspense fallback={<LoadingFallback />}>
-            <PremiumSavingsCalculator />
+            <CompanyComparisonSection />
           </Suspense>
           
+          {/* Services Grid */}
           <Suspense fallback={<LoadingFallback />}>
-            <ServicesBentoSection />
+            <ServicesGrid />
           </Suspense>
           
-          {/* Before/After Comparison */}
+          {/* Testimonials */}
           <Suspense fallback={<LoadingFallback />}>
-            <PremiumBeforeAfter />
+            <TestimonialsSlider />
           </Suspense>
           
-          {/* Company Comparison */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumCompanyComparison />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <CostExamplesSection />
-          </Suspense>
-          
-          {/* Moving Timeline */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumMovingTimeline />
-          </Suspense>
-          
-          {/* Success Stories */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumSuccessStories />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumTestimonialsSection />
-          </Suspense>
-          
+          {/* Regions */}
           <Suspense fallback={<LoadingFallback />}>
             <EnhancedRegionsSection />
           </Suspense>
           
-          {/* Guarantee Section */}
+          {/* FAQ */}
           <Suspense fallback={<LoadingFallback />}>
-            <PremiumGuarantee />
+            <OptimizedFAQ />
           </Suspense>
           
+          {/* Final CTA */}
           <Suspense fallback={<LoadingFallback />}>
-            <USPSection />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <CTASection />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <FAQSection />
-          </Suspense>
-          
-          <Suspense fallback={<LoadingFallback />}>
-            <NewsletterSection />
-          </Suspense>
-          
-          {/* Countdown Offer */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumCountdown />
-          </Suspense>
-          
-          {/* Price Alert */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumPriceAlert />
-          </Suspense>
-          
-          {/* Social Share */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumSocialShare />
-          </Suspense>
-          
-          {/* Mobile App Banner */}
-          <Suspense fallback={<LoadingFallback />}>
-            <PremiumMobileAppBanner />
+            <FinalCTA />
           </Suspense>
         </main>
 
         <SimplifiedFooter />
         
-        {/* Floating Elements - Loaded last */}
         <Suspense fallback={null}>
           <BackToTop />
         </Suspense>
         <Suspense fallback={null}>
           <CookieConsent />
-        </Suspense>
-        <Suspense fallback={null}>
-          <PremiumLiveChat />
-        </Suspense>
-        <Suspense fallback={null}>
-          <PremiumFloatingCTA />
         </Suspense>
       </div>
     </ErrorBoundary>
