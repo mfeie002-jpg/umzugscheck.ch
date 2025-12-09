@@ -1,72 +1,138 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, CheckCircle, Star, Shield, Award } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
+
+const serviceLinks = [
+  { label: "Umzugsofferten", href: "/umzugsofferten" },
+  { label: "Preisrechner", href: "/rechner" },
+  { label: "Umzugsfirmen", href: "/umzugsfirmen" },
+  { label: "Privatumzug", href: "/privatumzug" },
+  { label: "Firmenumzug", href: "/firmenumzug" },
+  { label: "Reinigung", href: "/reinigung" },
+];
+
+const regionLinks = [
+  { label: "Zürich", href: "/zuerich" },
+  { label: "Bern", href: "/bern" },
+  { label: "Basel", href: "/basel" },
+  { label: "Luzern", href: "/luzern" },
+  { label: "Aargau", href: "/aargau" },
+  { label: "St. Gallen", href: "/st-gallen" },
+  { label: "Alle Regionen", href: "/regionen" },
+];
+
+const companyLinks = [
+  { label: "Über uns", href: "/ueber-uns" },
+  { label: "Für Umzugsfirmen", href: "/fuer-firmen" },
+  { label: "Ratgeber", href: "/ratgeber" },
+  { label: "Kontakt", href: "/kontakt" },
+  { label: "FAQ", href: "/faq" },
+];
+
+const legalLinks = [
+  { label: "Impressum", href: "/impressum" },
+  { label: "Datenschutz", href: "/datenschutz" },
+  { label: "AGB", href: "/agb" },
+];
 
 export const SimplifiedFooter = () => {
   return (
     <footer className="bg-uc-footer text-uc-footer-text">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+      <div className="container mx-auto px-4 py-12 md:py-16">
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
           {/* Logo & Description */}
-          <div className="md:col-span-1">
+          <div className="col-span-2 md:col-span-1">
             <Link to="/" className="inline-block mb-4">
               <img 
                 src={logo}
-                alt="Umzugscheck.ch" 
+                alt="Umzugscheck.ch – Schweizer Umzugsvergleich" 
                 className="h-10"
-                sizes="164px"
                 width={164}
                 height={40}
                 loading="lazy"
               />
             </Link>
-            <p className="text-sm text-uc-footer-text/70">
-              Die führende Vergleichsplattform für Umzüge in der Schweiz.
+            <p className="text-sm text-uc-footer-text/70 mb-4">
+              Die führende Vergleichsplattform für Umzüge in der Schweiz. Kostenlos, unverbindlich, zuverlässig.
             </p>
             
             {/* Contact Info */}
-            <div className="mt-4 space-y-2">
+            <div className="space-y-2">
               <a href="mailto:info@umzugscheck.ch" className="flex items-center gap-2 text-sm text-uc-footer-text/70 hover:text-white transition-colors">
-                <Mail className="h-4 w-4 text-primary" />
+                <Mail className="h-4 w-4 text-secondary" />
                 info@umzugscheck.ch
               </a>
-              <a href="tel:+41445001234" className="flex items-center gap-2 text-sm text-uc-footer-text/70 hover:text-white transition-colors">
-                <Phone className="h-4 w-4 text-primary" />
-                +41 44 500 12 34
-              </a>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="flex gap-2 mt-4">
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                <Shield className="w-5 h-5 text-secondary" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                <Award className="w-5 h-5 text-swiss-gold" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                <Star className="w-5 h-5 text-primary" fill="currentColor" />
+              </div>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Services */}
           <div>
             <h4 className="font-semibold text-white mb-4">Services</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/umzugsofferten" className="text-uc-footer-text/70 hover:text-white transition-colors">Offerte anfragen</Link></li>
-              <li><Link to="/firmen" className="text-uc-footer-text/70 hover:text-white transition-colors">Firmenliste</Link></li>
-              <li><Link to="/rechner" className="text-uc-footer-text/70 hover:text-white transition-colors">Preisrechner</Link></li>
-              <li><Link to="/regionen" className="text-uc-footer-text/70 hover:text-white transition-colors">Regionen</Link></li>
+            <ul className="space-y-2.5 text-sm">
+              {serviceLinks.map((link) => (
+                <li key={link.href}>
+                  <Link to={link.href} className="text-uc-footer-text/70 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Regionen */}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Regionen</h4>
+            <ul className="space-y-2.5 text-sm">
+              {regionLinks.map((link) => (
+                <li key={link.href}>
+                  <Link to={link.href} className="text-uc-footer-text/70 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Unternehmen */}
           <div>
             <h4 className="font-semibold text-white mb-4">Unternehmen</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/ueber-uns" className="text-uc-footer-text/70 hover:text-white transition-colors">Über uns</Link></li>
-              <li><Link to="/kontakt" className="text-uc-footer-text/70 hover:text-white transition-colors">Kontakt</Link></li>
-              <li><Link to="/fuer-firmen" className="text-uc-footer-text/70 hover:text-white transition-colors">Für Firmen</Link></li>
-              <li><Link to="/faq" className="text-uc-footer-text/70 hover:text-white transition-colors">FAQ</Link></li>
+            <ul className="space-y-2.5 text-sm">
+              {companyLinks.map((link) => (
+                <li key={link.href}>
+                  <Link to={link.href} className="text-uc-footer-text/70 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Rechtliches */}
           <div>
             <h4 className="font-semibold text-white mb-4">Rechtliches</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/datenschutz" className="text-uc-footer-text/70 hover:text-white transition-colors">Datenschutz</Link></li>
-              <li><Link to="/agb" className="text-uc-footer-text/70 hover:text-white transition-colors">AGB</Link></li>
-              <li><Link to="/impressum" className="text-uc-footer-text/70 hover:text-white transition-colors">Impressum</Link></li>
+            <ul className="space-y-2.5 text-sm">
+              {legalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link to={link.href} className="text-uc-footer-text/70 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -76,27 +142,34 @@ export const SimplifiedFooter = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
               <div className="flex items-center gap-1.5 text-sm text-uc-footer-text/70">
-                <CheckCircle className="h-4 w-4 text-primary" />
+                <CheckCircle className="h-4 w-4 text-secondary" />
                 100% kostenlos
               </div>
               <div className="flex items-center gap-1.5 text-sm text-uc-footer-text/70">
-                <CheckCircle className="h-4 w-4 text-primary" />
-                Geprüfte Firmen
+                <CheckCircle className="h-4 w-4 text-secondary" />
+                200+ geprüfte Firmen
+              </div>
+              <div className="flex items-center gap-1.5 text-sm text-uc-footer-text/70">
+                <CheckCircle className="h-4 w-4 text-secondary" />
+                Bis zu 40% sparen
               </div>
             </div>
             <Link to="/umzugsofferten">
-              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta">
-                Jetzt Offerten vergleichen
+              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-semibold">
+                Jetzt Offerten erhalten
               </Button>
             </Link>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="pt-6 border-t border-white/10 text-center">
+        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-uc-footer-text/50">
             © {new Date().getFullYear()} Umzugscheck.ch – Alle Rechte vorbehalten
           </p>
+          <div className="flex items-center gap-4 text-xs text-uc-footer-text/40">
+            <span>Made with ❤️ in der Schweiz</span>
+          </div>
         </div>
       </div>
     </footer>
