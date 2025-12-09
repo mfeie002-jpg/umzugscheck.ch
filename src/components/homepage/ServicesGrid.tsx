@@ -1,5 +1,5 @@
-import { memo } from "react";
-import { motion } from "framer-motion";
+import { memo, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Truck, Building2, Sparkles, Trash2, Package, Sofa, ArrowRight, Star, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -62,18 +62,42 @@ const services = [
 ];
 
 export const ServicesGrid = memo(function ServicesGrid() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  
+  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
-      <div className="container">
+    <section ref={sectionRef} className="py-16 md:py-24 bg-muted/30 relative overflow-hidden">
+      {/* Parallax Background */}
+      <motion.div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{ y: backgroundY }}
+      >
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 20% 30%, hsl(var(--primary)) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 70%, hsl(var(--secondary)) 0%, transparent 50%)`
+        }} />
+      </motion.div>
+      
+      <div className="container relative">
         {/* Header */}
         <motion.div 
           className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.span 
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
           >
             <Star className="w-4 h-4" />
             Unsere Services
@@ -92,21 +116,32 @@ export const ServicesGrid = memo(function ServicesGrid() {
           {services.map((service, index) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08 }}
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ 
+                delay: index * 0.1,
+                duration: 0.5,
+                ease: [0.22, 1, 0.36, 1]
+              }}
             >
               <Link 
                 to={service.href} 
                 className="group block h-full bg-card rounded-2xl border border-border shadow-soft overflow-hidden hover:shadow-premium hover:border-primary/30 transition-all duration-300"
               >
-                <div className={cn("h-2", `bg-gradient-to-r ${service.color}`)} />
+                <motion.div 
+                  className={cn("h-2", `bg-gradient-to-r ${service.color}`)}
+                  whileHover={{ scaleX: 1.02 }}
+                />
                 <div className="p-6">
                   {/* Icon */}
-                  <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4", `bg-gradient-to-br ${service.color}`)}>
+                  <motion.div 
+                    className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4", `bg-gradient-to-br ${service.color}`)}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <service.icon className={cn("w-6 h-6", service.iconColor)} />
-                  </div>
+                  </motion.div>
 
                   {/* Content */}
                   <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
@@ -140,9 +175,10 @@ export const ServicesGrid = memo(function ServicesGrid() {
         {/* Trust Bar */}
         <motion.div 
           className="mt-12 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
         >
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-green-500" />
