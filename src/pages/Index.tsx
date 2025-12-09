@@ -5,11 +5,12 @@ import { Header } from "@/components/homepage/Header";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 
-// Core Components
+// Core Components (not lazy - above the fold)
 import { ConversionHero } from "@/components/homepage/ConversionHero";
 import { TrustBand } from "@/components/homepage/TrustBand";
+import { MediaLogosSection } from "@/components/homepage/MediaLogosSection";
 
-// Lazy loaded components
+// Lazy loaded components (below the fold)
 const HowItWorksSection = lazy(() => import("@/components/homepage/HowItWorksSection").then(m => ({ default: m.HowItWorksSection })));
 const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection").then(m => ({ default: m.CompanyComparisonSection })));
 const ServicesGrid = lazy(() => import("@/components/homepage/ServicesGrid").then(m => ({ default: m.ServicesGrid })));
@@ -20,8 +21,12 @@ const FinalCTA = lazy(() => import("@/components/homepage/FinalCTA").then(m => (
 const BackToTop = lazy(() => import("@/components/homepage/BackToTop").then(m => ({ default: m.BackToTop })));
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
 
-const LoadingFallback = () => (
-  <div className="h-32 flex items-center justify-center">
+// Skeleton placeholders with fixed heights to prevent CLS
+const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
+  <div 
+    className="w-full flex items-center justify-center bg-muted/10"
+    style={{ minHeight: height }}
+  >
     <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
   </div>
 );
@@ -70,44 +75,47 @@ const Index = () => {
         <Header />
 
         <main id="main-content" role="main">
-          {/* Hero Section with Form */}
+          {/* Hero Section with Form - No lazy loading (above fold) */}
           <ConversionHero />
           
-          {/* Trust Band with Stats */}
+          {/* Trust Band with Stats - No lazy loading (above fold) */}
           <TrustBand />
           
+          {/* Media Logos - No lazy loading (above fold) */}
+          <MediaLogosSection />
+          
           {/* How It Works - 3 Steps */}
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<SectionSkeleton height="450px" />}>
             <HowItWorksSection />
           </Suspense>
           
           {/* Company Comparison Section */}
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<SectionSkeleton height="600px" />}>
             <CompanyComparisonSection />
           </Suspense>
           
           {/* Services Grid */}
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<SectionSkeleton height="500px" />}>
             <ServicesGrid />
           </Suspense>
           
           {/* Testimonials */}
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<SectionSkeleton height="400px" />}>
             <TestimonialsSlider />
           </Suspense>
           
           {/* Regions */}
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
             <EnhancedRegionsSection />
           </Suspense>
           
           {/* FAQ */}
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<SectionSkeleton height="500px" />}>
             <OptimizedFAQ />
           </Suspense>
           
           {/* Final CTA */}
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
             <FinalCTA />
           </Suspense>
         </main>
