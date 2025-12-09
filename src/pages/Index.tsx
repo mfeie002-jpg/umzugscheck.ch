@@ -9,6 +9,7 @@ import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ConversionHero } from "@/components/homepage/ConversionHero";
 import { TrustBand } from "@/components/homepage/TrustBand";
 import { MediaLogosSection } from "@/components/homepage/MediaLogosSection";
+import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 
 // Lazy loaded components (below the fold)
 const HowItWorksSection = lazy(() => import("@/components/homepage/HowItWorksSection").then(m => ({ default: m.HowItWorksSection })));
@@ -121,6 +122,9 @@ const Index = () => {
         </main>
 
         <SimplifiedFooter />
+        
+        {/* Mobile Sticky CTA Bar */}
+        <MobileStickyBar />
         
         <Suspense fallback={null}>
           <BackToTop />
