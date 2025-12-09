@@ -109,6 +109,28 @@ export const HeroSection = memo(function HeroSection() {
         <AnimatedBackground variant="particles" className="absolute inset-0 z-0 opacity-20" />
       </div>
       
+      {/* Animated Gradient Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-primary/20 to-secondary/10 blur-3xl"
+          animate={{
+            x: [0, 100, 0],
+            y: [0, 50, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute -bottom-1/4 -right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-secondary/15 to-primary/10 blur-3xl"
+          animate={{
+            x: [0, -80, 0],
+            y: [0, -60, 0],
+            scale: [1, 1.15, 1],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+      
       {/* Parallax Background */}
       <motion.div 
         className="absolute inset-0 z-0"
@@ -123,12 +145,11 @@ export const HeroSection = memo(function HeroSection() {
         {/* Gradient Overlays - stronger on mobile for readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/98 to-background/80 md:via-background/95 md:to-background/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/40 md:via-transparent md:to-background/30" />
-        {/* Dotted Pattern - hidden on mobile */}
+        {/* Mesh Gradient Pattern */}
         <div 
-          className="absolute inset-0 opacity-[0.02] hidden lg:block"
+          className="absolute inset-0 opacity-[0.03] hidden lg:block"
           style={{
-            backgroundImage: "radial-gradient(circle, hsl(var(--foreground)) 1px, transparent 1px)",
-            backgroundSize: "24px 24px"
+            backgroundImage: "radial-gradient(circle at 25% 25%, hsl(var(--primary)) 0%, transparent 50%), radial-gradient(circle at 75% 75%, hsl(var(--secondary)) 0%, transparent 50%)",
           }}
         />
       </motion.div>
