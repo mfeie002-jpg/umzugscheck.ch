@@ -4,6 +4,8 @@ import { SkipToContent } from "@/components/SkipToContent";
 import { Header } from "@/components/homepage/Header";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { FloatingCTA } from "@/components/ui/floating-cta";
 
 // Core Components (not lazy - above the fold)
 import { ConversionHero } from "@/components/homepage/ConversionHero";
@@ -12,14 +14,14 @@ import { MediaLogosSection } from "@/components/homepage/MediaLogosSection";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 
 // Lazy loaded components (below the fold)
-const HowItWorksSection = lazy(() => import("@/components/homepage/HowItWorksSection").then(m => ({ default: m.HowItWorksSection })));
+const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
 const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection").then(m => ({ default: m.CompanyComparisonSection })));
-const ServicesGrid = lazy(() => import("@/components/homepage/ServicesGrid").then(m => ({ default: m.ServicesGrid })));
-const TestimonialsSlider = lazy(() => import("@/components/homepage/TestimonialsSlider").then(m => ({ default: m.TestimonialsSlider })));
-const EnhancedRegionsSection = lazy(() => import("@/components/homepage/EnhancedRegionsSection").then(m => ({ default: m.EnhancedRegionsSection })));
-const OptimizedFAQ = lazy(() => import("@/components/homepage/OptimizedFAQ").then(m => ({ default: m.OptimizedFAQ })));
-const FinalCTA = lazy(() => import("@/components/homepage/FinalCTA").then(m => ({ default: m.FinalCTA })));
-const BackToTop = lazy(() => import("@/components/homepage/BackToTop").then(m => ({ default: m.BackToTop })));
+const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
+const EnhancedTestimonials = lazy(() => import("@/components/homepage/EnhancedTestimonials").then(m => ({ default: m.EnhancedTestimonials })));
+const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid").then(m => ({ default: m.EnhancedRegionsGrid })));
+const EnhancedUSPSection = lazy(() => import("@/components/homepage/EnhancedUSPSection").then(m => ({ default: m.EnhancedUSPSection })));
+const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
+const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
 
 // Skeleton placeholders with fixed heights to prevent CLS
@@ -72,63 +74,51 @@ const Index = () => {
           <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
         </Helmet>
 
+        <ScrollProgress />
         <SkipToContent />
         <Header />
 
         <main id="main-content" role="main">
-          {/* Hero Section with Form - No lazy loading (above fold) */}
           <ConversionHero />
-          
-          {/* Trust Band with Stats - No lazy loading (above fold) */}
           <TrustBand />
-          
-          {/* Media Logos - No lazy loading (above fold) */}
           <MediaLogosSection />
           
-          {/* How It Works - 3 Steps */}
           <Suspense fallback={<SectionSkeleton height="450px" />}>
-            <HowItWorksSection />
+            <EnhancedHowItWorks />
           </Suspense>
           
-          {/* Company Comparison Section */}
           <Suspense fallback={<SectionSkeleton height="600px" />}>
             <CompanyComparisonSection />
           </Suspense>
           
-          {/* Services Grid */}
           <Suspense fallback={<SectionSkeleton height="500px" />}>
-            <ServicesGrid />
+            <EnhancedServicesGrid />
           </Suspense>
           
-          {/* Testimonials */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>
-            <TestimonialsSlider />
+            <EnhancedTestimonials />
           </Suspense>
           
-          {/* Regions */}
+          <Suspense fallback={<SectionSkeleton height="400px" />}>
+            <EnhancedUSPSection />
+          </Suspense>
+          
           <Suspense fallback={<SectionSkeleton height="350px" />}>
-            <EnhancedRegionsSection />
+            <EnhancedRegionsGrid />
           </Suspense>
           
-          {/* FAQ */}
           <Suspense fallback={<SectionSkeleton height="500px" />}>
-            <OptimizedFAQ />
+            <EnhancedFAQ />
           </Suspense>
           
-          {/* Final CTA */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
-            <FinalCTA />
+            <EnhancedFinalCTA />
           </Suspense>
         </main>
 
         <SimplifiedFooter />
-        
-        {/* Mobile Sticky CTA Bar */}
         <MobileStickyBar />
-        
-        <Suspense fallback={null}>
-          <BackToTop />
-        </Suspense>
+        <FloatingCTA />
         <Suspense fallback={null}>
           <CookieConsent />
         </Suspense>
