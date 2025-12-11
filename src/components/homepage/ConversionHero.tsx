@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
 
-// Swiss postal codes for autocomplete
 const swissPostalCodes = [
   { code: "8001", city: "Zürich", canton: "ZH" },
   { code: "8002", city: "Zürich", canton: "ZH" },
@@ -44,15 +42,12 @@ export const ConversionHero = memo(function ConversionHero() {
 
   return (
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
-      {/* Hero Background Image */}
+      {/* Background */}
       <div className="absolute inset-0 z-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80')",
-          }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80')" }}
         />
-        {/* Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/70 md:via-background/90 md:to-background/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
       </div>
@@ -97,7 +92,7 @@ export const ConversionHero = memo(function ConversionHero() {
               </span> für Sie: AI-gestützte Analyse, geprüfte Partner, transparente Offerten.
             </p>
 
-            {/* Live Activity Badge */}
+            {/* Live Activity Badge - ONLY this, NO stats row */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -132,7 +127,7 @@ export const ConversionHero = memo(function ConversionHero() {
               </Button>
             </div>
 
-            {/* Desktop Additional Trust Badges */}
+            {/* Desktop Trust Badges */}
             <div className="hidden lg:flex flex-wrap gap-2 pt-2">
               <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
                 <Shield className="w-3 h-3" />
@@ -149,7 +144,7 @@ export const ConversionHero = memo(function ConversionHero() {
             </div>
           </motion.div>
 
-          {/* Right - Form Card */}
+          {/* Right - Form Card (Desktop only) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -157,20 +152,15 @@ export const ConversionHero = memo(function ConversionHero() {
             className="hidden lg:block"
           >
             <div className="bg-card rounded-2xl border border-border shadow-premium p-6 lg:p-8">
-              {/* Form Header */}
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 text-xs text-muted-foreground mb-2">
                   <Sparkles className="w-3.5 h-3.5 text-secondary" />
                   In 2 Minuten zum Vergleich
                 </div>
-                <h2 className="text-xl lg:text-2xl font-bold">
-                  Kostenlos Offerten erhalten
-                </h2>
+                <h2 className="text-xl lg:text-2xl font-bold">Kostenlos Offerten erhalten</h2>
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* From Location */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Von (PLZ oder Ort)</label>
                   <Input
@@ -187,7 +177,6 @@ export const ConversionHero = memo(function ConversionHero() {
                   </datalist>
                 </div>
 
-                {/* To Location */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Nach (PLZ oder Ort)</label>
                   <Input
@@ -204,7 +193,6 @@ export const ConversionHero = memo(function ConversionHero() {
                   </datalist>
                 </div>
 
-                {/* Apartment Size */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Wohnungsgrösse</label>
                   <Select value={apartmentSize} onValueChange={setApartmentSize}>
@@ -222,7 +210,6 @@ export const ConversionHero = memo(function ConversionHero() {
                   </Select>
                 </div>
 
-                {/* Service Type */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Leistungsumfang</label>
                   <Select value={serviceType} onValueChange={setServiceType}>
@@ -237,7 +224,6 @@ export const ConversionHero = memo(function ConversionHero() {
                   </Select>
                 </div>
 
-                {/* Submit Button */}
                 <Button
                   type="submit"
                   size="lg"
@@ -249,7 +235,6 @@ export const ConversionHero = memo(function ConversionHero() {
                 </Button>
               </form>
 
-              {/* Trust Points */}
               <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-border">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CheckCircle className="w-3.5 h-3.5 text-green-500" />
