@@ -109,6 +109,8 @@ const CityMovers = lazy(() => import("./pages/CityMovers"));
 const CityOptimized = lazy(() => import("./pages/CityOptimized"));
 const CityPage = lazy(() => import("./pages/CityPage").then(m => ({ default: m.CityPage })));
 const ZurichMovers = lazy(() => import("./pages/ZurichMovers"));
+const CantonCompanies = lazy(() => import("./pages/CantonCompanies"));
+const RegionalOfferten = lazy(() => import("./pages/RegionalOfferten"));
 
 // Canton pages - lazy loaded bundle
 const Luzern = lazy(() => import("./pages/cantons/Luzern"));
@@ -167,6 +169,7 @@ const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 
 // Other pages
 const Umzugsofferten = lazy(() => import("./pages/Umzugsofferten"));
+// Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
 const ServicePlaceholder = lazy(() => import("./pages/ServicePlaceholder"));
 const ServicePage = lazy(() => import("./pages/ServicePage"));
@@ -315,8 +318,9 @@ const App = () => (
                             <Route path="/umzugsfirmen" element={<Companies />} />
                             <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
                             <Route path="/umzugsfirmen-suche" element={<UmzugsfirmenPage />} />
+                            <Route path="/umzugsfirmen/:canton" element={<CantonCompanies />} />
                             <Route path="/firmen/:id" element={<CompanyProfile />} />
-                            <Route path="/umzugsfirmen/:slug" element={<CompanyProfile />} />
+                            <Route path="/firma/:slug" element={<CompanyProfile />} />
                             <Route path="/vergleichen" element={<Compare />} />
                             <Route path="/vergleich" element={<Compare />} />
                             <Route path="/firmen-vergleich" element={<CompanyComparison />} />
@@ -384,6 +388,7 @@ const App = () => (
                             <Route path="/anbieter/preise" element={<ProviderPricing />} />
                             <Route path="/anbieter/portal" element={<ProviderPortal />} />
                             <Route path="/umzugsofferten" element={<Umzugsofferten />} />
+                            <Route path="/umzugsofferten/:region" element={<RegionalOfferten />} />
                             <Route path="/preise" element={<Pricing />} />
                             <Route path="/offerte" element={<OffertenPage />} />
                             <Route path="/offerten" element={<OffertenOptimized />} />

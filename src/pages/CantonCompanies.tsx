@@ -260,6 +260,7 @@ export default function CantonCompanies() {
                     <ScrollReveal key={company.id} delay={index * 0.05}>
                       <OrganicCompanyCard
                         id={company.id}
+                        rank={sponsoredCompanies.length + index + 1}
                         name={company.name}
                         logo={company.logo_url || company.logo}
                         rating={company.rating}
