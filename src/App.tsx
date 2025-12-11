@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import { PerformanceProvider } from "@/contexts/PerformanceContext";
@@ -283,37 +283,36 @@ const App = () => (
                             <Route path="/rechner/moebelmontage" element={<AssemblyCalculator />} />
                             <Route path="/rechner/konfigurator" element={<TotalPriceConfigurator />} />
                             <Route path="/rechner/video" element={<VideoEstimator />} />
-                            <Route path="/zug" element={<Zug />} />
+                            {/* Canton redirects to /umzugsfirmen/:canton */}
+                            <Route path="/zug" element={<Navigate to="/umzugsfirmen/zug" replace />} />
+                            <Route path="/luzern" element={<Navigate to="/umzugsfirmen/luzern" replace />} />
+                            <Route path="/zuerich" element={<Navigate to="/umzugsfirmen/zuerich" replace />} />
+                            <Route path="/bern" element={<Navigate to="/umzugsfirmen/bern" replace />} />
+                            <Route path="/stgallen" element={<Navigate to="/umzugsfirmen/stgallen" replace />} />
+                            <Route path="/aargau" element={<Navigate to="/umzugsfirmen/aargau" replace />} />
+                            <Route path="/basel" element={<Navigate to="/umzugsfirmen/basel" replace />} />
+                            <Route path="/thurgau" element={<Navigate to="/umzugsfirmen/thurgau" replace />} />
+                            <Route path="/solothurn" element={<Navigate to="/umzugsfirmen/solothurn" replace />} />
+                            <Route path="/graubuenden" element={<Navigate to="/umzugsfirmen/graubuenden" replace />} />
+                            <Route path="/wallis" element={<Navigate to="/umzugsfirmen/wallis" replace />} />
+                            <Route path="/tessin" element={<Navigate to="/umzugsfirmen/tessin" replace />} />
+                            <Route path="/fribourg" element={<Navigate to="/umzugsfirmen/fribourg" replace />} />
+                            <Route path="/schwyz" element={<Navigate to="/umzugsfirmen/schwyz" replace />} />
+                            <Route path="/geneve" element={<Navigate to="/umzugsfirmen/geneve" replace />} />
+                            <Route path="/uri" element={<Navigate to="/umzugsfirmen/uri" replace />} />
+                            <Route path="/obwalden" element={<Navigate to="/umzugsfirmen/obwalden" replace />} />
+                            <Route path="/nidwalden" element={<Navigate to="/umzugsfirmen/nidwalden" replace />} />
+                            <Route path="/glarus" element={<Navigate to="/umzugsfirmen/glarus" replace />} />
+                            <Route path="/schaffhausen" element={<Navigate to="/umzugsfirmen/schaffhausen" replace />} />
+                            <Route path="/appenzell" element={<Navigate to="/umzugsfirmen/appenzell" replace />} />
+                            <Route path="/neuchatel" element={<Navigate to="/umzugsfirmen/neuchatel" replace />} />
+                            <Route path="/jura" element={<Navigate to="/umzugsfirmen/jura" replace />} />
+                            <Route path="/waadt" element={<Navigate to="/umzugsfirmen/waadt" replace />} />
+                            {/* Canton comparison routes */}
                             <Route path="/zug/vergleich" element={<CantonComparison />} />
                             <Route path="/zuerich/vergleich" element={<CantonComparison />} />
                             <Route path="/bern/vergleich" element={<CantonComparison />} />
                             <Route path="/:canton/vergleich" element={<CantonComparison />} />
-                            <Route path="/luzern" element={<Luzern />} />
-                            <Route path="/zuerich" element={<Zuerich />} />
-                            <Route path="/bern" element={<Bern />} />
-                            <Route path="/stgallen" element={<StGallen />} />
-                            <Route path="/aargau" element={<Aargau />} />
-                            <Route path="/basel" element={<Basel />} />
-                            <Route path="/thurgau" element={<Thurgau />} />
-                            <Route path="/solothurn" element={<Solothurn />} />
-                            <Route path="/graubuenden" element={<Graubuenden />} />
-                            <Route path="/wallis" element={<Wallis />} />
-                            <Route path="/tessin" element={<Tessin />} />
-                            <Route path="/fribourg" element={<Fribourg />} />
-                            <Route path="/schwyz" element={<Schwyz />} />
-                            <Route path="/geneve" element={<Geneve />} />
-                            <Route path="/uri" element={<Uri />} />
-                            <Route path="/obwalden" element={<Obwalden />} />
-                            <Route path="/nidwalden" element={<Nidwalden />} />
-                            <Route path="/glarus" element={<Glarus />} />
-                            <Route path="/schaffhausen" element={<Schaffhausen />} />
-                            <Route path="/appenzell" element={<Appenzell />} />
-                            <Route path="/neuchatel" element={<Neuchatel />} />
-                            <Route path="/jura" element={<Jura />} />
-                            <Route path="/basel-new" element={<BaselNew />} />
-                            <Route path="/aargau-new" element={<AargauNew />} />
-                            <Route path="/luzern-new" element={<LuzernNew />} />
-                            <Route path="/stgallen-new" element={<StGallenNew />} />
                             <Route path="/firmen" element={<Companies />} />
                             <Route path="/umzugsfirmen" element={<Companies />} />
                             <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
