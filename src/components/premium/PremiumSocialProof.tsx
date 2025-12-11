@@ -31,14 +31,8 @@ const fallbackTestimonials: Testimonial[] = [
   { id: "4", name: "Marco R.", location: "Luzern", type: "2.5-Zimmer", rating: 5, text: "Die AI-Analyse hat genau die richtigen Firmen gefunden.", verified: true }
 ];
 
-const partnerLogos = [
-  { name: "20 Minuten", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/20_Minuten_Logo.svg/200px-20_Minuten_Logo.svg.png" },
-  { name: "Blick", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Blick_Logo_2020.svg/200px-Blick_Logo_2020.svg.png" },
-  { name: "Watson", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Watson_logo.svg/200px-Watson_logo.svg.png" },
-  { name: "TCS", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/TCS_Schweiz_Logo.svg/200px-TCS_Schweiz_Logo.svg.png" },
-  { name: "SRF", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Schweizer_Radio_und_Fernsehen_Logo.svg/200px-Schweizer_Radio_und_Fernsehen_Logo.svg.png" },
-  { name: "NZZ", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Neue_Z%C3%BCrcher_Zeitung_Logo.svg/200px-Neue_Z%C3%BCrcher_Zeitung_Logo.svg.png" },
-];
+// Partner names only - display as styled text to avoid broken image links
+const partnerNames = ["20 Minuten", "Blick", "Watson", "TCS", "SRF", "NZZ"];
 
 // Memoized review card with GlowingCard
 const ReviewCard = memo(({ testimonial }: { testimonial: Testimonial }) => (
@@ -173,20 +167,14 @@ export const PremiumSocialProof = memo(() => {
             Bekannt aus & geprüft von
           </p>
           <Marquee speed="slow" pauseOnHover className="py-2">
-            {partnerLogos.map((partner) => (
+            {partnerNames.map((name) => (
               <div
-                key={partner.name}
-                className="flex items-center justify-center mx-8 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 h-8 md:h-10"
+                key={name}
+                className="flex items-center justify-center mx-8 opacity-60 hover:opacity-100 transition-all duration-300"
               >
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  width={120}
-                  height={32}
-                  className="h-6 md:h-8 w-auto object-contain"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <span className="text-base md:text-lg font-semibold text-muted-foreground whitespace-nowrap">
+                  {name}
+                </span>
               </div>
             ))}
           </Marquee>
