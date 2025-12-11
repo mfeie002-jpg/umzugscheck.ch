@@ -36,6 +36,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import heroMovingCouple from "@/assets/hero-moving-couple.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -650,18 +651,25 @@ export default function HeroAIQuoteCalculator() {
   
   return (
     <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden">
-      {/* 303. Multi-layer gradient background with mesh */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-primary/5" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/15 via-transparent to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent" />
+      {/* Background image with human element */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroMovingCouple})` }}
+      />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
+      
+      {/* Subtle color accents */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
       
       {/* Animated mesh gradient */}
       <motion.div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-20"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
         }}
-        animate={{ opacity: [0.2, 0.3, 0.2] }}
+        animate={{ opacity: [0.15, 0.25, 0.15] }}
         transition={{ duration: 8, repeat: Infinity }}
       />
       
