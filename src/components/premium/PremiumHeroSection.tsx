@@ -313,46 +313,6 @@ export const PremiumHeroSection = () => {
               AI-gestützte Analyse, geprüfte Partner, transparente Offerten.
             </p>
             
-            {/* Trust Metrics Row - 2 items on mobile, 3 on desktop */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm">
-              <motion.div 
-                className="flex items-center gap-1.5 sm:gap-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Star className="h-4 w-4 md:h-5 md:w-5 fill-swiss-gold text-swiss-gold" />
-                <span className="font-bold text-foreground">
-                  <AnimatedCounter value={4.8} decimals={1} duration={1.5} />/5
-                </span>
-                <span className="text-foreground/60 hidden xs:inline">Bewertung</span>
-              </motion.div>
-              <motion.div 
-                className="flex items-center gap-1.5 sm:gap-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-secondary" />
-                <span className="font-bold text-foreground">
-                  <AnimatedCounter value={15000} suffix="+" duration={2} />
-                </span>
-                <span className="text-foreground/60 hidden sm:inline">Umzüge</span>
-              </motion.div>
-              <motion.div 
-                className="hidden sm:flex items-center gap-1.5 sm:gap-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-emerald-500" />
-                <span className="font-bold text-foreground">
-                  <AnimatedCounter value={100} suffix="%" duration={1} />
-                </span>
-                <span className="text-foreground/60">kostenlos</span>
-              </motion.div>
-            </div>
-            
             {/* Live Activity Badge - Hidden on very small screens */}
             <div className="pt-1 md:pt-2 hidden sm:block">
               <LiveActivityBadge />
