@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowRight, Star, Shield, TrendingUp, Sparkles, Users, Package } from "lucide-react";
+import { CheckCircle, ArrowRight, Shield, Sparkles, Users, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -97,21 +97,19 @@ export const ConversionHero = memo(function ConversionHero() {
               </span> für Sie: AI-gestützte Analyse, geprüfte Partner, transparente Offerten.
             </p>
 
-            {/* Trust Row */}
-            <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-              <div className="flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-border">
-                <Star className="w-5 h-5 text-swiss-gold fill-swiss-gold" />
-                <span className="text-sm font-semibold">4.8/5 Bewertung</span>
-              </div>
-              <div className="flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-border">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                <span className="text-sm font-semibold">15'000+ Umzüge</span>
-              </div>
-              <div className="flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-border">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm font-semibold">100% kostenlos</span>
-              </div>
-            </div>
+            {/* Live Activity Badge */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="inline-flex items-center gap-2 bg-green-500/10 text-green-700 dark:text-green-400 rounded-full px-3 py-1.5 text-sm mx-auto lg:mx-0"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="font-medium">3 Personen vergleichen gerade</span>
+            </motion.div>
 
             {/* Mobile CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 lg:hidden pt-2">
