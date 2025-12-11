@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Marquee } from "@/components/common/Marquee";
 import { GlowingCard } from "@/components/common/GlowingCard";
-import { NumberTicker } from "@/components/common/NumberTicker";
 import {
   Carousel,
   CarouselContent,
@@ -30,13 +29,6 @@ const fallbackTestimonials: Testimonial[] = [
   { id: "2", name: "Thomas M.", location: "Basel", type: "Firmenumzug", rating: 5, text: "Die vorgeschlagenen Firmen waren alle top – professionell und fair.", verified: true },
   { id: "3", name: "Nicole B.", location: "Bern", type: "4.5-Zimmer", rating: 5, text: "Transparente Preise, keine nervigen Anrufe, nur seriöse Angebote.", verified: true },
   { id: "4", name: "Marco R.", location: "Luzern", type: "2.5-Zimmer", rating: 5, text: "Die AI-Analyse hat genau die richtigen Firmen gefunden.", verified: true }
-];
-
-const displayStats = [
-  { value: "15'000+", label: "Umzüge" },
-  { value: "4.8/5", label: "Bewertung" },
-  { value: "200+", label: "Partner" },
-  { value: "26", label: "Kantone" }
 ];
 
 const partnerLogos = [
@@ -111,26 +103,8 @@ export const PremiumSocialProof = memo(() => {
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
   return (
-    <section className="py-8 sm:py-10 md:py-14 bg-muted/30 min-h-[350px] sm:min-h-[400px] md:min-h-[450px]" aria-labelledby="social-proof-heading">
+    <section className="py-8 sm:py-10 md:py-14 bg-muted/30 min-h-[300px] sm:min-h-[350px] md:min-h-[400px]" aria-labelledby="social-proof-heading">
       <div className="container mx-auto px-4 sm:px-6">
-        {/* Stats Row with NumberTicker - Fixed height to prevent CLS */}
-        <div className="grid grid-cols-4 gap-1.5 xs:gap-2 md:gap-4 max-w-2xl mx-auto mb-6 sm:mb-8">
-          {displayStats.map((stat, idx) => (
-            <div key={idx} className="text-center p-2 xs:p-3 bg-card rounded-lg border border-border/40 hover:border-primary/30 transition-colors min-h-[60px] xs:min-h-[72px] md:min-h-[80px]">
-              <div className="text-sm xs:text-lg md:text-2xl font-bold text-primary">
-                {stat.value.includes("'") ? (
-                  <NumberTicker value={parseInt(stat.value.replace(/[^0-9]/g, ''))} suffix="+" />
-                ) : stat.value.includes("/") ? (
-                  stat.value
-                ) : (
-                  <NumberTicker value={parseInt(stat.value.replace(/[^0-9]/g, ''))} suffix={stat.value.includes("+") ? "+" : ""} />
-                )}
-              </div>
-              <div className="text-[9px] xs:text-[10px] md:text-xs text-muted-foreground">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
