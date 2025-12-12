@@ -12,6 +12,8 @@ import { ConversionHero } from "@/components/homepage/ConversionHero";
 import { TrustBand } from "@/components/homepage/TrustBand";
 import { MediaLogosSection } from "@/components/homepage/MediaLogosSection";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
+import { QuickStatsBar } from "@/components/homepage/QuickStatsBar";
+import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
 
 // Lazy loaded components (below the fold)
 const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
@@ -23,6 +25,13 @@ const EnhancedUSPSection = lazy(() => import("@/components/homepage/EnhancedUSPS
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
+const PriceComparisonTeaser = lazy(() => import("@/components/homepage/PriceComparisonTeaser").then(m => ({ default: m.PriceComparisonTeaser })));
+const GuaranteeBanner = lazy(() => import("@/components/homepage/GuaranteeBanner").then(m => ({ default: m.GuaranteeBanner })));
+const PopularRoutesSection = lazy(() => import("@/components/homepage/PopularRoutesSection").then(m => ({ default: m.PopularRoutesSection })));
+const CompanyLogosStrip = lazy(() => import("@/components/homepage/CompanyLogosStrip").then(m => ({ default: m.CompanyLogosStrip })));
+const PartnerBenefitsSection = lazy(() => import("@/components/homepage/PartnerBenefitsSection").then(m => ({ default: m.PartnerBenefitsSection })));
+const CTAFloatingBanner = lazy(() => import("@/components/homepage/CTAFloatingBanner").then(m => ({ default: m.CTAFloatingBanner })));
+const AwardsBanner = lazy(() => import("@/components/homepage/AwardsBanner").then(m => ({ default: m.AwardsBanner })));
 
 // Skeleton placeholders with fixed heights to prevent CLS
 const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
@@ -81,26 +90,48 @@ const Index = () => {
         <main id="main-content" role="main">
           <ConversionHero />
           <TrustBand />
+          <QuickStatsBar />
           <MediaLogosSection />
+          <SocialProofMarquee />
           
           <Suspense fallback={<SectionSkeleton height="450px" />}>
             <EnhancedHowItWorks />
+          </Suspense>
+
+          <Suspense fallback={<SectionSkeleton height="120px" />}>
+            <AwardsBanner />
           </Suspense>
           
           <Suspense fallback={<SectionSkeleton height="600px" />}>
             <CompanyComparisonSection />
           </Suspense>
+
+          <Suspense fallback={<SectionSkeleton height="80px" />}>
+            <CompanyLogosStrip />
+          </Suspense>
           
           <Suspense fallback={<SectionSkeleton height="500px" />}>
             <EnhancedServicesGrid />
+          </Suspense>
+
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <PriceComparisonTeaser />
           </Suspense>
           
           <Suspense fallback={<SectionSkeleton height="400px" />}>
             <EnhancedTestimonials />
           </Suspense>
+
+          <Suspense fallback={<SectionSkeleton height="200px" />}>
+            <GuaranteeBanner />
+          </Suspense>
           
           <Suspense fallback={<SectionSkeleton height="400px" />}>
             <EnhancedUSPSection />
+          </Suspense>
+
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <PopularRoutesSection />
           </Suspense>
           
           <Suspense fallback={<SectionSkeleton height="350px" />}>
@@ -109,6 +140,10 @@ const Index = () => {
           
           <Suspense fallback={<SectionSkeleton height="500px" />}>
             <EnhancedFAQ />
+          </Suspense>
+
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <PartnerBenefitsSection />
           </Suspense>
           
           <Suspense fallback={<SectionSkeleton height="350px" />}>
@@ -121,6 +156,9 @@ const Index = () => {
         <FloatingCTA />
         <Suspense fallback={null}>
           <CookieConsent />
+        </Suspense>
+        <Suspense fallback={null}>
+          <CTAFloatingBanner />
         </Suspense>
       </div>
     </ErrorBoundary>
