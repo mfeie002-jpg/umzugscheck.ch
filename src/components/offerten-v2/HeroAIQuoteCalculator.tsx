@@ -651,37 +651,25 @@ export default function HeroAIQuoteCalculator() {
   
   return (
     <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden min-h-[85vh] flex items-center">
-      {/* Premium Background with visible image */}
+      {/* Light Gradient Background - Matching Homepage */}
       <div className="absolute inset-0 z-0">
-        {/* Background image - more visible */}
+        {/* Background image - subtle */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
           style={{ backgroundImage: `url(${heroMovingCouple})` }}
         />
-        {/* Gradient overlay - less opaque to show image better */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/60 to-slate-900/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-slate-900/30" />
-        {/* Red/Primary accent overlay for brand feel */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-blue-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-red-50/20" />
+        {/* Decorative grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(0 0 0) 1px, transparent 0)`,
+          backgroundSize: '24px 24px'
+        }} />
+        {/* Decorative shapes */}
+        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
       </div>
       
-      {/* Animated glow effects */}
-      <motion.div
-        className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px]"
-        animate={{ opacity: [0.3, 0.5, 0.3], scale: [1, 1.1, 1] }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
-      <motion.div
-        className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/15 rounded-full blur-[100px]"
-        animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.05, 1] }}
-        transition={{ duration: 6, repeat: Infinity, delay: 2 }}
-      />
-      
-      {/* Decorative grid pattern */}
-      <div className="absolute inset-0 opacity-[0.05]" style={{
-        backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)`,
-        backgroundSize: '32px 32px'
-      }} />
       
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
@@ -699,9 +687,9 @@ export default function HeroAIQuoteCalculator() {
               transition={{ delay: 0.2 }}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6"
             >
-              <div className="flex items-center gap-2 bg-green-500/20 text-green-300 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm border border-green-500/30 backdrop-blur-sm">
+              <div className="flex items-center gap-2 bg-green-50 text-green-700 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm border border-green-200">
                 <motion.div 
-                  className="w-2 h-2 rounded-full bg-green-400"
+                  className="w-2 h-2 rounded-full bg-green-500"
                   animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
@@ -711,20 +699,20 @@ export default function HeroAIQuoteCalculator() {
               <RecentlyCompletedBadge />
             </motion.div>
             
-            {/* Main headline - white text for dark background */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-lg">
-              <span className="bg-gradient-to-r from-red-400 via-primary to-red-500 bg-clip-text text-transparent">
+            {/* Main headline - dark text for light background */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-primary via-primary to-blue-600 bg-clip-text text-transparent">
                 KI-gestützte
               </span>{" "}
               Umzugsofferten vergleichen
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-white/80 mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0 drop-shadow">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
               Erhalten Sie in weniger als 2 Minuten eine realistische Preisspanne 
               und passende Offerten von geprüften Schweizer Umzugsfirmen.
             </p>
             
-            {/* Key benefits - styled for dark background */}
+            {/* Key benefits - styled for light background */}
             <div className="flex flex-col xs:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start mb-6 sm:mb-8">
               {[
                 { icon: Zap, text: "Sofortige Preisschätzung" },
@@ -738,10 +726,10 @@ export default function HeroAIQuoteCalculator() {
                   transition={{ delay: 0.4 + i * 0.1 }}
                   className="flex items-center gap-2 text-xs sm:text-sm"
                 >
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <benefit.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-400" />
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <benefit.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-600" />
                   </div>
-                  <span className="text-white font-medium drop-shadow">{benefit.text}</span>
+                  <span className="text-foreground font-medium">{benefit.text}</span>
                 </motion.div>
               ))}
             </div>
@@ -750,24 +738,22 @@ export default function HeroAIQuoteCalculator() {
             <TrustBadgeCarousel />
           </motion.div>
           
-          {/* Right: Calculator Card - 296. Glassmorphism */}
+          {/* Right: Calculator Card */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Card className="backdrop-blur-xl bg-white border-white/20 shadow-2xl shadow-black/30 overflow-hidden relative ring-1 ring-white/10">
+            <Card className="bg-white border-border/50 shadow-2xl shadow-primary/10 overflow-hidden relative">
               {/* Animated border gradient */}
               <motion.div
-                className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary via-blue-500 to-primary opacity-30"
-                style={{ padding: "2px" }}
+                className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary via-blue-500 to-primary opacity-20"
+                style={{ padding: "1px" }}
                 animate={{
                   backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                 }}
                 transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
               />
-              {/* Glow effect behind card */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-blue-500/20 to-primary/30 rounded-xl blur-xl -z-10" />
               
               <CardContent className="p-4 sm:p-6 md:p-8 relative">
                 {/* Header with step indicator */}
