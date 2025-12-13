@@ -5,8 +5,19 @@ const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-webhook-secret",
 };
+
+// Validate webhook secret for internal calls
+function validateWebhookSecret(req: Request): boolean {
+  const webhookSecret = Deno.env.get("WEBHOOK_SECRET");
+  if (!webhookSecret) {
+    console.warn("WEBHOOK_SECRET not configured - allowing request for backward compatibility");
+    return true;
+  }
+  const providedSecret = req.headers.get("x-webhook-secret") || req.headers.get("X-Webhook-Secret");
+  return providedSecret === webhookSecret;
+}
 
 interface AvailabilityNotificationRequest {
   email: string;
@@ -20,6 +31,15 @@ const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Validate webhook secret
+  if (!validateWebhookSecret(req)) {
+    console.error("Invalid or missing webhook secret");
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
   try {

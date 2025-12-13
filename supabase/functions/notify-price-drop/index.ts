@@ -2,8 +2,19 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-webhook-secret',
 };
+
+// Validate webhook secret for internal calls
+function validateWebhookSecret(req: Request): boolean {
+  const webhookSecret = Deno.env.get("WEBHOOK_SECRET");
+  if (!webhookSecret) {
+    console.warn("WEBHOOK_SECRET not configured - allowing request for backward compatibility");
+    return true;
+  }
+  const providedSecret = req.headers.get("x-webhook-secret") || req.headers.get("X-Webhook-Secret");
+  return providedSecret === webhookSecret;
+}
 
 interface PriceDropNotification {
   leadId: string;
@@ -16,6 +27,15 @@ interface PriceDropNotification {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Validate webhook secret
+  if (!validateWebhookSecret(req)) {
+    console.error("Invalid or missing webhook secret");
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
   try {
