@@ -15,7 +15,7 @@ const features = ["Kostenlose Registrierung", "Keine Grundgebühr", "Nur bei Erf
 
 export const PremiumProviderCTA = memo(() => {
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-br from-slate-100 via-stone-50 to-slate-100 relative overflow-hidden" aria-labelledby="provider-cta-heading">
+    <section className="py-16 md:py-20 bg-gradient-to-br from-amber-50/80 via-orange-50/50 to-rose-50/60 relative overflow-hidden" aria-labelledby="provider-cta-heading">
       {/* Decorative */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" aria-hidden="true" />
       <div className="absolute bottom-0 right-0 w-48 h-48 bg-secondary/5 rounded-full blur-3xl" aria-hidden="true" />
@@ -78,7 +78,7 @@ export const PremiumProviderCTA = memo(() => {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 shadow-xl">
+              <div className="bg-primary rounded-2xl p-6 shadow-xl">
                 {/* Stats with NumberTicker */}
                 <div className="grid grid-cols-3 gap-3 mb-5">
                   {[
@@ -90,7 +90,7 @@ export const PremiumProviderCTA = memo(() => {
                       <div className="text-2xl font-bold text-white">
                         <NumberTicker value={s.value} suffix={s.suffix} />
                       </div>
-                      <div className="text-xs text-white/70 mt-1">{s.label}</div>
+                      <div className="text-xs text-white/80 mt-1">{s.label}</div>
                     </div>
                   ))}
                 </div>
@@ -99,7 +99,7 @@ export const PremiumProviderCTA = memo(() => {
                 <div className="space-y-2.5">
                   {features.map((f, i) => (
                     <div key={i} className="flex items-center gap-2.5">
-                      <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                      <CheckCircle className="h-4 w-4 text-green-300 flex-shrink-0" />
                       <span className="text-white font-medium">{f}</span>
                     </div>
                   ))}
