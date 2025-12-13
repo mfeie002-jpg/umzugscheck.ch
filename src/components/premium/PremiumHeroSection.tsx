@@ -277,36 +277,36 @@ export const PremiumHeroSection = () => {
             transition={{ duration: 0.6 }}
             className="space-y-4 md:space-y-6 order-2 lg:order-1"
           >
-            {/* Dual USP Badges */}
+            {/* Dual USP Badges - Consistent Primary/Secondary colors */}
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              {/* Savings Badge */}
+              {/* Savings Badge - Primary Blue */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-xl sm:rounded-2xl shadow-soft border border-green-500/30"
+                className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-primary/10 rounded-xl sm:rounded-2xl shadow-soft border border-primary/30"
               >
-                <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-r from-green-500 to-green-600">
+                <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-primary">
                   <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] sm:text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wide">Bis 40% sparen</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-primary uppercase tracking-wide">Bis 40% sparen</p>
                   <p className="text-xs sm:text-sm font-semibold text-foreground">durch Vergleich</p>
                 </div>
               </motion.div>
 
-              {/* KI Video Badge */}
+              {/* KI Video Badge - Secondary Red */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl sm:rounded-2xl shadow-soft border border-primary/30"
+                className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-secondary/10 rounded-xl sm:rounded-2xl shadow-soft border border-secondary/30"
               >
-                <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-r from-primary to-secondary">
+                <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-secondary">
                   <Video className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] sm:text-xs font-bold text-primary uppercase tracking-wide">Schweizer Innovation</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-secondary uppercase tracking-wide">Schweizer Innovation</p>
                   <p className="text-xs sm:text-sm font-semibold text-foreground">KI Video-Rechner</p>
                 </div>
               </motion.div>
@@ -320,22 +320,22 @@ export const PremiumHeroSection = () => {
             
             {/* Subheadline - Combined Value Proposition */}
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed">
-              Unser <span className="inline-flex items-center gap-1 text-primary font-semibold"><Video className="h-4 w-4" />KI-Rechner</span> analysiert 
+              Unser <span className="inline-flex items-center gap-1 text-secondary font-semibold"><Video className="h-4 w-4" />KI-Rechner</span> analysiert 
               Ihren Umzug per Video – wir vergleichen <span className="font-semibold text-foreground">200+ Firmen</span> und finden 
-              das <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400 font-semibold"><Trophy className="h-4 w-4" />beste Angebot</span>.
+              das <span className="inline-flex items-center gap-1 text-primary font-semibold"><Trophy className="h-4 w-4" />beste Angebot</span>.
             </p>
             
-            {/* USP Pills */}
+            {/* USP Pills - Consistent Primary/Secondary */}
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex items-center gap-1.5 text-xs bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
                 <TrendingDown className="w-3 h-3" />
                 Bis 40% günstiger
               </span>
-              <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-secondary/10 text-secondary px-3 py-1.5 rounded-full font-medium">
                 <Video className="w-3 h-3" />
                 Video-Analyse
               </span>
-              <span className="inline-flex items-center gap-1.5 text-xs bg-secondary/10 text-secondary px-3 py-1.5 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
                 <CheckCircle2 className="w-3 h-3" />
                 200+ Firmen
               </span>
@@ -381,9 +381,9 @@ export const PremiumHeroSection = () => {
           >
             <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-5 md:p-8 relative">
               <div className="space-y-3 sm:space-y-4 md:space-y-5">
-                {/* Form Header - Savings Focus */}
+                {/* Form Header - Consistent Primary colors */}
                 <div className="text-center space-y-1 md:space-y-2">
-                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-green-700 dark:text-green-400 font-semibold bg-green-500/10 px-3 py-1 rounded-full">
+                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-semibold bg-primary/10 px-3 py-1 rounded-full">
                     <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Bester Preis garantiert
                   </div>
@@ -463,14 +463,14 @@ export const PremiumHeroSection = () => {
                   </Button>
                 </form>
                 
-                {/* Trust Microcopy - Compact on mobile */}
+                {/* Trust Microcopy - Consistent Primary colors */}
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1 md:pt-2 text-xs sm:text-sm text-foreground/60">
                   <span className="flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500" />
+                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                     Kostenlos
                   </span>
                   <span className="flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500" />
+                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                     Unverbindlich
                   </span>
                   <span className="flex items-center gap-1">
