@@ -239,7 +239,7 @@ export const KICalculatorShowcase = () => {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                <Link to="/rechner/video" className="no-underline flex-1">
+                <Link to="/umzugsofferten?mode=video" className="no-underline flex-1">
                   <Button 
                     size="lg" 
                     className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold shadow-lg group"
@@ -249,7 +249,7 @@ export const KICalculatorShowcase = () => {
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/rechner" className="no-underline">
+                <Link to="/umzugsofferten" className="no-underline">
                   <Button 
                     size="lg" 
                     variant="outline"

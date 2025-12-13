@@ -86,7 +86,7 @@ export const SponsoredCompanyCard = ({
             Firma ansehen
           </Button>
         </Link>
-        <Link to="/rechner" className="w-full">
+        <Link to="/umzugsofferten" className="w-full">
           <Button size="lg" className="w-full h-12 sm:h-auto">
             Offerte anfordern
           </Button>

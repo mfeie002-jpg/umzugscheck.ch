@@ -120,7 +120,7 @@ export const QuickLinks = () => (
       <ArrowRight className="h-3 w-3" />
       Kostenlos Offerten erhalten
     </Link>
-    <Link to="/rechner" className="flex items-center gap-2 text-sm text-primary hover:underline">
+    <Link to="/umzugsofferten" className="flex items-center gap-2 text-sm text-primary hover:underline">
       <ArrowRight className="h-3 w-3" />
       Umzugskosten berechnen
     </Link>

@@ -239,7 +239,7 @@ const BlogPost = () => {
                 <p className="text-muted-foreground mb-6">
                   Erhalten Sie jetzt kostenlose Offerten von geprüften Umzugsfirmen
                 </p>
-                <Link to="/rechner" className="w-full sm:w-auto inline-block">
+                <Link to="/umzugsofferten" className="w-full sm:w-auto inline-block">
                   <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90 shadow-accent text-base sm:text-lg px-4 sm:px-6 h-12 sm:h-14">
                     <span className="hidden sm:inline">Jetzt Offerten vergleichen</span>
                     <span className="sm:hidden">Offerten vergleichen</span>

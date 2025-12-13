@@ -242,7 +242,7 @@ const Contact = () => {
                       <CardTitle className="text-lg">Schnellzugriff</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <Link to="/rechner" className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors group">
+                      <Link to="/umzugsofferten" className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors group">
                         <Calculator className="w-5 h-5 text-primary" aria-hidden="true" />
                         <div>
                           <div className="font-medium group-hover:text-primary transition-colors">Kostenrechner</div>

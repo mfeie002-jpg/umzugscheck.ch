@@ -174,7 +174,7 @@ const CleaningCalculator = () => {
 
         <div className="container mx-auto px-4 py-8 md:py-12">
           <Link 
-            to="/rechner"
+            to="/umzugsofferten"
             className="inline-flex items-center gap-2 text-sm sm:text-base text-muted-foreground hover:text-primary transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" />

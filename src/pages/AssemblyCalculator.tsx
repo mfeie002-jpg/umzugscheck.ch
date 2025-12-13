@@ -147,7 +147,7 @@ const AssemblyCalculator = () => {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8 md:py-16">
           <Link 
-            to="/rechner"
+            to="/umzugsofferten"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8"
           >
             <ArrowLeft className="w-4 h-4" />

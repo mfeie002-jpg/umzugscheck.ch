@@ -14,49 +14,49 @@ const calculators: CalculatorItem[] = [
     icon: Calculator,
     title: "Umzugsrechner",
     description: "Berechnen Sie Ihre Umzugskosten",
-    href: "/rechner"
+    href: "/umzugsofferten"
   },
   {
     icon: Sparkles,
     title: "Reinigungsrechner",
     description: "Endreinigung kalkulieren",
-    href: "/rechner/reinigung"
+    href: "/umzugsofferten?service=reinigung"
   },
   {
     icon: Trash2,
     title: "Entsorgungsrechner",
     description: "Kosten für Entsorgung ermitteln",
-    href: "/rechner/entsorgung"
+    href: "/umzugsofferten?service=entsorgung"
   },
   {
     icon: Box,
     title: "Lagerrechner",
     description: "Lagerkosten berechnen",
-    href: "/rechner/lager"
+    href: "/umzugsofferten?service=lagerung"
   },
   {
     icon: Package,
     title: "Packservice-Rechner",
     description: "Packservice-Kosten kalkulieren",
-    href: "/rechner/packservice"
+    href: "/umzugsofferten?service=packservice"
   },
   {
     icon: Wrench,
     title: "Möbelmontage-Rechner",
     description: "Montagekosten berechnen",
-    href: "/rechner/moebelmontage"
+    href: "/umzugsofferten?service=montage"
   },
   {
     icon: Settings,
     title: "Gesamtpreis-Konfigurator",
     description: "Alle Services kombinierbar",
-    href: "/rechner/konfigurator"
+    href: "/umzugsofferten?service=komplett"
   },
   {
     icon: Video,
     title: "Video-Umzugsrechner",
     description: "KI-Analyse per Video",
-    href: "/rechner/video"
+    href: "/umzugsofferten?mode=video"
   }
 ];
 

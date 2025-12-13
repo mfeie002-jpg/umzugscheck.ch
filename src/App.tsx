@@ -268,8 +268,9 @@ const App = () => (
                             <Route path="/v2" element={<HomeOptimized />} />
                             <Route path="/v3" element={<NewIndex />} />
                             <Route path="/v4" element={<HomePage />} />
-                            <Route path="/rechner" element={<Calculator />} />
-                            <Route path="/umzugsrechner" element={<Calculator />} />
+                            {/* Redirect base calculator routes to umzugsofferten */}
+                            <Route path="/rechner" element={<Navigate to="/umzugsofferten" replace />} />
+                            <Route path="/umzugsrechner" element={<Navigate to="/umzugsofferten" replace />} />
                             <Route path="/rechner/ai" element={<AIUpload />} />
                             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
                             <Route path="/ergebnis/:id" element={<EstimateResult />} />

@@ -75,7 +75,7 @@ export const PremiumAIShowcase = () => {
             </div>
 
             <ButtonPremium size="lg" variant="default" asChild>
-              <Link to="/rechner">
+              <Link to="/umzugsofferten">
                 Jetzt AI-Rechner testen
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>

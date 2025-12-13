@@ -229,7 +229,7 @@ const ZurichMovers = () => {
                   <p className="text-muted-foreground mb-6">
                     Aktuell keine Firmen in {cityInfo.name} gefunden. Probieren Sie unseren Rechner für alle verfügbaren Optionen.
                   </p>
-                  <Link to="/rechner">
+                  <Link to="/umzugsofferten">
                     <Button>
                       Zum Rechner
                       <ArrowRight className="ml-2" />
@@ -341,7 +341,7 @@ const ZurichMovers = () => {
               </div>
 
               <div className="text-center mt-10">
-                <Link to="/rechner">
+                <Link to="/umzugsofferten">
                   <Button size="lg" className="h-12 px-8">
                     Genauen Preis berechnen
                     <ArrowRight className="ml-2" />

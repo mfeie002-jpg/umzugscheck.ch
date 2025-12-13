@@ -90,7 +90,7 @@ export const Footer = () => {
             <h4 className="font-bold mb-4 text-primary-foreground">Umzug planen</h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link to="/umzugsrechner" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+              <Link to="/umzugsofferten" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Umzugskosten berechnen
                 </Link>
               </li>

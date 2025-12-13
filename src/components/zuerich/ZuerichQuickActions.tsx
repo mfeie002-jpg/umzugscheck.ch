@@ -38,7 +38,7 @@ export const ZuerichQuickActions = () => {
         </motion.div>
 
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-          <Link to="/rechner">
+          <Link to="/umzugsofferten">
             <Button size="icon" className="h-12 w-12 rounded-full shadow-lg bg-primary hover:bg-primary/90">
               <Calculator className="h-5 w-5" />
             </Button>

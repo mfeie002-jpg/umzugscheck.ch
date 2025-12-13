@@ -98,7 +98,7 @@ export default function OffertenOptimized() {
                 Erhalten Sie kostenlose Offerten von geprüften Schweizer Umzugsfirmen – schnell, transparent und unverbindlich.
               </p>
               
-              <Link to="/rechner">
+              <Link to="/umzugsofferten">
                 <Button size="lg" className="h-14 px-10 text-lg font-bold bg-white text-accent hover:bg-white/90 shadow-xl hover:shadow-2xl transition-all hover:scale-105">
                   Jetzt Offerten erhalten
                   <ArrowRight className="ml-2 h-5 w-5" />

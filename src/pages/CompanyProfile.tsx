@@ -388,7 +388,7 @@ export default function CompanyProfile() {
                             <p className="text-muted-foreground mb-4">
                               Fordern Sie jetzt ein kostenloses Angebot an und vergleichen Sie Preise.
                             </p>
-                            <Link to="/rechner">
+                            <Link to="/umzugsofferten">
                               <Button size="lg" className="gap-2">
                                 Offerte anfordern
                                 <ChevronRight className="w-4 h-4" />

@@ -95,7 +95,7 @@ export default function InternationalMoving() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="default" asChild className="bg-white text-primary hover:bg-white/90 shadow-premium">
-                <Link to="/rechner">Jetzt Offerte anfragen</Link>
+                <Link to="/umzugsofferten">Jetzt Offerte anfragen</Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
                 <Link to="/umzugsfirmen">Umzugsfirmen vergleichen</Link>
