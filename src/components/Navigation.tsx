@@ -87,8 +87,11 @@ export const Navigation = () => {
       <nav className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
-            {/* Logo */}
-            <Logo size="xl" className="-ml-1 sm:ml-0" />
+            {/* Logo - Icon only on very small screens, full logo on larger */}
+            <div className="flex items-center -ml-1 sm:ml-0">
+              <Logo size="xl" className="hidden xs:flex" />
+              <Logo size="lg" iconOnly className="flex xs:hidden" />
+            </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
