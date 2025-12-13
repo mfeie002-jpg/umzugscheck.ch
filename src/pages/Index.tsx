@@ -16,6 +16,7 @@ import { QuickStatsBar } from "@/components/homepage/QuickStatsBar";
 import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
 
 // Lazy loaded components (below the fold)
+const AIVideoCalculatorShowcase = lazy(() => import("@/components/homepage/AIVideoCalculatorShowcase"));
 const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
 const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection").then(m => ({ default: m.CompanyComparisonSection })));
 const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
@@ -91,6 +92,12 @@ const Index = () => {
           <ConversionHero />
           <TrustBand />
           <QuickStatsBar />
+          
+          {/* AI Video Calculator - Primary USP Showcase */}
+          <Suspense fallback={<SectionSkeleton height="700px" />}>
+            <AIVideoCalculatorShowcase />
+          </Suspense>
+          
           <MediaLogosSection />
           <SocialProofMarquee />
           
