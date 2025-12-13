@@ -47,9 +47,9 @@ export const PremiumProviderCTA = memo(() => {
               
               <h2 id="provider-cta-heading" className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white">
                 Werden Sie Partner
-                <span className="block text-secondary/90 mt-1">Qualifizierte Leads erhalten</span>
+                <span className="block text-secondary mt-1">Qualifizierte Leads erhalten</span>
               </h2>
-              <p className="text-sm md:text-base text-white/80 mb-5">
+              <p className="text-sm md:text-base text-white/90 mb-5">
                 Über 200 geprüfte Schweizer Firmen erhalten qualifizierte Kundenanfragen.
               </p>
               
@@ -57,8 +57,8 @@ export const PremiumProviderCTA = memo(() => {
               <div className="space-y-2 mb-5">
                 {benefits.map((b, i) => (
                   <div key={i} className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded bg-primary/30 flex items-center justify-center">
-                      <b.icon className="h-3.5 w-3.5 text-primary" />
+                    <div className="w-7 h-7 rounded bg-white/20 flex items-center justify-center">
+                      <b.icon className="h-3.5 w-3.5 text-white" />
                     </div>
                     <span className="text-white text-sm">{b.text}</span>
                   </div>
@@ -97,11 +97,11 @@ export const PremiumProviderCTA = memo(() => {
                     { value: 15000, label: "Vermittelt", suffix: "+" },
                     { value: 98, label: "Zufrieden", suffix: "%" }
                   ].map((s, i) => (
-                    <div key={i} className="text-center p-2.5 bg-white/10 rounded-lg">
-                      <div className="text-xl font-bold text-primary">
+                    <div key={i} className="text-center p-2.5 bg-white/20 rounded-lg">
+                      <div className="text-xl font-bold text-secondary">
                         <NumberTicker value={s.value} suffix={s.suffix} />
                       </div>
-                      <div className="text-[10px] text-white/70">{s.label}</div>
+                      <div className="text-[10px] text-white/80">{s.label}</div>
                     </div>
                   ))}
                 </div>
