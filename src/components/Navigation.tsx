@@ -83,8 +83,8 @@ export const Navigation = () => {
   );
 
   return (
-    <header>
-      <nav className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-soft" aria-label="Hauptnavigation">
+    <header className="sticky top-0 z-50">
+      <nav className="bg-background/95 backdrop-blur-md border-b border-border shadow-soft relative" aria-label="Hauptnavigation">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
             {/* Logo - Icon only on very small screens, full logo on larger */}
@@ -93,86 +93,75 @@ export const Navigation = () => {
               <Logo size="lg" iconOnly className="flex xs:hidden" />
             </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1">
-            {/* Preisrechner - Dropdown */}
-            <div className="relative">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-1">
+              {/* Preisrechner - Dropdown */}
               <NavButton dropdown="calculator">
                 Preisrechner
               </NavButton>
-            </div>
 
-            {/* Umzugsfirmen - Dropdown */}
-            <div className="relative">
+              {/* Umzugsfirmen - Dropdown */}
               <NavButton dropdown="companies">
                 Umzugsfirmen
               </NavButton>
-            </div>
 
-            {/* Services - Dropdown */}
-            <div className="relative">
+              {/* Services - Dropdown */}
               <NavButton dropdown="services">
                 Services
               </NavButton>
-            </div>
 
-            {/* Regionen - Dropdown */}
-            <div className="relative">
+              {/* Regionen - Dropdown */}
               <NavButton dropdown="regions">
                 Regionen
               </NavButton>
-            </div>
 
-            {/* Ratgeber - Dropdown */}
-            <div className="relative">
+              {/* Ratgeber - Dropdown */}
               <NavButton dropdown="ratgeber">
                 Ratgeber
               </NavButton>
-            </div>
 
-            {/* Für Firmen - Dropdown */}
-            <div className="relative">
+              {/* Für Firmen - Dropdown */}
               <NavButton dropdown="provider">
                 Für Firmen
               </NavButton>
             </div>
-          </div>
 
-          {/* Mobile Menu Button & CTA - Visible on Mobile */}
-          <div className="flex lg:hidden items-center gap-2 -mr-1 sm:mr-0">
-            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
-              <Button 
-                size="sm"
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold text-[11px] sm:text-xs px-2.5 sm:px-3 h-8 sm:h-9 active:scale-95 transition-transform"
+            {/* Mobile Menu Button & CTA - Visible on Mobile */}
+            <div className="flex lg:hidden items-center gap-2 -mr-1 sm:mr-0">
+              <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
+                <Button 
+                  size="sm"
+                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold text-[11px] sm:text-xs px-2.5 sm:px-3 h-8 sm:h-9 active:scale-95 transition-transform"
+                >
+                  <span className="hidden xs:inline">Offerten</span>
+                  <span className="xs:hidden">Offerten</span>
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="relative z-50 h-9 w-9 sm:h-10 sm:w-10 active:scale-95 transition-transform"
+                aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
               >
-                <span className="hidden xs:inline">Offerten</span>
-                <span className="xs:hidden">Offerten</span>
+                {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />}
               </Button>
-            </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="relative z-50 h-9 w-9 sm:h-10 sm:w-10 active:scale-95 transition-transform"
-              aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />}
-            </Button>
-          </div>
+            </div>
 
-          {/* CTA Button - Desktop */}
-          <div className="hidden lg:flex items-center gap-3">
-            <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
-              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold animate-pulse-subtle">
-                Offerten erhalten
-              </Button>
-            </Link>
+            {/* CTA Button - Desktop */}
+            <div className="hidden lg:flex items-center gap-3">
+              <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
+                <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-bold animate-pulse-subtle">
+                  Offerten erhalten
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Dropdowns Container */}
+        {/* Dropdowns Container - positioned relative to nav */}
         <div
           onMouseEnter={() => {
             if (timeoutRef.current) {
@@ -206,14 +195,13 @@ export const Navigation = () => {
             onClose={closeAllDropdowns} 
           />
         </div>
-      </div>
+      </nav>
 
       {/* Mobile Menu */}
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
         onClose={() => setIsMobileMenuOpen(false)} 
       />
-    </nav>
     </header>
   );
 };

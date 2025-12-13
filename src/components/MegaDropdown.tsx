@@ -77,7 +77,7 @@ export const MegaDropdown = ({ isOpen, onClose }: MegaDropdownProps) => {
       />
       
       {/* Dropdown Content - Hidden on mobile */}
-      <div className="hidden lg:block absolute left-0 right-0 top-full mt-0 bg-white border-t border-border shadow-strong z-50 animate-fade-in">
+      <div className="hidden lg:block absolute left-0 right-0 top-0 bg-background border-t border-border shadow-strong z-50 animate-fade-in">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-5xl mx-auto">
             <div className="mb-6">

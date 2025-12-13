@@ -295,7 +295,7 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
       />
       
       {/* Dropdown Content */}
-      <div className="hidden lg:block absolute left-0 right-0 top-full mt-0 bg-white border-t border-border shadow-strong z-50 animate-fade-in max-h-[85vh] md:max-h-[70vh] overflow-hidden">
+      <div className="hidden lg:block absolute left-0 right-0 top-0 bg-background border-t border-border shadow-strong z-50 animate-fade-in max-h-[85vh] md:max-h-[70vh] overflow-hidden">
         <div className="container mx-auto px-3 md:px-4 py-4 md:py-6 h-full">
           <div className="max-w-7xl mx-auto h-full flex flex-col">
             <div className="mb-3 md:mb-4 flex-shrink-0">
