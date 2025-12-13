@@ -2,14 +2,14 @@ import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { RedesignHero } from "@/components/home/RedesignHero";
-import { RedesignHowItWorks } from "@/components/home/RedesignHowItWorks";
-import { AICalculatorShowcase } from "@/components/home/AICalculatorShowcase";
-import { ServicesGrid } from "@/components/home/ServicesGrid";
-import { FeaturedCompanies } from "@/components/home/FeaturedCompanies";
+import { TrustBand } from "@/components/homepage/TrustBand";
 import { USPGrid } from "@/components/home/USPGrid";
+import { FeaturedCompanies } from "@/components/home/FeaturedCompanies";
+import { RedesignHowItWorks } from "@/components/home/RedesignHowItWorks";
+import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { CostExamples } from "@/components/home/CostExamples";
 import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
-import { ProviderCTA } from "@/components/home/ProviderCTA";
+import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { FAQSection } from "@/components/home/FAQSection";
 import { RegionsSection } from "@/components/home/RegionsSection";
 import { Helmet } from "react-helmet";
@@ -28,6 +28,14 @@ const IndexRedesign = () => {
     {
       question: "Wie schnell erhalte ich Offerten?",
       answer: "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
+    },
+    {
+      question: "Sind die Umzugsfirmen geprüft?",
+      answer: "Ja, alle unsere Partner durchlaufen einen strengen Prüfprozess. Wir verifizieren Versicherungen, Bewilligungen und Kundenbewertungen."
+    },
+    {
+      question: "Kann ich auch nur eine Offerte anfragen?",
+      answer: "Ja, Sie können selbst entscheiden, von wie vielen Firmen Sie Offerten erhalten möchten. Sie haben die volle Kontrolle."
     }
   ];
 
@@ -48,42 +56,42 @@ const IndexRedesign = () => {
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* 1. Hero mit AI-Rechner */}
+        {/* 1. Hero mit Rechner - Emotionales Bild + Conversion */}
         <RedesignHero />
         
-        {/* 2. So funktioniert's - 4 Steps */}
-        <RedesignHowItWorks />
+        {/* 2. Trust Band - Sofortiger Social Proof */}
+        <TrustBand />
         
-        {/* 3. AI-Rechner Showcase */}
-        <AICalculatorShowcase />
-        
-        {/* 4. Services Grid */}
-        <ServicesGrid />
-        
-        {/* 5. Top Umzugsfirmen mit Filter */}
-        <FeaturedCompanies />
-        
-        {/* 6. Warum umzugscheck.ch - 4 USPs */}
+        {/* 3. Warum umzugscheck.ch - USPs früh zeigen */}
         <USPGrid />
         
-        {/* 7. Kostenbeispiele */}
+        {/* 4. Top Firmen - Vertrauen durch echte Partner */}
+        <FeaturedCompanies />
+        
+        {/* 5. Services - Komplettangebot zeigen */}
+        <ServicesGrid />
+        
+        {/* 6. Kostenbeispiele - Preistransparenz */}
         <CostExamples />
         
-        {/* 8. Testimonials Slider */}
+        {/* 7. So funktioniert's - Prozess erklären */}
+        <RedesignHowItWorks />
+        
+        {/* 8. Testimonials - Kundenstimmen */}
         <TestimonialsSlider />
         
-        {/* 9. Für Umzugsfirmen CTA */}
-        <ProviderCTA />
+        {/* 9. B2B CTA - Für Firmen */}
+        <PremiumProviderCTA />
         
-        {/* 10. FAQ - 2 Spalten Desktop */}
+        {/* 10. FAQ - SEO + Nutzerfragen */}
         <FAQSection />
         
-        {/* 11. Regionen */}
+        {/* 11. Regionen - Lokales SEO */}
         <RegionsSection />
       </main>
       
-      {/* 12. Mobile Sticky CTA */}
-      <StickyMobileCTA text="Gratis Angebote erhalten" />
+      {/* Mobile Sticky CTA */}
+      <StickyMobileCTA text="Gratis Offerten erhalten" />
       
       <ScrollToTop />
     </div>
