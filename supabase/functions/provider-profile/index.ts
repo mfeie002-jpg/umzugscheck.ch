@@ -35,6 +35,124 @@ async function verifyToken(authHeader: string | null): Promise<any> {
   }
 }
 
+// Input validation constants
+const MAX_LENGTHS = {
+  companyName: 200,
+  contactPersonName: 100,
+  phone: 30,
+  website: 500,
+  street: 200,
+  zip: 10,
+  city: 100,
+  description: 5000,
+  logoUrl: 500,
+};
+const MAX_ARRAY_SIZE = 30;
+const VALID_PRICE_LEVELS = ['günstig', 'fair', 'premium'];
+const VALID_CANTONS = ['ZH', 'BE', 'LU', 'UR', 'SZ', 'OW', 'NW', 'GL', 'ZG', 'FR', 'SO', 'BS', 'BL', 'SH', 'AR', 'AI', 'SG', 'GR', 'AG', 'TG', 'TI', 'VD', 'VS', 'NE', 'GE', 'JU'];
+
+// URL validation helper
+const isValidUrl = (urlString: string): boolean => {
+  try {
+    const url = new URL(urlString);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+// Validation helper that returns error message or null if valid
+function validateProfileInput(body: any): string | null {
+  const {
+    companyName,
+    contactPersonName,
+    phone,
+    website,
+    street,
+    zip,
+    city,
+    cantonsServed,
+    servicesOffered,
+    description,
+    fleetSize,
+    employeesCount,
+    priceLevel,
+    logoUrl,
+    maxLeadsPerMonth,
+    preferredRegions,
+    minJobValue
+  } = body;
+
+  // Validate string lengths
+  if (companyName !== undefined && (typeof companyName !== 'string' || companyName.length > MAX_LENGTHS.companyName)) {
+    return `Firmenname zu lang (max ${MAX_LENGTHS.companyName} Zeichen)`;
+  }
+  if (contactPersonName !== undefined && (typeof contactPersonName !== 'string' || contactPersonName.length > MAX_LENGTHS.contactPersonName)) {
+    return `Kontaktperson zu lang (max ${MAX_LENGTHS.contactPersonName} Zeichen)`;
+  }
+  if (phone !== undefined && (typeof phone !== 'string' || phone.length > MAX_LENGTHS.phone)) {
+    return `Telefonnummer zu lang (max ${MAX_LENGTHS.phone} Zeichen)`;
+  }
+  if (street !== undefined && (typeof street !== 'string' || street.length > MAX_LENGTHS.street)) {
+    return `Strasse zu lang (max ${MAX_LENGTHS.street} Zeichen)`;
+  }
+  if (zip !== undefined && (typeof zip !== 'string' || zip.length > MAX_LENGTHS.zip)) {
+    return `PLZ zu lang (max ${MAX_LENGTHS.zip} Zeichen)`;
+  }
+  if (city !== undefined && (typeof city !== 'string' || city.length > MAX_LENGTHS.city)) {
+    return `Stadt zu lang (max ${MAX_LENGTHS.city} Zeichen)`;
+  }
+  if (description !== undefined && (typeof description !== 'string' || description.length > MAX_LENGTHS.description)) {
+    return `Beschreibung zu lang (max ${MAX_LENGTHS.description} Zeichen)`;
+  }
+
+  // Validate URLs
+  if (website !== undefined && website !== '' && !isValidUrl(website)) {
+    return 'Ungültige Website-URL (muss mit http:// oder https:// beginnen)';
+  }
+  if (logoUrl !== undefined && logoUrl !== '' && !isValidUrl(logoUrl)) {
+    return 'Ungültige Logo-URL (muss mit http:// oder https:// beginnen)';
+  }
+
+  // Validate priceLevel enum
+  if (priceLevel !== undefined && !VALID_PRICE_LEVELS.includes(priceLevel)) {
+    return `Ungültiges Preisniveau. Erlaubt: ${VALID_PRICE_LEVELS.join(', ')}`;
+  }
+
+  // Validate arrays
+  if (cantonsServed !== undefined) {
+    if (!Array.isArray(cantonsServed) || cantonsServed.length > MAX_ARRAY_SIZE) {
+      return `Kantone müssen als Liste angegeben werden (max ${MAX_ARRAY_SIZE})`;
+    }
+    const invalidCantons = cantonsServed.filter((c: string) => !VALID_CANTONS.includes(c));
+    if (invalidCantons.length > 0) {
+      return `Ungültige Kantone: ${invalidCantons.join(', ')}`;
+    }
+  }
+  if (servicesOffered !== undefined && (!Array.isArray(servicesOffered) || servicesOffered.length > MAX_ARRAY_SIZE)) {
+    return `Dienstleistungen müssen als Liste angegeben werden (max ${MAX_ARRAY_SIZE})`;
+  }
+  if (preferredRegions !== undefined && (!Array.isArray(preferredRegions) || preferredRegions.length > MAX_ARRAY_SIZE)) {
+    return `Bevorzugte Regionen müssen als Liste angegeben werden (max ${MAX_ARRAY_SIZE})`;
+  }
+
+  // Validate numeric fields
+  if (fleetSize !== undefined && (typeof fleetSize !== 'number' || fleetSize < 0 || fleetSize > 1000)) {
+    return 'Flottengrösse muss eine Zahl zwischen 0 und 1000 sein';
+  }
+  if (employeesCount !== undefined && (typeof employeesCount !== 'number' || employeesCount < 0 || employeesCount > 10000)) {
+    return 'Mitarbeiterzahl muss eine Zahl zwischen 0 und 10000 sein';
+  }
+  if (maxLeadsPerMonth !== undefined && (typeof maxLeadsPerMonth !== 'number' || maxLeadsPerMonth < 0 || maxLeadsPerMonth > 10000)) {
+    return 'Maximale Leads pro Monat muss eine Zahl zwischen 0 und 10000 sein';
+  }
+  if (minJobValue !== undefined && (typeof minJobValue !== 'number' || minJobValue < 0 || minJobValue > 1000000)) {
+    return 'Minimaler Auftragswert muss eine Zahl zwischen 0 und 1000000 sein';
+  }
+
+  return null;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -77,6 +195,16 @@ serve(async (req) => {
     // PUT: Update provider profile
     if (req.method === 'PUT') {
       const body = await req.json();
+      
+      // Validate input
+      const validationError = validateProfileInput(body);
+      if (validationError) {
+        return new Response(
+          JSON.stringify({ error: validationError }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       const {
         companyName,
         contactPersonName,
