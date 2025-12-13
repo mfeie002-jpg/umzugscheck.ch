@@ -277,29 +277,40 @@ export const PremiumHeroSection = () => {
             transition={{ duration: 0.6 }}
             className="space-y-4 md:space-y-6 order-2 lg:order-1"
           >
-            {/* Savings Badge - Primary Value Proposition */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ 
-                opacity: 1, 
-                scale: 1,
-                y: [0, -8, 0]
-              }}
-              transition={{ 
-                opacity: { delay: 0.2, duration: 0.5 },
-                scale: { delay: 0.2, duration: 0.5 },
-                y: { delay: 0.7, duration: 3, repeat: Infinity, ease: "easeInOut" }
-              }}
-              className="hidden sm:inline-flex items-center gap-3 px-4 md:px-5 py-2 md:py-3 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-2xl shadow-medium border border-green-500/30"
-            >
-              <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-r from-green-500 to-green-600">
-                <TrendingDown className="h-5 w-5 md:h-6 md:w-6 text-white stroke-[2.5]" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wider">Bis zu 40% sparen</p>
-                <p className="text-sm font-bold text-foreground">durch Firmenvergleich</p>
-              </div>
-            </motion.div>
+            {/* Dual USP Badges */}
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              {/* Savings Badge */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-xl sm:rounded-2xl shadow-soft border border-green-500/30"
+              >
+                <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-r from-green-500 to-green-600">
+                  <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-[10px] sm:text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wide">Bis 40% sparen</p>
+                  <p className="text-xs sm:text-sm font-semibold text-foreground">durch Vergleich</p>
+                </div>
+              </motion.div>
+
+              {/* KI Video Badge */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl sm:rounded-2xl shadow-soft border border-primary/30"
+              >
+                <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-r from-primary to-secondary">
+                  <Video className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-[10px] sm:text-xs font-bold text-primary uppercase tracking-wide">Schweizer Innovation</p>
+                  <p className="text-xs sm:text-sm font-semibold text-foreground">KI Video-Rechner</p>
+                </div>
+              </motion.div>
+            </div>
             
             {/* Main Headline - Best Deal Focus */}
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.15] tracking-tight">
@@ -307,13 +318,30 @@ export const PremiumHeroSection = () => {
               <span className="block text-primary mt-1 md:mt-2">der ganzen Schweiz.</span>
             </h1>
             
-            {/* Subheadline - Value Proposition */}
+            {/* Subheadline - Combined Value Proposition */}
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed">
-              Wir vergleichen <span className="font-semibold text-foreground">200+ Schweizer Umzugsfirmen</span> – 
-              Sie erhalten garantiert das <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400 font-semibold"><Trophy className="h-4 w-4 md:h-5 md:w-5" />beste Angebot</span> zum fairsten Preis.
+              Unser <span className="inline-flex items-center gap-1 text-primary font-semibold"><Video className="h-4 w-4" />KI-Rechner</span> analysiert 
+              Ihren Umzug per Video – wir vergleichen <span className="font-semibold text-foreground">200+ Firmen</span> und finden 
+              das <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400 font-semibold"><Trophy className="h-4 w-4" />beste Angebot</span>.
             </p>
             
-            {/* Live Activity Badge - Hidden on very small screens */}
+            {/* USP Pills */}
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full font-medium">
+                <TrendingDown className="w-3 h-3" />
+                Bis 40% günstiger
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
+                <Video className="w-3 h-3" />
+                Video-Analyse
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs bg-secondary/10 text-secondary px-3 py-1.5 rounded-full font-medium">
+                <CheckCircle2 className="w-3 h-3" />
+                200+ Firmen
+              </span>
+            </div>
+            
+            {/* Live Activity Badge */}
             <div className="pt-1 md:pt-2 hidden sm:block">
               <LiveActivityBadge />
             </div>
