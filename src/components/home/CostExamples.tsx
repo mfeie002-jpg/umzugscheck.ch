@@ -29,48 +29,48 @@ const examples = [
 
 export const CostExamples = () => {
   return (
-    <section className="py-12 md:py-20 bg-background">
+    <section className="py-12 md:py-16 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-10"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-slate-900">
             Kostenbeispiele
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Transparente Preise für typische Umzugssituationen in der Schweiz
+          <p className="text-sm md:text-base text-slate-600 max-w-xl mx-auto">
+            Transparente Preise für typische Umzüge in der Schweiz
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto mb-8">
           {examples.map((example, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-card rounded-2xl p-8 shadow-soft hover:shadow-medium transition-all border border-border/50"
+              transition={{ delay: index * 0.08 }}
+              className="bg-gradient-to-b from-slate-50 to-white rounded-xl p-5 md:p-6 border border-slate-100 hover:border-primary/30 hover:shadow-lg transition-all"
             >
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                <example.icon className="h-8 w-8 text-primary" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto">
+                <example.icon className="h-6 w-6 md:h-7 md:w-7 text-primary" />
               </div>
               
-              <h3 className="text-2xl font-bold text-center mb-2">{example.title}</h3>
-              <p className="text-muted-foreground text-center text-sm mb-4">{example.details}</p>
+              <h3 className="text-lg md:text-xl font-bold text-center mb-1 text-slate-900">{example.title}</h3>
+              <p className="text-slate-500 text-center text-xs md:text-sm mb-3">{example.details}</p>
               
-              <div className="bg-primary/5 rounded-xl p-4 mb-6 text-center">
-                <div className="text-3xl font-bold text-primary">{example.priceRange}</div>
+              <div className="bg-primary/5 rounded-lg p-3 mb-4 text-center border border-primary/10">
+                <div className="text-xl md:text-2xl font-bold text-primary">{example.priceRange}</div>
               </div>
 
-              <ul className="space-y-2">
+              <ul className="space-y-1.5">
                 {example.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-success" />
-                    <span className="text-muted-foreground">{feature}</span>
+                  <li key={i} className="flex items-center gap-2 text-xs md:text-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                    <span className="text-slate-600">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -79,8 +79,8 @@ export const CostExamples = () => {
         </div>
 
         <div className="text-center">
-          <Link to="/rechner">
-            <Button size="lg" className="h-14 px-8 text-lg font-bold shadow-strong">
+          <Link to="/umzugsrechner">
+            <Button size="lg" className="h-11 md:h-12 px-6 md:px-8 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transition-all">
               Meinen Preis berechnen
             </Button>
           </Link>

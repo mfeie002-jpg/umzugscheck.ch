@@ -39,7 +39,7 @@ export const RedesignHero = () => {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen lg:min-h-[90vh] flex items-center overflow-hidden py-8 lg:py-0">
+    <section ref={sectionRef} className="relative min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-hidden py-6 lg:py-0">
       {/* Emotional Background Image with Parallax */}
       <motion.div 
         className="absolute inset-0 z-0"
@@ -64,7 +64,7 @@ export const RedesignHero = () => {
         <Check className="w-[400px] h-[400px] text-white stroke-[1.5]" />
       </motion.div>
 
-      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
+      <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
         <div className="max-w-6xl mx-auto">
           
           {/* Hero Content Grid */}

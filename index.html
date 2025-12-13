@@ -62,19 +62,106 @@
       .loading-spinner { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
     </style>
     
-    <!-- Structured Data -->
+    <!-- Structured Data - Enhanced for Rich Results -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Umzugscheck.ch",
-      "url": "https://umzugscheck.ch",
-      "description": "Die führende Schweizer Plattform für Umzugsvergleiche",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://umzugscheck.ch/firmen?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://umzugscheck.ch/#website",
+          "name": "Umzugscheck.ch",
+          "url": "https://umzugscheck.ch",
+          "description": "Die führende Schweizer Plattform für Umzugsvergleiche. Vergleichen Sie kostenlos Offerten von 200+ geprüften Umzugsfirmen.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://umzugscheck.ch/umzugsfirmen?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          },
+          "publisher": { "@id": "https://umzugscheck.ch/#organization" }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://umzugscheck.ch/#organization",
+          "name": "Umzugscheck.ch",
+          "url": "https://umzugscheck.ch",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://umzugscheck.ch/lovable-uploads/d4aa8c36-01f9-47b7-8e18-bd2a8e22467a.png",
+            "width": 512,
+            "height": 512
+          },
+          "sameAs": [],
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "CH",
+            "addressRegion": "Schweiz"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "availableLanguage": ["German", "French", "Italian"]
+          }
+        },
+        {
+          "@type": "Service",
+          "@id": "https://umzugscheck.ch/#service",
+          "name": "Umzugsvergleich Schweiz",
+          "description": "Kostenloser Vergleich von Umzugsfirmen in der Schweiz. Erhalten Sie bis zu 5 unverbindliche Offerten.",
+          "provider": { "@id": "https://umzugscheck.ch/#organization" },
+          "areaServed": {
+            "@type": "Country",
+            "name": "Switzerland"
+          },
+          "serviceType": "Moving Company Comparison"
+        },
+        {
+          "@type": "AggregateRating",
+          "itemReviewed": { "@id": "https://umzugscheck.ch/#organization" },
+          "ratingValue": "4.8",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": "2847"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://umzugscheck.ch/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Wie funktioniert umzugscheck.ch?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Geben Sie Ihre Umzugsdetails ein, erhalten Sie kostenlose Offerten von bis zu 5 geprüften Umzugsfirmen, vergleichen Sie Preise und Bewertungen, und wählen Sie die beste Firma für Ihren Umzug."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Ist der Service wirklich kostenlos?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, umzugscheck.ch ist für Privatkunden 100% kostenlos und unverbindlich. Sie bezahlen nur die Umzugsfirma, die Sie beauftragen."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Wie schnell erhalte ich Offerten?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Nach der Eingabe Ihrer Daten erhalten Sie innerhalb von 24 Stunden bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Sind die Umzugsfirmen geprüft?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, alle unsere Partner durchlaufen einen strengen Prüfprozess. Wir verifizieren Versicherungen, Bewilligungen und Kundenbewertungen."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
   </head>

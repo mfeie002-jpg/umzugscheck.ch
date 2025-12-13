@@ -51,18 +51,18 @@ export const TestimonialsSlider = () => {
   });
 
   return (
-    <section className="py-12 md:py-20 bg-background">
+    <section className="py-12 md:py-16 bg-gradient-to-b from-white to-slate-50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-10"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-slate-900">
             Das sagen unsere Kunden
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-slate-600 max-w-xl mx-auto">
             Über 15'000 zufriedene Kunden vertrauen auf umzugscheck.ch
           </p>
         </motion.div>
@@ -70,7 +70,7 @@ export const TestimonialsSlider = () => {
         <div 
           {...handlers}
           ref={scrollRef}
-          className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
+          className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-hide"
           style={{ scrollBehavior: 'smooth' }}
         >
           {testimonials.map((testimonial, index) => (
@@ -79,29 +79,29 @@ export const TestimonialsSlider = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="flex-shrink-0 w-full md:w-[400px] snap-start"
+              transition={{ delay: index * 0.08 }}
+              className="flex-shrink-0 w-[280px] md:w-[360px] snap-start"
             >
-              <div className="bg-card rounded-2xl p-8 shadow-soft hover:shadow-medium transition-all border border-border/50 h-full">
-                <div className="flex items-start justify-between mb-4">
-                  <Quote className="h-10 w-10 text-primary/20" />
-                  <div className="flex gap-1">
+              <div className="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 shadow-md hover:shadow-lg transition-all border border-slate-100 h-full">
+                <div className="flex items-start justify-between mb-3">
+                  <Quote className="h-8 w-8 text-primary/15" />
+                  <div className="flex gap-0.5">
                     {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                      <Star key={i} className="h-3.5 w-3.5 md:h-4 md:w-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                 </div>
 
-                <p className="text-foreground leading-relaxed mb-6 text-lg">
+                <p className="text-slate-700 leading-relaxed mb-4 text-sm md:text-base line-clamp-3">
                   "{testimonial.text}"
                 </p>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                   <div>
-                    <div className="font-bold">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground">{testimonial.location}</div>
+                    <div className="font-semibold text-sm text-slate-900">{testimonial.name}</div>
+                    <div className="text-xs text-slate-500">{testimonial.location}</div>
                   </div>
-                  <div className="text-xs text-muted-foreground">{testimonial.date}</div>
+                  <div className="text-[10px] text-slate-400">{testimonial.date}</div>
                 </div>
               </div>
             </motion.div>
