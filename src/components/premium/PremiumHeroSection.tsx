@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check } from "lucide-react";
+import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check, TrendingDown, Trophy, Video } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
@@ -277,7 +277,7 @@ export const PremiumHeroSection = () => {
             transition={{ duration: 0.6 }}
             className="space-y-4 md:space-y-6 order-2 lg:order-1"
           >
-            {/* CHECK Badge - Brand Highlight - Floating - Hidden on small mobile */}
+            {/* Savings Badge - Primary Value Proposition */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ 
@@ -290,27 +290,27 @@ export const PremiumHeroSection = () => {
                 scale: { delay: 0.2, duration: 0.5 },
                 y: { delay: 0.7, duration: 3, repeat: Infinity, ease: "easeInOut" }
               }}
-              className="hidden sm:inline-flex items-center gap-3 px-4 md:px-5 py-2 md:py-3 bg-white rounded-2xl shadow-medium border border-border"
+              className="hidden sm:inline-flex items-center gap-3 px-4 md:px-5 py-2 md:py-3 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-2xl shadow-medium border border-green-500/30"
             >
-              <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-primary">
-                <Check className="h-5 w-5 md:h-6 md:w-6 text-white stroke-[3]" />
+              <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-r from-green-500 to-green-600">
+                <TrendingDown className="h-5 w-5 md:h-6 md:w-6 text-white stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Wir checken für Sie</p>
-                <p className="text-sm font-bold text-foreground">200+ geprüfte Umzugsfirmen</p>
+                <p className="text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wider">Bis zu 40% sparen</p>
+                <p className="text-sm font-bold text-foreground">durch Firmenvergleich</p>
               </div>
             </motion.div>
             
-            {/* Main Headline - Smaller on mobile */}
+            {/* Main Headline - Best Deal Focus */}
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.15] tracking-tight">
-              <span className="text-foreground">Umzugsfirmen vergleichen.</span>
-              <span className="block text-primary mt-1 md:mt-2">In wenigen Minuten.</span>
+              <span className="text-foreground">Der beste Deal</span>
+              <span className="block text-primary mt-1 md:mt-2">der ganzen Schweiz.</span>
             </h1>
             
-            {/* Subheadline - Compact on mobile */}
+            {/* Subheadline - Value Proposition */}
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed">
-              Wir <span className="inline-flex items-center gap-1 text-secondary font-semibold"><CheckCircle2 className="h-4 w-4 md:h-5 md:w-5" />checken</span> für Sie: 
-              AI-gestützte Analyse, geprüfte Partner, transparente Offerten.
+              Wir vergleichen <span className="font-semibold text-foreground">200+ Schweizer Umzugsfirmen</span> – 
+              Sie erhalten garantiert das <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400 font-semibold"><Trophy className="h-4 w-4 md:h-5 md:w-5" />beste Angebot</span> zum fairsten Preis.
             </p>
             
             {/* Live Activity Badge - Hidden on very small screens */}
@@ -353,15 +353,18 @@ export const PremiumHeroSection = () => {
           >
             <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-5 md:p-8 relative">
               <div className="space-y-3 sm:space-y-4 md:space-y-5">
-                {/* Form Header */}
+                {/* Form Header - Savings Focus */}
                 <div className="text-center space-y-1 md:space-y-2">
-                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-semibold">
-                    <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    In 2 Minuten zum Vergleich
+                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-green-700 dark:text-green-400 font-semibold bg-green-500/10 px-3 py-1 rounded-full">
+                    <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Bester Preis garantiert
                   </div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
-                    Kostenlos Offerten erhalten
+                    200+ Firmen vergleichen
                   </h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Wir finden den günstigsten Anbieter für Sie
+                  </p>
                 </div>
                 
                 {/* Form */}
