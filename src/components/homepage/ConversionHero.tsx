@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowRight, Shield, Sparkles, Users, Package } from "lucide-react";
+import { CheckCircle, ArrowRight, Shield, Sparkles, Users, Package, Video, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -61,36 +61,53 @@ export const ConversionHero = memo(function ConversionHero() {
             transition={{ duration: 0.5 }}
             className="space-y-5 text-center lg:text-left"
           >
-            {/* Trust Badge */}
+            {/* Innovation Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="inline-flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-full px-4 py-2 border border-border shadow-soft mx-auto lg:mx-0"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/20 shadow-soft mx-auto lg:mx-0"
             >
-              <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center">
-                <CheckCircle className="w-4 h-4 text-secondary" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <span className="text-sm font-medium">Wir checken für Sie</span>
-              <span className="text-sm text-muted-foreground">• 200+ geprüfte Firmen</span>
+              <span className="text-sm font-bold text-primary">Schweizer Innovation</span>
+              <span className="text-sm text-muted-foreground">• Erster KI Video-Rechner</span>
             </motion.div>
 
             {/* Headline */}
             <div className="space-y-2">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
-                Umzugsfirmen vergleichen.
+                Umzugskosten berechnen.
               </h1>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
-                <span className="text-secondary">In wenigen Minuten.</span>
+                <span className="text-secondary">Per Video & KI.</span>
               </h1>
             </div>
 
             {/* Subline */}
             <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0">
-              Wir <span className="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded-md font-medium text-sm">
-                <CheckCircle className="w-3.5 h-3.5" />checken
-              </span> für Sie: AI-gestützte Analyse, geprüfte Partner, transparente Offerten.
+              <strong className="text-foreground">Weltneuheit:</strong> Filmen Sie Ihre Wohnung ab – unsere KI analysiert 
+              automatisch Volumen & Möbel und findet die <span className="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded-md font-medium text-sm">
+                <CheckCircle className="w-3.5 h-3.5" />besten Offerten
+              </span> für Sie.
             </p>
+
+            {/* USP Pills */}
+            <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full font-medium">
+                <CheckCircle className="w-3 h-3" />
+                Video-Analyse
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
+                <CheckCircle className="w-3 h-3" />
+                90% genauer
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs bg-secondary/10 text-secondary px-3 py-1.5 rounded-full font-medium">
+                <CheckCircle className="w-3 h-3" />
+                In 60 Sekunden
+              </span>
+            </div>
 
             {/* Live Activity Badge - ONLY this, NO stats row */}
             <motion.div
@@ -110,20 +127,21 @@ export const ConversionHero = memo(function ConversionHero() {
             <div className="flex flex-col sm:flex-row gap-3 lg:hidden pt-2">
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta h-12"
-                onClick={() => navigate('/umzugsofferten')}
+                className="w-full sm:w-auto bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white shadow-cta h-12"
+                onClick={() => navigate('/umzugsrechner?tab=ai')}
               >
-                <CheckCircle className="w-5 h-5 mr-2" />
-                Jetzt Offerten erhalten
+                <Video className="w-5 h-5 mr-2" />
+                KI Video-Rechner starten
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
                 className="w-full sm:w-auto h-12"
-                onClick={() => navigate('/umzugsrechner')}
+                onClick={() => navigate('/umzugsofferten')}
               >
-                Kosten berechnen
+                <Camera className="w-5 h-5 mr-2" />
+                Foto-Upload
               </Button>
             </div>
 
