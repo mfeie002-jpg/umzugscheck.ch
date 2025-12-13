@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 44">
+  <g transform="translate(2, 4)">
+    <!-- House body - blue -->
+    <path 
+      d="M18 10L4 20V36H32V20L18 10Z" 
+      fill="#0050A8"
+    />
+    <!-- Roof - red accent -->
+    <path 
+      d="M0 21L18 5L36 21" 
+      fill="none" 
+      stroke="#dc2626" 
+      stroke-width="3" 
+      stroke-linecap="round" 
+      stroke-linejoin="round"
+    />
+    <!-- Checkmark -->
+    <path 
+      d="M10 22L16 28L28 14" 
+      fill="none" 
+      stroke="white" 
+      stroke-width="3" 
+      stroke-linecap="round" 
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>

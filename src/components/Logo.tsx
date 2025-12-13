@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 interface LogoProps {
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
+  iconOnly?: boolean;
 }
 
-export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
+export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProps) => {
   const sizeClasses = {
     sm: "h-4",
     md: "h-5",
@@ -13,14 +14,64 @@ export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
     xl: "h-6 sm:h-7"
   };
 
+  const iconSizeClasses = {
+    sm: "h-6 w-6",
+    md: "h-7 w-7",
+    lg: "h-8 w-8",
+    xl: "h-9 w-9"
+  };
+
+  // Icon-only version for favicon or small screens
+  if (iconOnly) {
+    return (
+      <Link 
+        to="/" 
+        className={`flex items-center hover:opacity-90 hover:scale-105 transition-all duration-200 flex-shrink-0 ${className}`}
+        aria-label="Zur Startseite von Umzugscheck.ch"
+      >
+        <svg 
+          viewBox="0 0 40 44" 
+          className={iconSizeClasses[size]}
+          aria-hidden="true"
+        >
+          <g transform="translate(2, 4)">
+            {/* House body - blue */}
+            <path 
+              d="M18 10L4 20V36H32V20L18 10Z" 
+              fill="#0050A8"
+            />
+            {/* Roof - red accent */}
+            <path 
+              d="M0 21L18 5L36 21" 
+              fill="none" 
+              stroke="#dc2626" 
+              strokeWidth="3" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+            {/* Checkmark */}
+            <path 
+              d="M10 22L16 28L28 14" 
+              fill="none" 
+              stroke="white" 
+              strokeWidth="3" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </g>
+        </svg>
+      </Link>
+    );
+  }
+
   return (
     <Link 
       to="/" 
-      className={`flex items-center hover:opacity-90 transition-opacity flex-shrink-0 ${className}`}
+      className={`flex items-center hover:opacity-90 hover:scale-[1.02] transition-all duration-200 flex-shrink-0 ${className}`}
       aria-label="Zur Startseite von Umzugscheck.ch"
     >
       <svg 
-        viewBox="0 0 280 44" 
+        viewBox="0 0 290 44" 
         className={`${sizeClasses[size]} w-auto`}
         aria-hidden="true"
       >
@@ -63,9 +114,9 @@ export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
           Umzugs
         </text>
         
-        {/* Text "check.ch" in red */}
+        {/* Text "check.ch" in red - increased spacing */}
         <text 
-          x="138" 
+          x="146" 
           y="30" 
           fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
           fontSize="26" 
@@ -78,3 +129,38 @@ export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
     </Link>
   );
 };
+
+// Standalone icon component for favicon generation
+export const LogoIcon = ({ className = "" }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 40 44" 
+    className={className}
+    aria-hidden="true"
+  >
+    <g transform="translate(2, 4)">
+      {/* House body - blue */}
+      <path 
+        d="M18 10L4 20V36H32V20L18 10Z" 
+        fill="#0050A8"
+      />
+      {/* Roof - red accent */}
+      <path 
+        d="M0 21L18 5L36 21" 
+        fill="none" 
+        stroke="#dc2626" 
+        strokeWidth="3" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      {/* Checkmark */}
+      <path 
+        d="M10 22L16 28L28 14" 
+        fill="none" 
+        stroke="white" 
+        strokeWidth="3" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+    </g>
+  </svg>
+);
