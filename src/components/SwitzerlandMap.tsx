@@ -56,10 +56,11 @@ export const SwitzerlandMap = ({
   const [hoveredCanton, setHoveredCanton] = useState<string | null>(null);
 
   return (
-    <div className="relative w-full bg-background/50 rounded-lg border border-border p-4">
+    <div className="relative w-full h-full min-h-[300px] bg-background/50 rounded-lg border border-border p-4">
       <svg
         viewBox="0 0 1000 850"
-        className="w-full h-auto"
+        className="w-full h-full min-h-[250px]"
+        preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* Background */}

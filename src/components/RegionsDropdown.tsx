@@ -425,12 +425,14 @@ export const RegionsDropdown = ({ isOpen, onClose }: RegionsDropdownProps) => {
                 )}
               </TabsContent>
 
-              <TabsContent value="map" className="flex-1 min-h-0 mt-0">
-                <SwitzerlandMap
-                  onCantonClick={handleCantonClick}
-                  companyCounts={companyCounts}
-                  highlightedCantons={nearestCanton ? [nearestCanton] : []}
-                />
+              <TabsContent value="map" className="mt-0 h-[350px] min-h-[350px]">
+                <div className="h-full w-full">
+                  <SwitzerlandMap
+                    onCantonClick={handleCantonClick}
+                    companyCounts={companyCounts}
+                    highlightedCantons={nearestCanton ? [nearestCanton] : []}
+                  />
+                </div>
               </TabsContent>
 
               <TabsContent value="routes" className="flex-1 min-h-0 mt-0">
