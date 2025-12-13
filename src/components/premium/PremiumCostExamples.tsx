@@ -10,493 +10,198 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from "@/components/ui/carousel";
+import { useState } from "react";
 
-// Beautiful 3D-style Apartment Illustrations
-const FloorPlanStudio = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full drop-shadow-sm">
-    {/* Floor with gradient */}
-    <defs>
-      <linearGradient id="floorGradStudio" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.08)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.15)" />
-      </linearGradient>
-      <linearGradient id="wallGradStudio" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.3)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.15)" />
-      </linearGradient>
-      <linearGradient id="furnitureGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.5)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.3)" />
-      </linearGradient>
-    </defs>
-    
-    {/* Main room floor */}
-    <rect x="10" y="20" width="100" height="70" rx="4" fill="url(#floorGradStudio)" />
-    
-    {/* Walls with 3D effect */}
-    <path d="M10 20 L10 90 L110 90 L110 20" fill="none" stroke="url(#wallGradStudio)" strokeWidth="3" strokeLinecap="round" />
-    <path d="M10 20 L20 10 L100 10 L110 20" fill="hsl(var(--primary) / 0.05)" stroke="url(#wallGradStudio)" strokeWidth="2" />
-    
-    {/* Window with light effect */}
-    <rect x="50" y="12" width="20" height="6" rx="1" fill="hsl(220 90% 85%)" stroke="hsl(var(--primary) / 0.4)" strokeWidth="1" />
-    <rect x="52" y="13" width="7" height="4" rx="0.5" fill="hsl(200 100% 95%)" />
-    <rect x="61" y="13" width="7" height="4" rx="0.5" fill="hsl(200 100% 95%)" />
-    
-    {/* Cozy bed with pillows */}
-    <rect x="20" y="35" width="28" height="35" rx="3" fill="url(#furnitureGrad)" />
-    <rect x="21" y="37" width="26" height="8" rx="2" fill="hsl(var(--primary) / 0.6)" />
-    <ellipse cx="28" cy="41" rx="4" ry="3" fill="hsl(var(--background))" opacity="0.8" />
-    <ellipse cx="40" cy="41" rx="4" ry="3" fill="hsl(var(--background))" opacity="0.8" />
-    
-    {/* Small kitchen area */}
-    <rect x="75" y="30" width="25" height="12" rx="2" fill="hsl(var(--primary) / 0.35)" />
-    <circle cx="82" cy="36" r="3" fill="hsl(var(--background))" opacity="0.6" />
-    <circle cx="93" cy="36" r="3" fill="hsl(var(--background))" opacity="0.6" />
-    
-    {/* Mini bathroom */}
-    <rect x="75" y="55" width="25" height="25" rx="2" fill="hsl(var(--primary) / 0.2)" stroke="hsl(var(--primary) / 0.3)" strokeWidth="1" strokeDasharray="4 2" />
-    <ellipse cx="87" cy="70" rx="6" ry="4" fill="hsl(var(--primary) / 0.4)" />
-    
-    {/* Decorative plant */}
-    <circle cx="55" cy="75" r="4" fill="hsl(140 60% 50% / 0.4)" />
-    <rect x="53" y="78" width="4" height="5" rx="1" fill="hsl(30 40% 50% / 0.5)" />
-    
-    {/* Rug */}
-    <ellipse cx="45" cy="60" rx="12" ry="8" fill="hsl(var(--accent) / 0.15)" />
-  </svg>
-);
+// Import AI-generated apartment images
+import studioApartment from "@/assets/apartments/studio-apartment.jpg";
+import apartment1_5 from "@/assets/apartments/1-5-room-apartment.jpg";
+import apartment2_5 from "@/assets/apartments/2-5-room-apartment.jpg";
+import apartment3_5 from "@/assets/apartments/3-5-room-apartment.jpg";
+import apartment4_5 from "@/assets/apartments/4-5-room-apartment.jpg";
+import apartment5_5 from "@/assets/apartments/5-5-room-apartment.jpg";
+import officeSpace from "@/assets/apartments/office-space.jpg";
 
-const FloorPlan1_5 = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full drop-shadow-sm">
-    <defs>
-      <linearGradient id="floorGrad15" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.08)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.15)" />
-      </linearGradient>
-    </defs>
-    
-    {/* Main floor */}
-    <rect x="8" y="18" width="104" height="74" rx="4" fill="url(#floorGrad15)" />
-    
-    {/* 3D walls */}
-    <path d="M8 18 L8 92 L112 92 L112 18" fill="none" stroke="hsl(var(--primary) / 0.25)" strokeWidth="3" />
-    <path d="M8 18 L18 8 L102 8 L112 18" fill="hsl(var(--primary) / 0.05)" stroke="hsl(var(--primary) / 0.25)" strokeWidth="2" />
-    
-    {/* Window */}
-    <rect x="40" y="10" width="30" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.3)" strokeWidth="1" />
-    
-    {/* Living room with sofa */}
-    <rect x="15" y="25" width="50" height="35" rx="2" fill="hsl(var(--primary) / 0.08)" stroke="hsl(var(--primary) / 0.15)" strokeDasharray="6 3" />
-    <rect x="20" y="30" width="25" height="12" rx="3" fill="hsl(var(--primary) / 0.4)" />
-    <rect x="17" y="32" width="4" height="8" rx="2" fill="hsl(var(--primary) / 0.35)" />
-    <rect x="46" y="32" width="4" height="8" rx="2" fill="hsl(var(--primary) / 0.35)" />
-    {/* Coffee table */}
-    <rect x="28" y="47" width="12" height="8" rx="2" fill="hsl(var(--primary) / 0.25)" />
-    
-    {/* Small bedroom */}
-    <rect x="15" y="65" width="35" height="22" rx="2" fill="hsl(var(--primary) / 0.12)" stroke="hsl(var(--primary) / 0.2)" strokeDasharray="4 2" />
-    {/* Bed */}
-    <rect x="18" y="68" width="20" height="16" rx="2" fill="hsl(var(--primary) / 0.4)" />
-    <ellipse cx="28" cy="71" rx="4" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    
-    {/* Kitchen */}
-    <rect x="70" y="25" width="35" height="30" rx="2" fill="hsl(var(--primary) / 0.1)" stroke="hsl(var(--primary) / 0.2)" strokeDasharray="4 2" />
-    <rect x="75" y="30" width="25" height="8" rx="1" fill="hsl(var(--primary) / 0.35)" />
-    <circle cx="82" cy="34" r="2.5" fill="hsl(var(--background))" opacity="0.5" />
-    <circle cx="92" cy="34" r="2.5" fill="hsl(var(--background))" opacity="0.5" />
-    {/* Fridge */}
-    <rect x="90" y="42" width="12" height="10" rx="1" fill="hsl(var(--primary) / 0.3)" />
-    
-    {/* Bathroom */}
-    <rect x="70" y="60" width="35" height="27" rx="2" fill="hsl(var(--primary) / 0.15)" stroke="hsl(var(--primary) / 0.25)" strokeDasharray="4 2" />
-    <ellipse cx="85" cy="72" rx="8" ry="5" fill="hsl(var(--primary) / 0.35)" />
-    <rect x="93" y="65" width="8" height="6" rx="1" fill="hsl(var(--primary) / 0.25)" />
-  </svg>
-);
+// Interactive Floor Plan with Hover Effects
+interface FurnitureItem {
+  id: string;
+  name: string;
+  path: string;
+  fill: string;
+  hoverFill: string;
+}
 
-const FloorPlan2_5 = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full drop-shadow-sm">
-    <defs>
-      <linearGradient id="floorGrad25" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.06)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.12)" />
-      </linearGradient>
-    </defs>
-    
-    {/* Main floor */}
-    <rect x="6" y="16" width="108" height="78" rx="4" fill="url(#floorGrad25)" />
-    
-    {/* 3D walls */}
-    <path d="M6 16 L6 94 L114 94 L114 16" fill="none" stroke="hsl(var(--primary) / 0.25)" strokeWidth="3" />
-    <path d="M6 16 L16 6 L104 6 L114 16" fill="hsl(var(--primary) / 0.04)" stroke="hsl(var(--primary) / 0.2)" strokeWidth="2" />
-    
-    {/* Multiple windows */}
-    <rect x="25" y="8" width="18" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.3)" />
-    <rect x="55" y="8" width="18" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.3)" />
-    
-    {/* Living room */}
-    <rect x="10" y="22" width="45" height="32" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.12)" strokeDasharray="6 3" />
-    {/* L-shaped sofa */}
-    <path d="M15 28 L35 28 L35 35 L25 35 L25 45 L15 45 Z" fill="hsl(var(--primary) / 0.4)" rx="2" />
-    {/* Coffee table */}
-    <rect x="30" y="40" width="10" height="7" rx="2" fill="hsl(var(--primary) / 0.25)" />
-    {/* TV */}
-    <rect x="45" y="30" width="3" height="15" rx="1" fill="hsl(var(--primary) / 0.3)" />
-    
-    {/* Kitchen/Dining */}
-    <rect x="60" y="22" width="48" height="30" rx="2" fill="hsl(var(--primary) / 0.08)" stroke="hsl(var(--primary) / 0.15)" strokeDasharray="4 2" />
-    {/* Kitchen counter */}
-    <rect x="85" y="26" width="20" height="8" rx="1" fill="hsl(var(--primary) / 0.35)" />
-    <circle cx="92" cy="30" r="2" fill="hsl(var(--background))" opacity="0.5" />
-    <circle cx="100" cy="30" r="2" fill="hsl(var(--background))" opacity="0.5" />
-    {/* Dining table */}
-    <ellipse cx="72" cy="38" rx="8" ry="6" fill="hsl(var(--primary) / 0.25)" />
-    <circle cx="65" cy="38" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="79" cy="38" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="72" cy="32" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="72" cy="44" r="2" fill="hsl(var(--primary) / 0.2)" />
-    
-    {/* Bedroom 1 - Master */}
-    <rect x="10" y="58" width="35" height="30" rx="2" fill="hsl(var(--primary) / 0.1)" stroke="hsl(var(--primary) / 0.18)" strokeDasharray="4 2" />
-    <rect x="14" y="62" width="22" height="18" rx="2" fill="hsl(var(--primary) / 0.4)" />
-    <ellipse cx="20" cy="66" rx="4" ry="2.5" fill="hsl(var(--background))" opacity="0.7" />
-    <ellipse cx="30" cy="66" rx="4" ry="2.5" fill="hsl(var(--background))" opacity="0.7" />
-    {/* Nightstand */}
-    <rect x="37" y="68" width="5" height="5" rx="1" fill="hsl(var(--primary) / 0.25)" />
-    
-    {/* Bedroom 2 */}
-    <rect x="50" y="58" width="30" height="30" rx="2" fill="hsl(var(--primary) / 0.1)" stroke="hsl(var(--primary) / 0.18)" strokeDasharray="4 2" />
-    <rect x="54" y="64" width="18" height="14" rx="2" fill="hsl(var(--primary) / 0.4)" />
-    <ellipse cx="63" cy="68" rx="4" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    {/* Desk */}
-    <rect x="65" y="82" width="12" height="4" rx="1" fill="hsl(var(--primary) / 0.25)" />
-    
-    {/* Bathroom */}
-    <rect x="85" y="58" width="23" height="30" rx="2" fill="hsl(var(--primary) / 0.12)" stroke="hsl(var(--primary) / 0.22)" strokeDasharray="4 2" />
-    <ellipse cx="95" cy="72" rx="7" ry="5" fill="hsl(var(--primary) / 0.35)" />
-    <rect x="95" y="82" width="10" height="4" rx="1" fill="hsl(var(--primary) / 0.25)" />
-  </svg>
-);
+const InteractiveFloorPlan = ({ items, viewBox = "0 0 120 100" }: { items: FurnitureItem[], viewBox?: string }) => {
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-const FloorPlan3_5 = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full drop-shadow-sm">
-    <defs>
-      <linearGradient id="floorGrad35" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.05)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.1)" />
-      </linearGradient>
-    </defs>
-    
-    {/* Main floor */}
-    <rect x="5" y="14" width="110" height="80" rx="4" fill="url(#floorGrad35)" />
-    
-    {/* 3D walls */}
-    <path d="M5 14 L5 94 L115 94 L115 14" fill="none" stroke="hsl(var(--primary) / 0.22)" strokeWidth="3" />
-    <path d="M5 14 L15 4 L105 4 L115 14" fill="hsl(var(--primary) / 0.03)" stroke="hsl(var(--primary) / 0.18)" strokeWidth="2" />
-    
-    {/* Windows */}
-    <rect x="20" y="6" width="15" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.3)" />
-    <rect x="50" y="6" width="20" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.3)" />
-    <rect x="85" y="6" width="15" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.3)" />
-    
-    {/* Large living room */}
-    <rect x="10" y="20" width="55" height="32" rx="2" fill="hsl(var(--primary) / 0.05)" stroke="hsl(var(--primary) / 0.1)" strokeDasharray="6 3" />
-    {/* Sectional sofa */}
-    <path d="M15 26 L45 26 L45 34 L35 34 L35 44 L15 44 Z" fill="hsl(var(--primary) / 0.38)" rx="2" />
-    {/* Coffee table */}
-    <rect x="38" y="38" width="12" height="8" rx="2" fill="hsl(var(--primary) / 0.22)" />
-    {/* Plant */}
-    <circle cx="55" cy="28" r="4" fill="hsl(140 55% 50% / 0.35)" />
-    <rect x="53" y="31" width="4" height="5" rx="1" fill="hsl(30 35% 45% / 0.4)" />
-    
-    {/* Kitchen */}
-    <rect x="70" y="20" width="40" height="25" rx="2" fill="hsl(var(--primary) / 0.07)" stroke="hsl(var(--primary) / 0.12)" strokeDasharray="4 2" />
-    <rect x="85" y="24" width="22" height="8" rx="1" fill="hsl(var(--primary) / 0.32)" />
-    <circle cx="92" cy="28" r="2.5" fill="hsl(var(--background))" opacity="0.5" />
-    <circle cx="100" cy="28" r="2.5" fill="hsl(var(--background))" opacity="0.5" />
-    {/* Island */}
-    <rect x="75" y="32" width="8" height="10" rx="1" fill="hsl(var(--primary) / 0.25)" />
-    
-    {/* Bath */}
-    <rect x="70" y="48" width="20" height="16" rx="2" fill="hsl(var(--primary) / 0.12)" stroke="hsl(var(--primary) / 0.2)" strokeDasharray="4 2" />
-    <ellipse cx="80" cy="55" rx="6" ry="4" fill="hsl(var(--primary) / 0.32)" />
-    
-    {/* Bedroom 1 - Master */}
-    <rect x="10" y="56" width="28" height="32" rx="2" fill="hsl(var(--primary) / 0.08)" stroke="hsl(var(--primary) / 0.15)" strokeDasharray="4 2" />
-    <rect x="13" y="60" width="20" height="16" rx="2" fill="hsl(var(--primary) / 0.38)" />
-    <ellipse cx="18" cy="64" rx="3.5" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    <ellipse cx="28" cy="64" rx="3.5" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    
-    {/* Bedroom 2 */}
-    <rect x="42" y="56" width="26" height="32" rx="2" fill="hsl(var(--primary) / 0.08)" stroke="hsl(var(--primary) / 0.15)" strokeDasharray="4 2" />
-    <rect x="46" y="62" width="16" height="12" rx="2" fill="hsl(var(--primary) / 0.38)" />
-    <ellipse cx="54" cy="66" rx="4" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    
-    {/* Bedroom 3 / Office */}
-    <rect x="72" y="68" width="38" height="20" rx="2" fill="hsl(var(--primary) / 0.08)" stroke="hsl(var(--primary) / 0.15)" strokeDasharray="4 2" />
-    <rect x="76" y="72" width="14" height="10" rx="2" fill="hsl(var(--primary) / 0.38)" />
-    <rect x="95" y="74" width="10" height="4" rx="1" fill="hsl(var(--primary) / 0.22)" />
-  </svg>
-);
+  return (
+    <svg viewBox={viewBox} className="w-full h-full drop-shadow-sm">
+      <defs>
+        <linearGradient id="floorGradInteractive" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="hsl(var(--primary) / 0.08)" />
+          <stop offset="100%" stopColor="hsl(var(--primary) / 0.15)" />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      {/* Floor */}
+      <rect x="8" y="15" width="104" height="78" rx="4" fill="url(#floorGradInteractive)" />
+      
+      {/* Walls */}
+      <path d="M8 15 L8 93 L112 93 L112 15" fill="none" stroke="hsl(var(--primary) / 0.25)" strokeWidth="2.5" />
+      <path d="M8 15 L18 5 L102 5 L112 15" fill="hsl(var(--primary) / 0.05)" stroke="hsl(var(--primary) / 0.2)" strokeWidth="1.5" />
+      
+      {/* Window */}
+      <rect x="40" y="7" width="35" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.3)" strokeWidth="1" />
+      
+      {/* Interactive furniture items */}
+      {items.map((item) => (
+        <motion.path
+          key={item.id}
+          d={item.path}
+          fill={hoveredItem === item.id ? item.hoverFill : item.fill}
+          onMouseEnter={() => setHoveredItem(item.id)}
+          onMouseLeave={() => setHoveredItem(null)}
+          style={{ cursor: 'pointer' }}
+          filter={hoveredItem === item.id ? "url(#glow)" : undefined}
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}
+        />
+      ))}
+      
+      {/* Tooltip */}
+      {hoveredItem && (
+        <g>
+          <rect x="35" y="85" width="50" height="12" rx="3" fill="hsl(var(--primary))" />
+          <text x="60" y="93" textAnchor="middle" fill="white" fontSize="6" fontWeight="500">
+            {items.find(i => i.id === hoveredItem)?.name}
+          </text>
+        </g>
+      )}
+    </svg>
+  );
+};
 
-const FloorPlan4_5 = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full drop-shadow-sm">
-    <defs>
-      <linearGradient id="floorGrad45" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.04)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.09)" />
-      </linearGradient>
-    </defs>
-    
-    {/* Main floor */}
-    <rect x="4" y="12" width="112" height="82" rx="4" fill="url(#floorGrad45)" />
-    
-    {/* 3D walls */}
-    <path d="M4 12 L4 94 L116 94 L116 12" fill="none" stroke="hsl(var(--primary) / 0.2)" strokeWidth="3" />
-    <path d="M4 12 L14 2 L106 2 L116 12" fill="hsl(var(--primary) / 0.025)" stroke="hsl(var(--primary) / 0.15)" strokeWidth="2" />
-    
-    {/* Multiple windows */}
-    <rect x="18" y="4" width="12" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.25)" />
-    <rect x="40" y="4" width="18" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.25)" />
-    <rect x="68" y="4" width="12" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.25)" />
-    <rect x="90" y="4" width="12" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.25)" />
-    
-    {/* Open living/dining */}
-    <rect x="8" y="18" width="60" height="30" rx="2" fill="hsl(var(--primary) / 0.04)" stroke="hsl(var(--primary) / 0.08)" strokeDasharray="6 3" />
-    {/* Large sofa set */}
-    <path d="M12 24 L38 24 L38 32 L28 32 L28 40 L12 40 Z" fill="hsl(var(--primary) / 0.35)" />
-    <rect x="40" y="28" width="8" height="8" rx="2" fill="hsl(var(--primary) / 0.3)" />
-    {/* Coffee table */}
-    <rect x="32" y="36" width="14" height="8" rx="2" fill="hsl(var(--primary) / 0.2)" />
-    {/* Dining area */}
-    <ellipse cx="55" cy="32" rx="10" ry="7" fill="hsl(var(--primary) / 0.2)" />
-    
-    {/* Kitchen */}
-    <rect x="72" y="18" width="40" height="22" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.1)" strokeDasharray="4 2" />
-    <rect x="88" y="22" width="20" height="7" rx="1" fill="hsl(var(--primary) / 0.3)" />
-    <circle cx="95" cy="25.5" r="2" fill="hsl(var(--background))" opacity="0.5" />
-    <circle cx="102" cy="25.5" r="2" fill="hsl(var(--background))" opacity="0.5" />
-    <rect x="76" y="26" width="8" height="10" rx="1" fill="hsl(var(--primary) / 0.22)" />
-    
-    {/* Bath 1 */}
-    <rect x="72" y="44" width="18" height="14" rx="2" fill="hsl(var(--primary) / 0.1)" stroke="hsl(var(--primary) / 0.18)" strokeDasharray="4 2" />
-    <ellipse cx="80" cy="50" rx="5" ry="3.5" fill="hsl(var(--primary) / 0.3)" />
-    
-    {/* Bath 2 / WC */}
-    <rect x="94" y="44" width="18" height="14" rx="2" fill="hsl(var(--primary) / 0.1)" stroke="hsl(var(--primary) / 0.18)" strokeDasharray="4 2" />
-    <rect x="99" y="48" width="8" height="6" rx="1" fill="hsl(var(--primary) / 0.25)" />
-    
-    {/* Bedroom 1 - Master with ensuite */}
-    <rect x="8" y="52" width="30" height="36" rx="2" fill="hsl(var(--primary) / 0.07)" stroke="hsl(var(--primary) / 0.13)" strokeDasharray="4 2" />
-    <rect x="11" y="58" width="22" height="16" rx="2" fill="hsl(var(--primary) / 0.35)" />
-    <ellipse cx="17" cy="62" rx="4" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    <ellipse cx="27" cy="62" rx="4" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    <rect x="14" y="78" width="10" height="7" rx="1" fill="hsl(var(--primary) / 0.15)" />
-    
-    {/* Bedroom 2 */}
-    <rect x="42" y="52" width="26" height="36" rx="2" fill="hsl(var(--primary) / 0.07)" stroke="hsl(var(--primary) / 0.13)" strokeDasharray="4 2" />
-    <rect x="46" y="58" width="16" height="12" rx="2" fill="hsl(var(--primary) / 0.35)" />
-    <ellipse cx="54" cy="62" rx="4" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    
-    {/* Bedroom 3 */}
-    <rect x="72" y="62" width="24" height="26" rx="2" fill="hsl(var(--primary) / 0.07)" stroke="hsl(var(--primary) / 0.13)" strokeDasharray="4 2" />
-    <rect x="76" y="66" width="14" height="10" rx="2" fill="hsl(var(--primary) / 0.35)" />
-    
-    {/* Office/Guest */}
-    <rect x="100" y="62" width="12" height="26" rx="2" fill="hsl(var(--primary) / 0.07)" stroke="hsl(var(--primary) / 0.13)" strokeDasharray="4 2" />
-    <rect x="102" y="68" width="8" height="4" rx="1" fill="hsl(var(--primary) / 0.2)" />
-  </svg>
-);
+// Floor plan furniture configurations
+const studioFurniture: FurnitureItem[] = [
+  { id: "bed", name: "Bett", path: "M15 35 L48 35 L48 70 L15 70 Z", fill: "hsl(var(--primary) / 0.4)", hoverFill: "hsl(var(--primary) / 0.7)" },
+  { id: "desk", name: "Schreibtisch", path: "M55 55 L75 55 L75 68 L55 68 Z", fill: "hsl(var(--primary) / 0.3)", hoverFill: "hsl(var(--primary) / 0.6)" },
+  { id: "kitchen", name: "Küche", path: "M80 25 L105 25 L105 42 L80 42 Z", fill: "hsl(var(--primary) / 0.35)", hoverFill: "hsl(var(--primary) / 0.65)" },
+  { id: "bath", name: "Bad", path: "M80 50 L105 50 L105 80 L80 80 Z", fill: "hsl(var(--primary) / 0.25)", hoverFill: "hsl(var(--primary) / 0.55)" },
+];
 
-const FloorPlan5_5 = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full drop-shadow-sm">
-    <defs>
-      <linearGradient id="floorGrad55" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.035)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.08)" />
-      </linearGradient>
-    </defs>
-    
-    {/* Main floor */}
-    <rect x="3" y="10" width="114" height="84" rx="4" fill="url(#floorGrad55)" />
-    
-    {/* 3D walls */}
-    <path d="M3 10 L3 94 L117 94 L117 10" fill="none" stroke="hsl(var(--primary) / 0.18)" strokeWidth="3" />
-    <path d="M3 10 L13 0 L107 0 L117 10" fill="hsl(var(--primary) / 0.02)" stroke="hsl(var(--primary) / 0.12)" strokeWidth="2" />
-    
-    {/* Many windows */}
-    <rect x="15" y="2" width="10" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.2)" />
-    <rect x="32" y="2" width="15" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.2)" />
-    <rect x="54" y="2" width="15" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.2)" />
-    <rect x="76" y="2" width="10" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.2)" />
-    <rect x="93" y="2" width="10" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.2)" />
-    
-    {/* Large living area */}
-    <rect x="7" y="16" width="65" height="28" rx="2" fill="hsl(var(--primary) / 0.03)" stroke="hsl(var(--primary) / 0.07)" strokeDasharray="6 3" />
-    <path d="M12 22 L42 22 L42 30 L30 30 L30 38 L12 38 Z" fill="hsl(var(--primary) / 0.32)" />
-    <rect x="45" y="26" width="10" height="10" rx="2" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="35" y="34" width="16" height="8" rx="2" fill="hsl(var(--primary) / 0.18)" />
-    <ellipse cx="60" cy="30" rx="8" ry="6" fill="hsl(var(--primary) / 0.18)" />
-    
-    {/* Kitchen */}
-    <rect x="76" y="16" width="38" height="20" rx="2" fill="hsl(var(--primary) / 0.05)" stroke="hsl(var(--primary) / 0.09)" strokeDasharray="4 2" />
-    <rect x="92" y="20" width="18" height="6" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="80" y="24" width="8" height="8" rx="1" fill="hsl(var(--primary) / 0.2)" />
-    
-    {/* Bath 1 */}
-    <rect x="76" y="40" width="16" height="12" rx="2" fill="hsl(var(--primary) / 0.09)" stroke="hsl(var(--primary) / 0.15)" strokeDasharray="4 2" />
-    <ellipse cx="84" cy="46" rx="5" ry="3" fill="hsl(var(--primary) / 0.28)" />
-    
-    {/* Bath 2 */}
-    <rect x="96" y="40" width="18" height="12" rx="2" fill="hsl(var(--primary) / 0.09)" stroke="hsl(var(--primary) / 0.15)" strokeDasharray="4 2" />
-    <rect x="100" y="44" width="10" height="5" rx="1" fill="hsl(var(--primary) / 0.22)" />
-    
-    {/* Bedroom 1 - Master Suite */}
-    <rect x="7" y="48" width="28" height="40" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.11)" strokeDasharray="4 2" />
-    <rect x="10" y="54" width="20" height="14" rx="2" fill="hsl(var(--primary) / 0.32)" />
-    <ellipse cx="15" cy="58" rx="3.5" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    <ellipse cx="25" cy="58" rx="3.5" ry="2" fill="hsl(var(--background))" opacity="0.7" />
-    <rect x="12" y="72" width="10" height="8" rx="1" fill="hsl(var(--primary) / 0.12)" />
-    
-    {/* Bedroom 2 */}
-    <rect x="39" y="48" width="24" height="20" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.11)" strokeDasharray="4 2" />
-    <rect x="43" y="52" width="14" height="10" rx="2" fill="hsl(var(--primary) / 0.32)" />
-    
-    {/* Bedroom 3 */}
-    <rect x="39" y="72" width="24" height="16" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.11)" strokeDasharray="4 2" />
-    <rect x="43" y="76" width="14" height="9" rx="2" fill="hsl(var(--primary) / 0.32)" />
-    
-    {/* Bedroom 4 */}
-    <rect x="67" y="56" width="22" height="18" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.11)" strokeDasharray="4 2" />
-    <rect x="70" y="60" width="12" height="8" rx="2" fill="hsl(var(--primary) / 0.32)" />
-    
-    {/* Office */}
-    <rect x="93" y="56" width="20" height="32" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.11)" strokeDasharray="4 2" />
-    <rect x="97" y="62" width="12" height="5" rx="1" fill="hsl(var(--primary) / 0.18)" />
-    <rect x="97" y="74" width="8" height="8" rx="1" fill="hsl(var(--primary) / 0.15)" />
-    
-    {/* Storage */}
-    <rect x="67" y="78" width="22" height="10" rx="2" fill="hsl(var(--primary) / 0.05)" stroke="hsl(var(--primary) / 0.1)" strokeDasharray="4 2" />
-  </svg>
-);
+const apartment1_5Furniture: FurnitureItem[] = [
+  { id: "sofa", name: "Sofa", path: "M15 25 L45 25 L45 42 L15 42 Z", fill: "hsl(var(--primary) / 0.4)", hoverFill: "hsl(var(--primary) / 0.7)" },
+  { id: "bed", name: "Schlafzimmer", path: "M15 55 L45 55 L45 85 L15 85 Z", fill: "hsl(var(--primary) / 0.35)", hoverFill: "hsl(var(--primary) / 0.65)" },
+  { id: "kitchen", name: "Küche", path: "M55 25 L105 25 L105 50 L55 50 Z", fill: "hsl(var(--primary) / 0.3)", hoverFill: "hsl(var(--primary) / 0.6)" },
+  { id: "bath", name: "Bad", path: "M55 55 L80 55 L80 85 L55 85 Z", fill: "hsl(var(--primary) / 0.25)", hoverFill: "hsl(var(--primary) / 0.55)" },
+];
 
-const FloorPlanOffice = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full drop-shadow-sm">
-    <defs>
-      <linearGradient id="floorGradOffice" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary) / 0.04)" />
-        <stop offset="100%" stopColor="hsl(var(--primary) / 0.09)" />
-      </linearGradient>
-    </defs>
-    
-    {/* Main floor */}
-    <rect x="4" y="12" width="112" height="82" rx="4" fill="url(#floorGradOffice)" />
-    
-    {/* 3D walls */}
-    <path d="M4 12 L4 94 L116 94 L116 12" fill="none" stroke="hsl(var(--primary) / 0.2)" strokeWidth="3" />
-    <path d="M4 12 L14 2 L106 2 L116 12" fill="hsl(var(--primary) / 0.025)" stroke="hsl(var(--primary) / 0.15)" strokeWidth="2" />
-    
-    {/* Large windows */}
-    <rect x="20" y="4" width="25" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.25)" />
-    <rect x="55" y="4" width="25" height="6" rx="1" fill="hsl(220 90% 88%)" stroke="hsl(var(--primary) / 0.25)" />
-    
-    {/* Open Office Area */}
-    <rect x="8" y="18" width="70" height="45" rx="2" fill="hsl(var(--primary) / 0.04)" stroke="hsl(var(--primary) / 0.08)" strokeDasharray="6 3" />
-    {/* Desk clusters */}
-    <rect x="14" y="24" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="32" y="24" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="50" y="24" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="14" y="38" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="32" y="38" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="50" y="38" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="14" y="52" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    <rect x="32" y="52" width="14" height="7" rx="1" fill="hsl(var(--primary) / 0.28)" />
-    {/* Chairs (dots) */}
-    <circle cx="21" cy="34" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="39" cy="34" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="57" cy="34" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="21" cy="48" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="39" cy="48" r="2" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="57" cy="48" r="2" fill="hsl(var(--primary) / 0.2)" />
-    
-    {/* Meeting Room */}
-    <rect x="82" y="18" width="30" height="25" rx="2" fill="hsl(var(--primary) / 0.07)" stroke="hsl(var(--primary) / 0.12)" strokeDasharray="4 2" />
-    <ellipse cx="97" cy="30" rx="12" ry="8" fill="hsl(var(--primary) / 0.2)" />
-    <circle cx="88" cy="30" r="2" fill="hsl(var(--primary) / 0.15)" />
-    <circle cx="106" cy="30" r="2" fill="hsl(var(--primary) / 0.15)" />
-    <circle cx="97" cy="22" r="2" fill="hsl(var(--primary) / 0.15)" />
-    <circle cx="97" cy="38" r="2" fill="hsl(var(--primary) / 0.15)" />
-    
-    {/* Manager Office */}
-    <rect x="82" y="47" width="30" height="20" rx="2" fill="hsl(var(--primary) / 0.07)" stroke="hsl(var(--primary) / 0.12)" strokeDasharray="4 2" />
-    <rect x="88" y="52" width="18" height="8" rx="1" fill="hsl(var(--primary) / 0.25)" />
-    <circle cx="97" cy="62" r="2" fill="hsl(var(--primary) / 0.18)" />
-    
-    {/* Kitchen/Break Room */}
-    <rect x="8" y="67" width="35" height="21" rx="2" fill="hsl(var(--primary) / 0.06)" stroke="hsl(var(--primary) / 0.1)" strokeDasharray="4 2" />
-    <rect x="12" y="71" width="15" height="5" rx="1" fill="hsl(var(--primary) / 0.25)" />
-    <ellipse cx="35" cy="78" rx="5" ry="4" fill="hsl(var(--primary) / 0.18)" />
-    
-    {/* Restrooms */}
-    <rect x="47" y="67" width="14" height="21" rx="2" fill="hsl(var(--primary) / 0.08)" stroke="hsl(var(--primary) / 0.12)" strokeDasharray="4 2" />
-    <rect x="50" y="72" width="8" height="5" rx="1" fill="hsl(var(--primary) / 0.2)" />
-    <rect x="50" y="80" width="8" height="5" rx="1" fill="hsl(var(--primary) / 0.2)" />
-    
-    {/* Server/Storage */}
-    <rect x="65" y="67" width="13" height="21" rx="2" fill="hsl(var(--primary) / 0.08)" stroke="hsl(var(--primary) / 0.12)" strokeDasharray="4 2" />
-    <rect x="68" y="72" width="7" height="12" rx="1" fill="hsl(var(--primary) / 0.22)" />
-    
-    {/* Reception */}
-    <rect x="82" y="71" width="30" height="17" rx="2" fill="hsl(var(--primary) / 0.05)" stroke="hsl(var(--primary) / 0.1)" strokeDasharray="4 2" />
-    <path d="M88 76 L100 76 L100 82 L88 82 Z" fill="hsl(var(--primary) / 0.22)" />
-  </svg>
-);
+const apartment2_5Furniture: FurnitureItem[] = [
+  { id: "living", name: "Wohnzimmer", path: "M12 22 L55 22 L55 50 L12 50 Z", fill: "hsl(var(--primary) / 0.35)", hoverFill: "hsl(var(--primary) / 0.65)" },
+  { id: "kitchen", name: "Küche", path: "M60 22 L108 22 L108 48 L60 48 Z", fill: "hsl(var(--primary) / 0.3)", hoverFill: "hsl(var(--primary) / 0.6)" },
+  { id: "bedroom1", name: "Schlafzimmer 1", path: "M12 55 L45 55 L45 88 L12 88 Z", fill: "hsl(var(--primary) / 0.4)", hoverFill: "hsl(var(--primary) / 0.7)" },
+  { id: "bedroom2", name: "Schlafzimmer 2", path: "M50 55 L80 55 L80 88 L50 88 Z", fill: "hsl(var(--primary) / 0.38)", hoverFill: "hsl(var(--primary) / 0.68)" },
+  { id: "bath", name: "Bad", path: "M85 55 L108 55 L108 88 L85 88 Z", fill: "hsl(var(--primary) / 0.25)", hoverFill: "hsl(var(--primary) / 0.55)" },
+];
+
+const apartment3_5Furniture: FurnitureItem[] = [
+  { id: "living", name: "Wohnzimmer", path: "M12 20 L60 20 L60 48 L12 48 Z", fill: "hsl(var(--primary) / 0.35)", hoverFill: "hsl(var(--primary) / 0.65)" },
+  { id: "kitchen", name: "Küche", path: "M65 20 L108 20 L108 42 L65 42 Z", fill: "hsl(var(--primary) / 0.3)", hoverFill: "hsl(var(--primary) / 0.6)" },
+  { id: "bedroom1", name: "Elternzimmer", path: "M12 53 L40 53 L40 88 L12 88 Z", fill: "hsl(var(--primary) / 0.4)", hoverFill: "hsl(var(--primary) / 0.7)" },
+  { id: "bedroom2", name: "Kinderzimmer", path: "M45 53 L70 53 L70 88 L45 88 Z", fill: "hsl(var(--primary) / 0.38)", hoverFill: "hsl(var(--primary) / 0.68)" },
+  { id: "bedroom3", name: "Büro", path: "M75 53 L95 53 L95 75 L75 75 Z", fill: "hsl(var(--primary) / 0.32)", hoverFill: "hsl(var(--primary) / 0.62)" },
+  { id: "bath", name: "Bad", path: "M75 78 L108 78 L108 88 L75 88 Z", fill: "hsl(var(--primary) / 0.25)", hoverFill: "hsl(var(--primary) / 0.55)" },
+];
+
+const apartment4_5Furniture: FurnitureItem[] = [
+  { id: "living", name: "Wohnbereich", path: "M10 18 L65 18 L65 45 L10 45 Z", fill: "hsl(var(--primary) / 0.33)", hoverFill: "hsl(var(--primary) / 0.63)" },
+  { id: "kitchen", name: "Küche", path: "M70 18 L110 18 L110 38 L70 38 Z", fill: "hsl(var(--primary) / 0.3)", hoverFill: "hsl(var(--primary) / 0.6)" },
+  { id: "master", name: "Master-Suite", path: "M10 50 L38 50 L38 88 L10 88 Z", fill: "hsl(var(--primary) / 0.4)", hoverFill: "hsl(var(--primary) / 0.7)" },
+  { id: "bedroom2", name: "Schlafzimmer 2", path: "M42 50 L68 50 L68 88 L42 88 Z", fill: "hsl(var(--primary) / 0.38)", hoverFill: "hsl(var(--primary) / 0.68)" },
+  { id: "bedroom3", name: "Schlafzimmer 3", path: "M72 50 L95 50 L95 75 L72 75 Z", fill: "hsl(var(--primary) / 0.35)", hoverFill: "hsl(var(--primary) / 0.65)" },
+  { id: "office", name: "Büro", path: "M98 50 L110 50 L110 88 L98 88 Z", fill: "hsl(var(--primary) / 0.28)", hoverFill: "hsl(var(--primary) / 0.58)" },
+  { id: "bath", name: "Bäder", path: "M72 78 L95 78 L95 88 L72 88 Z", fill: "hsl(var(--primary) / 0.22)", hoverFill: "hsl(var(--primary) / 0.52)" },
+];
+
+const apartment5_5Furniture: FurnitureItem[] = [
+  { id: "living", name: "Wohnzimmer", path: "M8 18 L62 18 L62 42 L8 42 Z", fill: "hsl(var(--primary) / 0.32)", hoverFill: "hsl(var(--primary) / 0.62)" },
+  { id: "kitchen", name: "Küche", path: "M66 18 L112 18 L112 35 L66 35 Z", fill: "hsl(var(--primary) / 0.28)", hoverFill: "hsl(var(--primary) / 0.58)" },
+  { id: "master", name: "Master-Suite", path: "M8 46 L35 46 L35 88 L8 88 Z", fill: "hsl(var(--primary) / 0.4)", hoverFill: "hsl(var(--primary) / 0.7)" },
+  { id: "bedroom2", name: "Zimmer 2", path: "M38 46 L60 46 L60 66 L38 66 Z", fill: "hsl(var(--primary) / 0.36)", hoverFill: "hsl(var(--primary) / 0.66)" },
+  { id: "bedroom3", name: "Zimmer 3", path: "M38 69 L60 69 L60 88 L38 88 Z", fill: "hsl(var(--primary) / 0.34)", hoverFill: "hsl(var(--primary) / 0.64)" },
+  { id: "bedroom4", name: "Zimmer 4", path: "M64 46 L88 46 L88 70 L64 70 Z", fill: "hsl(var(--primary) / 0.32)", hoverFill: "hsl(var(--primary) / 0.62)" },
+  { id: "office", name: "Büro", path: "M92 46 L112 46 L112 88 L92 88 Z", fill: "hsl(var(--primary) / 0.28)", hoverFill: "hsl(var(--primary) / 0.58)" },
+  { id: "bath", name: "Bäder", path: "M66 38 L112 38 L112 44 L66 44 Z", fill: "hsl(var(--primary) / 0.22)", hoverFill: "hsl(var(--primary) / 0.52)" },
+];
+
+const officeFurniture: FurnitureItem[] = [
+  { id: "openoffice", name: "Grossraumbüro", path: "M10 20 L75 20 L75 60 L10 60 Z", fill: "hsl(var(--primary) / 0.3)", hoverFill: "hsl(var(--primary) / 0.6)" },
+  { id: "meeting", name: "Sitzungszimmer", path: "M80 20 L110 20 L110 42 L80 42 Z", fill: "hsl(var(--primary) / 0.35)", hoverFill: "hsl(var(--primary) / 0.65)" },
+  { id: "manager", name: "Chefbüro", path: "M80 46 L110 46 L110 65 L80 65 Z", fill: "hsl(var(--primary) / 0.38)", hoverFill: "hsl(var(--primary) / 0.68)" },
+  { id: "kitchen", name: "Pausenraum", path: "M10 65 L40 65 L40 88 L10 88 Z", fill: "hsl(var(--primary) / 0.25)", hoverFill: "hsl(var(--primary) / 0.55)" },
+  { id: "reception", name: "Empfang", path: "M80 70 L110 70 L110 88 L80 88 Z", fill: "hsl(var(--primary) / 0.28)", hoverFill: "hsl(var(--primary) / 0.58)" },
+  { id: "wc", name: "WC", path: "M45 65 L60 65 L60 88 L45 88 Z", fill: "hsl(var(--primary) / 0.2)", hoverFill: "hsl(var(--primary) / 0.5)" },
+];
 
 const costExamples = [
   {
-    FloorPlan: FloorPlanStudio,
+    furniture: studioFurniture,
+    image: studioApartment,
     title: "Studio",
     subtitle: "ca. 25-35 m²",
     price: "ab CHF 450",
     details: ["1-2 Umzugshelfer", "Kleintransporter", "2-3 Stunden"]
   },
   {
-    FloorPlan: FloorPlan1_5,
+    furniture: apartment1_5Furniture,
+    image: apartment1_5,
     title: "1.5-Zimmer",
     subtitle: "ca. 35-45 m²",
     price: "ab CHF 680",
     details: ["2 Umzugshelfer", "Kleintransporter", "3-4 Stunden"]
   },
   {
-    FloorPlan: FloorPlan2_5,
+    furniture: apartment2_5Furniture,
+    image: apartment2_5,
     title: "2.5-Zimmer",
     subtitle: "ca. 50-65 m²",
     price: "ab CHF 980",
     details: ["2-3 Umzugshelfer", "Umzugswagen", "4-5 Stunden"]
   },
   {
-    FloorPlan: FloorPlan3_5,
+    furniture: apartment3_5Furniture,
+    image: apartment3_5,
     title: "3.5-Zimmer",
     subtitle: "ca. 70-85 m²",
     price: "ab CHF 1'350",
     details: ["3 Umzugshelfer", "Umzugswagen", "5-7 Stunden"]
   },
   {
-    FloorPlan: FloorPlan4_5,
+    furniture: apartment4_5Furniture,
+    image: apartment4_5,
     title: "4.5-Zimmer",
     subtitle: "ca. 90-110 m²",
     price: "ab CHF 1'650",
     details: ["3-4 Umzugshelfer", "LKW 3.5t", "6-8 Stunden"]
   },
   {
-    FloorPlan: FloorPlan5_5,
+    furniture: apartment5_5Furniture,
+    image: apartment5_5,
     title: "5.5-Zimmer",
     subtitle: "ca. 120-150 m²",
     price: "ab CHF 2'200",
     details: ["4-5 Umzugshelfer", "LKW 7.5t", "8-10 Stunden"]
   },
   {
-    FloorPlan: FloorPlanOffice,
+    furniture: officeFurniture,
+    image: officeSpace,
     title: "KMU-Büroumzug",
     subtitle: "ca. 100-200 m²",
     price: "ab CHF 2'800",
@@ -505,6 +210,8 @@ const costExamples = [
 ];
 
 export const PremiumCostExamples = () => {
+  const [activeView, setActiveView] = useState<'photo' | 'plan'>('photo');
+
   return (
     <section className="py-10 sm:py-14 md:py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
       {/* Decorative Elements */}
@@ -518,7 +225,7 @@ export const PremiumCostExamples = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
           <motion.span 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -532,9 +239,33 @@ export const PremiumCostExamples = () => {
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4">
             Was kostet ein Umzug?
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
             Transparente Preisübersicht für alle Wohnungsgrössen
           </p>
+          
+          {/* View Toggle */}
+          <div className="inline-flex items-center gap-1 p-1 bg-muted rounded-lg">
+            <button
+              onClick={() => setActiveView('photo')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                activeView === 'photo' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              📸 Fotos
+            </button>
+            <button
+              onClick={() => setActiveView('plan')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                activeView === 'plan' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              📐 Grundrisse
+            </button>
+          </div>
         </motion.div>
         
         {/* Carousel with visible arrows */}
@@ -556,14 +287,37 @@ export const PremiumCostExamples = () => {
                     transition={{ delay: index * 0.05 }}
                     className="h-full"
                   >
-                    <Card className="h-full text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border bg-card overflow-hidden group">
+                    <Card className="h-full text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border bg-card overflow-hidden group">
                       <CardContent className="p-0 h-full flex flex-col">
-                        {/* Floor Plan Visual */}
-                        <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5 flex items-center justify-center min-h-[120px]">
-                          <div className="w-28 h-24 text-primary group-hover:scale-105 transition-transform duration-500">
-                            <example.FloorPlan />
-                          </div>
+                        {/* Image or Floor Plan Visual */}
+                        <div className="relative overflow-hidden min-h-[140px] sm:min-h-[160px]">
+                          {activeView === 'photo' ? (
+                            <motion.div
+                              className="w-full h-[140px] sm:h-[160px] relative"
+                              whileHover={{ scale: 1.05 }}
+                              transition={{ duration: 0.4 }}
+                            >
+                              <img 
+                                src={example.image} 
+                                alt={example.title}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                                <span className="text-white text-xs font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded">
+                                  {example.subtitle}
+                                </span>
+                              </div>
+                            </motion.div>
+                          ) : (
+                            <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 flex items-center justify-center h-[140px] sm:h-[160px]">
+                              <div className="w-full max-w-[180px] h-[120px] text-primary">
+                                <InteractiveFloorPlan items={example.furniture} />
+                              </div>
+                            </div>
+                          )}
                         </div>
+                        
                         <div className="p-4 md:p-5 flex-1 flex flex-col">
                           <h3 className="text-base md:text-lg font-bold mb-0.5 text-foreground">
                             {example.title}
@@ -571,9 +325,13 @@ export const PremiumCostExamples = () => {
                           <p className="text-xs text-muted-foreground mb-3">
                             {example.subtitle}
                           </p>
-                          <p className="text-2xl md:text-3xl font-bold text-primary mb-4">
+                          <motion.p 
+                            className="text-2xl md:text-3xl font-bold text-primary mb-4"
+                            initial={{ scale: 1 }}
+                            whileHover={{ scale: 1.05 }}
+                          >
                             {example.price}
-                          </p>
+                          </motion.p>
                           <ul className="space-y-1.5 text-left mt-auto">
                             {example.details.map((detail, i) => (
                               <li key={i} className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
@@ -601,6 +359,18 @@ export const PremiumCostExamples = () => {
             Wischen zum Durchblättern
             <ChevronRight className="h-3 w-3" />
           </p>
+          
+          {/* Interactive hint for floor plans */}
+          {activeView === 'plan' && (
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center text-xs text-muted-foreground mt-2 flex items-center justify-center gap-1"
+            >
+              <span className="inline-block w-2 h-2 rounded-full bg-primary/50 animate-pulse" />
+              Bewegen Sie die Maus über die Räume, um Details zu sehen
+            </motion.p>
+          )}
         </div>
         
         {/* Disclaimer */}
