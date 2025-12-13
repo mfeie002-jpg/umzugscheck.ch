@@ -9,7 +9,7 @@ import { ServicesDropdown } from "@/components/ServicesDropdown";
 import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
-import logo from "@/assets/logo-final.png";
+import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
 type DropdownType = 'calculator' | 'companies' | 'services' | 'regions' | 'ratgeber' | 'provider' | null;
@@ -88,20 +88,7 @@ export const Navigation = () => {
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
             {/* Logo */}
-            <Link 
-              to="/" 
-              className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 -ml-1 sm:ml-0"
-              aria-label="Zur Startseite von Umzugscheck.ch"
-            >
-              <img 
-                src={logo} 
-                alt="Umzugscheck.ch - Schweizer Umzugsvergleich" 
-                className="h-12 sm:h-14 md:h-16 lg:h-20 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[260px] lg:max-w-[320px]"
-                width={320}
-                height={80}
-                loading="eager"
-              />
-            </Link>
+            <Logo size="xl" className="-ml-1 sm:ml-0" />
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
