@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { InteractiveSwitzerlandMap } from "@/components/InteractiveSwitzerlandMap";
 
 const cantons = [
   { name: "Zürich", slug: "zuerich", companies: 42, moves: "1'200+", avgPrice: "CHF 1'200" },
@@ -172,6 +173,15 @@ const Regionen = () => {
                 </ScrollReveal>
               ))}
             </div>
+          </div>
+        </PageSection>
+
+        {/* Interactive Map */}
+        <PageSection variant="default">
+          <div className="max-w-6xl mx-auto">
+            <ScrollReveal>
+              <InteractiveSwitzerlandMap />
+            </ScrollReveal>
           </div>
         </PageSection>
 
