@@ -157,7 +157,9 @@ const costExamples = [
     title: "Studio",
     subtitle: "ca. 25-35 m²",
     price: "ab CHF 450",
-    details: ["1-2 Umzugshelfer", "Kleintransporter", "2-3 Stunden"]
+    details: ["1-2 Umzugshelfer", "Kleintransporter", "2-3 Stunden"],
+    rooms: "1",
+    ctaText: "Studio berechnen"
   },
   {
     furniture: apartment1_5Furniture,
@@ -165,7 +167,9 @@ const costExamples = [
     title: "1.5-Zimmer",
     subtitle: "ca. 35-45 m²",
     price: "ab CHF 680",
-    details: ["2 Umzugshelfer", "Kleintransporter", "3-4 Stunden"]
+    details: ["2 Umzugshelfer", "Kleintransporter", "3-4 Stunden"],
+    rooms: "1.5",
+    ctaText: "1.5-Zi. berechnen"
   },
   {
     furniture: apartment2_5Furniture,
@@ -173,7 +177,9 @@ const costExamples = [
     title: "2.5-Zimmer",
     subtitle: "ca. 50-65 m²",
     price: "ab CHF 980",
-    details: ["2-3 Umzugshelfer", "Umzugswagen", "4-5 Stunden"]
+    details: ["2-3 Umzugshelfer", "Umzugswagen", "4-5 Stunden"],
+    rooms: "2.5",
+    ctaText: "2.5-Zi. berechnen"
   },
   {
     furniture: apartment3_5Furniture,
@@ -181,7 +187,9 @@ const costExamples = [
     title: "3.5-Zimmer",
     subtitle: "ca. 70-85 m²",
     price: "ab CHF 1'350",
-    details: ["3 Umzugshelfer", "Umzugswagen", "5-7 Stunden"]
+    details: ["3 Umzugshelfer", "Umzugswagen", "5-7 Stunden"],
+    rooms: "3.5",
+    ctaText: "3.5-Zi. berechnen"
   },
   {
     furniture: apartment4_5Furniture,
@@ -189,7 +197,9 @@ const costExamples = [
     title: "4.5-Zimmer",
     subtitle: "ca. 90-110 m²",
     price: "ab CHF 1'650",
-    details: ["3-4 Umzugshelfer", "LKW 3.5t", "6-8 Stunden"]
+    details: ["3-4 Umzugshelfer", "LKW 3.5t", "6-8 Stunden"],
+    rooms: "4.5",
+    ctaText: "4.5-Zi. berechnen"
   },
   {
     furniture: apartment5_5Furniture,
@@ -197,7 +207,9 @@ const costExamples = [
     title: "5.5-Zimmer",
     subtitle: "ca. 120-150 m²",
     price: "ab CHF 2'200",
-    details: ["4-5 Umzugshelfer", "LKW 7.5t", "8-10 Stunden"]
+    details: ["4-5 Umzugshelfer", "LKW 7.5t", "8-10 Stunden"],
+    rooms: "5.5",
+    ctaText: "5.5-Zi. berechnen"
   },
   {
     furniture: officeFurniture,
@@ -205,7 +217,9 @@ const costExamples = [
     title: "KMU-Büroumzug",
     subtitle: "ca. 100-200 m²",
     price: "ab CHF 2'800",
-    details: ["4-6 Umzugshelfer", "LKW + Möbellift", "1-2 Tage"]
+    details: ["4-6 Umzugshelfer", "LKW + Möbellift", "1-2 Tage"],
+    rooms: "office",
+    ctaText: "Büroumzug berechnen"
   }
 ];
 
@@ -332,7 +346,7 @@ export const PremiumCostExamples = () => {
                           >
                             {example.price}
                           </motion.p>
-                          <ul className="space-y-1.5 text-left mt-auto">
+                          <ul className="space-y-1.5 text-left mb-4">
                             {example.details.map((detail, i) => (
                               <li key={i} className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
@@ -340,6 +354,20 @@ export const PremiumCostExamples = () => {
                               </li>
                             ))}
                           </ul>
+                          
+                          {/* Per-card CTA */}
+                          <Link 
+                            to={`/umzugsrechner?rooms=${example.rooms}`}
+                            className="mt-auto"
+                          >
+                            <Button 
+                              size="sm" 
+                              className="w-full h-9 text-xs font-semibold group/btn"
+                            >
+                              {example.ctaText}
+                              <ArrowRight className="ml-1.5 h-3 w-3 group-hover/btn:translate-x-0.5 transition-transform" />
+                            </Button>
+                          </Link>
                         </div>
                       </CardContent>
                     </Card>
