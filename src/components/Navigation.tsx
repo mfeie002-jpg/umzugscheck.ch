@@ -9,7 +9,7 @@ import { ServicesDropdown } from "@/components/ServicesDropdown";
 import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-final.png";
 import { cn } from "@/lib/utils";
 
 type DropdownType = 'calculator' | 'companies' | 'services' | 'regions' | 'ratgeber' | 'provider' | null;
