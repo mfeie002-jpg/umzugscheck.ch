@@ -35,8 +35,7 @@
  * 490. Estimated time to complete
  */
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import heroMovingCouple from "@/assets/hero-moving-couple.jpg";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -650,48 +649,27 @@ export default function HeroAIQuoteCalculator() {
   const isPhoneValid = state.phone.length >= 10;
   
   return (
-    <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden">
-      {/* Background image with human element */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroMovingCouple})` }}
-      />
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
+    <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden min-h-[85vh] flex items-center">
+      {/* Light Gradient Background - Matching Homepage */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-red-50/20" />
+        {/* Decorative grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(0 0 0) 1px, transparent 0)`,
+          backgroundSize: '24px 24px'
+        }} />
+        {/* Decorative shapes */}
+        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
+      </div>
       
-      {/* Subtle color accents */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
-      
-      {/* Animated mesh gradient */}
+      {/* Subtle animated gradient accent */}
       <motion.div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
-        animate={{ opacity: [0.15, 0.25, 0.15] }}
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent"
+        animate={{ opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 8, repeat: Infinity }}
       />
-      
-      {/* Grid pattern */}
-      <motion.div 
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }}
-        animate={{ opacity: [0.015, 0.025, 0.015] }}
-        transition={{ duration: 5, repeat: Infinity }}
-      />
-      
-      {/* Floating particles */}
-      {[...Array(8)].map((_, i) => (
-        <FloatingParticle 
-          key={i} 
-          delay={i * 1.5} 
-          x={`${10 + i * 12}%`} 
-          size={6 + Math.random() * 10}
-        />
-      ))}
       
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
