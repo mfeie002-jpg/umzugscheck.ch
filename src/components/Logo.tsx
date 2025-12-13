@@ -102,29 +102,17 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
           />
         </g>
         
-        {/* Text "Umzugs" in blue */}
+        {/* Text "Umzugscheck.ch" combined for proper spacing */}
         <text 
           x="44" 
           y="30" 
           fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
           fontSize="26" 
-          fontWeight="700" 
-          fill="#0050A8"
+          fontWeight="700"
         >
-          Umzugs
+          <tspan fill="#0050A8">Umzugs</tspan><tspan fill="#dc2626">check.ch</tspan>
         </text>
         
-        {/* Text "check.ch" in red - increased spacing */}
-        <text 
-          x="146" 
-          y="30" 
-          fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
-          fontSize="26" 
-          fontWeight="700" 
-          fill="#dc2626"
-        >
-          check.ch
-        </text>
       </svg>
     </Link>
   );
