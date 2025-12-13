@@ -36,6 +36,7 @@
  */
 
 import { useState, useCallback, useEffect } from "react";
+import heroMovingCouple from "@/assets/hero-moving-couple.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -650,9 +651,16 @@ export default function HeroAIQuoteCalculator() {
   
   return (
     <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden min-h-[85vh] flex items-center">
-      {/* Light Gradient Background - Matching Homepage */}
+      {/* Background Image with Light Overlay - Matching Homepage Style */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-red-50/20" />
+        {/* Background image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroMovingCouple})` }}
+        />
+        {/* Light gradient overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-slate-50/85 to-blue-50/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
         {/* Decorative grid pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, rgb(0 0 0) 1px, transparent 0)`,
