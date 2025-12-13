@@ -61,32 +61,32 @@ export const FeaturedCompanies = () => {
   });
 
   return (
-    <section className="py-12 md:py-20 bg-background">
+    <section className="py-12 md:py-16 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8"
+          className="text-center mb-6 md:mb-8"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-slate-900">
             Top Umzugsfirmen
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Geprüfte und versicherte Partner für Ihren stressfreien Umzug
+          <p className="text-sm md:text-base text-slate-600 max-w-xl mx-auto">
+            Geprüfte und versicherte Partner für Ihren Umzug
           </p>
         </motion.div>
 
-        {/* Filter Bar */}
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
+        {/* Filter Bar - Simplified for mobile */}
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-6 md:mb-8">
           {filters.map((filter) => (
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
-              className={`px-6 py-2.5 rounded-full font-medium transition-all ${
+              className={`px-4 md:px-6 py-2 rounded-full text-sm font-medium transition-all ${
                 activeFilter === filter.value
-                  ? 'bg-primary text-white shadow-medium'
-                  : 'bg-card text-foreground border border-border hover:border-primary'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {filter.label}
@@ -105,11 +105,12 @@ export const FeaturedCompanies = () => {
               transition={{ delay: index * 0.1 }}
               className="group bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-strong transition-all border border-border/50"
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-44 overflow-hidden">
                 <img 
                   src={company.image} 
                   alt={company.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-3 right-3 flex gap-2">
                   {company.badges.map((badge, i) => (
@@ -160,10 +161,11 @@ export const FeaturedCompanies = () => {
           {companies.map((company, index) => (
             <div key={index} className="flex-shrink-0 w-[300px] snap-start">
               <div className="bg-card rounded-2xl overflow-hidden shadow-soft border border-border/50 h-full">
-                <div className="relative h-48">
+                <div className="relative h-40">
                   <img 
                     src={company.image} 
                     alt={company.name}
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-3 right-3 flex gap-2 flex-wrap">
