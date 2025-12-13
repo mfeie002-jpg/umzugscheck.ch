@@ -1,37 +1,40 @@
 import { Button } from "@/components/ui/button";
-import { Star, CheckCircle, TrendingDown, Shield, Check } from "lucide-react";
+import { CheckCircle, Video, Users, TrendingDown, ArrowRight, Shield, Check, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getHomepageContent } from "@/lib/content";
-import heroMovingFamily from "@/assets/hero-moving-family.jpg";
 import { toast } from "sonner";
-import { useTypewriter } from "@/hooks/useTypewriter";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const RedesignHero = () => {
   const content = getHomepageContent().hero;
   const [fromPostal, setFromPostal] = useState("");
   const [toPostal, setToPostal] = useState("");
   const [rooms, setRooms] = useState("");
+  const [liveCount, setLiveCount] = useState(5);
   const navigate = useNavigate();
-  const sectionRef = useRef<HTMLElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  
-  const fullHeadline = `${content.headline} ${content.highlightedText} in der Schweiz`;
-  const { displayedText, isComplete } = useTypewriter({ text: fullHeadline, speed: 40, delay: 300 });
+
+  // Simulate live activity
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveCount(prev => Math.max(3, Math.min(12, prev + (Math.random() > 0.5 ? 1 : -1))));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleCalculate = () => {
     if (!fromPostal || !toPostal || !rooms) {
       toast.error("Bitte füllen Sie alle Felder aus", {
-        description: "Geben Sie Start-PLZ, Ziel-PLZ und Zimmeranzahl ein."
+        description: "Geben Sie Start-PLZ, Ziel-PLZ und Wohnungsgrösse ein."
       });
       return;
     }
@@ -39,197 +42,241 @@ export const RedesignHero = () => {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-hidden py-6 lg:py-0">
-      {/* Emotional Background Image with Parallax */}
-      <motion.div 
-        className="absolute inset-0 z-0"
-        style={{ y: backgroundY }}
-      >
-        <img 
-          src={heroMovingFamily}
-          alt="Glückliche Familie bei ihrem Umzug mit professionellen Umzugshelfern"
-          className="w-full h-[120%] object-cover"
-        />
-        {/* Gradient Overlay for Text Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/60 to-slate-900/40" />
-      </motion.div>
+    <section className="relative min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-hidden py-8 lg:py-0">
+      {/* Light Gradient Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-red-50/20" />
+        {/* Decorative grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(0 0 0) 1px, transparent 0)`,
+          backgroundSize: '24px 24px'
+        }} />
+        {/* Decorative shapes */}
+        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+      </div>
 
-      {/* OPTION 1: Large Watermark Checkmark in Background */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.08, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.5 }}
-        className="absolute right-[5%] top-1/2 -translate-y-1/2 z-[1] pointer-events-none hidden lg:block"
-      >
-        <Check className="w-[400px] h-[400px] text-white stroke-[1.5]" />
-      </motion.div>
-
-      <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+      <div className="container mx-auto px-4 py-8 md:py-12 relative z-10">
         <div className="max-w-6xl mx-auto">
           
           {/* Hero Content Grid */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             
             {/* Left: Main Content */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
+              transition={{ duration: 0.6 }}
               className="text-center lg:text-left"
             >
-              {/* OPTION 2: Animated Checkmark Badge next to mini-headline */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-4"
-              >
+              {/* Top Badges */}
+              <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-6">
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10, delay: 1 }}
-                  className="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2"
                 >
-                  <Check className="w-4 h-4 text-white stroke-[3]" />
+                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <span className="text-xs font-bold text-primary uppercase tracking-wide">BIS 40% SPAREN</span>
+                    <p className="text-[10px] text-muted-foreground">durch Vergleich</p>
+                  </div>
                 </motion.div>
-                <span className="text-white text-sm font-medium">In 2 Minuten zum Vergleich</span>
-              </motion.div>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-4 md:mb-6 min-h-[2.5em] sm:min-h-[2em]">
-                {displayedText.split(content.highlightedText).map((part, index, arr) => (
-                  <span key={index}>
-                    {part}
-                    {index < arr.length - 1 && (
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-                        {content.highlightedText}
-                      </span>
-                    )}
-                  </span>
-                ))}
-                {!isComplete && (
-                  <motion.span
-                    animate={{ opacity: [1, 0] }}
-                    transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-                    className="inline-block w-[3px] h-[1em] bg-white ml-1 align-middle"
-                  />
-                )}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-4 py-2 shadow-sm"
+                >
+                  <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center">
+                    <Video className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <span className="text-xs font-bold text-foreground uppercase tracking-wide">SCHWEIZER INNOVATION</span>
+                    <p className="text-[10px] text-muted-foreground">KI Video-Rechner</p>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-6">
+                <span className="text-foreground">Der beste Deal</span>
+                <br />
+                <span className="text-primary">der ganzen Schweiz.</span>
               </h1>
               
-              <p className="text-base md:text-lg lg:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                {content.subheadline}
+              {/* Subheadline */}
+              <p className="text-base md:text-lg lg:text-xl text-muted-foreground mb-6 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Unser <span className="inline-flex items-center gap-1"><Video className="w-4 h-4 text-primary" /><span className="text-primary font-semibold">KI-Rechner</span></span> analysiert Ihren Umzug per Video – wir vergleichen <span className="font-bold text-foreground">200+ Firmen</span> und finden das <span className="inline-flex items-center gap-1"><Users className="w-4 h-4 text-primary" /><span className="text-primary font-semibold">beste Angebot</span></span>.
               </p>
 
-              {/* CTA Buttons - Primary leads to Offerten, removed redundant secondary */}
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
-                <Link to="/umzugsofferten" className="w-full sm:w-auto">
-                  <Button 
-                    size="lg"
-                    className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg hover:shadow-xl transition-all"
-                  >
-                    Jetzt Offerten erhalten
-                  </Button>
-                </Link>
+              {/* Feature Badges */}
+              <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-6">
+                <span className="inline-flex items-center gap-1.5 text-sm text-primary bg-primary/5 border border-primary/20 px-3 py-1.5 rounded-full">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Bis 40% günstiger
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-sm text-primary bg-primary/5 border border-primary/20 px-3 py-1.5 rounded-full">
+                  <Video className="w-3.5 h-3.5" />
+                  Video-Analyse
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-sm text-primary bg-primary/5 border border-primary/20 px-3 py-1.5 rounded-full">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  200+ Firmen
+                </span>
               </div>
 
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap gap-4 md:gap-6 justify-center lg:justify-start text-xs md:text-sm text-white/90">
-                <div className="flex items-center gap-1.5 md:gap-2 bg-white/10 px-3 py-1.5 rounded-full">
-                  <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{content.trustIndicators.rating}</span>
-                </div>
-                <div className="flex items-center gap-1.5 md:gap-2 bg-white/10 px-3 py-1.5 rounded-full">
-                  <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
-                  <span>{content.trustIndicators.movesCount}</span>
-                </div>
-                <div className="flex items-center gap-1.5 md:gap-2 bg-white/10 px-3 py-1.5 rounded-full">
-                  <Shield className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
-                  <span>{content.trustIndicators.verifiedText}</span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Right: AI Calculator Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative mt-8 lg:mt-0"
-            >
-              {/* OPTION 3: Floating Badge on Calculator Card */}
+              {/* Live Activity Indicator */}
               <motion.div
-                initial={{ opacity: 0, scale: 0, rotate: -12 }}
-                animate={{ opacity: 1, scale: 1, rotate: -12 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15, delay: 1.2 }}
-                className="absolute -top-4 -right-4 z-20 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full w-16 h-16 md:w-20 md:h-20 flex flex-col items-center justify-center shadow-lg"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-4 py-2 shadow-sm mb-6"
               >
-                <Check className="w-6 h-6 md:w-8 md:h-8 stroke-[3]" />
-                <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-tight">Geprüft</span>
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <Users className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">{liveCount} Personen</span> schauen sich Firmen an
+                </span>
               </motion.div>
 
-              <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border border-slate-100 relative overflow-hidden">
-                {/* Glow Effect */}
-                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-20" />
-                
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4 md:mb-6">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
-                      <TrendingDown className="h-5 w-5 md:h-6 md:w-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl md:text-2xl font-bold text-slate-900">{content.calculator.title}</h3>
-                      <p className="text-xs md:text-sm text-slate-600">{content.calculator.subtitle}</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
-                    <div>
-                      <label className="text-xs md:text-sm font-semibold text-slate-700 mb-1.5 md:mb-2 block">{content.calculator.fromLabel}</label>
-                      <Input 
-                        placeholder={content.calculator.fromPlaceholder}
-                        value={fromPostal}
-                        onChange={(e) => setFromPostal(e.target.value)}
-                        className="h-11 md:h-12 border-slate-200 focus:border-blue-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs md:text-sm font-semibold text-slate-700 mb-1.5 md:mb-2 block">{content.calculator.toLabel}</label>
-                      <Input 
-                        placeholder={content.calculator.toPlaceholder}
-                        value={toPostal}
-                        onChange={(e) => setToPostal(e.target.value)}
-                        className="h-11 md:h-12 border-slate-200 focus:border-blue-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs md:text-sm font-semibold text-slate-700 mb-1.5 md:mb-2 block">{content.calculator.roomsLabel}</label>
-                      <Input 
-                        type="number"
-                        placeholder={content.calculator.roomsPlaceholder}
-                        value={rooms}
-                        onChange={(e) => setRooms(e.target.value)}
-                        className="h-11 md:h-12 border-slate-200 focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <Link to="/umzugsofferten">
                   <Button 
-                    onClick={handleCalculate}
-                    className="w-full h-12 md:h-14 text-base md:text-lg font-bold bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
+                    size="lg"
+                    className="w-full sm:w-auto h-14 px-8 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all group"
+                  >
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Jetzt checken lassen
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to="/umzugsrechner">
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="w-full sm:w-auto h-14 px-8 text-lg font-semibold border-2 border-slate-300 hover:border-primary hover:text-primary transition-all"
                   >
                     Kosten berechnen
                   </Button>
-
-                  <p className="text-xs text-center text-slate-500 mt-3 md:mt-4">
-                    {content.calculator.disclaimer}
-                  </p>
-                </div>
+                </Link>
               </div>
             </motion.div>
 
-          </div>
+            {/* Right: Calculator Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
+                {/* Card Header with Badge */}
+                <div className="relative p-6 pb-4">
+                  {/* Best Price Badge */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex justify-center mb-4"
+                  >
+                    <span className="inline-flex items-center gap-1.5 bg-secondary/10 text-secondary border border-secondary/20 rounded-full px-3 py-1 text-sm font-semibold">
+                      <CheckCircle className="w-4 h-4" />
+                      Bester Preis garantiert
+                    </span>
+                  </motion.div>
 
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold text-primary mb-1">200+ Firmen vergleichen</h3>
+                    <p className="text-sm text-muted-foreground">Wir finden den günstigsten Anbieter für Sie</p>
+                  </div>
+                </div>
+
+                {/* Form Fields */}
+                <div className="px-6 pb-6 space-y-4">
+                  <div>
+                    <label className="text-sm font-semibold text-foreground mb-2 block">Von (PLZ oder Ort)</label>
+                    <Input 
+                      placeholder="z.B. 8001 oder Zürich"
+                      value={fromPostal}
+                      onChange={(e) => setFromPostal(e.target.value)}
+                      className="h-12 border-slate-200 focus:border-primary focus:ring-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-foreground mb-2 block">Nach (PLZ oder Ort)</label>
+                    <Input 
+                      placeholder="z.B. 3011 oder Bern"
+                      value={toPostal}
+                      onChange={(e) => setToPostal(e.target.value)}
+                      className="h-12 border-slate-200 focus:border-primary focus:ring-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-foreground mb-2 block">Wohnungsgrösse</label>
+                    <Select value={rooms} onValueChange={setRooms}>
+                      <SelectTrigger className="h-12 border-slate-200 focus:border-primary focus:ring-primary">
+                        <SelectValue placeholder="Wählen Sie..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-slate-200 shadow-lg z-50">
+                        <SelectItem value="1">1 Zimmer</SelectItem>
+                        <SelectItem value="1.5">1.5 Zimmer</SelectItem>
+                        <SelectItem value="2">2 Zimmer</SelectItem>
+                        <SelectItem value="2.5">2.5 Zimmer</SelectItem>
+                        <SelectItem value="3">3 Zimmer</SelectItem>
+                        <SelectItem value="3.5">3.5 Zimmer</SelectItem>
+                        <SelectItem value="4">4 Zimmer</SelectItem>
+                        <SelectItem value="4.5">4.5 Zimmer</SelectItem>
+                        <SelectItem value="5">5+ Zimmer</SelectItem>
+                        <SelectItem value="haus">Haus</SelectItem>
+                        <SelectItem value="buero">Büro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Submit Button */}
+                  <Button 
+                    onClick={handleCalculate}
+                    className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all group"
+                  >
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Jetzt checken lassen
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+
+                  {/* Trust Row */}
+                  <div className="flex items-center justify-center gap-4 pt-2 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1">
+                      <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+                      Kostenlos
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+                      Unverbindlich
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <Shield className="w-3.5 h-3.5 text-primary" />
+                      Datenschutz
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative glow behind card */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 via-blue-500/10 to-secondary/10 rounded-3xl blur-2xl -z-10 opacity-60" />
+            </motion.div>
+
+          </div>
         </div>
       </div>
     </section>
