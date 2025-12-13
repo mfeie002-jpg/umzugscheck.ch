@@ -374,7 +374,7 @@ export const PremiumHeroSection = () => {
                       placeholder="z.B. 8001 oder Zürich"
                       value={fromPostal}
                       onChange={(e) => setFromPostal(e.target.value)}
-                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
                       autoComplete="off"
                       required
                     />
@@ -393,7 +393,7 @@ export const PremiumHeroSection = () => {
                       placeholder="z.B. 3011 oder Bern"
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
-                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
                       autoComplete="off"
                       required
                     />
@@ -407,7 +407,7 @@ export const PremiumHeroSection = () => {
                   <div className="space-y-1.5 md:space-y-2">
                     <Label htmlFor="rooms" className="text-foreground font-medium text-xs sm:text-sm">Wohnungsgrösse</Label>
                     <Select value={rooms} onValueChange={setRooms}>
-                      <SelectTrigger className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-border/60">
+                      <SelectTrigger className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-2 border-primary/40">
                         <SelectValue placeholder="Wählen Sie..." />
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
