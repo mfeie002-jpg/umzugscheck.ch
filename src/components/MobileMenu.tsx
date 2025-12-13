@@ -19,14 +19,14 @@ interface MobileMenuProps {
 }
 
 const calculators = [
-  { icon: Calculator, title: "Umzugsrechner", href: "/rechner" },
-  { icon: Sparkles, title: "Reinigungsrechner", href: "/rechner/reinigung" },
-  { icon: Trash2, title: "Entsorgungsrechner", href: "/rechner/entsorgung" },
-  { icon: Box, title: "Lagerrechner", href: "/rechner/lager" },
-  { icon: Package, title: "Packservice-Rechner", href: "/rechner/packservice" },
-  { icon: Wrench, title: "Möbelmontage-Rechner", href: "/rechner/moebelmontage" },
-  { icon: Settings, title: "Gesamtpreis-Konfigurator", href: "/rechner/konfigurator" },
-  { icon: Video, title: "Video-Umzugsrechner", href: "/rechner/video" },
+  { icon: Calculator, title: "Umzugsrechner", href: "/umzugsofferten" },
+  { icon: Sparkles, title: "Reinigungsrechner", href: "/umzugsofferten?service=reinigung" },
+  { icon: Trash2, title: "Entsorgungsrechner", href: "/umzugsofferten?service=entsorgung" },
+  { icon: Box, title: "Lagerrechner", href: "/umzugsofferten?service=lagerung" },
+  { icon: Package, title: "Packservice-Rechner", href: "/umzugsofferten?service=packservice" },
+  { icon: Wrench, title: "Möbelmontage-Rechner", href: "/umzugsofferten?service=montage" },
+  { icon: Settings, title: "Gesamtpreis-Konfigurator", href: "/umzugsofferten?service=komplett" },
+  { icon: Video, title: "Video-Umzugsrechner", href: "/umzugsofferten?mode=video" },
 ];
 
 const companies = [

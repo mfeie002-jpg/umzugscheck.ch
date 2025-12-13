@@ -156,7 +156,7 @@ const MovingCostGuide = () => {
               und wie Sie bis zu 40% sparen können.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link to="/rechner">
+              <Link to="/umzugsofferten">
                 <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-strong group">
                   <Calculator className="mr-2 w-5 h-5" />
                   Kosten berechnen

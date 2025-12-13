@@ -150,7 +150,7 @@ export const HowItWorksSimple = () => {
           viewport={{ once: true }}
           className="text-center"
         >
-          <Link to="/rechner">
+          <Link to="/umzugsofferten">
             <Button size="lg" className="text-lg px-8 py-6">
               Jetzt kostenlos starten
               <CheckCircle className="ml-2 h-5 w-5" />

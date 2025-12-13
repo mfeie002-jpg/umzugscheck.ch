@@ -95,7 +95,7 @@ export const PremiumHero = () => {
                 className="w-full sm:w-auto"
               >
                 <ButtonPremium size="default" variant="default" asChild className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-14">
-                  <Link to="/rechner">
+                  <Link to="/umzugsofferten">
                     Jetzt gratis Offerten vergleichen
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Link>

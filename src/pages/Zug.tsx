@@ -691,7 +691,7 @@ const Zug = () => {
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                           </Button>
                         </Link>
-                        <Link to="/rechner" className="flex-1">
+                        <Link to="/umzugsofferten" className="flex-1">
                           <Button size="lg" variant="outline" className="w-full">
                             Preise ansehen
                           </Button>

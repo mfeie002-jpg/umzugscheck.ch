@@ -163,7 +163,7 @@ export default function SoFunktionierts() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/rechner">
+              <Link to="/umzugsofferten">
                 <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-white/20 bg-white/10 hover:bg-white/20 text-white">
                   <Calculator className="mr-2 h-5 w-5" />
                   Kosten berechnen

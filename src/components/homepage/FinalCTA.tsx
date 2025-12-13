@@ -61,7 +61,7 @@ export const FinalCTA = memo(function FinalCTA() {
               variant="outline"
               className="bg-white/10 border-white/30 text-white hover:bg-white/20 h-14 px-8 text-base font-medium"
             >
-              <Link to="/rechner">
+              <Link to="/umzugsofferten">
                 <Calculator className="w-5 h-5 mr-2" />
                 Kosten berechnen
               </Link>

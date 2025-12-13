@@ -107,7 +107,7 @@ const OffertenCTA = () => {
               variant="secondary"
               className="h-14 px-10 text-lg font-bold rounded-xl bg-white text-primary hover:bg-white/95 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
             >
-              <Link to="/rechner" className="flex items-center gap-3">
+              <Link to="/umzugsofferten" className="flex items-center gap-3">
                 <CheckCircle className="w-5 h-5" />
                 Jetzt Offerten vergleichen
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

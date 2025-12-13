@@ -123,7 +123,7 @@ export const ComparisonPreview = () => {
                       </div>
                     </td>
                     <td className="px-6 py-5 text-center">
-                      <Link to="/rechner" aria-label={`Offerte von ${company.name} anfordern`}>
+                      <Link to="/umzugsofferten" aria-label={`Offerte von ${company.name} anfordern`}>
                         <Button size="sm" className="shadow-accent">
                           Offerte
                         </Button>
@@ -192,7 +192,7 @@ export const ComparisonPreview = () => {
                   </div>
                 </div>
 
-                <Link to="/rechner" className="block" aria-label={`Offerte von ${company.name} anfordern`}>
+                <Link to="/umzugsofferten" className="block" aria-label={`Offerte von ${company.name} anfordern`}>
                   <Button className="w-full shadow-accent">
                     Offerte anfragen
                   </Button>

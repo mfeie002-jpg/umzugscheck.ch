@@ -271,7 +271,7 @@ const Blog = () => {
                       <p className="text-sm text-muted-foreground mb-4">
                         Berechnen Sie die Kosten für Ihren Umzug in 60 Sekunden
                       </p>
-                      <Link to="/rechner">
+                      <Link to="/umzugsofferten">
                         <Button className="w-full bg-accent hover:bg-accent/90 group">
                           Jetzt berechnen
                           <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />

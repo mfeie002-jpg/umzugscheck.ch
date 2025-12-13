@@ -229,7 +229,7 @@ export default function ThankYou() {
               </Button>
 
               <Button variant="outline" className="w-full justify-start gap-3" asChild>
-                <Link to="/rechner">
+                <Link to="/umzugsofferten">
                   <Package className="h-4 w-4" />
                   Andere Rechner ausprobieren
                   <ArrowRight className="h-4 w-4 ml-auto" />

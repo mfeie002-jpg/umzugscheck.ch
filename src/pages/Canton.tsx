@@ -531,7 +531,7 @@ const Canton = () => {
               </Badge>
               <h1 className="mb-6">Umzug im Kanton {info.name}</h1>
               <p className="text-lg md:text-xl text-white/90 mb-8">{info.description}</p>
-              <Link to="/rechner">
+              <Link to="/umzugsofferten">
                 <Button size="lg" className="bg-accent hover:bg-accent/90 shadow-accent group">
                   Jetzt Offerten vergleichen
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -594,7 +594,7 @@ const Canton = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   *Preise sind Richtwerte und können je nach Umzugsdetails variieren.
                 </p>
-                <Link to="/rechner">
+                <Link to="/umzugsofferten">
                   <Button variant="outline" size="lg">
                     Genaue Berechnung starten
                     <ArrowRight className="ml-2 w-5 h-5" />
@@ -622,7 +622,7 @@ const Canton = () => {
                         Erhalten Sie in nur 60 Sekunden eine präzise Kostenschätzung für Ihren Umzug in {info.name}. 
                         Vergleichen Sie anschliessend bis zu 5 Offerten von geprüften Umzugsfirmen.
                       </p>
-                      <Link to="/rechner">
+                      <Link to="/umzugsofferten">
                         <Button size="lg" className="w-full md:w-auto">
                           Jetzt kostenlos berechnen
                           <ArrowRight className="ml-2 w-5 h-5" />

@@ -178,7 +178,7 @@ export const CostExamplesSection = memo(function CostExamplesSection() {
         {/* CTA */}
         <RevealOnScroll direction="up" className="text-center">
           <GlowingButton asChild size="lg" className="bg-secondary hover:bg-secondary/90" glowIntensity="medium">
-            <Link to="/rechner">
+            <Link to="/umzugsofferten">
               Ihren Preis berechnen
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>

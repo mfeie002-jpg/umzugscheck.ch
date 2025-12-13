@@ -291,7 +291,7 @@ const City = () => {
                         Erhalten Sie in 60 Sekunden eine präzise Kostenschätzung für Ihren Umzug in {city.name}.
                       </p>
                     </div>
-                    <Link to="/rechner">
+                    <Link to="/umzugsofferten">
                       <Button size="lg" variant="outline" className="border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
                         Jetzt berechnen
                         <ArrowRight className="ml-2 w-5 h-5" />

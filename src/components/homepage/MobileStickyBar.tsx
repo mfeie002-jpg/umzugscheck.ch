@@ -62,7 +62,7 @@ export const MobileStickyBar = memo(() => {
               </Link>
               
               {/* Calculator Quick Access */}
-              <Link to="/umzugsrechner">
+              <Link to="/umzugsofferten">
                 <Button 
                   variant="outline" 
                   size="icon" 

@@ -89,7 +89,7 @@ export const EnhancedFooter = () => {
             <h4 className="font-bold text-foreground mb-4">Services</h4>
             <ul className="space-y-3 text-sm">
               <li><Link to="/umzugsofferten" className="text-muted-foreground hover:text-primary transition-colors">Umzugsofferten</Link></li>
-              <li><Link to="/rechner" className="text-muted-foreground hover:text-primary transition-colors">Preisrechner</Link></li>
+              <li><Link to="/umzugsofferten" className="text-muted-foreground hover:text-primary transition-colors">Preisrechner</Link></li>
               <li><Link to="/firmen" className="text-muted-foreground hover:text-primary transition-colors">Umzugsfirmen</Link></li>
               <li><Link to="/vergleich" className="text-muted-foreground hover:text-primary transition-colors">Firmen vergleichen</Link></li>
               <li><Link to="/services" className="text-muted-foreground hover:text-primary transition-colors">Alle Services</Link></li>

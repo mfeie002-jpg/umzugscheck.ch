@@ -181,7 +181,7 @@ const CalculatorResults = () => {
           <div className="container mx-auto px-4 relative z-10">
             <Breadcrumbs items={breadcrumbItems} />
             <div className="max-w-4xl mx-auto mt-6">
-              <Link to="/rechner">
+              <Link to="/umzugsofferten">
                 <Button variant="outline" className="mb-6 border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
                   <ArrowLeft className="mr-2 w-4 h-4" />
                   Zurück zum Rechner

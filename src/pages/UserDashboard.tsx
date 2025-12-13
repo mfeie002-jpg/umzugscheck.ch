@@ -163,7 +163,7 @@ const UserDashboard = () => {
                 <TabsContent value="overview" className="space-y-6">
                   {/* Quick Actions */}
                   <div className="grid md:grid-cols-3 gap-4">
-                    <Link to="/rechner">
+                    <Link to="/umzugsofferten">
                       <Card className="hover:border-primary transition-colors cursor-pointer h-full">
                         <CardContent className="pt-6 text-center">
                           <Calculator className="h-8 w-8 mx-auto mb-3 text-primary" />

@@ -71,7 +71,7 @@ export const PriceCalculatorPreview = () => {
           </p>
         </div>
 
-        <Link to="/rechner">
+        <Link to="/umzugsofferten">
           <Button className="w-full gap-2 h-10 sm:h-11 text-sm sm:text-base active:scale-[0.98] transition-transform">
             Detaillierte Berechnung
             <ArrowRight className="h-4 w-4" />

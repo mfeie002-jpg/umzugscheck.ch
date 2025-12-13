@@ -352,7 +352,7 @@ const CantonComparison = () => {
                         Gratis Offerten erhalten
                       </Button>
                     </Link>
-                    <Link to="/rechner">
+                    <Link to="/umzugsofferten">
                       <Button size="lg" variant="outline" className="min-w-[200px]">
                         Preise berechnen
                       </Button>
