@@ -96,10 +96,9 @@ export const Navigation = () => {
               <img 
                 src={logo} 
                 alt="Umzugscheck.ch - Schweizer Umzugsvergleich" 
-                className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto"
-                sizes="(max-width: 640px) 160px, (max-width: 768px) 200px, 256px"
-                width={256}
-                height={64}
+                className="h-12 sm:h-14 md:h-16 lg:h-20 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[260px] lg:max-w-[320px]"
+                width={320}
+                height={80}
                 loading="eager"
               />
             </Link>
