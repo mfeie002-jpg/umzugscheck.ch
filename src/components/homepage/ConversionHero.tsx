@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowRight, Shield, Sparkles, Users, Package, Video, Camera } from "lucide-react";
+import { CheckCircle, ArrowRight, Shield, Sparkles, Users, TrendingDown, Video, Camera, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -61,51 +61,51 @@ export const ConversionHero = memo(function ConversionHero() {
             transition={{ duration: 0.5 }}
             className="space-y-5 text-center lg:text-left"
           >
-            {/* Innovation Badge */}
+            {/* Savings Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/20 shadow-soft mx-auto lg:mx-0"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-full px-4 py-2 border border-green-500/30 shadow-soft mx-auto lg:mx-0"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
+                <TrendingDown className="w-4 h-4 text-white" />
               </div>
-              <span className="text-sm font-bold text-primary">Schweizer Innovation</span>
-              <span className="text-sm text-muted-foreground">• Erster KI Video-Rechner</span>
+              <span className="text-sm font-bold text-green-700 dark:text-green-400">Bis zu 40% sparen</span>
+              <span className="text-sm text-muted-foreground">• durch Vergleich</span>
             </motion.div>
 
             {/* Headline */}
             <div className="space-y-2">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
-                Umzugskosten berechnen.
+                Der beste Deal
               </h1>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
-                <span className="text-secondary">Per Video & KI.</span>
+                <span className="text-primary">der ganzen Schweiz.</span>
               </h1>
             </div>
 
-            {/* Subline */}
+            {/* Value Proposition */}
             <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0">
-              <strong className="text-foreground">Weltneuheit:</strong> Filmen Sie Ihre Wohnung ab – unsere KI analysiert 
-              automatisch Volumen & Möbel und findet die <span className="inline-flex items-center gap-1 bg-secondary/10 text-secondary px-2 py-0.5 rounded-md font-medium text-sm">
-                <CheckCircle className="w-3.5 h-3.5" />besten Offerten
-              </span> für Sie.
+              Wir vergleichen <strong className="text-foreground">200+ Schweizer Umzugsfirmen</strong> miteinander – 
+              Sie erhalten garantiert das <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-md font-medium text-sm">
+                <Trophy className="w-3.5 h-3.5" />beste Angebot
+              </span> zum fairsten Preis.
             </p>
 
             {/* USP Pills */}
             <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
               <span className="inline-flex items-center gap-1.5 text-xs bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full font-medium">
-                <CheckCircle className="w-3 h-3" />
-                Video-Analyse
+                <TrendingDown className="w-3 h-3" />
+                Bis 40% sparen
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
-                <CheckCircle className="w-3 h-3" />
-                90% genauer
+                <Users className="w-3 h-3" />
+                200+ Firmen
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs bg-secondary/10 text-secondary px-3 py-1.5 rounded-full font-medium">
-                <CheckCircle className="w-3 h-3" />
-                In 60 Sekunden
+                <Video className="w-3 h-3" />
+                KI Video-Analyse
               </span>
             </div>
 
@@ -156,7 +156,7 @@ export const ConversionHero = memo(function ConversionHero() {
                 Schweizweit
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
-                <Package className="w-3 h-3" />
+                <TrendingDown className="w-3 h-3" />
                 Bis 40% sparen
               </span>
             </div>
@@ -170,15 +170,15 @@ export const ConversionHero = memo(function ConversionHero() {
             className="hidden lg:block"
           >
             <div className="bg-card rounded-2xl border border-border shadow-premium p-6 lg:p-8">
-              {/* KI Video Badge */}
+              {/* Savings Badge */}
               <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary px-3 py-1.5 rounded-full text-xs font-bold mb-3">
-                  <Video className="w-3.5 h-3.5" />
-                  NEU: KI Video-Analyse
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/10 to-green-600/10 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold mb-3">
+                  <Trophy className="w-3.5 h-3.5" />
+                  Bester Preis garantiert
                 </div>
-                <h2 className="text-xl lg:text-2xl font-bold">Umzug per Video berechnen</h2>
+                <h2 className="text-xl lg:text-2xl font-bold">200+ Firmen vergleichen</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Filmen Sie Ihre Wohnung – KI berechnet alles automatisch
+                  Wir finden den günstigsten Anbieter für Ihren Umzug
                 </p>
               </div>
 
@@ -281,16 +281,16 @@ export const ConversionHero = memo(function ConversionHero() {
 
               <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-border">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Video className="w-3.5 h-3.5 text-primary" />
-                  Video-Analyse
+                  <TrendingDown className="w-3.5 h-3.5 text-green-500" />
+                  Bis 40% sparen
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                  Kostenlos
+                  100% kostenlos
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Shield className="w-3.5 h-3.5 text-primary" />
-                  Schweizer KI
+                  Geprüfte Firmen
                 </div>
               </div>
             </div>
