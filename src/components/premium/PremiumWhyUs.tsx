@@ -76,25 +76,25 @@ export const PremiumWhyUs = memo(() => {
           </p>
         </BlurReveal>
         
-        {/* USPs Grid with GlowingCard */}
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-4xl mx-auto">
+        {/* USPs Grid - Mobile optimized */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {usps.map((usp, idx) => {
             const Icon = usp.icon;
             return (
               <BlurReveal key={idx} delay={idx * 0.05}>
                 <GlowingCard className="h-full">
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="h-4 w-4 text-primary" />
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left p-1">
+                    <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Icon className="h-6 w-6 sm:h-5 sm:w-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <h3 className="font-semibold text-foreground text-sm truncate">{usp.title}</h3>
-                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded flex-shrink-0">
+                    <div className="flex-1">
+                      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 mb-1">
+                        <h3 className="font-bold text-foreground text-base sm:text-sm">{usp.title}</h3>
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                           {usp.stat}
                         </span>
                       </div>
-                      <p className="text-muted-foreground text-xs leading-snug line-clamp-2">{usp.description}</p>
+                      <p className="text-muted-foreground text-sm sm:text-xs leading-relaxed">{usp.description}</p>
                     </div>
                   </div>
                 </GlowingCard>
