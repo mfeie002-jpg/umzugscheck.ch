@@ -8,10 +8,10 @@ interface LogoProps {
 
 export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProps) => {
   const sizeClasses = {
-    sm: "h-5",
-    md: "h-6",
-    lg: "h-6 sm:h-7",
-    xl: "h-7 sm:h-8 lg:h-9"
+    sm: "h-6",
+    md: "h-7",
+    lg: "h-8 sm:h-9",
+    xl: "h-9 sm:h-10 lg:h-11"
   };
 
   const iconSizeClasses = {
@@ -71,8 +71,8 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
       aria-label="Zur Startseite von Umzugscheck.ch"
     >
       <svg 
-        viewBox="0 0 290 44" 
-        className={`${sizeClasses[size]} w-auto`}
+        viewBox="0 0 320 44" 
+        className={`${sizeClasses[size]} w-auto min-w-[140px] sm:min-w-[180px]`}
         aria-hidden="true"
       >
         {/* House/Box with Checkmark Icon */}
