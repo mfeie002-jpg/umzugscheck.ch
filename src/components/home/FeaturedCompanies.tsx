@@ -204,7 +204,7 @@ export const FeaturedCompanies = () => {
 
         {/* View All CTA */}
         <div className="text-center">
-          <Link to="/firmen">
+          <Link to="/umzugsfirmen">
             <Button variant="outline" size="lg" className="px-8">
               Alle Firmen anzeigen
               <ArrowRight className="ml-2 h-5 w-5" />

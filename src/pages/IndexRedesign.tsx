@@ -12,6 +12,7 @@ import { TestimonialsSlider } from "@/components/home/TestimonialsSlider";
 import { PremiumProviderCTA } from "@/components/premium/PremiumProviderCTA";
 import { FAQSection } from "@/components/home/FAQSection";
 import { RegionsSection } from "@/components/home/RegionsSection";
+import { MiniCTA } from "@/components/home/MiniCTA";
 import { Helmet } from "react-helmet";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 
@@ -68,6 +69,13 @@ const IndexRedesign = () => {
         {/* 4. Top Firmen - Vertrauen durch echte Partner */}
         <FeaturedCompanies />
         
+        {/* Mini CTA nach Firmen */}
+        <MiniCTA 
+          title="Gefällt Ihnen eine Firma?" 
+          buttonText="Jetzt unverbindliche Offerte anfragen"
+          variant="subtle"
+        />
+        
         {/* 5. Services - Komplettangebot zeigen */}
         <ServicesGrid />
         
@@ -79,6 +87,12 @@ const IndexRedesign = () => {
         
         {/* 8. Testimonials - Kundenstimmen */}
         <TestimonialsSlider />
+        
+        {/* Mini CTA nach Testimonials */}
+        <MiniCTA 
+          title="Überzeugt von unseren Kunden?" 
+          buttonText="Jetzt selbst vergleichen"
+        />
         
         {/* 9. B2B CTA - Für Firmen */}
         <PremiumProviderCTA />
