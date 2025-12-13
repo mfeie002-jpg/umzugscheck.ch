@@ -170,12 +170,16 @@ export const ConversionHero = memo(function ConversionHero() {
             className="hidden lg:block"
           >
             <div className="bg-card rounded-2xl border border-border shadow-premium p-6 lg:p-8">
+              {/* KI Video Badge */}
               <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                  <Sparkles className="w-3.5 h-3.5 text-secondary" />
-                  In 2 Minuten zum Vergleich
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary px-3 py-1.5 rounded-full text-xs font-bold mb-3">
+                  <Video className="w-3.5 h-3.5" />
+                  NEU: KI Video-Analyse
                 </div>
-                <h2 className="text-xl lg:text-2xl font-bold">Kostenlos Offerten erhalten</h2>
+                <h2 className="text-xl lg:text-2xl font-bold">Umzug per Video berechnen</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Filmen Sie Ihre Wohnung – KI berechnet alles automatisch
+                </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -242,6 +246,7 @@ export const ConversionHero = memo(function ConversionHero() {
                   </Select>
                 </div>
 
+                {/* Primary CTA */}
                 <Button
                   type="submit"
                   size="lg"
@@ -251,20 +256,41 @@ export const ConversionHero = memo(function ConversionHero() {
                   Jetzt checken lassen
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
+
+                {/* Video Upload Alternative */}
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-card px-2 text-muted-foreground">oder</span>
+                  </div>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className="w-full h-12 rounded-xl border-primary/30 hover:bg-primary/5 font-medium"
+                  onClick={() => navigate('/umzugsrechner?tab=ai')}
+                >
+                  <Video className="w-5 h-5 mr-2 text-primary" />
+                  Video hochladen & KI berechnet
+                </Button>
               </form>
 
               <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-border">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Video className="w-3.5 h-3.5 text-primary" />
+                  Video-Analyse
+                </div>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CheckCircle className="w-3.5 h-3.5 text-green-500" />
                   Kostenlos
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                  Unverbindlich
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Shield className="w-3.5 h-3.5 text-primary" />
-                  Geprüfte Firmen
+                  Schweizer KI
                 </div>
               </div>
             </div>
