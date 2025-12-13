@@ -1,6 +1,6 @@
 import { useState, useEffect, memo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Calculator, CheckCircle2, Phone } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -45,43 +45,19 @@ export const MobileStickyBar = memo(() => {
           className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom"
         >
           {/* Gradient fade effect at top */}
-          <div className="absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 -top-4 h-4 bg-gradient-to-t from-background to-transparent pointer-events-none" />
           
-          {/* Main bar container */}
-          <div className="bg-background/98 backdrop-blur-xl border-t border-border/50 shadow-2xl px-3 py-2.5 pb-safe">
-            <div className="flex items-center gap-2">
-              {/* Primary CTA Button */}
-              <Link to="/umzugsofferten" className="flex-1">
-                <Button 
-                  className="w-full h-12 text-sm font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg rounded-xl gap-2 active:scale-[0.98] transition-all touch-manipulation"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Offerten erhalten</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-              
-              {/* Calculator Quick Access */}
-              <Link to="/umzugsofferten">
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  className="h-12 w-12 rounded-xl border-primary/30 hover:bg-primary/10 active:scale-[0.95] transition-all touch-manipulation"
-                >
-                  <Calculator className="h-5 w-5 text-primary" />
-                </Button>
-              </Link>
-              
-              {/* Phone Quick Access */}
+          {/* Simplified single CTA bar (#10) */}
+          <div className="bg-background/98 backdrop-blur-xl border-t border-border/50 shadow-2xl px-4 py-3 pb-safe">
+            <Link to="/umzugsofferten" className="block">
               <Button 
-                variant="outline" 
-                size="icon" 
-                className="h-12 w-12 rounded-xl border-accent/30 hover:bg-accent/10 active:scale-[0.95] transition-all touch-manipulation"
-                onClick={() => window.location.href = 'tel:+41445678900'}
+                className="w-full h-12 text-sm font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-[0_4px_20px_rgba(220,38,38,0.3)] rounded-xl gap-2"
               >
-                <Phone className="h-5 w-5 text-accent" />
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Kostenlos Offerten erhalten</span>
+                <ArrowRight className="w-4 h-4" />
               </Button>
-            </div>
+            </Link>
             
             {/* Trust indicators */}
             <div className="flex items-center justify-center gap-4 mt-2 text-[10px] text-muted-foreground">

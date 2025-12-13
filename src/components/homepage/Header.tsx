@@ -1,22 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, Calculator, Building2, Sparkles, MapPin, FileText, Users, Truck, Trash2, Package, Sofa, Home, Briefcase, Globe } from "lucide-react";
+import { Menu, X, ChevronDown, Building2, Sparkles, MapPin, FileText, Users, Truck, Trash2, Package, Sofa, Home, Briefcase, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Removed redundant "Preisrechner" - CTA button serves this purpose
 const navLinks = [
-  { 
-    label: "Preisrechner", 
-    href: "/rechner",
-    icon: Calculator,
-    dropdown: [
-      { label: "Umzugsrechner", href: "/rechner", icon: Truck },
-      { label: "Reinigungsrechner", href: "/reinigungsrechner", icon: Sparkles },
-      { label: "Entsorgungsrechner", href: "/entsorgungsrechner", icon: Trash2 },
-      { label: "Firmenumzug-Rechner", href: "/firmenumzug-rechner", icon: Briefcase },
-    ]
-  },
   { 
     label: "Umzugsfirmen", 
     href: "/umzugsfirmen",
@@ -51,7 +41,6 @@ const navLinks = [
       { label: "Basel", href: "/basel", icon: MapPin },
       { label: "Luzern", href: "/luzern", icon: MapPin },
       { label: "Aargau", href: "/aargau", icon: MapPin },
-      { label: "St. Gallen", href: "/st-gallen", icon: MapPin },
       { label: "Alle Regionen", href: "/regionen", icon: MapPin },
     ]
   },
@@ -61,7 +50,7 @@ const navLinks = [
     icon: FileText,
     dropdown: [
       { label: "Umzug Checkliste", href: "/ratgeber/checkliste", icon: FileText },
-      { label: "Umzugskosten", href: "/ratgeber/kosten", icon: Calculator },
+      { label: "Umzugskosten", href: "/ratgeber/kosten", icon: Truck },
       { label: "Tipps & Tricks", href: "/ratgeber/tipps", icon: Sparkles },
     ]
   },
@@ -81,6 +70,7 @@ export const Header = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -93,11 +83,25 @@ export const Header = () => {
     setActiveDropdown(null);
   }, [location]);
 
+  // Improved dropdown handling with delay (#5)
+  const handleMouseEnter = (label: string) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setActiveDropdown(label);
+  };
+
+  const handleMouseLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 200); // Increased delay from 0 to 200ms
+  };
+
   return (
     <header className={cn(
       "sticky top-0 z-50 w-full transition-all duration-300",
       scrolled 
-        ? "bg-card/98 backdrop-blur-lg border-b border-border shadow-soft" 
+        ? "bg-card/98 backdrop-blur-lg border-b border-border shadow-lg" // Enhanced shadow (#3)
         : "bg-card/95 backdrop-blur-sm border-b border-transparent"
     )}>
       <div className="container px-4 sm:px-6">
@@ -155,13 +159,13 @@ export const Header = () => {
               <div 
                 key={link.href}
                 className="relative"
-                onMouseEnter={() => setActiveDropdown(link.label)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                onMouseEnter={() => handleMouseEnter(link.label)}
+                onMouseLeave={handleMouseLeave}
               >
                 <Link
                   to={link.href}
                   className={cn(
-                    "group flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors rounded-lg",
+                    "group flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors rounded-lg",
                     activeDropdown === link.label
                       ? "text-foreground bg-muted/50"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -185,6 +189,8 @@ export const Header = () => {
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.15 }}
                       className="absolute top-full left-0 mt-1 w-56 bg-card rounded-xl border border-border shadow-premium p-2 z-50"
+                      onMouseEnter={() => handleMouseEnter(link.label)}
+                      onMouseLeave={handleMouseLeave}
                     >
                       {link.dropdown.map((item) => (
                         <Link
@@ -203,35 +209,27 @@ export const Header = () => {
             ))}
           </nav>
 
-          {/* Desktop CTA */}
+          {/* Desktop CTA - Enhanced visual hierarchy (#2) */}
           <div className="hidden lg:flex items-center gap-3">
             <Button
               asChild
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-cta animate-pulse-subtle"
+              size="lg"
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all"
             >
               <Link to="/umzugsofferten">
-                Offerten erhalten
+                Kostenlos Offerten erhalten
               </Link>
             </Button>
           </div>
 
-          {/* Mobile: CTA + Menu */}
-          <div className="flex lg:hidden items-center gap-2 sm:gap-3">
-            <Button
-              asChild
-              size="sm"
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold h-9 px-3 sm:h-10 sm:px-4 text-xs sm:text-sm active:scale-95 transition-transform"
-            >
-              <Link to="/umzugsofferten">
-                Offerten
-              </Link>
-            </Button>
+          {/* Mobile: Single CTA + Menu (#4 - simplified) */}
+          <div className="flex lg:hidden items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menu öffnen"
-              className="h-9 w-9 sm:h-10 sm:w-10 active:scale-95 transition-transform"
+              className="h-10 w-10 active:scale-95 transition-transform"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
