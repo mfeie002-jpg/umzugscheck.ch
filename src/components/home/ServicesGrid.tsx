@@ -9,66 +9,50 @@ import serviceReinigung from "@/assets/service-reinigung-new.jpg";
 import serviceEntsorgung from "@/assets/service-entsorgung-new.jpg";
 import serviceLagerung from "@/assets/service-lagerung.jpg";
 import serviceMontage from "@/assets/service-montage.jpg";
-import serviceWohnungsabgabe from "@/assets/service-wohnungsabgabe.jpg";
 import serviceFirmenumzug from "@/assets/service-firmenumzug-new.jpg";
-import serviceInternational from "@/assets/service-international.jpg";
 
 const services = [
   {
-    title: "Umzug",
+    title: "Privatumzug",
     description: "Professionelle Umzüge mit erfahrenen Teams",
     price: "Ab CHF 450",
-    link: "/dienstleistungen/umzug",
+    link: "/privatumzug",
     image: serviceUmzug
   },
   {
     title: "Reinigung",
     description: "Abnahmegarantierte Endreinigung",
     price: "Ab CHF 280",
-    link: "/dienstleistungen/reinigung",
+    link: "/reinigung",
     image: serviceReinigung
   },
   {
     title: "Entsorgung",
     description: "Fachgerechte Entsorgung von Möbeln",
     price: "Ab CHF 150",
-    link: "/dienstleistungen/entsorgung",
+    link: "/entsorgung",
     image: serviceEntsorgung
   },
   {
     title: "Lagerung",
     description: "Sichere Lagerräume für Ihre Möbel",
     price: "Ab CHF 120/Monat",
-    link: "/dienstleistungen/lagerung",
+    link: "/lagerung",
     image: serviceLagerung
   },
   {
-    title: "Möbelmontage",
-    description: "Auf- und Abbau von Möbeln",
-    price: "Ab CHF 80",
-    link: "/dienstleistungen/montage",
-    image: serviceMontage
-  },
-  {
-    title: "Wohnungsabgabe",
-    description: "Komplette Abgabevorbereitung",
+    title: "Möbellift",
+    description: "Möbel sicher durch das Fenster",
     price: "Ab CHF 350",
-    link: "/dienstleistungen/wohnungsabgabe",
-    image: serviceWohnungsabgabe
+    link: "/moebellift",
+    image: serviceMontage
   },
   {
     title: "Firmenumzug",
     description: "Business-Umzüge mit Minimalausfallzeit",
     price: "Auf Anfrage",
-    link: "/dienstleistungen/firmenumzug",
+    link: "/firmenumzug",
     image: serviceFirmenumzug
-  },
-  {
-    title: "International",
-    description: "Weltweite Umzüge organisiert",
-    price: "Auf Anfrage",
-    link: "/dienstleistungen/international",
-    image: serviceInternational
   }
 ];
 
