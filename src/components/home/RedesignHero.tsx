@@ -119,23 +119,14 @@ export const RedesignHero = () => {
                 {content.subheadline}
               </p>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - Primary leads to Offerten, removed redundant secondary */}
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
-                <Link to="/umzugsrechner" className="w-full sm:w-auto">
+                <Link to="/umzugsofferten" className="w-full sm:w-auto">
                   <Button 
                     size="lg"
-                    className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all"
+                    className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg hover:shadow-xl transition-all"
                   >
-                    {content.primaryCTA}
-                  </Button>
-                </Link>
-                <Link to="/fuer-firmen" className="w-full sm:w-auto">
-                  <Button 
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-semibold border-2 border-white/80 text-white hover:bg-white/10"
-                  >
-                    {content.secondaryCTA}
+                    Jetzt Offerten erhalten
                   </Button>
                 </Link>
               </div>
@@ -225,9 +216,9 @@ export const RedesignHero = () => {
 
                   <Button 
                     onClick={handleCalculate}
-                    className="w-full h-12 md:h-14 text-base md:text-lg font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all"
+                    className="w-full h-12 md:h-14 text-base md:text-lg font-bold bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
                   >
-                    {content.calculator.submitButton}
+                    Kosten berechnen
                   </Button>
 
                   <p className="text-xs text-center text-slate-500 mt-3 md:mt-4">
