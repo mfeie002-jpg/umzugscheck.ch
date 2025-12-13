@@ -7,10 +7,10 @@ interface LogoProps {
 
 export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
   const sizeClasses = {
-    sm: "h-5",
-    md: "h-6",
-    lg: "h-7 sm:h-8",
-    xl: "h-7 sm:h-8 md:h-9 lg:h-10"
+    sm: "h-4",
+    md: "h-5",
+    lg: "h-5 sm:h-6",
+    xl: "h-6 sm:h-7"
   };
 
   return (
@@ -20,34 +20,32 @@ export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
       aria-label="Zur Startseite von Umzugscheck.ch"
     >
       <svg 
-        viewBox="0 0 320 60" 
+        viewBox="0 0 280 44" 
         className={`${sizeClasses[size]} w-auto`}
         aria-hidden="true"
       >
         {/* House/Box with Checkmark Icon */}
-        <g transform="translate(0, 8)">
-          {/* House shape */}
+        <g transform="translate(2, 4)">
+          {/* House body - blue */}
           <path 
-            d="M22 8L4 22V44H40V22L22 8Z" 
-            fill="#0050A8" 
-            stroke="#0050A8" 
-            strokeWidth="2"
+            d="M18 10L4 20V36H32V20L18 10Z" 
+            fill="#0050A8"
           />
-          {/* Roof */}
+          {/* Roof - red accent */}
           <path 
-            d="M0 24L22 4L44 24" 
+            d="M0 21L18 5L36 21" 
             fill="none" 
-            stroke="#0050A8" 
-            strokeWidth="4" 
+            stroke="#dc2626" 
+            strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round"
           />
           {/* Checkmark */}
           <path 
-            d="M12 24L20 32L34 16" 
+            d="M10 22L16 28L28 14" 
             fill="none" 
             stroke="white" 
-            strokeWidth="4" 
+            strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round"
           />
@@ -55,10 +53,10 @@ export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
         
         {/* Text "Umzugs" in blue */}
         <text 
-          x="52" 
-          y="42" 
+          x="44" 
+          y="30" 
           fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
-          fontSize="32" 
+          fontSize="26" 
           fontWeight="700" 
           fill="#0050A8"
         >
@@ -67,10 +65,10 @@ export const Logo = ({ className = "", size = "lg" }: LogoProps) => {
         
         {/* Text "check.ch" in red */}
         <text 
-          x="164" 
-          y="42" 
+          x="138" 
+          y="30" 
           fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
-          fontSize="32" 
+          fontSize="26" 
           fontWeight="700" 
           fill="#dc2626"
         >
