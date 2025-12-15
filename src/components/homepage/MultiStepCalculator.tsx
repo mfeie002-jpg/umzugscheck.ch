@@ -33,12 +33,36 @@ const apartmentSizes = [
 ];
 
 const services = [
-  { id: "umzug", label: "Umzug", description: "Transport & Ein-/Ausladen", default: true },
-  { id: "reinigung", label: "Reinigung", description: "Endreinigung der alten Wohnung" },
-  { id: "entsorgung", label: "Entsorgung", description: "Sperrmüll & Möbelentsorgung" },
-  { id: "maler", label: "Malerarbeiten", description: "Streichen der alten Wohnung" },
-  { id: "lagerung", label: "Lagerung", description: "Zwischenlagerung Ihrer Möbel" },
+  { id: "umzug", label: "Umzug", description: "Transport & Ein-/Ausladen", default: true, priceAdd: 0 },
+  { id: "reinigung", label: "Reinigung", description: "Endreinigung der alten Wohnung", priceAdd: 350 },
+  { id: "entsorgung", label: "Entsorgung", description: "Sperrmüll & Möbelentsorgung", priceAdd: 200 },
+  { id: "maler", label: "Malerarbeiten", description: "Streichen der alten Wohnung", priceAdd: 450 },
+  { id: "lagerung", label: "Lagerung", description: "Zwischenlagerung Ihrer Möbel", priceAdd: 150 },
 ];
+
+// Price estimation based on apartment size
+const getPriceEstimate = (size: string, selectedServices: string[]) => {
+  const basePrices: Record<string, { min: number; max: number }> = {
+    "studio": { min: 480, max: 680 },
+    "1-1.5": { min: 580, max: 850 },
+    "2-2.5": { min: 780, max: 1200 },
+    "3-3.5": { min: 980, max: 1600 },
+    "4-4.5": { min: 1400, max: 2200 },
+    "5+": { min: 1800, max: 3200 },
+    "office": { min: 2500, max: 5000 },
+  };
+  
+  const base = basePrices[size] || { min: 800, max: 1500 };
+  const servicesExtra = selectedServices.reduce((sum, sId) => {
+    const service = services.find(s => s.id === sId);
+    return sum + (service?.priceAdd || 0);
+  }, 0);
+  
+  return {
+    min: base.min + servicesExtra,
+    max: base.max + servicesExtra,
+  };
+};
 
 interface FormData {
   fromLocation: string;
@@ -269,6 +293,35 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   </Select>
                 </div>
 
+                {/* Live Price Estimate */}
+                {formData.apartmentSize && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">
+                          Geschätzte Kosten
+                        </p>
+                        <p className="text-xl font-bold text-green-800 dark:text-green-300">
+                          CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}
+                          {" – "}
+                          {getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400">
+                        <TrendingDown className="w-4 h-4" />
+                        <span className="text-xs font-medium">bis 40% sparen</span>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-green-600/80 dark:text-green-400/80 mt-2">
+                      * Unverbindliche Schätzung. Exakte Preise erhalten Sie mit den Offerten.
+                    </p>
+                  </motion.div>
+                )}
+
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Gewünschte Leistungen</label>
                   <div className="grid grid-cols-1 gap-2">
@@ -451,7 +504,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               className="flex-1 h-14 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-cta"
             >
               <CheckCircle className="w-5 h-5 mr-2" />
-              Jetzt checken lassen
+              Jetzt Offerten anfordern (kostenlos)
             </Button>
           )}
         </div>
