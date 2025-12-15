@@ -1,0 +1,981 @@
+================================================================================
+UMZUGSCHECK.CH - DESIGN SYSTEM & HOMEPAGE COMPONENTS
+For ChatGPT Review - Generated: 2025-12-15
+================================================================================
+
+TABLE OF CONTENTS:
+1. DESIGN SYSTEM (index.css)
+2. TAILWIND CONFIG (tailwind.config.ts)
+3. HOMEPAGE COMPONENTS:
+   - Index.tsx (Main Page)
+   - Header.tsx
+   - EnhancedConversionHero.tsx
+   - MultiStepCalculator.tsx
+   - SocialProofMarquee.tsx
+   - EnhancedHowItWorks.tsx
+   - CompanyComparisonSection.tsx
+   - MobileStickyBar.tsx
+   - EnhancedFAQ.tsx
+
+================================================================================
+1. DESIGN SYSTEM - src/index.css
+================================================================================
+
+@tailwind base;
+
+/* Safe area insets for mobile devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pb-safe {
+    padding-bottom: max(0.625rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Touch optimization utilities */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+@tailwind components;
+@tailwind utilities;
+
+/* Dark mode support */
+.dark {
+  color-scheme: dark;
+}
+
+/* Umzugscheck.ch Brand Design System
+   Clean, Modern, Trustworthy - "Swiss Quality"
+   Primary: Blue (#0050A8) - Trust & Authority
+   Accent: Red (#E32026) - CTAs & Action
+*/
+
+@layer base {
+  :root {
+    /* Typography - Premium Fonts */
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    
+    /* Brand Colors - Umzugscheck.ch */
+    --uc-blue: 210 100% 33%;        /* #0050A8 - Primary brand blue */
+    --uc-red: 358 79% 51%;          /* #E32026 - Primary CTA / accent red */
+    --uc-bg-light: 214 32% 97%;     /* #F5F7FA - Light section background */
+    --uc-bg-white: 0 0% 100%;       /* #FFFFFF - Cards, main surfaces */
+    --uc-text-main: 220 43% 11%;    /* #111827 - Main body text */
+    --uc-text-muted: 220 9% 46%;    /* #4B5563 - Secondary text */
+    --uc-border-subtle: 220 13% 91%; /* #E5E7EB - Borders */
+    --uc-footer-bg: 208 87% 8%;     /* #021726 - Dark footer */
+    --uc-footer-text: 210 40% 98%;  /* #F9FAFB - Footer text */
+    
+    /* Semantic Tokens mapped to brand */
+    --background: var(--uc-bg-white);
+    --foreground: var(--uc-text-main);
+    
+    --card: var(--uc-bg-white);
+    --card-foreground: var(--uc-text-main);
+    
+    --popover: var(--uc-bg-white);
+    --popover-foreground: var(--uc-text-main);
+    
+    /* Primary: Brand Blue - for navigation, headings, icons, secondary buttons */
+    --primary: var(--uc-blue);
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 100% 28%; /* Darker blue */
+    
+    /* Secondary: Brand Red - for CTAs, badges, highlights */
+    --secondary: var(--uc-red);
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Muted: Light backgrounds */
+    --muted: var(--uc-bg-light);
+    --muted-foreground: var(--uc-text-muted);
+    
+    /* Accent: Very light blue tint for hovers */
+    --accent: 210 40% 96%;
+    --accent-foreground: var(--uc-blue);
+    
+    /* Swiss Gold for ratings/stars */
+    --swiss-gold: 45 93% 47%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Borders & Inputs */
+    --border: var(--uc-border-subtle);
+    --input: var(--uc-border-subtle);
+    --ring: var(--uc-blue);
+    
+    /* Premium Border Radius */
+    --radius: 0.75rem;
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-premium: 0 14px 40px rgba(0, 0, 0, 0.06);
+    --shadow-cta: 0 8px 24px rgba(227, 32, 38, 0.25);
+    --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.10);
+    --shadow-glow: 0 0 30px rgba(0, 80, 168, 0.15);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: var(--uc-text-main);
+    --sidebar-primary: var(--uc-blue);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: var(--uc-bg-light);
+    --sidebar-accent-foreground: var(--uc-blue);
+    --sidebar-border: var(--uc-border-subtle);
+  }
+
+  .dark {
+    --background: 210 20% 12%;
+    --foreground: 210 20% 98%;
+    --card: 210 20% 16%;
+    --card-foreground: 210 20% 98%;
+    --popover: 210 20% 16%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 80% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 358 79% 55%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 15% 20%;
+    --muted-foreground: 210 15% 70%;
+    --accent: 210 30% 20%;
+    --accent-foreground: 210 20% 98%;
+    --border: 210 15% 25%;
+    --input: 210 15% 25%;
+    --ring: 210 80% 50%;
+    
+    --sidebar-background: 210 20% 12%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 210 80% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 16%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 210 15% 25%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  /* Typography System */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-semibold;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  p {
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      font-size: 16px;
+    }
+  }
+}
+
+@layer utilities {
+  /* Brand Color Utilities */
+  .text-uc-blue { color: hsl(var(--uc-blue)); }
+  .bg-uc-blue { background-color: hsl(var(--uc-blue)); }
+  .border-uc-blue { border-color: hsl(var(--uc-blue)); }
+  .text-uc-red { color: hsl(var(--uc-red)); }
+  .bg-uc-red { background-color: hsl(var(--uc-red)); }
+  .border-uc-red { border-color: hsl(var(--uc-red)); }
+  .bg-uc-light { background-color: hsl(var(--uc-bg-light)); }
+  .bg-uc-footer { background-color: hsl(var(--uc-footer-bg)); }
+  .text-uc-footer { color: hsl(var(--uc-footer-text)); }
+  
+  /* Legacy color utilities - mapped to new brand */
+  .text-swiss-noir { color: hsl(var(--uc-text-main)); }
+  .bg-swiss-noir { background-color: hsl(var(--uc-text-main)); }
+  .text-swiss-gold { color: hsl(var(--swiss-gold)); }
+
+  /* Shadow Utilities */
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-medium { box-shadow: var(--shadow-medium); }
+  .shadow-premium { box-shadow: var(--shadow-premium); }
+  .shadow-cta { box-shadow: var(--shadow-cta); }
+  .shadow-lift { box-shadow: var(--shadow-lift); }
+
+  /* Hover Effects */
+  .hover-lift { transition: all 0.3s ease; }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+  .hover-scale { transition: all 0.3s ease; }
+  .hover-scale:hover { transform: scale(1.02); }
+
+  /* Layout Utilities */
+  .section-spacing { @apply py-16 md:py-20 lg:py-24; }
+  .section-spacing-sm { @apply py-10 md:py-14 lg:py-16; }
+  .content-container { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+
+  /* Typography */
+  .text-balance { text-wrap: balance; }
+  .heading-premium { @apply font-bold tracking-tight text-balance; }
+  .body-text { @apply leading-relaxed text-muted-foreground; }
+  
+  /* Gradient text */
+  .gradient-text { @apply bg-gradient-to-r from-primary via-primary to-secondary bg-clip-text text-transparent; }
+  
+  /* Focus ring utility */
+  .focus-ring { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2; }
+
+  /* Glassmorphism */
+  .glass { @apply bg-white/80 backdrop-blur-lg border border-white/20; }
+}
+
+/* Key Animations */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 8px 24px rgba(227, 32, 38, 0.25); }
+  50% { box-shadow: 0 8px 32px rgba(227, 32, 38, 0.4); }
+}
+
+.animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
+.animate-cta-glow { animation: cta-glow 2s ease-in-out infinite; }
+
+/* Card hover effects */
+.card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.card-hover:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+================================================================================
+2. TAILWIND CONFIG - tailwind.config.ts
+================================================================================
+
+import type { Config } from "tailwindcss";
+
+export default {
+  darkMode: ["class"],
+  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  prefix: "",
+  theme: {
+    screens: {
+      'xs': '375px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: "1.25rem",
+        sm: "2rem",
+        lg: "3rem",
+        xl: "4rem",
+        "2xl": "5rem",
+      },
+      screens: {
+        "2xl": "1320px",
+      },
+    },
+    extend: {
+      fontFamily: {
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'system-ui', 'sans-serif'],
+        display: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'h1': ['48px', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'h1-lg': ['56px', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'h2': ['32px', { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'h2-lg': ['40px', { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'h3': ['24px', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'h3-lg': ['28px', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'body': ['17px', { lineHeight: '1.6' }],
+        'body-lg': ['18px', { lineHeight: '1.6' }],
+        'small': ['14px', { lineHeight: '1.5' }],
+      },
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        // Brand Colors - Umzugscheck.ch
+        'uc-blue': "hsl(var(--uc-blue))",
+        'uc-red': "hsl(var(--uc-red))",
+        'uc-light': "hsl(var(--uc-bg-light))",
+        'swiss-gold': "hsl(var(--swiss-gold))",
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        'soft': '0 4px 12px rgba(0, 0, 0, 0.05)',
+        'medium': '0 8px 24px rgba(0, 0, 0, 0.08)',
+        'premium': '0 14px 40px rgba(0, 0, 0, 0.06)',
+        'cta': '0 8px 24px rgba(227, 32, 38, 0.25)',
+        'lift': '0 20px 40px rgba(0, 0, 0, 0.10)',
+        'glow': '0 0 30px rgba(0, 80, 168, 0.15)',
+        'card': '0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04)',
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "marquee": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "fade-in": "fade-in 0.5s ease-out",
+        "marquee": "marquee 25s linear infinite",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config;
+
+================================================================================
+3. HOMEPAGE COMPONENTS
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1 Index.tsx - Main Homepage
+--------------------------------------------------------------------------------
+
+import { Helmet } from "react-helmet";
+import { lazy, Suspense } from "react";
+import { Header } from "@/components/homepage/Header";
+import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
+import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
+import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
+
+// Lazy loaded components
+const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks"));
+const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection"));
+const AIVideoCalculatorSection = lazy(() => import("@/components/homepage/AIVideoCalculatorSection"));
+const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid"));
+const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection"));
+const EnhancedTestimonials = lazy(() => import("@/components/homepage/EnhancedTestimonials"));
+const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid"));
+const EnhancedUSPSection = lazy(() => import("@/components/homepage/EnhancedUSPSection"));
+const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ"));
+const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA"));
+
+const Index = () => {
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main id="main-content">
+        {/* 1. Hero with Multi-Step Form */}
+        <EnhancedConversionHero />
+        
+        {/* 2. Social proof immediately after hero */}
+        <SocialProofMarquee />
+        
+        {/* 3. How it works - simplified process */}
+        <EnhancedHowItWorks />
+        
+        {/* 4. Company comparison - core value */}
+        <CompanyComparisonSection />
+        
+        {/* 5. KI Video Calculator - Innovation highlight */}
+        <AIVideoCalculatorSection />
+
+        {/* 6. Services grid */}
+        <EnhancedServicesGrid />
+        
+        {/* 7. Cost Examples - Preisbeispiele */}
+        <CostExamplesSection />
+        
+        {/* 8. Testimonials */}
+        <EnhancedTestimonials />
+        
+        {/* 9. Regions */}
+        <EnhancedRegionsGrid />
+        
+        {/* 10. USP section - why choose us */}
+        <EnhancedUSPSection />
+        
+        {/* 11. FAQ */}
+        <EnhancedFAQ />
+        
+        {/* 12. Final CTA */}
+        <EnhancedFinalCTA />
+      </main>
+      <SimplifiedFooter />
+      <MobileStickyBar />
+    </div>
+  );
+};
+
+export default Index;
+
+--------------------------------------------------------------------------------
+3.2 Header.tsx - Navigation
+--------------------------------------------------------------------------------
+
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ChevronDown, Building2, Sparkles, MapPin, FileText, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+
+const navLinks = [
+  { 
+    label: "Umzugsfirmen", 
+    href: "/umzugsfirmen",
+    dropdown: [
+      { label: "Alle Umzugsfirmen", href: "/umzugsfirmen" },
+      { label: "Beste Umzugsfirmen", href: "/beste-umzugsfirma" },
+      { label: "Günstige Umzugsfirmen", href: "/guenstige-umzugsfirma" },
+    ]
+  },
+  { 
+    label: "Services", 
+    href: "/dienstleistungen",
+    dropdown: [
+      { label: "Privatumzug", href: "/privatumzug" },
+      { label: "Firmenumzug", href: "/firmenumzug" },
+      { label: "Reinigung", href: "/reinigung" },
+      { label: "Entsorgung", href: "/entsorgung" },
+    ]
+  },
+  { label: "Regionen", href: "/regionen" },
+  { label: "Ratgeber", href: "/ratgeber" },
+  { label: "Für Firmen", href: "/fuer-firmen" },
+];
+
+export const Header = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <header className={cn(
+      "sticky top-0 z-50 w-full transition-all duration-300",
+      scrolled 
+        ? "bg-card/98 backdrop-blur-lg border-b border-border shadow-lg"
+        : "bg-card/95 backdrop-blur-sm border-b border-transparent"
+    )}>
+      <div className="container">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center shadow-cta">
+              {/* Checkmark icon */}
+            </div>
+            <span className="text-xl font-bold">
+              <span className="text-primary">Umzugs</span>
+              <span className="text-secondary">check</span>
+              <span className="text-muted-foreground">.ch</span>
+            </span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Desktop CTA */}
+          <Button
+            asChild
+            className="hidden lg:flex bg-secondary hover:bg-secondary/90 shadow-cta"
+          >
+            <Link to="/umzugsofferten">Kostenlos Offerten erhalten</Link>
+          </Button>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden"
+          >
+            {mobileMenuOpen ? <X /> : <Menu />}
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+--------------------------------------------------------------------------------
+3.3 EnhancedConversionHero.tsx - Hero Section
+--------------------------------------------------------------------------------
+
+import { memo, useState } from "react";
+import { motion } from "framer-motion";
+import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MultiStepCalculator } from "./MultiStepCalculator";
+import { MobileFormSheet } from "./MobileFormSheet";
+
+export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
+  const [isMobileFormOpen, setIsMobileFormOpen] = useState(false);
+
+  return (
+    <section className="relative min-h-[80vh] flex items-center bg-gradient-to-br from-background via-muted/30 to-background">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
+      </div>
+
+      <div className="container relative z-10 py-16">
+        <div className="grid lg:grid-cols-[1fr,480px] gap-12 items-center">
+          {/* Left Content */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            {/* Savings Badge */}
+            <div className="inline-flex items-center gap-2 bg-green-500/15 rounded-full px-4 py-2 border border-green-500/30 mb-6">
+              <TrendingDown className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-bold text-green-700">Bis zu 40% sparen</span>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1] mb-4">
+              Der beste Deal der ganzen <span className="text-primary">Schweiz.</span>
+            </h1>
+
+            {/* Value Proposition */}
+            <p className="text-lg text-muted-foreground max-w-xl mb-6">
+              Wir vergleichen <strong className="text-foreground">200+ Schweizer Umzugsfirmen</strong> – 
+              Sie erhalten garantiert das beste Angebot zum fairsten Preis.
+            </p>
+
+            {/* USP Pills */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              <span className="inline-flex items-center gap-1.5 text-sm bg-green-500/10 text-green-700 px-3 py-1.5 rounded-full">
+                <TrendingDown className="w-3.5 h-3.5" /> Bis 40% sparen
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-sm bg-primary/10 text-primary px-3 py-1.5 rounded-full">
+                <Users className="w-3.5 h-3.5" /> 200+ Firmen
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-sm bg-secondary/10 text-secondary px-3 py-1.5 rounded-full">
+                <Video className="w-3.5 h-3.5" /> KI Video-Analyse
+              </span>
+            </div>
+
+            {/* Mobile CTA */}
+            <Button 
+              size="lg" 
+              className="lg:hidden w-full bg-secondary hover:bg-secondary/90 shadow-cta h-14 font-bold"
+              onClick={() => setIsMobileFormOpen(true)}
+            >
+              Jetzt checken lassen
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </motion.div>
+
+          {/* Right - Multi-Step Form (Desktop only) */}
+          <div className="hidden lg:block">
+            <MultiStepCalculator />
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Bottom Sheet Form */}
+      <MobileFormSheet isOpen={isMobileFormOpen} onClose={() => setIsMobileFormOpen(false)} />
+    </section>
+  );
+});
+
+--------------------------------------------------------------------------------
+3.4 SocialProofMarquee.tsx - Trust Signals
+--------------------------------------------------------------------------------
+
+import { memo } from "react";
+import { motion } from "framer-motion";
+import { Star, Quote, Users, Award, TrendingUp, ShieldCheck } from "lucide-react";
+
+const testimonials = [
+  { name: "M. Keller", city: "Zürich", text: "Super schnell und unkompliziert!", rating: 5 },
+  { name: "A. Müller", city: "Basel", text: "40% günstiger als erwartet.", rating: 5 },
+  { name: "S. Weber", city: "Bern", text: "Sehr professionelle Abwicklung.", rating: 5 },
+];
+
+const stats = [
+  { icon: Users, value: "15'000+", label: "Umzüge" },
+  { icon: Award, value: "200+", label: "Partner" },
+  { icon: Star, value: "4.8", label: "Bewertung" },
+  { icon: TrendingUp, value: "40%", label: "Ersparnis" },
+];
+
+export const SocialProofMarquee = memo(function SocialProofMarquee() {
+  return (
+    <section className="py-6 md:py-8 bg-muted/30 overflow-hidden border-y border-border/30">
+      {/* Stats */}
+      <div className="container mb-6">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="flex items-center gap-2 bg-card/50 px-3 py-2 rounded-lg border">
+              <stat.icon className="w-4 h-4 text-primary" />
+              <span className="font-bold text-sm">{stat.value}</span>
+              <span className="text-xs text-muted-foreground">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Testimonials Marquee */}
+      <motion.div
+        className="flex gap-4"
+        animate={{ x: [0, -50 * testimonials.length] }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      >
+        {[...testimonials, ...testimonials].map((item, idx) => (
+          <div key={idx} className="flex-shrink-0 bg-card rounded-xl border p-4 w-[280px]">
+            <div className="flex items-center gap-1 mb-2">
+              {Array.from({ length: item.rating }).map((_, i) => (
+                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              ))}
+            </div>
+            <p className="text-sm mb-3">{item.text}</p>
+            <div className="text-xs text-muted-foreground">{item.name} • {item.city}</div>
+          </div>
+        ))}
+      </motion.div>
+    </section>
+  );
+});
+
+--------------------------------------------------------------------------------
+3.5 EnhancedHowItWorks.tsx - Process Steps
+--------------------------------------------------------------------------------
+
+import { memo } from 'react';
+import { motion } from 'framer-motion';
+import { ClipboardList, Search, BadgeCheck, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+
+const steps = [
+  {
+    number: '01',
+    icon: ClipboardList,
+    title: 'Umzugsdetails eingeben',
+    description: 'Start- und Zielort, Wohnungsgrösse, Datum – in unter 2 Minuten ausgefüllt.',
+    color: 'text-primary',
+    bg: 'bg-primary/10',
+  },
+  {
+    number: '02',
+    icon: Search,
+    title: 'Wir checken für Sie',
+    description: 'Unser System inkl. KI vergleicht automatisch passende Firmen aus 200+ Partnern.',
+    color: 'text-secondary',
+    bg: 'bg-secondary/10',
+  },
+  {
+    number: '03',
+    icon: BadgeCheck,
+    title: 'Vergleichen & sparen',
+    description: 'Sie erhalten mehrere Offerten, vergleichen Preise & Bewertungen und wählen das beste Angebot.',
+    color: 'text-green-600',
+    bg: 'bg-green-500/10',
+  },
+];
+
+export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
+  return (
+    <section className="py-16 md:py-20 bg-muted/30">
+      <div className="container">
+        <div className="text-center mb-12">
+          <span className="inline-block text-sm font-medium text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4">
+            So funktioniert's
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            In 3 einfachen Schritten zum besten Angebot
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {steps.map((step, index) => (
+            <motion.div
+              key={step.number}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.15 }}
+              className="bg-card rounded-2xl border p-8 text-center hover:shadow-medium transition-shadow"
+            >
+              <div className={`w-16 h-16 ${step.bg} rounded-2xl mx-auto mb-5 flex items-center justify-center`}>
+                <step.icon className={`w-8 h-8 ${step.color}`} />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
+              <p className="text-muted-foreground text-sm">{step.description}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="text-center mt-10">
+          <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 shadow-cta">
+            <Link to="/umzugsofferten">
+              Jetzt checken lassen
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+--------------------------------------------------------------------------------
+3.6 MobileStickyBar.tsx - Mobile CTA
+--------------------------------------------------------------------------------
+
+import { useState, useEffect, memo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+
+export const MobileStickyBar = memo(() => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsVisible(window.scrollY > 400);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom"
+        >
+          <div className="absolute inset-x-0 -top-4 h-4 bg-gradient-to-t from-background to-transparent" />
+          
+          <div className="bg-background/98 backdrop-blur-xl border-t border-border/50 shadow-2xl px-4 py-3 pb-safe">
+            <Link to="/umzugsofferten" className="block">
+              <Button className="w-full h-12 text-sm font-bold bg-secondary hover:bg-secondary/90 shadow-cta rounded-xl gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                Kostenlos Offerten erhalten
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+            
+            {/* Trust indicators */}
+            <div className="flex items-center justify-center gap-4 mt-2 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-green-500" /> Kostenlos
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-green-500" /> Unverbindlich
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-green-500" /> In 2 Min.
+              </span>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+});
+
+--------------------------------------------------------------------------------
+3.7 EnhancedFAQ.tsx - FAQ Section (10 Questions)
+--------------------------------------------------------------------------------
+
+import { memo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, HelpCircle } from 'lucide-react';
+
+const faqItems = [
+  {
+    question: "Was kostet ein Umzug in der Schweiz?",
+    answer: "Die Kosten variieren je nach Wohnungsgrösse, Distanz und Aufwand. Ein Studio-Umzug (lokal) kostet ca. CHF 400–800, eine 3-Zimmer-Wohnung CHF 1'200–2'500, und grössere Umzüge CHF 3'000–6'000+. Mit unserem kostenlosen Vergleich sparen Sie bis zu 40%."
+  },
+  {
+    question: "Wie funktioniert der KI-Video-Kostenrechner?",
+    answer: "Laden Sie einfach ein kurzes Video Ihrer Wohnung hoch. Unsere KI analysiert automatisch Möbel, Volumen und Aufwand und erstellt in Sekunden eine präzise Kostenschätzung – ohne manuelles Ausfüllen langer Formulare."
+  },
+  {
+    question: "Ist der Vergleichsservice wirklich kostenlos?",
+    answer: "Ja, für Sie als Kunde ist unser Service 100% kostenlos und unverbindlich. Wir finanzieren uns über Vermittlungsprovisionen der Partnerfirmen."
+  },
+  {
+    question: "Wie werden die Umzugsfirmen geprüft?",
+    answer: "Alle 200+ Partnerfirmen durchlaufen einen strengen Prüfprozess: Handelsregister, Versicherungsschutz, Bewilligungen, echte Kundenbewertungen und Qualitätsstandards."
+  },
+  {
+    question: "Wie schnell erhalte ich Offerten?",
+    answer: "In der Regel erhalten Sie innerhalb von 24–48 Stunden mehrere unverbindliche Offerten von passenden Umzugsfirmen."
+  },
+  {
+    question: "Welche Services sind im Umzug inbegriffen?",
+    answer: "Typische Leistungen sind: Transport, Ein-/Auspacken, Möbelmontage, Verpackungsmaterial. Zusatzservices wie Reinigung, Entsorgung oder Lagerung können separat gebucht werden."
+  },
+  {
+    question: "Was passiert bei Schäden während des Umzugs?",
+    answer: "Alle unsere Partnerfirmen sind vollumfänglich haftpflichtversichert. Im seltenen Fall eines Schadens wickelt die Firma dies über ihre Versicherung ab."
+  },
+  {
+    question: "Kann ich auch Firmenumzüge vergleichen?",
+    answer: "Ja, unser Service deckt alle Umzugsarten ab: Privatumzüge, Büro- und Firmenumzüge, internationale Umzüge sowie Spezialservices."
+  },
+  {
+    question: "In welchen Regionen ist der Service verfügbar?",
+    answer: "Unser Service ist schweizweit verfügbar. Wir haben geprüfte Partnerfirmen in allen 26 Kantonen."
+  },
+  {
+    question: "Muss ich eine Offerte annehmen?",
+    answer: "Nein, Sie sind völlig frei in Ihrer Entscheidung. Vergleichen Sie die Angebote in Ruhe und wählen Sie die Firma, die am besten passt."
+  }
+];
+
+export const EnhancedFAQ = memo(function EnhancedFAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  return (
+    <section className="py-16 md:py-20">
+      <div className="container">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-2 mb-4">
+              <HelpCircle className="w-4 h-4" />
+              <span className="text-sm font-medium">Häufige Fragen</span>
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Noch Fragen?</h2>
+            <p className="text-muted-foreground">Hier finden Sie Antworten auf die häufigsten Fragen</p>
+          </div>
+
+          <div className="bg-card rounded-2xl border p-6 md:p-8">
+            {faqItems.map((item, index) => (
+              <div key={index} className="border-b border-border last:border-b-0">
+                <button
+                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                  className="flex items-center justify-between w-full py-5 text-left"
+                >
+                  <span className="font-medium text-base md:text-lg">{item.question}</span>
+                  <ChevronDown className={`w-5 h-5 transition-transform ${openIndex === index ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {openIndex === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <p className="pb-5 text-muted-foreground">{item.answer}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+================================================================================
+END OF FILE
+================================================================================
+
+NOTES FOR CHATGPT REVIEW:
+- Brand Colors: Primary Blue (#0050A8), Secondary Red (#E32026)
+- All colors use HSL format with CSS variables
+- Semantic tokens ensure consistent theming
+- Mobile-first responsive design
+- Key conversion elements: Hero form, Sticky CTA, Company comparison
+- 3 core USPs: 40% savings, 200+ companies, AI video calculator
