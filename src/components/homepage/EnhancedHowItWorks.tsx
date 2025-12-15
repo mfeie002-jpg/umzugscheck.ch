@@ -1,30 +1,32 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Home, Calculator, Star, ArrowRight } from 'lucide-react';
+import { ClipboardList, Search, BadgeCheck, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const steps = [
   {
     number: '01',
-    icon: Home,
-    title: 'Umzug beschreiben',
-    description: 'Geben Sie Start- und Zielort sowie Ihre Wohnungsgrösse an – in unter 2 Minuten.',
+    icon: ClipboardList,
+    title: 'Umzugsdetails eingeben',
+    description: 'Start- und Zielort, Wohnungsgrösse, Datum – in unter 2 Minuten ausgefüllt.',
     color: 'text-primary',
     bg: 'bg-primary/10',
   },
   {
     number: '02',
-    icon: Calculator,
-    title: 'Offerten erhalten',
-    description: 'Unsere geprüften Partner erstellen innerhalb von 24-48h individuelle Angebote.',
+    icon: Search,
+    title: 'Wir checken für Sie',
+    description: 'Unser System inkl. KI vergleicht automatisch passende Firmen aus 200+ Partnern.',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
   },
   {
     number: '03',
-    icon: Star,
-    title: 'Vergleichen & buchen',
-    description: 'Vergleichen Sie Preise, Bewertungen und Services – und wählen Sie Ihren Favoriten.',
+    icon: BadgeCheck,
+    title: 'Vergleichen & sparen',
+    description: 'Sie erhalten mehrere Offerten, vergleichen Preise & Bewertungen und wählen das beste Angebot.',
     color: 'text-green-600',
     bg: 'bg-green-500/10',
   },
@@ -49,7 +51,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
             viewport={{ once: true }}
             className="text-3xl md:text-4xl font-bold mb-4"
           >
-            In 3 einfachen Schritten
+            In 3 einfachen Schritten zum besten Angebot
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -58,7 +60,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground max-w-2xl mx-auto"
           >
-            Von der Anfrage bis zum erfolgreichen Umzug – wir begleiten Sie
+            Kostenlos, unverbindlich und in wenigen Minuten erledigt
           </motion.p>
         </div>
 
@@ -83,7 +85,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
                   </div>
                 )}
                 
-                <div className="bg-card rounded-2xl border border-border p-6 md:p-8 text-center relative hover:shadow-medium transition-shadow">
+                <div className="bg-card rounded-2xl border border-border p-6 md:p-8 text-center relative hover:shadow-medium transition-shadow h-full">
                   {/* Step Number */}
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className={cn(
@@ -111,6 +113,22 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
             ))}
           </div>
         </div>
+
+        {/* CTA */}
+        <motion.div 
+          className="text-center mt-10"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+        >
+          <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 shadow-cta">
+            <Link to="/umzugsofferten">
+              Jetzt checken lassen
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </Button>
+        </motion.div>
       </div>
     </section>
   );

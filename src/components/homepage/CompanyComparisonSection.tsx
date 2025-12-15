@@ -1,46 +1,59 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Star, CheckCircle, Shield, Wrench, Sparkles, ArrowRight, Clock, Award } from "lucide-react";
+import { Star, CheckCircle, Sparkles, ArrowRight, Clock, Award, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const exampleOffers = [
   {
     name: "Zürich Umzug Pro",
     priceRange: "CHF 1'200 – 1'600",
+    priceValue: 1200,
     rating: 4.9,
     reviews: 234,
     tags: ["Versichert", "Fixpreis möglich", "Reinigung"],
     highlights: ["Erfahrenes Team mit 15+ Jahren", "Umzugshelfer inkl. Verpackungsmaterial", "Kostenlose Besichtigung"],
     recommended: true,
     responseTime: "< 2 Std.",
+    category: "top",
   },
   {
     name: "Family Move Bern",
     priceRange: "CHF 1'350 – 1'750",
+    priceValue: 1350,
     rating: 4.8,
     reviews: 189,
     tags: ["Versichert", "Möbelmontage", "Wochenende"],
     highlights: ["Familienunternehmen", "Flexible Terminwahl", "Schweizweiter Service"],
     recommended: false,
     responseTime: "< 4 Std.",
+    category: "beliebt",
   },
   {
     name: "Express Umzüge Basel",
     priceRange: "CHF 1'100 – 1'450",
+    priceValue: 1100,
     rating: 4.7,
     reviews: 156,
     tags: ["Versichert", "Schnell verfügbar", "Entsorgung"],
     highlights: ["Kurzfristige Termine", "Faire Pauschalpreise", "Umweltfreundliche Entsorgung"],
     recommended: false,
     responseTime: "< 3 Std.",
+    category: "günstig",
   },
 ];
 
+type SortOption = "empfohlen" | "preis" | "bewertung";
+type FilterTab = "alle" | "top" | "günstig" | "beliebt";
+
 export const CompanyComparisonSection = memo(function CompanyComparisonSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [sortBy, setSortBy] = useState<SortOption>("empfohlen");
+  const [activeTab, setActiveTab] = useState<FilterTab>("alle");
+  
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
@@ -48,6 +61,15 @@ export const CompanyComparisonSection = memo(function CompanyComparisonSection()
   
   const scale = useTransform(scrollYProgress, [0, 0.3], [0.98, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0.7, 1]);
+
+  // Filter and sort offers
+  const filteredOffers = exampleOffers
+    .filter(offer => activeTab === "alle" || offer.category === activeTab)
+    .sort((a, b) => {
+      if (sortBy === "preis") return a.priceValue - b.priceValue;
+      if (sortBy === "bewertung") return b.rating - a.rating;
+      return b.recommended ? 1 : -1; // empfohlen
+    });
 
   return (
     <motion.section 
@@ -58,7 +80,7 @@ export const CompanyComparisonSection = memo(function CompanyComparisonSection()
       <div className="container">
         {/* Header */}
         <motion.div 
-          className="text-center mb-12"
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -75,17 +97,49 @@ export const CompanyComparisonSection = memo(function CompanyComparisonSection()
             Firmen vergleichen
           </motion.span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            So vergleichen Sie mit{" "}
-            <span className="text-secondary">Umzugscheck</span>
+            Transparenter{" "}
+            <span className="text-secondary">Angebotsvergleich</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Statt nur eine Firma anzufragen, sehen Sie mehrere Angebote auf einen Blick. Sie sparen Zeit, Geld und Nerven.
+            Sehen Sie mehrere Angebote auf einen Blick – Sie sparen Zeit, Geld und Nerven.
           </p>
+        </motion.div>
+
+        {/* Filter & Sort Bar */}
+        <motion.div 
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 p-4 bg-muted/30 rounded-xl border border-border"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as FilterTab)} className="w-full sm:w-auto">
+            <TabsList className="grid grid-cols-4 w-full sm:w-auto">
+              <TabsTrigger value="alle" className="text-xs sm:text-sm">Alle</TabsTrigger>
+              <TabsTrigger value="top" className="text-xs sm:text-sm">Top Umzüge</TabsTrigger>
+              <TabsTrigger value="günstig" className="text-xs sm:text-sm">Günstige</TabsTrigger>
+              <TabsTrigger value="beliebt" className="text-xs sm:text-sm">Beliebteste</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Sortieren:</span>
+            <select 
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="text-sm bg-card border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            >
+              <option value="empfohlen">Empfohlen</option>
+              <option value="preis">Günstigste</option>
+              <option value="bewertung">Beste Bewertung</option>
+            </select>
+          </div>
         </motion.div>
 
         {/* Comparison Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {exampleOffers.map((offer, index) => (
+          {filteredOffers.map((offer, index) => (
             <motion.div
               key={offer.name}
               initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -121,7 +175,12 @@ export const CompanyComparisonSection = memo(function CompanyComparisonSection()
               <div className={cn("p-6", offer.recommended && "pt-10")}>
                 {/* Company Name & Rating */}
                 <div className="mb-4">
-                  <h3 className="text-lg font-bold mb-2">{offer.name}</h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-lg font-bold">{offer.name}</h3>
+                    <Badge variant="outline" className="text-[10px] text-green-600 border-green-600/30 bg-green-50">
+                      Verifiziert
+                    </Badge>
+                  </div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 text-swiss-gold fill-swiss-gold" />
