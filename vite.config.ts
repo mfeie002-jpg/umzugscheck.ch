@@ -54,6 +54,11 @@ ${'='.repeat(80)}
     { title: 'PAGES', dir: 'src/pages' },
     { title: 'HOMEPAGE COMPONENTS', dir: 'src/components/homepage' },
     { title: 'LAYOUT COMPONENTS', dir: 'src/components/layout' },
+    { title: 'UI COMPONENTS', dir: 'src/components/ui' },
+    { title: 'COMMON COMPONENTS', dir: 'src/components/common' },
+    { title: 'CALCULATOR COMPONENTS', dir: 'src/components/calculator' },
+    { title: 'COMPANY COMPONENTS', dir: 'src/components/company' },
+    { title: 'ADMIN COMPONENTS', dir: 'src/components/admin' },
   ];
 
   for (const section of sections) {
