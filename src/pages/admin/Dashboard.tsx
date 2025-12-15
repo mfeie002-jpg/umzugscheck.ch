@@ -475,6 +475,39 @@ const AdminDashboard = () => {
               </div>
             </div>
 
+            {/* Developer Tools Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold mb-6">Entwickler-Tools</h2>
+              <div className="grid md:grid-cols-1 gap-6">
+                <Link to="/admin/code-export">
+                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 rounded-lg bg-slate-500/10">
+                          <Download className="w-6 h-6 text-slate-600" />
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">Code Export</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Design System und Komponenten für ChatGPT-Reviews exportieren
+                      </p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-slate-500"></div>
+                          <span className="text-muted-foreground">Design System</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                          <span className="text-muted-foreground">Alle Komponenten</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
+            </div>
+
             {/* Filters and Actions */}
             <Card className="shadow-strong mb-6">
               <CardHeader>
