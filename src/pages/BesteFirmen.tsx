@@ -240,14 +240,22 @@ export default function BesteFirmen() {
                 ) : (
                   <div className="grid gap-6">
                     {sponsoredCompanies.map((company) => (
-                      <div key={company.id} className="relative">
-                        <input
-                          type="checkbox"
-                          id={`select-sponsored-${company.id}`}
-                          checked={selectedCompanyIds.includes(company.id)}
-                          onChange={() => toggleCompanySelection(company.id)}
-                          className="absolute top-4 right-4 z-10 w-5 h-5 cursor-pointer"
-                        />
+                      <div key={company.id} className="relative group">
+                        <label 
+                          htmlFor={`select-sponsored-${company.id}`}
+                          className="absolute top-4 right-4 z-10 flex items-center gap-2 cursor-pointer bg-white/90 dark:bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border shadow-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            id={`select-sponsored-${company.id}`}
+                            checked={selectedCompanyIds.includes(company.id)}
+                            onChange={() => toggleCompanySelection(company.id)}
+                            className="w-4 h-4 cursor-pointer accent-primary"
+                          />
+                          <span className="text-xs font-medium">
+                            {selectedCompanyIds.includes(company.id) ? 'Ausgewählt' : 'Auswählen'}
+                          </span>
+                        </label>
                         <SponsoredCompanyCard {...company} />
                       </div>
                     ))}
@@ -307,14 +315,22 @@ export default function BesteFirmen() {
                 ) : (
                   <div className="space-y-4">
                     {organicCompanies.map((company) => (
-                      <div key={company.id} className="relative">
-                        <input
-                          type="checkbox"
-                          id={`select-organic-${company.id}`}
-                          checked={selectedCompanyIds.includes(company.id)}
-                          onChange={() => toggleCompanySelection(company.id)}
-                          className="absolute top-4 right-4 z-10 w-5 h-5 cursor-pointer"
-                        />
+                      <div key={company.id} className="relative group">
+                        <label 
+                          htmlFor={`select-organic-${company.id}`}
+                          className="absolute top-4 right-4 z-10 flex items-center gap-2 cursor-pointer bg-white/90 dark:bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border shadow-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            id={`select-organic-${company.id}`}
+                            checked={selectedCompanyIds.includes(company.id)}
+                            onChange={() => toggleCompanySelection(company.id)}
+                            className="w-4 h-4 cursor-pointer accent-primary"
+                          />
+                          <span className="text-xs font-medium">
+                            {selectedCompanyIds.includes(company.id) ? 'Ausgewählt' : 'Auswählen'}
+                          </span>
+                        </label>
                         <OrganicCompanyCard {...company} />
                       </div>
                     ))}
