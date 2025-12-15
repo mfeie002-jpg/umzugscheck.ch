@@ -203,6 +203,7 @@ const ConversionAnalytics = lazy(() => import("./pages/admin/ConversionAnalytics
 const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
 const ABTesting = lazy(() => import("./pages/admin/ABTesting"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
+const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
 
 // Legal pages
 const Datenschutz = lazy(() => import("./pages/Datenschutz"));
@@ -365,6 +366,7 @@ const App = () => (
                             <Route path="/admin/email-automation" element={<EmailAutomation />} />
                             <Route path="/admin/ab-testing" element={<ABTesting />} />
                             <Route path="/admin/availability" element={<ProviderAvailability />} />
+                            <Route path="/admin/code-export" element={<CodeExport />} />
                             <Route path="/ratgeber/umzugstipps" element={<Blog />} />
                             <Route path="/ratgeber/kosten" element={<Blog />} />
                             <Route path="/ratgeber/checklisten" element={<Blog />} />
