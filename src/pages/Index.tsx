@@ -7,7 +7,7 @@ import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 
 // Core Components (not lazy - above the fold)
-import { ConversionHero } from "@/components/homepage/ConversionHero";
+import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
 
@@ -78,8 +78,8 @@ const Index = () => {
         <Header />
 
         <main id="main-content" role="main">
-          {/* 1. Hero with form */}
-          <ConversionHero />
+          {/* 1. Hero with Multi-Step Form */}
+          <EnhancedConversionHero />
           
           {/* 2. Social proof immediately after hero (#8) */}
           <SocialProofMarquee />
