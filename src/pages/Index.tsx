@@ -14,7 +14,9 @@ import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
 // Lazy loaded components (below the fold)
 const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
 const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection").then(m => ({ default: m.CompanyComparisonSection })));
+const AIVideoCalculatorSection = lazy(() => import("@/components/homepage/AIVideoCalculatorSection").then(m => ({ default: m.AIVideoCalculatorSection })));
 const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
+const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
 const EnhancedTestimonials = lazy(() => import("@/components/homepage/EnhancedTestimonials").then(m => ({ default: m.EnhancedTestimonials })));
 const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid").then(m => ({ default: m.EnhancedRegionsGrid })));
 const EnhancedUSPSection = lazy(() => import("@/components/homepage/EnhancedUSPSection").then(m => ({ default: m.EnhancedUSPSection })));
@@ -94,9 +96,9 @@ const Index = () => {
             <CompanyComparisonSection />
           </Suspense>
           
-          {/* 5. Testimonials */}
-          <Suspense fallback={<SectionSkeleton height="350px" />}>
-            <EnhancedTestimonials />
+          {/* 5. KI Video Calculator - Innovation highlight */}
+          <Suspense fallback={<SectionSkeleton height="500px" />}>
+            <AIVideoCalculatorSection />
           </Suspense>
 
           {/* 6. Services grid */}
@@ -104,27 +106,37 @@ const Index = () => {
             <EnhancedServicesGrid />
           </Suspense>
           
-          {/* 7. USP section - why choose us */}
-          <Suspense fallback={<SectionSkeleton height="350px" />}>
-            <EnhancedUSPSection />
+          {/* 7. Cost Examples - Preisbeispiele */}
+          <Suspense fallback={<SectionSkeleton height="500px" />}>
+            <CostExamplesSection />
           </Suspense>
           
-          {/* 8. Regions */}
+          {/* 8. Testimonials */}
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <EnhancedTestimonials />
+          </Suspense>
+          
+          {/* 9. Regions */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedRegionsGrid />
           </Suspense>
+          
+          {/* 10. USP section - why choose us */}
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <EnhancedUSPSection />
+          </Suspense>
 
-          {/* 9. Media logos - trust signals */}
+          {/* 11. Media logos - trust signals */}
           <Suspense fallback={<SectionSkeleton height="150px" />}>
             <MediaLogosSection />
           </Suspense>
           
-          {/* 10. FAQ */}
+          {/* 12. FAQ */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>
             <EnhancedFAQ />
           </Suspense>
           
-          {/* 11. Final CTA */}
+          {/* 13. Final CTA */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedFinalCTA />
           </Suspense>
