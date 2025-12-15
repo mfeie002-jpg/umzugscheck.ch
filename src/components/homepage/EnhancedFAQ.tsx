@@ -10,36 +10,44 @@ interface FAQItem {
 
 const faqItems: FAQItem[] = [
   {
-    question: "Wie funktioniert der Vergleich genau?",
-    answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser AI-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten."
+    question: "Was kostet ein Umzug in der Schweiz?",
+    answer: "Die Kosten variieren je nach Wohnungsgrösse, Distanz und Aufwand. Ein Studio-Umzug (lokal) kostet ca. CHF 400–800, eine 3-Zimmer-Wohnung CHF 1'200–2'500, und grössere Umzüge CHF 3'000–6'000+. Mit unserem kostenlosen Vergleich sparen Sie bis zu 40%."
   },
   {
-    question: "Kostet mich der Service etwas?",
-    answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen."
+    question: "Wie funktioniert der KI-Video-Kostenrechner?",
+    answer: "Laden Sie einfach ein kurzes Video Ihrer Wohnung hoch. Unsere KI analysiert automatisch Möbel, Volumen und Aufwand und erstellt in Sekunden eine präzise Kostenschätzung – ohne manuelles Ausfüllen langer Formulare."
   },
   {
-    question: "Wie werden die Umzugsfirmen ausgewählt?",
-    answer: "Alle Partner durchlaufen einen strengen Prüfprozess. Wir verifizieren Versicherungen, Bewilligungen, Kundenbewertungen und Qualitätsstandards."
+    question: "Ist der Vergleichsservice wirklich kostenlos?",
+    answer: "Ja, für Sie als Kunde ist unser Service 100% kostenlos und unverbindlich. Wir finanzieren uns über Vermittlungsprovisionen der Partnerfirmen. Sie gehen keinerlei Verpflichtung ein."
   },
   {
-    question: "Wie schnell erhalte ich Angebote?",
-    answer: "In der Regel erhalten Sie innerhalb von 24-48 Stunden mehrere Offerten von passenden Umzugsfirmen."
+    question: "Wie werden die Umzugsfirmen geprüft?",
+    answer: "Alle 200+ Partnerfirmen durchlaufen einen strengen Prüfprozess: Wir verifizieren Handelsregister, Versicherungsschutz, Bewilligungen, echte Kundenbewertungen und Qualitätsstandards. Nur geprüfte Firmen werden aufgenommen."
   },
   {
-    question: "Sind die Angebote verbindlich?",
-    answer: "Die Offerten sind Richtangebote basierend auf Ihren Angaben. Nach einer Besichtigung erstellt die Firma ein verbindliches Angebot."
+    question: "Wie schnell erhalte ich Offerten?",
+    answer: "In der Regel erhalten Sie innerhalb von 24–48 Stunden mehrere unverbindliche Offerten von passenden Umzugsfirmen. Bei dringenden Anfragen können Sie dies im Formular angeben."
   },
   {
-    question: "Was passiert, wenn etwas beschädigt wird?",
-    answer: "Alle unsere Partnerfirmen sind vollumfänglich versichert. Im unwahrscheinlichen Fall eines Schadens sind Sie geschützt."
+    question: "Welche Services sind im Umzug inbegriffen?",
+    answer: "Das hängt von der gewählten Firma und dem Angebot ab. Typische Leistungen sind: Transport, Ein-/Auspacken, Möbelmontage, Verpackungsmaterial. Zusatzservices wie Reinigung, Entsorgung oder Lagerung können separat gebucht werden."
+  },
+  {
+    question: "Was passiert bei Schäden während des Umzugs?",
+    answer: "Alle unsere Partnerfirmen sind vollumfänglich haftpflichtversichert. Im seltenen Fall eines Schadens wickelt die Firma dies über ihre Versicherung ab. Dokumentieren Sie den Schaden direkt beim Umzug."
   },
   {
     question: "Kann ich auch Firmenumzüge vergleichen?",
-    answer: "Ja, unser Service deckt sowohl Privatumzüge als auch Firmen- und Büroumzüge ab."
+    answer: "Ja, unser Service deckt alle Umzugsarten ab: Privatumzüge, Büro- und Firmenumzüge, internationale Umzüge sowie Spezialservices wie Reinigung, Entsorgung und Lagerung."
   },
   {
     question: "In welchen Regionen ist der Service verfügbar?",
-    answer: "Unser Service ist schweizweit verfügbar. Wir haben Partner in allen 26 Kantonen."
+    answer: "Unser Service ist schweizweit verfügbar. Wir haben geprüfte Partnerfirmen in allen 26 Kantonen – von Zürich über Bern bis Genf und ins Tessin."
+  },
+  {
+    question: "Muss ich eine Offerte annehmen?",
+    answer: "Nein, Sie sind völlig frei in Ihrer Entscheidung. Vergleichen Sie die erhaltenen Angebote in Ruhe und wählen Sie die Firma, die am besten zu Ihren Bedürfnissen und Ihrem Budget passt."
   }
 ];
 
