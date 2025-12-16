@@ -206,6 +206,13 @@ const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailabili
 const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
 
+// Ratgeber pages
+const UmzugschecklisteDownload = lazy(() => import("./pages/ratgeber/UmzugschecklisteDownload"));
+const UmzugskostenGuide = lazy(() => import("./pages/ratgeber/UmzugskostenGuide"));
+
+// Regional pages
+const RegionalTemplate = lazy(() => import("./pages/region/RegionalTemplate"));
+
 // Legal pages
 const Datenschutz = lazy(() => import("./pages/Datenschutz"));
 const AGB = lazy(() => import("./pages/AGB"));
@@ -370,13 +377,14 @@ const App = () => (
                             <Route path="/admin/availability" element={<ProviderAvailability />} />
                             <Route path="/admin/code-export" element={<CodeExport />} />
                             <Route path="/ratgeber/umzugstipps" element={<Blog />} />
-                            <Route path="/ratgeber/kosten" element={<Blog />} />
-                            <Route path="/ratgeber/checklisten" element={<Blog />} />
+                            <Route path="/ratgeber/kosten" element={<UmzugskostenGuide />} />
+                            <Route path="/ratgeber/checklisten" element={<UmzugschecklisteDownload />} />
                             <Route path="/ratgeber/:category/:slug" element={<BlogPost />} />
-                            <Route path="/ratgeber/umzugskosten-3-zimmer-wohnung" element={<BlogPost />} />
-                            <Route path="/ratgeber/umzugscheckliste-download" element={<BlogPost />} />
+                            <Route path="/ratgeber/umzugskosten-3-zimmer-wohnung" element={<UmzugskostenGuide />} />
+                            <Route path="/ratgeber/umzugscheckliste-download" element={<UmzugschecklisteDownload />} />
                             <Route path="/ratgeber/umzug-mit-kindern" element={<BlogPost />} />
-                            <Route path="/umzugskosten-guide" element={<MovingCostGuide />} />
+                            <Route path="/umzugskosten-guide" element={<UmzugskostenGuide />} />
+                            <Route path="/region/:region" element={<RegionalTemplate />} />
                             <Route path="/beste-umzugsfirma" element={<BesteFirmen />} />
                             <Route path="/beste-umzugsfirma/:region" element={<BesteFirmen />} />
                             <Route path="/guenstige-umzugsfirma" element={<GuenstigeFirmen />} />
