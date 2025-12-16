@@ -1,5 +1,4 @@
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { HelpCircle } from "lucide-react";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
@@ -10,6 +9,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { CTASection } from "@/components/CTASection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { FAQSearch } from "@/components/FAQSearch";
 
 const faqCategories = [
   {
@@ -144,48 +144,6 @@ const faqCategories = [
   }
 ];
 
-interface FAQCategoryCardProps {
-  category: typeof faqCategories[0];
-  categoryIndex: number;
-}
-
-const FAQCategoryCard = ({ category, categoryIndex }: FAQCategoryCardProps) => {
-  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
-  
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "transition-all duration-500",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      )}
-    >
-      <Card className="mb-8 p-6 md:p-8 shadow-soft hover:shadow-medium transition-shadow">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="text-3xl" aria-hidden="true">{category.icon}</span>
-          <h2 className="text-xl md:text-2xl font-bold">{category.title}</h2>
-        </div>
-
-        <Accordion type="single" collapsible className="w-full">
-          {category.questions.map((faq, faqIndex) => (
-            <AccordionItem key={faqIndex} value={`item-${categoryIndex}-${faqIndex}`}>
-              <AccordionTrigger className="text-left text-base font-semibold hover:text-primary">
-                <div className="flex items-start gap-3">
-                  <HelpCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>{faq.q}</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground pl-8 pt-2">
-                {faq.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </Card>
-    </div>
-  );
-};
-
 const FAQ = () => {
   const currentUrl = 'https://www.umzugscheck.ch/faq/';
   
@@ -231,16 +189,10 @@ const FAQ = () => {
         </PageSection>
 
         <main>
-          {/* FAQ Categories */}
+          {/* FAQ with Search */}
           <PageSection>
             <div className="max-w-4xl mx-auto">
-              {faqCategories.map((category, categoryIndex) => (
-                <FAQCategoryCard 
-                  key={categoryIndex} 
-                  category={category} 
-                  categoryIndex={categoryIndex} 
-                />
-              ))}
+              <FAQSearch categories={faqCategories} />
             </div>
           </PageSection>
 

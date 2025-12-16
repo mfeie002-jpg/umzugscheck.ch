@@ -14,6 +14,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { ContactWhatsApp } from "@/components/ContactWhatsApp";
 
 const contactFAQs: FAQItem[] = [
   {
@@ -166,6 +167,11 @@ const Contact = () => {
                     </form>
                   </CardContent>
                 </Card>
+              </AnimatedCard>
+
+              {/* WhatsApp Contact */}
+              <AnimatedCard delay={350}>
+                <ContactWhatsApp />
               </AnimatedCard>
 
               {/* Contact Info */}

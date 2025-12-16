@@ -10,6 +10,8 @@ import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Loader2, CheckCircle, MapPin, Package, Clock, ArrowRight, FileText, Home } from "lucide-react";
 import { formatCurrency } from "@/lib/pricing";
+import { TimelineSteps } from "@/components/TimelineSteps";
+import { SocialShareButtons } from "@/components/SocialShareButtons";
 
 interface Lead {
   id: string;
@@ -163,6 +165,15 @@ export default function ThankYou() {
             </Card>
             </ScrollReveal>
 
+            {/* Timeline - What happens next */}
+            <ScrollReveal delay={150}>
+              <Card variant="elevated">
+                <CardContent className="p-6">
+                  <TimelineSteps />
+                </CardContent>
+              </Card>
+            </ScrollReveal>
+
             {/* Move Summary */}
             <ScrollReveal delay={200}>
               <Card variant="elevated">
@@ -245,6 +256,18 @@ export default function ThankYou() {
               </Button>
               </CardContent>
             </Card>
+            </ScrollReveal>
+
+            {/* Social Share */}
+            <ScrollReveal delay={350}>
+              <Card variant="elevated">
+                <CardContent className="p-6">
+                  <SocialShareButtons 
+                    title="Ich habe gerade Umzugsofferten verglichen auf Umzugscheck.ch!"
+                    description="Kostenlos Umzugsofferten vergleichen und bis zu 40% sparen."
+                  />
+                </CardContent>
+              </Card>
             </ScrollReveal>
 
             {/* Contact Info */}
