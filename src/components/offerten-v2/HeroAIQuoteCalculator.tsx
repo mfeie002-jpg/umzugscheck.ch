@@ -72,6 +72,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAnalytics } from "@/lib/analytics";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 interface CalculatorState {
@@ -564,9 +565,17 @@ export default function HeroAIQuoteCalculator() {
   const [activeUsers, setActiveUsers] = useState(47);
   const [showCelebration, setShowCelebration] = useState(false);
   const [autosaved, setAutosaved] = useState(true);
+  const [stepStartTime, setStepStartTime] = useState<number>(Date.now());
   const { toast } = useToast();
+  const analytics = useAnalytics();
   
   const priceEstimate = calculatePrice(state);
+  
+  // Track calculator start
+  useEffect(() => {
+    analytics.trackCalculatorStarted('ai');
+    analytics.trackStepStarted(1, 'location_details', 'ai_calculator');
+  }, []);
   
   // Simulate active users
   useEffect(() => {
@@ -590,14 +599,39 @@ export default function HeroAIQuoteCalculator() {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
   
+  // Track service selections
+  const handleServiceToggle = useCallback((serviceKey: string) => {
+    const currentValue = state[serviceKey as keyof CalculatorState] as boolean;
+    const newValue = !currentValue;
+    updateState({ [serviceKey]: newValue });
+    analytics.trackServiceSelected(serviceKey, newValue, 'ai_calculator');
+    
+    if (newValue) {
+      analytics.trackUpsellSelected(serviceKey);
+    }
+  }, [state, updateState, analytics]);
+  
   const goToNextStep = (nextStep: number) => {
+    const stepNames = ['location_details', 'services_options', 'contact_info'];
+    const duration = Math.round((Date.now() - stepStartTime) / 1000);
+    
+    // Track step completion
+    analytics.trackStepCompleted(state.step, stepNames[state.step - 1], 'ai_calculator', duration);
+    
     setShowCelebration(true);
     setTimeout(() => {
       updateState({ step: nextStep });
+      setStepStartTime(Date.now());
+      
+      // Track next step start
+      if (nextStep <= 3) {
+        analytics.trackStepStarted(nextStep, stepNames[nextStep - 1], 'ai_calculator');
+      }
+      
       setShowCelebration(false);
     }, 400);
   };
-  
+
   const handleSubmit = async () => {
     if (!state.name || !state.email || !state.phone) {
       toast({
@@ -609,6 +643,24 @@ export default function HeroAIQuoteCalculator() {
     }
     
     setIsSubmitting(true);
+    
+    // Track lead submission
+    const selectedServices = [
+      state.reinigung && 'reinigung',
+      state.verpackung && 'verpackung', 
+      state.moebellift && 'moebellift',
+      state.lagerung && 'lagerung'
+    ].filter(Boolean) as string[];
+    
+    analytics.trackLeadSubmitted({
+      calculatorType: 'ai',
+      moveDate: state.moveDate || 'nicht angegeben',
+      fromCity: state.fromOrt || state.fromPLZ,
+      toCity: state.toOrt || state.toPLZ,
+      priceRange: priceEstimate ? `${priceEstimate.min}-${priceEstimate.max}` : 'nicht berechnet',
+      services: selectedServices
+    });
+    
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     toast({
@@ -942,9 +994,7 @@ export default function HeroAIQuoteCalculator() {
                                   ? "border-primary bg-primary/5"
                                   : "border-border hover:border-primary/50"
                               }`}
-                              onClick={() => updateState({ 
-                                [service.key]: !state[service.key as keyof CalculatorState] 
-                              })}
+                              onClick={() => handleServiceToggle(service.key)}
                             >
                               <Switch
                                 checked={state[service.key as keyof CalculatorState] as boolean}

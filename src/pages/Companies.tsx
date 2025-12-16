@@ -13,7 +13,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3, Calendar as CalendarIcon, Clock, Bell, Heart, Calculator, Scale } from "lucide-react";
+import { Star, MapPin, CheckCircle2, ArrowRight, Search, SlidersHorizontal, X, Phone, Mail, TrendingUp, AlertCircle, BarChart3, Calendar as CalendarIcon, Clock, Bell, Heart, Calculator, Scale, LayoutGrid, TableProperties } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useAnalytics } from "@/lib/analytics";
@@ -36,6 +36,7 @@ import CompanyCertifications from "@/components/CompanyCertifications";
 import CompanyMatchScore from "@/components/CompanyMatchScore";
 import SmartSearchFilters from "@/components/SmartSearchFilters";
 import SavedSearches from "@/components/SavedSearches";
+import CompanyComparisonTable from "@/components/CompanyComparisonTable";
 
 interface Company {
   id: string;
@@ -106,6 +107,7 @@ const Companies = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showPriceChart, setShowPriceChart] = useState(false);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   // SEO Data
   const currentUrl = 'https://www.umzugscheck.ch/firmen/';
@@ -657,6 +659,28 @@ const Companies = () => {
                       </>
                     )}
                   </div>
+                  
+                  {/* View Toggle */}
+                  <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                    <Button
+                      variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                      size="sm"
+                      className="h-8 px-3 gap-1.5"
+                      onClick={() => setViewMode('cards')}
+                    >
+                      <LayoutGrid className="w-4 h-4" />
+                      <span className="hidden lg:inline">Karten</span>
+                    </Button>
+                    <Button
+                      variant={viewMode === 'table' ? 'default' : 'ghost'}
+                      size="sm"
+                      className="h-8 px-3 gap-1.5"
+                      onClick={() => setViewMode('table')}
+                    >
+                      <TableProperties className="w-4 h-4" />
+                      <span className="hidden lg:inline">Tabelle</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -866,7 +890,23 @@ const Companies = () => {
                         </div>
                       </CardContent>
                     </Card>
+                  ) : viewMode === 'table' ? (
+                    /* Table View */
+                    <CompanyComparisonTable 
+                      companies={filteredCompanies.map(c => ({
+                        id: c.id,
+                        name: c.name,
+                        rating: c.rating,
+                        review_count: c.review_count,
+                        price_level: c.price_level,
+                        services: c.services,
+                        service_areas: c.service_areas,
+                        verified: c.verified,
+                        availability: c.availability
+                      }))}
+                    />
                   ) : (
+                    /* Cards View */
                     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
                   {filteredCompanies.map((company, index) => (
                     <ScrollReveal key={company.id} delay={index * 50}>
@@ -998,31 +1038,27 @@ const Companies = () => {
                             )}
 
                             {/* Price & Contact Info */}
-                            <div className="pt-3 sm:pt-4 border-t space-y-2 sm:space-y-3">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs sm:text-sm text-muted-foreground">Preisniveau</span>
-                                <span className="font-bold text-primary text-base sm:text-lg">{company.price_level}</span>
-                              </div>
+                            <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                              <Badge variant="outline" className={`text-xs sm:text-sm font-semibold ${
+                                company.price_level === 'günstig' ? 'bg-green-50 text-green-700 border-green-200' :
+                                company.price_level === 'fair' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                'bg-purple-50 text-purple-700 border-purple-200'
+                              }`}>
+                                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" />
+                                {company.price_level}
+                              </Badge>
                               
-                              <div className="flex gap-3 sm:gap-4 text-xs flex-wrap">
-                                {company.phone && (
-                                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                                    <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                                    <span className="truncate">Telefon</span>
-                                  </div>
-                                )}
-                                {company.email && (
-                                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                                    <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                                    <span className="truncate">E-Mail</span>
-                                  </div>
-                                )}
-                              </div>
+                              {company.verified && (
+                                <Badge className="bg-green-100 text-green-700 border-0 gap-1 text-xs">
+                                  <CheckCircle2 className="w-3 h-3" />
+                                  Verifiziert
+                                </Badge>
+                              )}
                             </div>
                           </div>
-
-                          {/* CTA Buttons */}
-                          <div className="mt-4 sm:mt-5 space-y-2">
+                          
+                          {/* Actions */}
+                          <div className="pt-4 sm:pt-5 space-y-2 sm:space-y-3 mt-auto border-t border-border/50">
                             <Link 
                               to={`/firmen/${company.id}`} 
                               onClick={() => analytics.trackCompanyClicked(company.id, company.name, 'view_profile')}
