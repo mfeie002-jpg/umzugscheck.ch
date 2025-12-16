@@ -146,16 +146,36 @@ abTesting.registerTest({
   id: 'hero_cta',
   name: 'Hero CTA Button Text',
   variants: [
-    { id: 'control', name: 'Jetzt Preis berechnen', weight: 0.5 },
-    { id: 'variant_a', name: 'Kostenlos Offerten erhalten', weight: 0.5 }
+    { id: 'control', name: 'Jetzt checken lassen', weight: 0.34 },
+    { id: 'variant_a', name: 'Kostenlos Offerten erhalten', weight: 0.33 },
+    { id: 'variant_b', name: 'Jetzt vergleichen & sparen', weight: 0.33 }
   ]
 });
 
 abTesting.registerTest({
-  id: 'calculator_layout',
-  name: 'Calculator Layout',
+  id: 'calculator_submit',
+  name: 'Calculator Submit Button Text',
   variants: [
-    { id: 'control', name: 'Single Column', weight: 0.5 },
-    { id: 'variant_a', name: 'Two Columns', weight: 0.5 }
+    { id: 'control', name: 'Offerten anfordern', weight: 0.34 },
+    { id: 'variant_a', name: 'Jetzt kostenlos Offerten erhalten', weight: 0.33 },
+    { id: 'variant_b', name: 'Angebote vergleichen', weight: 0.33 }
+  ]
+});
+
+abTesting.registerTest({
+  id: 'video_cta',
+  name: 'Video Calculator CTA Text',
+  variants: [
+    { id: 'control', name: 'KI Video-Rechner', weight: 0.5 },
+    { id: 'variant_a', name: 'Video aufnehmen & sparen', weight: 0.5 }
+  ]
+});
+
+abTesting.registerTest({
+  id: 'company_view_mode',
+  name: 'Company List Default View',
+  variants: [
+    { id: 'control', name: 'Card View', weight: 0.5 },
+    { id: 'variant_a', name: 'Table View', weight: 0.5 }
   ]
 });

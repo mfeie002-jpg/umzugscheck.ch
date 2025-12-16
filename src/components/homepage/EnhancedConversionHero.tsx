@@ -5,10 +5,33 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { MultiStepCalculator } from "./MultiStepCalculator";
 import { MobileFormSheet } from "./MobileFormSheet";
+import { useABTest } from "@/hooks/use-ab-test";
 
 export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
   const navigate = useNavigate();
   const [isMobileFormOpen, setIsMobileFormOpen] = useState(false);
+  
+  // A/B Test variants
+  const { variant: heroCTAVariant, trackConversion: trackHeroCTA } = useABTest('hero_cta');
+  const { variant: videoCTAVariant } = useABTest('video_cta');
+  
+  // CTA text based on A/B test variant
+  const getHeroCTAText = () => {
+    switch (heroCTAVariant) {
+      case 'variant_a': return 'Kostenlos Offerten erhalten';
+      case 'variant_b': return 'Jetzt vergleichen & sparen';
+      default: return 'Jetzt checken lassen';
+    }
+  };
+  
+  const getVideoCTAText = () => {
+    return videoCTAVariant === 'variant_a' ? 'Video aufnehmen & sparen' : 'KI Video-Rechner';
+  };
+  
+  const handleHeroCTAClick = () => {
+    trackHeroCTA('hero_cta_click');
+    setIsMobileFormOpen(true);
+  };
 
   return (
     <>
@@ -92,9 +115,9 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <Button 
                   size="lg" 
                   className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta h-14 font-bold text-base"
-                  onClick={() => setIsMobileFormOpen(true)}
+                  onClick={handleHeroCTAClick}
                 >
-                  Jetzt checken lassen
+                  {getHeroCTAText()}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button 
@@ -104,7 +127,7 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                   onClick={() => navigate('/umzugsrechner?tab=ai')}
                 >
                   <Video className="w-5 h-5 mr-2 text-primary" />
-                  KI Video-Rechner
+                  {getVideoCTAText()}
                 </Button>
               </div>
 
