@@ -19,7 +19,7 @@ import { LeadExport } from "@/components/admin/LeadExport";
 import { supabase } from "@/integrations/supabase/client";
 
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,38 +27,16 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
     e.preventDefault();
     setLoading(true);
     
-    try {
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (authError) throw authError;
-
-      // Check if user has admin role
-      const { data: roleData, error: roleError } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', authData.user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      if (roleError) throw roleError;
-
-      if (!roleData) {
-        await supabase.auth.signOut();
-        toast.error("Keine Admin-Berechtigung");
-        return;
-      }
-
+    // Simple hardcoded admin credentials
+    if (username === "admin" && password === "passwort") {
+      sessionStorage.setItem("adminAuth", "true");
       toast.success("Login erfolgreich");
       onLogin();
-    } catch (error: any) {
-      console.error('Login error:', error);
-      toast.error(error.message || "Login fehlgeschlagen");
-    } finally {
-      setLoading(false);
+    } else {
+      toast.error("Ungültiger Benutzername oder Passwort");
     }
+    
+    setLoading(false);
   };
 
   return (
@@ -71,13 +49,13 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <Label htmlFor="email">E-Mail</Label>
+              <Label htmlFor="username">Benutzername</Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@example.com"
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="admin"
                 required
               />
             </div>
@@ -112,41 +90,16 @@ export default function Admin() {
     checkAuth();
   }, []);
 
-  const checkAuth = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        setAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
-      // Check if user has admin role
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      setAuthenticated(!!roleData);
-    } catch (error) {
-      console.error('Auth check error:', error);
-      setAuthenticated(false);
-    } finally {
-      setLoading(false);
-    }
+  const checkAuth = () => {
+    const isAuth = sessionStorage.getItem("adminAuth") === "true";
+    setAuthenticated(isAuth);
+    setLoading(false);
   };
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      setAuthenticated(false);
-      toast.success("Erfolgreich abgemeldet");
-    } catch (error) {
-      toast.error("Fehler beim Abmelden");
-    }
+  const handleLogout = () => {
+    sessionStorage.removeItem("adminAuth");
+    setAuthenticated(false);
+    toast.success("Erfolgreich abgemeldet");
   };
 
   if (loading) {
