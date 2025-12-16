@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard";
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
+import CompanyComparisonView from "@/components/CompanyComparisonView";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { TrendingDown, DollarSign, CheckCircle, ArrowRight } from "lucide-react";
+import { TrendingDown, DollarSign, CheckCircle, ArrowRight, LayoutGrid, Table2 } from "lucide-react";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
 import { getRankedCompanies } from "@/lib/ranking-service";
 import { trackLeadConversion } from "@/lib/bidding-engine";
@@ -52,6 +53,7 @@ export default function GuenstigeFirmen() {
   const [organicCompanies, setOrganicCompanies] = useState<any[]>([]);
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   const handleRefresh = async () => {
     await fetchCompanies();
@@ -263,12 +265,39 @@ export default function GuenstigeFirmen() {
           <section className="py-12">
             <div className="container mx-auto px-4">
               <div className="max-w-5xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">
-                  Alle günstigen Umzugsfirmen
-                </h2>
-                <p className="text-muted-foreground mb-4">
-                  Sortiert nach Preis-Leistungs-Verhältnis und Kundenzufriedenheit
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-2">
+                      Alle günstigen Umzugsfirmen
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Sortiert nach Preis-Leistungs-Verhältnis und Kundenzufriedenheit
+                    </p>
+                  </div>
+                  
+                  {/* View Toggle */}
+                  <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                    <Button
+                      variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('cards')}
+                      className="h-8 px-3"
+                    >
+                      <LayoutGrid className="w-4 h-4 mr-1.5" />
+                      Karten
+                    </Button>
+                    <Button
+                      variant={viewMode === 'table' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('table')}
+                      className="h-8 px-3"
+                    >
+                      <Table2 className="w-4 h-4 mr-1.5" />
+                      Tabelle
+                    </Button>
+                  </div>
+                </div>
+                
                 <p className="text-sm text-primary/70 mb-6 italic">
                   💡 Tipp: Nutzen Sie die Filter oben, um die passenden günstigen Umzugsfirmen zu finden
                 </p>
@@ -306,17 +335,40 @@ export default function GuenstigeFirmen() {
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
                   </div>
+                ) : viewMode === 'table' ? (
+                  <CompanyComparisonView
+                    companies={[...sponsoredCompanies, ...organicCompanies].map(c => ({
+                      id: c.id,
+                      name: c.name,
+                      rating: c.rating,
+                      review_count: c.reviewCount,
+                      price_level: c.priceLevel?.toLowerCase() || 'günstig',
+                      services: c.regions || ['Umzug', 'Transport'],
+                      service_areas: c.regions || ['Schweiz'],
+                      verified: c.verified ?? true,
+                      responseTime: '< 2 Std.',
+                    }))}
+                    onClose={() => setViewMode('cards')}
+                  />
                 ) : (
                   <div className="space-y-4">
                     {organicCompanies.map((company) => (
-                      <div key={company.id} className="relative">
-                        <input
-                          type="checkbox"
-                          id={`select-organic-${company.id}`}
-                          checked={selectedCompanyIds.includes(company.id)}
-                          onChange={() => toggleCompanySelection(company.id)}
-                          className="absolute top-4 right-4 z-10 w-5 h-5 cursor-pointer"
-                        />
+                      <div key={company.id} className="relative group">
+                        <label 
+                          htmlFor={`select-organic-${company.id}`}
+                          className="absolute top-4 right-4 z-10 flex items-center gap-2 cursor-pointer bg-white/90 dark:bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border shadow-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            id={`select-organic-${company.id}`}
+                            checked={selectedCompanyIds.includes(company.id)}
+                            onChange={() => toggleCompanySelection(company.id)}
+                            className="w-4 h-4 cursor-pointer accent-primary"
+                          />
+                          <span className="text-xs font-medium">
+                            {selectedCompanyIds.includes(company.id) ? 'Ausgewählt' : 'Auswählen'}
+                          </span>
+                        </label>
                         <OrganicCompanyCard {...company} />
                       </div>
                     ))}
