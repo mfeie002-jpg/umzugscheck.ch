@@ -204,6 +204,7 @@ const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
 const ABTesting = lazy(() => import("./pages/admin/ABTesting"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
 const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
+const AdminLogin = lazy(() => import("./pages/admin/Login"));
 
 // Legal pages
 const Datenschutz = lazy(() => import("./pages/Datenschutz"));
@@ -345,6 +346,7 @@ const App = () => (
                             <Route path="/kontakt" element={<Contact />} />
                             <Route path="/auth" element={<Auth />} />
                             <Route path="/admin" element={<Admin />} />
+                            <Route path="/admin/login" element={<AdminLogin />} />
                             <Route path="/admin/dashboard" element={<AdminDashboard />} />
                             <Route path="/admin/companies" element={<CompaniesAdmin />} />
                             <Route path="/admin/reviews" element={<AdminReviews />} />
