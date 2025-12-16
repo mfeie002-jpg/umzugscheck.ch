@@ -1,0 +1,286 @@
+=============================================================================
+UMZUGSCHECK.CH - FULL CODE EXPORT FOR CHATGPT REVIEW
+Generated: 2025-12-16
+=============================================================================
+
+PROJECT OVERVIEW:
+- Premium Swiss moving comparison platform
+- React + Vite + TypeScript + Tailwind CSS
+- Supabase backend (Cloud)
+- Goal: Lead generation, SEO, conversion optimization
+
+=============================================================================
+FILE STRUCTURE
+=============================================================================
+
+src/
+├── pages/                    # All page components
+│   ├── Index.tsx            # Homepage (IndexPremium is active)
+│   ├── IndexPremium.tsx     # Active premium homepage
+│   ├── Umzugsofferten.tsx   # Main conversion funnel page
+│   ├── Companies.tsx        # Company listing
+│   ├── Calculator.tsx       # Price calculator
+│   ├── Admin.tsx            # Admin panel
+│   ├── cantons/             # Canton-specific pages (Zurich, Bern, etc.)
+│   ├── services/            # Service pages (Private, Business, Cleaning)
+│   ├── admin/               # Admin sub-pages
+│   └── ...
+├── components/
+│   ├── homepage/            # Homepage components
+│   ├── offerten-v2/         # Offerten page components
+│   ├── calculator/          # Calculator components
+│   ├── ui/                  # Shadcn UI components
+│   ├── Navigation.tsx       # Main navigation
+│   ├── Footer.tsx           # Footer
+│   └── ...
+├── content/                  # JSON content files
+│   ├── faq.json
+│   ├── services.json
+│   ├── regions.json
+│   └── ...
+├── hooks/                    # Custom React hooks
+├── lib/                      # Utility functions
+└── integrations/supabase/   # Supabase client & types
+
+=============================================================================
+DESIGN SYSTEM (src/index.css)
+=============================================================================
+
+/* Brand Colors */
+--uc-blue: 210 100% 33%;        /* #0050A8 - Primary brand blue */
+--uc-red: 358 79% 51%;          /* #E32026 - Primary CTA / accent red */
+--uc-bg-light: 214 32% 97%;     /* #F5F7FA - Light section background */
+--uc-bg-white: 0 0% 100%;       /* #FFFFFF - Cards, main surfaces */
+--uc-text-main: 220 43% 11%;    /* #111827 - Main body text */
+--uc-text-muted: 220 9% 46%;    /* #4B5563 - Secondary text */
+
+/* Semantic Tokens */
+--background: var(--uc-bg-white);
+--foreground: var(--uc-text-main);
+--primary: var(--uc-blue);         /* Navigation, headings, icons */
+--secondary: var(--uc-red);        /* CTAs, badges, highlights */
+--muted: var(--uc-bg-light);
+--accent: 210 40% 96%;
+
+/* Shadows */
+--shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+--shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
+--shadow-cta: 0 8px 24px rgba(227, 32, 38, 0.25);
+--shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.10);
+
+/* Border Radius */
+--radius: 0.75rem;
+
+=============================================================================
+TAILWIND CONFIG (tailwind.config.ts)
+=============================================================================
+
+- Font: Inter (system fallback)
+- Custom font sizes: h1, h2, h3, body
+- Brand colors mapped to CSS variables
+- Custom shadows: soft, medium, premium, cta, lift
+- Animations: fade-in, slide-up, shimmer, marquee
+
+=============================================================================
+APP ROUTING (src/App.tsx) - KEY ROUTES
+=============================================================================
+
+/ → IndexPremium (Homepage)
+/umzugsofferten → Umzugsofferten (Main conversion funnel)
+/rechner → Redirects to /umzugsofferten
+/umzugsfirmen → Companies listing
+/umzugsfirmen/:canton → Canton-specific companies
+/firma/:slug → Company detail
+/admin → Admin dashboard (simple auth: admin/passwort)
+/anbieter → Provider portal
+/privatumzug, /firmenumzug, /reinigung → Service pages
+/zuerich, /bern, /basel, etc. → Redirect to /umzugsfirmen/:canton
+
+=============================================================================
+HOMEPAGE (src/pages/Index.tsx) - SECTION ORDER
+=============================================================================
+
+1. EnhancedConversionHero - Hero with CTA
+2. SocialProofMarquee - Trust signals
+3. EnhancedHowItWorks - Process steps
+4. CompanyComparisonSection - Company comparison
+5. AIVideoCalculatorSection - KI Video feature
+6. EnhancedServicesGrid - Services grid
+7. CostExamplesSection - Price examples
+8. EnhancedTestimonials - Customer reviews
+9. EnhancedRegionsGrid - Regional availability
+10. EnhancedUSPSection - Why choose us
+11. MediaLogosSection - Media logos
+12. EnhancedFAQ - FAQ accordion
+13. EnhancedFinalCTA - Final call to action
+
+=============================================================================
+NAVIGATION (src/components/Navigation.tsx)
+=============================================================================
+
+Desktop Menu Items:
+- Umzugsfirmen (dropdown)
+- Services (dropdown)
+- Regionen (dropdown)
+- Ratgeber (dropdown)
+- Für Firmen (dropdown)
+
+CTA Button: "Kostenlos Offerten erhalten" → /umzugsofferten
+- bg-secondary (red)
+- shadow-cta effect
+
+Mobile: Burger menu with MobileMenu component
+
+=============================================================================
+FOOTER (src/components/Footer.tsx)
+=============================================================================
+
+- Trust bar: SSL, DSGVO, Swiss Made
+- Columns: Umzug planen, Services, Informationen, Für Firmen, Kontakt
+- Social links: Facebook, LinkedIn, Instagram
+- Legal: Datenschutz, AGB, Impressum
+- Schema.org Organization markup
+
+=============================================================================
+UMZUGSOFFERTEN PAGE (src/pages/Umzugsofferten.tsx)
+=============================================================================
+
+Main conversion funnel with:
+- HeroAIQuoteCalculator
+- AIInsightsBar
+- HowItWorksSection
+- ComparisonShowcase
+- PriceScenariosSection
+- WhyUsSection
+- TrustAndSecuritySection
+- TestimonialsSection
+- FAQSection
+- BottomFinalCTA
+- BottomStickyCTA (mobile)
+
+=============================================================================
+CONTENT FILES
+=============================================================================
+
+src/content/faq.json:
+[
+  { "id": "how-it-works", "question": "Wie funktioniert umzugscheck.ch?", ... },
+  { "id": "is-free", "question": "Ist der Service wirklich kostenlos?", ... },
+  ...
+]
+
+src/content/services.json:
+[
+  { "id": "privatumzug", "name": "Privatumzug", "icon": "🏠", ... },
+  { "id": "firmenumzug", "name": "Firmenumzug", "icon": "🏢", ... },
+  ...
+]
+
+src/content/regions.json:
+[
+  { "id": "zuerich", "name": "Zürich", "canton": "ZH", ... },
+  { "id": "bern", "name": "Bern", "canton": "BE", ... },
+  ...
+]
+
+src/content/costExamples.json:
+[
+  { "id": "small", "title": "1.5-Zimmer", "priceFrom": "ab CHF 680" },
+  { "id": "medium", "title": "2.5-Zimmer", "priceFrom": "ab CHF 980" },
+  { "id": "large", "title": "4.5-Zimmer", "priceFrom": "ab CHF 1'650" }
+]
+
+=============================================================================
+DATABASE SCHEMA (Supabase)
+=============================================================================
+
+Key Tables:
+- service_providers: Moving companies
+- leads: Customer inquiries
+- reviews: Customer reviews
+- estimate_sessions: Calculator sessions
+- lead_transactions: Lead purchases
+- user_roles: Admin roles
+
+=============================================================================
+KEY COMPONENTS
+=============================================================================
+
+HOMEPAGE COMPONENTS (src/components/homepage/):
+- EnhancedConversionHero.tsx - Main hero with form
+- SocialProofMarquee.tsx - Trust marquee
+- EnhancedHowItWorks.tsx - Process steps
+- CompanyComparisonSection.tsx - Company comparison
+- AIVideoCalculatorSection.tsx - KI Video feature
+- EnhancedServicesGrid.tsx - Services grid
+- CostExamplesSection.tsx - Price examples
+- EnhancedTestimonials.tsx - Reviews
+- EnhancedRegionsGrid.tsx - Regions
+- EnhancedUSPSection.tsx - USPs
+- EnhancedFAQ.tsx - FAQ
+- EnhancedFinalCTA.tsx - Final CTA
+- MobileStickyBar.tsx - Mobile CTA
+
+OFFERTEN-V2 COMPONENTS (src/components/offerten-v2/):
+- HeroAIQuoteCalculator.tsx
+- AIInsightsBar.tsx
+- HowItWorksSection.tsx
+- ComparisonShowcase.tsx
+- PriceScenariosSection.tsx
+- WhyUsSection.tsx
+- TrustAndSecuritySection.tsx
+- TestimonialsSection.tsx
+- FAQSection.tsx
+- BottomFinalCTA.tsx
+- BottomStickyCTA.tsx
+
+=============================================================================
+ADMIN PANEL (src/pages/Admin.tsx)
+=============================================================================
+
+Simple authentication:
+- Username: admin
+- Password: passwort
+- Uses sessionStorage for auth state
+
+Admin features:
+- Dashboard analytics
+- Leads management
+- Companies management
+- Reviews moderation
+- Provider management
+- Billing & subscriptions
+- Rankings management
+
+=============================================================================
+BRAND GUIDELINES
+=============================================================================
+
+- Main color: Blue (#0050A8) - Trust & Authority
+- CTA color: Red (#E32026) - Action
+- Clean, modern, trustworthy "Swiss Quality"
+- Mobile-first responsive design
+- Conversion-focused UX
+- SEO-optimized structure
+
+=============================================================================
+CORE USPs (Always communicate)
+=============================================================================
+
+1. KI Video Calculator - Upload video for automatic cost calculation
+2. Company Comparison - 200+ Swiss moving companies
+3. Savings - Up to 40% savings through comparison
+
+=============================================================================
+IMPORTANT NOTES
+=============================================================================
+
+- /umzugsofferten is THE most important conversion page
+- All CTAs point to /umzugsofferten
+- /rechner and /umzugsrechner redirect to /umzugsofferten
+- Admin at /admin (not /admin/login)
+- Simple admin auth (sessionStorage, not Supabase)
+
+=============================================================================
+END OF EXPORT
+=============================================================================
