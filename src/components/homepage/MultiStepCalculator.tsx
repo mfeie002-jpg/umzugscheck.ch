@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useABTest } from "@/hooks/use-ab-test";
 import { EnhancedProgressIndicator, ProgressMessage } from "./EnhancedProgressIndicator";
 import { validateField, emailSchema, postalCodeSchema, nameSchema, phoneSchema } from "@/lib/form-validation";
+import { ValidatedInput } from "@/components/ui/ValidatedInput";
 import analytics from "@/lib/analytics";
 
 const swissPostalCodes = [
@@ -235,43 +236,35 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               </div>
 
               <div className="space-y-3">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-primary" />
-                    Von (PLZ oder Ort)
-                  </label>
-                  <Input
-                    placeholder="z.B. 8001 oder Zürich"
-                    value={formData.fromLocation}
-                    onChange={(e) => updateFormData("fromLocation", e.target.value)}
-                    className="h-12 rounded-xl"
-                    list="from-suggestions"
-                  />
-                  <datalist id="from-suggestions">
-                    {swissPostalCodes.map((p) => (
-                      <option key={`from-${p.code}`} value={`${p.code} ${p.city}`} />
-                    ))}
-                  </datalist>
-                </div>
+                <ValidatedInput
+                  schema={postalCodeSchema}
+                  value={formData.fromLocation}
+                  onValueChange={(v) => updateFormData("fromLocation", v)}
+                  label="Von (PLZ oder Ort)"
+                  icon={<MapPin className="w-4 h-4 text-primary" />}
+                  placeholder="z.B. 8001 oder Zürich"
+                  list="from-suggestions"
+                />
+                <datalist id="from-suggestions">
+                  {swissPostalCodes.map((p) => (
+                    <option key={`from-${p.code}`} value={`${p.code} ${p.city}`} />
+                  ))}
+                </datalist>
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-secondary" />
-                    Nach (PLZ oder Ort)
-                  </label>
-                  <Input
-                    placeholder="z.B. 3011 oder Bern"
-                    value={formData.toLocation}
-                    onChange={(e) => updateFormData("toLocation", e.target.value)}
-                    className="h-12 rounded-xl"
-                    list="to-suggestions"
-                  />
-                  <datalist id="to-suggestions">
-                    {swissPostalCodes.map((p) => (
-                      <option key={`to-${p.code}`} value={`${p.code} ${p.city}`} />
-                    ))}
-                  </datalist>
-                </div>
+                <ValidatedInput
+                  schema={postalCodeSchema}
+                  value={formData.toLocation}
+                  onValueChange={(v) => updateFormData("toLocation", v)}
+                  label="Nach (PLZ oder Ort)"
+                  icon={<MapPin className="w-4 h-4 text-secondary" />}
+                  placeholder="z.B. 3011 oder Bern"
+                  list="to-suggestions"
+                />
+                <datalist id="to-suggestions">
+                  {swissPostalCodes.map((p) => (
+                    <option key={`to-${p.code}`} value={`${p.code} ${p.city}`} />
+                  ))}
+                </datalist>
               </div>
             </motion.div>
           )}
@@ -401,46 +394,35 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               </div>
 
               <div className="space-y-3">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <User className="w-4 h-4 text-primary" />
-                    Name *
-                  </label>
-                  <Input
-                    placeholder="Ihr vollständiger Name"
-                    value={formData.name}
-                    onChange={(e) => updateFormData("name", e.target.value)}
-                    className="h-12 rounded-xl"
-                  />
-                </div>
+                <ValidatedInput
+                  schema={nameSchema}
+                  value={formData.name}
+                  onValueChange={(v) => updateFormData("name", v)}
+                  label="Name *"
+                  icon={<User className="w-4 h-4 text-primary" />}
+                  placeholder="Ihr vollständiger Name"
+                />
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-primary" />
-                    E-Mail *
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="ihre@email.ch"
-                    value={formData.email}
-                    onChange={(e) => updateFormData("email", e.target.value)}
-                    className="h-12 rounded-xl"
-                  />
-                </div>
+                <ValidatedInput
+                  schema={emailSchema}
+                  value={formData.email}
+                  onValueChange={(v) => updateFormData("email", v)}
+                  label="E-Mail *"
+                  icon={<Mail className="w-4 h-4 text-primary" />}
+                  placeholder="ihre@email.ch"
+                  type="email"
+                />
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    Telefon (optional)
-                  </label>
-                  <Input
-                    type="tel"
-                    placeholder="+41 79 123 45 67"
-                    value={formData.phone}
-                    onChange={(e) => updateFormData("phone", e.target.value)}
-                    className="h-12 rounded-xl"
-                  />
-                </div>
+                <ValidatedInput
+                  schema={phoneSchema}
+                  value={formData.phone}
+                  onValueChange={(v) => updateFormData("phone", v)}
+                  label="Telefon (optional)"
+                  icon={<Phone className="w-4 h-4 text-muted-foreground" />}
+                  placeholder="+41 79 123 45 67"
+                  type="tel"
+                  showSuccessIcon={false}
+                />
 
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium flex items-center gap-2">

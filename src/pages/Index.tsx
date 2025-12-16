@@ -5,6 +5,8 @@ import { Header } from "@/components/homepage/Header";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
+import { HotjarScript } from "@/components/analytics/HotjarScript";
 
 // Core Components (not lazy - above the fold)
 import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
@@ -161,6 +163,16 @@ const Index = () => {
         
         {/* Single mobile CTA approach */}
         <MobileStickyBar />
+        
+        {/* WhatsApp floating button - appears after 30 seconds */}
+        <FloatingWhatsApp 
+          phoneNumber="41780980000" 
+          message="Hallo! Ich interessiere mich für einen Umzug und hätte gerne mehr Informationen."
+          delayMs={30000}
+        />
+        
+        {/* Hotjar session recording & heatmaps */}
+        <HotjarScript />
         
         <Suspense fallback={null}>
           <CookieConsent />
