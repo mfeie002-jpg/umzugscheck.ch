@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check, TrendingDown, Trophy, Video } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
@@ -82,7 +81,6 @@ export const PremiumHeroSection = () => {
   const navigate = useNavigate();
   const [fromPostal, setFromPostal] = useState("");
   const [toPostal, setToPostal] = useState("");
-  const [rooms, setRooms] = useState("");
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -108,7 +106,7 @@ export const PremiumHeroSection = () => {
     const prefillData = {
       from: fromPostal,
       to: toPostal,
-      rooms: rooms,
+      source: "homepage",
       timestamp: Date.now(),
     };
     try {
@@ -120,7 +118,6 @@ export const PremiumHeroSection = () => {
     const params = new URLSearchParams();
     if (fromPostal) params.set("from", fromPostal);
     if (toPostal) params.set("to", toPostal);
-    if (rooms) params.set("rooms", rooms);
     navigate(`/umzugsofferten?${params.toString()}`);
   };
 
@@ -360,21 +357,14 @@ export const PremiumHeroSection = () => {
               <LiveActivityBadge />
             </div>
             
-            {/* Desktop CTAs with MagneticButton */}
+            {/* Desktop CTA with MagneticButton */}
             <div className="hidden lg:flex items-center gap-4 pt-2">
               <MagneticButton strength={0.2}>
                 <Link to="/umzugsofferten">
                   <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all">
                     <CheckCircle2 className="mr-2 h-5 w-5" />
-                    Jetzt checken lassen
+                    Kostenlos Offerten erhalten
                     <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-              </MagneticButton>
-              <MagneticButton strength={0.15}>
-                <Link to="/umzugsrechner">
-                  <Button size="lg" variant="secondary" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold">
-                    Kosten berechnen
                   </Button>
                 </Link>
               </MagneticButton>
@@ -409,6 +399,11 @@ export const PremiumHeroSection = () => {
                   </p>
                 </div>
                 
+                {/* Progress indicator */}
+                <div className="text-xs sm:text-sm text-muted-foreground text-center">
+                  Schritt 1 von 4 · Dauer ca. 2 Minuten
+                </div>
+                
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                   <div className="space-y-1.5 md:space-y-2">
@@ -421,6 +416,7 @@ export const PremiumHeroSection = () => {
                       onChange={(e) => setFromPostal(e.target.value)}
                       className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
                       autoComplete="off"
+                      autoFocus
                       required
                     />
                     <datalist id="from-options">
@@ -449,30 +445,13 @@ export const PremiumHeroSection = () => {
                     </datalist>
                   </div>
                   
-                  <div className="space-y-1.5 md:space-y-2">
-                    <Label htmlFor="rooms" className="text-foreground font-medium text-xs sm:text-sm">Wohnungsgrösse</Label>
-                    <Select value={rooms} onValueChange={setRooms}>
-                      <SelectTrigger className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-2 border-primary/40">
-                        <SelectValue placeholder="Wählen Sie..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card border-border">
-                        <SelectItem value="1">1 - 1.5 Zimmer</SelectItem>
-                        <SelectItem value="2">2 - 2.5 Zimmer</SelectItem>
-                        <SelectItem value="3">3 - 3.5 Zimmer</SelectItem>
-                        <SelectItem value="4">4 - 4.5 Zimmer</SelectItem>
-                        <SelectItem value="5">5+ Zimmer / Haus</SelectItem>
-                        <SelectItem value="office">Büro / Firma</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
                   <Button 
                     type="submit" 
                     size="lg" 
                     className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group"
                   >
                     <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                    Jetzt checken lassen
+                    Kostenlos Offerten erhalten
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>
