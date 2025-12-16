@@ -1,10 +1,12 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight } from "lucide-react";
+import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { MultiStepCalculator } from "./MultiStepCalculator";
 import { MobileFormSheet } from "./MobileFormSheet";
+import { HeroIllustration } from "./HeroIllustration";
+import { UrgencyBadge } from "./UrgencyBadge";
 import { useABTest } from "@/hooks/use-ab-test";
 
 export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
@@ -51,17 +53,15 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
               transition={{ duration: 0.5 }}
               className="space-y-6 text-center lg:text-left order-2 lg:order-1"
             >
-              {/* Savings Badge */}
+              {/* Urgency Badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 }}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/15 to-green-600/15 rounded-full px-4 py-2 border border-green-500/30 mx-auto lg:mx-0"
+                className="flex flex-wrap justify-center lg:justify-start gap-2"
               >
-                <div className="w-7 h-7 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
-                  <TrendingDown className="w-3.5 h-3.5 text-white" />
-                </div>
-                <span className="text-sm font-bold text-green-700 dark:text-green-400">Bis zu 40% sparen</span>
+                <UrgencyBadge variant="savings" />
+                <UrgencyBadge variant="time" className="hidden sm:inline-flex" />
               </motion.div>
 
               {/* Headline */}
@@ -97,21 +97,15 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
               </div>
 
               {/* Live Activity Badge */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="inline-flex items-center gap-2 bg-green-500/10 text-green-700 dark:text-green-400 rounded-full px-3 py-1.5 text-sm mx-auto lg:mx-0"
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span className="font-medium">3 Personen vergleichen gerade</span>
-              </motion.div>
+              <UrgencyBadge variant="users" className="mx-auto lg:mx-0" />
+
+              {/* Mobile: Hero Illustration */}
+              <div className="lg:hidden py-4">
+                <HeroIllustration />
+              </div>
 
               {/* Mobile CTA Buttons - Opens Bottom Sheet */}
-              <div className="flex flex-col sm:flex-row gap-3 lg:hidden pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 lg:hidden pt-2">
                 <Button 
                   size="lg" 
                   className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta h-14 font-bold text-base"
@@ -131,8 +125,19 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 </Button>
               </div>
 
+              {/* Time estimate badge */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="flex items-center justify-center lg:justify-start gap-2 text-sm text-muted-foreground"
+              >
+                <Clock className="w-4 h-4" />
+                <span>In nur 2 Minuten kostenlos Offerten erhalten</span>
+              </motion.div>
+
               {/* Desktop Trust Badges */}
-              <div className="hidden lg:flex flex-wrap gap-3 pt-4">
+              <div className="hidden lg:flex flex-wrap gap-3 pt-2">
                 <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground bg-card border border-border px-4 py-2 rounded-full shadow-soft">
                   <Shield className="w-4 h-4 text-primary" />
                   SSL verschlüsselt
