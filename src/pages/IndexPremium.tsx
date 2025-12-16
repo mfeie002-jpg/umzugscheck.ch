@@ -9,19 +9,34 @@ import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { TrustSignals } from "@/components/TrustSignals";
-import { memo, useMemo, lazy, Suspense } from "react";
+import { memo, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { SectionSkeleton } from "@/components/ui/section-skeleton";
+import analytics from "@/lib/analytics";
 
 // Lazy load below-fold sections for better performance
-const LazyPremiumCostExamples = lazy(() => import("@/components/premium/PremiumCostExamples").then(m => ({ default: m.PremiumCostExamples })));
 const LazyPremiumProviderCTA = lazy(() => import("@/components/premium/PremiumProviderCTA").then(m => ({ default: m.PremiumProviderCTA })));
-const LazyPremiumAIShowcase = lazy(() => import("@/components/premium/PremiumAIShowcase").then(m => ({ default: m.PremiumAIShowcase })));
 const LazyPremiumServicesGrid = lazy(() => import("@/components/premium/PremiumServicesGrid").then(m => ({ default: m.PremiumServicesGrid })));
-const LazyPremiumRegions = lazy(() => import("@/components/premium/PremiumRegions").then(m => ({ default: m.PremiumRegions })));
-const LazyPremiumWhyUs = lazy(() => import("@/components/premium/PremiumWhyUs").then(m => ({ default: m.PremiumWhyUs })));
 const LazyComparisonShowcase = lazy(() => import("@/components/home/ComparisonShowcase").then(m => ({ default: m.ComparisonShowcase })));
 
+// Optional sections - below main CTA (can be removed for less scroll)
+const LazyPremiumCostExamples = lazy(() => import("@/components/premium/PremiumCostExamples").then(m => ({ default: m.PremiumCostExamples })));
+const LazyPremiumAIShowcase = lazy(() => import("@/components/premium/PremiumAIShowcase").then(m => ({ default: m.PremiumAIShowcase })));
+const LazyPremiumRegions = lazy(() => import("@/components/premium/PremiumRegions").then(m => ({ default: m.PremiumRegions })));
+const LazyPremiumWhyUs = lazy(() => import("@/components/premium/PremiumWhyUs").then(m => ({ default: m.PremiumWhyUs })));
+
 const IndexPremium = () => {
+  // Tracking guard to prevent duplicate events on re-renders
+  const didTrack = useRef(false);
+
+  // Track page view once on mount
+  useEffect(() => {
+    if (didTrack.current) return;
+    didTrack.current = true;
+
+    // Track page view (analytics lib checks consent internally)
+    analytics.trackPageView('home_premium', '/');
+  }, []);
+
   // FAQ data - memoized
   const faqItems = useMemo(() => [
     {
@@ -58,7 +73,7 @@ const IndexPremium = () => {
     }
   ], []);
 
-  // Memoized schema
+  // Memoized schema - AggregateRating inside Organization (cleaner structured data)
   const schemaScript = useMemo(() => JSON.stringify({
     "@context": "https://schema.org",
     "@graph": [
@@ -69,7 +84,14 @@ const IndexPremium = () => {
         "url": "https://umzugscheck.ch",
         "logo": "https://umzugscheck.ch/logo.png",
         "description": "Die führende Schweizer Plattform für den Vergleich von Umzugsfirmen.",
-        "areaServed": "CH"
+        "areaServed": "CH",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": "2847"
+        }
       },
       {
         "@type": "WebSite",
@@ -85,14 +107,6 @@ const IndexPremium = () => {
           "name": item.question,
           "acceptedAnswer": { "@type": "Answer", "text": item.answer }
         }))
-      },
-      {
-        "@type": "AggregateRating",
-        "itemReviewed": { "@type": "Organization", "name": "Umzugscheck.ch" },
-        "ratingValue": "4.8",
-        "bestRating": "5",
-        "worstRating": "1",
-        "ratingCount": "2847"
       }
     ]
   }), [faqItems]);
@@ -108,12 +122,23 @@ const IndexPremium = () => {
         />
         <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, günstige Umzugsfirma" />
         <link rel="canonical" href="https://umzugscheck.ch/" />
+        
+        {/* Open Graph - with image */}
         <meta property="og:title" content="Umzugsfirmen vergleichen Schweiz | Umzugscheck.ch" />
         <meta property="og:description" content="200+ geprüfte Umzugsfirmen. KI-Rechner. Bis zu 40% sparen!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/" />
         <meta property="og:locale" content="de_CH" />
+        <meta property="og:image" content="https://umzugscheck.ch/og-home.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        
+        {/* Twitter - with image */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Umzugsfirmen vergleichen Schweiz | Umzugscheck.ch" />
+        <meta name="twitter:description" content="200+ geprüfte Umzugsfirmen. KI-Rechner. Bis zu 40% sparen!" />
+        <meta name="twitter:image" content="https://umzugscheck.ch/og-home.jpg" />
+        
         <meta name="robots" content="index, follow" />
         <meta name="geo.region" content="CH" />
         <script type="application/ld+json">{schemaScript}</script>
@@ -122,73 +147,78 @@ const IndexPremium = () => {
       <SkipToContent />
       
       <main id="main-content" role="main">
-        {/* Hero - Critical */}
+        {/* 1. Hero - Critical: Commitment hook */}
         <PremiumHeroSection />
         
-        {/* Trust */}
+        {/* 2. Trust Signals */}
         <TrustSignals />
         
-        {/* Social Proof */}
+        {/* 3. Social Proof */}
         <AnimatedSection animation="fade-up">
           <PremiumSocialProof />
         </AnimatedSection>
         
-        {/* How It Works */}
+        {/* 4. How It Works */}
         <AnimatedSection animation="fade-up">
           <PremiumHowItWorks />
         </AnimatedSection>
 
-        {/* Comparison - Lazy */}
+        {/* 5. Comparison Showcase - Lazy */}
         <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
           <AnimatedSection animation="fade-in">
             <LazyComparisonShowcase variant="premium" />
           </AnimatedSection>
         </Suspense>
         
-        {/* AI Calculator - Lazy */}
-        <Suspense fallback={<SectionSkeleton height="min-h-[500px]" />}>
-          <AnimatedSection animation="scale">
-            <LazyPremiumAIShowcase />
-          </AnimatedSection>
-        </Suspense>
-        
-        {/* Services - Lazy */}
+        {/* 6. Services Grid - Lazy */}
         <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
           <AnimatedSection animation="fade-up">
             <LazyPremiumServicesGrid />
           </AnimatedSection>
         </Suspense>
         
-        {/* Cost Examples - Lazy */}
+        {/* 7. FAQ - Key for SEO and conversion */}
+        <AnimatedSection animation="fade-in">
+          <PremiumFAQ items={faqItems} />
+        </AnimatedSection>
+        
+        {/* 8. Provider CTA / Final CTA - Lazy */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[200px]" />}>
+          <AnimatedSection animation="fade-up">
+            <LazyPremiumProviderCTA />
+          </AnimatedSection>
+        </Suspense>
+
+        {/* =========================================
+            OPTIONAL SECTIONS BELOW MAIN CTA
+            These can be removed for "less scroll, more action"
+            ========================================= */}
+        
+        {/* AI Calculator Showcase - Optional */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[500px]" />}>
+          <AnimatedSection animation="scale">
+            <LazyPremiumAIShowcase />
+          </AnimatedSection>
+        </Suspense>
+        
+        {/* Cost Examples - Optional */}
         <Suspense fallback={<SectionSkeleton height="min-h-[350px]" variant="cards" />}>
           <AnimatedSection animation="fade-up">
             <LazyPremiumCostExamples />
           </AnimatedSection>
         </Suspense>
         
-        {/* Regions - Lazy */}
+        {/* Regions - Optional */}
         <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
           <AnimatedSection animation="slide-left">
             <LazyPremiumRegions />
           </AnimatedSection>
         </Suspense>
         
-        {/* Why Us - Lazy */}
+        {/* Why Us - Optional */}
         <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
           <AnimatedSection animation="scale">
             <LazyPremiumWhyUs />
-          </AnimatedSection>
-        </Suspense>
-        
-        {/* FAQ */}
-        <AnimatedSection animation="fade-in">
-          <PremiumFAQ items={faqItems} />
-        </AnimatedSection>
-        
-        {/* Provider CTA - Lazy */}
-        <Suspense fallback={<SectionSkeleton height="min-h-[200px]" />}>
-          <AnimatedSection animation="fade-up">
-            <LazyPremiumProviderCTA />
           </AnimatedSection>
         </Suspense>
       </main>
