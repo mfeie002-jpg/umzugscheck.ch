@@ -1,30 +1,34 @@
 /**
- * HeroAIQuoteCalculator - Conversion-First 4-Step Funnel
+ * HeroAIQuoteCalculator - Conversion-First 4-Step Funnel V3
  * 
  * CORE PRINCIPLE: This funnel is a guided process, not a form.
  * - One decision per screen
  * - Clear progress at all times
  * - No pricing pressure early
  * - No ambiguity about "what happens next"
+ * 
+ * V3 FEATURES:
+ * - Consent-gated analytics
+ * - PII-safe event tracking
+ * - Rage click detection
+ * - Field interaction tracking
+ * - Error handling with tracking
  */
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import heroMovingCouple from "@/assets/hero-moving-couple.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
   CheckCircle2, 
   Calculator, 
   ArrowRight, 
   Sparkles,
   MapPin,
-  Home,
   User,
   Mail,
   Phone,
@@ -40,11 +44,11 @@ import {
   Users,
   Package,
   Trash2,
-  Sofa,
-  Warehouse
+  Sofa
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/lib/analytics";
+import { useRageClick } from "@/hooks/useRageClick";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface CalculatorState {
@@ -79,7 +83,10 @@ const initialState: CalculatorState = {
   phone: "",
 };
 
-// Floating label input component
+// Step names for analytics
+const STEP_NAMES = ['standort', 'wohnungsgroesse', 'zusatzleistungen', 'kontaktdaten'] as const;
+
+// Floating label input component with field tracking
 const FloatingLabelInput = ({ 
   value, 
   onChange, 
@@ -89,7 +96,8 @@ const FloatingLabelInput = ({
   isValid,
   error,
   helpText,
-  autoFocus
+  autoFocus,
+  onFieldFocus
 }: { 
   value: string; 
   onChange: (v: string) => void; 
@@ -100,10 +108,16 @@ const FloatingLabelInput = ({
   error?: boolean;
   helpText?: string;
   autoFocus?: boolean;
+  onFieldFocus?: () => void;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const hasValue = value.length > 0;
   const [showHelp, setShowHelp] = useState(false);
+  
+  const handleFocus = () => {
+    setIsFocused(true);
+    onFieldFocus?.();
+  };
   
   return (
     <motion.div 
@@ -144,7 +158,7 @@ const FloatingLabelInput = ({
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
+          onFocus={handleFocus}
           onBlur={() => setIsFocused(false)}
           autoFocus={autoFocus}
           className={`${Icon ? "pl-10" : ""} pr-16 h-11 sm:h-12 text-base transition-all duration-300 bg-transparent ${
@@ -306,14 +320,23 @@ export default function HeroAIQuoteCalculator() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [stepStartTime, setStepStartTime] = useState<number>(Date.now());
   const [isThankYou, setIsThankYou] = useState(false);
+  const [prefillSource, setPrefillSource] = useState<string>('direct');
   const { toast } = useToast();
   const analytics = useAnalytics();
   
-  // Track calculator start and load prefill data
+  // Rage click detection for primary CTAs
+  const rageClick = useRageClick({ 
+    element: 'primary_cta', 
+    step: state.step 
+  });
+  
+  // Track which fields have been interacted with (once only)
+  const interactedFields = useRef<Set<string>>(new Set());
+  
+  // Track page view and load prefill data
   useEffect(() => {
-    analytics.trackCalculatorStarted('ai');
-    analytics.trackStepStarted(1, 'location', 'ai_calculator');
-    
+    // Check for prefill source
+    let source = 'direct';
     try {
       const prefillRaw = localStorage.getItem('uc_prefill');
       if (prefillRaw) {
@@ -321,6 +344,9 @@ export default function HeroAIQuoteCalculator() {
         const isRecent = Date.now() - prefill.timestamp < 24 * 60 * 60 * 1000;
         
         if (isRecent) {
+          source = prefill.source || 'homepage';
+          setPrefillSource(source);
+          
           if (prefill.from) {
             const fromMatch = prefill.from.match(/^(\d{4})/);
             if (fromMatch) updateState({ fromPLZ: fromMatch[1] });
@@ -337,9 +363,20 @@ export default function HeroAIQuoteCalculator() {
         }
       }
     } catch (e) {
-      console.warn('Could not load prefill data');
+      analytics.trackError('umzugsofferten', null, 'prefill');
     }
+    
+    // Track page view and first step
+    analytics.trackPageView('umzugsofferten', source);
+    analytics.trackStepStarted(1, STEP_NAMES[0], 'funnel');
   }, []);
+  
+  // Track confirmation viewed when thank you state is shown
+  useEffect(() => {
+    if (isThankYou) {
+      analytics.trackLeadConfirmationViewed();
+    }
+  }, [isThankYou, analytics]);
   
   // Simulate active users
   useEffect(() => {
@@ -356,26 +393,39 @@ export default function HeroAIQuoteCalculator() {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
   
+  // Track field interaction (once per field per session)
+  const trackFieldInteraction = useCallback((field: string) => {
+    const key = `${state.step}-${field}`;
+    if (!interactedFields.current.has(key)) {
+      interactedFields.current.add(key);
+      analytics.trackFieldInteracted(state.step, field);
+    }
+  }, [state.step, analytics]);
+  
   const handleServiceToggle = useCallback((serviceKey: string) => {
     const currentValue = state[serviceKey as keyof CalculatorState] as boolean;
     const newValue = !currentValue;
     updateState({ [serviceKey]: newValue });
-    analytics.trackServiceSelected(serviceKey, newValue, 'ai_calculator');
+    analytics.trackServiceToggled(3, serviceKey, newValue ? 'on' : 'off');
   }, [state, updateState, analytics]);
   
   const goToNextStep = (nextStep: number) => {
-    const stepNames = ['location', 'apartment_size', 'additional_services', 'contact_info'];
-    const duration = Math.round((Date.now() - stepStartTime) / 1000);
+    const durationMs = Date.now() - stepStartTime;
     
-    analytics.trackStepCompleted(state.step, stepNames[state.step - 1], 'ai_calculator', duration);
+    // Track step completion with duration
+    analytics.trackStepCompleted(state.step, STEP_NAMES[state.step - 1], 'funnel', durationMs);
+    
+    // Track rage click on continue
+    rageClick.trackClick();
     
     setShowCelebration(true);
     setTimeout(() => {
       updateState({ step: nextStep });
       setStepStartTime(Date.now());
+      rageClick.reset();
       
       if (nextStep <= 4) {
-        analytics.trackStepStarted(nextStep, stepNames[nextStep - 1], 'ai_calculator');
+        analytics.trackStepStarted(nextStep, STEP_NAMES[nextStep - 1], 'funnel');
       }
       
       setShowCelebration(false);
@@ -383,36 +433,50 @@ export default function HeroAIQuoteCalculator() {
   };
 
   const handleSubmit = async () => {
+    // Track rage click on submit
+    rageClick.trackClick();
+    
     if (!state.name || !state.email || !state.phone) {
       toast({
         title: "Bitte füllen Sie alle Felder aus",
         description: "Name, E-Mail und Telefon sind erforderlich.",
         variant: "destructive",
       });
+      analytics.trackError('umzugsofferten', 4, 'validation');
       return;
     }
     
     setIsSubmitting(true);
     
-    const selectedServices = [
-      state.reinigung && 'reinigung',
-      state.montage && 'montage', 
-      state.entsorgung && 'entsorgung'
-    ].filter(Boolean) as string[];
-    
-    analytics.trackLeadSubmitted({
-      calculatorType: 'ai',
-      moveDate: 'nicht angegeben',
-      fromCity: state.fromOrt || state.fromPLZ,
-      toCity: state.toOrt || state.toPLZ,
-      priceRange: 'nicht berechnet',
-      services: selectedServices
-    });
-    
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsThankYou(true);
+    try {
+      const servicesCount = [state.reinigung, state.montage, state.entsorgung].filter(Boolean).length;
+      
+      // Track lead submitted with SAFE payload only (no PII)
+      analytics.trackLeadSubmitted({
+        calculatorType: 'full',
+        servicesCount,
+        hasServices: servicesCount > 0,
+        source: prefillSource
+      });
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Complete final step
+      const durationMs = Date.now() - stepStartTime;
+      analytics.trackStepCompleted(4, STEP_NAMES[3], 'funnel', durationMs);
+      
+      setIsSubmitting(false);
+      setIsThankYou(true);
+    } catch (error) {
+      analytics.trackError('umzugsofferten', 4, 'submit');
+      setIsSubmitting(false);
+      toast({
+        title: "Fehler beim Senden",
+        description: "Bitte versuchen Sie es erneut.",
+        variant: "destructive",
+      });
+    }
   };
   
   // Validation helpers
@@ -676,6 +740,7 @@ export default function HeroAIQuoteCalculator() {
                         isValid={state.fromPLZ.length >= 4}
                         autoFocus
                         helpText="Geben Sie die Postleitzahl oder den Ortsnamen ein"
+                        onFieldFocus={() => trackFieldInteraction('from')}
                       />
                       <FloatingLabelInput
                         value={state.toPLZ}
@@ -684,6 +749,7 @@ export default function HeroAIQuoteCalculator() {
                         icon={MapPin}
                         isValid={state.toPLZ.length >= 4}
                         helpText="Zieladresse Ihres Umzugs"
+                        onFieldFocus={() => trackFieldInteraction('to')}
                       />
                       
                       {/* Microcopy */}

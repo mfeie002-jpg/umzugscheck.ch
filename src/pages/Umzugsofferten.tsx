@@ -14,6 +14,8 @@
  */
 
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
+import { ConsentBanner } from "@/components/ConsentBanner";
+import { DebugOverlay } from "@/components/DebugOverlay";
 
 import { Helmet } from "react-helmet";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -69,6 +71,8 @@ const Umzugsofferten = () => {
   return (
     <div className="min-h-screen bg-background">
       <ExitIntentPopup />
+      <ConsentBanner />
+      <DebugOverlay />
       <PageEnhancements />
       <Helmet>
         <title>Umzugsofferten vergleichen mit KI | Gratis & unverbindlich | umzugscheck.ch</title>
