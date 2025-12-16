@@ -24,6 +24,7 @@ const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
 const MediaLogosSection = lazy(() => import("@/components/homepage/MediaLogosSection").then(m => ({ default: m.MediaLogosSection })));
+const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
 
 // Skeleton placeholders with fixed heights to prevent CLS
 const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
@@ -50,10 +51,11 @@ const Index = () => {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "@id": "https://umzugscheck.ch/#organization", "name": "Umzugscheck.ch", "url": "https://umzugscheck.ch", "logo": "https://umzugscheck.ch/logo.png", "description": "Die führende Vergleichsplattform für Umzüge in der Schweiz.", "areaServed": { "@type": "Country", "name": "Switzerland" } },
-      { "@type": "WebSite", "@id": "https://umzugscheck.ch/#website", "url": "https://umzugscheck.ch", "name": "Umzugscheck.ch" },
+      { "@type": "Organization", "@id": "https://umzugscheck.ch/#organization", "name": "Umzugscheck.ch", "url": "https://umzugscheck.ch", "logo": "https://umzugscheck.ch/logo.png", "description": "Die führende Vergleichsplattform für Umzüge in der Schweiz.", "areaServed": { "@type": "Country", "name": "Switzerland" }, "contactPoint": { "@type": "ContactPoint", "telephone": "+41-44-123-45-67", "contactType": "customer service", "availableLanguage": ["German", "French", "Italian"] } },
+      { "@type": "WebSite", "@id": "https://umzugscheck.ch/#website", "url": "https://umzugscheck.ch", "name": "Umzugscheck.ch", "potentialAction": { "@type": "SearchAction", "target": "https://umzugscheck.ch/suche?q={search_term_string}", "query-input": "required name=search_term_string" } },
       { "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.question, "acceptedAnswer": { "@type": "Answer", "text": item.answer } })) },
-      { "@type": "AggregateRating", "itemReviewed": { "@type": "Organization", "name": "Umzugscheck.ch" }, "ratingValue": "4.8", "bestRating": "5", "ratingCount": "2847" }
+      { "@type": "AggregateRating", "itemReviewed": { "@type": "Organization", "name": "Umzugscheck.ch" }, "ratingValue": "4.8", "bestRating": "5", "worstRating": "1", "ratingCount": "2847" },
+      { "@type": "Service", "name": "Umzugsvergleich Schweiz", "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "serviceType": "Moving Quote Comparison", "areaServed": { "@type": "Country", "name": "Switzerland" }, "description": "Kostenloser Vergleich von über 200 Schweizer Umzugsfirmen" }
     ]
   };
 
@@ -63,15 +65,23 @@ const Index = () => {
         <Helmet>
           <html lang="de-CH" />
           <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
-          <meta name="description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen. Jetzt vergleichen & sparen!" />
-          <meta name="robots" content="index, follow" />
+          <meta name="description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. KI-Preisrechner, transparente Preise, echte Bewertungen. Jetzt vergleichen & bis zu 40% sparen!" />
+          <meta name="keywords" content="Umzug Schweiz, Umzugsfirma vergleichen, Umzugsofferten, Umzugskosten, Zürich, Bern, Basel, günstig umziehen" />
+          <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
           <link rel="canonical" href="https://umzugscheck.ch/" />
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://umzugscheck.ch/" />
           <meta property="og:title" content="Umzugscheck.ch – Die Nr. 1 für Umzugsvergleiche in der Schweiz" />
           <meta property="og:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. Bis zu 40% sparen!" />
           <meta property="og:image" content="https://umzugscheck.ch/og-image.jpg" />
+          <meta property="og:locale" content="de_CH" />
           <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="Umzugscheck.ch – Umzugsfirmen vergleichen" />
+          <meta name="twitter:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen." />
+          <meta name="theme-color" content="#0050A8" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
         </Helmet>
 
@@ -80,10 +90,10 @@ const Index = () => {
         <Header />
 
         <main id="main-content" role="main">
-          {/* 1. Hero with Multi-Step Form */}
+          {/* 1. Hero with Multi-Step Form + Visual Element */}
           <EnhancedConversionHero />
           
-          {/* 2. Social proof immediately after hero (#8) */}
+          {/* 2. Social proof immediately after hero */}
           <SocialProofMarquee />
           
           {/* 3. How it works - simplified process */}
@@ -116,27 +126,32 @@ const Index = () => {
             <EnhancedTestimonials />
           </Suspense>
           
-          {/* 9. Regions */}
+          {/* 9. Alternative Contact - Phone/WhatsApp/Email */}
+          <Suspense fallback={<SectionSkeleton height="200px" />}>
+            <AlternativeContactSection />
+          </Suspense>
+          
+          {/* 10. Regions */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedRegionsGrid />
           </Suspense>
           
-          {/* 10. USP section - why choose us */}
+          {/* 11. USP section - why choose us */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
             <EnhancedUSPSection />
           </Suspense>
 
-          {/* 11. Media logos - trust signals */}
+          {/* 12. Media logos - trust signals */}
           <Suspense fallback={<SectionSkeleton height="150px" />}>
             <MediaLogosSection />
           </Suspense>
           
-          {/* 12. FAQ */}
+          {/* 13. FAQ */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>
             <EnhancedFAQ />
           </Suspense>
           
-          {/* 13. Final CTA */}
+          {/* 14. Final CTA */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedFinalCTA />
           </Suspense>
@@ -144,7 +159,7 @@ const Index = () => {
 
         <SimplifiedFooter />
         
-        {/* Single mobile CTA approach (#10) */}
+        {/* Single mobile CTA approach */}
         <MobileStickyBar />
         
         <Suspense fallback={null}>

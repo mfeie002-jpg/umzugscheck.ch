@@ -1,8 +1,8 @@
-import { useState, memo } from "react";
+import { useState, memo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, ArrowLeft, Shield, CheckCircle, Video, Camera, 
-  MapPin, Home, Calendar, User, Mail, Phone, TrendingDown
+  MapPin, Home, Calendar, User, Mail, Phone, TrendingDown, AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useABTest } from "@/hooks/use-ab-test";
+import { EnhancedProgressIndicator, ProgressMessage } from "./EnhancedProgressIndicator";
+import { validateField, emailSchema, postalCodeSchema, nameSchema, phoneSchema } from "@/lib/form-validation";
+import analytics from "@/lib/analytics";
 
 const swissPostalCodes = [
   { code: "8001", city: "Zürich" },
@@ -76,6 +79,14 @@ interface FormData {
   phone: string;
   useVideoAI: boolean;
   privacyAccepted: boolean;
+}
+
+interface FieldErrors {
+  fromLocation?: string;
+  toLocation?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
 }
 
 export const MultiStepCalculator = memo(function MultiStepCalculator() {
