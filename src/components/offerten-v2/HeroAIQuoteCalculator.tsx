@@ -571,10 +571,62 @@ export default function HeroAIQuoteCalculator() {
   
   const priceEstimate = calculatePrice(state);
   
-  // Track calculator start
+  // Track calculator start and load prefill data from localStorage
   useEffect(() => {
     analytics.trackCalculatorStarted('ai');
     analytics.trackStepStarted(1, 'location_details', 'ai_calculator');
+    
+    // Load prefill data from homepage hero form
+    try {
+      const prefillRaw = localStorage.getItem('uc_prefill');
+      if (prefillRaw) {
+        const prefill = JSON.parse(prefillRaw);
+        // Only use prefill if it's less than 24 hours old
+        const isRecent = Date.now() - prefill.timestamp < 24 * 60 * 60 * 1000;
+        
+        if (isRecent) {
+          // Parse the "from" field - could be "8001 - Zürich (ZH)" format
+          if (prefill.from) {
+            const fromMatch = prefill.from.match(/^(\d{4})/);
+            if (fromMatch) {
+              updateState({ fromPLZ: fromMatch[1] });
+            }
+            const fromCityMatch = prefill.from.match(/- (.+?) \(/);
+            if (fromCityMatch) {
+              updateState({ fromOrt: fromCityMatch[1] });
+            }
+          }
+          
+          // Parse the "to" field
+          if (prefill.to) {
+            const toMatch = prefill.to.match(/^(\d{4})/);
+            if (toMatch) {
+              updateState({ toPLZ: toMatch[1] });
+            }
+            const toCityMatch = prefill.to.match(/- (.+?) \(/);
+            if (toCityMatch) {
+              updateState({ toOrt: toCityMatch[1] });
+            }
+          }
+          
+          // Map rooms to wohnungsgroesse
+          if (prefill.rooms) {
+            const roomsMap: Record<string, string> = {
+              '1.5': '1.5',
+              '2.5': '2.5',
+              '3.5': '3.5',
+              '4.5': '4.5',
+              '5.5': '5.5',
+              '6+': '6.5',
+            };
+            const mapped = roomsMap[prefill.rooms] || prefill.rooms;
+            updateState({ wohnungsgroesse: mapped });
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Could not load prefill data');
+    }
   }, []);
   
   // Simulate active users

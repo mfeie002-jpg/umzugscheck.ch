@@ -103,6 +103,20 @@ export const PremiumHeroSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Store prefill data in localStorage for funnel prefill
+    const prefillData = {
+      from: fromPostal,
+      to: toPostal,
+      rooms: rooms,
+      timestamp: Date.now(),
+    };
+    try {
+      localStorage.setItem('uc_prefill', JSON.stringify(prefillData));
+    } catch (e) {
+      console.warn('Could not save prefill data');
+    }
+    
     const params = new URLSearchParams();
     if (fromPostal) params.set("from", fromPostal);
     if (toPostal) params.set("to", toPostal);
