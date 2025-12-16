@@ -1,340 +1,262 @@
-====================================
-UMZUGSCHECK.CH - HOMEPAGE EXPORT
-For ChatGPT Review
-Updated: 2025-12-16 (Conversion-Optimized Hero)
-====================================
+# Umzugscheck.ch - Design System & Components Export
+# Generated: 2025-12-16 (Updated)
+# This file contains the current design system and key components for review.
+# 
+# RECENT UPDATES:
+# - Funnel V3 implementation complete with consent gating
+# - Analytics event map with PII-safe payloads
+# - ConsentBanner, DebugOverlay, useRageClick hooks added
+# - 4-step guided funnel UX on /umzugsofferten
 
-====================================
-CONVERSION OPTIMIZATION SUMMARY
-====================================
+================================================================================
+DESIGN SYSTEM - BRAND COLORS
+================================================================================
 
-Recent changes to maximize homepage → funnel conversion:
+/* Umzugscheck.ch Brand Design System
+   Clean, Modern, Trustworthy - "Swiss Quality"
+   Primary: Blue (#0050A8) - Trust & Authority
+   Accent: Red (#E32026) - CTAs & Action
+*/
 
-1. HERO FORM SIMPLIFIED
-   - Only From/To fields (removed "rooms" - decision belongs in funnel)
-   - Single CTA: "Kostenlos Offerten erhalten"
-   - Progress indicator: "Schritt 1 von 4 · Dauer ca. 2 Minuten"
-   - Autofocus on first input
-
-2. PREFILL SYSTEM
-   - Homepage stores partial data to localStorage ('uc_prefill')
-   - /umzugsofferten reads and prefills Step 1
-   - 24h TTL for stored data
-
-3. SECTION ORDER (conversion-first)
-   Hero → Trust → SocialProof → HowItWorks → Comparison → Services → FAQ → CTA
-   Optional sections moved below main CTA
-
-====================================
-1. DESIGN SYSTEM - src/index.css
-====================================
-
-@layer base {
-  :root {
-    /* Brand Colors - Umzugscheck.ch */
-    --uc-blue: 210 100% 33%;        /* #0050A8 - Primary brand blue */
-    --uc-red: 358 79% 51%;          /* #E32026 - Primary CTA / accent red */
-    --uc-bg-light: 214 32% 97%;     /* #F5F7FA - Light section background */
-    --uc-bg-white: 0 0% 100%;       /* #FFFFFF - Cards, main surfaces */
-    --uc-text-main: 220 43% 11%;    /* #111827 - Main body text */
-    --uc-text-muted: 220 9% 46%;    /* #4B5563 - Secondary text */
-    
-    /* Semantic Tokens mapped to brand */
-    --background: var(--uc-bg-white);
-    --foreground: var(--uc-text-main);
-    --primary: var(--uc-blue);
-    --primary-foreground: 0 0% 100%;
-    --secondary: var(--uc-red);
-    --secondary-foreground: 0 0% 100%;
-    --muted: var(--uc-bg-light);
-    --muted-foreground: var(--uc-text-muted);
-    
-    /* Shadows */
-    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
-    --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
-    --shadow-cta: 0 8px 24px rgba(227, 32, 38, 0.25);
-    --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.10);
-    
-    --radius: 0.75rem;
-  }
+:root {
+  /* Brand Colors - Umzugscheck.ch */
+  --uc-blue: 210 100% 33%;        /* #0050A8 - Primary brand blue */
+  --uc-red: 358 79% 51%;          /* #E32026 - Primary CTA / accent red */
+  --uc-bg-light: 214 32% 97%;     /* #F5F7FA - Light section background */
+  --uc-bg-white: 0 0% 100%;       /* #FFFFFF - Cards, main surfaces */
+  --uc-text-main: 220 43% 11%;    /* #111827 - Main body text */
+  --uc-text-muted: 220 9% 46%;    /* #4B5563 - Secondary text */
+  --uc-border-subtle: 220 13% 91%; /* #E5E7EB - Borders */
+  --uc-footer-bg: 208 87% 8%;     /* #021726 - Dark footer */
+  --uc-footer-text: 210 40% 98%;  /* #F9FAFB - Footer text */
+  
+  /* Semantic Tokens mapped to brand */
+  --background: var(--uc-bg-white);
+  --foreground: var(--uc-text-main);
+  --card: var(--uc-bg-white);
+  --card-foreground: var(--uc-text-main);
+  
+  /* Primary: Brand Blue */
+  --primary: var(--uc-blue);
+  --primary-foreground: 0 0% 100%;
+  --primary-hover: 210 100% 28%;
+  
+  /* Secondary: Brand Red - for CTAs */
+  --secondary: var(--uc-red);
+  --secondary-foreground: 0 0% 100%;
+  
+  /* Swiss Gold for ratings/stars */
+  --swiss-gold: 45 93% 47%;
+  
+  /* Shadows */
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-premium: 0 14px 40px rgba(0, 0, 0, 0.06);
+  --shadow-cta: 0 8px 24px rgba(227, 32, 38, 0.25);
+  --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.10);
+  
+  --radius: 0.75rem;
 }
 
-====================================
-2. PREMIUM HERO - PremiumHeroSection.tsx
-====================================
+================================================================================
+TAILWIND CONFIG COLORS
+================================================================================
 
-DESIGN PHILOSOPHY: "Homepage = Commitment, Funnel = Decisions"
+colors: {
+  border: "hsl(var(--border))",
+  input: "hsl(var(--input))",
+  ring: "hsl(var(--ring))",
+  background: "hsl(var(--background))",
+  foreground: "hsl(var(--foreground))",
+  primary: {
+    DEFAULT: "hsl(var(--primary))",
+    foreground: "hsl(var(--primary-foreground))",
+    hover: "hsl(var(--primary-hover))",
+  },
+  secondary: {
+    DEFAULT: "hsl(var(--secondary))",
+    foreground: "hsl(var(--secondary-foreground))",
+  },
+  muted: {
+    DEFAULT: "hsl(var(--muted))",
+    foreground: "hsl(var(--muted-foreground))",
+  },
+  accent: {
+    DEFAULT: "hsl(var(--accent))",
+    foreground: "hsl(var(--accent-foreground))",
+  },
+  card: {
+    DEFAULT: "hsl(var(--card))",
+    foreground: "hsl(var(--card-foreground))",
+  },
+  // Brand Colors
+  'uc-blue': "hsl(var(--uc-blue))",
+  'uc-red': "hsl(var(--uc-red))",
+  'uc-light': "hsl(var(--uc-bg-light))",
+  'swiss-gold': "hsl(var(--swiss-gold))",
+}
 
-Form collects ONLY:
-- From (PLZ/Ort)
-- To (PLZ/Ort)
+================================================================================
+TYPOGRAPHY
+================================================================================
 
-Does NOT collect:
-- Rooms (asked in Step 2 of funnel)
-- Services
-- Price
+Font Family: Inter (system font stack)
+- H1: 48-56px, font-weight 700, line-height 1.1, letter-spacing -0.02em
+- H2: 32-40px, font-weight 700, line-height 1.2
+- H3: 24-28px, font-weight 600, line-height 1.3
+- Body: 17px, line-height 1.6
+- Small: 14px, line-height 1.5
 
-```tsx
-export const PremiumHeroSection = () => {
-  const navigate = useNavigate();
-  const [fromPostal, setFromPostal] = useState("");
-  const [toPostal, setToPostal] = useState("");
+================================================================================
+NAVIGATION STRUCTURE
+================================================================================
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Store prefill data for funnel
-    const prefillData = {
-      from: fromPostal,
-      to: toPostal,
-      source: "homepage",
-      timestamp: Date.now(),
-    };
-    localStorage.setItem('uc_prefill', JSON.stringify(prefillData));
-    
-    const params = new URLSearchParams();
-    if (fromPostal) params.set("from", fromPostal);
-    if (toPostal) params.set("to", toPostal);
-    navigate(`/umzugsofferten?${params.toString()}`);
-  };
+navLinks = [
+  { 
+    label: "Umzugsfirmen", 
+    href: "/umzugsfirmen",
+    dropdown: ["Alle Umzugsfirmen", "Beste Umzugsfirmen", "Günstige Umzugsfirmen"]
+  },
+  { 
+    label: "Services", 
+    href: "/dienstleistungen",
+    dropdown: ["Privatumzug", "Firmenumzug", "Reinigung", "Entsorgung & Räumung", 
+               "Möbelmontage", "Einlagerung", "Internationale Umzüge"]
+  },
+  { 
+    label: "Regionen", 
+    href: "/regionen",
+    dropdown: ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "Alle Regionen"]
+  },
+  { 
+    label: "Ratgeber", 
+    href: "/ratgeber",
+    dropdown: ["Umzug Checkliste", "Umzugskosten", "Tipps & Tricks"]
+  },
+  { 
+    label: "Für Firmen", 
+    href: "/fuer-firmen",
+    dropdown: ["Anbieter werden", "Partner Login"]
+  },
+]
 
-  return (
-    <section className="relative min-h-[90svh] flex items-center">
-      {/* Background with parallax */}
-      
-      <div className="container">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
-          {/* Left: Headlines & USPs */}
-          <div className="space-y-6">
-            {/* USP Badges */}
-            <div className="flex gap-3">
-              <Badge className="bg-primary/10 text-primary">
-                <TrendingDown /> Bis 40% sparen
-              </Badge>
-              <Badge className="bg-secondary/10 text-secondary">
-                <Video /> KI Video-Rechner
-              </Badge>
-            </div>
-            
-            {/* Main Headline */}
-            <h1 className="text-5xl font-bold">
-              Der beste Deal
-              <span className="text-primary"> der ganzen Schweiz.</span>
-            </h1>
-            
-            {/* Subheadline */}
-            <p className="text-xl text-muted-foreground">
-              KI-Rechner analysiert per Video – wir vergleichen 200+ Firmen
-            </p>
-            
-            {/* Desktop CTA (single) */}
-            <Button size="lg" className="hidden lg:flex">
-              <CheckCircle2 /> Kostenlos Offerten erhalten <ArrowRight />
-            </Button>
-          </div>
-          
-          {/* Right: Quote Form */}
-          <div className="bg-card rounded-2xl shadow-xl p-8">
-            <div className="text-center mb-4">
-              <Badge className="bg-primary/10 text-primary">
-                <Trophy /> Bester Preis garantiert
-              </Badge>
-              <h2 className="text-2xl font-bold">200+ Firmen vergleichen</h2>
-            </div>
-            
-            {/* Progress indicator */}
-            <p className="text-sm text-muted-foreground text-center mb-4">
-              Schritt 1 von 4 · Dauer ca. 2 Minuten
-            </p>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* From field - autofocus */}
-              <div>
-                <Label>Von (PLZ oder Ort)</Label>
-                <Input
-                  placeholder="z.B. 8001 oder Zürich"
-                  value={fromPostal}
-                  onChange={(e) => setFromPostal(e.target.value)}
-                  autoFocus
-                  required
-                />
-              </div>
-              
-              {/* To field */}
-              <div>
-                <Label>Nach (PLZ oder Ort)</Label>
-                <Input
-                  placeholder="z.B. 3011 oder Bern"
-                  value={toPostal}
-                  onChange={(e) => setToPostal(e.target.value)}
-                  required
-                />
-              </div>
-              
-              {/* Single CTA */}
-              <Button type="submit" size="lg" className="w-full">
-                <CheckCircle2 className="mr-2" />
-                Kostenlos Offerten erhalten
-                <ArrowRight className="ml-2" />
-              </Button>
-            </form>
-            
-            {/* Trust microcopy */}
-            <div className="flex justify-center gap-4 mt-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="h-4 w-4 text-primary" /> Kostenlos
-              </span>
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="h-4 w-4 text-primary" /> Unverbindlich
-              </span>
-              <span className="flex items-center gap-1">
-                <Shield className="h-4 w-4 text-secondary" /> Datenschutz
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-```
+Primary CTA: "Kostenlos Offerten erhalten" → /umzugsofferten
 
-====================================
-3. HOMEPAGE - IndexPremium.tsx
-====================================
+================================================================================
+FUNNEL V3 - /umzugsofferten
+================================================================================
 
-Section order (conversion-first):
+4-STEP GUIDED PROCESS:
 
-```tsx
-const IndexPremium = () => {
-  // Tracking guard - prevent duplicate events
-  const didTrack = useRef(false);
+Step 1: Standort
+- Headline: "Wo ziehen Sie um?"
+- Inputs: Von (PLZ/Ort), Nach (PLZ/Ort)
+- CTA: "Weiter zur Wohnungsgrösse"
 
-  useEffect(() => {
-    if (didTrack.current) return;
-    didTrack.current = true;
-    analytics.trackPageView('home_premium', '/');
-  }, []);
+Step 2: Wohnungsgrösse  
+- Headline: "Wie gross ist Ihre Wohnung?"
+- Selection: Room sizes (1-1.5, 2-2.5, 3-3.5, 4-4.5, 5+)
+- Toggle: Privat/Firma
+- CTA: "Weiter zu Zusatzleistungen"
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Umzugsfirmen vergleichen Schweiz 2025</title>
-        <meta property="og:image" content="https://umzugscheck.ch/og-home.jpg" />
-      </Helmet>
+Step 3: Zusatzservices
+- Headline: "Benötigen Sie zusätzliche Leistungen?"
+- Toggles: Endreinigung, Möbelmontage, Entsorgung (all OFF by default)
+- CTA: "Weiter zu den Offerten"
 
-      {/* 1. Hero with simplified form */}
-      <PremiumHeroSection />
-      
-      {/* 2. Trust signals */}
-      <TrustSignals />
-      
-      {/* 3. Social proof */}
-      <PremiumSocialProof />
-      
-      {/* 4. How it works */}
-      <PremiumHowItWorks />
-      
-      {/* 5. Company comparison preview */}
-      <Suspense><ComparisonShowcase /></Suspense>
-      
-      {/* 6. Services grid */}
-      <Suspense><PremiumServicesGrid /></Suspense>
-      
-      {/* 7. FAQ */}
-      <PremiumFAQ items={faqItems} />
-      
-      {/* 8. Provider CTA */}
-      <Suspense><PremiumProviderCTA /></Suspense>
-      
-      {/* OPTIONAL - Below main funnel */}
-      <Suspense><PremiumAIShowcase /></Suspense>
-      <Suspense><PremiumCostExamples /></Suspense>
-      <Suspense><PremiumRegions /></Suspense>
-      <Suspense><PremiumWhyUs /></Suspense>
-    </div>
-  );
-};
-```
+Step 4: Kontaktdaten
+- Headline: "Wohin dürfen wir die Offerten senden?"
+- Inputs: Name, Telefon, E-Mail
+- Privacy text: "Keine Weitergabe ohne Anfrage · Kein Spam"
+- CTA: "Jetzt kostenlose Offerten erhalten"
 
-====================================
-4. FUNNEL PREFILL - Umzugsofferten.tsx
-====================================
+Confirmation:
+- "Vielen Dank – Ihre Anfrage wurde versendet"
+- Timeline: Heute → 24-48h → Danach
 
-On mount, reads localStorage and prefills Step 1:
+================================================================================
+ANALYTICS EVENT MAP (V3)
+================================================================================
 
-```tsx
-useEffect(() => {
-  try {
-    const prefillRaw = localStorage.getItem('uc_prefill');
-    if (prefillRaw) {
-      const prefill = JSON.parse(prefillRaw);
-      const age = Date.now() - (prefill.timestamp || 0);
-      const MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
-      
-      if (age < MAX_AGE) {
-        // Prefill Step 1 fields
-        if (prefill.from) setFromLocation(prefill.from);
-        if (prefill.to) setToLocation(prefill.to);
-      }
-    }
-  } catch (e) {
-    console.warn('Could not read prefill data');
-  }
-}, []);
-```
+CANONICAL EVENTS:
+- page_viewed (once per load)
+- step_started (step, step_name)
+- step_completed (step, step_name)
+- field_interacted (step, field key only - NO values)
+- option_selected (step, option)
+- service_toggled (step, service, state)
+- lead_submitted (calculator_type, services_count, has_services, source)
+- lead_confirmation_viewed (lead_status)
+- error_occurred (page, step, context)
+- rage_click (step, element)
 
-====================================
-5. KEY CONVERSION PRINCIPLES
-====================================
+FORBIDDEN PAYLOAD FIELDS (NO PII):
+- name, email, phone
+- exact address strings
+- any freeform user text
 
-Homepage = Commitment (minimal friction)
-- Only ask From/To
-- Show progress: "Step 1 of 4"
-- Single CTA, no choices
+CONSENT GATING:
+- localStorage key: uc_consent
+- Analytics events only fire when consent.analytics = true
+- Debug overlay: localStorage.uc_debug = 'true'
 
-Funnel = Decisions (detailed info)
-- Ask rooms in Step 2
-- Ask services in Step 3
-- Ask contact in Step 4
+================================================================================
+KEY COMPONENTS
+================================================================================
 
-Why this works:
-- Reduces cognitive load on homepage
-- User commits before making decisions
-- Prefill creates momentum into funnel
-- Progress indicator sets expectations
+NEW COMPONENTS (Funnel V3):
+- src/lib/consent.ts - Consent management utilities
+- src/components/ConsentBanner.tsx - GDPR consent UI
+- src/components/DebugOverlay.tsx - Dev-only event viewer
+- src/hooks/useRageClick.ts - Rage click detection
 
-====================================
-6. BRAND COLORS QUICK REFERENCE
-====================================
+HOMEPAGE COMPONENTS (86 total):
+Header.tsx, HeroSection.tsx, EnhancedFAQ.tsx, CTASection.tsx,
+CompanyComparisonSection.tsx, EnhancedHowItWorks.tsx, EnhancedServicesGrid.tsx,
+EnhancedTestimonials.tsx, SocialProofMarquee.tsx, TrustBadges.tsx,
+InteractiveSwissMap.tsx, MobileStickyBar.tsx, and 74 more...
 
-Primary Blue: #0050A8 (hsl 210 100% 33%)
-- Navigation, headings, trust elements
+================================================================================
+DESIGN PRINCIPLES
+================================================================================
 
-Secondary Red: #E32026 (hsl 358 79% 51%)
-- CTAs, important highlights, action buttons
+1. Clean, Modern, Trustworthy - "Swiss Quality"
+2. Mobile-first responsive design
+3. Generous white space
+4. Clear visual hierarchy
+5. Conversion-focused CTAs (Red for primary actions)
+6. Trust signals throughout (badges, ratings, live activity)
+7. Privacy-first analytics (no PII)
+8. Consent-gated tracking
 
-Background: White #FFFFFF
-Text: #111827 (near-black)
-Muted: #6B7280
+================================================================================
+COMPONENT PATTERNS
+================================================================================
 
-====================================
-7. CORE USPs
-====================================
+Cards: rounded-xl, border-border, shadow-card
+Buttons: 
+  - Primary CTA: bg-secondary (red) with shadow-cta
+  - Secondary: bg-primary (blue)
+Forms: rounded-xl inputs, clear labels, h-11/h-12 height
+Badges: rounded-full with subtle backgrounds
+Animations: Framer Motion for reveals, hovers
 
-1. KI Video Calculator
-   - Upload video for automatic calculation
-   - Differentiator from competitors
+================================================================================
+FAQ CONTENT
+================================================================================
 
-2. 200+ Companies
-   - Comprehensive Swiss coverage
-   - Trust through volume
+10 FAQ items covering:
+- Umzugskosten in der Schweiz (CHF 400-6000+)
+- KI-Video-Kostenrechner functionality
+- Kostenloser Service confirmation
+- Umzugsfirmen verification process
+- 24-48h Offerten timeframe
+- Included services overview
+- Damage/insurance coverage
+- Firmenumzüge availability
+- Schweizweit regional coverage
+- Unverbindliche Offerten policy
 
-3. Up to 40% Savings
-   - Clear value proposition
-   - Comparison = savings
-
-====================================
+================================================================================
 END OF EXPORT
-====================================
+================================================================================
