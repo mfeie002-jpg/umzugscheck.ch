@@ -13,6 +13,8 @@
  * Colors: Primary red for CTAs, grey neutrals, green ONLY for checkmarks/verification
  */
 
+import { ExitIntentPopup } from "@/components/ExitIntentPopup";
+
 import { Helmet } from "react-helmet";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
@@ -66,6 +68,7 @@ const Umzugsofferten = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ExitIntentPopup />
       <PageEnhancements />
       <Helmet>
         <title>Umzugsofferten vergleichen mit KI | Gratis & unverbindlich | umzugscheck.ch</title>

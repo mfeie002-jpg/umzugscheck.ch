@@ -16,6 +16,7 @@ import {
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { ROICalculator } from "@/components/ROICalculator";
 
 const FuerFirmen = () => {
   const [formData, setFormData] = useState({
@@ -240,6 +241,41 @@ const FuerFirmen = () => {
                   </div>
                 </ScrollReveal>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ROI Calculator */}
+        <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+              <ScrollReveal>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                    Berechnen Sie Ihren potenziellen Ertrag
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    Sehen Sie, wie viele Leads und Aufträge Sie mit Ihrem Budget erwarten können.
+                  </p>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      <span>Qualifizierte Leads aus Ihrer Region</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      <span>Durchschnittlich 25% Conversion-Rate</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      <span>Flexibles Budget, keine Mindestlaufzeit</span>
+                    </li>
+                  </ul>
+                </div>
+              </ScrollReveal>
+              <ScrollReveal delay={0.1}>
+                <ROICalculator onGetStarted={() => document.getElementById('bewerbung')?.scrollIntoView({ behavior: 'smooth' })} />
+              </ScrollReveal>
             </div>
           </div>
         </section>
