@@ -40,6 +40,7 @@ const BusinessMoving = lazy(() => import("./pages/services/BusinessMoving"));
 const CleaningService = lazy(() => import("./pages/services/CleaningService"));
 const DisposalService = lazy(() => import("./pages/services/DisposalService"));
 const FurnitureLift = lazy(() => import("./pages/services/FurnitureLift"));
+const FurnitureAssembly = lazy(() => import("./pages/services/FurnitureAssembly"));
 const InternationalMoving = lazy(() => import("./pages/services/InternationalMoving"));
 const MovingWithCleaning = lazy(() => import("./pages/services/MovingWithCleaning"));
 const StorageService = lazy(() => import("./pages/services/StorageService"));
@@ -209,6 +210,7 @@ const AdminLogin = lazy(() => import("./pages/admin/Login"));
 // Ratgeber pages
 const UmzugschecklisteDownload = lazy(() => import("./pages/ratgeber/UmzugschecklisteDownload"));
 const UmzugskostenGuide = lazy(() => import("./pages/ratgeber/UmzugskostenGuide"));
+const UmzugstippsGuide = lazy(() => import("./pages/ratgeber/UmzugstippsGuide"));
 
 // Regional pages
 const RegionalTemplate = lazy(() => import("./pages/region/RegionalTemplate"));
@@ -376,7 +378,8 @@ const App = () => (
                             <Route path="/admin/ab-testing" element={<ABTesting />} />
                             <Route path="/admin/availability" element={<ProviderAvailability />} />
                             <Route path="/admin/code-export" element={<CodeExport />} />
-                            <Route path="/ratgeber/umzugstipps" element={<Blog />} />
+                            <Route path="/ratgeber/umzugstipps" element={<UmzugstippsGuide />} />
+                            <Route path="/ratgeber/tipps" element={<UmzugstippsGuide />} />
                             <Route path="/ratgeber/kosten" element={<UmzugskostenGuide />} />
                             <Route path="/ratgeber/checklisten" element={<UmzugschecklisteDownload />} />
                             <Route path="/ratgeber/:category/:slug" element={<BlogPost />} />
@@ -433,6 +436,7 @@ const App = () => (
                             <Route path="/reinigung" element={<CleaningService />} />
                             <Route path="/entsorgung-raeumung" element={<DisposalService />} />
                             <Route path="/moebellift" element={<FurnitureLift />} />
+                            <Route path="/moebelmontage" element={<FurnitureAssembly />} />
                             <Route path="/einlagerung" element={<StorageService />} />
                             <Route path="/umzug-mit-reinigung" element={<MovingWithCleaning />} />
                             <Route path="/international" element={<InternationalMoving />} />
