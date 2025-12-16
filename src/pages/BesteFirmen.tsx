@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { SponsoredCompanyCard } from "@/components/rankings/SponsoredCompanyCard";
 import { OrganicCompanyCard } from "@/components/rankings/OrganicCompanyCard";
 import { CompanySelectionBar, ContactFormData } from "@/components/rankings/CompanySelectionBar";
+import CompanyComparisonView from "@/components/CompanyComparisonView";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { Trophy, Star, Shield, Award, ArrowRight } from "lucide-react";
+import { Trophy, Star, Shield, Award, ArrowRight, LayoutGrid, Table2 } from "lucide-react";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
 import { getRankedCompanies } from "@/lib/ranking-service";
 import { trackLeadConversion } from "@/lib/bidding-engine";
@@ -52,6 +53,7 @@ export default function BesteFirmen() {
   const [organicCompanies, setOrganicCompanies] = useState<any[]>([]);
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   const handleRefresh = async () => {
     await fetchCompanies();
@@ -269,12 +271,39 @@ export default function BesteFirmen() {
           <section className="py-12">
             <div className="container mx-auto px-4">
               <div className="max-w-5xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">
-                  Komplettes Ranking
-                </h2>
-                <p className="text-muted-foreground mb-4">
-                  Sortiert nach Kundenbewertungen, Servicequalität und Preis-Leistungs-Verhältnis
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-2">
+                      Komplettes Ranking
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Sortiert nach Kundenbewertungen, Servicequalität und Preis-Leistungs-Verhältnis
+                    </p>
+                  </div>
+                  
+                  {/* View Toggle */}
+                  <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                    <Button
+                      variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('cards')}
+                      className="h-8 px-3"
+                    >
+                      <LayoutGrid className="w-4 h-4 mr-1.5" />
+                      Karten
+                    </Button>
+                    <Button
+                      variant={viewMode === 'table' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('table')}
+                      className="h-8 px-3"
+                    >
+                      <Table2 className="w-4 h-4 mr-1.5" />
+                      Tabelle
+                    </Button>
+                  </div>
+                </div>
+                
                 <p className="text-sm text-primary/70 mb-6 italic">
                   💡 Tipp: Nutzen Sie die Filter oben, um die perfekten Umzugsfirmen für Ihre Bedürfnisse zu finden
                 </p>
@@ -312,6 +341,21 @@ export default function BesteFirmen() {
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
                   </div>
+                ) : viewMode === 'table' ? (
+                  <CompanyComparisonView
+                    companies={[...sponsoredCompanies, ...organicCompanies].map(c => ({
+                      id: c.id,
+                      name: c.name,
+                      rating: c.rating,
+                      review_count: c.reviewCount,
+                      price_level: c.priceLevel?.toLowerCase() || 'fair',
+                      services: c.regions || ['Umzug', 'Transport'],
+                      service_areas: c.regions || ['Schweiz'],
+                      verified: c.verified ?? true,
+                      responseTime: '< 2 Std.',
+                    }))}
+                    onClose={() => setViewMode('cards')}
+                  />
                 ) : (
                   <div className="space-y-4">
                     {organicCompanies.map((company) => (
