@@ -1,6 +1,6 @@
 =============================================================================
 UMZUGSCHECK.CH - FULL CODE EXPORT FOR CHATGPT REVIEW
-Generated: 2025-12-16 (Updated with A/B Testing & Analytics)
+Generated: 2025-12-16 (Updated with Conversion-Optimized Hero)
 =============================================================================
 
 PROJECT OVERVIEW:
@@ -10,16 +10,36 @@ PROJECT OVERVIEW:
 - Goal: Lead generation, SEO, conversion optimization
 
 =============================================================================
+RECENT CONVERSION OPTIMIZATIONS
+=============================================================================
+
+1. HERO SIMPLIFICATION (PremiumHeroSection.tsx)
+   - Reduced form fields: Only From/To (removed "rooms" field)
+   - Single CTA: "Kostenlos Offerten erhalten" (removed secondary CTA)
+   - Added progress indicator: "Schritt 1 von 4 · Dauer ca. 2 Minuten"
+   - Autofocus on first input for faster engagement
+   - LocalStorage prefill for funnel continuity
+
+2. HOMEPAGE SECTION ORDER (IndexPremium.tsx)
+   - Conversion-first order: Hero → Trust → SocialProof → HowItWorks → Comparison → Services → FAQ → ProviderCTA
+   - Optional sections moved below main CTA: AI Showcase, Cost Examples, Regions, Why Us
+   - Page view tracking with duplicate prevention
+
+3. FUNNEL PREFILL SYSTEM
+   - Homepage stores: { from, to, source: "homepage", timestamp }
+   - /umzugsofferten reads and prefills Step 1
+   - 24-hour TTL for stored data
+
+=============================================================================
 FILE STRUCTURE
 =============================================================================
 
 src/
 ├── pages/                    # All page components
-│   ├── Index.tsx            # Homepage (IndexPremium is active)
+│   ├── Index.tsx            # Homepage (redirects to IndexPremium)
 │   ├── IndexPremium.tsx     # Active premium homepage
 │   ├── Umzugsofferten.tsx   # Main conversion funnel page
 │   ├── Companies.tsx        # Company listing with card/table toggle
-│   ├── Calculator.tsx       # Price calculator
 │   ├── Admin.tsx            # Admin panel
 │   ├── FuerFirmen.tsx       # Partner portal (B2B)
 │   ├── cantons/             # 26 Canton-specific pages
@@ -27,101 +47,140 @@ src/
 │   ├── ratgeber/            # 3 Guide pages
 │   └── admin/               # Admin sub-pages
 ├── components/
-│   ├── homepage/            # Homepage components
+│   ├── premium/             # Premium homepage components
+│   │   ├── PremiumHeroSection.tsx  # SIMPLIFIED: From/To only
+│   │   ├── PremiumSocialProof.tsx
+│   │   ├── PremiumHowItWorks.tsx
+│   │   ├── PremiumFAQ.tsx
+│   │   └── ...
 │   ├── offerten-v2/         # Offerten page components
-│   ├── calculator/          # Calculator components
 │   ├── ui/                  # Shadcn UI components
-│   ├── CompanyComparisonTable.tsx  # NEW: Table view for companies
 │   ├── Navigation.tsx       # Main navigation
-│   ├── Footer.tsx           # Footer
-│   └── ...
-├── content/                  # JSON content files
-├── hooks/                    # Custom React hooks
+│   └── Footer.tsx           # Footer
 ├── lib/
-│   ├── analytics.ts         # NEW: Enhanced analytics tracking
-│   ├── ab-testing.ts        # NEW: A/B testing system
+│   ├── analytics.ts         # Analytics tracking
+│   ├── ab-testing.ts        # A/B testing system
 │   └── ...
 └── integrations/supabase/   # Supabase client & types
 
 =============================================================================
-NEW: A/B TESTING SYSTEM (src/lib/ab-testing.ts)
+PREMIUM HERO SECTION (src/components/premium/PremiumHeroSection.tsx)
 =============================================================================
 
-Active A/B Tests:
-1. hero_cta - Hero CTA Button Text
-   - control: "Jetzt checken lassen" (34%)
-   - variant_a: "Kostenlos Offerten erhalten" (33%)
-   - variant_b: "Jetzt vergleichen & sparen" (33%)
+DESIGN PHILOSOPHY: "Homepage = Commitment, Funnel = Decisions"
 
-2. calculator_submit - Calculator Submit Button Text
-   - control: "Offerten anfordern" (34%)
-   - variant_a: "Jetzt kostenlos Offerten erhalten" (33%)
-   - variant_b: "Angebote vergleichen" (33%)
+Form Rules:
+- Collect ONLY: From (PLZ/Ort), To (PLZ/Ort)
+- Do NOT collect: rooms, services, price (these belong in /umzugsofferten)
+- This is Step 1 of 4, not a full calculator
 
-3. video_cta - Video Calculator CTA Text
-   - control: "KI Video-Rechner" (50%)
-   - variant_a: "Video aufnehmen & sparen" (50%)
+UX Requirements:
+- Autofocus first input
+- Progress indicator above form: "Schritt 1 von 4 · Dauer ca. 2 Minuten"
+- Single primary CTA: "Kostenlos Offerten erhalten"
+- Trust badges below form: Kostenlos, Unverbindlich, Datenschutz
 
-4. company_view_mode - Company List Default View
-   - control: "Card View" (50%)
-   - variant_a: "Table View" (50%)
+Behavior on Submit:
+1. Save partial data to localStorage as 'uc_prefill'
+2. Redirect to /umzugsofferten with query params
+3. Funnel page prefills Step 1 from localStorage
 
-Usage in components:
 ```tsx
-import { abTesting } from '@/lib/ab-testing';
-const variant = abTesting.getVariant('hero_cta');
-abTesting.trackConversion('hero_cta', 'cta_click');
+// Key state - simplified
+const [fromPostal, setFromPostal] = useState("");
+const [toPostal, setToPostal] = useState("");
+
+// Submit handler - stores prefill data
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  const prefillData = {
+    from: fromPostal,
+    to: toPostal,
+    source: "homepage",
+    timestamp: Date.now(),
+  };
+  localStorage.setItem('uc_prefill', JSON.stringify(prefillData));
+  
+  const params = new URLSearchParams();
+  if (fromPostal) params.set("from", fromPostal);
+  if (toPostal) params.set("to", toPostal);
+  navigate(`/umzugsofferten?${params.toString()}`);
+};
+```
+
+Form JSX (simplified):
+```tsx
+{/* Progress indicator */}
+<div className="text-xs sm:text-sm text-muted-foreground text-center">
+  Schritt 1 von 4 · Dauer ca. 2 Minuten
+</div>
+
+<form onSubmit={handleSubmit}>
+  {/* From field with autofocus */}
+  <Input
+    placeholder="z.B. 8001 oder Zürich"
+    value={fromPostal}
+    onChange={(e) => setFromPostal(e.target.value)}
+    autoFocus
+    required
+  />
+  
+  {/* To field */}
+  <Input
+    placeholder="z.B. 3011 oder Bern"
+    value={toPostal}
+    onChange={(e) => setToPostal(e.target.value)}
+    required
+  />
+  
+  {/* Single CTA */}
+  <Button type="submit" className="w-full">
+    <CheckCircle2 className="mr-2" />
+    Kostenlos Offerten erhalten
+    <ArrowRight className="ml-2" />
+  </Button>
+</form>
+
+{/* Trust microcopy */}
+<div className="flex items-center justify-center gap-3">
+  <span><CheckCircle2 /> Kostenlos</span>
+  <span><CheckCircle2 /> Unverbindlich</span>
+  <span><Shield /> Datenschutz</span>
+</div>
 ```
 
 =============================================================================
-NEW: ANALYTICS TRACKING (src/lib/analytics.ts)
+HOMEPAGE (src/pages/IndexPremium.tsx) - SECTION ORDER
 =============================================================================
 
-Event Types:
-- calculator_started, calculator_completed
-- step_started, step_completed (multi-step form tracking)
-- service_selected, upsell_selected
-- lead_submitted
-- company_viewed, company_clicked, company_bookmarked
-- filter_applied, page_viewed, error_occurred
-- ab_test_impression, ab_test_conversion
+Conversion-first order (less scroll, more action):
 
-Usage in components:
+1. PremiumHeroSection - Hero with simplified form (From/To only)
+2. TrustSignals - Trust indicators
+3. PremiumSocialProof - Social proof marquee
+4. PremiumHowItWorks - 4-step process
+5. ComparisonShowcase - Company comparison preview
+6. PremiumServicesGrid - Available services
+7. PremiumFAQ - FAQ accordion
+8. PremiumProviderCTA - Final CTA for providers
+
+OPTIONAL (below main funnel, can be removed):
+- PremiumAIShowcase
+- PremiumCostExamples
+- PremiumRegions
+- PremiumWhyUs
+
 ```tsx
-import { useAnalytics } from '@/lib/analytics';
+// Tracking guard to prevent duplicate events
+const didTrack = useRef(false);
 
-const { trackStepCompleted, trackLeadSubmitted, trackCompanyBookmarked } = useAnalytics();
-
-// Track form step completion
-trackStepCompleted(1, 'Standort', 'quick_calculator');
-
-// Track lead submission
-trackLeadSubmitted({
-  calculatorType: 'quick',
-  moveDate: '2025-03-15',
-  fromCity: 'Zürich',
-  toCity: 'Bern',
-  priceRange: '1200-1800',
-  services: ['Umzug', 'Reinigung']
-});
-
-// Track company bookmark
-trackCompanyBookmarked('company-id', 'Muster Umzüge AG', true);
+useEffect(() => {
+  if (didTrack.current) return;
+  didTrack.current = true;
+  analytics.trackPageView('home_premium', '/');
+}, []);
 ```
-
-=============================================================================
-NEW: COMPANY COMPARISON TABLE (src/components/CompanyComparisonTable.tsx)
-=============================================================================
-
-Features:
-- Tabular view with sortable columns
-- Columns: Firma, Preis, Bewertung, Leistungen, Antwortzeit, Aktionen
-- Bookmark functionality (saves to localStorage)
-- Joint quote request for multiple companies
-- Sort by: Empfohlen, Preis, Bewertung
-- Mobile responsive with horizontal scroll
-
-Toggle between Card/Table view on /firmen page
 
 =============================================================================
 DESIGN SYSTEM (src/index.css)
@@ -149,9 +208,6 @@ DESIGN SYSTEM (src/index.css)
 --shadow-cta: 0 8px 24px rgba(227, 32, 38, 0.25);
 --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.10);
 
-/* Border Radius */
---radius: 0.75rem;
-
 =============================================================================
 APP ROUTING (src/App.tsx) - KEY ROUTES
 =============================================================================
@@ -160,51 +216,34 @@ APP ROUTING (src/App.tsx) - KEY ROUTES
 /umzugsofferten → Umzugsofferten (Main conversion funnel)
 /rechner → Redirects to /umzugsofferten
 /umzugsfirmen → Companies listing (card/table toggle)
-/umzugsfirmen/:canton → Canton-specific companies
 /firma/:slug → Company detail
 /admin → Admin dashboard
 /fuer-firmen → Partner portal (B2B)
 
 SERVICE PAGES:
-/privatumzug → PrivateMoving
-/firmenumzug → BusinessMoving
-/reinigung → CleaningService
-/entsorgung → DisposalService
-/moebelmontage → FurnitureAssembly
-/lagerung → StorageService
-/internationale-umzuege → InternationalMoving
-/umzug-mit-reinigung → MovingWithCleaning
-/moebellift → FurnitureLift
-/services → ServicesOverview
+/privatumzug, /firmenumzug, /reinigung, /entsorgung,
+/moebelmontage, /lagerung, /internationale-umzuege, etc.
 
 CANTON PAGES (26 cantons):
-/zuerich, /bern, /basel, /luzern, /aargau, /st-gallen,
-/genf, /wallis, /tessin, /fribourg, /solothurn, /thurgau,
-/graubuenden, /schwyz, /uri, /obwalden, /nidwalden,
-/glarus, /appenzell, /schaffhausen, /jura, /neuchatel
+/zuerich, /bern, /basel, /luzern, /aargau, /st-gallen, etc.
 
 RATGEBER PAGES:
-/ratgeber/checkliste → UmzugschecklisteDownload
-/ratgeber/umzugskosten → UmzugskostenGuide
-/ratgeber/tipps → UmzugstippsGuide
+/ratgeber/checkliste, /ratgeber/umzugskosten, /ratgeber/tipps
 
 =============================================================================
-HOMEPAGE (src/pages/Index.tsx) - SECTION ORDER
+UMZUGSOFFERTEN PAGE (src/pages/Umzugsofferten.tsx)
 =============================================================================
 
-1. EnhancedConversionHero - Hero with CTA (A/B tested)
-2. SocialProofMarquee - Trust signals
-3. EnhancedHowItWorks - Process steps
-4. CompanyComparisonSection - Company comparison
-5. AIVideoCalculatorSection - KI Video feature (A/B tested)
-6. EnhancedServicesGrid - Services grid
-7. CostExamplesSection - Price examples
-8. EnhancedTestimonials - Customer reviews
-9. EnhancedRegionsGrid - Regional availability
-10. EnhancedUSPSection - Why choose us
-11. MediaLogosSection - Media logos
-12. EnhancedFAQ - FAQ accordion
-13. EnhancedFinalCTA - Final call to action
+Main conversion funnel with prefill support:
+- Reads 'uc_prefill' from localStorage on mount
+- Prefills Step 1 fields if data < 24h old
+- Multi-step form with analytics tracking
+
+Multi-step form:
+- Step 1: Standort (from/to) - PREFILLED from homepage
+- Step 2: Wohnungsgrösse (rooms)
+- Step 3: Zusatzservices
+- Step 4: Kontaktdaten
 
 =============================================================================
 NAVIGATION (src/components/Navigation.tsx)
@@ -221,98 +260,26 @@ CTA Button: "Kostenlos Offerten erhalten" → /umzugsofferten
 - bg-secondary (red)
 - shadow-cta effect
 
-Mobile: Burger menu with MobileMenu component
-
 =============================================================================
-UMZUGSOFFERTEN PAGE (src/pages/Umzugsofferten.tsx)
+A/B TESTING SYSTEM (src/lib/ab-testing.ts)
 =============================================================================
 
-Main conversion funnel with analytics tracking:
-- HeroAIQuoteCalculator (with step tracking)
-- AIInsightsBar
-- HowItWorksSection
-- ComparisonShowcase
-- PriceScenariosSection
-- WhyUsSection
-- TrustAndSecuritySection
-- TestimonialsSection
-- FAQSection
-- BottomFinalCTA
-- BottomStickyCTA (mobile)
-
-Multi-step form tracking:
-- Step 1: Standort (from/to)
-- Step 2: Wohnungsgrösse
-- Step 3: Zusatzservices
-- Step 4: Kontaktdaten
+Active A/B Tests:
+1. hero_cta - Hero CTA Button Text
+2. calculator_submit - Calculator Submit Button Text
+3. video_cta - Video Calculator CTA Text
+4. company_view_mode - Company List Default View
 
 =============================================================================
-COMPANIES PAGE (src/pages/Companies.tsx)
+ANALYTICS TRACKING (src/lib/analytics.ts)
 =============================================================================
 
-Features:
-- Toggle between Card View and Table View
-- Default view determined by A/B test (company_view_mode)
-- Filters: Region, Services, Rating, Price Level
-- Sorting: Empfohlen, Preis, Bewertung
-- Bookmark companies (localStorage)
-- Joint quote request for multiple companies
-
-=============================================================================
-SERVICE PAGES (src/pages/services/)
-=============================================================================
-
-All service pages follow unified template structure:
-1. Hero with service-specific value proposition and CTA
-2. Price examples for different apartment sizes
-3. Service overview and scope explanation
-4. Benefits/USP grid
-5. 5-step process walkthrough
-6. Customer testimonials
-7. Cross-sell grid of complementary services
-8. Regional availability with links
-9. Service-specific FAQ
-10. Final CTA
-
-Available Services:
-- PrivateMoving.tsx - Privatumzug
-- BusinessMoving.tsx - Firmenumzug
-- CleaningService.tsx - Endreinigung
-- DisposalService.tsx - Entsorgung & Räumung
-- FurnitureAssembly.tsx - Möbelmontage
-- StorageService.tsx - Lagerung
-- InternationalMoving.tsx - Internationale Umzüge
-- MovingWithCleaning.tsx - Umzug mit Reinigung
-- FurnitureLift.tsx - Möbellift
-
-=============================================================================
-CANTON PAGES (src/pages/cantons/)
-=============================================================================
-
-26 Swiss cantons with SEO-optimized pages:
-- Local pricing information
-- Region-specific company listings
-- Canton statistics and facts
-- Cross-links to nearby cantons
-
-=============================================================================
-RATGEBER PAGES (src/pages/ratgeber/)
-=============================================================================
-
-- UmzugschecklisteDownload.tsx - Downloadable moving checklist
-- UmzugskostenGuide.tsx - Cost guide with examples
-- UmzugstippsGuide.tsx - Moving tips and tricks
-
-=============================================================================
-PARTNER PORTAL (src/pages/FuerFirmen.tsx)
-=============================================================================
-
-B2B page for moving companies:
-- Partner benefits explanation
-- Lead generation value proposition
-- Transparent pricing/fees
-- Partner application form
-- FAQ for partners
+Event Types:
+- page_view, calculator_started, calculator_completed
+- step_started, step_completed
+- lead_submitted
+- company_viewed, company_clicked, company_bookmarked
+- ab_test_impression, ab_test_conversion
 
 =============================================================================
 DATABASE SCHEMA (Supabase)
@@ -324,75 +291,7 @@ Key Tables:
 - reviews: Customer reviews
 - estimate_sessions: Calculator sessions
 - lead_transactions: Lead purchases
-- user_roles: Admin roles
-- ab_tests: A/B test configurations (admin)
-- conversion_analytics: Conversion tracking
-
-=============================================================================
-KEY COMPONENTS
-=============================================================================
-
-HOMEPAGE COMPONENTS (src/components/homepage/):
-- EnhancedConversionHero.tsx - Hero with A/B tested CTAs
-- MultiStepCalculator.tsx - Calculator with A/B tested submit
-- SocialProofMarquee.tsx - Trust marquee
-- EnhancedHowItWorks.tsx - Process steps
-- CompanyComparisonSection.tsx - Company comparison
-- AIVideoCalculatorSection.tsx - KI Video feature
-- EnhancedServicesGrid.tsx - Services grid
-- CostExamplesSection.tsx - Price examples
-- EnhancedTestimonials.tsx - Reviews
-- EnhancedRegionsGrid.tsx - Regions
-- EnhancedUSPSection.tsx - USPs
-- EnhancedFAQ.tsx - FAQ
-- EnhancedFinalCTA.tsx - Final CTA
-- MobileStickyBar.tsx - Mobile CTA
-
-OFFERTEN-V2 COMPONENTS (src/components/offerten-v2/):
-- HeroAIQuoteCalculator.tsx - With step tracking
-- AIInsightsBar.tsx
-- HowItWorksSection.tsx
-- ComparisonShowcase.tsx
-- PriceScenariosSection.tsx
-- WhyUsSection.tsx
-- TrustAndSecuritySection.tsx
-- TestimonialsSection.tsx
-- FAQSection.tsx
-- BottomFinalCTA.tsx
-- BottomStickyCTA.tsx
-
-NEW COMPONENTS:
-- CompanyComparisonTable.tsx - Tabular company view
-
-=============================================================================
-ADMIN PANEL (src/pages/Admin.tsx)
-=============================================================================
-
-Simple authentication:
-- Username: admin
-- Password: passwort
-- Uses sessionStorage for auth state
-
-Admin features:
-- Dashboard analytics
-- Leads management
-- Companies management
-- Reviews moderation
-- Provider management
-- Billing & subscriptions
-- Rankings management
-- A/B Test results (coming)
-
-=============================================================================
-BRAND GUIDELINES
-=============================================================================
-
-- Main color: Blue (#0050A8) - Trust & Authority
-- CTA color: Red (#E32026) - Action
-- Clean, modern, trustworthy "Swiss Quality"
-- Mobile-first responsive design
-- Conversion-focused UX
-- SEO-optimized structure
+- ab_tests: A/B test configurations
 
 =============================================================================
 CORE USPs (Always communicate)
@@ -403,38 +302,24 @@ CORE USPs (Always communicate)
 3. Savings - Up to 40% savings through comparison
 
 =============================================================================
-TRACKING & OPTIMIZATION
+BRAND GUIDELINES
 =============================================================================
 
-Analytics Events Tracked:
-- calculator_started / calculator_completed
-- step_started / step_completed (with duration)
-- service_selected / upsell_selected
-- lead_submitted (with full lead data)
-- company_viewed / company_clicked / company_bookmarked
-- filter_applied
-- ab_test_impression / ab_test_conversion
-
-A/B Tests Running:
-- Hero CTA text (3 variants)
-- Calculator submit button (3 variants)
-- Video CTA text (2 variants)
-- Company view mode (card vs table)
+- Main color: Blue (#0050A8) - Trust & Authority
+- CTA color: Red (#E32026) - Action
+- Clean, modern, trustworthy "Swiss Quality"
+- Mobile-first responsive design
+- Conversion-focused UX
 
 =============================================================================
 IMPORTANT NOTES
 =============================================================================
 
 - /umzugsofferten is THE most important conversion page
+- Homepage hero has ONLY From/To fields (rooms in funnel Step 2)
 - All CTAs point to /umzugsofferten
-- /rechner and /umzugsrechner redirect to /umzugsofferten
+- LocalStorage 'uc_prefill' bridges homepage → funnel
 - Admin at /admin (simple auth, not Supabase)
-- A/B test assignments persist in localStorage
-- Analytics events sent to Google Analytics 4 (when configured)
-- All 26 canton pages are implemented
-- All 11 service pages are implemented
-- All 3 ratgeber pages are implemented
-- Partner portal at /fuer-firmen is implemented
 
 =============================================================================
 END OF EXPORT
