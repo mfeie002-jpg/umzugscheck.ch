@@ -1,38 +1,11 @@
 /**
- * HeroAIQuoteCalculator - Main hero section with AI-powered calculator
- * Features: 3-step calculator, real-time price estimation, lead capture
+ * HeroAIQuoteCalculator - Conversion-First 4-Step Funnel
  * 
- * OPTIMIZATIONS (296-350):
- * 296. Glassmorphism card with blur backdrop
- * 297. Animated gradient border on focus
- * 298. Step transition with 3D flip
- * 299. Price range visualization bar
- * 300. Input field floating labels
- * 301. Contextual help tooltips
- * 302. Progress ring around CTA
- * 303. Animated background mesh
- * 304. Smart field suggestions
- * 305. Completion percentage badge
- * 306. Real-time validator icons
- * 307. Animated placeholder text
- * 308. Focus trap indicators
- * 309. Step summary cards
- * 310. Voice input button styling
- * 311. Keyboard navigation hints
- * 312. Error shake with haptic
- * 313. Success state confetti
- * 314. Loading skeleton states
- * 315. Form autosave indicator
- * 481. Smart address autocomplete
- * 482. Instant price preview
- * 483. Calculator memory/history
- * 484. Quick estimate shortcuts
- * 485. Social proof live counter
- * 486. Trust badge carousel
- * 487. Animated value proposition
- * 488. Error recovery suggestions
- * 489. Field dependency highlighting
- * 490. Estimated time to complete
+ * CORE PRINCIPLE: This funnel is a guided process, not a form.
+ * - One decision per screen
+ * - Clear progress at all times
+ * - No pricing pressure early
+ * - No ambiguity about "what happens next"
  */
 
 import { useState, useCallback, useEffect } from "react";
@@ -52,28 +25,27 @@ import {
   Sparkles,
   MapPin,
   Home,
-  Calendar,
   User,
   Mail,
   Phone,
   Lock,
-  TrendingUp,
   Loader2,
   Shield,
   Clock,
   Star,
-  Zap,
-  Mic,
-  Keyboard,
   Award,
   Check,
   HelpCircle,
-  Save,
-  AlertCircle
+  Building2,
+  Users,
+  Package,
+  Trash2,
+  Sofa,
+  Warehouse
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/lib/analytics";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CalculatorState {
   step: number;
@@ -82,21 +54,13 @@ interface CalculatorState {
   toPLZ: string;
   toOrt: string;
   wohnungsgroesse: string;
-  stockwerkVon: string;
-  stockwerkNach: string;
-  liftVon: boolean;
-  liftNach: boolean;
-  moveDate: string;
+  kundentyp: "privat" | "firma";
   reinigung: boolean;
-  verpackung: boolean;
-  moebellift: boolean;
-  lagerung: boolean;
-  prioritaet: "guenstig" | "preis-leistung" | "premium";
-  flexibilitaet: "exakt" | "flexibel";
+  montage: boolean;
+  entsorgung: boolean;
   name: string;
   email: string;
   phone: string;
-  kontaktart: "email" | "telefon" | "beides";
 }
 
 const initialState: CalculatorState = {
@@ -106,80 +70,16 @@ const initialState: CalculatorState = {
   toPLZ: "",
   toOrt: "",
   wohnungsgroesse: "",
-  stockwerkVon: "eg",
-  stockwerkNach: "eg",
-  liftVon: false,
-  liftNach: false,
-  moveDate: "",
+  kundentyp: "privat",
   reinigung: false,
-  verpackung: false,
-  moebellift: false,
-  lagerung: false,
-  prioritaet: "preis-leistung",
-  flexibilitaet: "flexibel",
+  montage: false,
+  entsorgung: false,
   name: "",
   email: "",
   phone: "",
-  kontaktart: "beides",
 };
 
-// Simulated AI price calculation
-const calculatePrice = (state: CalculatorState): { min: number; max: number } | null => {
-  if (!state.wohnungsgroesse) return null;
-  
-  const basePrice: Record<string, number> = {
-    "1.5": 800,
-    "2.5": 1200,
-    "3.5": 1800,
-    "4.5": 2400,
-    "5.5": 3200,
-    "6.5": 4000,
-  };
-  
-  const base = basePrice[state.wohnungsgroesse] || 2000;
-  let multiplier = 1;
-  
-  const floorVon = parseInt(state.stockwerkVon) || 0;
-  const floorNach = parseInt(state.stockwerkNach) || 0;
-  if (!state.liftVon && floorVon > 2) multiplier += 0.15;
-  if (!state.liftNach && floorNach > 2) multiplier += 0.15;
-  
-  if (state.reinigung) multiplier += 0.2;
-  if (state.verpackung) multiplier += 0.25;
-  if (state.moebellift) multiplier += 0.1;
-  if (state.lagerung) multiplier += 0.15;
-  
-  if (state.prioritaet === "guenstig") multiplier *= 0.85;
-  if (state.prioritaet === "premium") multiplier *= 1.3;
-  
-  const min = Math.round(base * multiplier * 0.9 / 50) * 50;
-  const max = Math.round(base * multiplier * 1.2 / 50) * 50;
-  
-  return { min, max };
-};
-
-// 296. Glassmorphism floating particle
-const FloatingParticle = ({ delay, x, size }: { delay: number; x: string; size: number }) => (
-  <motion.div
-    className="absolute rounded-full bg-gradient-to-br from-primary/30 to-blue-500/20 backdrop-blur-sm"
-    style={{ left: x, width: size, height: size }}
-    initial={{ y: "100vh", opacity: 0 }}
-    animate={{ 
-      y: "-100px", 
-      opacity: [0, 0.8, 0],
-      x: [0, Math.random() * 60 - 30, 0],
-      scale: [0.8, 1.2, 0.8]
-    }}
-    transition={{ 
-      duration: 10 + Math.random() * 5,
-      delay,
-      repeat: Infinity,
-      ease: "linear"
-    }}
-  />
-);
-
-// 300. Floating label input
+// Floating label input component
 const FloatingLabelInput = ({ 
   value, 
   onChange, 
@@ -188,7 +88,8 @@ const FloatingLabelInput = ({
   icon: Icon,
   isValid,
   error,
-  helpText
+  helpText,
+  autoFocus
 }: { 
   value: string; 
   onChange: (v: string) => void; 
@@ -198,6 +99,7 @@ const FloatingLabelInput = ({
   isValid?: boolean;
   error?: boolean;
   helpText?: string;
+  autoFocus?: boolean;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const hasValue = value.length > 0;
@@ -209,7 +111,6 @@ const FloatingLabelInput = ({
       animate={error ? { x: [-4, 4, -4, 4, 0] } : {}}
       transition={{ duration: 0.4 }}
     >
-      {/* 297. Animated gradient border */}
       <motion.div
         className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-primary via-blue-500 to-primary opacity-0"
         animate={isFocused ? { opacity: 0.5 } : { opacity: 0 }}
@@ -228,7 +129,6 @@ const FloatingLabelInput = ({
           </motion.div>
         )}
         
-        {/* Floating label */}
         <motion.label
           className={`absolute left-${Icon ? '10' : '3'} pointer-events-none transition-all duration-200 ${
             isFocused || hasValue 
@@ -246,12 +146,12 @@ const FloatingLabelInput = ({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          autoFocus={autoFocus}
           className={`${Icon ? "pl-10" : ""} pr-16 h-11 sm:h-12 text-base transition-all duration-300 bg-transparent ${
             isFocused ? "ring-2 ring-primary/30 border-primary" : ""
           } ${error ? "border-red-500 ring-2 ring-red-200" : ""}`}
         />
         
-        {/* 301. Help tooltip */}
         {helpText && (
           <div className="absolute right-10 top-1/2 -translate-y-1/2">
             <motion.button
@@ -278,7 +178,6 @@ const FloatingLabelInput = ({
           </div>
         )}
         
-        {/* 306. Validation icons */}
         <AnimatePresence>
           {isValid && value && (
             <motion.div
@@ -292,175 +191,11 @@ const FloatingLabelInput = ({
               </div>
             </motion.div>
           )}
-          {error && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              className="absolute right-3 top-1/2 -translate-y-1/2"
-            >
-              <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center">
-                <AlertCircle className="w-3 h-3 text-red-600" />
-              </div>
-            </motion.div>
-          )}
         </AnimatePresence>
       </div>
     </motion.div>
   );
 };
-
-// 299. Price range visualization
-const PriceRangeBar = ({ min, max }: { min: number; max: number }) => {
-  const avgMarket = (min + max) / 2 * 1.3;
-  const savingsPercent = Math.round((1 - (max / avgMarket)) * 100);
-  
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between text-xs text-muted-foreground">
-        <span>Ihr Preis</span>
-        <span>Marktdurchschnitt</span>
-      </div>
-      <div className="h-3 bg-gradient-to-r from-green-200 via-amber-200 to-red-200 rounded-full overflow-hidden relative">
-        <motion.div
-          className="absolute left-0 h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full"
-          initial={{ width: 0 }}
-          animate={{ width: `${Math.min((max / avgMarket) * 100, 100)}%` }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        />
-        <motion.div
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-green-600 rounded-full shadow-lg"
-          initial={{ left: 0 }}
-          animate={{ left: `${Math.min((max / avgMarket) * 100, 100) - 2}%` }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        />
-      </div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex items-center justify-center gap-1 text-green-600 font-medium text-sm"
-      >
-        <TrendingUp className="w-4 h-4" />
-        {savingsPercent}% unter Marktpreis
-      </motion.div>
-    </div>
-  );
-};
-
-// 302. Progress ring CTA
-const ProgressRingButton = ({ progress, children, onClick, disabled, loading }: { 
-  progress: number; 
-  children: React.ReactNode; 
-  onClick: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-}) => {
-  const circumference = 2 * Math.PI * 20;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-  
-  return (
-    <motion.button
-      onClick={onClick}
-      disabled={disabled || loading}
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
-      className={`relative w-full h-12 sm:h-14 rounded-xl font-semibold text-base sm:text-lg transition-all active:scale-[0.98] ${
-        disabled 
-          ? "bg-muted text-muted-foreground cursor-not-allowed" 
-          : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30"
-      }`}
-    >
-      {/* Progress ring */}
-      <svg className="absolute -right-2 -top-2 w-10 h-10 sm:w-12 sm:h-12" viewBox="0 0 44 44">
-        <circle
-          cx="22"
-          cy="22"
-          r="20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="text-white/20"
-        />
-        <motion.circle
-          cx="22"
-          cy="22"
-          r="20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          className="text-white"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          transform="rotate(-90 22 22)"
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset }}
-          transition={{ duration: 0.5 }}
-        />
-        <text
-          x="22"
-          y="26"
-          textAnchor="middle"
-          className="text-xs fill-white font-bold"
-        >
-          {progress}%
-        </text>
-      </svg>
-      
-      <span className="flex items-center justify-center gap-2">
-        {loading ? (
-          <Loader2 className="w-5 h-5 animate-spin" />
-        ) : (
-          children
-        )}
-      </span>
-    </motion.button>
-  );
-};
-
-// 309. Step summary card
-const StepSummaryCard = ({ step, data }: { step: number; data: CalculatorState }) => {
-  if (step === 1) return null;
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      className="mb-4"
-    >
-      <div className="bg-muted/50 rounded-lg p-3 border border-border/50">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <CheckCircle2 className="w-4 h-4 text-green-500" />
-          <span>Schritt {step - 1} abgeschlossen</span>
-        </div>
-        {step >= 2 && (
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div><span className="text-muted-foreground">Von:</span> {data.fromPLZ} {data.fromOrt}</div>
-            <div><span className="text-muted-foreground">Nach:</span> {data.toPLZ} {data.toOrt}</div>
-            <div><span className="text-muted-foreground">Grösse:</span> {data.wohnungsgroesse} Zimmer</div>
-          </div>
-        )}
-      </div>
-    </motion.div>
-  );
-};
-
-// 315. Autosave indicator
-const AutosaveIndicator = ({ saved }: { saved: boolean }) => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    className="flex items-center gap-1.5 text-xs text-muted-foreground"
-  >
-    <motion.div
-      animate={saved ? { scale: [1, 1.2, 1] } : {}}
-      transition={{ duration: 0.3 }}
-    >
-      <Save className={`w-3.5 h-3.5 ${saved ? "text-green-500" : ""}`} />
-    </motion.div>
-    <span>{saved ? "Gespeichert" : "Speichern..."}</span>
-  </motion.div>
-);
 
 // Trust badge carousel
 const trustBadges = [
@@ -531,32 +266,37 @@ const RecentlyCompletedBadge = () => {
   );
 };
 
-// Animated price display
-const AnimatedPrice = ({ value }: { value: number }) => {
-  const [display, setDisplay] = useState(0);
-  
-  useEffect(() => {
-    const duration = 800;
-    const steps = 30;
-    const stepTime = duration / steps;
-    let step = 0;
-    
-    const interval = setInterval(() => {
-      step++;
-      const progress = step / steps;
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.round(value * easeOut));
-      
-      if (step >= steps) {
-        clearInterval(interval);
-        setDisplay(value);
-      }
-    }, stepTime);
-    
-    return () => clearInterval(interval);
-  }, [value]);
-  
-  return <span>{display.toLocaleString("de-CH")}</span>;
+// Step content configuration
+interface StepConfig {
+  headline: string;
+  subline?: string;
+  ctaText: string;
+  microcopy: string | null;
+}
+
+const stepConfig: Record<number, StepConfig> = {
+  1: {
+    headline: "Wo ziehen Sie um?",
+    ctaText: "Weiter zur Wohnungsgrösse",
+    microcopy: "Ihre Angaben dienen nur zur groben Einschätzung."
+  },
+  2: {
+    headline: "Wie gross ist Ihre Wohnung?",
+    ctaText: "Weiter zu Zusatzleistungen",
+    microcopy: "Eine grobe Angabe genügt – Details klären wir später."
+  },
+  3: {
+    headline: "Benötigen Sie zusätzliche Leistungen?",
+    subline: "Optional – alles kann später angepasst werden.",
+    ctaText: "Weiter zu den Offerten",
+    microcopy: null
+  },
+  4: {
+    headline: "Wohin dürfen wir die Offerten senden?",
+    subline: "Sie erhalten 3–5 passende Offerten von geprüften Firmen.",
+    ctaText: "Jetzt kostenlose Offerten erhalten",
+    microcopy: "Keine Weitergabe ohne Anfrage · Kein Spam"
+  }
 };
 
 export default function HeroAIQuoteCalculator() {
@@ -564,63 +304,35 @@ export default function HeroAIQuoteCalculator() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeUsers, setActiveUsers] = useState(47);
   const [showCelebration, setShowCelebration] = useState(false);
-  const [autosaved, setAutosaved] = useState(true);
   const [stepStartTime, setStepStartTime] = useState<number>(Date.now());
+  const [isThankYou, setIsThankYou] = useState(false);
   const { toast } = useToast();
   const analytics = useAnalytics();
   
-  const priceEstimate = calculatePrice(state);
-  
-  // Track calculator start and load prefill data from localStorage
+  // Track calculator start and load prefill data
   useEffect(() => {
     analytics.trackCalculatorStarted('ai');
-    analytics.trackStepStarted(1, 'location_details', 'ai_calculator');
+    analytics.trackStepStarted(1, 'location', 'ai_calculator');
     
-    // Load prefill data from homepage hero form
     try {
       const prefillRaw = localStorage.getItem('uc_prefill');
       if (prefillRaw) {
         const prefill = JSON.parse(prefillRaw);
-        // Only use prefill if it's less than 24 hours old
         const isRecent = Date.now() - prefill.timestamp < 24 * 60 * 60 * 1000;
         
         if (isRecent) {
-          // Parse the "from" field - could be "8001 - Zürich (ZH)" format
           if (prefill.from) {
             const fromMatch = prefill.from.match(/^(\d{4})/);
-            if (fromMatch) {
-              updateState({ fromPLZ: fromMatch[1] });
-            }
+            if (fromMatch) updateState({ fromPLZ: fromMatch[1] });
             const fromCityMatch = prefill.from.match(/- (.+?) \(/);
-            if (fromCityMatch) {
-              updateState({ fromOrt: fromCityMatch[1] });
-            }
+            if (fromCityMatch) updateState({ fromOrt: fromCityMatch[1] });
           }
           
-          // Parse the "to" field
           if (prefill.to) {
             const toMatch = prefill.to.match(/^(\d{4})/);
-            if (toMatch) {
-              updateState({ toPLZ: toMatch[1] });
-            }
+            if (toMatch) updateState({ toPLZ: toMatch[1] });
             const toCityMatch = prefill.to.match(/- (.+?) \(/);
-            if (toCityMatch) {
-              updateState({ toOrt: toCityMatch[1] });
-            }
-          }
-          
-          // Map rooms to wohnungsgroesse
-          if (prefill.rooms) {
-            const roomsMap: Record<string, string> = {
-              '1.5': '1.5',
-              '2.5': '2.5',
-              '3.5': '3.5',
-              '4.5': '4.5',
-              '5.5': '5.5',
-              '6+': '6.5',
-            };
-            const mapped = roomsMap[prefill.rooms] || prefill.rooms;
-            updateState({ wohnungsgroesse: mapped });
+            if (toCityMatch) updateState({ toOrt: toCityMatch[1] });
           }
         }
       }
@@ -640,34 +352,21 @@ export default function HeroAIQuoteCalculator() {
     return () => clearInterval(interval);
   }, []);
   
-  // Autosave simulation
-  useEffect(() => {
-    setAutosaved(false);
-    const timeout = setTimeout(() => setAutosaved(true), 1000);
-    return () => clearTimeout(timeout);
-  }, [state]);
-  
   const updateState = useCallback((updates: Partial<CalculatorState>) => {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
   
-  // Track service selections
   const handleServiceToggle = useCallback((serviceKey: string) => {
     const currentValue = state[serviceKey as keyof CalculatorState] as boolean;
     const newValue = !currentValue;
     updateState({ [serviceKey]: newValue });
     analytics.trackServiceSelected(serviceKey, newValue, 'ai_calculator');
-    
-    if (newValue) {
-      analytics.trackUpsellSelected(serviceKey);
-    }
   }, [state, updateState, analytics]);
   
   const goToNextStep = (nextStep: number) => {
-    const stepNames = ['location_details', 'services_options', 'contact_info'];
+    const stepNames = ['location', 'apartment_size', 'additional_services', 'contact_info'];
     const duration = Math.round((Date.now() - stepStartTime) / 1000);
     
-    // Track step completion
     analytics.trackStepCompleted(state.step, stepNames[state.step - 1], 'ai_calculator', duration);
     
     setShowCelebration(true);
@@ -675,8 +374,7 @@ export default function HeroAIQuoteCalculator() {
       updateState({ step: nextStep });
       setStepStartTime(Date.now());
       
-      // Track next step start
-      if (nextStep <= 3) {
+      if (nextStep <= 4) {
         analytics.trackStepStarted(nextStep, stepNames[nextStep - 1], 'ai_calculator');
       }
       
@@ -696,84 +394,132 @@ export default function HeroAIQuoteCalculator() {
     
     setIsSubmitting(true);
     
-    // Track lead submission
     const selectedServices = [
       state.reinigung && 'reinigung',
-      state.verpackung && 'verpackung', 
-      state.moebellift && 'moebellift',
-      state.lagerung && 'lagerung'
+      state.montage && 'montage', 
+      state.entsorgung && 'entsorgung'
     ].filter(Boolean) as string[];
     
     analytics.trackLeadSubmitted({
       calculatorType: 'ai',
-      moveDate: state.moveDate || 'nicht angegeben',
+      moveDate: 'nicht angegeben',
       fromCity: state.fromOrt || state.fromPLZ,
       toCity: state.toOrt || state.toPLZ,
-      priceRange: priceEstimate ? `${priceEstimate.min}-${priceEstimate.max}` : 'nicht berechnet',
+      priceRange: 'nicht berechnet',
       services: selectedServices
     });
     
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    toast({
-      title: "Anfrage erfolgreich gesendet!",
-      description: "Sie erhalten in Kürze passende Offerten per E-Mail.",
-    });
-    
     setIsSubmitting(false);
+    setIsThankYou(true);
   };
   
-  const canProceedToStep2 = state.fromPLZ && state.toPLZ && state.wohnungsgroesse;
-  
-  // Calculate completion percentage
-  const getCompletionPercent = () => {
-    let filled = 0;
-    let total = 0;
-    
-    if (state.step === 1) {
-      total = 3;
-      if (state.fromPLZ) filled++;
-      if (state.toPLZ) filled++;
-      if (state.wohnungsgroesse) filled++;
-    } else if (state.step === 2) {
-      total = 2;
-      if (state.stockwerkVon) filled++;
-      if (state.stockwerkNach) filled++;
-    } else {
-      total = 3;
-      if (state.name) filled++;
-      if (state.email) filled++;
-      if (state.phone) filled++;
-    }
-    
-    return Math.round((filled / total) * 100);
-  };
-  
-  // Email validation
+  // Validation helpers
+  const canProceedStep1 = state.fromPLZ.length >= 4 && state.toPLZ.length >= 4;
+  const canProceedStep2 = state.wohnungsgroesse !== "";
   const isEmailValid = state.email.includes("@") && state.email.includes(".");
   const isPhoneValid = state.phone.length >= 10;
+  const canSubmit = state.name.length >= 2 && isEmailValid && isPhoneValid;
+  
+  // Thank you state
+  if (isThankYou) {
+    return (
+      <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden min-h-[85vh] flex items-center">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-green-50/20" />
+        </div>
+        
+        <div className="container mx-auto px-4 sm:px-6 max-w-2xl relative z-10 text-center">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", duration: 0.6 }}
+            className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center"
+          >
+            <CheckCircle2 className="w-10 h-10 text-green-600" />
+          </motion.div>
+          
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4"
+          >
+            Vielen Dank – Ihre Anfrage wurde versendet
+          </motion.h1>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white rounded-xl p-6 shadow-lg border border-border/50 text-left mb-8"
+          >
+            <h2 className="font-semibold text-lg mb-4 text-foreground">Was passiert als Nächstes?</h2>
+            <ul className="space-y-4">
+              <li className="flex gap-3">
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-primary">1</span>
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">Heute</p>
+                  <p className="text-sm text-muted-foreground">Anfrage wird geprüft</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-primary">2</span>
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">Innerhalb 24–48h</p>
+                  <p className="text-sm text-muted-foreground">3–5 passende Offerten erhalten</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-primary">3</span>
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">Danach</p>
+                  <p className="text-sm text-muted-foreground">Anbieter vergleichen & auswählen</p>
+                </div>
+              </li>
+            </ul>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Button variant="outline" className="gap-2">
+              <Package className="w-4 h-4" />
+              Umzugscheckliste herunterladen
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+  
+  const currentStep = stepConfig[state.step as keyof typeof stepConfig];
   
   return (
     <section className="relative py-8 sm:py-12 md:py-20 lg:py-24 overflow-hidden min-h-[85vh] flex items-center">
-      {/* Light Gradient Background - Matching Homepage */}
+      {/* Background */}
       <div className="absolute inset-0 z-0">
-        {/* Background image - subtle */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
           style={{ backgroundImage: `url(${heroMovingCouple})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-red-50/20" />
-        {/* Decorative grid pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, rgb(0 0 0) 1px, transparent 0)`,
           backgroundSize: '24px 24px'
         }} />
-        {/* Decorative shapes */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
       </div>
-      
       
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
@@ -784,7 +530,7 @@ export default function HeroAIQuoteCalculator() {
             transition={{ duration: 0.6 }}
             className="text-center lg:text-left"
           >
-            {/* Live activity indicator */}
+            {/* Live activity */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -799,29 +545,27 @@ export default function HeroAIQuoteCalculator() {
                 />
                 <span><strong>{activeUsers}</strong> Personen online</span>
               </div>
-              
               <RecentlyCompletedBadge />
             </motion.div>
             
-            {/* Main headline - dark text for light background */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
+            {/* Page header - conversion-first */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4 leading-tight">
+              In 2 Minuten zu passenden{" "}
               <span className="bg-gradient-to-r from-primary via-primary to-blue-600 bg-clip-text text-transparent">
-                KI-gestützte
-              </span>{" "}
-              Umzugsofferten vergleichen
+                Umzugsofferten
+              </span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
-              Erhalten Sie in weniger als 2 Minuten eine realistische Preisspanne 
-              und passende Offerten von geprüften Schweizer Umzugsfirmen.
+            <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 font-medium">
+              Kostenlos · Unverbindlich · Schweizweit
             </p>
             
-            {/* Key benefits - styled for light background */}
+            {/* Key benefits */}
             <div className="flex flex-col xs:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start mb-6 sm:mb-8">
               {[
-                { icon: Zap, text: "Sofortige Preisschätzung" },
-                { icon: Shield, text: "100% kostenlos & unverbindlich" },
                 { icon: CheckCircle2, text: "Nur geprüfte Firmen" },
+                { icon: Shield, text: "100% kostenlos" },
+                { icon: Clock, text: "3–5 Offerten in 24h" },
               ].map((benefit, i) => (
                 <motion.div
                   key={benefit.text}
@@ -838,7 +582,6 @@ export default function HeroAIQuoteCalculator() {
               ))}
             </div>
             
-            {/* Trust badges carousel */}
             <TrustBadgeCarousel />
           </motion.div>
           
@@ -849,13 +592,10 @@ export default function HeroAIQuoteCalculator() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <Card className="bg-white border-border/50 shadow-2xl shadow-primary/10 overflow-hidden relative">
-              {/* Animated border gradient */}
               <motion.div
                 className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary via-blue-500 to-primary opacity-20"
                 style={{ padding: "1px" }}
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
+                animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
               />
               
@@ -870,16 +610,17 @@ export default function HeroAIQuoteCalculator() {
                       <Calculator className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </motion.div>
                     <div>
-                      <h2 className="font-bold text-base sm:text-lg text-foreground">KI Umzugsrechner</h2>
-                      <p className="text-xs sm:text-sm text-muted-foreground">Schritt {state.step} von 3</p>
+                      <h2 className="font-bold text-base sm:text-lg text-foreground">Offerten Anfrage</h2>
+                      <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+                        Schritt {state.step} von 4
+                      </p>
                     </div>
                   </div>
-                  <AutosaveIndicator saved={autosaved} />
                 </div>
                 
-                {/* Step progress bar */}
+                {/* Step progress bar - 4 steps */}
                 <div className="flex gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-                  {[1, 2, 3].map((step) => (
+                  {[1, 2, 3, 4].map((step) => (
                     <motion.div
                       key={step}
                       className={`h-1.5 flex-1 rounded-full overflow-hidden ${
@@ -900,184 +641,136 @@ export default function HeroAIQuoteCalculator() {
                   ))}
                 </div>
                 
-                {/* 309. Step summary */}
-                <StepSummaryCard step={state.step} data={state} />
+                {/* Step headline */}
+                <motion.div 
+                  key={`headline-${state.step}`}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-4 sm:mb-6"
+                >
+                  <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-1">
+                    {currentStep.headline}
+                  </h3>
+                  {currentStep.subline && (
+                    <p className="text-sm text-muted-foreground">{currentStep.subline}</p>
+                  )}
+                </motion.div>
                 
-                {/* Calculator steps - 298. 3D flip transition */}
+                {/* Calculator steps */}
                 <AnimatePresence mode="wait">
+                  {/* STEP 1 - STANDORT */}
                   {state.step === 1 && (
                     <motion.div
                       key="step1"
-                      initial={{ opacity: 0, rotateY: -90 }}
-                      animate={{ opacity: 1, rotateY: 0 }}
-                      exit={{ opacity: 0, rotateY: 90 }}
-                      transition={{ duration: 0.4 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
                       className="space-y-4"
                     >
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <FloatingLabelInput
-                          value={state.fromPLZ}
-                          onChange={(v) => updateState({ fromPLZ: v })}
-                          label="Von (PLZ oder Ort)"
-                          icon={MapPin}
-                          isValid={state.fromPLZ.length >= 4}
-                          helpText="Geben Sie die Postleitzahl oder den Ortsnamen ein"
-                        />
-                        <FloatingLabelInput
-                          value={state.toPLZ}
-                          onChange={(v) => updateState({ toPLZ: v })}
-                          label="Nach (PLZ oder Ort)"
-                          icon={MapPin}
-                          isValid={state.toPLZ.length >= 4}
-                          helpText="Zieladresse Ihres Umzugs"
-                        />
+                      <FloatingLabelInput
+                        value={state.fromPLZ}
+                        onChange={(v) => updateState({ fromPLZ: v })}
+                        label="Von (PLZ oder Ort)"
+                        icon={MapPin}
+                        isValid={state.fromPLZ.length >= 4}
+                        autoFocus
+                        helpText="Geben Sie die Postleitzahl oder den Ortsnamen ein"
+                      />
+                      <FloatingLabelInput
+                        value={state.toPLZ}
+                        onChange={(v) => updateState({ toPLZ: v })}
+                        label="Nach (PLZ oder Ort)"
+                        icon={MapPin}
+                        isValid={state.toPLZ.length >= 4}
+                        helpText="Zieladresse Ihres Umzugs"
+                      />
+                      
+                      {/* Microcopy */}
+                      <p className="text-xs text-muted-foreground text-center pt-2">
+                        {currentStep.microcopy}
+                      </p>
+                      
+                      <Button
+                        onClick={() => goToNextStep(2)}
+                        disabled={!canProceedStep1}
+                        className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold gap-2"
+                      >
+                        {currentStep.ctaText}
+                        <ArrowRight className="w-5 h-5" />
+                      </Button>
+                    </motion.div>
+                  )}
+                  
+                  {/* STEP 2 - WOHNUNGSGRÖSSE */}
+                  {state.step === 2 && (
+                    <motion.div
+                      key="step2"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      {/* Customer type toggle */}
+                      <div className="flex gap-2 mb-4">
+                        <Button
+                          type="button"
+                          variant={state.kundentyp === "privat" ? "default" : "outline"}
+                          className="flex-1 gap-2"
+                          onClick={() => updateState({ kundentyp: "privat" })}
+                        >
+                          <Users className="w-4 h-4" />
+                          Privat
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={state.kundentyp === "firma" ? "default" : "outline"}
+                          className="flex-1 gap-2"
+                          onClick={() => updateState({ kundentyp: "firma" })}
+                        >
+                          <Building2 className="w-4 h-4" />
+                          Firma
+                        </Button>
                       </div>
                       
                       <div>
-                        <Label className="text-sm font-medium mb-2 block">Wohnungsgrösse</Label>
+                        <Label className="text-sm font-medium mb-2 block">
+                          {state.kundentyp === "privat" ? "Wohnungsgrösse" : "Bürogrösse"}
+                        </Label>
                         <Select
                           value={state.wohnungsgroesse}
                           onValueChange={(v) => updateState({ wohnungsgroesse: v })}
                         >
                           <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Anzahl Zimmer wählen" />
+                            <SelectValue placeholder={state.kundentyp === "privat" ? "Anzahl Zimmer wählen" : "Bürogrösse wählen"} />
                           </SelectTrigger>
                           <SelectContent>
-                            {["1.5", "2.5", "3.5", "4.5", "5.5", "6.5"].map((size) => (
-                              <SelectItem key={size} value={size}>
-                                {size} Zimmer
-                              </SelectItem>
-                            ))}
+                            {state.kundentyp === "privat" ? (
+                              <>
+                                <SelectItem value="1.5">1–1.5 Zimmer (Studio)</SelectItem>
+                                <SelectItem value="2.5">2–2.5 Zimmer</SelectItem>
+                                <SelectItem value="3.5">3–3.5 Zimmer</SelectItem>
+                                <SelectItem value="4.5">4–4.5 Zimmer</SelectItem>
+                                <SelectItem value="5.5">5–5.5 Zimmer</SelectItem>
+                                <SelectItem value="6.5">6+ Zimmer / Haus</SelectItem>
+                              </>
+                            ) : (
+                              <>
+                                <SelectItem value="small">Kleines Büro (bis 50m²)</SelectItem>
+                                <SelectItem value="medium">Mittleres Büro (50–150m²)</SelectItem>
+                                <SelectItem value="large">Grosses Büro (150–500m²)</SelectItem>
+                                <SelectItem value="xlarge">Sehr gross (500m²+)</SelectItem>
+                              </>
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
                       
-                      <ProgressRingButton
-                        progress={getCompletionPercent()}
-                        onClick={() => goToNextStep(2)}
-                        disabled={!canProceedToStep2}
-                      >
-                        Weiter
-                        <ArrowRight className="w-5 h-5" />
-                      </ProgressRingButton>
-                    </motion.div>
-                  )}
-                  
-                  {state.step === 2 && (
-                    <motion.div
-                      key="step2"
-                      initial={{ opacity: 0, rotateY: -90 }}
-                      animate={{ opacity: 1, rotateY: 0 }}
-                      exit={{ opacity: 0, rotateY: 90 }}
-                      transition={{ duration: 0.4 }}
-                      className="space-y-4"
-                    >
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium mb-2 block">Stockwerk (Von)</Label>
-                          <Select
-                            value={state.stockwerkVon}
-                            onValueChange={(v) => updateState({ stockwerkVon: v })}
-                          >
-                            <SelectTrigger className="h-12">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="eg">Erdgeschoss</SelectItem>
-                              {[1, 2, 3, 4, 5, 6].map((floor) => (
-                                <SelectItem key={floor} value={floor.toString()}>
-                                  {floor}. Stock
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Switch
-                              checked={state.liftVon}
-                              onCheckedChange={(v) => updateState({ liftVon: v })}
-                            />
-                            <Label className="text-sm">Lift vorhanden</Label>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label className="text-sm font-medium mb-2 block">Stockwerk (Nach)</Label>
-                          <Select
-                            value={state.stockwerkNach}
-                            onValueChange={(v) => updateState({ stockwerkNach: v })}
-                          >
-                            <SelectTrigger className="h-12">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="eg">Erdgeschoss</SelectItem>
-                              {[1, 2, 3, 4, 5, 6].map((floor) => (
-                                <SelectItem key={floor} value={floor.toString()}>
-                                  {floor}. Stock
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Switch
-                              checked={state.liftNach}
-                              onCheckedChange={(v) => updateState({ liftNach: v })}
-                            />
-                            <Label className="text-sm">Lift vorhanden</Label>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <Label className="text-sm font-medium mb-3 block">Zusätzliche Services</Label>
-                        <div className="grid grid-cols-2 gap-3">
-                          {[
-                            { key: "reinigung", label: "Endreinigung" },
-                            { key: "verpackung", label: "Verpackung" },
-                            { key: "moebellift", label: "Möbellift" },
-                            { key: "lagerung", label: "Lagerung" },
-                          ].map((service) => (
-                            <motion.div
-                              key={service.key}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                              className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
-                                state[service.key as keyof CalculatorState]
-                                  ? "border-primary bg-primary/5"
-                                  : "border-border hover:border-primary/50"
-                              }`}
-                              onClick={() => handleServiceToggle(service.key)}
-                            >
-                              <Switch
-                                checked={state[service.key as keyof CalculatorState] as boolean}
-                                className="pointer-events-none"
-                              />
-                              <span className="text-sm font-medium">{service.label}</span>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      {/* Price estimate display */}
-                      {priceEstimate && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200"
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm font-medium text-green-800">KI-Preisschätzung</span>
-                            <Badge className="bg-green-100 text-green-700 border-0">
-                              <Sparkles className="w-3 h-3 mr-1" />
-                              Live
-                            </Badge>
-                          </div>
-                          <div className="text-2xl font-bold text-green-900 mb-3">
-                            CHF <AnimatedPrice value={priceEstimate.min} /> – <AnimatedPrice value={priceEstimate.max} />
-                          </div>
-                          <PriceRangeBar min={priceEstimate.min} max={priceEstimate.max} />
-                        </motion.div>
-                      )}
+                      {/* Microcopy */}
+                      <p className="text-xs text-muted-foreground text-center pt-2">
+                        {currentStep.microcopy}
+                      </p>
                       
                       <div className="flex gap-3">
                         <Button
@@ -1087,24 +780,95 @@ export default function HeroAIQuoteCalculator() {
                         >
                           Zurück
                         </Button>
-                        <ProgressRingButton
-                          progress={getCompletionPercent()}
+                        <Button
                           onClick={() => goToNextStep(3)}
+                          disabled={!canProceedStep2}
+                          className="flex-1 gap-2"
                         >
-                          Weiter
+                          {currentStep.ctaText}
                           <ArrowRight className="w-5 h-5" />
-                        </ProgressRingButton>
+                        </Button>
                       </div>
                     </motion.div>
                   )}
                   
+                  {/* STEP 3 - ZUSATZSERVICES */}
                   {state.step === 3 && (
                     <motion.div
                       key="step3"
-                      initial={{ opacity: 0, rotateY: -90 }}
-                      animate={{ opacity: 1, rotateY: 0 }}
-                      exit={{ opacity: 0, rotateY: 90 }}
-                      transition={{ duration: 0.4 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <div className="space-y-3">
+                        {[
+                          { key: "reinigung", label: "Endreinigung", icon: Sparkles, desc: "Wohnung wird besenrein übergeben" },
+                          { key: "montage", label: "Möbelmontage", icon: Sofa, desc: "Auf- und Abbau Ihrer Möbel" },
+                          { key: "entsorgung", label: "Entsorgung", icon: Trash2, desc: "Alte Möbel und Sperrgut entsorgen" },
+                        ].map((service) => (
+                          <motion.div
+                            key={service.key}
+                            whileHover={{ scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
+                              state[service.key as keyof CalculatorState]
+                                ? "border-primary bg-primary/5 shadow-sm"
+                                : "border-border hover:border-primary/50"
+                            }`}
+                            onClick={() => handleServiceToggle(service.key)}
+                          >
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                              state[service.key as keyof CalculatorState]
+                                ? "bg-primary/10"
+                                : "bg-muted"
+                            }`}>
+                              <service.icon className={`w-5 h-5 ${
+                                state[service.key as keyof CalculatorState]
+                                  ? "text-primary"
+                                  : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-foreground">{service.label}</p>
+                              <p className="text-xs text-muted-foreground">{service.desc}</p>
+                            </div>
+                            <Switch
+                              checked={state[service.key as keyof CalculatorState] as boolean}
+                              className="pointer-events-none"
+                            />
+                          </motion.div>
+                        ))}
+                      </div>
+                      
+                      <div className="flex gap-3 pt-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => updateState({ step: 2 })}
+                          className="flex-1"
+                        >
+                          Zurück
+                        </Button>
+                        <Button
+                          onClick={() => goToNextStep(4)}
+                          className="flex-1 gap-2"
+                        >
+                          {currentStep.ctaText}
+                          <ArrowRight className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {/* STEP 4 - KONTAKTDATEN */}
+                  {state.step === 4 && (
+                    <motion.div
+                      key="step4"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
                       className="space-y-4"
                     >
                       <FloatingLabelInput
@@ -1113,6 +877,17 @@ export default function HeroAIQuoteCalculator() {
                         label="Vor- und Nachname"
                         icon={User}
                         isValid={state.name.length >= 2}
+                        autoFocus
+                      />
+                      
+                      <FloatingLabelInput
+                        value={state.phone}
+                        onChange={(v) => updateState({ phone: v })}
+                        label="Telefonnummer"
+                        type="tel"
+                        icon={Phone}
+                        isValid={isPhoneValid}
+                        error={state.phone.length > 0 && !isPhoneValid}
                       />
                       
                       <FloatingLabelInput
@@ -1126,73 +901,48 @@ export default function HeroAIQuoteCalculator() {
                         helpText="Ihre Offerten werden an diese E-Mail gesendet"
                       />
                       
-                      <FloatingLabelInput
-                        value={state.phone}
-                        onChange={(v) => updateState({ phone: v })}
-                        label="Telefonnummer"
-                        type="tel"
-                        icon={Phone}
-                        isValid={isPhoneValid}
-                        error={state.phone.length > 0 && !isPhoneValid}
-                      />
-                      
-                      {/* Price summary */}
-                      {priceEstimate && (
-                        <div className="bg-muted/50 rounded-xl p-4 border border-border/50">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Geschätzter Preis</span>
-                            <span className="text-lg font-bold text-foreground">
-                              CHF {priceEstimate.min.toLocaleString("de-CH")} – {priceEstimate.max.toLocaleString("de-CH")}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Security note */}
+                      {/* Privacy reassurance */}
                       <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">
-                        <Lock className="w-4 h-4 text-green-600" />
-                        <span>Ihre Daten werden SSL-verschlüsselt übertragen und nicht an Dritte weitergegeben.</span>
+                        <Lock className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        <span>{currentStep.microcopy}</span>
                       </div>
                       
                       <div className="flex gap-3">
                         <Button
                           variant="outline"
-                          onClick={() => updateState({ step: 2 })}
+                          onClick={() => updateState({ step: 3 })}
                           className="flex-1"
                         >
                           Zurück
                         </Button>
-                        <ProgressRingButton
-                          progress={getCompletionPercent()}
+                        <Button
                           onClick={handleSubmit}
-                          loading={isSubmitting}
-                          disabled={!state.name || !isEmailValid || !isPhoneValid}
+                          disabled={!canSubmit || isSubmitting}
+                          className="flex-1 gap-2"
                         >
-                          {isSubmitting ? "Wird gesendet..." : "Offerten erhalten"}
-                          {!isSubmitting && <CheckCircle2 className="w-5 h-5" />}
-                        </ProgressRingButton>
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                              Wird gesendet...
+                            </>
+                          ) : (
+                            <>
+                              {currentStep.ctaText}
+                              <CheckCircle2 className="w-5 h-5" />
+                            </>
+                          )}
+                        </Button>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-                
-                {/* 311. Keyboard hint */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1 }}
-                  className="flex items-center justify-center gap-1.5 mt-4 text-xs text-muted-foreground"
-                >
-                  <Keyboard className="w-3.5 h-3.5" />
-                  <span>Tab für nächstes Feld • Enter zum Fortfahren</span>
-                </motion.div>
               </CardContent>
             </Card>
           </motion.div>
         </div>
       </div>
       
-      {/* 313. Celebration overlay */}
+      {/* Celebration overlay */}
       <AnimatePresence>
         {showCelebration && (
           <motion.div
