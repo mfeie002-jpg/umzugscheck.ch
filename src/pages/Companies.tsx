@@ -37,6 +37,7 @@ import CompanyMatchScore from "@/components/CompanyMatchScore";
 import SmartSearchFilters from "@/components/SmartSearchFilters";
 import SavedSearches from "@/components/SavedSearches";
 import CompanyComparisonTable from "@/components/CompanyComparisonTable";
+import { useABTest } from "@/hooks/use-ab-test";
 
 interface Company {
   id: string;
@@ -107,7 +108,22 @@ const Companies = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showPriceChart, setShowPriceChart] = useState(false);
+  
+  // A/B Test for default view mode
+  const { variant: viewModeVariant, trackConversion: trackViewMode } = useABTest('company_view_mode');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  
+  // Set initial view mode based on A/B test
+  useEffect(() => {
+    if (viewModeVariant === 'variant_a') {
+      setViewMode('table');
+    }
+  }, [viewModeVariant]);
+  
+  const handleViewModeChange = (mode: 'cards' | 'table') => {
+    setViewMode(mode);
+    trackViewMode(`view_mode_${mode}`);
+  };
 
   // SEO Data
   const currentUrl = 'https://www.umzugscheck.ch/firmen/';
@@ -666,7 +682,7 @@ const Companies = () => {
                       variant={viewMode === 'cards' ? 'default' : 'ghost'}
                       size="sm"
                       className="h-8 px-3 gap-1.5"
-                      onClick={() => setViewMode('cards')}
+                      onClick={() => handleViewModeChange('cards')}
                     >
                       <LayoutGrid className="w-4 h-4" />
                       <span className="hidden lg:inline">Karten</span>
@@ -675,7 +691,7 @@ const Companies = () => {
                       variant={viewMode === 'table' ? 'default' : 'ghost'}
                       size="sm"
                       className="h-8 px-3 gap-1.5"
-                      onClick={() => setViewMode('table')}
+                      onClick={() => handleViewModeChange('table')}
                     >
                       <TableProperties className="w-4 h-4" />
                       <span className="hidden lg:inline">Tabelle</span>

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
+import { useABTest } from "@/hooks/use-ab-test";
 
 const swissPostalCodes = [
   { code: "8001", city: "Zürich" },
@@ -93,6 +94,17 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
     privacyAccepted: false,
   });
 
+  // A/B Test for submit button
+  const { variant: submitVariant, trackConversion: trackSubmit } = useABTest('calculator_submit');
+  
+  const getSubmitButtonText = () => {
+    switch (submitVariant) {
+      case 'variant_a': return 'Jetzt kostenlos Offerten erhalten';
+      case 'variant_b': return 'Angebote vergleichen';
+      default: return 'Jetzt Offerten anfordern (kostenlos)';
+    }
+  };
+
   const totalSteps = 3;
 
   const updateFormData = (field: keyof FormData, value: string | string[] | boolean) => {
@@ -145,6 +157,8 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
       ...(formData.moveDate && { date: formData.moveDate }),
       ...(formData.useVideoAI && { videoAI: "true" }),
     });
+    // Track A/B test conversion
+    trackSubmit('form_submit');
     navigate(`/umzugsofferten?${params.toString()}`);
   };
 
@@ -504,7 +518,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               className="flex-1 h-14 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-cta"
             >
               <CheckCircle className="w-5 h-5 mr-2" />
-              Jetzt Offerten anfordern (kostenlos)
+              {getSubmitButtonText()}
             </Button>
           )}
         </div>
