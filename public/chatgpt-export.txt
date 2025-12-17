@@ -1,12 +1,14 @@
 # Umzugscheck.ch - Design System & Components Export
-# Generated: 2025-12-16 (Updated)
+# Generated: 2025-12-17 (Updated)
 # This file contains the current design system and key components for review.
 # 
 # RECENT UPDATES:
-# - Funnel V3 implementation complete with consent gating
-# - Analytics event map with PII-safe payloads
-# - ConsentBanner, DebugOverlay, useRageClick hooks added
-# - 4-step guided funnel UX on /umzugsofferten
+# - CRO improvements: SEO-optimized H1, Swiss market trust signals
+# - Added "Reinigung mit Abnahmegarantie" badge (Swiss tenant trust trigger)
+# - Added "3-5 Offerten in 24-48h" expectation setting
+# - Added privacy lock icon "Daten bleiben in der Schweiz"
+# - Quick room selector (Zimmerzahl) in Step 1 for micro-conversion
+# - Changed CTA to "Preise vergleichen" (stronger action-oriented)
 
 ================================================================================
 DESIGN SYSTEM - BRAND COLORS
@@ -141,6 +143,33 @@ navLinks = [
 ]
 
 Primary CTA: "Kostenlos Offerten erhalten" → /umzugsofferten
+
+================================================================================
+HERO SECTION (CRO OPTIMIZED)
+================================================================================
+
+H1 (SEO): "Umzugsfirmen vergleichen: Der beste Deal der Schweiz."
+
+VALUE PROPOSITION:
+"Wir vergleichen 200+ Schweizer Umzugsfirmen – Sie erhalten garantiert 
+das beste Angebot zum fairsten Preis."
+
+USP BADGES:
+1. "Bis 40% sparen" (green, TrendingDown icon)
+2. "200+ Firmen" (blue/primary, Users icon)
+3. "Reinigung mit Abnahmegarantie" (amber, Sparkles icon) ← Swiss trust trigger
+
+EXPECTATION SETTING (below badges):
+- "In nur 2 Minuten" (Clock icon)
+- "3–5 Offerten in 24–48h" (green highlight)
+- "Daten bleiben in der Schweiz" (Lock icon) ← Privacy trust
+
+FORM (Desktop MultiStepCalculator):
+Step 1: Von, Nach, Zimmerzahl quick selector (1-2, 3-3.5, 4-4.5, 5+)
+Step 2: Wohnungsgrösse dropdown, Zusatzleistungen toggles
+Step 3: Kontaktdaten + Privacy consent
+
+CTA Button: "Preise vergleichen (kostenlos)"
 
 ================================================================================
 FUNNEL V3 - /umzugsofferten
