@@ -3,10 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Home, Settings, FileText, MapPin, HelpCircle, DollarSign, Award, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Download, Target } from "lucide-react";
+import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target } from "lucide-react";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
 import { ProviderManagement } from "@/components/admin/ProviderManagement";
 import { LeadManagement } from "@/components/admin/LeadManagement";
@@ -18,68 +16,6 @@ import { RevenueAnalytics } from "@/components/admin/RevenueAnalytics";
 import { LeadExport } from "@/components/admin/LeadExport";
 import { supabase } from "@/integrations/supabase/client";
 
-const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simple hardcoded admin credentials
-    if (username === "admin" && password === "passwort") {
-      sessionStorage.setItem("adminAuth", "true");
-      toast.success("Login erfolgreich");
-      onLogin();
-    } else {
-      toast.error("Ungültiger Benutzername oder Passwort");
-    }
-    
-    setLoading(false);
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Admin Login</CardTitle>
-          <CardDescription>Melden Sie sich mit Ihrem Admin-Konto an</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <Label htmlFor="username">Benutzername</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Passwort</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Passwort"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Wird geprüft..." : "Anmelden"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
 export default function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -88,18 +24,55 @@ export default function Admin() {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setAuthenticated(false);
+        navigate('/admin/login');
+      }
+    });
 
-  const checkAuth = () => {
-    const isAuth = sessionStorage.getItem("adminAuth") === "true";
-    setAuthenticated(isAuth);
-    setLoading(false);
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate('/admin/login');
+        return;
+      }
+
+      // Check if user has admin role
+      const { data: roleData, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .single();
+
+      if (error || !roleData) {
+        toast.error("Keine Admin-Berechtigung");
+        await supabase.auth.signOut();
+        navigate('/admin/login');
+        return;
+      }
+
+      setAuthenticated(true);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      navigate('/admin/login');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("adminAuth");
-    setAuthenticated(false);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     toast.success("Erfolgreich abgemeldet");
+    navigate('/admin/login');
   };
 
   if (loading) {
@@ -111,7 +84,7 @@ export default function Admin() {
   }
 
   if (!authenticated) {
-    return <AdminLogin onLogin={() => checkAuth()} />;
+    return null; // Will redirect via useEffect
   }
 
   return (
