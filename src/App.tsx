@@ -104,6 +104,29 @@ const Canton = lazy(() => import("./pages/Canton"));
 const City = lazy(() => import("./pages/City"));
 const Zug = lazy(() => import("./pages/Zug"));
 const ZugLanding = lazy(() => import("./pages/umzugsfirmen/zug"));
+const ZuerichLanding = lazy(() => import("./pages/umzugsfirmen/zuerich"));
+const BernLanding = lazy(() => import("./pages/umzugsfirmen/bern"));
+const BaselLanding = lazy(() => import("./pages/umzugsfirmen/basel"));
+const LuzernLanding = lazy(() => import("./pages/umzugsfirmen/luzern"));
+const AargauLanding = lazy(() => import("./pages/umzugsfirmen/aargau"));
+const StGallenLanding = lazy(() => import("./pages/umzugsfirmen/stgallen"));
+const ThurgauLanding = lazy(() => import("./pages/umzugsfirmen/thurgau"));
+const SolothurnLanding = lazy(() => import("./pages/umzugsfirmen/solothurn"));
+const GraubuendenLanding = lazy(() => import("./pages/umzugsfirmen/graubuenden"));
+const WallisLanding = lazy(() => import("./pages/umzugsfirmen/wallis"));
+const TessinLanding = lazy(() => import("./pages/umzugsfirmen/tessin"));
+const FribourgLanding = lazy(() => import("./pages/umzugsfirmen/fribourg"));
+const SchwyzLanding = lazy(() => import("./pages/umzugsfirmen/schwyz"));
+const GenfLanding = lazy(() => import("./pages/umzugsfirmen/genf"));
+const UriLanding = lazy(() => import("./pages/umzugsfirmen/uri"));
+const ObwaldenLanding = lazy(() => import("./pages/umzugsfirmen/obwalden"));
+const NidwaldenLanding = lazy(() => import("./pages/umzugsfirmen/nidwalden"));
+const GlarusLanding = lazy(() => import("./pages/umzugsfirmen/glarus"));
+const SchaffhausenLanding = lazy(() => import("./pages/umzugsfirmen/schaffhausen"));
+const AppenzellLanding = lazy(() => import("./pages/umzugsfirmen/appenzell"));
+const NeuenburgLanding = lazy(() => import("./pages/umzugsfirmen/neuenburg"));
+const JuraLanding = lazy(() => import("./pages/umzugsfirmen/jura"));
+const WaadtLanding = lazy(() => import("./pages/umzugsfirmen/waadt"));
 const CantonComparison = lazy(() => import("./pages/CantonComparison"));
 const DynamicCanton = lazy(() => import("./pages/DynamicCanton"));
 const RegionenOverview = lazy(() => import("./pages/Regionen"));
@@ -332,6 +355,29 @@ const App = () => (
                             <Route path="/umzugsfirmen-suche" element={<UmzugsfirmenPage />} />
                             {/* Specific canton landing pages BEFORE generic route */}
                             <Route path="/umzugsfirmen/zug" element={<ZugLanding />} />
+                            <Route path="/umzugsfirmen/zuerich" element={<ZuerichLanding />} />
+                            <Route path="/umzugsfirmen/bern" element={<BernLanding />} />
+                            <Route path="/umzugsfirmen/basel" element={<BaselLanding />} />
+                            <Route path="/umzugsfirmen/luzern" element={<LuzernLanding />} />
+                            <Route path="/umzugsfirmen/aargau" element={<AargauLanding />} />
+                            <Route path="/umzugsfirmen/stgallen" element={<StGallenLanding />} />
+                            <Route path="/umzugsfirmen/thurgau" element={<ThurgauLanding />} />
+                            <Route path="/umzugsfirmen/solothurn" element={<SolothurnLanding />} />
+                            <Route path="/umzugsfirmen/graubuenden" element={<GraubuendenLanding />} />
+                            <Route path="/umzugsfirmen/wallis" element={<WallisLanding />} />
+                            <Route path="/umzugsfirmen/tessin" element={<TessinLanding />} />
+                            <Route path="/umzugsfirmen/fribourg" element={<FribourgLanding />} />
+                            <Route path="/umzugsfirmen/schwyz" element={<SchwyzLanding />} />
+                            <Route path="/umzugsfirmen/genf" element={<GenfLanding />} />
+                            <Route path="/umzugsfirmen/uri" element={<UriLanding />} />
+                            <Route path="/umzugsfirmen/obwalden" element={<ObwaldenLanding />} />
+                            <Route path="/umzugsfirmen/nidwalden" element={<NidwaldenLanding />} />
+                            <Route path="/umzugsfirmen/glarus" element={<GlarusLanding />} />
+                            <Route path="/umzugsfirmen/schaffhausen" element={<SchaffhausenLanding />} />
+                            <Route path="/umzugsfirmen/appenzell" element={<AppenzellLanding />} />
+                            <Route path="/umzugsfirmen/neuenburg" element={<NeuenburgLanding />} />
+                            <Route path="/umzugsfirmen/jura" element={<JuraLanding />} />
+                            <Route path="/umzugsfirmen/waadt" element={<WaadtLanding />} />
                             <Route path="/umzugsfirmen/:canton" element={<CantonCompanies />} />
                             <Route path="/firmen/:id" element={<CompanyProfile />} />
                             <Route path="/firma/:slug" element={<CompanyProfile />} />
