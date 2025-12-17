@@ -45,6 +45,20 @@ const InternationalMoving = lazy(() => import("./pages/services/InternationalMov
 const MovingWithCleaning = lazy(() => import("./pages/services/MovingWithCleaning"));
 const StorageService = lazy(() => import("./pages/services/StorageService"));
 
+// Services V2 pages (unified calculator approach)
+const ReinigungV2 = lazy(() => import("./pages/services-v2/reinigung"));
+const EntsorgungV2 = lazy(() => import("./pages/services-v2/entsorgung"));
+const LagerungV2 = lazy(() => import("./pages/services-v2/lagerung"));
+const PrivatumzugV2 = lazy(() => import("./pages/services-v2/privatumzug"));
+const FirmenumzugV2 = lazy(() => import("./pages/services-v2/firmenumzug"));
+const MontageV2 = lazy(() => import("./pages/services-v2/montage"));
+const MoebelliftV2 = lazy(() => import("./pages/services-v2/moebellift"));
+const InternationalV2 = lazy(() => import("./pages/services-v2/international"));
+const PackserviceV2 = lazy(() => import("./pages/services-v2/packservice"));
+const SeniorenumzugV2 = lazy(() => import("./pages/services-v2/seniorenumzug"));
+const StudentenV2 = lazy(() => import("./pages/services-v2/studenten"));
+const SpezialtransporteV2 = lazy(() => import("./pages/services-v2/spezialtransporte"));
+
 // City pages
 const ZurichMoving = lazy(() => import("./pages/city/ZurichMoving"));
 const BernMoving = lazy(() => import("./pages/city/BernMoving"));
@@ -469,6 +483,19 @@ const App = () => (
                             <Route path="/luzern-umzug" element={<LuzernMoving />} />
                             <Route path="/service/:serviceType" element={<ServicePage />} />
                             <Route path="/services/:serviceType" element={<ServiceOptimized />} />
+                            {/* Services V2 - Unified Calculator Approach */}
+                            <Route path="/services/reinigung" element={<ReinigungV2 />} />
+                            <Route path="/services/entsorgung" element={<EntsorgungV2 />} />
+                            <Route path="/services/lagerung" element={<LagerungV2 />} />
+                            <Route path="/services/privatumzug" element={<PrivatumzugV2 />} />
+                            <Route path="/services/firmenumzug" element={<FirmenumzugV2 />} />
+                            <Route path="/services/montage" element={<MontageV2 />} />
+                            <Route path="/services/moebellift" element={<MoebelliftV2 />} />
+                            <Route path="/services/international" element={<InternationalV2 />} />
+                            <Route path="/services/packservice" element={<PackserviceV2 />} />
+                            <Route path="/services/seniorenumzug" element={<SeniorenumzugV2 />} />
+                            <Route path="/services/studenten" element={<StudentenV2 />} />
+                            <Route path="/services/spezialtransporte" element={<SpezialtransporteV2 />} />
                             <Route path="/dienstleistungen" element={<ServicesOverview />} />
                             <Route path="/dienstleistungen/privatumzug" element={<PrivateMoving />} />
                             <Route path="/dienstleistungen/firmenumzug" element={<BusinessMoving />} />
