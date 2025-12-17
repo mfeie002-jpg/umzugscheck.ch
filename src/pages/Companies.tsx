@@ -38,6 +38,7 @@ import SmartSearchFilters from "@/components/SmartSearchFilters";
 import SavedSearches from "@/components/SavedSearches";
 import CompanyComparisonTable from "@/components/CompanyComparisonTable";
 import { useABTest } from "@/hooks/use-ab-test";
+import { StickyFavoritesCTA } from "@/components/StickyFavoritesCTA";
 
 interface Company {
   id: string;
@@ -1130,6 +1131,9 @@ const Companies = () => {
           </div>
         </section>
       </main>
+      
+      {/* Sticky CTA when favorites >= 2 */}
+      <StickyFavoritesCTA />
     </div>
     </>
   );

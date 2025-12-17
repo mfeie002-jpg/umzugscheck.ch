@@ -1,44 +1,89 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, User, Shield, ArrowRight } from "lucide-react";
+import { Lock, User, Shield, ArrowRight, AlertTriangle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check if already authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Check if user has admin role
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'admin')
+          .single();
+        
+        if (roleData) {
+          navigate("/admin");
+        }
+      }
+    };
+    checkAuth();
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simple hardcoded admin check as requested
-    // NOTE: In production, this should use proper authentication via Supabase
-    if (username === "admin" && password === "passwort") {
-      // Store admin session
-      sessionStorage.setItem("adminAuth", "true");
-      
-      toast({
-        title: "Erfolgreich angemeldet",
-        description: "Willkommen im Admin-Dashboard",
+    try {
+      // Authenticate with Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      
-      navigate("/admin");
-    } else {
+
+      if (error) throw error;
+
+      if (data.user) {
+        // Check if user has admin role
+        const { data: roleData, error: roleError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', data.user.id)
+          .eq('role', 'admin')
+          .single();
+
+        if (roleError || !roleData) {
+          await supabase.auth.signOut();
+          toast({
+            title: "Zugriff verweigert",
+            description: "Sie haben keine Admin-Berechtigung.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "Erfolgreich angemeldet",
+          description: "Willkommen im Admin-Dashboard",
+        });
+        
+        navigate("/admin");
+      }
+    } catch (error: any) {
       toast({
         title: "Anmeldefehler",
-        description: "Ungültiger Benutzername oder Passwort",
+        description: error.message || "Ungültige E-Mail oder Passwort",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -58,15 +103,15 @@ const AdminLogin = () => {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username">Benutzername</Label>
+              <Label htmlFor="email">E-Mail</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder="Benutzername eingeben"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
                   required
                 />

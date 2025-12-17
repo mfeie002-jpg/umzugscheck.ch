@@ -775,6 +775,51 @@ const Canton = () => {
           </div>
         </section>
 
+        {/* Internal Links - Services & Other Regions */}
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl font-bold mb-8 text-center">Weitere Services & Regionen</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Related Services */}
+                <Card className="p-5">
+                  <h3 className="font-bold text-lg mb-4">Services in {info.name}</h3>
+                  <div className="space-y-2">
+                    <Link to="/umzug" className="block text-primary hover:underline">Privatumzug</Link>
+                    <Link to="/firmenumzug" className="block text-primary hover:underline">Firmenumzug</Link>
+                    <Link to="/reinigung" className="block text-primary hover:underline">Endreinigung</Link>
+                    <Link to="/entsorgung" className="block text-primary hover:underline">Entsorgung</Link>
+                    <Link to="/lagerung" className="block text-primary hover:underline">Lagerung</Link>
+                  </div>
+                </Card>
+
+                {/* Popular Cantons */}
+                <Card className="p-5">
+                  <h3 className="font-bold text-lg mb-4">Beliebte Regionen</h3>
+                  <div className="space-y-2">
+                    <Link to="/umzug/zuerich" className="block text-primary hover:underline">Umzug Zürich</Link>
+                    <Link to="/umzug/bern" className="block text-primary hover:underline">Umzug Bern</Link>
+                    <Link to="/umzug/basel-stadt" className="block text-primary hover:underline">Umzug Basel</Link>
+                    <Link to="/umzug/aargau" className="block text-primary hover:underline">Umzug Aargau</Link>
+                    <Link to="/umzug/luzern" className="block text-primary hover:underline">Umzug Luzern</Link>
+                  </div>
+                </Card>
+
+                {/* Quick Links */}
+                <Card className="p-5">
+                  <h3 className="font-bold text-lg mb-4">Nützliche Links</h3>
+                  <div className="space-y-2">
+                    <Link to="/umzugsofferten" className="block text-primary hover:underline">Offerten erhalten</Link>
+                    <Link to="/umzugsfirmen" className="block text-primary hover:underline">Alle Firmen vergleichen</Link>
+                    <Link to="/ratgeber/umzugskosten" className="block text-primary hover:underline">Umzugskosten Ratgeber</Link>
+                    <Link to="/ratgeber/checkliste" className="block text-primary hover:underline">Umzugscheckliste</Link>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ */}
         <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">
