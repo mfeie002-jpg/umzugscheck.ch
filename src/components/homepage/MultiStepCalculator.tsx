@@ -111,9 +111,9 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
   
   const getSubmitButtonText = () => {
     switch (submitVariant) {
-      case 'variant_a': return 'Jetzt kostenlos Offerten erhalten';
-      case 'variant_b': return 'Angebote vergleichen';
-      default: return 'Jetzt Offerten anfordern (kostenlos)';
+      case 'variant_a': return 'Jetzt Preise vergleichen';
+      case 'variant_b': return 'Kostenlos Angebote erhalten';
+      default: return 'Preise vergleichen (kostenlos)';
     }
   };
 
@@ -265,6 +265,30 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                     <option key={`to-${p.code}`} value={`${p.code} ${p.city}`} />
                   ))}
                 </datalist>
+
+                {/* Quick room selector for micro-conversion */}
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Home className="w-4 h-4 text-muted-foreground" />
+                    Grösse (optional)
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {["1-2", "3-3.5", "4-4.5", "5+"].map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => updateFormData("apartmentSize", size)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                          formData.apartmentSize === size
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                        }`}
+                      >
+                        {size} Zi.
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}
