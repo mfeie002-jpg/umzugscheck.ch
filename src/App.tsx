@@ -103,6 +103,7 @@ const UmzugsfirmenPage = lazy(() => import("./pages/UmzugsfirmenPage"));
 const Canton = lazy(() => import("./pages/Canton"));
 const City = lazy(() => import("./pages/City"));
 const Zug = lazy(() => import("./pages/Zug"));
+const ZugLanding = lazy(() => import("./pages/umzugsfirmen/zug"));
 const CantonComparison = lazy(() => import("./pages/CantonComparison"));
 const DynamicCanton = lazy(() => import("./pages/DynamicCanton"));
 const RegionenOverview = lazy(() => import("./pages/Regionen"));
@@ -329,6 +330,8 @@ const App = () => (
                             <Route path="/umzugsfirmen" element={<Companies />} />
                             <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
                             <Route path="/umzugsfirmen-suche" element={<UmzugsfirmenPage />} />
+                            {/* Specific canton landing pages BEFORE generic route */}
+                            <Route path="/umzugsfirmen/zug" element={<ZugLanding />} />
                             <Route path="/umzugsfirmen/:canton" element={<CantonCompanies />} />
                             <Route path="/firmen/:id" element={<CompanyProfile />} />
                             <Route path="/firma/:slug" element={<CompanyProfile />} />
