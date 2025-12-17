@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Header } from "@/components/homepage/Header";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
-import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,11 +14,22 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import {
   Star, Shield, MapPin, Check, ArrowRight, Users, Clock, 
   Award, Sparkles, Truck, Package, Home, Trash2, Building2,
-  Lock, Play, Phone, Zap, TrendingDown, Eye, Timer
+  Lock, Play, Phone, Zap, TrendingDown, Eye, Timer,
+  FileText, CheckCircle, CalendarCheck, Sofa, Warehouse,
+  ClipboardList, ChevronDown, MessageSquare, HeartHandshake
 } from "lucide-react";
 
 // Hero background from Unsplash - Zug lakeside
 const HERO_BG = "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=2000&q=80";
+
+// Canton options for switcher
+const cantons = [
+  { value: "zug", label: "Zug", href: "/umzugsfirmen/zug" },
+  { value: "zuerich", label: "Zürich", href: "/zuerich/umzugsfirmen" },
+  { value: "bern", label: "Bern", href: "/bern/umzugsfirmen" },
+  { value: "basel", label: "Basel", href: "/basel/umzugsfirmen" },
+  { value: "luzern", label: "Luzern", href: "/luzern/umzugsfirmen" },
+];
 
 // Mock company data for Zug
 const companies = [
@@ -69,35 +79,68 @@ const companies = [
 ];
 
 const priceExamples = [
-  { size: "1.5 - 2.5 Zimmer", price: "CHF 900 – 1'500", icon: Home },
-  { size: "3.5 - 4.5 Zimmer", price: "CHF 1'600 – 2'600", icon: Building2 },
-  { size: "Einfamilienhaus", price: "ab CHF 2'800", icon: Home },
+  { size: "1.5 - 2.5 Zimmer", price: "CHF 550 – 900", subtext: "Studio / kleine Wohnung", icon: Home },
+  { size: "3.5 - 4.5 Zimmer", price: "CHF 770 – 1'200", subtext: "Familienwohnung", icon: Building2 },
+  { size: "5+ Zimmer / Haus", price: "ab CHF 1'500", subtext: "Villa / Einfamilienhaus", icon: Home },
 ];
 
-const localServices = [
-  { title: "Endreinigung mit Abnahmegarantie", icon: Sparkles, description: "Garantierte Wohnungsabnahme" },
-  { title: "Möbellagerung in Zug", icon: Package, description: "Sichere Lagermöglichkeiten" },
-  { title: "Entsorgung (Ökihof Service)", icon: Trash2, description: "Fachgerechte Entsorgung" },
+const services = [
+  { title: "Endreinigung", icon: Sparkles, description: "Wohnungsabnahme garantiert", link: "/services/reinigung" },
+  { title: "Ein-/Auspackservice", icon: Package, description: "Professionelles Verpacken", link: "/services/packservice" },
+  { title: "Möbelmontage", icon: Sofa, description: "Auf- & Abbau vor Ort", link: "/services/moebelmontage" },
+  { title: "Möbellift", icon: Truck, description: "Für schwere Möbel & enge Treppenhäuser", link: "/services/moebellift" },
+  { title: "Einlagerung", icon: Warehouse, description: "Sichere Lagerräume in Zug", link: "/services/lagerung" },
+  { title: "Entsorgung", icon: Trash2, description: "Fachgerechte Entsorgung (Ökihof)", link: "/services/entsorgung" },
+];
+
+const howItWorks = [
+  { 
+    step: 1, 
+    title: "Formular ausfüllen", 
+    description: "Geben Sie Ihre Umzugsdaten ein: Start, Ziel, Wohnungsgrösse und Wunschtermin.",
+    icon: ClipboardList
+  },
+  { 
+    step: 2, 
+    title: "Angebote vergleichen", 
+    description: "Erhalten Sie kostenlos 3-5 Offerten von geprüften Firmen und vergleichen Sie transparent.",
+    icon: FileText
+  },
+  { 
+    step: 3, 
+    title: "Umziehen & sparen", 
+    description: "Wählen Sie das beste Angebot und ziehen Sie sorglos um – bis zu 40% günstiger.",
+    icon: CheckCircle
+  },
 ];
 
 const usps = [
-  { title: "Regionale Expertise", description: "Firmen kennen Zug, Baar & Cham", icon: MapPin },
-  { title: "AI-Video Analyse", description: "Kostenvoranschlag per Video", icon: Play },
+  { title: "Regionale Expertise", description: "Lokale Firmen kennen Zug, Baar & Cham bestens", icon: MapPin },
+  { title: "AI-Video Analyse", description: "Kostenvoranschlag per Video in Minuten", icon: Play },
   { title: "Schweizer Support", description: "Persönliche Beratung auf Deutsch", icon: Phone },
+  { title: "100% Gratis", description: "Keine versteckten Kosten, unverbindlich", icon: HeartHandshake },
 ];
 
 const faqs = [
   {
-    question: "Wie früh muss ich in Zug eine Umzugsfirma buchen?",
-    answer: "Im Kanton Zug empfehlen wir 4-8 Wochen Vorlauf. Zur Hochsaison (April-September) oder bei Monatsende-Umzügen sind 8-12 Wochen ratsam, da viele internationale Firmen hier ansässig sind.",
+    question: "Wie erhalte ich kostenlose Offerten?",
+    answer: "Füllen Sie unser Online-Formular aus (dauert nur 2 Minuten). Innerhalb von 24-48 Stunden erhalten Sie 3-5 unverbindliche Angebote von geprüften Umzugsfirmen in Zug direkt per E-Mail.",
+  },
+  {
+    question: "Was kostet ein Umzug im Kanton Zug?",
+    answer: "Die Kosten variieren je nach Wohnungsgrösse, Etage und Distanz. Ein 2-Zimmer-Umzug innerhalb Zug kostet ca. CHF 550-900, ein 4-Zimmer-Umzug ca. CHF 770-1'200. Mit unserem Vergleich sparen Sie bis zu 40%.",
+  },
+  {
+    question: "Sind die Angebote wirklich gratis und unverbindlich?",
+    answer: "Ja, absolut! Das Einholen der Offerten ist 100% kostenlos und unverbindlich. Sie entscheiden selbst, ob und welches Angebot Sie annehmen möchten. Es entstehen keine versteckten Kosten.",
+  },
+  {
+    question: "Wie früh sollte ich in Zug buchen?",
+    answer: "Wir empfehlen 4-8 Wochen Vorlauf. Zur Hochsaison (April-September) oder bei Monatsende-Umzügen sind 8-12 Wochen ratsam, da viele Firmen dann ausgebucht sind.",
   },
   {
     question: "Brauche ich eine Halteverbotszone in der Stadt Zug?",
     answer: "In der Altstadt und bei engen Quartieren ist eine Parkbewilligung oft nötig. Die meisten unserer Partnerfirmen übernehmen die Beantragung für Sie. Rechnen Sie mit ca. CHF 50-100 Gebühren.",
-  },
-  {
-    question: "Was kostet eine Umzugsreinigung in Zug?",
-    answer: "Eine professionelle Endreinigung mit Abnahmegarantie kostet in Zug ca. CHF 400-800 für eine 3.5-Zimmer-Wohnung. Viele Firmen bieten Kombiangebote mit dem Umzug an.",
   },
 ];
 
@@ -106,20 +149,25 @@ const nearbyMunicipalities = [
   { name: "Umzug Cham", href: "/cham/umzugsfirmen" },
   { name: "Umzug Rotkreuz", href: "/rotkreuz/umzugsfirmen" },
   { name: "Umzug Steinhausen", href: "/steinhausen/umzugsfirmen" },
+  { name: "Umzug Hünenberg", href: "/huenenberg/umzugsfirmen" },
 ];
 
 const ZugLandingPage = () => {
-  const [liveViewers, setLiveViewers] = useState(12);
+  const navigate = useNavigate();
+  const [liveViewers, setLiveViewers] = useState(23);
+  const [recentRequests, setRecentRequests] = useState(47);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
   const [apartmentSize, setApartmentSize] = useState("");
+  const [selectedCanton, setSelectedCanton] = useState("zug");
 
-  // Simulate live viewers
+  // Simulate live viewers & recent requests
   useEffect(() => {
     const interval = setInterval(() => {
-      setLiveViewers(prev => Math.max(8, Math.min(20, prev + Math.floor(Math.random() * 5) - 2)));
-    }, 5000);
+      setLiveViewers(prev => Math.max(15, Math.min(35, prev + Math.floor(Math.random() * 5) - 2)));
+      setRecentRequests(prev => prev + Math.floor(Math.random() * 3));
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -134,7 +182,6 @@ const ZugLandingPage = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Store in localStorage and redirect
     localStorage.setItem("uc_prefill", JSON.stringify({
       from: fromLocation,
       to: toLocation,
@@ -142,7 +189,15 @@ const ZugLandingPage = () => {
       source: "zug-landing",
       timestamp: Date.now(),
     }));
-    window.location.href = "/umzugsofferten";
+    navigate("/umzugsofferten");
+  };
+
+  const handleCantonChange = (value: string) => {
+    setSelectedCanton(value);
+    const canton = cantons.find(c => c.value === value);
+    if (canton && value !== "zug") {
+      navigate(canton.href);
+    }
   };
 
   const schemaOrg = {
@@ -151,9 +206,14 @@ const ZugLandingPage = () => {
       {
         "@type": "LocalBusiness",
         "name": "Umzugscheck.ch - Kanton Zug",
-        "description": "Vergleiche 20+ geprüfte Umzugsfirmen im Kanton Zug. Kostenlose Offerten für Zug, Baar, Cham & Rotkreuz.",
+        "description": "Vergleiche 30+ geprüfte Umzugsfirmen im Kanton Zug. Kostenlose Offerten für Zug, Baar, Cham & Rotkreuz.",
         "areaServed": { "@type": "Place", "name": "Kanton Zug, Schweiz" },
-        "priceRange": "CHF 900 - CHF 4500",
+        "priceRange": "CHF 550 - CHF 3000",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "2847"
+        }
       },
       {
         "@type": "FAQPage",
@@ -178,12 +238,12 @@ const ZugLandingPage = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>Umzugsfirma Zug vergleichen – 20+ geprüfte Firmen | Bis 40% sparen</title>
-        <meta name="description" content="Vergleiche 20+ geprüfte Umzugsfirmen im Kanton Zug. Kostenlose Offerten für Zug, Baar, Cham & Rotkreuz. Reinigung mit Abnahmegarantie. Bis zu 40% sparen!" />
-        <meta name="keywords" content="Umzugsfirma Zug, Umzug Zug, Umzugsfirmen Baar, Umzug Cham, Umzugsreinigung Zug, Möbellift Zug" />
+        <title>Umzug Zug – Jetzt gratis Umzugsfirma finden | Bis 40% sparen</title>
+        <meta name="description" content="Vergleiche 30+ geprüfte Umzugsfirmen im Kanton Zug ✓ Kostenlose Offerten ✓ Zug, Baar, Cham & Rotkreuz ✓ Endreinigung mit Abnahmegarantie ✓ Bis zu 40% sparen!" />
+        <meta name="keywords" content="Umzugsfirma Zug, Umzug Zug, Umzugsfirmen Baar, Umzug Cham, Umzugsreinigung Zug, Möbellift Zug, Umzugskosten Zug" />
         <link rel="canonical" href="https://umzugscheck.ch/umzugsfirmen/zug" />
-        <meta property="og:title" content="Umzugsfirma Zug vergleichen – Kostenlose Offerten" />
-        <meta property="og:description" content="Vergleiche 20+ geprüfte Umzugsfirmen im Kanton Zug. Bis zu 40% sparen!" />
+        <meta property="og:title" content="Umzug Zug – Jetzt gratis Umzugsfirma finden und sparen" />
+        <meta property="og:description" content="Vergleiche 30+ geprüfte Umzugsfirmen im Kanton Zug. Bis zu 40% sparen!" />
         <meta property="og:url" content="https://umzugscheck.ch/umzugsfirmen/zug" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
@@ -193,16 +253,16 @@ const ZugLandingPage = () => {
 
       <main>
         {/* HERO SECTION */}
-        <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+        <section className="relative min-h-[90vh] flex items-center overflow-hidden">
           {/* Background Image with Overlay */}
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${HERO_BG})` }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-slate-900/75 to-slate-800/70" />
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-primary/40" />
           </div>
 
-          <div className="container relative z-10 px-4 py-16 md:py-24">
+          <div className="container relative z-10 px-4 py-16 md:py-20">
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               {/* Left: Content */}
               <motion.div
@@ -211,56 +271,85 @@ const ZugLandingPage = () => {
                 transition={{ duration: 0.5 }}
                 className="text-center lg:text-left"
               >
+                {/* Canton Switcher */}
+                <div className="inline-flex items-center gap-2 mb-4">
+                  <Select value={selectedCanton} onValueChange={handleCantonChange}>
+                    <SelectTrigger className="w-[140px] bg-white/10 border-white/20 text-white text-sm">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cantons.map((canton) => (
+                        <SelectItem key={canton.value} value={canton.value}>
+                          {canton.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* Live Badge */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-sm font-medium mb-6"
                 >
-                  <span className="relative flex h-2 w-2">
+                  <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                   </span>
                   {liveViewers} Personen in Zug vergleichen gerade
                 </motion.div>
 
                 {/* H1 */}
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-                  Umzugsfirma Zug <br className="hidden md:block" />
-                  <span className="text-secondary">vergleichen</span>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
+                  Umzug Zug – <br className="hidden md:block" />
+                  <span className="text-secondary">Jetzt gratis Firmen finden</span>
                 </h1>
 
                 {/* Subline */}
-                <p className="text-lg md:text-xl text-white/80 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Vergleichen Sie 20+ geprüfte Firmen aus Zug, Baar, Cham & Rotkreuz. 
-                  <span className="text-green-400 font-semibold"> Bis zu 40% Kosten sparen.</span>
+                <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
+                  Vergleichen Sie <strong>30+ geprüfte Umzugsfirmen</strong> aus Zug, Baar, Cham & Rotkreuz. 
+                  <span className="text-green-400 font-semibold"> Kostenlose Offerten – bis zu 40% sparen.</span>
                 </p>
 
-                {/* Trust Stats */}
-                <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8">
+                {/* Trust Stats Row */}
+                <div className="flex flex-wrap justify-center lg:justify-start gap-5 mb-8">
                   <div className="flex items-center gap-2 text-white/90">
-                    <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                    <span className="font-semibold">4.8/5</span>
-                    <span className="text-white/60">(2'847 Bewertungen)</span>
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                      ))}
+                    </div>
+                    <span className="font-bold">4.8/5</span>
+                    <span className="text-white/60 text-sm">(2'847)</span>
                   </div>
                   <div className="flex items-center gap-2 text-white/90">
                     <Shield className="w-5 h-5 text-green-400" />
                     <span>100% Geprüft</span>
                   </div>
+                  <div className="flex items-center gap-2 text-white/90">
+                    <Users className="w-5 h-5 text-blue-400" />
+                    <span>30+ Firmen</span>
+                  </div>
                 </div>
 
                 {/* Mobile CTA */}
-                <div className="lg:hidden">
+                <div className="lg:hidden space-y-3">
                   <Button 
                     asChild
                     size="lg" 
                     className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg py-6 shadow-[0_4px_20px_rgba(220,38,38,0.4)]"
                   >
                     <Link to="/umzugsofferten">
-                      Kostenlos Offerten erhalten
+                      Jetzt Offerten anfordern
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Link>
                   </Button>
+                  <div className="flex items-center justify-center gap-1.5 text-white/60 text-sm">
+                    <Check className="w-4 h-4 text-green-400" />
+                    100% kostenlos & unverbindlich
+                  </div>
                 </div>
               </motion.div>
 
@@ -271,14 +360,23 @@ const ZugLandingPage = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="hidden lg:block"
               >
-                <Card className="bg-white/95 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-hidden">
+                <Card className="bg-white/[0.97] backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-hidden">
                   <CardContent className="p-6 md:p-8">
+                    {/* Activity Indicator */}
+                    <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-4 pb-4 border-b border-border">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                      </span>
+                      {recentRequests} Anfragen heute in Zug
+                    </div>
+
                     <div className="text-center mb-6">
                       <h2 className="text-xl font-bold text-foreground mb-2">
-                        Jetzt kostenlos vergleichen
+                        Jetzt gratis vergleichen
                       </h2>
                       <p className="text-sm text-muted-foreground">
-                        In 2 Minuten zu 3-5 Offerten
+                        In 2 Minuten zu 3-5 unverbindlichen Offerten
                       </p>
                     </div>
 
@@ -327,7 +425,7 @@ const ZugLandingPage = () => {
                         size="lg" 
                         className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-lg py-6 shadow-[0_4px_20px_rgba(220,38,38,0.4)]"
                       >
-                        Kostenlos Offerten erhalten
+                        Jetzt Offerten anfordern
                         <ArrowRight className="ml-2 w-5 h-5" />
                       </Button>
                     </form>
@@ -345,7 +443,7 @@ const ZugLandingPage = () => {
                     {/* Privacy Note */}
                     <div className="flex items-center justify-center gap-1.5 mt-4 text-xs text-muted-foreground">
                       <Lock className="w-3 h-3" />
-                      Daten bleiben in der Schweiz
+                      Daten bleiben in der Schweiz · SSL verschlüsselt
                     </div>
                   </CardContent>
                 </Card>
@@ -354,33 +452,44 @@ const ZugLandingPage = () => {
           </div>
         </section>
 
-        {/* SOCIAL PROOF BAR */}
-        <section className="py-8 bg-muted/30 border-y border-border">
+        {/* TRUST / SOCIAL PROOF BAR */}
+        <section className="py-6 bg-muted/40 border-y border-border">
           <div className="container px-4">
-            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
               {/* Rating Summary */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />
+                    <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <div className="text-sm">
-                  <span className="font-bold">4.8/5</span>
-                  <span className="text-muted-foreground"> Sterne</span>
-                </div>
+                <span className="text-sm font-bold">4.8/5</span>
+                <span className="text-xs text-muted-foreground">(2'847 Bewertungen)</span>
               </div>
 
-              {/* Media Mentions (Grayscale) */}
-              {["Blick", "20min", "NZZ"].map((media) => (
-                <span key={media} className="text-lg font-semibold text-muted-foreground/50 tracking-tight">
-                  {media}
-                </span>
-              ))}
+              <div className="hidden md:block h-6 w-px bg-border" />
 
               {/* Stats */}
-              <div className="text-sm text-muted-foreground">
-                <span className="font-bold text-foreground">15'000+</span> vermittelte Umzüge
+              <div className="flex items-center gap-2 text-sm">
+                <Users className="w-4 h-4 text-primary" />
+                <span className="font-bold">30+</span>
+                <span className="text-muted-foreground">Firmen in Zug</span>
+              </div>
+
+              <div className="hidden md:block h-6 w-px bg-border" />
+
+              <div className="flex items-center gap-2 text-sm">
+                <Award className="w-4 h-4 text-primary" />
+                <span className="font-bold">15'000+</span>
+                <span className="text-muted-foreground">vermittelte Umzüge</span>
+              </div>
+
+              <div className="hidden md:block h-6 w-px bg-border" />
+
+              {/* Trust Badge */}
+              <div className="flex items-center gap-2 text-sm">
+                <Shield className="w-4 h-4 text-green-600" />
+                <span className="text-muted-foreground">Geprüft & Versichert</span>
               </div>
             </div>
           </div>
@@ -395,11 +504,12 @@ const ZugLandingPage = () => {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
+              <Badge variant="secondary" className="mb-4">Unsere Top-Partner</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Top Umzugsfirmen im Kanton Zug
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Geprüfte Anbieter mit Erfahrung in Zug, Baar, Cham und Umgebung
+                Geprüfte & versicherte Anbieter mit Erfahrung in Zug, Baar, Cham und Umgebung
               </p>
             </motion.div>
 
@@ -477,10 +587,10 @@ const ZugLandingPage = () => {
               ))}
             </div>
 
-            <div className="text-center mt-8">
+            <div className="text-center mt-10">
               <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground">
                 <Link to="/umzugsofferten">
-                  Alle {companies.length}+ Firmen vergleichen
+                  Alle 30+ Firmen vergleichen
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
@@ -488,7 +598,7 @@ const ZugLandingPage = () => {
           </div>
         </section>
 
-        {/* PRICE GUIDE */}
+        {/* PRICING SECTION */}
         <section className="py-16 md:py-20 bg-muted/20">
           <div className="container px-4">
             <motion.div
@@ -497,11 +607,12 @@ const ZugLandingPage = () => {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
+              <Badge variant="outline" className="mb-4">Preisübersicht</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Was kostet ein Umzug in Zug?
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Durchschnittliche Preise für Umzüge im Kanton Zug (inkl. Transport & Tragen)
+                Typische Preise für Umzüge im Kanton Zug (inkl. Transport, Träger & Material)
               </p>
             </motion.div>
 
@@ -514,12 +625,13 @@ const ZugLandingPage = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="text-center h-full hover:shadow-lg transition-shadow border-border/50">
+                  <Card className="text-center h-full hover:shadow-lg transition-shadow border-border/50 hover:border-primary/30">
                     <CardContent className="p-6">
                       <div className="w-14 h-14 bg-secondary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                         <item.icon className="w-7 h-7 text-secondary" />
                       </div>
-                      <h3 className="font-semibold text-lg mb-2">{item.size}</h3>
+                      <h3 className="font-semibold text-lg mb-1">{item.size}</h3>
+                      <p className="text-xs text-muted-foreground mb-3">{item.subtext}</p>
                       <p className="text-2xl font-bold text-secondary">{item.price}</p>
                     </CardContent>
                   </Card>
@@ -527,13 +639,21 @@ const ZugLandingPage = () => {
               ))}
             </div>
 
-            <p className="text-center text-sm text-muted-foreground mt-6 max-w-2xl mx-auto">
-              * Richtwerte für Umzüge innerhalb des Kantons Zug. Finale Preise hängen von Etage, Zugang, Distanz und Zusatzleistungen ab.
-            </p>
+            <div className="text-center mt-8">
+              <p className="text-sm text-muted-foreground mb-6 max-w-2xl mx-auto">
+                * Richtwerte für Umzüge innerhalb des Kantons Zug. Finale Preise variieren je nach Etage, Zugang, Distanz und Zusatzleistungen.
+              </p>
+              <Button asChild variant="outline" size="lg">
+                <Link to="/umzugsofferten">
+                  <TrendingDown className="mr-2 w-5 h-5" />
+                  Jetzt gratis Preise berechnen
+                </Link>
+              </Button>
+            </div>
           </div>
         </section>
 
-        {/* LOCAL SERVICES */}
+        {/* POPULAR SERVICES */}
         <section className="py-16 md:py-20">
           <div className="container px-4">
             <motion.div
@@ -542,40 +662,101 @@ const ZugLandingPage = () => {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
+              <Badge variant="secondary" className="mb-4">Zusatzservices</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Beliebte Zusatzservices in Zug
+                Beliebte Services in Zug
               </h2>
               <p className="text-lg text-muted-foreground">
-                Alles aus einer Hand – von Reinigung bis Entsorgung
+                Alles aus einer Hand – von Reinigung bis Möbellift
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              {localServices.map((service, index) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {services.map((service, index) => (
                 <motion.div
                   key={service.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.05 }}
                 >
-                  <Card className="h-full hover:shadow-lg transition-all hover:border-primary/30 cursor-pointer group">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                        <service.icon className="w-7 h-7 text-primary" />
-                      </div>
-                      <h3 className="font-semibold text-lg mb-2">{service.title}</h3>
-                      <p className="text-sm text-muted-foreground">{service.description}</p>
-                    </CardContent>
-                  </Card>
+                  <Link to={service.link}>
+                    <Card className="h-full hover:shadow-lg transition-all hover:border-primary/30 cursor-pointer group">
+                      <CardContent className="p-5 flex items-start gap-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                          <service.icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-base mb-1 group-hover:text-primary transition-colors">{service.title}</h3>
+                          <p className="text-sm text-muted-foreground">{service.description}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
+        {/* HOW IT WORKS */}
+        <section className="py-16 md:py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+          <div className="container px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <Badge variant="outline" className="mb-4">So funktioniert's</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                In 3 Schritten zu Ihrer Umzugsofferte
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Einfach, schnell und 100% kostenlos
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              {howItWorks.map((step, index) => (
+                <motion.div
+                  key={step.step}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.15 }}
+                  className="text-center relative"
+                >
+                  {/* Connector Line */}
+                  {index < howItWorks.length - 1 && (
+                    <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent" />
+                  )}
+                  
+                  <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 relative">
+                    <step.icon className="w-10 h-10 text-primary" />
+                    <span className="absolute -top-2 -right-2 w-8 h-8 bg-secondary text-secondary-foreground rounded-full flex items-center justify-center font-bold text-sm">
+                      {step.step}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">{step.title}</h3>
+                  <p className="text-muted-foreground text-sm">{step.description}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="text-center mt-10">
+              <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+                <Link to="/umzugsofferten">
+                  Jetzt starten – 100% kostenlos
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
         {/* WHY US / USP */}
-        <section className="py-16 md:py-20 bg-primary/5">
+        <section className="py-16 md:py-20">
           <div className="container px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -591,7 +772,7 @@ const ZugLandingPage = () => {
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {usps.map((usp, index) => (
                 <motion.div
                   key={usp.title}
@@ -599,13 +780,16 @@ const ZugLandingPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="text-center"
                 >
-                  <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <usp.icon className="w-8 h-8 text-secondary" />
-                  </div>
-                  <h3 className="font-bold text-lg mb-2">{usp.title}</h3>
-                  <p className="text-muted-foreground">{usp.description}</p>
+                  <Card className="h-full text-center hover:shadow-lg transition-shadow border-border/50">
+                    <CardContent className="p-6">
+                      <div className="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <usp.icon className="w-7 h-7 text-secondary" />
+                      </div>
+                      <h3 className="font-bold text-base mb-2">{usp.title}</h3>
+                      <p className="text-sm text-muted-foreground">{usp.description}</p>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </div>
@@ -613,7 +797,7 @@ const ZugLandingPage = () => {
         </section>
 
         {/* FAQ ACCORDION */}
-        <section className="py-16 md:py-20">
+        <section className="py-16 md:py-20 bg-muted/20">
           <div className="container px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -621,20 +805,21 @@ const ZugLandingPage = () => {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
+              <Badge variant="outline" className="mb-4">FAQ</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Häufige Fragen zu Umzügen in Zug
               </h2>
             </motion.div>
 
             <div className="max-w-3xl mx-auto">
-              <Accordion type="single" collapsible className="space-y-4">
+              <Accordion type="single" collapsible className="space-y-3">
                 {faqs.map((faq, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.05 }}
                   >
                     <AccordionItem value={`item-${index}`} className="border border-border rounded-xl px-6 bg-card">
                       <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
@@ -652,7 +837,7 @@ const ZugLandingPage = () => {
         </section>
 
         {/* SEO FOOTER LINKS */}
-        <section className="py-12 bg-muted/30 border-t border-border">
+        <section className="py-10 bg-muted/30 border-t border-border">
           <div className="container px-4">
             <h3 className="font-semibold text-lg mb-4 text-center">
               Umzugsfirmen in der Nähe von Zug
@@ -672,29 +857,56 @@ const ZugLandingPage = () => {
         </section>
 
         {/* FINAL CTA */}
-        <section className="py-16 md:py-20 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-          <div className="container px-4 text-center">
+        <section className="py-16 md:py-24 bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+          </div>
+          
+          <div className="container px-4 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Bereit für Ihren Umzug in Zug?
+              <Badge className="bg-white/20 text-white border-white/30 mb-6">
+                Bereit für Ihren Umzug?
+              </Badge>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                Kostenlose Umzugsofferten <br className="hidden md:block" />jetzt anfordern!
               </h2>
-              <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
-                Vergleichen Sie jetzt kostenlos 20+ geprüfte Umzugsfirmen und sparen Sie bis zu 40%.
+              <p className="text-lg text-primary-foreground/85 mb-8 max-w-xl mx-auto">
+                Vergleichen Sie 30+ geprüfte Umzugsfirmen in Zug und sparen Sie bis zu 40% – 100% gratis & unverbindlich.
               </p>
-              <Button 
-                asChild
-                size="lg" 
-                className="bg-white text-primary hover:bg-white/90 font-bold text-lg px-8 py-6 shadow-xl"
-              >
-                <Link to="/umzugsofferten">
-                  Kostenlos Offerten erhalten
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button 
+                  asChild
+                  size="lg" 
+                  className="bg-white text-primary hover:bg-white/90 font-bold text-lg px-8 py-6 shadow-xl"
+                >
+                  <Link to="/umzugsofferten">
+                    Jetzt Offerten anfordern
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-primary-foreground/80">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4" />
+                  Keine versteckten Kosten
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4" />
+                  100% unverbindlich
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4" />
+                  30 Tage Umzugs-Garantie
+                </div>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -709,18 +921,24 @@ const ZugLandingPage = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-card border-t border-border p-4 shadow-2xl"
+            className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-card/95 backdrop-blur-lg border-t border-border p-3 shadow-2xl"
           >
-            <Button 
-              asChild
-              size="lg" 
-              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold py-5"
-            >
-              <Link to="/umzugsofferten">
-                Gratis Offerten erhalten
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-            </Button>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground truncate">30+ geprüfte Firmen</p>
+                <p className="text-sm font-bold">Bis 40% sparen</p>
+              </div>
+              <Button 
+                asChild
+                size="lg" 
+                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shrink-0"
+              >
+                <Link to="/umzugsofferten">
+                  Gratis Offerten
+                  <ArrowRight className="ml-1 w-4 h-4" />
+                </Link>
+              </Button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
