@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight, Clock } from "lucide-react";
+import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight, Clock, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { MultiStepCalculator } from "./MultiStepCalculator";
@@ -64,14 +64,14 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <UrgencyBadge variant="time" className="hidden sm:inline-flex" />
               </motion.div>
 
-              {/* Headline */}
+              {/* Headline - SEO optimized */}
               <div className="space-y-1">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1]">
-                  Der beste Deal
+                  Umzugsfirmen vergleichen:
                 </h1>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1]">
-                  der ganzen <span className="text-primary">Schweiz.</span>
-                </h1>
+                <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1]">
+                  Der beste Deal der <span className="text-primary">Schweiz.</span>
+                </span>
               </div>
 
               {/* Value Proposition */}
@@ -80,7 +80,7 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 Sie erhalten garantiert das beste Angebot zum fairsten Preis.
               </p>
 
-              {/* USP Pills */}
+              {/* USP Pills - Including Cleaning Guarantee for Swiss market */}
               <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
                 <span className="inline-flex items-center gap-1.5 text-sm bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full font-medium">
                   <TrendingDown className="w-3.5 h-3.5" />
@@ -90,9 +90,9 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                   <Users className="w-3.5 h-3.5" />
                   200+ Firmen
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-sm bg-secondary/10 text-secondary px-3 py-1.5 rounded-full font-medium">
-                  <Video className="w-3.5 h-3.5" />
-                  KI Video-Analyse
+                <span className="inline-flex items-center gap-1.5 text-sm bg-amber-500/10 text-amber-700 dark:text-amber-400 px-3 py-1.5 rounded-full font-medium">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Reinigung mit Abnahmegarantie
                 </span>
               </div>
 
@@ -125,15 +125,26 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 </Button>
               </div>
 
-              {/* Time estimate badge */}
+              {/* Time estimate + expectation setting */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="flex items-center justify-center lg:justify-start gap-2 text-sm text-muted-foreground"
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 text-sm"
               >
-                <Clock className="w-4 h-4" />
-                <span>In nur 2 Minuten kostenlos Offerten erhalten</span>
+                <span className="inline-flex items-center gap-2 text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  In nur 2 Minuten
+                </span>
+                <span className="hidden sm:inline text-border">•</span>
+                <span className="inline-flex items-center gap-2 font-medium text-green-700 dark:text-green-400">
+                  3–5 Offerten in 24–48h
+                </span>
+                <span className="hidden sm:inline text-border">•</span>
+                <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                  <Lock className="w-3.5 h-3.5" />
+                  Daten bleiben in der Schweiz
+                </span>
               </motion.div>
 
               {/* Desktop Trust Badges */}

@@ -197,6 +197,28 @@ export const MobileFormSheet = memo(function MobileFormSheet({ isOpen, onClose }
                           className="h-12 rounded-xl"
                         />
                       </div>
+                      {/* Quick room selector for micro-conversion */}
+                      <div>
+                        <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
+                          <Home className="w-4 h-4 text-muted-foreground" /> Grösse (optional)
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {["1-2", "3-3.5", "4-4.5", "5+"].map((size) => (
+                            <button
+                              key={size}
+                              type="button"
+                              onClick={() => updateFormData("apartmentSize", size)}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                                formData.apartmentSize === size
+                                  ? 'bg-primary text-primary-foreground'
+                                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                              }`}
+                            >
+                              {size} Zi.
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -364,7 +386,7 @@ export const MobileFormSheet = memo(function MobileFormSheet({ isOpen, onClose }
                     className="flex-1 h-12 rounded-xl bg-secondary hover:bg-secondary/90 shadow-cta"
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
-                    Offerten erhalten
+                    Preise vergleichen
                   </Button>
                 )}
               </div>
