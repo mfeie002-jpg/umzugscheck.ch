@@ -1,21 +1,46 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Package, Clock, TrendingUp, Star, ArrowRight, MapPin,
-  CheckCircle2, Shield, Award, Zap, ThumbsUp, Phone, MessageCircle,
-  Users, Truck, Sparkles, Crown, BadgeCheck, Timer, Percent, Gift,
-  ChevronDown, ChevronUp, Heart, TrendingDown, Calendar, Home, ArrowUpDown
+import {
+  Package,
+  Clock,
+  TrendingUp,
+  Star,
+  ArrowRight,
+  MapPin,
+  CheckCircle2,
+  Shield,
+  Award,
+  Zap,
+  ThumbsUp,
+  Phone,
+  MessageCircle,
+  Users,
+  Truck,
+  Sparkles,
+  Crown,
+  BadgeCheck,
+  Timer,
+  Percent,
+  Gift,
+  ChevronDown,
+  ChevronUp,
+  Heart,
+  TrendingDown,
+  Calendar,
+  Home,
+  ArrowUpDown,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/pricing";
 import { motion, AnimatePresence } from "framer-motion";
-import { Header } from "@/components/homepage/Header";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { Link } from "react-router-dom";
+import zugHero from "@/assets/zug-hero.jpg";
 
 // Demo data for Zug
 const demoMoveDetails = {
@@ -422,12 +447,30 @@ export default function DemoResult() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
+      <Helmet>
+        <html lang="de-CH" />
+        <title>Umzug Zug Ergebnis – Demo Offerten | umzugscheck.ch</title>
+        <meta
+          name="description"
+          content="Demo: So sieht das Ergebnis nach dem Umzugsrechner aus – Offerten für einen Umzug in Zug vergleichen, bevor Sie buchen."
+        />
+        <link rel="canonical" href="https://umzugscheck.ch/demo-ergebnis" />
+      </Helmet>
+
       <main className="flex-1">
         {/* Hero Header */}
-        <section className="relative py-12 md:py-16 gradient-hero text-white overflow-hidden">
-          
+        <section className="relative py-12 md:py-16 overflow-hidden text-primary-foreground">
+          <div className="absolute inset-0">
+            <img
+              src={zugHero}
+              alt="Umzug Zug – Demo Ergebnis"
+              className="h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-foreground/90 via-foreground/75 to-primary/35" />
+          </div>
+
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
               {/* Demo Banner */}

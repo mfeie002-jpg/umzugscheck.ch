@@ -325,6 +325,7 @@ const App = () => (
                             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
                             <Route path="/ergebnis/:id" element={<EstimateResult />} />
                             <Route path="/demo-ergebnis" element={<DemoResult />} />
+                            <Route path="/demo" element={<Navigate to="/demo-ergebnis" replace />} />
                             <Route path="/bundle" element={<BundleEstimates />} />
                             <Route path="/offerte-anfordern/:id" element={<LeadRequest />} />
                             <Route path="/danke/:id" element={<ThankYou />} />
