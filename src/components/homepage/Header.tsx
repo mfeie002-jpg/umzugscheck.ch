@@ -105,7 +105,7 @@ export const Header = () => {
         : "bg-card/95 backdrop-blur-sm border-b border-transparent"
     )}>
       <div className="container px-4 sm:px-6">
-        <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Animated Logo */}
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 group">
             <motion.div 
@@ -146,13 +146,15 @@ export const Header = () => {
                 }}
               />
             </motion.div>
-            <div className="flex flex-col">
+            <div className="flex items-center gap-2">
               <div className="flex items-center">
                 <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">Umzugs</span>
                 <span className="text-lg sm:text-xl font-bold text-secondary group-hover:text-secondary/80 transition-colors">check</span>
                 <span className="text-lg sm:text-xl font-bold text-muted-foreground">.ch</span>
               </div>
-              <span className="hidden sm:block text-[10px] text-muted-foreground font-medium tracking-wide -mt-0.5">Der Schweizer Umzugsvergleich</span>
+              <span className="hidden lg:flex items-center text-xs text-muted-foreground/60 font-normal border-l border-border/50 pl-2 ml-1">
+                Der Schweizer Umzugsvergleich
+              </span>
             </div>
           </Link>
 
