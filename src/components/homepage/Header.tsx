@@ -146,10 +146,13 @@ export const Header = () => {
                 }}
               />
             </motion.div>
-            <div className="flex items-center">
-              <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">Umzugs</span>
-              <span className="text-lg sm:text-xl font-bold text-secondary group-hover:text-secondary/80 transition-colors">check</span>
-              <span className="text-lg sm:text-xl font-bold text-muted-foreground">.ch</span>
+            <div className="flex flex-col">
+              <div className="flex items-center">
+                <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">Umzugs</span>
+                <span className="text-lg sm:text-xl font-bold text-secondary group-hover:text-secondary/80 transition-colors">check</span>
+                <span className="text-lg sm:text-xl font-bold text-muted-foreground">.ch</span>
+              </div>
+              <span className="hidden sm:block text-[10px] text-muted-foreground font-medium tracking-wide -mt-0.5">Der Schweizer Umzugsvergleich</span>
             </div>
           </Link>
 
