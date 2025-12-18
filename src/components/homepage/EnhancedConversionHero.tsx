@@ -37,23 +37,23 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
 
   return (
     <>
-      <section className="relative min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-background via-muted/30 to-background">
+      <section className="relative min-h-[75vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-background via-muted/30 to-background">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" />
         </div>
 
-        <div className="container relative z-10 py-12 md:py-16 lg:py-20">
-          <div className="grid lg:grid-cols-[1fr,480px] gap-8 lg:gap-12 items-center">
+        <div className="container relative z-10 py-8 sm:py-12 md:py-16 lg:py-20">
+          <div className="grid lg:grid-cols-[1fr,480px] gap-6 sm:gap-8 lg:gap-12 items-center">
             {/* Left Content */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="space-y-6 text-center lg:text-left order-2 lg:order-1"
+              className="space-y-4 sm:space-y-6 text-center lg:text-left order-2 lg:order-1"
             >
-              {/* Urgency Badge */}
+              {/* Urgency Badge - More compact on mobile */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -64,35 +64,35 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <UrgencyBadge variant="time" className="hidden sm:inline-flex" />
               </motion.div>
 
-              {/* Headline - SEO optimized */}
-              <div className="space-y-1">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1]">
+              {/* Headline - Optimized mobile sizing */}
+              <div className="space-y-1 px-2 sm:px-0">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15]">
                   Umzugsfirmen vergleichen:
                 </h1>
-                <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1]">
+                <span className="block text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15]">
                   Der beste Deal der <span className="text-primary">Schweiz.</span>
                 </span>
               </div>
 
-              {/* Value Proposition */}
-              <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              {/* Value Proposition - Better mobile readability */}
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
                 Wir vergleichen <strong className="text-foreground">200+ Schweizer Umzugsfirmen</strong> – 
                 Sie erhalten garantiert das beste Angebot zum fairsten Preis.
               </p>
 
-              {/* USP Pills - Including Cleaning Guarantee for Swiss market */}
-              <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-                <span className="inline-flex items-center gap-1.5 text-sm bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full font-medium">
+              {/* USP Pills - Better touch targets */}
+              <div className="flex flex-wrap gap-2 justify-center lg:justify-start px-2 sm:px-0">
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-2 sm:py-1.5 rounded-full font-medium min-h-[36px] sm:min-h-0">
                   <TrendingDown className="w-3.5 h-3.5" />
                   Bis 40% sparen
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-sm bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-primary/10 text-primary px-3 py-2 sm:py-1.5 rounded-full font-medium min-h-[36px] sm:min-h-0">
                   <Users className="w-3.5 h-3.5" />
                   200+ Firmen
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-sm bg-amber-500/10 text-amber-700 dark:text-amber-400 px-3 py-1.5 rounded-full font-medium">
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-amber-500/10 text-amber-700 dark:text-amber-400 px-3 py-2 sm:py-1.5 rounded-full font-medium min-h-[36px] sm:min-h-0">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Reinigung mit Abnahmegarantie
+                  Abnahmegarantie
                 </span>
               </div>
 
@@ -100,15 +100,15 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
               <UrgencyBadge variant="users" className="mx-auto lg:mx-0" />
 
               {/* Mobile: Hero Illustration */}
-              <div className="lg:hidden py-4">
+              <div className="lg:hidden py-2 sm:py-4">
                 <HeroIllustration />
               </div>
 
-              {/* Mobile CTA Buttons - Opens Bottom Sheet */}
-              <div className="flex flex-col sm:flex-row gap-3 lg:hidden pt-2">
+              {/* Mobile CTA Buttons - Improved touch targets */}
+              <div className="flex flex-col gap-3 lg:hidden pt-2 px-2 sm:px-0">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta h-14 font-bold text-base"
+                  className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta h-14 font-bold text-base active:scale-[0.98] transition-transform"
                   onClick={handleHeroCTAClick}
                 >
                   {getHeroCTAText()}
@@ -117,7 +117,7 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="w-full sm:w-auto h-12 border-primary/30"
+                  className="w-full h-12 border-primary/30 active:scale-[0.98] transition-transform"
                   onClick={() => navigate('/umzugsrechner?tab=ai')}
                 >
                   <Video className="w-5 h-5 mr-2 text-primary" />
