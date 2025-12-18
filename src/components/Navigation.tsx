@@ -160,8 +160,9 @@ export const Navigation = () => {
           </div>
         </div>
 
-        {/* Dropdowns Container */}
+        {/* Dropdowns Container - positioned relative to nav */}
         <div
+          className="relative"
           onMouseEnter={() => {
             if (timeoutRef.current) {
               clearTimeout(timeoutRef.current);
