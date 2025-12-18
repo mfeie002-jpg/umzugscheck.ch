@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Twitter, Shield, Award, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Shield, Award, CheckCircle } from "lucide-react";
 import { Helmet } from "react-helmet";
-import logo from "@/assets/logo.png";
 
 const ORGANIZATION_SCHEMA = {
   "@context": "https://schema.org",
@@ -68,16 +67,17 @@ export const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8 mb-8 sm:mb-12">
           {/* Company Info */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center hover:opacity-90 transition-opacity">
-              <img 
-                src={logo} 
-                alt="Umzugscheck.ch Logo" 
-                className="h-12 w-auto brightness-0 invert"
-                sizes="196px"
-                width={196}
-                height={48}
-                loading="lazy"
-              />
+            <Link to="/" className="inline-flex items-center gap-2 group">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <span className="text-2xl font-bold">
+                <span className="text-white">Umzugs</span>
+                <span className="text-secondary">check</span>
+                <span className="text-white">.ch</span>
+              </span>
             </Link>
             <p className="text-primary-foreground/90 text-sm leading-relaxed max-w-sm">
               Die führende Vergleichsplattform für Umzüge in der Schweiz. 
