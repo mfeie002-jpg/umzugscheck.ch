@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
-import { FileText, DollarSign, CheckSquare, Package, Trash2, Lightbulb } from "lucide-react";
+import { FileText, DollarSign, CheckSquare, Lightbulb, BookOpen } from "lucide-react";
+import { DropdownWrapper } from "./navigation/DropdownWrapper";
+import { DropdownLink } from "./navigation/DropdownLink";
+import { DropdownSection } from "./navigation/DropdownSection";
 
 interface RatgeberDropdownProps {
   isOpen: boolean;
@@ -10,56 +12,50 @@ const ratgeberItems = [
   {
     icon: DollarSign,
     title: "Kosten & Preise",
-    href: "/ratgeber/kosten"
+    description: "Was kostet ein Umzug in der Schweiz?",
+    href: "/ratgeber/kosten",
+    featured: true,
   },
   {
     icon: CheckSquare,
     title: "Umzugscheckliste",
-    href: "/ratgeber/checklisten"
+    description: "Schritt für Schritt zum perfekten Umzug",
+    href: "/ratgeber/checklisten",
   },
   {
     icon: Lightbulb,
     title: "Umzugstipps",
-    href: "/ratgeber/umzugstipps"
+    description: "Praktische Tipps von Experten",
+    href: "/ratgeber/umzugstipps",
   },
   {
-    icon: FileText,
+    icon: BookOpen,
     title: "Alle Ratgeber",
-    href: "/ratgeber"
-  }
+    description: "Komplette Sammlung aller Artikel",
+    href: "/ratgeber",
+  },
 ];
 
 export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => {
-  if (!isOpen) return null;
-
   return (
-    <>
-      {/* Overlay */}
-      <div 
-        className="fixed inset-0 bg-black/5 z-40 hidden lg:block"
-        onClick={onClose}
-      />
-      
-      {/* Dropdown Content */}
-      <div className="hidden lg:block absolute left-0 right-0 top-0 bg-background border-t border-border shadow-strong z-50 animate-fade-in">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {ratgeberItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              onClick={onClose}
-              className="flex items-center gap-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors group"
-            >
-              <item.icon className="w-5 h-5 text-primary flex-shrink-0" aria-hidden="true" />
-              <span className="text-sm font-medium text-foreground group-hover:text-primary">
-                {item.title}
-              </span>
-            </Link>
-          ))}
-        </div>
+    <DropdownWrapper isOpen={isOpen} onClose={onClose}>
+      <div className="container mx-auto px-6 py-6">
+        <DropdownSection title="Ratgeber & Tipps">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2">
+            {ratgeberItems.map((item) => (
+              <DropdownLink
+                key={item.href}
+                to={item.href}
+                icon={item.icon}
+                title={item.title}
+                description={item.description}
+                onClick={onClose}
+                featured={item.featured}
+              />
+            ))}
+          </div>
+        </DropdownSection>
       </div>
-      </div>
-    </>
+    </DropdownWrapper>
   );
 };

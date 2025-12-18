@@ -1,6 +1,9 @@
+import { Briefcase, LogIn, DollarSign, Award, HelpCircle, Rocket } from "lucide-react";
+import { DropdownWrapper } from "./navigation/DropdownWrapper";
+import { DropdownLink } from "./navigation/DropdownLink";
+import { DropdownSection } from "./navigation/DropdownSection";
+import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-import { Briefcase, LogIn, DollarSign, Award, HelpCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface ProviderDropdownProps {
   isOpen: boolean;
@@ -8,44 +11,54 @@ interface ProviderDropdownProps {
 }
 
 const providerLinks = [
-  { icon: Briefcase, title: "Anbieter werden", href: "/anbieter" },
-  { icon: LogIn, title: "Anbieter Login", href: "/anbieter/login" },
-  { icon: DollarSign, title: "Preise & Konditionen", href: "/anbieter/preise" },
-  { icon: HelpCircle, title: "Häufige Fragen", href: "/anbieter/faq" },
-  { icon: Award, title: "Vorteile", href: "/anbieter#vorteile" }
+  { icon: Briefcase, title: "Anbieter werden", description: "Registrieren Sie sich kostenlos", href: "/anbieter", featured: true },
+  { icon: LogIn, title: "Anbieter Login", description: "Zugang zum Dashboard", href: "/anbieter/login" },
+  { icon: DollarSign, title: "Preise & Konditionen", description: "Transparente Preisübersicht", href: "/anbieter/preise" },
+  { icon: HelpCircle, title: "Häufige Fragen", description: "Antworten auf Ihre Fragen", href: "/anbieter/faq" },
 ];
 
 export const ProviderDropdown = ({ isOpen, onClose }: ProviderDropdownProps) => {
-  if (!isOpen) return null;
-
   return (
-    <>
-      {/* Overlay */}
-      <div 
-        className="fixed inset-0 bg-black/5 z-40 hidden lg:block"
-        onClick={onClose}
-      />
-      
-      {/* Dropdown Content */}
-      <div className="hidden lg:block absolute left-0 right-0 top-0 bg-background border-t border-border shadow-strong z-50 animate-fade-in">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {providerLinks.map((link) => (
-            <Link
-              key={link.title}
-              to={link.href}
-              onClick={onClose}
-              className="flex items-center gap-3 p-4 rounded-lg hover:bg-secondary/50 transition-colors group"
-            >
-              <link.icon className="w-5 h-5 text-primary flex-shrink-0" aria-hidden="true" />
-              <span className="text-sm font-medium text-foreground group-hover:text-primary">
-                {link.title}
-              </span>
-            </Link>
-          ))}
+    <DropdownWrapper isOpen={isOpen} onClose={onClose}>
+      <div className="container mx-auto px-6 py-6">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-8">
+          <DropdownSection title="Für Umzugsfirmen">
+            <div className="grid sm:grid-cols-2 gap-2">
+              {providerLinks.map((link) => (
+                <DropdownLink
+                  key={link.title}
+                  to={link.href}
+                  icon={link.icon}
+                  title={link.title}
+                  description={link.description}
+                  onClick={onClose}
+                  featured={link.featured}
+                />
+              ))}
+            </div>
+          </DropdownSection>
+
+          {/* CTA Card */}
+          <div className="lg:border-l lg:border-border lg:pl-8">
+            <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-2xl p-6 border border-primary/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Rocket className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="font-bold text-foreground">Jetzt starten</h4>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Erreichen Sie täglich hunderte potenzielle Kunden und wachsen Sie mit uns.
+              </p>
+              <Link to="/anbieter" onClick={onClose}>
+                <Button className="w-full" size="sm">
+                  Kostenlos registrieren
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
-      </div>
-    </>
+    </DropdownWrapper>
   );
 };
