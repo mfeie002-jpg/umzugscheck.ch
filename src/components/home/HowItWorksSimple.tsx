@@ -1,4 +1,5 @@
 import { Clock, Users, Percent, CheckCircle } from "lucide-react";
+import compareSaveImage from "@/assets/compare-save-step.png";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ const steps = [
     number: "3",
     title: "Vergleichen & sparen",
     description: "Erhalten Sie transparente Offerten, vergleichen Sie Preise und Bewertungen – und sparen Sie bis zu 40%.",
-    imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop",
+    imageUrl: compareSaveImage,
     badge: "Bis 40% sparen",
     badgeIcon: Percent,
   },
