@@ -96,6 +96,7 @@ const CalculatorResults = lazy(() => import("./pages/CalculatorResults"));
 const EstimateResult = lazy(() => import("./pages/EstimateResult"));
 const LeadRequest = lazy(() => import("./pages/LeadRequest"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
+const DemoResult = lazy(() => import("./pages/DemoResult"));
 const BundleEstimates = lazy(() => import("./pages/BundleEstimates"));
 const CleaningCalculator = lazy(() => import("./pages/CleaningCalculator"));
 const DisposalCalculator = lazy(() => import("./pages/DisposalCalculator"));
@@ -323,6 +324,7 @@ const App = () => (
                             <Route path="/rechner/ai" element={<AIUpload />} />
                             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
                             <Route path="/ergebnis/:id" element={<EstimateResult />} />
+                            <Route path="/demo-ergebnis" element={<DemoResult />} />
                             <Route path="/bundle" element={<BundleEstimates />} />
                             <Route path="/offerte-anfordern/:id" element={<LeadRequest />} />
                             <Route path="/danke/:id" element={<ThankYou />} />
