@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenu } from "@/components/MobileMenu";
@@ -96,27 +96,27 @@ export const Navigation = () => {
       <nav 
         className={cn(
           "bg-background/95 backdrop-blur-md border-b border-border relative transition-shadow duration-300",
-          scrolled ? "shadow-lg" : "shadow-soft" // Enhanced shadow on scroll (#3)
+          scrolled ? "shadow-lg" : "shadow-soft"
         )} 
         aria-label="Hauptnavigation"
       >
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
-            {/* Logo */}
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+            {/* Logo with Slogan */}
             <div className="flex items-center -ml-1 sm:ml-0">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Logo size="xl" className="hidden xs:flex" />
                 <Logo size="lg" iconOnly className="flex xs:hidden" />
 
                 {/* Slogan (Desktop) */}
-                <span className="hidden lg:flex items-center text-xs text-muted-foreground/70 font-medium border-l border-border/60 pl-3">
+                <span className="hidden lg:flex items-center text-xs text-muted-foreground/70 font-medium border-l border-border/60 pl-2 sm:pl-3">
                   <span className="hidden xl:inline">Der Schweizer Umzugsvergleich</span>
                   <span className="xl:hidden">Schweizer Umzugsvergleich</span>
                 </span>
               </div>
             </div>
 
-            {/* Desktop Navigation - Removed Preisrechner (#1) */}
+            {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1">
               <NavButton dropdown="companies">
                 Umzugsfirmen
@@ -139,8 +139,17 @@ export const Navigation = () => {
               </NavButton>
             </div>
 
-            {/* Mobile: Just menu button (#4 - simplified) */}
+            {/* Mobile: Menu button + mini CTA */}
             <div className="flex lg:hidden items-center gap-2 -mr-1 sm:mr-0">
+              {/* Mini CTA for mobile header */}
+              <Link 
+                to="/umzugsofferten" 
+                className="hidden xs:flex items-center gap-1.5 bg-secondary text-secondary-foreground text-xs font-semibold px-3 py-2 rounded-lg shadow-sm active:scale-95 transition-transform"
+              >
+                <span className="hidden sm:inline">Offerten</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              
               <Button
                 variant="ghost"
                 size="icon"
@@ -154,7 +163,7 @@ export const Navigation = () => {
               </Button>
             </div>
 
-            {/* CTA Button - Desktop with enhanced visual hierarchy (#2) */}
+            {/* CTA Button - Desktop */}
             <div className="hidden lg:flex items-center gap-3">
               <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
                 <Button 
