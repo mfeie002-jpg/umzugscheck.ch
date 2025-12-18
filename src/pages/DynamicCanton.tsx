@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { CantonTemplate } from "@/components/canton/CantonTemplate";
 import { getCantonConfig, isValidCanton } from "@/lib/cantonConfigMap";
+import { Header } from "@/components/homepage/Header";
+import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import NotFound from "./NotFound";
 
 const DynamicCanton = () => {
@@ -16,7 +18,13 @@ const DynamicCanton = () => {
     return <NotFound />;
   }
   
-  return <CantonTemplate config={config} />;
+  return (
+    <>
+      <Header />
+      <CantonTemplate config={config} />
+      <SimplifiedFooter />
+    </>
+  );
 };
 
 export default DynamicCanton;
