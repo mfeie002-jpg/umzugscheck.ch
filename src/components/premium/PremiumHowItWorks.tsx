@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronRight, Star, Shield, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -13,6 +13,7 @@ const steps = [
     title: "Umzugsdetails eingeben",
     description: "Füllen Sie in nur 2 Minuten unser einfaches Formular aus: Von wo nach wo, Wohnungsgrösse und Ihr Wunschdatum.",
     highlight: "Nur 2 Minuten",
+    highlightColor: "text-primary",
   },
   {
     number: "2",
@@ -20,6 +21,7 @@ const steps = [
     title: "Wir checken für Sie",
     description: "Unser intelligentes System analysiert 200+ geprüfte Umzugsfirmen und findet die besten Partner für Ihre Anforderungen.",
     highlight: "200+ Firmen gecheckt",
+    highlightColor: "text-primary",
   },
   {
     number: "3",
@@ -27,14 +29,21 @@ const steps = [
     title: "Vergleichen & sparen",
     description: "Erhalten Sie transparente Offerten, vergleichen Sie Preise und Bewertungen – und sparen Sie bis zu 40%.",
     highlight: "Bis 40% sparen",
+    highlightColor: "text-secondary",
   }
+];
+
+const socialProof = [
+  { icon: Users, value: "15'000+", label: "zufriedene Kunden" },
+  { icon: Star, value: "4.9/5", label: "Kundenbewertung" },
+  { icon: Shield, value: "200+", label: "geprüfte Firmen" },
 ];
 
 export const PremiumHowItWorks = () => {
   return (
-    <section className="py-12 md:py-16 bg-muted/30 overflow-hidden min-h-[600px] md:min-h-[700px]" aria-labelledby="how-it-works-heading">
+    <section className="py-12 md:py-16 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
       <div className="container mx-auto px-4">
-        {/* Section Header - Compact */}
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,8 +63,8 @@ export const PremiumHowItWorks = () => {
           </p>
         </motion.div>
         
-        {/* Steps Grid */}
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-10">
+        {/* Steps Grid with Arrows */}
+        <div className="relative grid md:grid-cols-3 gap-6 md:gap-4 lg:gap-6 mb-10">
           {steps.map((step, idx) => (
             <motion.div
               key={idx}
@@ -63,9 +72,24 @@ export const PremiumHowItWorks = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.15 }}
-              className="group"
+              className="group relative"
             >
-              <div className="bg-card rounded-2xl overflow-hidden shadow-medium hover:shadow-premium transition-all duration-400 border border-border/50">
+              {/* Arrow between steps (desktop only) */}
+              {idx < steps.length - 1 && (
+                <div className="hidden md:flex absolute -right-2 lg:-right-3 top-1/3 z-10 transform translate-x-1/2">
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.5 + idx * 0.2 }}
+                    className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-secondary shadow-lg flex items-center justify-center"
+                  >
+                    <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                  </motion.div>
+                </div>
+              )}
+              
+              <div className="bg-card rounded-2xl overflow-hidden shadow-medium hover:shadow-premium transition-all duration-400 border border-border/50 h-full flex flex-col">
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                   <img 
@@ -79,7 +103,7 @@ export const PremiumHowItWorks = () => {
                   />
                   {/* Step Number */}
                   <div className="absolute top-3 left-3">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-card rounded-xl shadow-lg flex items-center justify-center">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-card rounded-xl shadow-lg flex items-center justify-center border-2 border-primary/20">
                       <span className="text-lg sm:text-xl font-bold text-primary">
                         {step.number}
                       </span>
@@ -87,7 +111,7 @@ export const PremiumHowItWorks = () => {
                   </div>
                   {/* Highlight Badge */}
                   <div className="absolute bottom-3 right-3">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-card/95 backdrop-blur-sm rounded-full text-xs font-bold text-secondary shadow-lg">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1.5 bg-card/95 backdrop-blur-sm rounded-full text-xs font-bold ${step.highlightColor} shadow-lg`}>
                       <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
                       {step.highlight}
                     </span>
@@ -95,7 +119,7 @@ export const PremiumHowItWorks = () => {
                 </div>
                 
                 {/* Content */}
-                <div className="p-5 sm:p-6">
+                <div className="p-5 sm:p-6 flex-grow">
                   <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                     Schritt {step.number}
                   </span>
@@ -110,13 +134,34 @@ export const PremiumHowItWorks = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Social Trust Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+          className="flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12 mb-10 py-6 px-4 bg-card/50 rounded-2xl border border-border/30"
+        >
+          {socialProof.map((item, idx) => (
+            <div key={idx} className="flex items-center gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              </div>
+              <div>
+                <div className="text-lg sm:text-xl font-bold text-foreground">{item.value}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">{item.label}</div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
         
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.3 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
           className="text-center"
         >
           <Link to="/umzugsofferten">
