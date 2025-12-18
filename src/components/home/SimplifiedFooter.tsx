@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, CheckCircle, Star, Shield, Award } from "lucide-react";
-import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 
 const serviceLinks = [
@@ -44,15 +43,18 @@ export const SimplifiedFooter = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
           {/* Logo & Description */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="inline-block mb-4">
-              <img 
-                src={logo}
-                alt="Umzugscheck.ch – Schweizer Umzugsvergleich" 
-                className="h-10"
-                width={164}
-                height={40}
-                loading="lazy"
-              />
+            <Link to="/" className="inline-flex items-center gap-2 mb-4 group">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+              </div>
+              <span className="text-xl font-bold">
+                <span className="text-white">Umzugs</span>
+                <span className="text-secondary">check</span>
+                <span className="text-white">.ch</span>
+              </span>
             </Link>
             <p className="text-sm text-uc-footer-text/70 mb-4">
               Die führende Vergleichsplattform für Umzüge in der Schweiz. Kostenlos, unverbindlich, zuverlässig.
