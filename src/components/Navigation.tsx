@@ -104,8 +104,16 @@ export const Navigation = () => {
           <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
             {/* Logo */}
             <div className="flex items-center -ml-1 sm:ml-0">
-              <Logo size="xl" className="hidden xs:flex" />
-              <Logo size="lg" iconOnly className="flex xs:hidden" />
+              <div className="flex items-center gap-3">
+                <Logo size="xl" className="hidden xs:flex" />
+                <Logo size="lg" iconOnly className="flex xs:hidden" />
+
+                {/* Slogan (Desktop) */}
+                <span className="hidden lg:flex items-center text-xs text-muted-foreground/70 font-medium border-l border-border/60 pl-3">
+                  <span className="hidden xl:inline">Der Schweizer Umzugsvergleich</span>
+                  <span className="xl:hidden">Schweizer Umzugsvergleich</span>
+                </span>
+              </div>
             </div>
 
             {/* Desktop Navigation - Removed Preisrechner (#1) */}
