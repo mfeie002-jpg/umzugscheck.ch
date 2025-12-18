@@ -102,16 +102,15 @@ export const Navigation = () => {
       >
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
-            {/* Logo with Slogan */}
+            {/* Logo with Slogan - Vertical Stack */}
             <div className="flex items-center -ml-1 sm:ml-0">
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex flex-col items-start">
                 <Logo size="xl" className="hidden xs:flex" />
                 <Logo size="lg" iconOnly className="flex xs:hidden" />
 
-                {/* Slogan (Desktop) */}
-                <span className="hidden lg:flex items-center text-xs text-muted-foreground/70 font-medium border-l border-border/60 pl-2 sm:pl-3">
-                  <span className="hidden xl:inline">Der Schweizer Umzugsvergleich</span>
-                  <span className="xl:hidden">Schweizer Umzugsvergleich</span>
+                {/* Slogan below logo (Desktop) */}
+                <span className="hidden lg:block text-[10px] xl:text-xs text-muted-foreground/70 font-medium mt-0.5">
+                  Der Schweizer Umzugsvergleich
                 </span>
               </div>
             </div>
