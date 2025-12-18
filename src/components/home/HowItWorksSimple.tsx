@@ -1,5 +1,6 @@
 import { Clock, Users, Percent, CheckCircle } from "lucide-react";
 import compareSaveImage from "@/assets/compare-save-step.png";
+import enterDetailsImage from "@/assets/enter-details-step.png";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ const steps = [
     number: "1",
     title: "Umzugsdetails eingeben",
     description: "Füllen Sie in nur 2 Minuten unser einfaches Formular aus: Von wo nach wo, Wohnungsgrösse und Ihr Wunschdatum.",
-    imageUrl: "https://images.unsplash.com/photo-1554224311-beee460c201f?w=800&auto=format&fit=crop",
+    imageUrl: enterDetailsImage,
     badge: "Nur 2 Minuten",
     badgeIcon: Clock,
   },
