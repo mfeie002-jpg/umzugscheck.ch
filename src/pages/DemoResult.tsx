@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/pricing";
 import { motion, AnimatePresence } from "framer-motion";
-import { Navigation } from "@/components/Navigation";
+import { Header } from "@/components/homepage/Header";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { Link } from "react-router-dom";
 
@@ -422,12 +422,11 @@ export default function DemoResult() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navigation />
+      <Header />
       
       <main className="flex-1">
         {/* Hero Header */}
-        <section className="relative py-8 md:py-12 bg-gradient-to-br from-primary via-primary/90 to-accent text-primary-foreground overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30" />
+        <section className="relative py-12 md:py-16 gradient-hero text-white overflow-hidden">
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
