@@ -142,35 +142,35 @@ export const Navigation = () => {
             </div>
 
             {/* Mobile: Menu button + mini CTA */}
-            <div className="flex lg:hidden items-center gap-1 xs:gap-2 flex-shrink-0">
-              {/* Mini CTA for mobile header */}
+            <div className="flex lg:hidden items-center gap-2 xs:gap-3 flex-shrink-0">
+              {/* Mini CTA for mobile header with pulse animation */}
               <Link 
                 to="/umzugsofferten" 
-                className="hidden xs:flex items-center gap-1 xs:gap-1.5 bg-secondary text-secondary-foreground text-[10px] xs:text-xs font-semibold px-2 xs:px-3 py-1.5 xs:py-2 rounded-md xs:rounded-lg shadow-sm active:scale-95 transition-transform"
+                className="hidden xs:flex items-center gap-1.5 xs:gap-2 bg-secondary text-secondary-foreground text-xs xs:text-sm font-semibold px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg shadow-cta active:scale-95 transition-all min-h-[44px] touch-manipulation animate-[pulseGlow_2s_ease-in-out_infinite]"
               >
                 <span className="hidden sm:inline">Offerten</span>
-                <ArrowRight className="w-3 xs:w-3.5 h-3 xs:h-3.5" />
+                <ArrowRight className="w-4 h-4" />
               </Link>
               
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative z-50 h-9 w-9 xs:h-10 xs:w-10 active:scale-95 transition-transform"
+                className="relative z-50 h-11 w-11 xs:h-12 xs:w-12 active:scale-95 transition-transform touch-manipulation"
                 aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
               >
-                {isMobileMenuOpen ? <X className="w-4 xs:w-5 h-4 xs:h-5" aria-hidden="true" /> : <Menu className="w-4 xs:w-5 h-4 xs:h-5" aria-hidden="true" />}
+                {isMobileMenuOpen ? <X className="w-5 xs:w-6 h-5 xs:h-6" aria-hidden="true" /> : <Menu className="w-5 xs:w-6 h-5 xs:h-6" aria-hidden="true" />}
               </Button>
             </div>
 
-            {/* CTA Button - Desktop */}
+            {/* CTA Button - Desktop with pulse animation */}
             <div className="hidden lg:flex items-center gap-3">
               <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
                 <Button 
                   size="lg"
-                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all"
+                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all animate-[pulseGlow_2s_ease-in-out_infinite] hover:animate-none"
                 >
                   Kostenlos Offerten erhalten
                 </Button>
