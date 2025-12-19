@@ -111,21 +111,28 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay with fade animation */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
         onClick={onClose}
         aria-hidden="true"
+        style={{ 
+          animation: 'fadeIn 0.25s ease-out forwards' 
+        }}
       />
       
-      {/* Menu Panel - Full screen slide from right */}
+      {/* Menu Panel - Full screen slide from right with smooth animation */}
       <div 
         className={cn(
           "fixed inset-y-0 right-0 w-full max-w-sm",
           "bg-background z-50 lg:hidden",
           "flex flex-col",
-          "animate-in slide-in-from-right duration-300"
+          "transform transition-transform duration-300 ease-out",
+          isOpen ? "translate-x-0" : "translate-x-full"
         )}
+        style={{ 
+          animation: isOpen ? 'slideInFromRight 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards' : undefined 
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 h-14 border-b border-border bg-background/95 backdrop-blur-md">
