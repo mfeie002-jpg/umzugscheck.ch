@@ -108,8 +108,8 @@ export const Navigation = () => {
                 <Logo size="xl" className="hidden xs:flex" />
                 <Logo size="lg" iconOnly className="flex xs:hidden" />
 
-                {/* Slogan below logo (Desktop) */}
-                <span className="hidden lg:block text-[10px] xl:text-xs text-muted-foreground/70 font-medium mt-0.5">
+                {/* Slogan below logo (Tablet + Desktop) */}
+                <span className="hidden md:block text-[10px] xl:text-xs text-muted-foreground/70 font-medium mt-0.5">
                   Der Schweizer Umzugsvergleich
                 </span>
               </div>
