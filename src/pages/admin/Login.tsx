@@ -21,14 +21,12 @@ const AdminLogin = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         // Check if user has admin role
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .eq('role', 'admin')
-          .single();
-        
-        if (roleData) {
+        const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
+          _user_id: session.user.id,
+          _role: "admin",
+        });
+
+        if (!roleError && isAdmin) {
           navigate("/admin");
         }
       }
@@ -51,14 +49,12 @@ const AdminLogin = () => {
 
       if (data.user) {
         // Check if user has admin role
-        const { data: roleData, error: roleError } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', data.user.id)
-          .eq('role', 'admin')
-          .single();
+        const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
+          _user_id: data.user.id,
+          _role: "admin",
+        });
 
-        if (roleError || !roleData) {
+        if (roleError || !isAdmin) {
           await supabase.auth.signOut();
           toast({
             title: "Zugriff verweigert",
