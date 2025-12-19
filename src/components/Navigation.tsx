@@ -106,13 +106,13 @@ export const Navigation = () => {
             {/* Logo with Slogan - Vertical Stack */}
             <div className="flex items-center">
               <div className="group flex flex-col items-start transition-all duration-300 hover:scale-105">
-                <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]">
+                <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] flex items-center">
                   <Logo size="xl" className="hidden xs:flex" />
-                  <Logo size="lg" iconOnly className="flex xs:hidden" />
+                  <Logo size="md" iconOnly className="flex xs:hidden" />
                 </div>
 
-                {/* Slogan below logo (Mobile, Tablet + Desktop) */}
-                <span className="text-[8px] xs:text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight">
+                {/* Slogan below logo (Mobile, Tablet + Desktop) with fade-in animation */}
+                <span className="text-[7px] xs:text-[8px] sm:text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight animate-[fadeInSlogan_0.6s_ease-out_0.2s_both] whitespace-nowrap">
                   Der Schweizer Umzugsvergleich
                 </span>
               </div>
