@@ -173,6 +173,16 @@
   }
 }
 
+/* CTA pulse glow animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(227, 32, 38, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(227, 32, 38, 0.6);
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
