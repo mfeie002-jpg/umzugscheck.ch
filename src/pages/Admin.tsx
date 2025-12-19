@@ -20,6 +20,7 @@ import { CompetitorCapture } from "@/components/admin/CompetitorCapture";
 import { AIFeedbackPackage } from "@/components/admin/AIFeedbackPackage";
 import { ScreenshotDiff } from "@/components/admin/ScreenshotDiff";
 import { LovableImplementationKit } from "@/components/admin/LovableImplementationKit";
+import ProjectAnalyzerComplete from "@/components/admin/ProjectAnalyzerComplete";
 import { LighthouseAudit } from "@/components/admin/LighthouseAudit";
 import { HeatmapAnalytics } from "@/components/admin/HeatmapAnalytics";
 import { FormAnalytics } from "@/components/admin/analytics/FormAnalytics";
@@ -255,6 +256,7 @@ export default function Admin() {
 
           <TabsContent value="ai-tools">
             <div className="space-y-6">
+              <ProjectAnalyzerComplete />
               <LovableImplementationKit />
               <AIFeedbackPackage />
               <CompetitorCapture />
