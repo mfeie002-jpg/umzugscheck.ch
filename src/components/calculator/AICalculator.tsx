@@ -158,10 +158,10 @@ export const AICalculator = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-foreground">
           <Sparkles className="w-6 h-6 text-accent" />
-          KI-gestützter Rechner
+          Smart-Rechner mit Bildanalyse
         </CardTitle>
         <CardDescription className="text-foreground/70">
-          Laden Sie Fotos oder Videos Ihrer Wohnung hoch. Unsere KI schätzt automatisch das Volumen und erstellt eine detaillierte Inventarliste.
+          Laden Sie Fotos oder Videos Ihrer Wohnung hoch. Unser System schätzt automatisch das Volumen und erstellt eine detaillierte Inventarliste.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -241,17 +241,17 @@ export const AICalculator = () => {
               disabled={files.length === 0 || isAnalyzing}
               className="w-full bg-accent hover:bg-accent/90 shadow-accent group"
               size="lg"
-              aria-label={isAnalyzing ? "KI analysiert Ihre Dateien" : "Mit KI analysieren"}
+              aria-label={isAnalyzing ? "System analysiert Ihre Dateien" : "Jetzt analysieren"}
             >
               {isAnalyzing ? (
                 <>
                   <Loader2 className="mr-2 w-5 h-5 animate-spin" aria-hidden="true" />
-                  KI analysiert...
+                  Analysiere...
                 </>
               ) : (
                 <>
                   <Sparkles className="mr-2 w-5 h-5" aria-hidden="true" />
-                  Mit KI analysieren
+                  Jetzt analysieren
                 </>
               )}
             </Button>
@@ -264,7 +264,7 @@ export const AICalculator = () => {
                   <ol className="list-decimal list-inside space-y-1 text-foreground/80">
                     <li>Machen Sie Fotos von jedem Zimmer (verschiedene Winkel)</li>
                     <li>Optional: Video-Rundgang durch die Wohnung</li>
-                    <li>Unsere KI analysiert Möbel, Kartons und Volumen</li>
+                    <li>Unser System analysiert Möbel, Kartons und Volumen</li>
                     <li>Sie erhalten eine editierbare Schätzung mit allen Details</li>
                   </ol>
                 </div>
@@ -281,7 +281,7 @@ export const AICalculator = () => {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-2">KI-Analyse abgeschlossen!</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-2">Analyse abgeschlossen!</h3>
               <p className="text-muted-foreground">Basierend auf Ihren Dateien haben wir folgende Schätzung erstellt</p>
             </div>
 

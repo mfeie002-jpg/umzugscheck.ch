@@ -59,7 +59,7 @@ export const PremiumFooter = memo(function PremiumFooter() {
             </Link>
             <p className="text-uc-footer-text/70 mb-6 max-w-sm leading-relaxed">
               Die führende Schweizer Plattform für den Vergleich von Umzugsfirmen. 
-              AI-gestützt, transparent und kostenlos.
+              Experten-geprüft, transparent und kostenlos.
             </p>
             
             {/* Contact Info */}

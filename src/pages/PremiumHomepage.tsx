@@ -20,7 +20,7 @@ const PremiumHomepage = memo(function PremiumHomepage() {
   const faqItems = [
     {
       question: "Wie funktioniert der Vergleich genau?",
-      answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser AI-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen in Ihrer Region. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten zum Vergleichen."
+      answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser Experten-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen in Ihrer Region. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten zum Vergleichen."
     },
     {
       question: "Kostet mich der Service etwas?",
@@ -124,12 +124,12 @@ const PremiumHomepage = memo(function PremiumHomepage() {
         <title>Umzugsfirmen vergleichen Schweiz – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
         <meta 
           name="description" 
-          content="Vergleichen Sie Schweizer Umzugsfirmen kostenlos. AI-gestützte Analyse, geprüfte Partner, transparente Preise. Jetzt unverbindlich bis zu 5 Offerten erhalten." 
+          content="Vergleichen Sie Schweizer Umzugsfirmen kostenlos. Experten-geprüfte Analyse, verifizierte Partner, transparente Preise. Jetzt unverbindlich bis zu 5 Offerten erhalten." 
         />
         <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, Umzugskosten, günstige Umzüge Schweiz" />
         <link rel="canonical" href="https://umzugscheck.ch/" />
         <meta property="og:title" content="Umzugsfirmen vergleichen – Kostenlos & unverbindlich | Umzugscheck.ch" />
-        <meta property="og:description" content="Die führende Schweizer Plattform für Umzugsvergleiche. AI-gestützt, transparent, vertrauenswürdig." />
+        <meta property="og:description" content="Die führende Schweizer Plattform für Umzugsvergleiche. Experten-geprüft, transparent, vertrauenswürdig." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/" />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>

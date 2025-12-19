@@ -144,7 +144,7 @@ export const CustomerOnboarding = () => {
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle className="w-4 h-4 text-green-600" />
-                        <span>KI-gestützte Berechnung</span>
+                        <span>Smart Berechnung</span>
                       </div>
                     </>
                   )}

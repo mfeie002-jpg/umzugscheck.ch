@@ -135,7 +135,7 @@ export const MLPricePredictions = () => {
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="secondary" className="text-xs">
                 <Target className="w-3 h-3 mr-1" />
-                KI-gestützte Vorhersage
+                Datenbasierte Vorhersage
               </Badge>
             </div>
 

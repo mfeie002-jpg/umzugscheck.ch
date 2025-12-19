@@ -360,7 +360,7 @@ export default function VideoEstimator() {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     "name": "Video-Umzugsrechner Tutorial - Umzugsvolumen automatisch schätzen",
-    "description": "Erfahren Sie, wie Sie mit dem Video-Umzugsrechner von Umzugscheck.ch Ihr Umzugsvolumen automatisch berechnen lassen. Filmen Sie einfach Ihre Wohnung mit dem Smartphone, laden Sie das Video hoch und erhalten Sie eine KI-gestützte Kostenschätzung in Sekunden.",
+    "description": "Erfahren Sie, wie Sie mit dem Video-Umzugsrechner von Umzugscheck.ch Ihr Umzugsvolumen automatisch berechnen lassen. Filmen Sie einfach Ihre Wohnung mit dem Smartphone, laden Sie das Video hoch und erhalten Sie eine automatische Kostenschätzung in Sekunden.",
     "thumbnailUrl": "https://umzugscheck.ch/og-image-video-calculator.jpg",
     "uploadDate": "2024-01-15T08:00:00+01:00",
     "contentUrl": "https://umzugscheck.ch/video-rechner",
@@ -398,8 +398,8 @@ export default function VideoEstimator() {
       },
       {
         "@type": "HowToStep",
-        "name": "KI-Analyse abwarten",
-        "text": "Unsere KI analysiert Ihr Video automatisch und schätzt das Umzugsvolumen in Kubikmetern sowie die Schwierigkeit des Umzugs.",
+        "name": "Smart-Analyse abwarten",
+        "text": "Unser System analysiert Ihr Video automatisch und schätzt das Umzugsvolumen in Kubikmetern sowie die Schwierigkeit des Umzugs.",
         "position": 3
       },
       {
@@ -435,24 +435,24 @@ export default function VideoEstimator() {
       "worstRating": "1",
       "ratingCount": "156"
     },
-    "featureList": "Video-Upload, KI-gestützte Volumenberechnung, Kostenschätzung, Schwierigkeitsanalyse, Distanzberechnung",
+    "featureList": "Video-Upload, Automatische Volumenberechnung, Kostenschätzung, Schwierigkeitsanalyse, Distanzberechnung",
     "screenshot": "https://umzugscheck.ch/screenshot-video-calculator.jpg"
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>Video-Umzugsrechner - KI-gestützte Kostenschätzung | Umzugscheck.ch</title>
+        <title>Video-Umzugsrechner - Automatische Kostenschätzung | Umzugscheck.ch</title>
         <meta 
           name="description" 
-          content="Video-Umzugsrechner mit KI: Filmen Sie Ihre Wohnung, laden Sie das Video hoch und erhalten Sie automatisch eine präzise Schätzung für Umzugsvolumen und -kosten. Kostenlos & in Sekunden." 
+          content="Video-Umzugsrechner: Filmen Sie Ihre Wohnung, laden Sie das Video hoch und erhalten Sie automatisch eine präzise Schätzung für Umzugsvolumen und -kosten. Kostenlos & in Sekunden." 
         />
-        <meta name="keywords" content="Video Umzugsrechner, KI Umzugskostenschätzung, Video Upload Umzug, automatische Volumenberechnung, Umzugskosten Video" />
+        <meta name="keywords" content="Video Umzugsrechner, Umzugskostenschätzung, Video Upload Umzug, automatische Volumenberechnung, Umzugskosten Video" />
         <link rel="canonical" href="https://umzugscheck.ch/video-rechner" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Video-Umzugsrechner - Umzugsvolumen per KI berechnen" />
-        <meta property="og:description" content="Filmen Sie Ihre Wohnung und erhalten Sie eine automatische Kostenschätzung durch KI-Analyse. Schnell, kostenlos und präzise." />
+        <meta property="og:title" content="Video-Umzugsrechner - Umzugsvolumen automatisch berechnen" />
+        <meta property="og:description" content="Filmen Sie Ihre Wohnung und erhalten Sie eine automatische Kostenschätzung durch Smart-Analyse. Schnell, kostenlos und präzise." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/video-rechner" />
         <meta property="og:image" content="https://umzugscheck.ch/og-image-video-calculator.jpg" />
