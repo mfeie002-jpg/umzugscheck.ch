@@ -51,7 +51,7 @@ export const GradientCTA = ({
             </Button>
           </Link>
           <p className="text-sm mt-6 text-white/80">
-            ✓ Kostenlos  ✓ Unverbindlich  ✓ In 2 Minuten
+            ✓ Kostenlos  ✓ Unverbindlich  ✓ 3–5 Offerten in 24–48h
           </p>
         </motion.div>
       </div>

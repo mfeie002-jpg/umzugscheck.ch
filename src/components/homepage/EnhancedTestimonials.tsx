@@ -16,42 +16,42 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Sarah Müller",
-    location: "Zürich",
+    name: "Sarah Müller-Bachmann",
+    location: "Zürich-Oerlikon → Winterthur",
     rating: 5,
-    text: "Innerhalb von 2 Tagen hatte ich 3 Offerten. Die Ersparnis gegenüber meiner ersten Anfrage war CHF 480 – dank Umzugscheck habe ich den besten Anbieter gefunden.",
+    text: "Innerhalb von 2 Tagen hatte ich 4 Offerten von Zürcher Firmen. Die günstigste war CHF 480 unter meiner ersten Anfrage direkt bei einer Firma. Der Umzug mit der Firma Blitz-Umzüge lief perfekt.",
     date: "November 2024"
   },
   {
     id: 2,
-    name: "Thomas Keller",
-    location: "Basel-Stadt",
+    name: "Thomas & Petra Keller",
+    location: "Basel-Stadt → Riehen",
     rating: 5,
-    text: "Die Firma MoveExpert Basel war pünktlich, professionell und hat sogar mein Klavier sicher transportiert. Der Vergleich hat sich absolut gelohnt.",
+    text: "Wir hatten ein Klavier und viele Antiquitäten – die Firma Basler Möbeltransport AG hat alles ohne einen Kratzer geliefert. Preis: CHF 1'850 statt der CHF 2'400, die ein anderer Anbieter wollte.",
     date: "Oktober 2024"
   },
   {
     id: 3,
     name: "Anna Brunner",
-    location: "Bern",
+    location: "3.5-Zimmer-Wohnung, Bern-Bümpliz",
     rating: 5,
-    text: "Hätte nicht gedacht, dass der Preisunterschied zwischen den Firmen so gross ist. Von CHF 2'800 auf CHF 1'950 – klare Empfehlung!",
+    text: "Als Alleinerziehende mit zwei Kindern war ich skeptisch. Aber der Service war wirklich kostenlos, keine nervigen Anrufe. Ich habe CHF 650 gespart und die Firma war super flexibel mit dem Termin.",
     date: "September 2024"
   },
   {
     id: 4,
     name: "Marco Lombardi",
-    location: "Luzern",
+    location: "Firmenumzug, Luzern",
     rating: 5,
-    text: "Von der Anfrage bis zum Umzugstag – alles hat reibungslos geklappt. Die Offerten kamen schnell, die Firma war top.",
+    text: "Wir haben unser Büro mit 12 Arbeitsplätzen über ein Wochenende gezügelt. Die Offerten kamen innerhalb von 24 Stunden – am Montag war alles aufgebaut. Absolut professionell.",
     date: "Oktober 2024"
   },
   {
     id: 5,
-    name: "Nina Weber",
-    location: "St. Gallen",
+    name: "Nina & Daniel Weber",
+    location: "St. Gallen → Frauenfeld",
     rating: 5,
-    text: "Als alleinerziehende Mutter war ich skeptisch. Aber der Service war kostenlos, die Offerten unverbindlich – und ich habe CHF 350 gespart.",
+    text: "Wir hatten nur 3 Wochen Zeit für den Umzug. Über Umzugscheck haben wir sofort eine Firma gefunden, die kurzfristig verfügbar war. CHF 1'350 für 4 Zimmer inkl. Einpackservice – top!",
     date: "August 2024"
   },
 ];
