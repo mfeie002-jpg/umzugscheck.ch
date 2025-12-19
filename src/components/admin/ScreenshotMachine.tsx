@@ -10,7 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2 } from "lucide-react";
+import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2, Archive, FileText } from "lucide-react";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+import { jsPDF } from "jspdf";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -20,6 +23,7 @@ interface ScreenshotResult {
   timestamp: Date;
   isFullPage: boolean;
   dimension: string;
+  htmlContent?: string;
 }
 
 const PRESET_URLS = [
@@ -64,6 +68,9 @@ export function ScreenshotMachine() {
   // Modal for full-page preview
   const [selectedImage, setSelectedImage] = useState<ScreenshotResult | null>(null);
 
+  // Export options
+  const [includeHtml, setIncludeHtml] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const generateScreenshotUrl = (targetUrl: string): string => {
     const width = dimension.split("x")[0];
     // ScreenshotMachine API: full page via "WIDTHxfull" format (e.g., 1920xfull)
@@ -194,6 +201,138 @@ export function ScreenshotMachine() {
       // Fallback: open in new tab
       window.open(imageUrl, "_blank");
     }
+  };
+
+  const fetchHtmlContent = async (pageUrl: string): Promise<string> => {
+    try {
+      // Use a CORS proxy or fetch directly if same origin
+      const response = await fetch(pageUrl, { mode: 'no-cors' });
+      // Due to CORS, we can't get the actual HTML in most cases
+      // Return a placeholder or use an edge function for this
+      return `<!-- HTML content from ${pageUrl} -->\n<!-- Note: Due to CORS restrictions, full HTML capture requires server-side fetching -->`;
+    } catch (error) {
+      return `<!-- Could not fetch HTML from ${pageUrl} -->`;
+    }
+  };
+
+  const downloadAllAsZip = async () => {
+    if (results.length === 0) {
+      toast.error("Keine Screenshots zum Exportieren");
+      return;
+    }
+
+    setExportLoading(true);
+    const zip = new JSZip();
+    const screenshotsFolder = zip.folder("screenshots");
+    
+    try {
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        const hostname = new URL(result.url).hostname;
+        const pathname = new URL(result.url).pathname.replace(/\//g, '_') || 'index';
+        const filename = `${hostname}${pathname}_${i + 1}`;
+
+        // Fetch and add screenshot
+        try {
+          const response = await fetch(result.imageUrl);
+          const blob = await response.blob();
+          screenshotsFolder?.file(`${filename}.png`, blob);
+        } catch (error) {
+          console.error(`Failed to add screenshot for ${result.url}:`, error);
+        }
+
+        // Add metadata JSON
+        screenshotsFolder?.file(`${filename}_info.json`, JSON.stringify({
+          url: result.url,
+          dimension: result.dimension,
+          isFullPage: result.isFullPage,
+          capturedAt: result.timestamp.toISOString(),
+        }, null, 2));
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `screenshots_${new Date().toISOString().split('T')[0]}.zip`);
+      toast.success(`${results.length} Screenshots als ZIP exportiert!`);
+    } catch (error) {
+      console.error("ZIP export error:", error);
+      toast.error("Fehler beim ZIP-Export");
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const downloadAllAsPdf = async () => {
+    if (results.length === 0) {
+      toast.error("Keine Screenshots zum Exportieren");
+      return;
+    }
+
+    setExportLoading(true);
+    
+    try {
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        // Title
+        pdf.setFontSize(14);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(`Screenshot ${i + 1}/${results.length}`, margin, margin + 5);
+        
+        // URL and metadata
+        pdf.setFontSize(10);
+        pdf.setFont("helvetica", "normal");
+        pdf.text(`URL: ${result.url}`, margin, margin + 12);
+        pdf.text(`Dimension: ${result.dimension} | Full Page: ${result.isFullPage ? 'Ja' : 'Nein'}`, margin, margin + 18);
+        pdf.text(`Erfasst: ${result.timestamp.toLocaleString('de-CH')}`, margin, margin + 24);
+
+        // Add screenshot image
+        try {
+          const response = await fetch(result.imageUrl);
+          const blob = await response.blob();
+          const base64 = await blobToBase64(blob);
+          
+          const imgWidth = pageWidth - (margin * 2);
+          const imgHeight = pageHeight - margin - 35; // Leave space for header
+          
+          pdf.addImage(base64, 'PNG', margin, margin + 30, imgWidth, imgHeight, undefined, 'FAST');
+        } catch (error) {
+          console.error(`Failed to add image for ${result.url}:`, error);
+          pdf.setFontSize(12);
+          pdf.text("Bild konnte nicht geladen werden", margin, margin + 50);
+        }
+      }
+
+      pdf.save(`screenshots_${new Date().toISOString().split('T')[0]}.pdf`);
+      toast.success(`${results.length} Screenshots als PDF exportiert!`);
+    } catch (error) {
+      console.error("PDF export error:", error);
+      toast.error("Fehler beim PDF-Export");
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   };
 
   const usePresetUrl = (presetUrl: string) => {
@@ -416,10 +555,46 @@ export function ScreenshotMachine() {
       {results.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Screenshots ({results.length})</CardTitle>
-            <CardDescription>
-              Klicke auf ein Bild um es in voller Grösse anzuzeigen
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Screenshots ({results.length})</CardTitle>
+                <CardDescription>
+                  Klicke auf ein Bild um es in voller Grösse anzuzeigen
+                </CardDescription>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={downloadAllAsZip}
+                  disabled={exportLoading}
+                >
+                  {exportLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Archive className="h-4 w-4 mr-1" />
+                      ZIP
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={downloadAllAsPdf}
+                  disabled={exportLoading}
+                >
+                  {exportLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <FileText className="h-4 w-4 mr-1" />
+                      PDF
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
