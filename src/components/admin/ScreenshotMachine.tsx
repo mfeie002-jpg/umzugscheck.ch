@@ -52,18 +52,18 @@ export function ScreenshotMachine() {
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
 
   const generateScreenshotUrl = (targetUrl: string): string => {
+    const width = dimension.split("x")[0];
+    // ScreenshotMachine supports full-page via "WIDTHxfull" (e.g. 1366xfull)
+    const effectiveDimension = fullPage ? `${width}xfull` : dimension;
+
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
       url: targetUrl,
-      dimension: dimension,
+      dimension: effectiveDimension,
       format: "png",
       cacheLimit: "0",
       delay: "2000",
     });
-
-    if (fullPage) {
-      params.set("fullpage", "true");
-    }
 
     return `https://api.screenshotmachine.com?${params.toString()}`;
   };
