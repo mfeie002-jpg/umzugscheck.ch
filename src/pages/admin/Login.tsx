@@ -144,8 +144,19 @@ const AdminLogin = () => {
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t text-center">
-            <p className="text-xs text-muted-foreground">
+          <div className="mt-6 pt-6 border-t space-y-4">
+            <p className="text-sm text-center text-muted-foreground">
+              Noch kein Konto?
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate("/auth")}
+            >
+              Registrieren
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
               Geschützter Bereich nur für autorisierte Administratoren
             </p>
           </div>
