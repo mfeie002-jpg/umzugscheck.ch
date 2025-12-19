@@ -101,18 +101,18 @@ export const Navigation = () => {
         )} 
         aria-label="Hauptnavigation"
       >
-        <div className="container mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-16 sm:h-16 lg:h-20">
+        <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-14 xs:h-16 sm:h-16 lg:h-20">
             {/* Logo with Slogan - Vertical Stack */}
-            <div className="flex items-center">
+            <div className="flex items-center min-w-0">
               <div className="group flex flex-col items-start transition-all duration-300 hover:scale-105">
                 <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] flex items-center">
                   <Logo size="xl" className="hidden xs:flex" />
-                  <Logo size="md" iconOnly className="flex xs:hidden" />
+                  <Logo size="sm" iconOnly className="flex xs:hidden" />
                 </div>
 
                 {/* Slogan below logo (Mobile, Tablet + Desktop) with fade-in animation */}
-                <span className="text-[7px] xs:text-[8px] sm:text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight animate-[fadeInSlogan_0.6s_ease-out_0.2s_both] whitespace-nowrap">
+                <span className="text-[6px] xs:text-[8px] sm:text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0 xs:mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight animate-[fadeInSlogan_0.6s_ease-out_0.2s_both] whitespace-nowrap max-w-[120px] xs:max-w-none truncate xs:overflow-visible">
                   Der Schweizer Umzugsvergleich
                 </span>
               </div>
@@ -142,26 +142,26 @@ export const Navigation = () => {
             </div>
 
             {/* Mobile: Menu button + mini CTA */}
-            <div className="flex lg:hidden items-center gap-2 -mr-1 sm:mr-0">
+            <div className="flex lg:hidden items-center gap-1 xs:gap-2 flex-shrink-0">
               {/* Mini CTA for mobile header */}
               <Link 
                 to="/umzugsofferten" 
-                className="hidden xs:flex items-center gap-1.5 bg-secondary text-secondary-foreground text-xs font-semibold px-3 py-2 rounded-lg shadow-sm active:scale-95 transition-transform"
+                className="hidden xs:flex items-center gap-1 xs:gap-1.5 bg-secondary text-secondary-foreground text-[10px] xs:text-xs font-semibold px-2 xs:px-3 py-1.5 xs:py-2 rounded-md xs:rounded-lg shadow-sm active:scale-95 transition-transform"
               >
                 <span className="hidden sm:inline">Offerten</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3 xs:w-3.5 h-3 xs:h-3.5" />
               </Link>
               
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative z-50 h-10 w-10 active:scale-95 transition-transform"
+                className="relative z-50 h-9 w-9 xs:h-10 xs:w-10 active:scale-95 transition-transform"
                 aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
               >
-                {isMobileMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
+                {isMobileMenuOpen ? <X className="w-4 xs:w-5 h-4 xs:h-5" aria-hidden="true" /> : <Menu className="w-4 xs:w-5 h-4 xs:h-5" aria-hidden="true" />}
               </Button>
             </div>
 
