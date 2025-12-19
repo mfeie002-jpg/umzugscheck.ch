@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,13 +11,14 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { 
-  Package, Download, Loader2, Globe, Copy, CheckCircle2, 
-  FileText, Camera, Code, Plus, X, Monitor, Smartphone, 
-  Image, ExternalLink, Trash2, Zap, FileDown, ArrowLeft,
-  Wrench
+  Package, Download, Loader2, Copy, CheckCircle2, 
+  FileText, Camera, Code, Plus, X,
+  Trash2, Zap, FileDown,
+  Wrench, ExternalLink, BookOpen, Terminal, FileCode
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -226,7 +227,6 @@ verify_jwt = false
 
 const AdminTools = () => {
   const { user, isAdmin, loading } = useAuth();
-  const navigate = useNavigate();
   
   // AI Feedback Package State
   const [config, setConfig] = useState<ProjectConfig>({
@@ -558,110 +558,135 @@ Please provide specific, actionable feedback with examples from the screenshots.
   // ============================================================================
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+    <AdminLayout>
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" onClick={() => navigate('/admin')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Zurück
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Wrench className="h-8 w-8" />
-              Admin Tools
-            </h1>
-            <p className="text-muted-foreground">
-              Analyse-Tools, Screenshots und Downloads
-            </p>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-orange-500/10">
+              <Wrench className="h-8 w-8 text-orange-600" />
+            </div>
+            Admin Tools & Downloads
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Analyse-Tools, Screenshots und Standalone-Komponenten für andere Projekte
+          </p>
         </div>
 
-        {/* Download Section */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Download className="h-5 w-5" />
-              Standalone Downloads
-            </CardTitle>
-            <CardDescription>
-              Lade die Prompts herunter oder kopiere die Dateipfade für die Standalone-Komponenten
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Prompts Download */}
-            <div>
-              <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <FileText className="h-4 w-4" />
+        {/* Download Section - Prominent Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Quick Start Prompts */}
+          <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <BookOpen className="h-5 w-5 text-primary" />
+                </div>
                 ChatGPT/Claude Prompts
-              </h4>
-              <Button 
-                onClick={() => downloadStandaloneFile('prompts')}
-                className="w-full md:w-auto"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                STANDALONE_PROMPTS.md herunterladen
-              </Button>
-            </div>
-
-            {/* Component Files */}
-            <div>
-              <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <Code className="h-4 w-4" />
-                Standalone Komponenten (Pfad kopieren für Code-Editor)
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              </CardTitle>
+              <CardDescription>
+                Fertige Prompts um die Tools in einem neuen Projekt zu erstellen
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Diese Markdown-Datei enthält alle Prompts die du brauchst, um die Tools in einem neuen Lovable oder Softgen Projekt zu erstellen.
+              </p>
+              <div className="flex gap-2">
                 <Button 
-                  variant="outline" 
-                  className="h-auto py-3 flex-col items-start text-left"
-                  onClick={() => copyFilePathToClipboard('src/standalone/AIFeedbackPackageStandalone.tsx')}
+                  onClick={() => downloadStandaloneFile('prompts')}
+                  className="flex-1"
+                  size="lg"
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <Package className="h-4 w-4" />
-                    <span className="font-semibold">AI Feedback Package</span>
-                  </div>
-                  <code className="text-xs text-muted-foreground">src/standalone/AIFeedbackPackageStandalone.tsx</code>
-                  <Badge variant="secondary" className="mt-2">868 Zeilen</Badge>
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="h-auto py-3 flex-col items-start text-left"
-                  onClick={() => copyFilePathToClipboard('src/standalone/ScreenshotMachineStandalone.tsx')}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <Camera className="h-4 w-4" />
-                    <span className="font-semibold">Screenshot Machine</span>
-                  </div>
-                  <code className="text-xs text-muted-foreground">src/standalone/ScreenshotMachineStandalone.tsx</code>
-                  <Badge variant="secondary" className="mt-2">634 Zeilen</Badge>
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="h-auto py-3 flex-col items-start text-left"
-                  onClick={() => copyFilePathToClipboard('src/standalone/WebAnalyzerSuiteStandalone.tsx')}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <Zap className="h-4 w-4" />
-                    <span className="font-semibold">Web Analyzer Suite</span>
-                  </div>
-                  <code className="text-xs text-muted-foreground">src/standalone/WebAnalyzerSuiteStandalone.tsx</code>
-                  <Badge variant="secondary" className="mt-2">1104 Zeilen - Alles in einem!</Badge>
+                  <Download className="h-5 w-5 mr-2" />
+                  STANDALONE_PROMPTS.md
                 </Button>
               </div>
-            </div>
+              <div className="bg-muted/50 rounded-lg p-3 text-xs">
+                <p className="font-medium mb-1">Enthält:</p>
+                <ul className="text-muted-foreground space-y-0.5">
+                  <li>• AI Feedback Package Setup</li>
+                  <li>• Screenshot Machine Setup</li>
+                  <li>• Web Analyzer Suite (All-in-One)</li>
+                  <li>• Edge Function Code</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Instructions */}
-            <div className="bg-muted/50 rounded-lg p-4 text-sm">
-              <h5 className="font-semibold mb-2">So verwendest du die Standalone-Dateien:</h5>
-              <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-                <li>Klicke auf eine Komponente um den Pfad zu kopieren</li>
-                <li>Öffne den Code-Editor (oben links umschalten)</li>
-                <li>Navigiere zum Pfad und kopiere den gesamten Dateiinhalt</li>
-                <li>Füge den Code in ein neues Lovable/Softgen Projekt ein</li>
-                <li>Installiere: <code className="bg-background px-1 rounded">npm install jszip file-saver jspdf</code></li>
-              </ol>
+          {/* Standalone Components */}
+          <Card className="border-2 border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-transparent">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-orange-500/10">
+                  <FileCode className="h-5 w-5 text-orange-600" />
+                </div>
+                Standalone Komponenten
+              </CardTitle>
+              <CardDescription>
+                Kopiere komplette Komponenten für andere Projekte
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                {[
+                  { name: 'AI Feedback Package', path: 'src/standalone/AIFeedbackPackageStandalone.tsx', lines: 868, icon: Package },
+                  { name: 'Screenshot Machine', path: 'src/standalone/ScreenshotMachineStandalone.tsx', lines: 634, icon: Camera },
+                  { name: 'Web Analyzer Suite', path: 'src/standalone/WebAnalyzerSuiteStandalone.tsx', lines: 1104, icon: Zap, highlight: true },
+                ].map((item) => (
+                  <Button 
+                    key={item.path}
+                    variant="outline" 
+                    className={`w-full h-auto py-3 justify-between ${item.highlight ? 'border-orange-500/30 bg-orange-500/5' : ''}`}
+                    onClick={() => copyFilePathToClipboard(item.path)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <item.icon className="h-4 w-4" />
+                      <span className="font-medium">{item.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">{item.lines} Zeilen</Badge>
+                      <Copy className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  </Button>
+                ))}
+              </div>
+              <div className="bg-muted/50 rounded-lg p-3 text-xs">
+                <p className="font-medium mb-1 flex items-center gap-2">
+                  <Terminal className="h-3 w-3" />
+                  Dependencies:
+                </p>
+                <code className="text-muted-foreground">npm install jszip file-saver jspdf</code>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Step by Step Instructions */}
+        <Card className="mb-8 bg-muted/30">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-success" />
+              Anleitung: So nutzt du die Standalone-Dateien
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {[
+                { step: 1, title: 'Prompts laden', desc: 'STANDALONE_PROMPTS.md herunterladen' },
+                { step: 2, title: 'Neues Projekt', desc: 'Lovable/Softgen Projekt öffnen' },
+                { step: 3, title: 'Prompt kopieren', desc: 'Gewünschten Prompt aus MD-Datei kopieren' },
+                { step: 4, title: 'AI einfügen', desc: 'Prompt in Chat einfügen und erstellen lassen' },
+                { step: 5, title: 'Fertig!', desc: 'Tool ist einsatzbereit' },
+              ].map((item) => (
+                <div key={item.step} className="flex flex-col items-center text-center p-3 rounded-lg bg-background">
+                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm mb-2">
+                    {item.step}
+                  </div>
+                  <p className="font-medium text-sm">{item.title}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -1016,7 +1041,7 @@ Please provide specific, actionable feedback with examples from the screenshots.
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 
