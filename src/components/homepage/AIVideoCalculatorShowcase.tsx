@@ -10,7 +10,7 @@ export const AIVideoCalculatorShowcase = memo(function AIVideoCalculatorShowcase
     {
       icon: Video,
       title: "Video-Analyse",
-      description: "Filmen Sie Ihre Räume ab – unsere KI erkennt automatisch Möbel, Volumen und Besonderheiten",
+      description: "Filmen Sie Ihre Räume ab – unser System erkennt automatisch Möbel, Volumen und Besonderheiten",
       badge: "Weltneuheit"
     },
     {
@@ -21,7 +21,7 @@ export const AIVideoCalculatorShowcase = memo(function AIVideoCalculatorShowcase
     },
     {
       icon: Brain,
-      title: "KI-Objekterkennung",
+      title: "Smart-Objekterkennung",
       description: "Erkennt Schränke, Sofas, Betten, Kartons – und berechnet das exakte Transportvolumen",
       badge: null
     }
@@ -58,11 +58,11 @@ export const AIVideoCalculatorShowcase = memo(function AIVideoCalculatorShowcase
           </div>
           
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Der <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">erste KI Video-Rechner</span> der Schweiz
+            Der <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">erste Smart Video-Rechner</span> der Schweiz
           </h2>
           
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
-            Revolutionär: Filmen Sie einfach Ihre Wohnung ab – unsere künstliche Intelligenz analysiert 
+            Revolutionär: Filmen Sie einfach Ihre Wohnung ab – unser intelligentes System analysiert 
             das Video und berechnet Ihren Umzugspreis <strong>automatisch und präzise</strong>.
           </p>
 
@@ -78,7 +78,7 @@ export const AIVideoCalculatorShowcase = memo(function AIVideoCalculatorShowcase
             </span>
             <span className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium">
               <Sparkles className="w-4 h-4" />
-              KI-gestützte Analyse
+              Smart Analyse
             </span>
           </div>
         </motion.div>
@@ -97,7 +97,7 @@ export const AIVideoCalculatorShowcase = memo(function AIVideoCalculatorShowcase
               <div className="aspect-video bg-gradient-to-br from-slate-900 to-slate-800 relative">
                 <img 
                   src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
-                  alt="Wohnungsaufnahme für KI-Analyse"
+                  alt="Wohnungsaufnahme für Video-Analyse"
                   className="w-full h-full object-cover opacity-60"
                 />
                 {/* Play Button Overlay */}
@@ -114,7 +114,7 @@ export const AIVideoCalculatorShowcase = memo(function AIVideoCalculatorShowcase
                 <div className="absolute top-4 left-4 right-4">
                   <div className="bg-black/70 backdrop-blur-sm rounded-lg p-3 flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-white text-sm font-medium">KI analysiert Video...</span>
+                    <span className="text-white text-sm font-medium">System analysiert Video...</span>
                     <div className="ml-auto flex gap-1">
                       <div className="w-2 h-4 bg-primary rounded animate-pulse" />
                       <div className="w-2 h-6 bg-primary rounded animate-pulse delay-75" />
@@ -271,7 +271,7 @@ export const AIVideoCalculatorShowcase = memo(function AIVideoCalculatorShowcase
             {[
               { step: "1", title: "Video aufnehmen", desc: "Filmen Sie alle Räume mit Ihrem Smartphone ab (30-60 Sekunden pro Raum)" },
               { step: "2", title: "Hochladen", desc: "Laden Sie das Video direkt in unseren Rechner hoch – sicher und verschlüsselt" },
-              { step: "3", title: "KI analysiert", desc: "Unsere KI erkennt alle Möbel und berechnet Volumen, Gewicht und Komplexität" },
+              { step: "3", title: "Smart-Analyse", desc: "Unser System erkennt alle Möbel und berechnet Volumen, Gewicht und Komplexität" },
               { step: "4", title: "Preisvergleich", desc: "Erhalten Sie sofort passende Offerten von geprüften Umzugsfirmen" }
             ].map((item, index) => (
               <div key={index} className="text-center">

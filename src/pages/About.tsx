@@ -159,7 +159,7 @@ const About = () => {
                   </p>
                   <p className="text-lg text-foreground/90 leading-relaxed">
                     Deshalb haben wir eine Plattform geschaffen, die dir hilft, in wenigen Minuten 
-                    mehrere Offerten von geprüften Umzugsfirmen zu vergleichen. Unsere KI-gestützten 
+                    mehrere Offerten von geprüften Umzugsfirmen zu vergleichen. Unsere smarten 
                     Preisrechner geben dir sofort eine realistische Einschätzung deiner Umzugskosten.
                   </p>
                   <FeatureList

@@ -397,9 +397,9 @@ const ZuerichLandingPage = () => {
               <Card className="overflow-hidden border-2 border-primary/20">
                 <div className="grid md:grid-cols-2 items-center">
                   <div className="p-8">
-                    <Badge className="bg-primary/10 text-primary mb-4"><Video className="w-3 h-3 mr-1" />NEU: AI-Video Analyse</Badge>
+                    <Badge className="bg-primary/10 text-primary mb-4"><Video className="w-3 h-3 mr-1" />NEU: Smart Video-Analyse</Badge>
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">Kostenvoranschlag per Video</h2>
-                    <p className="text-muted-foreground mb-6">Filmen Sie einfach Ihre Wohnung ab – unsere KI analysiert automatisch das Umzugsvolumen und liefert einen präzisen Kostenvoranschlag.</p>
+                    <p className="text-muted-foreground mb-6">Filmen Sie einfach Ihre Wohnung ab – unser System analysiert automatisch das Umzugsvolumen und liefert einen präzisen Kostenvoranschlag.</p>
                     <div className="space-y-2 mb-6">{["30 Sekunden Video genügt", "Präziser als manuelle Schätzung", "100% kostenlos"].map((item) => <div key={item} className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" />{item}</div>)}</div>
                     <Button asChild className="bg-primary hover:bg-primary/90"><Link to="/umzugsofferten"><Play className="mr-2 w-4 h-4" />Video-Analyse starten</Link></Button>
                   </div>

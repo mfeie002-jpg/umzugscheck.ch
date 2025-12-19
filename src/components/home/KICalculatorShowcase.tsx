@@ -24,10 +24,10 @@ export const KICalculatorShowcase = () => {
               <span className="text-sm font-bold text-secondary">SCHWEIZER INNOVATION</span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-              KI <span className="text-secondary">Video</span>-Umzugsrechner
+              Smart <span className="text-secondary">Video</span>-Umzugsrechner
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Filmen Sie einfach Ihre Wohnung – unsere KI berechnet automatisch Volumen, 
+              Filmen Sie einfach Ihre Wohnung – unser System berechnet automatisch Volumen, 
               Aufwand und findet die <span className="font-semibold text-foreground">günstigsten Anbieter</span>.
             </p>
           </motion.div>
@@ -62,9 +62,9 @@ export const KICalculatorShowcase = () => {
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                 <Sparkles className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-bold text-foreground mb-2">KI analysiert</h3>
+              <h3 className="font-bold text-foreground mb-2">Smart-Analyse</h3>
               <p className="text-sm text-muted-foreground">
-                Google Gemini AI erkennt automatisch Möbel, Kartons und Umzugsvolumen
+                Google Gemini erkennt automatisch Möbel, Kartons und Umzugsvolumen
               </p>
             </div>
 
@@ -125,7 +125,7 @@ export const KICalculatorShowcase = () => {
                   >
                     <div className="flex items-center gap-2 text-white text-xs font-medium">
                       <Sparkles className="w-3.5 h-3.5" />
-                      KI aktiv
+                      Analyse aktiv
                     </div>
                   </motion.div>
 
@@ -155,7 +155,7 @@ export const KICalculatorShowcase = () => {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                      <span className="font-medium text-foreground text-sm">KI-Analyse abgeschlossen</span>
+                      <span className="font-medium text-foreground text-sm">Analyse abgeschlossen</span>
                     </div>
                     <span className="text-xs text-muted-foreground">~45 Sekunden</span>
                   </div>
@@ -193,7 +193,7 @@ export const KICalculatorShowcase = () => {
                   Warum Video-Analyse?
                 </h3>
                 <p className="text-muted-foreground">
-                  Traditionelle Schätzungen sind ungenau. Unser KI Video-Rechner sieht, 
+                  Traditionelle Schätzungen sind ungenau. Unser Smart Video-Rechner sieht, 
                   was wirklich da ist – und berechnet präzise Kosten.
                 </p>
               </div>
@@ -219,7 +219,7 @@ export const KICalculatorShowcase = () => {
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">90% genauer als Schätzungen</h4>
                     <p className="text-sm text-muted-foreground">
-                      KI erkennt jeden Gegenstand – keine vergessenen Möbel mehr
+                      Smart-System erkennt jeden Gegenstand – keine vergessenen Möbel mehr
                     </p>
                   </div>
                 </div>

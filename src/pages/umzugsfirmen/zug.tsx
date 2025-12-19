@@ -853,11 +853,11 @@ const ZugLandingPage = () => {
                   <div className="p-8">
                     <Badge className="bg-primary/10 text-primary mb-4">
                       <Video className="w-3 h-3 mr-1" />
-                      NEU: AI-Video Analyse
+                      NEU: Smart Video-Analyse
                     </Badge>
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">Kostenvoranschlag per Video</h2>
                     <p className="text-muted-foreground mb-6">
-                      Filmen Sie einfach Ihre Wohnung ab – unsere KI analysiert automatisch das Umzugsvolumen und liefert einen präzisen Kostenvoranschlag.
+                      Filmen Sie einfach Ihre Wohnung ab – unser System analysiert automatisch das Umzugsvolumen und liefert einen präzisen Kostenvoranschlag.
                     </p>
                     <div className="space-y-2 mb-6">
                       {["30 Sekunden Video genügt", "Präziser als manuelle Schätzung", "100% kostenlos"].map((item) => (
