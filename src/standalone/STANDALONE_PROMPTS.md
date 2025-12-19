@@ -212,11 +212,12 @@ Generate all components and edge functions. Make it production-ready.
 
 ## Quick Reference
 
-| Tool | File | API Key Needed | Edge Functions |
-|------|------|----------------|----------------|
-| AI Feedback Package | `AIFeedbackPackageStandalone.tsx` | ScreenshotMachine (892618) | fetch-html |
-| Screenshot Machine | `ScreenshotMachineStandalone.tsx` | ScreenshotMachine (892618) | None |
-| Project Analyzer | `ProjectAnalyzerComplete.tsx` | ScreenshotMachine (892618) | fetch-html, capture-screenshot, lighthouse |
+| Tool | File | API Key | Features |
+|------|------|---------|----------|
+| AI Feedback Package | `AIFeedbackPackageStandalone.tsx` | 892618 | PDF export, auto-discovery |
+| Screenshot Machine | `ScreenshotMachineStandalone.tsx` | 892618 | Single/bulk, ZIP export |
+| Project Analyzer | `ProjectAnalyzerComplete.tsx` | 892618 | Implementation prompts |
+| **All-in-One Suite** | `WebAnalyzerSuiteStandalone.tsx` | 892618 | **All 3 tools in tabs + PDF** |
 
 ---
 
@@ -224,7 +225,7 @@ Generate all components and edge functions. Make it production-ready.
 
 All tools require:
 ```bash
-npm install jszip file-saver lucide-react
+npm install jszip file-saver jspdf lucide-react
 ```
 
 If using with Supabase:
