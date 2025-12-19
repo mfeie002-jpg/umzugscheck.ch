@@ -124,10 +124,10 @@ export const CompanyComparisonSection = memo(function CompanyComparisonSection()
           </motion.span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
             Transparenter{" "}
-            <span className="text-secondary">Angebotsvergleich</span>
+            <span className="text-secondary">Offertenvergleich</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Sehen Sie mehrere Angebote auf einen Blick – Sie sparen Zeit, Geld und Nerven.
+            Sehen Sie mehrere Offerten auf einen Blick – Sie sparen Zeit, Geld und Nerven.
           </p>
         </motion.div>
 

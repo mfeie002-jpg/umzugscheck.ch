@@ -46,7 +46,7 @@ const benefits = [
   "Präzisere Kosteneinschätzung (+30% genauer)",
   "Keine manuelle Inventarliste nötig",
   "Firmen sehen genau, was zu tun ist",
-  "Schnellere Angebotserstellung",
+  "Schnellere Offertenerstellung",
 ];
 
 const privacyFeatures = [
@@ -105,13 +105,18 @@ export const AIVideoCalculatorSection = memo(function AIVideoCalculatorSection()
             </motion.div>
 
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-              Der <span className="text-primary">KI Video-Rechner</span>
+              Der <span className="text-primary">Smart Video-Rechner</span>
             </h2>
 
             <p className="text-lg text-muted-foreground max-w-xl">
-              Modernste Künstliche Intelligenz berechnet Ihre Umzugskosten in Sekunden – 
-              basierend auf Entfernung, Volumen, Aufwand und historischen Daten.
+              <strong className="text-foreground">Optional:</strong> Laden Sie ein Video Ihrer Wohnung hoch für eine präzisere Schätzung. 
+              Unser System erkennt automatisch Möbel und berechnet das Volumen – Sie sparen Zeit bei der Eingabe.
             </p>
+            
+            <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-4 py-2 rounded-lg border border-green-200">
+              <Shield className="w-4 h-4 flex-shrink-0" />
+              <span>Das Video ist <strong>optional</strong> – Sie können auch ohne Video Offerten erhalten.</span>
+            </div>
 
             {/* Steps with Accordion */}
             <div className="space-y-3 py-4">

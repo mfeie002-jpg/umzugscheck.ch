@@ -1023,10 +1023,16 @@ export default function HeroAIQuoteCalculator() {
                         helpText="Ihre Offerten werden an diese E-Mail gesendet"
                       />
                       
-                      {/* Privacy reassurance */}
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">
-                        <Lock className="w-4 h-4 text-green-600 flex-shrink-0" />
-                        <span>{currentStep.microcopy}</span>
+                      {/* Process expectation + Privacy reassurance */}
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-2 text-xs text-green-700 bg-green-50 p-3 rounded-lg border border-green-200">
+                          <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                          <span><strong>Was passiert:</strong> Sie erhalten innerhalb von 24–48h 3–5 Offerten per E-Mail. Keine Anrufe, keine Verpflichtungen.</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">
+                          <Lock className="w-4 h-4 text-primary flex-shrink-0" />
+                          <span>{currentStep.microcopy}</span>
+                        </div>
                       </div>
                       
                       <div className="flex gap-3">
