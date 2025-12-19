@@ -62,7 +62,7 @@ export function ScreenshotMachine() {
     });
 
     if (fullPage) {
-      params.set("full", "true");
+      params.set("fullpage", "true");
     }
 
     return `https://api.screenshotmachine.com?${params.toString()}`;
