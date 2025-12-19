@@ -22,21 +22,33 @@ export const SocialProofMarquee = memo(function SocialProofMarquee() {
   const doubled = [...testimonials, ...testimonials];
 
   return (
-    <section className="py-6 md:py-8 bg-muted/30 overflow-hidden border-y border-border/30">
-      {/* Consolidated stats row (#6, #7) */}
-      <div className="container mb-6">
-        <div className="flex items-center justify-center gap-1 mb-4">
-          <ShieldCheck className="w-4 h-4 text-primary" />
-          <span className="text-xs font-medium text-muted-foreground">Geprüft & Verifiziert</span>
-        </div>
+    <section className="py-8 md:py-10 bg-gradient-to-b from-muted/40 to-muted/20 overflow-hidden border-y border-border/30">
+      {/* Consolidated stats row - Enhanced visual impact */}
+      <div className="container mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center justify-center gap-2 mb-5"
+        >
+          <ShieldCheck className="w-5 h-5 text-primary" />
+          <span className="text-sm font-semibold text-foreground">Geprüft & Verifiziert</span>
+        </motion.div>
         
-        <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-          {stats.map((stat) => (
-            <div key={stat.label} className="flex items-center gap-2 bg-card/50 px-3 py-2 rounded-lg border border-border/50">
-              <stat.icon className="w-4 h-4 text-primary" />
-              <span className="font-bold text-sm">{stat.value}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-6 max-w-2xl mx-auto">
+          {stats.map((stat, index) => (
+            <motion.div 
+              key={stat.label}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="flex flex-col items-center gap-1 bg-card px-4 py-4 rounded-xl border border-border shadow-soft hover:shadow-medium transition-shadow"
+            >
+              <stat.icon className="w-5 h-5 text-primary mb-1" />
+              <span className="font-bold text-xl text-foreground">{stat.value}</span>
               <span className="text-xs text-muted-foreground">{stat.label}</span>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

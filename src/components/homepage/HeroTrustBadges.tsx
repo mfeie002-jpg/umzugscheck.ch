@@ -71,39 +71,44 @@ export const HeroTrustBadges = memo(function HeroTrustBadges({
     );
   }
 
-  // Default: below-form variant
+  // Default: below-form variant - Enhanced design
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5 }}
-      className={`bg-muted/50 rounded-xl border border-border/50 p-4 ${className}`}
+      className={`bg-gradient-to-br from-muted/60 to-muted/30 rounded-xl border border-border/60 p-5 backdrop-blur-sm ${className}`}
     >
-      {/* Media logos */}
-      <div className="flex items-center justify-center gap-2 mb-3">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Bekannt aus</span>
+      {/* Media logos header */}
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <div className="h-px w-8 bg-border/60" />
+        <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Bekannt aus</span>
+        <div className="h-px w-8 bg-border/60" />
       </div>
       
-      <div className="flex items-center justify-center gap-6 mb-3">
+      <div className="flex items-center justify-center gap-8 mb-4">
         {mediaLogos.map((name, index) => (
           <motion.div
             key={name}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6 + index * 0.1 }}
-            className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
+            whileHover={{ scale: 1.05 }}
+            className="opacity-70 hover:opacity-100 transition-all duration-200 grayscale hover:grayscale-0 cursor-default"
           >
             <MediaLogo name={name} />
           </motion.div>
         ))}
       </div>
       
-      {/* Trust fact */}
-      <div className="text-center border-t border-border/50 pt-3">
-        <p className="text-[11px] text-muted-foreground leading-relaxed">
-          <Shield className="w-3 h-3 inline-block mr-1 text-primary" />
-          <strong className="text-foreground">83% der Kunden</strong> vertrauen Websites mit Zertifizierungen mehr.
-        </p>
+      {/* Trust fact - Enhanced styling */}
+      <div className="text-center border-t border-border/40 pt-4">
+        <div className="inline-flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full">
+          <Shield className="w-4 h-4 text-primary" />
+          <p className="text-xs text-muted-foreground">
+            <strong className="text-foreground font-semibold">83% der Kunden</strong> vertrauen Websites mit Zertifizierungen mehr
+          </p>
+        </div>
       </div>
     </motion.div>
   );
