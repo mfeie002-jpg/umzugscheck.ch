@@ -11,8 +11,18 @@ import {
   LayoutDashboard,
   ChevronLeft,
   ChevronRight,
-  Settings,
-  Calendar
+  Home,
+  Calendar,
+  BarChart3,
+  PieChart,
+  Target,
+  FlaskConical,
+  DollarSign,
+  CreditCard,
+  Mail,
+  Trophy,
+  FileText,
+  Gauge
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -23,6 +33,10 @@ const navItems = [
     href: "/admin", 
     icon: LayoutDashboard,
     exact: true
+  },
+  {
+    type: "divider",
+    title: "Verwaltung"
   },
   { 
     title: "Leads", 
@@ -45,19 +59,9 @@ const navItems = [
     icon: MessageSquare 
   },
   { 
-    title: "Analytics", 
-    href: "/admin/analytics", 
-    icon: TrendingUp 
-  },
-  { 
-    title: "Funnel", 
-    href: "/admin/funnel", 
-    icon: TrendingUp 
-  },
-  { 
-    title: "KI-Analytics", 
-    href: "/admin/ml-analytics", 
-    icon: Brain 
+    title: "Rankings", 
+    href: "/admin/rankings", 
+    icon: Trophy 
   },
   { 
     title: "Verfügbarkeit", 
@@ -66,7 +70,70 @@ const navItems = [
   },
   {
     type: "divider",
-    title: "Entwickler"
+    title: "Analytics"
+  },
+  { 
+    title: "Übersicht", 
+    href: "/admin/analytics", 
+    icon: BarChart3 
+  },
+  { 
+    title: "Funnel", 
+    href: "/admin/funnel", 
+    icon: Target 
+  },
+  { 
+    title: "Conversions", 
+    href: "/admin/conversions", 
+    icon: PieChart 
+  },
+  { 
+    title: "KI-Analytics", 
+    href: "/admin/ml-analytics", 
+    icon: Brain 
+  },
+  { 
+    title: "Preise", 
+    href: "/admin/pricing-analytics", 
+    icon: Gauge 
+  },
+  { 
+    title: "A/B Tests", 
+    href: "/admin/ab-testing", 
+    icon: FlaskConical 
+  },
+  { 
+    title: "Reports", 
+    href: "/admin/reports", 
+    icon: FileText 
+  },
+  {
+    type: "divider",
+    title: "Finanzen"
+  },
+  { 
+    title: "Abrechnung", 
+    href: "/admin/billing", 
+    icon: CreditCard 
+  },
+  { 
+    title: "Abos", 
+    href: "/admin/subscriptions", 
+    icon: DollarSign 
+  },
+  { 
+    title: "Dynamische Preise", 
+    href: "/admin/dynamic-pricing", 
+    icon: TrendingUp 
+  },
+  {
+    type: "divider",
+    title: "Einstellungen"
+  },
+  { 
+    title: "E-Mail Automation", 
+    href: "/admin/email-automation", 
+    icon: Mail 
   },
   { 
     title: "Tools & Downloads", 
@@ -166,7 +233,7 @@ export function AdminSidebar() {
           )}
           title={collapsed ? "Zur Website" : undefined}
         >
-          <Settings className="h-5 w-5 shrink-0" />
+          <Home className="h-5 w-5 shrink-0" />
           {!collapsed && <span className="text-sm">Zur Website</span>}
         </Link>
       </div>
