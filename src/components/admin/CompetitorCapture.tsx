@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Users, Plus, Trash2, Camera, Loader2, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -63,9 +64,10 @@ export function CompetitorCapture() {
   };
 
   const generateScreenshotUrl = (targetUrl: string, width: string): string => {
+    const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
-      url: targetUrl,
+      url: urlForShot,
       dimension: `${width}xfull`,
       format: "png",
       cacheLimit: "0",

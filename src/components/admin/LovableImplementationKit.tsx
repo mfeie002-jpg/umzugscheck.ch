@@ -8,13 +8,25 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { 
-  Package, Download, Loader2, Copy, CheckCircle2, FileArchive, 
-  Code, Zap, FileText, Globe, Camera, Sparkles, Wand2
+import {
+  Package,
+  Download,
+  Loader2,
+  Copy,
+  CheckCircle2,
+  FileArchive,
+  Code,
+  Zap,
+  FileText,
+  Globe,
+  Camera,
+  Sparkles,
+  Wand2,
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
+import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -383,9 +395,10 @@ export function ScreenshotMachine() {
           setProgress({ step: `Screenshot ${i + 1}/${Math.min(TOP_PAGES.length, 3)}...`, percent: 40 + (i * 15) });
           
           try {
+            const urlForShot = addScreenshotRenderParamIfHost(pageUrl, "umzugscheck.ch");
             const params = new URLSearchParams({
               key: SCREENSHOT_API_KEY,
-              url: pageUrl,
+              url: urlForShot,
               dimension: '1920xfull',
               format: 'png',
               cacheLimit: '0',

@@ -10,11 +10,29 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2, Archive, FileText, Code, CloudUpload, FolderArchive } from "lucide-react";
+import {
+  Camera,
+  Download,
+  ExternalLink,
+  Loader2,
+  Monitor,
+  Smartphone,
+  Tablet,
+  FileImage,
+  Bug,
+  X,
+  Maximize2,
+  Archive,
+  FileText,
+  Code,
+  CloudUpload,
+  FolderArchive,
+} from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { jsPDF } from "jspdf";
 import { supabase } from "@/integrations/supabase/client";
+import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -124,9 +142,11 @@ export function ScreenshotMachine() {
     // ScreenshotMachine API: full page via "WIDTHxfull" format (e.g., 1920xfull)
     const effectiveDimension = fullPage ? `${width}xfull` : dimension;
 
+    const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
+
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
-      url: targetUrl,
+      url: urlForShot,
       dimension: effectiveDimension,
       format: "png",
       cacheLimit: "0",
