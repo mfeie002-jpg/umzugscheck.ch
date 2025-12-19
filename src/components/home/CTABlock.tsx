@@ -63,7 +63,7 @@ export const CTABlock = ({
           </div>
 
           <p className="text-sm text-white/80 pt-4">
-            ✓ 100% kostenlos  ✓ Keine Anmeldung  ✓ In 2 Minuten fertig
+            ✓ 100% kostenlos  ✓ Keine Werbeanrufe  ✓ 3–5 Offerten in 24–48h
           </p>
         </div>
       </div>

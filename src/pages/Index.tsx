@@ -25,10 +25,8 @@ const EnhancedUSPSection = lazy(() => import("@/components/homepage/EnhancedUSPS
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
-const MediaLogosSection = lazy(() => import("@/components/homepage/MediaLogosSection").then(m => ({ default: m.MediaLogosSection })));
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
 const PreFunnelCalculator = lazy(() => import("@/components/homepage/PreFunnelCalculator").then(m => ({ default: m.PreFunnelCalculator })));
-const ChecklistDownload = lazy(() => import("@/components/homepage/ChecklistDownload").then(m => ({ default: m.ChecklistDownload })));
 
 // Skeleton placeholders with fixed heights to prevent CLS
 const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
@@ -45,8 +43,8 @@ const Index = () => {
     { question: "Wie funktioniert der Vergleich genau?", answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser Experten-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten." },
     { question: "Kostet mich der Service etwas?", answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen." },
     { question: "Wie werden die Umzugsfirmen ausgewählt?", answer: "Alle Partner durchlaufen einen strengen Prüfprozess. Wir verifizieren Versicherungen, Bewilligungen, Kundenbewertungen und Qualitätsstandards." },
-    { question: "Wie schnell erhalte ich Angebote?", answer: "In der Regel erhalten Sie innerhalb von 24-48 Stunden mehrere Offerten von passenden Umzugsfirmen." },
-    { question: "Sind die Angebote verbindlich?", answer: "Die Offerten sind Richtangebote basierend auf Ihren Angaben. Nach einer Besichtigung erstellt die Firma ein verbindliches Angebot." },
+    { question: "Wie schnell erhalte ich Offerten?", answer: "In der Regel erhalten Sie innerhalb von 24-48 Stunden 3–5 Offerten von passenden Umzugsfirmen per E-Mail." },
+    { question: "Sind die Offerten verbindlich?", answer: "Die Offerten sind Richtpreise basierend auf Ihren Angaben. Nach einer Besichtigung erstellt die Firma eine verbindliche Offerte." },
     { question: "Was passiert, wenn etwas beschädigt wird?", answer: "Alle unsere Partnerfirmen sind vollumfänglich versichert. Im unwahrscheinlichen Fall eines Schadens sind Sie geschützt." },
     { question: "Kann ich auch Firmenumzüge vergleichen?", answer: "Ja, unser Service deckt sowohl Privatumzüge als auch Firmen- und Büroumzüge ab." },
     { question: "In welchen Regionen ist der Service verfügbar?", answer: "Unser Service ist schweizweit verfügbar. Wir haben Partner in allen 26 Kantonen." }
@@ -150,19 +148,7 @@ const Index = () => {
             <EnhancedUSPSection />
           </Suspense>
 
-          {/* 12. Media logos - trust signals */}
-          <Suspense fallback={<SectionSkeleton height="150px" />}>
-            <MediaLogosSection />
-          </Suspense>
-          
-          {/* 12b. Checklist Download - Lead Magnet */}
-          <section className="py-12 sm:py-16">
-            <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
-              <Suspense fallback={<SectionSkeleton height="200px" />}>
-                <ChecklistDownload variant="card" />
-              </Suspense>
-            </div>
-          </section>
+          {/* 12. Media logos - trust signals - moved inline to footer */}
           
           {/* 13. FAQ */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>

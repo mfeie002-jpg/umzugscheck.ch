@@ -301,6 +301,9 @@ export const MobileFormSheet = memo(function MobileFormSheet({ isOpen, onClose }
                     <div className="text-center mb-4">
                       <h3 className="text-xl font-bold">Fast geschafft!</h3>
                       <p className="text-sm text-muted-foreground">Wohin sollen die Offerten?</p>
+                      <p className="text-xs text-green-600 mt-2 font-medium">
+                        → 3–5 Offerten in 24–48h per E-Mail
+                      </p>
                     </div>
 
                     <div className="space-y-3">
@@ -348,7 +351,7 @@ export const MobileFormSheet = memo(function MobileFormSheet({ isOpen, onClose }
                           className="mt-0.5"
                         />
                         <label htmlFor="privacy-mobile" className="text-xs text-muted-foreground">
-                          Ich akzeptiere die <a href="/datenschutz" className="text-primary">Datenschutzerklärung</a> und bin einverstanden, dass meine Daten zur Angebotseinholung weitergegeben werden.
+                          Ich akzeptiere die <a href="/datenschutz" className="text-primary">Datenschutzerklärung</a> und bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden. <span className="text-green-600 font-medium">Keine Werbeanrufe.</span>
                         </label>
                       </div>
                     </div>
@@ -386,7 +389,7 @@ export const MobileFormSheet = memo(function MobileFormSheet({ isOpen, onClose }
                     className="flex-1 h-12 rounded-xl bg-secondary hover:bg-secondary/90 shadow-cta"
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
-                    Preise vergleichen
+                    Offerten erhalten
                   </Button>
                 )}
               </div>

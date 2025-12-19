@@ -28,11 +28,11 @@ const faqColumn1 = [
 const faqColumn2 = [
   {
     question: "Muss ich alle Offerten annehmen?",
-    answer: "Nein, Sie sind zu nichts verpflichtet. Vergleichen Sie in Ruhe alle Angebote und wählen Sie nur die Firma, die am besten zu Ihnen passt – oder lehnen Sie alle ab."
+    answer: "Nein, Sie sind zu nichts verpflichtet. Vergleichen Sie in Ruhe alle Offerten und wählen Sie nur die Firma, die am besten zu Ihnen passt – oder lehnen Sie alle ab."
   },
   {
     question: "Wie spare ich mit umzugscheck.ch?",
-    answer: "Durch den direkten Vergleich mehrerer Angebote sparen Sie durchschnittlich 30-40% im Vergleich zu einer direkten Buchung ohne Vergleich."
+    answer: "Durch den direkten Vergleich mehrerer Offerten sparen Sie durchschnittlich 30-40% im Vergleich zu einer direkten Buchung ohne Vergleich."
   },
   {
     question: "Welche Regionen werden abgedeckt?",
@@ -40,7 +40,7 @@ const faqColumn2 = [
   },
   {
     question: "Was passiert nach der Anfrage?",
-    answer: "Sie erhalten Offerten per E-Mail, können diese vergleichen und direkt mit den Firmen in Kontakt treten. Die Firmen kontaktieren Sie nur auf Ihren Wunsch."
+    answer: "Sie erhalten 3–5 Offerten per E-Mail innerhalb von 24–48 Stunden. Danach können Sie die Offerten in Ruhe vergleichen und bei Interesse direkt mit den Firmen in Kontakt treten. Keine Werbeanrufe."
   }
 ];
 

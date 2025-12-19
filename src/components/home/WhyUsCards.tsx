@@ -6,7 +6,7 @@ const features = [
   {
     icon: Brain,
     title: "Mehrere Offerten statt nur einer",
-    description: "Erhalten Sie bis zu 5 Angebote und wählen Sie das beste für Sie",
+    description: "Erhalten Sie bis zu 5 Offerten und wählen Sie die beste für Sie",
   },
   {
     icon: ShieldCheck,
@@ -20,7 +20,7 @@ const features = [
   },
   {
     icon: Eye,
-    title: "Zeitersparnis: eine Anfrage, viele Angebote",
+    title: "Zeitersparnis: eine Anfrage, viele Offerten",
     description: "In 2 Minuten mehrere Offerten statt mühsamer Einzelanfragen",
   },
 ];
