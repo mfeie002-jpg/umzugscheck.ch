@@ -130,7 +130,7 @@ export function ScreenshotMachine() {
       dimension: effectiveDimension,
       format: "png",
       cacheLimit: "0",
-      delay: fullPage ? "3000" : "2000", // Longer delay for full-page
+      delay: fullPage ? "6000" : "4000", // Increased delay for JS animations to complete
     });
 
     return `https://api.screenshotmachine.com?${params.toString()}`;
@@ -382,7 +382,7 @@ export function ScreenshotMachine() {
         const pathname = new URL(targetUrl).pathname.replace(/\//g, '_') || 'index';
         const filename = `${String(i + 1).padStart(2, '0')}_${hostname}${pathname}`;
         
-        // Generate screenshot URL
+        // Generate screenshot URL with longer delay for JS animations
         const width = dimension.split("x")[0];
         const effectiveDimension = fullPage ? `${width}xfull` : dimension;
         const params = new URLSearchParams({
@@ -391,7 +391,7 @@ export function ScreenshotMachine() {
           dimension: effectiveDimension,
           format: "png",
           cacheLimit: "0",
-          delay: fullPage ? "3000" : "2000",
+          delay: fullPage ? "6000" : "4000", // Increased delay for animations
         });
         const screenshotUrl = `https://api.screenshotmachine.com?${params.toString()}`;
         
