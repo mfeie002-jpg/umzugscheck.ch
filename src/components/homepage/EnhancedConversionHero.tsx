@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight, Clock, Lock, Sparkles } from "lucide-react";
+import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight, Clock, Lock, Sparkles, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { MultiStepCalculator } from "./MultiStepCalculator";
@@ -8,6 +8,9 @@ import { MobileFormSheet } from "./MobileFormSheet";
 import { HeroIllustration } from "./HeroIllustration";
 import { UrgencyBadge } from "./UrgencyBadge";
 import { useABTest } from "@/hooks/use-ab-test";
+import { CheckyAvatar } from "./CheckyAvatar";
+import { HeroTrustBadges } from "./HeroTrustBadges";
+import { DataPrivacyBadge } from "./DataPrivacyBadge";
 
 export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
   const navigate = useNavigate();
@@ -21,8 +24,8 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
   const getHeroCTAText = () => {
     switch (heroCTAVariant) {
       case 'variant_a': return 'Kostenlos Offerten erhalten';
-      case 'variant_b': return 'Jetzt vergleichen & sparen';
-      default: return 'Jetzt checken lassen';
+      case 'variant_b': return 'Mein Sparpotenzial berechnen';
+      default: return 'Kostenlos Offerten erhalten';
     }
   };
   
@@ -64,20 +67,20 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <UrgencyBadge variant="time" className="hidden sm:inline-flex" />
               </motion.div>
 
-              {/* Headline - Optimized mobile sizing */}
+              {/* Headline - Optimized with trust-focused messaging */}
               <div className="space-y-1 px-2 sm:px-0">
                 <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15]">
-                  Umzugsfirmen vergleichen:
+                  Ihr sicherster Weg
                 </h1>
                 <span className="block text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15]">
-                  Der beste Deal der <span className="text-primary">Schweiz.</span>
+                  zum besten <span className="text-primary">Preis.</span>
                 </span>
               </div>
 
-              {/* Value Proposition - Better mobile readability */}
+              {/* Value Proposition - Benefit-focused */}
               <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
-                Wir vergleichen <strong className="text-foreground">200+ Schweizer Umzugsfirmen</strong> – 
-                Sie erhalten garantiert das beste Angebot zum fairsten Preis.
+                Erhalten Sie in <strong className="text-foreground">2 Minuten</strong> Ihren exakten Preis – 
+                wir vergleichen <strong className="text-foreground">200+ geprüfte Schweizer Umzugsfirmen</strong> für Sie.
               </p>
 
               {/* USP Pills - Better touch targets */}
@@ -125,6 +128,29 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 </Button>
               </div>
 
+              {/* Data Privacy Badge - Prominent placement */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.35 }}
+                className="flex flex-col items-center lg:items-start gap-3 px-2 sm:px-0"
+              >
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1.5 bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
+                    <Shield className="w-3.5 h-3.5 text-primary" />
+                    Server in der Schweiz
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
+                    <Lock className="w-3.5 h-3.5 text-primary" />
+                    SSL-verschlüsselt
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 bg-green-500/10 px-3 py-1.5 rounded-full border border-green-500/20 font-medium text-green-700 dark:text-green-400">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Keine Werbeanrufe. Versprochen.
+                  </span>
+                </div>
+              </motion.div>
+
               {/* Time estimate + expectation setting */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -139,11 +165,6 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <span className="hidden sm:inline text-border">•</span>
                 <span className="inline-flex items-center gap-2 font-medium text-green-700 dark:text-green-400">
                   3–5 Offerten in 24–48h
-                </span>
-                <span className="hidden sm:inline text-border">•</span>
-                <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                  <Lock className="w-3.5 h-3.5" />
-                  Daten bleiben in der Schweiz
                 </span>
               </motion.div>
 
@@ -160,14 +181,23 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
               </div>
             </motion.div>
 
-            {/* Right - Multi-Step Form (Desktop only) */}
+            {/* Right - Multi-Step Form (Desktop only) + Checky Avatar + Trust Badges */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="hidden lg:block"
+              className="hidden lg:flex flex-col gap-4"
             >
+              {/* Checky Avatar above form */}
+              <CheckyAvatar 
+                size="md" 
+                message="Hallo! Ich bin Checky – Ihre KI-Assistenz. Ich finde in Sekunden die besten Umzugsfirmen für Sie."
+              />
+              
               <MultiStepCalculator />
+              
+              {/* Trust Badges below form */}
+              <HeroTrustBadges variant="below-form" />
             </motion.div>
           </div>
         </div>
