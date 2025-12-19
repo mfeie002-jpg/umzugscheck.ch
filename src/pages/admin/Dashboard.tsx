@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -246,9 +245,8 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-
-      <main className="flex-1 bg-gradient-light">
+    <AdminLayout>
+      <div className="flex-1 bg-gradient-light">
         {/* Header */}
         <section className="gradient-hero text-white py-12">
           <div className="container mx-auto px-4">
@@ -726,10 +724,8 @@ const AdminDashboard = () => {
             </Card>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 

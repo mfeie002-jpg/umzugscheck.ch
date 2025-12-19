@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigation } from "@/components/Navigation";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -63,9 +63,8 @@ const CompaniesAdmin = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-
-      <main className="flex-1 py-8">
+    <AdminLayout>
+      <div className="flex-1 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
@@ -207,8 +206,8 @@ const CompaniesAdmin = () => {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 

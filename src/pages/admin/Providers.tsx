@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -256,9 +256,8 @@ const ProvidersAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-
-      <main className="flex-1 bg-gradient-light">
+    <AdminLayout>
+      <div className="flex-1 bg-gradient-light">
         {/* Header */}
         <section className="gradient-hero text-white py-12">
           <div className="container mx-auto px-4">
@@ -548,7 +547,7 @@ const ProvidersAdmin = () => {
             </Card>
           </div>
         </section>
-      </main>
+      </div>
 
       {/* Action Confirmation Dialog */}
       <AlertDialog open={actionDialogOpen} onOpenChange={setActionDialogOpen}>
@@ -574,7 +573,7 @@ const ProvidersAdmin = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AdminLayout>
   );
 };
 

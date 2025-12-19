@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -241,9 +241,8 @@ const AdminAnalytics = () => {
   const conversionTrend = analytics.conversionRate > previousConversionRate;
 
   return (
-    <div className="min-h-screen flex flex-col">
-
-      <main className="flex-1 py-8 bg-gradient-light">
+    <AdminLayout>
+      <div className="flex-1 py-8 bg-gradient-light">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
@@ -646,8 +645,8 @@ const AdminAnalytics = () => {
             </Tabs>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 
