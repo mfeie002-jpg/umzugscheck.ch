@@ -157,51 +157,60 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         <ScrollArea className="flex-1">
           <div className="p-4">
             {!activeSection ? (
-              // Main Menu
-              <div className="space-y-2">
+              // Main Menu - Optimized touch targets
+              <div className="space-y-3">
                 {menuSections.map((section) => (
                   <button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
                     className={cn(
-                      "flex items-center justify-between w-full px-4 py-4 rounded-xl",
-                      "bg-accent/50 hover:bg-accent transition-all duration-200",
-                      "active:scale-[0.98]"
+                      "flex items-center justify-between w-full px-4 py-5 rounded-xl",
+                      "bg-accent/50 hover:bg-accent/80 active:bg-accent",
+                      "transition-all duration-200 ease-out",
+                      "active:scale-[0.98] touch-manipulation",
+                      "min-h-[56px] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     )}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <section.icon className="w-5 h-5 text-primary" />
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
+                        <section.icon className="w-6 h-6 text-primary" />
                       </div>
-                      <span className="font-semibold text-foreground">{section.title}</span>
+                      <span className="font-semibold text-foreground text-base">{section.title}</span>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                    <ChevronRight className="w-5 h-5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                   </button>
                 ))}
               </div>
             ) : (
-              // Sub Menu
-              <div className="space-y-1">
+              // Sub Menu - Optimized touch targets
+              <div className="space-y-2">
                 {currentSection?.items.map((item, index) => (
                   <Link
                     key={item.href}
                     to={item.href}
                     onClick={onClose}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200",
-                      "active:scale-[0.98]",
+                      "flex items-center gap-4 px-4 py-4 rounded-xl",
+                      "transition-all duration-200 ease-out",
+                      "active:scale-[0.98] touch-manipulation",
+                      "min-h-[52px] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                       isActive(item.href)
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-accent"
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "hover:bg-accent/80 active:bg-accent"
                     )}
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
-                    <item.icon className={cn(
-                      "w-5 h-5",
-                      isActive(item.href) ? "text-primary-foreground" : "text-primary"
-                    )} />
+                    <div className={cn(
+                      "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+                      isActive(item.href) ? "bg-primary-foreground/20" : "bg-primary/10"
+                    )}>
+                      <item.icon className={cn(
+                        "w-5 h-5",
+                        isActive(item.href) ? "text-primary-foreground" : "text-primary"
+                      )} />
+                    </div>
                     <span className={cn(
-                      "font-medium",
+                      "font-medium text-base",
                       isActive(item.href) ? "text-primary-foreground" : "text-foreground"
                     )}>
                       {item.title}
