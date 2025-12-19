@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2, Archive, FileText, Code } from "lucide-react";
+import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2, Archive, FileText, Code, CloudUpload, FolderArchive } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { jsPDF } from "jspdf";
@@ -25,6 +25,17 @@ interface ScreenshotResult {
   isFullPage: boolean;
   dimension: string;
   htmlContent?: string;
+  storagePath?: string;
+}
+
+interface ArchivedScreenshot {
+  id: string;
+  url: string;
+  screenshotPath: string;
+  htmlPath: string;
+  dimension: string;
+  isFullPage: boolean;
+  archivedAt: Date;
 }
 
 const PRESET_URLS = [
@@ -36,6 +47,29 @@ const PRESET_URLS = [
   { label: "Region Zürich", url: "https://umzugscheck.ch/umzugsfirmen/zuerich" },
   { label: "Region Bern", url: "https://umzugscheck.ch/umzugsfirmen/bern" },
   { label: "Region Basel", url: "https://umzugscheck.ch/umzugsfirmen/basel" },
+];
+
+const TOP_20_URLS = [
+  "https://umzugscheck.ch",
+  "https://umzugscheck.ch/umzugsofferten",
+  "https://umzugscheck.ch/firmen",
+  "https://umzugscheck.ch/beste-umzugsfirma",
+  "https://umzugscheck.ch/guenstige-umzugsfirma",
+  "https://umzugscheck.ch/umzugsfirmen/zuerich",
+  "https://umzugscheck.ch/umzugsfirmen/bern",
+  "https://umzugscheck.ch/umzugsfirmen/basel",
+  "https://umzugscheck.ch/umzugsfirmen/aargau",
+  "https://umzugscheck.ch/umzugsfirmen/luzern",
+  "https://umzugscheck.ch/privatumzug",
+  "https://umzugscheck.ch/firmenumzug",
+  "https://umzugscheck.ch/umzugskosten",
+  "https://umzugscheck.ch/reinigung",
+  "https://umzugscheck.ch/entsorgung",
+  "https://umzugscheck.ch/ratgeber",
+  "https://umzugscheck.ch/checkliste",
+  "https://umzugscheck.ch/preisrechner",
+  "https://umzugscheck.ch/fuer-firmen",
+  "https://umzugscheck.ch/kontakt",
 ];
 
 const DIMENSIONS = [
@@ -70,8 +104,9 @@ export function ScreenshotMachine() {
   const [selectedImage, setSelectedImage] = useState<ScreenshotResult | null>(null);
 
   // Export options
-  const [includeHtml, setIncludeHtml] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+  const [archiveLoading, setArchiveLoading] = useState(false);
+  const [top20Loading, setTop20Loading] = useState(false);
   const generateScreenshotUrl = (targetUrl: string): string => {
     const width = dimension.split("x")[0];
     // ScreenshotMachine API: full page via "WIDTHxfull" format (e.g., 1920xfull)
@@ -228,6 +263,169 @@ export function ScreenshotMachine() {
     }
   };
 
+  const archiveToStorage = async (result: ScreenshotResult): Promise<{ screenshotPath: string; htmlPath: string } | null> => {
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const hostname = new URL(result.url).hostname;
+      const pathname = new URL(result.url).pathname.replace(/\//g, '_') || 'index';
+      const basePath = `${timestamp}/${hostname}${pathname}`;
+
+      // Fetch and upload screenshot
+      const screenshotResponse = await fetch(result.imageUrl);
+      const screenshotBlob = await screenshotResponse.blob();
+      const screenshotPath = `${basePath}.png`;
+      
+      const { error: screenshotError } = await supabase.storage
+        .from('screenshots-archive')
+        .upload(screenshotPath, screenshotBlob, {
+          contentType: 'image/png',
+          upsert: true
+        });
+
+      if (screenshotError) {
+        console.error('Screenshot upload error:', screenshotError);
+        throw screenshotError;
+      }
+
+      // Fetch and upload HTML
+      const htmlContent = await fetchHtmlContent(result.url);
+      const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
+      const htmlPath = `${basePath}.html`;
+      
+      const { error: htmlError } = await supabase.storage
+        .from('screenshots-archive')
+        .upload(htmlPath, htmlBlob, {
+          contentType: 'text/html',
+          upsert: true
+        });
+
+      if (htmlError) {
+        console.error('HTML upload error:', htmlError);
+        throw htmlError;
+      }
+
+      // Upload metadata JSON
+      const metadata = {
+        url: result.url,
+        dimension: result.dimension,
+        isFullPage: result.isFullPage,
+        capturedAt: result.timestamp.toISOString(),
+        screenshotPath,
+        htmlPath
+      };
+      const metadataBlob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' });
+      
+      await supabase.storage
+        .from('screenshots-archive')
+        .upload(`${basePath}_meta.json`, metadataBlob, {
+          contentType: 'application/json',
+          upsert: true
+        });
+
+      return { screenshotPath, htmlPath };
+    } catch (error) {
+      console.error('Archive error:', error);
+      return null;
+    }
+  };
+
+  const archiveAllToStorage = async () => {
+    if (results.length === 0) {
+      toast.error("Keine Screenshots zum Archivieren");
+      return;
+    }
+
+    setArchiveLoading(true);
+    toast.info("Archivierung gestartet...");
+    
+    let successCount = 0;
+    for (let i = 0; i < results.length; i++) {
+      toast.info(`Archiviere ${i + 1}/${results.length}...`);
+      const result = await archiveToStorage(results[i]);
+      if (result) {
+        successCount++;
+        // Update the result with storage paths
+        setResults(prev => prev.map((r, idx) => 
+          idx === i ? { ...r, storagePath: result.screenshotPath } : r
+        ));
+      }
+    }
+
+    setArchiveLoading(false);
+    toast.success(`${successCount}/${results.length} Screenshots archiviert!`);
+  };
+
+  const downloadTop20WithHtml = async () => {
+    setTop20Loading(true);
+    toast.info("Lade Top 20 Seiten herunter...");
+    
+    const zip = new JSZip();
+    
+    try {
+      for (let i = 0; i < TOP_20_URLS.length; i++) {
+        const targetUrl = TOP_20_URLS[i];
+        toast.info(`Verarbeite ${i + 1}/${TOP_20_URLS.length}: ${new URL(targetUrl).hostname}${new URL(targetUrl).pathname}`);
+        
+        const hostname = new URL(targetUrl).hostname;
+        const pathname = new URL(targetUrl).pathname.replace(/\//g, '_') || 'index';
+        const filename = `${String(i + 1).padStart(2, '0')}_${hostname}${pathname}`;
+        
+        // Generate screenshot URL
+        const width = dimension.split("x")[0];
+        const effectiveDimension = fullPage ? `${width}xfull` : dimension;
+        const params = new URLSearchParams({
+          key: SCREENSHOT_API_KEY,
+          url: targetUrl,
+          dimension: effectiveDimension,
+          format: "png",
+          cacheLimit: "0",
+          delay: fullPage ? "3000" : "2000",
+        });
+        const screenshotUrl = `https://api.screenshotmachine.com?${params.toString()}`;
+        
+        // Fetch screenshot
+        try {
+          const screenshotResponse = await fetch(screenshotUrl);
+          const screenshotBlob = await screenshotResponse.blob();
+          zip.file(`${filename}.png`, screenshotBlob);
+        } catch (error) {
+          console.error(`Failed to fetch screenshot for ${targetUrl}:`, error);
+          zip.file(`${filename}_screenshot_error.txt`, `Failed to capture: ${error}`);
+        }
+        
+        // Fetch HTML
+        try {
+          const htmlContent = await fetchHtmlContent(targetUrl);
+          zip.file(`${filename}.html`, htmlContent);
+        } catch (error) {
+          console.error(`Failed to fetch HTML for ${targetUrl}:`, error);
+          zip.file(`${filename}_html_error.txt`, `Failed to fetch HTML: ${error}`);
+        }
+        
+        // Add metadata
+        zip.file(`${filename}_info.json`, JSON.stringify({
+          url: targetUrl,
+          dimension: effectiveDimension,
+          isFullPage: fullPage,
+          capturedAt: new Date().toISOString(),
+          index: i + 1
+        }, null, 2));
+        
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `top20_screenshots_html_${new Date().toISOString().split('T')[0]}.zip`);
+      toast.success("Top 20 Seiten als ZIP heruntergeladen!");
+    } catch (error) {
+      console.error("Top 20 download error:", error);
+      toast.error("Fehler beim Download der Top 20");
+    } finally {
+      setTop20Loading(false);
+    }
+  };
+
   const downloadAllAsZip = async () => {
     if (results.length === 0) {
       toast.error("Keine Screenshots zum Exportieren");
@@ -235,27 +433,37 @@ export function ScreenshotMachine() {
     }
 
     setExportLoading(true);
+    toast.info("ZIP-Export mit HTML gestartet...");
     const zip = new JSZip();
-    const screenshotsFolder = zip.folder("screenshots");
     
     try {
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
+        toast.info(`Verarbeite ${i + 1}/${results.length}...`);
+        
         const hostname = new URL(result.url).hostname;
         const pathname = new URL(result.url).pathname.replace(/\//g, '_') || 'index';
-        const filename = `${hostname}${pathname}_${i + 1}`;
+        const filename = `${String(i + 1).padStart(2, '0')}_${hostname}${pathname}`;
 
         // Fetch and add screenshot
         try {
           const response = await fetch(result.imageUrl);
           const blob = await response.blob();
-          screenshotsFolder?.file(`${filename}.png`, blob);
+          zip.file(`${filename}.png`, blob);
         } catch (error) {
           console.error(`Failed to add screenshot for ${result.url}:`, error);
         }
 
+        // Fetch and add HTML
+        try {
+          const htmlContent = await fetchHtmlContent(result.url);
+          zip.file(`${filename}.html`, htmlContent);
+        } catch (error) {
+          console.error(`Failed to fetch HTML for ${result.url}:`, error);
+        }
+
         // Add metadata JSON
-        screenshotsFolder?.file(`${filename}_info.json`, JSON.stringify({
+        zip.file(`${filename}_info.json`, JSON.stringify({
           url: result.url,
           dimension: result.dimension,
           isFullPage: result.isFullPage,
@@ -264,8 +472,8 @@ export function ScreenshotMachine() {
       }
 
       const content = await zip.generateAsync({ type: "blob" });
-      saveAs(content, `screenshots_${new Date().toISOString().split('T')[0]}.zip`);
-      toast.success(`${results.length} Screenshots als ZIP exportiert!`);
+      saveAs(content, `screenshots_with_html_${new Date().toISOString().split('T')[0]}.zip`);
+      toast.success(`${results.length} Screenshots mit HTML als ZIP exportiert!`);
     } catch (error) {
       console.error("ZIP export error:", error);
       toast.error("Fehler beim ZIP-Export");
@@ -442,6 +650,35 @@ export function ScreenshotMachine() {
               </p>
             </div>
             <Switch checked={bulkMode} onCheckedChange={setBulkMode} />
+          </div>
+
+          {/* Top 20 Quick Action */}
+          <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label className="text-base font-medium">Top 20 Seiten</Label>
+                <p className="text-sm text-muted-foreground">
+                  Alle wichtigen Seiten inkl. Screenshot + HTML als ZIP herunterladen
+                </p>
+              </div>
+              <Button 
+                onClick={downloadTop20WithHtml}
+                disabled={top20Loading}
+                variant="default"
+              >
+                {top20Loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Lädt...
+                  </>
+                ) : (
+                  <>
+                    <FolderArchive className="h-4 w-4 mr-2" />
+                    Top 20 ZIP + HTML
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
 
           {/* Preset URLs */}
@@ -634,19 +871,20 @@ export function ScreenshotMachine() {
                   Klicke auf ein Bild um es in voller Grösse anzuzeigen
                 </CardDescription>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={downloadAllAsZip}
-                  disabled={exportLoading}
+                  disabled={exportLoading || archiveLoading}
+                  title="ZIP mit Screenshot + HTML"
                 >
                   {exportLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
                       <Archive className="h-4 w-4 mr-1" />
-                      ZIP
+                      ZIP + HTML
                     </>
                   )}
                 </Button>
@@ -654,7 +892,7 @@ export function ScreenshotMachine() {
                   variant="outline"
                   size="sm"
                   onClick={downloadAllAsPdf}
-                  disabled={exportLoading}
+                  disabled={exportLoading || archiveLoading}
                   title="PDF mit HTML-Quellcode exportieren"
                 >
                   {exportLoading ? (
@@ -663,6 +901,22 @@ export function ScreenshotMachine() {
                     <>
                       <Code className="h-4 w-4 mr-1" />
                       PDF + HTML
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={archiveAllToStorage}
+                  disabled={archiveLoading || exportLoading}
+                  title="In Cloud-Speicher archivieren"
+                >
+                  {archiveLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <CloudUpload className="h-4 w-4 mr-1" />
+                      Archivieren
                     </>
                   )}
                 </Button>
