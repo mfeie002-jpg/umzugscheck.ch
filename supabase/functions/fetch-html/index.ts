@@ -65,9 +65,22 @@ serve(async (req) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error in fetch-html function:', errorMessage);
+    
+    // Handle SSL/TLS certificate errors gracefully
+    const isSslError = errorMessage.includes('invalid peer certificate') || 
+                       errorMessage.includes('certificate') ||
+                       errorMessage.includes('SSL') ||
+                       errorMessage.includes('TLS');
+    
     return new Response(
-      JSON.stringify({ error: errorMessage, html: null }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ 
+        error: isSslError 
+          ? `SSL certificate error for this website. The site may have an invalid or expired certificate.`
+          : errorMessage, 
+        html: null,
+        errorType: isSslError ? 'SSL_ERROR' : 'FETCH_ERROR'
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

@@ -70,9 +70,25 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('PageSpeed API error:', response.status, errorText);
+      
+      // Handle rate limit (429) gracefully
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'PageSpeed API rate limit exceeded. Please try again later or reduce the number of concurrent requests.',
+            errorType: 'RATE_LIMIT',
+            retryAfter: 60
+          }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
       return new Response(
-        JSON.stringify({ error: `PageSpeed API error: ${response.status}` }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          error: `PageSpeed API error: ${response.status}`,
+          errorType: 'API_ERROR'
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
