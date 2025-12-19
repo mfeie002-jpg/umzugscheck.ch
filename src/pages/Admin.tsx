@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera, FolderArchive } from "lucide-react";
+import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera, Package } from "lucide-react";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
 import { ProviderManagement } from "@/components/admin/ProviderManagement";
 import { LeadManagement } from "@/components/admin/LeadManagement";
@@ -16,6 +16,10 @@ import { RevenueAnalytics } from "@/components/admin/RevenueAnalytics";
 import { LeadExport } from "@/components/admin/LeadExport";
 import { ScreenshotMachine } from "@/components/admin/ScreenshotMachine";
 import { ScreenshotArchive } from "@/components/admin/ScreenshotArchive";
+import { CompetitorCapture } from "@/components/admin/CompetitorCapture";
+import { AIFeedbackPackage } from "@/components/admin/AIFeedbackPackage";
+import { ScreenshotDiff } from "@/components/admin/ScreenshotDiff";
+import { LighthouseAudit } from "@/components/admin/LighthouseAudit";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Admin() {
@@ -113,7 +117,7 @@ export default function Admin() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-5 lg:grid-cols-9 w-full gap-1">
+          <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full gap-1">
             <TabsTrigger value="dashboard">
               <BarChart3 className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -149,6 +153,10 @@ export default function Admin() {
             <TabsTrigger value="screenshots">
               <Camera className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Screenshots</span>
+            </TabsTrigger>
+            <TabsTrigger value="ai-tools">
+              <Package className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">AI Tools</span>
             </TabsTrigger>
           </TabsList>
 
@@ -199,6 +207,15 @@ export default function Admin() {
             <div className="space-y-6">
               <ScreenshotMachine />
               <ScreenshotArchive />
+              <ScreenshotDiff />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="ai-tools">
+            <div className="space-y-6">
+              <AIFeedbackPackage />
+              <CompetitorCapture />
+              <LighthouseAudit />
             </div>
           </TabsContent>
         </Tabs>

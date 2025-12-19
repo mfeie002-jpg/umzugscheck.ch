@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.scheduled-screenshots]
 verify_jwt = false
+
+[functions.lighthouse]
+verify_jwt = false
