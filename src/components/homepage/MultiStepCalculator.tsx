@@ -111,9 +111,9 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
   
   const getSubmitButtonText = () => {
     switch (submitVariant) {
-      case 'variant_a': return 'Jetzt Preise vergleichen';
-      case 'variant_b': return 'Kostenlos Angebote erhalten';
-      default: return 'Preise vergleichen (kostenlos)';
+      case 'variant_a': return 'Jetzt Offerten erhalten';
+      case 'variant_b': return 'Kostenlos Offerten anfordern';
+      default: return 'Offerten erhalten (kostenlos)';
     }
   };
 
@@ -382,6 +382,9 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                 <p className="text-sm text-muted-foreground">
                   Wohin sollen wir die Offerten senden?
                 </p>
+                <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">
+                  → Sie erhalten 3–5 Offerten per E-Mail innerhalb von 24–48h
+                </p>
               </div>
 
               <div className="space-y-3">
@@ -463,7 +466,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   />
                   <label htmlFor="privacy" className="text-xs text-muted-foreground cursor-pointer">
                     Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline">Datenschutzerklärung</a> und 
-                    bin einverstanden, dass meine Daten zur Angebotseinholung weitergegeben werden.
+                    bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden. <span className="text-green-600 dark:text-green-400 font-medium">Keine Werbeanrufe.</span>
                   </label>
                 </div>
               </div>
