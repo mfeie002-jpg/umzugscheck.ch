@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { DynamicPricingDisplay } from "@/components/provider/DynamicPricingDisplay";
 import { calculateDynamicPricing, formatPricingBreakdown } from "@/lib/dynamic-pricing";
 import { TrendingUp, Calculator, Info } from "lucide-react";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 
 export default function DynamicPricing() {
   const [basePrice, setBasePrice] = useState(30);
@@ -30,8 +31,9 @@ export default function DynamicPricing() {
   ];
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
+    <AdminLayout>
+      <div className="container mx-auto py-8 px-4">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
           <TrendingUp className="h-8 w-8 text-primary" />
           Dynamische Preisgestaltung
@@ -184,6 +186,7 @@ export default function DynamicPricing() {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

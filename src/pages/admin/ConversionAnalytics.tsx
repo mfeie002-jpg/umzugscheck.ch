@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
   ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line 
@@ -92,8 +93,9 @@ export default function ConversionAnalytics() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+    <AdminLayout>
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Conversion Analytics</h1>
         <p className="text-muted-foreground">
           Detaillierte Analyse der Conversions nach Stadt und Service
@@ -242,7 +244,8 @@ export default function ConversionAnalytics() {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
-    </div>
+        </Tabs>
+      </div>
+    </AdminLayout>
   );
 }

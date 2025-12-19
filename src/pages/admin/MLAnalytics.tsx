@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -75,8 +74,7 @@ const MLAnalytics = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-
+    <AdminLayout>
       <main className="flex-1 bg-gradient-light">
         <section className="gradient-hero text-white py-12">
           <div className="container mx-auto px-4">
@@ -257,9 +255,7 @@ const MLAnalytics = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </AdminLayout>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -167,8 +168,9 @@ const CodeExport = () => {
     : `${(exportSize / 1024).toFixed(1)} KB`;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
+    <AdminLayout>
+      <div className="container mx-auto py-8 px-4">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Code Export für ChatGPT</h1>
         <p className="text-muted-foreground">
           Vollständiger Export des Design Systems und aller Komponenten für AI-Reviews.
@@ -304,7 +306,8 @@ const CodeExport = () => {
           </ScrollArea>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Edit2, Check, Crown, Zap, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 
 interface SubscriptionPlan {
   id: string;
@@ -97,10 +98,11 @@ export default function Subscriptions() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Abonnement-Pläne</h1>
+    <AdminLayout>
+      <div className="container mx-auto p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Abonnement-Pläne</h1>
           <p className="text-muted-foreground">
             Verwalte Subscription-Tiers für Anbieter
           </p>
@@ -328,6 +330,7 @@ export default function Subscriptions() {
           </Card>
         ))}
       </div>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

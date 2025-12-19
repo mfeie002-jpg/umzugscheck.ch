@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Loader2, TrendingUp, Users, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -95,9 +94,8 @@ export default function FunnelAnalytics() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
+    <AdminLayout>
+      <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Header */}
           <div>
@@ -198,11 +196,9 @@ export default function FunnelAnalytics() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+        </Card>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

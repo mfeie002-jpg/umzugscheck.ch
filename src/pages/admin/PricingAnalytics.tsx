@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, DollarSign, Calendar, Activity } from "lucide-react";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 
 export default function PricingAnalytics() {
   // Mock data for seasonal trends
@@ -48,8 +48,9 @@ export default function PricingAnalytics() {
   ];
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
+    <AdminLayout>
+      <div className="container mx-auto py-8 px-4">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
           <TrendingUp className="h-8 w-8 text-primary" />
           Preis-Analytics
@@ -294,7 +295,8 @@ export default function PricingAnalytics() {
             </Card>
           </div>
         </TabsContent>
-      </Tabs>
-    </div>
+        </Tabs>
+      </div>
+    </AdminLayout>
   );
 }
