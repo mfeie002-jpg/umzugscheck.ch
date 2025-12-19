@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera, Package } from "lucide-react";
+import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera, Package, MousePointer2 } from "lucide-react";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
 import { ProviderManagement } from "@/components/admin/ProviderManagement";
 import { LeadManagement } from "@/components/admin/LeadManagement";
@@ -20,6 +20,18 @@ import { CompetitorCapture } from "@/components/admin/CompetitorCapture";
 import { AIFeedbackPackage } from "@/components/admin/AIFeedbackPackage";
 import { ScreenshotDiff } from "@/components/admin/ScreenshotDiff";
 import { LighthouseAudit } from "@/components/admin/LighthouseAudit";
+import { HeatmapAnalytics } from "@/components/admin/HeatmapAnalytics";
+import { FormAnalytics } from "@/components/admin/analytics/FormAnalytics";
+import { SessionRecordings } from "@/components/admin/analytics/SessionRecordings";
+import { UserFlowVisualization } from "@/components/admin/analytics/UserFlowVisualization";
+import { BounceRateTracker } from "@/components/admin/analytics/BounceRateTracker";
+import { ConversionFunnels } from "@/components/admin/analytics/ConversionFunnels";
+import { ABTestResults } from "@/components/admin/analytics/ABTestResults";
+import { RealTimeVisitors } from "@/components/admin/analytics/RealTimeVisitors";
+import { PageLoadTracker } from "@/components/admin/analytics/PageLoadTracker";
+import { ErrorTracking } from "@/components/admin/analytics/ErrorTracking";
+import { UserSegments } from "@/components/admin/analytics/UserSegments";
+import { UltimateZipPackage } from "@/components/admin/analytics/UltimateZipPackage";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Admin() {
@@ -117,7 +129,7 @@ export default function Admin() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full gap-1">
+          <TabsList className="grid grid-cols-5 lg:grid-cols-11 w-full gap-1">
             <TabsTrigger value="dashboard">
               <BarChart3 className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -153,6 +165,10 @@ export default function Admin() {
             <TabsTrigger value="screenshots">
               <Camera className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Screenshots</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics">
+              <MousePointer2 className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Analytics</span>
             </TabsTrigger>
             <TabsTrigger value="ai-tools">
               <Package className="h-4 w-4 mr-1" />
@@ -208,6 +224,31 @@ export default function Admin() {
               <ScreenshotMachine />
               <ScreenshotArchive />
               <ScreenshotDiff />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <div className="space-y-6">
+              <UltimateZipPackage />
+              <HeatmapAnalytics />
+              <div className="grid gap-6 md:grid-cols-2">
+                <FormAnalytics />
+                <SessionRecordings />
+              </div>
+              <UserFlowVisualization />
+              <div className="grid gap-6 md:grid-cols-2">
+                <BounceRateTracker />
+                <ConversionFunnels />
+              </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                <ABTestResults />
+                <RealTimeVisitors />
+              </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                <PageLoadTracker />
+                <ErrorTracking />
+              </div>
+              <UserSegments />
             </div>
           </TabsContent>
 
