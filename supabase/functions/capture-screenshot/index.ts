@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { url, dimension = '1920xfull', delay = 5000, format = 'png' } = await req.json();
+    const { url, dimension = '1920xfull', delay = 8000, format = 'png', scrollToBottom = true } = await req.json();
 
     if (!url) {
       return new Response(
@@ -23,24 +23,33 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, delay: ${delay}ms`);
+    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, delay: ${delay}ms, scrollToBottom: ${scrollToBottom}`);
 
     // Build ScreenshotMachine API URL with extended delay for JS animations
+    // Key parameters for capturing pages with scroll-triggered animations:
+    // - delay: Wait for animations after page load
+    // - scroll: Trigger scroll-based animations by scrolling through the page
+    // - scrollto: Scroll to specific position (bottom to trigger all lazy-load)
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
       url: url,
       dimension: dimension,
       format: format,
-      cacheLimit: '0', // No cache
-      delay: String(delay), // Wait for animations
-      // Additional params for better JS rendering
-      js: 'true', // Enable JavaScript
-      scroll: 'true', // Scroll the page to trigger scroll animations
+      cacheLimit: '0', // No cache - always fresh capture
+      delay: String(delay), // Extended delay for JS animations (8+ seconds)
+      // JavaScript rendering params
+      js: 'true', // Enable JavaScript execution
+      scroll: 'true', // Scroll through page to trigger IntersectionObserver animations
     });
+
+    // For full-page captures, scroll to bottom first to trigger all lazy content
+    if (scrollToBottom && dimension.includes('full')) {
+      params.set('scrollto', 'bottom');
+    }
 
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
     
-    console.log('Requesting screenshot from API...');
+    console.log('Requesting screenshot from API:', apiUrl);
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
