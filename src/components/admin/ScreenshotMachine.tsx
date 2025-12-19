@@ -41,35 +41,47 @@ interface ArchivedScreenshot {
 const PRESET_URLS = [
   { label: "Homepage", url: "https://umzugscheck.ch" },
   { label: "Umzugsofferten", url: "https://umzugscheck.ch/umzugsofferten" },
-  { label: "Umzugsfirmen", url: "https://umzugscheck.ch/firmen" },
+  { label: "Preisrechner", url: "https://umzugscheck.ch/preisrechner" },
+  { label: "Firmenverzeichnis", url: "https://umzugscheck.ch/firmen" },
   { label: "Beste Umzugsfirma", url: "https://umzugscheck.ch/beste-umzugsfirma" },
   { label: "Günstige Umzugsfirma", url: "https://umzugscheck.ch/guenstige-umzugsfirma" },
-  { label: "Region Zürich", url: "https://umzugscheck.ch/umzugsfirmen/zuerich" },
-  { label: "Region Bern", url: "https://umzugscheck.ch/umzugsfirmen/bern" },
-  { label: "Region Basel", url: "https://umzugscheck.ch/umzugsfirmen/basel" },
+  { label: "Zürich", url: "https://umzugscheck.ch/umzugsfirmen/zuerich" },
+  { label: "Bern", url: "https://umzugscheck.ch/umzugsfirmen/bern" },
 ];
 
+// Comprehensive list of all important pages to monitor
 const TOP_20_URLS = [
-  "https://umzugscheck.ch",
-  "https://umzugscheck.ch/umzugsofferten",
-  "https://umzugscheck.ch/firmen",
-  "https://umzugscheck.ch/beste-umzugsfirma",
-  "https://umzugscheck.ch/guenstige-umzugsfirma",
-  "https://umzugscheck.ch/umzugsfirmen/zuerich",
-  "https://umzugscheck.ch/umzugsfirmen/bern",
-  "https://umzugscheck.ch/umzugsfirmen/basel",
-  "https://umzugscheck.ch/umzugsfirmen/aargau",
-  "https://umzugscheck.ch/umzugsfirmen/luzern",
-  "https://umzugscheck.ch/privatumzug",
-  "https://umzugscheck.ch/firmenumzug",
-  "https://umzugscheck.ch/umzugskosten",
-  "https://umzugscheck.ch/reinigung",
-  "https://umzugscheck.ch/entsorgung",
-  "https://umzugscheck.ch/ratgeber",
-  "https://umzugscheck.ch/checkliste",
-  "https://umzugscheck.ch/preisrechner",
-  "https://umzugscheck.ch/fuer-firmen",
-  "https://umzugscheck.ch/kontakt",
+  // === CORE CONVERSION FUNNELS ===
+  "https://umzugscheck.ch",                          // Homepage - main entry
+  "https://umzugscheck.ch/umzugsofferten",           // Main lead funnel
+  "https://umzugscheck.ch/preisrechner",             // Price calculator
+  
+  // === COMPANY RANKINGS ===
+  "https://umzugscheck.ch/firmen",                   // Company directory
+  "https://umzugscheck.ch/beste-umzugsfirma",        // Best companies ranking
+  "https://umzugscheck.ch/guenstige-umzugsfirma",    // Cheapest companies ranking
+  
+  // === TOP REGIONS (by search volume) ===
+  "https://umzugscheck.ch/umzugsfirmen/zuerich",     // Zürich region
+  "https://umzugscheck.ch/umzugsfirmen/bern",        // Bern region
+  "https://umzugscheck.ch/umzugsfirmen/basel",       // Basel region
+  "https://umzugscheck.ch/umzugsfirmen/aargau",      // Aargau region
+  "https://umzugscheck.ch/umzugsfirmen/luzern",      // Luzern region
+  "https://umzugscheck.ch/umzugsfirmen/st-gallen",   // St. Gallen region
+  
+  // === SERVICE PAGES ===
+  "https://umzugscheck.ch/privatumzug",              // Private moving service
+  "https://umzugscheck.ch/firmenumzug",              // Business moving service
+  "https://umzugscheck.ch/reinigung",                // Cleaning service
+  "https://umzugscheck.ch/entsorgung",               // Disposal service
+  
+  // === CONTENT / SEO PAGES ===
+  "https://umzugscheck.ch/umzugskosten",             // Moving costs info
+  "https://umzugscheck.ch/ratgeber",                 // Guide/advice hub
+  "https://umzugscheck.ch/checkliste",               // Moving checklist
+  
+  // === B2B / PROVIDER PAGES ===
+  "https://umzugscheck.ch/fuer-firmen",              // For companies / become provider
 ];
 
 const DIMENSIONS = [

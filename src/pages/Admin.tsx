@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera } from "lucide-react";
+import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera, FolderArchive } from "lucide-react";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
 import { ProviderManagement } from "@/components/admin/ProviderManagement";
 import { LeadManagement } from "@/components/admin/LeadManagement";
@@ -15,6 +15,7 @@ import { LeadQualityDashboard } from "@/components/admin/LeadQualityDashboard";
 import { RevenueAnalytics } from "@/components/admin/RevenueAnalytics";
 import { LeadExport } from "@/components/admin/LeadExport";
 import { ScreenshotMachine } from "@/components/admin/ScreenshotMachine";
+import { ScreenshotArchive } from "@/components/admin/ScreenshotArchive";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Admin() {
@@ -195,7 +196,10 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="screenshots">
-            <ScreenshotMachine />
+            <div className="space-y-6">
+              <ScreenshotMachine />
+              <ScreenshotArchive />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
