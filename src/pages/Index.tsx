@@ -27,6 +27,8 @@ const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalC
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
 const MediaLogosSection = lazy(() => import("@/components/homepage/MediaLogosSection").then(m => ({ default: m.MediaLogosSection })));
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
+const PreFunnelCalculator = lazy(() => import("@/components/homepage/PreFunnelCalculator").then(m => ({ default: m.PreFunnelCalculator })));
+const ChecklistDownload = lazy(() => import("@/components/homepage/ChecklistDownload").then(m => ({ default: m.ChecklistDownload })));
 
 // Skeleton placeholders with fixed heights to prevent CLS
 const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
@@ -98,6 +100,11 @@ const Index = () => {
           {/* 2. Social proof immediately after hero */}
           <SocialProofMarquee />
           
+          {/* 2b. Pre-Funnel Calculator - alternative entry */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <PreFunnelCalculator />
+          </Suspense>
+          
           {/* 3. How it works - simplified process */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
             <EnhancedHowItWorks />
@@ -147,6 +154,15 @@ const Index = () => {
           <Suspense fallback={<SectionSkeleton height="150px" />}>
             <MediaLogosSection />
           </Suspense>
+          
+          {/* 12b. Checklist Download - Lead Magnet */}
+          <section className="py-12 sm:py-16">
+            <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
+              <Suspense fallback={<SectionSkeleton height="200px" />}>
+                <ChecklistDownload variant="card" />
+              </Suspense>
+            </div>
+          </section>
           
           {/* 13. FAQ */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>
