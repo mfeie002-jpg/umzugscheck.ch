@@ -7,22 +7,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { 
-  Package, 
-  Download, 
-  Loader2, 
-  FileText, 
-  Image as ImageIcon, 
-  Code, 
-  Globe, 
+import {
+  Package,
+  Download,
+  Loader2,
+  FileText,
+  Image as ImageIcon,
+  Code,
+  Globe,
   Upload,
   Link,
   CheckCircle2,
-  Copy
+  Copy,
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
+import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -323,11 +324,13 @@ Please provide:
         const pathname = new URL(url).pathname.replace(/\//g, '_') || 'index';
         const filename = `${String(i + 1).padStart(2, '0')}_${pathname}`;
 
+        const urlForShot = addScreenshotRenderParamIfHost(url, "umzugscheck.ch");
+
         // Desktop screenshot
         updateProgress(`Desktop: ${new URL(url).pathname || '/'}`);
         const desktopParams = new URLSearchParams({
           key: SCREENSHOT_API_KEY,
-          url,
+          url: urlForShot,
           dimension: "1920xfull",
           format: "png",
           cacheLimit: "0",
@@ -345,7 +348,7 @@ Please provide:
         updateProgress(`Mobile: ${new URL(url).pathname || '/'}`);
         const mobileParams = new URLSearchParams({
           key: SCREENSHOT_API_KEY,
-          url,
+          url: urlForShot,
           dimension: "375xfull",
           format: "png",
           cacheLimit: "0",
@@ -373,10 +376,12 @@ Please provide:
         const url = competitors[i];
         const domain = new URL(url).hostname.replace('www.', '');
 
+        const urlForShot = addScreenshotRenderParamIfHost(url, "umzugscheck.ch");
+
         updateProgress(`Konkurrent Desktop: ${domain}`);
         const desktopParams = new URLSearchParams({
           key: SCREENSHOT_API_KEY,
-          url,
+          url: urlForShot,
           dimension: "1920xfull",
           format: "png",
           cacheLimit: "0",
@@ -393,7 +398,7 @@ Please provide:
         updateProgress(`Konkurrent Mobile: ${domain}`);
         const mobileParams = new URLSearchParams({
           key: SCREENSHOT_API_KEY,
-          url,
+          url: urlForShot,
           dimension: "375xfull",
           format: "png",
           cacheLimit: "0",

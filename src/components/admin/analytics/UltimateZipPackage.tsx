@@ -11,6 +11,7 @@ import { Package, Download, Loader2, Link, Copy, CheckCircle2, FileArchive, Glob
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
+import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -1107,11 +1108,14 @@ Your analysis is successful if:
 
   const captureScreenshot = async (url: string, dimension: string): Promise<Blob | null> => {
     try {
+      const internalHost = new URL(config.projectUrl).hostname;
+      const screenshotUrl = addScreenshotRenderParamIfHost(url, internalHost);
+
       // Use 6 second delay to allow JavaScript animations to complete
       // Full-page screenshots need to scroll, which triggers scroll animations
       const params = new URLSearchParams({
         key: SCREENSHOT_API_KEY,
-        url,
+        url: screenshotUrl,
         dimension,
         format: "png",
         cacheLimit: "0",
