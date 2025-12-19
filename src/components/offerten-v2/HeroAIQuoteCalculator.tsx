@@ -44,12 +44,14 @@ import {
   Users,
   Package,
   Trash2,
-  Sofa
+  Sofa,
+  Video
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/lib/analytics";
 import { useRageClick } from "@/hooks/useRageClick";
 import { motion, AnimatePresence } from "framer-motion";
+import { VideoInventoryAnalysis, InventoryItem } from "./VideoInventoryAnalysis";
 
 interface CalculatorState {
   step: number;
@@ -59,6 +61,11 @@ interface CalculatorState {
   toOrt: string;
   wohnungsgroesse: string;
   kundentyp: "privat" | "firma";
+  // Inventory data from video analysis or manual input
+  inventoryItems: InventoryItem[];
+  inventoryVolumeM3: number;
+  inventoryEffortMin: number;
+  // Additional services
   reinigung: boolean;
   montage: boolean;
   entsorgung: boolean;
@@ -75,6 +82,9 @@ const initialState: CalculatorState = {
   toOrt: "",
   wohnungsgroesse: "",
   kundentyp: "privat",
+  inventoryItems: [],
+  inventoryVolumeM3: 0,
+  inventoryEffortMin: 0,
   reinigung: false,
   montage: false,
   entsorgung: false,
@@ -83,8 +93,8 @@ const initialState: CalculatorState = {
   phone: "",
 };
 
-// Step names for analytics
-const STEP_NAMES = ['standort', 'wohnungsgroesse', 'zusatzleistungen', 'kontaktdaten'] as const;
+// Step names for analytics - now 5 steps
+const STEP_NAMES = ['standort', 'wohnungsgroesse', 'inventar', 'zusatzleistungen', 'kontaktdaten'] as const;
 
 // Floating label input component with field tracking
 const FloatingLabelInput = ({ 
@@ -296,16 +306,22 @@ const stepConfig: Record<number, StepConfig> = {
   },
   2: {
     headline: "Wie gross ist Ihre Wohnung?",
-    ctaText: "Weiter zu Zusatzleistungen",
+    ctaText: "Weiter zum Inventar",
     microcopy: "Eine grobe Angabe genügt – Details klären wir später."
   },
   3: {
+    headline: "Was wird umgezogen?",
+    subline: "Video hochladen für automatische Erkennung oder manuell eingeben.",
+    ctaText: "Weiter zu Zusatzleistungen",
+    microcopy: null
+  },
+  4: {
     headline: "Benötigen Sie zusätzliche Leistungen?",
     subline: "Optional – alles kann später angepasst werden.",
     ctaText: "Weiter zu den Offerten",
     microcopy: null
   },
-  4: {
+  5: {
     headline: "Wohin dürfen wir die Offerten senden?",
     subline: "Sie erhalten 3–5 passende Offerten von geprüften Firmen.",
     ctaText: "Jetzt kostenlose Offerten erhalten",
@@ -676,15 +692,15 @@ export default function HeroAIQuoteCalculator() {
                     <div>
                       <h2 className="font-bold text-base sm:text-lg text-foreground">Offerten Anfrage</h2>
                       <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-                        Schritt {state.step} von 4
+                        Schritt {state.step} von 5
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                {/* Step progress bar - 4 steps */}
+                {/* Step progress bar - 5 steps */}
                 <div className="flex gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-                  {[1, 2, 3, 4].map((step) => (
+                  {[1, 2, 3, 4, 5].map((step) => (
                     <motion.div
                       key={step}
                       className={`h-1.5 flex-1 rounded-full overflow-hidden ${
@@ -858,10 +874,50 @@ export default function HeroAIQuoteCalculator() {
                     </motion.div>
                   )}
                   
-                  {/* STEP 3 - ZUSATZSERVICES */}
+                  {/* STEP 3 - INVENTAR (NEU) */}
                   {state.step === 3 && (
                     <motion.div
                       key="step3"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <VideoInventoryAnalysis
+                        initialItems={state.inventoryItems}
+                        onInventoryChange={(items, volumeM3, effortMin) => {
+                          updateState({
+                            inventoryItems: items,
+                            inventoryVolumeM3: volumeM3,
+                            inventoryEffortMin: effortMin
+                          });
+                        }}
+                      />
+                      
+                      <div className="flex gap-3 pt-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => updateState({ step: 2 })}
+                          className="flex-1"
+                        >
+                          Zurück
+                        </Button>
+                        <Button
+                          onClick={() => goToNextStep(4)}
+                          className="flex-1 gap-2"
+                        >
+                          {currentStep.ctaText}
+                          <ArrowRight className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {/* STEP 4 - ZUSATZSERVICES */}
+                  {state.step === 4 && (
+                    <motion.div
+                      key="step4"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
@@ -911,13 +967,13 @@ export default function HeroAIQuoteCalculator() {
                       <div className="flex gap-3 pt-2">
                         <Button
                           variant="outline"
-                          onClick={() => updateState({ step: 2 })}
+                          onClick={() => updateState({ step: 3 })}
                           className="flex-1"
                         >
                           Zurück
                         </Button>
                         <Button
-                          onClick={() => goToNextStep(4)}
+                          onClick={() => goToNextStep(5)}
                           className="flex-1 gap-2"
                         >
                           {currentStep.ctaText}
@@ -927,8 +983,8 @@ export default function HeroAIQuoteCalculator() {
                     </motion.div>
                   )}
                   
-                  {/* STEP 4 - KONTAKTDATEN */}
-                  {state.step === 4 && (
+                  {/* STEP 5 - KONTAKTDATEN */}
+                  {state.step === 5 && (
                     <motion.div
                       key="step4"
                       initial={{ opacity: 0, x: 20 }}
@@ -976,7 +1032,7 @@ export default function HeroAIQuoteCalculator() {
                       <div className="flex gap-3">
                         <Button
                           variant="outline"
-                          onClick={() => updateState({ step: 3 })}
+                          onClick={() => updateState({ step: 4 })}
                           className="flex-1"
                         >
                           Zurück

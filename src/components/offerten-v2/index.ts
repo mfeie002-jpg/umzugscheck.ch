@@ -14,6 +14,8 @@
  */
 
 export { default as HeroAIQuoteCalculator } from "./HeroAIQuoteCalculator";
+export { VideoInventoryAnalysis } from "./VideoInventoryAnalysis";
+export type { InventoryItem } from "./VideoInventoryAnalysis";
 export { default as AIInsightsBar } from "./AIInsightsBar";
 export { default as HowItWorksSection } from "./HowItWorksSection";
 export { default as ComparisonShowcase } from "./ComparisonShowcase";

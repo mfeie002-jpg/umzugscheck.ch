@@ -81,33 +81,42 @@ serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: `You are a professional moving volume estimator. Analyze this video of a home to estimate moving volume and create an inventory.
+                text: `Du bist ein professioneller Umzugsvolumen-Schätzer für Schweizer Umzugsfirmen. Analysiere dieses Video/Bild einer Wohnung und erstelle eine detaillierte Inventarliste.
 
-Your task:
-1. Identify all rooms visible in the video
-2. Count all furniture items and large objects in each room
-3. Estimate the volume in cubic meters for the entire home
-4. Identify large furniture items that need special handling
-5. Provide a difficulty score (1-5) based on access, stairs, heavy items, and fragility
-6. Provide a confidence score (0-1) for your estimate
+Deine Aufgaben:
+1. Identifiziere alle sichtbaren Räume
+2. Zähle alle Möbelstücke und grossen Gegenstände in jedem Raum
+3. Schätze das Gesamtvolumen in Kubikmetern (m³)
+4. Schätze den Zeitaufwand in Minuten für den Umzug (inkl. Tragen, Verladen, Transport)
+5. Erstelle eine detaillierte Item-Liste mit Kategorien und Mengen
 
-Return your analysis as a JSON object with this structure:
+Antworte NUR mit einem gültigen JSON-Objekt in diesem Format:
 {
-  "videoId": "auto-generated-id",
-  "estimatedVolumeM3": XX,
-  "difficultyScore": X.X,
-  "confidence": 0.XX,
-  "itemCounts": {
-    "sofas": X,
-    "beds": X,
-    "wardrobes": X,
-    "boxes": X,
-    "tables": X,
-    "chairs": X
-  }
+  "volume_m3": 25,
+  "estimated_effort_min": 240,
+  "confidence": 0.85,
+  "rooms_detected": ["Wohnzimmer", "Schlafzimmer", "Küche"],
+  "items": [
+    {"category": "Sofa", "quantity": 1, "icon": "sofa", "volume_per_item": 1.5},
+    {"category": "Bett", "quantity": 2, "icon": "bed", "volume_per_item": 2.0},
+    {"category": "Kleiderschrank", "quantity": 2, "icon": "wardrobe", "volume_per_item": 2.5},
+    {"category": "Esstisch", "quantity": 1, "icon": "table", "volume_per_item": 1.2},
+    {"category": "Stühle", "quantity": 6, "icon": "chair", "volume_per_item": 0.3},
+    {"category": "Sessel", "quantity": 2, "icon": "armchair", "volume_per_item": 0.8},
+    {"category": "TV/Monitor", "quantity": 1, "icon": "tv", "volume_per_item": 0.3},
+    {"category": "Bücherregal", "quantity": 1, "icon": "bookshelf", "volume_per_item": 0.8},
+    {"category": "Kommoden", "quantity": 2, "icon": "dresser", "volume_per_item": 0.6},
+    {"category": "Umzugskartons (geschätzt)", "quantity": 20, "icon": "box", "volume_per_item": 0.06}
+  ],
+  "special_items": ["Klavier", "Aquarium"],
+  "difficulty_notes": "Enge Treppe sichtbar"
 }
 
-Be detailed and accurate. Consider that this is for a Swiss home.`
+Wichtig:
+- volume_m3: Gesamtvolumen aller Gegenstände
+- estimated_effort_min: Geschätzter Zeitaufwand in Minuten (typisch: 4-8 Stunden für eine 3-Zimmer-Wohnung)
+- items: Detaillierte Liste mit icon-Namen (sofa, bed, wardrobe, table, chair, armchair, tv, bookshelf, dresser, box, lamp, plant, fridge, washer)
+- Sei realistisch und präzise für Schweizer Wohnungen`
               },
               {
                 type: "image_url",
@@ -153,35 +162,41 @@ Be detailed and accurate. Consider that this is for a Swiss home.`
     let analysis;
     try {
       const jsonMatch = analysisText.match(/```json\n([\s\S]*?)\n```/) || 
-                       analysisText.match(/```\n([\s\S]*?)\n```/);
+                       analysisText.match(/```\n([\s\S]*?)\n```/) ||
+                       analysisText.match(/\{[\s\S]*\}/);
       
       if (jsonMatch) {
-        analysis = JSON.parse(jsonMatch[1]);
+        const jsonStr = jsonMatch[1] || jsonMatch[0];
+        analysis = JSON.parse(jsonStr);
       } else {
         analysis = JSON.parse(analysisText);
       }
 
-      // Ensure videoId exists
-      if (!analysis.videoId) {
-        analysis.videoId = `video-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      }
+      // Ensure required fields exist
+      analysis.id = `video-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      analysis.volume_m3 = analysis.volume_m3 || analysis.estimatedVolumeM3 || 30;
+      analysis.estimated_effort_min = analysis.estimated_effort_min || 240;
+      analysis.confidence = analysis.confidence || 0.7;
+      analysis.items = analysis.items || [];
+      
     } catch (parseError) {
       log.error('Failed to parse AI response', parseError);
       
-      // Return a fallback response
+      // Return a fallback response with the new structure
       analysis = {
-        videoId: `video-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        estimatedVolumeM3: 30,
-        difficultyScore: 3,
+        id: `video-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        volume_m3: 30,
+        estimated_effort_min: 300,
         confidence: 0.5,
-        itemCounts: {
-          sofas: 1,
-          beds: 2,
-          wardrobes: 2,
-          boxes: 20,
-          tables: 2,
-          chairs: 6
-        },
+        rooms_detected: ["Wohnzimmer", "Schlafzimmer"],
+        items: [
+          { category: "Sofa", quantity: 1, icon: "sofa", volume_per_item: 1.5 },
+          { category: "Bett", quantity: 2, icon: "bed", volume_per_item: 2.0 },
+          { category: "Kleiderschrank", quantity: 2, icon: "wardrobe", volume_per_item: 2.5 },
+          { category: "Esstisch", quantity: 1, icon: "table", volume_per_item: 1.2 },
+          { category: "Stühle", quantity: 4, icon: "chair", volume_per_item: 0.3 },
+          { category: "Umzugskartons (geschätzt)", quantity: 20, icon: "box", volume_per_item: 0.06 }
+        ],
         note: "Analyse konnte nicht vollständig verarbeitet werden. Bitte überprüfen Sie die Werte."
       };
     }
