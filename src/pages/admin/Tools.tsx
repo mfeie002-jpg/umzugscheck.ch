@@ -122,103 +122,75 @@ const fetchHtmlContent = async (url: string): Promise<string> => {
 // STANDALONE FILES CONTENT (embedded for download)
 // ============================================================================
 
-const STANDALONE_PROMPTS_CONTENT = `# Standalone Component Prompts
+const STANDALONE_PROMPTS_CONTENT = `# Web Analyzer Suite - Standalone Setup
 
-Ready-to-use prompts for setting up the standalone tools in any Lovable or Softgen project.
+## 🎯 1 Prompt, 1 Tool - Alles was du brauchst
 
----
-
-## 1. AI Feedback Package - Setup Prompt
-
-Copy and paste this into a new Lovable/Softgen chat:
-
-\`\`\`
-Create an AI Feedback Package Generator with:
-
-- Project name, URL, description, goals, target audience inputs
-- Auto-discover pages by crawling homepage links  
-- Capture desktop (1920px) and mobile (375px) screenshots
-- Fetch HTML source for SEO analysis
-- Capture competitor screenshots
-- Generate tailored AI prompts for analysis
-- Download everything as ZIP with PDF report
-
-Technical: React + TypeScript, JSZip, file-saver, jsPDF, lucide-react
-Screenshot API: ScreenshotMachine (key: 892618)
-Edge Function: fetch-html (verify_jwt = false)
-\`\`\`
+Kopiere diesen Prompt in ein neues **Lovable** oder **Softgen** Projekt:
 
 ---
 
-## 2. Screenshot Machine - Setup Prompt
+## Der Prompt (kopiere alles zwischen den Backticks):
 
 \`\`\`
-Create a Screenshot Machine with:
+Erstelle eine Web Analyzer Suite mit folgenden Features:
 
-- Single and bulk URL screenshot capture
-- Device selection (desktop/mobile) with dimension presets
-- Full-page capture toggle
-- Delay configuration (1-8 seconds)
-- Download as PNG or ZIP
-- Screenshot API: ScreenshotMachine (key: 892618)
-\`\`\`
+## 1. AI Feedback Package Generator
+- Eingabefelder: Projektname, URL, Beschreibung, Ziele, Zielgruppe, Konkurrenten
+- Zusätzliche Seiten hinzufügen (dynamische Liste)
+- Automatische Screenshots: Desktop (1920xfull) und Mobile (393x852)
+- HTML-Quellcode abrufen für SEO-Analyse
+- Generiere AI-Analyse-Prompt als Markdown
+- PDF Project Brief erstellen
+- Alles als ZIP downloaden
 
----
+## 2. Screenshot Machine
+- Einzel-Screenshot: URL eingeben, Dimension wählen (Desktop/Mobile Presets)
+- Bulk-Screenshots: Mehrere URLs auf einmal
+- Optionen: Verzögerung (0-10 Sek), Volle Seite
+- Download einzeln oder als ZIP
+- Galerie der erfassten Screenshots
 
-## 3. Web Analyzer Suite (All-in-One)
+## Technische Details:
+- Screenshot API: ScreenshotMachine.com
+- API Key: 892618
+- API URL Format: https://api.screenshotmachine.com?key={KEY}&url={URL}&dimension={WxH}
+- Für volle Seite: dimension={W}x0&full=true
 
-\`\`\`
-Create a combined Web Analyzer Suite with tabs for:
-1. AI Feedback Package Generator
-2. Screenshot Machine  
-3. Project Analyzer
-All tools share utilities and API configuration.
-Screenshot API key: 892618
+## Dependencies:
+npm install jszip file-saver jspdf
+
+## Edge Function für HTML-Abruf:
+Erstelle eine Edge Function "fetch-html" mit verify_jwt = false die eine URL entgegennimmt und den HTML-Inhalt zurückgibt.
+
+## UI:
+- Tabs für die zwei Tools
+- Cards mit Formularen
+- Progress-Anzeige beim Generieren
+- Toast-Benachrichtigungen
+- Responsive Design
 \`\`\`
 
 ---
 
-## Dependencies
+## Nach dem Erstellen:
 
-\`\`\`bash
-npm install jszip file-saver jspdf lucide-react
-\`\`\`
+1. **Dependencies installieren** (falls nicht automatisch):
+   \`npm install jszip file-saver jspdf\`
 
-## Edge Function (supabase/functions/fetch-html/index.ts)
+2. **Edge Function prüfen** - sollte automatisch erstellt werden
 
-\`\`\`typescript
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+3. **Fertig!** Das Tool ist einsatzbereit.
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+---
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
-  
-  try {
-    const { url } = await req.json();
-    const response = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; AnalyzerBot/1.0)' }
-    });
-    const html = await response.text();
-    return new Response(JSON.stringify({ html, url }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  }
-});
-\`\`\`
+## Screenshot API Info
 
-Add to supabase/config.toml:
-\`\`\`
-[functions.fetch-html]
-verify_jwt = false
-\`\`\`
+- **Anbieter**: ScreenshotMachine.com
+- **API Key**: 892618 (eingebaut)
+- **Limits**: Abhängig vom Plan
+- **Formate**: PNG, JPG
+- **Dimensionen**: Beliebig (z.B. 1920x1080, 393x852)
 `;
 
 // ============================================================================
@@ -573,120 +545,86 @@ Please provide specific, actionable feedback with examples from the screenshots.
           </p>
         </div>
 
-        {/* Download Section - Prominent Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Quick Start Prompts */}
-          <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <BookOpen className="h-5 w-5 text-primary" />
-                </div>
-                ChatGPT/Claude Prompts
-              </CardTitle>
-              <CardDescription>
-                Fertige Prompts um die Tools in einem neuen Projekt zu erstellen
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Diese Markdown-Datei enthält alle Prompts die du brauchst, um die Tools in einem neuen Lovable oder Softgen Projekt zu erstellen.
-              </p>
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => downloadStandaloneFile('prompts')}
-                  className="flex-1"
-                  size="lg"
-                >
-                  <Download className="h-5 w-5 mr-2" />
-                  STANDALONE_PROMPTS.md
-                </Button>
+        {/* Simplified Download Section - 1 Prompt, 1 File */}
+        <Card className="mb-8 border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-transparent to-orange-500/5">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-orange-500 text-white">
+                <Download className="h-6 w-6" />
               </div>
-              <div className="bg-muted/50 rounded-lg p-3 text-xs">
-                <p className="font-medium mb-1">Enthält:</p>
-                <ul className="text-muted-foreground space-y-0.5">
-                  <li>• AI Feedback Package Setup</li>
-                  <li>• Screenshot Machine Setup</li>
-                  <li>• Web Analyzer Suite (All-in-One)</li>
-                  <li>• Edge Function Code</li>
-                </ul>
+              <div>
+                <CardTitle className="text-xl">Standalone Download</CardTitle>
+                <CardDescription>
+                  1 Prompt + 1 Datei = Komplettes Tool in neuem Projekt
+                </CardDescription>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Standalone Components */}
-          <Card className="border-2 border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-transparent">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-orange-500/10">
-                  <FileCode className="h-5 w-5 text-orange-600" />
-                </div>
-                Standalone Komponenten
-              </CardTitle>
-              <CardDescription>
-                Kopiere komplette Komponenten für andere Projekte
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                {[
-                  { name: 'AI Feedback Package', path: 'src/standalone/AIFeedbackPackageStandalone.tsx', lines: 868, icon: Package },
-                  { name: 'Screenshot Machine', path: 'src/standalone/ScreenshotMachineStandalone.tsx', lines: 634, icon: Camera },
-                  { name: 'Web Analyzer Suite', path: 'src/standalone/WebAnalyzerSuiteStandalone.tsx', lines: 1104, icon: Zap, highlight: true },
-                ].map((item) => (
-                  <Button 
-                    key={item.path}
-                    variant="outline" 
-                    className={`w-full h-auto py-3 justify-between ${item.highlight ? 'border-orange-500/30 bg-orange-500/5' : ''}`}
-                    onClick={() => copyFilePathToClipboard(item.path)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span className="font-medium">{item.name}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">{item.lines} Zeilen</Badge>
-                      <Copy className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </Button>
-                ))}
-              </div>
-              <div className="bg-muted/50 rounded-lg p-3 text-xs">
-                <p className="font-medium mb-1 flex items-center gap-2">
-                  <Terminal className="h-3 w-3" />
-                  Dependencies:
-                </p>
-                <code className="text-muted-foreground">npm install jszip file-saver jspdf</code>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Step by Step Instructions */}
-        <Card className="mb-8 bg-muted/30">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-success" />
-              Anleitung: So nutzt du die Standalone-Dateien
-            </CardTitle>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              {[
-                { step: 1, title: 'Prompts laden', desc: 'STANDALONE_PROMPTS.md herunterladen' },
-                { step: 2, title: 'Neues Projekt', desc: 'Lovable/Softgen Projekt öffnen' },
-                { step: 3, title: 'Prompt kopieren', desc: 'Gewünschten Prompt aus MD-Datei kopieren' },
-                { step: 4, title: 'AI einfügen', desc: 'Prompt in Chat einfügen und erstellen lassen' },
-                { step: 5, title: 'Fertig!', desc: 'Tool ist einsatzbereit' },
-              ].map((item) => (
-                <div key={item.step} className="flex flex-col items-center text-center p-3 rounded-lg bg-background">
-                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm mb-2">
-                    {item.step}
-                  </div>
-                  <p className="font-medium text-sm">{item.title}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+          <CardContent className="space-y-6">
+            {/* Main Download Button */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button 
+                onClick={() => downloadStandaloneFile('prompts')}
+                size="lg"
+                className="flex-1 h-14 text-base bg-gradient-to-r from-primary to-primary/80"
+              >
+                <FileDown className="h-5 w-5 mr-2" />
+                STANDALONE_PROMPTS.md herunterladen
+              </Button>
+            </div>
+
+            {/* How it works */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="font-bold text-primary">1</span>
                 </div>
-              ))}
+                <div>
+                  <p className="font-medium text-sm">Download</p>
+                  <p className="text-xs text-muted-foreground">Lade die .md Datei herunter</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
+                <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
+                  <span className="font-bold text-orange-600">2</span>
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Kopieren</p>
+                  <p className="text-xs text-muted-foreground">Prompt in Lovable/Softgen einfügen</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
+                <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Fertig!</p>
+                  <p className="text-xs text-muted-foreground">Tool wird automatisch erstellt</p>
+                </div>
+              </div>
+            </div>
+
+            {/* What's included */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="font-semibold text-sm mb-2">Was ist enthalten:</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <Package className="h-4 w-4 text-primary" />
+                  <span>AI Feedback Package</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Camera className="h-4 w-4 text-orange-600" />
+                  <span>Screenshot Machine</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Code className="h-4 w-4 text-green-600" />
+                  <span>Edge Function Code</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Terminal className="h-4 w-4 text-purple-600" />
+                  <span>Dependencies Liste</span>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
