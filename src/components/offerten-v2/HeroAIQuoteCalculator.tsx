@@ -44,14 +44,13 @@ import {
   Users,
   Package,
   Trash2,
-  Sofa,
-  Video
+  Sofa
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/lib/analytics";
 import { useRageClick } from "@/hooks/useRageClick";
 import { motion, AnimatePresence } from "framer-motion";
-import { VideoInventoryAnalysis, InventoryItem } from "./VideoInventoryAnalysis";
+// VideoInventoryAnalysis removed - feature available but not in main funnel
 
 interface CalculatorState {
   step: number;
@@ -61,10 +60,6 @@ interface CalculatorState {
   toOrt: string;
   wohnungsgroesse: string;
   kundentyp: "privat" | "firma";
-  // Inventory data from video analysis or manual input
-  inventoryItems: InventoryItem[];
-  inventoryVolumeM3: number;
-  inventoryEffortMin: number;
   // Additional services
   reinigung: boolean;
   montage: boolean;
@@ -82,9 +77,6 @@ const initialState: CalculatorState = {
   toOrt: "",
   wohnungsgroesse: "",
   kundentyp: "privat",
-  inventoryItems: [],
-  inventoryVolumeM3: 0,
-  inventoryEffortMin: 0,
   reinigung: false,
   montage: false,
   entsorgung: false,
@@ -93,8 +85,8 @@ const initialState: CalculatorState = {
   phone: "",
 };
 
-// Step names for analytics - now 5 steps
-const STEP_NAMES = ['standort', 'wohnungsgroesse', 'inventar', 'zusatzleistungen', 'kontaktdaten'] as const;
+// Step names for analytics - optimized 4 steps (merged inventory+services)
+const STEP_NAMES = ['standort', 'wohnungsgroesse', 'zusatzleistungen', 'kontaktdaten'] as const;
 
 // Floating label input component with field tracking
 const FloatingLabelInput = ({ 
@@ -301,31 +293,25 @@ interface StepConfig {
 const stepConfig: Record<number, StepConfig> = {
   1: {
     headline: "Wo ziehen Sie um?",
-    ctaText: "Weiter zur Wohnungsgrösse",
+    ctaText: "Weiter",
     microcopy: "Ihre Angaben dienen nur zur groben Einschätzung."
   },
   2: {
     headline: "Wie gross ist Ihre Wohnung?",
-    ctaText: "Weiter zum Inventar",
+    ctaText: "Weiter",
     microcopy: "Eine grobe Angabe genügt – Details klären wir später."
   },
   3: {
-    headline: "Was wird umgezogen?",
-    subline: "Video hochladen für automatische Erkennung oder manuell eingeben.",
-    ctaText: "Weiter zu Zusatzleistungen",
-    microcopy: null
-  },
-  4: {
-    headline: "Benötigen Sie zusätzliche Leistungen?",
-    subline: "Optional – alles kann später angepasst werden.",
+    headline: "Zusätzliche Leistungen?",
+    subline: "Optional – Sie können später alles anpassen.",
     ctaText: "Weiter zu den Offerten",
     microcopy: null
   },
-  5: {
-    headline: "Wohin dürfen wir die Offerten senden?",
-    subline: "Sie erhalten 3–5 passende Offerten von geprüften Firmen.",
+  4: {
+    headline: "Fast fertig!",
+    subline: "Sie erhalten 3–5 Offerten von geprüften Firmen.",
     ctaText: "Jetzt kostenlose Offerten erhalten",
-    microcopy: "Keine Weitergabe ohne Anfrage · Kein Spam"
+    microcopy: "Keine Weitergabe · Kein Spam · 100% unverbindlich"
   }
 };
 
@@ -690,17 +676,17 @@ export default function HeroAIQuoteCalculator() {
                       <Calculator className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </motion.div>
                     <div>
-                      <h2 className="font-bold text-base sm:text-lg text-foreground">Offerten Anfrage</h2>
+                  <h2 className="font-bold text-base sm:text-lg text-foreground">Offerten Anfrage</h2>
                       <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-                        Schritt {state.step} von 5
+                        Schritt {state.step} von 4
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                {/* Step progress bar - 5 steps */}
+                {/* Step progress bar - 4 steps */}
                 <div className="flex gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-                  {[1, 2, 3, 4, 5].map((step) => (
+                  {[1, 2, 3, 4].map((step) => (
                     <motion.div
                       key={step}
                       className={`h-1.5 flex-1 rounded-full overflow-hidden ${
@@ -874,7 +860,7 @@ export default function HeroAIQuoteCalculator() {
                     </motion.div>
                   )}
                   
-                  {/* STEP 3 - INVENTAR (NEU) */}
+                  {/* STEP 3 - ZUSATZSERVICES (merged, simplified) */}
                   {state.step === 3 && (
                     <motion.div
                       key="step3"
@@ -884,16 +870,49 @@ export default function HeroAIQuoteCalculator() {
                       transition={{ duration: 0.3 }}
                       className="space-y-4"
                     >
-                      <VideoInventoryAnalysis
-                        initialItems={state.inventoryItems}
-                        onInventoryChange={(items, volumeM3, effortMin) => {
-                          updateState({
-                            inventoryItems: items,
-                            inventoryVolumeM3: volumeM3,
-                            inventoryEffortMin: effortMin
-                          });
-                        }}
-                      />
+                      <div className="space-y-3">
+                        {[
+                          { key: "reinigung", label: "Endreinigung", icon: Sparkles, desc: "Besenreine Übergabe" },
+                          { key: "montage", label: "Möbelmontage", icon: Sofa, desc: "Auf- und Abbau" },
+                          { key: "entsorgung", label: "Entsorgung", icon: Trash2, desc: "Sperrgut entsorgen" },
+                        ].map((service) => (
+                          <motion.div
+                            key={service.key}
+                            whileHover={{ scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border cursor-pointer transition-all ${
+                              state[service.key as keyof CalculatorState]
+                                ? "border-primary bg-primary/5"
+                                : "border-border hover:border-primary/50"
+                            }`}
+                            onClick={() => handleServiceToggle(service.key)}
+                          >
+                            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center ${
+                              state[service.key as keyof CalculatorState]
+                                ? "bg-primary/10"
+                                : "bg-muted"
+                            }`}>
+                              <service.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                                state[service.key as keyof CalculatorState]
+                                  ? "text-primary"
+                                  : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-foreground text-sm sm:text-base">{service.label}</p>
+                              <p className="text-xs text-muted-foreground">{service.desc}</p>
+                            </div>
+                            <Switch
+                              checked={state[service.key as keyof CalculatorState] as boolean}
+                              className="pointer-events-none"
+                            />
+                          </motion.div>
+                        ))}
+                      </div>
+                      
+                      <p className="text-xs text-muted-foreground text-center">
+                        Alle Optionen können später angepasst werden.
+                      </p>
                       
                       <div className="flex gap-3 pt-2">
                         <Button
@@ -914,77 +933,8 @@ export default function HeroAIQuoteCalculator() {
                     </motion.div>
                   )}
                   
-                  {/* STEP 4 - ZUSATZSERVICES */}
+                  {/* STEP 4 - KONTAKTDATEN */}
                   {state.step === 4 && (
-                    <motion.div
-                      key="step4"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="space-y-4"
-                    >
-                      <div className="space-y-3">
-                        {[
-                          { key: "reinigung", label: "Endreinigung", icon: Sparkles, desc: "Wohnung wird besenrein übergeben" },
-                          { key: "montage", label: "Möbelmontage", icon: Sofa, desc: "Auf- und Abbau Ihrer Möbel" },
-                          { key: "entsorgung", label: "Entsorgung", icon: Trash2, desc: "Alte Möbel und Sperrgut entsorgen" },
-                        ].map((service) => (
-                          <motion.div
-                            key={service.key}
-                            whileHover={{ scale: 1.01 }}
-                            whileTap={{ scale: 0.99 }}
-                            className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                              state[service.key as keyof CalculatorState]
-                                ? "border-primary bg-primary/5 shadow-sm"
-                                : "border-border hover:border-primary/50"
-                            }`}
-                            onClick={() => handleServiceToggle(service.key)}
-                          >
-                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                              state[service.key as keyof CalculatorState]
-                                ? "bg-primary/10"
-                                : "bg-muted"
-                            }`}>
-                              <service.icon className={`w-5 h-5 ${
-                                state[service.key as keyof CalculatorState]
-                                  ? "text-primary"
-                                  : "text-muted-foreground"
-                              }`} />
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-medium text-foreground">{service.label}</p>
-                              <p className="text-xs text-muted-foreground">{service.desc}</p>
-                            </div>
-                            <Switch
-                              checked={state[service.key as keyof CalculatorState] as boolean}
-                              className="pointer-events-none"
-                            />
-                          </motion.div>
-                        ))}
-                      </div>
-                      
-                      <div className="flex gap-3 pt-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => updateState({ step: 3 })}
-                          className="flex-1"
-                        >
-                          Zurück
-                        </Button>
-                        <Button
-                          onClick={() => goToNextStep(5)}
-                          className="flex-1 gap-2"
-                        >
-                          {currentStep.ctaText}
-                          <ArrowRight className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    </motion.div>
-                  )}
-                  
-                  {/* STEP 5 - KONTAKTDATEN */}
-                  {state.step === 5 && (
                     <motion.div
                       key="step4"
                       initial={{ opacity: 0, x: 20 }}
@@ -1020,25 +970,24 @@ export default function HeroAIQuoteCalculator() {
                         icon={Mail}
                         isValid={isEmailValid}
                         error={state.email.length > 0 && !isEmailValid}
-                        helpText="Ihre Offerten werden an diese E-Mail gesendet"
+                        helpText="Ihre Offerten werden per E-Mail gesendet"
                       />
                       
-                      {/* Process expectation + Privacy reassurance */}
-                      <div className="space-y-2">
-                        <div className="flex items-start gap-2 text-xs text-green-700 bg-green-50 p-3 rounded-lg border border-green-200">
-                          <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                          <span><strong>Was passiert:</strong> Sie erhalten innerhalb von 24–48h 3–5 Offerten per E-Mail. Keine Anrufe, keine Verpflichtungen.</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">
-                          <Lock className="w-4 h-4 text-primary flex-shrink-0" />
-                          <span>{currentStep.microcopy}</span>
-                        </div>
+                      {/* Process expectation */}
+                      <div className="flex items-start gap-2 text-xs text-green-700 bg-green-50 p-3 rounded-lg border border-green-200">
+                        <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                        <span>Sie erhalten innerhalb von 24h 3–5 Offerten. Keine Anrufe, keine Verpflichtungen.</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Lock className="w-3 h-3" />
+                        <span>{currentStep.microcopy}</span>
                       </div>
                       
                       <div className="flex gap-3">
                         <Button
                           variant="outline"
-                          onClick={() => updateState({ step: 4 })}
+                          onClick={() => updateState({ step: 3 })}
                           className="flex-1"
                         >
                           Zurück
@@ -1055,7 +1004,7 @@ export default function HeroAIQuoteCalculator() {
                             </>
                           ) : (
                             <>
-                              {currentStep.ctaText}
+                              Offerten erhalten
                               <CheckCircle2 className="w-5 h-5" />
                             </>
                           )}
