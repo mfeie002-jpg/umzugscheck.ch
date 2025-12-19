@@ -1107,13 +1107,15 @@ Your analysis is successful if:
 
   const captureScreenshot = async (url: string, dimension: string): Promise<Blob | null> => {
     try {
+      // Use 6 second delay to allow JavaScript animations to complete
+      // Full-page screenshots need to scroll, which triggers scroll animations
       const params = new URLSearchParams({
         key: SCREENSHOT_API_KEY,
         url,
         dimension,
         format: "png",
         cacheLimit: "0",
-        delay: "3000",
+        delay: "6000", // Increased from 3000 to allow scroll animations to complete
       });
       const response = await fetch(`https://api.screenshotmachine.com?${params}`);
       if (!response.ok) throw new Error("Screenshot failed");

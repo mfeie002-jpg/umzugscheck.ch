@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.lighthouse]
 verify_jwt = false
+
+[functions.capture-screenshot]
+verify_jwt = false
