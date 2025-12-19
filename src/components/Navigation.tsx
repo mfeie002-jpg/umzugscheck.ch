@@ -112,7 +112,7 @@ export const Navigation = () => {
                 </div>
 
                 {/* Slogan below logo (Mobile, Tablet + Desktop) with fade-in animation */}
-                <span className="text-[6px] xs:text-[8px] sm:text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0 xs:mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight animate-[fadeInSlogan_0.6s_ease-out_0.2s_both] whitespace-nowrap max-w-[120px] xs:max-w-none truncate xs:overflow-visible">
+                <span className="text-[8px] xs:text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground/80 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight animate-[fadeInSlogan_0.6s_ease-out_0.2s_both]">
                   Der Schweizer Umzugsvergleich
                 </span>
               </div>
