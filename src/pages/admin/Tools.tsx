@@ -118,37 +118,106 @@ const fetchHtmlContent = async (url: string): Promise<string> => {
 };
 
 // ============================================================================
-// STANDALONE FILES CONTENT (for download)
+// STANDALONE FILES CONTENT (embedded for download)
 // ============================================================================
 
-const getStandalonePrompts = () => `# STANDALONE PROMPTS FOR AI ANALYSIS TOOLS
+const STANDALONE_PROMPTS_CONTENT = `# Standalone Component Prompts
 
-## PROMPT A: AI Website Feedback Package
+Ready-to-use prompts for setting up the standalone tools in any Lovable or Softgen project.
 
-Create a complete React component called "AIFeedbackPackage" that:
-- Takes project name, URL, and multiple page paths
-- Captures desktop (1920x1080) and mobile (393x852) screenshots
-- Uses ScreenshotMachine API (key: 892618)
-- Generates tailored AI prompts for analysis
-- Downloads everything as ZIP
-- Include PDF export option
+---
 
-## PROMPT B: Screenshot Machine
+## 1. AI Feedback Package - Setup Prompt
 
-Create a React component "ScreenshotMachine" that:
+Copy and paste this into a new Lovable/Softgen chat:
+
+\`\`\`
+Create an AI Feedback Package Generator with:
+
+- Project name, URL, description, goals, target audience inputs
+- Auto-discover pages by crawling homepage links  
+- Capture desktop (1920px) and mobile (375px) screenshots
+- Fetch HTML source for SEO analysis
+- Capture competitor screenshots
+- Generate tailored AI prompts for analysis
+- Download everything as ZIP with PDF report
+
+Technical: React + TypeScript, JSZip, file-saver, jsPDF, lucide-react
+Screenshot API: ScreenshotMachine (key: 892618)
+Edge Function: fetch-html (verify_jwt = false)
+\`\`\`
+
+---
+
+## 2. Screenshot Machine - Setup Prompt
+
+\`\`\`
+Create a Screenshot Machine with:
+
 - Single and bulk URL screenshot capture
-- Multiple dimension presets (desktop/mobile)
-- Full-page capture support
+- Device selection (desktop/mobile) with dimension presets
+- Full-page capture toggle
+- Delay configuration (1-8 seconds)
 - Download as PNG or ZIP
-- API key: 892618
+- Screenshot API: ScreenshotMachine (key: 892618)
+\`\`\`
 
-## PROMPT C: Web Analyzer Suite (Combined)
+---
 
-Create a combined component with tabs for:
-1. AI Feedback Package
+## 3. Web Analyzer Suite (All-in-One)
+
+\`\`\`
+Create a combined Web Analyzer Suite with tabs for:
+1. AI Feedback Package Generator
 2. Screenshot Machine  
 3. Project Analyzer
-All in one interface with shared state.
+All tools share utilities and API configuration.
+Screenshot API key: 892618
+\`\`\`
+
+---
+
+## Dependencies
+
+\`\`\`bash
+npm install jszip file-saver jspdf lucide-react
+\`\`\`
+
+## Edge Function (supabase/functions/fetch-html/index.ts)
+
+\`\`\`typescript
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+  
+  try {
+    const { url } = await req.json();
+    const response = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; AnalyzerBot/1.0)' }
+    });
+    const html = await response.text();
+    return new Response(JSON.stringify({ html, url }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+});
+\`\`\`
+
+Add to supabase/config.toml:
+\`\`\`
+[functions.fetch-html]
+verify_jwt = false
+\`\`\`
 `;
 
 // ============================================================================
@@ -448,45 +517,40 @@ Please provide specific, actionable feedback with examples from the screenshots.
   // DOWNLOAD STANDALONE FILES
   // ============================================================================
 
-  const downloadStandaloneFile = async (type: 'prompts' | 'ai-feedback' | 'screenshot' | 'suite') => {
+  const downloadStandaloneFile = (type: 'prompts' | 'ai-feedback' | 'screenshot' | 'suite') => {
     try {
       let content = '';
       let filename = '';
+      let mimeType = 'text/plain';
 
       switch (type) {
         case 'prompts':
-          content = getStandalonePrompts();
+          content = STANDALONE_PROMPTS_CONTENT;
           filename = 'STANDALONE_PROMPTS.md';
+          mimeType = 'text/markdown';
           break;
         case 'ai-feedback':
-          // Fetch the actual file content
-          const aiFeedbackResponse = await fetch('/src/standalone/AIFeedbackPackageStandalone.tsx');
-          content = await aiFeedbackResponse.text();
-          filename = 'AIFeedbackPackageStandalone.tsx';
-          break;
+          toast.info('Öffne Code-Editor → src/standalone/AIFeedbackPackageStandalone.tsx → Kopiere den Inhalt');
+          return;
         case 'screenshot':
-          const screenshotResponse = await fetch('/src/standalone/ScreenshotMachineStandalone.tsx');
-          content = await screenshotResponse.text();
-          filename = 'ScreenshotMachineStandalone.tsx';
-          break;
+          toast.info('Öffne Code-Editor → src/standalone/ScreenshotMachineStandalone.tsx → Kopiere den Inhalt');
+          return;
         case 'suite':
-          const suiteResponse = await fetch('/src/standalone/WebAnalyzerSuiteStandalone.tsx');
-          content = await suiteResponse.text();
-          filename = 'WebAnalyzerSuiteStandalone.tsx';
-          break;
+          toast.info('Öffne Code-Editor → src/standalone/WebAnalyzerSuiteStandalone.tsx → Kopiere den Inhalt');
+          return;
       }
 
-      if (type === 'prompts') {
-        const blob = new Blob([content], { type: 'text/markdown' });
-        saveAs(blob, filename);
-      } else {
-        toast.info('Datei wird aus dem Code-Editor exportiert. Nutze "Code Export" für vollständigen Download.');
-      }
-      
-      toast.success(`${filename} bereit!`);
+      const blob = new Blob([content], { type: mimeType });
+      saveAs(blob, filename);
+      toast.success(`${filename} heruntergeladen!`);
     } catch (error) {
       toast.error('Download fehlgeschlagen');
     }
+  };
+
+  const copyFilePathToClipboard = (path: string) => {
+    navigator.clipboard.writeText(path);
+    toast.success(`Pfad kopiert: ${path}`);
   };
 
   // ============================================================================
@@ -521,50 +585,83 @@ Please provide specific, actionable feedback with examples from the screenshots.
               Standalone Downloads
             </CardTitle>
             <CardDescription>
-              Lade die Tools als eigenständige Dateien herunter
+              Lade die Prompts herunter oder kopiere die Dateipfade für die Standalone-Komponenten
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <CardContent className="space-y-6">
+            {/* Prompts Download */}
+            <div>
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                ChatGPT/Claude Prompts
+              </h4>
               <Button 
-                variant="outline" 
-                className="h-auto py-4 flex-col"
                 onClick={() => downloadStandaloneFile('prompts')}
+                className="w-full md:w-auto"
               >
-                <FileText className="h-8 w-8 mb-2" />
-                <span className="font-semibold">Prompts</span>
-                <span className="text-xs text-muted-foreground">STANDALONE_PROMPTS.md</span>
+                <Download className="h-4 w-4 mr-2" />
+                STANDALONE_PROMPTS.md herunterladen
               </Button>
-              
-              <Button 
-                variant="outline" 
-                className="h-auto py-4 flex-col"
-                onClick={() => navigate('/admin/code-export')}
-              >
-                <Package className="h-8 w-8 mb-2" />
-                <span className="font-semibold">AI Feedback</span>
-                <span className="text-xs text-muted-foreground">Via Code Export</span>
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="h-auto py-4 flex-col"
-                onClick={() => navigate('/admin/code-export')}
-              >
-                <Camera className="h-8 w-8 mb-2" />
-                <span className="font-semibold">Screenshot Tool</span>
-                <span className="text-xs text-muted-foreground">Via Code Export</span>
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="h-auto py-4 flex-col"
-                onClick={() => navigate('/admin/code-export')}
-              >
-                <Zap className="h-8 w-8 mb-2" />
-                <span className="font-semibold">Complete Suite</span>
-                <span className="text-xs text-muted-foreground">Via Code Export</span>
-              </Button>
+            </div>
+
+            {/* Component Files */}
+            <div>
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Code className="h-4 w-4" />
+                Standalone Komponenten (Pfad kopieren für Code-Editor)
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Button 
+                  variant="outline" 
+                  className="h-auto py-3 flex-col items-start text-left"
+                  onClick={() => copyFilePathToClipboard('src/standalone/AIFeedbackPackageStandalone.tsx')}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Package className="h-4 w-4" />
+                    <span className="font-semibold">AI Feedback Package</span>
+                  </div>
+                  <code className="text-xs text-muted-foreground">src/standalone/AIFeedbackPackageStandalone.tsx</code>
+                  <Badge variant="secondary" className="mt-2">868 Zeilen</Badge>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-auto py-3 flex-col items-start text-left"
+                  onClick={() => copyFilePathToClipboard('src/standalone/ScreenshotMachineStandalone.tsx')}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Camera className="h-4 w-4" />
+                    <span className="font-semibold">Screenshot Machine</span>
+                  </div>
+                  <code className="text-xs text-muted-foreground">src/standalone/ScreenshotMachineStandalone.tsx</code>
+                  <Badge variant="secondary" className="mt-2">634 Zeilen</Badge>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-auto py-3 flex-col items-start text-left"
+                  onClick={() => copyFilePathToClipboard('src/standalone/WebAnalyzerSuiteStandalone.tsx')}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Zap className="h-4 w-4" />
+                    <span className="font-semibold">Web Analyzer Suite</span>
+                  </div>
+                  <code className="text-xs text-muted-foreground">src/standalone/WebAnalyzerSuiteStandalone.tsx</code>
+                  <Badge variant="secondary" className="mt-2">1104 Zeilen - Alles in einem!</Badge>
+                </Button>
+              </div>
+            </div>
+
+            {/* Instructions */}
+            <div className="bg-muted/50 rounded-lg p-4 text-sm">
+              <h5 className="font-semibold mb-2">So verwendest du die Standalone-Dateien:</h5>
+              <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+                <li>Klicke auf eine Komponente um den Pfad zu kopieren</li>
+                <li>Öffne den Code-Editor (oben links umschalten)</li>
+                <li>Navigiere zum Pfad und kopiere den gesamten Dateiinhalt</li>
+                <li>Füge den Code in ein neues Lovable/Softgen Projekt ein</li>
+                <li>Installiere: <code className="bg-background px-1 rounded">npm install jszip file-saver jspdf</code></li>
+              </ol>
             </div>
           </CardContent>
         </Card>
