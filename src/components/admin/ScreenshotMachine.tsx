@@ -6,8 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage } from "lucide-react";
+import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2 } from "lucide-react";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -15,16 +18,19 @@ interface ScreenshotResult {
   url: string;
   imageUrl: string;
   timestamp: Date;
+  isFullPage: boolean;
+  dimension: string;
 }
 
 const PRESET_URLS = [
   { label: "Homepage", url: "https://umzugscheck.ch" },
-  { label: "Preisrechner", url: "https://umzugscheck.ch/preisrechner" },
+  { label: "Umzugsofferten", url: "https://umzugscheck.ch/umzugsofferten" },
   { label: "Umzugsfirmen", url: "https://umzugscheck.ch/firmen" },
   { label: "Beste Umzugsfirma", url: "https://umzugscheck.ch/beste-umzugsfirma" },
   { label: "Günstige Umzugsfirma", url: "https://umzugscheck.ch/guenstige-umzugsfirma" },
-  { label: "Umzugsofferten", url: "https://umzugscheck.ch/umzugsofferten" },
-  { label: "Region Zürich", url: "https://umzugscheck.ch/umzugsfirma-zuerich" },
+  { label: "Region Zürich", url: "https://umzugscheck.ch/umzugsfirmen/zuerich" },
+  { label: "Region Bern", url: "https://umzugscheck.ch/umzugsfirmen/bern" },
+  { label: "Region Basel", url: "https://umzugscheck.ch/umzugsfirmen/basel" },
 ];
 
 const DIMENSIONS = [
@@ -51,9 +57,16 @@ export function ScreenshotMachine() {
   const [bulkLoading, setBulkLoading] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
 
+  // Debug mode
+  const [showDebug, setShowDebug] = useState(false);
+  const [debugUrl, setDebugUrl] = useState("");
+
+  // Modal for full-page preview
+  const [selectedImage, setSelectedImage] = useState<ScreenshotResult | null>(null);
+
   const generateScreenshotUrl = (targetUrl: string): string => {
     const width = dimension.split("x")[0];
-    // ScreenshotMachine supports full-page via "WIDTHxfull" (e.g. 1366xfull)
+    // ScreenshotMachine API: full page via "WIDTHxfull" format (e.g., 1920xfull)
     const effectiveDimension = fullPage ? `${width}xfull` : dimension;
 
     const params = new URLSearchParams({
@@ -62,10 +75,21 @@ export function ScreenshotMachine() {
       dimension: effectiveDimension,
       format: "png",
       cacheLimit: "0",
-      delay: "2000",
+      delay: fullPage ? "3000" : "2000", // Longer delay for full-page
     });
 
     return `https://api.screenshotmachine.com?${params.toString()}`;
+  };
+
+  const testRequest = () => {
+    const testUrl = url || "https://umzugscheck.ch";
+    const apiUrl = generateScreenshotUrl(testUrl);
+    setDebugUrl(apiUrl);
+    setShowDebug(true);
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(apiUrl);
+    toast.success("API-URL in Zwischenablage kopiert!");
   };
 
   const captureScreenshot = async () => {
@@ -84,7 +108,9 @@ export function ScreenshotMachine() {
         setResults(prev => [{
           url,
           imageUrl,
-          timestamp: new Date()
+          timestamp: new Date(),
+          isFullPage: fullPage,
+          dimension: fullPage ? `${dimension.split("x")[0]}xfull` : dimension,
         }, ...prev]);
         toast.success("Screenshot erfolgreich erstellt!");
         setLoading(false);
@@ -127,7 +153,9 @@ export function ScreenshotMachine() {
             setResults(prev => [{
               url: targetUrl,
               imageUrl,
-              timestamp: new Date()
+              timestamp: new Date(),
+              isFullPage: fullPage,
+              dimension: fullPage ? `${dimension.split("x")[0]}xfull` : dimension,
             }, ...prev]);
             resolve();
           };
@@ -287,52 +315,99 @@ export function ScreenshotMachine() {
               <div className="space-y-1">
                 <Label className="text-base">Full Page</Label>
                 <p className="text-sm text-muted-foreground">
-                  Gesamte Seite erfassen
+                  Gesamte Seite erfassen ({dimension.split("x")[0]}xfull)
                 </p>
               </div>
               <Switch checked={fullPage} onCheckedChange={setFullPage} />
             </div>
           </div>
 
-          {/* Capture Button */}
-          {bulkMode ? (
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            {bulkMode ? (
+              <Button 
+                onClick={captureBulkScreenshots} 
+                disabled={bulkLoading}
+                className="flex-1"
+                size="lg"
+              >
+                {bulkLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Erfasse {bulkProgress.current}/{bulkProgress.total}...
+                  </>
+                ) : (
+                  <>
+                    <FileImage className="h-4 w-4 mr-2" />
+                    Bulk-Screenshots erstellen
+                  </>
+                )}
+              </Button>
+            ) : (
+              <Button 
+                onClick={captureScreenshot} 
+                disabled={loading}
+                className="flex-1"
+                size="lg"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Erstelle Screenshot...
+                  </>
+                ) : (
+                  <>
+                    <Camera className="h-4 w-4 mr-2" />
+                    Screenshot erstellen
+                  </>
+                )}
+              </Button>
+            )}
+            
+            {/* Debug Button */}
             <Button 
-              onClick={captureBulkScreenshots} 
-              disabled={bulkLoading}
-              className="w-full"
+              variant="outline" 
               size="lg"
+              onClick={testRequest}
+              title="API-URL anzeigen"
             >
-              {bulkLoading ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Erfasse {bulkProgress.current}/{bulkProgress.total}...
-                </>
-              ) : (
-                <>
-                  <FileImage className="h-4 w-4 mr-2" />
-                  Bulk-Screenshots erstellen
-                </>
-              )}
+              <Bug className="h-4 w-4" />
             </Button>
-          ) : (
-            <Button 
-              onClick={captureScreenshot} 
-              disabled={loading}
-              className="w-full"
-              size="lg"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Erstelle Screenshot...
-                </>
-              ) : (
-                <>
-                  <Camera className="h-4 w-4 mr-2" />
-                  Screenshot erstellen
-                </>
-              )}
-            </Button>
+          </div>
+
+          {/* Debug Panel */}
+          {showDebug && (
+            <div className="p-4 bg-muted rounded-lg space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Debug: API-URL</Label>
+                <Button variant="ghost" size="sm" onClick={() => setShowDebug(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <code className="block text-xs bg-background p-3 rounded border break-all">
+                {debugUrl}
+              </code>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.open(debugUrl, "_blank")}
+                >
+                  <ExternalLink className="h-4 w-4 mr-1" />
+                  Im Browser öffnen
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    navigator.clipboard.writeText(debugUrl);
+                    toast.success("Kopiert!");
+                  }}
+                >
+                  Kopieren
+                </Button>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
@@ -343,34 +418,67 @@ export function ScreenshotMachine() {
           <CardHeader>
             <CardTitle>Screenshots ({results.length})</CardTitle>
             <CardDescription>
-              Klicke auf ein Bild um es zu vergrössern
+              Klicke auf ein Bild um es in voller Grösse anzuzeigen
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {results.map((result, index) => (
                 <div key={index} className="border rounded-lg overflow-hidden">
-                  <div className="aspect-video bg-muted relative group">
+                  <div 
+                    className="aspect-video bg-muted relative group cursor-pointer"
+                    onClick={() => setSelectedImage(result)}
+                  >
                     <img
                       src={result.imageUrl}
                       alt={`Screenshot of ${result.url}`}
                       className="w-full h-full object-cover object-top"
                     />
+                    
+                    {/* Full Page Badge */}
+                    {result.isFullPage && (
+                      <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
+                        Full Page
+                      </Badge>
+                    )}
+                    
+                    {/* Dimension Badge */}
+                    <Badge variant="secondary" className="absolute top-2 right-2">
+                      {result.dimension}
+                    </Badge>
+
+                    {/* Hover Overlay */}
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Button
                         size="sm"
                         variant="secondary"
-                        onClick={() => window.open(result.imageUrl, "_blank")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedImage(result);
+                        }}
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(result.imageUrl, "_blank");
+                        }}
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Button>
                       <Button
                         size="sm"
                         variant="secondary"
-                        onClick={() => downloadScreenshot(
-                          result.imageUrl,
-                          `screenshot-${new URL(result.url).hostname}-${Date.now()}`
-                        )}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadScreenshot(
+                            result.imageUrl,
+                            `screenshot-${new URL(result.url).hostname}-${Date.now()}`
+                          );
+                        }}
                       >
                         <Download className="h-4 w-4" />
                       </Button>
@@ -390,6 +498,52 @@ export function ScreenshotMachine() {
           </CardContent>
         </Card>
       )}
+
+      {/* Full-Page Preview Modal */}
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="p-4 pb-0">
+            <DialogTitle className="flex items-center gap-2 text-sm">
+              {selectedImage?.url}
+              {selectedImage?.isFullPage && (
+                <Badge className="bg-primary text-primary-foreground">Full Page</Badge>
+              )}
+              <Badge variant="secondary">{selectedImage?.dimension}</Badge>
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[calc(90vh-80px)]">
+            <div className="p-4 pt-2">
+              {selectedImage && (
+                <img
+                  src={selectedImage.imageUrl}
+                  alt={`Screenshot of ${selectedImage.url}`}
+                  className="w-full h-auto rounded-lg border"
+                />
+              )}
+            </div>
+          </ScrollArea>
+          <div className="p-4 pt-0 flex gap-2 justify-end border-t">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => selectedImage && window.open(selectedImage.imageUrl, "_blank")}
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              Neuer Tab
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => selectedImage && downloadScreenshot(
+                selectedImage.imageUrl,
+                `screenshot-${new URL(selectedImage.url).hostname}-${Date.now()}`
+              )}
+            >
+              <Download className="h-4 w-4 mr-1" />
+              Download
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
