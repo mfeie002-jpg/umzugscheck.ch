@@ -1110,17 +1110,25 @@ Your analysis is successful if:
     try {
       const internalHost = new URL(config.projectUrl).hostname;
       const screenshotUrl = addScreenshotRenderParamIfHost(url, internalHost);
+      const isFullPage = dimension.includes('full');
 
-      // Use 6 second delay to allow JavaScript animations to complete
-      // Full-page screenshots need to scroll, which triggers scroll animations
+      // Extended delay + scroll params for pages with scroll-triggered animations
       const params = new URLSearchParams({
         key: SCREENSHOT_API_KEY,
         url: screenshotUrl,
         dimension,
         format: "png",
         cacheLimit: "0",
-        delay: "6000", // Increased from 3000 to allow scroll animations to complete
+        delay: isFullPage ? "10000" : "6000", // 10s for full-page captures
+        js: "true", // Enable JavaScript
+        scroll: "true", // Scroll through page to trigger IntersectionObserver
       });
+      
+      // For full-page captures, scroll to bottom first to trigger all lazy content
+      if (isFullPage) {
+        params.set("scrollto", "bottom");
+      }
+      
       const response = await fetch(`https://api.screenshotmachine.com?${params}`);
       if (!response.ok) throw new Error("Screenshot failed");
       return await response.blob();

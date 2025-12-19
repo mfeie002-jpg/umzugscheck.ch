@@ -144,14 +144,22 @@ export function ScreenshotMachine() {
 
     const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
 
+    // Extended delays and scroll params for pages with scroll-triggered animations
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
       url: urlForShot,
       dimension: effectiveDimension,
       format: "png",
       cacheLimit: "0",
-      delay: fullPage ? "6000" : "4000", // Increased delay for JS animations to complete
+      delay: fullPage ? "10000" : "6000", // 10s for full-page to ensure all animations complete
+      js: "true", // Enable JavaScript
+      scroll: "true", // Scroll through page to trigger IntersectionObserver
     });
+
+    // For full-page captures, scroll to bottom first to trigger all lazy content
+    if (fullPage) {
+      params.set("scrollto", "bottom");
+    }
 
     return `https://api.screenshotmachine.com?${params.toString()}`;
   };
@@ -405,14 +413,20 @@ export function ScreenshotMachine() {
         // Generate screenshot URL with longer delay for JS animations
         const width = dimension.split("x")[0];
         const effectiveDimension = fullPage ? `${width}xfull` : dimension;
+        const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
         const params = new URLSearchParams({
           key: SCREENSHOT_API_KEY,
-          url: targetUrl,
+          url: urlForShot,
           dimension: effectiveDimension,
           format: "png",
           cacheLimit: "0",
-          delay: fullPage ? "6000" : "4000", // Increased delay for animations
+          delay: fullPage ? "10000" : "6000", // Extended delay for animations
+          js: "true",
+          scroll: "true",
         });
+        if (fullPage) {
+          params.set("scrollto", "bottom");
+        }
         const screenshotUrl = `https://api.screenshotmachine.com?${params.toString()}`;
         
         // Fetch screenshot

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useReducedMotion } from './useReducedMotion';
+import { isScreenshotRenderMode } from '@/lib/screenshot-render-mode';
 
 interface ScrollAnimationOptions {
   threshold?: number;
@@ -9,7 +10,7 @@ interface ScrollAnimationOptions {
 
 /**
  * Hook for triggering animations when element enters viewport
- * Respects reduced motion preferences
+ * Respects reduced motion preferences and screenshot render mode
  */
 export const useScrollAnimation = <T extends HTMLElement = HTMLDivElement>({
   threshold = 0.1,
@@ -20,10 +21,11 @@ export const useScrollAnimation = <T extends HTMLElement = HTMLDivElement>({
   const [isVisible, setIsVisible] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+  const screenshotMode = isScreenshotRenderMode();
 
   useEffect(() => {
-    // If reduced motion is preferred, show immediately
-    if (prefersReducedMotion) {
+    // If reduced motion is preferred OR screenshot mode, show immediately
+    if (prefersReducedMotion || screenshotMode) {
       setIsVisible(true);
       setHasAnimated(true);
       return;
@@ -56,7 +58,7 @@ export const useScrollAnimation = <T extends HTMLElement = HTMLDivElement>({
     return () => {
       observer.unobserve(element);
     };
-  }, [threshold, rootMargin, triggerOnce, hasAnimated, prefersReducedMotion]);
+  }, [threshold, rootMargin, triggerOnce, hasAnimated, prefersReducedMotion, screenshotMode]);
 
   return { ref, isVisible };
 };
@@ -69,11 +71,12 @@ export const useStaggerAnimation = (
   staggerDelay: number = 100
 ) => {
   const prefersReducedMotion = useReducedMotion();
+  const screenshotMode = isScreenshotRenderMode();
   
   const getDelay = useCallback((index: number) => {
-    if (prefersReducedMotion) return 0;
+    if (prefersReducedMotion || screenshotMode) return 0;
     return index * staggerDelay;
-  }, [staggerDelay, prefersReducedMotion]);
+  }, [staggerDelay, prefersReducedMotion, screenshotMode]);
 
   return { getDelay };
 };
