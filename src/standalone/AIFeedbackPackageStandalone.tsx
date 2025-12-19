@@ -93,11 +93,12 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { 
   Package, Download, Loader2, Globe, Copy, CheckCircle2, 
-  FileText, Camera, Code, ExternalLink, Plus, X 
+  FileText, Camera, Code, ExternalLink, Plus, X, FileDown 
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
 import { toast } from 'sonner';
 
 // ============================================================================
@@ -389,6 +390,138 @@ Please provide:
 };
 
 // ============================================================================
+// PDF GENERATION
+// ============================================================================
+
+const generatePdfReport = (config: ProjectConfig, pageCount: number): jsPDF => {
+  const pdf = new jsPDF();
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  let yPos = 20;
+
+  const checkNewPage = (requiredSpace: number = 30) => {
+    if (yPos + requiredSpace > 270) {
+      pdf.addPage();
+      yPos = 20;
+    }
+  };
+
+  // Title
+  pdf.setFontSize(24);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('AI Feedback Report', pageWidth / 2, yPos, { align: 'center' });
+  yPos += 15;
+
+  pdf.setFontSize(16);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text(config.projectName, pageWidth / 2, yPos, { align: 'center' });
+  yPos += 10;
+
+  pdf.setFontSize(10);
+  pdf.setTextColor(100);
+  pdf.text(`${config.projectUrl} | Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPos, { align: 'center' });
+  pdf.setTextColor(0);
+  yPos += 20;
+
+  // Summary
+  pdf.setFillColor(240, 240, 240);
+  pdf.roundedRect(15, yPos, pageWidth - 30, 25, 3, 3, 'F');
+  yPos += 10;
+  pdf.setFontSize(12);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Analysis Summary', 20, yPos);
+  yPos += 8;
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(10);
+  pdf.text(`• Pages Analyzed: ${pageCount} | Competitors: ${config.competitors.filter(c => c).length}`, 25, yPos);
+  yPos += 15;
+
+  // Description
+  if (config.description) {
+    checkNewPage(40);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Project Description', 15, yPos);
+    yPos += 8;
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    const descLines = pdf.splitTextToSize(config.description, pageWidth - 30);
+    pdf.text(descLines, 15, yPos);
+    yPos += descLines.length * 5 + 10;
+  }
+
+  // Goals
+  if (config.goals) {
+    checkNewPage(40);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Goals & Objectives', 15, yPos);
+    yPos += 8;
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    config.goals.split(',').forEach(goal => {
+      checkNewPage(10);
+      pdf.text(`• ${goal.trim()}`, 20, yPos);
+      yPos += 6;
+    });
+    yPos += 10;
+  }
+
+  // Target Audience
+  if (config.targetAudience) {
+    checkNewPage(30);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Target Audience', 15, yPos);
+    yPos += 8;
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(config.targetAudience, 15, yPos);
+    yPos += 15;
+  }
+
+  // Competitors
+  const competitors = config.competitors.filter(c => c);
+  if (competitors.length > 0) {
+    checkNewPage(30 + competitors.length * 6);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Competitors', 15, yPos);
+    yPos += 8;
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    competitors.forEach((comp, i) => {
+      pdf.text(`${i + 1}. ${comp}`, 20, yPos);
+      yPos += 6;
+    });
+    yPos += 10;
+  }
+
+  // Key Questions
+  if (config.keyQuestions) {
+    checkNewPage(50);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Key Questions', 15, yPos);
+    yPos += 8;
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    const questionLines = pdf.splitTextToSize(config.keyQuestions, pageWidth - 30);
+    pdf.text(questionLines, 15, yPos);
+  }
+
+  // Footer
+  pdf.setFontSize(8);
+  pdf.setTextColor(150);
+  const totalPages = pdf.internal.pages.length - 1;
+  for (let i = 1; i <= totalPages; i++) {
+    pdf.setPage(i);
+    pdf.text(`AI Feedback Package v3.0 | Page ${i} of ${totalPages}`, pageWidth / 2, 290, { align: 'center' });
+  }
+
+  return pdf;
+};
+
+// ============================================================================
 // MAIN COMPONENT
 // ============================================================================
 
@@ -516,7 +649,13 @@ const AIFeedbackPackageStandalone: React.FC = () => {
         totalPages: pages.length
       }, null, 2));
 
-      // Step 5: Generate ZIP
+      // Step 5: Generate PDF Report
+      updateProg('Generating PDF report...');
+      const pdf = generatePdfReport(config, pages.length);
+      const pdfBlob = pdf.output('blob');
+      zip.file('REPORT.pdf', pdfBlob);
+
+      // Step 6: Generate ZIP
       setProgress({ step: 'Creating ZIP...', percent: 95 });
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       const timestamp = new Date().toISOString().split('T')[0];
@@ -526,7 +665,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
 
       setProgress({ step: 'Complete!', percent: 100 });
       setResults({ pageCount: pages.length });
-      toast.success('Package generated and downloaded!');
+      toast.success('Package generated with PDF report!');
 
     } catch (error) {
       console.error('Package generation error:', error);
@@ -534,6 +673,16 @@ const AIFeedbackPackageStandalone: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const downloadPdfOnly = () => {
+    if (!config.projectName) {
+      toast.error('Enter project name first');
+      return;
+    }
+    const pdf = generatePdfReport(config, results?.pageCount || 0);
+    pdf.save(`${sanitizeFilename(config.projectName)}_report.pdf`);
+    toast.success('PDF downloaded!');
   };
 
   const copyPrompt = () => {
@@ -672,7 +821,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
             ) : (
               <>
                 <Download className="mr-2 h-4 w-4" />
-                Generate & Download Package
+                Generate Package
               </>
             )}
           </Button>
@@ -680,6 +829,12 @@ const AIFeedbackPackageStandalone: React.FC = () => {
             <Copy className="mr-2 h-4 w-4" />
             Copy Prompt
           </Button>
+          {results && (
+            <Button variant="secondary" size="lg" onClick={downloadPdfOnly}>
+              <FileDown className="mr-2 h-4 w-4" />
+              PDF Only
+            </Button>
+          )}
         </div>
 
         {/* Results */}
@@ -703,6 +858,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
           <Badge variant="secondary"><FileText className="h-3 w-3 mr-1" /> HTML Source</Badge>
           <Badge variant="secondary"><Globe className="h-3 w-3 mr-1" /> Auto Page Discovery</Badge>
           <Badge variant="secondary"><Code className="h-3 w-3 mr-1" /> SEO Analysis Ready</Badge>
+          <Badge variant="secondary"><FileDown className="h-3 w-3 mr-1" /> PDF Export</Badge>
         </div>
       </CardContent>
     </Card>
