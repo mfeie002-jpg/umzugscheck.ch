@@ -104,12 +104,12 @@ export const Navigation = () => {
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
             {/* Logo with Slogan - Vertical Stack */}
             <div className="flex items-center -ml-1 sm:ml-0">
-              <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start transition-transform duration-200 hover:scale-105">
                 <Logo size="xl" className="hidden xs:flex" />
                 <Logo size="lg" iconOnly className="flex xs:hidden" />
 
                 {/* Slogan below logo (Tablet + Desktop) */}
-                <span className="hidden md:block text-[10px] xl:text-xs text-muted-foreground/70 font-medium mt-0.5">
+                <span className="hidden md:block text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0.5">
                   Der Schweizer Umzugsvergleich
                 </span>
               </div>
