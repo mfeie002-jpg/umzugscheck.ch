@@ -21,12 +21,12 @@ const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedSe
 const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
 const EnhancedTestimonials = lazy(() => import("@/components/homepage/EnhancedTestimonials").then(m => ({ default: m.EnhancedTestimonials })));
 const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid").then(m => ({ default: m.EnhancedRegionsGrid })));
-const EnhancedUSPSection = lazy(() => import("@/components/homepage/EnhancedUSPSection").then(m => ({ default: m.EnhancedUSPSection })));
+
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
-const PreFunnelCalculator = lazy(() => import("@/components/homepage/PreFunnelCalculator").then(m => ({ default: m.PreFunnelCalculator })));
+
 
 // Skeleton placeholders with fixed heights to prevent CLS
 const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
@@ -98,10 +98,6 @@ const Index = () => {
           {/* 2. Social proof immediately after hero */}
           <SocialProofMarquee />
           
-          {/* 2b. Pre-Funnel Calculator - alternative entry */}
-          <Suspense fallback={<SectionSkeleton height="300px" />}>
-            <PreFunnelCalculator />
-          </Suspense>
           
           {/* 3. How it works - simplified process */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
@@ -143,10 +139,6 @@ const Index = () => {
             <EnhancedRegionsGrid />
           </Suspense>
           
-          {/* 11. USP section - why choose us */}
-          <Suspense fallback={<SectionSkeleton height="350px" />}>
-            <EnhancedUSPSection />
-          </Suspense>
 
           {/* 12. Media logos - trust signals - moved inline to footer */}
           
