@@ -66,20 +66,32 @@ export const PreFunnelCalculator = memo(function PreFunnelCalculator({
   };
 
   return (
-    <div className={`bg-card rounded-2xl border border-border shadow-premium p-6 ${className}`}>
-      {/* Header */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full mb-3">
-          <Sparkles className="w-3.5 h-3.5" />
-          Schnell-Check
-        </div>
-        <h3 className="text-lg font-bold text-foreground mb-1">
-          Was kostet Ihr Umzug?
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          Erhalten Sie in Sekunden eine erste Preisschätzung
-        </p>
-      </div>
+    <section className="py-10 sm:py-14 bg-gradient-to-b from-transparent via-muted/30 to-transparent">
+      <div className="container mx-auto px-4 sm:px-6 max-w-lg">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className={`bg-card rounded-2xl border border-border shadow-premium p-6 sm:p-8 ${className}`}
+        >
+          {/* Header */}
+          <div className="text-center mb-6">
+            <motion.div 
+              initial={{ scale: 0.9 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/15 to-secondary/15 text-primary text-xs font-semibold px-4 py-2 rounded-full mb-4 border border-primary/20"
+            >
+              <Sparkles className="w-4 h-4" />
+              Schnell-Check in 10 Sekunden
+            </motion.div>
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
+              Was kostet Ihr Umzug?
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Schieben Sie die Regler für eine sofortige Preisschätzung
+            </p>
+          </div>
       
       {/* Sliders */}
       <div className="space-y-6">
@@ -187,25 +199,32 @@ export const PreFunnelCalculator = memo(function PreFunnelCalculator({
         </span>
       </motion.div>
       
-      {/* CTA Button */}
-      <Button
-        onClick={handleContinue}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-        className="w-full mt-4 h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-cta"
-      >
-        <span>Exakten Preis berechnen</span>
-        <motion.div
-          animate={{ x: isHovering ? 4 : 0 }}
-          transition={{ type: "spring", stiffness: 400 }}
-        >
-          <ArrowRight className="w-5 h-5 ml-2" />
+          {/* CTA Button */}
+          <Button
+            onClick={handleContinue}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            size="lg"
+            className="w-full mt-5 h-14 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-base shadow-cta active:scale-[0.98] transition-transform"
+          >
+            <span>Exakten Preis berechnen</span>
+            <motion.div
+              animate={{ x: isHovering ? 5 : 0 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </motion.div>
+          </Button>
+          
+          <p className="text-center text-xs text-muted-foreground mt-4 flex items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Kostenlos</span>
+            <span>•</span>
+            <span>Unverbindlich</span>
+            <span>•</span>
+            <span>In 2 Min.</span>
+          </p>
         </motion.div>
-      </Button>
-      
-      <p className="text-center text-[10px] text-muted-foreground mt-3">
-        Kostenlos • Unverbindlich • In 2 Minuten
-      </p>
-    </div>
+      </div>
+    </section>
   );
 });

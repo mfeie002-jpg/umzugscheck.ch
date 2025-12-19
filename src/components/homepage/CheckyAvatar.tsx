@@ -28,30 +28,43 @@ export const CheckyAvatar = memo(function CheckyAvatar({
   };
 
   return (
-    <div className={`flex items-start gap-3 ${className}`}>
-      {/* Checky Avatar */}
+    <motion.div 
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.1 }}
+      className={`flex items-start gap-3 ${className}`}
+    >
+      {/* Checky Avatar - Enhanced with Swiss colors */}
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
         className="relative flex-shrink-0"
       >
-        {/* Main avatar circle */}
-        <div className={`${sizeClasses[size]} rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-medium`}>
-          <Bot className="text-primary-foreground" size={iconSize[size]} strokeWidth={1.5} />
+        {/* Glow effect */}
+        <div className={`absolute inset-0 ${sizeClasses[size]} rounded-full bg-primary/30 blur-lg animate-pulse`} />
+        
+        {/* Main avatar circle with Swiss gradient */}
+        <div className={`${sizeClasses[size]} rounded-full bg-gradient-to-br from-primary via-primary to-swiss-red flex items-center justify-center shadow-medium relative z-10 ring-2 ring-background`}>
+          <Bot className="text-primary-foreground drop-shadow-sm" size={iconSize[size]} strokeWidth={1.5} />
         </div>
         
-        {/* Status indicator */}
+        {/* Status indicator - pulsing green */}
         <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-background"
+          animate={{ scale: [1, 1.15, 1], opacity: [1, 0.8, 1] }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+          className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-background shadow-sm"
         />
         
-        {/* Floating shield badge */}
-        <div className="absolute -top-1 -right-1 w-5 h-5 bg-secondary rounded-full flex items-center justify-center shadow-sm">
-          <Shield className="w-3 h-3 text-secondary-foreground" />
-        </div>
+        {/* Floating Swiss shield badge */}
+        <motion.div 
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.3, type: "spring" }}
+          className="absolute -top-1 -right-1 w-6 h-6 bg-secondary rounded-full flex items-center justify-center shadow-md ring-1 ring-background"
+        >
+          <Shield className="w-3.5 h-3.5 text-secondary-foreground" />
+        </motion.div>
       </motion.div>
 
       {/* Message bubble */}
@@ -78,6 +91,6 @@ export const CheckyAvatar = memo(function CheckyAvatar({
           </div>
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 });

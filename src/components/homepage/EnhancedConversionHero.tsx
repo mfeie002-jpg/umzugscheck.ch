@@ -40,11 +40,12 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
 
   return (
     <>
-      <section className="relative min-h-[75vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-background via-muted/30 to-background">
-        {/* Subtle Background Pattern */}
+      <section className="relative min-h-[70vh] sm:min-h-[75vh] lg:min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
+        {/* Enhanced Background with Swiss-themed gradients */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:3rem_3rem] opacity-15" />
+          <div className="absolute top-0 right-0 w-2/3 h-full bg-gradient-to-l from-primary/8 via-primary/3 to-transparent" />
+          <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-secondary/5 to-transparent" />
         </div>
 
         <div className="container relative z-10 py-8 sm:py-12 md:py-16 lg:py-20">
@@ -67,20 +68,20 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <UrgencyBadge variant="time" className="hidden sm:inline-flex" />
               </motion.div>
 
-              {/* Headline - Optimized with trust-focused messaging */}
-              <div className="space-y-1 px-2 sm:px-0">
-                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15]">
-                  Ihr sicherster Weg
+              {/* Headline - Trust-focused with visual hierarchy */}
+              <div className="space-y-0 px-2 sm:px-0">
+                <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.1]">
+                  <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Ihr sicherster Weg</span>
                 </h1>
-                <span className="block text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15]">
-                  zum besten <span className="text-primary">Preis.</span>
+                <span className="block text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.1]">
+                  zum besten <span className="text-primary drop-shadow-sm">Preis.</span>
                 </span>
               </div>
 
-              {/* Value Proposition - Benefit-focused */}
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
-                Erhalten Sie in <strong className="text-foreground">2 Minuten</strong> Ihren exakten Preis – 
-                wir vergleichen <strong className="text-foreground">200+ geprüfte Schweizer Umzugsfirmen</strong> für Sie.
+              {/* Value Proposition - Benefit-focused with stronger contrast */}
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
+                In nur <strong className="text-foreground font-semibold">2 Minuten</strong> zum exakten Preis – 
+                wir vergleichen <strong className="text-primary font-semibold">200+ geprüfte Umzugsfirmen</strong> für Sie.
               </p>
 
               {/* USP Pills - Better touch targets */}
