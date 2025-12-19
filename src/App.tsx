@@ -245,6 +245,7 @@ const ABTesting = lazy(() => import("./pages/admin/ABTesting"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
 const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
+const AdminTools = lazy(() => import("./pages/admin/Tools"));
 
 // Ratgeber pages
 const UmzugschecklisteDownload = lazy(() => import("./pages/ratgeber/UmzugschecklisteDownload"));
@@ -444,6 +445,7 @@ const App = () => (
                             <Route path="/admin/ab-testing" element={<ABTesting />} />
                             <Route path="/admin/availability" element={<ProviderAvailability />} />
                             <Route path="/admin/code-export" element={<CodeExport />} />
+                            <Route path="/admin/tools" element={<AdminTools />} />
                             <Route path="/ratgeber/umzugstipps" element={<UmzugstippsGuide />} />
                             <Route path="/ratgeber/tipps" element={<UmzugstippsGuide />} />
                             <Route path="/ratgeber/kosten" element={<UmzugskostenGuide />} />

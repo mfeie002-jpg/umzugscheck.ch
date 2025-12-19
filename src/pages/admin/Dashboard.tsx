@@ -33,7 +33,8 @@ import {
   ArrowRight,
   MessageSquare,
   Star,
-  Brain
+  Brain,
+  Wrench
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -478,9 +479,9 @@ const AdminDashboard = () => {
             {/* Developer Tools Section */}
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-6">Entwickler-Tools</h2>
-              <div className="grid md:grid-cols-1 gap-6">
+              <div className="grid md:grid-cols-2 gap-6">
                 <Link to="/admin/code-export">
-                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer">
+                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div className="p-3 rounded-lg bg-slate-500/10">
@@ -499,7 +500,34 @@ const AdminDashboard = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-slate-400"></div>
-                          <span className="text-muted-foreground">Alle Komponenten</span>
+                          <span className="text-muted-foreground">Komponenten</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                <Link to="/admin/tools">
+                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 rounded-lg bg-orange-500/10">
+                          <Wrench className="w-6 h-6 text-orange-600" />
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">Analyse Tools</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        AI Feedback Package, Screenshot Machine & Downloads
+                      </p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                          <span className="text-muted-foreground">Screenshots</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-orange-400"></div>
+                          <span className="text-muted-foreground">AI Prompts</span>
                         </div>
                       </div>
                     </CardContent>
