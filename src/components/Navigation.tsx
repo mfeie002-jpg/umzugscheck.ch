@@ -102,17 +102,17 @@ export const Navigation = () => {
         aria-label="Hauptnavigation"
       >
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+          <div className="flex items-center justify-between h-16 sm:h-16 lg:h-20">
             {/* Logo with Slogan - Vertical Stack */}
-            <div className="flex items-center -ml-1 sm:ml-0">
+            <div className="flex items-center">
               <div className="group flex flex-col items-start transition-all duration-300 hover:scale-105">
                 <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]">
                   <Logo size="xl" className="hidden xs:flex" />
                   <Logo size="lg" iconOnly className="flex xs:hidden" />
                 </div>
 
-                {/* Slogan below logo (Tablet + Desktop) */}
-                <span className="hidden md:block text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary">
+                {/* Slogan below logo (Mobile, Tablet + Desktop) */}
+                <span className="text-[8px] xs:text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground/70 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight">
                   Der Schweizer Umzugsvergleich
                 </span>
               </div>
