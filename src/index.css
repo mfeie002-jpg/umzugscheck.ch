@@ -161,6 +161,18 @@
   }
 }
 
+/* Slogan fade-in animation */
+@keyframes fadeInSlogan {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
