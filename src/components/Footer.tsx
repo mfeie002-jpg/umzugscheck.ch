@@ -185,11 +185,6 @@ export const Footer = () => {
                   Kontakt
                 </Link>
               </li>
-              <li>
-                <Link to="/auth" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
-                  Admin Login
-                </Link>
-              </li>
             </ul>
           </div>
 

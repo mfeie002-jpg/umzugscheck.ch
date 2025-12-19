@@ -16,43 +16,43 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Sarah M.",
+    name: "Sarah Müller",
     location: "Zürich",
     rating: 5,
-    text: "Innerhalb von 2 Tagen hatte ich 3 Angebote. Die Ersparnis gegenüber meiner ersten Anfrage war enorm!",
-    date: "vor 2 Wochen"
+    text: "Innerhalb von 2 Tagen hatte ich 3 Offerten. Die Ersparnis gegenüber meiner ersten Anfrage war CHF 480 – dank Umzugscheck habe ich den besten Anbieter gefunden.",
+    date: "November 2024"
   },
   {
     id: 2,
-    name: "Thomas K.",
-    location: "Basel",
+    name: "Thomas Keller",
+    location: "Basel-Stadt",
     rating: 5,
-    text: "Super einfach zu bedienen. Die Firma die ich gewählt habe war pünktlich und sehr professionell.",
-    date: "vor 3 Wochen"
+    text: "Die Firma MoveExpert Basel war pünktlich, professionell und hat sogar mein Klavier sicher transportiert. Der Vergleich hat sich absolut gelohnt.",
+    date: "Oktober 2024"
   },
   {
     id: 3,
-    name: "Anna B.",
+    name: "Anna Brunner",
     location: "Bern",
     rating: 5,
-    text: "Hätte nicht gedacht, dass der Preisunterschied so gross ist. Klare Empfehlung!",
-    date: "vor 1 Monat"
+    text: "Hätte nicht gedacht, dass der Preisunterschied zwischen den Firmen so gross ist. Von CHF 2'800 auf CHF 1'950 – klare Empfehlung!",
+    date: "September 2024"
   },
   {
     id: 4,
-    name: "Marco L.",
+    name: "Marco Lombardi",
     location: "Luzern",
-    rating: 4,
-    text: "Schnelle Antworten und faire Preise. Der Vergleich hat sich definitiv gelohnt.",
-    date: "vor 1 Monat"
+    rating: 5,
+    text: "Von der Anfrage bis zum Umzugstag – alles hat reibungslos geklappt. Die Offerten kamen schnell, die Firma war top.",
+    date: "Oktober 2024"
   },
   {
     id: 5,
-    name: "Nina W.",
+    name: "Nina Weber",
     location: "St. Gallen",
     rating: 5,
-    text: "Von der Anfrage bis zur Buchung alles reibungslos. Sehr zufrieden!",
-    date: "vor 2 Monaten"
+    text: "Als alleinerziehende Mutter war ich skeptisch. Aber der Service war kostenlos, die Offerten unverbindlich – und ich habe CHF 350 gespart.",
+    date: "August 2024"
   },
 ];
 

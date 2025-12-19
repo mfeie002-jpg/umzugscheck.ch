@@ -47,9 +47,14 @@ export const SimplifiedFooter = () => {
             <div className="mb-4">
               <FooterLogo variant="dark" />
             </div>
-            <p className="text-sm text-uc-footer-text/70 mb-4">
+            <p className="text-sm text-uc-footer-text/70 mb-3">
               Die führende Vergleichsplattform für Umzüge in der Schweiz. Kostenlos, unverbindlich, zuverlässig.
             </p>
+            <div className="text-xs text-uc-footer-text/60 space-y-1 mb-4">
+              <p className="font-medium text-uc-footer-text/80">Umzugscheck GmbH</p>
+              <p>Bahnhofstrasse 100, 8001 Zürich</p>
+              <p>CHE-xxx.xxx.xxx</p>
+            </div>
             
             {/* Contact Info */}
             <div className="space-y-2">

@@ -11,7 +11,7 @@ const steps = [
     number: '01',
     icon: ClipboardList,
     title: 'Umzugsdetails eingeben',
-    description: 'Start- und Zielort, Wohnungsgrösse, Datum – in unter 2 Minuten ausgefüllt.',
+    description: 'Start- und Zielort, Wohnungsgrösse – in unter 2 Minuten ausgefüllt. Kein Video nötig.',
     color: 'text-primary',
     bg: 'bg-primary/10',
     borderColor: 'border-primary/30',
@@ -19,8 +19,8 @@ const steps = [
   {
     number: '02',
     icon: Search,
-    title: 'Wir checken für Sie',
-    description: 'Unser System inkl. KI vergleicht automatisch passende Firmen aus 200+ Partnern.',
+    title: 'Wir finden passende Firmen',
+    description: 'Unser System vergleicht automatisch 200+ geprüfte Umzugsfirmen für Ihre Route und Anforderungen.',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
     borderColor: 'border-secondary/30',
@@ -28,8 +28,8 @@ const steps = [
   {
     number: '03',
     icon: BadgeCheck,
-    title: 'Vergleichen & sparen',
-    description: 'Sie erhalten mehrere Offerten, vergleichen Preise & Bewertungen und wählen das beste Angebot.',
+    title: 'Offerten erhalten & sparen',
+    description: 'Innerhalb von 24–48 Stunden erhalten Sie 3–5 Offerten per E-Mail. Sie vergleichen und wählen.',
     color: 'text-green-600',
     bg: 'bg-green-500/10',
     borderColor: 'border-green-500/30',
@@ -77,7 +77,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
             viewport={{ once: true }}
             className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-4"
           >
-            In 3 einfachen Schritten zum besten Angebot
+            In 3 einfachen Schritten zur besten Offerte
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
