@@ -10,10 +10,11 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2, Archive, FileText } from "lucide-react";
+import { Camera, Download, ExternalLink, Loader2, Monitor, Smartphone, Tablet, FileImage, Bug, X, Maximize2, Archive, FileText, Code } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { jsPDF } from "jspdf";
+import { supabase } from "@/integrations/supabase/client";
 
 const SCREENSHOT_API_KEY = "892618";
 
@@ -205,12 +206,24 @@ export function ScreenshotMachine() {
 
   const fetchHtmlContent = async (pageUrl: string): Promise<string> => {
     try {
-      // Use a CORS proxy or fetch directly if same origin
-      const response = await fetch(pageUrl, { mode: 'no-cors' });
-      // Due to CORS, we can't get the actual HTML in most cases
-      // Return a placeholder or use an edge function for this
-      return `<!-- HTML content from ${pageUrl} -->\n<!-- Note: Due to CORS restrictions, full HTML capture requires server-side fetching -->`;
+      console.log(`Fetching HTML via Edge Function for: ${pageUrl}`);
+      const { data, error } = await supabase.functions.invoke('fetch-html', {
+        body: { url: pageUrl }
+      });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        return `<!-- Error fetching HTML: ${error.message} -->`;
+      }
+
+      if (data?.html) {
+        console.log(`Successfully fetched HTML for ${pageUrl}, length: ${data.html.length}`);
+        return data.html;
+      }
+
+      return `<!-- No HTML content returned for ${pageUrl} -->`;
     } catch (error) {
+      console.error('Error fetching HTML:', error);
       return `<!-- Could not fetch HTML from ${pageUrl} -->`;
     }
   };
@@ -268,6 +281,7 @@ export function ScreenshotMachine() {
     }
 
     setExportLoading(true);
+    toast.info("PDF-Export gestartet, HTML wird geladen...");
     
     try {
       const pdf = new jsPDF({
@@ -282,6 +296,7 @@ export function ScreenshotMachine() {
 
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
+        toast.info(`Verarbeite ${i + 1}/${results.length}: ${new URL(result.url).hostname}`);
         
         if (i > 0) {
           pdf.addPage();
@@ -314,10 +329,67 @@ export function ScreenshotMachine() {
           pdf.setFontSize(12);
           pdf.text("Bild konnte nicht geladen werden", margin, margin + 50);
         }
+
+        // Fetch and add HTML source code on separate page(s)
+        try {
+          const htmlContent = await fetchHtmlContent(result.url);
+          
+          if (htmlContent && !htmlContent.startsWith('<!--')) {
+            // Add HTML source code page(s)
+            pdf.addPage('a4', 'portrait');
+            
+            pdf.setFontSize(12);
+            pdf.setFont("helvetica", "bold");
+            pdf.text(`HTML-Quellcode: ${result.url}`, margin, margin + 5);
+            
+            pdf.setFontSize(8);
+            pdf.setFont("courier", "normal");
+            
+            // Split HTML into lines that fit the page
+            const maxCharsPerLine = 100;
+            const maxLinesPerPage = 55;
+            const lines: string[] = [];
+            
+            // Split by newlines first, then wrap long lines
+            const rawLines = htmlContent.split('\n');
+            for (const rawLine of rawLines) {
+              if (rawLine.length <= maxCharsPerLine) {
+                lines.push(rawLine);
+              } else {
+                // Wrap long lines
+                for (let j = 0; j < rawLine.length; j += maxCharsPerLine) {
+                  lines.push(rawLine.substring(j, j + maxCharsPerLine));
+                }
+              }
+            }
+            
+            let lineY = margin + 15;
+            let currentLine = 0;
+            
+            for (const line of lines) {
+              if (currentLine >= maxLinesPerPage) {
+                pdf.addPage('a4', 'portrait');
+                pdf.setFontSize(8);
+                pdf.setFont("courier", "normal");
+                lineY = margin + 5;
+                currentLine = 0;
+              }
+              
+              // Sanitize line for PDF (remove control characters)
+              const sanitizedLine = line.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+              pdf.text(sanitizedLine || ' ', margin, lineY);
+              lineY += 3.5;
+              currentLine++;
+            }
+          }
+        } catch (htmlError) {
+          console.error(`Failed to fetch HTML for ${result.url}:`, htmlError);
+          // Continue without HTML - don't break the export
+        }
       }
 
-      pdf.save(`screenshots_${new Date().toISOString().split('T')[0]}.pdf`);
-      toast.success(`${results.length} Screenshots als PDF exportiert!`);
+      pdf.save(`screenshots_with_html_${new Date().toISOString().split('T')[0]}.pdf`);
+      toast.success(`${results.length} Screenshots mit HTML als PDF exportiert!`);
     } catch (error) {
       console.error("PDF export error:", error);
       toast.error("Fehler beim PDF-Export");
@@ -583,13 +655,14 @@ export function ScreenshotMachine() {
                   size="sm"
                   onClick={downloadAllAsPdf}
                   disabled={exportLoading}
+                  title="PDF mit HTML-Quellcode exportieren"
                 >
                   {exportLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
-                      <FileText className="h-4 w-4 mr-1" />
-                      PDF
+                      <Code className="h-4 w-4 mr-1" />
+                      PDF + HTML
                     </>
                   )}
                 </Button>
