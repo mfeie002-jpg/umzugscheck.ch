@@ -284,7 +284,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
         >
           <Button asChild size="lg" className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 shadow-cta h-12 sm:h-11 text-sm sm:text-base font-bold">
             <Link to="/umzugsofferten">
-              Jetzt checken lassen
+              Jetzt Offerten erhalten
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
