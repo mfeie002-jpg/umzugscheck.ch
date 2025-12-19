@@ -6,13 +6,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useABTest } from "@/hooks/use-ab-test";
 import { EnhancedProgressIndicator, ProgressMessage } from "./EnhancedProgressIndicator";
 import { validateField, emailSchema, postalCodeSchema, nameSchema, phoneSchema } from "@/lib/form-validation";
 import { ValidatedInput } from "@/components/ui/ValidatedInput";
+import { VisualRoomSelector } from "./VisualRoomSelector";
 import analytics from "@/lib/analytics";
 
 const swissPostalCodes = [
@@ -244,6 +244,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   icon={<MapPin className="w-4 h-4 text-primary" />}
                   placeholder="z.B. 8001 oder Zürich"
                   list="from-suggestions"
+                  inputMode="text"
                 />
                 <datalist id="from-suggestions">
                   {swissPostalCodes.map((p) => (
@@ -259,6 +260,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   icon={<MapPin className="w-4 h-4 text-secondary" />}
                   placeholder="z.B. 3011 oder Bern"
                   list="to-suggestions"
+                  inputMode="text"
                 />
                 <datalist id="to-suggestions">
                   {swissPostalCodes.map((p) => (
@@ -266,29 +268,11 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   ))}
                 </datalist>
 
-                {/* Quick room selector for micro-conversion */}
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Home className="w-4 h-4 text-muted-foreground" />
-                    Grösse (optional)
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {["1-2", "3-3.5", "4-4.5", "5+"].map((size) => (
-                      <button
-                        key={size}
-                        type="button"
-                        onClick={() => updateFormData("apartmentSize", size)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                          formData.apartmentSize === size
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                        }`}
-                      >
-                        {size} Zi.
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                {/* Visual Room Selector */}
+                <VisualRoomSelector
+                  value={formData.apartmentSize}
+                  onChange={(v) => updateFormData("apartmentSize", v)}
+                />
               </div>
             </motion.div>
           )}
@@ -312,28 +296,11 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               </div>
 
               <div className="space-y-3">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Home className="w-4 h-4 text-primary" />
-                    Wohnungsgrösse
-                  </label>
-                  <Select 
-                    value={formData.apartmentSize} 
-                    onValueChange={(v) => updateFormData("apartmentSize", v)}
-                  >
-                    <SelectTrigger className="h-12 rounded-xl">
-                      <SelectValue placeholder="Bitte wählen..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {apartmentSizes.map((size) => (
-                        <SelectItem key={size.value} value={size.value}>
-                          <span>{size.label}</span>
-                          <span className="ml-2 text-muted-foreground text-xs">({size.sqm})</span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* Visual Room Selector for Step 2 */}
+                <VisualRoomSelector
+                  value={formData.apartmentSize}
+                  onChange={(v) => updateFormData("apartmentSize", v)}
+                />
 
                 {/* Live Price Estimate */}
                 {formData.apartmentSize && (
@@ -445,6 +412,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   icon={<Phone className="w-4 h-4 text-muted-foreground" />}
                   placeholder="+41 79 123 45 67"
                   type="tel"
+                  inputMode="tel"
                   showSuccessIcon={false}
                 />
 
