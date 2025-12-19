@@ -1,1 +1,4 @@
 project_id = "vgitgdvxanodfgokokix"
+
+[functions.fetch-html]
+verify_jwt = false
