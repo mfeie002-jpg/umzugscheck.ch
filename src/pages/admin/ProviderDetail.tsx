@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Navigate, Link } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -243,8 +243,7 @@ const ProviderDetail = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-
+    <AdminLayout>
       <main className="flex-1 bg-gradient-light">
         {/* Header */}
         <section className="gradient-hero text-white py-12">
@@ -674,7 +673,7 @@ const ProviderDetail = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AdminLayout>
   );
 };
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DollarSign, Download, CheckCircle, XCircle, Clock } from "lucide-react";
 import { Helmet } from "react-helmet";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 
 interface BillingRecord {
   id: string;
@@ -129,12 +129,12 @@ export default function Billing() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8">
+    <AdminLayout>
       <Helmet>
         <title>Abrechnungen | Admin | Umzugscheck.ch</title>
       </Helmet>
 
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-7xl py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Abrechnungen & Billing</h1>
           <p className="text-muted-foreground">Verwalten Sie alle Provider-Rechnungen und Zahlungen</p>
@@ -268,6 +268,6 @@ export default function Billing() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

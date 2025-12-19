@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ABTestManager } from '@/components/admin/ABTestManager';
 import { supabase } from '@/integrations/supabase/client';
+import { AdminLayout } from "@/components/admin/AdminLayout";
 
 export default function ABTesting() {
   const [currentFeatured, setCurrentFeatured] = useState<any[]>([]);
@@ -49,9 +50,11 @@ export default function ABTesting() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">A/B Testing</h1>
-      <ABTestManager currentFeatured={currentFeatured} currentOrganic={currentOrganic} />
-    </div>
+    <AdminLayout>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">A/B Testing</h1>
+        <ABTestManager currentFeatured={currentFeatured} currentOrganic={currentOrganic} />
+      </div>
+    </AdminLayout>
   );
 }

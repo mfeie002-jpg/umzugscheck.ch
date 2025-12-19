@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
-import { Mail, Send, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Mail, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { AdminLayout } from "@/components/admin/AdminLayout";
 
 export default function EmailAutomation() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -74,8 +75,9 @@ export default function EmailAutomation() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+    <AdminLayout>
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Email Automation</h1>
         <p className="text-muted-foreground">
           Verwalte automatisierte Email-Kampagnen und -Warteschlangen
@@ -285,7 +287,8 @@ export default function EmailAutomation() {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
-    </div>
+        </Tabs>
+      </div>
+    </AdminLayout>
   );
 }

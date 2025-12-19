@@ -7,9 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar as CalendarIcon, Plus, Save } from 'lucide-react';
+import { Calendar as CalendarIcon, Save } from 'lucide-react';
 import { format, addMonths, startOfMonth, endOfMonth } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { AdminLayout } from "@/components/admin/AdminLayout";
 
 interface Provider {
   id: string;
@@ -140,10 +141,11 @@ export default function ProviderAvailability() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Verfügbarkeits-Management</h1>
-      </div>
+    <AdminLayout>
+      <div className="container mx-auto px-4 py-8 space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Verfügbarkeits-Management</h1>
+        </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
@@ -263,6 +265,7 @@ export default function ProviderAvailability() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

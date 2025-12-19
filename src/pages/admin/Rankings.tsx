@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -452,14 +451,12 @@ export default function Rankings() {
   };
 
   return (
-    <>
+    <AdminLayout>
       <Helmet>
         <title>Rankings verwalten | Admin | Umzugscheck.ch</title>
       </Helmet>
 
-      <div className="min-h-screen flex flex-col bg-background">
-
-        <main className="flex-1 py-8">
+      <main className="flex-1 py-8 bg-background">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="mb-8">
@@ -874,9 +871,6 @@ export default function Rankings() {
             </div>
           </div>
         </main>
-
-        <Footer />
-      </div>
-    </>
+    </AdminLayout>
   );
 }
