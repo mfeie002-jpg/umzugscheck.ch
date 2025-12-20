@@ -6,9 +6,23 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Copy, Zap, Search, Code, ChevronDown, Check, Sparkles } from "lucide-react";
+import { 
+  Copy, 
+  Zap, 
+  Search, 
+  Code, 
+  ChevronDown, 
+  Check, 
+  Sparkles, 
+  Camera,
+  GitCompare,
+  Eye,
+  ExternalLink,
+} from "lucide-react";
 import { generatePrompt, PROMPT_VARIANTS, type PromptVariant, type PromptData } from "@/lib/chatgpt-prompts";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +37,27 @@ const variantIcons = {
   quick: Zap,
   deep: Search,
   code: Code,
+  screenshot: Camera,
+  regression: GitCompare,
+  seo: Search,
+  accessibility: Eye,
 } as const;
+
+const variantColors = {
+  quick: "text-amber-500",
+  deep: "text-primary",
+  code: "text-green-500",
+  screenshot: "text-purple-500",
+  regression: "text-orange-500",
+  seo: "text-blue-500",
+  accessibility: "text-pink-500",
+} as const;
+
+const variantCategories = {
+  basic: ["quick", "deep", "code"] as PromptVariant[],
+  screenshot: ["screenshot", "regression"] as PromptVariant[],
+  advanced: ["seo", "accessibility"] as PromptVariant[],
+};
 
 export function ChatGPTPromptCopier({ 
   data, 
@@ -52,8 +86,8 @@ export function ChatGPTPromptCopier({
     try {
       await navigator.clipboard.writeText(prompt);
       setCopied(true);
-      toast.success("ChatGPT-Prompt kopiert!", {
-        description: "Jetzt in ChatGPT einfügen und analysieren lassen.",
+      toast.success("Prompt kopiert!", {
+        description: `${PROMPT_VARIANTS[selectedVariant].name} - Jetzt in ChatGPT/Claude einfügen.`,
         action: {
           label: "ChatGPT öffnen",
           onClick: () => window.open("https://chat.openai.com", "_blank"),
@@ -74,13 +108,14 @@ export function ChatGPTPromptCopier({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
-              <SelectedIcon className="h-4 w-4" />
+              <SelectedIcon className={cn("h-4 w-4", variantColors[selectedVariant])} />
               {variantInfo.name}
               <ChevronDown className="h-3 w-3 opacity-50" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            {(Object.keys(PROMPT_VARIANTS) as PromptVariant[]).map((variant) => {
+          <DropdownMenuContent align="start" className="w-64">
+            <DropdownMenuLabel>Standard-Analysen</DropdownMenuLabel>
+            {variantCategories.basic.map((variant) => {
               const Icon = variantIcons[variant];
               const info = PROMPT_VARIANTS[variant];
               return (
@@ -89,12 +124,54 @@ export function ChatGPTPromptCopier({
                   onClick={() => setSelectedVariant(variant)}
                   className="gap-2"
                 >
-                  <Icon className="h-4 w-4" />
-                  <div>
+                  <Icon className={cn("h-4 w-4", variantColors[variant])} />
+                  <div className="flex-1">
                     <div className="font-medium">{info.name}</div>
                     <div className="text-xs text-muted-foreground">{info.description}</div>
                   </div>
-                  {selectedVariant === variant && <Check className="h-4 w-4 ml-auto" />}
+                  {selectedVariant === variant && <Check className="h-4 w-4" />}
+                </DropdownMenuItem>
+              );
+            })}
+            
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Screenshot-Analysen</DropdownMenuLabel>
+            {variantCategories.screenshot.map((variant) => {
+              const Icon = variantIcons[variant];
+              const info = PROMPT_VARIANTS[variant];
+              return (
+                <DropdownMenuItem
+                  key={variant}
+                  onClick={() => setSelectedVariant(variant)}
+                  className="gap-2"
+                >
+                  <Icon className={cn("h-4 w-4", variantColors[variant])} />
+                  <div className="flex-1">
+                    <div className="font-medium">{info.name}</div>
+                    <div className="text-xs text-muted-foreground">{info.description}</div>
+                  </div>
+                  {selectedVariant === variant && <Check className="h-4 w-4" />}
+                </DropdownMenuItem>
+              );
+            })}
+            
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Erweiterte Analysen</DropdownMenuLabel>
+            {variantCategories.advanced.map((variant) => {
+              const Icon = variantIcons[variant];
+              const info = PROMPT_VARIANTS[variant];
+              return (
+                <DropdownMenuItem
+                  key={variant}
+                  onClick={() => setSelectedVariant(variant)}
+                  className="gap-2"
+                >
+                  <Icon className={cn("h-4 w-4", variantColors[variant])} />
+                  <div className="flex-1">
+                    <div className="font-medium">{info.name}</div>
+                    <div className="text-xs text-muted-foreground">{info.description}</div>
+                  </div>
+                  {selectedVariant === variant && <Check className="h-4 w-4" />}
                 </DropdownMenuItem>
               );
             })}
@@ -116,31 +193,97 @@ export function ChatGPTPromptCopier({
         <span>Wähle eine Analyse-Variante und kopiere den optimierten Prompt</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {(Object.keys(PROMPT_VARIANTS) as PromptVariant[]).map((variant) => {
-          const Icon = variantIcons[variant];
-          const info = PROMPT_VARIANTS[variant];
-          const isSelected = selectedVariant === variant;
-          
-          return (
-            <button
-              key={variant}
-              onClick={() => setSelectedVariant(variant)}
-              className={cn(
-                "p-4 rounded-lg border-2 transition-all text-left",
-                isSelected
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:border-primary/50 hover:bg-muted/50"
-              )}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <Icon className={cn("h-5 w-5", isSelected ? "text-primary" : "text-muted-foreground")} />
-                <span className="font-medium">{info.name}</span>
-              </div>
-              <p className="text-xs text-muted-foreground">{info.description}</p>
-            </button>
-          );
-        })}
+      {/* Standard Analyses */}
+      <div>
+        <p className="text-xs font-medium text-muted-foreground mb-2">Standard-Analysen</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {variantCategories.basic.map((variant) => {
+            const Icon = variantIcons[variant];
+            const info = PROMPT_VARIANTS[variant];
+            const isSelected = selectedVariant === variant;
+            
+            return (
+              <button
+                key={variant}
+                onClick={() => setSelectedVariant(variant)}
+                className={cn(
+                  "p-4 rounded-lg border-2 transition-all text-left",
+                  isSelected
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50 hover:bg-muted/50"
+                )}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className={cn("h-5 w-5", variantColors[variant])} />
+                  <span className="font-medium">{info.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">{info.description}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Screenshot Analyses */}
+      <div>
+        <p className="text-xs font-medium text-muted-foreground mb-2">Screenshot-Analysen</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {variantCategories.screenshot.map((variant) => {
+            const Icon = variantIcons[variant];
+            const info = PROMPT_VARIANTS[variant];
+            const isSelected = selectedVariant === variant;
+            
+            return (
+              <button
+                key={variant}
+                onClick={() => setSelectedVariant(variant)}
+                className={cn(
+                  "p-4 rounded-lg border-2 transition-all text-left",
+                  isSelected
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50 hover:bg-muted/50"
+                )}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className={cn("h-5 w-5", variantColors[variant])} />
+                  <span className="font-medium">{info.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">{info.description}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Advanced Analyses */}
+      <div>
+        <p className="text-xs font-medium text-muted-foreground mb-2">Erweiterte Analysen</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {variantCategories.advanced.map((variant) => {
+            const Icon = variantIcons[variant];
+            const info = PROMPT_VARIANTS[variant];
+            const isSelected = selectedVariant === variant;
+            
+            return (
+              <button
+                key={variant}
+                onClick={() => setSelectedVariant(variant)}
+                className={cn(
+                  "p-4 rounded-lg border-2 transition-all text-left",
+                  isSelected
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50 hover:bg-muted/50"
+                )}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className={cn("h-5 w-5", variantColors[variant])} />
+                  <span className="font-medium">{info.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">{info.description}</p>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <Button onClick={handleCopy} className="w-full gap-2" size="lg">
@@ -152,14 +295,23 @@ export function ChatGPTPromptCopier({
         ) : (
           <>
             <Copy className="h-5 w-5" />
-            ChatGPT-Prompt kopieren
+            {PROMPT_VARIANTS[selectedVariant].name} Prompt kopieren
           </>
         )}
       </Button>
 
-      <p className="text-xs text-center text-muted-foreground">
-        Funktioniert mit ChatGPT-4, Claude, Gemini und anderen LLMs
-      </p>
+      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+        <span>Funktioniert mit:</span>
+        <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground flex items-center gap-1">
+          ChatGPT <ExternalLink className="h-3 w-3" />
+        </a>
+        <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="hover:text-foreground flex items-center gap-1">
+          Claude <ExternalLink className="h-3 w-3" />
+        </a>
+        <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground flex items-center gap-1">
+          Gemini <ExternalLink className="h-3 w-3" />
+        </a>
+      </div>
     </div>
   );
 
@@ -172,7 +324,10 @@ export function ChatGPTPromptCopier({
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Sparkles className="h-5 w-5 text-primary" />
-          ChatGPT-Prompt Generator
+          KI-Prompt Generator
+          <span className="text-xs font-normal text-muted-foreground ml-2">
+            {Object.keys(PROMPT_VARIANTS).length} Varianten
+          </span>
         </CardTitle>
       </CardHeader>
       <CardContent>{content}</CardContent>
