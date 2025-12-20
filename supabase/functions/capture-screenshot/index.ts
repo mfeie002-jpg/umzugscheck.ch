@@ -82,7 +82,11 @@ serve(async (req) => {
     console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`);
 
     // Determine effective dimension for full-page captures
-    const effectiveDimension = isFullPage ? `${width}xfull` : dimension;
+    // ScreenshotMachine can introduce "white gap" stitching artifacts on very long pages with `xfull`.
+    // Workaround for the homepage: render a single tall viewport (max supported height = 9999px).
+    const effectiveDimension = isFullPage
+      ? (deviceType === 'desktop' && isHomepage ? `${width}x9999` : `${width}xfull`)
+      : dimension;
 
     // Build ScreenshotMachine API URL with hash for authentication
     const params = new URLSearchParams({
