@@ -181,6 +181,7 @@ const DELAY_OPTIONS = [
 const FORMAT_OPTIONS = [
   { value: "png", label: "PNG (beste Qualität)" },
   { value: "jpg", label: "JPG (kleinere Datei)" },
+  { value: "pdf", label: "PDF (Dokument)" },
 ];
 
 export function ScreenshotMachine() {
@@ -188,7 +189,7 @@ export function ScreenshotMachine() {
   const [dimension, setDimension] = useState("1920x1080");
   const [fullPage, setFullPage] = useState(true);
   const [delay, setDelay] = useState("10000");
-  const [format, setFormat] = useState<"png" | "jpg">("png");
+  const [format, setFormat] = useState<"png" | "jpg" | "pdf">("png");
   const [scrollToBottom, setScrollToBottom] = useState(true);
   const [noCache, setNoCache] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -375,14 +376,14 @@ export function ScreenshotMachine() {
     toast.success(`${urls.length} Screenshots erstellt!`);
   };
 
-  const downloadScreenshot = async (imageUrl: string, filename: string) => {
+  const downloadScreenshot = async (imageUrl: string, filename: string, isPdf = false) => {
     try {
       const response = await fetch(imageUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${filename}.png`;
+      a.download = isPdf ? `${filename}.pdf` : `${filename}.${format}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -391,6 +392,50 @@ export function ScreenshotMachine() {
     } catch (error) {
       // Fallback: open in new tab
       window.open(imageUrl, "_blank");
+    }
+  };
+
+  // Download single screenshot as PDF (convert from image)
+  const downloadScreenshotAsPdf = async (result: ScreenshotResult) => {
+    try {
+      toast.info("PDF wird erstellt...");
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+
+      // Title
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold");
+      pdf.text(`Screenshot: ${new URL(result.url).hostname}`, margin, margin + 5);
+      
+      // Metadata
+      pdf.setFontSize(9);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`URL: ${result.url}`, margin, margin + 12);
+      pdf.text(`Dimension: ${result.dimension} | Full Page: ${result.isFullPage ? 'Ja' : 'Nein'} | ${result.timestamp.toLocaleString('de-CH')}`, margin, margin + 17);
+
+      // Add screenshot image
+      const response = await fetch(result.imageUrl);
+      const blob = await response.blob();
+      const base64 = await blobToBase64(blob);
+      
+      const imgWidth = pageWidth - (margin * 2);
+      const imgHeight = pageHeight - margin - 25;
+      
+      pdf.addImage(base64, 'PNG', margin, margin + 22, imgWidth, imgHeight, undefined, 'FAST');
+
+      const hostname = new URL(result.url).hostname;
+      pdf.save(`screenshot-${hostname}-${Date.now()}.pdf`);
+      toast.success("PDF erstellt!");
+    } catch (error) {
+      console.error("PDF export error:", error);
+      toast.error("Fehler beim PDF-Export");
     }
   };
 
@@ -1272,8 +1317,20 @@ export function ScreenshotMachine() {
                             `screenshot-${new URL(result.url).hostname}-${Date.now()}`
                           );
                         }}
+                        title="Download als Bild"
                       >
                         <Download className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadScreenshotAsPdf(result);
+                        }}
+                        title="Download als PDF"
+                      >
+                        <FileText className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -1323,6 +1380,14 @@ export function ScreenshotMachine() {
             >
               <ExternalLink className="h-4 w-4 mr-1" />
               Neuer Tab
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => selectedImage && downloadScreenshotAsPdf(selectedImage)}
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              PDF
             </Button>
             <Button
               size="sm"
