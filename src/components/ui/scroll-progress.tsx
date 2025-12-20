@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 export const ScrollProgress = () => {
+  // Screenshot tools can capture during RAF-updated transforms; disable this indicator in screenshot mode.
+  if (isScreenshotRenderMode()) return null;
+
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
-    restDelta: 0.001
+    restDelta: 0.001,
   });
 
   return (
@@ -16,3 +19,4 @@ export const ScrollProgress = () => {
     />
   );
 };
+
