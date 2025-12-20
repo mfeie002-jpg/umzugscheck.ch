@@ -247,6 +247,10 @@ const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailabili
 const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
 const AdminTools = lazy(() => import("./pages/admin/Tools"));
+const AdminAIExport = lazy(() => import("./pages/admin/AIExport"));
+
+// Customer pages
+const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
 
 // Ratgeber pages
 const UmzugschecklisteDownload = lazy(() => import("./pages/ratgeber/UmzugschecklisteDownload"));
@@ -450,6 +454,8 @@ const App = () => (
                             <Route path="/admin/availability" element={<ProviderAvailability />} />
                             <Route path="/admin/code-export" element={<CodeExport />} />
                             <Route path="/admin/tools" element={<AdminTools />} />
+                            <Route path="/admin/ai-export" element={<AdminAIExport />} />
+                            <Route path="/kunden-onboarding" element={<KundenOnboarding />} />
                             <Route path="/ratgeber/umzugstipps" element={<UmzugstippsGuide />} />
                             <Route path="/ratgeber/tipps" element={<UmzugstippsGuide />} />
                             <Route path="/ratgeber/kosten" element={<UmzugskostenGuide />} />

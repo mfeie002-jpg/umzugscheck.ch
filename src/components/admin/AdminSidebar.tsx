@@ -146,6 +146,12 @@ const navItems = [
     href: "/admin/code-export", 
     icon: Download 
   },
+  { 
+    title: "KI-Analyse", 
+    href: "/admin/ai-export", 
+    icon: Brain,
+    highlight: true
+  },
 ];
 
 export function AdminSidebar() {
