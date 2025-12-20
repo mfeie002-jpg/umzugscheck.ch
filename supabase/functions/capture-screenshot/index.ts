@@ -50,12 +50,15 @@ serve(async (req) => {
       js: 'true',
     });
 
-    // Add scroll params for full-page captures
-    if (scroll) {
-      params.set('scroll', 'true');
-    }
+    // Add scroll params for full-page captures - critical for lazy-loaded content
     if (fullPage) {
+      // For full-page, scroll to bottom first to trigger lazy loading
+      params.set('scroll', 'true');
       params.set('scrollto', 'bottom');
+      params.set('scrolldelay', '3000'); // Wait 3s after scrolling
+      params.set('scrollback', 'true'); // Scroll back to top after loading
+    } else if (scroll) {
+      params.set('scroll', 'true');
     }
 
     // Generate MD5 hash: md5(url + secretPhrase)

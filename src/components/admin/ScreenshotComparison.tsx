@@ -1,10 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
+import { jsPDF } from "jspdf";
 import {
   ArrowLeftRight,
   Columns2,
@@ -14,6 +17,11 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  Diff,
+  Download,
+  FileText,
+  History,
+  Loader2,
 } from "lucide-react";
 
 interface ComparisonImage {
@@ -35,13 +43,19 @@ interface ScreenshotComparisonProps {
 export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotComparisonProps) {
   const [leftImage, setLeftImage] = useState<ComparisonImage | null>(null);
   const [rightImage, setRightImage] = useState<ComparisonImage | null>(null);
-  const [comparisonMode, setComparisonMode] = useState<"side-by-side" | "slider" | "overlay">("slider");
+  const [comparisonMode, setComparisonMode] = useState<"side-by-side" | "slider" | "overlay" | "diff">("slider");
   const [sliderPosition, setSliderPosition] = useState(50);
   const [overlayOpacity, setOverlayOpacity] = useState(50);
   const [zoom, setZoom] = useState(100);
+  const [diffImageUrl, setDiffImageUrl] = useState<string | null>(null);
+  const [diffLoading, setDiffLoading] = useState(false);
+  const [diffStats, setDiffStats] = useState<{ totalPixels: number; diffPixels: number; percentage: number } | null>(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   
   const sliderContainerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
+  const diffCanvasRef = useRef<HTMLCanvasElement>(null);
 
   // Handle file upload
   const handleImageUpload = (side: "left" | "right") => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +93,214 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
     }
   };
 
+  // Generate pixel diff
+  const generateDiff = useCallback(async () => {
+    if (!leftImage || !rightImage) return;
+    
+    setDiffLoading(true);
+    setDiffImageUrl(null);
+    setDiffStats(null);
+
+    try {
+      // Load both images
+      const loadImage = (src: string): Promise<HTMLImageElement> => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      };
+
+      const [imgA, imgB] = await Promise.all([
+        loadImage(leftImage.imageUrl),
+        loadImage(rightImage.imageUrl),
+      ]);
+
+      // Create canvas with max dimensions
+      const width = Math.max(imgA.width, imgB.width);
+      const height = Math.max(imgA.height, imgB.height);
+      
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      
+      if (!ctx) {
+        throw new Error("Canvas context not available");
+      }
+
+      // Draw image A
+      const canvasA = document.createElement("canvas");
+      canvasA.width = width;
+      canvasA.height = height;
+      const ctxA = canvasA.getContext("2d");
+      ctxA?.drawImage(imgA, 0, 0);
+      const dataA = ctxA?.getImageData(0, 0, width, height);
+
+      // Draw image B
+      const canvasB = document.createElement("canvas");
+      canvasB.width = width;
+      canvasB.height = height;
+      const ctxB = canvasB.getContext("2d");
+      ctxB?.drawImage(imgB, 0, 0);
+      const dataB = ctxB?.getImageData(0, 0, width, height);
+
+      if (!dataA || !dataB) {
+        throw new Error("Could not get image data");
+      }
+
+      // Create diff image
+      const diffData = ctx.createImageData(width, height);
+      let diffPixelCount = 0;
+      const threshold = 30; // Color difference threshold
+
+      for (let i = 0; i < dataA.data.length; i += 4) {
+        const rA = dataA.data[i];
+        const gA = dataA.data[i + 1];
+        const bA = dataA.data[i + 2];
+        
+        const rB = dataB.data[i];
+        const gB = dataB.data[i + 1];
+        const bB = dataB.data[i + 2];
+
+        // Calculate color difference
+        const diff = Math.abs(rA - rB) + Math.abs(gA - gB) + Math.abs(bA - bB);
+        
+        if (diff > threshold) {
+          // Highlight difference in red
+          diffData.data[i] = 255;     // R
+          diffData.data[i + 1] = 0;   // G
+          diffData.data[i + 2] = 0;   // B
+          diffData.data[i + 3] = 200; // A
+          diffPixelCount++;
+        } else {
+          // Show original but dimmed
+          diffData.data[i] = rA;
+          diffData.data[i + 1] = gA;
+          diffData.data[i + 2] = bA;
+          diffData.data[i + 3] = 100;
+        }
+      }
+
+      ctx.putImageData(diffData, 0, 0);
+      
+      const totalPixels = (width * height);
+      const percentage = (diffPixelCount / totalPixels) * 100;
+      
+      setDiffStats({
+        totalPixels,
+        diffPixels: diffPixelCount,
+        percentage,
+      });
+      
+      setDiffImageUrl(canvas.toDataURL("image/png"));
+      toast.success(`Diff erstellt: ${percentage.toFixed(2)}% Unterschied`);
+    } catch (error) {
+      console.error("Diff generation error:", error);
+      toast.error("Fehler beim Erstellen des Diffs");
+    } finally {
+      setDiffLoading(false);
+    }
+  }, [leftImage, rightImage]);
+
+  // Auto-generate diff when mode changes to diff
+  useEffect(() => {
+    if (comparisonMode === "diff" && leftImage && rightImage && !diffImageUrl) {
+      generateDiff();
+    }
+  }, [comparisonMode, leftImage, rightImage, diffImageUrl, generateDiff]);
+
+  // Export comparison as PDF
+  const exportToPdf = async () => {
+    if (!leftImage || !rightImage) return;
+    
+    setPdfLoading(true);
+    
+    try {
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+
+      // Title page
+      pdf.setFontSize(24);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Screenshot Vergleich", pageWidth / 2, 30, { align: "center" });
+      
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`Erstellt am: ${new Date().toLocaleString("de-CH")}`, pageWidth / 2, 45, { align: "center" });
+      
+      pdf.text(`Bild A: ${leftImage.label}`, margin, 70);
+      pdf.text(`Bild B: ${rightImage.label}`, margin, 80);
+      
+      if (diffStats) {
+        pdf.text(`Unterschied: ${diffStats.percentage.toFixed(2)}% (${diffStats.diffPixels.toLocaleString()} von ${diffStats.totalPixels.toLocaleString()} Pixeln)`, margin, 95);
+      }
+
+      // Page 2: Image A
+      pdf.addPage();
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Bild A (Vorher)", margin, margin + 10);
+      
+      try {
+        const imgWidth = pageWidth - (margin * 2);
+        const imgHeight = pageHeight - margin - 25;
+        pdf.addImage(leftImage.imageUrl, "PNG", margin, margin + 15, imgWidth, imgHeight, undefined, "FAST");
+      } catch (e) {
+        pdf.text("Bild konnte nicht geladen werden", margin, margin + 30);
+      }
+
+      // Page 3: Image B
+      pdf.addPage();
+      pdf.text("Bild B (Nachher)", margin, margin + 10);
+      
+      try {
+        const imgWidth = pageWidth - (margin * 2);
+        const imgHeight = pageHeight - margin - 25;
+        pdf.addImage(rightImage.imageUrl, "PNG", margin, margin + 15, imgWidth, imgHeight, undefined, "FAST");
+      } catch (e) {
+        pdf.text("Bild konnte nicht geladen werden", margin, margin + 30);
+      }
+
+      // Page 4: Diff (if available)
+      if (diffImageUrl) {
+        pdf.addPage();
+        pdf.text("Pixel-Diff (Unterschiede in Rot)", margin, margin + 10);
+        
+        if (diffStats) {
+          pdf.setFontSize(10);
+          pdf.setFont("helvetica", "normal");
+          pdf.text(`${diffStats.percentage.toFixed(2)}% der Pixel haben sich geändert`, margin, margin + 18);
+        }
+        
+        try {
+          const imgWidth = pageWidth - (margin * 2);
+          const imgHeight = pageHeight - margin - 30;
+          pdf.addImage(diffImageUrl, "PNG", margin, margin + 22, imgWidth, imgHeight, undefined, "FAST");
+        } catch (e) {
+          pdf.text("Diff-Bild konnte nicht geladen werden", margin, margin + 35);
+        }
+      }
+
+      pdf.save(`screenshot-vergleich-${new Date().toISOString().split("T")[0]}.pdf`);
+      toast.success("PDF exportiert!");
+    } catch (error) {
+      console.error("PDF export error:", error);
+      toast.error("Fehler beim PDF-Export");
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   // Slider drag handling
   const handleMouseDown = () => {
     isDragging.current = true;
@@ -108,6 +330,8 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
     setSliderPosition(50);
     setOverlayOpacity(50);
     setZoom(100);
+    setDiffImageUrl(null);
+    setDiffStats(null);
   };
 
   const hasImages = leftImage && rightImage;
@@ -115,15 +339,89 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ArrowLeftRight className="h-5 w-5" />
-          Screenshot Vergleich
-        </CardTitle>
-        <CardDescription>
-          Vergleiche zwei Screenshots nebeneinander oder mit einem Schieberegler
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <ArrowLeftRight className="h-5 w-5" />
+              Screenshot Vergleich
+            </CardTitle>
+            <CardDescription>
+              Vergleiche zwei Screenshots nebeneinander, mit Slider oder Pixel-Diff
+            </CardDescription>
+          </div>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowHistory(!showHistory)}
+              className="gap-1"
+            >
+              <History className="h-4 w-4" />
+              History ({availableScreenshots.length})
+            </Button>
+            {hasImages && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={exportToPdf}
+                disabled={pdfLoading}
+                className="gap-1"
+              >
+                {pdfLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileText className="h-4 w-4" />
+                )}
+                PDF Export
+              </Button>
+            )}
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* History Panel */}
+        {showHistory && availableScreenshots.length > 0 && (
+          <div className="p-4 bg-muted/50 rounded-lg">
+            <Label className="text-sm font-medium mb-3 block">
+              Screenshot History ({availableScreenshots.length} verfügbar)
+            </Label>
+            <ScrollArea className="h-32">
+              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                {availableScreenshots.map((s, i) => (
+                  <div key={i} className="relative group">
+                    <img 
+                      src={s.imageUrl} 
+                      alt={s.url}
+                      className="w-full h-16 object-cover rounded border hover:border-primary cursor-pointer"
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded flex items-center justify-center gap-1">
+                      <Button 
+                        size="icon" 
+                        variant="secondary" 
+                        className="h-6 w-6"
+                        onClick={() => selectFromAvailable("left", s)}
+                      >
+                        A
+                      </Button>
+                      <Button 
+                        size="icon" 
+                        variant="secondary" 
+                        className="h-6 w-6"
+                        onClick={() => selectFromAvailable("right", s)}
+                      >
+                        B
+                      </Button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground truncate mt-1">
+                      {new URL(s.url).pathname || "/"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
+
         {/* Image Selection */}
         <div className="grid md:grid-cols-2 gap-4">
           {/* Left Image */}
@@ -143,7 +441,11 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                   <Button 
                     variant="destructive" 
                     size="sm"
-                    onClick={() => setLeftImage(null)}
+                    onClick={() => {
+                      setLeftImage(null);
+                      setDiffImageUrl(null);
+                      setDiffStats(null);
+                    }}
                   >
                     <X className="h-4 w-4 mr-1" /> Entfernen
                   </Button>
@@ -157,21 +459,6 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                   <span className="text-sm text-muted-foreground">Bild hochladen</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload("left")} />
                 </label>
-                {availableScreenshots.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {availableScreenshots.slice(0, 4).map((s, i) => (
-                      <Button 
-                        key={i} 
-                        variant="outline" 
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => selectFromAvailable("left", s)}
-                      >
-                        {new URL(s.url).pathname.slice(0, 15) || "Home"}
-                      </Button>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -193,7 +480,11 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                   <Button 
                     variant="destructive" 
                     size="sm"
-                    onClick={() => setRightImage(null)}
+                    onClick={() => {
+                      setRightImage(null);
+                      setDiffImageUrl(null);
+                      setDiffStats(null);
+                    }}
                   >
                     <X className="h-4 w-4 mr-1" /> Entfernen
                   </Button>
@@ -207,21 +498,6 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                   <span className="text-sm text-muted-foreground">Bild hochladen</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload("right")} />
                 </label>
-                {availableScreenshots.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {availableScreenshots.slice(0, 4).map((s, i) => (
-                      <Button 
-                        key={i} 
-                        variant="outline" 
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => selectFromAvailable("right", s)}
-                      >
-                        {new URL(s.url).pathname.slice(0, 15) || "Home"}
-                      </Button>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -231,20 +507,24 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
         {hasImages && (
           <>
             {/* Mode Selection */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <Tabs value={comparisonMode} onValueChange={(v) => setComparisonMode(v as typeof comparisonMode)}>
                 <TabsList>
                   <TabsTrigger value="slider" className="gap-2">
                     <SplitSquareHorizontal className="h-4 w-4" />
-                    Schieberegler
+                    Slider
                   </TabsTrigger>
                   <TabsTrigger value="side-by-side" className="gap-2">
                     <Columns2 className="h-4 w-4" />
-                    Nebeneinander
+                    Side-by-Side
                   </TabsTrigger>
                   <TabsTrigger value="overlay" className="gap-2">
                     <ArrowLeftRight className="h-4 w-4" />
-                    Überlagert
+                    Overlay
+                  </TabsTrigger>
+                  <TabsTrigger value="diff" className="gap-2">
+                    <Diff className="h-4 w-4" />
+                    Pixel-Diff
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -271,16 +551,13 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                 style={{ height: `${400 * (zoom / 100)}px` }}
                 onMouseMove={handleMouseMove}
               >
-                {/* Left Image (full) */}
                 <img 
                   src={leftImage.imageUrl} 
                   alt="Before" 
                   className="absolute inset-0 w-full h-full object-contain bg-muted"
-                  style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center' }}
                   draggable={false}
                 />
                 
-                {/* Right Image (clipped) */}
                 <div 
                   className="absolute inset-0 overflow-hidden"
                   style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}
@@ -289,12 +566,10 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                     src={rightImage.imageUrl} 
                     alt="After" 
                     className="w-full h-full object-contain bg-muted"
-                    style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center' }}
                     draggable={false}
                   />
                 </div>
 
-                {/* Slider Handle */}
                 <div 
                   className="absolute top-0 bottom-0 w-1 bg-white shadow-lg cursor-ew-resize z-10"
                   style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
@@ -305,7 +580,6 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                   </div>
                 </div>
 
-                {/* Labels */}
                 <Badge className="absolute top-2 left-2 bg-blue-500">A: Vorher</Badge>
                 <Badge className="absolute top-2 right-2 bg-green-500">B: Nachher</Badge>
               </div>
@@ -369,6 +643,68 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
                 </div>
               </div>
             )}
+
+            {/* Diff Mode */}
+            {comparisonMode === "diff" && (
+              <div className="space-y-4">
+                {diffStats && (
+                  <div className="flex items-center gap-4 p-3 bg-muted/50 rounded-lg">
+                    <Badge variant={diffStats.percentage > 10 ? "destructive" : diffStats.percentage > 5 ? "default" : "secondary"}>
+                      {diffStats.percentage.toFixed(2)}% Unterschied
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {diffStats.diffPixels.toLocaleString()} von {diffStats.totalPixels.toLocaleString()} Pixeln
+                    </span>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={generateDiff}
+                      disabled={diffLoading}
+                      className="ml-auto"
+                    >
+                      {diffLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Neu berechnen"}
+                    </Button>
+                  </div>
+                )}
+                
+                {diffLoading && (
+                  <div className="flex items-center justify-center py-20">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <span className="ml-3 text-muted-foreground">Berechne Pixel-Unterschiede...</span>
+                  </div>
+                )}
+                
+                {diffImageUrl && !diffLoading && (
+                  <div 
+                    className="relative rounded-lg overflow-hidden border"
+                    style={{ height: `${400 * (zoom / 100)}px` }}
+                  >
+                    <img 
+                      src={diffImageUrl} 
+                      alt="Diff" 
+                      className="w-full h-full object-contain bg-black"
+                    />
+                    <Badge className="absolute top-2 left-2 bg-red-500">Unterschiede in Rot</Badge>
+                    {diffImageUrl && (
+                      <Button 
+                        variant="secondary" 
+                        size="sm"
+                        className="absolute bottom-2 right-2"
+                        onClick={() => {
+                          const a = document.createElement("a");
+                          a.href = diffImageUrl;
+                          a.download = `diff-${Date.now()}.png`;
+                          a.click();
+                        }}
+                      >
+                        <Download className="h-4 w-4 mr-1" />
+                        Diff speichern
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
 
@@ -376,6 +712,7 @@ export function ScreenshotComparison({ availableScreenshots = [] }: ScreenshotCo
           <div className="text-center py-8 text-muted-foreground">
             <ArrowLeftRight className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>Wähle zwei Screenshots aus, um sie zu vergleichen</p>
+            <p className="text-sm mt-2">Nutze die History oben oder lade Bilder hoch</p>
           </div>
         )}
       </CardContent>
