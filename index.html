@@ -54,12 +54,30 @@
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     </noscript>
     
+    <!-- Screenshot render mode detection - MUST run before any content -->
+    <script>
+      (function() {
+        if (window.location.search.indexOf('uc_render=1') !== -1) {
+          document.documentElement.classList.add('uc-render');
+        }
+      })();
+    </script>
+    
     <!-- Inline critical CSS for faster first paint -->
     <style>
       /* Critical CSS for above-the-fold content */
       body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
       #root { min-height: 100vh; }
       .loading-spinner { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+      
+      /* Screenshot mode: disable ALL animations and force visibility */
+      html.uc-render *, html.uc-render *::before, html.uc-render *::after {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+      }
     </style>
     
     <!-- Structured Data - Enhanced for Rich Results -->
