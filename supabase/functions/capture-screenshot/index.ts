@@ -82,11 +82,8 @@ serve(async (req) => {
     console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`);
 
     // Determine effective dimension for full-page captures
-    // ScreenshotMachine can introduce "white gap" stitching artifacts on very long pages with `xfull`.
-    // Workaround for the homepage: render a single tall viewport (max supported height = 9999px).
-    const effectiveDimension = isFullPage
-      ? (deviceType === 'desktop' && isHomepage ? `${width}x9999` : `${width}xfull`)
-      : dimension;
+    // Use `xfull` so viewport units (vh) behave correctly.
+    const effectiveDimension = isFullPage ? `${width}xfull` : dimension;
 
     // Build ScreenshotMachine API URL with hash for authentication
     const params = new URLSearchParams({
@@ -103,11 +100,8 @@ serve(async (req) => {
     params.set('device', deviceType);
 
     // Zoom controls output resolution.
-    // We previously reduced zoom aggressively to avoid "white gaps" on stitched full-page captures.
-    // Now that the homepage uses a single tall viewport (`x9999`) we can keep a normal zoom so content isn't tiny/washed out.
-    const effectiveZoom = (deviceType === 'desktop' && isFullPage)
-      ? (isHomepage ? '100' : '110')
-      : '200';
+    // Keep desktop full-page at a moderate zoom to reduce stitching artifacts, while keeping mobile/tablet retina quality.
+    const effectiveZoom = (deviceType === 'desktop' && isFullPage) ? '125' : '200';
     params.set('zoom', effectiveZoom);
 
     // Improve reliability on real-world sites (bot detection / language variants)
