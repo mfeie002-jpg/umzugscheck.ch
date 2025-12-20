@@ -3,15 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { memo } from "react";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 export const PremiumAIShowcase = memo(() => {
+  const isScreenshot = isScreenshotRenderMode();
+  
   return (
     <section className="py-12 md:py-20 bg-gradient-to-br from-secondary/5 via-primary/5 to-background overflow-hidden" aria-labelledby="ai-showcase-heading">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           className="text-center mb-10 md:mb-14"
         >
@@ -30,8 +34,9 @@ export const PremiumAIShowcase = memo(() => {
 
         {/* Process Steps */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-10"
@@ -84,8 +89,9 @@ export const PremiumAIShowcase = memo(() => {
           
           {/* Left Column - Phone Mockup */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={isScreenshot ? false : { opacity: 0, x: -20 }}
+            whileInView={isScreenshot ? undefined : { opacity: 1, x: 0 }}
+            animate={isScreenshot ? { opacity: 1, x: 0 } : undefined}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
             className="relative order-2 lg:order-1"
@@ -180,8 +186,9 @@ export const PremiumAIShowcase = memo(() => {
           
           {/* Right Column - Features & CTA */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={isScreenshot ? false : { opacity: 0, x: 20 }}
+            whileInView={isScreenshot ? undefined : { opacity: 1, x: 0 }}
+            animate={isScreenshot ? { opacity: 1, x: 0 } : undefined}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="space-y-5 order-1 lg:order-2"

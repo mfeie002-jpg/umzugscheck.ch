@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { memo } from "react";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 const regions = [
   { name: "Zürich", slug: "zuerich", count: 45, popular: true, rating: 4.8 },
@@ -20,10 +21,13 @@ const regions = [
 ];
 
 // Popular region card component
-const PopularRegionCard = memo(({ region, index }: { region: typeof regions[0]; index: number }) => (
+const PopularRegionCard = memo(({ region, index }: { region: typeof regions[0]; index: number }) => {
+  const isScreenshot = isScreenshotRenderMode();
+  return (
   <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    whileInView={{ opacity: 1, y: 0 }}
+    initial={isScreenshot ? false : { opacity: 0, y: 10 }}
+    whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+    animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
     viewport={{ once: true }}
     transition={{ duration: 0.3, delay: index * 0.05 }}
   >
@@ -51,21 +55,24 @@ const PopularRegionCard = memo(({ region, index }: { region: typeof regions[0]; 
       <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
     </Link>
   </motion.div>
-));
+  );
+});
 
 PopularRegionCard.displayName = 'PopularRegionCard';
 
 export const PremiumRegions = memo(() => {
   const popularRegions = regions.filter(r => r.popular);
   const otherRegions = regions.filter(r => !r.popular);
+  const isScreenshot = isScreenshotRenderMode();
   
   return (
     <section className="py-10 sm:py-12 md:py-16 bg-muted/30" aria-labelledby="regions-heading">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 10 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           className="text-center mb-6 md:mb-8"
         >

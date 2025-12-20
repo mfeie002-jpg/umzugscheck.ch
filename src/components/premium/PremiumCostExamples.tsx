@@ -11,6 +11,7 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { useState } from "react";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 // Import AI-generated apartment images
 import studioApartment from "@/assets/apartments/studio-apartment.jpg";
@@ -225,6 +226,7 @@ const costExamples = [
 
 export const PremiumCostExamples = () => {
   const [activeView, setActiveView] = useState<'photo' | 'plan'>('photo');
+  const isScreenshot = isScreenshotRenderMode();
 
   return (
     <section className="py-10 sm:py-14 md:py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
@@ -235,15 +237,17 @@ export const PremiumCostExamples = () => {
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="text-center mb-8 sm:mb-12"
         >
           <motion.span 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={isScreenshot ? false : { opacity: 0, scale: 0.9 }}
+            whileInView={isScreenshot ? undefined : { opacity: 1, scale: 1 }}
+            animate={isScreenshot ? { opacity: 1, scale: 1 } : undefined}
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-success/10 rounded-full text-success font-semibold text-sm uppercase tracking-wider mb-4"
           >
