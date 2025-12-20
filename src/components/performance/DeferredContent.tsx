@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, memo, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { isScreenshotRenderMode } from '@/lib/screenshot-render-mode';
 
 interface DeferredContentProps {
   children: ReactNode;
@@ -24,14 +25,22 @@ export const DeferredContent = memo<DeferredContentProps>(({
   rootMargin = '200px',
   className,
 }) => {
-  const [shouldRender, setShouldRender] = useState(false);
+  const screenshotMode = isScreenshotRenderMode();
+
+  const [shouldRender, setShouldRender] = useState(screenshotMode);
   const containerRef = useRef<HTMLDivElement>(null);
   const hasTriggered = useRef(false);
 
   const triggerRender = () => {
     if (hasTriggered.current) return;
     hasTriggered.current = true;
-    
+
+    // In screenshot mode we must render immediately (no IO / delays)
+    if (screenshotMode) {
+      setShouldRender(true);
+      return;
+    }
+
     if (delay > 0) {
       setTimeout(() => setShouldRender(true), delay);
     } else {
@@ -41,6 +50,7 @@ export const DeferredContent = memo<DeferredContentProps>(({
 
   // Intersection Observer for scroll-based triggering
   useEffect(() => {
+    if (screenshotMode) return;
     if (!triggerOnScroll || shouldRender) return;
 
     const observer = new IntersectionObserver(
@@ -60,14 +70,15 @@ export const DeferredContent = memo<DeferredContentProps>(({
     }
 
     return () => observer.disconnect();
-  }, [triggerOnScroll, shouldRender, rootMargin]);
+  }, [triggerOnScroll, shouldRender, rootMargin, screenshotMode]);
 
   // User interaction triggering
   useEffect(() => {
+    if (screenshotMode) return;
     if (!triggerOnInteraction || shouldRender) return;
 
     const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
-    
+
     const handleInteraction = () => {
       triggerRender();
       events.forEach((event) => {
@@ -84,7 +95,7 @@ export const DeferredContent = memo<DeferredContentProps>(({
         window.removeEventListener(event, handleInteraction);
       });
     };
-  }, [triggerOnInteraction, shouldRender]);
+  }, [triggerOnInteraction, shouldRender, screenshotMode]);
 
   return (
     <div ref={containerRef} className={className}>
@@ -103,20 +114,20 @@ export const IdleContent: React.FC<{
   fallback?: ReactNode;
   timeout?: number;
 }> = memo(({ children, fallback = null, timeout = 2000 }) => {
-  const [shouldRender, setShouldRender] = useState(false);
+  const screenshotMode = isScreenshotRenderMode();
+  const [shouldRender, setShouldRender] = useState(screenshotMode);
 
   useEffect(() => {
+    if (screenshotMode) return;
+
     if ('requestIdleCallback' in window) {
-      const id = requestIdleCallback(
-        () => setShouldRender(true),
-        { timeout }
-      );
+      const id = requestIdleCallback(() => setShouldRender(true), { timeout });
       return () => cancelIdleCallback(id);
     } else {
       const timer = setTimeout(() => setShouldRender(true), 100);
       return () => clearTimeout(timer);
     }
-  }, [timeout]);
+  }, [timeout, screenshotMode]);
 
   return <>{shouldRender ? children : fallback}</>;
 });
@@ -130,11 +141,13 @@ export const AfterHydration: React.FC<{
   children: ReactNode;
   fallback?: ReactNode;
 }> = memo(({ children, fallback = null }) => {
-  const [hydrated, setHydrated] = useState(false);
+  const screenshotMode = isScreenshotRenderMode();
+  const [hydrated, setHydrated] = useState(screenshotMode);
 
   useEffect(() => {
+    if (screenshotMode) return;
     setHydrated(true);
-  }, []);
+  }, [screenshotMode]);
 
   return <>{hydrated ? children : fallback}</>;
 });
@@ -151,11 +164,7 @@ export const SkeletonLoader: React.FC<{
   rounded?: boolean;
 }> = memo(({ width = '100%', height = '20px', className, rounded = false }) => (
   <div
-    className={cn(
-      'animate-pulse bg-muted',
-      rounded ? 'rounded-full' : 'rounded',
-      className
-    )}
+    className={cn('animate-pulse bg-muted', rounded ? 'rounded-full' : 'rounded', className)}
     style={{ width, height }}
   />
 ));
@@ -165,14 +174,16 @@ SkeletonLoader.displayName = 'SkeletonLoader';
 /**
  * Intersection trigger hook for manual control
  */
-export const useIntersectionTrigger = (
-  options?: IntersectionObserverInit
-) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const [hasIntersected, setHasIntersected] = useState(false);
+export const useIntersectionTrigger = (options?: IntersectionObserverInit) => {
+  const screenshotMode = isScreenshotRenderMode();
+
+  const [isIntersecting, setIsIntersecting] = useState(screenshotMode);
+  const [hasIntersected, setHasIntersected] = useState(screenshotMode);
   const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    if (screenshotMode) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -194,7 +205,8 @@ export const useIntersectionTrigger = (
     }
 
     return () => observer.disconnect();
-  }, [hasIntersected, options]);
+  }, [hasIntersected, options, screenshotMode]);
 
   return { ref, isIntersecting, hasIntersected };
 };
+

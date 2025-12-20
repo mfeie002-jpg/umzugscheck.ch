@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { isScreenshotRenderMode } from '@/lib/screenshot-render-mode';
 
 interface ImageLazyLoaderProps {
   src: string;
@@ -24,14 +25,16 @@ export const ImageLazyLoader: React.FC<ImageLazyLoaderProps> = ({
   onLoad,
   onError,
 }) => {
+  const screenshotMode = isScreenshotRenderMode();
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [isIntersecting, setIsIntersecting] = useState(priority);
+  const [isIntersecting, setIsIntersecting] = useState(priority || screenshotMode);
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (priority || !containerRef.current) return;
+    if (priority || screenshotMode || !containerRef.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -45,16 +48,16 @@ export const ImageLazyLoader: React.FC<ImageLazyLoaderProps> = ({
 
     observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, [priority]);
+  }, [priority, screenshotMode]);
 
-  const shouldLoad = priority || isIntersecting;
+  const shouldLoad = priority || screenshotMode || isIntersecting;
 
   useEffect(() => {
     if (!shouldLoad || !imgRef.current) return;
 
     const img = imgRef.current;
-    
-    if (!priority && 'loading' in HTMLImageElement.prototype) {
+
+    if (!priority && !screenshotMode && 'loading' in HTMLImageElement.prototype) {
       img.loading = 'lazy';
     }
 
@@ -69,7 +72,7 @@ export const ImageLazyLoader: React.FC<ImageLazyLoaderProps> = ({
           onLoad?.();
         });
     }
-  }, [shouldLoad, priority, onLoad]);
+  }, [shouldLoad, priority, screenshotMode, onLoad]);
 
   const handleLoad = () => {
     setIsLoaded(true);
@@ -84,20 +87,17 @@ export const ImageLazyLoader: React.FC<ImageLazyLoaderProps> = ({
   const placeholderColor = `hsl(${hashCode(src) % 360}, 20%, 90%)`;
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className={cn('relative overflow-hidden', className)}
-      style={{ 
+      style={{
         width: width ? `${width}px` : undefined,
         height: height ? `${height}px` : undefined,
       }}
     >
       {!isLoaded && !hasError && (
-        <div 
-          className={cn(
-            'absolute inset-0 animate-pulse',
-            placeholderClassName
-          )}
+        <div
+          className={cn('absolute inset-0 animate-pulse', placeholderClassName)}
           style={{ backgroundColor: placeholderColor }}
         />
       )}
@@ -122,10 +122,12 @@ export const ImageLazyLoader: React.FC<ImageLazyLoaderProps> = ({
       )}
 
       {hasError && (
-        <div className={cn(
-          'absolute inset-0 flex items-center justify-center bg-muted text-muted-foreground',
-          className
-        )}>
+        <div
+          className={cn(
+            'absolute inset-0 flex items-center justify-center bg-muted text-muted-foreground',
+            className
+          )}
+        >
           <span className="text-sm">Bild nicht verfügbar</span>
         </div>
       )}
@@ -137,8 +139,9 @@ function hashCode(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
   return Math.abs(hash);
 }
+
