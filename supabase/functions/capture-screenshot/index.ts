@@ -1,15 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { encode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
-
-// Helper function to compute MD5 hash
-async function md5(input: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(input);
-  const hashBuffer = await crypto.subtle.digest("MD5", data);
-  const hashArray = new Uint8Array(hashBuffer);
-  const hexBytes = encode(hashArray);
-  return new TextDecoder().decode(hexBytes);
-}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,6 +8,132 @@ const corsHeaders = {
 // Get credentials from environment variables
 const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY") || "";
 const SECRET_PHRASE = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") || "";
+
+// Simple MD5 implementation for hash authentication
+function md5(input: string): string {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  
+  // MD5 helper functions
+  function rotateLeft(x: number, n: number): number {
+    return (x << n) | (x >>> (32 - n));
+  }
+  
+  function addUnsigned(x: number, y: number): number {
+    const x4 = (x & 0x40000000);
+    const y4 = (y & 0x40000000);
+    const x8 = (x & 0x80000000);
+    const y8 = (y & 0x80000000);
+    const result = (x & 0x3FFFFFFF) + (y & 0x3FFFFFFF);
+    if (x4 & y4) return (result ^ 0x80000000 ^ x8 ^ y8);
+    if (x4 | y4) {
+      if (result & 0x40000000) return (result ^ 0xC0000000 ^ x8 ^ y8);
+      else return (result ^ 0x40000000 ^ x8 ^ y8);
+    }
+    return (result ^ x8 ^ y8);
+  }
+  
+  function F(x: number, y: number, z: number): number { return (x & y) | ((~x) & z); }
+  function G(x: number, y: number, z: number): number { return (x & z) | (y & (~z)); }
+  function H(x: number, y: number, z: number): number { return (x ^ y ^ z); }
+  function I(x: number, y: number, z: number): number { return (y ^ (x | (~z))); }
+  
+  function FF(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(F(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  function GG(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(G(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  function HH(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(H(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  function II(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(I(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  
+  function wordToHex(value: number): string {
+    let hex = "";
+    for (let count = 0; count <= 3; count++) {
+      const byte = (value >>> (count * 8)) & 255;
+      hex += byte.toString(16).padStart(2, "0");
+    }
+    return hex;
+  }
+  
+  // Prepare message
+  const msgLength = data.length;
+  const numBlocks = Math.ceil((msgLength + 9) / 64);
+  const totalLength = numBlocks * 64;
+  const paddedMsg = new Uint8Array(totalLength);
+  paddedMsg.set(data);
+  paddedMsg[msgLength] = 0x80;
+  
+  const bitLength = msgLength * 8;
+  const view = new DataView(paddedMsg.buffer);
+  view.setUint32(totalLength - 8, bitLength, true);
+  view.setUint32(totalLength - 4, 0, true);
+  
+  // Initialize hash values
+  let a = 0x67452301, b = 0xefcdab89, c = 0x98badcfe, d = 0x10325476;
+  
+  // Process each 64-byte block
+  for (let i = 0; i < totalLength; i += 64) {
+    const block = new Uint32Array(16);
+    for (let j = 0; j < 16; j++) {
+      block[j] = view.getUint32(i + j * 4, true);
+    }
+    
+    let aa = a, bb = b, cc = c, dd = d;
+    
+    // Round 1
+    a = FF(a, b, c, d, block[0], 7, 0xd76aa478); d = FF(d, a, b, c, block[1], 12, 0xe8c7b756);
+    c = FF(c, d, a, b, block[2], 17, 0x242070db); b = FF(b, c, d, a, block[3], 22, 0xc1bdceee);
+    a = FF(a, b, c, d, block[4], 7, 0xf57c0faf); d = FF(d, a, b, c, block[5], 12, 0x4787c62a);
+    c = FF(c, d, a, b, block[6], 17, 0xa8304613); b = FF(b, c, d, a, block[7], 22, 0xfd469501);
+    a = FF(a, b, c, d, block[8], 7, 0x698098d8); d = FF(d, a, b, c, block[9], 12, 0x8b44f7af);
+    c = FF(c, d, a, b, block[10], 17, 0xffff5bb1); b = FF(b, c, d, a, block[11], 22, 0x895cd7be);
+    a = FF(a, b, c, d, block[12], 7, 0x6b901122); d = FF(d, a, b, c, block[13], 12, 0xfd987193);
+    c = FF(c, d, a, b, block[14], 17, 0xa679438e); b = FF(b, c, d, a, block[15], 22, 0x49b40821);
+    
+    // Round 2
+    a = GG(a, b, c, d, block[1], 5, 0xf61e2562); d = GG(d, a, b, c, block[6], 9, 0xc040b340);
+    c = GG(c, d, a, b, block[11], 14, 0x265e5a51); b = GG(b, c, d, a, block[0], 20, 0xe9b6c7aa);
+    a = GG(a, b, c, d, block[5], 5, 0xd62f105d); d = GG(d, a, b, c, block[10], 9, 0x02441453);
+    c = GG(c, d, a, b, block[15], 14, 0xd8a1e681); b = GG(b, c, d, a, block[4], 20, 0xe7d3fbc8);
+    a = GG(a, b, c, d, block[9], 5, 0x21e1cde6); d = GG(d, a, b, c, block[14], 9, 0xc33707d6);
+    c = GG(c, d, a, b, block[3], 14, 0xf4d50d87); b = GG(b, c, d, a, block[8], 20, 0x455a14ed);
+    a = GG(a, b, c, d, block[13], 5, 0xa9e3e905); d = GG(d, a, b, c, block[2], 9, 0xfcefa3f8);
+    c = GG(c, d, a, b, block[7], 14, 0x676f02d9); b = GG(b, c, d, a, block[12], 20, 0x8d2a4c8a);
+    
+    // Round 3
+    a = HH(a, b, c, d, block[5], 4, 0xfffa3942); d = HH(d, a, b, c, block[8], 11, 0x8771f681);
+    c = HH(c, d, a, b, block[11], 16, 0x6d9d6122); b = HH(b, c, d, a, block[14], 23, 0xfde5380c);
+    a = HH(a, b, c, d, block[1], 4, 0xa4beea44); d = HH(d, a, b, c, block[4], 11, 0x4bdecfa9);
+    c = HH(c, d, a, b, block[7], 16, 0xf6bb4b60); b = HH(b, c, d, a, block[10], 23, 0xbebfbc70);
+    a = HH(a, b, c, d, block[13], 4, 0x289b7ec6); d = HH(d, a, b, c, block[0], 11, 0xeaa127fa);
+    c = HH(c, d, a, b, block[3], 16, 0xd4ef3085); b = HH(b, c, d, a, block[6], 23, 0x04881d05);
+    a = HH(a, b, c, d, block[9], 4, 0xd9d4d039); d = HH(d, a, b, c, block[12], 11, 0xe6db99e5);
+    c = HH(c, d, a, b, block[15], 16, 0x1fa27cf8); b = HH(b, c, d, a, block[2], 23, 0xc4ac5665);
+    
+    // Round 4
+    a = II(a, b, c, d, block[0], 6, 0xf4292244); d = II(d, a, b, c, block[7], 10, 0x432aff97);
+    c = II(c, d, a, b, block[14], 15, 0xab9423a7); b = II(b, c, d, a, block[5], 21, 0xfc93a039);
+    a = II(a, b, c, d, block[12], 6, 0x655b59c3); d = II(d, a, b, c, block[3], 10, 0x8f0ccc92);
+    c = II(c, d, a, b, block[10], 15, 0xffeff47d); b = II(b, c, d, a, block[1], 21, 0x85845dd1);
+    a = II(a, b, c, d, block[8], 6, 0x6fa87e4f); d = II(d, a, b, c, block[15], 10, 0xfe2ce6e0);
+    c = II(c, d, a, b, block[6], 15, 0xa3014314); b = II(b, c, d, a, block[13], 21, 0x4e0811a1);
+    a = II(a, b, c, d, block[4], 6, 0xf7537e82); d = II(d, a, b, c, block[11], 10, 0xbd3af235);
+    c = II(c, d, a, b, block[2], 15, 0x2ad7d2bb); b = II(b, c, d, a, block[9], 21, 0xeb86d391);
+    
+    a = addUnsigned(a, aa); b = addUnsigned(b, bb); c = addUnsigned(c, cc); d = addUnsigned(d, dd);
+  }
+  
+  return wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -37,11 +152,8 @@ serve(async (req) => {
     } = await req.json();
 
     // Auto-add uc_render=1 for umzugscheck.ch to avoid lazy-loading issues
-    let isHomepage = false;
     try {
       const parsedUrl = new URL(url);
-      isHomepage = parsedUrl.pathname === "/" || parsedUrl.pathname === "";
-
       if (
         parsedUrl.hostname === "umzugscheck.ch" ||
         parsedUrl.hostname.endsWith(".umzugscheck.ch")
@@ -58,10 +170,9 @@ serve(async (req) => {
     const validFormats = ["png", "jpg", "pdf"];
     const outputFormat = validFormats.includes(format) ? format : "png";
 
-    // ScreenshotMachine only supports specific delay values (ms) - use HIGHER delays for complex pages
+    // ScreenshotMachine only supports specific delay values (ms)
     const allowedDelays = [0, 200, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
     const delayMsRaw = typeof delay === "number" ? delay : Number(delay);
-    // Default to 10000ms (10s) for umzugscheck.ch to ensure all content loads
     const defaultDelay = 10000;
     const delayMsClamped = Number.isFinite(delayMsRaw)
       ? Math.max(0, Math.min(10000, delayMsRaw))
@@ -84,18 +195,15 @@ serve(async (req) => {
     const width = parseInt(widthStr, 10);
     const heightNum = parseInt(heightStr, 10);
 
-    // Treat "xfull" dimensions as full-page even if caller forgot fullPage=true
     const isDimensionFull = String(heightStr || "").toLowerCase() === "full";
     let isFullPage = Boolean(fullPage || isDimensionFull);
 
-    // Guardrail: Tall viewports often break vh/svh layouts
     const isTallViewport = Number.isFinite(heightNum) && heightNum >= 2000;
     if (!isFullPage && isTallViewport) {
       isFullPage = true;
       console.log(`Detected tall viewport (${dimension}); switching to xfull stitching.`);
     }
 
-    // Determine device type based on width
     let deviceType = "desktop";
     if (width <= 480) {
       deviceType = "phone";
@@ -107,16 +215,12 @@ serve(async (req) => {
       `Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`
     );
 
-    // Determine effective dimension for full-page captures
     let effectiveDimension = dimension;
-    let captureStrategy: "viewport" | "xfull" = "viewport";
-
     if (isFullPage) {
       effectiveDimension = `${width}xfull`;
-      captureStrategy = "xfull";
     }
 
-    console.log(`Capture strategy: ${captureStrategy}, effectiveDimension: ${effectiveDimension}`);
+    console.log(`Capture strategy: ${isFullPage ? "xfull" : "viewport"}, effectiveDimension: ${effectiveDimension}`);
 
     if (!SCREENSHOT_API_KEY) {
       console.error("SCREENSHOTMACHINE_API_KEY not configured");
@@ -132,32 +236,27 @@ serve(async (req) => {
       url: url,
       dimension: effectiveDimension,
       format: outputFormat,
-      cacheLimit: "0", // Always bypass cache to get fresh content
+      cacheLimit: "0",
       delay: String(effectiveDelay),
-      js: "true", // Enable JavaScript rendering
-      timeout: "20000", // 20 second timeout for slow-loading pages
+      js: "true",
+      timeout: "20000",
     });
 
     // Add hash authentication if secret phrase is configured
     if (SECRET_PHRASE) {
-      const hashValue = await md5(url + SECRET_PHRASE);
+      const hashValue = md5(url + SECRET_PHRASE);
       params.set("hash", hashValue);
       console.log("Using hash authentication with secret phrase");
     } else {
       console.log("No secret phrase configured, using simple API key auth");
     }
 
-    // Set device type properly for mobile/tablet rendering
     params.set("device", deviceType);
 
-    // Zoom controls output resolution
     const effectiveZoom = deviceType === "desktop" && isFullPage ? "100" : "200";
     params.set("zoom", effectiveZoom);
-
-    // Improve reliability on real-world sites
     params.set("accept-language", "de-CH,de;q=0.9,en;q=0.8");
 
-    // Use appropriate user-agent based on device type
     if (deviceType === "phone") {
       params.set(
         "user-agent",
@@ -189,11 +288,9 @@ serve(async (req) => {
       );
     }
 
-    // Return the image as base64 (handle large images safely)
     const imageBuffer = await response.arrayBuffer();
     const bytes = new Uint8Array(imageBuffer);
 
-    // Convert to base64 in chunks to avoid stack overflow
     let base64 = "";
     const chunkSize = 8192;
     for (let i = 0; i < bytes.length; i += chunkSize) {
@@ -206,7 +303,6 @@ serve(async (req) => {
       `Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}, device: ${deviceType}, zoom: ${effectiveZoom}`
     );
 
-    // Determine MIME type based on format
     const mimeType = outputFormat === "pdf" ? "application/pdf" : `image/${outputFormat}`;
 
     return new Response(
