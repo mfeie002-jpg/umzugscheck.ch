@@ -1248,6 +1248,436 @@ ${config.projectName} - WCAG 2.1 Level AA
   };
 
   // ============================================================================
+  // MEGA-EXPORT: ZIP WITH REAL CODE + PROMPT
+  // ============================================================================
+
+  const downloadMegaExport = async () => {
+    toast.info('Mega-Export wird erstellt...');
+    const zip = new JSZip();
+    
+    // ============ EDGE FUNCTIONS ============
+    const functionsFolder = zip.folder('supabase/functions');
+    
+    // fetch-html
+    functionsFolder?.file('fetch-html/index.ts', `import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { url } = await req.json();
+
+    if (!url) {
+      return new Response(
+        JSON.stringify({ error: 'URL is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(\`Fetching HTML from: \${url}\`);
+
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'de-CH,de;q=0.9,en;q=0.8',
+      },
+    });
+
+    if (!response.ok) {
+      return new Response(
+        JSON.stringify({ error: \`Failed to fetch: \${response.status}\`, html: null }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const html = await response.text();
+    const cleanHtml = html.replace(/<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>/gi, '');
+
+    return new Response(
+      JSON.stringify({ html: cleanHtml, url, fetchedAt: new Date().toISOString() }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error', html: null }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});`);
+
+    // capture-rendered-html (Firecrawl)
+    functionsFolder?.file('capture-rendered-html/index.ts', `import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { url, waitFor = 5000, formats = ['html', 'markdown'] } = await req.json();
+
+    if (!url) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'URL is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const apiKey = Deno.env.get('FIRECRAWL_API_KEY');
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'FIRECRAWL_API_KEY not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    let formattedUrl = url.startsWith('http') ? url : \`https://\${url}\`;
+
+    const response = await fetch('https://api.firecrawl.dev/v1/scrape', {
+      method: 'POST',
+      headers: {
+        'Authorization': \`Bearer \${apiKey}\`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url: formattedUrl, formats, waitFor }),
+    });
+
+    const data = await response.json();
+    const result = data.data || data;
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        url: formattedUrl,
+        html: result.html,
+        markdown: result.markdown,
+        capturedAt: new Date().toISOString(),
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});`);
+
+    // ai-website-analyze (Lovable AI)
+    functionsFolder?.file('ai-website-analyze/index.ts', `import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { projectName, projectUrl, description, goals, targetAudience, competitors, htmlContent, screenshotBase64 } = await req.json();
+
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY is not configured');
+
+    const systemPrompt = 'Du bist ein erfahrener Web-Analyst und UX-Experte. Analysiere Websites gründlich.';
+    let userPrompt = \`# Website-Analyse für \${projectName}\\n\\n**URL:** \${projectUrl}\\n**Beschreibung:** \${description || 'Keine'}\\n**Ziele:** \${goals || 'Nicht angegeben'}\\n\`;
+    
+    if (htmlContent) {
+      userPrompt += \`\\n## HTML-Auszug:\\n\\\`\\\`\\\`html\\n\${htmlContent.substring(0, 15000)}\\n\\\`\\\`\\\`\\n\`;
+    }
+    
+    userPrompt += \`\\n## Analyse:\\n1. TOP 3 Conversion-Killer\\n2. Quick Wins\\n3. SEO-Probleme\\n4. Mobile UX\\n\`;
+
+    const messages: any[] = [{ role: 'system', content: systemPrompt }];
+    
+    if (screenshotBase64) {
+      messages.push({
+        role: 'user',
+        content: [
+          { type: 'text', text: userPrompt },
+          { type: 'image_url', image_url: { url: screenshotBase64.startsWith('data:') ? screenshotBase64 : \`data:image/png;base64,\${screenshotBase64}\` } }
+        ]
+      });
+    } else {
+      messages.push({ role: 'user', content: userPrompt });
+    }
+
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': \`Bearer \${LOVABLE_API_KEY}\`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages, max_tokens: 4000 }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) return new Response(JSON.stringify({ error: 'Rate limit' }), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      throw new Error(\`AI error: \${response.status}\`);
+    }
+
+    const data = await response.json();
+    return new Response(
+      JSON.stringify({ success: true, analysis: data.choices?.[0]?.message?.content, timestamp: new Date().toISOString() }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});`);
+
+    // lighthouse
+    functionsFolder?.file('lighthouse/index.ts', `import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+const PAGESPEED_API_URL = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { url, strategy = 'mobile' } = await req.json();
+
+    if (!url) {
+      return new Response(JSON.stringify({ error: 'URL is required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    const apiUrl = new URL(PAGESPEED_API_URL);
+    apiUrl.searchParams.set('url', url);
+    apiUrl.searchParams.set('strategy', strategy);
+    apiUrl.searchParams.set('category', 'performance');
+
+    const response = await fetch(apiUrl.toString());
+    if (!response.ok) {
+      return new Response(JSON.stringify({ error: \`PageSpeed API error: \${response.status}\` }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    const data = await response.json();
+    const lh = data.lighthouseResult;
+    const scores = {
+      performance: Math.round((lh.categories.performance?.score || 0) * 100),
+      accessibility: Math.round((lh.categories.accessibility?.score || 0) * 100),
+      bestPractices: Math.round((lh.categories['best-practices']?.score || 0) * 100),
+      seo: Math.round((lh.categories.seo?.score || 0) * 100),
+    };
+
+    return new Response(JSON.stringify({ url, scores, fetchTime: new Date().toISOString() }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  }
+});`);
+
+    // firecrawl-map
+    functionsFolder?.file('firecrawl-map/index.ts', `const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' };
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+
+  try {
+    const { url, options } = await req.json();
+    if (!url) return new Response(JSON.stringify({ success: false, error: 'URL is required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+
+    const apiKey = Deno.env.get('FIRECRAWL_API_KEY');
+    if (!apiKey) return new Response(JSON.stringify({ success: false, error: 'FIRECRAWL_API_KEY not configured' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+
+    const formattedUrl = url.startsWith('http') ? url : \`https://\${url}\`;
+    const response = await fetch('https://api.firecrawl.dev/v1/map', {
+      method: 'POST',
+      headers: { 'Authorization': \`Bearer \${apiKey}\`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: formattedUrl, limit: options?.limit || 50 }),
+    });
+
+    const data = await response.json();
+    return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Failed' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  }
+});`);
+
+    // ============ CONFIG.TOML ============
+    zip.file('supabase/config.toml', `project_id = "your-project-id"
+
+[functions.fetch-html]
+verify_jwt = false
+
+[functions.capture-rendered-html]
+verify_jwt = false
+
+[functions.ai-website-analyze]
+verify_jwt = false
+
+[functions.lighthouse]
+verify_jwt = false
+
+[functions.firecrawl-map]
+verify_jwt = false
+`);
+
+    // ============ SQL MIGRATION ============
+    zip.file('supabase/migrations/001_initial_schema.sql', `-- ENUMS
+CREATE TYPE app_role AS ENUM ('admin', 'user');
+
+-- PROFILES
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT,
+  full_name TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- USER ROLES
+CREATE TABLE IF NOT EXISTS user_roles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  role app_role NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(user_id, role)
+);
+
+-- SCREENSHOT HISTORY
+CREATE TABLE IF NOT EXISTS screenshot_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  url TEXT NOT NULL,
+  dimension TEXT NOT NULL,
+  image_base64 TEXT NOT NULL,
+  is_full_page BOOLEAN DEFAULT false,
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- SCREENSHOT BASELINES
+CREATE TABLE IF NOT EXISTS screenshot_baselines (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  dimension TEXT DEFAULT '1920x1080',
+  image_base64 TEXT NOT NULL,
+  threshold_percent NUMERIC DEFAULT 5,
+  is_active BOOLEAN DEFAULT true,
+  last_checked_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ANALYSIS REPORTS
+CREATE TABLE IF NOT EXISTS analysis_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  site_name TEXT NOT NULL,
+  website_url TEXT NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  status TEXT DEFAULT 'draft',
+  overall_score INTEGER DEFAULT 0,
+  categories JSONB DEFAULT '[]',
+  total_issues INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ENABLE RLS
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE screenshot_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE screenshot_baselines ENABLE ROW LEVEL SECURITY;
+ALTER TABLE analysis_reports ENABLE ROW LEVEL SECURITY;
+
+-- ADMIN CHECK FUNCTION
+CREATE OR REPLACE FUNCTION has_role(_user_id UUID, _role app_role)
+RETURNS BOOLEAN
+LANGUAGE SQL STABLE SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (SELECT 1 FROM user_roles WHERE user_id = _user_id AND role = _role)
+$$;
+
+-- RLS POLICIES
+CREATE POLICY "Users see own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users see own roles" ON user_roles FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Admins full access screenshots" ON screenshot_history FOR ALL USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins full access baselines" ON screenshot_baselines FOR ALL USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins full access reports" ON analysis_reports FOR ALL USING (has_role(auth.uid(), 'admin'));
+
+-- PROFILE TRIGGER
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  INSERT INTO profiles (id, email, full_name) VALUES (NEW.id, NEW.email, COALESCE(NEW.raw_user_meta_data->>'full_name', ''));
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+`);
+
+    // ============ README ============
+    zip.file('README.md', STANDALONE_PROMPTS_CONTENT);
+
+    // ============ QUICK START ============
+    zip.file('QUICK_START.md', `# 🚀 Quick Start Guide
+
+## Option 1: Prompt in Lovable (Empfohlen)
+1. Öffne https://lovable.dev
+2. Erstelle ein neues Projekt
+3. Kopiere den Inhalt von README.md in den Chat
+4. Warte bis alles generiert ist
+5. Registriere dich, füge Admin-Rolle hinzu, fertig!
+
+## Option 2: Manuelles Setup
+1. Erstelle ein Supabase-Projekt
+2. Führe \`supabase/migrations/001_initial_schema.sql\` aus
+3. Deploye die Edge Functions in \`supabase/functions/\`
+4. Baue das Frontend mit den Tools-Komponenten
+
+## Secrets benötigt
+- FIRECRAWL_API_KEY (für Screenshots + HTML)
+- LOVABLE_API_KEY (automatisch bei Lovable Cloud)
+
+## Nach dem Setup
+1. Registriere dich normal
+2. Füge Admin-Rolle hinzu:
+   \`\`\`sql
+   INSERT INTO user_roles (user_id, role) VALUES ('deine-user-id', 'admin');
+   \`\`\`
+3. Login unter /admin/login
+
+## Enthaltene Tools
+- 1-Klick KI-Analyse
+- Screenshot Machine
+- SEO HTML Analyzer
+- 7 Prompt-Varianten
+- URL Discovery
+`);
+
+    // Generate and download
+    const content = await zip.generateAsync({ type: 'blob' });
+    saveAs(content, 'WEB_ANALYZER_SUITE_MEGA_EXPORT.zip');
+    toast.success('Mega-Export heruntergeladen! ZIP enthält echten Code + Anleitung.');
+  };
+
+  // ============================================================================
   // RENDER
   // ============================================================================
 
@@ -1315,7 +1745,7 @@ ${config.projectName} - WCAG 2.1 Level AA
           </Card>
         </div>
 
-        {/* Full-Stack Export Section */}
+        {/* Full-Stack Export Section - MEGA EXPORT */}
         <Card className="mb-8 border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-transparent to-orange-500/5">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -1323,43 +1753,46 @@ ${config.projectName} - WCAG 2.1 Level AA
                 <Download className="h-6 w-6" />
               </div>
               <div>
-                <CardTitle className="text-xl">Full-Stack Export</CardTitle>
+                <CardTitle className="text-xl">Mega Export - Komplettes Tool replizieren</CardTitle>
                 <CardDescription>
-                  1 Prompt = Frontend + Backend + Auth + Tools - Alles in einem!
+                  ZIP mit echtem Code + Prompt-Anleitung - 100% Copy-Paste ready!
                 </CardDescription>
               </div>
               <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white ml-auto">
-                Kombiniert
+                NEU
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
-                onClick={downloadStandaloneFile}
+                onClick={downloadMegaExport}
                 size="lg"
                 className="flex-1 h-14 text-base bg-gradient-to-r from-primary to-orange-500"
               >
-                <FileDown className="h-5 w-5 mr-2" />
-                FULL_STACK_EXPORT.md herunterladen
+                <Package className="h-5 w-5 mr-2" />
+                MEGA_EXPORT.zip herunterladen
               </Button>
-              <Link to="/admin/ai-export" className="flex-1">
-                <Button variant="outline" size="lg" className="w-full h-14 text-base">
-                  <Sparkles className="h-5 w-5 mr-2" />
-                  KI-Prompt Generator
-                </Button>
-              </Link>
+              <Button 
+                onClick={downloadStandaloneFile}
+                variant="outline"
+                size="lg"
+                className="flex-1 h-14 text-base"
+              >
+                <FileDown className="h-5 w-5 mr-2" />
+                Nur Prompt (.md)
+              </Button>
             </div>
 
             {/* What's included */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-4 border-t">
               <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-500/10">
                 <Code className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium">Frontend UI</span>
+                <span className="text-sm font-medium">5 Edge Functions</span>
               </div>
               <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10">
                 <Database className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">DB Schema</span>
+                <span className="text-sm font-medium">SQL Migration</span>
               </div>
               <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10">
                 <Shield className="h-4 w-4 text-amber-600" />
@@ -1367,18 +1800,22 @@ ${config.projectName} - WCAG 2.1 Level AA
               </div>
               <div className="flex items-center gap-2 p-3 rounded-lg bg-purple-500/10">
                 <Zap className="h-4 w-4 text-purple-600" />
-                <span className="text-sm font-medium">Edge Functions</span>
+                <span className="text-sm font-medium">Config.toml</span>
+              </div>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-pink-500/10">
+                <BookOpen className="h-4 w-4 text-pink-600" />
+                <span className="text-sm font-medium">Quick Start</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t">
               <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span className="font-bold text-primary">1</span>
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Download</p>
-                  <p className="text-xs text-muted-foreground">Lade die .md Datei herunter</p>
+                  <p className="font-medium text-sm">Download ZIP</p>
+                  <p className="text-xs text-muted-foreground">Echter Code + Prompt</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
@@ -1386,8 +1823,17 @@ ${config.projectName} - WCAG 2.1 Level AA
                   <span className="font-bold text-orange-600">2</span>
                 </div>
                 <div>
-                  <p className="font-medium text-sm">In Lovable einfügen</p>
-                  <p className="text-xs text-muted-foreground">Neues Projekt → Prompt einfügen</p>
+                  <p className="font-medium text-sm">README.md kopieren</p>
+                  <p className="text-xs text-muted-foreground">In Lovable-Chat einfügen</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
+                <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+                  <span className="font-bold text-blue-600">3</span>
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Registrieren</p>
+                  <p className="text-xs text-muted-foreground">Admin-Rolle hinzufügen</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
@@ -1395,10 +1841,26 @@ ${config.projectName} - WCAG 2.1 Level AA
                   <CheckCircle2 className="h-4 w-4 text-green-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Komplettes Tool!</p>
-                  <p className="text-xs text-muted-foreground">Frontend + Backend + Auth</p>
+                  <p className="font-medium text-sm">Fertig!</p>
+                  <p className="text-xs text-muted-foreground">Komplettes Tool</p>
                 </div>
               </div>
+            </div>
+
+            {/* Link to code export for comparison */}
+            <div className="flex items-center gap-4 pt-4 border-t">
+              <Link to="/admin/code-export">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <FileCode className="h-4 w-4" />
+                  Backend-Export (nur DB)
+                </Button>
+              </Link>
+              <Link to="/admin/ai-export">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  KI-Prompt Generator
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
