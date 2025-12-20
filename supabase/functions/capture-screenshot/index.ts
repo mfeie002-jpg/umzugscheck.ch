@@ -89,9 +89,9 @@ serve(async (req) => {
 
     if (isFullPage) {
       if (isHomepage) {
-        // Conservative tall height that usually fits the whole homepage without stitching.
-        // (If it ends up slightly longer than needed, that's fine; it's still a single render.)
-        const tallHeight = deviceType === 'desktop' ? 12000 : deviceType === 'tablet' ? 10000 : 9000;
+        // Tall single-render viewport to avoid stitching gaps.
+        // IMPORTANT: ScreenshotMachine becomes unreliable with very tall heights; keep conservative to avoid blank images.
+        const tallHeight = deviceType === 'desktop' ? 8000 : deviceType === 'tablet' ? 7000 : 6000;
         effectiveDimension = `${width}x${tallHeight}`;
         captureStrategy = 'tall';
       } else {
@@ -146,7 +146,7 @@ serve(async (req) => {
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
     
     console.log('Requesting screenshot from API (hash included)');
-    const response = await fetch(apiUrl);
+    let response = await fetch(apiUrl);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -158,9 +158,24 @@ serve(async (req) => {
     }
 
     // Return the image as base64 (handle large images safely)
-    const imageBuffer = await response.arrayBuffer();
+    let imageBuffer = await response.arrayBuffer();
+
+    // If ScreenshotMachine returns a tiny (often blank) image for tall strategy, retry with xfull.
+    if (isHomepage && isFullPage && captureStrategy === 'tall' && imageBuffer.byteLength < 50_000) {
+      console.warn(`Tiny screenshot (${imageBuffer.byteLength} bytes) for tall strategy; retrying with xfull...`);
+      const retryParams = new URLSearchParams(params);
+      retryParams.set('dimension', `${width}xfull`);
+      const retryUrl = `https://api.screenshotmachine.com?${retryParams.toString()}`;
+      const retryResponse = await fetch(retryUrl);
+      if (retryResponse.ok) {
+        imageBuffer = await retryResponse.arrayBuffer();
+        response = retryResponse;
+      } else {
+        console.warn('Retry (xfull) failed, keeping tall result');
+      }
+    }
+
     const bytes = new Uint8Array(imageBuffer);
-    
     // Convert to base64 in chunks to avoid stack overflow
     let base64 = '';
     const chunkSize = 8192;
