@@ -5,9 +5,15 @@
 
 ---
 
-## 📋 PROJECT OVERVIEW
+## 🎯 WICHTIGSTER PROMPT FÜR CHATGPT
 
-Create a premium Swiss moving comparison platform admin portal with the following features:
+**Dieser Prompt wird mit dem Ultimate Package an ChatGPT gesendet:**
+
+```
+Analysiere dieses Website-Feedback-Package und gib detaillierte Verbesserungsvorschläge.
+```
+
+---
 
 1. **Ultimate Feedback Suite** - One-click website analysis tool for AI feedback
 2. **Screenshot Capture** - Full-page screenshots of 37+ pages (desktop + mobile)
