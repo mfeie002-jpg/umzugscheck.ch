@@ -1166,18 +1166,18 @@ img {
    - Force everything visible only in screenshot mode.
 */
 
-/* Broad pattern matching for opacity: 0 variations */
-html.uc-render [style*="opacity: 0"],
-html.uc-render [style*="opacity:0"] {
+html.uc-render [style*="opacity: 0;"],
+html.uc-render [style*="opacity:0;"],
+html.uc-render [style*="opacity: 0.0"],
+html.uc-render [style*="opacity:0.0"] {
   opacity: 1 !important;
 }
 
-/* Force all transforms to none for initially hidden elements */
-html.uc-render [style*="opacity: 0"][style*="transform"],
-html.uc-render [style*="opacity:0"][style*="transform"],
-html.uc-render [style*="translateY"],
-html.uc-render [style*="translateX"],
-html.uc-render [style*="translate3d"] {
+/* Only neutralize transforms for elements that start hidden (typical framer-motion initial state) */
+html.uc-render [style*="opacity: 0;"][style*="transform"],
+html.uc-render [style*="opacity:0;"][style*="transform"],
+html.uc-render [style*="opacity: 0.0"][style*="transform"],
+html.uc-render [style*="opacity:0.0"][style*="transform"] {
   transform: none !important;
 }
 
