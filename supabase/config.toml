@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.capture-rendered-html]
 verify_jwt = false
+
+[functions.ai-website-analyze]
+verify_jwt = false
