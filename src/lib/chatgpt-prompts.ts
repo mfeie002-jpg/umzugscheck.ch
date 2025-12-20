@@ -24,7 +24,7 @@ export interface PromptData {
   };
 }
 
-export type PromptVariant = "quick" | "deep" | "code" | "screenshot" | "regression" | "seo" | "accessibility";
+export type PromptVariant = "quick" | "deep" | "code" | "screenshot" | "regression" | "seo" | "accessibility" | "complete";
 
 export const PROMPT_VARIANTS = {
   quick: {
@@ -61,6 +61,11 @@ export const PROMPT_VARIANTS = {
     name: "Accessibility Audit",
     description: "Barrierefreiheit und WCAG-Konformität",
     icon: "Eye",
+  },
+  complete: {
+    name: "Komplett-Analyse",
+    description: "Alle 7 Analysen in einem - Umfassender Website-Audit",
+    icon: "Layers",
   },
 } as const;
 
@@ -481,6 +486,76 @@ Best Practices und Verbesserungen
 Für die TOP 3 Issues: Vorher/Nachher Code`;
 }
 
+export function generateCompleteAnalysisPrompt(data: PromptData): string {
+  return `# UMFASSENDE WEBSITE-ANALYSE (7-in-1)
+  
+## Projekt-Information
+- **Name:** ${data.projectName || "Umzugscheck.ch"}
+- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
+- **Branche:** Swiss Moving Comparison Platform
+
+## Aktuelle Metriken
+- Conversion Rate: ${data.conversionRate || 14}%
+- Bounce Rate: ${data.bounceRate || 38.5}%
+- Mobile Score: ${data.mobileScore || 67}
+- Ø Session: ${data.avgSessionDuration || "2:45"}
+
+---
+
+# TEIL 1: QUICK ANALYSIS
+${generateQuickAnalysisPrompt(data)}
+
+---
+
+# TEIL 2: DEEP AUDIT
+${generateDeepAuditPrompt(data)}
+
+---
+
+# TEIL 3: CODE REVIEW
+${generateCodeReviewPrompt(data)}
+
+---
+
+# TEIL 4: SCREENSHOT ANALYSE
+${generateScreenshotAnalysisPrompt(data)}
+
+---
+
+# TEIL 5: SEO DEEP DIVE
+${generateSEOAuditPrompt(data)}
+
+---
+
+# TEIL 6: ACCESSIBILITY AUDIT
+${generateAccessibilityAuditPrompt(data)}
+
+---
+
+# ZUSAMMENFASSUNG
+
+Nachdem du alle 6 Analysen durchgeführt hast, erstelle eine **Executive Summary** mit:
+
+## Prioritäten-Matrix
+| Kategorie | Top 3 Issues | Impact | Aufwand |
+|-----------|-------------|--------|---------|
+| UX/Conversion | | Hoch/Mittel/Niedrig | Stunden |
+| Performance | | | |
+| SEO | | | |
+| Accessibility | | | |
+| Code Quality | | | |
+
+## Aktionsplan
+1. **Diese Woche** (Quick Wins): 
+2. **Diesen Monat** (Medium Effort):
+3. **Nächstes Quartal** (Strategic):
+
+## ROI-Schätzung
+- Geschätzter Conversion-Uplift: X%
+- Erwartete Bounce-Rate Reduktion: X%
+- Potenzielle Umsatzsteigerung: CHF X/Monat`;
+}
+
 export function generatePrompt(variant: PromptVariant, data: PromptData): string {
   switch (variant) {
     case "quick":
@@ -497,6 +572,8 @@ export function generatePrompt(variant: PromptVariant, data: PromptData): string
       return generateSEOAuditPrompt(data);
     case "accessibility":
       return generateAccessibilityAuditPrompt(data);
+    case "complete":
+      return generateCompleteAnalysisPrompt(data);
     default:
       return generateQuickAnalysisPrompt(data);
   }
@@ -515,4 +592,5 @@ export const PROMPT_GENERATORS = {
   regression: generateRegressionReportPrompt,
   seo: generateSEOAuditPrompt,
   accessibility: generateAccessibilityAuditPrompt,
+  complete: generateCompleteAnalysisPrompt,
 } as const;
