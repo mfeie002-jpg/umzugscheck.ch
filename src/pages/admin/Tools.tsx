@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { 
   Package, Download, Loader2, Copy, CheckCircle2, 
   FileText, Camera, Code, Plus, X,
-  Trash2, Zap, FileDown,
+  Trash2, Zap, FileDown, Shield,
   Wrench, ExternalLink, BookOpen, Terminal, FileCode,
   Database, Search, Eye, GitCompare, Sparkles, Bot, Play,
   Globe, RefreshCw
@@ -117,105 +117,275 @@ const fetchRenderedHtml = async (url: string): Promise<string> => {
 // STANDALONE PROMPTS CONTENT
 // ============================================================================
 
-const STANDALONE_PROMPTS_CONTENT = `# Web Analyzer Suite - Standalone Setup
+const STANDALONE_PROMPTS_CONTENT = `# 🚀 Full-Stack Web Analyzer Suite - Complete Setup
 
-## 🎯 1 Prompt, 1 Tool - Alles was du brauchst
+## Was ist das?
+Ein **kombinierter Export** der ALLES enthält:
+- ✅ Frontend UI & Tools
+- ✅ Backend Schema & RLS
+- ✅ Edge Functions
+- ✅ Admin Login System
 
-Kopiere diesen Prompt in ein neues **Lovable** oder **Softgen** Projekt:
+Kopiere diesen EINEN Prompt in ein neues **Lovable** Projekt und du bekommst das komplette Tool!
 
 ---
 
-## Der Prompt (kopiere alles zwischen den Backticks):
+# DER PROMPT (Kopiere alles ab hier)
 
-\`\`\`
-Erstelle eine Web Analyzer Suite mit Admin-Bereich und folgenden Features:
+Erstelle eine vollständige Web Analyzer Suite mit Admin-Bereich, Datenbank und allen Tools:
 
-## 0. Admin Authentication (WICHTIG!)
+## 1. ADMIN AUTHENTICATION (KRITISCH!)
 - Login-Seite unter /admin/login
-- Email/Passwort Login mit Supabase Auth
+- Email/Passwort Login mit Supabase Auth  
 - Geschützter Admin-Bereich (alle /admin/* Routen)
-- Logout-Button im Admin-Layout
-- Session-Management mit automatischer Weiterleitung
-- User Roles Tabelle (admin, user) für Berechtigungen
+- AdminLayout Wrapper mit Auth-Check
+- Logout-Button im Header
+- Automatische Weiterleitung bei nicht-authentifiziert
+- User Roles Tabelle mit 'admin' und 'user' Rollen
 - RLS Policies: Nur Admins können Admin-Bereiche sehen
 
-## 1. AI Feedback Package Generator
+## 2. DATENBANK-SCHEMA
+
+\`\`\`sql
+-- ENUMS
+CREATE TYPE app_role AS ENUM ('admin', 'user');
+
+-- PROFILES
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  email TEXT,
+  full_name TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- USER ROLES
+CREATE TABLE user_roles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  role app_role NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(user_id, role)
+);
+
+-- SCREENSHOT HISTORY
+CREATE TABLE screenshot_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  url TEXT NOT NULL,
+  dimension TEXT NOT NULL,
+  image_base64 TEXT NOT NULL,
+  is_full_page BOOLEAN DEFAULT false,
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- SCREENSHOT BASELINES (für Regression Tests)
+CREATE TABLE screenshot_baselines (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  dimension TEXT DEFAULT '1920x1080',
+  image_base64 TEXT NOT NULL,
+  threshold_percent NUMERIC DEFAULT 5,
+  is_active BOOLEAN DEFAULT true,
+  last_checked_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- SCREENSHOT REGRESSION RESULTS
+CREATE TABLE screenshot_regression_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  baseline_id UUID REFERENCES screenshot_baselines(id),
+  new_image_base64 TEXT NOT NULL,
+  diff_image_base64 TEXT,
+  diff_percent NUMERIC NOT NULL,
+  status TEXT DEFAULT 'pending',
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ANALYSIS REPORTS
+CREATE TABLE analysis_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  site_name TEXT NOT NULL,
+  website_url TEXT NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  status TEXT DEFAULT 'draft',
+  overall_score INTEGER DEFAULT 0,
+  categories JSONB DEFAULT '[]',
+  consequences JSONB DEFAULT '[]',
+  total_issues INTEGER DEFAULT 0,
+  critical_issues INTEGER DEFAULT 0,
+  warning_issues INTEGER DEFAULT 0,
+  info_issues INTEGER DEFAULT 0,
+  total_hours NUMERIC DEFAULT 0,
+  hourly_rate NUMERIC DEFAULT 150,
+  monthly_loss NUMERIC DEFAULT 0,
+  current_revenue NUMERIC DEFAULT 0,
+  projected_revenue NUMERIC DEFAULT 0,
+  viewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+\`\`\`
+
+## 3. RLS POLICIES
+
+\`\`\`sql
+-- Enable RLS
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE screenshot_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE screenshot_baselines ENABLE ROW LEVEL SECURITY;
+ALTER TABLE screenshot_regression_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE analysis_reports ENABLE ROW LEVEL SECURITY;
+
+-- Admin Check Function
+CREATE OR REPLACE FUNCTION has_role(_user_id UUID, _role app_role)
+RETURNS BOOLEAN
+LANGUAGE SQL STABLE SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM user_roles WHERE user_id = _user_id AND role = _role
+  )
+$$;
+
+-- Admin Policies
+CREATE POLICY "Admins full access" ON screenshot_history FOR ALL USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins full access" ON screenshot_baselines FOR ALL USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins full access" ON screenshot_regression_results FOR ALL USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins full access" ON analysis_reports FOR ALL USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Users see own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users see own roles" ON user_roles FOR SELECT USING (auth.uid() = user_id);
+\`\`\`
+
+## 4. EDGE FUNCTIONS
+
+Erstelle folgende Edge Functions:
+
+### fetch-html
+- URL als Input
+- Ruft rohen HTML-Code ab
+- verify_jwt = false
+
+### capture-rendered-html  
+- URL + waitFor als Input
+- Verwendet Firecrawl für gerenderten HTML
+- Gibt HTML und Markdown zurück
+- verify_jwt = false
+
+### capture-screenshot
+- URL, dimension, fullPage, delay als Input
+- Verwendet Firecrawl für Screenshot
+- Gibt base64 Image zurück
+- verify_jwt = false
+
+### ai-website-analyze
+- projectName, projectUrl, htmlContent, screenshotBase64 als Input
+- Ruft Lovable AI auf
+- Gibt strukturierte Analyse zurück
+- verify_jwt = false
+
+### lighthouse
+- URL als Input
+- Ruft Lighthouse API auf
+- Gibt Performance-Metriken zurück
+- verify_jwt = false
+
+## 5. FRONTEND TOOLS
+
+### AI Feedback Package Generator
 - Eingabefelder: Projektname, URL, Beschreibung, Ziele, Zielgruppe, Konkurrenten
 - Zusätzliche Seiten hinzufügen (dynamische Liste)
-- Automatische Screenshots: Desktop (1920xfull) und Mobile (393x852)
-- HTML-Quellcode abrufen für SEO-Analyse
-- Generiere AI-Analyse-Prompt als Markdown
+- URL Discovery mit Firecrawl Map
+- Automatische Screenshots (Desktop 1920xfull, Mobile 393x852)
+- HTML-Quellcode abrufen
+- 7 verschiedene KI-Analyse-Prompts generieren
 - PDF Project Brief erstellen
 - Alles als ZIP downloaden
 
-## 2. Screenshot Machine
-- Einzel-Screenshot: URL eingeben, Dimension wählen (Desktop/Mobile Presets)
-- Bulk-Screenshots: Mehrere URLs auf einmal
-- Optionen: Verzögerung (0-10 Sek), Volle Seite
-- Download einzeln oder als ZIP
-- Galerie der erfassten Screenshots
+### 1-Klick KI-Analyse
+- Screenshot erstellen
+- HTML abrufen
+- An Lovable AI senden
+- Analyse-Ergebnis anzeigen und exportieren
 
-## 3. SEO HTML Analyzer
+### Screenshot Machine
+- Einzel-Screenshot mit Dimension-Presets
+- Bulk-Screenshots (mehrere URLs)
+- Optionen: Verzögerung, Volle Seite
+- Galerie der erfassten Screenshots
+- ZIP Download
+
+### SEO HTML Analyzer
 - Raw HTML vs. Rendered HTML Vergleich
-- H1, H2, Meta-Tags Extraktion
-- Link-Analyse
+- Automatische Tag-Extraktion (H1, H2, Meta, Links)
+- Presets für bekannte Websites
 - LLM-ready Markdown Export
 
-## Technische Details:
-- Screenshot API: Firecrawl oder ScreenshotMachine
-- Edge Functions für HTML-Abruf
-- Supabase Auth für Admin-Login
+### Lighthouse Integration
+- Performance, Accessibility, SEO, Best Practices Scores
+- Detaillierte Metriken
 
-## Dependencies:
-npm install jszip file-saver jspdf
+### Screenshot Regression Tests
+- Baseline Management
+- Automatischer Vergleich
+- Diff-Visualisierung
 
-## Datenbank-Tabellen:
-1. user_roles - Admin-Rollen (user_id, role: 'admin' | 'user')
-2. profiles - Benutzerprofile (id, email, full_name)
+## 6. UI COMPONENTS
 
-## Edge Functions:
-1. fetch-html - Roher HTML-Abruf
-2. capture-rendered-html - Gerendertes HTML via Firecrawl
-3. capture-screenshot - Screenshot-Erfassung
-
-## Admin-Seiten:
-- /admin/login - Login-Formular
-- /admin/dashboard - Übersicht
-- /admin/tools - Alle Tools
-
-## UI:
 - Tabs für die Tools
 - Cards mit Formularen
 - Progress-Anzeige beim Generieren
 - Toast-Benachrichtigungen
-- Responsive Design
+- Responsive Design (Mobile-first)
 - Dark/Light Mode Support
-\`\`\`
+- Shadcn UI Components
+
+## 7. DEPENDENCIES
+
+npm install jszip file-saver jspdf
+
+## 8. ADMIN SEITEN
+
+- /admin/login - Login-Formular
+- /admin/dashboard - Übersicht mit Stats
+- /admin/tools - Alle Tools (Hauptseite)
+
+## 9. SECRETS BENÖTIGT
+
+- FIRECRAWL_API_KEY - Für Screenshots und HTML
+- LOVABLE_API_KEY - Automatisch vorhanden
 
 ---
 
-## Was ist enthalten:
+# NACH DEM ERSTELLEN
 
-1. **Admin Login System** - Geschützter Bereich mit Email/Passwort
-2. **AI Feedback Package** - Screenshots + HTML + Prompts als ZIP
-3. **Screenshot Machine** - Einzel- und Bulk-Screenshots
-4. **SEO HTML Analyzer** - Raw vs. Rendered HTML Vergleich
-5. **7 KI-Prompt Varianten** - Quick, Deep, Code, Screenshot, Regression, SEO, Accessibility
+1. **Registriere dich** normal über die App
+2. **Admin-Rolle hinzufügen**: 
+   \`\`\`sql
+   INSERT INTO user_roles (user_id, role) 
+   VALUES ('deine-user-id', 'admin');
+   \`\`\`
+3. **Firecrawl verbinden** (optional, für Screenshots)
+4. **Fertig!** Login unter /admin/login
 
-## Nach dem Erstellen:
+---
 
-1. **Dependencies installieren** (falls nicht automatisch):
-   \`npm install jszip file-saver jspdf\`
+## QUICK REFERENCE
 
-2. **Admin-User erstellen**:
-   - Registriere dich normal
-   - Füge in user_roles Tabelle: (deine_user_id, 'admin') hinzu
+| Feature | Benötigt | Funktion |
+|---------|----------|----------|
+| Screenshots | Firecrawl | capture-screenshot |
+| HTML Abruf | Edge Function | fetch-html |
+| KI Analyse | Lovable AI | ai-website-analyze |
+| Lighthouse | API | lighthouse |
 
-3. **Edge Functions erstellen** - fetch-html, capture-rendered-html
+---
 
-4. **Firecrawl aktivieren** - Für gerenderten HTML-Abruf
-
-5. **Fertig!** Das Tool ist einsatzbereit.
+Erstellt mit ❤️ - 1 Prompt, komplettes Tool
 `;
 
 // ============================================================================
@@ -1073,8 +1243,8 @@ ${config.projectName} - WCAG 2.1 Level AA
 
   const downloadStandaloneFile = () => {
     const blob = new Blob([STANDALONE_PROMPTS_CONTENT], { type: 'text/markdown' });
-    saveAs(blob, 'STANDALONE_PROMPTS.md');
-    toast.success('STANDALONE_PROMPTS.md heruntergeladen!');
+    saveAs(blob, 'FULL_STACK_EXPORT.md');
+    toast.success('FULL_STACK_EXPORT.md heruntergeladen!');
   };
 
   // ============================================================================
@@ -1145,7 +1315,7 @@ ${config.projectName} - WCAG 2.1 Level AA
           </Card>
         </div>
 
-        {/* Standalone Download Section */}
+        {/* Full-Stack Export Section */}
         <Card className="mb-8 border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-transparent to-orange-500/5">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -1153,11 +1323,14 @@ ${config.projectName} - WCAG 2.1 Level AA
                 <Download className="h-6 w-6" />
               </div>
               <div>
-                <CardTitle className="text-xl">Standalone Download</CardTitle>
+                <CardTitle className="text-xl">Full-Stack Export</CardTitle>
                 <CardDescription>
-                  1 Prompt-Datei = Komplettes Tool für neues Projekt
+                  1 Prompt = Frontend + Backend + Auth + Tools - Alles in einem!
                 </CardDescription>
               </div>
+              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white ml-auto">
+                Kombiniert
+              </Badge>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -1165,10 +1338,10 @@ ${config.projectName} - WCAG 2.1 Level AA
               <Button 
                 onClick={downloadStandaloneFile}
                 size="lg"
-                className="flex-1 h-14 text-base bg-gradient-to-r from-primary to-primary/80"
+                className="flex-1 h-14 text-base bg-gradient-to-r from-primary to-orange-500"
               >
                 <FileDown className="h-5 w-5 mr-2" />
-                STANDALONE_PROMPTS.md herunterladen
+                FULL_STACK_EXPORT.md herunterladen
               </Button>
               <Link to="/admin/ai-export" className="flex-1">
                 <Button variant="outline" size="lg" className="w-full h-14 text-base">
@@ -1176,6 +1349,26 @@ ${config.projectName} - WCAG 2.1 Level AA
                   KI-Prompt Generator
                 </Button>
               </Link>
+            </div>
+
+            {/* What's included */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t">
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-500/10">
+                <Code className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium">Frontend UI</span>
+              </div>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10">
+                <Database className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium">DB Schema</span>
+              </div>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10">
+                <Shield className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium">RLS + Auth</span>
+              </div>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-purple-500/10">
+                <Zap className="h-4 w-4 text-purple-600" />
+                <span className="text-sm font-medium">Edge Functions</span>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
@@ -1193,8 +1386,8 @@ ${config.projectName} - WCAG 2.1 Level AA
                   <span className="font-bold text-orange-600">2</span>
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Kopieren</p>
-                  <p className="text-xs text-muted-foreground">Prompt in Lovable/Softgen einfügen</p>
+                  <p className="font-medium text-sm">In Lovable einfügen</p>
+                  <p className="text-xs text-muted-foreground">Neues Projekt → Prompt einfügen</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
@@ -1202,8 +1395,8 @@ ${config.projectName} - WCAG 2.1 Level AA
                   <CheckCircle2 className="h-4 w-4 text-green-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Fertig!</p>
-                  <p className="text-xs text-muted-foreground">Tool wird automatisch erstellt</p>
+                  <p className="font-medium text-sm">Komplettes Tool!</p>
+                  <p className="text-xs text-muted-foreground">Frontend + Backend + Auth</p>
                 </div>
               </div>
             </div>
