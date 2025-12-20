@@ -155,6 +155,11 @@ const FuerFirmen = () => {
                       Zum Partner-Login
                     </Button>
                   </Link>
+                  <Link to="/kunden-onboarding">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
+                      Anleitung ansehen
+                    </Button>
+                  </Link>
                 </div>
 
                 {/* Trust Stats */}
