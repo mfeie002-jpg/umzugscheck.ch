@@ -81,18 +81,9 @@ serve(async (req) => {
 
     console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`);
 
-    const scrollRequested = Boolean(scroll);
-
     // Determine effective dimension for full-page captures
-    // For the homepage on desktop we prefer "scroll stitch" (normal viewport + scroll=true)
-    // because `xfull` is prone to large white gap stitching artifacts on very long pages.
-    const useScrollStitchForFullPage = isFullPage && scrollRequested && deviceType === 'desktop' && isHomepage;
-
-    const effectiveDimension = useScrollStitchForFullPage
-      ? dimension
-      : (isFullPage ? `${width}xfull` : dimension);
-
-    console.log(`Screenshot strategy: ${useScrollStitchForFullPage ? 'scroll-stitch' : (isFullPage ? 'xfull' : 'viewport')}`);
+    // ScreenshotMachine full page is controlled ONLY via `dimension=WIDTHxfull`.
+    const effectiveDimension = isFullPage ? `${width}xfull` : dimension;
 
     // Build ScreenshotMachine API URL with hash for authentication
     const params = new URLSearchParams({
@@ -109,8 +100,8 @@ serve(async (req) => {
     params.set('device', deviceType);
 
     // Zoom controls output resolution.
-    // Keep desktop full-page at a moderate zoom to reduce stitching artifacts, while keeping mobile/tablet retina quality.
-    const effectiveZoom = (deviceType === 'desktop' && isFullPage) ? '125' : '200';
+    // NOTE: Full-page renders can get very large; keep desktop zoom at 100 to avoid blank/white rendering artifacts.
+    const effectiveZoom = (deviceType === 'desktop' && isFullPage) ? '100' : '200';
     params.set('zoom', effectiveZoom);
 
     // Improve reliability on real-world sites (bot detection / language variants)
@@ -123,20 +114,6 @@ serve(async (req) => {
       params.set('user-agent', 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1');
     } else {
       params.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    }
-
-    // Scrolling behavior
-    // - For homepage full-page desktop: force scroll stitching (workaround for xfull gaps)
-    // - For normal screenshots: respect the toggle
-    if (useScrollStitchForFullPage) {
-      params.set('scroll', 'true');
-    } else if (!isFullPage && scrollRequested) {
-      params.set('scroll', 'true');
-    }
-
-    // Disable touch emulation only for desktop
-    if (deviceType === 'desktop') {
-      params.set('touch', 'false');
     }
 
     // Generate MD5 hash: md5(url + secretPhrase)
