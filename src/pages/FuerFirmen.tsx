@@ -17,6 +17,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ROICalculator } from "@/components/ROICalculator";
+import { BusinessAnalysisReport } from "@/components/business/BusinessAnalysisReport";
 
 const FuerFirmen = () => {
   const [formData, setFormData] = useState({
@@ -277,6 +278,13 @@ const FuerFirmen = () => {
                 <ROICalculator onGetStarted={() => document.getElementById('bewerbung')?.scrollIntoView({ behavior: 'smooth' })} />
               </ScrollReveal>
             </div>
+          </div>
+        </section>
+
+        {/* Business Analysis Report - Full Analysis */}
+        <section className="py-16 md:py-24 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <BusinessAnalysisReport />
           </div>
         </section>
 
