@@ -1160,6 +1160,16 @@ img {
   contain-intrinsic-size: auto 600px;
 }
 
+/* Screenshot rendering (uc_render=1)
+   - Some sections use framer-motion `whileInView` with `opacity: 0` until scrolled into view.
+   - Full-page screenshot tools can then produce huge white blocks.
+   - Force hidden motion elements visible only in screenshot mode.
+*/
+html.uc-render [style*="opacity: 0"],
+html.uc-render [style*="opacity:0"] {
+  opacity: 1 !important;
+}
+
 /* Skeleton placeholder for images */
 .skeleton-image {
   background: linear-gradient(
