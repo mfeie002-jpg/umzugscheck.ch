@@ -22,6 +22,7 @@ import {
   GitCompare,
   Eye,
   ExternalLink,
+  Layers,
 } from "lucide-react";
 import { generatePrompt, PROMPT_VARIANTS, type PromptVariant, type PromptData } from "@/lib/chatgpt-prompts";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,7 @@ const variantIcons = {
   regression: GitCompare,
   seo: Search,
   accessibility: Eye,
+  complete: Layers,
 } as const;
 
 const variantColors = {
@@ -51,6 +53,7 @@ const variantColors = {
   regression: "text-orange-500",
   seo: "text-blue-500",
   accessibility: "text-pink-500",
+  complete: "text-gradient-to-r from-primary to-purple-500",
 } as const;
 
 const variantCategories = {
@@ -191,6 +194,39 @@ export function ChatGPTPromptCopier({
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Sparkles className="h-4 w-4" />
         <span>Wähle eine Analyse-Variante und kopiere den optimierten Prompt</span>
+      </div>
+
+      {/* Complete Analysis - Featured */}
+      <div className="mb-4">
+        <button
+          onClick={() => setSelectedVariant("complete")}
+          className={cn(
+            "w-full p-5 rounded-xl border-2 transition-all text-left relative overflow-hidden",
+            selectedVariant === "complete"
+              ? "border-primary bg-gradient-to-r from-primary/10 to-purple-500/10"
+              : "border-border hover:border-primary/50 bg-gradient-to-r from-muted/30 to-muted/50 hover:from-primary/5 hover:to-purple-500/5"
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-purple-500">
+              <Layers className="h-6 w-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-lg">Komplett-Analyse</span>
+                <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-primary/20 text-primary">
+                  7-in-1
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">
+                Alle 7 Analysen in einem Prompt - Für umfassende Website-Audits
+              </p>
+            </div>
+            {selectedVariant === "complete" && (
+              <Check className="h-5 w-5 text-primary" />
+            )}
+          </div>
+        </button>
       </div>
 
       {/* Standard Analyses */}
