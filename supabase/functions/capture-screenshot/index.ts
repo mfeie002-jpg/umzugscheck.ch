@@ -49,12 +49,14 @@ serve(async (req) => {
     const validFormats = ["png", "jpg", "pdf"];
     const outputFormat = validFormats.includes(format) ? format : "png";
 
-    // ScreenshotMachine only supports specific delay values (ms)
+    // ScreenshotMachine only supports specific delay values (ms) - use HIGHER delays for complex pages
     const allowedDelays = [0, 200, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
     const delayMsRaw = typeof delay === "number" ? delay : Number(delay);
+    // Default to 10000ms (10s) for umzugscheck.ch to ensure all content loads
+    const defaultDelay = 10000;
     const delayMsClamped = Number.isFinite(delayMsRaw)
       ? Math.max(0, Math.min(10000, delayMsRaw))
-      : 6000;
+      : defaultDelay;
     const effectiveDelay = allowedDelays.reduce(
       (prev, curr) =>
         Math.abs(curr - delayMsClamped) < Math.abs(prev - delayMsClamped) ? curr : prev,
@@ -113,9 +115,10 @@ serve(async (req) => {
       url: url,
       dimension: effectiveDimension,
       format: outputFormat,
-      cacheLimit: noCache ? "0" : "14400",
+      cacheLimit: "0", // Always bypass cache to get fresh content
       delay: String(effectiveDelay),
-      js: "true",
+      js: "true", // Enable JavaScript rendering
+      timeout: "20000", // 20 second timeout for slow-loading pages
     });
 
     // Set device type properly for mobile/tablet rendering
