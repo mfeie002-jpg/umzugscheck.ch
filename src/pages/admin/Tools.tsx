@@ -81,7 +81,7 @@ const DIMENSION_PRESETS = {
   ]
 };
 
-const DEFAULT_SITE_ORIGIN = "https://www.umzugscheck.ch";
+const DEFAULT_SITE_ORIGIN = "";
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -209,13 +209,13 @@ const AdminTools = () => {
 
   // AI Feedback Package State - with localStorage persistence
   const defaultConfig: ProjectConfig = {
-    projectName: 'Umzugscheck',
+    projectName: '',
     projectUrl: DEFAULT_SITE_ORIGIN,
-    description: 'Schweizer Umzugs-Vergleichsplattform',
-    goals: 'Lead-Generierung, SEO-Optimierung, Nutzervertrauen',
-    targetAudience: 'Privatpersonen und Firmen, die umziehen möchten',
-    competitors: 'movu.ch\ncomparis.ch\numzug.ch',
-    additionalPages: ['/umzugsofferten', '/preisrechner', '/firmen'],
+    description: '',
+    goals: '',
+    targetAudience: '',
+    competitors: '',
+    additionalPages: [],
   };
   
   const [savedConfig, setSavedConfig, clearSavedConfig] = useLocalStorage<ProjectConfig>(
@@ -720,7 +720,7 @@ ${config.projectName} - Schnelle UX/Conversion-Analyse
 
 ## Projekt
 - URL: ${config.projectUrl}
-- Branche: Swiss Moving Comparison Platform
+- Branche: Comparison Platform
 
 ## Aufgabe
 Führe eine schnelle UX-Analyse durch und identifiziere:
@@ -1283,7 +1283,7 @@ ${config.projectName} - WCAG 2.1 Level AA
                     <Textarea 
                       value={config.competitors}
                       onChange={(e) => setConfig({...config, competitors: e.target.value})}
-                      placeholder="movu.ch&#10;comparis.ch"
+                      placeholder="competitor1.com&#10;competitor2.com"
                       rows={2}
                     />
                   </div>

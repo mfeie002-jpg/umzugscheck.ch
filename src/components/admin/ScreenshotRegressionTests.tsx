@@ -62,10 +62,10 @@ interface AlertSettings {
   is_active: boolean;
 }
 
-// Always use production domain for screenshots, not the sandbox/preview domain
-const DEFAULT_SITE_ORIGIN = "https://www.umzugscheck.ch";
+// Site origin is now configurable
+const DEFAULT_SITE_ORIGIN = "";
 
-const UC_RENDER_HOSTS = ["umzugscheck.ch", "www.umzugscheck.ch"];
+const UC_RENDER_HOSTS: string[] = [];
 
 const DIMENSIONS = [
   { value: "1920x1080", label: "Desktop Full HD" },
@@ -75,11 +75,7 @@ const DIMENSIONS = [
 ];
 
 const TOP_URLS = [
-  `${DEFAULT_SITE_ORIGIN}/`,
-  `${DEFAULT_SITE_ORIGIN}/umzugsofferten`,
-  `${DEFAULT_SITE_ORIGIN}/preisrechner`,
-  `${DEFAULT_SITE_ORIGIN}/firmen`,
-  `${DEFAULT_SITE_ORIGIN}/beste-umzugsfirma`,
+  "https://example.com",
 ];
 
 export function ScreenshotRegressionTests() {

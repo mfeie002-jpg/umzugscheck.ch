@@ -32,7 +32,7 @@ const AIExport = () => {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>KI-Analyse Anleitung - Umzugscheck.ch</title>
+  <title>KI-Analyse Anleitung</title>
   <style>
     body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
     h1 { color: #2563eb; border-bottom: 3px solid #2563eb; padding-bottom: 10px; }
@@ -46,7 +46,7 @@ const AIExport = () => {
 </head>
 <body>
   <h1>🤖 KI-Analyse Anleitung</h1>
-  <p><strong>Umzugscheck.ch</strong> - Step-by-Step Anleitung</p>
+  <p><strong>Web Analyzer Suite</strong> - Step-by-Step Anleitung</p>
   
   <div class="scenario">
     <h2>🚀 Quick Analysis (~2 Minuten)</h2>
@@ -75,7 +75,7 @@ const AIExport = () => {
 
   <footer>
     <p>📅 Erstellt am: ${new Date().toLocaleDateString('de-CH')}</p>
-    <p>🔗 <strong>Umzugscheck.ch</strong></p>
+    <p>🔗 <strong>Web Analyzer Suite</strong></p>
   </footer>
 </body>
 </html>`;

@@ -453,7 +453,7 @@ export default function Rankings() {
   return (
     <AdminLayout>
       <Helmet>
-        <title>Rankings verwalten | Admin | Umzugscheck.ch</title>
+        <title>Rankings verwalten | Admin</title>
       </Helmet>
 
       <main className="flex-1 py-8 bg-background">

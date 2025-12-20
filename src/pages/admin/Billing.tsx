@@ -131,7 +131,7 @@ export default function Billing() {
   return (
     <AdminLayout>
       <Helmet>
-        <title>Abrechnungen | Admin | Umzugscheck.ch</title>
+        <title>Abrechnungen | Admin</title>
       </Helmet>
 
       <div className="container mx-auto px-4 max-w-7xl py-8">

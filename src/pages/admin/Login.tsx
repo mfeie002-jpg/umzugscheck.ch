@@ -104,7 +104,7 @@ const AdminLogin = () => {
           <div>
             <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
             <CardDescription>
-              Zugang zum Umzugscheck Admin-Dashboard
+              Zugang zum Admin-Dashboard
             </CardDescription>
           </div>
         </CardHeader>
