@@ -1,14 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
-import { encode as encodeHex } from "https://deno.land/std@0.168.0/encoding/hex.ts";
+
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// ScreenshotMachine API credentials
-const SCREENSHOT_API_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY') || '892618';
-const SECRET_PHRASE = 'iamthebestintheworld'; // Secret phrase for hash generation
+// ScreenshotMachine API credentials (stored as backend secrets)
+const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY") ?? "";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -105,45 +103,53 @@ serve(async (req) => {
 
     console.log(`Capture strategy: ${captureStrategy}, effectiveDimension: ${effectiveDimension}`);
 
-    // Build ScreenshotMachine API URL with hash for authentication
+    if (!SCREENSHOT_API_KEY) {
+      console.error("Missing SCREENSHOTMACHINE_API_KEY secret");
+      return new Response(
+        JSON.stringify({ error: "Screenshot service not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // Build ScreenshotMachine API URL
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
       url: url,
       dimension: effectiveDimension,
       format: outputFormat,
-      cacheLimit: noCache ? '0' : '14400', // 0 = no cache, 14400 = 10 days
+      cacheLimit: noCache ? "0" : "14400", // 0 = no cache, 14400 = 10 days
       delay: String(effectiveDelay),
-      js: 'true',
+      js: "true",
     });
 
     // Set device type properly for mobile/tablet rendering
-    params.set('device', deviceType);
+    params.set("device", deviceType);
 
     // Zoom controls output resolution.
     // NOTE: Full-page renders can get very large; keep desktop zoom at 100 to avoid blank/white rendering artifacts.
-    const effectiveZoom = (deviceType === 'desktop' && isFullPage) ? '100' : '200';
-    params.set('zoom', effectiveZoom);
+    const effectiveZoom = deviceType === "desktop" && isFullPage ? "100" : "200";
+    params.set("zoom", effectiveZoom);
 
     // Improve reliability on real-world sites (bot detection / language variants)
-    params.set('accept-language', 'de-CH,de;q=0.9,en;q=0.8');
+    params.set("accept-language", "de-CH,de;q=0.9,en;q=0.8");
 
     // Use appropriate user-agent based on device type
-    if (deviceType === 'phone') {
-      params.set('user-agent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1');
-    } else if (deviceType === 'tablet') {
-      params.set('user-agent', 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1');
+    if (deviceType === "phone") {
+      params.set(
+        "user-agent",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+      );
+    } else if (deviceType === "tablet") {
+      params.set(
+        "user-agent",
+        "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+      );
     } else {
-      params.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+      params.set(
+        "user-agent",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      );
     }
-
-    // Generate MD5 hash: md5(url + secretPhrase)
-    const hashInput = url + SECRET_PHRASE;
-    const encoder = new TextEncoder();
-    const data = encoder.encode(hashInput);
-    const hashBuffer = await crypto.subtle.digest("MD5", data);
-    const hashBytes = encodeHex(new Uint8Array(hashBuffer));
-    const hash = new TextDecoder().decode(hashBytes);
-    params.set('hash', hash);
 
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
 
