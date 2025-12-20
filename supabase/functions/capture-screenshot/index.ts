@@ -59,10 +59,21 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, delay: ${effectiveDelay}ms, fullPage: ${fullPage}`);
+    // Parse dimension to detect mobile/tablet
+    const [widthStr, heightStr] = dimension.split('x');
+    const width = parseInt(widthStr, 10);
+    
+    // Determine device type based on width
+    let deviceType = 'desktop';
+    if (width <= 480) {
+      deviceType = 'phone';
+    } else if (width <= 1024) {
+      deviceType = 'tablet';
+    }
+
+    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${fullPage}`);
 
     // Determine effective dimension for full-page captures
-    const width = dimension.split("x")[0];
     const effectiveDimension = fullPage ? `${width}xfull` : dimension;
 
     // Build ScreenshotMachine API URL with hash for authentication
@@ -76,9 +87,24 @@ serve(async (req) => {
       js: 'true',
     });
 
+    // Set device type properly for mobile/tablet rendering
+    params.set('device', deviceType);
+
+    // Use zoom=200 for retina quality (high-res screenshots)
+    // This makes screenshots 2x sharper, especially for mobile
+    params.set('zoom', '200');
+
     // Improve reliability on real-world sites (bot detection / language variants)
     params.set('accept-language', 'de-CH,de;q=0.9,en;q=0.8');
-    params.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    
+    // Use appropriate user-agent based on device type
+    if (deviceType === 'phone') {
+      params.set('user-agent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1');
+    } else if (deviceType === 'tablet') {
+      params.set('user-agent', 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1');
+    } else {
+      params.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    }
 
     // Add scroll params for full-page captures - critical for lazy-loaded content
     if (fullPage) {
@@ -93,9 +119,10 @@ serve(async (req) => {
       params.set('scroll', 'true');
     }
     
-    // Additional render options for JS-heavy pages
-    params.set('device', 'desktop'); // Force desktop rendering
-    params.set('touch', 'false'); // Disable touch emulation
+    // Disable touch emulation only for desktop
+    if (deviceType === 'desktop') {
+      params.set('touch', 'false');
+    }
 
     // Generate MD5 hash: md5(url + secretPhrase)
     const hashInput = url + SECRET_PHRASE;
@@ -133,7 +160,7 @@ serve(async (req) => {
     }
     base64 = btoa(base64);
 
-    console.log(`Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}`);
+    console.log(`Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}, device: ${deviceType}, zoom: 200`);
 
     // Determine MIME type based on format
     const mimeType = outputFormat === 'pdf' ? 'application/pdf' : `image/${outputFormat}`;
@@ -145,6 +172,7 @@ serve(async (req) => {
         url,
         dimension: effectiveDimension,
         format: outputFormat,
+        device: deviceType,
         capturedAt: new Date().toISOString(),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

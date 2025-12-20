@@ -1166,14 +1166,30 @@ img {
    - Force everything visible only in screenshot mode.
 */
 html.uc-render [style*="opacity: 0"],
-html.uc-render [style*="opacity:0"] {
+html.uc-render [style*="opacity:0"],
+html.uc-render [style*="opacity:"] {
   opacity: 1 !important;
 }
 
+html.uc-render [style*="transform:"],
+html.uc-render [style*="transform: "] {
+  transform: none !important;
+}
+
 html.uc-render .content-visibility-auto,
-html.uc-render .content-visibility-auto-tall {
+html.uc-render .content-visibility-auto-tall,
+html.uc-render [style*="content-visibility"] {
   content-visibility: visible !important;
   contain-intrinsic-size: none !important;
+}
+
+/* Ensure all sections are visible */
+html.uc-render section,
+html.uc-render [class*="Section"],
+html.uc-render [class*="section"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
 }
 
 /* Skeleton placeholder for images */
