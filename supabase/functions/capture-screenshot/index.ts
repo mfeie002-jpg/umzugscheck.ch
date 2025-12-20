@@ -8,8 +8,9 @@ const corsHeaders = {
 };
 
 // ScreenshotMachine API credentials
-const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY") ?? "892618";
-const SECRET_PHRASE = "iamthebestintheworld";
+const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY");
+// Optional: only needed if your ScreenshotMachine account uses hash authentication
+const SECRET_PHRASE = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") ?? "";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -109,6 +110,14 @@ serve(async (req) => {
 
     console.log(`Capture strategy: ${captureStrategy}, effectiveDimension: ${effectiveDimension}`);
 
+    if (!SCREENSHOT_API_KEY) {
+      console.error("SCREENSHOTMACHINE_API_KEY not configured");
+      return new Response(
+        JSON.stringify({ error: "Screenshot provider not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Build ScreenshotMachine API URL
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
@@ -149,14 +158,19 @@ serve(async (req) => {
       );
     }
 
-    // Generate MD5 hash: md5(url + secretPhrase)
-    const hashInput = url + SECRET_PHRASE;
-    const encoder = new TextEncoder();
-    const data = encoder.encode(hashInput);
-    const hashBuffer = await crypto.subtle.digest("MD5", data);
-    const hashBytes = encodeHex(new Uint8Array(hashBuffer));
-    const hash = new TextDecoder().decode(hashBytes);
-    params.set("hash", hash);
+    // Optional hash authentication
+    if (SECRET_PHRASE) {
+      // Generate MD5 hash: md5(url + secretPhrase)
+      const hashInput = url + SECRET_PHRASE;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(hashInput);
+      const hashBuffer = await crypto.subtle.digest("MD5", data);
+      const hashBytes = encodeHex(new Uint8Array(hashBuffer));
+      const hash = new TextDecoder().decode(hashBytes);
+      params.set("hash", hash);
+    } else {
+      console.log("No SCREENSHOTMACHINE_SECRET_PHRASE set; calling API without hash.");
+    }
 
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
 
