@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,20 +13,18 @@ import {
   Package, Download, Loader2, Copy, CheckCircle2, 
   FileText, Camera, Code, Plus, X,
   Trash2, Zap, FileDown,
-  Wrench, ExternalLink, BookOpen, Terminal, FileCode
+  Wrench, ExternalLink, BookOpen, Terminal, FileCode,
+  Database, Search, Eye, GitCompare, Sparkles
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import { toast } from "sonner";
-
-// ============================================================================
-// CONFIGURATION
-// ============================================================================
-
-const SCREENSHOT_API_KEY = "892618";
+import { Link } from "react-router-dom";
+import { captureScreenshot } from "@/lib/screenshot-service";
 
 // ============================================================================
 // TYPES
@@ -51,9 +49,16 @@ interface ScreenshotConfig {
 
 interface CapturedScreenshot {
   url: string;
-  blob: Blob;
+  imageUrl: string;
   dimension: string;
   timestamp: Date;
+}
+
+interface DatabaseStats {
+  leadsCount: number;
+  providersCount: number;
+  reviewsCount: number;
+  screenshotsCount: number;
 }
 
 // ============================================================================
@@ -73,35 +78,11 @@ const DIMENSION_PRESETS = {
   ]
 };
 
+const DEFAULT_SITE_ORIGIN = "https://www.umzugscheck.ch";
+
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
-
-const buildScreenshotUrl = (targetUrl: string, dimension: string, delay: number = 0): string => {
-  const [width, height] = dimension.split('x');
-  const isFullPage = height === 'full';
-  
-  const params = new URLSearchParams({
-    key: SCREENSHOT_API_KEY,
-    url: targetUrl,
-    dimension: `${width}x${isFullPage ? '0' : height}`,
-    format: 'png',
-    cacheLimit: '0',
-    delay: delay.toString(),
-  });
-  
-  if (isFullPage) {
-    params.set('full', 'true');
-  }
-  
-  return `https://api.screenshotmachine.com?${params.toString()}`;
-};
-
-const fetchScreenshotAsBlob = async (url: string): Promise<Blob> => {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Screenshot failed');
-  return await response.blob();
-};
 
 const fetchHtmlContent = async (url: string): Promise<string> => {
   try {
@@ -116,8 +97,21 @@ const fetchHtmlContent = async (url: string): Promise<string> => {
   }
 };
 
+const fetchRenderedHtml = async (url: string): Promise<string> => {
+  try {
+    const { data, error } = await supabase.functions.invoke('capture-rendered-html', {
+      body: { url, waitFor: 5000, formats: ['html', 'markdown'] }
+    });
+    if (error) throw error;
+    return data?.html || '';
+  } catch (error) {
+    console.error('Failed to fetch rendered HTML:', error);
+    return '';
+  }
+};
+
 // ============================================================================
-// STANDALONE FILES CONTENT (embedded for download)
+// STANDALONE PROMPTS CONTENT
 // ============================================================================
 
 const STANDALONE_PROMPTS_CONTENT = `# Web Analyzer Suite - Standalone Setup
@@ -149,20 +143,26 @@ Erstelle eine Web Analyzer Suite mit folgenden Features:
 - Download einzeln oder als ZIP
 - Galerie der erfassten Screenshots
 
+## 3. SEO HTML Analyzer
+- Raw HTML vs. Rendered HTML Vergleich
+- H1, H2, Meta-Tags Extraktion
+- Link-Analyse
+- LLM-ready Markdown Export
+
 ## Technische Details:
-- Screenshot API: ScreenshotMachine.com
-- API Key: 892618
-- API URL Format: https://api.screenshotmachine.com?key={KEY}&url={URL}&dimension={WxH}
-- Für volle Seite: dimension={W}x0&full=true
+- Screenshot API: Firecrawl oder ScreenshotMachine
+- Edge Functions für HTML-Abruf
 
 ## Dependencies:
 npm install jszip file-saver jspdf
 
-## Edge Function für HTML-Abruf:
-Erstelle eine Edge Function "fetch-html" mit verify_jwt = false die eine URL entgegennimmt und den HTML-Inhalt zurückgibt.
+## Edge Functions:
+1. fetch-html - Roher HTML-Abruf
+2. capture-rendered-html - Gerendertes HTML via Firecrawl
+3. capture-screenshot - Screenshot-Erfassung
 
 ## UI:
-- Tabs für die zwei Tools
+- Tabs für die Tools
 - Cards mit Formularen
 - Progress-Anzeige beim Generieren
 - Toast-Benachrichtigungen
@@ -171,24 +171,23 @@ Erstelle eine Edge Function "fetch-html" mit verify_jwt = false die eine URL ent
 
 ---
 
+## Was ist enthalten:
+
+1. **AI Feedback Package** - Screenshots + HTML + Prompts als ZIP
+2. **Screenshot Machine** - Einzel- und Bulk-Screenshots
+3. **SEO HTML Analyzer** - Raw vs. Rendered HTML Vergleich
+4. **7 KI-Prompt Varianten** - Quick, Deep, Code, Screenshot, Regression, SEO, Accessibility
+
 ## Nach dem Erstellen:
 
 1. **Dependencies installieren** (falls nicht automatisch):
    \`npm install jszip file-saver jspdf\`
 
-2. **Edge Function prüfen** - sollte automatisch erstellt werden
+2. **Edge Functions erstellen** - fetch-html, capture-rendered-html
 
-3. **Fertig!** Das Tool ist einsatzbereit.
+3. **Firecrawl aktivieren** - Für gerenderten HTML-Abruf
 
----
-
-## Screenshot API Info
-
-- **Anbieter**: ScreenshotMachine.com
-- **API Key**: 892618 (eingebaut)
-- **Limits**: Abhängig vom Plan
-- **Formate**: PNG, JPG
-- **Dimensionen**: Beliebig (z.B. 1920x1080, 393x852)
+4. **Fertig!** Das Tool ist einsatzbereit.
 `;
 
 // ============================================================================
@@ -196,15 +195,24 @@ Erstelle eine Edge Function "fetch-html" mit verify_jwt = false die eine URL ent
 // ============================================================================
 
 const AdminTools = () => {
+  // Database stats
+  const [dbStats, setDbStats] = useState<DatabaseStats>({
+    leadsCount: 0,
+    providersCount: 0,
+    reviewsCount: 0,
+    screenshotsCount: 0,
+  });
+  const [loadingStats, setLoadingStats] = useState(true);
+
   // AI Feedback Package State
   const [config, setConfig] = useState<ProjectConfig>({
     projectName: 'Umzugscheck',
-    projectUrl: 'https://umzugscheck.ch',
-    description: '',
-    goals: '',
-    targetAudience: '',
-    competitors: '',
-    additionalPages: [],
+    projectUrl: DEFAULT_SITE_ORIGIN,
+    description: 'Schweizer Umzugs-Vergleichsplattform',
+    goals: 'Lead-Generierung, SEO-Optimierung, Nutzervertrauen',
+    targetAudience: 'Privatpersonen und Firmen, die umziehen möchten',
+    competitors: 'movu.ch\ncomparis.ch\numzug.ch',
+    additionalPages: ['/umzugsofferten', '/preisrechner', '/firmen'],
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -215,12 +223,39 @@ const AdminTools = () => {
   const [screenshotConfig, setScreenshotConfig] = useState<ScreenshotConfig>({
     dimension: '1920x1080',
     format: 'png',
-    delay: 0,
-    fullPage: false,
+    delay: 5,
+    fullPage: true,
   });
   const [capturedScreenshots, setCapturedScreenshots] = useState<CapturedScreenshot[]>([]);
   const [isCapturing, setIsCapturing] = useState(false);
   const [bulkUrls, setBulkUrls] = useState('');
+
+  // Load database stats
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const [leadsRes, providersRes, reviewsRes, screenshotsRes] = await Promise.all([
+          supabase.from('leads').select('id', { count: 'exact', head: true }),
+          supabase.from('service_providers').select('id', { count: 'exact', head: true }),
+          supabase.from('reviews').select('id', { count: 'exact', head: true }),
+          supabase.from('screenshot_history').select('id', { count: 'exact', head: true }),
+        ]);
+
+        setDbStats({
+          leadsCount: leadsRes.count || 0,
+          providersCount: providersRes.count || 0,
+          reviewsCount: reviewsRes.count || 0,
+          screenshotsCount: screenshotsRes.count || 0,
+        });
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    loadStats();
+  }, []);
 
   // ============================================================================
   // AI FEEDBACK PACKAGE FUNCTIONS
@@ -240,13 +275,17 @@ const AdminTools = () => {
       const zip = new JSZip();
       const screenshotsFolder = zip.folder('screenshots');
       const htmlFolder = zip.folder('html');
+      const renderedHtmlFolder = zip.folder('rendered-html');
       
       const allPages = [
         { path: '/', name: 'homepage' },
-        ...config.additionalPages.map((p, i) => ({ path: p, name: `page-${i + 1}` }))
+        ...config.additionalPages.map((p, i) => ({ 
+          path: p.startsWith('/') ? p : `/${p}`, 
+          name: p.replace(/\//g, '-').replace(/^-/, '') || `page-${i + 1}` 
+        }))
       ];
 
-      const totalSteps = allPages.length * 3 + 2;
+      const totalSteps = allPages.length * 4 + 2; // 4 per page + prompt + pdf
       let currentStep = 0;
 
       for (const page of allPages) {
@@ -255,9 +294,22 @@ const AdminTools = () => {
         // Desktop screenshot
         setStatus(`Desktop Screenshot: ${page.name}...`);
         try {
-          const desktopUrl = buildScreenshotUrl(fullUrl, '1920xfull', 2000);
-          const desktopBlob = await fetchScreenshotAsBlob(desktopUrl);
-          screenshotsFolder?.file(`${page.name}-desktop.png`, desktopBlob);
+          const result = await captureScreenshot({
+            url: fullUrl,
+            dimension: '1920x1080',
+            fullPage: true,
+            delay: 5000,
+          });
+          if (result.success && result.image) {
+            const base64Data = result.image.split(',')[1];
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let j = 0; j < byteCharacters.length; j++) {
+              byteNumbers[j] = byteCharacters.charCodeAt(j);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            screenshotsFolder?.file(`${page.name}-desktop.png`, byteArray);
+          }
         } catch (e) {
           console.error('Desktop screenshot failed:', e);
         }
@@ -267,29 +319,64 @@ const AdminTools = () => {
         // Mobile screenshot
         setStatus(`Mobile Screenshot: ${page.name}...`);
         try {
-          const mobileUrl = buildScreenshotUrl(fullUrl, '393x852', 2000);
-          const mobileBlob = await fetchScreenshotAsBlob(mobileUrl);
-          screenshotsFolder?.file(`${page.name}-mobile.png`, mobileBlob);
+          const result = await captureScreenshot({
+            url: fullUrl,
+            dimension: '393x852',
+            fullPage: true,
+            delay: 5000,
+          });
+          if (result.success && result.image) {
+            const base64Data = result.image.split(',')[1];
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let j = 0; j < byteCharacters.length; j++) {
+              byteNumbers[j] = byteCharacters.charCodeAt(j);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            screenshotsFolder?.file(`${page.name}-mobile.png`, byteArray);
+          }
         } catch (e) {
           console.error('Mobile screenshot failed:', e);
         }
         currentStep++;
         setProgress((currentStep / totalSteps) * 100);
 
-        // HTML content
-        setStatus(`HTML abrufen: ${page.name}...`);
-        const html = await fetchHtmlContent(fullUrl);
-        if (html) {
-          htmlFolder?.file(`${page.name}.html`, html);
+        // Raw HTML content
+        setStatus(`Raw HTML abrufen: ${page.name}...`);
+        const rawHtml = await fetchHtmlContent(fullUrl);
+        if (rawHtml) {
+          htmlFolder?.file(`${page.name}-raw.html`, rawHtml);
         }
         currentStep++;
         setProgress((currentStep / totalSteps) * 100);
+
+        // Rendered HTML content
+        setStatus(`Rendered HTML abrufen: ${page.name}...`);
+        const renderedHtml = await fetchRenderedHtml(fullUrl);
+        if (renderedHtml) {
+          renderedHtmlFolder?.file(`${page.name}-rendered.html`, renderedHtml);
+        }
+        currentStep++;
+        setProgress((currentStep / totalSteps) * 100);
+
+        // Small delay between pages
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
 
       // Generate analysis prompt
-      setStatus('Erstelle Analyse-Prompt...');
+      setStatus('Erstelle Analyse-Prompts...');
       const promptContent = generateAnalysisPrompt();
       zip.file('ANALYSIS_PROMPT.md', promptContent);
+      
+      // Add all 7 prompt variants
+      zip.file('prompts/01_QUICK_ANALYSIS.md', generateQuickPrompt());
+      zip.file('prompts/02_DEEP_AUDIT.md', generateDeepPrompt());
+      zip.file('prompts/03_CODE_REVIEW.md', generateCodePrompt());
+      zip.file('prompts/04_SCREENSHOT_ANALYSIS.md', generateScreenshotPrompt());
+      zip.file('prompts/05_REGRESSION_REPORT.md', generateRegressionPrompt());
+      zip.file('prompts/06_SEO_DEEP_DIVE.md', generateSEOPrompt());
+      zip.file('prompts/07_ACCESSIBILITY_AUDIT.md', generateAccessibilityPrompt());
+      
       currentStep++;
       setProgress((currentStep / totalSteps) * 100);
 
@@ -300,10 +387,13 @@ const AdminTools = () => {
       currentStep++;
       setProgress((currentStep / totalSteps) * 100);
 
+      // Add README
+      zip.file('README.md', generateReadme());
+
       // Download ZIP
       setStatus('Erstelle ZIP...');
       const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, `${config.projectName.toLowerCase().replace(/\s+/g, '-')}-feedback-package.zip`);
+      saveAs(content, `${config.projectName.toLowerCase().replace(/\s+/g, '-')}-feedback-package-${new Date().toISOString().split('T')[0]}.zip`);
 
       setStatus('Fertig!');
       toast.success('Package erfolgreich erstellt!');
@@ -315,17 +405,60 @@ const AdminTools = () => {
     }
   };
 
+  const generateReadme = () => {
+    return `# ${config.projectName} - AI Feedback Package
+
+## Generiert am ${new Date().toLocaleDateString('de-CH')}
+
+### Inhalt
+
+- **/screenshots/** - Desktop und Mobile Screenshots aller Seiten
+- **/html/** - Raw HTML (ohne JavaScript)
+- **/rendered-html/** - Gerendertes HTML (nach JavaScript-Ausführung)
+- **/prompts/** - 7 verschiedene KI-Analyse-Prompts
+- **PROJECT_BRIEF.pdf** - Projekt-Zusammenfassung
+
+### Verwendung
+
+1. Öffne ChatGPT, Claude oder Gemini
+2. Wähle einen Prompt aus dem /prompts/ Ordner
+3. Füge den Prompt ein
+4. Lade relevante Screenshots oder HTML-Dateien hoch
+5. Erhalte detaillierte Analyse
+
+### Prompts
+
+1. **Quick Analysis** - Schnelle UX/Conversion-Checks (~2 Min)
+2. **Deep Audit** - Vollständige Analyse (~10 Min)
+3. **Code Review** - Technische Qualität (~5 Min)
+4. **Screenshot Analysis** - Visuelles Review (~3 Min)
+5. **Regression Report** - Änderungs-Analyse (~3 Min)
+6. **SEO Deep Dive** - Suchmaschinen-Optimierung (~8 Min)
+7. **Accessibility Audit** - WCAG-Konformität (~5 Min)
+
+### Projekt-Details
+
+- **URL:** ${config.projectUrl}
+- **Beschreibung:** ${config.description}
+- **Zielgruppe:** ${config.targetAudience}
+- **Konkurrenten:** ${config.competitors.replace(/\n/g, ', ')}
+`;
+  };
+
   const generateAnalysisPrompt = () => {
     return `# AI Analysis Request: ${config.projectName}
 
 ## Project Overview
 - **URL**: ${config.projectUrl}
-- **Description**: ${config.description || 'Swiss moving comparison platform'}
-- **Goals**: ${config.goals || 'Lead generation, SEO optimization, user trust'}
-- **Target Audience**: ${config.targetAudience || 'People planning to move in Switzerland'}
+- **Description**: ${config.description}
+- **Goals**: ${config.goals}
+- **Target Audience**: ${config.targetAudience}
 
 ## Competitors
-${config.competitors || 'Not specified'}
+${config.competitors}
+
+## Pages Analyzed
+${config.additionalPages.map(p => `- ${config.projectUrl}${p}`).join('\n')}
 
 ## Analysis Instructions
 
@@ -341,7 +474,7 @@ Please analyze the attached screenshots and HTML files. Focus on:
 - Meta tags and structure
 - Heading hierarchy (H1-H6)
 - Internal linking
-- Page speed indicators
+- Raw vs. Rendered HTML differences
 
 ### 3. Conversion Optimization
 - Form design and placement
@@ -358,27 +491,200 @@ Please provide specific, actionable feedback with examples from the screenshots.
 `;
   };
 
+  const generateQuickPrompt = () => `# Quick Analysis Prompt
+
+${config.projectName} - Schnelle UX/Conversion-Analyse
+
+## Projekt
+- URL: ${config.projectUrl}
+- Branche: Swiss Moving Comparison Platform
+
+## Aufgabe
+Führe eine schnelle UX-Analyse durch und identifiziere:
+
+1. **TOP 3 Conversion-Killer** - Was hindert Nutzer am Abschluss?
+2. **Quick Wins** - Welche Änderungen können diese Woche umgesetzt werden?
+3. **Mobile UX** - Gibt es offensichtliche Mobile-Probleme?
+
+## Ausgabeformat
+Priorisierte Liste mit:
+- Problem
+- Auswirkung (Hoch/Mittel/Niedrig)
+- Konkrete Lösung (1 Satz)
+- Geschätzter Aufwand (Stunden)
+`;
+
+  const generateDeepPrompt = () => `# Deep Audit Prompt
+
+${config.projectName} - Vollständige Analyse
+
+## Projekt
+- URL: ${config.projectUrl}
+- Zielgruppe: ${config.targetAudience}
+- Konkurrenten: ${config.competitors.replace(/\n/g, ', ')}
+
+## Analyse-Bereiche
+1. Conversion Funnel (40%)
+2. SEO & Content (25%)
+3. Technical Performance (20%)
+4. Trust & Social Proof (15%)
+
+## Erwarteter Output
+- Executive Summary
+- ICE-priorisierte Findings
+- Wettbewerbs-Vergleich
+- 90-Tage Roadmap
+`;
+
+  const generateCodePrompt = () => `# Code Review Prompt
+
+${config.projectName} - Technische Analyse
+
+## Stack
+React 18, Vite, TypeScript, Tailwind CSS, Supabase
+
+## Fokus
+1. Performance (30%) - Bundle Size, Rendering
+2. Architecture (25%) - Components, State
+3. TypeScript (20%) - Type Safety
+4. Best Practices (15%) - Error Handling
+5. Security (10%) - API, RLS
+
+## Output
+- Critical Issues
+- Code Smells
+- Optimization Opportunities
+- Konkrete Code-Snippets
+`;
+
+  const generateScreenshotPrompt = () => `# Screenshot Analysis Prompt
+
+${config.projectName} - Visuelles Review
+
+## Analyse-Punkte
+1. Visual Hierarchy (25%)
+2. Above the Fold (25%)
+3. Design Consistency (20%)
+4. Mobile/Responsive (15%)
+5. Conversion-Optimierung (15%)
+
+## Output
+- Positives ✅
+- Verbesserungen ⚠️
+- Kritische Issues ❌
+- Quick Wins 🚀
+`;
+
+  const generateRegressionPrompt = () => `# Regression Report Prompt
+
+${config.projectName} - Änderungs-Analyse
+
+## Aufgabe
+Analysiere Unterschiede zwischen Baseline und neuem Screenshot:
+
+1. Art der Änderungen
+2. Impact-Bewertung (High/Medium/Low)
+3. Potenzielle Ursachen
+4. Empfehlungen
+
+## Output
+| Bereich | Änderung | Impact | Empfehlung |
+|---------|----------|--------|------------|
+`;
+
+  const generateSEOPrompt = () => `# SEO Deep Dive Prompt
+
+${config.projectName} - Suchmaschinen-Optimierung
+
+## Analyse-Bereiche
+1. On-Page SEO (30%)
+2. Technical SEO (25%)
+3. Content Quality (20%)
+4. Local SEO CH (15%)
+5. Off-Page Signals (10%)
+
+## Output
+- SEO Score Card
+- Top 5 Quick Wins
+- Keyword Opportunities
+- 6-Monats Roadmap
+`;
+
+  const generateAccessibilityPrompt = () => `# Accessibility Audit Prompt
+
+${config.projectName} - WCAG 2.1 Level AA
+
+## Prüfbereiche
+1. Perceivable (25%)
+2. Operable (25%)
+3. Understandable (25%)
+4. Robust (25%)
+
+## Output
+- Accessibility Score
+- Kritische Issues (Level A)
+- Wichtige Issues (Level AA)
+- Empfehlungen
+`;
+
   const generatePdfReport = () => {
     const pdf = new jsPDF();
     
-    pdf.setFontSize(20);
-    pdf.text(`Project Brief: ${config.projectName}`, 20, 30);
+    pdf.setFontSize(24);
+    pdf.setTextColor(37, 99, 235);
+    pdf.text(`${config.projectName}`, 20, 30);
     
     pdf.setFontSize(12);
-    pdf.text(`URL: ${config.projectUrl}`, 20, 50);
-    pdf.text(`Generated: ${new Date().toLocaleDateString('de-CH')}`, 20, 60);
+    pdf.setTextColor(100);
+    pdf.text('AI Feedback Package - Project Brief', 20, 40);
     
-    pdf.setFontSize(14);
-    pdf.text('Project Goals:', 20, 80);
     pdf.setFontSize(10);
+    pdf.setTextColor(0);
+    pdf.text(`URL: ${config.projectUrl}`, 20, 55);
+    pdf.text(`Generiert: ${new Date().toLocaleDateString('de-CH')}`, 20, 62);
+    
+    pdf.setFontSize(12);
+    pdf.setTextColor(37, 99, 235);
+    pdf.text('Projekt-Ziele:', 20, 80);
+    pdf.setFontSize(10);
+    pdf.setTextColor(0);
     const goals = config.goals || 'Lead generation, SEO, User trust';
-    pdf.text(goals.substring(0, 80), 20, 90);
+    pdf.text(goals.substring(0, 80), 20, 88);
     
-    pdf.setFontSize(14);
-    pdf.text('Target Audience:', 20, 110);
+    pdf.setFontSize(12);
+    pdf.setTextColor(37, 99, 235);
+    pdf.text('Zielgruppe:', 20, 105);
     pdf.setFontSize(10);
+    pdf.setTextColor(0);
     const audience = config.targetAudience || 'Swiss moving customers';
-    pdf.text(audience.substring(0, 80), 20, 120);
+    pdf.text(audience.substring(0, 80), 20, 113);
+    
+    pdf.setFontSize(12);
+    pdf.setTextColor(37, 99, 235);
+    pdf.text('Analysierte Seiten:', 20, 130);
+    pdf.setFontSize(10);
+    pdf.setTextColor(0);
+    config.additionalPages.forEach((page, i) => {
+      pdf.text(`• ${config.projectUrl}${page}`, 25, 138 + (i * 7));
+    });
+    
+    pdf.setFontSize(12);
+    pdf.setTextColor(37, 99, 235);
+    pdf.text('Enthaltene Prompts:', 20, 180);
+    pdf.setFontSize(10);
+    pdf.setTextColor(0);
+    const prompts = [
+      '1. Quick Analysis - Schnelle UX/Conversion-Checks',
+      '2. Deep Audit - Vollständige Analyse',
+      '3. Code Review - Technische Qualität',
+      '4. Screenshot Analysis - Visuelles Review',
+      '5. Regression Report - Änderungs-Analyse',
+      '6. SEO Deep Dive - Suchmaschinen-Optimierung',
+      '7. Accessibility Audit - WCAG-Konformität',
+    ];
+    prompts.forEach((prompt, i) => {
+      pdf.text(prompt, 25, 188 + (i * 7));
+    });
     
     return pdf.output('blob');
   };
@@ -387,7 +693,7 @@ Please provide specific, actionable feedback with examples from the screenshots.
   // SCREENSHOT MACHINE FUNCTIONS
   // ============================================================================
 
-  const captureScreenshot = async () => {
+  const captureScreenshotHandler = async () => {
     if (!screenshotUrl) {
       toast.error('Bitte URL eingeben');
       return;
@@ -399,17 +705,24 @@ Please provide specific, actionable feedback with examples from the screenshots.
         ? screenshotConfig.dimension.replace(/x\d+$/, 'xfull')
         : screenshotConfig.dimension;
       
-      const url = buildScreenshotUrl(screenshotUrl, dimension, screenshotConfig.delay * 1000);
-      const blob = await fetchScreenshotAsBlob(url);
-      
-      setCapturedScreenshots(prev => [...prev, {
+      const result = await captureScreenshot({
         url: screenshotUrl,
-        blob,
         dimension,
-        timestamp: new Date()
-      }]);
+        delay: screenshotConfig.delay * 1000,
+        fullPage: screenshotConfig.fullPage,
+      });
       
-      toast.success('Screenshot erfasst!');
+      if (result.success && result.image) {
+        setCapturedScreenshots(prev => [...prev, {
+          url: screenshotUrl,
+          imageUrl: result.image!,
+          dimension,
+          timestamp: new Date()
+        }]);
+        toast.success('Screenshot erfasst!');
+      } else {
+        toast.error(result.error || 'Screenshot fehlgeschlagen');
+      }
     } catch (error) {
       toast.error('Screenshot fehlgeschlagen');
     } finally {
@@ -429,30 +742,59 @@ Please provide specific, actionable feedback with examples from the screenshots.
 
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i].trim();
+      toast.info(`Screenshot ${i + 1}/${urls.length}: ${url}`);
+      
       try {
         const dimension = screenshotConfig.fullPage 
           ? screenshotConfig.dimension.replace(/x\d+$/, 'xfull')
           : screenshotConfig.dimension;
         
-        const screenshotUrl = buildScreenshotUrl(url, dimension, screenshotConfig.delay * 1000);
-        const blob = await fetchScreenshotAsBlob(screenshotUrl);
+        const result = await captureScreenshot({
+          url,
+          dimension,
+          delay: screenshotConfig.delay * 1000,
+          fullPage: screenshotConfig.fullPage,
+        });
         
-        const hostname = new URL(url).hostname.replace(/\./g, '-');
-        zip.file(`${hostname}-${i + 1}.png`, blob);
+        if (result.success && result.image) {
+          const base64Data = result.image.split(',')[1];
+          const byteCharacters = atob(base64Data);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let j = 0; j < byteCharacters.length; j++) {
+            byteNumbers[j] = byteCharacters.charCodeAt(j);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          
+          const hostname = new URL(url).hostname.replace(/\./g, '-');
+          zip.file(`${hostname}-${i + 1}.png`, byteArray);
+        }
+        
+        // Delay between screenshots
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Failed: ${url}`);
       }
     }
 
     const content = await zip.generateAsync({ type: 'blob' });
-    saveAs(content, 'bulk-screenshots.zip');
+    saveAs(content, `bulk-screenshots-${new Date().toISOString().split('T')[0]}.zip`);
     setIsCapturing(false);
     toast.success('Bulk Screenshots heruntergeladen!');
   };
 
   const downloadScreenshot = (screenshot: CapturedScreenshot) => {
     const hostname = new URL(screenshot.url).hostname.replace(/\./g, '-');
-    saveAs(screenshot.blob, `${hostname}-${screenshot.dimension}.png`);
+    
+    const base64Data = screenshot.imageUrl.split(',')[1];
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let j = 0; j < byteCharacters.length; j++) {
+      byteNumbers[j] = byteCharacters.charCodeAt(j);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'image/png' });
+    
+    saveAs(blob, `${hostname}-${screenshot.dimension}.png`);
   };
 
   const downloadAllScreenshots = async () => {
@@ -461,51 +803,30 @@ Please provide specific, actionable feedback with examples from the screenshots.
     const zip = new JSZip();
     capturedScreenshots.forEach((s, i) => {
       const hostname = new URL(s.url).hostname.replace(/\./g, '-');
-      zip.file(`${hostname}-${s.dimension}-${i + 1}.png`, s.blob);
+      
+      const base64Data = s.imageUrl.split(',')[1];
+      const byteCharacters = atob(base64Data);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let j = 0; j < byteCharacters.length; j++) {
+        byteNumbers[j] = byteCharacters.charCodeAt(j);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      
+      zip.file(`${hostname}-${s.dimension}-${i + 1}.png`, byteArray);
     });
     
     const content = await zip.generateAsync({ type: 'blob' });
-    saveAs(content, 'screenshots.zip');
+    saveAs(content, `screenshots-${new Date().toISOString().split('T')[0]}.zip`);
   };
 
   // ============================================================================
   // DOWNLOAD STANDALONE FILES
   // ============================================================================
 
-  const downloadStandaloneFile = (type: 'prompts' | 'ai-feedback' | 'screenshot' | 'suite') => {
-    try {
-      let content = '';
-      let filename = '';
-      let mimeType = 'text/plain';
-
-      switch (type) {
-        case 'prompts':
-          content = STANDALONE_PROMPTS_CONTENT;
-          filename = 'STANDALONE_PROMPTS.md';
-          mimeType = 'text/markdown';
-          break;
-        case 'ai-feedback':
-          toast.info('Öffne Code-Editor → src/standalone/AIFeedbackPackageStandalone.tsx → Kopiere den Inhalt');
-          return;
-        case 'screenshot':
-          toast.info('Öffne Code-Editor → src/standalone/ScreenshotMachineStandalone.tsx → Kopiere den Inhalt');
-          return;
-        case 'suite':
-          toast.info('Öffne Code-Editor → src/standalone/WebAnalyzerSuiteStandalone.tsx → Kopiere den Inhalt');
-          return;
-      }
-
-      const blob = new Blob([content], { type: mimeType });
-      saveAs(blob, filename);
-      toast.success(`${filename} heruntergeladen!`);
-    } catch (error) {
-      toast.error('Download fehlgeschlagen');
-    }
-  };
-
-  const copyFilePathToClipboard = (path: string) => {
-    navigator.clipboard.writeText(path);
-    toast.success(`Pfad kopiert: ${path}`);
+  const downloadStandaloneFile = () => {
+    const blob = new Blob([STANDALONE_PROMPTS_CONTENT], { type: 'text/markdown' });
+    saveAs(blob, 'STANDALONE_PROMPTS.md');
+    toast.success('STANDALONE_PROMPTS.md heruntergeladen!');
   };
 
   // ============================================================================
@@ -524,11 +845,59 @@ Please provide specific, actionable feedback with examples from the screenshots.
             Admin Tools & Downloads
           </h1>
           <p className="text-muted-foreground mt-2">
-            Analyse-Tools, Screenshots und Standalone-Komponenten für andere Projekte
+            Analyse-Tools, Screenshots, KI-Prompts und Standalone-Komponenten
           </p>
         </div>
 
-        {/* Simplified Download Section - 1 Prompt, 1 File */}
+        {/* Database Stats */}
+        <div className="grid gap-4 md:grid-cols-4 mb-8">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <Database className="h-8 w-8 text-primary" />
+                <div>
+                  <p className="text-2xl font-bold">{loadingStats ? '...' : dbStats.leadsCount}</p>
+                  <p className="text-sm text-muted-foreground">Leads</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <Package className="h-8 w-8 text-green-600" />
+                <div>
+                  <p className="text-2xl font-bold">{loadingStats ? '...' : dbStats.providersCount}</p>
+                  <p className="text-sm text-muted-foreground">Anbieter</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <FileText className="h-8 w-8 text-purple-600" />
+                <div>
+                  <p className="text-2xl font-bold">{loadingStats ? '...' : dbStats.reviewsCount}</p>
+                  <p className="text-sm text-muted-foreground">Reviews</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <Camera className="h-8 w-8 text-orange-600" />
+                <div>
+                  <p className="text-2xl font-bold">{loadingStats ? '...' : dbStats.screenshotsCount}</p>
+                  <p className="text-sm text-muted-foreground">Screenshots</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Standalone Download Section */}
         <Card className="mb-8 border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-transparent to-orange-500/5">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -538,25 +907,29 @@ Please provide specific, actionable feedback with examples from the screenshots.
               <div>
                 <CardTitle className="text-xl">Standalone Download</CardTitle>
                 <CardDescription>
-                  1 Prompt + 1 Datei = Komplettes Tool in neuem Projekt
+                  1 Prompt-Datei = Komplettes Tool für neues Projekt
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Main Download Button */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
-                onClick={() => downloadStandaloneFile('prompts')}
+                onClick={downloadStandaloneFile}
                 size="lg"
                 className="flex-1 h-14 text-base bg-gradient-to-r from-primary to-primary/80"
               >
                 <FileDown className="h-5 w-5 mr-2" />
                 STANDALONE_PROMPTS.md herunterladen
               </Button>
+              <Link to="/admin/ai-export" className="flex-1">
+                <Button variant="outline" size="lg" className="w-full h-14 text-base">
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  KI-Prompt Generator
+                </Button>
+              </Link>
             </div>
 
-            {/* How it works */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
               <div className="flex items-start gap-3 p-4 rounded-lg bg-background">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -586,29 +959,23 @@ Please provide specific, actionable feedback with examples from the screenshots.
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            {/* What's included */}
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="font-semibold text-sm mb-2">Was ist enthalten:</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                <div className="flex items-center gap-2">
-                  <Package className="h-4 w-4 text-primary" />
-                  <span>AI Feedback Package</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Camera className="h-4 w-4 text-orange-600" />
-                  <span>Screenshot Machine</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Code className="h-4 w-4 text-green-600" />
-                  <span>Edge Function Code</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Terminal className="h-4 w-4 text-purple-600" />
-                  <span>Dependencies Liste</span>
-                </div>
-              </div>
-            </div>
+        {/* KI-Prompt Generator */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              KI-Prompt Generator
+              <Badge variant="secondary">7 Varianten</Badge>
+            </CardTitle>
+            <CardDescription>
+              Wähle eine Analyse-Variante und kopiere den optimierten Prompt
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChatGPTPromptCopier showCard={false} />
           </CardContent>
         </Card>
 
@@ -685,11 +1052,11 @@ Please provide specific, actionable feedback with examples from the screenshots.
                   </div>
                   
                   <div className="space-y-2">
-                    <Label>Konkurrenten (URLs)</Label>
+                    <Label>Konkurrenten (eine pro Zeile)</Label>
                     <Textarea 
                       value={config.competitors}
                       onChange={(e) => setConfig({...config, competitors: e.target.value})}
-                      placeholder="https://competitor1.ch&#10;https://competitor2.ch"
+                      placeholder="movu.ch&#10;comparis.ch"
                       rows={2}
                     />
                   </div>
@@ -749,7 +1116,7 @@ Please provide specific, actionable feedback with examples from the screenshots.
                 <CardHeader>
                   <CardTitle>Package generieren</CardTitle>
                   <CardDescription>
-                    Erstellt Screenshots, HTML und AI-Prompts als ZIP
+                    Erstellt Screenshots, HTML, Prompts und PDF als ZIP
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -781,18 +1148,21 @@ Please provide specific, actionable feedback with examples from the screenshots.
 
                   <div className="border-t pt-4">
                     <h4 className="font-medium mb-2">Das Package enthält:</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-muted-foreground space-y-2">
                       <li className="flex items-center gap-2">
                         <Camera className="h-4 w-4" /> Desktop & Mobile Screenshots
                       </li>
                       <li className="flex items-center gap-2">
-                        <Code className="h-4 w-4" /> HTML Source Code
+                        <Code className="h-4 w-4" /> Raw & Rendered HTML
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileText className="h-4 w-4" /> AI Analysis Prompt
+                        <Sparkles className="h-4 w-4" /> 7 KI-Analyse-Prompts
                       </li>
                       <li className="flex items-center gap-2">
                         <FileDown className="h-4 w-4" /> PDF Project Brief
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <FileText className="h-4 w-4" /> README mit Anleitung
                       </li>
                     </ul>
                   </div>
@@ -865,7 +1235,7 @@ Please provide specific, actionable feedback with examples from the screenshots.
                   </div>
                   
                   <Button 
-                    onClick={captureScreenshot}
+                    onClick={captureScreenshotHandler}
                     disabled={isCapturing}
                     className="w-full"
                   >
@@ -907,18 +1277,19 @@ Please provide specific, actionable feedback with examples from the screenshots.
                     ) : (
                       <Download className="h-4 w-4 mr-2" />
                     )}
-                    Alle erfassen & ZIP Download
+                    Alle als ZIP downloaden
                   </Button>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Captured Screenshots */}
+            {/* Captured Screenshots Gallery */}
             {capturedScreenshots.length > 0 && (
               <Card className="mt-6">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Erfasste Screenshots ({capturedScreenshots.length})</CardTitle>
+                    <CardTitle>Erfasste Screenshots</CardTitle>
+                    <CardDescription>{capturedScreenshots.length} Screenshots</CardDescription>
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={downloadAllScreenshots}>
@@ -934,24 +1305,23 @@ Please provide specific, actionable feedback with examples from the screenshots.
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {capturedScreenshots.map((screenshot, i) => (
-                      <div key={i} className="border rounded-lg overflow-hidden group">
+                      <div key={i} className="relative group border rounded-lg overflow-hidden">
                         <img 
-                          src={URL.createObjectURL(screenshot.blob)}
+                          src={screenshot.imageUrl} 
                           alt={screenshot.url}
                           className="w-full h-32 object-cover object-top"
                         />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <Button size="sm" variant="secondary" onClick={() => downloadScreenshot(screenshot)}>
+                            <Download className="h-3 w-3" />
+                          </Button>
+                          <Button size="sm" variant="secondary" onClick={() => window.open(screenshot.imageUrl, '_blank')}>
+                            <ExternalLink className="h-3 w-3" />
+                          </Button>
+                        </div>
                         <div className="p-2 text-xs">
                           <p className="truncate font-medium">{new URL(screenshot.url).hostname}</p>
                           <p className="text-muted-foreground">{screenshot.dimension}</p>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full mt-1"
-                            onClick={() => downloadScreenshot(screenshot)}
-                          >
-                            <Download className="h-3 w-3 mr-1" />
-                            Download
-                          </Button>
                         </div>
                       </div>
                     ))}
@@ -961,6 +1331,45 @@ Please provide specific, actionable feedback with examples from the screenshots.
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Quick Links */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>Weitere Tools</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-4">
+              <Link to="/admin/screenshots">
+                <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Camera className="h-6 w-6" />
+                  <span>Screenshot Machine</span>
+                  <span className="text-xs text-muted-foreground">Erweiterte Optionen</span>
+                </Button>
+              </Link>
+              <Link to="/admin/ai-export">
+                <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Sparkles className="h-6 w-6" />
+                  <span>KI-Analyse</span>
+                  <span className="text-xs text-muted-foreground">7 Prompt-Varianten</span>
+                </Button>
+              </Link>
+              <Link to="/admin/analytics">
+                <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Search className="h-6 w-6" />
+                  <span>Analytics</span>
+                  <span className="text-xs text-muted-foreground">Conversion Tracking</span>
+                </Button>
+              </Link>
+              <Link to="/admin/rankings">
+                <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Database className="h-6 w-6" />
+                  <span>Rankings</span>
+                  <span className="text-xs text-muted-foreground">Firmen verwalten</span>
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </AdminLayout>
   );
