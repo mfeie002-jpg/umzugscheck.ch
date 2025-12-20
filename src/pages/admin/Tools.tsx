@@ -246,6 +246,8 @@ const AdminTools = () => {
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   const [analyzeProgress, setAnalyzeProgress] = useState(0);
   const [analyzeStatus, setAnalyzeStatus] = useState('');
+  const [analyzeCapturedScreenshot, setAnalyzeCapturedScreenshot] = useState<string | null>(null);
+  const [analyzeCapturedHtml, setAnalyzeCapturedHtml] = useState<string | null>(null);
   
   // Screenshot Machine State
   const [screenshotUrl, setScreenshotUrl] = useState('');
@@ -383,6 +385,8 @@ const AdminTools = () => {
 
     setIsAnalyzing(true);
     setAnalysisResult(null);
+    setAnalyzeCapturedScreenshot(null);
+    setAnalyzeCapturedHtml(null);
     setAnalyzeProgress(0);
     setAnalyzeStatus('Starte Analyse...');
 
@@ -401,6 +405,7 @@ const AdminTools = () => {
         });
         if (screenshotResult.success && screenshotResult.image) {
           screenshotBase64 = screenshotResult.image;
+          setAnalyzeCapturedScreenshot(screenshotResult.image);
         }
       } catch (e) {
         console.error('Screenshot failed:', e);
@@ -413,6 +418,9 @@ const AdminTools = () => {
       let htmlContent = '';
       try {
         htmlContent = await fetchHtmlContent(config.projectUrl);
+        if (htmlContent) {
+          setAnalyzeCapturedHtml(htmlContent);
+        }
       } catch (e) {
         console.error('HTML fetch failed:', e);
       }
@@ -1506,6 +1514,42 @@ ${config.projectName} - WCAG 2.1 Level AA
                           {analysisResult}
                         </pre>
                       </div>
+                      
+                      {/* Screenshot & HTML Downloads */}
+                      {(analyzeCapturedScreenshot || analyzeCapturedHtml) && (
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {analyzeCapturedScreenshot && (
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              onClick={() => {
+                                const link = document.createElement('a');
+                                link.href = `data:image/png;base64,${analyzeCapturedScreenshot}`;
+                                link.download = `${config.projectName.replace(/\s+/g, '-')}-screenshot.png`;
+                                link.click();
+                                toast.success('Screenshot heruntergeladen!');
+                              }}
+                            >
+                              <Camera className="h-3 w-3 mr-1" />
+                              Screenshot
+                            </Button>
+                          )}
+                          {analyzeCapturedHtml && (
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              onClick={() => {
+                                const blob = new Blob([analyzeCapturedHtml], { type: 'text/html' });
+                                saveAs(blob, `${config.projectName.replace(/\s+/g, '-')}-source.html`);
+                                toast.success('HTML heruntergeladen!');
+                              }}
+                            >
+                              <Code className="h-3 w-3 mr-1" />
+                              HTML
+                            </Button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
 
