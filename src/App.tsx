@@ -75,6 +75,7 @@ import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
 import { ScrollProgressBar } from "./components/ScrollProgressBar";
+import { ScreenshotRenderModeRoot } from "@/components/ScreenshotRenderModeRoot";
 
 // Lazy load non-critical UI components
 const AIMovingAssistant = lazy(() => import("./components/AIMovingAssistant").then(m => ({ default: m.AIMovingAssistant })));
@@ -288,16 +289,17 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
-              <CriticalCSS />
-              <CriticalCSSLoader />
-              <ResourceHints />
-              <PrefetchManager />
-              <PerformanceMonitor />
-              <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
-              <PreloadResources />
-              <PWAInstallPrompt />
-              <PerformanceDebugOverlay />
-              <div className="flex flex-col min-h-screen bg-background">
+                <ScreenshotRenderModeRoot />
+                <CriticalCSS />
+                <CriticalCSSLoader />
+                <ResourceHints />
+                <PrefetchManager />
+                <PerformanceMonitor />
+                <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
+                <PreloadResources />
+                <PWAInstallPrompt />
+                <PerformanceDebugOverlay />
+                <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
                 <ScrollProgressBar />
                 
