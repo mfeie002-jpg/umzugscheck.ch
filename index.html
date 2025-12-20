@@ -56,9 +56,39 @@
     
     <!-- Screenshot render mode detection - MUST run before any content -->
     <script>
-      (function() {
-        if (window.location.search.indexOf('uc_render=1') !== -1) {
-          document.documentElement.classList.add('uc-render');
+      (function () {
+        var isRender = window.location.search.indexOf('uc_render=1') !== -1;
+        if (!isRender) return;
+
+        document.documentElement.classList.add('uc-render');
+
+        // Force all IntersectionObserver-based lazy rendering to trigger immediately.
+        // This fixes "white gaps" caused by whileInView / lazy sections during automated screenshots.
+        try {
+          var OriginalIO = window.IntersectionObserver;
+          window.IntersectionObserver = function (callback) {
+            this._callback = callback;
+            this.observe = function (el) {
+              setTimeout(function () {
+                callback([
+                  {
+                    isIntersecting: true,
+                    intersectionRatio: 1,
+                    target: el,
+                  },
+                ]);
+              }, 0);
+            };
+            this.unobserve = function () {};
+            this.disconnect = function () {};
+            this.takeRecords = function () {
+              return [];
+            };
+          };
+          // Preserve static properties if any
+          window.IntersectionObserver.prototype = OriginalIO && OriginalIO.prototype ? OriginalIO.prototype : {};
+        } catch (e) {
+          // no-op
         }
       })();
     </script>
@@ -77,6 +107,17 @@
         opacity: 1 !important;
         visibility: visible !important;
         transform: none !important;
+
+        /* Prevent Chrome's content-visibility/contain optimizations from creating "white gaps" */
+        content-visibility: visible !important;
+        contain: none !important;
+        contain-intrinsic-size: none !important;
+      }
+
+      /* Make sure long pages expand naturally */
+      html.uc-render body, html.uc-render #root {
+        height: auto !important;
+        min-height: 100vh;
       }
     </style>
     
