@@ -66,7 +66,7 @@ const DIMENSIONS = [
   { value: "1920x1080", label: "Desktop Full HD" },
   { value: "1366x768", label: "Desktop HD" },
   { value: "768x1024", label: "Tablet Portrait" },
-  { value: "430x932", label: "Mobile iPhone (Retina)" },
+  { value: "480x960", label: "Mobile (Retina, scharf)" },
 ];
 
 const TOP_URLS = [
