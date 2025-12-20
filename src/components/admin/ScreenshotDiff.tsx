@@ -128,19 +128,21 @@ export function ScreenshotDiff() {
         );
 
         if (afterFile) {
-          const { data: beforeUrl } = supabase.storage
+          const { data: beforeUrl, error: beforeErr } = await supabase.storage
             .from('screenshots-archive')
-            .getPublicUrl(beforeFile);
-          
-          const { data: afterUrl } = supabase.storage
+            .createSignedUrl(beforeFile, 60 * 60);
+
+          const { data: afterUrl, error: afterErr } = await supabase.storage
             .from('screenshots-archive')
-            .getPublicUrl(afterFile);
+            .createSignedUrl(afterFile, 60 * 60);
+
+          if (beforeErr || afterErr || !beforeUrl?.signedUrl || !afterUrl?.signedUrl) continue;
 
           pairs.push({
             url: pathname,
             pathname,
-            before: beforeUrl.publicUrl,
-            after: afterUrl.publicUrl,
+            before: beforeUrl.signedUrl,
+            after: afterUrl.signedUrl,
           });
         }
       }
