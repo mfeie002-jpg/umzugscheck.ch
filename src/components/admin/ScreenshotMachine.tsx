@@ -173,9 +173,7 @@ const DELAY_OPTIONS = [
   { value: "4000", label: "4 Sekunden" },
   { value: "6000", label: "6 Sekunden (Standard)" },
   { value: "8000", label: "8 Sekunden" },
-  { value: "10000", label: "10 Sekunden" },
-  { value: "15000", label: "15 Sekunden (langsam)" },
-  { value: "20000", label: "20 Sekunden (sehr langsam)" },
+  { value: "10000", label: "10 Sekunden (max)" },
 ];
 
 const FORMAT_OPTIONS = [
