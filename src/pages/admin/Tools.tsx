@@ -128,7 +128,16 @@ Kopiere diesen Prompt in ein neues **Lovable** oder **Softgen** Projekt:
 ## Der Prompt (kopiere alles zwischen den Backticks):
 
 \`\`\`
-Erstelle eine Web Analyzer Suite mit folgenden Features:
+Erstelle eine Web Analyzer Suite mit Admin-Bereich und folgenden Features:
+
+## 0. Admin Authentication (WICHTIG!)
+- Login-Seite unter /admin/login
+- Email/Passwort Login mit Supabase Auth
+- Geschützter Admin-Bereich (alle /admin/* Routen)
+- Logout-Button im Admin-Layout
+- Session-Management mit automatischer Weiterleitung
+- User Roles Tabelle (admin, user) für Berechtigungen
+- RLS Policies: Nur Admins können Admin-Bereiche sehen
 
 ## 1. AI Feedback Package Generator
 - Eingabefelder: Projektname, URL, Beschreibung, Ziele, Zielgruppe, Konkurrenten
@@ -155,14 +164,24 @@ Erstelle eine Web Analyzer Suite mit folgenden Features:
 ## Technische Details:
 - Screenshot API: Firecrawl oder ScreenshotMachine
 - Edge Functions für HTML-Abruf
+- Supabase Auth für Admin-Login
 
 ## Dependencies:
 npm install jszip file-saver jspdf
+
+## Datenbank-Tabellen:
+1. user_roles - Admin-Rollen (user_id, role: 'admin' | 'user')
+2. profiles - Benutzerprofile (id, email, full_name)
 
 ## Edge Functions:
 1. fetch-html - Roher HTML-Abruf
 2. capture-rendered-html - Gerendertes HTML via Firecrawl
 3. capture-screenshot - Screenshot-Erfassung
+
+## Admin-Seiten:
+- /admin/login - Login-Formular
+- /admin/dashboard - Übersicht
+- /admin/tools - Alle Tools
 
 ## UI:
 - Tabs für die Tools
@@ -170,27 +189,33 @@ npm install jszip file-saver jspdf
 - Progress-Anzeige beim Generieren
 - Toast-Benachrichtigungen
 - Responsive Design
+- Dark/Light Mode Support
 \`\`\`
 
 ---
 
 ## Was ist enthalten:
 
-1. **AI Feedback Package** - Screenshots + HTML + Prompts als ZIP
-2. **Screenshot Machine** - Einzel- und Bulk-Screenshots
-3. **SEO HTML Analyzer** - Raw vs. Rendered HTML Vergleich
-4. **7 KI-Prompt Varianten** - Quick, Deep, Code, Screenshot, Regression, SEO, Accessibility
+1. **Admin Login System** - Geschützter Bereich mit Email/Passwort
+2. **AI Feedback Package** - Screenshots + HTML + Prompts als ZIP
+3. **Screenshot Machine** - Einzel- und Bulk-Screenshots
+4. **SEO HTML Analyzer** - Raw vs. Rendered HTML Vergleich
+5. **7 KI-Prompt Varianten** - Quick, Deep, Code, Screenshot, Regression, SEO, Accessibility
 
 ## Nach dem Erstellen:
 
 1. **Dependencies installieren** (falls nicht automatisch):
    \`npm install jszip file-saver jspdf\`
 
-2. **Edge Functions erstellen** - fetch-html, capture-rendered-html
+2. **Admin-User erstellen**:
+   - Registriere dich normal
+   - Füge in user_roles Tabelle: (deine_user_id, 'admin') hinzu
 
-3. **Firecrawl aktivieren** - Für gerenderten HTML-Abruf
+3. **Edge Functions erstellen** - fetch-html, capture-rendered-html
 
-4. **Fertig!** Das Tool ist einsatzbereit.
+4. **Firecrawl aktivieren** - Für gerenderten HTML-Abruf
+
+5. **Fertig!** Das Tool ist einsatzbereit.
 `;
 
 // ============================================================================
