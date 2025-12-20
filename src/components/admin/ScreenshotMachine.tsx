@@ -37,6 +37,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
 import { captureScreenshot as captureViaBackend } from "@/lib/screenshot-service";
 import { ScreenshotComparison } from "./ScreenshotComparison";
+import { ScreenshotRegressionTests } from "./ScreenshotRegressionTests";
 
 interface ScreenshotResult {
   url: string;
@@ -1336,6 +1337,9 @@ export function ScreenshotMachine() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Regression Tests */}
+      <ScreenshotRegressionTests />
 
       {/* Screenshot Comparison Tool */}
       <ScreenshotComparison availableScreenshots={results} />

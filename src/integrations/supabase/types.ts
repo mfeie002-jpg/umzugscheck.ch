@@ -1717,6 +1717,143 @@ export type Database = {
         }
         Relationships: []
       }
+      screenshot_alert_settings: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+          threshold_percent: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+          threshold_percent?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+          threshold_percent?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      screenshot_baselines: {
+        Row: {
+          created_at: string
+          dimension: string
+          id: string
+          image_base64: string
+          is_active: boolean
+          last_checked_at: string | null
+          name: string
+          threshold_percent: number
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          dimension?: string
+          id?: string
+          image_base64: string
+          is_active?: boolean
+          last_checked_at?: string | null
+          name: string
+          threshold_percent?: number
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          dimension?: string
+          id?: string
+          image_base64?: string
+          is_active?: boolean
+          last_checked_at?: string | null
+          name?: string
+          threshold_percent?: number
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      screenshot_history: {
+        Row: {
+          created_at: string
+          dimension: string
+          id: string
+          image_base64: string
+          is_full_page: boolean
+          metadata: Json | null
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          dimension: string
+          id?: string
+          image_base64: string
+          is_full_page?: boolean
+          metadata?: Json | null
+          url: string
+        }
+        Update: {
+          created_at?: string
+          dimension?: string
+          id?: string
+          image_base64?: string
+          is_full_page?: boolean
+          metadata?: Json | null
+          url?: string
+        }
+        Relationships: []
+      }
+      screenshot_regression_results: {
+        Row: {
+          baseline_id: string
+          created_at: string
+          diff_image_base64: string | null
+          diff_percent: number
+          id: string
+          new_image_base64: string
+          notes: string | null
+          status: string
+        }
+        Insert: {
+          baseline_id: string
+          created_at?: string
+          diff_image_base64?: string | null
+          diff_percent: number
+          id?: string
+          new_image_base64: string
+          notes?: string | null
+          status?: string
+        }
+        Update: {
+          baseline_id?: string
+          created_at?: string
+          diff_image_base64?: string | null
+          diff_percent?: number
+          id?: string
+          new_image_base64?: string
+          notes?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "screenshot_regression_results_baseline_id_fkey"
+            columns: ["baseline_id"]
+            isOneToOne: false
+            referencedRelation: "screenshot_baselines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seasonal_ranking_presets: {
         Row: {
           configuration: Json
