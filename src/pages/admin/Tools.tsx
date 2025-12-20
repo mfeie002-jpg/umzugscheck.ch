@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -205,8 +206,8 @@ const AdminTools = () => {
   });
   const [loadingStats, setLoadingStats] = useState(true);
 
-  // AI Feedback Package State
-  const [config, setConfig] = useState<ProjectConfig>({
+  // AI Feedback Package State - with localStorage persistence
+  const defaultConfig: ProjectConfig = {
     projectName: 'Umzugscheck',
     projectUrl: DEFAULT_SITE_ORIGIN,
     description: 'Schweizer Umzugs-Vergleichsplattform',
@@ -214,7 +215,27 @@ const AdminTools = () => {
     targetAudience: 'Privatpersonen und Firmen, die umziehen möchten',
     competitors: 'movu.ch\ncomparis.ch\numzug.ch',
     additionalPages: ['/umzugsofferten', '/preisrechner', '/firmen'],
-  });
+  };
+  
+  const [savedConfig, setSavedConfig, clearSavedConfig] = useLocalStorage<ProjectConfig>(
+    'admin-ai-feedback-config',
+    defaultConfig
+  );
+  const [config, setConfig] = useState<ProjectConfig>(savedConfig);
+  const [configSaved, setConfigSaved] = useState(false);
+
+  const saveConfig = useCallback(() => {
+    setSavedConfig(config);
+    setConfigSaved(true);
+    toast.success('Konfiguration gespeichert!');
+    setTimeout(() => setConfigSaved(false), 2000);
+  }, [config, setSavedConfig]);
+
+  const resetConfig = useCallback(() => {
+    setConfig(defaultConfig);
+    clearSavedConfig();
+    toast.info('Konfiguration zurückgesetzt');
+  }, [clearSavedConfig]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('');
@@ -1113,6 +1134,36 @@ ${config.projectName} - WCAG 2.1 Level AA
                         </Badge>
                       ))}
                     </div>
+                  </div>
+
+                  {/* Save/Reset Config Buttons */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button 
+                      onClick={saveConfig}
+                      variant={configSaved ? "default" : "outline"}
+                      className="flex-1"
+                      disabled={configSaved}
+                    >
+                      {configSaved ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4 mr-2" />
+                          Gespeichert!
+                        </>
+                      ) : (
+                        <>
+                          <Download className="h-4 w-4 mr-2" />
+                          Konfiguration speichern
+                        </>
+                      )}
+                    </Button>
+                    <Button 
+                      onClick={resetConfig}
+                      variant="ghost"
+                      size="icon"
+                      title="Auf Standard zurücksetzen"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
