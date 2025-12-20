@@ -24,8 +24,12 @@ import {
   FileCode2,
   Layers,
   Bot,
+  Copy,
+  Check,
+  FileDown,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { saveAs } from "file-saver";
 
 interface SEOAnalysis {
   url: string;
@@ -77,6 +81,34 @@ export function SEOHtmlAnalyzer() {
   const [analysis, setAnalysis] = useState<SEOAnalysis | null>(null);
   const [issues, setIssues] = useState<SEOIssue[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
+  const [copiedRaw, setCopiedRaw] = useState(false);
+  const [copiedRendered, setCopiedRendered] = useState(false);
+  const [copiedMarkdown, setCopiedMarkdown] = useState(false);
+
+  const copyToClipboard = async (content: string, type: 'raw' | 'rendered' | 'markdown') => {
+    try {
+      await navigator.clipboard.writeText(content);
+      if (type === 'raw') {
+        setCopiedRaw(true);
+        setTimeout(() => setCopiedRaw(false), 2000);
+      } else if (type === 'rendered') {
+        setCopiedRendered(true);
+        setTimeout(() => setCopiedRendered(false), 2000);
+      } else {
+        setCopiedMarkdown(true);
+        setTimeout(() => setCopiedMarkdown(false), 2000);
+      }
+      toast.success(`${type === 'raw' ? 'Raw' : type === 'rendered' ? 'Rendered' : 'Markdown'} HTML kopiert!`);
+    } catch (error) {
+      toast.error("Fehler beim Kopieren");
+    }
+  };
+
+  const downloadHtml = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+    saveAs(blob, filename);
+    toast.success(`${filename} heruntergeladen!`);
+  };
 
   const extractHeadings = (html: string, tag: 'h1' | 'h2'): string[] => {
     const regex = new RegExp(`<${tag}[^>]*>([^<]*)</${tag}>`, 'gi');
@@ -598,47 +630,135 @@ export function SEOHtmlAnalyzer() {
               </TabsContent>
 
               <TabsContent value="raw">
-                <ScrollArea className="h-[500px] rounded-md border p-4">
-                  {analysis.rawHtml ? (
-                    <pre className="text-xs font-mono whitespace-pre-wrap">
-                      {analysis.rawHtml}
-                    </pre>
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <XCircle className="h-8 w-8 mx-auto mb-2 text-destructive" />
-                      Kein Raw HTML verfügbar
-                      <p className="text-sm mt-2">
-                        Dies bedeutet, dass Suchmaschinen ohne JavaScript-Rendering keinen Inhalt sehen.
-                      </p>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Code className="h-5 w-5 text-muted-foreground" />
+                      <span className="font-medium">Raw HTML (ohne JavaScript)</span>
+                      {analysis.rawHtml && (
+                        <Badge variant="secondary">{(analysis.rawHtml.length / 1024).toFixed(1)} KB</Badge>
+                      )}
                     </div>
-                  )}
-                </ScrollArea>
+                    {analysis.rawHtml && (
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => copyToClipboard(analysis.rawHtml!, 'raw')}
+                        >
+                          {copiedRaw ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                          {copiedRaw ? 'Kopiert!' : 'Copy outerHTML'}
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => downloadHtml(analysis.rawHtml!, `${new URL(analysis.url).hostname}-raw.html`)}
+                        >
+                          <FileDown className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <ScrollArea className="h-[500px] rounded-md border p-4">
+                    {analysis.rawHtml ? (
+                      <pre className="text-xs font-mono whitespace-pre-wrap">
+                        {analysis.rawHtml}
+                      </pre>
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <XCircle className="h-8 w-8 mx-auto mb-2 text-destructive" />
+                        Kein Raw HTML verfügbar
+                        <p className="text-sm mt-2">
+                          Dies bedeutet, dass Suchmaschinen ohne JavaScript-Rendering keinen Inhalt sehen.
+                        </p>
+                      </div>
+                    )}
+                  </ScrollArea>
+                </div>
               </TabsContent>
 
               <TabsContent value="rendered">
-                <ScrollArea className="h-[500px] rounded-md border p-4">
-                  {analysis.renderedHtml ? (
-                    <pre className="text-xs font-mono whitespace-pre-wrap">
-                      {analysis.renderedHtml}
-                    </pre>
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      Kein gerendertes HTML verfügbar
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileCode2 className="h-5 w-5 text-primary" />
+                      <span className="font-medium">Rendered HTML (nach JavaScript)</span>
+                      {analysis.renderedHtml && (
+                        <Badge variant="default">{(analysis.renderedHtml.length / 1024).toFixed(1)} KB</Badge>
+                      )}
                     </div>
-                  )}
-                </ScrollArea>
+                    {analysis.renderedHtml && (
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => copyToClipboard(analysis.renderedHtml!, 'rendered')}
+                        >
+                          {copiedRendered ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                          {copiedRendered ? 'Kopiert!' : 'Copy outerHTML'}
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => downloadHtml(analysis.renderedHtml!, `${new URL(analysis.url).hostname}-rendered.html`)}
+                        >
+                          <FileDown className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <ScrollArea className="h-[500px] rounded-md border p-4">
+                    {analysis.renderedHtml ? (
+                      <pre className="text-xs font-mono whitespace-pre-wrap">
+                        {analysis.renderedHtml}
+                      </pre>
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        Kein gerendertes HTML verfügbar
+                      </div>
+                    )}
+                  </ScrollArea>
+                </div>
               </TabsContent>
 
               <TabsContent value="markdown">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-                    <Bot className="h-5 w-5 text-primary" />
-                    <div>
-                      <p className="font-medium">LLM-Ready Markdown</p>
-                      <p className="text-sm text-muted-foreground">
-                        Bereinigter Inhalt, optimiert für AI-Verarbeitung (ChatGPT, Claude, etc.)
-                      </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 p-3 bg-muted rounded-lg flex-1">
+                      <Bot className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium">LLM-Ready Markdown</p>
+                        <p className="text-sm text-muted-foreground">
+                          Bereinigter Inhalt, optimiert für AI-Verarbeitung (ChatGPT, Claude, etc.)
+                        </p>
+                      </div>
                     </div>
+                    {analysis.markdown && (
+                      <div className="flex gap-2 ml-4">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => copyToClipboard(analysis.markdown!, 'markdown')}
+                        >
+                          {copiedMarkdown ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                          {copiedMarkdown ? 'Kopiert!' : 'Kopieren'}
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => {
+                            const blob = new Blob([analysis.markdown!], { type: 'text/markdown;charset=utf-8' });
+                            saveAs(blob, `${new URL(analysis.url).hostname}-content.md`);
+                            toast.success('Markdown heruntergeladen!');
+                          }}
+                        >
+                          <FileDown className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   <ScrollArea className="h-[500px] rounded-md border p-4">
                     {analysis.markdown ? (
