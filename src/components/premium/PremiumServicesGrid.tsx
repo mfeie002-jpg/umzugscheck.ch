@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { BlurReveal } from "@/components/common/BlurReveal";
 import { NumberTicker } from "@/components/common/NumberTicker";
 import { GradientBorder } from "@/components/common/GradientBorder";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 // Service images
 import servicePrivatumzug from "@/assets/service-privatumzug.jpg";
@@ -84,14 +85,20 @@ const services = [
 ];
 
 export const PremiumServicesGrid = () => {
+  const screenshotMode = isScreenshotRenderMode();
+
   return (
     <section className="py-10 sm:py-12 md:py-16 bg-background relative overflow-hidden" aria-labelledby="services-heading">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.02]" style={{
-        backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-        backgroundSize: '32px 32px'
-      }} aria-hidden="true" />
-      
+      <div
+        className="absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+          backgroundSize: "32px 32px",
+        }}
+        aria-hidden="true"
+      />
+
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Section Header with BlurReveal */}
         <BlurReveal className="text-center mb-8 md:mb-12">
@@ -106,52 +113,52 @@ export const PremiumServicesGrid = () => {
             Von Endreinigung bis Spezialtransport – alles aus einer Hand.
           </p>
         </BlurReveal>
-        
+
         {/* Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           {services.map((service, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={screenshotMode ? false : { opacity: 0, y: 25 }}
+              whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.05 }}
               whileHover={{ y: -6 }}
               className="group"
             >
-              <Link 
+              <Link
                 to={service.link}
                 className="relative block h-full bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-medium border border-border/50 hover:border-primary/30 transition-all duration-300"
               >
                 {/* Image */}
                 <div className="relative h-24 xs:h-28 sm:h-32 md:h-36 overflow-hidden">
-                  <img 
-                    src={service.image} 
+                  <img
+                    src={service.image}
                     alt={service.title}
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-                  
+
                   {/* Badge */}
                   {service.badge && (
                     <span className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold text-white ${service.badgeColor}`}>
                       {service.badge}
                     </span>
                   )}
-                  
+
                   {/* Title on Image */}
                   <h3 className="absolute bottom-2 left-3 right-3 text-sm sm:text-base font-bold text-white drop-shadow-lg">
                     {service.title}
                   </h3>
                 </div>
-                
+
                 {/* Content */}
                 <div className="p-3 sm:p-4">
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-2">
                     {service.description}
                   </p>
-                  
+
                   {/* Link */}
                   <span className="inline-flex items-center text-xs sm:text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
                     Mehr erfahren
@@ -162,13 +169,13 @@ export const PremiumServicesGrid = () => {
             </motion.div>
           ))}
         </div>
-        
+
         {/* Stats Row with NumberTicker */}
         <BlurReveal className="mt-10 flex flex-wrap justify-center gap-6 md:gap-12" delay={0.2}>
           {[
             { value: 8, label: "Service-Kategorien", suffix: "+" },
             { value: 200, label: "Partner-Firmen", suffix: "+" },
-            { value: 26, label: "Kantone abgedeckt", suffix: "" }
+            { value: 26, label: "Kantone abgedeckt", suffix: "" },
           ].map((stat, idx) => (
             <div key={idx} className="text-center">
               <div className="text-xl md:text-2xl font-bold text-primary">
@@ -178,11 +185,11 @@ export const PremiumServicesGrid = () => {
             </div>
           ))}
         </BlurReveal>
-        
+
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={screenshotMode ? false : { opacity: 0, y: 15 }}
+          whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.3 }}
           className="text-center mt-8"

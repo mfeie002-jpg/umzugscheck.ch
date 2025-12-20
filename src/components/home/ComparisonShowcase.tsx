@@ -5,6 +5,7 @@ import { Check, Star, Shield, ArrowRight, Sparkles, TrendingDown, BadgeCheck } f
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 // Sample companies for demo - memoized
 const sampleCompanies = [
@@ -103,16 +104,18 @@ const CardComparison = () => (
 );
 
 // Option 3: Split-Screen Preview
-const SplitComparison = () => (
+const SplitComparison = ({ screenshotMode }: { screenshotMode: boolean }) => (
   <div className="grid md:grid-cols-2 gap-8 items-center">
     <div className="space-y-4">
       {sampleCompanies.slice(0, 2).map((company, i) => (
         <motion.div
           key={i}
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={screenshotMode ? false : { opacity: 0, x: -20 }}
+          whileInView={screenshotMode ? undefined : { opacity: 1, x: 0 }}
           transition={{ delay: i * 0.2 }}
-          className={`p-6 rounded-2xl border-2 ${i === 0 ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
+          className={`p-6 rounded-2xl border-2 ${
+            i === 0 ? "border-primary bg-primary/5" : "border-border bg-card"
+          }`}
         >
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
@@ -130,7 +133,9 @@ const SplitComparison = () => (
               <div className="text-2xl font-bold text-primary">{company.price}</div>
               <div className="flex gap-1 mt-2">
                 {company.badges.map((badge, j) => (
-                  <Badge key={j} variant={i === 0 ? "default" : "secondary"} className="text-xs">{badge}</Badge>
+                  <Badge key={j} variant={i === 0 ? "default" : "secondary"} className="text-xs">
+                    {badge}
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -154,11 +159,11 @@ const SplitComparison = () => (
 );
 
 // Option 4: Premium Showcase (Best Option)
-const PremiumComparison = () => (
+const PremiumComparison = ({ screenshotMode }: { screenshotMode: boolean }) => (
   <div className="relative">
     {/* Background decoration */}
     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-3xl" />
-    
+
     <div className="relative grid lg:grid-cols-5 gap-8 items-center">
       {/* Left: Feature highlights */}
       <div className="lg:col-span-2 space-y-6">
@@ -166,9 +171,7 @@ const PremiumComparison = () => (
           <Sparkles className="h-5 w-5" />
           <span className="font-semibold text-sm">Intelligenter Vergleich</span>
         </div>
-        <h3 className="text-3xl font-bold text-foreground">
-          Die besten Umzugsfirmen auf einen Blick
-        </h3>
+        <h3 className="text-3xl font-bold text-foreground">Die besten Umzugsfirmen auf einen Blick</h3>
         <p className="text-muted-foreground text-lg">
           Vergleichen Sie Preise, Bewertungen und Services von geprüften Schweizer Umzugsfirmen – transparent und unabhängig.
         </p>
@@ -194,26 +197,30 @@ const PremiumComparison = () => (
           </Link>
         </Button>
       </div>
-      
+
       {/* Right: Company preview cards */}
       <div className="lg:col-span-3 relative">
         <div className="grid sm:grid-cols-2 gap-4">
           {sampleCompanies.map((company, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={screenshotMode ? false : { opacity: 0, y: 20 }}
+              whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ scale: 1.03 }}
               className="group"
             >
-              <Card className={`relative overflow-hidden transition-all duration-300 ${i === 0 ? 'ring-2 ring-primary shadow-lg' : 'hover:shadow-md'}`}>
+              <Card
+                className={`relative overflow-hidden transition-all duration-300 ${
+                  i === 0 ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md"
+                }`}
+              >
                 {i === 0 && (
                   <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-3 py-1.5 text-xs font-semibold text-center">
                     🏆 Top Empfehlung
                   </div>
                 )}
-                <CardContent className={`p-5 ${i === 0 ? 'pt-10' : ''}`}>
+                <CardContent className={`p-5 ${i === 0 ? "pt-10" : ""}`}>
                   <div className="flex items-center gap-3 mb-3">
                     <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center text-2xl">
                       {company.logo}
@@ -229,7 +236,9 @@ const PremiumComparison = () => (
                   </div>
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {company.badges.map((badge, j) => (
-                      <Badge key={j} variant="secondary" className="text-xs py-0.5">{badge}</Badge>
+                      <Badge key={j} variant="secondary" className="text-xs py-0.5">
+                        {badge}
+                      </Badge>
                     ))}
                   </div>
                   <div className="flex items-center justify-between">
@@ -253,15 +262,22 @@ interface ComparisonShowcaseProps {
 }
 
 export const ComparisonShowcase = memo(({ variant = 'premium' }: ComparisonShowcaseProps) => {
+  const screenshotMode = useMemo(() => isScreenshotRenderMode(), []);
+
   const renderVariant = useMemo(() => {
     switch (variant) {
-      case 'table': return <TableComparison />;
-      case 'cards': return <CardComparison />;
-      case 'split': return <SplitComparison />;
-      case 'premium': return <PremiumComparison />;
-      default: return <PremiumComparison />;
+      case 'table':
+        return <TableComparison />;
+      case 'cards':
+        return <CardComparison />;
+      case 'split':
+        return <SplitComparison screenshotMode={screenshotMode} />;
+      case 'premium':
+        return <PremiumComparison screenshotMode={screenshotMode} />;
+      default:
+        return <PremiumComparison screenshotMode={screenshotMode} />;
     }
-  }, [variant]);
+  }, [variant, screenshotMode]);
 
   if (variant === 'all') {
     return (
@@ -288,14 +304,14 @@ export const ComparisonShowcase = memo(({ variant = 'premium' }: ComparisonShowc
               <Badge className="mb-3">Option 3</Badge>
               <h2 className="text-xl font-bold text-foreground">Split-Screen</h2>
             </div>
-            <SplitComparison />
+            <SplitComparison screenshotMode={screenshotMode} />
           </div>
           <div>
             <div className="text-center mb-6">
               <Badge className="mb-3 bg-primary">Empfohlen</Badge>
               <h2 className="text-xl font-bold text-foreground">Premium</h2>
             </div>
-            <PremiumComparison />
+            <PremiumComparison screenshotMode={screenshotMode} />
           </div>
         </div>
       </section>
@@ -306,8 +322,8 @@ export const ComparisonShowcase = memo(({ variant = 'premium' }: ComparisonShowc
     <section className="py-12 md:py-16 bg-background" aria-labelledby="comparison-heading">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={screenshotMode ? false : { opacity: 0, y: 12 }}
+          whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
           className="text-center mb-8"

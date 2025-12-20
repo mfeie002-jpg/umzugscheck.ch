@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { memo, useMemo } from "react";
 import { BlurReveal } from "@/components/common/BlurReveal";
 import { GlowingCard } from "@/components/common/GlowingCard";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 interface FAQItem {
   question: string;
@@ -17,16 +18,22 @@ interface PremiumFAQProps {
 }
 
 export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
+  const screenshotMode = isScreenshotRenderMode();
+
   // Memoize FAQ Schema
-  const faqSchemaScript = useMemo(() => JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": items.map(item => ({
-      "@type": "Question",
-      "name": item.question,
-      "acceptedAnswer": { "@type": "Answer", "text": item.answer }
-    }))
-  }), [items]);
+  const faqSchemaScript = useMemo(
+    () =>
+      JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: items.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      }),
+    [items]
+  );
 
   return (
     <section className="py-10 sm:py-12 md:py-16 bg-background relative min-h-[400px] sm:min-h-[500px] md:min-h-[600px]" aria-labelledby="faq-heading">
@@ -41,28 +48,29 @@ export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
             <h2 id="faq-heading" className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
               Häufig gestellte Fragen
             </h2>
-            <p className="text-sm text-muted-foreground">
-              Schnelle Antworten zu Umzugscheck.ch
-            </p>
+            <p className="text-sm text-muted-foreground">Schnelle Antworten zu Umzugscheck.ch</p>
           </BlurReveal>
-          
+
           {/* Accordion */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={screenshotMode ? false : { opacity: 0, y: 10 }}
+            whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
             <Accordion type="single" collapsible className="space-y-2">
               {items.map((item, idx) => (
-                <AccordionItem 
+                <AccordionItem
                   key={idx}
                   value={`item-${idx}`}
                   className="bg-card rounded-lg border border-border/50 px-4 shadow-sm data-[state=open]:shadow-soft data-[state=open]:border-primary/20 transition-all"
                 >
                   <AccordionTrigger className="text-left font-medium text-foreground hover:text-primary py-3 hover:no-underline text-sm">
                     <div className="flex items-center gap-2.5">
-                      <span className="flex-shrink-0 w-6 h-6 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground" aria-hidden="true">
+                      <span
+                        className="flex-shrink-0 w-6 h-6 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground"
+                        aria-hidden="true"
+                      >
                         {idx + 1}
                       </span>
                       <span>{item.question}</span>
@@ -75,7 +83,7 @@ export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
               ))}
             </Accordion>
           </motion.div>
-          
+
           {/* Contact CTA with GlowingCard */}
           <BlurReveal delay={0.2} className="mt-8 flex justify-center">
             <GlowingCard className="text-center max-w-xs">
