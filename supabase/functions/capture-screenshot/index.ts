@@ -27,8 +27,12 @@ serve(async (req) => {
     } = await req.json();
 
     // Auto-add uc_render=1 for umzugscheck.ch to avoid lazy-loading issues
+    // Also detect homepage path for special handling (very long, more likely to produce white gaps in full-page captures)
+    let isHomepage = false;
     try {
       const parsedUrl = new URL(url);
+      isHomepage = parsedUrl.pathname === '/' || parsedUrl.pathname === '';
+
       if (parsedUrl.hostname === 'umzugscheck.ch' || parsedUrl.hostname.endsWith('.umzugscheck.ch')) {
         parsedUrl.searchParams.set('uc_render', '1');
         url = parsedUrl.toString();
@@ -95,9 +99,11 @@ serve(async (req) => {
     params.set('device', deviceType);
 
     // Zoom controls output resolution.
-    // Full-page desktop screenshots can become extremely large at zoom=200 and may produce "white gaps".
-    // So we reduce zoom for long desktop captures, but keep retina quality for mobile/tablet.
-    const effectiveZoom = (deviceType === 'desktop' && isFullPage && width >= 1600) ? '125' : '200';
+    // Desktop full-page homepage is extremely long and more likely to produce "white gaps" at higher zoom.
+    // Keep mobile/tablet retina quality.
+    const effectiveZoom = (deviceType === 'desktop' && isFullPage)
+      ? (isHomepage ? '80' : '100')
+      : '200';
     params.set('zoom', effectiveZoom);
 
     // Improve reliability on real-world sites (bot detection / language variants)
@@ -112,19 +118,12 @@ serve(async (req) => {
       params.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     }
 
-    // Add scroll params for full-page captures - critical for lazy-loaded content
-    if (isFullPage) {
-      // For full-page, scroll to bottom first to trigger lazy loading
-      params.set('scroll', 'true');
-      params.set('scrollto', 'bottom');
-      params.set('scrolldelay', '5000'); // Wait 5s after scrolling (increased)
-      params.set('scrollback', 'true'); // Scroll back to top after loading
-      // Wait for page to fully render
-      params.set('waitfor', '.hero,.main-content,main,#app,#root'); // Common content selectors
-    } else if (scroll) {
+    // Note: We intentionally avoid extra scrolling parameters for full-page captures.
+    // The provider already handles scrolling for "xfull" and extra scrolling can cause blank segments on very long pages.
+    if (!isFullPage && scroll) {
       params.set('scroll', 'true');
     }
-    
+
     // Disable touch emulation only for desktop
     if (deviceType === 'desktop') {
       params.set('touch', 'false');
