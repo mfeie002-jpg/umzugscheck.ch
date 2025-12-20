@@ -33,7 +33,9 @@ import {
   MessageSquare,
   Star,
   Brain,
-  Wrench
+  Wrench,
+  Sparkles,
+  BookOpen
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -476,8 +478,8 @@ const AdminDashboard = () => {
 
             {/* Developer Tools Section */}
             <div className="mb-12">
-              <h2 className="text-2xl font-bold mb-6">Entwickler-Tools</h2>
-              <div className="grid md:grid-cols-2 gap-6">
+              <h2 className="text-2xl font-bold mb-6">Entwickler-Tools & Onboarding</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Link to="/admin/code-export">
                   <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
                     <CardContent className="p-6">
@@ -526,6 +528,60 @@ const AdminDashboard = () => {
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-orange-400"></div>
                           <span className="text-muted-foreground">AI Prompts</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                <Link to="/admin/ai-export">
+                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full border-primary/50">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <Sparkles className="w-6 h-6 text-primary" />
+                        </div>
+                        <Badge className="bg-primary">Neu</Badge>
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">KI-Analyse & Export</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        ChatGPT-Prompts generieren und Website analysieren lassen
+                      </p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-primary"></div>
+                          <span className="text-muted-foreground">Quick Analysis</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-primary/60"></div>
+                          <span className="text-muted-foreground">Deep Audit</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                <Link to="/kunden-onboarding">
+                  <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 rounded-lg bg-green-500/10">
+                          <BookOpen className="w-6 h-6 text-green-600" />
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">Kunden-Onboarding</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Schritt-für-Schritt Anleitung für Partner zur Website-Analyse
+                      </p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                          <span className="text-muted-foreground">5 Schritte</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                          <span className="text-muted-foreground">Video-Tutorials</span>
                         </div>
                       </div>
                     </CardContent>
