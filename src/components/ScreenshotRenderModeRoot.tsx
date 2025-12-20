@@ -1,17 +1,68 @@
 import { useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
-// Apply the screenshot rendering class as early as possible (before first paint).
+// Apply the screenshot rendering class + in-view fixes as early as possible (before first paint).
 // Many screenshot engines capture before React effects run, which can leave whileInView sections hidden.
 if (typeof window !== "undefined") {
   try {
     if (isScreenshotRenderMode()) {
       document.documentElement.classList.add("uc-render");
+
+      // Patch IntersectionObserver in screenshot mode so whileInView/useInView content renders immediately.
+      // This avoids relying on scroll sweeps which some screenshot engines ignore.
+      const w = window as any;
+      if (!w.__ucIntersectionObserverPatched && "IntersectionObserver" in window) {
+        w.__ucIntersectionObserverPatched = true;
+        w.__ucOriginalIntersectionObserver = window.IntersectionObserver;
+
+        const defer = (fn: () => void) =>
+          typeof (globalThis as any).queueMicrotask === "function"
+            ? (globalThis as any).queueMicrotask(fn)
+            : Promise.resolve().then(fn);
+
+        class UCIntersectionObserver implements IntersectionObserver {
+          readonly root: Element | Document | null;
+          readonly rootMargin: string;
+          readonly thresholds: ReadonlyArray<number>;
+          private _callback: IntersectionObserverCallback;
+
+          constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+            this._callback = callback;
+            this.root = options?.root ?? null;
+            this.rootMargin = options?.rootMargin ?? "0px";
+            const t = options?.threshold ?? 0;
+            this.thresholds = Array.isArray(t) ? t : [t];
+          }
+
+          observe = (target: Element) => {
+            defer(() => {
+              const rect = (target as any).getBoundingClientRect?.() ?? ({} as any);
+              const entry = {
+                target,
+                isIntersecting: true,
+                intersectionRatio: 1,
+                time: (globalThis.performance?.now?.() ?? Date.now()) as number,
+                boundingClientRect: rect,
+                intersectionRect: rect,
+                rootBounds: null,
+              } as IntersectionObserverEntry;
+              this._callback([entry], this);
+            });
+          };
+
+          unobserve = () => {};
+          disconnect = () => {};
+          takeRecords = () => [];
+        }
+
+        window.IntersectionObserver = UCIntersectionObserver as any;
+      }
     }
   } catch {
     // ignore
   }
 }
+
 
 /**
  * Adds a global CSS hook for screenshot rendering (uc_render=1).
