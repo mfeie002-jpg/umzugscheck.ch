@@ -12,10 +12,175 @@ import {
   Search,
   Code,
   ArrowRight,
+  FileText,
 } from "lucide-react";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
+import { saveAs } from "file-saver";
+import { useToast } from "@/hooks/use-toast";
 
 const AIExport = () => {
+  const { toast } = useToast();
+
+  const downloadAnleitung = () => {
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>KI-Analyse Anleitung - Umzugscheck.ch</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
+    h1 { color: #2563eb; border-bottom: 3px solid #2563eb; padding-bottom: 10px; }
+    h2 { color: #1e40af; margin-top: 30px; }
+    h3 { color: #3b82f6; }
+    .scenario { background: #f8fafc; border-left: 4px solid #2563eb; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+    .step { background: #fff; border: 1px solid #e2e8f0; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    .step-number { display: inline-block; width: 28px; height: 28px; background: #2563eb; color: white; border-radius: 50%; text-align: center; line-height: 28px; margin-right: 10px; font-weight: bold; }
+    .output { background: #ecfdf5; border: 1px solid #10b981; padding: 15px; border-radius: 8px; margin-top: 15px; }
+    .tip { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 20px 0; }
+    .access-point { background: #f0f9ff; padding: 10px 15px; border-radius: 6px; margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
+    th { background: #f1f5f9; }
+    footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>🤖 KI-Analyse Anleitung</h1>
+  <p><strong>Umzugscheck.ch</strong> - Vollständige Step-by-Step Anleitung für alle 3 Analyse-Szenarien</p>
+  
+  <h2>📋 Übersicht der 3 Szenarien</h2>
+  <table>
+    <tr>
+      <th>Szenario</th>
+      <th>Dauer</th>
+      <th>Zweck</th>
+      <th>Ideal für</th>
+    </tr>
+    <tr>
+      <td>🚀 Quick Analysis</td>
+      <td>~2 Min</td>
+      <td>Schnelle UX/Conversion-Checks</td>
+      <td>Tägliche/Wöchentliche Checks</td>
+    </tr>
+    <tr>
+      <td>🔍 Deep Audit</td>
+      <td>~10 Min</td>
+      <td>Vollständige Analyse</td>
+      <td>Strategische Planung (alle 2-4 Wochen)</td>
+    </tr>
+    <tr>
+      <td>💻 Code Review</td>
+      <td>~5 Min</td>
+      <td>Technische Code-Qualität</td>
+      <td>Entwickler & Tech-Optimierung</td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <div class="scenario">
+    <h2>🚀 Szenario 1: Quick Analysis (~2 Minuten)</h2>
+    <p><strong>Ziel:</strong> Schnelle UX/Conversion-Probleme identifizieren</p>
+    
+    <div class="step"><span class="step-number">1</span> Gehe zu <strong>/admin/ai-export</strong> oder Admin Dashboard → "KI-Analyse & Export"</div>
+    <div class="step"><span class="step-number">2</span> Wähle <strong>"Quick Analysis"</strong> aus dem Dropdown-Menü</div>
+    <div class="step"><span class="step-number">3</span> Klicke auf <strong>"Prompt kopieren"</strong></div>
+    <div class="step"><span class="step-number">4</span> Öffne <a href="https://chat.openai.com">ChatGPT</a> in einem neuen Tab</div>
+    <div class="step"><span class="step-number">5</span> Füge den Prompt ein (Ctrl+V / Cmd+V)</div>
+    <div class="step"><span class="step-number">6</span> Drücke Enter und warte auf die Analyse</div>
+    
+    <div class="output">
+      <strong>📊 Erwartete Ergebnisse:</strong>
+      <ul>
+        <li>TOP 3 Conversion-Killer</li>
+        <li>Quick Wins (diese Woche umsetzbar)</li>
+        <li>Mobile UX Probleme</li>
+        <li>Priorisierte Action Items mit Aufwand</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scenario">
+    <h2>🔍 Szenario 2: Deep Audit (~10 Minuten)</h2>
+    <p><strong>Ziel:</strong> Vollständige Funnel + SEO + Performance + Wettbewerbs-Analyse</p>
+    
+    <div class="step"><span class="step-number">1</span> Gehe zu <strong>/admin/ai-export</strong></div>
+    <div class="step"><span class="step-number">2</span> Wähle <strong>"Deep Audit"</strong> aus dem Dropdown-Menü</div>
+    <div class="step"><span class="step-number">3</span> Klicke auf <strong>"Prompt kopieren"</strong></div>
+    <div class="step"><span class="step-number">4</span> Öffne ChatGPT, Claude oder Gemini</div>
+    <div class="step"><span class="step-number">5</span> Füge den Prompt ein</div>
+    <div class="step"><span class="step-number">6</span> Optional: Füge auch die Public URL hinzu für vollständige Analyse</div>
+    
+    <div class="output">
+      <strong>📊 Erwartete Ergebnisse:</strong>
+      <ul>
+        <li>Executive Summary (2-3 Sätze)</li>
+        <li>ICE-priorisierte Findings (Impact, Confidence, Effort)</li>
+        <li>Wettbewerbs-Vergleich (movu.ch, comparis.ch)</li>
+        <li>90-Tage Roadmap (Quick Wins → Medium → Strategic)</li>
+        <li>KPIs zum Tracken</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scenario">
+    <h2>💻 Szenario 3: Code Review (~5 Minuten)</h2>
+    <p><strong>Ziel:</strong> Technische Code-Qualität und Performance optimieren</p>
+    
+    <div class="step"><span class="step-number">1</span> Gehe zu <strong>/admin/ai-export</strong></div>
+    <div class="step"><span class="step-number">2</span> Wähle <strong>"Code Review"</strong> aus dem Dropdown-Menü</div>
+    <div class="step"><span class="step-number">3</span> Klicke auf <strong>"Prompt kopieren"</strong></div>
+    <div class="step"><span class="step-number">4</span> Öffne ChatGPT oder Claude</div>
+    <div class="step"><span class="step-number">5</span> Füge den Prompt ein</div>
+    <div class="step"><span class="step-number">6</span> Optional: Füge spezifischen Code-Abschnitt hinzu</div>
+    
+    <div class="output">
+      <strong>📊 Erwartete Ergebnisse:</strong>
+      <ul>
+        <li>Critical Issues (Bugs, Security, Performance-Blocker)</li>
+        <li>Code Smells & Refactoring-Kandidaten</li>
+        <li>Performance-Optimierungen mit Impact</li>
+        <li>Best Practices Empfehlungen</li>
+        <li>Vorher/Nachher Code-Snippets für TOP 3 Issues</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>📍 Zugriffspunkte</h2>
+  <div class="access-point">🏠 <strong>Admin Dashboard</strong> → "KI-Analyse & Export" Card</div>
+  <div class="access-point">📋 <strong>Admin Sidebar</strong> → "KI-Analyse" Link</div>
+  <div class="access-point">📚 <strong>Kunden-Onboarding</strong> → Schritt 4 (/kunden-onboarding)</div>
+  <div class="access-point">🛠️ <strong>Tools-Seite</strong> → ChatGPT Prompt Section</div>
+
+  <div class="tip">
+    <h3>💡 Pro-Tipps</h3>
+    <ul>
+      <li>Nutze <strong>GPT-4</strong> oder <strong>Claude</strong> für beste Ergebnisse</li>
+      <li>Kombiniere die Public URL mit dem Prompt für vollständige Analyse</li>
+      <li>Führe wöchentlich eine Quick Analysis durch, um Trends zu erkennen</li>
+      <li>Deep Audits alle 2-4 Wochen für strategische Planung</li>
+      <li>Code Reviews vor grösseren Releases durchführen</li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>📅 Erstellt am: ${new Date().toLocaleDateString('de-CH')}</p>
+    <p>🔗 <strong>Umzugscheck.ch</strong> - Swiss Moving Comparison Platform</p>
+  </footer>
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: "application/msword;charset=utf-8" });
+    saveAs(blob, `KI-Analyse-Anleitung_${new Date().toISOString().split('T')[0]}.doc`);
+    
+    toast({
+      title: "✅ Anleitung heruntergeladen",
+      description: "Die Word-Datei wurde erfolgreich erstellt",
+    });
+  };
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -30,7 +195,11 @@ const AIExport = () => {
               Exportieren Sie Ihre Daten für ChatGPT, Claude und andere LLMs
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button variant="default" className="gap-2" onClick={downloadAnleitung}>
+              <FileText className="h-4 w-4" />
+              Anleitung herunterladen
+            </Button>
             <Link to="/kunden-onboarding">
               <Button variant="outline" className="gap-2">
                 <BookOpen className="h-4 w-4" />
