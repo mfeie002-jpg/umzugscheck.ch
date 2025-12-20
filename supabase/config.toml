@@ -11,6 +11,3 @@ verify_jwt = false
 
 [functions.capture-screenshot]
 verify_jwt = false
-
-[functions.admin-reset-password]
-verify_jwt = false
