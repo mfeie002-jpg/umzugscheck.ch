@@ -113,7 +113,7 @@ export const BackendExportGenerator = () => {
   };
 
   const generateFullBackendPrompt = () => {
-    return `# 🏗️ BACKEND STRUKTUR - Umzugscheck.ch
+    return `# 🏗️ BACKEND STRUKTUR - Lead-Comparison Platform
 
 Du bist ein Experte für Supabase und fullstack Entwicklung. Erstelle mir ein identisches Backend-Setup basierend auf folgender Struktur.
 
@@ -134,7 +134,7 @@ CREATE TABLE leads (
   from_postal TEXT NOT NULL,
   to_city TEXT NOT NULL,
   to_postal TEXT NOT NULL,
-  move_date DATE,
+  service_date DATE,
   calculator_type TEXT NOT NULL,
   calculator_input JSONB NOT NULL,
   calculator_output JSONB NOT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE leads (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- SERVICE PROVIDERS (Umzugsfirmen)
+-- SERVICE PROVIDERS (Dienstleister)
 CREATE TABLE service_providers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_name TEXT NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE service_providers (
   logo_url TEXT,
   website TEXT,
   services_offered TEXT[] DEFAULT '{}',
-  cantons_served TEXT[] DEFAULT '{}',
+  regions_served TEXT[] DEFAULT '{}',
   cities_served TEXT[],
   preferred_regions TEXT[],
   price_level price_level,
@@ -222,10 +222,10 @@ CREATE TABLE service_providers (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ESTIMATE SESSIONS (Preisrechner Sessions)
+-- ESTIMATE SESSIONS (Calculator Sessions)
 CREATE TABLE estimate_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  move_details JSONB NOT NULL,
+  service_details JSONB NOT NULL,
   estimate JSONB NOT NULL,
   matching_company_ids UUID[],
   funnel_variant TEXT,
@@ -236,7 +236,7 @@ CREATE TABLE estimate_sessions (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- LEAD TRANSACTIONS (Provider kauft Lead)
+-- LEAD TRANSACTIONS (Provider purchases Lead)
 CREATE TABLE lead_transactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   lead_id UUID REFERENCES leads(id),
@@ -256,7 +256,7 @@ CREATE TABLE lead_transactions (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- LEAD BIDS (Auktions-System)
+-- LEAD BIDS (Auction System)
 CREATE TABLE lead_bids (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   lead_id UUID REFERENCES leads(id),
@@ -390,7 +390,7 @@ CREATE TABLE profiles (
 CREATE TYPE app_role AS ENUM ('admin', 'user');
 CREATE TYPE account_status AS ENUM ('active', 'inactive');
 CREATE TYPE verification_status AS ENUM ('pending', 'approved', 'rejected');
-CREATE TYPE price_level AS ENUM ('günstig', 'fair', 'premium');
+CREATE TYPE price_level AS ENUM ('budget', 'fair', 'premium');
 \`\`\`
 
 ---
@@ -398,11 +398,11 @@ CREATE TYPE price_level AS ENUM ('günstig', 'fair', 'premium');
 ## 🔐 ROW LEVEL SECURITY (RLS) POLICIES
 
 \`\`\`sql
--- Alle Tabellen haben RLS aktiviert
+-- All tables have RLS enabled
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE service_providers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
--- ... (alle anderen Tabellen)
+-- ... (all other tables)
 
 -- Admin Check Function
 CREATE OR REPLACE FUNCTION has_role(_user_id UUID, _role app_role)
@@ -417,7 +417,7 @@ AS $$
   )
 $$;
 
--- Beispiel Policies
+-- Example Policies
 CREATE POLICY "Admins can manage all" ON leads
   FOR ALL USING (has_role(auth.uid(), 'admin'));
 
@@ -435,11 +435,11 @@ CREATE POLICY "Providers see own data" ON service_providers
 
 ## ⚡ EDGE FUNCTIONS (${EDGE_FUNCTIONS.length} Functions)
 
-### Wichtigste Functions:
+### Important Functions:
 
 ${EDGE_FUNCTIONS.map(fn => `- \`${fn}\``).join('\n')}
 
-### Beispiel Edge Function Pattern:
+### Example Edge Function Pattern:
 
 \`\`\`typescript
 // supabase/functions/create-funnel-lead/index.ts
@@ -506,33 +506,33 @@ CREATE FUNCTION find_matching_providers(
   estimated_value NUMERIC DEFAULT NULL
 ) RETURNS UUID[] AS $$
 DECLARE
-  from_canton TEXT;
-  to_canton TEXT;
+  from_region TEXT;
+  to_region TEXT;
   matching_ids UUID[];
 BEGIN
-  from_canton := get_canton_from_postal(lead_from_postal);
-  to_canton := get_canton_from_postal(lead_to_postal);
+  from_region := get_region_from_postal(lead_from_postal);
+  to_region := get_region_from_postal(lead_to_postal);
   
   SELECT ARRAY_AGG(id) INTO matching_ids
   FROM service_providers
   WHERE verification_status = 'approved'
     AND account_status = 'active'
-    AND (from_canton = ANY(cantons_served) OR to_canton = ANY(cantons_served));
+    AND (from_region = ANY(regions_served) OR to_region = ANY(regions_served));
   
   RETURN COALESCE(matching_ids, ARRAY[]::UUID[]);
 END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
 
--- Get Canton from Postal Code
-CREATE FUNCTION get_canton_from_postal(postal_code TEXT)
+-- Get Region from Postal Code
+CREATE FUNCTION get_region_from_postal(postal_code TEXT)
 RETURNS TEXT AS $$
 BEGIN
   CASE 
-    WHEN postal_code LIKE '8%' THEN RETURN 'ZH';
-    WHEN postal_code LIKE '3%' THEN RETURN 'BE';
-    WHEN postal_code LIKE '4%' THEN RETURN 'BS';
-    WHEN postal_code LIKE '6%' THEN RETURN 'LU';
-    WHEN postal_code LIKE '9%' THEN RETURN 'SG';
+    WHEN postal_code LIKE '8%' THEN RETURN 'REGION_A';
+    WHEN postal_code LIKE '3%' THEN RETURN 'REGION_B';
+    WHEN postal_code LIKE '4%' THEN RETURN 'REGION_C';
+    WHEN postal_code LIKE '6%' THEN RETURN 'REGION_D';
+    WHEN postal_code LIKE '9%' THEN RETURN 'REGION_E';
     ELSE RETURN NULL;
   END CASE;
 END;
@@ -556,7 +556,7 @@ BEGIN
   
   quality_score := value_score;
   IF NEW.phone IS NOT NULL THEN quality_score := quality_score + 5; END IF;
-  IF NEW.move_date IS NOT NULL THEN quality_score := quality_score + 5; END IF;
+  IF NEW.service_date IS NOT NULL THEN quality_score := quality_score + 5; END IF;
   
   INSERT INTO lead_quality_factors (lead_id, quality_score, value_score)
   VALUES (NEW.id, quality_score, value_score);
@@ -594,23 +594,23 @@ verify_jwt = false
 [functions.ai-website-analyze]
 verify_jwt = false
 
-# Weitere Functions mit verify_jwt = true (Standard)
+# Other Functions with verify_jwt = true (default)
 \`\`\`
 
 ---
 
-## 📝 ANWEISUNGEN FÜR LOVABLE
+## 📝 INSTRUCTIONS FOR LOVABLE
 
-1. **Erstelle die Enums zuerst** (app_role, account_status, verification_status, price_level)
-2. **Dann die Tabellen** in der richtigen Reihenfolge (profiles → user_roles → service_providers → leads → etc.)
-3. **Aktiviere RLS** auf allen Tabellen
-4. **Erstelle die has_role Function** vor den Policies
-5. **Füge RLS Policies** hinzu
-6. **Erstelle Database Functions** und Triggers
-7. **Erstelle Edge Functions** nach Bedarf
-8. **Konfiguriere Storage Buckets**
+1. **Create Enums first** (app_role, account_status, verification_status, price_level)
+2. **Then create Tables** in correct order (profiles → user_roles → service_providers → leads → etc.)
+3. **Enable RLS** on all tables
+4. **Create the has_role Function** before Policies
+5. **Add RLS Policies**
+6. **Create Database Functions** and Triggers
+7. **Create Edge Functions** as needed
+8. **Configure Storage Buckets**
 
-Wichtig: Verwende Supabase Cloud für maximale Kompatibilität. Auto-confirm Email Signups aktivieren!
+Important: Use Supabase Cloud for maximum compatibility. Enable auto-confirm email signups!
 `;
   };
 
