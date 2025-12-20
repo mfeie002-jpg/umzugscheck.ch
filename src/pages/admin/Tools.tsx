@@ -19,6 +19,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
+import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -981,7 +982,7 @@ ${config.projectName} - WCAG 2.1 Level AA
 
         {/* Tools Tabs */}
         <Tabs defaultValue="ai-feedback" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="ai-feedback" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               AI Feedback Package
@@ -989,6 +990,10 @@ ${config.projectName} - WCAG 2.1 Level AA
             <TabsTrigger value="screenshots" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
               Screenshot Machine
+            </TabsTrigger>
+            <TabsTrigger value="seo-analyzer" className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              SEO HTML Analyzer
             </TabsTrigger>
           </TabsList>
 
@@ -1329,6 +1334,11 @@ ${config.projectName} - WCAG 2.1 Level AA
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          {/* SEO HTML Analyzer Tab */}
+          <TabsContent value="seo-analyzer">
+            <SEOHtmlAnalyzer />
           </TabsContent>
         </Tabs>
 

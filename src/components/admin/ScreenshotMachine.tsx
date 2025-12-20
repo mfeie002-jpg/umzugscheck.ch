@@ -1342,6 +1342,24 @@ export function ScreenshotMachine() {
                         <Button
                           size="sm"
                           variant="secondary"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            toast.info("Lade HTML...");
+                            const html = await fetchHtmlContent(result.url);
+                            if (html) {
+                              await navigator.clipboard.writeText(html);
+                              toast.success("HTML kopiert!");
+                            } else {
+                              toast.error("HTML konnte nicht geladen werden");
+                            }
+                          }}
+                          title="Copy outerHTML"
+                        >
+                          <Code className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
                           onClick={(e) => {
                             e.stopPropagation();
                             downloadScreenshotAsPdf(result);
@@ -1399,6 +1417,25 @@ export function ScreenshotMachine() {
             >
               <ExternalLink className="h-4 w-4 mr-1" />
               Neuer Tab
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                if (selectedImage) {
+                  toast.info("Lade HTML...");
+                  const html = await fetchHtmlContent(selectedImage.url);
+                  if (html) {
+                    await navigator.clipboard.writeText(html);
+                    toast.success("HTML kopiert!");
+                  } else {
+                    toast.error("HTML konnte nicht geladen werden");
+                  }
+                }
+              }}
+            >
+              <Code className="h-4 w-4 mr-1" />
+              Copy HTML
             </Button>
             <Button
               variant="outline"
