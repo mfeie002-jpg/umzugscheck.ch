@@ -1259,89 +1259,104 @@ export function ScreenshotMachine() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {results.map((result, index) => (
-                <div key={index} className="border rounded-lg overflow-hidden">
-                  <div 
-                    className="aspect-video bg-muted relative group cursor-pointer"
-                    onClick={() => setSelectedImage(result)}
-                  >
-                    <img
-                      src={result.imageUrl}
-                      alt={`Screenshot of ${result.url}`}
-                      className="w-full h-full object-cover object-top"
-                    />
-                    
-                    {/* Full Page Badge */}
-                    {result.isFullPage && (
-                      <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
-                        Full Page
-                      </Badge>
-                    )}
-                    
-                    {/* Dimension Badge */}
-                    <Badge variant="secondary" className="absolute top-2 right-2">
-                      {result.dimension}
-                    </Badge>
+              {results.map((result, index) => {
+                const dimParts = (result.dimension || "").split("x");
+                const height = Number(dimParts[1]);
+                const isTallFullPage =
+                  result.isFullPage && Number.isFinite(height) && height > 1500;
 
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedImage(result);
-                        }}
-                      >
-                        <Maximize2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(result.imageUrl, "_blank");
-                        }}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          downloadScreenshot(
-                            result.imageUrl,
-                            `screenshot-${new URL(result.url).hostname}-${Date.now()}`
-                          );
-                        }}
-                        title="Download als Bild"
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          downloadScreenshotAsPdf(result);
-                        }}
-                        title="Download als PDF"
-                      >
-                        <FileText className="h-4 w-4" />
-                      </Button>
+                return (
+                  <div key={index} className="border rounded-lg overflow-hidden">
+                    <div
+                      className={
+                        isTallFullPage
+                          ? "h-64 bg-muted relative group cursor-pointer"
+                          : "aspect-video bg-muted relative group cursor-pointer"
+                      }
+                      onClick={() => setSelectedImage(result)}
+                    >
+                      <img
+                        src={result.imageUrl}
+                        alt={`Screenshot of ${result.url}`}
+                        className={
+                          isTallFullPage
+                            ? "w-full h-full object-contain"
+                            : "w-full h-full object-cover object-top"
+                        }
+                      />
+
+                      {/* Full Page Badge */}
+                      {result.isFullPage && (
+                        <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
+                          Full Page
+                        </Badge>
+                      )}
+
+                      {/* Dimension Badge */}
+                      <Badge variant="secondary" className="absolute top-2 right-2">
+                        {result.dimension}
+                      </Badge>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedImage(result);
+                          }}
+                        >
+                          <Maximize2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(result.imageUrl, "_blank");
+                          }}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            downloadScreenshot(
+                              result.imageUrl,
+                              `screenshot-${new URL(result.url).hostname}-${Date.now()}`
+                            );
+                          }}
+                          title="Download als Bild"
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            downloadScreenshotAsPdf(result);
+                          }}
+                          title="Download als PDF"
+                        >
+                          <FileText className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="p-3 space-y-1">
+                      <p className="text-sm font-medium truncate" title={result.url}>
+                        {result.url}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {result.timestamp.toLocaleString("de-CH")}
+                      </p>
                     </div>
                   </div>
-                  <div className="p-3 space-y-1">
-                    <p className="text-sm font-medium truncate" title={result.url}>
-                      {result.url}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {result.timestamp.toLocaleString("de-CH")}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
