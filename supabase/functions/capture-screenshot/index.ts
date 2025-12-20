@@ -94,9 +94,11 @@ serve(async (req) => {
     // Set device type properly for mobile/tablet rendering
     params.set('device', deviceType);
 
-    // Use zoom=200 for retina quality (high-res screenshots)
-    // This makes screenshots 2x sharper, especially for mobile
-    params.set('zoom', '200');
+    // Zoom controls output resolution.
+    // Full-page desktop screenshots can become extremely large at zoom=200 and may produce "white gaps".
+    // So we reduce zoom for long desktop captures, but keep retina quality for mobile/tablet.
+    const effectiveZoom = (deviceType === 'desktop' && isFullPage && width >= 1600) ? '125' : '200';
+    params.set('zoom', effectiveZoom);
 
     // Improve reliability on real-world sites (bot detection / language variants)
     params.set('accept-language', 'de-CH,de;q=0.9,en;q=0.8');
@@ -164,7 +166,7 @@ serve(async (req) => {
     }
     base64 = btoa(base64);
 
-    console.log(`Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}, device: ${deviceType}, zoom: 200`);
+    console.log(`Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}, device: ${deviceType}, zoom: ${effectiveZoom}`);
 
     // Determine MIME type based on format
     const mimeType = outputFormat === 'pdf' ? 'application/pdf' : `image/${outputFormat}`;
