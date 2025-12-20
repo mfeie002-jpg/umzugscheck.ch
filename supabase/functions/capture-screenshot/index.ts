@@ -16,11 +16,11 @@ serve(async (req) => {
   }
 
   try {
-    const { 
-      url, 
-      dimension = '1920x1080', 
-      delay = 6000, 
-      format = 'png', 
+    const {
+      url,
+      dimension = '1920x1080',
+      delay = 6000,
+      format = 'png',
       fullPage = false,
       scroll = true,
       noCache = true,
@@ -30,6 +30,16 @@ serve(async (req) => {
     const validFormats = ['png', 'jpg', 'pdf'];
     const outputFormat = validFormats.includes(format) ? format : 'png';
 
+    // ScreenshotMachine only supports specific delay values (ms)
+    const allowedDelays = [0, 200, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
+    const delayMsRaw = typeof delay === 'number' ? delay : Number(delay);
+    const delayMsClamped = Number.isFinite(delayMsRaw)
+      ? Math.max(0, Math.min(10000, delayMsRaw))
+      : 6000;
+    const effectiveDelay = allowedDelays.reduce((prev, curr) =>
+      Math.abs(curr - delayMsClamped) < Math.abs(prev - delayMsClamped) ? curr : prev
+    , allowedDelays[0]);
+
     if (!url) {
       return new Response(
         JSON.stringify({ error: 'URL is required' }),
@@ -37,7 +47,7 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, delay: ${delay}ms, fullPage: ${fullPage}`);
+    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, delay: ${effectiveDelay}ms, fullPage: ${fullPage}`);
 
     // Determine effective dimension for full-page captures
     const width = dimension.split("x")[0];
@@ -50,9 +60,13 @@ serve(async (req) => {
       dimension: effectiveDimension,
       format: outputFormat,
       cacheLimit: noCache ? '0' : '14400', // 0 = no cache, 14400 = 10 days
-      delay: String(delay),
+      delay: String(effectiveDelay),
       js: 'true',
     });
+
+    // Improve reliability on real-world sites (bot detection / language variants)
+    params.set('accept-language', 'de-CH,de;q=0.9,en;q=0.8');
+    params.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
     // Add scroll params for full-page captures - critical for lazy-loaded content
     if (fullPage) {
