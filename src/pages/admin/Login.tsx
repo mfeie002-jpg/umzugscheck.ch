@@ -14,25 +14,37 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [existingAdminEmail, setExistingAdminEmail] = useState<string | null>(null);
+  const [checkingSession, setCheckingSession] = useState(true);
 
   // Check if already authenticated
   useEffect(() => {
+    let cancelled = false;
+
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
         // Check if user has admin role
         const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
           _user_id: session.user.id,
           _role: "admin",
         });
 
-        if (!roleError && isAdmin) {
-          navigate("/admin");
+        if (!roleError && isAdmin && !cancelled) {
+          setExistingAdminEmail(session.user.email ?? session.user.id);
         }
+      } finally {
+        if (!cancelled) setCheckingSession(false);
       }
     };
+
     checkAuth();
-  }, [navigate]);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
