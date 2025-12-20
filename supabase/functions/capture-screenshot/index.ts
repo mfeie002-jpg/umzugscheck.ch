@@ -62,7 +62,11 @@ serve(async (req) => {
     // Parse dimension to detect mobile/tablet
     const [widthStr, heightStr] = dimension.split('x');
     const width = parseInt(widthStr, 10);
-    
+
+    // Treat "xfull" dimensions as full-page even if caller forgot fullPage=true
+    const isDimensionFull = String(heightStr || '').toLowerCase() === 'full';
+    const isFullPage = Boolean(fullPage || isDimensionFull);
+
     // Determine device type based on width
     let deviceType = 'desktop';
     if (width <= 480) {
@@ -71,10 +75,10 @@ serve(async (req) => {
       deviceType = 'tablet';
     }
 
-    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${fullPage}`);
+    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`);
 
     // Determine effective dimension for full-page captures
-    const effectiveDimension = fullPage ? `${width}xfull` : dimension;
+    const effectiveDimension = isFullPage ? `${width}xfull` : dimension;
 
     // Build ScreenshotMachine API URL with hash for authentication
     const params = new URLSearchParams({
@@ -96,7 +100,7 @@ serve(async (req) => {
 
     // Improve reliability on real-world sites (bot detection / language variants)
     params.set('accept-language', 'de-CH,de;q=0.9,en;q=0.8');
-    
+
     // Use appropriate user-agent based on device type
     if (deviceType === 'phone') {
       params.set('user-agent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1');
@@ -107,7 +111,7 @@ serve(async (req) => {
     }
 
     // Add scroll params for full-page captures - critical for lazy-loaded content
-    if (fullPage) {
+    if (isFullPage) {
       // For full-page, scroll to bottom first to trigger lazy loading
       params.set('scroll', 'true');
       params.set('scrollto', 'bottom');

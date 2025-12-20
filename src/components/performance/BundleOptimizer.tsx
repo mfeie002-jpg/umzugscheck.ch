@@ -1,4 +1,5 @@
 import React, { lazy, Suspense, ComponentType, useEffect, useState } from 'react';
+import { isScreenshotRenderMode } from '@/lib/screenshot-render-mode';
 
 /**
  * Bundle Optimization Utilities
@@ -56,10 +57,12 @@ export const LazyVisible: React.FC<{
   rootMargin?: string;
   threshold?: number;
 }> = ({ children, fallback = <DefaultFallback />, rootMargin = '100px', threshold = 0.1 }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const screenshotMode = isScreenshotRenderMode();
+  const [isVisible, setIsVisible] = useState(screenshotMode);
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (screenshotMode) return;
     if (!ref) return;
 
     const observer = new IntersectionObserver(
@@ -74,13 +77,9 @@ export const LazyVisible: React.FC<{
 
     observer.observe(ref);
     return () => observer.disconnect();
-  }, [ref, rootMargin, threshold]);
+  }, [ref, rootMargin, threshold, screenshotMode]);
 
-  return (
-    <div ref={setRef}>
-      {isVisible ? children : fallback}
-    </div>
-  );
+  return <div ref={setRef}>{isVisible ? children : fallback}</div>;
 };
 
 /**
@@ -91,32 +90,30 @@ export const LazyOnInteraction: React.FC<{
   fallback?: React.ReactNode;
   events?: Array<'click' | 'mouseover' | 'focus' | 'scroll'>;
 }> = ({ children, fallback = <DefaultFallback />, events = ['mouseover', 'focus'] }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const screenshotMode = isScreenshotRenderMode();
+  const [isLoaded, setIsLoaded] = useState(screenshotMode);
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (screenshotMode) return;
     if (!ref || isLoaded) return;
 
     const handleInteraction = () => {
       setIsLoaded(true);
     };
 
-    events.forEach(event => {
+    events.forEach((event) => {
       ref.addEventListener(event, handleInteraction, { once: true, passive: true });
     });
 
     return () => {
-      events.forEach(event => {
+      events.forEach((event) => {
         ref.removeEventListener(event, handleInteraction);
       });
     };
-  }, [ref, isLoaded, events]);
+  }, [ref, isLoaded, events, screenshotMode]);
 
-  return (
-    <div ref={setRef}>
-      {isLoaded ? children : fallback}
-    </div>
-  );
+  return <div ref={setRef}>{isLoaded ? children : fallback}</div>;
 };
 
 /**
@@ -132,7 +129,7 @@ export async function dynamicImportWithRetry<T>(
       return await importFn();
     } catch (error) {
       if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+      await new Promise((resolve) => setTimeout(resolve, delay * (i + 1)));
     }
   }
   throw new Error('Dynamic import failed after retries');
@@ -146,9 +143,12 @@ export const ModulePreloader: React.FC<{
 }> = ({ modules }) => {
   useEffect(() => {
     if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(() => {
-        modules.forEach(mod => mod().catch(() => {}));
-      }, { timeout: 5000 });
+      (window as any).requestIdleCallback(
+        () => {
+          modules.forEach((mod) => mod().catch(() => {}));
+        },
+        { timeout: 5000 }
+      );
     }
   }, [modules]);
 
@@ -175,3 +175,4 @@ export default {
   ModulePreloader,
   ConditionalRender,
 };
+
