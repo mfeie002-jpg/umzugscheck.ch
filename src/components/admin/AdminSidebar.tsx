@@ -22,9 +22,12 @@ import {
   Mail,
   Trophy,
   FileText,
-  Gauge
+  Gauge,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 
 const navItems = [
@@ -33,6 +36,14 @@ const navItems = [
     href: "/admin", 
     icon: LayoutDashboard,
     exact: true
+  },
+  // KI-Analyse at top for prominence
+  { 
+    title: "KI-Analyse & Export", 
+    href: "/admin/ai-export", 
+    icon: Brain,
+    highlight: true,
+    badge: "NEU"
   },
   {
     type: "divider",
@@ -138,19 +149,12 @@ const navItems = [
   { 
     title: "Tools & Downloads", 
     href: "/admin/tools", 
-    icon: Wrench,
-    highlight: true
+    icon: Wrench
   },
   { 
     title: "Code Export", 
     href: "/admin/code-export", 
     icon: Download 
-  },
-  { 
-    title: "KI-Analyse", 
-    href: "/admin/ai-export", 
-    icon: Brain,
-    highlight: true
   },
 ];
 
@@ -206,25 +210,61 @@ export function AdminSidebar() {
           const Icon = item.icon!;
           const active = isActive(item.href!, item.exact);
 
-          return (
+          const NavContent = (
             <Link
               key={item.href}
               to={item.href!}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors mb-1",
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors mb-1 relative",
                 "hover:bg-accent hover:text-accent-foreground",
                 active && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground",
-                item.highlight && !active && "bg-orange-500/10 text-orange-600 hover:bg-orange-500/20",
+                item.highlight && !active && "bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary border border-primary/20 hover:from-primary/20 hover:to-orange-500/20",
                 collapsed && "justify-center px-2"
               )}
-              title={collapsed ? item.title : undefined}
             >
-              <Icon className={cn("h-5 w-5 shrink-0", active && "text-primary-foreground")} />
+              {item.highlight && !collapsed && !active && (
+                <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-orange-500" />
+              )}
+              <Icon className={cn(
+                "h-5 w-5 shrink-0", 
+                active && "text-primary-foreground",
+                item.highlight && !active && "text-primary"
+              )} />
               {!collapsed && (
-                <span className="text-sm font-medium">{item.title}</span>
+                <>
+                  <span className="text-sm font-medium flex-1">{item.title}</span>
+                  {item.badge && (
+                    <Badge variant="default" className="text-[10px] px-1.5 py-0 h-4 bg-orange-500 hover:bg-orange-500">
+                      {item.badge}
+                    </Badge>
+                  )}
+                </>
               )}
             </Link>
           );
+
+          // Wrap in tooltip for collapsed mode
+          if (collapsed) {
+            return (
+              <TooltipProvider key={item.href} delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    {NavContent}
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="flex items-center gap-2">
+                    {item.title}
+                    {item.badge && (
+                      <Badge variant="default" className="text-[10px] px-1.5 py-0 h-4 bg-orange-500">
+                        {item.badge}
+                      </Badge>
+                    )}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            );
+          }
+
+          return NavContent;
         })}
       </nav>
 

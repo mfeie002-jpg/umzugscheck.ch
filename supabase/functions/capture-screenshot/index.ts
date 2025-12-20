@@ -1,12 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
+import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
+import { encode as encodeHex } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Default to screenshotmachine.com API (supports JavaScript rendering)
+// ScreenshotMachine API credentials
 const SCREENSHOT_API_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY') || '892618';
+const SECRET_PHRASE = 'iamthebestintheworld'; // Secret phrase for hash generation
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -14,7 +16,14 @@ serve(async (req) => {
   }
 
   try {
-    const { url, dimension = '1920xfull', delay = 8000, format = 'png', scrollToBottom = true } = await req.json();
+    const { 
+      url, 
+      dimension = '1920x1080', 
+      delay = 6000, 
+      format = 'png', 
+      fullPage = false,
+      scroll = true 
+    } = await req.json();
 
     if (!url) {
       return new Response(
@@ -23,39 +32,50 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, delay: ${delay}ms, scrollToBottom: ${scrollToBottom}`);
+    console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, delay: ${delay}ms, fullPage: ${fullPage}`);
 
-    // Build ScreenshotMachine API URL with extended delay for JS animations
-    // Key parameters for capturing pages with scroll-triggered animations:
-    // - delay: Wait for animations after page load
-    // - scroll: Trigger scroll-based animations by scrolling through the page
-    // - scrollto: Scroll to specific position (bottom to trigger all lazy-load)
+    // Determine effective dimension for full-page captures
+    const width = dimension.split("x")[0];
+    const effectiveDimension = fullPage ? `${width}xfull` : dimension;
+
+    // Build ScreenshotMachine API URL with hash for authentication
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
       url: url,
-      dimension: dimension,
+      dimension: effectiveDimension,
       format: format,
-      cacheLimit: '0', // No cache - always fresh capture
-      delay: String(delay), // Extended delay for JS animations (8+ seconds)
-      // JavaScript rendering params
-      js: 'true', // Enable JavaScript execution
-      scroll: 'true', // Scroll through page to trigger IntersectionObserver animations
+      cacheLimit: '0',
+      delay: String(delay),
+      js: 'true',
     });
 
-    // For full-page captures, scroll to bottom first to trigger all lazy content
-    if (scrollToBottom && dimension.includes('full')) {
+    // Add scroll params for full-page captures
+    if (scroll) {
+      params.set('scroll', 'true');
+    }
+    if (fullPage) {
       params.set('scrollto', 'bottom');
     }
 
+    // Generate MD5 hash: md5(url + secretPhrase)
+    const hashInput = url + SECRET_PHRASE;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(hashInput);
+    const hashBuffer = await crypto.subtle.digest("MD5", data);
+    const hashBytes = encodeHex(new Uint8Array(hashBuffer));
+    const hash = new TextDecoder().decode(hashBytes);
+    params.set('hash', hash);
+
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
     
-    console.log('Requesting screenshot from API:', apiUrl);
+    console.log('Requesting screenshot from API (hash included)');
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
-      console.error(`Screenshot API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`Screenshot API error: ${response.status}`, errorText);
       return new Response(
-        JSON.stringify({ error: `Screenshot API error: ${response.status}` }),
+        JSON.stringify({ error: `Screenshot API error: ${response.status}`, details: errorText }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -71,7 +91,7 @@ serve(async (req) => {
         success: true,
         image: `data:image/${format};base64,${base64}`,
         url,
-        dimension,
+        dimension: effectiveDimension,
         capturedAt: new Date().toISOString(),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

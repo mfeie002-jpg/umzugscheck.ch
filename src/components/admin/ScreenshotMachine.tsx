@@ -33,8 +33,7 @@ import { saveAs } from "file-saver";
 import { jsPDF } from "jspdf";
 import { supabase } from "@/integrations/supabase/client";
 import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
-
-const SCREENSHOT_API_KEY = "892618";
+import { captureScreenshot as captureViaBackend } from "@/lib/screenshot-service";
 
 interface ScreenshotResult {
   url: string;
@@ -137,42 +136,30 @@ export function ScreenshotMachine() {
   const [exportLoading, setExportLoading] = useState(false);
   const [archiveLoading, setArchiveLoading] = useState(false);
   const [top20Loading, setTop20Loading] = useState(false);
-  const generateScreenshotUrl = (targetUrl: string): string => {
-    const width = dimension.split("x")[0];
-    // ScreenshotMachine API: full page via "WIDTHxfull" format (e.g., 1920xfull)
-    const effectiveDimension = fullPage ? `${width}xfull` : dimension;
-
+  // Capture screenshot via backend (with proper hash authentication)
+  const captureScreenshotViaBackend = async (targetUrl: string): Promise<ScreenshotResult | null> => {
     const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
-
-    // Extended delays and scroll params for pages with scroll-triggered animations
-    const params = new URLSearchParams({
-      key: SCREENSHOT_API_KEY,
+    const result = await captureViaBackend({
       url: urlForShot,
-      dimension: effectiveDimension,
-      format: "png",
-      cacheLimit: "0",
-      delay: fullPage ? "10000" : "6000", // 10s for full-page to ensure all animations complete
-      js: "true", // Enable JavaScript
-      scroll: "true", // Scroll through page to trigger IntersectionObserver
+      dimension,
+      fullPage,
+      delay: fullPage ? 10000 : 6000,
     });
 
-    // For full-page captures, scroll to bottom first to trigger all lazy content
-    if (fullPage) {
-      params.set("scrollto", "bottom");
+    if (result.success && result.image) {
+      return {
+        url: targetUrl,
+        imageUrl: result.image,
+        timestamp: new Date(),
+        isFullPage: fullPage,
+        dimension: result.dimension || dimension,
+      };
     }
-
-    return `https://api.screenshotmachine.com?${params.toString()}`;
+    return null;
   };
 
   const testRequest = () => {
-    const testUrl = url || "https://umzugscheck.ch";
-    const apiUrl = generateScreenshotUrl(testUrl);
-    setDebugUrl(apiUrl);
-    setShowDebug(true);
-    
-    // Copy to clipboard
-    navigator.clipboard.writeText(apiUrl);
-    toast.success("API-URL in Zwischenablage kopiert!");
+    toast.info("Screenshots werden jetzt über das Backend erstellt (mit Hash-Authentifizierung)");
   };
 
   const captureScreenshot = async () => {
@@ -183,28 +170,18 @@ export function ScreenshotMachine() {
 
     setLoading(true);
     try {
-      const imageUrl = generateScreenshotUrl(url);
+      const result = await captureScreenshotViaBackend(url);
       
-      // Pre-load the image to verify it works
-      const img = new Image();
-      img.onload = () => {
-        setResults(prev => [{
-          url,
-          imageUrl,
-          timestamp: new Date(),
-          isFullPage: fullPage,
-          dimension: fullPage ? `${dimension.split("x")[0]}xfull` : dimension,
-        }, ...prev]);
+      if (result) {
+        setResults(prev => [result, ...prev]);
         toast.success("Screenshot erfolgreich erstellt!");
-        setLoading(false);
-      };
-      img.onerror = () => {
+      } else {
         toast.error("Fehler beim Erstellen des Screenshots");
-        setLoading(false);
-      };
-      img.src = imageUrl;
+      }
     } catch (error) {
+      console.error("Screenshot error:", error);
       toast.error("Fehler beim Erstellen des Screenshots");
+    } finally {
       setLoading(false);
     }
   };
@@ -228,29 +205,12 @@ export function ScreenshotMachine() {
       setBulkProgress({ current: i + 1, total: urls.length });
 
       try {
-        const imageUrl = generateScreenshotUrl(targetUrl);
-        
-        await new Promise<void>((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => {
-            setResults(prev => [{
-              url: targetUrl,
-              imageUrl,
-              timestamp: new Date(),
-              isFullPage: fullPage,
-              dimension: fullPage ? `${dimension.split("x")[0]}xfull` : dimension,
-            }, ...prev]);
-            resolve();
-          };
-          img.onerror = () => {
-            console.error(`Failed to capture: ${targetUrl}`);
-            resolve(); // Continue with next URL even on error
-          };
-          img.src = imageUrl;
-        });
-
+        const result = await captureScreenshotViaBackend(targetUrl);
+        if (result) {
+          setResults(prev => [result, ...prev]);
+        }
         // Small delay between requests to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Error capturing ${targetUrl}:`, error);
       }
@@ -410,30 +370,21 @@ export function ScreenshotMachine() {
         const pathname = new URL(targetUrl).pathname.replace(/\//g, '_') || 'index';
         const filename = `${String(i + 1).padStart(2, '0')}_${hostname}${pathname}`;
         
-        // Generate screenshot URL with longer delay for JS animations
-        const width = dimension.split("x")[0];
-        const effectiveDimension = fullPage ? `${width}xfull` : dimension;
-        const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
-        const params = new URLSearchParams({
-          key: SCREENSHOT_API_KEY,
-          url: urlForShot,
-          dimension: effectiveDimension,
-          format: "png",
-          cacheLimit: "0",
-          delay: fullPage ? "10000" : "6000", // Extended delay for animations
-          js: "true",
-          scroll: "true",
-        });
-        if (fullPage) {
-          params.set("scrollto", "bottom");
-        }
-        const screenshotUrl = `https://api.screenshotmachine.com?${params.toString()}`;
-        
-        // Fetch screenshot
+        // Capture screenshot via backend
         try {
-          const screenshotResponse = await fetch(screenshotUrl);
-          const screenshotBlob = await screenshotResponse.blob();
-          zip.file(`${filename}.png`, screenshotBlob);
+          const result = await captureScreenshotViaBackend(targetUrl);
+          if (result && result.imageUrl) {
+            // Convert base64 to blob
+            const base64Data = result.imageUrl.split(',')[1];
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let j = 0; j < byteCharacters.length; j++) {
+              byteNumbers[j] = byteCharacters.charCodeAt(j);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'image/png' });
+            zip.file(`${filename}.png`, blob);
+          }
         } catch (error) {
           console.error(`Failed to fetch screenshot for ${targetUrl}:`, error);
           zip.file(`${filename}_screenshot_error.txt`, `Failed to capture: ${error}`);
@@ -449,9 +400,11 @@ export function ScreenshotMachine() {
         }
         
         // Add metadata
+        const width = dimension.split("x")[0];
+        const effectiveDim = fullPage ? `${width}xfull` : dimension;
         zip.file(`${filename}_info.json`, JSON.stringify({
           url: targetUrl,
-          dimension: effectiveDimension,
+          dimension: effectiveDim,
           isFullPage: fullPage,
           capturedAt: new Date().toISOString(),
           index: i + 1
