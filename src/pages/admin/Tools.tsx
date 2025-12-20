@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,7 +15,6 @@ import {
   Trash2, Zap, FileDown,
   Wrench, ExternalLink, BookOpen, Terminal, FileCode
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import JSZip from "jszip";
@@ -198,8 +196,6 @@ Erstelle eine Edge Function "fetch-html" mit verify_jwt = false die eine URL ent
 // ============================================================================
 
 const AdminTools = () => {
-  const { user, isAdmin, loading } = useAuth();
-  
   // AI Feedback Package State
   const [config, setConfig] = useState<ProjectConfig>({
     projectName: 'Umzugscheck',
@@ -225,19 +221,6 @@ const AdminTools = () => {
   const [capturedScreenshots, setCapturedScreenshots] = useState<CapturedScreenshot[]>([]);
   const [isCapturing, setIsCapturing] = useState(false);
   const [bulkUrls, setBulkUrls] = useState('');
-
-  // Redirect if not admin
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user || !isAdmin) {
-    return <Navigate to="/admin/login" replace />;
-  }
 
   // ============================================================================
   // AI FEEDBACK PACKAGE FUNCTIONS
