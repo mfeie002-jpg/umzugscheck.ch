@@ -27,6 +27,8 @@ import {
   Code,
   CloudUpload,
   FolderArchive,
+  Layers,
+  Package,
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -34,6 +36,7 @@ import { jsPDF } from "jspdf";
 import { supabase } from "@/integrations/supabase/client";
 import { addScreenshotRenderParamIfHost } from "@/lib/screenshot-render-mode";
 import { captureScreenshot as captureViaBackend } from "@/lib/screenshot-service";
+import { ScreenshotComparison } from "./ScreenshotComparison";
 
 interface ScreenshotResult {
   url: string;
@@ -101,15 +104,67 @@ const TOP_20_URLS = [
   "https://umzugscheck.ch/fuer-firmen",              // For companies / become provider
 ];
 
-const DIMENSIONS = [
-  { value: "1920x1080", label: "Desktop Full HD (1920x1080)" },
-  { value: "1366x768", label: "Desktop HD (1366x768)" },
-  { value: "1024x768", label: "Desktop (1024x768)" },
-  { value: "768x1024", label: "Tablet Portrait (768x1024)" },
-  { value: "1024x1366", label: "Tablet Landscape (1024x1366)" },
+// Device-specific dimensions
+const MOBILE_DIMENSIONS = [
   { value: "375x812", label: "Mobile iPhone X (375x812)" },
   { value: "414x896", label: "Mobile iPhone XR (414x896)" },
   { value: "360x640", label: "Mobile Android (360x640)" },
+  { value: "390x844", label: "Mobile iPhone 12/13 (390x844)" },
+];
+
+const DESKTOP_DIMENSIONS = [
+  { value: "1920x1080", label: "Desktop Full HD (1920x1080)" },
+  { value: "1366x768", label: "Desktop HD (1366x768)" },
+  { value: "1024x768", label: "Desktop (1024x768)" },
+  { value: "1440x900", label: "Desktop MacBook (1440x900)" },
+];
+
+const TABLET_DIMENSIONS = [
+  { value: "768x1024", label: "Tablet Portrait (768x1024)" },
+  { value: "1024x1366", label: "Tablet Landscape (1024x1366)" },
+];
+
+const DIMENSIONS = [
+  ...DESKTOP_DIMENSIONS,
+  ...TABLET_DIMENSIONS,
+  ...MOBILE_DIMENSIONS,
+];
+
+// Screenshot Bundles
+const SCREENSHOT_BUNDLES = [
+  {
+    id: "mobile",
+    label: "Mobile Bundle",
+    icon: "smartphone",
+    description: "Alle Mobile-Auflösungen",
+    dimensions: MOBILE_DIMENSIONS.map(d => d.value),
+    color: "bg-blue-500/10 text-blue-600 border-blue-200",
+  },
+  {
+    id: "desktop",
+    label: "Desktop Bundle",
+    icon: "monitor",
+    description: "Alle Desktop-Auflösungen",
+    dimensions: DESKTOP_DIMENSIONS.map(d => d.value),
+    color: "bg-green-500/10 text-green-600 border-green-200",
+  },
+  {
+    id: "tablet",
+    label: "Tablet Bundle",
+    icon: "tablet",
+    description: "Alle Tablet-Auflösungen",
+    dimensions: TABLET_DIMENSIONS.map(d => d.value),
+    color: "bg-purple-500/10 text-purple-600 border-purple-200",
+  },
+  {
+    id: "full-audit",
+    label: "Full Audit",
+    icon: "layers",
+    description: "Alle Seiten in allen Auflösungen",
+    dimensions: DIMENSIONS.map(d => d.value),
+    isFullAudit: true,
+    color: "bg-orange-500/10 text-orange-600 border-orange-200",
+  },
 ];
 
 const DELAY_OPTIONS = [
@@ -158,6 +213,80 @@ export function ScreenshotMachine() {
   
   // Advanced settings visibility
   const [showAdvanced, setShowAdvanced] = useState(false);
+  
+  // Bundle loading state
+  const [bundleLoading, setBundleLoading] = useState<string | null>(null);
+  const [bundleProgress, setBundleProgress] = useState({ current: 0, total: 0, dimension: "" });
+
+  // Capture screenshot with specific dimension override
+  const captureWithDimension = async (targetUrl: string, overrideDimension: string): Promise<ScreenshotResult | null> => {
+    const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
+    const result = await captureViaBackend({
+      url: urlForShot,
+      dimension: overrideDimension,
+      fullPage,
+      delay: parseInt(delay),
+      format,
+      scroll: scrollToBottom,
+      noCache,
+    });
+
+    if (result.success && result.image) {
+      return {
+        url: targetUrl,
+        imageUrl: result.image,
+        timestamp: new Date(),
+        isFullPage: fullPage,
+        dimension: result.dimension || overrideDimension,
+      };
+    }
+    return null;
+  };
+
+  // Run a bundle capture
+  const runBundle = async (bundleId: string) => {
+    const bundle = SCREENSHOT_BUNDLES.find(b => b.id === bundleId);
+    if (!bundle) return;
+
+    const targetUrl = url || "https://umzugscheck.ch";
+    const urls = bundle.isFullAudit ? TOP_20_URLS : [targetUrl];
+    const dimensions = bundle.dimensions;
+    const totalCaptures = urls.length * dimensions.length;
+
+    setBundleLoading(bundleId);
+    setBundleProgress({ current: 0, total: totalCaptures, dimension: "" });
+
+    const newResults: ScreenshotResult[] = [];
+
+    for (let u = 0; u < urls.length; u++) {
+      for (let d = 0; d < dimensions.length; d++) {
+        const currentUrl = urls[u];
+        const currentDimension = dimensions[d];
+        const currentIndex = u * dimensions.length + d + 1;
+        
+        setBundleProgress({ 
+          current: currentIndex, 
+          total: totalCaptures, 
+          dimension: currentDimension 
+        });
+
+        try {
+          const result = await captureWithDimension(currentUrl, currentDimension);
+          if (result) {
+            newResults.push(result);
+            setResults(prev => [result, ...prev]);
+          }
+          // Small delay between requests
+          await new Promise(resolve => setTimeout(resolve, 800));
+        } catch (error) {
+          console.error(`Bundle capture error for ${currentUrl} at ${currentDimension}:`, error);
+        }
+      }
+    }
+
+    setBundleLoading(null);
+    toast.success(`${bundle.label} abgeschlossen: ${newResults.length}/${totalCaptures} Screenshots`);
+  };
   // Capture screenshot via backend (with proper hash authentication)
   const captureScreenshotViaBackend = async (targetUrl: string): Promise<ScreenshotResult | null> => {
     const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
@@ -676,6 +805,57 @@ export function ScreenshotMachine() {
             <Switch checked={bulkMode} onCheckedChange={setBulkMode} />
           </div>
 
+          {/* Screenshot Bundles */}
+          <div className="space-y-3">
+            <Label className="text-base font-medium flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Screenshot Bundles
+            </Label>
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+              {SCREENSHOT_BUNDLES.map((bundle) => {
+                const IconComponent = bundle.icon === "smartphone" ? Smartphone 
+                  : bundle.icon === "monitor" ? Monitor 
+                  : bundle.icon === "tablet" ? Tablet 
+                  : Layers;
+                const isLoading = bundleLoading === bundle.id;
+                
+                return (
+                  <Button
+                    key={bundle.id}
+                    variant="outline"
+                    className={`h-auto p-4 flex flex-col items-start gap-2 ${bundle.color} border`}
+                    onClick={() => runBundle(bundle.id)}
+                    disabled={bundleLoading !== null}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      {isLoading ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <IconComponent className="h-5 w-5" />
+                      )}
+                      <span className="font-medium">{bundle.label}</span>
+                    </div>
+                    <span className="text-xs opacity-70 text-left">
+                      {isLoading 
+                        ? `${bundleProgress.current}/${bundleProgress.total} (${bundleProgress.dimension})`
+                        : bundle.description
+                      }
+                    </span>
+                    <Badge variant="secondary" className="text-xs">
+                      {bundle.dimensions.length} Auflösungen
+                      {bundle.isFullAudit && ` × ${TOP_20_URLS.length} Seiten`}
+                    </Badge>
+                  </Button>
+                );
+              })}
+            </div>
+            {!url && !bulkMode && (
+              <p className="text-xs text-muted-foreground">
+                💡 Tipp: Gib eine URL ein, um Bundles für diese Seite zu erstellen. Ohne URL wird die Homepage verwendet.
+              </p>
+            )}
+          </div>
+
           {/* Top 20 Quick Action */}
           <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
             <div className="flex items-center justify-between">
@@ -1156,6 +1336,9 @@ export function ScreenshotMachine() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Screenshot Comparison Tool */}
+      <ScreenshotComparison availableScreenshots={results} />
     </div>
   );
 }
