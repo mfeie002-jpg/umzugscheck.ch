@@ -12,6 +12,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { HeroGradient } from "@/components/common/HeroGradient";
 import { GridPattern } from "@/components/common/GridPattern";
 import { MagneticButton } from "@/components/common/MagneticButton";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 // Animated Counter Component
 const AnimatedCounter = ({ 
@@ -121,8 +122,14 @@ export const PremiumHeroSection = () => {
     navigate(`/umzugsofferten?${params.toString()}`);
   };
 
+  // Use fixed height in screenshot mode to prevent vh/svh from exploding with tall viewports
+  const screenshotMode = isScreenshotRenderMode();
+  const heroHeightClass = screenshotMode
+    ? "min-h-[700px]" // Fixed height for screenshots
+    : "min-h-[90svh] sm:min-h-[85vh] md:min-h-[85vh]";
+
   return (
-    <section ref={sectionRef} className="relative min-h-[90svh] sm:min-h-[85vh] md:min-h-[85vh] flex items-center overflow-hidden pt-16 sm:pt-0" style={{ position: 'relative' }}>
+    <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-center overflow-hidden pt-16 sm:pt-0`} style={{ position: 'relative' }}>
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"
