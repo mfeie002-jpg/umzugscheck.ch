@@ -220,6 +220,7 @@ const OffertenPage = lazy(() => import("./pages/OffertenPage"));
 const OffertenOptimized = lazy(() => import("./pages/OffertenOptimized"));
 const Tools = lazy(() => import("./pages/Tools"));
 const UserDashboard = lazy(() => import("./pages/UserDashboard"));
+const Vergleich = lazy(() => import("./pages/Vergleich"));
 
 // Admin pages
 const Auth = lazy(() => import("./pages/Auth"));
@@ -319,9 +320,12 @@ const App = () => (
                             <Route path="/v2" element={<HomeOptimized />} />
                             <Route path="/v3" element={<NewIndex />} />
                             <Route path="/v4" element={<HomePage />} />
-                            {/* Redirect base calculator routes to umzugsofferten */}
-                            <Route path="/rechner" element={<Navigate to="/umzugsofferten" replace />} />
-                            <Route path="/umzugsrechner" element={<Navigate to="/umzugsofferten" replace />} />
+                            {/* Primary conversion funnel - Multi-step wizard */}
+                            <Route path="/vergleich" element={<Vergleich />} />
+                            <Route path="/offerte" element={<Vergleich />} />
+                            {/* Redirect base calculator routes to new wizard */}
+                            <Route path="/rechner" element={<Navigate to="/vergleich" replace />} />
+                            <Route path="/umzugsrechner" element={<Navigate to="/vergleich" replace />} />
                             <Route path="/rechner/ai" element={<AIUpload />} />
                             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
                             <Route path="/ergebnis/:id" element={<EstimateResult />} />
