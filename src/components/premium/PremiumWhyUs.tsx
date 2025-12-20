@@ -107,23 +107,35 @@ export const PremiumWhyUs = memo(() => {
         </div>
         
         {/* Trust Footer */}
-        <motion.div
-          initial={isScreenshot ? false : { opacity: 0 }}
-          whileInView={isScreenshot ? undefined : { opacity: 1 }}
-          animate={isScreenshot ? { opacity: 1 } : undefined}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 text-center"
-        >
-          <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground">
-            {trustBadges.map((badge, i) => (
-              <span key={i} className="flex items-center gap-1">
-                <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
-                {badge.text}
-              </span>
-            ))}
+        {isScreenshot ? (
+          <div className="mt-8 text-center">
+            <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground">
+              {trustBadges.map((badge, i) => (
+                <span key={i} className="flex items-center gap-1">
+                  <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
+                  {badge.text}
+                </span>
+              ))}
+            </div>
           </div>
-        </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 text-center"
+          >
+            <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground">
+              {trustBadges.map((badge, i) => (
+                <span key={i} className="flex items-center gap-1">
+                  <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
+                  {badge.text}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );
