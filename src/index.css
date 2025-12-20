@@ -1165,18 +1165,18 @@ img {
    - Our CLS utilities use `content-visibility: auto`, which many screenshot tools won't paint.
    - Force everything visible only in screenshot mode.
 */
-html.uc-render [style*="opacity: 0"],
-html.uc-render [style*="opacity:0"],
-html.uc-render [style*="opacity: 0."],
-html.uc-render [style*="opacity:0."] {
+html.uc-render [style*="opacity: 0;"],
+html.uc-render [style*="opacity:0;"],
+html.uc-render [style*="opacity: 0.0"],
+html.uc-render [style*="opacity:0.0"] {
   opacity: 1 !important;
 }
 
 /* Only neutralize transforms for elements that start hidden (typical framer-motion initial state) */
-html.uc-render [style*="opacity: 0"][style*="transform"],
-html.uc-render [style*="opacity:0"][style*="transform"],
-html.uc-render [style*="opacity: 0."][style*="transform"],
-html.uc-render [style*="opacity:0."][style*="transform"] {
+html.uc-render [style*="opacity: 0;"][style*="transform"],
+html.uc-render [style*="opacity:0;"][style*="transform"],
+html.uc-render [style*="opacity: 0.0"][style*="transform"],
+html.uc-render [style*="opacity:0.0"][style*="transform"] {
   transform: none !important;
 }
 

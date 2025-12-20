@@ -81,17 +81,19 @@ export const OptimizedImage = memo<OptimizedImageProps>(({
   style,
   ...props
 }) => {
+  const screenshotMode = isScreenshotRenderMode();
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isInView, setIsInView] = useState(priority);
+  const [isInView, setIsInView] = useState(priority || screenshotMode);
   const [currentSrc, setCurrentSrc] = useState<string>(
-    placeholder === 'blur' 
-      ? (blurDataURL || generateBlurPlaceholder(width, height)) 
+    placeholder === 'blur'
+      ? (blurDataURL || generateBlurPlaceholder(width, height))
       : ''
   );
   const imgRef = useRef<HTMLImageElement>(null);
 
-  // Intersection Observer for lazy loading
+  // Intersection Observer for lazy loading (disabled in screenshot mode)
   useEffect(() => {
+    if (screenshotMode) return;
     if (priority || isInView) return;
 
     const observer = new IntersectionObserver(
@@ -114,7 +116,7 @@ export const OptimizedImage = memo<OptimizedImageProps>(({
     }
 
     return () => observer.disconnect();
-  }, [priority, isInView]);
+  }, [priority, isInView, screenshotMode]);
 
   // Load actual image when in view
   useEffect(() => {
