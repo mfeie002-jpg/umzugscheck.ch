@@ -1,15 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
-import { encode as encodeHex } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// ScreenshotMachine API credentials - use env vars with hardcoded fallback
-const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY") || "892618";
-const SECRET_PHRASE = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") || "iamthebestintheworld";
+// ScreenshotMachine API credentials
+// API key from the dashboard - no secret phrase needed unless explicitly configured
+const SCREENSHOT_API_KEY = "892618";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -157,20 +155,7 @@ serve(async (req) => {
       );
     }
 
-    // Optional hash authentication
-    if (SECRET_PHRASE) {
-      // Generate MD5 hash: md5(url + secretPhrase)
-      const hashInput = url + SECRET_PHRASE;
-      const encoder = new TextEncoder();
-      const data = encoder.encode(hashInput);
-      const hashBuffer = await crypto.subtle.digest("MD5", data);
-      const hashBytes = encodeHex(new Uint8Array(hashBuffer));
-      const hash = new TextDecoder().decode(hashBytes);
-      params.set("hash", hash);
-    } else {
-      console.log("No SCREENSHOTMACHINE_SECRET_PHRASE set; calling API without hash.");
-    }
-
+    // No hash authentication needed - using simple API key auth
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
 
     console.log("Requesting screenshot from ScreenshotMachine API (with hash authentication)");
