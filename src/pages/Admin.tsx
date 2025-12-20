@@ -63,18 +63,16 @@ export default function Admin() {
         return;
       }
 
-      // Check if user has admin role
-      const { data: roleData, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .eq('role', 'admin')
-        .single();
+      // Check if user has admin role (use backend function to avoid RLS issues)
+      const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
+        _user_id: session.user.id,
+        _role: "admin",
+      });
 
-      if (error || !roleData) {
+      if (roleError || !isAdmin) {
         toast.error("Keine Admin-Berechtigung");
         await supabase.auth.signOut();
-        navigate('/admin/login');
+        navigate("/admin/login");
         return;
       }
 
