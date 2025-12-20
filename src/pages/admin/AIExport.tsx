@@ -13,6 +13,10 @@ import {
   Code,
   ArrowRight,
   FileText,
+  Camera,
+  GitCompare,
+  Eye,
+  Shield,
 } from "lucide-react";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import { saveAs } from "file-saver";
@@ -49,7 +53,7 @@ const AIExport = () => {
   <h1>🤖 KI-Analyse Anleitung</h1>
   <p><strong>Umzugscheck.ch</strong> - Vollständige Step-by-Step Anleitung für alle 3 Analyse-Szenarien</p>
   
-  <h2>📋 Übersicht der 3 Szenarien</h2>
+  <h2>📋 Übersicht der Analyse-Szenarien</h2>
   <table>
     <tr>
       <th>Szenario</th>
@@ -67,13 +71,37 @@ const AIExport = () => {
       <td>🔍 Deep Audit</td>
       <td>~10 Min</td>
       <td>Vollständige Analyse</td>
-      <td>Strategische Planung (alle 2-4 Wochen)</td>
+      <td>Strategische Planung</td>
     </tr>
     <tr>
       <td>💻 Code Review</td>
       <td>~5 Min</td>
-      <td>Technische Code-Qualität</td>
-      <td>Entwickler & Tech-Optimierung</td>
+      <td>Code-Qualität</td>
+      <td>Tech-Optimierung</td>
+    </tr>
+    <tr>
+      <td>📸 Screenshot Analyse</td>
+      <td>~3 Min</td>
+      <td>Visuelles Review</td>
+      <td>Design-Feedback</td>
+    </tr>
+    <tr>
+      <td>🔄 Regression Report</td>
+      <td>~3 Min</td>
+      <td>Änderungs-Analyse</td>
+      <td>Nach Updates</td>
+    </tr>
+    <tr>
+      <td>🔎 SEO Deep Dive</td>
+      <td>~8 Min</td>
+      <td>Suchmaschinen-Optimierung</td>
+      <td>SEO-Strategie</td>
+    </tr>
+    <tr>
+      <td>♿ Accessibility Audit</td>
+      <td>~5 Min</td>
+      <td>WCAG-Konformität</td>
+      <td>Barrierefreiheit</td>
     </tr>
   </table>
 
@@ -219,7 +247,7 @@ const AIExport = () => {
         <ChatGPTPromptCopier />
 
         {/* Info Cards */}
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -228,13 +256,12 @@ const AIExport = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Schnelle UX/Conversion-Analyse für sofortige Insights. 
-                Ideal für tägliche Checks.
+              <p className="text-sm text-muted-foreground mb-3">
+                Schnelle UX/Conversion-Analyse (~2 Min)
               </p>
-              <ul className="text-sm space-y-1">
+              <ul className="text-xs space-y-1 text-muted-foreground">
                 <li>• TOP 3 Conversion-Killer</li>
-                <li>• Quick Wins diese Woche</li>
+                <li>• Quick Wins</li>
                 <li>• Mobile UX Check</li>
               </ul>
             </CardContent>
@@ -248,14 +275,12 @@ const AIExport = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Vollständige Funnel + SEO + Performance Analyse. 
-                Für strategische Planung.
+              <p className="text-sm text-muted-foreground mb-3">
+                Vollständige Funnel + SEO Analyse
               </p>
-              <ul className="text-sm space-y-1">
-                <li>• Conversion Funnel Analyse</li>
-                <li>• SEO & Content Audit</li>
-                <li>• Wettbewerbs-Vergleich</li>
+              <ul className="text-xs space-y-1 text-muted-foreground">
+                <li>• Conversion Funnel</li>
+                <li>• SEO & Content</li>
                 <li>• 90-Tage Roadmap</li>
               </ul>
             </CardContent>
@@ -264,20 +289,97 @@ const AIExport = () => {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
+                <Camera className="h-5 w-5 text-purple-500" />
+                Screenshot Analyse
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3">
+                Visuelles Design & UX Review
+              </p>
+              <ul className="text-xs space-y-1 text-muted-foreground">
+                <li>• Visual Hierarchy</li>
+                <li>• Above the Fold</li>
+                <li>• Design Consistency</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Eye className="h-5 w-5 text-pink-500" />
+                Accessibility
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3">
+                WCAG-Konformität prüfen
+              </p>
+              <ul className="text-xs space-y-1 text-muted-foreground">
+                <li>• Perceivable</li>
+                <li>• Operable</li>
+                <li>• Screenreader-Ready</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Additional Cards Row */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
                 <Code className="h-5 w-5 text-green-500" />
                 Code Review
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Technische Code-Qualität Analyse. 
-                Für Entwickler und technische Optimierung.
+              <p className="text-sm text-muted-foreground mb-3">
+                Technische Code-Qualität
               </p>
-              <ul className="text-sm space-y-1">
+              <ul className="text-xs space-y-1 text-muted-foreground">
                 <li>• Performance Optimierung</li>
                 <li>• TypeScript Best Practices</li>
                 <li>• Security Audit</li>
-                <li>• Code Refactoring</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <GitCompare className="h-5 w-5 text-orange-500" />
+                Regression Report
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3">
+                Visuelle Änderungen analysieren
+              </p>
+              <ul className="text-xs space-y-1 text-muted-foreground">
+                <li>• Änderungstypen erkennen</li>
+                <li>• Impact-Bewertung</li>
+                <li>• Baseline-Empfehlung</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Search className="h-5 w-5 text-blue-500" />
+                SEO Deep Dive
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3">
+                Suchmaschinen-Optimierung
+              </p>
+              <ul className="text-xs space-y-1 text-muted-foreground">
+                <li>• On-Page SEO</li>
+                <li>• Technical SEO</li>
+                <li>• Local SEO (CH)</li>
               </ul>
             </CardContent>
           </Card>
