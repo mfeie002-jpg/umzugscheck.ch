@@ -140,6 +140,7 @@ const IndexPremium = () => {
   }
 
   return (
+    <div className="min-h-screen bg-background">
       <ScrollProgress />
       <Helmet>
         <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos | Umzugscheck.ch</title>
