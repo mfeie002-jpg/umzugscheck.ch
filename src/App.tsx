@@ -429,7 +429,7 @@ const App = () => (
                             <Route path="/faq" element={<FAQ />} />
                             <Route path="/kontakt" element={<Contact />} />
                             <Route path="/auth" element={<Auth />} />
-                            <Route path="/admin" element={<Admin />} />
+                            <Route path="/admin" element={<AdminDashboard />} />
                             <Route path="/admin/login" element={<AdminLogin />} />
                             <Route path="/admin/dashboard" element={<AdminDashboard />} />
                             <Route path="/admin/companies" element={<CompaniesAdmin />} />
