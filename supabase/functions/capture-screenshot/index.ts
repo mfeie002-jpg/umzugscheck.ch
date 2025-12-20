@@ -7,10 +7,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// ScreenshotMachine API credentials
-const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY");
-// Optional: only needed if your ScreenshotMachine account uses hash authentication
-const SECRET_PHRASE = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") ?? "";
+// ScreenshotMachine API credentials - use env vars with hardcoded fallback
+const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY") || "892618";
+const SECRET_PHRASE = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") || "iamthebestintheworld";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
