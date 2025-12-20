@@ -13,6 +13,7 @@ import { memo, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { SectionSkeleton } from "@/components/ui/section-skeleton";
 import analytics from "@/lib/analytics";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import IndexPremiumScreenshot from "./IndexPremiumScreenshot";
 
 // Lazy load below-fold sections for better performance
 const LazyPremiumProviderCTA = lazy(() =>
@@ -39,8 +40,6 @@ const LazyPremiumWhyUs = lazy(() =>
   import("@/components/premium/PremiumWhyUs").then((m) => ({ default: m.PremiumWhyUs }))
 );
 
-// Dedicated screenshot render variant (no below-the-fold chunk waterfall)
-const LazyIndexPremiumScreenshot = lazy(() => import("./IndexPremiumScreenshot"));
 const IndexPremium = () => {
   const screenshotMode = useMemo(() => isScreenshotRenderMode(), []);
 
@@ -131,12 +130,10 @@ const IndexPremium = () => {
     ]
   }), [faqItems]);
 
+  // IMPORTANT: Screenshot tools may capture before lazy chunks resolve.
+  // Render screenshot-variant synchronously to avoid blank/white full-page screenshots.
   if (screenshotMode) {
-    return (
-      <Suspense fallback={<div className="min-h-screen bg-background" aria-label="Loading screenshot render" />}>
-        <LazyIndexPremiumScreenshot />
-      </Suspense>
-    );
+    return <IndexPremiumScreenshot />;
   }
 
   return (
