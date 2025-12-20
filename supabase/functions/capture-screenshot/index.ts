@@ -22,7 +22,8 @@ serve(async (req) => {
       delay = 6000, 
       format = 'png', 
       fullPage = false,
-      scroll = true 
+      scroll = true,
+      noCache = true,
     } = await req.json();
 
     if (!url) {
@@ -44,7 +45,7 @@ serve(async (req) => {
       url: url,
       dimension: effectiveDimension,
       format: format,
-      cacheLimit: '0',
+      cacheLimit: noCache ? '0' : '14400', // 0 = no cache, 14400 = 10 days
       delay: String(delay),
       js: 'true',
     });
@@ -80,11 +81,20 @@ serve(async (req) => {
       );
     }
 
-    // Return the image as base64
-    const imageBlob = await response.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(imageBlob)));
+    // Return the image as base64 (handle large images safely)
+    const imageBuffer = await response.arrayBuffer();
+    const bytes = new Uint8Array(imageBuffer);
+    
+    // Convert to base64 in chunks to avoid stack overflow
+    let base64 = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.slice(i, i + chunkSize);
+      base64 += String.fromCharCode(...chunk);
+    }
+    base64 = btoa(base64);
 
-    console.log(`Screenshot captured successfully, size: ${imageBlob.byteLength} bytes`);
+    console.log(`Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes`);
 
     return new Response(
       JSON.stringify({ 
