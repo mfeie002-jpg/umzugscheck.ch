@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
+import { ToolsDocumentation } from "@/components/admin/ToolsDocumentation";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -1864,6 +1865,9 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
             </div>
           </CardContent>
         </Card>
+
+        {/* Documentation Section */}
+        <ToolsDocumentation />
 
         {/* KI-Prompt Generator */}
         <Card className="mb-8">
