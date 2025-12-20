@@ -59,11 +59,17 @@ serve(async (req) => {
       // For full-page, scroll to bottom first to trigger lazy loading
       params.set('scroll', 'true');
       params.set('scrollto', 'bottom');
-      params.set('scrolldelay', '3000'); // Wait 3s after scrolling
+      params.set('scrolldelay', '5000'); // Wait 5s after scrolling (increased)
       params.set('scrollback', 'true'); // Scroll back to top after loading
+      // Wait for page to fully render
+      params.set('waitfor', '.hero,.main-content,main,#app,#root'); // Common content selectors
     } else if (scroll) {
       params.set('scroll', 'true');
     }
+    
+    // Additional render options for JS-heavy pages
+    params.set('device', 'desktop'); // Force desktop rendering
+    params.set('touch', 'false'); // Disable touch emulation
 
     // Generate MD5 hash: md5(url + secretPhrase)
     const hashInput = url + SECRET_PHRASE;
