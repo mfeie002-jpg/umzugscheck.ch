@@ -82,27 +82,17 @@ serve(async (req) => {
     console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`);
 
     // Determine effective dimension for full-page captures
-    // ScreenshotMachine supports `WIDTHxfull`, but long pages can produce white stitching artifacts.
-    // For the homepage we prefer a very tall single-render viewport to avoid gaps.
+    // ScreenshotMachine supports `WIDTHxfull`.
+    // Some long pages can occasionally return "blank" images; we retry with a tall viewport in that case.
     let effectiveDimension = dimension;
     let captureStrategy: 'viewport' | 'xfull' | 'tall' = 'viewport';
 
     if (isFullPage) {
-      if (isHomepage) {
-        // Tall single-render viewport to avoid stitching gaps.
-        // IMPORTANT: ScreenshotMachine becomes unreliable with very tall heights; keep conservative to avoid blank images.
-        const tallHeight = deviceType === 'desktop' ? 8000 : deviceType === 'tablet' ? 7000 : 6000;
-        effectiveDimension = `${width}x${tallHeight}`;
-        captureStrategy = 'tall';
-      } else {
-        effectiveDimension = `${width}xfull`;
-        captureStrategy = 'xfull';
-      }
+      effectiveDimension = `${width}xfull`;
+      captureStrategy = 'xfull';
     }
 
     console.log(`Capture strategy: ${captureStrategy}, effectiveDimension: ${effectiveDimension}`);
-
-
     // Build ScreenshotMachine API URL with hash for authentication
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
@@ -160,18 +150,19 @@ serve(async (req) => {
     // Return the image as base64 (handle large images safely)
     let imageBuffer = await response.arrayBuffer();
 
-    // If ScreenshotMachine returns a tiny (often blank) image for tall strategy, retry with xfull.
-    if (isHomepage && isFullPage && captureStrategy === 'tall' && imageBuffer.byteLength < 50_000) {
-      console.warn(`Tiny screenshot (${imageBuffer.byteLength} bytes) for tall strategy; retrying with xfull...`);
+    // If ScreenshotMachine returns a tiny (often blank) image for xfull strategy, retry with a tall viewport.
+    if (isHomepage && isFullPage && captureStrategy === 'xfull' && imageBuffer.byteLength < 50_000) {
+      console.warn(`Tiny screenshot (${imageBuffer.byteLength} bytes) for xfull strategy; retrying with tall viewport...`);
       const retryParams = new URLSearchParams(params);
-      retryParams.set('dimension', `${width}xfull`);
+      const tallHeight = deviceType === 'desktop' ? 8000 : deviceType === 'tablet' ? 7000 : 6000;
+      retryParams.set('dimension', `${width}x${tallHeight}`);
       const retryUrl = `https://api.screenshotmachine.com?${retryParams.toString()}`;
       const retryResponse = await fetch(retryUrl);
       if (retryResponse.ok) {
         imageBuffer = await retryResponse.arrayBuffer();
         response = retryResponse;
       } else {
-        console.warn('Retry (xfull) failed, keeping tall result');
+        console.warn('Retry (tall) failed, keeping xfull result');
       }
     }
 
