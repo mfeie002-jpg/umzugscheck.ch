@@ -599,6 +599,76 @@ verify_jwt = false
 
 ---
 
+## 🔐 ADMIN LOGIN FRONTEND
+
+### Admin Login Page (/admin/login)
+
+\`\`\`tsx
+// src/pages/admin/Login.tsx
+// Features:
+// - Email/Password login form
+// - Supabase Auth integration
+// - Error handling with toast notifications
+// - Redirect to /admin/dashboard after login
+// - Clean, professional design
+
+// Key implementation:
+const handleLogin = async (email: string, password: string) => {
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    toast.error("Login fehlgeschlagen");
+    return;
+  }
+  // Check if user has admin role
+  const { data: roles } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .eq('role', 'admin')
+    .single();
+  
+  if (!roles) {
+    toast.error("Kein Admin-Zugang");
+    await supabase.auth.signOut();
+    return;
+  }
+  navigate('/admin/dashboard');
+};
+\`\`\`
+
+### Protected Admin Routes
+
+\`\`\`tsx
+// src/components/admin/AdminLayout.tsx
+// - Check auth state on mount
+// - Redirect to /admin/login if not authenticated
+// - Check admin role via user_roles table
+// - Logout button in header/sidebar
+// - Wrap all /admin/* pages
+
+// Key pattern:
+useEffect(() => {
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    (event, session) => {
+      if (!session) navigate('/admin/login');
+    }
+  );
+  return () => subscription.unsubscribe();
+}, []);
+\`\`\`
+
+### Admin Routes Setup
+
+\`\`\`tsx
+// src/App.tsx routes:
+<Route path="/admin/login" element={<AdminLogin />} />
+<Route path="/admin/dashboard" element={<AdminDashboard />} />
+<Route path="/admin/tools" element={<AdminTools />} />
+// ... weitere Admin-Routen
+\`\`\`
+
+---
+
 ## 📝 INSTRUCTIONS FOR LOVABLE
 
 1. **Create Enums first** (app_role, account_status, verification_status, price_level)
@@ -609,6 +679,9 @@ verify_jwt = false
 6. **Create Database Functions** and Triggers
 7. **Create Edge Functions** as needed
 8. **Configure Storage Buckets**
+9. **Create Admin Login Page** (/admin/login with email/password)
+10. **Create AdminLayout** (auth check wrapper for all admin pages)
+11. **Add Admin User** - Nach Registrierung: INSERT INTO user_roles (user_id, role) VALUES ('your-user-id', 'admin')
 
 Important: Use Supabase Cloud for maximum compatibility. Enable auto-confirm email signups!
 `;
