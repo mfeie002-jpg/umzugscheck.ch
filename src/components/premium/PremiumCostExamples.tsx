@@ -298,27 +298,17 @@ export const PremiumCostExamples = () => {
             <CarouselContent className="-ml-2 md:-ml-4">
               {costExamples.map((example, index) => (
                 <CarouselItem key={index} className="pl-2 md:pl-4 basis-[75%] xs:basis-[80%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                  <motion.div
-                    initial={isScreenshot ? false : { opacity: 0, y: 20 }}
-                    whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
-                    animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.05 }}
-                    className="h-full"
-                  >
-                    <Card className="h-full text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border bg-card overflow-hidden group">
+                  <div className="h-full">
+                    <Card className="h-full text-center hover:shadow-xl transition-all duration-500 border bg-card overflow-hidden group">
                       <CardContent className="p-0 h-full flex flex-col">
                         {/* Image or Floor Plan Visual */}
                         <div className="relative overflow-hidden min-h-[140px] sm:min-h-[160px]">
                           {activeView === 'photo' ? (
-                            <motion.div
-                              className="w-full h-[140px] sm:h-[160px] relative"
-                              whileHover={{ scale: 1.05 }}
-                              transition={{ duration: 0.4 }}
-                            >
+                            <div className="w-full h-[140px] sm:h-[160px] relative">
                               <img 
                                 src={example.image} 
                                 alt={example.title}
+                                loading="eager"
                                 className="w-full h-full object-cover"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -327,7 +317,7 @@ export const PremiumCostExamples = () => {
                                   {example.subtitle}
                                 </span>
                               </div>
-                            </motion.div>
+                            </div>
                           ) : (
                             <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 flex items-center justify-center h-[140px] sm:h-[160px]">
                               <div className="w-full max-w-[180px] h-[120px] text-primary">
@@ -344,13 +334,9 @@ export const PremiumCostExamples = () => {
                           <p className="text-xs text-muted-foreground mb-3">
                             {example.subtitle}
                           </p>
-                          <motion.p 
-                            className="text-2xl md:text-3xl font-bold text-primary mb-4"
-                            initial={{ scale: 1 }}
-                            whileHover={{ scale: 1.05 }}
-                          >
+                          <p className="text-2xl md:text-3xl font-bold text-primary mb-4">
                             {example.price}
-                          </motion.p>
+                          </p>
                           <ul className="space-y-1.5 text-left mb-4">
                             {example.details.map((detail, i) => (
                               <li key={i} className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
@@ -367,16 +353,16 @@ export const PremiumCostExamples = () => {
                           >
                             <Button 
                               size="sm" 
-                              className="w-full h-9 text-xs font-semibold group/btn"
+                              className="w-full h-9 text-xs font-semibold"
                             >
                               {example.ctaText}
-                              <ArrowRight className="ml-1.5 h-3 w-3 group-hover/btn:translate-x-0.5 transition-transform" />
+                              <ArrowRight className="ml-1.5 h-3 w-3" />
                             </Button>
                           </Link>
                         </div>
                       </CardContent>
                     </Card>
-                  </motion.div>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -407,28 +393,14 @@ export const PremiumCostExamples = () => {
         </div>
         
         {/* Disclaimer */}
-        <motion.div
-          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
-          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
-          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto italic">
             Richtwerte für lokale Umzüge. Exakte Preise mit Ihrer persönlichen Offerte.
           </p>
-        </motion.div>
+        </div>
         
         {/* CTA */}
-        <motion.div
-          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
-          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
-          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center"
-        >
+        <div className="text-center">
           <Link to="/umzugsrechner">
             <Button size="lg" className="h-12 sm:h-14 px-5 sm:px-10 text-sm sm:text-lg font-semibold shadow-copper hover:shadow-lift transition-all group">
               <Calculator className="mr-1.5 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -440,7 +412,7 @@ export const PremiumCostExamples = () => {
           <p className="mt-4 text-sm text-muted-foreground">
             Kostenlos & unverbindlich in 2 Minuten
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

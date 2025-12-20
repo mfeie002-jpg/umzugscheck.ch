@@ -117,56 +117,101 @@ export const PremiumServicesGrid = () => {
         {/* Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           {services.map((service, idx) => (
-            <motion.div
-              key={idx}
-              initial={screenshotMode ? false : { opacity: 0, y: 25 }}
-              whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.05 }}
-              whileHover={{ y: -6 }}
-              className="group"
-            >
-              <Link
-                to={service.link}
-                className="relative block h-full bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-medium border border-border/50 hover:border-primary/30 transition-all duration-300"
-              >
-                {/* Image */}
-                <div className="relative h-24 xs:h-28 sm:h-32 md:h-36 overflow-hidden">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            screenshotMode ? (
+              <div key={idx} className="group">
+                <Link
+                  to={service.link}
+                  className="relative block h-full bg-card rounded-xl overflow-hidden shadow-soft border border-border/50 transition-all duration-300"
+                >
+                  {/* Image */}
+                  <div className="relative h-24 xs:h-28 sm:h-32 md:h-36 overflow-hidden">
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      loading="eager"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
-                  {/* Badge */}
-                  {service.badge && (
-                    <span className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold text-white ${service.badgeColor}`}>
-                      {service.badge}
+                    {/* Badge */}
+                    {service.badge && (
+                      <span className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold text-white ${service.badgeColor}`}>
+                        {service.badge}
+                      </span>
+                    )}
+
+                    {/* Title on Image */}
+                    <h3 className="absolute bottom-2 left-3 right-3 text-sm sm:text-base font-bold text-white drop-shadow-lg">
+                      {service.title}
+                    </h3>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-3 sm:p-4">
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-2">
+                      {service.description}
+                    </p>
+
+                    {/* Link */}
+                    <span className="inline-flex items-center text-xs sm:text-sm font-medium text-primary transition-colors">
+                      Mehr erfahren
+                      <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                     </span>
-                  )}
+                  </div>
+                </Link>
+              </div>
+            ) : (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                whileHover={{ y: -6 }}
+                className="group"
+              >
+                <Link
+                  to={service.link}
+                  className="relative block h-full bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-medium border border-border/50 hover:border-primary/30 transition-all duration-300"
+                >
+                  {/* Image */}
+                  <div className="relative h-24 xs:h-28 sm:h-32 md:h-36 overflow-hidden">
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
-                  {/* Title on Image */}
-                  <h3 className="absolute bottom-2 left-3 right-3 text-sm sm:text-base font-bold text-white drop-shadow-lg">
-                    {service.title}
-                  </h3>
-                </div>
+                    {/* Badge */}
+                    {service.badge && (
+                      <span className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold text-white ${service.badgeColor}`}>
+                        {service.badge}
+                      </span>
+                    )}
 
-                {/* Content */}
-                <div className="p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-2">
-                    {service.description}
-                  </p>
+                    {/* Title on Image */}
+                    <h3 className="absolute bottom-2 left-3 right-3 text-sm sm:text-base font-bold text-white drop-shadow-lg">
+                      {service.title}
+                    </h3>
+                  </div>
 
-                  {/* Link */}
-                  <span className="inline-flex items-center text-xs sm:text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
-                    Mehr erfahren
-                    <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
+                  {/* Content */}
+                  <div className="p-3 sm:p-4">
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-2">
+                      {service.description}
+                    </p>
+
+                    {/* Link */}
+                    <span className="inline-flex items-center text-xs sm:text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
+                      Mehr erfahren
+                      <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            )
           ))}
         </div>
 
@@ -187,20 +232,31 @@ export const PremiumServicesGrid = () => {
         </BlurReveal>
 
         {/* CTA */}
-        <motion.div
-          initial={screenshotMode ? false : { opacity: 0, y: 15 }}
-          whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="text-center mt-8"
-        >
-          <Link to="/dienstleistungen">
-            <Button variant="secondary" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold group">
-              Alle Services ansehen
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-            </Button>
-          </Link>
-        </motion.div>
+        {screenshotMode ? (
+          <div className="text-center mt-8">
+            <Link to="/dienstleistungen">
+              <Button variant="secondary" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold group">
+                Alle Services ansehen
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="text-center mt-8"
+          >
+            <Link to="/dienstleistungen">
+              <Button variant="secondary" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold group">
+                Alle Services ansehen
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+              </Button>
+            </Link>
+          </motion.div>
+        )}
       </div>
     </section>
   );

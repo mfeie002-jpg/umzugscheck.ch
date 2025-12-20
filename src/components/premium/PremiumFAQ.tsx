@@ -52,20 +52,15 @@ export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
           </BlurReveal>
 
           {/* Accordion */}
-          <motion.div
-            initial={screenshotMode ? false : { opacity: 0, y: 10 }}
-            whileInView={screenshotMode ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
+          {screenshotMode ? (
             <Accordion type="single" collapsible className="space-y-2">
               {items.map((item, idx) => (
                 <AccordionItem
                   key={idx}
                   value={`item-${idx}`}
-                  className="bg-card rounded-lg border border-border/50 px-4 shadow-sm data-[state=open]:shadow-soft data-[state=open]:border-primary/20 transition-all"
+                  className="bg-card rounded-lg border border-border/50 px-4 shadow-sm"
                 >
-                  <AccordionTrigger className="text-left font-medium text-foreground hover:text-primary py-3 hover:no-underline text-sm">
+                  <AccordionTrigger className="text-left font-medium text-foreground py-3 hover:no-underline text-sm">
                     <div className="flex items-center gap-2.5">
                       <span
                         className="flex-shrink-0 w-6 h-6 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground"
@@ -82,7 +77,39 @@ export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
                 </AccordionItem>
               ))}
             </Accordion>
-          </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <Accordion type="single" collapsible className="space-y-2">
+                {items.map((item, idx) => (
+                  <AccordionItem
+                    key={idx}
+                    value={`item-${idx}`}
+                    className="bg-card rounded-lg border border-border/50 px-4 shadow-sm data-[state=open]:shadow-soft data-[state=open]:border-primary/20 transition-all"
+                  >
+                    <AccordionTrigger className="text-left font-medium text-foreground hover:text-primary py-3 hover:no-underline text-sm">
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="flex-shrink-0 w-6 h-6 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground"
+                          aria-hidden="true"
+                        >
+                          {idx + 1}
+                        </span>
+                        <span>{item.question}</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-3 pl-8 text-sm leading-relaxed">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </motion.div>
+          )}
 
           {/* Contact CTA with GlowingCard */}
           <BlurReveal delay={0.2} className="mt-8 flex justify-center">
