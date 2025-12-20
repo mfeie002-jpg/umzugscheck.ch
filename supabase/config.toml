@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.ai-website-analyze]
 verify_jwt = false
+
+[functions.firecrawl-map]
+verify_jwt = false
