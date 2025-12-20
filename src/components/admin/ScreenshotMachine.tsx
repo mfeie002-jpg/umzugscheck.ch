@@ -112,10 +112,29 @@ const DIMENSIONS = [
   { value: "360x640", label: "Mobile Android (360x640)" },
 ];
 
+const DELAY_OPTIONS = [
+  { value: "2000", label: "2 Sekunden (schnell)" },
+  { value: "4000", label: "4 Sekunden" },
+  { value: "6000", label: "6 Sekunden (Standard)" },
+  { value: "8000", label: "8 Sekunden" },
+  { value: "10000", label: "10 Sekunden" },
+  { value: "15000", label: "15 Sekunden (langsam)" },
+  { value: "20000", label: "20 Sekunden (sehr langsam)" },
+];
+
+const FORMAT_OPTIONS = [
+  { value: "png", label: "PNG (beste Qualität)" },
+  { value: "jpg", label: "JPG (kleinere Datei)" },
+];
+
 export function ScreenshotMachine() {
   const [url, setUrl] = useState("");
   const [dimension, setDimension] = useState("1920x1080");
-  const [fullPage, setFullPage] = useState(false);
+  const [fullPage, setFullPage] = useState(true);
+  const [delay, setDelay] = useState("10000");
+  const [format, setFormat] = useState<"png" | "jpg">("png");
+  const [scrollToBottom, setScrollToBottom] = useState(true);
+  const [noCache, setNoCache] = useState(true);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<ScreenshotResult[]>([]);
   
@@ -136,6 +155,9 @@ export function ScreenshotMachine() {
   const [exportLoading, setExportLoading] = useState(false);
   const [archiveLoading, setArchiveLoading] = useState(false);
   const [top20Loading, setTop20Loading] = useState(false);
+  
+  // Advanced settings visibility
+  const [showAdvanced, setShowAdvanced] = useState(false);
   // Capture screenshot via backend (with proper hash authentication)
   const captureScreenshotViaBackend = async (targetUrl: string): Promise<ScreenshotResult | null> => {
     const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
@@ -143,7 +165,10 @@ export function ScreenshotMachine() {
       url: urlForShot,
       dimension,
       fullPage,
-      delay: fullPage ? 10000 : 6000,
+      delay: parseInt(delay),
+      format,
+      scroll: scrollToBottom,
+      noCache,
     });
 
     if (result.success && result.image) {
@@ -758,16 +783,102 @@ export function ScreenshotMachine() {
               </Select>
             </div>
 
+            <div className="space-y-2">
+              <Label>Verzögerung (Delay)</Label>
+              <Select value={delay} onValueChange={setDelay}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DELAY_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Wartezeit bis die Seite vollständig geladen ist
+              </p>
+            </div>
+          </div>
+
+          {/* Quick toggles */}
+          <div className="grid gap-4 md:grid-cols-3">
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-1">
                 <Label className="text-base">Full Page</Label>
-                <p className="text-sm text-muted-foreground">
-                  Gesamte Seite erfassen ({dimension.split("x")[0]}xfull)
+                <p className="text-xs text-muted-foreground">
+                  Gesamte Seite ({dimension.split("x")[0]}xfull)
                 </p>
               </div>
               <Switch checked={fullPage} onCheckedChange={setFullPage} />
             </div>
+
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="space-y-1">
+                <Label className="text-base">Auto-Scroll</Label>
+                <p className="text-xs text-muted-foreground">
+                  Seite automatisch scrollen
+                </p>
+              </div>
+              <Switch checked={scrollToBottom} onCheckedChange={setScrollToBottom} />
+            </div>
+
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="space-y-1">
+                <Label className="text-base">Kein Cache</Label>
+                <p className="text-xs text-muted-foreground">
+                  Immer frisch laden
+                </p>
+              </div>
+              <Switch checked={noCache} onCheckedChange={setNoCache} />
+            </div>
           </div>
+
+          {/* Advanced settings toggle */}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="w-full justify-between"
+          >
+            Erweiterte Einstellungen
+            <Badge variant="outline">{showAdvanced ? "−" : "+"}</Badge>
+          </Button>
+
+          {showAdvanced && (
+            <div className="grid gap-4 md:grid-cols-2 p-4 bg-muted/50 rounded-lg">
+              <div className="space-y-2">
+                <Label>Format</Label>
+                <Select value={format} onValueChange={(v) => setFormat(v as "png" | "jpg")}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {FORMAT_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="p-4 border rounded-lg bg-background">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Aktuelle Einstellungen</Label>
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <p>• Auflösung: {fullPage ? `${dimension.split("x")[0]}xfull` : dimension}</p>
+                    <p>• Delay: {parseInt(delay) / 1000}s</p>
+                    <p>• Format: {format.toUpperCase()}</p>
+                    <p>• Auto-Scroll: {scrollToBottom ? "Ja" : "Nein"}</p>
+                    <p>• Cache: {noCache ? "Deaktiviert" : "Aktiviert"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex gap-2">

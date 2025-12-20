@@ -7,6 +7,7 @@ export interface ScreenshotOptions {
   format?: 'png' | 'jpg';
   fullPage?: boolean;
   scroll?: boolean;
+  noCache?: boolean;
 }
 
 export interface ScreenshotResult {
@@ -33,6 +34,7 @@ export async function captureScreenshot(options: ScreenshotOptions): Promise<Scr
         format: options.format || 'png',
         fullPage: options.fullPage || false,
         scroll: options.scroll !== false,
+        noCache: options.noCache !== false,
       }
     });
 
