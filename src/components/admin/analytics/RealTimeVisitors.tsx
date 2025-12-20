@@ -15,11 +15,11 @@ interface ActiveVisitor {
 }
 
 const MOCK_VISITORS: ActiveVisitor[] = [
-  { id: "v1", page: "/preisrechner", device: "desktop", country: "CH", city: "Zürich", timeOnSite: "3:24", referrer: "Google" },
-  { id: "v2", page: "/umzugsofferten", device: "mobile", country: "CH", city: "Bern", timeOnSite: "1:45", referrer: "Direct" },
-  { id: "v3", page: "/firmen", device: "desktop", country: "CH", city: "Basel", timeOnSite: "2:12", referrer: "Google" },
+  { id: "v1", page: "/pricing", device: "desktop", country: "CH", city: "Zürich", timeOnSite: "3:24", referrer: "Google" },
+  { id: "v2", page: "/services", device: "mobile", country: "CH", city: "Bern", timeOnSite: "1:45", referrer: "Direct" },
+  { id: "v3", page: "/companies", device: "desktop", country: "CH", city: "Basel", timeOnSite: "2:12", referrer: "Google" },
   { id: "v4", page: "/", device: "mobile", country: "DE", city: "Berlin", timeOnSite: "0:32", referrer: "Facebook" },
-  { id: "v5", page: "/umzugsfirmen/zuerich", device: "desktop", country: "CH", city: "Winterthur", timeOnSite: "4:56", referrer: "Google" },
+  { id: "v5", page: "/regions/zurich", device: "desktop", country: "CH", city: "Winterthur", timeOnSite: "4:56", referrer: "Google" },
 ];
 
 export function RealTimeVisitors() {

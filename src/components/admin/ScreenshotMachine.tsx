@@ -59,55 +59,21 @@ interface ArchivedScreenshot {
   archivedAt: Date;
 }
 
-// Always use production domain for screenshots, not the sandbox/preview domain
-const DEFAULT_SITE_ORIGIN = "https://www.umzugscheck.ch";
+// Site origin is now configurable - empty for universal use
+const DEFAULT_SITE_ORIGIN = "";
 
-const UC_RENDER_HOSTS = ["umzugscheck.ch", "www.umzugscheck.ch"];
+const UC_RENDER_HOSTS: string[] = [];
 
 const PRESET_URLS = [
-  { label: "Homepage", url: `${DEFAULT_SITE_ORIGIN}/` },
-  { label: "Umzugsofferten", url: `${DEFAULT_SITE_ORIGIN}/umzugsofferten` },
-  { label: "Preisrechner", url: `${DEFAULT_SITE_ORIGIN}/preisrechner` },
-  { label: "Firmenverzeichnis", url: `${DEFAULT_SITE_ORIGIN}/firmen` },
-  { label: "Beste Umzugsfirma", url: `${DEFAULT_SITE_ORIGIN}/beste-umzugsfirma` },
-  { label: "Günstige Umzugsfirma", url: `${DEFAULT_SITE_ORIGIN}/guenstige-umzugsfirma` },
-  { label: "Zürich", url: `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/zuerich` },
-  { label: "Bern", url: `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/bern` },
+  { label: "Google", url: "https://www.google.com" },
+  { label: "GitHub", url: "https://github.com" },
+  { label: "Hacker News", url: "https://news.ycombinator.com" },
+  { label: "Reddit", url: "https://www.reddit.com" },
 ];
 
-// Comprehensive list of all important pages to monitor
+// Comprehensive list of example pages - user can customize
 const TOP_20_URLS = [
-  // === CORE CONVERSION FUNNELS ===
-  `${DEFAULT_SITE_ORIGIN}/`,                          // Homepage - main entry
-  `${DEFAULT_SITE_ORIGIN}/umzugsofferten`,           // Main lead funnel
-  `${DEFAULT_SITE_ORIGIN}/preisrechner`,             // Price calculator
-  
-  // === COMPANY RANKINGS ===
-  `${DEFAULT_SITE_ORIGIN}/firmen`,                   // Company directory
-  `${DEFAULT_SITE_ORIGIN}/beste-umzugsfirma`,        // Best companies ranking
-  `${DEFAULT_SITE_ORIGIN}/guenstige-umzugsfirma`,    // Cheapest companies ranking
-  
-  // === TOP REGIONS (by search volume) ===
-  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/zuerich`,     // Zürich region
-  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/bern`,        // Bern region
-  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/basel`,       // Basel region
-  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/aargau`,      // Aargau region
-  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/luzern`,      // Luzern region
-  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/st-gallen`,   // St. Gallen region
-  
-  // === SERVICE PAGES ===
-  `${DEFAULT_SITE_ORIGIN}/privatumzug`,              // Private moving service
-  `${DEFAULT_SITE_ORIGIN}/firmenumzug`,              // Business moving service
-  `${DEFAULT_SITE_ORIGIN}/reinigung`,                // Cleaning service
-  `${DEFAULT_SITE_ORIGIN}/entsorgung`,               // Disposal service
-  
-  // === CONTENT / SEO PAGES ===
-  `${DEFAULT_SITE_ORIGIN}/umzugskosten`,             // Moving costs info
-  `${DEFAULT_SITE_ORIGIN}/ratgeber`,                 // Guide/advice hub
-  `${DEFAULT_SITE_ORIGIN}/checkliste`,               // Moving checklist
-  
-  // === B2B / PROVIDER PAGES ===
-  `${DEFAULT_SITE_ORIGIN}/fuer-firmen`,              // For companies / become provider
+  "https://example.com",
 ];
 
 

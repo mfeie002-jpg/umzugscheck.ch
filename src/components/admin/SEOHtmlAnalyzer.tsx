@@ -63,16 +63,13 @@ interface SEOIssue {
   details?: string;
 }
 
-const DEFAULT_SITE_ORIGIN = "https://www.umzugscheck.ch";
+const DEFAULT_SITE_ORIGIN = "";
 
 const PRESET_URLS = [
-  { label: "Homepage", url: `${DEFAULT_SITE_ORIGIN}/` },
-  { label: "Umzugsofferten", url: `${DEFAULT_SITE_ORIGIN}/umzugsofferten` },
-  { label: "Preisrechner", url: `${DEFAULT_SITE_ORIGIN}/preisrechner` },
-  { label: "Firmenverzeichnis", url: `${DEFAULT_SITE_ORIGIN}/firmen` },
-  { label: "Beste Umzugsfirma", url: `${DEFAULT_SITE_ORIGIN}/beste-umzugsfirma` },
-  { label: "Zürich", url: `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/zuerich` },
-  { label: "Bern", url: `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/bern` },
+  { label: "Google", url: "https://www.google.com" },
+  { label: "GitHub", url: "https://github.com" },
+  { label: "Hacker News", url: "https://news.ycombinator.com" },
+  { label: "Reddit", url: "https://www.reddit.com" },
 ];
 
 export function SEOHtmlAnalyzer() {
@@ -390,7 +387,7 @@ export function SEOHtmlAnalyzer() {
           {/* URL Input */}
           <div className="flex gap-2">
             <Input
-              placeholder="https://www.umzugscheck.ch/..."
+              placeholder="https://example.com/..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               className="flex-1"

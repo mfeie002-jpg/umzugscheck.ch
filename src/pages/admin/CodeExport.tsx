@@ -105,7 +105,7 @@ const CodeExport = () => {
       .join("\n");
 
     const timestamp = new Date().toISOString();
-    const header = `# Umzugscheck.ch - Design System & Components Export (Gefiltert)
+    const header = `# Design System & Components Export (Gefiltert)
 # Generated: ${timestamp}
 # Enthält: ${Array.from(selectedSections).join(", ")}
 
@@ -119,7 +119,7 @@ const CodeExport = () => {
     const a = document.createElement("a");
     a.href = url;
     const suffix = selectedSections.size === sections.length ? "" : "-filtered";
-    a.download = `umzugscheck-code-export${suffix}-${new Date().toISOString().split("T")[0]}.txt`;
+    a.download = `code-export${suffix}-${new Date().toISOString().split("T")[0]}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

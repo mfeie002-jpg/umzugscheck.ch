@@ -48,11 +48,9 @@ interface LighthouseResult {
 }
 
 const TEST_URLS = [
-  { label: "Homepage", url: "https://umzugscheck.ch" },
-  { label: "Umzugsofferten", url: "https://umzugscheck.ch/umzugsofferten" },
-  { label: "Preisrechner", url: "https://umzugscheck.ch/preisrechner" },
-  { label: "Firmen", url: "https://umzugscheck.ch/firmen" },
-  { label: "Beste Firma", url: "https://umzugscheck.ch/beste-umzugsfirma" },
+  { label: "Google", url: "https://www.google.com" },
+  { label: "GitHub", url: "https://github.com" },
+  { label: "Hacker News", url: "https://news.ycombinator.com" },
 ];
 
 export function LighthouseAudit() {
