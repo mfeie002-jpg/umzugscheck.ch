@@ -94,6 +94,7 @@ const MobileBottomNav = lazy(() => import("./components/MobileBottomNav"));
 const Calculator = lazy(() => import("./pages/Calculator"));
 const CalculatorResults = lazy(() => import("./pages/CalculatorResults"));
 const EstimateResult = lazy(() => import("./pages/EstimateResult"));
+const AnalysisReportPage = lazy(() => import("./pages/AnalysisReportPage"));
 const LeadRequest = lazy(() => import("./pages/LeadRequest"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
 const DemoResult = lazy(() => import("./pages/DemoResult"));
@@ -334,6 +335,7 @@ const App = () => (
                             <Route path="/rechner/ai" element={<AIUpload />} />
                             <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
                             <Route path="/ergebnis/:id" element={<EstimateResult />} />
+                            <Route path="/analyse/:token" element={<AnalysisReportPage />} />
                             <Route path="/demo-ergebnis" element={<DemoResult />} />
                             <Route path="/demo" element={<Navigate to="/demo-ergebnis" replace />} />
                             <Route path="/bundle" element={<BundleEstimates />} />
