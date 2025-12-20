@@ -72,14 +72,14 @@ export function ChatGPTPromptCopier({
   const [copied, setCopied] = useState(false);
 
   const defaultData: PromptData = {
-    projectName: "Umzugscheck.ch",
-    projectUrl: "https://umzugscheck.ch",
-    conversionRate: 14,
-    bounceRate: 38.5,
-    mobileScore: 67,
-    avgSessionDuration: "2:45",
-    topPages: ["Homepage", "Rechner", "Firmen-Verzeichnis", "Offerten"],
-    competitors: ["movu.ch", "comparis.ch", "umzug.ch"],
+    projectName: "",
+    projectUrl: "",
+    conversionRate: undefined,
+    bounceRate: undefined,
+    mobileScore: undefined,
+    avgSessionDuration: "",
+    topPages: [],
+    competitors: [],
     ...data,
   };
 

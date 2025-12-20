@@ -73,9 +73,9 @@ export function generateQuickAnalysisPrompt(data: PromptData): string {
   return `# Website Quick Analysis
 
 ## Projekt
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
-- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
-- **Branche:** Swiss Moving Comparison Platform
+- **Name:** ${data.projectName || "[Projektname]"}
+- **URL:** ${data.projectUrl || "[URL eingeben]"}
+- **Branche:** ${data.projectName ? "Comparison Platform" : "[Branche]"}
 
 ## Aktuelle Metriken
 - Conversion Rate: ${data.conversionRate || 14}%
@@ -100,16 +100,16 @@ Halte die Antwort kurz und actionable.`;
 }
 
 export function generateDeepAuditPrompt(data: PromptData): string {
-  const competitors = data.competitors?.join(", ") || "movu.ch, comparis.ch";
-  const topPages = data.topPages?.join("\n- ") || "Homepage, Rechner, Firmen-Verzeichnis";
+  const competitors = data.competitors?.join(", ") || "[Wettbewerber eingeben]";
+  const topPages = data.topPages?.join("\n- ") || "Homepage, Produktseite, Kontakt";
   
   return `# Comprehensive Website Audit
 
 ## Projekt Details
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
-- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
-- **Branche:** Swiss Moving Comparison Platform
-- **Zielgruppe:** Privatpersonen und Firmen, die umziehen möchten
+- **Name:** ${data.projectName || "[Projektname]"}
+- **URL:** ${data.projectUrl || "[URL eingeben]"}
+- **Branche:** ${data.projectName ? "Comparison Platform" : "[Branche eingeben]"}
+- **Zielgruppe:** [Zielgruppe beschreiben]
 
 ## Aktuelle Performance-Metriken
 | Metrik | Wert | Benchmark |
@@ -180,7 +180,7 @@ export function generateCodeReviewPrompt(data: PromptData): string {
   return `# Technical Code Review
 
 ## Projekt
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
+- **Name:** ${data.projectName || "[Projektname]"}
 - **Stack:** React 18, Vite, TypeScript, Tailwind CSS, Supabase
 - **Ziel:** Code-Qualität und Performance optimieren
 
@@ -246,8 +246,8 @@ export function generateScreenshotAnalysisPrompt(data: PromptData): string {
   return `# Visual Screenshot Analysis
 
 ## Projekt
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
-- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
+- **Name:** ${data.projectName || "[Projektname]"}
+- **URL:** ${data.projectUrl || "[URL eingeben]"}
 ${screenshotInfo}
 
 ## Analysiere den Screenshot und bewerte:
@@ -304,8 +304,8 @@ export function generateRegressionReportPrompt(data: PromptData): string {
   return `# Visual Regression Analysis Report
 
 ## Projekt
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
-- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
+- **Name:** ${data.projectName || "[Projektname]"}
+- **URL:** ${data.projectUrl || "[URL eingeben]"}
 ${regressionInfo}
 
 ## Deine Aufgabe
@@ -347,15 +347,15 @@ Analysiere die Unterschiede zwischen der Baseline und dem neuen Screenshot:
 }
 
 export function generateSEOAuditPrompt(data: PromptData): string {
-  const topPages = data.topPages?.join("\n- ") || "Homepage, Rechner, Firmen-Verzeichnis";
+  const topPages = data.topPages?.join("\n- ") || "Homepage, Produktseite, Kontakt";
   
   return `# SEO Deep Dive Audit
 
 ## Projekt
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
-- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
-- **Branche:** Swiss Moving Comparison Platform
-- **Markt:** Schweiz (DE-CH)
+- **Name:** ${data.projectName || "[Projektname]"}
+- **URL:** ${data.projectUrl || "[URL eingeben]"}
+- **Branche:** ${data.projectName ? "Comparison Platform" : "[Branche eingeben]"}
+- **Markt:** [Markt/Region]
 
 ## Zu analysierende Seiten
 - ${topPages}
@@ -415,7 +415,7 @@ Sofort umsetzbare Verbesserungen
 Keywords für die die Seite ranken sollte
 
 ### D) Konkurrenz-Vergleich
-Wo stehen wir vs. movu.ch, comparis.ch?
+Wo stehen wir vs. den Wettbewerbern?
 
 ### E) 6-Monats SEO Roadmap
 Priorisierte Maßnahmen`;
@@ -425,8 +425,8 @@ export function generateAccessibilityAuditPrompt(data: PromptData): string {
   return `# Accessibility (a11y) Audit
 
 ## Projekt
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
-- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
+- **Name:** ${data.projectName || "[Projektname]"}
+- **URL:** ${data.projectUrl || "[URL eingeben]"}
 - **Ziel-Standard:** WCAG 2.1 Level AA
 
 ## Prüfbereiche
@@ -490,9 +490,9 @@ export function generateCompleteAnalysisPrompt(data: PromptData): string {
   return `# UMFASSENDE WEBSITE-ANALYSE (7-in-1)
   
 ## Projekt-Information
-- **Name:** ${data.projectName || "Umzugscheck.ch"}
-- **URL:** ${data.projectUrl || "https://umzugscheck.ch"}
-- **Branche:** Swiss Moving Comparison Platform
+- **Name:** ${data.projectName || "[Projektname]"}
+- **URL:** ${data.projectUrl || "[URL eingeben]"}
+- **Branche:** ${data.projectName ? "Comparison Platform" : "[Branche eingeben]"}
 
 ## Aktuelle Metriken
 - Conversion Rate: ${data.conversionRate || 14}%
