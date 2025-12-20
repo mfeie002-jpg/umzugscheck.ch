@@ -16,7 +16,7 @@ import { PremiumCostExamples } from "@/components/premium/PremiumCostExamples";
 import { PremiumAIShowcase } from "@/components/premium/PremiumAIShowcase";
 import { PremiumRegions } from "@/components/premium/PremiumRegions";
 import { PremiumWhyUs } from "@/components/premium/PremiumWhyUs";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 
 /**
  * Screenshot-Rendering Variante der Homepage (uc_render=1).
