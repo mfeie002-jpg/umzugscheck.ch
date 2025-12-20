@@ -247,6 +247,7 @@ const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailabili
 const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
 const AdminTools = lazy(() => import("./pages/admin/Tools"));
+const AdminScreenshots = lazy(() => import("./pages/admin/Screenshots"));
 const AdminAIExport = lazy(() => import("./pages/admin/AIExport"));
 
 // Customer pages
@@ -454,6 +455,7 @@ const App = () => (
                             <Route path="/admin/availability" element={<ProviderAvailability />} />
                             <Route path="/admin/code-export" element={<CodeExport />} />
                             <Route path="/admin/tools" element={<AdminTools />} />
+                            <Route path="/admin/screenshots" element={<AdminScreenshots />} />
                             <Route path="/admin/ai-export" element={<AdminAIExport />} />
                             <Route path="/kunden-onboarding" element={<KundenOnboarding />} />
                             <Route path="/ratgeber/umzugstipps" element={<UmzugstippsGuide />} />

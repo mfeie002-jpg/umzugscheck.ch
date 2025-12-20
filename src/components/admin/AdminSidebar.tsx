@@ -8,6 +8,7 @@ import {
   Brain, 
   Wrench,
   Download,
+  Camera,
   LayoutDashboard,
   ChevronLeft,
   ChevronRight,
@@ -145,6 +146,11 @@ const navItems = [
     title: "E-Mail Automation", 
     href: "/admin/email-automation", 
     icon: Mail 
+  },
+  { 
+    title: "Screenshots", 
+    href: "/admin/screenshots", 
+    icon: Camera
   },
   { 
     title: "Tools & Downloads", 
