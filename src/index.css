@@ -1162,12 +1162,18 @@ img {
 
 /* Screenshot rendering (uc_render=1)
    - Some sections use framer-motion `whileInView` with `opacity: 0` until scrolled into view.
-   - Full-page screenshot tools can then produce huge white blocks.
-   - Force hidden motion elements visible only in screenshot mode.
+   - Our CLS utilities use `content-visibility: auto`, which many screenshot tools won't paint.
+   - Force everything visible only in screenshot mode.
 */
 html.uc-render [style*="opacity: 0"],
 html.uc-render [style*="opacity:0"] {
   opacity: 1 !important;
+}
+
+html.uc-render .content-visibility-auto,
+html.uc-render .content-visibility-auto-tall {
+  content-visibility: visible !important;
+  contain-intrinsic-size: none !important;
 }
 
 /* Skeleton placeholder for images */
