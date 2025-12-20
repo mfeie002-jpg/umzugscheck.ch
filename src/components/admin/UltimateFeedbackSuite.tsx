@@ -1584,7 +1584,6 @@ Der Code ist brand-neutral und anpassbar.
           };
           
           zip.file("user-segments/user_segments.json", JSON.stringify(userSegments, null, 2));
-          }
         } catch (e) {
           console.log("User Segments nicht verfügbar:", e);
         }
