@@ -1192,6 +1192,7 @@ html.uc-render .content-visibility-auto-tall,
 html.uc-render [style*="content-visibility"] {
   content-visibility: visible !important;
   contain-intrinsic-size: none !important;
+  contain: none !important;
 }
 
 /* Ensure all sections and containers are fully visible */

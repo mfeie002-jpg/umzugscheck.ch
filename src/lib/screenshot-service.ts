@@ -26,16 +26,30 @@ export interface ScreenshotResult {
  */
 export async function captureScreenshot(options: ScreenshotOptions): Promise<ScreenshotResult> {
   try {
+    // Cache-buster for screenshot tooling (prevents stale HTML/JS/service-worker caches during captures)
+    const cacheBuster = options.noCache === false ? '' : `uc_cb=${Date.now()}`;
+    const urlWithCacheBuster = (() => {
+      try {
+        const u = new URL(options.url);
+        if (cacheBuster) u.searchParams.set('uc_cb', String(Date.now()));
+        return u.toString();
+      } catch {
+        return options.url;
+      }
+    })();
+
     const { data, error } = await supabase.functions.invoke('capture-screenshot', {
       body: {
-        url: options.url,
+        url: urlWithCacheBuster,
         dimension: options.dimension || '1920x1080',
         delay: options.delay || 6000,
         format: options.format || 'png',
         fullPage: options.fullPage || false,
-        scroll: options.scroll !== false,
+        // IMPORTANT: many "scroll" based full-page captures create large white gaps.
+        // When fullPage is requested, rely on stitching mode instead of scrolling.
+        scroll: options.fullPage ? false : options.scroll !== false,
         noCache: options.noCache !== false,
-      }
+      },
     });
 
     if (error) {
