@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Marquee } from "@/components/common/Marquee";
 import { GlowingCard } from "@/components/common/GlowingCard";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import {
   Carousel,
   CarouselContent,
@@ -64,6 +65,7 @@ export const PremiumSocialProof = memo(() => {
   const [reviews, setReviews] = useState<Testimonial[]>(fallbackTestimonials);
   const [loading, setLoading] = useState(true);
   const [avgRating, setAvgRating] = useState(4.8);
+  const isScreenshot = isScreenshotRenderMode();
 
   const fetchReviews = useCallback(async () => {
     try {
@@ -101,8 +103,9 @@ export const PremiumSocialProof = memo(() => {
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 10 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           className="text-center mb-6"
         >

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import step1Img from "@/assets/step-1-form.jpg";
 import step2Img from "@/assets/step-2-analysis.jpg";
 import step3Img from "@/assets/step-3-choose.jpg";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 const steps = [
   {
@@ -40,13 +41,16 @@ const socialProof = [
 ];
 
 export const PremiumHowItWorks = () => {
+  const isScreenshot = isScreenshotRenderMode();
+  
   return (
     <section className="py-12 md:py-16 bg-muted/30 overflow-hidden" aria-labelledby="how-it-works-heading">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 15 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
           className="text-center mb-10 md:mb-12"
@@ -68,8 +72,9 @@ export const PremiumHowItWorks = () => {
           {steps.map((step, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={isScreenshot ? false : { opacity: 0, y: 30 }}
+              whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+              animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.15 }}
               className="group relative"
@@ -137,8 +142,9 @@ export const PremiumHowItWorks = () => {
 
         {/* Social Trust Bar */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.4 }}
           className="flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12 mb-10 py-6 px-4 bg-card/50 rounded-2xl border border-border/30"
@@ -158,8 +164,9 @@ export const PremiumHowItWorks = () => {
         
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 15 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.5 }}
           className="text-center"

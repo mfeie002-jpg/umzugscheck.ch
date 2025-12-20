@@ -4,6 +4,7 @@ import { memo } from "react";
 import { GlowingCard } from "@/components/common/GlowingCard";
 import { BlurReveal } from "@/components/common/BlurReveal";
 import { AnimatedCounter } from "@/components/common/AnimatedCounter";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 const usps = [
   {
@@ -52,6 +53,8 @@ const trustBadges = [
 ];
 
 export const PremiumWhyUs = memo(() => {
+  const isScreenshot = isScreenshotRenderMode();
+  
   return (
     <section className="py-10 sm:py-12 md:py-16 bg-muted/30 relative overflow-hidden" aria-labelledby="why-us-heading">
       {/* Subtle background pattern */}
@@ -105,8 +108,9 @@ export const PremiumWhyUs = memo(() => {
         
         {/* Trust Footer */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={isScreenshot ? false : { opacity: 0 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1 }}
+          animate={isScreenshot ? { opacity: 1 } : undefined}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
           className="mt-8 text-center"
