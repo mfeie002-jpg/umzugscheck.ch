@@ -72,13 +72,15 @@ export function ScreenshotArchive() {
           groups[timestamp] = [];
         }
 
-        const { data: urlData } = supabase.storage
+        const { data: urlData, error: urlError } = await supabase.storage
           .from('screenshots-archive')
-          .getPublicUrl(file.name);
+          .createSignedUrl(file.name, 60 * 60);
+
+        if (urlError || !urlData?.signedUrl) continue;
 
         groups[timestamp].push({
           ...file,
-          publicUrl: urlData.publicUrl
+          publicUrl: urlData.signedUrl,
         });
       }
 
@@ -97,14 +99,16 @@ export function ScreenshotArchive() {
 
             for (const file of folderContents) {
               const fullPath = `${folder.name}/${file.name}`;
-              const { data: urlData } = supabase.storage
+              const { data: urlData, error: urlError } = await supabase.storage
                 .from('screenshots-archive')
-                .getPublicUrl(fullPath);
+                .createSignedUrl(fullPath, 60 * 60);
+
+              if (urlError || !urlData?.signedUrl) continue;
 
               groups[folder.name].push({
                 ...file,
                 name: fullPath,
-                publicUrl: urlData.publicUrl
+                publicUrl: urlData.signedUrl,
               });
             }
           }
