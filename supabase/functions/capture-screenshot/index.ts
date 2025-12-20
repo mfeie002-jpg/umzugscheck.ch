@@ -66,10 +66,19 @@ serve(async (req) => {
     // Parse dimension to detect mobile/tablet
     const [widthStr, heightStr] = dimension.split('x');
     const width = parseInt(widthStr, 10);
+    const heightNum = parseInt(heightStr, 10);
 
     // Treat "xfull" dimensions as full-page even if caller forgot fullPage=true
     const isDimensionFull = String(heightStr || '').toLowerCase() === 'full';
-    const isFullPage = Boolean(fullPage || isDimensionFull);
+    let isFullPage = Boolean(fullPage || isDimensionFull);
+
+    // Guardrail: Tall viewports (e.g. 1920x8000) often break vh/svh layouts and can produce "white"/washed captures.
+    // If someone requests an unusually tall viewport, switch to proper full-page stitching.
+    const isTallViewport = Number.isFinite(heightNum) && heightNum >= 2000;
+    if (!isFullPage && isTallViewport) {
+      isFullPage = true;
+      console.log(`Detected tall viewport (${dimension}); switching to xfull stitching.`);
+    }
 
     // Determine device type based on width
     let deviceType = 'desktop';
