@@ -1,6 +1,18 @@
 import { useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
+// Apply the screenshot rendering class as early as possible (before first paint).
+// Many screenshot engines capture before React effects run, which can leave whileInView sections hidden.
+if (typeof window !== "undefined") {
+  try {
+    if (isScreenshotRenderMode()) {
+      document.documentElement.classList.add("uc-render");
+    }
+  } catch {
+    // ignore
+  }
+}
+
 /**
  * Adds a global CSS hook for screenshot rendering (uc_render=1).
  * Goal: avoid "white blocks" caused by in-view animations (e.g. framer-motion whileInView)
