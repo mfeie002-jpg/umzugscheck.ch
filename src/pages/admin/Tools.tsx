@@ -15,7 +15,7 @@ import {
   FileText, Camera, Code, Plus, X,
   Trash2, Zap, FileDown,
   Wrench, ExternalLink, BookOpen, Terminal, FileCode,
-  Database, Search, Eye, GitCompare, Sparkles
+  Database, Search, Eye, GitCompare, Sparkles, Bot, Play
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
@@ -240,6 +240,12 @@ const AdminTools = () => {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('');
   
+  // AI Auto-Analyze State
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+  const [analyzeProgress, setAnalyzeProgress] = useState(0);
+  const [analyzeStatus, setAnalyzeStatus] = useState('');
+  
   // Screenshot Machine State
   const [screenshotUrl, setScreenshotUrl] = useState('');
   const [screenshotConfig, setScreenshotConfig] = useState<ScreenshotConfig>({
@@ -278,6 +284,107 @@ const AdminTools = () => {
 
     loadStats();
   }, []);
+
+  // ============================================================================
+  // AI AUTO-ANALYZE FUNCTION (1-CLICK)
+  // ============================================================================
+
+  const runAutoAnalyze = async () => {
+    if (!config.projectUrl) {
+      toast.error('Bitte URL eingeben');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    setAnalyzeProgress(0);
+    setAnalyzeStatus('Starte Analyse...');
+
+    try {
+      // Step 1: Capture screenshot
+      setAnalyzeProgress(20);
+      setAnalyzeStatus('Screenshot wird erstellt...');
+      
+      let screenshotBase64 = '';
+      try {
+        const screenshotResult = await captureScreenshot({
+          url: config.projectUrl,
+          dimension: '1920x1080',
+          fullPage: false,
+          delay: 3000,
+        });
+        if (screenshotResult.success && screenshotResult.image) {
+          screenshotBase64 = screenshotResult.image;
+        }
+      } catch (e) {
+        console.error('Screenshot failed:', e);
+      }
+
+      // Step 2: Fetch HTML
+      setAnalyzeProgress(40);
+      setAnalyzeStatus('HTML wird abgerufen...');
+      
+      let htmlContent = '';
+      try {
+        htmlContent = await fetchHtmlContent(config.projectUrl);
+      } catch (e) {
+        console.error('HTML fetch failed:', e);
+      }
+
+      // Step 3: Call AI
+      setAnalyzeProgress(60);
+      setAnalyzeStatus('KI analysiert Website...');
+
+      const { data, error } = await supabase.functions.invoke('ai-website-analyze', {
+        body: {
+          projectName: config.projectName,
+          projectUrl: config.projectUrl,
+          description: config.description,
+          goals: config.goals,
+          targetAudience: config.targetAudience,
+          competitors: config.competitors,
+          htmlContent,
+          screenshotBase64,
+          analysisType: 'complete'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.analysis) {
+        setAnalyzeProgress(100);
+        setAnalyzeStatus('Analyse abgeschlossen!');
+        setAnalysisResult(data.analysis);
+        toast.success('KI-Analyse abgeschlossen!');
+      } else {
+        throw new Error(data?.error || 'Analyse fehlgeschlagen');
+      }
+
+    } catch (error) {
+      console.error('Auto-analyze error:', error);
+      toast.error(error instanceof Error ? error.message : 'Analyse fehlgeschlagen');
+      setAnalyzeStatus('Fehler bei der Analyse');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const copyAnalysisResult = async () => {
+    if (!analysisResult) return;
+    try {
+      await navigator.clipboard.writeText(analysisResult);
+      toast.success('Analyse kopiert!');
+    } catch (e) {
+      toast.error('Kopieren fehlgeschlagen');
+    }
+  };
+
+  const downloadAnalysisResult = () => {
+    if (!analysisResult) return;
+    const blob = new Blob([analysisResult], { type: 'text/markdown' });
+    saveAs(blob, `${config.projectName.replace(/\s+/g, '-')}-analyse-${new Date().toISOString().split('T')[0]}.md`);
+    toast.success('Analyse heruntergeladen!');
+  };
 
   // ============================================================================
   // AI FEEDBACK PACKAGE FUNCTIONS
@@ -1168,11 +1275,93 @@ ${config.projectName} - WCAG 2.1 Level AA
                 </CardContent>
               </Card>
 
+              {/* 1-Click AI Analysis Card */}
+              <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bot className="h-5 w-5 text-primary" />
+                    1-Klick KI-Analyse
+                    <Badge className="bg-gradient-to-r from-primary to-purple-500 text-white">NEU</Badge>
+                  </CardTitle>
+                  <CardDescription>
+                    Automatische Screenshot + HTML + KI-Analyse in einem Schritt
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {isAnalyzing && (
+                    <div className="space-y-2">
+                      <Progress value={analyzeProgress} className="h-2" />
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        {analyzeStatus}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <Button 
+                    onClick={runAutoAnalyze} 
+                    disabled={isAnalyzing || !config.projectUrl}
+                    className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90"
+                    size="lg"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                        Analysiere...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-5 w-5 mr-2" />
+                        Website jetzt analysieren
+                      </>
+                    )}
+                  </Button>
+
+                  {analysisResult && (
+                    <div className="space-y-3 pt-4 border-t">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium flex items-center gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          Analyse-Ergebnis
+                        </h4>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={copyAnalysisResult}>
+                            <Copy className="h-3 w-3 mr-1" />
+                            Kopieren
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={downloadAnalysisResult}>
+                            <Download className="h-3 w-3 mr-1" />
+                            .md
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="bg-muted rounded-lg p-4 max-h-96 overflow-y-auto">
+                        <pre className="text-xs whitespace-pre-wrap font-mono">
+                          {analysisResult}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="text-xs text-muted-foreground pt-2 border-t">
+                    <p>✨ Die KI erstellt automatisch:</p>
+                    <ul className="mt-1 space-y-1 ml-4">
+                      <li>• Screenshot der Startseite</li>
+                      <li>• HTML-Code Analyse</li>
+                      <li>• UX/Conversion Bewertung</li>
+                      <li>• SEO & Accessibility Check</li>
+                      <li>• Priorisierter Aktionsplan</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Manual Package Card */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Package generieren</CardTitle>
+                  <CardTitle>Manuelles Package</CardTitle>
                   <CardDescription>
-                    Erstellt Screenshots, HTML, Prompts und PDF als ZIP
+                    Erstellt Screenshots, HTML, Prompts und PDF als ZIP für externe KI
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -1188,6 +1377,7 @@ ${config.projectName} - WCAG 2.1 Level AA
                     disabled={isGenerating}
                     className="w-full"
                     size="lg"
+                    variant="outline"
                   >
                     {isGenerating ? (
                       <>
@@ -1197,28 +1387,25 @@ ${config.projectName} - WCAG 2.1 Level AA
                     ) : (
                       <>
                         <Package className="h-4 w-4 mr-2" />
-                        Package erstellen & Download
+                        Package für ChatGPT/Claude
                       </>
                     )}
                   </Button>
 
                   <div className="border-t pt-4">
-                    <h4 className="font-medium mb-2">Das Package enthält:</h4>
-                    <ul className="text-sm text-muted-foreground space-y-2">
+                    <h4 className="font-medium mb-2 text-sm">Das Package enthält:</h4>
+                    <ul className="text-xs text-muted-foreground space-y-1">
                       <li className="flex items-center gap-2">
-                        <Camera className="h-4 w-4" /> Desktop & Mobile Screenshots
+                        <Camera className="h-3 w-3" /> Desktop & Mobile Screenshots
                       </li>
                       <li className="flex items-center gap-2">
-                        <Code className="h-4 w-4" /> Raw & Rendered HTML
+                        <Code className="h-3 w-3" /> Raw & Rendered HTML
                       </li>
                       <li className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4" /> 7 KI-Analyse-Prompts
+                        <Sparkles className="h-3 w-3" /> 7 KI-Analyse-Prompts
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileDown className="h-4 w-4" /> PDF Project Brief
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <FileText className="h-4 w-4" /> README mit Anleitung
+                        <FileDown className="h-3 w-3" /> PDF Project Brief
                       </li>
                     </ul>
                   </div>
