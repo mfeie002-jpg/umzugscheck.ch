@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera, Package, MousePointer2 } from "lucide-react";
+import { Home, DollarSign, LogOut, Building2, Users, CreditCard, BarChart3, Mail, Target, Camera, Package, MousePointer2, Sparkles } from "lucide-react";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
 import { ProviderManagement } from "@/components/admin/ProviderManagement";
 import { LeadManagement } from "@/components/admin/LeadManagement";
@@ -17,10 +17,7 @@ import { LeadExport } from "@/components/admin/LeadExport";
 import { ScreenshotMachine } from "@/components/admin/ScreenshotMachine";
 import { ScreenshotArchive } from "@/components/admin/ScreenshotArchive";
 import { CompetitorCapture } from "@/components/admin/CompetitorCapture";
-import { AIFeedbackPackage } from "@/components/admin/AIFeedbackPackage";
 import { ScreenshotDiff } from "@/components/admin/ScreenshotDiff";
-import { LovableImplementationKit } from "@/components/admin/LovableImplementationKit";
-import ProjectAnalyzerComplete from "@/components/admin/ProjectAnalyzerComplete";
 import { LighthouseAudit } from "@/components/admin/LighthouseAudit";
 import { HeatmapAnalytics } from "@/components/admin/HeatmapAnalytics";
 import { FormAnalytics } from "@/components/admin/analytics/FormAnalytics";
@@ -34,6 +31,7 @@ import { PageLoadTracker } from "@/components/admin/analytics/PageLoadTracker";
 import { ErrorTracking } from "@/components/admin/analytics/ErrorTracking";
 import { UserSegments } from "@/components/admin/analytics/UserSegments";
 import { UltimateZipPackage } from "@/components/admin/analytics/UltimateZipPackage";
+import { UltimateFeedbackSuite } from "@/components/admin/UltimateFeedbackSuite";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Admin() {
@@ -131,7 +129,11 @@ export default function Admin() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-5 lg:grid-cols-11 w-full gap-1">
+          <TabsList className="grid grid-cols-6 lg:grid-cols-12 w-full gap-1">
+            <TabsTrigger value="ultimate" className="bg-primary/10 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Sparkles className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Ultimate</span>
+            </TabsTrigger>
             <TabsTrigger value="dashboard">
               <BarChart3 className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -174,9 +176,14 @@ export default function Admin() {
             </TabsTrigger>
             <TabsTrigger value="ai-tools">
               <Package className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">AI Tools</span>
+              <span className="hidden sm:inline">Tools</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* ULTIMATE FEEDBACK SUITE - Primary Tool */}
+          <TabsContent value="ultimate">
+            <UltimateFeedbackSuite />
+          </TabsContent>
 
           <TabsContent value="dashboard">
             <AdminStatistics />
@@ -256,9 +263,14 @@ export default function Admin() {
 
           <TabsContent value="ai-tools">
             <div className="space-y-6">
-              <ProjectAnalyzerComplete />
-              <LovableImplementationKit />
-              <AIFeedbackPackage />
+              <Card>
+                <CardHeader>
+                  <CardTitle>Additional Tools</CardTitle>
+                  <CardDescription>
+                    Individual tools for specific tasks. For the complete all-in-one solution, use the "Ultimate" tab.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
               <CompetitorCapture />
               <LighthouseAudit />
             </div>
