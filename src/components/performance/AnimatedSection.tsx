@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { isScreenshotRenderMode } from '@/lib/screenshot-render-mode';
 
 interface AnimatedSectionProps {
   children: ReactNode;
@@ -17,19 +18,19 @@ const getVariants = (direction: string, distance: number = 30): Variants => {
     down: { y: -distance },
     left: { x: distance },
     right: { x: -distance },
-    none: {}
+    none: {},
   };
 
   return {
     hidden: {
       opacity: 0,
-      ...directions[direction]
+      ...directions[direction],
     },
     visible: {
       opacity: 1,
       x: 0,
-      y: 0
-    }
+      y: 0,
+    },
   };
 };
 
@@ -39,11 +40,13 @@ export const AnimatedSection = ({
   delay = 0,
   direction = 'up',
   duration = 0.5,
-  once = true
+  once = true,
 }: AnimatedSectionProps) => {
   const prefersReducedMotion = useReducedMotion();
 
-  if (prefersReducedMotion) {
+  // Screenshot mode: never rely on IntersectionObserver/whileInView.
+  // Many screenshot engines don't trigger IO callbacks reliably, which leaves sections invisible.
+  if (prefersReducedMotion || isScreenshotRenderMode()) {
     return <div className={className}>{children}</div>;
   }
 
@@ -57,7 +60,7 @@ export const AnimatedSection = ({
       transition={{
         duration,
         delay,
-        ease: [0.25, 0.1, 0.25, 1]
+        ease: [0.25, 0.1, 0.25, 1],
       }}
     >
       {children}
@@ -69,7 +72,7 @@ export const AnimatedSection = ({
 export const StaggerContainer = ({
   children,
   className,
-  staggerDelay = 0.1
+  staggerDelay = 0.1,
 }: {
   children: ReactNode;
   className?: string;
@@ -77,7 +80,7 @@ export const StaggerContainer = ({
 }) => {
   const prefersReducedMotion = useReducedMotion();
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion || isScreenshotRenderMode()) {
     return <div className={className}>{children}</div>;
   }
 
@@ -96,17 +99,21 @@ export const StaggerContainer = ({
 
 export const StaggerItem = ({
   children,
-  className
+  className,
 }: {
   children: ReactNode;
   className?: string;
 }) => {
+  if (isScreenshotRenderMode()) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
       variants={{
         hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 }
+        visible: { opacity: 1, y: 0 },
       }}
       transition={{ duration: 0.4 }}
     >
@@ -114,3 +121,4 @@ export const StaggerItem = ({
     </motion.div>
   );
 };
+
