@@ -1,14 +1,13 @@
 /**
- * ULTIMATE FEEDBACK SUITE
- * =======================
- * Consolidated tool that combines all feedback, screenshot, and export capabilities.
+ * ULTIMATE FEEDBACK SUITE v4.0
+ * ============================
+ * Optimized all-in-one tool for AI feedback and Lovable cloning.
  * 
  * Features:
- * 1. Auto-fill project info from current URL
- * 2. One-click complete analysis package generation
- * 3. Lovable Clone Package for recreating this admin in any project
+ * 1. One-click complete analysis with auto-detection
+ * 2. AI-ready prompts for ChatGPT/Claude/Gemini with implementation instructions
+ * 3. Complete Lovable Clone Package with all edge functions and components
  * 4. Screenshot capture with full API integration
- * 5. AI-ready prompts for ChatGPT/Gemini/Claude
  */
 
 import React, { useState, useEffect } from 'react';
@@ -21,6 +20,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import {
   Package,
@@ -28,7 +28,6 @@ import {
   Loader2,
   Copy,
   CheckCircle2,
-  FileArchive,
   Camera,
   Zap,
   Globe,
@@ -39,7 +38,11 @@ import {
   Monitor,
   Smartphone,
   ExternalLink,
-  RotateCcw,
+  RefreshCw,
+  FileCode,
+  Database,
+  Settings,
+  Rocket,
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -61,10 +64,13 @@ interface ProjectConfig {
   techStack: string;
   competitors: string;
   keyQuestions: string;
+  industry: string;
+  language: string;
 }
 
 interface ScreenshotResult {
   url: string;
+  path: string;
   desktop?: Blob;
   mobile?: Blob;
   html?: string;
@@ -77,10 +83,10 @@ interface ScreenshotResult {
 }
 
 // ============================================================================
-// DEFAULT PAGES TO ANALYZE
+// SITE-SPECIFIC CONFIGURATION (Auto-detected)
 // ============================================================================
 
-const TOP_PAGES = [
+const UMZUGSCHECK_PAGES = [
   "/",
   "/umzugsofferten",
   "/preisrechner",
@@ -123,9 +129,11 @@ export function UltimateFeedbackSuite() {
     description: "",
     goals: "",
     targetAudience: "",
-    techStack: "React, TypeScript, Tailwind CSS, Supabase, Vite, shadcn/ui",
+    techStack: "",
     competitors: DEFAULT_COMPETITORS.join("\n"),
     keyQuestions: "",
+    industry: "",
+    language: "de",
   });
 
   // Processing state
@@ -150,31 +158,56 @@ export function UltimateFeedbackSuite() {
     const currentUrl = window.location.origin;
     const hostname = window.location.hostname;
     
-    // Extract project name from hostname
-    let projectName = hostname
-      .replace('www.', '')
-      .replace('.lovable.app', '')
-      .replace('.vercel.app', '')
-      .replace('.netlify.app', '');
+    // Detect if this is umzugscheck.ch
+    const isUmzugscheck = hostname.includes('umzugscheck') || hostname.includes('vgitgdvxanodfgokokix');
     
-    // Capitalize first letter
-    projectName = projectName.charAt(0).toUpperCase() + projectName.slice(1);
+    if (isUmzugscheck) {
+      setConfig({
+        projectName: "Umzugscheck.ch",
+        projectUrl: currentUrl,
+        description: "Umzugscheck.ch ist die führende Schweizer Vergleichsplattform für Umzugsofferten. Nutzer können kostenlos Offerten von geprüften Umzugsfirmen erhalten und vergleichen.",
+        goals: "1. Conversion-Rate erhöhen (Offerten-Anfragen)\n2. SEO-Rankings verbessern\n3. Benutzerführung optimieren\n4. Mobile Experience verbessern\n5. Vertrauen durch Design stärken",
+        targetAudience: "Privatpersonen und Unternehmen in der Schweiz, die einen Umzug planen. Primär 25-55 Jahre alt, deutsch- und französischsprachig.",
+        techStack: "React 18, TypeScript, Tailwind CSS, shadcn/ui, Vite, Supabase (Auth, Database, Edge Functions, Storage), React Query, React Router",
+        competitors: DEFAULT_COMPETITORS.join("\n"),
+        keyQuestions: `1. Wie kann die Conversion-Rate auf der Offerten-Seite erhöht werden?
+2. Welche UX-Verbesserungen sind am dringendsten?
+3. Wie schneidet die Seite im Vergleich zu Movu und Comparis ab?
+4. Welche SEO-Quick-Wins gibt es?
+5. Ist die mobile Erfahrung wettbewerbsfähig?
+6. Sind die CTAs klar und überzeugend?
+7. Wie kann das Vertrauen gestärkt werden?`,
+        industry: "Umzugs-Vergleichsplattform / Lead Generation",
+        language: "de",
+      });
+    } else {
+      // Generic detection
+      let projectName = hostname
+        .replace('www.', '')
+        .replace('.lovable.app', '')
+        .replace('.vercel.app', '')
+        .replace('.netlify.app', '');
+      projectName = projectName.charAt(0).toUpperCase() + projectName.slice(1);
+      
+      setConfig({
+        projectName: projectName || "My Project",
+        projectUrl: currentUrl,
+        description: `${projectName} - Eine moderne Web-Applikation.`,
+        goals: "Conversion erhöhen, UX verbessern, SEO optimieren",
+        targetAudience: "Web-Nutzer auf der Suche nach effizienten Lösungen",
+        techStack: "React, TypeScript, Tailwind CSS, Supabase, Vite, shadcn/ui",
+        competitors: "",
+        keyQuestions: `1. Was sind die Top 5 UX-Verbesserungen?
+2. Wie kann die Conversion erhöht werden?
+3. Gibt es offensichtliche SEO-Probleme?
+4. Wie sieht das Design im Vergleich zur Konkurrenz aus?
+5. Welche Quick-Wins sind sofort umsetzbar?`,
+        industry: "Web Application",
+        language: "de",
+      });
+    }
     
-    setConfig(prev => ({
-      ...prev,
-      projectName: projectName || "My Project",
-      projectUrl: currentUrl,
-      description: `${projectName} - A modern web application built with React and Supabase.`,
-      goals: "Improve conversion rates, enhance UX, optimize SEO, increase user engagement",
-      targetAudience: "Web users looking for efficient solutions",
-      keyQuestions: `1. What are the top 5 UX improvements needed?
-2. How can we improve conversion rates?
-3. Are there obvious SEO issues to fix?
-4. How does our design compare to competitors?
-5. What quick wins can be implemented immediately?`,
-    }));
-    
-    toast.success("Project info auto-detected!");
+    toast.success("Projekt-Info automatisch erkannt!");
   };
 
   // ============================================================================
@@ -198,7 +231,8 @@ export function UltimateFeedbackSuite() {
     dimension: string
   ): Promise<Blob | null> => {
     try {
-      const urlForShot = addScreenshotRenderParamIfHost(url, new URL(config.projectUrl).hostname);
+      const hostname = new URL(config.projectUrl).hostname;
+      const urlForShot = addScreenshotRenderParamIfHost(url, hostname);
       const params = new URLSearchParams({
         key: SCREENSHOT_API_KEY,
         url: urlForShot,
@@ -241,121 +275,180 @@ export function UltimateFeedbackSuite() {
   };
 
   // ============================================================================
-  // PROMPT GENERATORS
+  // AI PROMPT GENERATOR - OPTIMIZED FOR IMPLEMENTATION
   // ============================================================================
 
   const generateAIFeedbackPrompt = (results: ScreenshotResult[]): string => {
-    return `# ${config.projectName} - Complete AI Analysis Request
+    const avgScores = results.filter(r => r.lighthouse).reduce((acc, r) => {
+      if (r.lighthouse) {
+        acc.performance += r.lighthouse.performance;
+        acc.seo += r.lighthouse.seo;
+        acc.accessibility += r.lighthouse.accessibility;
+        acc.bestPractices += r.lighthouse.bestPractices;
+        acc.count++;
+      }
+      return acc;
+    }, { performance: 0, seo: 0, accessibility: 0, bestPractices: 0, count: 0 });
 
-## 🎯 Project Overview
-- **Project**: ${config.projectName}
-- **URL**: ${config.projectUrl}
-- **Generated**: ${new Date().toISOString()}
+    const hasLighthouse = avgScores.count > 0;
 
-## 📝 Description
+    return `# ${config.projectName} - Vollständige Analyse & Optimierungsauftrag
+
+## 🎯 DEINE AUFGABE
+
+Analysiere diese Website vollständig und gib mir **konkrete, sofort umsetzbare Verbesserungsvorschläge** in Form von:
+1. Beschreibung was geändert werden soll
+2. Exakte Anweisungen die ich in Lovable.dev einfügen kann
+
+---
+
+## 📋 PROJEKT-ÜBERSICHT
+
+| Feld | Wert |
+|------|------|
+| **Projekt** | ${config.projectName} |
+| **URL** | ${config.projectUrl} |
+| **Branche** | ${config.industry} |
+| **Sprache** | ${config.language} |
+| **Generiert** | ${new Date().toISOString()} |
+
+### Beschreibung
 ${config.description}
 
-## 🎯 Goals
+### Ziele
 ${config.goals}
 
-## 👥 Target Audience
+### Zielgruppe
 ${config.targetAudience}
 
-## 🛠 Tech Stack
+### Tech Stack
 ${config.techStack}
 
-## ❓ Key Questions for Analysis
-${config.keyQuestions}
+---
+
+## 📊 PERFORMANCE SCORES
+${hasLighthouse ? `
+| Metrik | Durchschnitt |
+|--------|-------------|
+| Performance | ${Math.round(avgScores.performance / avgScores.count)}% |
+| SEO | ${Math.round(avgScores.seo / avgScores.count)}% |
+| Accessibility | ${Math.round(avgScores.accessibility / avgScores.count)}% |
+| Best Practices | ${Math.round(avgScores.bestPractices / avgScores.count)}% |
+` : '(Keine Lighthouse-Daten verfügbar)'}
 
 ---
 
-## 📦 What's Included in This Package
-
-### Screenshots
-- **Desktop** (1920xfull): Full-page captures at HD resolution
-- **Mobile** (375xfull): Mobile-responsive captures
-- Organized in \`/screenshots/desktop/\` and \`/screenshots/mobile/\`
-
-### HTML Source Code
-- Complete HTML for each page in \`/html/\`
-- Useful for SEO analysis, accessibility checks
-
-### Competitor Screenshots
-- Side-by-side comparison in \`/competitors/\`
-
-### Performance Reports
-- Lighthouse scores in \`/lighthouse/\`
-
----
-
-## 📊 Pages Analyzed (${results.length} pages)
+## 📸 ANALYSIERTE SEITEN (${results.length})
 
 ${results.map((r, i) => {
-  const path = new URL(r.url).pathname || '/';
+  const path = r.path || '/';
   const scores = r.lighthouse 
-    ? `| Perf: ${r.lighthouse.performance}% | SEO: ${r.lighthouse.seo}%`
-    : '';
-  return `${i + 1}. ${path} ${scores}`;
+    ? `Perf: ${r.lighthouse.performance}% | SEO: ${r.lighthouse.seo}%`
+    : 'Keine Scores';
+  return `${i + 1}. **${path}** - ${scores}`;
 }).join('\n')}
 
 ---
 
-## 🔍 Please Analyze
+## ❓ SPEZIFISCHE FRAGEN
 
-### 1. Design & UX
-- Visual hierarchy and clarity
-- CTA placement and effectiveness
-- Trust signals and credibility
-- Mobile experience quality
-
-### 2. Conversion Optimization
-- Funnel friction points
-- Form usability
-- Value proposition clarity
-
-### 3. Competitor Comparison
-- Visual differences
-- Feature gaps
-- Competitive advantages
-
-### 4. SEO (from HTML)
-- Meta tags optimization
-- Heading structure
-- Technical issues
+${config.keyQuestions}
 
 ---
 
-## ✅ Expected Output
+## 📦 ENTHALTENE DATEIEN
 
-1. **Top 5 Critical Issues** - Fix these first
-2. **Top 5 Quick Wins** - Easy improvements
-3. **Competitor Insights** - What to learn
-4. **Prioritized Action Items** - Specific next steps
+### Screenshots
+- \`/screenshots/desktop/\` - Full-page Desktop (1920px)
+- \`/screenshots/mobile/\` - Full-page Mobile (375px)
+
+### HTML Quellcode
+- \`/html/\` - HTML jeder Seite für SEO-Analyse
+
+### Konkurrenz
+- \`/competitors/\` - Screenshots der Hauptkonkurrenten
+
+### Performance
+- \`/lighthouse/\` - Detaillierte Lighthouse Reports
 
 ---
 
-*Generated by Ultimate Feedback Suite - Ready for ChatGPT, Claude, or Gemini analysis*
+## ✅ ERWARTETE AUSGABE
+
+### 1. KRITISCHE PROBLEME (Top 5)
+Für jedes Problem:
+- **Problem**: Beschreibung
+- **Auswirkung**: Wie es Conversion/UX/SEO beeinflusst
+- **Lovable-Prompt**: Exakte Anweisung zum Kopieren
+
+### 2. QUICK WINS (Top 5)
+Einfache Änderungen mit grosser Wirkung.
+
+### 3. KONKURRENZ-ANALYSE
+- Was machen Movu, Umzug24, Comparis besser?
+- Welche Features fehlen uns?
+
+### 4. SEO VERBESSERUNGEN
+Basierend auf HTML-Analyse:
+- Meta Tags
+- Heading Struktur
+- Interne Verlinkung
+
+### 5. MOBILE OPTIMIERUNG
+Spezifische mobile Verbesserungen.
+
+### 6. PRIORISIERTE ACTION ITEMS
+Nummerierte Liste: "Kopiere diesen Prompt in Lovable: [PROMPT]"
+
+---
+
+## 🎨 DESIGN FEEDBACK FORMAT
+
+Für visuelle Änderungen, nutze dieses Format:
+
+\`\`\`
+SEITE: [URL-Pfad]
+ELEMENT: [Welches Element]
+PROBLEM: [Was ist das Problem]
+LÖSUNG: [Was soll geändert werden]
+LOVABLE-PROMPT: [Exakte Anweisung für Lovable]
+\`\`\`
+
+---
+
+*Generiert mit Ultimate Feedback Suite v4.0*
+*Bereit für ChatGPT, Claude oder Gemini*
 `;
   };
 
+  // ============================================================================
+  // LOVABLE CLONE PACKAGE - COMPLETE IMPLEMENTATION
+  // ============================================================================
+
   const generateLovableClonePrompt = (): string => {
-    return `# Admin Portal Clone - Implementation Request
+    return `# Admin Portal & Feedback Suite - Vollständige Implementation
 
-## 🎯 What I Need
+## 🎯 ÜBERSICHT
 
-Recreate a complete admin portal with the following features:
+Erstelle ein komplettes Admin-Portal mit folgenden Funktionen:
+- Screenshot-Erfassung (Desktop + Mobile, Full-Page)
+- HTML-Extraktion
+- Lighthouse Performance-Audits
+- ZIP-Package-Generator
+- AI-Prompt-Generator für Feedback
+- Cloud-Speicherung für Sharing
 
-### 1. Screenshot Capture System
-- Full-page screenshot capture using ScreenshotMachine API (key: 892618)
-- Desktop (1920xfull) and Mobile (375xfull) support
-- Bulk URL processing
-- HTML source extraction
-- ZIP export with organized folders
+## 📦 ABHÄNGIGKEITEN
 
-### 2. Edge Functions Required
+\`\`\`bash
+npm install jszip file-saver jspdf lucide-react
+\`\`\`
+
+## 🔧 EDGE FUNCTIONS
+
+### 1. fetch-html (supabase/functions/fetch-html/index.ts)
 
 \`\`\`typescript
-// supabase/functions/fetch-html/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -370,18 +463,32 @@ serve(async (req) => {
 
   try {
     const { url } = await req.json();
+    if (!url) {
+      return new Response(
+        JSON.stringify({ error: 'URL required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Fetching HTML from:', url);
+
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'de-CH,de;q=0.9,en;q=0.8',
       },
     });
+
     const html = await response.text();
+    console.log('HTML fetched, length:', html.length);
 
     return new Response(
-      JSON.stringify({ html, url }),
+      JSON.stringify({ html, url, status: response.status }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
+    console.error('Fetch error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -390,8 +497,9 @@ serve(async (req) => {
 });
 \`\`\`
 
+### 2. lighthouse (supabase/functions/lighthouse/index.ts)
+
 \`\`\`typescript
-// supabase/functions/lighthouse/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -406,16 +514,29 @@ serve(async (req) => {
 
   try {
     const { url, strategy = 'desktop' } = await req.json();
+    
+    if (!url) {
+      return new Response(
+        JSON.stringify({ error: 'URL required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Running Lighthouse for:', url, 'strategy:', strategy);
+
     const apiUrl = \`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=\${encodeURIComponent(url)}&strategy=\${strategy}&category=performance&category=accessibility&category=best-practices&category=seo\`;
     
     const response = await fetch(apiUrl);
     const data = await response.json();
+
+    console.log('Lighthouse complete for:', url);
 
     return new Response(
       JSON.stringify(data),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
+    console.error('Lighthouse error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -424,40 +545,97 @@ serve(async (req) => {
 });
 \`\`\`
 
-### 3. Storage Setup
-Create a Supabase storage bucket named \`screenshots-archive\` with public access.
+## 📁 SUPABASE CONFIG
 
-### 4. Admin Components
-- Screenshot Machine: Single/bulk capture UI
-- Ultimate Feedback Package: One-click analysis generator
-- AI Prompt Generator: Ready-to-use prompts for AI review
+\`\`\`toml
+# supabase/config.toml - Füge diese Einträge hinzu
 
-### 5. Dependencies
+[functions.fetch-html]
+verify_jwt = false
+
+[functions.lighthouse]
+verify_jwt = false
 \`\`\`
-npm install jszip file-saver jspdf lucide-react
+
+## 🗄️ STORAGE BUCKET
+
+Erstelle einen Storage Bucket für ZIP-Archivierung:
+
+\`\`\`sql
+-- Storage bucket für Screenshots und ZIPs
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('screenshots-archive', 'screenshots-archive', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- RLS Policy für öffentlichen Lesezugriff
+CREATE POLICY "Public read access" ON storage.objects
+FOR SELECT USING (bucket_id = 'screenshots-archive');
+
+-- RLS Policy für authentifizierte Uploads
+CREATE POLICY "Authenticated upload" ON storage.objects
+FOR INSERT WITH CHECK (bucket_id = 'screenshots-archive');
 \`\`\`
 
-### 6. Key Features
-- Auto-detect current project URL
-- One-click full analysis
-- Generate AI-ready prompts
-- ZIP download with all assets
-- Cloud storage for sharing
+## 🖼️ SCREENSHOT API
 
-## 🎨 Design
-- Clean, modern admin dashboard
-- Tab-based navigation
-- Progress indicators for long operations
-- Toast notifications for feedback
+Nutze ScreenshotMachine API:
+- Key: 892618
+- Endpoint: https://api.screenshotmachine.com
 
-## 📦 Expected Output
-A working admin system where I can:
-1. Capture screenshots of any URL
-2. Generate complete analysis packages
-3. Download ZIP with screenshots, HTML, reports
-4. Get ready-to-use prompts for AI analysis
+Parameter:
+\`\`\`typescript
+const params = new URLSearchParams({
+  key: "892618",
+  url: targetUrl,
+  dimension: "1920xfull", // oder "375xfull" für mobile
+  format: "png",
+  cacheLimit: "0",
+  delay: "8000",
+  js: "true",
+  scroll: "true",
+});
+const imageUrl = \`https://api.screenshotmachine.com?\${params}\`;
+\`\`\`
 
-Please implement step by step, starting with edge functions.
+## 🧩 HAUPT-KOMPONENTE
+
+Erstelle eine UltimateFeedbackSuite Komponente mit:
+
+1. **Auto-Detection**: Erkennt automatisch Projekt-URL und Namen
+2. **Capture Options**: Toggles für Desktop/Mobile/HTML/Competitors/Lighthouse
+3. **One-Click Generate**: Roter Button der alles auf einmal macht
+4. **Progress Bar**: Zeigt aktuellen Schritt
+5. **Results Section**: 
+   - Generated Prompt anzeigen + Copy Button
+   - Public URL wenn hochgeladen
+   - Download Link
+
+## 🔄 WORKFLOW
+
+1. User klickt "Generate Ultimate Package"
+2. System iteriert durch alle Seiten:
+   - Desktop Screenshot (1920xfull)
+   - Mobile Screenshot (375xfull)
+   - HTML Extraction
+   - Lighthouse Audit (erste 5 Seiten)
+3. Competitor Screenshots
+4. ZIP mit allem erstellen
+5. Optional: Cloud Upload
+6. AI Prompt generieren
+
+## 🎨 UI DESIGN
+
+- Card mit Gradient Header
+- Tabs: Ultimate Package | Lovable Clone | Quick Screenshot
+- Switches für Capture-Optionen
+- Roter "Generate" Button
+- Grüne Success-Box mit Results
+- Badge-Liste mit Features
+
+## ✅ FERTIG
+
+Mit diesem Prompt kannst du das komplette Admin-Portal in jedem Lovable Projekt replizieren.
+Der Code ist brand-neutral und anpassbar.
 `;
   };
 
@@ -467,12 +645,12 @@ Please implement step by step, starting with edge functions.
 
   const generateUltimatePackage = async () => {
     setLoading(true);
-    setProgress({ step: "Initializing...", percent: 0 });
+    setProgress({ step: "Initialisiere...", percent: 0 });
     
     const zip = new JSZip();
     const results: ScreenshotResult[] = [];
     const baseUrl = config.projectUrl;
-    const pages = TOP_PAGES.map(path => `${baseUrl}${path}`);
+    const pages = UMZUGSCHECK_PAGES.map(path => `${baseUrl}${path}`);
     const competitors = config.competitors.split('\n').filter(c => c.trim());
     
     const totalSteps = 
@@ -481,7 +659,7 @@ Please implement step by step, starting with edge functions.
       pages.length * (captureHtml ? 1 : 0) +
       (runLighthouse ? Math.min(5, pages.length) : 0) +
       (captureCompetitors ? competitors.length * 2 : 0) +
-      3; // metadata files
+      3;
     
     let currentStep = 0;
     
@@ -494,11 +672,11 @@ Please implement step by step, starting with edge functions.
       // Process each page
       for (let i = 0; i < pages.length; i++) {
         const url = pages[i];
-        const path = new URL(url).pathname || 'index';
+        const path = new URL(url).pathname || '/';
         const safePath = path.replace(/\//g, '_').replace(/^_/, '') || 'index';
         const filename = `${String(i + 1).padStart(2, '0')}_${safePath}`;
         
-        const result: ScreenshotResult = { url };
+        const result: ScreenshotResult = { url, path };
 
         // Desktop screenshot
         if (captureDesktop) {
@@ -550,14 +728,14 @@ Please implement step by step, starting with edge functions.
           if (!competitorUrl.trim()) continue;
           const domain = new URL(competitorUrl).hostname.replace('www.', '');
           
-          updateProgress(`Competitor Desktop: ${domain}`);
+          updateProgress(`Konkurrent Desktop: ${domain}`);
           const desktop = await captureScreenshot(competitorUrl, "1920xfull");
           if (desktop) {
             zip.file(`competitors/${domain}_desktop.png`, desktop);
           }
           await new Promise(r => setTimeout(r, 500));
 
-          updateProgress(`Competitor Mobile: ${domain}`);
+          updateProgress(`Konkurrent Mobile: ${domain}`);
           const mobile = await captureScreenshot(competitorUrl, "375xfull");
           if (mobile) {
             zip.file(`competitors/${domain}_mobile.png`, mobile);
@@ -567,38 +745,43 @@ Please implement step by step, starting with edge functions.
       }
 
       // Generate prompts and metadata
-      updateProgress("Generating AI prompt...");
+      updateProgress("Generiere AI-Prompt...");
       const aiPrompt = generateAIFeedbackPrompt(results);
       setGeneratedPrompt(aiPrompt);
       zip.file("AI_REVIEW_PROMPT.md", aiPrompt);
 
-      updateProgress("Generating project brief...");
+      updateProgress("Erstelle Projekt-Brief...");
       zip.file("PROJECT_BRIEF.md", `# ${config.projectName}
 
 **URL**: ${config.projectUrl}
-**Generated**: ${new Date().toISOString()}
+**Generiert**: ${new Date().toISOString()}
+**Branche**: ${config.industry}
 
-## Description
+## Beschreibung
 ${config.description}
 
-## Goals
+## Ziele
 ${config.goals}
 
-## Target Audience
+## Zielgruppe
 ${config.targetAudience}
 
 ## Tech Stack
 ${config.techStack}
 
-## Pages Analyzed
-${results.map((r, i) => `${i + 1}. ${new URL(r.url).pathname}`).join('\n')}
+## Analysierte Seiten
+${results.map((r, i) => `${i + 1}. ${r.path}`).join('\n')}
+
+## Konkurrenten
+${config.competitors}
 `);
 
-      updateProgress("Creating analysis summary...");
+      updateProgress("Erstelle Summary...");
       const summary = {
         project: config.projectName,
         url: config.projectUrl,
         generated: new Date().toISOString(),
+        industry: config.industry,
         pages: results.length,
         screenshots: {
           desktop: results.filter(r => r.desktop).length,
@@ -610,12 +793,38 @@ ${results.map((r, i) => `${i + 1}. ${new URL(r.url).pathname}`).join('\n')}
         averageScores: runLighthouse ? {
           performance: Math.round(results.filter(r => r.lighthouse).reduce((sum, r) => sum + (r.lighthouse?.performance || 0), 0) / Math.max(1, results.filter(r => r.lighthouse).length)),
           seo: Math.round(results.filter(r => r.lighthouse).reduce((sum, r) => sum + (r.lighthouse?.seo || 0), 0) / Math.max(1, results.filter(r => r.lighthouse).length)),
+          accessibility: Math.round(results.filter(r => r.lighthouse).reduce((sum, r) => sum + (r.lighthouse?.accessibility || 0), 0) / Math.max(1, results.filter(r => r.lighthouse).length)),
+          bestPractices: Math.round(results.filter(r => r.lighthouse).reduce((sum, r) => sum + (r.lighthouse?.bestPractices || 0), 0) / Math.max(1, results.filter(r => r.lighthouse).length)),
         } : null,
       };
       zip.file("analysis-summary.json", JSON.stringify(summary, null, 2));
 
+      // Add README
+      zip.file("README.md", `# ${config.projectName} - Ultimate Feedback Package
+
+## Inhalt
+
+- \`/screenshots/desktop/\` - Full-page Desktop Screenshots (1920px)
+- \`/screenshots/mobile/\` - Full-page Mobile Screenshots (375px)
+- \`/html/\` - HTML Quellcode jeder Seite
+- \`/lighthouse/\` - Performance Reports
+- \`/competitors/\` - Konkurrenz-Screenshots
+- \`AI_REVIEW_PROMPT.md\` - Prompt für ChatGPT/Claude/Gemini
+- \`PROJECT_BRIEF.md\` - Projekt-Übersicht
+- \`analysis-summary.json\` - Zusammenfassung als JSON
+
+## Verwendung
+
+1. Öffne ChatGPT, Claude oder Gemini
+2. Lade dieses ZIP hoch
+3. Kopiere den Inhalt von AI_REVIEW_PROMPT.md
+4. Erhalte detailliertes Feedback mit Lovable-Prompts
+
+Generiert: ${new Date().toISOString()}
+`);
+
       // Create ZIP
-      setProgress({ step: "Creating ZIP...", percent: 95 });
+      setProgress({ step: "Erstelle ZIP...", percent: 95 });
       const zipBlob = await zip.generateAsync({ type: "blob" });
       
       // Save locally
@@ -623,28 +832,32 @@ ${results.map((r, i) => `${i + 1}. ${new URL(r.url).pathname}`).join('\n')}
       saveAs(zipBlob, `${config.projectName.toLowerCase().replace(/\s+/g, '-')}_ultimate-package_${timestamp}.zip`);
 
       // Upload to cloud
-      setProgress({ step: "Uploading to cloud...", percent: 98 });
+      setProgress({ step: "Lade in Cloud...", percent: 98 });
       const storagePath = `ultimate-packages/${timestamp}_${Date.now()}.zip`;
       
-      const { error: uploadError } = await supabase.storage
-        .from('screenshots-archive')
-        .upload(storagePath, zipBlob, {
-          contentType: 'application/zip',
-          upsert: true
-        });
-
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage
+      try {
+        const { error: uploadError } = await supabase.storage
           .from('screenshots-archive')
-          .getPublicUrl(storagePath);
-        setPublicUrl(urlData.publicUrl);
+          .upload(storagePath, zipBlob, {
+            contentType: 'application/zip',
+            upsert: true
+          });
+
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage
+            .from('screenshots-archive')
+            .getPublicUrl(storagePath);
+          setPublicUrl(urlData.publicUrl);
+        }
+      } catch (e) {
+        console.log("Cloud upload skipped:", e);
       }
 
-      setProgress({ step: "Complete!", percent: 100 });
-      toast.success("Ultimate Package generated successfully!");
+      setProgress({ step: "Fertig!", percent: 100 });
+      toast.success("Ultimate Package erfolgreich generiert!");
     } catch (error) {
       console.error("Package generation error:", error);
-      toast.error("Error generating package");
+      toast.error("Fehler beim Generieren");
     } finally {
       setLoading(false);
     }
@@ -652,18 +865,20 @@ ${results.map((r, i) => `${i + 1}. ${new URL(r.url).pathname}`).join('\n')}
 
   const generateLovableClonePackage = async () => {
     setLoading(true);
-    setProgress({ step: "Generating clone package...", percent: 0 });
+    setProgress({ step: "Generiere Clone Package...", percent: 0 });
 
     const zip = new JSZip();
 
     try {
       // Add main prompt
-      setProgress({ step: "Creating implementation prompt...", percent: 20 });
+      setProgress({ step: "Erstelle Implementation Prompt...", percent: 20 });
       const clonePrompt = generateLovableClonePrompt();
       zip.file("LOVABLE_IMPLEMENTATION_PROMPT.md", clonePrompt);
 
       // Add edge function code
-      setProgress({ step: "Adding edge functions...", percent: 40 });
+      setProgress({ step: "Füge Edge Functions hinzu...", percent: 40 });
+      
+      // fetch-html
       zip.file("edge-functions/fetch-html/index.ts", `import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -685,19 +900,25 @@ serve(async (req) => {
       );
     }
 
+    console.log('Fetching HTML from:', url);
+
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0',
-        'Accept': 'text/html',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'de-CH,de;q=0.9,en;q=0.8',
       },
     });
 
     const html = await response.text();
+    console.log('HTML fetched, length:', html.length);
+
     return new Response(
-      JSON.stringify({ html, url }),
+      JSON.stringify({ html, url, status: response.status }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
+    console.error('Fetch error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -706,6 +927,7 @@ serve(async (req) => {
 });
 `);
 
+      // lighthouse
       zip.file("edge-functions/lighthouse/index.ts", `import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -720,16 +942,29 @@ serve(async (req) => {
 
   try {
     const { url, strategy = 'desktop' } = await req.json();
+    
+    if (!url) {
+      return new Response(
+        JSON.stringify({ error: 'URL required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Running Lighthouse for:', url, 'strategy:', strategy);
+
     const apiUrl = \`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=\${encodeURIComponent(url)}&strategy=\${strategy}&category=performance&category=accessibility&category=best-practices&category=seo\`;
     
     const response = await fetch(apiUrl);
     const data = await response.json();
+
+    console.log('Lighthouse complete for:', url);
 
     return new Response(
       JSON.stringify(data),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
+    console.error('Lighthouse error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -738,62 +973,130 @@ serve(async (req) => {
 });
 `);
 
-      // Add README
-      setProgress({ step: "Creating documentation...", percent: 60 });
-      zip.file("README.md", `# Admin Portal Clone Package
+      // Config
+      setProgress({ step: "Erstelle Config...", percent: 50 });
+      zip.file("supabase-config.toml", `# Füge diese Einträge zu deiner supabase/config.toml hinzu
 
-## Quick Start
-
-1. Create a new Lovable project
-2. Copy the content of \`LOVABLE_IMPLEMENTATION_PROMPT.md\` into the chat
-3. Lovable will create the complete admin system
-
-## What's Included
-
-- \`LOVABLE_IMPLEMENTATION_PROMPT.md\` - Complete implementation instructions
-- \`edge-functions/\` - Ready-to-use Supabase edge functions
-- \`config.toml\` - Supabase configuration
-
-## Edge Functions
-
-### fetch-html
-Fetches HTML content from any URL for analysis.
-
-### lighthouse  
-Runs Google PageSpeed Insights for performance analysis.
-
-## Screenshot API
-Uses ScreenshotMachine API (key: 892618) for capturing screenshots.
-
-## Dependencies
-\`\`\`
-npm install jszip file-saver jspdf lucide-react
-\`\`\`
-
-Generated: ${new Date().toISOString()}
-`);
-
-      // Add config.toml template
-      zip.file("config.toml", `[functions.fetch-html]
+[functions.fetch-html]
 verify_jwt = false
 
 [functions.lighthouse]
 verify_jwt = false
 `);
 
+      // Storage SQL
+      zip.file("storage-setup.sql", `-- Storage Bucket erstellen
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('screenshots-archive', 'screenshots-archive', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- RLS Policies
+CREATE POLICY "Public read access" ON storage.objects
+FOR SELECT USING (bucket_id = 'screenshots-archive');
+
+CREATE POLICY "Authenticated upload" ON storage.objects
+FOR INSERT WITH CHECK (bucket_id = 'screenshots-archive');
+`);
+
+      // Add README
+      setProgress({ step: "Erstelle Dokumentation...", percent: 60 });
+      zip.file("README.md", `# Admin Portal Clone Package
+
+## Quick Start
+
+1. Erstelle ein neues Lovable Projekt
+2. Aktiviere Lovable Cloud (Backend)
+3. Kopiere den Inhalt von \`LOVABLE_IMPLEMENTATION_PROMPT.md\` in den Chat
+4. Lovable erstellt das komplette Admin-System
+
+## Enthaltene Dateien
+
+- \`LOVABLE_IMPLEMENTATION_PROMPT.md\` - Vollständige Implementation-Anleitung
+- \`edge-functions/\` - Supabase Edge Functions
+- \`supabase-config.toml\` - Konfiguration für config.toml
+- \`storage-setup.sql\` - SQL für Storage Bucket
+
+## Edge Functions
+
+### fetch-html
+Holt HTML von jeder URL für SEO-Analyse.
+
+### lighthouse
+Führt Google PageSpeed Insights aus.
+
+## Screenshot API
+
+ScreenshotMachine API (Key: 892618):
+- Full-page Desktop: 1920xfull
+- Full-page Mobile: 375xfull
+- Delay: 8 Sekunden für JS-Rendering
+
+## Abhängigkeiten
+
+\`\`\`bash
+npm install jszip file-saver jspdf lucide-react
+\`\`\`
+
+## Features
+
+- ✅ Auto-Detection der aktuellen URL
+- ✅ One-Click Full Analysis
+- ✅ Desktop + Mobile Screenshots
+- ✅ HTML Extraction
+- ✅ Lighthouse Performance Audits
+- ✅ Competitor Screenshots
+- ✅ AI-Ready Prompts
+- ✅ Cloud Storage für Sharing
+- ✅ ZIP Download
+
+Generiert: ${new Date().toISOString()}
+`);
+
+      // Add quick start
+      zip.file("QUICK_START.md", `# Quick Start Guide
+
+## Schritt 1: Neues Projekt
+
+Erstelle ein neues Lovable Projekt auf lovable.dev
+
+## Schritt 2: Cloud aktivieren
+
+Gehe zu Settings → Cloud → Enable Cloud
+
+## Schritt 3: Prompt einfügen
+
+Kopiere den gesamten Inhalt von \`LOVABLE_IMPLEMENTATION_PROMPT.md\` und füge ihn in den Lovable Chat ein.
+
+## Schritt 4: Edge Functions
+
+Lovable wird die Edge Functions automatisch erstellen. Warte bis der Build fertig ist.
+
+## Schritt 5: Storage
+
+Führe das SQL aus \`storage-setup.sql\` im SQL Editor aus (oder lass Lovable das machen).
+
+## Schritt 6: Testen
+
+Gehe zur Admin-Seite und teste das Ultimate Package Feature.
+
+## Fertig! 🎉
+
+Du hast jetzt ein vollständiges Feedback-System.
+`);
+
       // Create ZIP
-      setProgress({ step: "Creating ZIP...", percent: 80 });
+      setProgress({ step: "Erstelle ZIP...", percent: 80 });
       const zipBlob = await zip.generateAsync({ type: "blob" });
 
       // Save
       const timestamp = new Date().toISOString().split('T')[0];
       saveAs(zipBlob, `lovable-admin-clone_${timestamp}.zip`);
 
-      setProgress({ step: "Complete!", percent: 100 });
-      toast.success("Clone package generated!");
+      setProgress({ step: "Fertig!", percent: 100 });
+      toast.success("Clone Package erfolgreich generiert!");
     } catch (error) {
       console.error("Clone package error:", error);
-      toast.error("Error generating clone package");
+      toast.error("Fehler beim Generieren");
     } finally {
       setLoading(false);
     }
@@ -802,14 +1105,14 @@ verify_jwt = false
   const copyPrompt = () => {
     if (generatedPrompt) {
       navigator.clipboard.writeText(generatedPrompt);
-      toast.success("Prompt copied to clipboard!");
+      toast.success("Prompt in Zwischenablage kopiert!");
     }
   };
 
   const copyUrl = () => {
     if (publicUrl) {
       navigator.clipboard.writeText(publicUrl);
-      toast.success("URL copied!");
+      toast.success("URL kopiert!");
     }
   };
 
@@ -823,25 +1126,25 @@ verify_jwt = false
         <CardTitle className="flex items-center gap-2 text-2xl">
           <Sparkles className="h-6 w-6 text-primary" />
           Ultimate Feedback Suite
-          <Badge className="bg-primary">v3.0</Badge>
+          <Badge className="bg-primary">v4.0</Badge>
         </CardTitle>
         <CardDescription>
-          One-click analysis packages for AI review + Lovable clone generator
+          One-Click Analyse für AI-Feedback + Lovable Clone Generator
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6 pt-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="ultimate">
-              <Package className="h-4 w-4 mr-2" />
+            <TabsTrigger value="ultimate" className="gap-2">
+              <Rocket className="h-4 w-4" />
               Ultimate Package
             </TabsTrigger>
-            <TabsTrigger value="clone">
-              <Code className="h-4 w-4 mr-2" />
+            <TabsTrigger value="clone" className="gap-2">
+              <FileCode className="h-4 w-4" />
               Lovable Clone
             </TabsTrigger>
-            <TabsTrigger value="quick">
-              <Camera className="h-4 w-4 mr-2" />
+            <TabsTrigger value="quick" className="gap-2">
+              <Camera className="h-4 w-4" />
               Quick Screenshot
             </TabsTrigger>
           </TabsList>
@@ -851,27 +1154,29 @@ verify_jwt = false
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-green-800">Auto-Detected Project</h4>
+                <div className="flex-1">
+                  <h4 className="font-medium text-green-800">Projekt automatisch erkannt</h4>
                   <p className="text-sm text-green-700">
-                    Project info has been automatically filled from your current URL. 
-                    Review and adjust as needed.
+                    {config.projectName} - {config.industry}
                   </p>
                 </div>
+                <Button variant="ghost" size="sm" onClick={autoDetectProject}>
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
               </div>
             </div>
 
             {/* Project Config */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label>Project Name</Label>
+                <Label>Projekt Name</Label>
                 <Input
                   value={config.projectName}
                   onChange={(e) => setConfig({ ...config, projectName: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Project URL</Label>
+                <Label>Projekt URL</Label>
                 <Input
                   value={config.projectUrl}
                   onChange={(e) => setConfig({ ...config, projectUrl: e.target.value })}
@@ -880,7 +1185,7 @@ verify_jwt = false
             </div>
 
             <div className="space-y-2">
-              <Label>Description</Label>
+              <Label>Beschreibung</Label>
               <Textarea
                 value={config.description}
                 onChange={(e) => setConfig({ ...config, description: e.target.value })}
@@ -890,25 +1195,25 @@ verify_jwt = false
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label>Goals</Label>
+                <Label>Ziele</Label>
                 <Textarea
                   value={config.goals}
                   onChange={(e) => setConfig({ ...config, goals: e.target.value })}
-                  rows={3}
+                  rows={4}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Target Audience</Label>
+                <Label>Zielgruppe</Label>
                 <Textarea
                   value={config.targetAudience}
                   onChange={(e) => setConfig({ ...config, targetAudience: e.target.value })}
-                  rows={3}
+                  rows={4}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Competitors (one per line)</Label>
+              <Label>Konkurrenten (eine URL pro Zeile)</Label>
               <Textarea
                 value={config.competitors}
                 onChange={(e) => setConfig({ ...config, competitors: e.target.value })}
@@ -917,11 +1222,11 @@ verify_jwt = false
             </div>
 
             <div className="space-y-2">
-              <Label>Key Questions for AI</Label>
+              <Label>Schlüsselfragen für AI</Label>
               <Textarea
                 value={config.keyQuestions}
                 onChange={(e) => setConfig({ ...config, keyQuestions: e.target.value })}
-                rows={4}
+                rows={6}
               />
             </div>
 
@@ -929,35 +1234,35 @@ verify_jwt = false
             <div className="grid gap-4 md:grid-cols-5 p-4 bg-muted rounded-lg">
               <div className="flex items-center gap-2">
                 <Switch checked={captureDesktop} onCheckedChange={setCaptureDesktop} />
-                <Label className="flex items-center gap-1">
+                <Label className="flex items-center gap-1 cursor-pointer">
                   <Monitor className="h-4 w-4" />
                   Desktop
                 </Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={captureMobile} onCheckedChange={setCaptureMobile} />
-                <Label className="flex items-center gap-1">
+                <Label className="flex items-center gap-1 cursor-pointer">
                   <Smartphone className="h-4 w-4" />
                   Mobile
                 </Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={captureHtml} onCheckedChange={setCaptureHtml} />
-                <Label className="flex items-center gap-1">
+                <Label className="flex items-center gap-1 cursor-pointer">
                   <Code className="h-4 w-4" />
                   HTML
                 </Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={captureCompetitors} onCheckedChange={setCaptureCompetitors} />
-                <Label className="flex items-center gap-1">
+                <Label className="flex items-center gap-1 cursor-pointer">
                   <Globe className="h-4 w-4" />
-                  Competitors
+                  Konkurrenz
                 </Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={runLighthouse} onCheckedChange={setRunLighthouse} />
-                <Label className="flex items-center gap-1">
+                <Label className="flex items-center gap-1 cursor-pointer">
                   <Zap className="h-4 w-4" />
                   Lighthouse
                 </Label>
@@ -969,17 +1274,17 @@ verify_jwt = false
               onClick={generateUltimatePackage}
               disabled={loading}
               size="lg"
-              className="w-full h-14 text-lg bg-red-600 hover:bg-red-700"
+              className="w-full h-16 text-lg bg-red-600 hover:bg-red-700"
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  <Loader2 className="h-6 w-6 mr-2 animate-spin" />
                   {progress.step}
                 </>
               ) : (
                 <>
-                  <Package className="h-5 w-5 mr-2" />
-                  Generate Ultimate Package
+                  <Rocket className="h-6 w-6 mr-2" />
+                  Ultimate Package generieren
                 </>
               )}
             </Button>
@@ -987,7 +1292,7 @@ verify_jwt = false
             {/* Progress */}
             {loading && (
               <div className="space-y-2">
-                <Progress value={progress.percent} />
+                <Progress value={progress.percent} className="h-3" />
                 <p className="text-sm text-center text-muted-foreground">{progress.step}</p>
               </div>
             )}
@@ -998,30 +1303,29 @@ verify_jwt = false
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    <span className="font-medium text-green-800">Package Ready!</span>
+                    <span className="font-medium text-green-800">Package bereit!</span>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={copyPrompt}>
                       <Copy className="h-4 w-4 mr-2" />
-                      Copy Prompt
+                      Prompt kopieren
                     </Button>
                     {publicUrl && (
                       <Button size="sm" variant="outline" onClick={copyUrl}>
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        Copy URL
+                        URL kopieren
                       </Button>
                     )}
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label>AI Review Prompt (copy to ChatGPT/Claude/Gemini):</Label>
-                  <Textarea
-                    value={generatedPrompt}
-                    readOnly
-                    rows={8}
-                    className="font-mono text-xs"
-                  />
+                  <Label>AI Review Prompt (für ChatGPT/Claude/Gemini):</Label>
+                  <ScrollArea className="h-64 rounded border bg-white">
+                    <pre className="p-4 font-mono text-xs whitespace-pre-wrap">
+                      {generatedPrompt}
+                    </pre>
+                  </ScrollArea>
                 </div>
               </div>
             )}
@@ -1035,8 +1339,8 @@ verify_jwt = false
                 <div>
                   <h4 className="font-medium text-purple-800">Lovable Clone Package</h4>
                   <p className="text-sm text-purple-700">
-                    Generate a complete package with prompts and code to recreate this admin 
-                    portal in any Lovable project. Brand-neutral and ready to customize.
+                    Generiere ein komplettes Package mit Prompts und Code um dieses Admin-Portal 
+                    in jedem Lovable Projekt zu replizieren. Brand-neutral und anpassbar.
                   </p>
                 </div>
               </div>
@@ -1047,18 +1351,18 @@ verify_jwt = false
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <FileText className="h-5 w-5" />
-                    What's Included
+                    Enthaltene Dateien
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
-                      Complete implementation prompt for Lovable
+                      Implementation Prompt für Lovable
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
-                      Edge functions (fetch-html, lighthouse)
+                      Edge Functions (fetch-html, lighthouse)
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -1066,7 +1370,11 @@ verify_jwt = false
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
-                      Setup documentation
+                      Storage SQL Setup
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      Quick Start Guide
                     </li>
                   </ul>
                 </CardContent>
@@ -1075,27 +1383,31 @@ verify_jwt = false
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Zap className="h-5 w-5" />
-                    Features Replicated
+                    <Settings className="h-5 w-5" />
+                    Replizierte Features
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <Camera className="h-4 w-4 text-blue-500" />
-                      Screenshot capture system
+                      Screenshot Capture System
                     </li>
                     <li className="flex items-center gap-2">
                       <Package className="h-4 w-4 text-blue-500" />
-                      ZIP package generation
+                      ZIP Package Generator
                     </li>
                     <li className="flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-blue-500" />
-                      HTML extraction
+                      <Code className="h-4 w-4 text-blue-500" />
+                      HTML Extraction
                     </li>
                     <li className="flex items-center gap-2">
                       <Zap className="h-4 w-4 text-blue-500" />
-                      Lighthouse audits
+                      Lighthouse Audits
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Database className="h-4 w-4 text-blue-500" />
+                      Cloud Storage
                     </li>
                   </ul>
                 </CardContent>
@@ -1116,14 +1428,14 @@ verify_jwt = false
               ) : (
                 <>
                   <Download className="h-5 w-5 mr-2" />
-                  Generate Lovable Clone Package
+                  Lovable Clone Package generieren
                 </>
               )}
             </Button>
 
             {loading && (
               <div className="space-y-2">
-                <Progress value={progress.percent} />
+                <Progress value={progress.percent} className="h-3" />
                 <p className="text-sm text-center text-muted-foreground">{progress.step}</p>
               </div>
             )}
@@ -1137,14 +1449,15 @@ verify_jwt = false
 
         {/* Features */}
         <div className="flex flex-wrap gap-2 pt-4 border-t">
-          <Badge variant="outline">Auto-Detection</Badge>
+          <Badge variant="outline">Auto-Erkennung</Badge>
           <Badge variant="outline">Full-Page Screenshots</Badge>
           <Badge variant="outline">Mobile + Desktop</Badge>
           <Badge variant="outline">HTML Extraction</Badge>
           <Badge variant="outline">Lighthouse Audits</Badge>
-          <Badge variant="outline">Competitor Analysis</Badge>
+          <Badge variant="outline">Konkurrenz-Analyse</Badge>
           <Badge variant="outline">AI-Ready Prompts</Badge>
           <Badge variant="outline">Cloud Storage</Badge>
+          <Badge variant="outline">One-Click Export</Badge>
         </div>
       </CardContent>
     </Card>
@@ -1162,7 +1475,7 @@ function QuickScreenshotTool() {
 
   const capture = async (dimension: string) => {
     if (!url) {
-      toast.error("Please enter a URL");
+      toast.error("Bitte URL eingeben");
       return;
     }
 
@@ -1190,16 +1503,16 @@ function QuickScreenshotTool() {
       const img = new Image();
       img.onload = () => {
         setResults(prev => [{ url: targetUrl, imageUrl, dimension }, ...prev]);
-        toast.success("Screenshot captured!");
+        toast.success("Screenshot erfasst!");
         setLoading(false);
       };
       img.onerror = () => {
-        toast.error("Screenshot failed");
+        toast.error("Screenshot fehlgeschlagen");
         setLoading(false);
       };
       img.src = imageUrl;
     } catch (error) {
-      toast.error("Error capturing screenshot");
+      toast.error("Fehler beim Screenshot");
       setLoading(false);
     }
   };
@@ -1223,7 +1536,7 @@ function QuickScreenshotTool() {
 
     const content = await zip.generateAsync({ type: "blob" });
     saveAs(content, `screenshots_${new Date().toISOString().split('T')[0]}.zip`);
-    toast.success("ZIP downloaded!");
+    toast.success("ZIP heruntergeladen!");
   };
 
   return (
@@ -1237,7 +1550,7 @@ function QuickScreenshotTool() {
         />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Button
           onClick={() => capture("1920xfull")}
           disabled={loading}
@@ -1262,16 +1575,29 @@ function QuickScreenshotTool() {
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Monitor className="h-4 w-4 mr-2" />}
           Desktop HD
         </Button>
+        <Button
+          onClick={() => capture("375x812")}
+          disabled={loading}
+          variant="outline"
+        >
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Smartphone className="h-4 w-4 mr-2" />}
+          Mobile HD
+        </Button>
       </div>
 
       {results.length > 0 && (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">{results.length} screenshots</span>
-            <Button size="sm" onClick={downloadAll}>
-              <Download className="h-4 w-4 mr-2" />
-              Download All as ZIP
-            </Button>
+            <span className="text-sm text-muted-foreground">{results.length} Screenshots</span>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={() => setResults([])}>
+                Alle löschen
+              </Button>
+              <Button size="sm" onClick={downloadAll}>
+                <Download className="h-4 w-4 mr-2" />
+                Alle als ZIP
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -1282,13 +1608,23 @@ function QuickScreenshotTool() {
                   alt={result.url}
                   className="rounded-lg border shadow-sm w-full aspect-video object-cover object-top"
                 />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
                   <Button
                     size="sm"
                     variant="secondary"
                     onClick={() => window.open(result.imageUrl, '_blank')}
                   >
                     <ExternalLink className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      navigator.clipboard.writeText(result.imageUrl);
+                      toast.success("URL kopiert");
+                    }}
+                  >
+                    <Copy className="h-4 w-4" />
                   </Button>
                 </div>
                 <Badge className="absolute bottom-2 left-2">{result.dimension}</Badge>
