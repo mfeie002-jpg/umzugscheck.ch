@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
-
+import { isScreenshotRenderMode } from '@/lib/screenshot-render-mode';
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
