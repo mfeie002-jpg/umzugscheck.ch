@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { motion, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 interface NumberTickerProps {
   value: number;
@@ -15,8 +16,21 @@ export const NumberTicker = memo(function NumberTicker({
   className,
   duration = 2,
   suffix = "",
-  prefix = ""
+  prefix = "",
 }: NumberTickerProps) {
+  const screenshotMode = isScreenshotRenderMode();
+
+  // In screenshot mode we render the final number immediately (no viewport dependency).
+  if (screenshotMode) {
+    return (
+      <span className={cn("tabular-nums", className)}>
+        {prefix}
+        {value.toLocaleString("de-CH")}
+        {suffix}
+      </span>
+    );
+  }
+
   const [isInView, setIsInView] = useState(false);
   const spring = useSpring(0, { duration: duration * 1000 });
   const display = useTransform(spring, (current) => Math.round(current));
@@ -38,7 +52,10 @@ export const NumberTicker = memo(function NumberTicker({
       onViewportEnter={() => setIsInView(true)}
       viewport={{ once: true, margin: "-100px" }}
     >
-      {prefix}{displayValue.toLocaleString("de-CH")}{suffix}
+      {prefix}
+      {displayValue.toLocaleString("de-CH")}
+      {suffix}
     </motion.span>
   );
 });
+

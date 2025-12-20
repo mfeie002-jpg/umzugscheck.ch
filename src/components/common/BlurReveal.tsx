@@ -1,6 +1,7 @@
 import { memo, ReactNode } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 interface BlurRevealProps {
   children: ReactNode;
@@ -11,8 +12,14 @@ interface BlurRevealProps {
 export const BlurReveal = memo(function BlurReveal({
   children,
   className,
-  delay = 0
+  delay = 0,
 }: BlurRevealProps) {
+  const screenshotMode = isScreenshotRenderMode();
+
+  if (screenshotMode) {
+    return <div className={cn(className)}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={cn(className)}
@@ -25,3 +32,4 @@ export const BlurReveal = memo(function BlurReveal({
     </motion.div>
   );
 });
+
