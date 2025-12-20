@@ -59,51 +59,60 @@ interface ArchivedScreenshot {
   archivedAt: Date;
 }
 
+const DEFAULT_SITE_ORIGIN =
+  typeof window !== "undefined" ? window.location.origin : "https://umzugscheck.ch";
+
+const UC_RENDER_HOSTS =
+  typeof window !== "undefined"
+    ? [window.location.hostname, "umzugscheck.ch", "www.umzugscheck.ch"]
+    : ["umzugscheck.ch", "www.umzugscheck.ch"];
+
 const PRESET_URLS = [
-  { label: "Homepage", url: "https://umzugscheck.ch" },
-  { label: "Umzugsofferten", url: "https://umzugscheck.ch/umzugsofferten" },
-  { label: "Preisrechner", url: "https://umzugscheck.ch/preisrechner" },
-  { label: "Firmenverzeichnis", url: "https://umzugscheck.ch/firmen" },
-  { label: "Beste Umzugsfirma", url: "https://umzugscheck.ch/beste-umzugsfirma" },
-  { label: "Günstige Umzugsfirma", url: "https://umzugscheck.ch/guenstige-umzugsfirma" },
-  { label: "Zürich", url: "https://umzugscheck.ch/umzugsfirmen/zuerich" },
-  { label: "Bern", url: "https://umzugscheck.ch/umzugsfirmen/bern" },
+  { label: "Homepage", url: `${DEFAULT_SITE_ORIGIN}/` },
+  { label: "Umzugsofferten", url: `${DEFAULT_SITE_ORIGIN}/umzugsofferten` },
+  { label: "Preisrechner", url: `${DEFAULT_SITE_ORIGIN}/preisrechner` },
+  { label: "Firmenverzeichnis", url: `${DEFAULT_SITE_ORIGIN}/firmen` },
+  { label: "Beste Umzugsfirma", url: `${DEFAULT_SITE_ORIGIN}/beste-umzugsfirma` },
+  { label: "Günstige Umzugsfirma", url: `${DEFAULT_SITE_ORIGIN}/guenstige-umzugsfirma` },
+  { label: "Zürich", url: `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/zuerich` },
+  { label: "Bern", url: `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/bern` },
 ];
 
 // Comprehensive list of all important pages to monitor
 const TOP_20_URLS = [
   // === CORE CONVERSION FUNNELS ===
-  "https://umzugscheck.ch",                          // Homepage - main entry
-  "https://umzugscheck.ch/umzugsofferten",           // Main lead funnel
-  "https://umzugscheck.ch/preisrechner",             // Price calculator
+  `${DEFAULT_SITE_ORIGIN}/`,                          // Homepage - main entry
+  `${DEFAULT_SITE_ORIGIN}/umzugsofferten`,           // Main lead funnel
+  `${DEFAULT_SITE_ORIGIN}/preisrechner`,             // Price calculator
   
   // === COMPANY RANKINGS ===
-  "https://umzugscheck.ch/firmen",                   // Company directory
-  "https://umzugscheck.ch/beste-umzugsfirma",        // Best companies ranking
-  "https://umzugscheck.ch/guenstige-umzugsfirma",    // Cheapest companies ranking
+  `${DEFAULT_SITE_ORIGIN}/firmen`,                   // Company directory
+  `${DEFAULT_SITE_ORIGIN}/beste-umzugsfirma`,        // Best companies ranking
+  `${DEFAULT_SITE_ORIGIN}/guenstige-umzugsfirma`,    // Cheapest companies ranking
   
   // === TOP REGIONS (by search volume) ===
-  "https://umzugscheck.ch/umzugsfirmen/zuerich",     // Zürich region
-  "https://umzugscheck.ch/umzugsfirmen/bern",        // Bern region
-  "https://umzugscheck.ch/umzugsfirmen/basel",       // Basel region
-  "https://umzugscheck.ch/umzugsfirmen/aargau",      // Aargau region
-  "https://umzugscheck.ch/umzugsfirmen/luzern",      // Luzern region
-  "https://umzugscheck.ch/umzugsfirmen/st-gallen",   // St. Gallen region
+  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/zuerich`,     // Zürich region
+  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/bern`,        // Bern region
+  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/basel`,       // Basel region
+  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/aargau`,      // Aargau region
+  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/luzern`,      // Luzern region
+  `${DEFAULT_SITE_ORIGIN}/umzugsfirmen/st-gallen`,   // St. Gallen region
   
   // === SERVICE PAGES ===
-  "https://umzugscheck.ch/privatumzug",              // Private moving service
-  "https://umzugscheck.ch/firmenumzug",              // Business moving service
-  "https://umzugscheck.ch/reinigung",                // Cleaning service
-  "https://umzugscheck.ch/entsorgung",               // Disposal service
+  `${DEFAULT_SITE_ORIGIN}/privatumzug`,              // Private moving service
+  `${DEFAULT_SITE_ORIGIN}/firmenumzug`,              // Business moving service
+  `${DEFAULT_SITE_ORIGIN}/reinigung`,                // Cleaning service
+  `${DEFAULT_SITE_ORIGIN}/entsorgung`,               // Disposal service
   
   // === CONTENT / SEO PAGES ===
-  "https://umzugscheck.ch/umzugskosten",             // Moving costs info
-  "https://umzugscheck.ch/ratgeber",                 // Guide/advice hub
-  "https://umzugscheck.ch/checkliste",               // Moving checklist
+  `${DEFAULT_SITE_ORIGIN}/umzugskosten`,             // Moving costs info
+  `${DEFAULT_SITE_ORIGIN}/ratgeber`,                 // Guide/advice hub
+  `${DEFAULT_SITE_ORIGIN}/checkliste`,               // Moving checklist
   
   // === B2B / PROVIDER PAGES ===
-  "https://umzugscheck.ch/fuer-firmen",              // For companies / become provider
+  `${DEFAULT_SITE_ORIGIN}/fuer-firmen`,              // For companies / become provider
 ];
+
 
 // Device-specific dimensions
 const MOBILE_DIMENSIONS = [
@@ -220,7 +229,7 @@ export function ScreenshotMachine() {
 
   // Capture screenshot with specific dimension override
   const captureWithDimension = async (targetUrl: string, overrideDimension: string): Promise<ScreenshotResult | null> => {
-    const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
+    const urlForShot = addScreenshotRenderParamIfHost(targetUrl, UC_RENDER_HOSTS);
     const result = await captureViaBackend({
       url: urlForShot,
       dimension: overrideDimension,
@@ -248,7 +257,7 @@ export function ScreenshotMachine() {
     const bundle = SCREENSHOT_BUNDLES.find(b => b.id === bundleId);
     if (!bundle) return;
 
-    const targetUrl = url || "https://umzugscheck.ch";
+    const targetUrl = url || DEFAULT_SITE_ORIGIN;
     const urls = bundle.isFullAudit ? TOP_20_URLS : [targetUrl];
     const dimensions = bundle.dimensions;
     const totalCaptures = urls.length * dimensions.length;
@@ -289,7 +298,7 @@ export function ScreenshotMachine() {
   };
   // Capture screenshot via backend (with proper hash authentication)
   const captureScreenshotViaBackend = async (targetUrl: string): Promise<ScreenshotResult | null> => {
-    const urlForShot = addScreenshotRenderParamIfHost(targetUrl, "umzugscheck.ch");
+    const urlForShot = addScreenshotRenderParamIfHost(targetUrl, UC_RENDER_HOSTS);
     const result = await captureViaBackend({
       url: urlForShot,
       dimension,
