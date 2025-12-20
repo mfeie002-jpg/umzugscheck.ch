@@ -59,13 +59,10 @@ interface ArchivedScreenshot {
   archivedAt: Date;
 }
 
-const DEFAULT_SITE_ORIGIN =
-  typeof window !== "undefined" ? window.location.origin : "https://umzugscheck.ch";
+// Always use production domain for screenshots, not the sandbox/preview domain
+const DEFAULT_SITE_ORIGIN = "https://www.umzugscheck.ch";
 
-const UC_RENDER_HOSTS =
-  typeof window !== "undefined"
-    ? [window.location.hostname, "umzugscheck.ch", "www.umzugscheck.ch"]
-    : ["umzugscheck.ch", "www.umzugscheck.ch"];
+const UC_RENDER_HOSTS = ["umzugscheck.ch", "www.umzugscheck.ch"];
 
 const PRESET_URLS = [
   { label: "Homepage", url: `${DEFAULT_SITE_ORIGIN}/` },
