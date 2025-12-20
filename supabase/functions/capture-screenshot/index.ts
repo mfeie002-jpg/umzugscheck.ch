@@ -81,9 +81,18 @@ serve(async (req) => {
 
     console.log(`Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`);
 
+    const scrollRequested = Boolean(scroll);
+
     // Determine effective dimension for full-page captures
-    // Use `xfull` so viewport units (vh) behave correctly.
-    const effectiveDimension = isFullPage ? `${width}xfull` : dimension;
+    // For the homepage on desktop we prefer "scroll stitch" (normal viewport + scroll=true)
+    // because `xfull` is prone to large white gap stitching artifacts on very long pages.
+    const useScrollStitchForFullPage = isFullPage && scrollRequested && deviceType === 'desktop' && isHomepage;
+
+    const effectiveDimension = useScrollStitchForFullPage
+      ? dimension
+      : (isFullPage ? `${width}xfull` : dimension);
+
+    console.log(`Screenshot strategy: ${useScrollStitchForFullPage ? 'scroll-stitch' : (isFullPage ? 'xfull' : 'viewport')}`);
 
     // Build ScreenshotMachine API URL with hash for authentication
     const params = new URLSearchParams({
@@ -116,9 +125,12 @@ serve(async (req) => {
       params.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     }
 
-    // Note: We intentionally avoid extra scrolling parameters for full-page captures.
-    // The provider already handles scrolling for "xfull" and extra scrolling can cause blank segments on very long pages.
-    if (!isFullPage && scroll) {
+    // Scrolling behavior
+    // - For homepage full-page desktop: force scroll stitching (workaround for xfull gaps)
+    // - For normal screenshots: respect the toggle
+    if (useScrollStitchForFullPage) {
+      params.set('scroll', 'true');
+    } else if (!isFullPage && scrollRequested) {
       params.set('scroll', 'true');
     }
 
