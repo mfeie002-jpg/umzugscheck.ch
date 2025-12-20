@@ -15,7 +15,8 @@ import {
   FileText, Camera, Code, Plus, X,
   Trash2, Zap, FileDown,
   Wrench, ExternalLink, BookOpen, Terminal, FileCode,
-  Database, Search, Eye, GitCompare, Sparkles, Bot, Play
+  Database, Search, Eye, GitCompare, Sparkles, Bot, Play,
+  Globe, RefreshCw
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
@@ -258,7 +259,11 @@ const AdminTools = () => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [bulkUrls, setBulkUrls] = useState('');
 
-  // Load database stats
+  // URL Discovery state
+  const [isDiscoveringUrls, setIsDiscoveringUrls] = useState(false);
+  const [discoveredUrls, setDiscoveredUrls] = useState<string[]>([]);
+  const [selectedDiscoveredUrls, setSelectedDiscoveredUrls] = useState<Set<string>>(new Set());
+  const [urlDiscoveryUrl, setUrlDiscoveryUrl] = useState('');
   useEffect(() => {
     const loadStats = async () => {
       try {
@@ -284,6 +289,87 @@ const AdminTools = () => {
 
     loadStats();
   }, []);
+
+  // ============================================================================
+  // URL DISCOVERY WITH FIRECRAWL
+  // ============================================================================
+
+  const discoverUrls = async () => {
+    const urlToMap = urlDiscoveryUrl || config.projectUrl;
+    if (!urlToMap) {
+      toast.error('Bitte URL eingeben');
+      return;
+    }
+
+    setIsDiscoveringUrls(true);
+    setDiscoveredUrls([]);
+    setSelectedDiscoveredUrls(new Set());
+
+    try {
+      const { data, error } = await supabase.functions.invoke('firecrawl-map', {
+        body: { 
+          url: urlToMap,
+          options: { limit: 50, includeSubdomains: false }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.links && Array.isArray(data.links)) {
+        // Extract paths from full URLs
+        const baseUrl = new URL(urlToMap).origin;
+        const paths = data.links
+          .filter((link: string) => link.startsWith(baseUrl))
+          .map((link: string) => {
+            try {
+              const url = new URL(link);
+              return url.pathname;
+            } catch {
+              return link;
+            }
+          })
+          .filter((path: string) => path !== '/' && path.length > 1)
+          .slice(0, 20); // Top 20
+
+        setDiscoveredUrls(paths);
+        toast.success(`${paths.length} URLs entdeckt!`);
+      } else {
+        toast.error('Keine URLs gefunden');
+      }
+    } catch (error) {
+      console.error('URL discovery failed:', error);
+      toast.error('URL Discovery fehlgeschlagen. Ist Firecrawl verbunden?');
+    } finally {
+      setIsDiscoveringUrls(false);
+    }
+  };
+
+  const toggleUrlSelection = (url: string) => {
+    setSelectedDiscoveredUrls(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(url)) {
+        newSet.delete(url);
+      } else {
+        newSet.add(url);
+      }
+      return newSet;
+    });
+  };
+
+  const addSelectedUrlsToConfig = () => {
+    const newPages = Array.from(selectedDiscoveredUrls).filter(
+      url => !config.additionalPages.includes(url)
+    );
+    if (newPages.length > 0) {
+      setConfig({
+        ...config,
+        additionalPages: [...config.additionalPages, ...newPages]
+      });
+      toast.success(`${newPages.length} Seiten hinzugefügt!`);
+      setDiscoveredUrls([]);
+      setSelectedDiscoveredUrls(new Set());
+    }
+  };
 
   // ============================================================================
   // AI AUTO-ANALYZE FUNCTION (1-CLICK)
@@ -1194,8 +1280,31 @@ ${config.projectName} - WCAG 2.1 Level AA
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>Zusätzliche Seiten</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label>Zusätzliche Seiten</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={discoverUrls}
+                        disabled={isDiscoveringUrls}
+                        className="gap-1 text-xs"
+                      >
+                        {isDiscoveringUrls ? (
+                          <>
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                            Suche...
+                          </>
+                        ) : (
+                          <>
+                            <Globe className="h-3 w-3" />
+                            URLs entdecken
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    
+                    {/* Manual input */}
                     <div className="flex gap-2">
                       <Input 
                         placeholder="/rechner, /firmen, ..."
@@ -1229,7 +1338,64 @@ ${config.projectName} - WCAG 2.1 Level AA
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
-                    <div className="flex flex-wrap gap-2 mt-2">
+
+                    {/* Discovered URLs Selection */}
+                    {discoveredUrls.length > 0 && (
+                      <div className="border rounded-lg p-3 bg-muted/50 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium flex items-center gap-2">
+                            <Globe className="h-4 w-4 text-primary" />
+                            {discoveredUrls.length} URLs gefunden
+                          </span>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setSelectedDiscoveredUrls(new Set(discoveredUrls))}
+                              className="text-xs h-7"
+                            >
+                              Alle
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setSelectedDiscoveredUrls(new Set())}
+                              className="text-xs h-7"
+                            >
+                              Keine
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="max-h-40 overflow-y-auto space-y-1">
+                          {discoveredUrls.map((url) => (
+                            <label
+                              key={url}
+                              className="flex items-center gap-2 p-2 rounded hover:bg-background cursor-pointer text-sm"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedDiscoveredUrls.has(url)}
+                                onChange={() => toggleUrlSelection(url)}
+                                className="rounded"
+                              />
+                              <span className="truncate">{url}</span>
+                            </label>
+                          ))}
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={addSelectedUrlsToConfig}
+                          disabled={selectedDiscoveredUrls.size === 0}
+                          className="w-full"
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          {selectedDiscoveredUrls.size} ausgewählte hinzufügen
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* Current pages */}
+                    <div className="flex flex-wrap gap-2">
                       {config.additionalPages.map((page, i) => (
                         <Badge key={i} variant="secondary" className="cursor-pointer" onClick={() => {
                           setConfig({
