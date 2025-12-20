@@ -443,8 +443,8 @@ export const ToolsWizard = ({ onSelectTool }: ToolsWizardProps) => {
             </div>
 
             {/* Content Grid */}
-            <ScrollArea className="max-h-[500px]">
-              <div className="p-4 space-y-4">
+            <ScrollArea className="max-h-[60vh]">
+              <div className="p-4 pb-6 space-y-4">
                 {/* Purpose Section */}
                 <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
                   <div className="flex items-start gap-3">
