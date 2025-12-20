@@ -26,6 +26,10 @@ serve(async (req) => {
       noCache = true,
     } = await req.json();
 
+    // Validate format
+    const validFormats = ['png', 'jpg', 'pdf'];
+    const outputFormat = validFormats.includes(format) ? format : 'png';
+
     if (!url) {
       return new Response(
         JSON.stringify({ error: 'URL is required' }),
@@ -44,7 +48,7 @@ serve(async (req) => {
       key: SCREENSHOT_API_KEY,
       url: url,
       dimension: effectiveDimension,
-      format: format,
+      format: outputFormat,
       cacheLimit: noCache ? '0' : '14400', // 0 = no cache, 14400 = 10 days
       delay: String(delay),
       js: 'true',
@@ -97,14 +101,18 @@ serve(async (req) => {
     }
     base64 = btoa(base64);
 
-    console.log(`Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes`);
+    console.log(`Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}`);
+
+    // Determine MIME type based on format
+    const mimeType = outputFormat === 'pdf' ? 'application/pdf' : `image/${outputFormat}`;
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        image: `data:image/${format};base64,${base64}`,
+        image: `data:${mimeType};base64,${base64}`,
         url,
         dimension: effectiveDimension,
+        format: outputFormat,
         capturedAt: new Date().toISOString(),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

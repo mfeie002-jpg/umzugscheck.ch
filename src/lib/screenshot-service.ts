@@ -4,7 +4,7 @@ export interface ScreenshotOptions {
   url: string;
   dimension?: string;
   delay?: number;
-  format?: 'png' | 'jpg';
+  format?: 'png' | 'jpg' | 'pdf';
   fullPage?: boolean;
   scroll?: boolean;
   noCache?: boolean;
