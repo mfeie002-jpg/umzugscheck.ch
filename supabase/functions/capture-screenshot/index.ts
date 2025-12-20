@@ -1,13 +1,24 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { encode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
+
+// Helper function to compute MD5 hash
+async function md5(input: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hashBuffer = await crypto.subtle.digest("MD5", data);
+  const hashArray = new Uint8Array(hashBuffer);
+  const hexBytes = encode(hashArray);
+  return new TextDecoder().decode(hexBytes);
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// ScreenshotMachine API credentials
-// API key from the dashboard - no secret phrase needed unless explicitly configured
-const SCREENSHOT_API_KEY = "892618";
+// Get credentials from environment variables
+const SCREENSHOT_API_KEY = Deno.env.get("SCREENSHOTMACHINE_API_KEY") || "";
+const SECRET_PHRASE = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") || "";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -110,7 +121,7 @@ serve(async (req) => {
     if (!SCREENSHOT_API_KEY) {
       console.error("SCREENSHOTMACHINE_API_KEY not configured");
       return new Response(
-        JSON.stringify({ error: "Screenshot provider not configured" }),
+        JSON.stringify({ error: "Screenshot provider not configured - API key missing" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -126,6 +137,15 @@ serve(async (req) => {
       js: "true", // Enable JavaScript rendering
       timeout: "20000", // 20 second timeout for slow-loading pages
     });
+
+    // Add hash authentication if secret phrase is configured
+    if (SECRET_PHRASE) {
+      const hashValue = await md5(url + SECRET_PHRASE);
+      params.set("hash", hashValue);
+      console.log("Using hash authentication with secret phrase");
+    } else {
+      console.log("No secret phrase configured, using simple API key auth");
+    }
 
     // Set device type properly for mobile/tablet rendering
     params.set("device", deviceType);
@@ -155,10 +175,9 @@ serve(async (req) => {
       );
     }
 
-    // No hash authentication needed - using simple API key auth
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
 
-    console.log("Requesting screenshot from ScreenshotMachine API (with hash authentication)");
+    console.log("Requesting screenshot from ScreenshotMachine API");
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
