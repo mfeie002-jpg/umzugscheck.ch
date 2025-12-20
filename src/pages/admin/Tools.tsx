@@ -23,6 +23,7 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
 import { ToolsDocumentation } from "@/components/admin/ToolsDocumentation";
+import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -462,6 +463,25 @@ const AdminTools = () => {
   const [discoveredUrls, setDiscoveredUrls] = useState<string[]>([]);
   const [selectedDiscoveredUrls, setSelectedDiscoveredUrls] = useState<Set<string>>(new Set());
   const [urlDiscoveryUrl, setUrlDiscoveryUrl] = useState('');
+  
+  // Wizard state
+  const [activeTab, setActiveTab] = useState('ai-feedback');
+  const [showAllTools, setShowAllTools] = useState(false);
+
+  const handleWizardSelectTool = (toolId: string) => {
+    setShowAllTools(true);
+    // Map tool IDs to tabs
+    const tabMap: Record<string, string> = {
+      'mega-export': 'ai-feedback',
+      '1-click-ai': 'ai-feedback',
+      'manual-package': 'ai-feedback',
+      'screenshot-machine': 'screenshots',
+      'seo-analyzer': 'seo-analyzer',
+      'prompt-generator': 'ai-feedback',
+      'url-discovery': 'ai-feedback'
+    };
+    setActiveTab(tabMap[toolId] || 'ai-feedback');
+  };
   useEffect(() => {
     const loadStats = async () => {
       try {
@@ -1698,6 +1718,22 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
           </p>
         </div>
 
+        {/* Goal-based Wizard */}
+        {!showAllTools && (
+          <ToolsWizard onSelectTool={handleWizardSelectTool} />
+        )}
+        
+        {showAllTools && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setShowAllTools(false)}
+            className="mb-6"
+          >
+            ← Zurück zur Zielauswahl
+          </Button>
+        )}
+
         {/* Database Stats */}
         <div className="grid gap-4 md:grid-cols-4 mb-8">
           <Card>
@@ -1887,7 +1923,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
         </Card>
 
         {/* Tools Tabs */}
-        <Tabs defaultValue="ai-feedback" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="ai-feedback" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
