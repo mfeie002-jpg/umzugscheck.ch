@@ -1165,19 +1165,26 @@ img {
    - Our CLS utilities use `content-visibility: auto`, which many screenshot tools won't paint.
    - Force everything visible only in screenshot mode.
 */
-html.uc-render [style*="opacity: 0;"],
-html.uc-render [style*="opacity:0;"],
-html.uc-render [style*="opacity: 0.0"],
-html.uc-render [style*="opacity:0.0"] {
+
+/* Broad pattern matching for opacity: 0 variations */
+html.uc-render [style*="opacity: 0"],
+html.uc-render [style*="opacity:0"] {
   opacity: 1 !important;
 }
 
-/* Only neutralize transforms for elements that start hidden (typical framer-motion initial state) */
-html.uc-render [style*="opacity: 0;"][style*="transform"],
-html.uc-render [style*="opacity:0;"][style*="transform"],
-html.uc-render [style*="opacity: 0.0"][style*="transform"],
-html.uc-render [style*="opacity:0.0"][style*="transform"] {
+/* Force all transforms to none for initially hidden elements */
+html.uc-render [style*="opacity: 0"][style*="transform"],
+html.uc-render [style*="opacity:0"][style*="transform"],
+html.uc-render [style*="translateY"],
+html.uc-render [style*="translateX"],
+html.uc-render [style*="translate3d"] {
   transform: none !important;
+}
+
+/* Fix blur filters used in animations */
+html.uc-render [style*="filter: blur"],
+html.uc-render [style*="filter:blur"] {
+  filter: none !important;
 }
 
 html.uc-render .content-visibility-auto,
@@ -1187,13 +1194,23 @@ html.uc-render [style*="content-visibility"] {
   contain-intrinsic-size: none !important;
 }
 
-/* Ensure all sections are visible */
+/* Ensure all sections and containers are fully visible */
 html.uc-render section,
+html.uc-render main,
 html.uc-render [class*="Section"],
-html.uc-render [class*="section"] {
+html.uc-render [class*="section"],
+html.uc-render [class*="Container"],
+html.uc-render [class*="container"] {
   opacity: 1 !important;
   visibility: visible !important;
   transform: none !important;
+}
+
+/* Force all motion.div elements visible (framer-motion) */
+html.uc-render [style*="will-change"] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
 }
 
 /* Skeleton placeholder for images */
