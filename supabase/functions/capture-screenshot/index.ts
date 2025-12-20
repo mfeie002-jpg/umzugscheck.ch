@@ -16,7 +16,7 @@ serve(async (req) => {
   }
 
   try {
-    const {
+    let {
       url,
       dimension = '1920x1080',
       delay = 6000,
@@ -25,6 +25,18 @@ serve(async (req) => {
       scroll = true,
       noCache = true,
     } = await req.json();
+
+    // Auto-add uc_render=1 for umzugscheck.ch to avoid lazy-loading issues
+    try {
+      const parsedUrl = new URL(url);
+      if (parsedUrl.hostname === 'umzugscheck.ch' || parsedUrl.hostname.endsWith('.umzugscheck.ch')) {
+        parsedUrl.searchParams.set('uc_render', '1');
+        url = parsedUrl.toString();
+        console.log('Added uc_render=1 for umzugscheck.ch URL');
+      }
+    } catch (e) {
+      console.warn('Could not parse URL for uc_render injection:', e);
+    }
 
     // Validate format
     const validFormats = ['png', 'jpg', 'pdf'];
