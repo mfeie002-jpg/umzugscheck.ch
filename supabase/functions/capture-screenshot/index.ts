@@ -103,10 +103,10 @@ serve(async (req) => {
     params.set('device', deviceType);
 
     // Zoom controls output resolution.
-    // Desktop full-page homepage is extremely long and more likely to produce "white gaps" at higher zoom.
-    // Keep mobile/tablet retina quality.
+    // We previously reduced zoom aggressively to avoid "white gaps" on stitched full-page captures.
+    // Now that the homepage uses a single tall viewport (`x9999`) we can keep a normal zoom so content isn't tiny/washed out.
     const effectiveZoom = (deviceType === 'desktop' && isFullPage)
-      ? (isHomepage ? '80' : '100')
+      ? (isHomepage ? '100' : '110')
       : '200';
     params.set('zoom', effectiveZoom);
 
