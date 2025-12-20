@@ -1,5 +1,7 @@
 import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";
 import { SkipToContent } from "@/components/SkipToContent";
 import { Header } from "@/components/homepage/Header";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
@@ -7,7 +9,6 @@ import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { HotjarScript } from "@/components/analytics/HotjarScript";
-
 // Core Components (not lazy - above the fold)
 import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
@@ -39,6 +40,10 @@ const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
 );
 
 const Index = () => {
+  if (isScreenshotRenderMode()) {
+    return <IndexPremiumScreenshot />;
+  }
+
   const faqItems = [
     { question: "Wie funktioniert der Vergleich genau?", answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser Experten-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten." },
     { question: "Kostet mich der Service etwas?", answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen." },
