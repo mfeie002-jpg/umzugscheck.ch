@@ -299,8 +299,9 @@ export const PremiumCostExamples = () => {
               {costExamples.map((example, index) => (
                 <CarouselItem key={index} className="pl-2 md:pl-4 basis-[75%] xs:basis-[80%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={isScreenshot ? false : { opacity: 0, y: 20 }}
+                    whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+                    animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.05 }}
                     className="h-full"
@@ -407,8 +408,9 @@ export const PremiumCostExamples = () => {
         
         {/* Disclaimer */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center mb-12"
@@ -420,8 +422,9 @@ export const PremiumCostExamples = () => {
         
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isScreenshot ? false : { opacity: 0, y: 20 }}
+          whileInView={isScreenshot ? undefined : { opacity: 1, y: 0 }}
+          animate={isScreenshot ? { opacity: 1, y: 0 } : undefined}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="text-center"

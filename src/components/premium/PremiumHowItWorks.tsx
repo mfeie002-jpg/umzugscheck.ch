@@ -83,8 +83,9 @@ export const PremiumHowItWorks = () => {
               {idx < steps.length - 1 && (
                 <div className="hidden md:flex absolute -right-2 lg:-right-3 top-1/3 z-10 transform translate-x-1/2">
                   <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={isScreenshot ? false : { opacity: 0, x: -10 }}
+                    whileInView={isScreenshot ? undefined : { opacity: 1, x: 0 }}
+                    animate={isScreenshot ? { opacity: 1, x: 0 } : undefined}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: 0.5 + idx * 0.2 }}
                     className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-secondary shadow-lg flex items-center justify-center"
