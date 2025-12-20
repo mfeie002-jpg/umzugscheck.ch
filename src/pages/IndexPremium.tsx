@@ -12,30 +12,50 @@ import { TrustSignals } from "@/components/TrustSignals";
 import { memo, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { SectionSkeleton } from "@/components/ui/section-skeleton";
 import analytics from "@/lib/analytics";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 // Lazy load below-fold sections for better performance
-const LazyPremiumProviderCTA = lazy(() => import("@/components/premium/PremiumProviderCTA").then(m => ({ default: m.PremiumProviderCTA })));
-const LazyPremiumServicesGrid = lazy(() => import("@/components/premium/PremiumServicesGrid").then(m => ({ default: m.PremiumServicesGrid })));
-const LazyComparisonShowcase = lazy(() => import("@/components/home/ComparisonShowcase").then(m => ({ default: m.ComparisonShowcase })));
+const LazyPremiumProviderCTA = lazy(() =>
+  import("@/components/premium/PremiumProviderCTA").then((m) => ({ default: m.PremiumProviderCTA }))
+);
+const LazyPremiumServicesGrid = lazy(() =>
+  import("@/components/premium/PremiumServicesGrid").then((m) => ({ default: m.PremiumServicesGrid }))
+);
+const LazyComparisonShowcase = lazy(() =>
+  import("@/components/home/ComparisonShowcase").then((m) => ({ default: m.ComparisonShowcase }))
+);
 
 // Optional sections - below main CTA (can be removed for less scroll)
-const LazyPremiumCostExamples = lazy(() => import("@/components/premium/PremiumCostExamples").then(m => ({ default: m.PremiumCostExamples })));
-const LazyPremiumAIShowcase = lazy(() => import("@/components/premium/PremiumAIShowcase").then(m => ({ default: m.PremiumAIShowcase })));
-const LazyPremiumRegions = lazy(() => import("@/components/premium/PremiumRegions").then(m => ({ default: m.PremiumRegions })));
-const LazyPremiumWhyUs = lazy(() => import("@/components/premium/PremiumWhyUs").then(m => ({ default: m.PremiumWhyUs })));
+const LazyPremiumCostExamples = lazy(() =>
+  import("@/components/premium/PremiumCostExamples").then((m) => ({ default: m.PremiumCostExamples }))
+);
+const LazyPremiumAIShowcase = lazy(() =>
+  import("@/components/premium/PremiumAIShowcase").then((m) => ({ default: m.PremiumAIShowcase }))
+);
+const LazyPremiumRegions = lazy(() =>
+  import("@/components/premium/PremiumRegions").then((m) => ({ default: m.PremiumRegions }))
+);
+const LazyPremiumWhyUs = lazy(() =>
+  import("@/components/premium/PremiumWhyUs").then((m) => ({ default: m.PremiumWhyUs }))
+);
 
+// Dedicated screenshot render variant (no below-the-fold chunk waterfall)
+const LazyIndexPremiumScreenshot = lazy(() => import("./IndexPremiumScreenshot"));
 const IndexPremium = () => {
+  const screenshotMode = useMemo(() => isScreenshotRenderMode(), []);
+
   // Tracking guard to prevent duplicate events on re-renders
   const didTrack = useRef(false);
 
   // Track page view once on mount
   useEffect(() => {
+    if (screenshotMode) return;
     if (didTrack.current) return;
     didTrack.current = true;
 
     // Track page view (analytics lib checks consent internally)
     analytics.trackPageView('home_premium', '/');
-  }, []);
+  }, [screenshotMode]);
 
   // FAQ data - memoized
   const faqItems = useMemo(() => [
@@ -111,8 +131,15 @@ const IndexPremium = () => {
     ]
   }), [faqItems]);
 
+  if (screenshotMode) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-background" aria-label="Loading screenshot render" />}>
+        <LazyIndexPremiumScreenshot />
+      </Suspense>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background">
       <ScrollProgress />
       <Helmet>
         <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos | Umzugscheck.ch</title>
