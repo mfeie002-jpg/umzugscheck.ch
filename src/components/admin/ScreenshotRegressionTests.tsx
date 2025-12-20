@@ -62,6 +62,14 @@ interface AlertSettings {
   is_active: boolean;
 }
 
+const DEFAULT_SITE_ORIGIN =
+  typeof window !== "undefined" ? window.location.origin : "https://umzugscheck.ch";
+
+const UC_RENDER_HOSTS =
+  typeof window !== "undefined"
+    ? [window.location.hostname, "umzugscheck.ch", "www.umzugscheck.ch"]
+    : ["umzugscheck.ch", "www.umzugscheck.ch"];
+
 const DIMENSIONS = [
   { value: "1920x1080", label: "Desktop Full HD" },
   { value: "1366x768", label: "Desktop HD" },
@@ -70,11 +78,11 @@ const DIMENSIONS = [
 ];
 
 const TOP_URLS = [
-  "https://umzugscheck.ch",
-  "https://umzugscheck.ch/umzugsofferten",
-  "https://umzugscheck.ch/preisrechner",
-  "https://umzugscheck.ch/firmen",
-  "https://umzugscheck.ch/beste-umzugsfirma",
+  `${DEFAULT_SITE_ORIGIN}/`,
+  `${DEFAULT_SITE_ORIGIN}/umzugsofferten`,
+  `${DEFAULT_SITE_ORIGIN}/preisrechner`,
+  `${DEFAULT_SITE_ORIGIN}/firmen`,
+  `${DEFAULT_SITE_ORIGIN}/beste-umzugsfirma`,
 ];
 
 export function ScreenshotRegressionTests() {
@@ -89,12 +97,12 @@ export function ScreenshotRegressionTests() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newBaseline, setNewBaseline] = useState({
     name: "",
-    url: "https://umzugscheck.ch",
+    url: DEFAULT_SITE_ORIGIN,
     dimension: "1920x1080",
     threshold_percent: 5,
   });
   const [capturingBaseline, setCapturingBaseline] = useState(false);
-  
+
   // Alert settings dialog
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [alertEmail, setAlertEmail] = useState("");
@@ -132,6 +140,38 @@ export function ScreenshotRegressionTests() {
       toast.error("Fehler beim Laden der Daten");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const rewriteBaselinesToCurrentDomain = async () => {
+    if (
+      !confirm(
+        `Alle Baseline-URLs auf die aktuelle Domain umstellen?\n\nNeue Domain: ${DEFAULT_SITE_ORIGIN}`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const updates = baselines.map((b) => {
+        try {
+          const u = new URL(b.url);
+          const next = new URL(`${u.pathname}${u.search}${u.hash}`, DEFAULT_SITE_ORIGIN).toString();
+          return { id: b.id, url: next };
+        } catch {
+          return { id: b.id, url: b.url };
+        }
+      });
+
+      await Promise.all(
+        updates.map((u) => supabase.from("screenshot_baselines").update({ url: u.url }).eq("id", u.id))
+      );
+
+      toast.success("Baseline-URLs aktualisiert");
+      loadData();
+    } catch (error) {
+      console.error("Error updating baseline URLs:", error);
+      toast.error("Fehler beim Aktualisieren der URLs");
     }
   };
 
@@ -225,7 +265,7 @@ export function ScreenshotRegressionTests() {
 
     setCapturingBaseline(true);
     try {
-      const urlForShot = addScreenshotRenderParamIfHost(newBaseline.url, "umzugscheck.ch");
+      const urlForShot = addScreenshotRenderParamIfHost(newBaseline.url, UC_RENDER_HOSTS);
       const result = await captureScreenshot({
         url: urlForShot,
         dimension: newBaseline.dimension,
@@ -253,7 +293,7 @@ export function ScreenshotRegressionTests() {
 
       toast.success("Baseline erfolgreich erstellt!");
       setShowAddDialog(false);
-      setNewBaseline({ name: "", url: "https://umzugscheck.ch", dimension: "1920x1080", threshold_percent: 5 });
+      setNewBaseline({ name: "", url: DEFAULT_SITE_ORIGIN, dimension: "1920x1080", threshold_percent: 5 });
       loadData();
     } catch (error) {
       console.error("Error adding baseline:", error);
@@ -282,7 +322,7 @@ export function ScreenshotRegressionTests() {
       setTestProgress({ current: i + 1, total: activeBaselines.length });
 
       try {
-        const urlForShot = addScreenshotRenderParamIfHost(baseline.url, "umzugscheck.ch");
+        const urlForShot = addScreenshotRenderParamIfHost(baseline.url, UC_RENDER_HOSTS);
         const result = await captureScreenshot({
           url: urlForShot,
           dimension: baseline.dimension,
