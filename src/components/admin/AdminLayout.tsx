@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { AdminSidebar } from "./AdminSidebar";
+import { AdminFloatingAIButton } from "./AdminFloatingAIButton";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface AdminLayoutProps {
@@ -31,6 +32,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       <main className="flex-1 overflow-auto">
         {children}
       </main>
+      <AdminFloatingAIButton />
     </div>
   );
 }
