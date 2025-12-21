@@ -93,7 +93,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { 
   Package, Download, Loader2, Globe, Copy, CheckCircle2, 
-  FileText, Camera, Code, ExternalLink, Plus, X, FileDown 
+  FileText, Camera, Code, ExternalLink, Plus, X, FileDown, Wand2 
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import JSZip from 'jszip';
@@ -537,6 +537,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [autoFillLoading, setAutoFillLoading] = useState(false);
   const [progress, setProgress] = useState({ step: '', percent: 0 });
   const [results, setResults] = useState<{ pageCount: number; downloadUrl?: string } | null>(null);
 
@@ -553,6 +554,47 @@ const AIFeedbackPackageStandalone: React.FC = () => {
     const newCompetitors = [...config.competitors];
     newCompetitors[index] = value;
     setConfig({ ...config, competitors: newCompetitors });
+  };
+
+  // Auto-fill with AI
+  const autoFillWithAI = async () => {
+    if (!config.projectUrl) {
+      toast.error('Bitte zuerst eine URL eingeben');
+      return;
+    }
+
+    setAutoFillLoading(true);
+    toast.info('Analysiere Website mit KI...');
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-extract-project-info', {
+        body: { url: config.projectUrl }
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.data) {
+        const extracted = data.data;
+        setConfig(prev => ({
+          ...prev,
+          projectName: extracted.projectName || prev.projectName,
+          description: extracted.description || prev.description,
+          goals: extracted.goals || prev.goals,
+          targetAudience: extracted.targetAudience || prev.targetAudience,
+          competitors: extracted.competitors?.length > 0 
+            ? extracted.competitors 
+            : prev.competitors,
+        }));
+        toast.success('Felder wurden automatisch ausgefüllt!');
+      } else {
+        toast.error(data?.error || 'Fehler beim Extrahieren der Daten');
+      }
+    } catch (error) {
+      console.error('Auto-fill error:', error);
+      toast.error('Fehler beim Analysieren der Website: ' + (error instanceof Error ? error.message : 'Unbekannter Fehler'));
+    } finally {
+      setAutoFillLoading(false);
+    }
   };
 
   const generatePackage = async () => {
@@ -711,17 +753,35 @@ const AIFeedbackPackageStandalone: React.FC = () => {
               placeholder="My Awesome Project"
               value={config.projectName}
               onChange={(e) => setConfig({ ...config, projectName: e.target.value })}
-              disabled={loading}
+              disabled={loading || autoFillLoading}
             />
           </div>
           <div className="space-y-2">
             <Label>Project URL *</Label>
-            <Input
-              placeholder="example.com"
-              value={config.projectUrl}
-              onChange={(e) => setConfig({ ...config, projectUrl: e.target.value })}
-              disabled={loading}
-            />
+            <div className="flex gap-2">
+              <Input
+                placeholder="example.com"
+                value={config.projectUrl}
+                onChange={(e) => setConfig({ ...config, projectUrl: e.target.value })}
+                disabled={loading || autoFillLoading}
+                className="flex-1"
+              />
+              <Button
+                variant="secondary"
+                onClick={autoFillWithAI}
+                disabled={loading || autoFillLoading || !config.projectUrl}
+                title="Mit KI automatisch ausfüllen"
+              >
+                {autoFillLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Wand2 className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Klick auf den Zauberstab um alle Felder automatisch mit KI auszufüllen
+            </p>
           </div>
         </div>
 
@@ -732,7 +792,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
             placeholder="Describe what your project does..."
             value={config.description}
             onChange={(e) => setConfig({ ...config, description: e.target.value })}
-            disabled={loading}
+            disabled={loading || autoFillLoading}
             rows={2}
           />
         </div>
@@ -745,7 +805,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
               placeholder="Improve conversion, enhance UX, boost SEO"
               value={config.goals}
               onChange={(e) => setConfig({ ...config, goals: e.target.value })}
-              disabled={loading}
+              disabled={loading || autoFillLoading}
             />
           </div>
           <div className="space-y-2">
@@ -754,7 +814,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
               placeholder="Who are your users?"
               value={config.targetAudience}
               onChange={(e) => setConfig({ ...config, targetAudience: e.target.value })}
-              disabled={loading}
+              disabled={loading || autoFillLoading}
             />
           </div>
         </div>
@@ -768,19 +828,19 @@ const AIFeedbackPackageStandalone: React.FC = () => {
                 placeholder="competitor.com"
                 value={comp}
                 onChange={(e) => updateCompetitor(index, e.target.value)}
-                disabled={loading}
+                disabled={loading || autoFillLoading}
               />
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => removeCompetitor(index)}
-                disabled={loading || config.competitors.length <= 1}
+                disabled={loading || autoFillLoading || config.competitors.length <= 1}
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
           ))}
-          <Button variant="outline" size="sm" onClick={addCompetitor} disabled={loading}>
+          <Button variant="outline" size="sm" onClick={addCompetitor} disabled={loading || autoFillLoading}>
             <Plus className="h-4 w-4 mr-1" /> Add Competitor
           </Button>
         </div>
