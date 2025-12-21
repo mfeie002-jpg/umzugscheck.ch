@@ -91,6 +91,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Package, Download, Loader2, Globe, Copy, CheckCircle2, 
   FileText, Camera, Code, ExternalLink, Plus, X, FileDown, Wand2 
@@ -536,6 +538,19 @@ const AIFeedbackPackageStandalone: React.FC = () => {
     keyQuestions: '1. What are the biggest UX issues?\n2. How can we improve conversion rates?\n3. What SEO improvements are needed?\n4. How do we compare to competitors?'
   });
 
+  // Package options state
+  const [packageOptions, setPackageOptions] = useState({
+    desktopScreenshots: true,
+    mobileScreenshots: true,
+    html: true,
+    competitors: true,
+    prompts: true,
+    pdf: true,
+  });
+
+  // Page count selector
+  const [pageCount, setPageCount] = useState<'5' | '10' | '25'>('25');
+
   const [loading, setLoading] = useState(false);
   const [autoFillLoading, setAutoFillLoading] = useState(false);
   const [progress, setProgress] = useState({ step: '', percent: 0 });
@@ -603,6 +618,13 @@ const AIFeedbackPackageStandalone: React.FC = () => {
       return;
     }
 
+    // Check if at least one option is selected
+    const hasSelection = Object.values(packageOptions).some(v => v);
+    if (!hasSelection) {
+      toast.error('Bitte mindestens eine Option auswählen');
+      return;
+    }
+
     setLoading(true);
     setProgress({ step: 'Initializing...', percent: 0 });
     setResults(null);
@@ -615,10 +637,20 @@ const AIFeedbackPackageStandalone: React.FC = () => {
       // Step 1: Fetch homepage and discover pages
       setProgress({ step: 'Discovering pages...', percent: 5 });
       const homeHtml = await fetchHtml(baseUrl);
-      const pages = homeHtml ? discoverPages(baseUrl, homeHtml) : [baseUrl];
+      const maxPages = parseInt(pageCount);
+      const allPages = homeHtml ? discoverPages(baseUrl, homeHtml) : [baseUrl];
+      const pages = allPages.slice(0, maxPages);
       
-      const competitors = config.competitors.filter(c => c.trim());
-      const totalSteps = pages.length * 3 + competitors.length * 2 + 5;
+      const competitors = packageOptions.competitors ? config.competitors.filter(c => c.trim()) : [];
+      
+      // Calculate steps based on selected options
+      let stepsPerPage = 0;
+      if (packageOptions.desktopScreenshots) stepsPerPage++;
+      if (packageOptions.mobileScreenshots) stepsPerPage++;
+      if (packageOptions.html) stepsPerPage++;
+      
+      const totalSteps = pages.length * stepsPerPage + competitors.length * 2 + 
+        (packageOptions.prompts ? 1 : 0) + (packageOptions.pdf ? 1 : 0) + 2;
       let currentStep = 0;
 
       const updateProg = (step: string) => {
@@ -633,52 +665,63 @@ const AIFeedbackPackageStandalone: React.FC = () => {
         const filename = `${String(i + 1).padStart(2, '0')}_${pathname}`;
 
         // Desktop screenshot
-        updateProg(`Desktop: ${new URL(url).pathname || '/'}`);
-        const desktopBlob = await captureScreenshot(url, '1920xfull');
-        if (desktopBlob) {
-          zip.file(`screenshots/desktop/${filename}.png`, desktopBlob);
+        if (packageOptions.desktopScreenshots) {
+          updateProg(`Desktop: ${new URL(url).pathname || '/'}`);
+          const desktopBlob = await captureScreenshot(url, '1920xfull');
+          if (desktopBlob) {
+            zip.file(`screenshots/desktop/${filename}.png`, desktopBlob);
+          }
         }
 
         // Mobile screenshot
-        updateProg(`Mobile: ${new URL(url).pathname || '/'}`);
-        const mobileBlob = await captureScreenshot(url, '375xfull');
-        if (mobileBlob) {
-          zip.file(`screenshots/mobile/${filename}.png`, mobileBlob);
+        if (packageOptions.mobileScreenshots) {
+          updateProg(`Mobile: ${new URL(url).pathname || '/'}`);
+          const mobileBlob = await captureScreenshot(url, '375xfull');
+          if (mobileBlob) {
+            zip.file(`screenshots/mobile/${filename}.png`, mobileBlob);
+          }
         }
 
         // HTML
-        updateProg(`HTML: ${new URL(url).pathname || '/'}`);
-        const html = await fetchHtml(url);
-        if (html) {
-          zip.file(`html/${filename}.html`, html);
+        if (packageOptions.html) {
+          updateProg(`HTML: ${new URL(url).pathname || '/'}`);
+          const html = await fetchHtml(url);
+          if (html) {
+            zip.file(`html/${filename}.html`, html);
+          }
         }
 
         await delay(800); // Rate limiting
       }
 
       // Step 3: Capture competitors
-      for (const competitorUrl of competitors) {
-        const compDomain = extractDomain(competitorUrl);
-        
-        updateProg(`Competitor: ${compDomain}`);
-        const desktopBlob = await captureScreenshot(normalizeUrl(competitorUrl), '1920xfull');
-        if (desktopBlob) {
-          zip.file(`competitors/${compDomain}_desktop.png`, desktopBlob);
-        }
+      if (packageOptions.competitors) {
+        for (const competitorUrl of competitors) {
+          const compDomain = extractDomain(competitorUrl);
+          
+          updateProg(`Competitor: ${compDomain}`);
+          const desktopBlob = await captureScreenshot(normalizeUrl(competitorUrl), '1920xfull');
+          if (desktopBlob) {
+            zip.file(`competitors/${compDomain}_desktop.png`, desktopBlob);
+          }
 
-        updateProg(`Competitor Mobile: ${compDomain}`);
-        const mobileBlob = await captureScreenshot(normalizeUrl(competitorUrl), '375xfull');
-        if (mobileBlob) {
-          zip.file(`competitors/${compDomain}_mobile.png`, mobileBlob);
-        }
+          updateProg(`Competitor Mobile: ${compDomain}`);
+          const mobileBlob = await captureScreenshot(normalizeUrl(competitorUrl), '375xfull');
+          if (mobileBlob) {
+            zip.file(`competitors/${compDomain}_mobile.png`, mobileBlob);
+          }
 
-        await delay(1000);
+          await delay(1000);
+        }
       }
 
       // Step 4: Generate documentation
-      updateProg('Generating documentation...');
-      zip.file('PROJECT_BRIEF.md', generateProjectBrief(config, pages.length));
-      zip.file('REVIEW_REQUEST.md', generateReviewRequest(config));
+      if (packageOptions.prompts) {
+        updateProg('Generating documentation...');
+        zip.file('PROJECT_BRIEF.md', generateProjectBrief(config, pages.length));
+        zip.file('REVIEW_REQUEST.md', generateReviewRequest(config));
+      }
+      
       zip.file('SITEMAP.json', JSON.stringify({
         generated: new Date().toISOString(),
         domain,
@@ -688,14 +731,17 @@ const AIFeedbackPackageStandalone: React.FC = () => {
           path: new URL(url).pathname || '/'
         })),
         competitors: competitors,
-        totalPages: pages.length
+        totalPages: pages.length,
+        maxPagesConfigured: maxPages
       }, null, 2));
 
       // Step 5: Generate PDF Report
-      updateProg('Generating PDF report...');
-      const pdf = generatePdfReport(config, pages.length);
-      const pdfBlob = pdf.output('blob');
-      zip.file('REPORT.pdf', pdfBlob);
+      if (packageOptions.pdf) {
+        updateProg('Generating PDF report...');
+        const pdf = generatePdfReport(config, pages.length);
+        const pdfBlob = pdf.output('blob');
+        zip.file('REPORT.pdf', pdfBlob);
+      }
 
       // Step 6: Generate ZIP
       setProgress({ step: 'Creating ZIP...', percent: 95 });
@@ -707,7 +753,7 @@ const AIFeedbackPackageStandalone: React.FC = () => {
 
       setProgress({ step: 'Complete!', percent: 100 });
       setResults({ pageCount: pages.length });
-      toast.success('Package generated with PDF report!');
+      toast.success(`Package generiert! ${pages.length} Seiten erfasst.`);
 
     } catch (error) {
       console.error('Package generation error:', error);
@@ -843,6 +889,146 @@ const AIFeedbackPackageStandalone: React.FC = () => {
           <Button variant="outline" size="sm" onClick={addCompetitor} disabled={loading || autoFillLoading}>
             <Plus className="h-4 w-4 mr-1" /> Add Competitor
           </Button>
+        </div>
+
+        {/* Package Options */}
+        <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+          <Label className="text-sm font-medium">Package-Inhalte auswählen:</Label>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="desktopScreenshots"
+                checked={packageOptions.desktopScreenshots}
+                onCheckedChange={(checked) => 
+                  setPackageOptions(prev => ({ ...prev, desktopScreenshots: !!checked }))
+                }
+              />
+              <label htmlFor="desktopScreenshots" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                <Camera className="h-3 w-3 text-muted-foreground" />
+                Desktop Screenshots
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="mobileScreenshots"
+                checked={packageOptions.mobileScreenshots}
+                onCheckedChange={(checked) => 
+                  setPackageOptions(prev => ({ ...prev, mobileScreenshots: !!checked }))
+                }
+              />
+              <label htmlFor="mobileScreenshots" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                <Camera className="h-3 w-3 text-muted-foreground" />
+                Mobile Screenshots
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="html"
+                checked={packageOptions.html}
+                onCheckedChange={(checked) => 
+                  setPackageOptions(prev => ({ ...prev, html: !!checked }))
+                }
+              />
+              <label htmlFor="html" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                <Code className="h-3 w-3 text-muted-foreground" />
+                HTML Source
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="competitors"
+                checked={packageOptions.competitors}
+                onCheckedChange={(checked) => 
+                  setPackageOptions(prev => ({ ...prev, competitors: !!checked }))
+                }
+              />
+              <label htmlFor="competitors" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                <Globe className="h-3 w-3 text-muted-foreground" />
+                Konkurrenten
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="prompts"
+                checked={packageOptions.prompts}
+                onCheckedChange={(checked) => 
+                  setPackageOptions(prev => ({ ...prev, prompts: !!checked }))
+                }
+              />
+              <label htmlFor="prompts" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                <FileText className="h-3 w-3 text-muted-foreground" />
+                KI-Prompts
+              </label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="pdf"
+                checked={packageOptions.pdf}
+                onCheckedChange={(checked) => 
+                  setPackageOptions(prev => ({ ...prev, pdf: !!checked }))
+                }
+              />
+              <label htmlFor="pdf" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                <FileDown className="h-3 w-3 text-muted-foreground" />
+                PDF Report
+              </label>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 pt-2 border-t">
+            <div className="flex items-center gap-2">
+              <Label className="text-xs">Max. Seiten:</Label>
+              <Select value={pageCount} onValueChange={(v) => setPageCount(v as '5' | '10' | '25')}>
+                <SelectTrigger className="w-24 h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5 Seiten</SelectItem>
+                  <SelectItem value="10">10 Seiten</SelectItem>
+                  <SelectItem value="25">25 Seiten</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-6 text-xs px-2"
+                onClick={() => setPackageOptions({
+                  desktopScreenshots: true,
+                  mobileScreenshots: true,
+                  html: true,
+                  competitors: true,
+                  prompts: true,
+                  pdf: true,
+                })}
+              >
+                Alle auswählen
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-6 text-xs px-2"
+                onClick={() => setPackageOptions({
+                  desktopScreenshots: false,
+                  mobileScreenshots: false,
+                  html: false,
+                  competitors: false,
+                  prompts: false,
+                  pdf: false,
+                })}
+              >
+                Keine
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Key Questions */}

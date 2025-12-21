@@ -953,27 +953,43 @@ const AdminTools = () => {
   };
 
   const generateReadme = () => {
+    const selectedItems: string[] = [];
+    if (packageOptions.desktopScreenshots || packageOptions.mobileScreenshots) {
+      const types = [];
+      if (packageOptions.desktopScreenshots) types.push('Desktop');
+      if (packageOptions.mobileScreenshots) types.push('Mobile');
+      selectedItems.push(`- **/screenshots/** - ${types.join(' & ')} Screenshots aller Seiten`);
+    }
+    if (packageOptions.rawHtml) {
+      selectedItems.push('- **/html/** - Raw HTML (ohne JavaScript)');
+    }
+    if (packageOptions.renderedHtml) {
+      selectedItems.push('- **/rendered-html/** - Gerendertes HTML (nach JavaScript-Ausführung)');
+    }
+    if (packageOptions.prompts) {
+      selectedItems.push('- **/prompts/** - 7 verschiedene KI-Analyse-Prompts');
+    }
+    if (packageOptions.pdfBrief) {
+      selectedItems.push('- **PROJECT_BRIEF.pdf** - Projekt-Zusammenfassung');
+    }
+
     return `# ${config.projectName} - AI Feedback Package
 
 ## Generiert am ${new Date().toLocaleDateString('de-CH')}
 
 ### Inhalt
 
-- **/screenshots/** - Desktop und Mobile Screenshots aller Seiten
-- **/html/** - Raw HTML (ohne JavaScript)
-- **/rendered-html/** - Gerendertes HTML (nach JavaScript-Ausführung)
-- **/prompts/** - 7 verschiedene KI-Analyse-Prompts
-- **PROJECT_BRIEF.pdf** - Projekt-Zusammenfassung
+${selectedItems.join('\n')}
 
 ### Verwendung
 
 1. Öffne ChatGPT, Claude oder Gemini
-2. Wähle einen Prompt aus dem /prompts/ Ordner
-3. Füge den Prompt ein
+2. ${packageOptions.prompts ? 'Wähle einen Prompt aus dem /prompts/ Ordner' : 'Formuliere deine Analyse-Anfrage'}
+3. ${packageOptions.prompts ? 'Füge den Prompt ein' : 'Beschreibe was du analysieren möchtest'}
 4. Lade relevante Screenshots oder HTML-Dateien hoch
 5. Erhalte detaillierte Analyse
 
-### Prompts
+${packageOptions.prompts ? `### Prompts
 
 1. **Quick Analysis** - Schnelle UX/Conversion-Checks (~2 Min)
 2. **Deep Audit** - Vollständige Analyse (~10 Min)
@@ -982,13 +998,14 @@ const AdminTools = () => {
 5. **Regression Report** - Änderungs-Analyse (~3 Min)
 6. **SEO Deep Dive** - Suchmaschinen-Optimierung (~8 Min)
 7. **Accessibility Audit** - WCAG-Konformität (~5 Min)
-
+` : ''}
 ### Projekt-Details
 
 - **URL:** ${config.projectUrl}
 - **Beschreibung:** ${config.description}
 - **Zielgruppe:** ${config.targetAudience}
 - **Konkurrenten:** ${config.competitors.replace(/\n/g, ', ')}
+- **Analysierte Seiten:** Homepage${config.additionalPages.length > 0 ? ` + ${config.additionalPages.length} weitere` : ''}
 `;
   };
 
