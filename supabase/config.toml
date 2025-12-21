@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.firecrawl-map]
 verify_jwt = false
+
+[functions.ai-extract-project-info]
+verify_jwt = false
