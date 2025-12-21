@@ -23,6 +23,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
+import { RegressionTestingPanel } from "@/components/admin/RegressionTestingPanel";
+import { ScheduledMonitoringPanel } from "@/components/admin/ScheduledMonitoringPanel";
 import { ToolsDocumentation } from "@/components/admin/ToolsDocumentation";
 import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import JSZip from "jszip";
@@ -2091,18 +2093,26 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
 
         {/* Tools Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="ai-feedback" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
-              AI Feedback Package
+              AI Package
             </TabsTrigger>
             <TabsTrigger value="screenshots" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
-              Screenshot Machine
+              Screenshots
             </TabsTrigger>
             <TabsTrigger value="seo-analyzer" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
-              SEO HTML Analyzer
+              SEO Analyzer
+            </TabsTrigger>
+            <TabsTrigger value="regression" className="flex items-center gap-2">
+              <GitCompare className="h-4 w-4" />
+              Regression
+            </TabsTrigger>
+            <TabsTrigger value="monitoring" className="flex items-center gap-2">
+              <RefreshCw className="h-4 w-4" />
+              Monitoring
             </TabsTrigger>
           </TabsList>
 
@@ -2855,6 +2865,16 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
           {/* SEO HTML Analyzer Tab */}
           <TabsContent value="seo-analyzer">
             <SEOHtmlAnalyzer />
+          </TabsContent>
+
+          {/* Regression Testing Tab */}
+          <TabsContent value="regression">
+            <RegressionTestingPanel />
+          </TabsContent>
+
+          {/* Scheduled Monitoring Tab */}
+          <TabsContent value="monitoring">
+            <ScheduledMonitoringPanel />
           </TabsContent>
         </Tabs>
 
