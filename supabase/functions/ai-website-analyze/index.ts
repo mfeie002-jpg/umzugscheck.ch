@@ -21,7 +21,9 @@ serve(async (req) => {
       competitors,
       htmlContent,
       screenshotBase64,
-      analysisType = 'complete' 
+      analysisType = 'complete',
+      pageCount = 1,
+      analyzedPages = []
     } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -29,7 +31,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log(`Starting ${analysisType} analysis for: ${projectUrl}`);
+    console.log(`Starting ${analysisType} analysis for: ${projectUrl} (${pageCount} page(s))`);
 
     // Build the analysis prompt based on type
     const systemPrompt = `Du bist ein erfahrener Web-Analyst und UX-Experte. Analysiere Websites gründlich und gib actionable Empfehlungen. Antworte auf Deutsch.`;
@@ -42,6 +44,8 @@ serve(async (req) => {
 - **Ziele:** ${goals || 'Nicht angegeben'}
 - **Zielgruppe:** ${targetAudience || 'Nicht angegeben'}
 - **Konkurrenten:** ${competitors || 'Nicht angegeben'}
+- **Analysierte Seiten:** ${pageCount}
+${analyzedPages && analyzedPages.length > 0 ? `- **Seiten-URLs:** \n${analyzedPages.map((url: string, i: number) => `  ${i + 1}. ${url}`).join('\n')}` : ''}
 
 `;
 
