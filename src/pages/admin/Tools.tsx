@@ -1522,7 +1522,7 @@ serve(async (req) => {
   }
 });`);
 
-    // ai-website-analyze (Lovable AI)
+    // ai-website-analyze (Lovable AI) - Multi-Page Support
     functionsFolder?.file('ai-website-analyze/index.ts', `import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -1537,21 +1537,62 @@ serve(async (req) => {
   }
 
   try {
-    const { projectName, projectUrl, description, goals, targetAudience, competitors, htmlContent, screenshotBase64 } = await req.json();
+    const { 
+      projectName, projectUrl, description, goals, targetAudience, competitors, 
+      htmlContent, screenshotBase64, pageCount = 1, analyzedPages = [] 
+    } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY is not configured');
 
-    const systemPrompt = 'Du bist ein erfahrener Web-Analyst und UX-Experte. Analysiere Websites gründlich.';
-    let userPrompt = \`# Website-Analyse für \${projectName}\\n\\n**URL:** \${projectUrl}\\n**Beschreibung:** \${description || 'Keine'}\\n**Ziele:** \${goals || 'Nicht angegeben'}\\n\`;
-    
-    if (htmlContent) {
-      userPrompt += \`\\n## HTML-Auszug:\\n\\\`\\\`\\\`html\\n\${htmlContent.substring(0, 15000)}\\n\\\`\\\`\\\`\\n\`;
+    console.log(\`Starting analysis for: \${projectUrl} (\${pageCount} page(s))\`);
+
+    const systemPrompt = \`Du bist ein erfahrener Web-Analyst, UX-Experte und Conversion-Spezialist. 
+Analysiere Websites gründlich und gib actionable, priorisierte Empfehlungen.
+Antworte auf Deutsch. Sei konkret und gib Aufwand-Schätzungen in Stunden.\`;
+
+    let userPrompt = \`# Website-Analyse für \${projectName || 'Projekt'}
+
+## Projekt-Details
+- **URL:** \${projectUrl}
+- **Beschreibung:** \${description || 'Keine'}
+- **Ziele:** \${goals || 'Lead-Generierung, Conversion-Optimierung'}
+- **Zielgruppe:** \${targetAudience || 'Nicht spezifiziert'}
+- **Konkurrenten:** \${competitors || 'Nicht angegeben'}
+- **Analysierte Seiten:** \${pageCount}
+\`;
+
+    if (analyzedPages && analyzedPages.length > 0) {
+      userPrompt += \`\\n### Erfasste Seiten:\\n\`;
+      analyzedPages.forEach((url, i) => { userPrompt += \`\${i + 1}. \${url}\\n\`; });
     }
     
-    userPrompt += \`\\n## Analyse:\\n1. TOP 3 Conversion-Killer\\n2. Quick Wins\\n3. SEO-Probleme\\n4. Mobile UX\\n\`;
+    if (htmlContent) {
+      userPrompt += \`\\n## HTML-Analyse\\n\\\`\\\`\\\`html\\n\${htmlContent.substring(0, 20000)}\\n\\\`\\\`\\\`\\n\`;
+    }
+    
+    userPrompt += \`
+## Deine Aufgaben
 
-    const messages: any[] = [{ role: 'system', content: systemPrompt }];
+### 1. Executive Summary (2-3 Sätze)
+### 2. Quick Analysis
+- TOP 3 Conversion-Killer
+- Quick Wins für diese Woche
+- Mobile UX Probleme
+
+### 3. SEO Analyse
+- Meta-Tags, Heading-Struktur, Interne Verlinkung, Schema.org
+
+### 4. UX/Conversion
+- CTA Klarheit, Formular-Usability, Trust-Elemente
+
+## Ausgabeformat
+| # | Problem | Impact | Lösung | Aufwand |
+|---|---------|--------|--------|---------|
+
+### Nächste Schritte (Top 3)\`;
+
+    const messages = [{ role: 'system', content: systemPrompt }];
     
     if (screenshotBase64) {
       messages.push({
@@ -1568,17 +1609,18 @@ serve(async (req) => {
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': \`Bearer \${LOVABLE_API_KEY}\`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages, max_tokens: 4000 }),
+      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages, max_tokens: 6000 }),
     });
 
     if (!response.ok) {
       if (response.status === 429) return new Response(JSON.stringify({ error: 'Rate limit' }), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      if (response.status === 402) return new Response(JSON.stringify({ error: 'AI-Guthaben aufgebraucht' }), { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       throw new Error(\`AI error: \${response.status}\`);
     }
 
     const data = await response.json();
     return new Response(
-      JSON.stringify({ success: true, analysis: data.choices?.[0]?.message?.content, timestamp: new Date().toISOString() }),
+      JSON.stringify({ success: true, analysis: data.choices?.[0]?.message?.content, pageCount, analyzedPages, timestamp: new Date().toISOString() }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {

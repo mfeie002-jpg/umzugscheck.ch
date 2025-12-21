@@ -32,28 +32,41 @@ serve(async (req) => {
     }
 
     console.log(`Starting ${analysisType} analysis for: ${projectUrl} (${pageCount} page(s))`);
+    if (analyzedPages.length > 0) {
+      console.log(`Analyzed pages: ${analyzedPages.join(', ')}`);
+    }
 
     // Build the analysis prompt based on type
-    const systemPrompt = `Du bist ein erfahrener Web-Analyst und UX-Experte. Analysiere Websites gründlich und gib actionable Empfehlungen. Antworte auf Deutsch.`;
+    const systemPrompt = `Du bist ein erfahrener Web-Analyst, UX-Experte und Conversion-Spezialist. 
+Analysiere Websites gründlich und gib actionable, priorisierte Empfehlungen.
+Antworte auf Deutsch. Sei konkret und gib Aufwand-Schätzungen in Stunden.`;
 
-    let userPrompt = `# Website-Analyse für ${projectName}
+    let userPrompt = `# Website-Analyse für ${projectName || 'Unbekanntes Projekt'}
 
 ## Projekt-Details
 - **URL:** ${projectUrl}
-- **Beschreibung:** ${description || 'Keine Beschreibung'}
-- **Ziele:** ${goals || 'Nicht angegeben'}
-- **Zielgruppe:** ${targetAudience || 'Nicht angegeben'}
+- **Beschreibung:** ${description || 'Keine Beschreibung angegeben'}
+- **Ziele:** ${goals || 'Lead-Generierung, Conversion-Optimierung'}
+- **Zielgruppe:** ${targetAudience || 'Nicht spezifiziert'}
 - **Konkurrenten:** ${competitors || 'Nicht angegeben'}
 - **Analysierte Seiten:** ${pageCount}
-${analyzedPages && analyzedPages.length > 0 ? `- **Seiten-URLs:** \n${analyzedPages.map((url: string, i: number) => `  ${i + 1}. ${url}`).join('\n')}` : ''}
-
 `;
 
+    // Add page URLs if available
+    if (analyzedPages && analyzedPages.length > 0) {
+      userPrompt += `\n### Erfasste Seiten:\n`;
+      analyzedPages.forEach((url: string, i: number) => {
+        userPrompt += `${i + 1}. ${url}\n`;
+      });
+    }
+
+    userPrompt += '\n';
+
+    // Add HTML content if provided
     if (htmlContent) {
-      // Truncate HTML to avoid token limits
-      const truncatedHtml = htmlContent.substring(0, 15000);
+      const truncatedHtml = htmlContent.substring(0, 20000);
       userPrompt += `## HTML-Analyse
-Hier ist ein Auszug des HTML-Codes (erste 15000 Zeichen):
+Hier ist der HTML-Code der analysierten Seite(n) (bis 20.000 Zeichen):
 
 \`\`\`html
 ${truncatedHtml}
@@ -64,43 +77,60 @@ ${truncatedHtml}
 
     userPrompt += `## Deine Aufgaben
 
-### 1. Quick Analysis
-- TOP 3 Conversion-Killer identifizieren
-- Quick Wins für diese Woche
-- Mobile UX Probleme
+### 1. Executive Summary (Kurz & Knapp)
+- Gesamteindruck in 2-3 Sätzen
+- Wichtigster Handlungsbedarf
 
-### 2. SEO Analyse
-- Meta-Tags Bewertung (Title, Description)
-- Heading-Struktur (H1, H2, H3)
-- Interne Verlinkung
-- Schema.org Markup
+### 2. Quick Analysis
+- **TOP 3 Conversion-Killer** (was hindert Nutzer am Abschluss?)
+- **Quick Wins** für diese Woche (max. 2h Aufwand pro Item)
+- **Mobile UX Probleme** (kritisch für Conversion)
 
-### 3. Performance & Code
+### 3. SEO Analyse
+- Meta-Tags Bewertung (Title, Description, OG-Tags)
+- Heading-Struktur (H1 vorhanden? H2/H3 Hierarchie?)
+- Interne Verlinkung (Navigation, Breadcrumbs, Footer)
+- Schema.org Markup (vorhanden? korrekt?)
+
+### 4. Performance & Code
 - HTML-Struktur Bewertung
-- Semantisches HTML
-- Accessibility-Basics (ARIA, Alt-Tags)
+- Semantisches HTML (richtige Tags?)
+- Accessibility-Basics (ARIA-Labels, Alt-Tags, Kontrast)
+- Ladezeit-Indikatoren (große Bilder, inline CSS/JS?)
 
-### 4. UX/Conversion
-- Call-to-Action Klarheit
-- Formular-Usability
-- Trust-Elemente
+### 5. UX/Conversion
+- Call-to-Action Klarheit & Platzierung
+- Formular-Usability (falls vorhanden)
+- Trust-Elemente (Bewertungen, Zertifikate, Garantien)
 - Mobile Responsiveness
+- Above-the-fold Optimierung
+
+### 6. Wettbewerbsvergleich (falls Konkurrenten angegeben)
+- Was machen Konkurrenten besser?
+- Was können wir übernehmen?
 
 ## Ausgabeformat
 
-Für jeden Bereich:
-| Problem | Impact | Lösung | Aufwand |
-|---------|--------|--------|---------|
-| ... | Hoch/Mittel/Niedrig | Konkrete Anweisung | Stunden |
+### Priorisierte Issue-Liste
+| # | Problem | Impact | Lösung | Aufwand |
+|---|---------|--------|--------|---------|
+| 1 | ... | 🔴 Hoch | Konkrete Anweisung | X Stunden |
+| 2 | ... | 🟡 Mittel | ... | X Stunden |
+| 3 | ... | 🟢 Niedrig | ... | X Stunden |
 
-### Executive Summary
-- 🔴 Kritisch (sofort beheben)
-- 🟡 Wichtig (diese Woche)
-- 🟢 Nice-to-have (Backlog)
+### Kategorisierte Zusammenfassung
+- 🔴 **Kritisch** (sofort beheben, hoher Impact)
+- 🟡 **Wichtig** (diese Woche, mittlerer Impact)
+- 🟢 **Nice-to-have** (Backlog, niedriger Impact)
 
 ### ROI-Schätzung
-- Geschätzter Conversion-Uplift
-- Potenzielle Umsatzsteigerung`;
+- Geschätzter Conversion-Uplift bei Umsetzung
+- Potenzielle monatliche Umsatzsteigerung (falls möglich)
+
+### Nächste Schritte
+1. [Wichtigste Aktion]
+2. [Zweitwichtigste Aktion]
+3. [Drittwichtigste Aktion]`;
 
     // Prepare messages array
     const messages: any[] = [
@@ -127,7 +157,7 @@ Für jeden Bereich:
       messages.push({ role: 'user', content: userPrompt });
     }
 
-    console.log('Calling Lovable AI Gateway...');
+    console.log('Calling Lovable AI Gateway with google/gemini-2.5-flash...');
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -138,7 +168,7 @@ Für jeden Bereich:
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages,
-        max_tokens: 4000,
+        max_tokens: 6000,
       }),
     });
 
@@ -169,13 +199,15 @@ Für jeden Bereich:
       throw new Error('Keine Analyse erhalten');
     }
 
-    console.log('Analysis complete!');
+    console.log(`Analysis complete! ${pageCount} page(s) analyzed.`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         analysis: analysisResult,
         model: 'google/gemini-2.5-flash',
+        pageCount,
+        analyzedPages,
         timestamp: new Date().toISOString()
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
