@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -438,6 +439,16 @@ const AdminTools = () => {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('');
   
+  // Manual Package Options State
+  const [packageOptions, setPackageOptions] = useState({
+    desktopScreenshots: true,
+    mobileScreenshots: true,
+    rawHtml: true,
+    renderedHtml: true,
+    prompts: true,
+    pdfBrief: true,
+  });
+  
   // AI Auto-Analyze State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
@@ -777,15 +788,22 @@ const AdminTools = () => {
       return;
     }
 
+    // Check if at least one option is selected
+    const hasSelection = Object.values(packageOptions).some(v => v);
+    if (!hasSelection) {
+      toast.error('Bitte mindestens eine Option auswählen');
+      return;
+    }
+
     setIsGenerating(true);
     setProgress(0);
     setStatus('Initialisiere...');
 
     try {
       const zip = new JSZip();
-      const screenshotsFolder = zip.folder('screenshots');
-      const htmlFolder = zip.folder('html');
-      const renderedHtmlFolder = zip.folder('rendered-html');
+      const screenshotsFolder = (packageOptions.desktopScreenshots || packageOptions.mobileScreenshots) ? zip.folder('screenshots') : null;
+      const htmlFolder = packageOptions.rawHtml ? zip.folder('html') : null;
+      const renderedHtmlFolder = packageOptions.renderedHtml ? zip.folder('rendered-html') : null;
       
       const allPages = [
         { path: '/', name: 'homepage' },
@@ -795,107 +813,126 @@ const AdminTools = () => {
         }))
       ];
 
-      const totalSteps = allPages.length * 4 + 2; // 4 per page + prompt + pdf
+      // Calculate total steps based on selected options
+      let stepsPerPage = 0;
+      if (packageOptions.desktopScreenshots) stepsPerPage++;
+      if (packageOptions.mobileScreenshots) stepsPerPage++;
+      if (packageOptions.rawHtml) stepsPerPage++;
+      if (packageOptions.renderedHtml) stepsPerPage++;
+      
+      const totalSteps = allPages.length * stepsPerPage + (packageOptions.prompts ? 1 : 0) + (packageOptions.pdfBrief ? 1 : 0);
       let currentStep = 0;
 
       for (const page of allPages) {
         const fullUrl = `${config.projectUrl.replace(/\/$/, '')}${page.path}`;
         
         // Desktop screenshot
-        setStatus(`Desktop Screenshot: ${page.name}...`);
-        try {
-          const result = await captureScreenshot({
-            url: fullUrl,
-            dimension: '1920x1080',
-            fullPage: true,
-            delay: 5000,
-          });
-          if (result.success && result.image) {
-            const base64Data = result.image.split(',')[1];
-            const byteCharacters = atob(base64Data);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let j = 0; j < byteCharacters.length; j++) {
-              byteNumbers[j] = byteCharacters.charCodeAt(j);
+        if (packageOptions.desktopScreenshots) {
+          setStatus(`Desktop Screenshot: ${page.name}...`);
+          try {
+            const result = await captureScreenshot({
+              url: fullUrl,
+              dimension: '1920x1080',
+              fullPage: true,
+              delay: 5000,
+            });
+            if (result.success && result.image) {
+              const base64Data = result.image.split(',')[1];
+              const byteCharacters = atob(base64Data);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let j = 0; j < byteCharacters.length; j++) {
+                byteNumbers[j] = byteCharacters.charCodeAt(j);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              screenshotsFolder?.file(`${page.name}-desktop.png`, byteArray);
             }
-            const byteArray = new Uint8Array(byteNumbers);
-            screenshotsFolder?.file(`${page.name}-desktop.png`, byteArray);
+          } catch (e) {
+            console.error('Desktop screenshot failed:', e);
           }
-        } catch (e) {
-          console.error('Desktop screenshot failed:', e);
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
         }
-        currentStep++;
-        setProgress((currentStep / totalSteps) * 100);
 
         // Mobile screenshot
-        setStatus(`Mobile Screenshot: ${page.name}...`);
-        try {
-          const result = await captureScreenshot({
-            url: fullUrl,
-            dimension: '393x852',
-            fullPage: true,
-            delay: 5000,
-          });
-          if (result.success && result.image) {
-            const base64Data = result.image.split(',')[1];
-            const byteCharacters = atob(base64Data);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let j = 0; j < byteCharacters.length; j++) {
-              byteNumbers[j] = byteCharacters.charCodeAt(j);
+        if (packageOptions.mobileScreenshots) {
+          setStatus(`Mobile Screenshot: ${page.name}...`);
+          try {
+            const result = await captureScreenshot({
+              url: fullUrl,
+              dimension: '393x852',
+              fullPage: true,
+              delay: 5000,
+            });
+            if (result.success && result.image) {
+              const base64Data = result.image.split(',')[1];
+              const byteCharacters = atob(base64Data);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let j = 0; j < byteCharacters.length; j++) {
+                byteNumbers[j] = byteCharacters.charCodeAt(j);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              screenshotsFolder?.file(`${page.name}-mobile.png`, byteArray);
             }
-            const byteArray = new Uint8Array(byteNumbers);
-            screenshotsFolder?.file(`${page.name}-mobile.png`, byteArray);
+          } catch (e) {
+            console.error('Mobile screenshot failed:', e);
           }
-        } catch (e) {
-          console.error('Mobile screenshot failed:', e);
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
         }
-        currentStep++;
-        setProgress((currentStep / totalSteps) * 100);
 
         // Raw HTML content
-        setStatus(`Raw HTML abrufen: ${page.name}...`);
-        const rawHtml = await fetchHtmlContent(fullUrl);
-        if (rawHtml) {
-          htmlFolder?.file(`${page.name}-raw.html`, rawHtml);
+        if (packageOptions.rawHtml) {
+          setStatus(`Raw HTML abrufen: ${page.name}...`);
+          const rawHtml = await fetchHtmlContent(fullUrl);
+          if (rawHtml) {
+            htmlFolder?.file(`${page.name}-raw.html`, rawHtml);
+          }
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
         }
-        currentStep++;
-        setProgress((currentStep / totalSteps) * 100);
 
         // Rendered HTML content
-        setStatus(`Rendered HTML abrufen: ${page.name}...`);
-        const renderedHtml = await fetchRenderedHtml(fullUrl);
-        if (renderedHtml) {
-          renderedHtmlFolder?.file(`${page.name}-rendered.html`, renderedHtml);
+        if (packageOptions.renderedHtml) {
+          setStatus(`Rendered HTML abrufen: ${page.name}...`);
+          const renderedHtml = await fetchRenderedHtml(fullUrl);
+          if (renderedHtml) {
+            renderedHtmlFolder?.file(`${page.name}-rendered.html`, renderedHtml);
+          }
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
         }
-        currentStep++;
-        setProgress((currentStep / totalSteps) * 100);
 
         // Small delay between pages
         await new Promise(resolve => setTimeout(resolve, 500));
       }
 
-      // Generate analysis prompt
-      setStatus('Erstelle Analyse-Prompts...');
-      const promptContent = generateAnalysisPrompt();
-      zip.file('ANALYSIS_PROMPT.md', promptContent);
-      
-      // Add all 7 prompt variants
-      zip.file('prompts/01_QUICK_ANALYSIS.md', generateQuickPrompt());
-      zip.file('prompts/02_DEEP_AUDIT.md', generateDeepPrompt());
-      zip.file('prompts/03_CODE_REVIEW.md', generateCodePrompt());
-      zip.file('prompts/04_SCREENSHOT_ANALYSIS.md', generateScreenshotPrompt());
-      zip.file('prompts/05_REGRESSION_REPORT.md', generateRegressionPrompt());
-      zip.file('prompts/06_SEO_DEEP_DIVE.md', generateSEOPrompt());
-      zip.file('prompts/07_ACCESSIBILITY_AUDIT.md', generateAccessibilityPrompt());
-      
-      currentStep++;
-      setProgress((currentStep / totalSteps) * 100);
+      // Generate analysis prompts
+      if (packageOptions.prompts) {
+        setStatus('Erstelle Analyse-Prompts...');
+        const promptContent = generateAnalysisPrompt();
+        zip.file('ANALYSIS_PROMPT.md', promptContent);
+        
+        // Add all 7 prompt variants
+        zip.file('prompts/01_QUICK_ANALYSIS.md', generateQuickPrompt());
+        zip.file('prompts/02_DEEP_AUDIT.md', generateDeepPrompt());
+        zip.file('prompts/03_CODE_REVIEW.md', generateCodePrompt());
+        zip.file('prompts/04_SCREENSHOT_ANALYSIS.md', generateScreenshotPrompt());
+        zip.file('prompts/05_REGRESSION_REPORT.md', generateRegressionPrompt());
+        zip.file('prompts/06_SEO_DEEP_DIVE.md', generateSEOPrompt());
+        zip.file('prompts/07_ACCESSIBILITY_AUDIT.md', generateAccessibilityPrompt());
+        
+        currentStep++;
+        setProgress((currentStep / totalSteps) * 100);
+      }
 
       // Generate PDF report
-      setStatus('Erstelle PDF Report...');
-      const pdfBlob = generatePdfReport();
-      zip.file('PROJECT_BRIEF.pdf', pdfBlob);
-      currentStep++;
-      setProgress((currentStep / totalSteps) * 100);
+      if (packageOptions.pdfBrief) {
+        setStatus('Erstelle PDF Report...');
+        const pdfBlob = generatePdfReport();
+        zip.file('PROJECT_BRIEF.pdf', pdfBlob);
+        currentStep++;
+        setProgress((currentStep / totalSteps) * 100);
+      }
 
       // Add README
       zip.file('README.md', generateReadme());
@@ -2424,6 +2461,147 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Package Options */}
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Inhalte auswählen:</Label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="desktopScreenshots"
+                          checked={packageOptions.desktopScreenshots}
+                          onCheckedChange={(checked) => 
+                            setPackageOptions(prev => ({ ...prev, desktopScreenshots: !!checked }))
+                          }
+                        />
+                        <label 
+                          htmlFor="desktopScreenshots" 
+                          className="text-xs flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Camera className="h-3 w-3 text-muted-foreground" />
+                          Desktop Screenshots
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="mobileScreenshots"
+                          checked={packageOptions.mobileScreenshots}
+                          onCheckedChange={(checked) => 
+                            setPackageOptions(prev => ({ ...prev, mobileScreenshots: !!checked }))
+                          }
+                        />
+                        <label 
+                          htmlFor="mobileScreenshots" 
+                          className="text-xs flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Camera className="h-3 w-3 text-muted-foreground" />
+                          Mobile Screenshots
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="rawHtml"
+                          checked={packageOptions.rawHtml}
+                          onCheckedChange={(checked) => 
+                            setPackageOptions(prev => ({ ...prev, rawHtml: !!checked }))
+                          }
+                        />
+                        <label 
+                          htmlFor="rawHtml" 
+                          className="text-xs flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Code className="h-3 w-3 text-muted-foreground" />
+                          Raw HTML
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="renderedHtml"
+                          checked={packageOptions.renderedHtml}
+                          onCheckedChange={(checked) => 
+                            setPackageOptions(prev => ({ ...prev, renderedHtml: !!checked }))
+                          }
+                        />
+                        <label 
+                          htmlFor="renderedHtml" 
+                          className="text-xs flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Code className="h-3 w-3 text-muted-foreground" />
+                          Rendered HTML
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="prompts"
+                          checked={packageOptions.prompts}
+                          onCheckedChange={(checked) => 
+                            setPackageOptions(prev => ({ ...prev, prompts: !!checked }))
+                          }
+                        />
+                        <label 
+                          htmlFor="prompts" 
+                          className="text-xs flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Sparkles className="h-3 w-3 text-muted-foreground" />
+                          7 KI-Prompts
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="pdfBrief"
+                          checked={packageOptions.pdfBrief}
+                          onCheckedChange={(checked) => 
+                            setPackageOptions(prev => ({ ...prev, pdfBrief: !!checked }))
+                          }
+                        />
+                        <label 
+                          htmlFor="pdfBrief" 
+                          className="text-xs flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <FileDown className="h-3 w-3 text-muted-foreground" />
+                          PDF Brief
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2 pt-1">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-6 text-xs px-2"
+                        onClick={() => setPackageOptions({
+                          desktopScreenshots: true,
+                          mobileScreenshots: true,
+                          rawHtml: true,
+                          renderedHtml: true,
+                          prompts: true,
+                          pdfBrief: true,
+                        })}
+                      >
+                        Alle auswählen
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-6 text-xs px-2"
+                        onClick={() => setPackageOptions({
+                          desktopScreenshots: false,
+                          mobileScreenshots: false,
+                          rawHtml: false,
+                          renderedHtml: false,
+                          prompts: false,
+                          pdfBrief: false,
+                        })}
+                      >
+                        Keine auswählen
+                      </Button>
+                    </div>
+                  </div>
+
                   {isGenerating && (
                     <div className="space-y-2">
                       <Progress value={progress} />
@@ -2433,7 +2611,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                   
                   <Button 
                     onClick={generatePackage} 
-                    disabled={isGenerating}
+                    disabled={isGenerating || !Object.values(packageOptions).some(v => v)}
                     className="w-full"
                     size="lg"
                     variant="outline"
@@ -2446,28 +2624,10 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                     ) : (
                       <>
                         <Package className="h-4 w-4 mr-2" />
-                        Package für ChatGPT/Claude
+                        Package erstellen
                       </>
                     )}
                   </Button>
-
-                  <div className="border-t pt-4">
-                    <h4 className="font-medium mb-2 text-sm">Das Package enthält:</h4>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                      <li className="flex items-center gap-2">
-                        <Camera className="h-3 w-3" /> Desktop & Mobile Screenshots
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Code className="h-3 w-3" /> Raw & Rendered HTML
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Sparkles className="h-3 w-3" /> 7 KI-Analyse-Prompts
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <FileDown className="h-3 w-3" /> PDF Project Brief
-                      </li>
-                    </ul>
-                  </div>
                 </CardContent>
               </Card>
             </div>
