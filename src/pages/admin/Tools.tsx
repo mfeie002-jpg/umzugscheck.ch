@@ -445,6 +445,8 @@ const AdminTools = () => {
   const [analyzeStatus, setAnalyzeStatus] = useState('');
   const [analyzeCapturedScreenshot, setAnalyzeCapturedScreenshot] = useState<string | null>(null);
   const [analyzeCapturedHtml, setAnalyzeCapturedHtml] = useState<string | null>(null);
+  const [analyzePageCount, setAnalyzePageCount] = useState<'1' | '5' | '10' | '20'>('1');
+  const [analyzeCapturedPages, setAnalyzeCapturedPages] = useState<Array<{url: string, screenshot?: string, html?: string}>>([]);
   
   // Screenshot Machine State
   const [screenshotUrl, setScreenshotUrl] = useState('');
@@ -603,47 +605,114 @@ const AdminTools = () => {
     setAnalysisResult(null);
     setAnalyzeCapturedScreenshot(null);
     setAnalyzeCapturedHtml(null);
+    setAnalyzeCapturedPages([]);
     setAnalyzeProgress(0);
     setAnalyzeStatus('Starte Analyse...');
 
     try {
-      // Step 1: Capture screenshot
-      setAnalyzeProgress(20);
-      setAnalyzeStatus('Screenshot wird erstellt...');
+      const pageLimit = parseInt(analyzePageCount);
+      let pagesToAnalyze: string[] = [config.projectUrl];
       
-      let screenshotBase64 = '';
-      try {
-        const screenshotResult = await captureScreenshot({
-          url: config.projectUrl,
-          dimension: '1920x1080',
-          fullPage: false,
-          delay: 3000,
+      // If more than 1 page requested, discover additional URLs
+      if (pageLimit > 1) {
+        setAnalyzeProgress(5);
+        setAnalyzeStatus('Entdecke Seiten...');
+        
+        try {
+          const { data, error } = await supabase.functions.invoke('firecrawl-map', {
+            body: { 
+              url: config.projectUrl,
+              options: { limit: pageLimit * 2, includeSubdomains: false }
+            }
+          });
+          
+          if (!error && data?.links && Array.isArray(data.links)) {
+            const baseUrl = new URL(config.projectUrl).origin;
+            const additionalPages = data.links
+              .filter((link: string) => link.startsWith(baseUrl))
+              .filter((link: string) => !link.match(/\.(jpg|jpeg|png|gif|svg|css|js|pdf|zip|ico)$/i))
+              .slice(0, pageLimit);
+            
+            if (additionalPages.length > 0) {
+              pagesToAnalyze = additionalPages;
+            }
+          }
+        } catch (e) {
+          console.error('URL discovery failed:', e);
+          // Continue with just homepage
+        }
+      }
+      
+      const capturedPages: Array<{url: string, screenshot?: string, html?: string}> = [];
+      const totalSteps = pagesToAnalyze.length * 2 + 1; // screenshots + html + AI analysis
+      let currentStep = 0;
+      
+      // Capture screenshots and HTML for each page
+      for (let i = 0; i < pagesToAnalyze.length; i++) {
+        const pageUrl = pagesToAnalyze[i];
+        const pageName = i === 0 ? 'Startseite' : new URL(pageUrl).pathname || `Seite ${i + 1}`;
+        
+        // Screenshot
+        currentStep++;
+        setAnalyzeProgress(Math.round((currentStep / totalSteps) * 80));
+        setAnalyzeStatus(`Screenshot ${i + 1}/${pagesToAnalyze.length}: ${pageName}...`);
+        
+        let screenshotBase64 = '';
+        try {
+          const screenshotResult = await captureScreenshot({
+            url: pageUrl,
+            dimension: '1920x1080',
+            fullPage: false,
+            delay: 3000,
+          });
+          if (screenshotResult.success && screenshotResult.image) {
+            screenshotBase64 = screenshotResult.image;
+            if (i === 0) {
+              setAnalyzeCapturedScreenshot(screenshotResult.image);
+            }
+          }
+        } catch (e) {
+          console.error('Screenshot failed:', e);
+        }
+
+        // HTML
+        currentStep++;
+        setAnalyzeProgress(Math.round((currentStep / totalSteps) * 80));
+        setAnalyzeStatus(`HTML ${i + 1}/${pagesToAnalyze.length}: ${pageName}...`);
+        
+        let htmlContent = '';
+        try {
+          htmlContent = await fetchHtmlContent(pageUrl);
+          if (htmlContent && i === 0) {
+            setAnalyzeCapturedHtml(htmlContent);
+          }
+        } catch (e) {
+          console.error('HTML fetch failed:', e);
+        }
+        
+        capturedPages.push({
+          url: pageUrl,
+          screenshot: screenshotBase64,
+          html: htmlContent
         });
-        if (screenshotResult.success && screenshotResult.image) {
-          screenshotBase64 = screenshotResult.image;
-          setAnalyzeCapturedScreenshot(screenshotResult.image);
+        
+        // Small delay between pages
+        if (i < pagesToAnalyze.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
-      } catch (e) {
-        console.error('Screenshot failed:', e);
       }
-
-      // Step 2: Fetch HTML
-      setAnalyzeProgress(40);
-      setAnalyzeStatus('HTML wird abgerufen...');
       
-      let htmlContent = '';
-      try {
-        htmlContent = await fetchHtmlContent(config.projectUrl);
-        if (htmlContent) {
-          setAnalyzeCapturedHtml(htmlContent);
-        }
-      } catch (e) {
-        console.error('HTML fetch failed:', e);
-      }
+      setAnalyzeCapturedPages(capturedPages);
 
-      // Step 3: Call AI
-      setAnalyzeProgress(60);
-      setAnalyzeStatus('KI analysiert Website...');
+      // Step 3: Call AI with all pages
+      setAnalyzeProgress(85);
+      setAnalyzeStatus(`KI analysiert ${capturedPages.length} Seite(n)...`);
+      
+      // Combine all HTML (truncated) for AI analysis
+      const combinedHtmlSummary = capturedPages.map((p, i) => {
+        const truncatedHtml = p.html ? p.html.substring(0, 8000) : '';
+        return `\n\n--- SEITE ${i + 1}: ${p.url} ---\n${truncatedHtml}`;
+      }).join('');
 
       const { data, error } = await supabase.functions.invoke('ai-website-analyze', {
         body: {
@@ -653,9 +722,11 @@ const AdminTools = () => {
           goals: config.goals,
           targetAudience: config.targetAudience,
           competitors: config.competitors,
-          htmlContent,
-          screenshotBase64,
-          analysisType: 'complete'
+          htmlContent: combinedHtmlSummary.substring(0, 50000), // Limit total size
+          screenshotBase64: capturedPages[0]?.screenshot || '',
+          analysisType: 'complete',
+          pageCount: capturedPages.length,
+          analyzedPages: capturedPages.map(p => p.url)
         }
       });
 
@@ -665,7 +736,7 @@ const AdminTools = () => {
         setAnalyzeProgress(100);
         setAnalyzeStatus('Analyse abgeschlossen!');
         setAnalysisResult(data.analysis);
-        toast.success('KI-Analyse abgeschlossen!');
+        toast.success(`KI-Analyse für ${capturedPages.length} Seite(n) abgeschlossen!`);
       } else {
         throw new Error(data?.error || 'Analyse fehlgeschlagen');
       }
@@ -2182,6 +2253,27 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* Page Count Selector */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Seitenanzahl analysieren</Label>
+                    <Select value={analyzePageCount} onValueChange={(v) => setAnalyzePageCount(v as '1' | '5' | '10' | '20')} disabled={isAnalyzing}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">Nur Startseite</SelectItem>
+                        <SelectItem value="5">Top 5 Seiten</SelectItem>
+                        <SelectItem value="10">Top 10 Seiten</SelectItem>
+                        <SelectItem value="20">Top 20 Seiten</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      {analyzePageCount === '1' 
+                        ? 'Schnelle Analyse nur der Startseite' 
+                        : `Analysiert bis zu ${analyzePageCount} Seiten mit Screenshots & HTML`}
+                    </p>
+                  </div>
+
                   {isAnalyzing && (
                     <div className="space-y-2">
                       <Progress value={analyzeProgress} className="h-2" />
@@ -2206,7 +2298,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                     ) : (
                       <>
                         <Play className="h-5 w-5 mr-2" />
-                        Website jetzt analysieren
+                        {analyzePageCount === '1' ? 'Startseite analysieren' : `Top ${analyzePageCount} Seiten analysieren`}
                       </>
                     )}
                   </Button>
@@ -2273,11 +2365,48 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                     </div>
                   )}
 
+                  {/* Download all captured pages as ZIP */}
+                  {analyzeCapturedPages.length > 1 && (
+                    <div className="pt-2 border-t">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="w-full"
+                        onClick={async () => {
+                          const zip = new JSZip();
+                          const screenshotsFolder = zip.folder('screenshots');
+                          const htmlFolder = zip.folder('html');
+                          
+                          analyzeCapturedPages.forEach((page, i) => {
+                            const pageName = i === 0 ? 'homepage' : new URL(page.url).pathname.replace(/\//g, '_') || `page_${i}`;
+                            if (page.screenshot) {
+                              screenshotsFolder?.file(`${String(i + 1).padStart(2, '0')}_${pageName}.png`, page.screenshot, { base64: true });
+                            }
+                            if (page.html) {
+                              htmlFolder?.file(`${String(i + 1).padStart(2, '0')}_${pageName}.html`, page.html);
+                            }
+                          });
+                          
+                          if (analysisResult) {
+                            zip.file('analyse.md', analysisResult);
+                          }
+                          
+                          const zipBlob = await zip.generateAsync({ type: 'blob' });
+                          saveAs(zipBlob, `${config.projectName.replace(/\s+/g, '-')}-analyse-${analyzeCapturedPages.length}-seiten.zip`);
+                          toast.success('ZIP heruntergeladen!');
+                        }}
+                      >
+                        <Download className="h-3 w-3 mr-1" />
+                        Alle {analyzeCapturedPages.length} Seiten als ZIP
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="text-xs text-muted-foreground pt-2 border-t">
                     <p>✨ Die KI erstellt automatisch:</p>
                     <ul className="mt-1 space-y-1 ml-4">
-                      <li>• Screenshot der Startseite</li>
-                      <li>• HTML-Code Analyse</li>
+                      <li>• {analyzePageCount === '1' ? 'Screenshot der Startseite' : `Screenshots von bis zu ${analyzePageCount} Seiten`}</li>
+                      <li>• {analyzePageCount === '1' ? 'HTML-Code Analyse' : `HTML-Code aller ${analyzePageCount} Seiten`}</li>
                       <li>• UX/Conversion Bewertung</li>
                       <li>• SEO & Accessibility Check</li>
                       <li>• Priorisierter Aktionsplan</li>
