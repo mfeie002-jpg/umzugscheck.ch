@@ -1118,7 +1118,7 @@ ${packageOptions.prompts ? `### Prompts
 - **URL:** ${config.projectUrl}
 - **Beschreibung:** ${config.description}
 - **Zielgruppe:** ${config.targetAudience}
-- **Konkurrenten:** ${config.competitors.replace(/\n/g, ', ')}
+- **Konkurrenten:** ${Array.isArray(config.competitors) ? config.competitors.join(', ') : (config.competitors || '').toString().replace(/\n/g, ', ')}
 - **Analysierte Seiten:** Homepage${config.additionalPages.length > 0 ? ` + ${config.additionalPages.length} weitere` : ''}
 `;
   };
@@ -1199,7 +1199,7 @@ ${config.projectName} - Vollständige Analyse
 ## Projekt
 - URL: ${config.projectUrl}
 - Zielgruppe: ${config.targetAudience}
-- Konkurrenten: ${config.competitors.replace(/\n/g, ', ')}
+- Konkurrenten: ${Array.isArray(config.competitors) ? config.competitors.join(', ') : (config.competitors || '').toString().replace(/\n/g, ', ')}
 
 ## Analyse-Bereiche
 1. Conversion Funnel (40%)
