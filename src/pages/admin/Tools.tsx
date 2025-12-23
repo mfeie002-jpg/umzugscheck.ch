@@ -485,6 +485,9 @@ const AdminTools = () => {
   
   // Auto-fill state
   const [isAutoFilling, setIsAutoFilling] = useState(false);
+  
+  // Manual page input state
+  const [manualPageInput, setManualPageInput] = useState('');
 
   const handleWizardSelectTool = (toolId: string) => {
     setShowAllTools(true);
@@ -571,10 +574,18 @@ const AdminTools = () => {
   // ============================================================================
 
   const discoverUrls = async () => {
-    const urlToMap = urlDiscoveryUrl || config.projectUrl;
+    let urlToMap = urlDiscoveryUrl || config.projectUrl;
     if (!urlToMap) {
       toast.error('Bitte URL eingeben');
       return;
+    }
+
+    // Force https and handle preview URLs
+    if (!urlToMap.startsWith('http://') && !urlToMap.startsWith('https://')) {
+      urlToMap = `https://${urlToMap}`;
+    }
+    if (urlToMap.startsWith('http://')) {
+      urlToMap = urlToMap.replace('http://', 'https://');
     }
 
     setIsDiscoveringUrls(true);
@@ -585,7 +596,7 @@ const AdminTools = () => {
       const { data, error } = await supabase.functions.invoke('firecrawl-map', {
         body: { 
           url: urlToMap,
-          options: { limit: 50, includeSubdomains: false }
+          options: { limit: 100, includeSubdomains: false }
         }
       });
 
@@ -605,10 +616,14 @@ const AdminTools = () => {
             }
           })
           .filter((path: string) => path !== '/' && path.length > 1)
-          .slice(0, 20); // Top 20
+          .slice(0, 30); // Top 30
 
-        setDiscoveredUrls(paths);
-        toast.success(`${paths.length} URLs entdeckt!`);
+        if (paths.length > 0) {
+          setDiscoveredUrls(paths);
+          toast.success(`${paths.length} URLs entdeckt!`);
+        } else {
+          toast.error('Keine zusätzlichen Seiten gefunden. Firecrawl konnte nur die Startseite finden.');
+        }
       } else {
         toast.error('Keine URLs gefunden');
       }
@@ -2316,16 +2331,15 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                     <div className="flex gap-2">
                       <Input 
                         placeholder="/rechner, /firmen, ..."
+                        value={manualPageInput}
+                        onChange={(e) => setManualPageInput(e.target.value)}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            const input = e.currentTarget;
-                            if (input.value.trim()) {
-                              setConfig({
-                                ...config,
-                                additionalPages: [...config.additionalPages, input.value.trim()]
-                              });
-                              input.value = '';
-                            }
+                          if (e.key === 'Enter' && manualPageInput.trim()) {
+                            setConfig({
+                              ...config,
+                              additionalPages: [...config.additionalPages, manualPageInput.trim()]
+                            });
+                            setManualPageInput('');
                           }
                         }}
                       />
@@ -2333,13 +2347,12 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                         variant="outline" 
                         size="icon"
                         onClick={() => {
-                          const input = document.querySelector('input[placeholder="/rechner, /firmen, ..."]') as HTMLInputElement;
-                          if (input?.value.trim()) {
+                          if (manualPageInput.trim()) {
                             setConfig({
                               ...config,
-                              additionalPages: [...config.additionalPages, input.value.trim()]
+                              additionalPages: [...config.additionalPages, manualPageInput.trim()]
                             });
-                            input.value = '';
+                            setManualPageInput('');
                           }
                         }}
                       >
