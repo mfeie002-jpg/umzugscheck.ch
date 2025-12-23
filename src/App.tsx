@@ -32,6 +32,7 @@ const Index = lazy(() => import("./pages/Index"));
 const NewIndex = lazy(() => import("./pages/NewIndex"));
 const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
 const HomeOptimized = lazy(() => import("./pages/HomeOptimized"));
+const LandingPage = lazy(() => import("./pages/LandingPage"));
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -324,6 +325,7 @@ const App = () => (
                         <Suspense fallback={<PageLoadingFallback />}>
                           <AnimatedRoutes>
                             <Route path="/" element={<IndexPremium />} />
+                            <Route path="/landing" element={<LandingPage />} />
                             <Route path="/old-home" element={<Index />} />
                             <Route path="/v2" element={<HomeOptimized />} />
                             <Route path="/v3" element={<NewIndex />} />
