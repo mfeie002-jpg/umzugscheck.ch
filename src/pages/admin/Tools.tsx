@@ -635,7 +635,7 @@ const AdminTools = () => {
           const { data, error } = await supabase.functions.invoke('firecrawl-map', {
             body: { 
               url: config.projectUrl,
-              options: { limit: pageLimit * 2, includeSubdomains: false }
+              options: { limit: pageLimit * 3, includeSubdomains: false }
             }
           });
           
@@ -648,6 +648,49 @@ const AdminTools = () => {
             
             if (additionalPages.length > 0) {
               pagesToAnalyze = additionalPages;
+            }
+          }
+          
+          // If Firecrawl only returned 1 URL (homepage), use configured additional pages
+          if (pagesToAnalyze.length < pageLimit && config.additionalPages.length > 0) {
+            const baseUrl = config.projectUrl.replace(/\/$/, '');
+            const additionalFromConfig = config.additionalPages
+              .slice(0, pageLimit - pagesToAnalyze.length)
+              .map(path => `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`);
+            pagesToAnalyze = [...pagesToAnalyze, ...additionalFromConfig];
+          }
+          
+          // If still not enough, try common Swiss moving site pages
+          if (pagesToAnalyze.length < pageLimit) {
+            const baseUrl = config.projectUrl.replace(/\/$/, '');
+            const commonPages = [
+              '/umzugsfirmen',
+              '/preisrechner', 
+              '/umzugsofferten',
+              '/reinigungsfirmen',
+              '/ratgeber',
+              '/kontakt',
+              '/ueber-uns',
+              '/impressum',
+              '/agb',
+              '/datenschutz',
+              '/faq',
+              '/blog',
+              '/services',
+              '/regionen',
+              '/umzug-zuerich',
+              '/umzug-bern',
+              '/umzug-basel',
+              '/firmenumzug',
+              '/privatumzug'
+            ];
+            
+            for (const page of commonPages) {
+              if (pagesToAnalyze.length >= pageLimit) break;
+              const fullUrl = `${baseUrl}${page}`;
+              if (!pagesToAnalyze.includes(fullUrl)) {
+                pagesToAnalyze.push(fullUrl);
+              }
             }
           }
         } catch (e) {
