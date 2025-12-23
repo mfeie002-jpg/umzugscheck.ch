@@ -482,6 +482,9 @@ const AdminTools = () => {
   // Wizard state
   const [activeTab, setActiveTab] = useState('ai-feedback');
   const [showAllTools, setShowAllTools] = useState(false);
+  
+  // Auto-fill state
+  const [isAutoFilling, setIsAutoFilling] = useState(false);
 
   const handleWizardSelectTool = (toolId: string) => {
     setShowAllTools(true);
@@ -522,6 +525,46 @@ const AdminTools = () => {
 
     loadStats();
   }, []);
+
+  // ============================================================================
+  // AUTO-FILL PROJECT INFO WITH AI
+  // ============================================================================
+
+  const autoFillProjectInfo = async () => {
+    if (!config.projectUrl) {
+      toast.error('Bitte zuerst eine URL eingeben');
+      return;
+    }
+
+    setIsAutoFilling(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-extract-project-info', {
+        body: { url: config.projectUrl }
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.data) {
+        const info = data.data;
+        setConfig(prev => ({
+          ...prev,
+          projectName: info.projectName || prev.projectName || '',
+          description: info.description || prev.description || '',
+          goals: info.goals || prev.goals || '',
+          targetAudience: info.targetAudience || prev.targetAudience || '',
+          competitors: info.competitors || prev.competitors || '',
+        }));
+        toast.success('Projektinfos automatisch ausgefüllt!');
+      } else {
+        toast.error(data?.error || 'Konnte Projektinfos nicht extrahieren');
+      }
+    } catch (error) {
+      console.error('Auto-fill failed:', error);
+      toast.error('Auto-Fill fehlgeschlagen');
+    } finally {
+      setIsAutoFilling(false);
+    }
+  };
 
   // ============================================================================
   // URL DISCOVERY WITH FIRECRAWL
@@ -2181,11 +2224,28 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                     </div>
                     <div className="space-y-2">
                       <Label>URL</Label>
-                      <Input 
-                        value={config.projectUrl}
-                        onChange={(e) => setConfig({...config, projectUrl: e.target.value})}
-                        placeholder="https://..."
-                      />
+                      <div className="flex gap-2">
+                        <Input 
+                          value={config.projectUrl}
+                          onChange={(e) => setConfig({...config, projectUrl: e.target.value})}
+                          placeholder="https://..."
+                          className="flex-1"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={autoFillProjectInfo}
+                          disabled={isAutoFilling || !config.projectUrl}
+                          title="Felder automatisch ausfüllen"
+                        >
+                          {isAutoFilling ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Sparkles className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                   
