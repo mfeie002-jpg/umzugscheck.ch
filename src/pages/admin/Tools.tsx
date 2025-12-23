@@ -118,6 +118,16 @@ const fetchRenderedHtml = async (url: string): Promise<string> => {
   }
 };
 
+const extractBase64FromDataUrl = (value?: string | null): string => {
+  if (!value) return '';
+  const commaIdx = value.indexOf(',');
+  // Accept both pure base64 and full data URLs like: data:image/png;base64,AAA...
+  if (commaIdx !== -1 && value.slice(0, commaIdx).includes('base64')) {
+    return value.slice(commaIdx + 1);
+  }
+  return value;
+};
+
 // ============================================================================
 // STANDALONE PROMPTS CONTENT
 // ============================================================================
@@ -780,9 +790,10 @@ const AdminTools = () => {
             delay: 3000,
           });
           if (screenshotResult.success && screenshotResult.image) {
-            screenshotBase64 = screenshotResult.image;
+            const base64 = extractBase64FromDataUrl(screenshotResult.image);
+            screenshotBase64 = base64;
             if (i === 0) {
-              setAnalyzeCapturedScreenshot(screenshotResult.image);
+              setAnalyzeCapturedScreenshot(base64);
             }
           }
         } catch (e) {
@@ -2557,8 +2568,9 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                               size="sm" 
                               variant="secondary"
                               onClick={() => {
+                                const base64 = extractBase64FromDataUrl(analyzeCapturedScreenshot);
                                 const link = document.createElement('a');
-                                link.href = `data:image/png;base64,${analyzeCapturedScreenshot}`;
+                                link.href = `data:image/png;base64,${base64}`;
                                 link.download = `${config.projectName.replace(/\s+/g, '-')}-screenshot.png`;
                                 link.click();
                                 toast.success('Screenshot heruntergeladen!');
@@ -2602,7 +2614,12 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                           analyzeCapturedPages.forEach((page, i) => {
                             const pageName = i === 0 ? 'homepage' : new URL(page.url).pathname.replace(/\//g, '_') || `page_${i}`;
                             if (page.screenshot) {
-                              screenshotsFolder?.file(`${String(i + 1).padStart(2, '0')}_${pageName}.png`, page.screenshot, { base64: true });
+                              const base64 = extractBase64FromDataUrl(page.screenshot);
+                              screenshotsFolder?.file(
+                                `${String(i + 1).padStart(2, '0')}_${pageName}.png`,
+                                base64,
+                                { base64: true }
+                              );
                             }
                             if (page.html) {
                               htmlFolder?.file(`${String(i + 1).padStart(2, '0')}_${pageName}.html`, page.html);
