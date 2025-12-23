@@ -28,10 +28,14 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    // Format URL
+    // Format URL - always prefer https
     let formattedUrl = url.trim();
     if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
       formattedUrl = `https://${formattedUrl}`;
+    }
+    // Force https if http was provided
+    if (formattedUrl.startsWith('http://')) {
+      formattedUrl = formattedUrl.replace('http://', 'https://');
     }
 
     console.log('Extracting project info from:', formattedUrl);
@@ -40,8 +44,9 @@ serve(async (req) => {
     let websiteContent = '';
     let title = '';
 
-    if (FIRECRAWL_API_KEY) {
-      console.log('Using Firecrawl to scrape website...');
+    const scrapeWithFirecrawl = async (urlToScrape: string): Promise<{content: string, title: string}> => {
+      if (!FIRECRAWL_API_KEY) return { content: '', title: '' };
+      
       try {
         const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
           method: 'POST',
@@ -50,22 +55,50 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            url: formattedUrl,
+            url: urlToScrape,
             formats: ['markdown'],
             onlyMainContent: true,
+            waitFor: 3000,
           }),
         });
 
         if (scrapeResponse.ok) {
           const scrapeData = await scrapeResponse.json();
-          websiteContent = scrapeData.data?.markdown || scrapeData.markdown || '';
-          title = scrapeData.data?.metadata?.title || scrapeData.metadata?.title || '';
-          console.log('Firecrawl scrape successful, content length:', websiteContent.length);
-        } else {
-          console.error('Firecrawl error:', await scrapeResponse.text());
+          const content = scrapeData.data?.markdown || scrapeData.markdown || '';
+          const pageTitle = scrapeData.data?.metadata?.title || scrapeData.metadata?.title || '';
+          return { content, title: pageTitle };
         }
-      } catch (scrapeError) {
-        console.error('Firecrawl scrape failed:', scrapeError);
+      } catch (e) {
+        console.error('Firecrawl error:', e);
+      }
+      return { content: '', title: '' };
+    };
+
+    if (FIRECRAWL_API_KEY) {
+      console.log('Using Firecrawl to scrape website...');
+      const result = await scrapeWithFirecrawl(formattedUrl);
+      websiteContent = result.content;
+      title = result.title;
+      console.log('Firecrawl scrape result, content length:', websiteContent.length);
+      
+      // Check if content is too short or contains error indicators
+      const isErrorPage = websiteContent.length < 500 || 
+        websiteContent.toLowerCase().includes('project not found') ||
+        websiteContent.toLowerCase().includes('page not found') ||
+        websiteContent.toLowerCase().includes('404');
+      
+      if (isErrorPage) {
+        console.log('Detected error page or too short content, trying www subdomain...');
+        // Try with www subdomain
+        const wwwUrl = formattedUrl.replace('https://', 'https://www.');
+        if (!formattedUrl.includes('://www.')) {
+          const wwwResult = await scrapeWithFirecrawl(wwwUrl);
+          if (wwwResult.content.length > websiteContent.length) {
+            websiteContent = wwwResult.content;
+            title = wwwResult.title;
+            console.log('www subdomain returned better content:', websiteContent.length);
+          }
+        }
       }
     }
 
