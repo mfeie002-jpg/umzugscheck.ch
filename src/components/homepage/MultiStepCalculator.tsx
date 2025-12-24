@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useABTest } from "@/hooks/use-ab-test";
 import { postalCodeSchema, emailSchema, nameSchema, phoneSchema } from "@/lib/form-validation";
 import { ValidatedInput } from "@/components/ui/ValidatedInput";
@@ -165,10 +165,11 @@ interface FormData {
 
 export const MultiStepCalculator = memo(function MultiStepCalculator() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [expandedService, setExpandedService] = useState<string | null>(null);
+  const [didAutoAdvance, setDidAutoAdvance] = useState(false);
   
-  // Initialize form data from localStorage if available
   const [formData, setFormData] = useState<FormData>(() => {
     try {
       const saved = localStorage.getItem(FORM_STORAGE_KEY);
@@ -240,6 +241,63 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
       console.error("Error saving form data:", e);
     }
   }, [formData]);
+
+  // Prefill from URL (?from=&to=&size=&services=) or uc_prefill and auto-skip steps
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(location.search);
+      const from = params.get("from") || "";
+      const to = params.get("to") || "";
+      const size = params.get("size") || "";
+      const servicesParam = params.get("services") || "";
+      const servicesFromUrl = servicesParam
+        ? servicesParam.split(",").map((s) => s.trim()).filter(Boolean)
+        : null;
+
+      const prefillRaw = localStorage.getItem("uc_prefill");
+      const prefill = prefillRaw ? JSON.parse(prefillRaw) : null;
+
+      const nextFrom = from || prefill?.from || "";
+      const nextTo = to || prefill?.to || "";
+      const nextSize = size || prefill?.size || "";
+
+      const nextServices = servicesFromUrl || (Array.isArray(prefill?.services) ? prefill.services : null);
+
+      if (nextFrom || nextTo || nextSize || nextServices) {
+        setFormData((prev) => ({
+          ...prev,
+          // Move type is required for step 1, so set a safe default when we have prefill
+          moveType: prev.moveType || "wohnung",
+          fromLocation: nextFrom || prev.fromLocation,
+          toLocation: nextTo || prev.toLocation,
+          apartmentSize: nextSize || prev.apartmentSize,
+          selectedServices: nextServices?.length ? Array.from(new Set(["umzug", ...nextServices])) : prev.selectedServices,
+        }));
+
+        // Skip the move-type click if prefilled
+        setCurrentStep((prevStep) => (prevStep === 1 ? 2 : prevStep));
+      }
+    } catch {
+      // ignore
+    }
+  }, [location.search]);
+
+  // Auto-advance from step 2 -> step 3 if all required fields are already present
+  useEffect(() => {
+    if (didAutoAdvance) return;
+    if (currentStep !== 2) return;
+
+    const ready =
+      formData.fromLocation.trim() !== "" &&
+      formData.toLocation.trim() !== "" &&
+      formData.apartmentSize !== "" &&
+      formData.selectedServices.length > 0;
+
+    if (ready) {
+      setDidAutoAdvance(true);
+      setCurrentStep(3);
+    }
+  }, [currentStep, didAutoAdvance, formData]);
 
   // A/B Test for submit button
   const { variant: submitVariant, trackConversion: trackSubmit } = useABTest('calculator_submit');
