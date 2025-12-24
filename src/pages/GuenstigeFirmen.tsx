@@ -26,12 +26,12 @@ export default function GuenstigeFirmen() {
   const { trigger } = useHaptic();
   
   const pageTitle = region 
-    ? `Günstige Umzugsfirmen in ${region} (2025)` 
-    : "Günstige Umzugsfirmen in der Schweiz (2025)";
+    ? `Günstige Umzugsfirma in ${region} – Preise vergleichen & sparen | umzugscheck.ch` 
+    : "Günstige Umzugsfirma – Preise vergleichen & sparen | umzugscheck.ch";
   
   const pageDescription = region
-    ? `Die preiswertesten Umzugsfirmen in ${region}. Vergleichen Sie Preise und sparen Sie bis zu 40% bei Ihrem Umzug.`
-    : "Die günstigsten Umzugsfirmen der Schweiz im Vergleich. Faire Preise ohne versteckte Kosten. Sparen Sie bis zu 40%.";
+    ? `Günstig umziehen in ${region} mit Qualität: Vergleichen Sie Preise von günstigen Umzugsfirmen. Fordern Sie kostenlose Offerten an und sparen Sie bis zu 40%!`
+    : "Günstig umziehen mit Qualität: Vergleichen Sie Preise von günstigen Umzugsfirmen in der Schweiz. Fordern Sie kostenlose Offerten an und sparen Sie bis zu 40% bei Ihrem Umzug!";
 
   // Initialize filters from URL params
   const initializeFilters = (): FilterState => {
@@ -172,12 +172,67 @@ export default function GuenstigeFirmen() {
 
   const currentUrl = `https://www.umzugscheck.ch/guenstige-umzugsfirma${region ? `/${region}` : ''}/`;
 
+  // Schema.org Markup for Rich Snippets
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": region ? `Günstige Umzugsfirmen in ${region}` : "Günstige Umzugsfirmen Schweiz",
+    "description": pageDescription,
+    "provider": {
+      "@type": "Organization",
+      "name": "umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
+    },
+    "areaServed": {
+      "@type": region ? "AdministrativeArea" : "Country",
+      "name": region || "Switzerland"
+    },
+    "serviceType": "Affordable Moving Company Comparison",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.6",
+      "reviewCount": "8500",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "lowPrice": "450",
+      "highPrice": "2500",
+      "priceCurrency": "CHF",
+      "description": "Günstige Umzugsangebote ab CHF 450"
+    }
+  };
+
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": region ? `Günstige Umzugsfirmen in ${region}` : "Günstige Umzugsfirmen Schweiz",
+    "description": "Ranking der preiswertesten Umzugsfirmen",
+    "numberOfItems": organicCompanies.length + sponsoredCompanies.length,
+    "itemListElement": [...sponsoredCompanies, ...organicCompanies].slice(0, 10).map((company, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "LocalBusiness",
+        "name": company.name,
+        "priceRange": company.priceLevel === "Günstig" ? "€" : "€€",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": company.rating,
+          "reviewCount": company.reviewCount
+        }
+      }
+    }))
+  };
+
   return (
     <>
       <OptimizedSEO
         title={pageTitle}
         description={pageDescription}
         canonicalUrl={currentUrl}
+        schemaMarkup={[serviceSchema, itemListSchema]}
       />
       <PullToRefreshIndicator 
         isPulling={isPulling}
@@ -207,7 +262,7 @@ export default function GuenstigeFirmen() {
                     {pageDescription}
                   </p>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-8">
                     {[
                       { icon: TrendingDown, value: "Bis 40%", label: "Günstiger als Durchschnitt", color: "text-green-300" },
                       { icon: DollarSign, value: "Ab CHF 450", label: "Pro Umzug", color: "text-yellow-300" },
@@ -220,6 +275,14 @@ export default function GuenstigeFirmen() {
                       </Card>
                     ))}
                   </div>
+                  
+                  {/* Hero CTA Button */}
+                  <Link to="/umzugsofferten">
+                    <Button size="lg" className="text-lg px-8 h-14 bg-white text-green-600 hover:bg-white/90 shadow-xl">
+                      Günstige Angebote sichern
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </section>
@@ -383,18 +446,27 @@ export default function GuenstigeFirmen() {
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
-                  Unsicher, welche Umzugsfirma am besten zu Ihnen passt?
+                  Günstige Angebote sichern
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
-                  Statt lange zu vergleichen, können Sie mit einer Anfrage mehrere Offerten von geprüften Umzugsfirmen erhalten.
+                  Sparen Sie bis zu 40% bei Ihrem Umzug. Vergleichen Sie jetzt Preise von günstigen Umzugsfirmen und erhalten Sie kostenlose Offerten.
                 </p>
                 <Link to="/umzugsofferten" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-4 sm:px-6 sm:px-8 h-12 sm:h-14">
-                    <span className="hidden sm:inline">Jetzt Umzugsofferten vergleichen</span>
-                    <span className="sm:hidden">Offerten vergleichen</span>
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-14 bg-green-600 hover:bg-green-700">
+                    Jetzt günstige Offerten erhalten
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </Link>
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-6 sm:mt-8">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>✓ bis 40% Ersparnis möglich</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <DollarSign className="w-4 h-4 text-green-600" />
+                    <span>Keine versteckten Kosten</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>

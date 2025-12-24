@@ -75,33 +75,34 @@ const Umzugsofferten = () => {
       <DebugOverlay />
       <PageEnhancements />
       <Helmet>
-        <title>Umzugsofferten vergleichen mit KI | Gratis & unverbindlich | umzugscheck.ch</title>
+        <title>Umzugsofferten vergleichen & bis 40% sparen | umzugscheck.ch</title>
         <meta
           name="description"
-          content="Erhalten Sie kostenlose, KI-gestützte Umzugsofferten von geprüften Schweizer Umzugsfirmen. Vergleichen Sie Preise, Bewertungen und Leistungen – schnell, transparent und unverbindlich."
+          content="Erhalten Sie jetzt kostenlos bis zu 5 Offerten für Ihren Umzug. Vergleichen Sie 200+ geprüfte Umzugsfirmen in der Schweiz und sparen Sie bis zu 40% bei Ihrem Umzug!"
         />
         <meta
           name="keywords"
-          content="Umzugsofferten, Umzugsrechner, Umzug Schweiz, Umzugsfirma vergleichen, KI Umzugsrechner, Umzugskosten berechnen, Zügelofferte"
+          content="Umzugsofferten, Umzugsofferten vergleichen, Umzug Schweiz, Umzugsfirma vergleichen, KI Umzugsrechner, Umzugskosten berechnen, Zügelofferte, kostenlose Offerten"
         />
         <link rel="canonical" href="https://umzugscheck.ch/umzugsofferten" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Umzugsofferten vergleichen mit KI | umzugscheck.ch" />
+        <meta property="og:title" content="Umzugsofferten vergleichen & bis 40% sparen | umzugscheck.ch" />
         <meta
           property="og:description"
-          content="Erhalten Sie kostenlose, KI-gestützte Umzugsofferten von geprüften Schweizer Umzugsfirmen."
+          content="Erhalten Sie jetzt kostenlos bis zu 5 Offerten für Ihren Umzug. Vergleichen Sie 200+ geprüfte Umzugsfirmen in der Schweiz."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/umzugsofferten" />
         <meta property="og:locale" content="de_CH" />
+        <meta property="og:site_name" content="umzugscheck.ch" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Umzugsofferten vergleichen mit KI | umzugscheck.ch" />
+        <meta name="twitter:title" content="Umzugsofferten vergleichen & bis 40% sparen | umzugscheck.ch" />
         <meta
           name="twitter:description"
-          content="Kostenlose, KI-gestützte Umzugsofferten von geprüften Schweizer Umzugsfirmen."
+          content="Kostenlos bis zu 5 Offerten für Ihren Umzug erhalten. 200+ geprüfte Schweizer Umzugsfirmen."
         />
 
         {/* Schema.org */}
