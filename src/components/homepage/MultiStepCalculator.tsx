@@ -39,11 +39,12 @@ const apartmentSizes = [
 ];
 
 const services = [
-  { id: "umzug", label: "Umzug", description: "Transport & Ein-/Ausladen", default: true, priceAdd: 0 },
-  { id: "reinigung", label: "Reinigung", description: "Endreinigung der alten Wohnung", priceAdd: 350 },
-  { id: "entsorgung", label: "Entsorgung", description: "Sperrmüll & Möbelentsorgung", priceAdd: 200 },
-  { id: "maler", label: "Malerarbeiten", description: "Streichen der alten Wohnung", priceAdd: 450 },
-  { id: "lagerung", label: "Lagerung", description: "Zwischenlagerung Ihrer Möbel", priceAdd: 150 },
+  { id: "umzug", label: "Umzug", description: "Transport & Ein-/Ausladen", default: true, priceAdd: 0, popular: true },
+  { id: "einpacken", label: "Einpacken", description: "Profis packen Ihre Sachen sicher ein", priceAdd: 400, popular: true },
+  { id: "auspacken", label: "Auspacken", description: "Kartons auspacken am Zielort", priceAdd: 300, popular: false },
+  { id: "reinigung", label: "Reinigung", description: "Endreinigung der alten Wohnung", priceAdd: 350, popular: true },
+  { id: "entsorgung", label: "Entsorgung", description: "Sperrmüll & Möbelentsorgung", priceAdd: 200, popular: false },
+  { id: "lagerung", label: "Lagerung", description: "Zwischenlagerung Ihrer Möbel", priceAdd: 150, popular: false },
 ];
 
 // Price estimation based on apartment size
