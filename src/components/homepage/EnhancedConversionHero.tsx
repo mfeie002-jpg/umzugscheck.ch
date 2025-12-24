@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight, Clock, Lock, Sparkles, CheckCircle2 } from "lucide-react";
+import { TrendingDown, Users, Video, Trophy, Shield, ArrowRight, Clock, Lock, Sparkles, CheckCircle2, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { MultiStepCalculator } from "./MultiStepCalculator";
@@ -11,6 +11,7 @@ import { useABTest } from "@/hooks/use-ab-test";
 import { CheckyAvatar } from "./CheckyAvatar";
 import { HeroTrustBadges } from "./HeroTrustBadges";
 import { DataPrivacyBadge } from "./DataPrivacyBadge";
+import { PartnerLogos } from "@/components/trust/PartnerLogos";
 
 export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
   const navigate = useNavigate();
@@ -108,7 +109,7 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 <HeroIllustration />
               </div>
 
-              {/* Mobile CTA Buttons - Improved touch targets */}
+              {/* Mobile CTA Buttons - Differentiated CTAs */}
               <div className="flex flex-col gap-3 lg:hidden pt-2 px-2 sm:px-0">
                 <Button 
                   size="lg" 
@@ -118,16 +119,20 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                   {getHeroCTAText()}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
+                {/* Secondary CTA: KI Video-Analyse - differenziert vom primären CTA */}
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="w-full h-12 border-primary/30 active:scale-[0.98] transition-transform"
+                  className="w-full h-12 border-primary/30 bg-primary/5 hover:bg-primary/10 active:scale-[0.98] transition-transform"
                   onClick={() => navigate('/umzugsrechner?tab=ai')}
                 >
-                  <Video className="w-5 h-5 mr-2 text-primary" />
-                  {getVideoCTAText()}
+                  <Camera className="w-5 h-5 mr-2 text-primary" />
+                  KI Video-Analyse starten
                 </Button>
               </div>
+              
+              {/* Partner/Verbands-Logos - Trust Signal Above the Fold */}
+              <PartnerLogos variant="hero" className="pt-2" />
 
               {/* Data Privacy Badge - Prominent placement */}
               <motion.div

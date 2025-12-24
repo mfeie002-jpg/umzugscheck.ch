@@ -13,6 +13,7 @@ import { EnhancedProgressIndicator, ProgressMessage } from "./EnhancedProgressIn
 import { validateField, emailSchema, postalCodeSchema, nameSchema, phoneSchema } from "@/lib/form-validation";
 import { ValidatedInput } from "@/components/ui/ValidatedInput";
 import { VisualRoomSelector } from "./VisualRoomSelector";
+import { MoveTypeInitialStep } from "./MoveTypeInitialStep";
 import analytics from "@/lib/analytics";
 
 const swissPostalCodes = [
@@ -70,6 +71,7 @@ const getPriceEstimate = (size: string, selectedServices: string[]) => {
 };
 
 interface FormData {
+  moveType: string; // New: Micro-commitment first step
   fromLocation: string;
   toLocation: string;
   apartmentSize: string;
@@ -94,6 +96,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
+    moveType: "", // Micro-commitment first step
     fromLocation: "",
     toLocation: "",
     apartmentSize: "",
@@ -117,7 +120,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
     }
   };
 
-  const totalSteps = 3;
+  const totalSteps = 4; // Now 4 steps: MoveType → Location → Details → Contact
 
   const updateFormData = (field: keyof FormData, value: string | string[] | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -135,10 +138,12 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return formData.fromLocation.trim() !== "" && formData.toLocation.trim() !== "";
+        return formData.moveType !== ""; // Just one click needed
       case 2:
-        return formData.apartmentSize !== "" && formData.selectedServices.length > 0;
+        return formData.fromLocation.trim() !== "" && formData.toLocation.trim() !== "";
       case 3:
+        return formData.apartmentSize !== "" && formData.selectedServices.length > 0;
+      case 4:
         return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.privacyAccepted;
       default:
         return false;
@@ -159,6 +164,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
 
   const handleSubmit = () => {
     const params = new URLSearchParams({
+      type: formData.moveType,
       from: formData.fromLocation,
       to: formData.toLocation,
       size: formData.apartmentSize,
@@ -194,9 +200,9 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
           </div>
         </div>
         
-        {/* Progress Bar */}
+        {/* Progress Bar - 4 steps now */}
         <div className="flex gap-1.5">
-          {[1, 2, 3].map((step) => (
+          {[1, 2, 3, 4].map((step) => (
             <div
               key={step}
               className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
@@ -208,19 +214,41 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
         
         {/* Step Labels */}
         <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
-          <span className={currentStep >= 1 ? 'text-primary font-medium' : ''}>Start & Ziel</span>
-          <span className={currentStep >= 2 ? 'text-primary font-medium' : ''}>Details</span>
-          <span className={currentStep >= 3 ? 'text-primary font-medium' : ''}>Kontakt</span>
+          <span className={currentStep >= 1 ? 'text-primary font-medium' : ''}>Typ</span>
+          <span className={currentStep >= 2 ? 'text-primary font-medium' : ''}>Ort</span>
+          <span className={currentStep >= 3 ? 'text-primary font-medium' : ''}>Details</span>
+          <span className={currentStep >= 4 ? 'text-primary font-medium' : ''}>Kontakt</span>
         </div>
       </div>
 
       {/* Form Content */}
       <div className="p-6">
         <AnimatePresence mode="wait">
-          {/* Step 1: Location */}
+          {/* Step 1: Move Type (Micro-Commitment) */}
           {currentStep === 1 && (
             <motion.div
-              key="step1"
+              key="step1-movetype"
+              variants={stepVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.2 }}
+            >
+              <MoveTypeInitialStep
+                value={formData.moveType}
+                onChange={(v) => {
+                  updateFormData("moveType", v);
+                  // Auto-advance after selection for smoother UX
+                  setTimeout(() => setCurrentStep(2), 300);
+                }}
+              />
+            </motion.div>
+          )}
+
+          {/* Step 2: Location */}
+          {currentStep === 2 && (
+            <motion.div
+              key="step2-location"
               variants={stepVariants}
               initial="enter"
               animate="center"
@@ -231,7 +259,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               <div className="text-center mb-6">
                 <h3 className="text-lg font-bold">Wohin geht Ihr Umzug?</h3>
                 <p className="text-sm text-muted-foreground">
-                  Geben Sie Start- und Zielort ein
+                  Von wo nach wo ziehen Sie?
                 </p>
               </div>
 
@@ -240,7 +268,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   schema={postalCodeSchema}
                   value={formData.fromLocation}
                   onValueChange={(v) => updateFormData("fromLocation", v)}
-                  label="Von (PLZ oder Ort)"
+                  label="Aktueller Wohnort"
                   icon={<MapPin className="w-4 h-4 text-primary" />}
                   placeholder="z.B. 8001 oder Zürich"
                   list="from-suggestions"
@@ -256,7 +284,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   schema={postalCodeSchema}
                   value={formData.toLocation}
                   onValueChange={(v) => updateFormData("toLocation", v)}
-                  label="Nach (PLZ oder Ort)"
+                  label="Neues Zuhause"
                   icon={<MapPin className="w-4 h-4 text-secondary" />}
                   placeholder="z.B. 3011 oder Bern"
                   list="to-suggestions"
@@ -277,10 +305,10 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
             </motion.div>
           )}
 
-          {/* Step 2: Details */}
-          {currentStep === 2 && (
+          {/* Step 3: Details */}
+          {currentStep === 3 && (
             <motion.div
-              key="step2"
+              key="step3-details"
               variants={stepVariants}
               initial="enter"
               animate="center"
@@ -296,7 +324,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               </div>
 
               <div className="space-y-3">
-                {/* Visual Room Selector for Step 2 */}
+                {/* Visual Room Selector for Step 3 */}
                 <VisualRoomSelector
                   value={formData.apartmentSize}
                   onChange={(v) => updateFormData("apartmentSize", v)}
@@ -366,10 +394,10 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
             </motion.div>
           )}
 
-          {/* Step 3: Contact */}
-          {currentStep === 3 && (
+          {/* Step 4: Contact */}
+          {currentStep === 4 && (
             <motion.div
-              key="step3"
+              key="step4-contact"
               variants={stepVariants}
               initial="enter"
               animate="center"

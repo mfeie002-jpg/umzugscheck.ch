@@ -1,0 +1,124 @@
+import { memo } from "react";
+import { motion } from "framer-motion";
+import { Home, Building2, Briefcase, Package, LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface MoveTypeOption {
+  value: string;
+  label: string;
+  description: string;
+  icon: LucideIcon;
+  color: string;
+}
+
+const moveTypeOptions: MoveTypeOption[] = [
+  { 
+    value: "wohnung", 
+    label: "Wohnung", 
+    description: "Privatumzug",
+    icon: Home,
+    color: "text-primary"
+  },
+  { 
+    value: "haus", 
+    label: "Haus", 
+    description: "Einfamilienhaus",
+    icon: Building2,
+    color: "text-secondary"
+  },
+  { 
+    value: "buero", 
+    label: "Büro", 
+    description: "Firmenumzug",
+    icon: Briefcase,
+    color: "text-amber-600 dark:text-amber-400"
+  },
+  { 
+    value: "einzeln", 
+    label: "Einzelteile", 
+    description: "Möbel / Geräte",
+    icon: Package,
+    color: "text-green-600 dark:text-green-400"
+  },
+];
+
+interface MoveTypeInitialStepProps {
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+}
+
+/**
+ * Micro-Commitment Entry Point
+ * Simple click-based selection to reduce cognitive load
+ * Psychology: Foot-in-the-door technique - one click investment
+ */
+export const MoveTypeInitialStep = memo(function MoveTypeInitialStep({
+  value,
+  onChange,
+  className = ""
+}: MoveTypeInitialStepProps) {
+  return (
+    <div className={`space-y-4 ${className}`}>
+      <div className="text-center">
+        <h3 className="text-lg font-bold mb-1">Was möchten Sie zügeln?</h3>
+        <p className="text-sm text-muted-foreground">
+          Wählen Sie einfach aus – wir finden die passenden Firmen
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-3">
+        {moveTypeOptions.map((option, index) => {
+          const isSelected = value === option.value;
+          const Icon = option.icon;
+          
+          return (
+            <motion.button
+              key={option.value}
+              type="button"
+              onClick={() => onChange(option.value)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              className={cn(
+                "flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all min-h-[100px] touch-manipulation",
+                isSelected
+                  ? "border-primary bg-primary/10 shadow-medium ring-2 ring-primary/20"
+                  : "border-border bg-card hover:border-primary/40 hover:bg-muted/30 hover:shadow-soft"
+              )}
+              aria-pressed={isSelected}
+            >
+              <div className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors",
+                isSelected ? "bg-primary/20" : "bg-muted"
+              )}>
+                <Icon 
+                  className={cn(
+                    "w-6 h-6 transition-colors",
+                    isSelected ? "text-primary" : option.color
+                  )} 
+                />
+              </div>
+              <span className={cn(
+                "text-sm font-semibold transition-colors",
+                isSelected ? "text-primary" : "text-foreground"
+              )}>
+                {option.label}
+              </span>
+              <span className="text-xs text-muted-foreground mt-0.5">
+                {option.description}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+      
+      {/* Trust micro-signal */}
+      <p className="text-center text-xs text-muted-foreground pt-2">
+        ✓ Kostenlos & unverbindlich • ✓ In 2 Minuten erledigt
+      </p>
+    </div>
+  );
+});
