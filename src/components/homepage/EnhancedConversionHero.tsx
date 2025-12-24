@@ -70,34 +70,30 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
               </motion.div>
 
               {/* Headline - Trust-focused with visual hierarchy */}
-              <div className="space-y-0 px-2 sm:px-0">
-                <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.1]">
-                  <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Ihr sicherster Weg</span>
+              <div className="space-y-1 px-2 sm:px-0">
+                <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.05]">
+                  <span className="text-foreground">Umzugsfirmen</span>
                 </h1>
-                <span className="block text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.1]">
-                  zum besten <span className="text-primary drop-shadow-sm">Preis.</span>
+                <span className="block text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.05]">
+                  <span className="text-primary">vergleichen</span> & sparen
                 </span>
               </div>
 
-              {/* Value Proposition - Benefit-focused with stronger contrast */}
+              {/* Value Proposition - Cleaner, more direct */}
               <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
-                In nur <strong className="text-foreground font-semibold">2 Minuten</strong> zum exakten Preis – 
-                wir vergleichen <strong className="text-primary font-semibold">200+ geprüfte Umzugsfirmen</strong> für Sie.
+                <strong className="text-foreground">200+ geprüfte Umzugsfirmen</strong> im Vergleich. 
+                Kostenlose Offerten in <strong className="text-primary">24-48 Stunden</strong>.
               </p>
 
-              {/* USP Pills - Better touch targets */}
+              {/* Simplified USP Pills */}
               <div className="flex flex-wrap gap-2 justify-center lg:justify-start px-2 sm:px-0">
-                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-green-500/10 text-green-700 dark:text-green-400 px-3 py-2 sm:py-1.5 rounded-full font-medium min-h-[36px] sm:min-h-0">
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-green-500/15 text-green-700 dark:text-green-400 px-3 py-2 sm:py-1.5 rounded-full font-semibold min-h-[36px] sm:min-h-0 border border-green-500/20">
                   <TrendingDown className="w-3.5 h-3.5" />
                   Bis 40% sparen
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-primary/10 text-primary px-3 py-2 sm:py-1.5 rounded-full font-medium min-h-[36px] sm:min-h-0">
-                  <Users className="w-3.5 h-3.5" />
-                  200+ Firmen
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-amber-500/10 text-amber-700 dark:text-amber-400 px-3 py-2 sm:py-1.5 rounded-full font-medium min-h-[36px] sm:min-h-0">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Abnahmegarantie
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm bg-primary/10 text-primary px-3 py-2 sm:py-1.5 rounded-full font-semibold min-h-[36px] sm:min-h-0 border border-primary/20">
+                  <Shield className="w-3.5 h-3.5" />
+                  Alle Firmen geprüft
                 </span>
               </div>
 
@@ -131,60 +127,29 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
                 </Button>
               </div>
               
-              {/* Partner/Verbands-Logos - Trust Signal Above the Fold */}
-              <PartnerLogos variant="hero" className="pt-2" />
+              {/* Trust Metrics - Clean, verifiable */}
+              <PartnerLogos variant="hero" className="pt-1" />
 
-              {/* Data Privacy Badge - Prominent placement */}
+              {/* Single line trust + time estimate */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
-                className="flex flex-col items-center lg:items-start gap-3 px-2 sm:px-0"
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-xs sm:text-sm text-muted-foreground px-2 sm:px-0"
               >
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5 bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
-                    <Shield className="w-3.5 h-3.5 text-primary" />
-                    Server in der Schweiz
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
-                    <Lock className="w-3.5 h-3.5 text-primary" />
-                    SSL-verschlüsselt
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 bg-green-500/10 px-3 py-1.5 rounded-full border border-green-500/20 font-medium text-green-700 dark:text-green-400">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    Keine Werbeanrufe. Versprochen.
-                  </span>
-                </div>
-              </motion.div>
-
-              {/* Time estimate + expectation setting */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 text-sm"
-              >
-                <span className="inline-flex items-center gap-2 text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
                   <Clock className="w-4 h-4" />
-                  In nur 2 Minuten
+                  In 2 Min. erledigt
                 </span>
-                <span className="hidden sm:inline text-border">•</span>
-                <span className="inline-flex items-center gap-2 font-medium text-green-700 dark:text-green-400">
-                  3–5 Offerten in 24–48h
+                <span className="inline-flex items-center gap-1.5 text-green-700 dark:text-green-400 font-medium">
+                  <CheckCircle2 className="w-4 h-4" />
+                  3–5 Offerten in 24h
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Lock className="w-4 h-4" />
+                  Schweizer Server
                 </span>
               </motion.div>
-
-              {/* Desktop Trust Badges */}
-              <div className="hidden lg:flex flex-wrap gap-3 pt-2">
-                <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground bg-card border border-border px-4 py-2 rounded-full shadow-soft">
-                  <Shield className="w-4 h-4 text-primary" />
-                  SSL verschlüsselt
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground bg-card border border-border px-4 py-2 rounded-full shadow-soft">
-                  <Trophy className="w-4 h-4 text-swiss-gold" />
-                  4.8 ★ Bewertung
-                </span>
-              </div>
             </motion.div>
 
             {/* Right - Multi-Step Form (Desktop only) + Checky Avatar + Trust Badges */}
