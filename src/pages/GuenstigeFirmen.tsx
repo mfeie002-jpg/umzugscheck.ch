@@ -26,12 +26,12 @@ export default function GuenstigeFirmen() {
   const { trigger } = useHaptic();
   
   const pageTitle = region 
-    ? `Günstige Umzugsfirma in ${region} – Preise vergleichen & sparen | umzugscheck.ch` 
-    : "Günstige Umzugsfirma – Preise vergleichen & sparen | umzugscheck.ch";
+    ? `Günstige Umzugsfirma in ${region} | Preise vergleichen & bis zu 40% sparen` 
+    : "Günstige Umzugsfirma Schweiz | Preise vergleichen & bis zu 40% sparen";
   
   const pageDescription = region
-    ? `Günstig umziehen in ${region} mit Qualität: Vergleichen Sie Preise von günstigen Umzugsfirmen. Fordern Sie kostenlose Offerten an und sparen Sie bis zu 40%!`
-    : "Günstig umziehen mit Qualität: Vergleichen Sie Preise von günstigen Umzugsfirmen in der Schweiz. Fordern Sie kostenlose Offerten an und sparen Sie bis zu 40% bei Ihrem Umzug!";
+    ? `Finden Sie eine günstige Umzugsfirma in ${region}: Offerten vergleichen, transparente Preise sehen und bis zu 40% sparen – kostenlos & unverbindlich.`
+    : "Finden Sie eine günstige Umzugsfirma in der Schweiz: Offerten vergleichen, transparente Preise sehen und bis zu 40% sparen – kostenlos & unverbindlich.";
 
   // Initialize filters from URL params
   const initializeFilters = (): FilterState => {
@@ -446,25 +446,29 @@ export default function GuenstigeFirmen() {
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
-                  Günstige Angebote sichern
+                  Günstige Umzugsfirma finden & bis zu 40% sparen
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
-                  Sparen Sie bis zu 40% bei Ihrem Umzug. Vergleichen Sie jetzt Preise von günstigen Umzugsfirmen und erhalten Sie kostenlose Offerten.
+                  Vergleichen Sie jetzt Preise von günstigen Umzugsfirmen und erhalten Sie kostenlose Offerten.
                 </p>
                 <Link to="/umzugsofferten" className="w-full sm:w-auto">
                   <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-14 bg-green-600 hover:bg-green-700">
-                    Jetzt günstige Offerten erhalten
+                    Jetzt günstige Umzugsfirma vergleichen
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </Link>
                 <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-6 sm:mt-8">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>✓ bis 40% Ersparnis möglich</span>
+                    <span>Kostenlos</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <DollarSign className="w-4 h-4 text-green-600" />
-                    <span>Keine versteckten Kosten</span>
+                    <span>Unverbindlich</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>Datenschutz</span>
                   </div>
                 </div>
               </div>
