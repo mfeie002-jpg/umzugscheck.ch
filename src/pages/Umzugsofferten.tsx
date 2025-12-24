@@ -75,10 +75,10 @@ const Umzugsofferten = () => {
       <DebugOverlay />
       <PageEnhancements />
       <Helmet>
-        <title>Umzugsofferten Schweiz | Gratis Offerten von 200+ Umzugsfirmen</title>
+        <title>Umzugsofferten Schweiz kostenlos vergleichen | Umzugscheck.ch</title>
         <meta
           name="description"
-          content="Erhalten Sie kostenlose Umzugsofferten von 200+ geprüften Umzugsfirmen in der Schweiz. Vergleichen, sparen & das beste Angebot finden."
+          content="Erhalten Sie gratis Umzugsofferten von geprüften Umzugsfirmen in der Schweiz. Schnell vergleichen, transparente Preise, echte Bewertungen – in ca. 2 Minuten."
         />
         <meta
           name="keywords"
@@ -87,10 +87,10 @@ const Umzugsofferten = () => {
         <link rel="canonical" href="https://umzugscheck.ch/umzugsofferten" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Umzugsofferten Schweiz | Gratis Offerten von 200+ Umzugsfirmen" />
+        <meta property="og:title" content="Umzugsofferten Schweiz – kostenlos vergleichen" />
         <meta
           property="og:description"
-          content="Erhalten Sie kostenlose Umzugsofferten von 200+ geprüften Umzugsfirmen in der Schweiz. Vergleichen, sparen & das beste Angebot finden."
+          content="Erhalten Sie gratis Umzugsofferten von geprüften Umzugsfirmen in der Schweiz. Schnell vergleichen, transparente Preise, echte Bewertungen."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/umzugsofferten" />
@@ -99,10 +99,10 @@ const Umzugsofferten = () => {
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Umzugsofferten Schweiz | Gratis Offerten von 200+ Umzugsfirmen" />
+        <meta name="twitter:title" content="Umzugsofferten Schweiz – kostenlos vergleichen" />
         <meta
           name="twitter:description"
-          content="Erhalten Sie kostenlose Umzugsofferten von 200+ geprüften Umzugsfirmen in der Schweiz."
+          content="Erhalten Sie gratis Umzugsofferten von geprüften Umzugsfirmen in der Schweiz. Schnell vergleichen, transparente Preise."
         />
 
         {/* Schema.org */}
