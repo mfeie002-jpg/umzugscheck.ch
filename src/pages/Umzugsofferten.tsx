@@ -75,22 +75,22 @@ const Umzugsofferten = () => {
       <DebugOverlay />
       <PageEnhancements />
       <Helmet>
-        <title>Umzugsofferten vergleichen & bis 40% sparen | umzugscheck.ch</title>
+        <title>Umzugsofferten Schweiz | Gratis Offerten von 200+ Umzugsfirmen</title>
         <meta
           name="description"
-          content="Erhalten Sie jetzt kostenlos bis zu 5 Offerten für Ihren Umzug. Vergleichen Sie 200+ geprüfte Umzugsfirmen in der Schweiz und sparen Sie bis zu 40% bei Ihrem Umzug!"
+          content="Erhalten Sie kostenlose Umzugsofferten von 200+ geprüften Umzugsfirmen in der Schweiz. Vergleichen, sparen & das beste Angebot finden."
         />
         <meta
           name="keywords"
-          content="Umzugsofferten, Umzugsofferten vergleichen, Umzug Schweiz, Umzugsfirma vergleichen, KI Umzugsrechner, Umzugskosten berechnen, Zügelofferte, kostenlose Offerten"
+          content="Umzugsofferten, Umzugsofferten Schweiz, gratis Offerten, Umzugsfirma vergleichen, Umzug Schweiz, Zügelofferte"
         />
         <link rel="canonical" href="https://umzugscheck.ch/umzugsofferten" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Umzugsofferten vergleichen & bis 40% sparen | umzugscheck.ch" />
+        <meta property="og:title" content="Umzugsofferten Schweiz | Gratis Offerten von 200+ Umzugsfirmen" />
         <meta
           property="og:description"
-          content="Erhalten Sie jetzt kostenlos bis zu 5 Offerten für Ihren Umzug. Vergleichen Sie 200+ geprüfte Umzugsfirmen in der Schweiz."
+          content="Erhalten Sie kostenlose Umzugsofferten von 200+ geprüften Umzugsfirmen in der Schweiz. Vergleichen, sparen & das beste Angebot finden."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://umzugscheck.ch/umzugsofferten" />
@@ -99,10 +99,10 @@ const Umzugsofferten = () => {
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Umzugsofferten vergleichen & bis 40% sparen | umzugscheck.ch" />
+        <meta name="twitter:title" content="Umzugsofferten Schweiz | Gratis Offerten von 200+ Umzugsfirmen" />
         <meta
           name="twitter:description"
-          content="Kostenlos bis zu 5 Offerten für Ihren Umzug erhalten. 200+ geprüfte Schweizer Umzugsfirmen."
+          content="Erhalten Sie kostenlose Umzugsofferten von 200+ geprüften Umzugsfirmen in der Schweiz."
         />
 
         {/* Schema.org */}

@@ -26,12 +26,12 @@ export default function BesteFirmen() {
   const { trigger } = useHaptic();
   
   const pageTitle = region 
-    ? `Beste Umzugsfirma in ${region} finden – Qualitätsvergleich | umzugscheck.ch` 
-    : "Beste Umzugsfirma finden – Qualitätsvergleich | umzugscheck.ch";
+    ? `Beste Umzugsfirma in ${region} finden | Top Umzugsfirmen vergleichen` 
+    : "Beste Umzugsfirma finden | Top Umzugsfirmen in der Schweiz vergleichen";
   
   const pageDescription = region
-    ? `So finden Sie die beste Umzugsfirma in ${region}: Vergleichen Sie geprüfte Umzugsunternehmen mit echten Bewertungen. Jetzt kostenlos Offerten anfordern!`
-    : "So finden Sie die beste Umzugsfirma: Vergleichen Sie geprüfte Umzugsunternehmen mit echten Bewertungen. Unser Service zeigt Ihnen die Top-Umzugsfirmen – jetzt kostenlos Offerten anfordern!";
+    ? `Vergleichen Sie geprüfte Umzugsfirmen in ${region}, Bewertungen & Preise. Finden Sie die beste Umzugsfirma für Ihren Umzug – schnell & kostenlos.`
+    : "Vergleichen Sie geprüfte Umzugsfirmen, Bewertungen & Preise. Finden Sie die beste Umzugsfirma für Ihren Umzug – schnell & kostenlos.";
 
   // Initialize filters from URL params
   const initializeFilters = (): FilterState => {
@@ -450,29 +450,29 @@ export default function BesteFirmen() {
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
-                  Jetzt beste Umzugsfirma finden
+                  Finden Sie die beste Umzugsfirma für Ihren Umzug
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
                   Vergleichen Sie geprüfte Top-Umzugsfirmen und erhalten Sie kostenlos bis zu 5 unverbindliche Offerten.
                 </p>
                 <Link to="/umzugsofferten" className="w-full sm:w-auto">
                   <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-14">
-                    Beste Umzugsfirma jetzt finden
+                    Jetzt beste Umzugsfirma finden
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </Link>
                 <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-6 sm:mt-8">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Shield className="w-4 h-4 text-primary" />
-                    <span>100% kostenlos</span>
+                    <Shield className="w-4 h-4 text-green-600" />
+                    <span>Kostenlos</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Star className="w-4 h-4 text-primary" />
-                    <span>Geprüfte Firmen</span>
+                    <Star className="w-4 h-4 text-green-600" />
+                    <span>Unverbindlich</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Award className="w-4 h-4 text-primary" />
-                    <span>Bis 40% Ersparnis</span>
+                    <Award className="w-4 h-4 text-green-600" />
+                    <span>Datenschutz</span>
                   </div>
                 </div>
               </div>
