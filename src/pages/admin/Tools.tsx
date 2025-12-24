@@ -1326,16 +1326,18 @@ ${config.projectName} - WCAG 2.1 Level AA
     pdf.text('Projekt-Ziele:', 20, 80);
     pdf.setFontSize(10);
     pdf.setTextColor(0);
-    const goals = config.goals || 'Lead generation, SEO, User trust';
-    pdf.text(goals.substring(0, 80), 20, 88);
+    const goalsRaw = config.goals || 'Lead generation, SEO, User trust';
+    const goalsStr = Array.isArray(goalsRaw) ? goalsRaw.join(', ') : String(goalsRaw);
+    pdf.text(goalsStr.substring(0, 80), 20, 88);
     
     pdf.setFontSize(12);
     pdf.setTextColor(37, 99, 235);
     pdf.text('Zielgruppe:', 20, 105);
     pdf.setFontSize(10);
     pdf.setTextColor(0);
-    const audience = config.targetAudience || 'Swiss moving customers';
-    pdf.text(audience.substring(0, 80), 20, 113);
+    const audienceRaw = config.targetAudience || 'Swiss moving customers';
+    const audienceStr = Array.isArray(audienceRaw) ? audienceRaw.join(', ') : String(audienceRaw);
+    pdf.text(audienceStr.substring(0, 80), 20, 113);
     
     pdf.setFontSize(12);
     pdf.setTextColor(37, 99, 235);
