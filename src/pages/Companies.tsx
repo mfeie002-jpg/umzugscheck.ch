@@ -536,9 +536,9 @@ const Companies = () => {
   return (
     <>
       <OptimizedSEO
-        title="Umzugsfirmen in der Schweiz vergleichen – 200+ geprüfte Anbieter"
-        description="Finden Sie geprüfte Umzugsunternehmen in Ihrer Region. Vergleichen Sie Preise, Bewertungen und Services – kostenlos & unverbindlich."
-        keywords="umzugsfirmen schweiz, umzugsunternehmen, umzugsfirmen vergleichen"
+        title="Umzugsfirmen Schweiz vergleichen – 5 Offerten in 2 Minuten | umzugscheck.ch"
+        description="Die besten Umzugsfirmen der Schweiz im Überblick: Einfach Formular ausfüllen und bis zu 5 Offerten von geprüften Zügelunternehmen erhalten. Stressfrei umziehen und Geld sparen!"
+        keywords="umzugsfirmen schweiz, umzugsunternehmen schweiz, umzugsfirmen vergleichen, zügelunternehmen, umzugsfirma finden"
         canonicalUrl={currentUrl}
         schemaMarkup={companySchemas}
       />

@@ -26,12 +26,12 @@ export default function BesteFirmen() {
   const { trigger } = useHaptic();
   
   const pageTitle = region 
-    ? `Die besten Umzugsfirmen in ${region} (2025)` 
-    : "Die besten Umzugsfirmen in der Schweiz (2025)";
+    ? `Beste Umzugsfirma in ${region} finden – Qualitätsvergleich | umzugscheck.ch` 
+    : "Beste Umzugsfirma finden – Qualitätsvergleich | umzugscheck.ch";
   
   const pageDescription = region
-    ? `Vergleichen Sie die top-bewerteten Umzugsfirmen in ${region}. Basierend auf echten Kundenbewertungen, Preis-Leistung und Servicequalität.`
-    : "Die besten Umzugsfirmen der Schweiz im Vergleich. Basierend auf Kundenbewertungen, Preis-Leistung und Servicequalität.";
+    ? `So finden Sie die beste Umzugsfirma in ${region}: Vergleichen Sie geprüfte Umzugsunternehmen mit echten Bewertungen. Jetzt kostenlos Offerten anfordern!`
+    : "So finden Sie die beste Umzugsfirma: Vergleichen Sie geprüfte Umzugsunternehmen mit echten Bewertungen. Unser Service zeigt Ihnen die Top-Umzugsfirmen – jetzt kostenlos Offerten anfordern!";
 
   // Initialize filters from URL params
   const initializeFilters = (): FilterState => {
@@ -170,12 +170,65 @@ export default function BesteFirmen() {
 
   const currentUrl = `https://www.umzugscheck.ch/beste-umzugsfirma${region ? `/${region}` : ''}/`;
 
+  // Schema.org Markup for Rich Snippets
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": region ? `Beste Umzugsfirmen in ${region}` : "Beste Umzugsfirmen Schweiz",
+    "description": pageDescription,
+    "provider": {
+      "@type": "Organization",
+      "name": "umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
+    },
+    "areaServed": {
+      "@type": region ? "AdministrativeArea" : "Country",
+      "name": region || "Switzerland"
+    },
+    "serviceType": "Moving Company Comparison",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "15000",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CHF",
+      "description": "Kostenloser Vergleich von Umzugsfirmen"
+    }
+  };
+
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": region ? `Top Umzugsfirmen in ${region}` : "Top Umzugsfirmen Schweiz",
+    "description": "Ranking der besten Umzugsfirmen basierend auf Kundenbewertungen",
+    "numberOfItems": organicCompanies.length + sponsoredCompanies.length,
+    "itemListElement": [...sponsoredCompanies, ...organicCompanies].slice(0, 10).map((company, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "LocalBusiness",
+        "name": company.name,
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": company.rating,
+          "reviewCount": company.reviewCount
+        }
+      }
+    }))
+  };
+
   return (
     <>
       <OptimizedSEO
         title={pageTitle}
         description={pageDescription}
         canonicalUrl={currentUrl}
+        schemaMarkup={[serviceSchema, itemListSchema]}
       />
       <PullToRefreshIndicator 
         isPulling={isPulling}
@@ -205,7 +258,7 @@ export default function BesteFirmen() {
                     {pageDescription}
                   </p>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-8">
                     {[
                       { icon: Star, value: "4.8/5", label: "Durchschnittliche Bewertung", color: "text-yellow-400" },
                       { icon: Shield, value: "100%", label: "Geprüfte Firmen", color: "text-green-400" },
@@ -218,6 +271,14 @@ export default function BesteFirmen() {
                       </Card>
                     ))}
                   </div>
+                  
+                  {/* Hero CTA Button */}
+                  <Link to="/umzugsofferten">
+                    <Button size="lg" className="text-lg px-8 h-14 bg-white text-primary hover:bg-white/90 shadow-xl">
+                      Beste Umzugsfirma jetzt finden
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </section>
@@ -389,18 +450,31 @@ export default function BesteFirmen() {
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
-                  Unsicher, welche Umzugsfirma am besten zu Ihnen passt?
+                  Jetzt beste Umzugsfirma finden
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
-                  Statt lange zu vergleichen, können Sie mit einer Anfrage mehrere Offerten von geprüften Umzugsfirmen erhalten.
+                  Vergleichen Sie geprüfte Top-Umzugsfirmen und erhalten Sie kostenlos bis zu 5 unverbindliche Offerten.
                 </p>
                 <Link to="/umzugsofferten" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-4 sm:px-6 sm:px-8 h-12 sm:h-14">
-                    <span className="hidden sm:inline">Jetzt Umzugsofferten vergleichen</span>
-                    <span className="sm:hidden">Offerten vergleichen</span>
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-14">
+                    Beste Umzugsfirma jetzt finden
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </Link>
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-6 sm:mt-8">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Shield className="w-4 h-4 text-primary" />
+                    <span>100% kostenlos</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Star className="w-4 h-4 text-primary" />
+                    <span>Geprüfte Firmen</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Award className="w-4 h-4 text-primary" />
+                    <span>Bis 40% Ersparnis</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
