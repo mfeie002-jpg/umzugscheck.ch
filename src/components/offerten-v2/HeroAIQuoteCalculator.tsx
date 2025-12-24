@@ -737,7 +737,7 @@ export default function HeroAIQuoteCalculator() {
                       <FloatingLabelInput
                         value={state.fromPLZ}
                         onChange={(v) => updateState({ fromPLZ: v })}
-                        label="Von (PLZ oder Ort)"
+                        label="Umzug von"
                         icon={MapPin}
                         isValid={state.fromPLZ.length >= 4}
                         autoFocus
@@ -747,7 +747,7 @@ export default function HeroAIQuoteCalculator() {
                       <FloatingLabelInput
                         value={state.toPLZ}
                         onChange={(v) => updateState({ toPLZ: v })}
-                        label="Nach (PLZ oder Ort)"
+                        label="Umzug nach"
                         icon={MapPin}
                         isValid={state.toPLZ.length >= 4}
                         helpText="Zieladresse Ihres Umzugs"
