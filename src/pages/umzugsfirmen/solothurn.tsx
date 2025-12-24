@@ -81,8 +81,8 @@ export default function SolothurnLandingPage() {
               <Card className="bg-white/[0.98] backdrop-blur-xl border-0 shadow-2xl rounded-2xl"><CardContent className="p-8">
                 <h2 className="text-xl font-bold mb-6 text-center">Jetzt gratis vergleichen</h2>
                 <form onSubmit={handleFormSubmit} className="space-y-4">
-                  <div><Label>Von (PLZ oder Ort)</Label><Input placeholder="z.B. 4500 Solothurn" value={fromLocation} onChange={(e) => setFromLocation(e.target.value)} className="mt-1.5 h-12" /></div>
-                  <div><Label>Nach (PLZ oder Ort)</Label><Input placeholder="z.B. 4600 Olten" value={toLocation} onChange={(e) => setToLocation(e.target.value)} className="mt-1.5 h-12" /></div>
+                  <div><Label>Umzug von</Label><Input placeholder="4500 oder Solothurn" value={fromLocation} onChange={(e) => setFromLocation(e.target.value)} className="mt-1.5 h-12" /></div>
+                  <div><Label>Umzug nach</Label><Input placeholder="z.B. 4600 oder Olten" value={toLocation} onChange={(e) => setToLocation(e.target.value)} className="mt-1.5 h-12" /></div>
                   <div><Label>Wohnungsgrösse</Label><Select value={apartmentSize} onValueChange={setApartmentSize}><SelectTrigger className="mt-1.5 h-12"><SelectValue placeholder="Bitte wählen..." /></SelectTrigger><SelectContent><SelectItem value="1-2">1-2 Zimmer</SelectItem><SelectItem value="3-4">3-4 Zimmer</SelectItem><SelectItem value="5+">5+ Zimmer</SelectItem></SelectContent></Select></div>
                   <Button type="submit" size="lg" className="w-full bg-secondary hover:bg-secondary/90 font-bold text-lg py-6">Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Button>
                 </form>

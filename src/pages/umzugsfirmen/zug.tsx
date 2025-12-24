@@ -464,7 +464,7 @@ const ZugLandingPage = () => {
                     <form onSubmit={handleFormSubmit} className="space-y-4 mt-4">
                       <div>
                         <Label htmlFor="from" className="text-sm font-medium flex items-center gap-1">
-                          Von (PLZ oder Ort)
+                          Umzug von
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger><Info className="w-3.5 h-3.5 text-muted-foreground" /></TooltipTrigger>
@@ -474,7 +474,7 @@ const ZugLandingPage = () => {
                         </Label>
                         <Input
                           id="from"
-                          placeholder="z.B. 6300 Zug"
+                          placeholder="6300 oder Zug"
                           value={fromLocation}
                           onChange={(e) => setFromLocation(e.target.value)}
                           className="mt-1.5 h-12"
@@ -483,10 +483,10 @@ const ZugLandingPage = () => {
                       </div>
 
                       <div>
-                        <Label htmlFor="to" className="text-sm font-medium">Nach (PLZ oder Ort)</Label>
+                        <Label htmlFor="to" className="text-sm font-medium">Umzug nach</Label>
                         <Input
                           id="to"
-                          placeholder="z.B. 6340 Baar"
+                          placeholder="z.B. 6340 oder Baar"
                           value={toLocation}
                           onChange={(e) => setToLocation(e.target.value)}
                           className="mt-1.5 h-12"
