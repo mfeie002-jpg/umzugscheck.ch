@@ -208,9 +208,10 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
     };
   });
 
-  // Persist form data to localStorage
+  // Persist form data to localStorage AND sync with uc_prefill for /umzugsofferten page
   useEffect(() => {
     try {
+      // Save to main form storage
       localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify({
         moveType: formData.moveType,
         fromLocation: formData.fromLocation,
@@ -223,6 +224,18 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
         phone: formData.phone,
         useVideoAI: formData.useVideoAI,
       }));
+      
+      // Also save to uc_prefill format for HeroAIQuoteCalculator on /umzugsofferten
+      if (formData.fromLocation || formData.toLocation) {
+        localStorage.setItem('uc_prefill', JSON.stringify({
+          from: formData.fromLocation,
+          to: formData.toLocation,
+          size: formData.apartmentSize,
+          services: formData.selectedServices,
+          source: 'homepage',
+          timestamp: Date.now(),
+        }));
+      }
     } catch (e) {
       console.error("Error saving form data:", e);
     }

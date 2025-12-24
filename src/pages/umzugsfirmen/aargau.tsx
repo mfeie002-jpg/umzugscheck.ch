@@ -294,12 +294,12 @@ export default function AargauLandingPage() {
                     <FormProgress fields={{ from: fromLocation, to: toLocation, size: apartmentSize }} />
                     <form onSubmit={handleFormSubmit} className="space-y-4 mt-4">
                       <div>
-                        <Label htmlFor="from" className="text-sm font-medium flex items-center gap-1">Von (PLZ oder Ort)<TooltipProvider><Tooltip><TooltipTrigger><Info className="w-3.5 h-3.5 text-muted-foreground" /></TooltipTrigger><TooltipContent>Ihr aktueller Wohnort</TooltipContent></Tooltip></TooltipProvider></Label>
-                        <Input id="from" placeholder="z.B. 5000 Aarau" value={fromLocation} onChange={(e) => setFromLocation(e.target.value)} className="mt-1.5 h-12" autoFocus />
+                        <Label htmlFor="from" className="text-sm font-medium flex items-center gap-1">Umzug von<TooltipProvider><Tooltip><TooltipTrigger><Info className="w-3.5 h-3.5 text-muted-foreground" /></TooltipTrigger><TooltipContent>Ihr aktueller Wohnort</TooltipContent></Tooltip></TooltipProvider></Label>
+                        <Input id="from" placeholder="5000 oder Aarau" value={fromLocation} onChange={(e) => setFromLocation(e.target.value)} className="mt-1.5 h-12" autoFocus />
                       </div>
                       <div>
-                        <Label htmlFor="to" className="text-sm font-medium">Nach (PLZ oder Ort)</Label>
-                        <Input id="to" placeholder="z.B. 5400 Baden" value={toLocation} onChange={(e) => setToLocation(e.target.value)} className="mt-1.5 h-12" />
+                        <Label htmlFor="to" className="text-sm font-medium">Umzug nach</Label>
+                        <Input id="to" placeholder="z.B. 5400 oder Baden" value={toLocation} onChange={(e) => setToLocation(e.target.value)} className="mt-1.5 h-12" />
                       </div>
                       <div>
                         <Label htmlFor="size" className="text-sm font-medium">Wohnungsgrösse</Label>

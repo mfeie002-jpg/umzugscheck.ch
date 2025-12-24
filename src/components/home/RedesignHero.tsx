@@ -38,6 +38,35 @@ export const RedesignHero = () => {
       });
       return;
     }
+    
+    // Save to uc_prefill for HeroAIQuoteCalculator and MultiStepCalculator
+    try {
+      localStorage.setItem('uc_prefill', JSON.stringify({
+        from: fromPostal,
+        to: toPostal,
+        size: rooms,
+        services: ['umzug'],
+        source: 'redesign_hero',
+        timestamp: Date.now(),
+      }));
+      
+      // Also save to main form storage for MultiStepCalculator
+      localStorage.setItem('umzugscheck_form_data', JSON.stringify({
+        moveType: 'private',
+        fromLocation: fromPostal,
+        toLocation: toPostal,
+        apartmentSize: rooms,
+        selectedServices: ['umzug'],
+        moveDate: '',
+        name: '',
+        email: '',
+        phone: '',
+        useVideoAI: false,
+      }));
+    } catch (e) {
+      console.error("Error saving form data:", e);
+    }
+    
     navigate(`/umzugsrechner?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}&rooms=${rooms}`);
   };
 

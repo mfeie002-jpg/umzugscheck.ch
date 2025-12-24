@@ -337,7 +337,7 @@ export default function HeroAIQuoteCalculator() {
   
   // Track page view and load prefill data
   useEffect(() => {
-    // Check for prefill source
+    // Check for prefill source from homepage or region forms
     let source = 'direct';
     try {
       const prefillRaw = localStorage.getItem('uc_prefill');
@@ -349,18 +349,57 @@ export default function HeroAIQuoteCalculator() {
           source = prefill.source || 'homepage';
           setPrefillSource(source);
           
+          // Handle "from" location - simpler parsing
           if (prefill.from) {
-            const fromMatch = prefill.from.match(/^(\d{4})/);
-            if (fromMatch) updateState({ fromPLZ: fromMatch[1] });
-            const fromCityMatch = prefill.from.match(/- (.+?) \(/);
-            if (fromCityMatch) updateState({ fromOrt: fromCityMatch[1] });
+            const fromValue = prefill.from.trim();
+            // Extract PLZ (first 4 digits)
+            const fromPLZMatch = fromValue.match(/(\d{4})/);
+            if (fromPLZMatch) {
+              updateState({ fromPLZ: fromPLZMatch[1] });
+            }
+            // Extract city name (after PLZ or the whole string if no PLZ)
+            const fromCityPart = fromValue.replace(/^\d{4}\s*/, '').trim();
+            if (fromCityPart) {
+              updateState({ fromOrt: fromCityPart });
+            }
           }
           
+          // Handle "to" location - simpler parsing
           if (prefill.to) {
-            const toMatch = prefill.to.match(/^(\d{4})/);
-            if (toMatch) updateState({ toPLZ: toMatch[1] });
-            const toCityMatch = prefill.to.match(/- (.+?) \(/);
-            if (toCityMatch) updateState({ toOrt: toCityMatch[1] });
+            const toValue = prefill.to.trim();
+            const toPLZMatch = toValue.match(/(\d{4})/);
+            if (toPLZMatch) {
+              updateState({ toPLZ: toPLZMatch[1] });
+            }
+            const toCityPart = toValue.replace(/^\d{4}\s*/, '').trim();
+            if (toCityPart) {
+              updateState({ toOrt: toCityPart });
+            }
+          }
+          
+          // Handle apartment size
+          if (prefill.size) {
+            updateState({ wohnungsgroesse: prefill.size });
+          }
+          
+          // Handle services
+          if (prefill.services && Array.isArray(prefill.services)) {
+            const serviceMapping: Record<string, keyof CalculatorState> = {
+              'reinigung': 'reinigung',
+              'montage': 'montage',
+              'entsorgung': 'entsorgung',
+            };
+            prefill.services.forEach((svc: string) => {
+              if (serviceMapping[svc]) {
+                updateState({ [serviceMapping[svc]]: true });
+              }
+            });
+          }
+          
+          // If data was prefilled, auto-advance to step 2 (skip location entry)
+          if (prefill.from && prefill.to) {
+            // Auto skip to step 2 since location is filled
+            setTimeout(() => updateState({ step: 2 }), 100);
           }
         }
       }
