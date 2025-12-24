@@ -460,29 +460,44 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   />
                 </div>
 
-                {/* Video AI Option */}
-                <div className="p-3 rounded-xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20">
-                  <button
-                    type="button"
-                    onClick={() => updateFormData("useVideoAI", !formData.useVideoAI)}
-                    className="flex items-start gap-3 w-full text-left"
-                  >
-                    <div className={`mt-0.5 w-5 h-5 rounded-md flex items-center justify-center border ${
-                      formData.useVideoAI ? 'bg-primary border-primary' : 'border-border bg-background'
+                {/* KI Video-Analyse Option - Prominent Feature Highlight */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    formData.useVideoAI 
+                      ? 'border-primary bg-primary/10 shadow-medium ring-2 ring-primary/20' 
+                      : 'border-primary/30 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 hover:border-primary/50'
+                  }`}
+                  onClick={() => updateFormData("useVideoAI", !formData.useVideoAI)}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                      formData.useVideoAI ? 'bg-primary text-primary-foreground' : 'bg-primary/20'
+                    }`}>
+                      <Camera className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-bold">KI Video-Analyse</p>
+                        <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-medium">
+                          Empfohlen
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Raum scannen statt Liste tippen – KI berechnet Volumen automatisch
+                      </p>
+                      <p className="text-[10px] text-green-600 dark:text-green-400 mt-1.5 font-medium">
+                        → Exaktere Preise, weniger Nachforderungen
+                      </p>
+                    </div>
+                    <div className={`mt-1 w-5 h-5 rounded-full flex items-center justify-center border-2 transition-colors ${
+                      formData.useVideoAI ? 'bg-primary border-primary' : 'border-border'
                     }`}>
                       {formData.useVideoAI && <CheckCircle className="w-3.5 h-3.5 text-primary-foreground" />}
                     </div>
-                    <div>
-                      <p className="text-sm font-medium flex items-center gap-2">
-                        <Video className="w-4 h-4 text-primary" />
-                        KI Video-Analyse nutzen
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Video hochladen & KI berechnet automatisch Volumen und Aufwand
-                      </p>
-                    </div>
-                  </button>
-                </div>
+                  </div>
+                </motion.div>
 
                 {/* Privacy Checkbox */}
                 <div className="flex items-start gap-3">

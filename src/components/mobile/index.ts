@@ -39,3 +39,4 @@ export { GamepadIndicator } from './GamepadIndicator';
 export { OrientationLock } from './OrientationLock';
 export { MobileSearchOverlay } from './MobileSearchOverlay';
 export { MobileSearchButton } from './MobileSearchButton';
+export { StickyMobileCTA } from './StickyMobileCTA';
