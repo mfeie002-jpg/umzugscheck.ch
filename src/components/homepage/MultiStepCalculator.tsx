@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, ArrowLeft, Shield, CheckCircle, Video, Camera, 
   MapPin, TrendingDown, Package, Sparkles, Brush, Trash2, Warehouse,
-  ChevronDown, Info, Star, Clock, Award, User, Mail, Phone, Calendar
+  Plus, Minus, Info, Star, Clock, Award, User, Mail, Phone, Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,7 @@ const swissPostalCodes = [
   { code: "8400", city: "Winterthur" },
 ];
 
-// Enhanced services with detailed info
+// Enhanced services with detailed info - PACKING FIRST (most important upsell)
 const services = [
   { 
     id: "umzug", 
@@ -49,24 +49,26 @@ const services = [
   { 
     id: "einpacken", 
     label: "Einpack-Service", 
-    description: "Wir packen alles sicher ein",
+    description: "Wir packen alles für Sie ein",
     priceRange: "+CHF 300–500",
-    details: "Professionelles Einpacken aller Gegenstände in Kartons. Geschirr, Gläser, Bücher – alles wird fachgerecht verpackt.",
-    benefits: ["Spart Ihnen 1-2 Tage Arbeit", "Bruchsicheres Verpacken", "Kartonmaterial inklusive"],
+    details: "Professionelles Einpacken aller Gegenstände in Kartons. Geschirr, Gläser, Bücher – alles wird fachgerecht und bruchsicher verpackt. Sie müssen keinen Finger rühren!",
+    benefits: ["Spart Ihnen 1–2 Tage Arbeit", "Bruchsicheres Verpacken durch Profis", "Kartonmaterial & Polsterung inklusive", "Ideal wenn wenig Zeit"],
     icon: <Package className="w-4 h-4" />,
     priceAdd: 400,
-    popular: true 
+    popular: true,
+    highlight: true // New flag to visually emphasize
   },
   { 
     id: "auspacken", 
     label: "Auspack-Service", 
     description: "Kartons auspacken am Zielort",
     priceRange: "+CHF 200–400",
-    details: "Wir packen alle Kartons am neuen Ort aus und entsorgen das Verpackungsmaterial. Sie können sofort einziehen!",
-    benefits: ["Sofort einzugsbereit", "Kartonentsorgung inklusive", "Zeitersparnis"],
+    details: "Wir packen alle Kartons am neuen Ort aus und entsorgen das Verpackungsmaterial. Sie können sofort einziehen und geniessen!",
+    benefits: ["Sofort einzugsbereit", "Kartonentsorgung inklusive", "Zeitersparnis von 1 Tag", "Stressfreier Start im neuen Zuhause"],
     icon: <Sparkles className="w-4 h-4" />,
     priceAdd: 300,
-    popular: false 
+    popular: true,
+    highlight: true
   },
   { 
     id: "reinigung", 
@@ -569,11 +571,20 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                           }`}
                         >
                           {/* Main Row */}
-                          <button
-                            type="button"
+                          <div
+                            role="button"
+                            tabIndex={service.id === "umzug" ? -1 : 0}
                             onClick={() => toggleService(service.id)}
-                            className="w-full flex items-center gap-2.5 p-2.5 text-left"
-                            disabled={service.id === "umzug"}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                toggleService(service.id);
+                              }
+                            }}
+                            className={`w-full flex items-center gap-2.5 p-2.5 text-left cursor-pointer ${
+                              service.id === "umzug" ? "cursor-default" : ""
+                            }`}
+                            aria-disabled={service.id === "umzug"}
                           >
                             <div
                               className={`w-4 h-4 rounded flex items-center justify-center border-2 shrink-0 ${
@@ -596,9 +607,14 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5">
+                              <div className="flex items-center gap-1.5 flex-wrap">
                                 <p className="text-xs font-semibold truncate">{service.label}</p>
-                                {service.popular && (
+                                {(service as any).highlight && (
+                                  <span className="text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold shrink-0 animate-pulse">
+                                    💡 Tipp
+                                  </span>
+                                )}
+                                {service.popular && !(service as any).highlight && (
                                   <span className="text-[8px] bg-secondary text-secondary-foreground px-1 py-0.5 rounded-full font-medium shrink-0">
                                     Beliebt
                                   </span>
@@ -610,7 +626,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                             </div>
 
                             <div className="flex items-center gap-1.5 shrink-0">
-                              <span className="text-[10px] font-medium text-primary">
+                              <span className={`text-[10px] font-medium ${(service as any).highlight ? 'text-secondary' : 'text-primary'}`}>
                                 {service.priceRange}
                               </span>
                               <button
@@ -619,17 +635,17 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                                   e.stopPropagation();
                                   setExpandedService(isExpanded ? null : service.id);
                                 }}
-                                className="p-0.5 rounded-full hover:bg-muted transition-colors"
+                                className={`p-0.5 rounded-full transition-colors ${isExpanded ? 'bg-primary/20' : 'hover:bg-muted'}`}
+                                aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
                               >
-                                <motion.div
-                                  animate={{ rotate: isExpanded ? 180 : 0 }}
-                                  transition={{ duration: 0.2 }}
-                                >
-                                  <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-                                </motion.div>
+                                {isExpanded ? (
+                                  <Minus className="w-3.5 h-3.5 text-primary" />
+                                ) : (
+                                  <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+                                )}
                               </button>
                             </div>
-                          </button>
+                          </div>
 
                           {/* Expandable Details */}
                           <AnimatePresence>
