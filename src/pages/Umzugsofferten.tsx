@@ -20,7 +20,6 @@ import { DebugOverlay } from "@/components/DebugOverlay";
 import { Helmet } from "react-helmet";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
-  HeroAIQuoteCalculator,
   AIInsightsBar,
   HowItWorksSection,
   ComparisonShowcase,
@@ -33,6 +32,7 @@ import {
   BottomStickyCTA,
   PageEnhancements,
 } from "@/components/offerten-v2";
+import { MultiStepCalculator } from "@/components/homepage/MultiStepCalculator";
 import { Link } from "react-router-dom";
 
 const Umzugsofferten = () => {
@@ -113,11 +113,14 @@ const Umzugsofferten = () => {
       <main id="main-content">
         {/* Breadcrumbs */}
         <div className="container mx-auto px-4 sm:px-6 pt-3 sm:pt-4 max-w-6xl">
+          <h1 className="sr-only">Umzugsofferten Schweiz kostenlos vergleichen</h1>
           <Breadcrumbs items={[{ label: "Umzugsofferten vergleichen" }]} />
         </div>
 
-        {/* Hero with AI Calculator */}
-        <HeroAIQuoteCalculator />
+        {/* Hero with Comparison Wizard */}
+        <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-4 sm:pt-6">
+          <MultiStepCalculator />
+        </section>
 
         {/* AI Insights Strip */}
         <AIInsightsBar />

@@ -38,24 +38,38 @@ export const RedesignHero = () => {
       });
       return;
     }
-    
-    // Save to uc_prefill for HeroAIQuoteCalculator and MultiStepCalculator
+
+    const normalizeSize = (raw: string) => {
+      // Map homepage room values to MultiStepCalculator apartmentSize keys
+      if (raw === "haus") return "5+";
+      if (raw === "buero") return "office";
+      if (raw === "1" || raw === "1.5") return "1-1.5";
+      if (raw === "2" || raw === "2.5") return "2-2.5";
+      if (raw === "3" || raw === "3.5") return "3-3.5";
+      if (raw === "4" || raw === "4.5") return "4-4.5";
+      if (raw === "5") return "5+";
+      return raw;
+    };
+
+    const size = normalizeSize(rooms);
+
+    // Save to uc_prefill for /umzugsofferten wizard
     try {
       localStorage.setItem('uc_prefill', JSON.stringify({
         from: fromPostal,
         to: toPostal,
-        size: rooms,
+        size,
         services: ['umzug'],
         source: 'redesign_hero',
         timestamp: Date.now(),
       }));
-      
+
       // Also save to main form storage for MultiStepCalculator
       localStorage.setItem('umzugscheck_form_data', JSON.stringify({
-        moveType: 'private',
+        moveType: 'wohnung',
         fromLocation: fromPostal,
         toLocation: toPostal,
-        apartmentSize: rooms,
+        apartmentSize: size,
         selectedServices: ['umzug'],
         moveDate: '',
         name: '',
@@ -66,8 +80,8 @@ export const RedesignHero = () => {
     } catch (e) {
       console.error("Error saving form data:", e);
     }
-    
-    navigate(`/umzugsrechner?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}&rooms=${rooms}`);
+
+    navigate(`/umzugsofferten?from=${encodeURIComponent(fromPostal)}&to=${encodeURIComponent(toPostal)}&size=${encodeURIComponent(size)}`);
   };
 
   return (
