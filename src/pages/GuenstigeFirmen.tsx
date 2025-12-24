@@ -26,12 +26,12 @@ export default function GuenstigeFirmen() {
   const { trigger } = useHaptic();
   
   const pageTitle = region 
-    ? `Günstige Umzugsfirma in ${region} | Preise vergleichen & bis zu 40% sparen` 
-    : "Günstige Umzugsfirma Schweiz | Preise vergleichen & bis zu 40% sparen";
+    ? `Günstige Umzugsfirmen ${region} | Preise vergleichen & sparen` 
+    : "Günstige Umzugsfirmen Schweiz | Preise vergleichen & sparen";
   
   const pageDescription = region
-    ? `Finden Sie eine günstige Umzugsfirma in ${region}: Offerten vergleichen, transparente Preise sehen und bis zu 40% sparen – kostenlos & unverbindlich.`
-    : "Finden Sie eine günstige Umzugsfirma in der Schweiz: Offerten vergleichen, transparente Preise sehen und bis zu 40% sparen – kostenlos & unverbindlich.";
+    ? `Günstige Umzugsfirmen in ${region} finden: transparente Preise, geprüfte Anbieter, bis zu 40% sparen. Jetzt vergleichen und passende Offerten anfordern.`
+    : "Günstige Umzugsfirmen in der Schweiz finden: transparente Preise, geprüfte Anbieter, bis zu 40% sparen. Jetzt vergleichen und passende Offerten anfordern.";
 
   // Initialize filters from URL params
   const initializeFilters = (): FilterState => {

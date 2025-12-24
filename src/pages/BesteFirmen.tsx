@@ -26,12 +26,12 @@ export default function BesteFirmen() {
   const { trigger } = useHaptic();
   
   const pageTitle = region 
-    ? `Beste Umzugsfirma in ${region} finden | Top Umzugsfirmen vergleichen` 
-    : "Beste Umzugsfirma finden | Top Umzugsfirmen in der Schweiz vergleichen";
+    ? `Beste Umzugsfirmen ${region} 2025 | Bewertungen & Vergleich` 
+    : "Beste Umzugsfirmen Schweiz 2025 | Bewertungen & Vergleich";
   
   const pageDescription = region
-    ? `Vergleichen Sie geprüfte Umzugsfirmen in ${region}, Bewertungen & Preise. Finden Sie die beste Umzugsfirma für Ihren Umzug – schnell & kostenlos.`
-    : "Vergleichen Sie geprüfte Umzugsfirmen, Bewertungen & Preise. Finden Sie die beste Umzugsfirma für Ihren Umzug – schnell & kostenlos.";
+    ? `Finden Sie die besten Umzugsfirmen in ${region} 2025: Bewertungen, Leistungen & Preise vergleichen. Anbieter auswählen und unverbindliche Offerten erhalten.`
+    : "Finden Sie die besten Umzugsfirmen der Schweiz 2025: Bewertungen, Leistungen & Preise vergleichen. Anbieter auswählen und unverbindliche Offerten erhalten.";
 
   // Initialize filters from URL params
   const initializeFilters = (): FilterState => {
