@@ -36,7 +36,7 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
         Wohnungsgrösse
       </label>
       
-      <div className="grid grid-cols-5 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {roomOptions.map((option, index) => {
           const isSelected = value === option.value;
           const Icon = option.icon;
@@ -52,7 +52,7 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                "flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all min-h-[80px] touch-manipulation",
+                "flex flex-col items-center justify-center p-2 sm:p-3 rounded-xl border-2 transition-all min-h-[70px] sm:min-h-[80px] touch-manipulation",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-soft"
                   : "border-border bg-card hover:border-primary/40 hover:bg-muted/50"
@@ -61,17 +61,17 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
             >
               <Icon 
                 className={cn(
-                  "w-6 h-6 mb-1 transition-colors",
+                  "w-5 h-5 sm:w-6 sm:h-6 mb-1 transition-colors",
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )} 
               />
               <span className={cn(
-                "text-xs font-medium transition-colors",
+                "text-[11px] sm:text-xs font-medium transition-colors leading-tight text-center",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {option.label}
               </span>
-              <span className="text-[9px] text-muted-foreground mt-0.5">
+              <span className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5">
                 {option.sublabel}
               </span>
             </motion.button>
