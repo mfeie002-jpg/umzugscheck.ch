@@ -1,5 +1,17 @@
 @tailwind base;
 
+/* Hide Lovable badge in production */
+#lovable-badge,
+[id*="lovable"],
+.lovable-badge,
+[class*="lovable-badge"],
+a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fixed"], [style*="position:fixed"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Safe area insets for mobile devices */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .safe-area-bottom {

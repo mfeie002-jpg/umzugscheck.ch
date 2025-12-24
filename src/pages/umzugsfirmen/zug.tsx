@@ -338,8 +338,6 @@ const ZugLandingPage = () => {
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
-      <Header />
-
       <main>
         {/* 1. HERO SECTION */}
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">
@@ -1113,8 +1111,6 @@ const ZugLandingPage = () => {
           </div>
         </section>
       </main>
-
-      <SimplifiedFooter />
 
       <WhatsAppButton />
 

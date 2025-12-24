@@ -198,8 +198,6 @@ const ZuerichLandingPage = () => {
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
-      <Header />
-
       <main>
         {/* 1. HERO */}
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">
@@ -539,7 +537,6 @@ const ZuerichLandingPage = () => {
         </section>
       </main>
 
-      <SimplifiedFooter />
       <WhatsAppButton />
 
       <AnimatePresence>

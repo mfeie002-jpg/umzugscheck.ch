@@ -66,7 +66,6 @@ export default function SolothurnLandingPage() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet><title>Umzug {CANTON_NAME} – Gratis Umzugsfirma finden | Bis 40% sparen</title><meta name="description" content={`Vergleiche 20+ geprüfte Umzugsfirmen im Kanton ${CANTON_NAME} ✓ Kostenlose Offerten ✓ Bis zu 40% sparen!`} /><link rel="canonical" href={`https://umzugscheck.ch/umzugsfirmen/${CANTON_SLUG}`} /></Helmet>
-      <Header />
       <main>
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${HERO_BG})` }}><div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-primary/40" /></div>
@@ -104,7 +103,6 @@ export default function SolothurnLandingPage() {
 
         <section className="py-16 bg-gradient-to-br from-primary to-primary/80 text-white"><div className="container px-4 text-center"><h2 className="text-3xl font-bold mb-4">Bereit für Ihren Umzug in {CANTON_NAME}?</h2><p className="text-white/80 mb-8">Vergleichen Sie jetzt kostenlos 20+ geprüfte Umzugsfirmen.</p><Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6"><Link to="/umzugsofferten">Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link></Button></div></section>
       </main>
-      <SimplifiedFooter />
       {showStickyBar && (<motion.div initial={{ y: 100 }} animate={{ y: 0 }} className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t shadow-lg p-3 lg:hidden"><Button asChild size="lg" className="w-full bg-secondary font-bold"><Link to="/umzugsofferten">Kostenlos Offerten erhalten</Link></Button></motion.div>)}
     </div>
   );
