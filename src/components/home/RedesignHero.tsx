@@ -152,23 +152,30 @@ export const RedesignHero = () => {
                 <Link to="/umzugsofferten">
                   <Button 
                     size="lg"
-                    className="w-full sm:w-auto h-14 px-8 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all group"
+                    className="w-full sm:w-auto h-14 px-8 text-lg font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg hover:shadow-xl transition-all group"
                   >
                     <CheckCircle className="w-5 h-5 mr-2" />
-                    Jetzt checken lassen
+                    Kostenlos Offerten erhalten
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/umzugsrechner">
+                <Link to="/rechner/video">
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="w-full sm:w-auto h-14 px-8 text-lg font-semibold border-2 border-slate-300 hover:border-primary hover:text-primary transition-all"
+                    className="w-full sm:w-auto h-14 px-8 text-lg font-semibold border-2 border-primary/30 bg-primary/5 hover:bg-primary/10 text-primary transition-all group"
                   >
-                    Kosten berechnen
+                    <Video className="w-5 h-5 mr-2" />
+                    Video‑Offerte starten
                   </Button>
                 </Link>
               </div>
+              
+              {/* Video USP Benefit */}
+              <p className="text-sm text-muted-foreground mt-4 flex items-center gap-2 justify-center lg:justify-start">
+                <Video className="w-4 h-4 text-primary" />
+                30–60 Sek. Video statt Inventarliste – KI erkennt Volumen & matcht passende Firmen.
+              </p>
             </motion.div>
 
             {/* Right: Calculator Card */}
@@ -203,9 +210,9 @@ export const RedesignHero = () => {
                 {/* Form Fields */}
                 <div className="px-6 pb-6 space-y-4">
                   <div>
-                    <label className="text-sm font-semibold text-foreground mb-2 block">Von (PLZ oder Ort)</label>
+                    <label className="text-sm font-semibold text-foreground mb-2 block">Umzug von</label>
                     <Input 
-                      placeholder="z.B. 8001 oder Zürich"
+                      placeholder="8001 oder Zürich"
                       value={fromPostal}
                       onChange={(e) => setFromPostal(e.target.value)}
                       className="h-12 border-slate-200 focus:border-primary focus:ring-primary"
@@ -213,7 +220,7 @@ export const RedesignHero = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-foreground mb-2 block">Nach (PLZ oder Ort)</label>
+                    <label className="text-sm font-semibold text-foreground mb-2 block">Umzug nach</label>
                     <Input 
                       placeholder="z.B. 3011 oder Bern"
                       value={toPostal}

@@ -218,8 +218,6 @@ export default function AargauLandingPage() {
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
-      <Header />
-
       <main>
         {/* 1. HERO SECTION */}
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">
@@ -593,7 +591,6 @@ export default function AargauLandingPage() {
         </section>
       </main>
 
-      <SimplifiedFooter />
       <WhatsAppButton />
 
       {/* Sticky Mobile Bar */}
