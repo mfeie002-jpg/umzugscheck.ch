@@ -36,7 +36,7 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
         Wohnungsgrösse
       </label>
       
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2">
         {roomOptions.map((option, index) => {
           const isSelected = value === option.value;
           const Icon = option.icon;
