@@ -238,12 +238,10 @@ serve(async (req) => {
     );
 
     let effectiveDimension = dimension;
-    if (isFullPage) {
-      // ScreenshotMachine xfull is most reliable with wider output sizes.
-      // Keep desktop as-is, but clamp smaller viewports to at least 1024px width.
-      const safeWidth = Number.isFinite(width) && width > 0 ? width : 1024;
-      const xfullWidth = Math.max(safeWidth, 1024);
-      effectiveDimension = `${xfullWidth}xfull`;
+    if (isFullPage && !isDimensionFull) {
+      // Respect requested viewport width for full-page captures (e.g., 390xfull, 1920xfull).
+      const safeWidth = Number.isFinite(width) && width > 0 ? width : 1920;
+      effectiveDimension = `${safeWidth}xfull`;
     }
 
     console.log(`Capture strategy: ${isFullPage ? "xfull" : "viewport"}, effectiveDimension: ${effectiveDimension}`);
@@ -257,7 +255,8 @@ serve(async (req) => {
     }
 
     // Build ScreenshotMachine API URL
-    const effectiveTimeout = isFullPage ? "60000" : "20000";
+    // For full-page captures we allow longer total execution time (delay + render).
+    const effectiveTimeoutMs = isFullPage ? Math.min(120000, effectiveDelay + 60000) : 20000;
 
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
@@ -267,9 +266,19 @@ serve(async (req) => {
       cacheLimit: "0",
       delay: String(effectiveDelay),
       js: "true",
-      // Full-page renders can take significantly longer.
-      timeout: effectiveTimeout,
+      timeout: String(effectiveTimeoutMs),
     });
+
+    // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
+    // (In our app this prevents capturing the "Wird geladen..." state.)
+    const shouldScroll = Boolean(scroll) || isFullPage;
+    if (shouldScroll) {
+      params.set("scroll", "true");
+      if (isFullPage) {
+        params.set("scrollto", "bottom");
+        params.set("scrolldelay", "2000");
+      }
+    }
 
     // Add hash authentication if secret phrase is configured
     if (SECRET_PHRASE) {
@@ -280,28 +289,31 @@ serve(async (req) => {
       console.log("No secret phrase configured, using simple API key auth");
     }
 
-    params.set("device", deviceType);
-
-    // ScreenshotMachine full-length mode ('xfull') is much more reliable with zoom=100.
+    // ScreenshotMachine full-length mode ('xfull') is most reliable with zoom=100.
     const effectiveZoom = isFullPage ? "100" : deviceType === "desktop" ? "100" : "200";
     params.set("zoom", effectiveZoom);
     params.set("accept-language", "de-CH,de;q=0.9,en;q=0.8");
 
-    if (deviceType === "phone") {
-      params.set(
-        "user-agent",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
-      );
-    } else if (deviceType === "tablet") {
-      params.set(
-        "user-agent",
-        "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
-      );
-    } else {
-      params.set(
-        "user-agent",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-      );
+    // Device/User-Agent tweaks are helpful for viewport captures, but can interfere with xfull.
+    if (!isFullPage) {
+      params.set("device", deviceType);
+
+      if (deviceType === "phone") {
+        params.set(
+          "user-agent",
+          "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+        );
+      } else if (deviceType === "tablet") {
+        params.set(
+          "user-agent",
+          "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+        );
+      } else {
+        params.set(
+          "user-agent",
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        );
+      }
     }
 
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
