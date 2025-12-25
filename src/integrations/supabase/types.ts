@@ -883,6 +883,73 @@ export type Database = {
           },
         ]
       }
+      listing_bids: {
+        Row: {
+          available_date: string | null
+          bid_amount: number
+          created_at: string
+          estimated_duration_hours: number | null
+          id: string
+          includes_services: string[]
+          listing_id: string
+          message: string | null
+          provider_id: string
+          status: string
+          updated_at: string
+          viewed_at: string | null
+        }
+        Insert: {
+          available_date?: string | null
+          bid_amount: number
+          created_at?: string
+          estimated_duration_hours?: number | null
+          id?: string
+          includes_services?: string[]
+          listing_id: string
+          message?: string | null
+          provider_id: string
+          status?: string
+          updated_at?: string
+          viewed_at?: string | null
+        }
+        Update: {
+          available_date?: string | null
+          bid_amount?: number
+          created_at?: string
+          estimated_duration_hours?: number | null
+          id?: string
+          includes_services?: string[]
+          listing_id?: string
+          message?: string | null
+          provider_id?: string
+          status?: string
+          updated_at?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_bids_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "public_move_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_bids_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_bids_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ml_ranking_models: {
         Row: {
           accuracy_score: number | null
@@ -1312,6 +1379,92 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      public_move_listings: {
+        Row: {
+          apartment_size: string
+          awarded_at: string | null
+          bid_count: number | null
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string
+          current_lowest_bid: number | null
+          expires_at: string
+          from_city: string
+          from_postal: string
+          id: string
+          is_urgent: boolean | null
+          lead_id: string | null
+          move_date: string
+          response_deadline: string | null
+          services_requested: string[]
+          starting_price: number | null
+          status: string
+          to_city: string
+          to_postal: string
+          updated_at: string
+          view_count: number | null
+          visibility: string
+        }
+        Insert: {
+          apartment_size: string
+          awarded_at?: string | null
+          bid_count?: number | null
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          current_lowest_bid?: number | null
+          expires_at?: string
+          from_city: string
+          from_postal: string
+          id?: string
+          is_urgent?: boolean | null
+          lead_id?: string | null
+          move_date: string
+          response_deadline?: string | null
+          services_requested?: string[]
+          starting_price?: number | null
+          status?: string
+          to_city: string
+          to_postal: string
+          updated_at?: string
+          view_count?: number | null
+          visibility?: string
+        }
+        Update: {
+          apartment_size?: string
+          awarded_at?: string | null
+          bid_count?: number | null
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          current_lowest_bid?: number | null
+          expires_at?: string
+          from_city?: string
+          from_postal?: string
+          id?: string
+          is_urgent?: boolean | null
+          lead_id?: string | null
+          move_date?: string
+          response_deadline?: string | null
+          services_requested?: string[]
+          starting_price?: number | null
+          status?: string
+          to_city?: string
+          to_postal?: string
+          updated_at?: string
+          view_count?: number | null
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_move_listings_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
             referencedColumns: ["id"]
           },
         ]
