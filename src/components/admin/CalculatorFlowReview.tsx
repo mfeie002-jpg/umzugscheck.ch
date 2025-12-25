@@ -30,7 +30,8 @@ interface FlowStep {
   step: number;
   name: string;
   description: string;
-  screenshotBase64?: string;
+  screenshotDesktop?: string;
+  screenshotMobile?: string;
   html?: string;
   url?: string;
 }
@@ -42,6 +43,11 @@ const STEP_CONFIGS = [
   { step: 4, name: "Optionen wählen", path: "/?step=4", description: "Direkt, Ausschreibung oder beides" },
   { step: 5, name: "Kontaktdaten", path: "/?step=5", description: "Name, Email, Absenden" },
 ];
+
+const DIMENSIONS = {
+  desktop: '1920x1080',
+  mobile: '375x812',
+};
 
 export function CalculatorFlowReview() {
   const [isCapturing, setIsCapturing] = useState(false);
@@ -58,19 +64,19 @@ export function CalculatorFlowReview() {
     { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
   ];
 
-  const captureScreenshot = async (url: string): Promise<string | null> => {
+  const captureScreenshot = async (url: string, dimension: string): Promise<string | null> => {
     try {
       const { data, error } = await supabase.functions.invoke('capture-screenshot', {
         body: { 
           url, 
-          dimension: '1920xfull',
-          fullPage: true,
+          dimension,
+          fullPage: false,
           delay: 3000
         }
       });
       
       if (error) throw error;
-      return data?.data?.screenshot || data?.screenshot || null;
+      return data?.data?.screenshot || data?.screenshot || data?.image || null;
     } catch (err) {
       console.error('Screenshot capture failed:', err);
       return null;
@@ -98,40 +104,48 @@ export function CalculatorFlowReview() {
     
     const baseUrl = window.location.origin;
     const steps: FlowStep[] = [];
+    const totalOperations = STEP_CONFIGS.length * 3; // desktop + mobile + html per step
+    let completedOps = 0;
     
     for (let i = 0; i < STEP_CONFIGS.length; i++) {
       const config = STEP_CONFIGS[i];
       const fullUrl = `${baseUrl}${config.path}`;
       
-      setCaptureStatus(`Step ${config.step}: ${config.name}...`);
-      setCaptureProgress(((i + 0.3) / STEP_CONFIGS.length) * 100);
+      // Desktop screenshot
+      setCaptureStatus(`Step ${config.step}: Desktop Screenshot...`);
+      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop);
+      completedOps++;
+      setCaptureProgress((completedOps / totalOperations) * 100);
       
-      // Capture screenshot
-      const screenshot = await captureScreenshot(fullUrl);
-      
-      setCaptureProgress(((i + 0.6) / STEP_CONFIGS.length) * 100);
+      // Mobile screenshot
+      setCaptureStatus(`Step ${config.step}: Mobile Screenshot...`);
+      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile);
+      completedOps++;
+      setCaptureProgress((completedOps / totalOperations) * 100);
       
       // Capture HTML
+      setCaptureStatus(`Step ${config.step}: HTML...`);
       const html = await captureRenderedHtml(fullUrl);
+      completedOps++;
+      setCaptureProgress((completedOps / totalOperations) * 100);
       
       steps.push({
         step: config.step,
         name: config.name,
         description: config.description,
         url: fullUrl,
-        screenshotBase64: screenshot || undefined,
+        screenshotDesktop: desktopScreenshot || undefined,
+        screenshotMobile: mobileScreenshot || undefined,
         html: html || undefined,
       });
-      
-      setCaptureProgress(((i + 1) / STEP_CONFIGS.length) * 100);
     }
     
     setCapturedSteps(steps);
     setCaptureStatus("");
     setIsCapturing(false);
     
-    const successCount = steps.filter(s => s.screenshotBase64 || s.html).length;
-    toast.success(`${successCount} von ${steps.length} Steps erfasst`);
+    const successCount = steps.filter(s => s.screenshotDesktop || s.screenshotMobile || s.html).length;
+    toast.success(`${successCount} von ${steps.length} Steps erfasst (Desktop + Mobile)`);
   };
 
   const generateMockSteps = () => {
@@ -429,10 +443,16 @@ export function CalculatorFlowReview() {
         stepFolder.file('page.html', step.html);
       }
       
-      // Add screenshot
-      if (step.screenshotBase64) {
-        const base64Data = step.screenshotBase64.replace(/^data:image\/\w+;base64,/, '');
-        stepFolder.file('screenshot.png', base64Data, { base64: true });
+      // Add desktop screenshot
+      if (step.screenshotDesktop) {
+        const base64Data = step.screenshotDesktop.replace(/^data:image\/\w+;base64,/, '');
+        stepFolder.file('screenshot-desktop.png', base64Data, { base64: true });
+      }
+      
+      // Add mobile screenshot
+      if (step.screenshotMobile) {
+        const base64Data = step.screenshotMobile.replace(/^data:image\/\w+;base64,/, '');
+        stepFolder.file('screenshot-mobile.png', base64Data, { base64: true });
       }
       
       // Add step info
@@ -441,6 +461,9 @@ export function CalculatorFlowReview() {
         name: step.name,
         description: step.description,
         url: step.url,
+        hasDesktopScreenshot: !!step.screenshotDesktop,
+        hasMobileScreenshot: !!step.screenshotMobile,
+        hasHtml: !!step.html,
         capturedAt: new Date().toISOString(),
       }, null, 2));
     }
@@ -450,16 +473,25 @@ export function CalculatorFlowReview() {
     
     const blob = await zip.generateAsync({ type: 'blob' });
     saveAs(blob, `${folderName}.zip`);
-    toast.success('ZIP mit Screenshots und HTML heruntergeladen');
+    toast.success('ZIP mit Desktop + Mobile Screenshots heruntergeladen');
   };
 
   const generateReadme = () => `# Umzugsofferten Flow Review
 
 ## Übersicht
-Dieser Export enthält Screenshots und HTML aller Steps des Umzugsofferten-Flows.
+Dieser Export enthält Desktop und Mobile Screenshots sowie HTML aller Steps des Umzugsofferten-Flows.
 
 ## Inhalt
-${capturedSteps.map(s => `- Step ${s.step}: ${s.name}${s.screenshotBase64 ? ' (Screenshot ✓)' : ''}${s.html ? ' (HTML ✓)' : ''}`).join('\n')}
+${capturedSteps.map(s => `- Step ${s.step}: ${s.name}
+  - Desktop: ${s.screenshotDesktop ? '✓' : '✗'}
+  - Mobile: ${s.screenshotMobile ? '✓' : '✗'}
+  - HTML: ${s.html ? '✓' : '✗'}`).join('\n')}
+
+## Dateien pro Step
+- screenshot-desktop.png (1920x1080)
+- screenshot-mobile.png (375x812)
+- page.html
+- info.json
 
 ## Verwendung mit ChatGPT/Claude
 1. Öffne chatgpt-prompt.md
@@ -481,20 +513,21 @@ ${capturedSteps.map(step => `
 **Step ${step.step}: ${step.name}**
 - URL: ${step.url || 'N/A'}
 - Beschreibung: ${step.description}
-- Screenshot: ${step.screenshotBase64 ? '✓ Vorhanden (siehe Ordner)' : '✗ Nicht erfasst'}
-- HTML: ${step.html ? '✓ Vorhanden (siehe page.html)' : '✗ Nicht erfasst'}
+- Desktop Screenshot: ${step.screenshotDesktop ? '✓ Vorhanden (screenshot-desktop.png)' : '✗ Nicht erfasst'}
+- Mobile Screenshot: ${step.screenshotMobile ? '✓ Vorhanden (screenshot-mobile.png)' : '✗ Nicht erfasst'}
+- HTML: ${step.html ? '✓ Vorhanden (page.html)' : '✗ Nicht erfasst'}
 `).join('\n')}
 
 ### Analyse-Aufgaben:
-1. **UX-Analyse:** Bewerte die Benutzerführung und Conversion-Optimierung
-2. **Design-Feedback:** Identifiziere Verbesserungspotenziale im UI
-3. **Fehleranalyse:** Finde potenzielle Usability-Probleme
-4. **Conversion-Tipps:** Gib konkrete Empfehlungen zur Steigerung der Abschlussrate
-5. **Mobile-Optimierung:** Bewerte die mobile Nutzererfahrung
+1. **UX-Analyse Desktop:** Bewerte die Benutzerführung und Conversion-Optimierung auf Desktop
+2. **UX-Analyse Mobile:** Bewerte die mobile Nutzererfahrung und Touch-Optimierung
+3. **Design-Feedback:** Identifiziere Verbesserungspotenziale im UI (Desktop & Mobile)
+4. **Responsive Vergleich:** Vergleiche Desktop vs Mobile und identifiziere Inkonsistenzen
+5. **Conversion-Tipps:** Gib konkrete Empfehlungen zur Steigerung der Abschlussrate
 
 ### Gewünschte Ausgabe:
 - Übersichtliche Zusammenfassung
-- Priorisierte Verbesserungsvorschläge
+- Priorisierte Verbesserungsvorschläge für Desktop und Mobile
 - Konkrete Code-Snippets wo hilfreich
 
 ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
@@ -615,31 +648,54 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               {capturedSteps.map(step => (
                 <div key={step.step} className="border rounded-lg p-4 bg-muted/30">
                   <div className="flex items-start gap-4">
-                    {/* Screenshot Preview */}
-                    <div className="w-48 shrink-0">
-                      {step.screenshotBase64 ? (
-                        <img 
-                          src={step.screenshotBase64.startsWith('data:') ? step.screenshotBase64 : `data:image/png;base64,${step.screenshotBase64}`}
-                          alt={`Step ${step.step}`}
-                          className="w-full h-32 object-cover object-top rounded border"
-                        />
-                      ) : (
-                        <div className="w-full h-32 bg-muted rounded border flex items-center justify-center">
-                          <Image className="w-8 h-8 text-muted-foreground/30" />
-                        </div>
-                      )}
+                    {/* Screenshot Previews - Desktop & Mobile */}
+                    <div className="flex gap-2 shrink-0">
+                      {/* Desktop */}
+                      <div className="w-40">
+                        <p className="text-xs text-muted-foreground mb-1 text-center">Desktop</p>
+                        {step.screenshotDesktop ? (
+                          <img 
+                            src={step.screenshotDesktop.startsWith('data:') ? step.screenshotDesktop : `data:image/png;base64,${step.screenshotDesktop}`}
+                            alt={`Step ${step.step} Desktop`}
+                            className="w-full h-24 object-cover object-top rounded border"
+                          />
+                        ) : (
+                          <div className="w-full h-24 bg-muted rounded border flex items-center justify-center">
+                            <Image className="w-6 h-6 text-muted-foreground/30" />
+                          </div>
+                        )}
+                      </div>
+                      {/* Mobile */}
+                      <div className="w-16">
+                        <p className="text-xs text-muted-foreground mb-1 text-center">Mobile</p>
+                        {step.screenshotMobile ? (
+                          <img 
+                            src={step.screenshotMobile.startsWith('data:') ? step.screenshotMobile : `data:image/png;base64,${step.screenshotMobile}`}
+                            alt={`Step ${step.step} Mobile`}
+                            className="w-full h-24 object-cover object-top rounded border"
+                          />
+                        ) : (
+                          <div className="w-full h-24 bg-muted rounded border flex items-center justify-center">
+                            <Image className="w-4 h-4 text-muted-foreground/30" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                     
                     {/* Step Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
                         <Badge className="bg-primary">{step.step}</Badge>
                         <span className="font-medium">{step.name}</span>
-                        <div className="flex gap-1 ml-auto">
-                          {step.screenshotBase64 && (
+                        <div className="flex gap-1 ml-auto flex-wrap">
+                          {step.screenshotDesktop && (
                             <Badge variant="outline" className="text-green-600 border-green-300">
-                              <Image className="w-3 h-3 mr-1" />
-                              Screenshot
+                              Desktop ✓
+                            </Badge>
+                          )}
+                          {step.screenshotMobile && (
+                            <Badge variant="outline" className="text-purple-600 border-purple-300">
+                              Mobile ✓
                             </Badge>
                           )}
                           {step.html && (
