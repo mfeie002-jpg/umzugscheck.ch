@@ -222,11 +222,45 @@ export const VARIANT_C_ORIGINAL: FlowVariantConfig = {
 };
 
 // All variants
+// Variant D: Marketplace Wizard V5
+export const VARIANT_D: FlowVariantConfig = {
+  id: 'variant-d',
+  name: 'Marketplace Wizard V5',
+  description: 'Full End-to-End Marketplace mit Partner-Offerten und Booking',
+  
+  steps: ['moveType', 'location', 'services', 'companies', 'summary', 'contact'],
+  
+  showProgressBar: true,
+  progressStyle: 'bar',
+  layout: 'wizard',
+  
+  headline: 'Fixpreis-Offerten in 10 Minuten',
+  subheadline: 'Video/Inventar → Partner-Angebote → Online buchen',
+  ctaText: 'Jetzt buchen',
+  trustBadges: true,
+  
+  showPriceEstimate: true,
+  showCompanyPreview: true,
+  showVideoAIOption: true,
+  showServiceDetails: true,
+  showSavingsCalculator: true,
+  
+  companySelectionMode: 'single',
+  maxCompanySelections: 1,
+  
+  submitOptions: ['direct'],
+  defaultSubmitOption: 'direct',
+  
+  accentColor: 'green',
+  cardStyle: 'elevated',
+};
+
 export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'control': VARIANT_CONTROL,
   'variant-a': VARIANT_A,
   'variant-b': VARIANT_B,
   'variant-c': VARIANT_C,
+  'variant-d': VARIANT_D,
 };
 
 // Get variant by ID
@@ -245,6 +279,7 @@ export const URL_TO_VARIANT: Record<string, string> = {
   '/umzugsofferten-v2': 'variant-a',
   '/umzugsofferten-v3': 'variant-b',
   '/umzugsofferten-v4': 'variant-c',
+  '/umzugsofferten-v5': 'variant-d',
 };
 
 // Get variant from URL path
