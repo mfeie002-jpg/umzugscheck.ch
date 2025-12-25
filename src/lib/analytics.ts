@@ -358,6 +358,31 @@ class Analytics {
       });
     }
     
+    // Send to Hotjar
+    if (typeof window !== 'undefined' && (window as any).hj) {
+      try {
+        (window as any).hj('event', payload.event);
+        // Identify user attributes for Hotjar (if available)
+        if (payload.properties) {
+          (window as any).hj('identify', null, payload.properties);
+        }
+      } catch (e) {
+        // Silently fail
+      }
+    }
+    
+    // Send to Contentsquare
+    if (typeof window !== 'undefined' && (window as any)._uxa) {
+      try {
+        (window as any)._uxa.push(['trackDynamicVariable', { 
+          key: payload.event, 
+          value: payload.properties ? JSON.stringify(payload.properties) : 'true' 
+        }]);
+      } catch (e) {
+        // Silently fail
+      }
+    }
+    
     // Console log for development
     if (process.env.NODE_ENV === 'development') {
       console.log('[Analytics]', payload.event, payload.properties);

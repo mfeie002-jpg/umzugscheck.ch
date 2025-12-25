@@ -194,6 +194,16 @@ const Vergleich: React.FC = () => {
       (window as Window & { gtag?: (...args: unknown[]) => void }).gtag?.('event', eventName, eventData);
     }
     
+    // Hotjar event tracking
+    if (typeof window !== 'undefined' && (window as Window & { hj?: (...args: unknown[]) => void }).hj) {
+      (window as Window & { hj?: (...args: unknown[]) => void }).hj?.('event', eventName);
+    }
+    
+    // Contentsquare tracking
+    if (typeof window !== 'undefined' && (window as Window & { _uxa?: unknown[] })._uxa) {
+      (window as Window & { _uxa?: unknown[] })._uxa?.push(['trackDynamicVariable', { key: eventName, value: JSON.stringify(eventData || {}) }]);
+    }
+    
     // Console log for debugging
     if (process.env.NODE_ENV === 'development') {
       console.log(`[Funnel Event] ${eventName}`, eventData);
