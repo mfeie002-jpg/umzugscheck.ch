@@ -591,14 +591,16 @@ export function CalculatorFlowReview() {
       if (!flowFolder) continue;
 
       setCaptureStatus(`${flow.label}: Desktop Screenshot...`);
-      const fullUrl = `${baseUrl}${flow.path}`;
-      
+      // Use deterministic capture mode so the screenshot/HTML fetch never depends on cookies/localStorage
+      // (and avoids any login walls / gated previews).
+      const fullUrl = buildCaptureUrl(baseUrl, flow.path, 1);
+
       // Capture desktop screenshot
       const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop);
-      
+
       setCaptureStatus(`${flow.label}: Mobile Screenshot...`);
       const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile);
-      
+
       setCaptureStatus(`${flow.label}: HTML...`);
       const html = await captureRenderedHtml(fullUrl);
 
