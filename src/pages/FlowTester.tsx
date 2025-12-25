@@ -414,7 +414,7 @@ export default function FlowTester() {
                     onClick={() => setCurrentStepFeedback(prev => ({ ...prev, rating }))}
                     className="p-2 hover:scale-110 transition-transform"
                   >
-                    <Star className={`h-8 w-8 ${rating <= currentStepFeedback.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
+                    <Star className={`h-8 w-8 ${rating <= currentStepFeedback.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/50 stroke-current'}`} />
                   </button>
                 ))}
               </div>
@@ -432,7 +432,7 @@ export default function FlowTester() {
                   <div className="flex gap-1">
                     {[1,2,3,4,5].map(r => (
                       <button key={r} className="p-1">
-                        <Star className="h-4 w-4 text-muted hover:text-yellow-500" />
+                        <Star className="h-4 w-4 text-muted-foreground/50 stroke-current hover:text-yellow-500 hover:fill-yellow-500" />
                       </button>
                     ))}
                   </div>
