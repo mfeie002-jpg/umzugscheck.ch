@@ -351,18 +351,43 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
     }));
   };
 
-  // Get matching companies based on location
+  // Map our service IDs to company service names
+  const serviceIdToCompanyService: Record<string, string[]> = {
+    "umzug": ["Umzug", "Firmenumzug"],
+    "einpacken": ["Packservice"],
+    "auspacken": ["Packservice"],
+    "reinigung": ["Reinigung"],
+    "entsorgung": ["Entsorgung"],
+    "lagerung": ["Lagerung"],
+  };
+
+  // Get matching companies based on location AND selected services
   const getMatchingCompanies = () => {
     const region = formData.fromLocation.split(" ").pop() || "";
     let companies = getCompaniesByRegion(region);
     if (companies.length < 5) companies = DEMO_COMPANIES;
+    
+    // Filter by selected services - company must offer ALL selected services
+    const selectedServiceNames = formData.selectedServices
+      .filter(s => s !== "umzug") // umzug is always included, don't filter by it
+      .flatMap(serviceId => serviceIdToCompanyService[serviceId] || []);
+    
+    if (selectedServiceNames.length > 0) {
+      companies = companies.filter(company => 
+        selectedServiceNames.every(serviceName =>
+          company.services_offered.some(offered => 
+            offered.toLowerCase().includes(serviceName.toLowerCase())
+          )
+        )
+      );
+    }
     
     // Sort: Featured first, then by rating
     return [...companies].sort((a, b) => {
       if (a.is_featured && !b.is_featured) return -1;
       if (!a.is_featured && b.is_featured) return 1;
       return b.rating - a.rating;
-    }).slice(0, 8);
+    }).slice(0, 12); // Show more companies since we're filtering
   };
 
   const canProceed = () => {
@@ -861,7 +886,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                         )}
 
                         <div className="p-2.5">
-                          <div className="flex items-start gap-2">
+                          <div className="flex items-start gap-2 mb-2">
                             {/* Checkbox */}
                             <div
                               className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 mt-0.5 ${
@@ -903,6 +928,32 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                                 {company.price_level === "günstig" ? "💰 Günstig" : company.price_level === "premium" ? "⭐ Premium" : "Fair"}
                               </p>
                             </div>
+                          </div>
+                          
+                          {/* Services offered - show which selected services they provide */}
+                          <div className="flex flex-wrap gap-1">
+                            {company.services_offered.slice(0, 5).map((service) => {
+                              // Check if this service matches any of the user's selected services
+                              const isSelectedService = formData.selectedServices.some(selectedId => {
+                                const matchingNames = serviceIdToCompanyService[selectedId] || [];
+                                return matchingNames.some(name => 
+                                  service.toLowerCase().includes(name.toLowerCase())
+                                );
+                              });
+                              
+                              return (
+                                <span 
+                                  key={service} 
+                                  className={`text-[8px] px-1.5 py-0.5 rounded-full ${
+                                    isSelectedService 
+                                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium" 
+                                      : "bg-muted text-muted-foreground"
+                                  }`}
+                                >
+                                  {isSelectedService && "✓ "}{service}
+                                </span>
+                              );
+                            })}
                           </div>
                         </div>
                       </motion.div>
