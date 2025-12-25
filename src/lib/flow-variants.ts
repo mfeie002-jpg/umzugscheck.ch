@@ -90,36 +90,39 @@ export const VARIANT_CONTROL: FlowVariantConfig = {
   cardStyle: 'elevated',
 };
 
-// Variant A: Simplified 3-step flow (no company selection)
+// Variant A: Premium Full-Journey Experience
 export const VARIANT_A: FlowVariantConfig = {
   id: 'variant-a',
-  name: 'Simplified 3-Step',
-  description: 'Faster flow without company selection: MoveType → Location+Services → Contact',
+  name: 'Premium Full-Journey',
+  description: 'Luxury experience with package selection: Intro → Details → Package → Extras → Schedule → Contact',
   
-  steps: ['moveType', 'location', 'contact'],
+  steps: ['moveType', 'location', 'services', 'pricing', 'summary', 'contact'],
   
   showProgressBar: true,
   progressStyle: 'bar',
-  layout: 'card',
+  layout: 'wizard',
   
-  headline: 'Schnell & einfach Offerten erhalten',
-  subheadline: 'In nur 60 Sekunden – keine Registrierung nötig',
-  ctaText: 'Jetzt kostenlos Offerten erhalten',
+  headline: 'Ihr Umzug. Perfekt organisiert.',
+  subheadline: 'Von der Entscheidung bis zum Einzug – wir kümmern uns um alles.',
+  ctaText: 'Premium Offerten anfordern',
   trustBadges: true,
   
   showPriceEstimate: true,
-  showCompanyPreview: false,
-  showVideoAIOption: false,
-  showServiceDetails: false,
-  showSavingsCalculator: false,
+  showCompanyPreview: true,
+  showVideoAIOption: true,
+  showServiceDetails: true,
+  showSavingsCalculator: true,
   
-  companySelectionMode: 'none',
-  maxCompanySelections: 0,
+  companySelectionMode: 'multi',
+  maxCompanySelections: 5,
   
-  submitOptions: ['publish'],
-  defaultSubmitOption: 'publish',
+  submitOptions: ['direct', 'publish', 'both'],
+  defaultSubmitOption: 'both',
   
   cardStyle: 'elevated',
+  
+  // Custom V2 flag for premium theme
+  accentColor: 'gold',
 };
 
 // Variant B: Price-first approach
