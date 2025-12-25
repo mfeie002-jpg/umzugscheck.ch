@@ -66,17 +66,25 @@ export function CalculatorFlowReview() {
 
   const captureScreenshot = async (url: string, dimension: string): Promise<string | null> => {
     try {
+      console.log(`Capturing screenshot: ${url} with dimension: ${dimension}`);
       const { data, error } = await supabase.functions.invoke('capture-screenshot', {
         body: { 
           url, 
           dimension,
           fullPage: false,
-          delay: 3000
+          delay: 4000
         }
       });
       
-      if (error) throw error;
-      return data?.data?.screenshot || data?.screenshot || data?.image || null;
+      if (error) {
+        console.error('Screenshot error:', error);
+        throw error;
+      }
+      
+      // Handle various response formats from the edge function
+      const imageData = data?.image || data?.data?.screenshot || data?.screenshot || null;
+      console.log(`Screenshot captured: ${imageData ? 'SUCCESS' : 'FAILED'} (${imageData?.substring(0, 50)}...)`);
+      return imageData;
     } catch (err) {
       console.error('Screenshot capture failed:', err);
       return null;
