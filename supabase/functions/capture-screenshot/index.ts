@@ -312,26 +312,25 @@ serve(async (req) => {
     params.set("zoom", effectiveZoom);
     params.set("accept-language", "de-CH,de;q=0.9,en;q=0.8");
 
-    // Device/User-Agent tweaks are helpful for viewport captures, but can interfere with xfull.
-    if (!isFullPage) {
-      params.set("device", deviceType);
+    // ScreenshotMachine expects a `device` parameter even for full-length ("...xfull") screenshots.
+    // If omitted, it can silently fall back to an unexpected default viewport.
+    params.set("device", deviceType);
 
-      if (deviceType === "phone") {
-        params.set(
-          "user-agent",
-          "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
-        );
-      } else if (deviceType === "tablet") {
-        params.set(
-          "user-agent",
-          "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
-        );
-      } else {
-        params.set(
-          "user-agent",
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        );
-      }
+    if (deviceType === "phone") {
+      params.set(
+        "user-agent",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+      );
+    } else if (deviceType === "tablet") {
+      params.set(
+        "user-agent",
+        "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+      );
+    } else {
+      params.set(
+        "user-agent",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      );
     }
 
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
