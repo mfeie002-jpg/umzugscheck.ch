@@ -111,7 +111,7 @@ export function CalculatorFlowReview() {
         dimension,
         delay: 8000,
         format: "png",
-        fullPage: false,
+        fullPage: true,
         scroll: true,
         noCache: true,
       });

@@ -232,15 +232,15 @@ export function AutoFlowScreenshots() {
 
           const captureUrl = buildCaptureUrl(flow.path, stepDef.step);
 
-          try {
-            const result = await captureScreenshot({
-              url: captureUrl,
-              dimension: dim.value,
-              delay: 8000, // Give time for animations
-              format: "png",
-              fullPage: false,
-              noCache: true,
-            });
+            try {
+              const result = await captureScreenshot({
+                url: captureUrl,
+                dimension: dim.value,
+                delay: 8000, // Give time for animations
+                format: "png",
+                fullPage: true,
+                noCache: true,
+              });
 
             const captureResult: CaptureResult = {
               flowId: flow.id,
