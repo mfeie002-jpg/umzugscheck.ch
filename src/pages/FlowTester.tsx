@@ -36,6 +36,20 @@ interface FlowFeedback {
   abandoned: boolean;
   abandonedAtStep?: string;
   totalTime: number;
+  detailedAnswers: Record<string, number | string>; // For 10 specific questions
+}
+
+interface FinalSurvey {
+  bestFlow: string;
+  worstFlow: string;
+  missingFeatures: string;
+  priceClarity: number;
+  trustLevel: number;
+  mobileExperience: number;
+  wouldUseAgain: boolean;
+  recommendToFriend: boolean;
+  additionalComments: string;
+  preferredFlowFeatures: string[];
 }
 
 interface TesterInfo {
@@ -136,6 +150,27 @@ const RATING_CRITERIA = [
   { id: 'mobile', label: 'Mobile UX', description: 'Wie gut funktioniert es mobil?' }
 ];
 
+// 10 specific questions per flow
+const FLOW_QUESTIONS = [
+  { id: 'q1', question: 'Wie einfach war der Einstieg in den Flow?', type: 'rating' as const },
+  { id: 'q2', question: 'War der Preisbereich sofort ersichtlich?', type: 'rating' as const },
+  { id: 'q3', question: 'Wie verständlich waren die Eingabefelder?', type: 'rating' as const },
+  { id: 'q4', question: 'Wie gut hat die Firmenauswahl funktioniert?', type: 'rating' as const },
+  { id: 'q5', question: 'War das Kontaktformular angenehm auszufüllen?', type: 'rating' as const },
+  { id: 'q6', question: 'Wie professionell wirkte der gesamte Ablauf?', type: 'rating' as const },
+  { id: 'q7', question: 'Gab es verwirrende oder überflüssige Schritte?', type: 'yesno' as const },
+  { id: 'q8', question: 'Haben Sie das Gefühl, dass Ihre Daten sicher sind?', type: 'rating' as const },
+  { id: 'q9', question: 'Würden Sie den Flow auf dem Handy nutzen?', type: 'yesno' as const },
+  { id: 'q10', question: 'Was hat Ihnen am meisten gefallen/gefehlt?', type: 'text' as const },
+];
+
+// Final survey questions
+const FINAL_QUESTIONS = [
+  { id: 'priceClarity', question: 'Wie klar war die Preiskommunikation insgesamt?', type: 'rating' as const },
+  { id: 'trustLevel', question: 'Wie hoch war Ihr Vertrauensgefühl?', type: 'rating' as const },
+  { id: 'mobileExperience', question: 'Wie war die Mobile-Erfahrung?', type: 'rating' as const },
+];
+
 export default function FlowTester() {
   const [testerInfo, setTesterInfo] = useState<TesterInfo>({ name: '', email: '', role: 'user' });
   const [isRegistered, setIsRegistered] = useState(false);
@@ -143,10 +178,24 @@ export default function FlowTester() {
   const [feedbacks, setFeedbacks] = useState<Record<string, FlowFeedback>>({});
   const [testStartTime, setTestStartTime] = useState<Date | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [showFinalSurvey, setShowFinalSurvey] = useState(false);
   const [currentStepFeedback, setCurrentStepFeedback] = useState<{
     rating: number;
     comment: string;
-  }>({ rating: 0, comment: '' });
+    detailedAnswers: Record<string, number | string>;
+  }>({ rating: 0, comment: '', detailedAnswers: {} });
+  const [finalSurvey, setFinalSurvey] = useState<FinalSurvey>({
+    bestFlow: '',
+    worstFlow: '',
+    missingFeatures: '',
+    priceClarity: 0,
+    trustLevel: 0,
+    mobileExperience: 0,
+    wouldUseAgain: false,
+    recommendToFriend: false,
+    additionalComments: '',
+    preferredFlowFeatures: [],
+  });
 
   // Initialize feedbacks
   useEffect(() => {
@@ -159,7 +208,8 @@ export default function FlowTester() {
         wouldRecommend: false,
         completedAt: null,
         abandoned: false,
-        totalTime: 0
+        totalTime: 0,
+        detailedAnswers: {},
       };
     });
     setFeedbacks(initialFeedbacks);
@@ -193,6 +243,7 @@ export default function FlowTester() {
         wouldRecommend: recommend,
         completedAt: endTime,
         totalTime,
+        detailedAnswers: { ...currentStepFeedback.detailedAnswers },
         stepRatings: {
           ...prev[flowId].stepRatings,
           overall: { rating, comment: comments, timeSpent: totalTime }
@@ -202,6 +253,7 @@ export default function FlowTester() {
     
     setCurrentFlowIndex(null);
     setTestStartTime(null);
+    setCurrentStepFeedback({ rating: 0, comment: '', detailedAnswers: {} });
     toast.success(`Feedback für ${FLOWS.find(f => f.id === flowId)?.name} gespeichert!`);
   };
 
@@ -392,9 +444,16 @@ export default function FlowTester() {
     if (currentFlowIndex === null) return null;
     const flow = FLOWS[currentFlowIndex];
     
+    const setDetailedAnswer = (questionId: string, value: number | string) => {
+      setCurrentStepFeedback(prev => ({
+        ...prev,
+        detailedAnswers: { ...prev.detailedAnswers, [questionId]: value }
+      }));
+    };
+    
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-lg ${flow.color} flex items-center justify-center text-white font-bold`}>
@@ -402,11 +461,12 @@ export default function FlowTester() {
               </div>
               Feedback für {flow.name}
             </CardTitle>
+            <p className="text-sm text-muted-foreground">Beantworten Sie bitte alle 10 Fragen zu diesem Flow</p>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Overall Rating */}
             <div className="space-y-3">
-              <Label>Gesamtbewertung</Label>
+              <Label className="text-base font-semibold">Gesamtbewertung</Label>
               <div className="flex gap-2">
                 {[1,2,3,4,5].map(rating => (
                   <button
@@ -420,57 +480,74 @@ export default function FlowTester() {
               </div>
             </div>
 
-            {/* Criteria Ratings */}
-            <div className="space-y-4">
-              <Label>Detailbewertung</Label>
-              {RATING_CRITERIA.map(criterion => (
-                <div key={criterion.id} className="flex items-center justify-between">
-                  <div>
-                    <div className="font-medium text-sm">{criterion.label}</div>
-                    <div className="text-xs text-muted-foreground">{criterion.description}</div>
+            {/* 10 Specific Questions */}
+            <div className="space-y-4 border-t pt-4">
+              <Label className="text-base font-semibold">10 spezifische Fragen</Label>
+              {FLOW_QUESTIONS.map((q, index) => (
+                <div key={q.id} className="space-y-2 p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <span className="text-xs font-bold bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center shrink-0">
+                      {index + 1}
+                    </span>
+                    <span className="text-sm font-medium">{q.question}</span>
                   </div>
-                  <div className="flex gap-1">
-                    {[1,2,3,4,5].map(r => (
-                      <button key={r} className="p-1">
-                        <Star className="h-4 w-4 text-muted-foreground/50 stroke-current hover:text-yellow-500 hover:fill-yellow-500" />
-                      </button>
-                    ))}
-                  </div>
+                  
+                  {q.type === 'rating' && (
+                    <div className="flex gap-1 ml-7">
+                      {[1,2,3,4,5].map(r => (
+                        <button 
+                          key={r} 
+                          onClick={() => setDetailedAnswer(q.id, r)}
+                          className="p-1 hover:scale-110 transition-transform"
+                        >
+                          <Star className={`h-5 w-5 ${(currentStepFeedback.detailedAnswers[q.id] as number) >= r ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/40 stroke-current'}`} />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {q.type === 'yesno' && (
+                    <div className="flex gap-2 ml-7">
+                      <Button 
+                        size="sm" 
+                        variant={currentStepFeedback.detailedAnswers[q.id] === 'yes' ? 'default' : 'outline'}
+                        onClick={() => setDetailedAnswer(q.id, 'yes')}
+                      >
+                        <ThumbsUp className="mr-1 h-3 w-3" />
+                        Ja
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant={currentStepFeedback.detailedAnswers[q.id] === 'no' ? 'default' : 'outline'}
+                        onClick={() => setDetailedAnswer(q.id, 'no')}
+                      >
+                        <ThumbsDown className="mr-1 h-3 w-3" />
+                        Nein
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {q.type === 'text' && (
+                    <Textarea 
+                      className="ml-7 text-sm"
+                      placeholder="Ihre Antwort..."
+                      rows={2}
+                      value={(currentStepFeedback.detailedAnswers[q.id] as string) || ''}
+                      onChange={(e) => setDetailedAnswer(q.id, e.target.value)}
+                    />
+                  )}
                 </div>
               ))}
             </div>
 
-            {/* Would Recommend */}
-            <div className="space-y-3">
-              <Label>Würden Sie diesen Flow empfehlen?</Label>
-              <div className="flex gap-4">
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => submitFlowFeedback(flow.id, currentStepFeedback.rating, true, currentStepFeedback.comment)}
-                >
-                  <ThumbsUp className="mr-2 h-4 w-4" />
-                  Ja
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => submitFlowFeedback(flow.id, currentStepFeedback.rating, false, currentStepFeedback.comment)}
-                >
-                  <ThumbsDown className="mr-2 h-4 w-4" />
-                  Nein
-                </Button>
-              </div>
-            </div>
-
             {/* Comments */}
-            <div className="space-y-2">
-              <Label>Kommentare & Verbesserungsvorschläge</Label>
+            <div className="space-y-2 border-t pt-4">
+              <Label>Zusätzliche Kommentare</Label>
               <Textarea 
-                placeholder="Was hat Ihnen gefallen? Was könnte besser sein?"
+                placeholder="Weitere Anmerkungen zu diesem Flow..."
                 value={currentStepFeedback.comment}
                 onChange={(e) => setCurrentStepFeedback(prev => ({ ...prev, comment: e.target.value }))}
-                rows={4}
+                rows={3}
               />
             </div>
           </CardContent>
@@ -484,10 +561,173 @@ export default function FlowTester() {
             <Button 
               className="flex-1"
               onClick={() => submitFlowFeedback(flow.id, currentStepFeedback.rating, true, currentStepFeedback.comment)}
-              disabled={currentStepFeedback.rating === 0}
+              disabled={currentStepFeedback.rating === 0 || Object.keys(currentStepFeedback.detailedAnswers).length < 8}
             >
               <Send className="mr-2 h-4 w-4" />
-              Feedback absenden
+              Feedback absenden ({Object.keys(currentStepFeedback.detailedAnswers).length}/10 beantwortet)
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderFinalSurvey = () => {
+    const completedFlows = FLOWS.filter(f => feedbacks[f.id]?.completedAt);
+    
+    return (
+      <div className="space-y-8 max-w-2xl mx-auto">
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <Award className="h-10 w-10 text-primary" />
+          </div>
+          <h2 className="text-3xl font-bold">Abschlussbefragung</h2>
+          <p className="text-muted-foreground">
+            Sie haben {completedFlows.length} Flows getestet. Bitte beantworten Sie diese finalen Fragen.
+          </p>
+        </div>
+
+        <Card>
+          <CardContent className="p-6 space-y-6">
+            {/* Best Flow */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Welcher Flow war der beste?</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {completedFlows.map(flow => (
+                  <button
+                    key={flow.id}
+                    onClick={() => setFinalSurvey(prev => ({ ...prev, bestFlow: flow.id }))}
+                    className={`p-3 rounded-lg border-2 transition-all ${finalSurvey.bestFlow === flow.id ? 'border-green-500 bg-green-50' : 'border-muted hover:border-primary'}`}
+                  >
+                    <div className={`w-8 h-8 rounded ${flow.color} flex items-center justify-center text-white font-bold text-sm mx-auto mb-1`}>
+                      {flow.version}
+                    </div>
+                    <div className="text-xs font-medium truncate">{flow.name}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Worst Flow */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Welcher Flow war der schlechteste?</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {completedFlows.map(flow => (
+                  <button
+                    key={flow.id}
+                    onClick={() => setFinalSurvey(prev => ({ ...prev, worstFlow: flow.id }))}
+                    className={`p-3 rounded-lg border-2 transition-all ${finalSurvey.worstFlow === flow.id ? 'border-red-500 bg-red-50' : 'border-muted hover:border-primary'}`}
+                  >
+                    <div className={`w-8 h-8 rounded ${flow.color} flex items-center justify-center text-white font-bold text-sm mx-auto mb-1`}>
+                      {flow.version}
+                    </div>
+                    <div className="text-xs font-medium truncate">{flow.name}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Rating Questions */}
+            {FINAL_QUESTIONS.map(q => (
+              <div key={q.id} className="space-y-3">
+                <Label className="text-base font-semibold">{q.question}</Label>
+                <div className="flex gap-2">
+                  {[1,2,3,4,5].map(r => (
+                    <button
+                      key={r}
+                      onClick={() => setFinalSurvey(prev => ({ ...prev, [q.id]: r }))}
+                      className="p-2 hover:scale-110 transition-transform"
+                    >
+                      <Star className={`h-7 w-7 ${(finalSurvey[q.id as keyof FinalSurvey] as number) >= r ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/40 stroke-current'}`} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Missing Features */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Was hat Ihnen insgesamt gefehlt?</Label>
+              <Textarea
+                placeholder="z.B. bessere Preisanzeige, mehr Firmeninfos, schnellerer Ablauf..."
+                value={finalSurvey.missingFeatures}
+                onChange={(e) => setFinalSurvey(prev => ({ ...prev, missingFeatures: e.target.value }))}
+                rows={3}
+              />
+            </div>
+
+            {/* Would use again */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Würden Sie Umzugscheck.ch wieder nutzen?</Label>
+              <div className="flex gap-4">
+                <Button 
+                  variant={finalSurvey.wouldUseAgain ? 'default' : 'outline'}
+                  onClick={() => setFinalSurvey(prev => ({ ...prev, wouldUseAgain: true }))}
+                  className="flex-1"
+                >
+                  <ThumbsUp className="mr-2 h-4 w-4" />
+                  Ja, definitiv
+                </Button>
+                <Button 
+                  variant={finalSurvey.wouldUseAgain === false ? 'destructive' : 'outline'}
+                  onClick={() => setFinalSurvey(prev => ({ ...prev, wouldUseAgain: false }))}
+                  className="flex-1"
+                >
+                  <ThumbsDown className="mr-2 h-4 w-4" />
+                  Eher nicht
+                </Button>
+              </div>
+            </div>
+
+            {/* Recommend to friend */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Würden Sie uns Freunden empfehlen?</Label>
+              <div className="flex gap-4">
+                <Button 
+                  variant={finalSurvey.recommendToFriend ? 'default' : 'outline'}
+                  onClick={() => setFinalSurvey(prev => ({ ...prev, recommendToFriend: true }))}
+                  className="flex-1"
+                >
+                  <ThumbsUp className="mr-2 h-4 w-4" />
+                  Ja
+                </Button>
+                <Button 
+                  variant={finalSurvey.recommendToFriend === false ? 'destructive' : 'outline'}
+                  onClick={() => setFinalSurvey(prev => ({ ...prev, recommendToFriend: false }))}
+                  className="flex-1"
+                >
+                  <ThumbsDown className="mr-2 h-4 w-4" />
+                  Nein
+                </Button>
+              </div>
+            </div>
+
+            {/* Additional Comments */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Abschliessende Bemerkungen</Label>
+              <Textarea
+                placeholder="Haben Sie noch weitere Anmerkungen oder Verbesserungsvorschläge?"
+                value={finalSurvey.additionalComments}
+                onChange={(e) => setFinalSurvey(prev => ({ ...prev, additionalComments: e.target.value }))}
+                rows={4}
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowFinalSurvey(false)}>
+              Zurück
+            </Button>
+            <Button 
+              className="flex-1"
+              onClick={() => {
+                setShowFinalSurvey(false);
+                setShowResults(true);
+                toast.success('Vielen Dank für Ihre ausführliche Bewertung!');
+              }}
+              disabled={!finalSurvey.bestFlow || finalSurvey.priceClarity === 0}
+            >
+              <CheckCircle2 className="mr-2 h-4 w-4" />
+              Abschlussbefragung absenden
             </Button>
           </CardFooter>
         </Card>
@@ -602,10 +842,10 @@ export default function FlowTester() {
                   <span className="font-medium text-foreground">{getCompletedCount()}</span> / {FLOWS.length} getestet
                 </div>
                 <Progress value={(getCompletedCount() / FLOWS.length) * 100} className="w-32 h-2" />
-                {getCompletedCount() >= 3 && (
-                  <Button variant="outline" size="sm" onClick={() => setShowResults(true)}>
-                    <Trophy className="mr-2 h-4 w-4" />
-                    Ergebnisse
+                {getCompletedCount() >= 3 && !showFinalSurvey && !showResults && (
+                  <Button variant="outline" size="sm" onClick={() => setShowFinalSurvey(true)}>
+                    <Award className="mr-2 h-4 w-4" />
+                    Abschluss
                   </Button>
                 )}
               </div>
@@ -617,6 +857,8 @@ export default function FlowTester() {
         <main className="container mx-auto px-4 py-8">
           {!isRegistered ? (
             renderRegistration()
+          ) : showFinalSurvey ? (
+            renderFinalSurvey()
           ) : showResults ? (
             renderResults()
           ) : (
@@ -629,11 +871,11 @@ export default function FlowTester() {
                       <Target className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg mb-2">So funktioniert's</h3>
+                      <h3 className="font-bold text-lg mb-2">So funktioniert es</h3>
                       <ol className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex items-center gap-2">
                           <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold">1</span>
-                          Klicken Sie auf "Testen" um einen Flow in einem neuen Tab zu öffnen
+                          Klicken Sie auf Testen um einen Flow in einem neuen Tab zu öffnen
                         </li>
                         <li className="flex items-center gap-2">
                           <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold">2</span>
@@ -641,11 +883,11 @@ export default function FlowTester() {
                         </li>
                         <li className="flex items-center gap-2">
                           <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold">3</span>
-                          Kommen Sie zurück und geben Sie Ihr Feedback
+                          Kommen Sie zurück und beantworten Sie 10 spezifische Fragen
                         </li>
                         <li className="flex items-center gap-2">
                           <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold">4</span>
-                          Nach 3+ Tests sehen Sie Ihre Ergebnisse
+                          Nach 3+ Tests folgt die Abschlussbefragung
                         </li>
                       </ol>
                     </div>
@@ -665,9 +907,9 @@ export default function FlowTester() {
                   Neuer Test starten
                 </Button>
                 {getCompletedCount() >= 3 && (
-                  <Button onClick={() => setShowResults(true)}>
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    Ergebnisse anzeigen
+                  <Button onClick={() => setShowFinalSurvey(true)}>
+                    <Award className="mr-2 h-4 w-4" />
+                    Abschlussbefragung starten
                   </Button>
                 )}
               </div>
