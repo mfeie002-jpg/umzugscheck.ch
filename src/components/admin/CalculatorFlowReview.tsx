@@ -56,8 +56,9 @@ const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number) => {
 };
 
 const DIMENSIONS = {
-  desktop: '1920x1080',
-  mobile: '375x812',
+  desktop: "1920x1080",
+  // iPhone 12/13/14 viewport (good default for mobile capture)
+  mobile: "390x844",
 };
 
 export function CalculatorFlowReview() {
@@ -68,8 +69,10 @@ export function CalculatorFlowReview() {
   const [customPrompt, setCustomPrompt] = useState("");
   const [captureProgress, setCaptureProgress] = useState(0);
   const [captureStatus, setCaptureStatus] = useState("");
-  // Use sandbox URL by default (publicly accessible, always up-to-date)
-  const [baseUrlOverride, setBaseUrlOverride] = useState("https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com");
+  // Default: current origin (prevents capturing from an outdated preview URL)
+  const [baseUrlOverride, setBaseUrlOverride] = useState(() =>
+    typeof window !== "undefined" ? window.location.origin : ""
+  );
 
   const calculatorOptions = [
     { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
@@ -106,24 +109,34 @@ export function CalculatorFlowReview() {
         `Screenshot captured: ${result.success ? "SUCCESS" : "FAILED"} (${result.image?.substring(0, 50)}...)`
       );
 
-      if (!result.success) return null;
+      if (!result.success) {
+        toast.error(`Screenshot fehlgeschlagen (${dimension})${result.error ? `: ${result.error}` : ""}`);
+        return null;
+      }
+
       return result.image || null;
     } catch (err) {
       console.error("Screenshot capture failed:", err);
+      toast.error(
+        `Screenshot fehlgeschlagen (${dimension})${err instanceof Error ? `: ${err.message}` : ""}`
+      );
       return null;
     }
   };
 
   const captureRenderedHtml = async (url: string): Promise<string | null> => {
     try {
-      const { data, error } = await supabase.functions.invoke('capture-rendered-html', {
-        body: { url, waitFor: 5000, formats: ['html'] }
+      const { data, error } = await supabase.functions.invoke("capture-rendered-html", {
+        body: { url, waitFor: 5000, formats: ["html"] },
       });
-      
+
       if (error) throw error;
       return data?.html || null;
     } catch (err) {
-      console.error('HTML capture failed:', err);
+      console.error("HTML capture failed:", err);
+      toast.error(
+        `HTML Capture fehlgeschlagen${err instanceof Error ? `: ${err.message}` : ""}`
+      );
       return null;
     }
   };
@@ -508,7 +521,7 @@ export function CalculatorFlowReview() {
     folder.file('chatgpt-prompt.md', generatePromptTemplate());
     
     const blob = await zip.generateAsync({ type: 'blob' });
-    saveAs(blob, `${folderName}.zip`);
+    downloadBlob(blob, `${folderName}.zip`);
     toast.success('ZIP mit Desktop + Mobile Screenshots heruntergeladen');
   };
 
@@ -646,7 +659,7 @@ export function CalculatorFlowReview() {
     setCaptureProgress(95);
     setCaptureStatus("ZIP wird erstellt...");
     const blob = await zip.generateAsync({ type: 'blob' });
-    saveAs(blob, `all-flows-export-${exportDate}.zip`);
+    downloadBlob(blob, `all-flows-export-${exportDate}.zip`);
 
     setCaptureProgress(100);
     setCaptureStatus("");
@@ -863,9 +876,26 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
     return new Blob([bytes], { type: mime });
   };
 
-  const downloadBlob = (blob: Blob, filename: string) => {
+  const isInIFrame = () => {
     try {
-      const url = URL.createObjectURL(blob);
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  };
+
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+
+    // In Lovable preview (iframe), downloads are often blocked. Opening in a new tab is reliable.
+    if (isInIFrame()) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      toast.message("Datei in neuem Tab geöffnet (Download im Preview teils blockiert)");
+      window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
+      return;
+    }
+
+    try {
       const a = document.createElement("a");
       a.href = url;
       a.download = filename;
@@ -875,8 +905,11 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
       a.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 2000);
     } catch (err) {
-      // Fallback
-      saveAs(blob, filename);
+      try {
+        saveAs(blob, filename);
+      } finally {
+        window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+      }
     }
   };
 
