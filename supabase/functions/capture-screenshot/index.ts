@@ -218,9 +218,25 @@ serve(async (req) => {
     // ScreenshotMachine delay is in milliseconds; allow longer waits for SPA rendering.
     // Previous implementation incorrectly limited delay to 10s, causing screenshots of loading states.
     const delayMsRaw = typeof delay === "number" ? delay : Number(delay);
-    const defaultDelay = isFullPage ? 15000 : 6000;
-    const minDelay = isFullPage ? 15000 : 0;
+
+    const isCaptureMode = (() => {
+      try {
+        const u = new URL(url);
+        return u.searchParams.get("uc_capture") === "1" || u.searchParams.has("uc_step");
+      } catch {
+        return String(url).includes("uc_capture=1") || String(url).includes("uc_step=");
+      }
+    })();
+
+    // In capture-mode we intentionally wait longer because the funnel pre-fills data and loads async content.
+    const defaultDelay = isFullPage
+      ? (isCaptureMode ? 30000 : 15000)
+      : 6000;
+    const minDelay = isFullPage
+      ? (isCaptureMode ? 25000 : 15000)
+      : 0;
     const maxDelay = isFullPage ? 60000 : 20000;
+
     const delayMsClamped = Number.isFinite(delayMsRaw)
       ? Math.max(minDelay, Math.min(maxDelay, delayMsRaw))
       : defaultDelay;
@@ -270,13 +286,13 @@ serve(async (req) => {
     });
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
-    // IMPORTANT: Do NOT force scroll for full-page captures.
+    // IMPORTANT: Do NOT force scroll-to-bottom for full-page captures.
     // Some engines end up capturing the *bottom* viewport if xfull isn't honored.
-    const shouldScroll = Boolean(scroll);
+    const shouldScroll = (typeof isCaptureMode === "boolean" && isCaptureMode) || Boolean(scroll);
     if (shouldScroll) {
       params.set("scroll", "true");
-      params.set("scrolldelay", "2000");
-      console.log("Scroll enabled (scroll=true)");
+      params.set("scrolldelay", "2500");
+      console.log(isCaptureMode ? "Scroll enabled (capture-mode preload)" : "Scroll enabled (scroll=true)");
     }
 
     // Add hash authentication if secret phrase is configured

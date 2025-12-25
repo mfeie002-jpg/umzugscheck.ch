@@ -145,7 +145,12 @@ const DELAY_OPTIONS = [
   { value: "4000", label: "4 Sekunden" },
   { value: "6000", label: "6 Sekunden (Standard)" },
   { value: "8000", label: "8 Sekunden" },
-  { value: "10000", label: "10 Sekunden (max)" },
+  { value: "10000", label: "10 Sekunden" },
+  { value: "15000", label: "15 Sekunden" },
+  { value: "20000", label: "20 Sekunden" },
+  { value: "30000", label: "30 Sekunden (für Funnels)" },
+  { value: "45000", label: "45 Sekunden" },
+  { value: "60000", label: "60 Sekunden (max)" },
 ];
 
 const FORMAT_OPTIONS = [
