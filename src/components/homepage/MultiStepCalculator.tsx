@@ -284,10 +284,18 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
     }
   }, [location.search]);
 
-  // Auto-advance from step 2 -> step 3 if all required fields are already present
+  // Auto-advance from step 2 -> step 3 ONLY when coming from URL prefill
+  // Do NOT auto-advance when user is manually filling the form
   useEffect(() => {
     if (didAutoAdvance) return;
     if (currentStep !== 2) return;
+
+    // Only auto-advance if we have prefill data from URL/localStorage
+    // This prevents jumping away when user is still selecting services
+    const params = new URLSearchParams(location.search);
+    const hasUrlPrefill = params.get("from") || params.get("to") || params.get("size");
+    
+    if (!hasUrlPrefill) return; // Don't auto-advance for manual entry
 
     const ready =
       formData.fromLocation.trim() !== "" &&
@@ -299,7 +307,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
       setDidAutoAdvance(true);
       setCurrentStep(3);
     }
-  }, [currentStep, didAutoAdvance, formData]);
+  }, [currentStep, didAutoAdvance, formData, location.search]);
 
   // A/B Test for submit button
   const { variant: submitVariant, trackConversion: trackSubmit } = useABTest('calculator_submit');
@@ -555,7 +563,13 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
 
                 {/* Services with Expand */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Was brauchen Sie?</label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium">Was brauchen Sie?</label>
+                    <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
+                      <Plus className="w-2.5 h-2.5" />
+                      Klick auf + für Details
+                    </span>
+                  </div>
                   <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
                     {services.map((service) => {
                       const isSelected = formData.selectedServices.includes(service.id);
