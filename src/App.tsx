@@ -212,6 +212,7 @@ const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 
 // Other pages
 const Umzugsofferten = lazy(() => import("./pages/Umzugsofferten"));
+const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
 const ServicePlaceholder = lazy(() => import("./pages/ServicePlaceholder"));
@@ -489,6 +490,7 @@ const App = () => (
                             <Route path="/anbieter/preise" element={<ProviderPricing />} />
                             <Route path="/anbieter/portal" element={<ProviderPortal />} />
                             <Route path="/umzugsofferten" element={<Umzugsofferten />} />
+                            <Route path="/umzugsofferten/bestaetigung" element={<UmzugsoffertenBestaetigung />} />
                             <Route path="/umzugsofferten/:region" element={<RegionalOfferten />} />
                             <Route path="/preise" element={<Pricing />} />
                             <Route path="/offerte" element={<OffertenPage />} />

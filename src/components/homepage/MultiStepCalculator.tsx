@@ -21,6 +21,7 @@ import { getCantonFromZip } from "@/lib/zip-to-canton";
 import { getCantonConfig } from "@/lib/cantonConfigMap";
 import { CompanyComparisonTable } from "./CompanyComparisonTable";
 import { PackageSavingsCard } from "./PackageSavingsCard";
+import { SubmitOptionsCard } from "./SubmitOptionsCard";
 
 // Storage key for form persistence
 const FORM_STORAGE_KEY = "umzugscheck_form_data";
@@ -174,6 +175,7 @@ interface FormData {
   useVideoAI: boolean;
   privacyAccepted: boolean;
   selectedCompanies: string[];
+  submitOption: "direct" | "publish" | "both";
 }
 
 export const MultiStepCalculator = memo(function MultiStepCalculator() {
@@ -203,6 +205,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
           useVideoAI: parsed.useVideoAI || false,
           privacyAccepted: false, // Always reset privacy for security
           selectedCompanies: [],
+          submitOption: (parsed.submitOption as "direct" | "publish" | "both") || "both",
         };
       }
     } catch (e) {
@@ -221,6 +224,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
       useVideoAI: false,
       privacyAccepted: false,
       selectedCompanies: [],
+      submitOption: "both" as const,
     };
   });
 
@@ -470,6 +474,8 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
   };
 
   const handleSubmit = () => {
+    const priceEstimate = getPriceEstimate(formData.apartmentSize, formData.selectedServices);
+    
     const params = new URLSearchParams({
       type: formData.moveType,
       from: formData.fromLocation,
@@ -479,14 +485,21 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
       companies: formData.selectedCompanies.join(","),
       name: formData.name,
       email: formData.email,
+      submitOption: formData.submitOption,
+      priceMin: priceEstimate.min.toString(),
+      priceMax: priceEstimate.max.toString(),
       ...(formData.phone && { phone: formData.phone }),
       ...(formData.moveDate && { date: formData.moveDate }),
       ...(formData.useVideoAI && { videoAI: "true" }),
     });
+    
     trackSubmit('form_submit');
+    
     // Clear storage after successful submit
     localStorage.removeItem(FORM_STORAGE_KEY);
-    navigate(`/umzugsofferten?${params.toString()}`);
+    
+    // Navigate with submitOption info - the receiving page will handle creating listings
+    navigate(`/umzugsofferten/bestaetigung?${params.toString()}`);
   };
 
   const stepVariants = {
@@ -894,15 +907,20 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               transition={{ duration: 0.2 }}
               className="space-y-4"
             >
-              <div className="text-center mb-4">
+              <div className="text-center mb-2">
                 <h3 className="text-lg font-bold">Fast geschafft!</h3>
                 <p className="text-sm text-muted-foreground">
-                  Wohin sollen die {formData.selectedCompanies.length} Offerten?
-                </p>
-                <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">
-                  → Offerten per E-Mail in 24–48h
+                  Wie möchten Sie Offerten erhalten?
                 </p>
               </div>
+
+              {/* Submit Options - Direct vs Publish vs Both */}
+              <SubmitOptionsCard
+                value={formData.submitOption}
+                onChange={(v) => updateFormData("submitOption", v)}
+                selectedCompaniesCount={formData.selectedCompanies.length}
+                estimatedPrice={getPriceEstimate(formData.apartmentSize, formData.selectedServices)}
+              />
 
               <div className="space-y-3">
                 <ValidatedInput
@@ -935,46 +953,6 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   inputMode="tel"
                   showSuccessIcon={false}
                 />
-
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    Datum (optional)
-                  </label>
-                  <Input
-                    type="date"
-                    value={formData.moveDate}
-                    onChange={(e) => updateFormData("moveDate", e.target.value)}
-                    className="h-11 rounded-xl"
-                  />
-                </div>
-
-                {/* KI Video Option */}
-                <div
-                  className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                    formData.useVideoAI
-                      ? "border-primary bg-primary/10"
-                      : "border-primary/30 bg-primary/5 hover:border-primary/50"
-                  }`}
-                  onClick={() => updateFormData("useVideoAI", !formData.useVideoAI)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                      formData.useVideoAI ? "bg-primary text-primary-foreground" : "bg-primary/20"
-                    }`}>
-                      <Camera className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-bold">KI Video-Analyse</p>
-                      <p className="text-[10px] text-muted-foreground">Exaktere Preise</p>
-                    </div>
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                      formData.useVideoAI ? "bg-primary border-primary" : "border-border"
-                    }`}>
-                      {formData.useVideoAI && <CheckCircle className="w-2.5 h-2.5 text-primary-foreground" />}
-                    </div>
-                  </div>
-                </div>
 
                 {/* Privacy */}
                 <div className="flex items-start gap-2.5">
