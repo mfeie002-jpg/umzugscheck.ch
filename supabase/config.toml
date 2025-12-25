@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.ai-extract-project-info]
 verify_jwt = false
+
+[functions.get-source-files]
+verify_jwt = false

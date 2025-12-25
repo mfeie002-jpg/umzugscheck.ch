@@ -498,7 +498,25 @@ export function CalculatorFlowReview() {
     toast.success('ZIP mit Desktop + Mobile Screenshots heruntergeladen');
   };
 
-  // Export ALL flow variants at once
+  // Fetch source code from edge function
+  const fetchSourceFiles = async (): Promise<Record<string, Record<string, string>> | null> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-source-files', {
+        body: { 
+          flowIds: flowVariants.map(f => f.value),
+          includeShared: true 
+        }
+      });
+      
+      if (error) throw error;
+      return data?.files || null;
+    } catch (err) {
+      console.error('Failed to fetch source files:', err);
+      return null;
+    }
+  };
+
+  // Export ALL flow variants at once with source code
   const exportAllFlows = async () => {
     setIsExportingAll(true);
     setCaptureProgress(0);
@@ -514,6 +532,11 @@ export function CalculatorFlowReview() {
       toast.error("Export fehlgeschlagen");
       return;
     }
+
+    // Fetch source code first
+    setCaptureStatus("Lade Source Code...");
+    const sourceFiles = await fetchSourceFiles();
+    setCaptureProgress(5);
 
     const totalFlows = flowVariants.length;
     let completedFlows = 0;
@@ -554,6 +577,14 @@ export function CalculatorFlowReview() {
         flowFolder.file('page.html', html);
       }
 
+      // Add source code to flow folder
+      const sourceCodeFolder = flowFolder.folder('source-code');
+      if (sourceCodeFolder && sourceFiles && sourceFiles[flow.value]) {
+        Object.entries(sourceFiles[flow.value]).forEach(([filename, content]) => {
+          sourceCodeFolder.file(filename, content as string);
+        });
+      }
+
       // Create flow info JSON
       const flowInfo = {
         id: flow.value,
@@ -563,6 +594,7 @@ export function CalculatorFlowReview() {
         hasDesktopScreenshot: !!desktopScreenshot,
         hasMobileScreenshot: !!mobileScreenshot,
         hasHtml: !!html,
+        hasSourceCode: !!(sourceFiles && sourceFiles[flow.value]),
         htmlLength: html?.length || 0,
         capturedAt: new Date().toISOString(),
       };
@@ -571,7 +603,15 @@ export function CalculatorFlowReview() {
       allFlowsData.flows[flow.value] = flowInfo;
 
       completedFlows++;
-      setCaptureProgress((completedFlows / totalFlows) * 100);
+      setCaptureProgress(5 + (completedFlows / totalFlows) * 85);
+    }
+
+    // Add shared source files
+    const sharedFolder = rootFolder.folder('shared');
+    if (sharedFolder && sourceFiles && sourceFiles['shared']) {
+      Object.entries(sourceFiles['shared']).forEach(([filename, content]) => {
+        sharedFolder.file(filename, content as string);
+      });
     }
 
     // Add master JSON with all flows info
@@ -583,13 +623,21 @@ export function CalculatorFlowReview() {
     // Add comparison prompt
     rootFolder.file('comparison-prompt.md', generateComparisonPrompt());
 
+    // Add Swiss Market Analysis
+    rootFolder.file('swiss-market-analysis.md', generateSwissMarketAnalysis());
+
+    // Add Deep Research Prompt
+    rootFolder.file('deep-research-prompt.md', generateDeepResearchPrompt());
+
+    setCaptureProgress(95);
     setCaptureStatus("ZIP wird erstellt...");
     const blob = await zip.generateAsync({ type: 'blob' });
     saveAs(blob, `all-flows-export-${exportDate}.zip`);
 
+    setCaptureProgress(100);
     setCaptureStatus("");
     setIsExportingAll(false);
-    toast.success(`Alle ${totalFlows} Flows exportiert!`);
+    toast.success(`Alle ${totalFlows} Flows mit Source Code exportiert!`);
   };
 
   const generateAllFlowsPrompt = (data: Record<string, any>) => `# Umzugscheck.ch - Alle 9 Flow-Varianten Analyse
