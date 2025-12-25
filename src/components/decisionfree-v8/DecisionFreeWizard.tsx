@@ -16,6 +16,7 @@ import {
   Eye, Video, Bot, Headphones
 } from 'lucide-react';
 import { CountUp } from '@/components/ui/count-up';
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 type Step = 'welcome' | 'scan' | 'proposal' | 'confirm' | 'dashboard' | 'moving-day';
 
@@ -62,6 +63,7 @@ const CREW_MEMBERS = [
 ];
 
 export const DecisionFreeWizard = () => {
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   const [step, setStep] = useState<Step>('welcome');
   const [moveData, setMoveData] = useState<MoveData>({
     fromPostal: '',
@@ -87,6 +89,31 @@ export const DecisionFreeWizard = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [conciergeActive, setConciergeActive] = useState(false);
   const [trackingProgress, setTrackingProgress] = useState(0);
+
+  // Capture mode: jump to step and prefill data
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null) {
+      const stepMap: Record<number, Step> = { 1: 'welcome', 2: 'scan', 3: 'proposal', 4: 'confirm', 5: 'dashboard', 6: 'moving-day' };
+      const targetStep = stepMap[captureStep];
+      if (targetStep) {
+        setStep(targetStep);
+        setMoveData({
+          fromPostal: demoData.fromPostal,
+          fromCity: demoData.fromCity,
+          toPostal: demoData.toPostal,
+          toCity: demoData.toCity,
+          propertySize: '3room',
+          moveDate: demoData.moveDate,
+          serviceTier: demoData.serviceLevel,
+          scanComplete: captureStep >= 3,
+          inventoryItems: 95,
+          estimatedVolume: 35,
+          contact: { name: demoData.name, email: demoData.email, phone: demoData.phone },
+          extras: { cleaning: true, disposal: false, storage: false, halteverbot: true, eumzug: true }
+        });
+      }
+    }
+  }, [isCaptureMode, captureStep, demoData]);
 
   // Calculate price based on AI analysis
   const calculatePrice = () => {

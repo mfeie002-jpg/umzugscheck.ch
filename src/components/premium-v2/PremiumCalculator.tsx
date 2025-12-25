@@ -5,7 +5,7 @@
  * and full-journey experience from decision to move-in.
  */
 
-import { useState, memo } from "react";
+import { useState, memo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, ArrowLeft, Crown, Diamond, Sparkles, 
@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 // Premium packages
 const packages = [
@@ -127,6 +128,7 @@ const steps: Step[] = ["intro", "details", "package", "extras", "schedule", "con
 
 export const PremiumCalculator = memo(function PremiumCalculator() {
   const navigate = useNavigate();
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   const [currentStep, setCurrentStep] = useState<Step>("intro");
   
   const [formData, setFormData] = useState<FormData>({
@@ -144,6 +146,32 @@ export const PremiumCalculator = memo(function PremiumCalculator() {
     comments: "",
     privacyAccepted: false,
   });
+
+  // Capture mode: jump to step and prefill data
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null) {
+      const stepMap: Record<number, Step> = { 1: "intro", 2: "details", 3: "package", 4: "extras", 5: "schedule", 6: "contact" };
+      const targetStep = stepMap[captureStep];
+      if (targetStep) {
+        setCurrentStep(targetStep);
+        setFormData({
+          moveType: "private",
+          fromLocation: demoData.fromLocation,
+          toLocation: demoData.toLocation,
+          apartmentSize: demoData.apartmentSize,
+          selectedPackage: "standard",
+          additionalServices: ["lagerung"],
+          moveDate: demoData.moveDate,
+          flexibility: "flexible",
+          name: demoData.name,
+          email: demoData.email,
+          phone: demoData.phone,
+          comments: "",
+          privacyAccepted: demoData.privacyAccepted,
+        });
+      }
+    }
+  }, [isCaptureMode, captureStep, demoData]);
 
   const currentStepIndex = steps.indexOf(currentStep);
   const progress = ((currentStepIndex + 1) / steps.length) * 100;

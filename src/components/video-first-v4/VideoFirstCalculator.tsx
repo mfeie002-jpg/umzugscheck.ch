@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,6 +38,7 @@ import {
   Lock,
   Loader2
 } from "lucide-react";
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 type Step = "video" | "analyzing" | "offers" | "extras" | "booking" | "confirm";
 
@@ -64,6 +65,7 @@ const EXTRAS = [
 ];
 
 export const VideoFirstCalculator = () => {
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   const [step, setStep] = useState<Step>("video");
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
@@ -77,6 +79,28 @@ export const VideoFirstCalculator = () => {
     email: "",
     phone: "",
   });
+
+  // Capture mode: jump to step and prefill data
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null) {
+      const stepMap: Record<number, Step> = { 1: "video", 2: "analyzing", 3: "offers", 4: "extras", 5: "booking", 6: "confirm" };
+      const targetStep = stepMap[captureStep];
+      if (targetStep) {
+        setStep(targetStep);
+        setVideoUploaded(captureStep >= 2);
+        setAnalysisProgress(captureStep >= 3 ? 100 : 0);
+        setSelectedOffer(captureStep >= 4 ? "recommended" : null);
+        setFormData({
+          fromCity: demoData.fromCity,
+          toCity: demoData.toCity,
+          moveDate: demoData.moveDate,
+          name: demoData.name,
+          email: demoData.email,
+          phone: demoData.phone,
+        });
+      }
+    }
+  }, [isCaptureMode, captureStep, demoData]);
 
   // Simulated offers based on "AI analysis"
   const offers: Offer[] = [

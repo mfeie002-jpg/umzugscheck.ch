@@ -14,6 +14,7 @@ import {
   Navigation, Camera, Bell, FileText, Settings, HelpCircle
 } from 'lucide-react';
 import { CountUp } from '@/components/ui/count-up';
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 type Step = 'landing' | 'configure' | 'checkout' | 'dashboard' | 'tracking';
 
@@ -102,6 +103,7 @@ const CREW_MEMBERS = [
 ];
 
 export const SwissMoveWizard = () => {
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   const [step, setStep] = useState<Step>('landing');
   const [booking, setBooking] = useState<BookingData>({
     moveDate: '',
@@ -123,6 +125,30 @@ export const SwissMoveWizard = () => {
   });
   const [isBooked, setIsBooked] = useState(false);
   const [trackingProgress, setTrackingProgress] = useState(0);
+
+  // Capture mode: jump to step and prefill data
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null) {
+      const stepMap: Record<number, Step> = { 1: 'landing', 2: 'configure', 3: 'checkout', 4: 'dashboard', 5: 'tracking' };
+      const targetStep = stepMap[captureStep];
+      if (targetStep) {
+        setStep(targetStep);
+        setBooking({
+          moveDate: demoData.moveDate,
+          fromPostal: demoData.fromPostal,
+          fromCity: demoData.fromCity,
+          toPostal: demoData.toPostal,
+          toCity: demoData.toCity,
+          propertySize: '3room',
+          serviceTier: demoData.serviceLevel,
+          addons: { packing: true, cleaning: true, assembly: true, disposal: false, storageDays: 0 },
+          contact: { name: demoData.name, email: demoData.email, phone: demoData.phone },
+          paymentMethod: 'after'
+        });
+        if (captureStep >= 4) setIsBooked(true);
+      }
+    }
+  }, [isCaptureMode, captureStep, demoData]);
 
   // Calculate price
   const calculatePrice = () => {
