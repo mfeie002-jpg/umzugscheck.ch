@@ -135,6 +135,30 @@ function md5(input: string): string {
   return wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
 }
 
+function getPngDimensions(bytes: Uint8Array): { width: number; height: number } | null {
+  // PNG signature: 89 50 4E 47 0D 0A 1A 0A
+  if (bytes.length < 24) return null;
+  if (
+    bytes[0] !== 0x89 ||
+    bytes[1] !== 0x50 ||
+    bytes[2] !== 0x4e ||
+    bytes[3] !== 0x47 ||
+    bytes[4] !== 0x0d ||
+    bytes[5] !== 0x0a ||
+    bytes[6] !== 0x1a ||
+    bytes[7] !== 0x0a
+  ) {
+    return null;
+  }
+
+  // IHDR chunk data starts at offset 16
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const width = view.getUint32(16, false);
+  const height = view.getUint32(20, false);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return null;
+  return { width, height };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -217,7 +241,11 @@ serve(async (req) => {
 
     let effectiveDimension = dimension;
     if (isFullPage) {
-      effectiveDimension = `${width}xfull`;
+      // ScreenshotMachine xfull is most reliable with wider output sizes.
+      // Keep desktop as-is, but clamp smaller viewports to at least 1024px width.
+      const safeWidth = Number.isFinite(width) && width > 0 ? width : 1024;
+      const xfullWidth = Math.max(safeWidth, 1024);
+      effectiveDimension = `${xfullWidth}xfull`;
     }
 
     console.log(`Capture strategy: ${isFullPage ? "xfull" : "viewport"}, effectiveDimension: ${effectiveDimension}`);
@@ -295,6 +323,11 @@ serve(async (req) => {
     const imageBuffer = await response.arrayBuffer();
     const bytes = new Uint8Array(imageBuffer);
 
+    const pngDims = outputFormat === "png" ? getPngDimensions(bytes) : null;
+    if (pngDims) {
+      console.log(`Output image dimensions: ${pngDims.width}x${pngDims.height}`);
+    }
+
     let base64 = "";
     const chunkSize = 8192;
     for (let i = 0; i < bytes.length; i += chunkSize) {
@@ -304,7 +337,9 @@ serve(async (req) => {
     base64 = btoa(base64);
 
     console.log(
-      `Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}, device: ${deviceType}, zoom: ${effectiveZoom}`
+      `Screenshot captured successfully, size: ${imageBuffer.byteLength} bytes, format: ${outputFormat}, device: ${deviceType}, zoom: ${effectiveZoom}${
+        pngDims ? `, out: ${pngDims.width}x${pngDims.height}` : ""
+      }`
     );
 
     const mimeType = outputFormat === "pdf" ? "application/pdf" : `image/${outputFormat}`;
@@ -317,6 +352,8 @@ serve(async (req) => {
         dimension: effectiveDimension,
         format: outputFormat,
         device: deviceType,
+        imageWidth: pngDims?.width ?? null,
+        imageHeight: pngDims?.height ?? null,
         capturedAt: new Date().toISOString(),
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
