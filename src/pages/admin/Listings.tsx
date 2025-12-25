@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
@@ -26,8 +27,10 @@ import {
   RefreshCw,
   Package,
   AlertTriangle,
-  Award
+  Award,
+  Sparkles
 } from "lucide-react";
+import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 
 interface Listing {
   id: string;
@@ -243,6 +246,21 @@ export default function AdminListings() {
             Aktualisieren
           </Button>
         </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="listings" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="listings" className="flex items-center gap-2">
+              <Gavel className="h-4 w-4" />
+              Ausschreibungen
+            </TabsTrigger>
+            <TabsTrigger value="ai-review" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              AI Review
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="listings" className="space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -601,6 +619,12 @@ export default function AdminListings() {
             )}
           </DialogContent>
         </Dialog>
+          </TabsContent>
+
+          <TabsContent value="ai-review">
+            <CalculatorFlowReview />
+          </TabsContent>
+        </Tabs>
       </div>
     </AdminLayout>
   );
