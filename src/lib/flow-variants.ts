@@ -125,36 +125,37 @@ export const VARIANT_A: FlowVariantConfig = {
   accentColor: 'gold',
 };
 
-// Variant B: Price-first approach
+// Variant B: God Mode - One Slider, Zero Decisions
 export const VARIANT_B: FlowVariantConfig = {
   id: 'variant-b',
-  name: 'Price-First',
-  description: 'Show price estimate upfront: Location → Pricing → Services → Contact',
+  name: 'God Mode',
+  description: 'One slider controls everything: Slider → Details → Confirm → Contact',
   
-  steps: ['location', 'pricing', 'services', 'contact'],
+  steps: ['pricing', 'location', 'summary', 'contact'],
   
   showProgressBar: true,
-  progressStyle: 'steps',
+  progressStyle: 'minimal',
   layout: 'wizard',
   
-  headline: 'Was kostet Ihr Umzug?',
-  subheadline: 'Sofortige Preisschätzung + kostenlose Offerten',
-  ctaText: 'Verbindliche Offerten anfordern',
+  headline: 'One Slider. Alles geregelt.',
+  subheadline: 'Wie viel wollen Sie selbst machen? Schieben Sie den Regler.',
+  ctaText: 'Jetzt buchen',
   trustBadges: true,
   
   showPriceEstimate: true,
-  showCompanyPreview: true,
-  showVideoAIOption: true,
+  showCompanyPreview: false,
+  showVideoAIOption: false,
   showServiceDetails: true,
-  showSavingsCalculator: true,
+  showSavingsCalculator: false,
   
-  companySelectionMode: 'multi',
-  maxCompanySelections: 3,
+  companySelectionMode: 'none',
+  maxCompanySelections: 0,
   
-  submitOptions: ['direct', 'both'],
+  submitOptions: ['direct'],
   defaultSubmitOption: 'direct',
   
-  cardStyle: 'bordered',
+  cardStyle: 'elevated',
+  accentColor: 'gradient',
 };
 
 // Variant C: Conversational/guided flow

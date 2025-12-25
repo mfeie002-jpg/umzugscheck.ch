@@ -22,6 +22,7 @@ import {
 } from "@/components/offerten-v2";
 import { MultiStepCalculatorVariant } from "@/components/homepage/MultiStepCalculatorVariant";
 import { PremiumCalculator } from "@/components/premium-v2/PremiumCalculator";
+import { GodModeCalculator } from "@/components/god-mode-v3/GodModeCalculator";
 import { Link, useLocation } from "react-router-dom";
 import { getVariantFromPath, type FlowVariantConfig } from "@/lib/flow-variants";
 import { useEffect } from "react";
@@ -52,9 +53,9 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
   const getTitle = () => {
     switch (variant.id) {
       case 'variant-a':
-        return 'Schnell Umzugsofferten erhalten | In 60 Sekunden | Umzugscheck.ch';
+        return 'Premium Umzug | Full-Service Pakete | Umzugscheck.ch';
       case 'variant-b':
-        return 'Umzugskosten berechnen | Sofort Preise sehen | Umzugscheck.ch';
+        return 'Umzug buchen | One Slider, Zero Stress | Umzugscheck.ch';
       case 'variant-c':
         return 'Persönliche Umzugsofferten | Geführte Anfrage | Umzugscheck.ch';
       default:
@@ -65,9 +66,9 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
   const getDescription = () => {
     switch (variant.id) {
       case 'variant-a':
-        return 'In nur 60 Sekunden kostenlose Umzugsofferten erhalten. Schnell, einfach, unverbindlich.';
+        return 'Premium Umzugsservice mit Full-Service Paketen. Von DIY bis White-Glove – Sie wählen, wir organisieren.';
       case 'variant-b':
-        return 'Berechnen Sie sofort Ihre Umzugskosten und erhalten Sie verbindliche Offerten von Schweizer Umzugsfirmen.';
+        return 'Ein Regler. Alles geregelt. Wählen Sie wie viel Sie selbst machen wollen – wir kümmern uns um den Rest.';
       case 'variant-c':
         return 'Beantworten Sie ein paar Fragen und wir finden die perfekte Umzugsfirma für Sie.';
       default:
@@ -95,6 +96,7 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
 
   // Check if this is the premium V2 variant
   const isPremiumV2 = variant.id === 'variant-a';
+  const isGodModeV3 = variant.id === 'variant-b';
 
   return (
     <div className={cn(
@@ -123,10 +125,12 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
           </div>
         </div>
 
-        {/* Hero with Calculator - Use Premium Calculator for V2 */}
+        {/* Hero with Calculator - Use specific calculator for each variant */}
         <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-4 sm:pt-6 pb-8">
           {isPremiumV2 ? (
             <PremiumCalculator />
+          ) : isGodModeV3 ? (
+            <GodModeCalculator />
           ) : (
             <MultiStepCalculatorVariant variant={variant} />
           )}
