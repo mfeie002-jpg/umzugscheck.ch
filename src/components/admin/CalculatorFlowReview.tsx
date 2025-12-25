@@ -26,7 +26,9 @@ import {
   Image,
   FileText,
   RefreshCw,
-  Package
+  Package,
+  Globe,
+  Search
 } from "lucide-react";
 
 interface FlowStep {
@@ -84,6 +86,12 @@ export function CalculatorFlowReview() {
   const [captureStatus, setCaptureStatus] = useState("");
   // Default: use a public base URL (the preview domain can show a login wall to the screenshot service)
   const [baseUrlOverride, setBaseUrlOverride] = useState(() => getDefaultPublicBaseUrl());
+  
+  // URL Discovery state
+  const [discoveryUrl, setDiscoveryUrl] = useState<string>(SITE_CONFIG.url);
+  const [discoveredPages, setDiscoveredPages] = useState<string[]>([]);
+  const [isDiscovering, setIsDiscovering] = useState(false);
+  const [pageLimit, setPageLimit] = useState<number>(20);
 
   const calculatorOptions = [
     { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
@@ -102,6 +110,111 @@ export function CalculatorFlowReview() {
 
   // Only flow variants (V1-V9) for bulk export
   const flowVariants = calculatorOptions.filter(c => c.value.startsWith('umzugsofferten'));
+
+  // Discover top pages using firecrawl-map
+  const discoverTopPages = async () => {
+    if (!discoveryUrl.trim()) {
+      toast.error("Bitte URL eingeben");
+      return;
+    }
+
+    setIsDiscovering(true);
+    try {
+      let formattedUrl = discoveryUrl.trim();
+      if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+        formattedUrl = `https://${formattedUrl}`;
+      }
+
+      const { data, error } = await supabase.functions.invoke('firecrawl-map', {
+        body: { 
+          url: formattedUrl, 
+          options: { 
+            limit: pageLimit * 3, // Get more to filter
+            includeSubdomains: false 
+          } 
+        }
+      });
+
+      if (error) throw error;
+
+      const urls = data?.links || [];
+      // Filter and limit
+      const filteredUrls = urls
+        .filter((u: string) => {
+          const lower = u.toLowerCase();
+          return !lower.includes('/admin') && 
+                 !lower.includes('/api/') && 
+                 !lower.includes('.pdf') &&
+                 !lower.includes('.jpg') &&
+                 !lower.includes('.png');
+        })
+        .slice(0, pageLimit);
+
+      setDiscoveredPages(filteredUrls);
+      toast.success(`${filteredUrls.length} Seiten entdeckt`);
+    } catch (err) {
+      console.error('URL discovery failed:', err);
+      toast.error(`URL Discovery fehlgeschlagen: ${err instanceof Error ? err.message : 'Unbekannter Fehler'}`);
+    } finally {
+      setIsDiscovering(false);
+    }
+  };
+
+  // Capture discovered pages (not calculator steps)
+  const captureDiscoveredPages = async () => {
+    if (discoveredPages.length === 0) {
+      toast.error("Keine Seiten zum Erfassen. Bitte zuerst Seiten entdecken.");
+      return;
+    }
+
+    setIsCapturing(true);
+    setCaptureProgress(0);
+    setCapturedSteps([]);
+
+    const steps: FlowStep[] = [];
+    const totalOperations = discoveredPages.length * 3; // desktop + mobile + html per page
+    let completedOps = 0;
+
+    for (let i = 0; i < discoveredPages.length; i++) {
+      const pageUrl = discoveredPages[i];
+      const pageName = new URL(pageUrl).pathname || '/';
+      
+      // Desktop screenshot
+      setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Desktop Screenshot...`);
+      const desktopScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.desktop);
+      completedOps++;
+      setCaptureProgress((completedOps / totalOperations) * 100);
+      
+      // Mobile screenshot
+      setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Mobile Screenshot...`);
+      const mobileScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.mobile);
+      completedOps++;
+      setCaptureProgress((completedOps / totalOperations) * 100);
+      
+      // Capture HTML
+      setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: HTML...`);
+      const html = await captureRenderedHtml(pageUrl);
+      completedOps++;
+      setCaptureProgress((completedOps / totalOperations) * 100);
+      
+      steps.push({
+        step: i + 1,
+        name: pageName,
+        description: pageUrl,
+        url: pageUrl,
+        screenshotDesktop: desktopScreenshot || undefined,
+        screenshotMobile: mobileScreenshot || undefined,
+        html: html || undefined,
+      });
+    }
+    
+    setCapturedSteps(steps);
+    setCaptureStatus("");
+    setIsCapturing(false);
+    
+    const successCount = steps.filter(s => s.screenshotDesktop || s.screenshotMobile || s.html).length;
+    toast.success(`${successCount} von ${steps.length} Seiten erfasst`);
+  };
 
   const captureScreenshot = async (url: string, dimension: string): Promise<string | null> => {
     try {
@@ -1064,6 +1177,108 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               </Button>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* URL Discovery Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5 text-primary" />
+            URL Discovery - Seiten automatisch entdecken
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-muted-foreground text-sm">
+            Gib eine Domain ein um automatisch die Top-Seiten zu entdecken und Screenshots zu erfassen.
+          </p>
+          
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <label className="text-sm font-medium mb-2 block">Domain / URL</label>
+              <Input
+                value={discoveryUrl}
+                onChange={(e) => setDiscoveryUrl(e.target.value)}
+                placeholder="https://example.com"
+                inputMode="url"
+              />
+            </div>
+            
+            <div className="w-32">
+              <label className="text-sm font-medium mb-2 block">Anzahl</label>
+              <Select value={String(pageLimit)} onValueChange={(v) => setPageLimit(Number(v))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5 Seiten</SelectItem>
+                  <SelectItem value="10">10 Seiten</SelectItem>
+                  <SelectItem value="20">20 Seiten</SelectItem>
+                  <SelectItem value="50">50 Seiten</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex items-end gap-2">
+              <Button 
+                onClick={discoverTopPages}
+                disabled={isDiscovering || isCapturing || !discoveryUrl.trim()}
+                variant="outline"
+              >
+                {isDiscovering ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Search className="w-4 h-4 mr-2" />
+                )}
+                {isDiscovering ? 'Suche...' : 'Seiten entdecken'}
+              </Button>
+              
+              <Button 
+                onClick={captureDiscoveredPages}
+                disabled={isCapturing || discoveredPages.length === 0}
+              >
+                {isCapturing ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Camera className="w-4 h-4 mr-2" />
+                )}
+                {isCapturing ? 'Erfasse...' : `${discoveredPages.length} Seiten erfassen`}
+              </Button>
+            </div>
+          </div>
+          
+          {/* Discovered Pages List */}
+          {discoveredPages.length > 0 && (
+            <div className="border rounded-lg p-3 bg-muted/30">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">{discoveredPages.length} Seiten gefunden</span>
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  onClick={() => setDiscoveredPages([])}
+                >
+                  <RefreshCw className="w-3 h-3 mr-1" />
+                  Reset
+                </Button>
+              </div>
+              <div className="max-h-48 overflow-y-auto space-y-1">
+                {discoveredPages.map((url, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs font-mono text-muted-foreground py-1 border-b border-border/50 last:border-0">
+                    <Badge variant="outline" className="w-6 justify-center shrink-0">{i + 1}</Badge>
+                    <span className="truncate">{url}</span>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-6 w-6 p-0 ml-auto shrink-0"
+                      onClick={() => window.open(url, '_blank')}
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
