@@ -321,6 +321,39 @@ export const VARIANT_F: FlowVariantConfig = {
   cardStyle: 'elevated',
 };
 
+// Variant G: Decision-Free V8 - Full Automation
+export const VARIANT_G: FlowVariantConfig = {
+  id: 'variant-g',
+  name: 'Decision-Free V8',
+  description: 'Decision-Free Plattform mit KI-Video-Scan, eUmzugCH Integration, Crew-Profile & Live-Tracking',
+  
+  steps: ['moveType', 'location', 'pricing', 'summary', 'contact'],
+  
+  showProgressBar: true,
+  progressStyle: 'steps',
+  layout: 'wizard',
+  
+  headline: 'Decision-Free Umzug',
+  subheadline: 'KI-Inventarisierung • eUmzug-Integration • Fixpreis-Garantie',
+  ctaText: 'Jetzt buchen',
+  trustBadges: true,
+  
+  showPriceEstimate: true,
+  showCompanyPreview: true,
+  showVideoAIOption: true,
+  showServiceDetails: true,
+  showSavingsCalculator: false,
+  
+  companySelectionMode: 'none',
+  maxCompanySelections: 0,
+  
+  submitOptions: ['direct'],
+  defaultSubmitOption: 'direct',
+  
+  accentColor: 'green',
+  cardStyle: 'elevated',
+};
+
 export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'control': VARIANT_CONTROL,
   'variant-a': VARIANT_A,
@@ -329,6 +362,7 @@ export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'variant-d': VARIANT_D,
   'variant-e': VARIANT_E,
   'variant-f': VARIANT_F,
+  'variant-g': VARIANT_G,
 };
 
 // Get variant by ID
@@ -350,6 +384,7 @@ export const URL_TO_VARIANT: Record<string, string> = {
   '/umzugsofferten-v5': 'variant-d',
   '/umzugsofferten-v6': 'variant-e',
   '/umzugsofferten-v7': 'variant-f',
+  '/umzugsofferten-v8': 'variant-g',
 };
 
 // Get variant from URL path

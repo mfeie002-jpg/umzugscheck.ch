@@ -60,7 +60,14 @@ export function CalculatorFlowReview() {
   const [baseUrlOverride, setBaseUrlOverride] = useState("");
 
   const calculatorOptions = [
-    { value: "umzugsofferten", label: "Umzugsofferten-Flow", path: "/" },
+    { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
+    { value: "umzugsofferten-v2", label: "V2 - Premium Full-Journey", path: "/umzugsofferten-v2" },
+    { value: "umzugsofferten-v3", label: "V3 - God Mode", path: "/umzugsofferten-v3" },
+    { value: "umzugsofferten-v4", label: "V4 - Video-First AI", path: "/umzugsofferten-v4" },
+    { value: "umzugsofferten-v5", label: "V5 - Marketplace Wizard", path: "/umzugsofferten-v5" },
+    { value: "umzugsofferten-v6", label: "V6 - Ultimate (6-Tier)", path: "/umzugsofferten-v6" },
+    { value: "umzugsofferten-v7", label: "V7 - SwissMove (90s)", path: "/umzugsofferten-v7" },
+    { value: "umzugsofferten-v8", label: "V8 - Decision-Free", path: "/umzugsofferten-v8" },
     { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner" },
     { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner" },
     { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
