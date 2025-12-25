@@ -191,8 +191,9 @@ export function AutoFlowScreenshots() {
   const buildCaptureUrl = (flowPath: string, step: number) => {
     const baseUrl = getBaseUrl();
     // uc_cb busts caches for screenshot tooling.
-    // uc_render=1 triggers render-mode patches (eager images, IntersectionObserver bypass)
-    return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_render=1&uc_cb=${Date.now()}`;
+    // NOTE: uc_render=1 was causing issues - the ScreenshotRenderModeRoot patches may conflict.
+    // ScreenshotMachine works without uc_render, so we follow the same pattern.
+    return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_cb=${Date.now()}`;
   };
 
   const toggleFlow = (flowId: string) => {
