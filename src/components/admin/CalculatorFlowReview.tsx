@@ -3,9 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import { 
   Camera, 
   Copy, 
@@ -18,22 +21,35 @@ import {
   Loader2,
   ExternalLink,
   Image,
-  FileText
+  FileText,
+  RefreshCw,
+  Package
 } from "lucide-react";
 
 interface FlowStep {
   step: number;
   name: string;
   description: string;
-  screenshotUrl?: string;
+  screenshotBase64?: string;
   html?: string;
+  url?: string;
 }
+
+const STEP_CONFIGS = [
+  { step: 1, name: "Adressen eingeben", path: "/?step=1", description: "Von/Nach PLZ und Stadt eingeben" },
+  { step: 2, name: "Wohnungsdetails & Datum", path: "/?step=2", description: "Wohnungsgrösse, Datum, Services" },
+  { step: 3, name: "Firmenauswahl", path: "/?step=3", description: "Passende Firmen auswählen" },
+  { step: 4, name: "Optionen wählen", path: "/?step=4", description: "Direkt, Ausschreibung oder beides" },
+  { step: 5, name: "Kontaktdaten", path: "/?step=5", description: "Name, Email, Absenden" },
+];
 
 export function CalculatorFlowReview() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [capturedSteps, setCapturedSteps] = useState<FlowStep[]>([]);
-  const [selectedCalculator, setSelectedCalculator] = useState("umzugsrechner");
+  const [selectedCalculator, setSelectedCalculator] = useState("umzugsofferten");
   const [customPrompt, setCustomPrompt] = useState("");
+  const [captureProgress, setCaptureProgress] = useState(0);
+  const [captureStatus, setCaptureStatus] = useState("");
 
   const calculatorOptions = [
     { value: "umzugsofferten", label: "Umzugsofferten-Flow", path: "/" },
@@ -42,7 +58,419 @@ export function CalculatorFlowReview() {
     { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
   ];
 
-  const defaultPromptTemplate = `## Umzugsofferten Flow Analyse
+  const captureScreenshot = async (url: string): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('capture-screenshot', {
+        body: { 
+          url, 
+          dimension: '1920xfull',
+          fullPage: true,
+          delay: 3000
+        }
+      });
+      
+      if (error) throw error;
+      return data?.data?.screenshot || data?.screenshot || null;
+    } catch (err) {
+      console.error('Screenshot capture failed:', err);
+      return null;
+    }
+  };
+
+  const captureRenderedHtml = async (url: string): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('capture-rendered-html', {
+        body: { url, waitFor: 5000, formats: ['html'] }
+      });
+      
+      if (error) throw error;
+      return data?.html || null;
+    } catch (err) {
+      console.error('HTML capture failed:', err);
+      return null;
+    }
+  };
+
+  const captureAllSteps = async () => {
+    setIsCapturing(true);
+    setCaptureProgress(0);
+    setCapturedSteps([]);
+    
+    const baseUrl = window.location.origin;
+    const steps: FlowStep[] = [];
+    
+    for (let i = 0; i < STEP_CONFIGS.length; i++) {
+      const config = STEP_CONFIGS[i];
+      const fullUrl = `${baseUrl}${config.path}`;
+      
+      setCaptureStatus(`Step ${config.step}: ${config.name}...`);
+      setCaptureProgress(((i + 0.3) / STEP_CONFIGS.length) * 100);
+      
+      // Capture screenshot
+      const screenshot = await captureScreenshot(fullUrl);
+      
+      setCaptureProgress(((i + 0.6) / STEP_CONFIGS.length) * 100);
+      
+      // Capture HTML
+      const html = await captureRenderedHtml(fullUrl);
+      
+      steps.push({
+        step: config.step,
+        name: config.name,
+        description: config.description,
+        url: fullUrl,
+        screenshotBase64: screenshot || undefined,
+        html: html || undefined,
+      });
+      
+      setCaptureProgress(((i + 1) / STEP_CONFIGS.length) * 100);
+    }
+    
+    setCapturedSteps(steps);
+    setCaptureStatus("");
+    setIsCapturing(false);
+    
+    const successCount = steps.filter(s => s.screenshotBase64 || s.html).length;
+    toast.success(`${successCount} von ${steps.length} Steps erfasst`);
+  };
+
+  const generateMockSteps = () => {
+    const mockSteps: FlowStep[] = STEP_CONFIGS.map(config => ({
+      step: config.step,
+      name: config.name,
+      description: config.description,
+      url: `${window.location.origin}${config.path}`,
+      html: getMockHtml(config.step),
+    }));
+    
+    setCapturedSteps(mockSteps);
+    toast.success("Demo-Steps geladen (ohne Screenshots)");
+  };
+
+  const getMockHtml = (step: number): string => {
+    const htmlTemplates: Record<number, string> = {
+      1: `<!DOCTYPE html>
+<html lang="de">
+<head><title>Umzugsofferten - Step 1</title></head>
+<body>
+  <main class="calculator-container">
+    <div class="step-1-addresses">
+      <h1>Wohin soll der Umzug gehen?</h1>
+      <p class="subtitle">Geben Sie Ihre Adressen ein</p>
+      
+      <div class="address-grid">
+        <div class="from-address">
+          <h3>Von</h3>
+          <label>PLZ</label>
+          <input type="text" placeholder="z.B. 8001" class="input-plz" />
+          <label>Stadt</label>
+          <input type="text" placeholder="Zürich" class="input-city" />
+        </div>
+        
+        <div class="to-address">
+          <h3>Nach</h3>
+          <label>PLZ</label>
+          <input type="text" placeholder="z.B. 3011" class="input-plz" />
+          <label>Stadt</label>
+          <input type="text" placeholder="Bern" class="input-city" />
+        </div>
+      </div>
+      
+      <div class="progress-indicator">
+        <span class="step active">1</span>
+        <span class="step">2</span>
+        <span class="step">3</span>
+        <span class="step">4</span>
+        <span class="step">5</span>
+      </div>
+      
+      <button class="btn-primary btn-next">Weiter</button>
+    </div>
+  </main>
+</body>
+</html>`,
+      2: `<!DOCTYPE html>
+<html lang="de">
+<head><title>Umzugsofferten - Step 2</title></head>
+<body>
+  <main class="calculator-container">
+    <div class="step-2-details">
+      <h1>Details zu Ihrem Umzug</h1>
+      
+      <div class="form-section">
+        <label>Wohnungsgrösse</label>
+        <select class="select-apartment">
+          <option>1-Zimmer Wohnung</option>
+          <option>2-Zimmer Wohnung</option>
+          <option selected>3-Zimmer Wohnung</option>
+          <option>4-Zimmer Wohnung</option>
+          <option>5-Zimmer Wohnung</option>
+          <option>6+ Zimmer / Haus</option>
+        </select>
+      </div>
+      
+      <div class="form-section">
+        <label>Umzugsdatum *</label>
+        <input type="date" class="input-date" required />
+        <span class="hint">Pflichtfeld</span>
+      </div>
+      
+      <div class="services-section">
+        <h3>Zusätzliche Services</h3>
+        <label class="checkbox-item">
+          <input type="checkbox" /> Packen & Auspacken (+15%)
+        </label>
+        <label class="checkbox-item">
+          <input type="checkbox" /> Endreinigung (+CHF 450)
+        </label>
+        <label class="checkbox-item">
+          <input type="checkbox" /> Entsorgung (+CHF 200)
+        </label>
+      </div>
+      
+      <div class="price-estimate">
+        <span class="label">Geschätzte Kosten:</span>
+        <span class="price">CHF 1'200 - 1'800</span>
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn-secondary">Zurück</button>
+        <button class="btn-primary">Weiter</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>`,
+      3: `<!DOCTYPE html>
+<html lang="de">
+<head><title>Umzugsofferten - Step 3</title></head>
+<body>
+  <main class="calculator-container">
+    <div class="step-3-companies">
+      <h1>Passende Umzugsfirmen</h1>
+      <p class="subtitle">Wählen Sie 1-5 Firmen aus</p>
+      
+      <div class="filter-bar">
+        <select class="sort-select">
+          <option selected>Empfohlen</option>
+          <option>Beste Bewertung</option>
+          <option>Günstigste</option>
+        </select>
+        <div class="filter-chips">
+          <button class="chip active">Alle</button>
+          <button class="chip">4+ Sterne</button>
+          <button class="chip">Günstig</button>
+        </div>
+      </div>
+      
+      <div class="company-list">
+        <div class="company-card sponsored">
+          <span class="badge-sponsored">Gesponsert</span>
+          <img src="/logo-1.png" alt="Premium Umzug AG" />
+          <h3>Premium Umzug AG</h3>
+          <div class="rating">★★★★★ 4.9 (127 Bewertungen)</div>
+          <div class="price">ab CHF 1'400</div>
+          <button class="btn-select">Auswählen</button>
+        </div>
+        
+        <div class="company-card">
+          <span class="badge-verified">✓ Verifiziert</span>
+          <img src="/logo-2.png" alt="Züri-Move GmbH" />
+          <h3>Züri-Move GmbH</h3>
+          <div class="rating">★★★★★ 4.7 (89 Bewertungen)</div>
+          <div class="price">ab CHF 1'200</div>
+          <button class="btn-select selected">Ausgewählt</button>
+        </div>
+        
+        <div class="company-card">
+          <img src="/logo-3.png" alt="SwissMove" />
+          <h3>SwissMove</h3>
+          <div class="rating">★★★★☆ 4.5 (56 Bewertungen)</div>
+          <div class="price">ab CHF 1'100</div>
+          <button class="btn-select">Auswählen</button>
+        </div>
+      </div>
+      
+      <div class="selection-summary">
+        <span>2 Firmen ausgewählt</span>
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn-secondary">Zurück</button>
+        <button class="btn-primary">Weiter</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>`,
+      4: `<!DOCTYPE html>
+<html lang="de">
+<head><title>Umzugsofferten - Step 4</title></head>
+<body>
+  <main class="calculator-container">
+    <div class="step-4-options">
+      <h1>Wie möchten Sie fortfahren?</h1>
+      
+      <div class="options-grid">
+        <div class="option-card">
+          <h3>Direkt anfragen</h3>
+          <p>Die ausgewählten Firmen kontaktieren Sie direkt mit einem Angebot.</p>
+          <ul class="benefits">
+            <li>✓ Schnelle Antwort</li>
+            <li>✓ Persönlicher Kontakt</li>
+            <li>✓ Gezielte Auswahl</li>
+          </ul>
+          <button class="btn-option">Auswählen</button>
+        </div>
+        
+        <div class="option-card highlighted">
+          <span class="badge-new">Neu</span>
+          <h3>Ausschreibung publizieren</h3>
+          <p>Ihr Umzug wird veröffentlicht und Firmen können Gebote abgeben.</p>
+          <ul class="benefits">
+            <li>✓ Wettbewerb unter Firmen</li>
+            <li>✓ Möglicherweise günstiger</li>
+            <li>✓ Mehr Optionen</li>
+          </ul>
+          <button class="btn-option">Auswählen</button>
+        </div>
+        
+        <div class="option-card recommended">
+          <span class="badge-recommended">Empfohlen</span>
+          <h3>Beides</h3>
+          <p>Kombination: Direkte Anfragen + öffentliche Ausschreibung.</p>
+          <ul class="benefits">
+            <li>✓ Maximale Chancen</li>
+            <li>✓ Beste Preise</li>
+            <li>✓ Schnell & flexibel</li>
+          </ul>
+          <button class="btn-option selected">Ausgewählt</button>
+        </div>
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn-secondary">Zurück</button>
+        <button class="btn-primary">Weiter</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>`,
+      5: `<!DOCTYPE html>
+<html lang="de">
+<head><title>Umzugsofferten - Step 5</title></head>
+<body>
+  <main class="calculator-container">
+    <div class="step-5-submit">
+      <h1>Fast geschafft!</h1>
+      <p class="subtitle">Geben Sie Ihre Kontaktdaten ein</p>
+      
+      <form class="contact-form">
+        <div class="form-group">
+          <label>Name *</label>
+          <input type="text" placeholder="Ihr Name" required />
+        </div>
+        
+        <div class="form-group">
+          <label>E-Mail *</label>
+          <input type="email" placeholder="ihre@email.ch" required />
+        </div>
+        
+        <div class="form-group">
+          <label>Telefon (optional)</label>
+          <input type="tel" placeholder="+41 79 123 45 67" />
+        </div>
+        
+        <div class="form-group">
+          <label>Bemerkungen</label>
+          <textarea placeholder="Zusätzliche Informationen..."></textarea>
+        </div>
+        
+        <label class="checkbox-privacy">
+          <input type="checkbox" required />
+          Ich akzeptiere die <a href="/datenschutz">Datenschutzerklärung</a>
+        </label>
+        
+        <button type="submit" class="btn-primary btn-large">
+          Offerten erhalten
+        </button>
+      </form>
+      
+      <div class="trust-badges">
+        <span class="badge">✓ Kostenlos</span>
+        <span class="badge">✓ Unverbindlich</span>
+        <span class="badge">✓ Schweizer Firmen</span>
+      </div>
+    </div>
+  </main>
+</body>
+</html>`,
+    };
+    return htmlTemplates[step] || '';
+  };
+
+  const downloadAsZip = async () => {
+    const zip = new JSZip();
+    const folderName = `umzugsofferten-flow-${new Date().toISOString().split('T')[0]}`;
+    const folder = zip.folder(folderName);
+    
+    if (!folder) return;
+    
+    // Add README
+    folder.file('README.md', generateReadme());
+    
+    // Add each step
+    for (const step of capturedSteps) {
+      const stepFolder = folder.folder(`step-${step.step}-${step.name.replace(/\s+/g, '-').toLowerCase()}`);
+      if (!stepFolder) continue;
+      
+      // Add HTML
+      if (step.html) {
+        stepFolder.file('page.html', step.html);
+      }
+      
+      // Add screenshot
+      if (step.screenshotBase64) {
+        const base64Data = step.screenshotBase64.replace(/^data:image\/\w+;base64,/, '');
+        stepFolder.file('screenshot.png', base64Data, { base64: true });
+      }
+      
+      // Add step info
+      stepFolder.file('info.json', JSON.stringify({
+        step: step.step,
+        name: step.name,
+        description: step.description,
+        url: step.url,
+        capturedAt: new Date().toISOString(),
+      }, null, 2));
+    }
+    
+    // Add prompt file
+    folder.file('chatgpt-prompt.md', generatePromptTemplate());
+    
+    const blob = await zip.generateAsync({ type: 'blob' });
+    saveAs(blob, `${folderName}.zip`);
+    toast.success('ZIP mit Screenshots und HTML heruntergeladen');
+  };
+
+  const generateReadme = () => `# Umzugsofferten Flow Review
+
+## Übersicht
+Dieser Export enthält Screenshots und HTML aller Steps des Umzugsofferten-Flows.
+
+## Inhalt
+${capturedSteps.map(s => `- Step ${s.step}: ${s.name}${s.screenshotBase64 ? ' (Screenshot ✓)' : ''}${s.html ? ' (HTML ✓)' : ''}`).join('\n')}
+
+## Verwendung mit ChatGPT/Claude
+1. Öffne chatgpt-prompt.md
+2. Kopiere den Inhalt
+3. Lade die Screenshots hoch
+4. Füge den Prompt ein
+
+Erstellt: ${new Date().toLocaleString('de-CH')}
+`;
+
+  const generatePromptTemplate = () => `## Umzugsofferten Flow Analyse
 
 Ich möchte den folgenden Calculator-Flow analysieren lassen:
 
@@ -51,8 +479,10 @@ Ich möchte den folgenden Calculator-Flow analysieren lassen:
 ### Flow Steps:
 ${capturedSteps.map(step => `
 **Step ${step.step}: ${step.name}**
-${step.description}
-${step.html ? `\`\`\`html\n${step.html.substring(0, 2000)}...\n\`\`\`` : ''}
+- URL: ${step.url || 'N/A'}
+- Beschreibung: ${step.description}
+- Screenshot: ${step.screenshotBase64 ? '✓ Vorhanden (siehe Ordner)' : '✗ Nicht erfasst'}
+- HTML: ${step.html ? '✓ Vorhanden (siehe page.html)' : '✗ Nicht erfasst'}
 `).join('\n')}
 
 ### Analyse-Aufgaben:
@@ -69,239 +499,9 @@ ${step.html ? `\`\`\`html\n${step.html.substring(0, 2000)}...\n\`\`\`` : ''}
 
 ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
 
-  const captureStep = async (stepNumber: number, name: string, description: string) => {
-    setIsCapturing(true);
-    
-    try {
-      // Capture current page HTML (simplified - in real scenario would use edge function)
-      const html = document.documentElement.outerHTML;
-      
-      const newStep: FlowStep = {
-        step: stepNumber,
-        name,
-        description,
-        html: html.substring(0, 5000), // Limit for demo
-      };
-      
-      setCapturedSteps(prev => [...prev.filter(s => s.step !== stepNumber), newStep].sort((a, b) => a.step - b.step));
-      toast.success(`Step ${stepNumber} erfasst`);
-    } catch (error) {
-      toast.error("Fehler beim Erfassen");
-    } finally {
-      setIsCapturing(false);
-    }
-  };
-
-  const generateMockSteps = () => {
-    const mockSteps: FlowStep[] = selectedCalculator === "umzugsofferten" ? [
-      {
-        step: 1,
-        name: "Adressen eingeben",
-        description: "User gibt Von-PLZ/Stadt und Nach-PLZ/Stadt ein. Validierung der PLZ, Autocomplete für Schweizer Städte. CTA: Weiter-Button.",
-        html: `<div class="step-1-addresses">
-  <h2>Wohin soll der Umzug gehen?</h2>
-  <div class="grid grid-cols-2 gap-4">
-    <div>
-      <Label>Von PLZ</Label>
-      <Input placeholder="z.B. 8001" />
-      <Label>Von Stadt</Label>
-      <Input placeholder="Zürich" />
-    </div>
-    <div>
-      <Label>Nach PLZ</Label>
-      <Input placeholder="z.B. 3011" />
-      <Label>Nach Stadt</Label>
-      <Input placeholder="Bern" />
-    </div>
-  </div>
-  <Button>Weiter</Button>
-</div>`
-      },
-      {
-        step: 2,
-        name: "Wohnungsdetails & Datum",
-        description: "Auswahl Wohnungsgrösse (1-6+ Zimmer), Umzugsdatum (Pflichtfeld), optionale Services wie Packen, Reinigung, Entsorgung mit Preisaufschlägen. Live-Preisberechnung wird angezeigt.",
-        html: `<div class="step-2-details">
-  <h2>Details zu Ihrem Umzug</h2>
-  <Select>
-    <option>1-Zimmer Wohnung</option>
-    <option>2-Zimmer Wohnung</option>
-    <option>3-Zimmer Wohnung</option>
-    ...
-  </Select>
-  <DatePicker label="Umzugsdatum" required />
-  <div class="services-checkboxes">
-    <Checkbox>Packen (+15%)</Checkbox>
-    <Checkbox>Endreinigung (+CHF 450)</Checkbox>
-    <Checkbox>Entsorgung (+CHF 200)</Checkbox>
-  </div>
-  <PriceDisplay min="1200" max="1800" />
-</div>`
-      },
-      {
-        step: 3,
-        name: "Firmenauswahl",
-        description: "Anzeige passender Umzugsfirmen basierend auf Region und Services. Gesponserte Firmen oben, dann nach Quality-Score sortiert. Filter: Rating, Preis, Verfügbarkeit. User wählt 1-5 Firmen aus. Paket-Rabatt bei Buchung mehrerer Services.",
-        html: `<div class="step-3-companies">
-  <h2>Passende Umzugsfirmen</h2>
-  <FilterBar>
-    <SortSelect>Empfohlen | Beste Bewertung | Günstigste</SortSelect>
-    <RatingFilter />
-    <PriceFilter />
-  </FilterBar>
-  <div class="company-grid">
-    <CompanyCard sponsored name="Premium Umzug AG" rating="4.9" price="ab CHF 1400" />
-    <CompanyCard name="Züri-Move GmbH" rating="4.7" price="ab CHF 1200" verified />
-    <CompanyCard name="SwissMove" rating="4.5" price="ab CHF 1100" />
-  </div>
-  <SelectedCount>2 Firmen ausgewählt</SelectedCount>
-</div>`
-      },
-      {
-        step: 4,
-        name: "Optionen wählen",
-        description: "3 Optionen: (A) Direkt anfragen - Kontakt mit ausgewählten Firmen, (B) Ausschreibung publizieren - Umzug wird öffentlich, Firmen können bieten, (C) Beides - Kombination. Jede Option mit Vor-/Nachteilen erklärt.",
-        html: `<div class="step-4-options">
-  <h2>Wie möchten Sie fortfahren?</h2>
-  <SubmitOptionsCard>
-    <Option value="direct" title="Direkt anfragen" 
-      description="Die ausgewählten Firmen kontaktieren Sie direkt" 
-      benefits="Schnell, persönlich, gezielt" />
-    <Option value="publish" title="Ausschreibung publizieren" 
-      description="Ihr Umzug wird veröffentlicht, Firmen können Gebote abgeben"
-      benefits="Wettbewerb, möglicherweise günstiger" badge="Neu" />
-    <Option value="both" title="Beides" 
-      description="Kombination aus beidem"
-      benefits="Maximale Chancen" recommended />
-  </SubmitOptionsCard>
-</div>`
-      },
-      {
-        step: 5,
-        name: "Kontaktdaten & Absenden",
-        description: "Formular: Name, Email, Telefon (optional), Bemerkungen. Datenschutz-Checkbox. Submit-Button erstellt Lead in DB und optional public_move_listing für Bieter-System.",
-        html: `<div class="step-5-submit">
-  <h2>Fast geschafft!</h2>
-  <form>
-    <Input label="Name" required />
-    <Input label="Email" type="email" required />
-    <Input label="Telefon" optional />
-    <Textarea label="Bemerkungen" />
-    <Checkbox>Ich akzeptiere die Datenschutzerklärung</Checkbox>
-    <Button type="submit" size="lg">Offerten erhalten</Button>
-  </form>
-  <TrustBadges>
-    <Badge>Kostenlos</Badge>
-    <Badge>Unverbindlich</Badge>
-    <Badge>Schweizer Firmen</Badge>
-  </TrustBadges>
-</div>`
-      },
-    ] : [
-      {
-        step: 1,
-        name: "Start",
-        description: "Einstieg in den Rechner",
-        html: `<div class="calculator-step-1"><h2>Start</h2></div>`
-      },
-      {
-        step: 2,
-        name: "Details",
-        description: "Details eingeben",
-        html: `<div class="calculator-step-2"><h2>Details</h2></div>`
-      },
-      {
-        step: 3,
-        name: "Ergebnis",
-        description: "Preisanzeige und Firmenauswahl",
-        html: `<div class="calculator-step-3"><h2>Ergebnis</h2></div>`
-      },
-    ];
-    
-    setCapturedSteps(mockSteps);
-    toast.success("Umzugsofferten-Flow Steps geladen");
-  };
-
   const copyPromptToClipboard = () => {
-    navigator.clipboard.writeText(defaultPromptTemplate);
-    toast.success("Prompt kopiert! Füge ihn in ChatGPT/Claude ein.");
-  };
-
-  const downloadAsMarkdown = () => {
-    const blob = new Blob([defaultPromptTemplate], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `calculator-review-${selectedCalculator}-${new Date().toISOString().split('T')[0]}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Markdown heruntergeladen");
-  };
-
-  const downloadAsHTML = () => {
-    const htmlContent = `<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <title>Calculator Flow Review - ${calculatorOptions.find(c => c.value === selectedCalculator)?.label}</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1200px; margin: 0 auto; padding: 40px; background: #f8fafc; }
-    h1 { color: #1e40af; border-bottom: 3px solid #3b82f6; padding-bottom: 15px; }
-    h2 { color: #1e3a8a; margin-top: 30px; }
-    .step { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .step-number { background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-    .step-title { font-size: 1.25rem; font-weight: 600; color: #1e293b; }
-    .step-description { color: #64748b; margin-bottom: 16px; }
-    .code-block { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: 'Monaco', 'Menlo', monospace; font-size: 13px; }
-    .meta { background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 30px; }
-    .instructions { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0; }
-  </style>
-</head>
-<body>
-  <h1>🔍 Calculator Flow Review</h1>
-  <p><strong>Calculator:</strong> ${calculatorOptions.find(c => c.value === selectedCalculator)?.label}</p>
-  <p><strong>Erstellt:</strong> ${new Date().toLocaleString('de-CH')}</p>
-  
-  <div class="instructions">
-    <h3>📋 Anleitung für ChatGPT/Claude</h3>
-    <p>1. Öffne ChatGPT oder Claude</p>
-    <p>2. Kopiere den Inhalt dieser Seite (Strg+A, Strg+C)</p>
-    <p>3. Füge ihn ein und bitte um eine UX-Analyse</p>
-  </div>
-
-  <h2>Flow Steps</h2>
-  ${capturedSteps.map(step => `
-  <div class="step">
-    <div class="step-header">
-      <div class="step-number">${step.step}</div>
-      <div class="step-title">${step.name}</div>
-    </div>
-    <p class="step-description">${step.description}</p>
-    ${step.html ? `<pre class="code-block"><code>${step.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>` : ''}
-  </div>
-  `).join('')}
-
-  <div class="meta">
-    <h3>🎯 Analyse-Fokus</h3>
-    <ul>
-      <li>UX/UI-Verbesserungen</li>
-      <li>Conversion-Optimierung</li>
-      <li>Mobile Experience</li>
-      <li>Performance-Hinweise</li>
-    </ul>
-  </div>
-</body>
-</html>`;
-
-    const blob = new Blob([htmlContent], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `calculator-review-${selectedCalculator}-${new Date().toISOString().split('T')[0]}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("HTML heruntergeladen");
+    navigator.clipboard.writeText(generatePromptTemplate());
+    toast.success("Prompt kopiert!");
   };
 
   const openInNewTab = (path: string) => {
@@ -315,17 +515,17 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            Calculator Flow für ChatGPT/Claude Review
+            Umzugsofferten Flow für AI Review
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            Erfasse Screenshots und HTML des Calculator-Flows, um sie von ChatGPT oder Claude analysieren zu lassen.
+            Erfasse Screenshots und vollständiges HTML aller Calculator-Steps für ChatGPT/Claude Analyse.
           </p>
           
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <label className="text-sm font-medium mb-2 block">Calculator auswählen</label>
+              <label className="text-sm font-medium mb-2 block">Calculator</label>
               <Select value={selectedCalculator} onValueChange={setSelectedCalculator}>
                 <SelectTrigger>
                   <SelectValue />
@@ -339,20 +539,45 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex items-end gap-2">
+            <div className="flex items-end gap-2 flex-wrap">
               <Button 
                 variant="outline"
                 onClick={() => openInNewTab(calculatorOptions.find(c => c.value === selectedCalculator)?.path || '/')}
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Calculator öffnen
+                Öffnen
               </Button>
-              <Button onClick={generateMockSteps}>
+              <Button 
+                variant="outline"
+                onClick={generateMockSteps}
+                disabled={isCapturing}
+              >
                 <Play className="w-4 h-4 mr-2" />
-                Demo-Steps laden
+                Demo laden
+              </Button>
+              <Button 
+                onClick={captureAllSteps}
+                disabled={isCapturing}
+              >
+                {isCapturing ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Camera className="w-4 h-4 mr-2" />
+                )}
+                Alle Steps erfassen
               </Button>
             </div>
           </div>
+          
+          {isCapturing && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">{captureStatus}</span>
+                <span className="font-medium">{Math.round(captureProgress)}%</span>
+              </div>
+              <Progress value={captureProgress} />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -365,10 +590,16 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               Erfasste Steps ({capturedSteps.length})
             </span>
             {capturedSteps.length > 0 && (
-              <Badge variant="secondary" className="bg-green-100 text-green-700">
-                <CheckCircle className="w-3 h-3 mr-1" />
-                Bereit für Export
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="bg-green-100 text-green-700">
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Bereit
+                </Badge>
+                <Button size="sm" variant="outline" onClick={() => setCapturedSteps([])}>
+                  <RefreshCw className="w-3 h-3 mr-1" />
+                  Reset
+                </Button>
+              </div>
             )}
           </CardTitle>
         </CardHeader>
@@ -377,28 +608,66 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
             <div className="text-center py-8 text-muted-foreground">
               <Camera className="h-12 w-12 mx-auto mb-3 opacity-20" />
               <p>Noch keine Steps erfasst</p>
-              <p className="text-sm mt-1">Klicke "Demo-Steps laden" oder erfasse manuell</p>
+              <p className="text-sm mt-1">Klicke "Alle Steps erfassen" für Screenshots + HTML</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid gap-4">
               {capturedSteps.map(step => (
                 <div key={step.step} className="border rounded-lg p-4 bg-muted/30">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Badge className="bg-primary">{step.step}</Badge>
-                    <span className="font-medium">{step.name}</span>
+                  <div className="flex items-start gap-4">
+                    {/* Screenshot Preview */}
+                    <div className="w-48 shrink-0">
+                      {step.screenshotBase64 ? (
+                        <img 
+                          src={step.screenshotBase64.startsWith('data:') ? step.screenshotBase64 : `data:image/png;base64,${step.screenshotBase64}`}
+                          alt={`Step ${step.step}`}
+                          className="w-full h-32 object-cover object-top rounded border"
+                        />
+                      ) : (
+                        <div className="w-full h-32 bg-muted rounded border flex items-center justify-center">
+                          <Image className="w-8 h-8 text-muted-foreground/30" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Step Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Badge className="bg-primary">{step.step}</Badge>
+                        <span className="font-medium">{step.name}</span>
+                        <div className="flex gap-1 ml-auto">
+                          {step.screenshotBase64 && (
+                            <Badge variant="outline" className="text-green-600 border-green-300">
+                              <Image className="w-3 h-3 mr-1" />
+                              Screenshot
+                            </Badge>
+                          )}
+                          {step.html && (
+                            <Badge variant="outline" className="text-blue-600 border-blue-300">
+                              <FileCode className="w-3 h-3 mr-1" />
+                              HTML
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{step.description}</p>
+                      {step.url && (
+                        <p className="text-xs text-muted-foreground font-mono">{step.url}</p>
+                      )}
+                      
+                      {step.html && (
+                        <details className="mt-3 text-xs">
+                          <summary className="cursor-pointer text-primary hover:underline flex items-center gap-1">
+                            <FileCode className="w-3 h-3" />
+                            HTML anzeigen ({(step.html.length / 1024).toFixed(1)} KB)
+                          </summary>
+                          <pre className="mt-2 p-3 bg-muted rounded text-xs overflow-x-auto max-h-48 whitespace-pre-wrap">
+                            {step.html}
+                          </pre>
+                        </details>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-3">{step.description}</p>
-                  {step.html && (
-                    <details className="text-xs">
-                      <summary className="cursor-pointer text-primary hover:underline flex items-center gap-1">
-                        <FileCode className="w-3 h-3" />
-                        HTML anzeigen
-                      </summary>
-                      <pre className="mt-2 p-3 bg-muted rounded text-xs overflow-x-auto max-h-32">
-                        {step.html.substring(0, 500)}...
-                      </pre>
-                    </details>
-                  )}
                 </div>
               ))}
             </div>
@@ -424,33 +693,34 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
         </CardContent>
       </Card>
 
-      {/* Preview & Export */}
+      {/* Export */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Eye className="h-5 w-5" />
-            Prompt Preview & Export
+            <Download className="h-5 w-5" />
+            Export für AI Review
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-muted rounded-lg p-4 max-h-64 overflow-y-auto">
+          <div className="bg-muted rounded-lg p-4 max-h-48 overflow-y-auto">
             <pre className="text-xs whitespace-pre-wrap font-mono">
-              {defaultPromptTemplate}
+              {generatePromptTemplate()}
             </pre>
           </div>
           
           <div className="flex flex-wrap gap-3">
-            <Button onClick={copyPromptToClipboard} className="flex-1 md:flex-none">
+            <Button onClick={copyPromptToClipboard} disabled={capturedSteps.length === 0}>
               <Copy className="w-4 h-4 mr-2" />
               Prompt kopieren
             </Button>
-            <Button variant="outline" onClick={downloadAsMarkdown}>
-              <Download className="w-4 h-4 mr-2" />
-              Als Markdown
-            </Button>
-            <Button variant="outline" onClick={downloadAsHTML}>
-              <FileCode className="w-4 h-4 mr-2" />
-              Als HTML
+            <Button 
+              variant="default" 
+              onClick={downloadAsZip}
+              disabled={capturedSteps.length === 0}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <Package className="w-4 h-4 mr-2" />
+              ZIP Download (Screenshots + HTML)
             </Button>
           </div>
           
@@ -460,8 +730,8 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               className="flex-1"
               onClick={() => window.open('https://chat.openai.com', '_blank')}
             >
-              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" className="w-4 h-4 mr-2" alt="" />
-              In ChatGPT öffnen
+              <ExternalLink className="w-4 h-4 mr-2" />
+              ChatGPT öffnen
             </Button>
             <Button 
               variant="secondary"
@@ -469,23 +739,23 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               onClick={() => window.open('https://claude.ai', '_blank')}
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              In Claude öffnen
+              Claude öffnen
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Quick Tips */}
+      {/* Tips */}
       <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
         <CardContent className="p-4">
           <h4 className="font-medium flex items-center gap-2 mb-2">
             💡 Tipps für beste Ergebnisse
           </h4>
           <ul className="text-sm text-muted-foreground space-y-1">
-            <li>• Verwende GPT-4 oder Claude 3 für detaillierte Analysen</li>
-            <li>• Füge Screenshots hinzu für visuelle Analyse</li>
-            <li>• Frage nach konkreten Code-Verbesserungen</li>
-            <li>• Lass die Conversion-Rate schätzen und Optimierungen vorschlagen</li>
+            <li>• Lade die ZIP-Datei herunter und öffne die Screenshots in ChatGPT/Claude</li>
+            <li>• Verwende GPT-4 Vision oder Claude 3 für visuelle Analyse</li>
+            <li>• Das HTML ermöglicht detaillierte Code-Verbesserungsvorschläge</li>
+            <li>• Frage nach A/B-Test-Ideen für Conversion-Optimierung</li>
           </ul>
         </CardContent>
       </Card>
