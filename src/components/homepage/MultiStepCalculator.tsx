@@ -17,6 +17,8 @@ import { ValidatedInput } from "@/components/ui/ValidatedInput";
 import { VisualRoomSelector } from "./VisualRoomSelector";
 import { MoveTypeInitialStep } from "./MoveTypeInitialStep";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
+import { getCantonFromZip } from "@/lib/zip-to-canton";
+import { getCantonConfig } from "@/lib/cantonConfigMap";
 
 // Storage key for form persistence
 const FORM_STORAGE_KEY = "umzugscheck_form_data";
@@ -361,11 +363,47 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
     "lagerung": ["Lagerung"],
   };
 
-  // Get matching companies based on location AND selected services
+  // Get matching companies based on "from" ZIP code - using canton config
   const getMatchingCompanies = () => {
-    const region = formData.fromLocation.split(" ").pop() || "";
-    let companies = getCompaniesByRegion(region);
-    if (companies.length < 5) companies = DEMO_COMPANIES;
+    // Extract ZIP from fromLocation (format: "8048 Zürich" or just "8048")
+    const fromZip = formData.fromLocation.split(" ")[0] || "";
+    const cantonSlug = getCantonFromZip(fromZip);
+    
+    let companies: typeof DEMO_COMPANIES = [];
+    
+    // Try to get companies from canton config first
+    if (cantonSlug) {
+      const cantonConfig = getCantonConfig(cantonSlug);
+      if (cantonConfig && cantonConfig.companies && cantonConfig.companies.length > 0) {
+        // Convert canton config companies to our format
+        companies = cantonConfig.companies.map((c, idx) => ({
+          id: `${cantonSlug}-${idx}`,
+          name: c.name,
+          company_name: c.name,
+          rating: c.rating,
+          review_count: c.reviews,
+          price_level: c.priceLevel as "günstig" | "fair" | "premium",
+          is_featured: c.sponsored,
+          services_offered: ["Umzug", "Reinigung", "Packservice", "Entsorgung", "Lagerung"],
+          service_areas: [cantonConfig.name],
+          cantons_served: [cantonSlug],
+          logo_url: null,
+          short_description: c.badge || `Professionelle Umzugsfirma in ${cantonConfig.name}`,
+          quality_score: c.rating * 20,
+          slug: c.name.toLowerCase().replace(/\s+/g, '-'),
+          profile_completeness: 85,
+          conversion_rate: 25,
+          response_time_avg_hours: 2,
+        }));
+      }
+    }
+    
+    // Fallback: try region-based lookup or demo companies
+    if (companies.length === 0) {
+      const region = formData.fromLocation.split(" ").pop() || "";
+      companies = getCompaniesByRegion(region);
+      if (companies.length < 5) companies = DEMO_COMPANIES;
+    }
     
     // Filter by selected services - company must offer ALL selected services
     const selectedServiceNames = formData.selectedServices
@@ -387,7 +425,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
       if (a.is_featured && !b.is_featured) return -1;
       if (!a.is_featured && b.is_featured) return 1;
       return b.rating - a.rating;
-    }).slice(0, 12); // Show more companies since we're filtering
+    }).slice(0, 12);
   };
 
   const canProceed = () => {
