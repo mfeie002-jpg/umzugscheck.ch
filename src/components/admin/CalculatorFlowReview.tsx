@@ -36,13 +36,13 @@ export function CalculatorFlowReview() {
   const [customPrompt, setCustomPrompt] = useState("");
 
   const calculatorOptions = [
-    { value: "umzugsrechner", label: "Umzugsrechner", path: "/" },
+    { value: "umzugsofferten", label: "Umzugsofferten-Flow", path: "/" },
     { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner" },
     { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner" },
-    { value: "lagerung", label: "Lagerungsrechner", path: "/lagerungsrechner" },
+    { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
   ];
 
-  const defaultPromptTemplate = `## Calculator Flow Analyse
+  const defaultPromptTemplate = `## Umzugsofferten Flow Analyse
 
 Ich möchte den folgenden Calculator-Flow analysieren lassen:
 
@@ -93,54 +93,133 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
   };
 
   const generateMockSteps = () => {
-    const mockSteps: FlowStep[] = [
+    const mockSteps: FlowStep[] = selectedCalculator === "umzugsofferten" ? [
       {
         step: 1,
-        name: "Start & Adressen",
-        description: "User gibt Von/Nach Adressen ein. Postleitzahl-Validierung, Autocomplete für Städte.",
-        html: `<div class="calculator-step-1">
+        name: "Adressen eingeben",
+        description: "User gibt Von-PLZ/Stadt und Nach-PLZ/Stadt ein. Validierung der PLZ, Autocomplete für Schweizer Städte. CTA: Weiter-Button.",
+        html: `<div class="step-1-addresses">
   <h2>Wohin soll der Umzug gehen?</h2>
-  <input type="text" placeholder="Von PLZ" />
-  <input type="text" placeholder="Nach PLZ" />
-  <button>Weiter</button>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <Label>Von PLZ</Label>
+      <Input placeholder="z.B. 8001" />
+      <Label>Von Stadt</Label>
+      <Input placeholder="Zürich" />
+    </div>
+    <div>
+      <Label>Nach PLZ</Label>
+      <Input placeholder="z.B. 3011" />
+      <Label>Nach Stadt</Label>
+      <Input placeholder="Bern" />
+    </div>
+  </div>
+  <Button>Weiter</Button>
 </div>`
       },
       {
         step: 2,
-        name: "Wohnungsdetails",
-        description: "Auswahl Wohnungsgröße, Datum, zusätzliche Services. Preisberechnung wird gestartet.",
-        html: `<div class="calculator-step-2">
+        name: "Wohnungsdetails & Datum",
+        description: "Auswahl Wohnungsgrösse (1-6+ Zimmer), Umzugsdatum (Pflichtfeld), optionale Services wie Packen, Reinigung, Entsorgung mit Preisaufschlägen. Live-Preisberechnung wird angezeigt.",
+        html: `<div class="step-2-details">
   <h2>Details zu Ihrem Umzug</h2>
-  <select>1-Zimmer, 2-Zimmer, etc.</select>
-  <input type="date" />
-  <div class="services">Packen, Reinigung, Entsorgung</div>
+  <Select>
+    <option>1-Zimmer Wohnung</option>
+    <option>2-Zimmer Wohnung</option>
+    <option>3-Zimmer Wohnung</option>
+    ...
+  </Select>
+  <DatePicker label="Umzugsdatum" required />
+  <div class="services-checkboxes">
+    <Checkbox>Packen (+15%)</Checkbox>
+    <Checkbox>Endreinigung (+CHF 450)</Checkbox>
+    <Checkbox>Entsorgung (+CHF 200)</Checkbox>
+  </div>
+  <PriceDisplay min="1200" max="1800" />
 </div>`
       },
       {
         step: 3,
         name: "Firmenauswahl",
-        description: "Anzeige passender Umzugsfirmen mit Rating, Preis, Verfügbarkeit. Filter und Sortierung.",
-        html: `<div class="calculator-step-3">
-  <h2>Passende Firmen</h2>
-  <div class="filters">Sortierung, Preislevel, Rating</div>
-  <div class="company-cards">Firma A, Firma B, Firma C</div>
+        description: "Anzeige passender Umzugsfirmen basierend auf Region und Services. Gesponserte Firmen oben, dann nach Quality-Score sortiert. Filter: Rating, Preis, Verfügbarkeit. User wählt 1-5 Firmen aus. Paket-Rabatt bei Buchung mehrerer Services.",
+        html: `<div class="step-3-companies">
+  <h2>Passende Umzugsfirmen</h2>
+  <FilterBar>
+    <SortSelect>Empfohlen | Beste Bewertung | Günstigste</SortSelect>
+    <RatingFilter />
+    <PriceFilter />
+  </FilterBar>
+  <div class="company-grid">
+    <CompanyCard sponsored name="Premium Umzug AG" rating="4.9" price="ab CHF 1400" />
+    <CompanyCard name="Züri-Move GmbH" rating="4.7" price="ab CHF 1200" verified />
+    <CompanyCard name="SwissMove" rating="4.5" price="ab CHF 1100" />
+  </div>
+  <SelectedCount>2 Firmen ausgewählt</SelectedCount>
 </div>`
       },
       {
         step: 4,
-        name: "Optionen & Submit",
-        description: "Wahl zwischen Direktanfrage, Ausschreibung oder beides. Kontaktdaten eingeben.",
-        html: `<div class="calculator-step-4">
+        name: "Optionen wählen",
+        description: "3 Optionen: (A) Direkt anfragen - Kontakt mit ausgewählten Firmen, (B) Ausschreibung publizieren - Umzug wird öffentlich, Firmen können bieten, (C) Beides - Kombination. Jede Option mit Vor-/Nachteilen erklärt.",
+        html: `<div class="step-4-options">
   <h2>Wie möchten Sie fortfahren?</h2>
-  <div class="options">Direkt anfragen | Ausschreiben | Beides</div>
-  <form>Name, Email, Telefon</form>
-  <button>Offerten erhalten</button>
+  <SubmitOptionsCard>
+    <Option value="direct" title="Direkt anfragen" 
+      description="Die ausgewählten Firmen kontaktieren Sie direkt" 
+      benefits="Schnell, persönlich, gezielt" />
+    <Option value="publish" title="Ausschreibung publizieren" 
+      description="Ihr Umzug wird veröffentlicht, Firmen können Gebote abgeben"
+      benefits="Wettbewerb, möglicherweise günstiger" badge="Neu" />
+    <Option value="both" title="Beides" 
+      description="Kombination aus beidem"
+      benefits="Maximale Chancen" recommended />
+  </SubmitOptionsCard>
 </div>`
+      },
+      {
+        step: 5,
+        name: "Kontaktdaten & Absenden",
+        description: "Formular: Name, Email, Telefon (optional), Bemerkungen. Datenschutz-Checkbox. Submit-Button erstellt Lead in DB und optional public_move_listing für Bieter-System.",
+        html: `<div class="step-5-submit">
+  <h2>Fast geschafft!</h2>
+  <form>
+    <Input label="Name" required />
+    <Input label="Email" type="email" required />
+    <Input label="Telefon" optional />
+    <Textarea label="Bemerkungen" />
+    <Checkbox>Ich akzeptiere die Datenschutzerklärung</Checkbox>
+    <Button type="submit" size="lg">Offerten erhalten</Button>
+  </form>
+  <TrustBadges>
+    <Badge>Kostenlos</Badge>
+    <Badge>Unverbindlich</Badge>
+    <Badge>Schweizer Firmen</Badge>
+  </TrustBadges>
+</div>`
+      },
+    ] : [
+      {
+        step: 1,
+        name: "Start",
+        description: "Einstieg in den Rechner",
+        html: `<div class="calculator-step-1"><h2>Start</h2></div>`
+      },
+      {
+        step: 2,
+        name: "Details",
+        description: "Details eingeben",
+        html: `<div class="calculator-step-2"><h2>Details</h2></div>`
+      },
+      {
+        step: 3,
+        name: "Ergebnis",
+        description: "Preisanzeige und Firmenauswahl",
+        html: `<div class="calculator-step-3"><h2>Ergebnis</h2></div>`
       },
     ];
     
     setCapturedSteps(mockSteps);
-    toast.success("Demo-Steps geladen");
+    toast.success("Umzugsofferten-Flow Steps geladen");
   };
 
   const copyPromptToClipboard = () => {
