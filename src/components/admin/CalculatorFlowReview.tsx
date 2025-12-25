@@ -731,6 +731,47 @@ Erstelle ein Ranking von 1-9 basierend auf:
 Lade die Screenshots aus den jeweiligen Ordnern hoch für eine visuelle Analyse.
 `;
 
+  const generateSwissMarketAnalysis = () => `# Schweizer Umzugsmarkt - Analyse
+
+## Marktübersicht
+- Gesamtmarkt: CHF 800 Mio.-1.2 Mrd./Jahr
+- 900k Umzüge/Jahr, 30-40% mit Firma
+- Durchschnittspreis: CHF 1200-3500
+
+## Wettbewerber
+| Firma | USP | Traffic/Monat |
+|-------|-----|---------------|
+| Movu.ch | 60 Sek. Offerte | 50-80k |
+| MoveAgain | Festpreis | 15-25k |
+| Movinga | International | 10-20k |
+| Umzugspreise.ch | Guenstig | 8-15k |
+
+## Conversion Benchmarks
+- Durchschnitt: 3-5%, Top 10%: 8-12%
+- Mobile: 2-4%, Desktop: 4-6%
+
+## Schweizer Besonderheiten
+- Kuendigungstermine: 31.3., 30.6., 30.9., 31.12.
+- Stockwerk = Preistreiber
+- Sprachregionen: DE 65%, FR 23%, IT 8%
+`;
+
+  const generateDeepResearchPrompt = () => `# Deep Research & V10 Synthesis
+
+## Analyse alle 9 Flows:
+1. Source Code: Architektur, Patterns
+2. Visual Design: Hero, CTAs, Trust
+3. User Journey: Steps, Zeit
+4. Conversion Psychology
+5. Technische Qualitaet
+
+## Erstelle:
+- Vergleichs-Matrix (Score 1-10)
+- Top 10 Best Practices
+- Top 10 Anti-Patterns
+- V10 Ultimate Design mit A/B Roadmap
+`;
+
   const generateReadme = () => `# Umzugsofferten Flow Review
 
 ## Übersicht
