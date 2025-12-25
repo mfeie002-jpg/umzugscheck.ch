@@ -24,6 +24,7 @@ import { captureScreenshot } from "@/lib/screenshot-service";
 
 // Flow definitions with their steps (Offerten-Funnel Varianten)
 // Uses uc_capture mode for deterministic screenshots.
+// IMPORTANT: Step definitions MUST match the stepMap inside each flow component.
 const CALCULATOR_FLOWS = [
   {
     id: "umzugsofferten",
@@ -41,10 +42,12 @@ const CALCULATOR_FLOWS = [
     name: "V2",
     path: "/umzugsofferten-v2",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
+      { step: 1, name: "Step 1 - Intro" },
       { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
-      { step: 4, name: "Step 4 - Kontakt" },
+      { step: 3, name: "Step 3 - Paket" },
+      { step: 4, name: "Step 4 - Extras" },
+      { step: 5, name: "Step 5 - Termin" },
+      { step: 6, name: "Step 6 - Kontakt" },
     ],
   },
   {
@@ -52,9 +55,9 @@ const CALCULATOR_FLOWS = [
     name: "V3",
     path: "/umzugsofferten-v3",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
+      { step: 1, name: "Step 1 - Slider" },
       { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
+      { step: 3, name: "Step 3 - Bestätigung" },
       { step: 4, name: "Step 4 - Kontakt" },
     ],
   },
@@ -63,10 +66,12 @@ const CALCULATOR_FLOWS = [
     name: "V4",
     path: "/umzugsofferten-v4",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
-      { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
-      { step: 4, name: "Step 4 - Kontakt" },
+      { step: 1, name: "Step 1 - Video" },
+      { step: 2, name: "Step 2 - Analyse" },
+      { step: 3, name: "Step 3 - Offerten" },
+      { step: 4, name: "Step 4 - Extras" },
+      { step: 5, name: "Step 5 - Buchung" },
+      { step: 6, name: "Step 6 - Bestätigung" },
     ],
   },
   {
@@ -74,10 +79,12 @@ const CALCULATOR_FLOWS = [
     name: "V5",
     path: "/umzugsofferten-v5",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
-      { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
-      { step: 4, name: "Step 4 - Kontakt" },
+      { step: 1, name: "Step 1 - Details" },
+      { step: 2, name: "Step 2 - Services" },
+      { step: 3, name: "Step 3 - Inventar" },
+      { step: 4, name: "Step 4 - Offerten" },
+      { step: 5, name: "Step 5 - Buchung" },
+      { step: 6, name: "Step 6 - Bestätigung" },
     ],
   },
   {
@@ -85,10 +92,12 @@ const CALCULATOR_FLOWS = [
     name: "V6",
     path: "/umzugsofferten-v6",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
-      { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
-      { step: 4, name: "Step 4 - Kontakt" },
+      { step: 1, name: "Step 1 - Intro" },
+      { step: 2, name: "Step 2 - Scan" },
+      { step: 3, name: "Step 3 - Service" },
+      { step: 4, name: "Step 4 - Preis" },
+      { step: 5, name: "Step 5 - Buchung" },
+      { step: 6, name: "Step 6 - Dashboard" },
     ],
   },
   {
@@ -96,10 +105,11 @@ const CALCULATOR_FLOWS = [
     name: "V7",
     path: "/umzugsofferten-v7",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
-      { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
-      { step: 4, name: "Step 4 - Kontakt" },
+      { step: 1, name: "Step 1 - Start" },
+      { step: 2, name: "Step 2 - Konfigurieren" },
+      { step: 3, name: "Step 3 - Checkout" },
+      { step: 4, name: "Step 4 - Dashboard" },
+      { step: 5, name: "Step 5 - Tracking" },
     ],
   },
   {
@@ -107,10 +117,12 @@ const CALCULATOR_FLOWS = [
     name: "V8",
     path: "/umzugsofferten-v8",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
-      { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
-      { step: 4, name: "Step 4 - Kontakt" },
+      { step: 1, name: "Step 1 - Welcome" },
+      { step: 2, name: "Step 2 - Scan" },
+      { step: 3, name: "Step 3 - Vorschlag" },
+      { step: 4, name: "Step 4 - Bestätigen" },
+      { step: 5, name: "Step 5 - Dashboard" },
+      { step: 6, name: "Step 6 - Moving Day" },
     ],
   },
   {
@@ -118,10 +130,12 @@ const CALCULATOR_FLOWS = [
     name: "V9",
     path: "/umzugsofferten-v9",
     steps: [
-      { step: 1, name: "Step 1 - Umzugstyp" },
-      { step: 2, name: "Step 2 - Details" },
-      { step: 3, name: "Step 3 - Firmen" },
-      { step: 4, name: "Step 4 - Kontakt" },
+      { step: 1, name: "Step 1 - Start" },
+      { step: 2, name: "Step 2 - Refine" },
+      { step: 3, name: "Step 3 - Service" },
+      { step: 4, name: "Step 4 - Customize" },
+      { step: 5, name: "Step 5 - Firmen" },
+      { step: 6, name: "Step 6 - Bestätigen" },
     ],
   },
 ];
