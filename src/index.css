@@ -150,6 +150,54 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
     --sidebar-accent-foreground: 210 20% 98%;
     --sidebar-border: 210 15% 25%;
   }
+
+  /* Premium V2 Dark Theme - Luxury Moving Experience */
+  .theme-premium-v2 {
+    /* Dark elegant base */
+    --background: 220 20% 8%;
+    --foreground: 45 20% 95%;
+    
+    /* Cards with subtle warmth */
+    --card: 220 18% 12%;
+    --card-foreground: 45 20% 95%;
+    
+    --popover: 220 18% 14%;
+    --popover-foreground: 45 20% 95%;
+    
+    /* Gold primary for luxury feel */
+    --primary: 45 80% 50%;
+    --primary-foreground: 220 20% 8%;
+    --primary-hover: 45 85% 55%;
+    
+    /* Swiss Red for CTAs */
+    --secondary: 358 79% 55%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Muted surfaces */
+    --muted: 220 15% 16%;
+    --muted-foreground: 220 10% 60%;
+    
+    /* Accent */
+    --accent: 220 20% 18%;
+    --accent-foreground: 45 80% 50%;
+    
+    /* Gold for ratings */
+    --swiss-gold: 45 93% 50%;
+    
+    /* Borders */
+    --border: 220 15% 20%;
+    --input: 220 15% 18%;
+    --ring: 45 80% 50%;
+    
+    /* Premium shadows */
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-premium: 0 14px 40px rgba(0, 0, 0, 0.35);
+    --shadow-cta: 0 8px 24px rgba(227, 32, 38, 0.35);
+    --shadow-gold: 0 8px 24px rgba(202, 167, 83, 0.25);
+    --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 30px rgba(202, 167, 83, 0.2);
+  }
 }
 
 /* Mobile Menu Animations */

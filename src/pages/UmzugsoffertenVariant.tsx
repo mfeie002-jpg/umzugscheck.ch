@@ -21,9 +21,11 @@ import {
   PageEnhancements,
 } from "@/components/offerten-v2";
 import { MultiStepCalculatorVariant } from "@/components/homepage/MultiStepCalculatorVariant";
+import { PremiumCalculator } from "@/components/premium-v2/PremiumCalculator";
 import { Link, useLocation } from "react-router-dom";
 import { getVariantFromPath, type FlowVariantConfig } from "@/lib/flow-variants";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface UmzugsoffertenVariantProps {
   variantId?: string;
@@ -91,8 +93,14 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
     "serviceType": "Moving Quote Comparison",
   };
 
+  // Check if this is the premium V2 variant
+  const isPremiumV2 = variant.id === 'variant-a';
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn(
+      "min-h-screen",
+      isPremiumV2 ? "theme-premium-v2 bg-background" : "bg-background"
+    )}>
       <PageEnhancements />
       <Helmet>
         <title>{getTitle()}</title>
@@ -115,9 +123,13 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
           </div>
         </div>
 
-        {/* Hero with Configurable Calculator */}
-        <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-4 sm:pt-6">
-          <MultiStepCalculatorVariant variant={variant} />
+        {/* Hero with Calculator - Use Premium Calculator for V2 */}
+        <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-4 sm:pt-6 pb-8">
+          {isPremiumV2 ? (
+            <PremiumCalculator />
+          ) : (
+            <MultiStepCalculatorVariant variant={variant} />
+          )}
         </section>
 
         {/* AI Insights Strip - show based on variant */}
