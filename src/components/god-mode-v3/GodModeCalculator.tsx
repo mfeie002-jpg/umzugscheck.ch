@@ -5,7 +5,7 @@
  * Minimal decisions, maximum automation, absolute trust.
  */
 
-import { useState, memo, useMemo } from "react";
+import { useState, memo, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Zap, Shield, Clock, CheckCircle, Star, Crown, Diamond,
@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 // Service tiers based on 0-100 slider
 const serviceTiers = [
@@ -154,6 +155,7 @@ const steps: Step[] = ["slider", "details", "confirm", "contact"];
 
 export const GodModeCalculator = memo(function GodModeCalculator() {
   const navigate = useNavigate();
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   const [currentStep, setCurrentStep] = useState<Step>("slider");
   
   const [formData, setFormData] = useState<FormData>({
@@ -167,6 +169,28 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
     phone: "",
     privacyAccepted: false,
   });
+
+  // Capture mode: jump to step and prefill data
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null) {
+      const stepMap: Record<number, Step> = { 1: "slider", 2: "details", 3: "confirm", 4: "contact" };
+      const targetStep = stepMap[captureStep];
+      if (targetStep) {
+        setCurrentStep(targetStep);
+        setFormData({
+          fromLocation: demoData.fromLocation,
+          toLocation: demoData.toLocation,
+          apartmentSize: demoData.apartmentSize,
+          controlLevel: demoData.serviceLevel,
+          moveDate: demoData.moveDate,
+          name: demoData.name,
+          email: demoData.email,
+          phone: demoData.phone,
+          privacyAccepted: demoData.privacyAccepted,
+        });
+      }
+    }
+  }, [isCaptureMode, captureStep, demoData]);
 
   const currentStepIndex = steps.indexOf(currentStep);
   const progress = ((currentStepIndex + 1) / steps.length) * 100;

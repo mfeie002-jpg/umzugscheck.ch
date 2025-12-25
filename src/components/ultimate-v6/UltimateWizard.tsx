@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -51,6 +51,7 @@ import {
   HeartHandshake,
   Sparkle
 } from "lucide-react";
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 // Types
 type WizardStep = "intro" | "scan" | "service" | "price" | "booking" | "dashboard";
@@ -159,6 +160,7 @@ const TIMELINE_PHASES = [
 ];
 
 export const UltimateWizard = () => {
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   const [step, setStep] = useState<WizardStep>("intro");
   const [sliderValue, setSliderValue] = useState([40]);
   const [location, setLocation] = useState<LocationData>({
@@ -185,6 +187,36 @@ export const UltimateWizard = () => {
     acceptTerms: false,
   });
   const [showBreakdown, setShowBreakdown] = useState(false);
+
+  // Capture mode: jump to step and prefill data
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null) {
+      const stepMap: Record<number, WizardStep> = { 1: "intro", 2: "scan", 3: "service", 4: "price", 5: "booking", 6: "dashboard" };
+      const targetStep = stepMap[captureStep];
+      if (targetStep) {
+        setStep(targetStep);
+        setSliderValue([demoData.serviceLevel]);
+        setLocation({
+          fromPlz: demoData.fromPostal,
+          fromCity: demoData.fromCity,
+          fromFloor: demoData.floor,
+          fromElevator: demoData.hasElevator,
+          toPlz: demoData.toPostal,
+          toCity: demoData.toCity,
+          toFloor: 1,
+          toElevator: true,
+          moveDate: demoData.moveDate,
+          rooms: String(demoData.rooms),
+        });
+        setContactData({ name: demoData.name, email: demoData.email, phone: demoData.phone, acceptTerms: demoData.privacyAccepted });
+        if (captureStep >= 3) {
+          setAnalysisComplete(true);
+          setVolumeEstimate(35);
+          setConfidence(0.92);
+        }
+      }
+    }
+  }, [isCaptureMode, captureStep, demoData]);
 
   // Get current tier based on slider
   const getCurrentTier = useCallback(() => {

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -50,6 +50,7 @@ import {
   Plus,
   Minus
 } from "lucide-react";
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 type WizardStep = "location" | "service" | "inventory" | "offers" | "booking" | "confirmation";
 
@@ -155,6 +156,7 @@ const DEFAULT_INVENTORY: InventoryItem[] = [
 const STEP_ORDER: WizardStep[] = ["location", "service", "inventory", "offers", "booking", "confirmation"];
 
 export const MarketplaceWizard = () => {
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   const [currentStep, setCurrentStep] = useState<WizardStep>("location");
   const [locationData, setLocationData] = useState<LocationData>({
     fromPlz: "",
@@ -177,6 +179,32 @@ export const MarketplaceWizard = () => {
   const [selectedOffer, setSelectedOffer] = useState<string | null>(null);
   const [contactData, setContactData] = useState({ name: "", email: "", phone: "" });
   const [termsAccepted, setTermsAccepted] = useState(false);
+
+  // Capture mode: jump to step and prefill data
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null) {
+      const stepMap: Record<number, WizardStep> = { 1: "location", 2: "service", 3: "inventory", 4: "offers", 5: "booking", 6: "confirmation" };
+      const targetStep = stepMap[captureStep];
+      if (targetStep) {
+        setCurrentStep(targetStep);
+        setLocationData({
+          fromPlz: demoData.fromPostal,
+          fromCity: demoData.fromCity,
+          fromFloor: demoData.floor,
+          fromElevator: demoData.hasElevator,
+          toPlz: demoData.toPostal,
+          toCity: demoData.toCity,
+          toFloor: 1,
+          toElevator: true,
+          moveDate: demoData.moveDate,
+          rooms: String(demoData.rooms),
+        });
+        setContactData({ name: demoData.name, email: demoData.email, phone: demoData.phone });
+        setTermsAccepted(demoData.privacyAccepted);
+        if (captureStep >= 4) setSelectedOffer("offer-0");
+      }
+    }
+  }, [isCaptureMode, captureStep, demoData]);
 
   const currentStepIndex = STEP_ORDER.indexOf(currentStep);
   const progress = ((currentStepIndex + 1) / STEP_ORDER.length) * 100;
