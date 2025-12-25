@@ -22,12 +22,12 @@ interface Company {
   company_name?: string;
   rating: number;
   review_count: number;
-  price_level: "günstig" | "fair" | "premium";
+  price_level: string;
   is_featured: boolean;
   services_offered: string[];
-  service_areas: string[];
+  service_areas?: string[];
   cantons_served?: string[];
-  logo_url: string | null;
+  logo_url?: string | null;
   short_description?: string;
   quality_score?: number;
   slug?: string;
