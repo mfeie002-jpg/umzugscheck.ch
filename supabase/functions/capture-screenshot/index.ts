@@ -228,15 +228,16 @@ serve(async (req) => {
       }
     })();
 
-    // In capture-mode we intentionally wait a bit longer because the funnel pre-fills data and loads async content.
-    // IMPORTANT: Keep this conservative to avoid Edge/Provider timeouts in bulk runs.
+    // In capture-mode we intentionally wait much longer because the funnel:
+    // 1. Is lazy-loaded (React Suspense)
+    // 2. Pre-fills data and loads async content
+    // 3. May have animations that need to complete
+    // CRITICAL: SPAs with lazy-loading need 20-30+ seconds to fully render
     const defaultDelay = isFullPage
-      ? (isCaptureMode ? 15000 : 12000)
-      : 6000;
-    const minDelay = isFullPage
-      ? (isCaptureMode ? 8000 : 8000)
-      : 0;
-    const maxDelay = isFullPage ? 45000 : 20000;
+      ? (isCaptureMode ? 25000 : 15000)
+      : (isCaptureMode ? 20000 : 6000);
+    const minDelay = isCaptureMode ? 15000 : (isFullPage ? 8000 : 0);
+    const maxDelay = 60000; // Allow up to 60 seconds
 
     const delayMsClamped = Number.isFinite(delayMsRaw)
       ? Math.max(minDelay, Math.min(maxDelay, delayMsRaw))
