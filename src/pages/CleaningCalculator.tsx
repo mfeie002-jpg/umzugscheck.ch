@@ -12,13 +12,14 @@ import { Sparkles, ArrowLeft, Home, Droplets, Square, Users } from "lucide-react
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { calculateCleaningPrice, CleaningCalculatorInput } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { OffertenCTA } from "@/components/OffertenCTA";
+import { CalculatorEvents, ConversionEvents, EngagementEvents } from "@/lib/analytics-tracking";
 import {
   Form,
   FormControl,
@@ -34,7 +35,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 const formSchema = z.object({
   cleaningType: z.enum(['end-of-lease', 'regular', 'deep-clean']),
   squareMeters: z.number().min(20).max(500),
@@ -79,6 +79,11 @@ const CleaningCalculator = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Track calculator start
+  useEffect(() => {
+    CalculatorEvents.started('reinigungsrechner');
+  }, []);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -95,12 +100,29 @@ const CleaningCalculator = () => {
     },
   });
 
+  // Track slider changes
+  const handleSliderChange = (name: string, value: number) => {
+    EngagementEvents.sliderUsed({ sliderName: `cleaning_${name}`, value });
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
     try {
       const calculation = calculateCleaningPrice(values as CleaningCalculatorInput);
       setResult(calculation);
+
+      // Track calculator completion
+      CalculatorEvents.priceShown({ 
+        version: 'reinigungsrechner', 
+        priceMin: calculation.priceRange.min, 
+        priceMax: calculation.priceRange.max 
+      });
+      ConversionEvents.calculatorCompleted({ 
+        version: 'reinigungsrechner', 
+        estimatedPrice: calculation.totalPrice,
+        duration: calculation.estimatedHours 
+      });
       
       // Create estimate session for funnel
       const { data: sessionData, error: sessionError } = await supabase.functions.invoke(

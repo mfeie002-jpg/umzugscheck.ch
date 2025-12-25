@@ -11,12 +11,13 @@ import { Package, ArrowLeft, Clock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { calculateStoragePrice, StorageCalculatorInput } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { CalculatorEvents, ConversionEvents, EngagementEvents } from "@/lib/analytics-tracking";
 import {
   Form,
   FormControl,
@@ -74,6 +75,11 @@ const StorageCalculator = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Track calculator start
+  useEffect(() => {
+    CalculatorEvents.started('lagerrechner');
+  }, []);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -86,12 +92,28 @@ const StorageCalculator = () => {
     },
   });
 
+  // Track slider changes
+  const handleSliderChange = (name: string, value: number) => {
+    EngagementEvents.sliderUsed({ sliderName: `storage_${name}`, value });
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
     try {
       const calculation = calculateStoragePrice(values as StorageCalculatorInput);
       setResult({ ...calculation, duration: values.duration });
+
+      // Track calculator completion
+      CalculatorEvents.priceShown({ 
+        version: 'lagerrechner', 
+        priceMin: calculation.priceRange.min, 
+        priceMax: calculation.priceRange.max 
+      });
+      ConversionEvents.calculatorCompleted({ 
+        version: 'lagerrechner', 
+        estimatedPrice: calculation.monthlyPrice 
+      });
       
       // Create estimate session
       const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
