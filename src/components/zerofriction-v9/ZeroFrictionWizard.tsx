@@ -73,6 +73,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 // ============================================
 // TYPES
@@ -294,34 +295,85 @@ const QuickPriceDisplay = ({ price, savings }: { price: number; savings: number 
 // ============================================
 
 export function ZeroFrictionWizard() {
-  const [step, setStep] = useState<WizardStep>('start');
+  // Capture mode for screenshot automation
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
+  
+  // Map capture step (1-4) to wizard steps
+  const getInitialStep = (): WizardStep => {
+    if (!isCaptureMode || !captureStep) return 'start';
+    const stepMap: Record<number, WizardStep> = {
+      1: 'start',
+      2: 'refine',
+      3: 'service',
+      4: 'customize',
+      5: 'confirm',
+    };
+    return stepMap[captureStep] || 'start';
+  };
+  
+  const [step, setStep] = useState<WizardStep>(getInitialStep());
   const [isCalculating, setIsCalculating] = useState(false);
   const [showVideoOption, setShowVideoOption] = useState(false);
   
-  const [moveData, setMoveData] = useState<MoveData>({
-    fromZip: '',
-    fromCity: '',
-    toZip: '',
-    toCity: '',
-    rooms: 3,
-    floor: 2,
-    hasElevator: true,
-    moveDate: '',
-    flexibleDate: true,
-    serviceLevel: 50,
-    addons: {
-      packing: false,
-      cleaning: true, // Smart default: most people need this
-      disposal: false,
-      storage: false,
-      furniture: true, // Smart default
-      admin: false,
-    },
-    videoScanned: false,
-    inventoryItems: 0,
-    estimatedVolume: 35,
-    contact: { name: '', email: '', phone: '' },
-    comments: '',
+  const [moveData, setMoveData] = useState<MoveData>(() => {
+    // In capture mode, use prefilled demo data
+    if (isCaptureMode) {
+      return {
+        fromZip: demoData.fromPostal,
+        fromCity: demoData.fromCity,
+        toZip: demoData.toPostal,
+        toCity: demoData.toCity,
+        rooms: demoData.rooms,
+        floor: demoData.floor,
+        hasElevator: demoData.hasElevator,
+        moveDate: demoData.moveDate,
+        flexibleDate: true,
+        serviceLevel: demoData.serviceLevel,
+        addons: {
+          packing: demoData.selectedServices.includes('einpacken'),
+          cleaning: demoData.selectedServices.includes('reinigung'),
+          disposal: demoData.selectedServices.includes('entsorgung'),
+          storage: demoData.selectedServices.includes('lagerung'),
+          furniture: true,
+          admin: false,
+        },
+        videoScanned: false,
+        inventoryItems: 0,
+        estimatedVolume: 35,
+        contact: { 
+          name: demoData.name, 
+          email: demoData.email, 
+          phone: demoData.phone 
+        },
+        comments: '',
+      };
+    }
+    
+    return {
+      fromZip: '',
+      fromCity: '',
+      toZip: '',
+      toCity: '',
+      rooms: 3,
+      floor: 2,
+      hasElevator: true,
+      moveDate: '',
+      flexibleDate: true,
+      serviceLevel: 50,
+      addons: {
+        packing: false,
+        cleaning: true, // Smart default: most people need this
+        disposal: false,
+        storage: false,
+        furniture: true, // Smart default
+        admin: false,
+      },
+      videoScanned: false,
+      inventoryItems: 0,
+      estimatedVolume: 35,
+      contact: { name: '', email: '', phone: '' },
+      comments: '',
+    };
   });
 
   const [priceBreakdown, setPriceBreakdown] = useState<PriceBreakdown | null>(null);

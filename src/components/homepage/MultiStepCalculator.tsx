@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useABTest } from "@/hooks/use-ab-test";
+import { getUcCaptureParams, getTomorrowISODate, getDefaultCaptureContact } from "@/lib/uc-capture";
 import { postalCodeSchema, emailSchema, nameSchema, phoneSchema } from "@/lib/form-validation";
 import { ValidatedInput } from "@/components/ui/ValidatedInput";
 import { VisualRoomSelector } from "./VisualRoomSelector";
@@ -181,13 +182,43 @@ interface FormData {
 export const MultiStepCalculator = memo(function MultiStepCalculator() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentStep, setCurrentStep] = useState(1);
+  
+  // Check for capture mode (for screenshot automation)
+  const captureParams = getUcCaptureParams(location.search);
+  
+  const [currentStep, setCurrentStep] = useState(() => {
+    // If in capture mode with a specific step, start at that step
+    if (captureParams.enabled && captureParams.step) {
+      return captureParams.step;
+    }
+    return 1;
+  });
   const [expandedService, setExpandedService] = useState<string | null>(null);
   const [didAutoAdvance, setDidAutoAdvance] = useState(false);
   const [companyFilter, setCompanyFilter] = useState<"alle" | "günstig" | "top" | "schnell">("alle");
   const [showComparisonView, setShowComparisonView] = useState(false);
   
   const [formData, setFormData] = useState<FormData>(() => {
+    // If in capture mode, use prefilled demo data
+    if (captureParams.enabled) {
+      const contact = getDefaultCaptureContact();
+      return {
+        moveType: "wohnung",
+        fromLocation: "8048 Zürich",
+        toLocation: "3011 Bern",
+        apartmentSize: "3-3.5",
+        selectedServices: ["umzug", "einpacken", "reinigung"],
+        moveDate: getTomorrowISODate(),
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        useVideoAI: false,
+        privacyAccepted: true,
+        selectedCompanies: ["demo-1", "demo-2", "demo-3"],
+        submitOption: "both" as const,
+      };
+    }
+    
     try {
       const saved = localStorage.getItem(FORM_STORAGE_KEY);
       if (saved) {

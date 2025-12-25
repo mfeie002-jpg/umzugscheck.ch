@@ -53,6 +53,7 @@ export default function UmzugsoffertenBestaetigung() {
 
       try {
         // 1. Create the lead
+        // Note: selected_company_ids expects UUIDs, so we store company selection in calculator_input instead
         const { data: lead, error: leadError } = await supabase
           .from("leads")
           .insert({
@@ -70,12 +71,13 @@ export default function UmzugsoffertenBestaetigung() {
               services,
               fromLocation,
               toLocation,
+              selectedCompanies: companies, // Store company selection here (can be any format)
             },
             calculator_output: {
               priceMin,
               priceMax,
             },
-            selected_company_ids: companies,
+            // Don't use selected_company_ids - it expects UUIDs but we have temporary IDs like "zuerich-0"
             lead_source: submitOption === "publish" ? "public_listing" : "calculator",
           })
           .select()

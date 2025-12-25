@@ -37,13 +37,20 @@ interface FlowStep {
   url?: string;
 }
 
+// Step configs using uc_capture mode for deterministic screenshot capture
+// uc_capture=1 enables capture mode (prefilled demo data)
+// uc_step=N sets the specific step to render
 const STEP_CONFIGS = [
-  { step: 1, name: "Adressen eingeben", path: "/?step=1", description: "Von/Nach PLZ und Stadt eingeben" },
-  { step: 2, name: "Wohnungsdetails & Datum", path: "/?step=2", description: "Wohnungsgrösse, Datum, Services" },
-  { step: 3, name: "Firmenauswahl", path: "/?step=3", description: "Passende Firmen auswählen" },
-  { step: 4, name: "Optionen wählen", path: "/?step=4", description: "Direkt, Ausschreibung oder beides" },
-  { step: 5, name: "Kontaktdaten", path: "/?step=5", description: "Name, Email, Absenden" },
+  { step: 1, name: "Umzugstyp wählen", description: "Wohnung, Haus, Büro auswählen" },
+  { step: 2, name: "Details & Services", description: "Adressen, Grösse, Datum, Services" },
+  { step: 3, name: "Firmenauswahl", description: "Passende Firmen auswählen" },
+  { step: 4, name: "Kontakt & Absenden", description: "Name, Email, Absenden" },
 ];
+
+// Helper to build capture URL for a given flow and step
+const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number) => {
+  return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}`;
+};
 
 const DIMENSIONS = {
   desktop: '1920x1080',
@@ -134,8 +141,8 @@ export function CalculatorFlowReview() {
 
     for (let i = 0; i < STEP_CONFIGS.length; i++) {
       const config = STEP_CONFIGS[i];
-      // Construct URL with calculator path + step parameter
-      const fullUrl = `${baseUrl}${calculatorPath}?step=${config.step}`;
+      // Construct URL with uc_capture mode for deterministic step rendering
+      const fullUrl = buildCaptureUrl(baseUrl, calculatorPath, config.step);
 
       // Desktop screenshot
       setCaptureStatus(`Step ${config.step}: Desktop Screenshot...`);
@@ -175,11 +182,13 @@ export function CalculatorFlowReview() {
   };
 
   const generateMockSteps = () => {
+    const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
+    const calculatorPath = selectedCalc?.path || '/umzugsofferten';
     const mockSteps: FlowStep[] = STEP_CONFIGS.map(config => ({
       step: config.step,
       name: config.name,
       description: config.description,
-      url: `${window.location.origin}${config.path}`,
+      url: buildCaptureUrl(window.location.origin, calculatorPath, config.step),
       html: getMockHtml(config.step),
     }));
     
