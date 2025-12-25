@@ -226,6 +226,11 @@ export function ScreenshotMachine() {
     if (!bundle) return;
 
     const targetUrl = url || DEFAULT_SITE_ORIGIN;
+    if (!bundle.isFullAudit && !targetUrl) {
+      toast.error("Bitte gib eine URL ein (Bundles brauchen eine Ziel-URL)");
+      return;
+    }
+
     const urls = bundle.isFullAudit ? TOP_20_URLS : [targetUrl];
     const dimensions = bundle.dimensions;
     const totalCaptures = urls.length * dimensions.length;
