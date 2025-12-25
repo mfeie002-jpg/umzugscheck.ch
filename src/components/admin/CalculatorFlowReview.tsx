@@ -52,6 +52,7 @@ const DIMENSIONS = {
 
 export function CalculatorFlowReview() {
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isExportingAll, setIsExportingAll] = useState(false);
   const [capturedSteps, setCapturedSteps] = useState<FlowStep[]>([]);
   const [selectedCalculator, setSelectedCalculator] = useState("umzugsofferten");
   const [customPrompt, setCustomPrompt] = useState("");
@@ -73,6 +74,9 @@ export function CalculatorFlowReview() {
     { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner" },
     { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
   ];
+
+  // Only flow variants (V1-V9) for bulk export
+  const flowVariants = calculatorOptions.filter(c => c.value.startsWith('umzugsofferten'));
 
   const captureScreenshot = async (url: string, dimension: string): Promise<string | null> => {
     try {
@@ -494,6 +498,191 @@ export function CalculatorFlowReview() {
     toast.success('ZIP mit Desktop + Mobile Screenshots heruntergeladen');
   };
 
+  // Export ALL flow variants at once
+  const exportAllFlows = async () => {
+    setIsExportingAll(true);
+    setCaptureProgress(0);
+    setCaptureStatus("Starte Export aller Flows...");
+
+    const baseUrl = (baseUrlOverride.trim() || window.location.origin).replace(/\/$/, "");
+    const zip = new JSZip();
+    const exportDate = new Date().toISOString().split('T')[0];
+    const rootFolder = zip.folder(`all-flows-export-${exportDate}`);
+
+    if (!rootFolder) {
+      setIsExportingAll(false);
+      toast.error("Export fehlgeschlagen");
+      return;
+    }
+
+    const totalFlows = flowVariants.length;
+    let completedFlows = 0;
+
+    const allFlowsData: Record<string, any> = {
+      exportDate: new Date().toISOString(),
+      baseUrl,
+      flows: {},
+    };
+
+    for (const flow of flowVariants) {
+      const flowFolderName = flow.value.replace('umzugsofferten', 'v1').replace('-v', 'v');
+      const flowFolder = rootFolder.folder(flowFolderName);
+      if (!flowFolder) continue;
+
+      setCaptureStatus(`${flow.label}: Desktop Screenshot...`);
+      const fullUrl = `${baseUrl}${flow.path}`;
+      
+      // Capture desktop screenshot
+      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop);
+      
+      setCaptureStatus(`${flow.label}: Mobile Screenshot...`);
+      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile);
+      
+      setCaptureStatus(`${flow.label}: HTML...`);
+      const html = await captureRenderedHtml(fullUrl);
+
+      // Save to folder
+      if (desktopScreenshot) {
+        const base64Data = desktopScreenshot.replace(/^data:image\/\w+;base64,/, '');
+        flowFolder.file('screenshot-desktop.png', base64Data, { base64: true });
+      }
+      if (mobileScreenshot) {
+        const base64Data = mobileScreenshot.replace(/^data:image\/\w+;base64,/, '');
+        flowFolder.file('screenshot-mobile.png', base64Data, { base64: true });
+      }
+      if (html) {
+        flowFolder.file('page.html', html);
+      }
+
+      // Create flow info JSON
+      const flowInfo = {
+        id: flow.value,
+        name: flow.label,
+        path: flow.path,
+        fullUrl,
+        hasDesktopScreenshot: !!desktopScreenshot,
+        hasMobileScreenshot: !!mobileScreenshot,
+        hasHtml: !!html,
+        htmlLength: html?.length || 0,
+        capturedAt: new Date().toISOString(),
+      };
+      flowFolder.file('info.json', JSON.stringify(flowInfo, null, 2));
+      
+      allFlowsData.flows[flow.value] = flowInfo;
+
+      completedFlows++;
+      setCaptureProgress((completedFlows / totalFlows) * 100);
+    }
+
+    // Add master JSON with all flows info
+    rootFolder.file('all-flows.json', JSON.stringify(allFlowsData, null, 2));
+
+    // Add comprehensive analysis prompt
+    rootFolder.file('chatgpt-analysis-prompt.md', generateAllFlowsPrompt(allFlowsData));
+
+    // Add comparison prompt
+    rootFolder.file('comparison-prompt.md', generateComparisonPrompt());
+
+    setCaptureStatus("ZIP wird erstellt...");
+    const blob = await zip.generateAsync({ type: 'blob' });
+    saveAs(blob, `all-flows-export-${exportDate}.zip`);
+
+    setCaptureStatus("");
+    setIsExportingAll(false);
+    toast.success(`Alle ${totalFlows} Flows exportiert!`);
+  };
+
+  const generateAllFlowsPrompt = (data: Record<string, any>) => `# Umzugscheck.ch - Alle 9 Flow-Varianten Analyse
+
+## Exportdatum: ${data.exportDate}
+## Base URL: ${data.baseUrl}
+
+---
+
+Du bist ein UX-Experte und Conversion-Optimierer. Analysiere alle 9 Umzugsrechner-Flows und erstelle eine optimierte Version 10.
+
+## Die 9 Flows:
+
+${Object.entries(data.flows).map(([key, flow]: [string, any]) => `
+### ${flow.name}
+- **URL:** ${flow.fullUrl}
+- **Desktop Screenshot:** ${flow.hasDesktopScreenshot ? '✓' : '✗'}
+- **Mobile Screenshot:** ${flow.hasMobileScreenshot ? '✓' : '✗'}
+- **HTML:** ${flow.hasHtml ? `✓ (${(flow.htmlLength / 1024).toFixed(1)} KB)` : '✗'}
+`).join('')}
+
+---
+
+## Analyse-Aufgaben:
+
+### Für JEDEN Flow analysiere:
+1. ✅ **Stärken** - Was funktioniert gut?
+2. ❌ **Schwächen** - Was könnte besser sein?
+3. 💡 **Unique Ideas** - Einzigartige Elemente die übernommen werden sollten
+4. 📊 **Conversion-Schätzung** - Niedrig/Mittel/Hoch
+
+### Erstelle dann V10 "Ultimate Flow":
+- Kombiniere die besten Elemente aller 9 Flows
+- Optimiere für: **Schnelligkeit**, **Vertrauen**, **Conversion**
+- Ziel: In unter 2 Minuten zur Offerte
+- Mobile-First Design
+- Schweizer Markt (DE/FR/IT)
+
+---
+
+## Gewünschtes Output-Format:
+
+### 1. Analyse-Tabelle
+| Flow | Stärken | Schwächen | Unique Ideas | Conversion |
+|------|---------|-----------|--------------|------------|
+| V1   | ...     | ...       | ...          | ...        |
+| ...  | ...     | ...       | ...          | ...        |
+
+### 2. Top 5 Best Practices (aus allen Flows)
+
+### 3. V10 "Ultimate Flow" - Detaillierter Ablauf
+- Step-by-Step Beschreibung
+- Wireframe/Mockup Beschreibung
+- Key Features von jedem übernommenen Flow
+
+### 4. Priorisierte Implementierungs-Roadmap
+
+---
+
+**Hinweis:** Die Screenshots und HTML-Dateien befinden sich in den jeweiligen Flow-Ordnern.
+`;
+
+  const generateComparisonPrompt = () => `# Quick Comparison Prompt - Alle 9 Flows
+
+Vergleiche alle 9 Umzugsrechner-Flows und beantworte:
+
+## Schnell-Vergleich
+
+1. **Welcher Flow hat die beste User Experience?** Warum?
+2. **Welcher Flow ist am schnellsten?** (wenigste Schritte/Zeit)
+3. **Welcher Flow wirkt am vertrauenswürdigsten?**
+4. **Welcher Flow hat das beste Mobile-Design?**
+5. **Welcher Flow ist am innovativsten?**
+
+## Ranking
+
+Erstelle ein Ranking von 1-9 basierend auf:
+- Conversion-Potenzial
+- User Experience
+- Geschwindigkeit
+- Vertrauen/Seriösität
+- Innovation
+
+## Empfehlung
+
+**Dein Favorit für Production:** ___
+**Begründung:** ___
+
+---
+
+Lade die Screenshots aus den jeweiligen Ordnern hoch für eine visuelle Analyse.
+`;
+
   const generateReadme = () => `# Umzugsofferten Flow Review
 
 ## Übersicht
@@ -639,14 +828,14 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               <Button 
                 variant="outline"
                 onClick={generateMockSteps}
-                disabled={isCapturing}
+                disabled={isCapturing || isExportingAll}
               >
                 <Play className="w-4 h-4 mr-2" />
                 Demo laden
               </Button>
               <Button 
                 onClick={captureAllSteps}
-                disabled={isCapturing}
+                disabled={isCapturing || isExportingAll}
               >
                 {isCapturing ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -658,7 +847,7 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
             </div>
           </div>
           
-          {isCapturing && (
+          {(isCapturing || isExportingAll) && (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">{captureStatus}</span>
@@ -667,6 +856,33 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               <Progress value={captureProgress} />
             </div>
           )}
+
+          {/* Export All Flows Button */}
+          <div className="border-t pt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium flex items-center gap-2">
+                  <Package className="w-4 h-4 text-primary" />
+                  Alle {flowVariants.length} Flows exportieren
+                </h4>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Exportiert Screenshots, HTML & JSON aller V1-V9 Flows für ChatGPT-Analyse
+                </p>
+              </div>
+              <Button 
+                onClick={exportAllFlows}
+                disabled={isCapturing || isExportingAll}
+                className="bg-gradient-to-r from-primary to-blue-600"
+              >
+                {isExportingAll ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4 mr-2" />
+                )}
+                {isExportingAll ? 'Exportiere...' : 'Alle Flows exportieren'}
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
