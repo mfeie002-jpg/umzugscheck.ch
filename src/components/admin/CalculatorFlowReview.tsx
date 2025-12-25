@@ -58,7 +58,8 @@ export function CalculatorFlowReview() {
   const [customPrompt, setCustomPrompt] = useState("");
   const [captureProgress, setCaptureProgress] = useState(0);
   const [captureStatus, setCaptureStatus] = useState("");
-  const [baseUrlOverride, setBaseUrlOverride] = useState("");
+  // Use sandbox URL by default (publicly accessible, always up-to-date)
+  const [baseUrlOverride, setBaseUrlOverride] = useState("https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com");
 
   const calculatorOptions = [
     { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
