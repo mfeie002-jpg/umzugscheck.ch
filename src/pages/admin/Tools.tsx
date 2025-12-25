@@ -28,6 +28,7 @@ import { ScheduledMonitoringPanel } from "@/components/admin/ScheduledMonitoring
 import { ToolsDocumentation } from "@/components/admin/ToolsDocumentation";
 import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
+import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -3004,7 +3005,15 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
 
           {/* Calculator Flow Review Tab */}
           <TabsContent value="calculator-review">
-            <CalculatorFlowReview />
+            <div className="space-y-8">
+              <CalculatorFlowReview />
+              
+              {/* Auto Flow Screenshots Section */}
+              <div className="border-t pt-8">
+                <h2 className="text-2xl font-bold mb-4">Flow Screenshots</h2>
+                <AutoFlowScreenshots />
+              </div>
+            </div>
           </TabsContent>
 
           {/* SEO HTML Analyzer Tab */}
