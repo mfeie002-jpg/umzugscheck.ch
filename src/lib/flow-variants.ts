@@ -288,6 +288,39 @@ export const VARIANT_E: FlowVariantConfig = {
   cardStyle: 'elevated',
 };
 
+// Variant F: SwissMove V7 - 90-Sekunden Buchung
+export const VARIANT_F: FlowVariantConfig = {
+  id: 'variant-f',
+  name: 'SwissMove V7',
+  description: '90-Sekunden Buchung mit 4-Tier Service-Level Slider',
+  
+  steps: ['moveType', 'location', 'pricing', 'summary', 'contact'],
+  
+  showProgressBar: true,
+  progressStyle: 'bar',
+  layout: 'wizard',
+  
+  headline: 'Dein Umzug in 90 Sekunden gebucht',
+  subheadline: 'Ohne Stress. Ohne versteckte Kosten. Garantiert.',
+  ctaText: 'Jetzt buchen',
+  trustBadges: true,
+  
+  showPriceEstimate: true,
+  showCompanyPreview: true,
+  showVideoAIOption: false,
+  showServiceDetails: true,
+  showSavingsCalculator: false,
+  
+  companySelectionMode: 'none',
+  maxCompanySelections: 0,
+  
+  submitOptions: ['direct'],
+  defaultSubmitOption: 'direct',
+  
+  accentColor: 'blue',
+  cardStyle: 'elevated',
+};
+
 export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'control': VARIANT_CONTROL,
   'variant-a': VARIANT_A,
@@ -295,6 +328,7 @@ export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'variant-c': VARIANT_C,
   'variant-d': VARIANT_D,
   'variant-e': VARIANT_E,
+  'variant-f': VARIANT_F,
 };
 
 // Get variant by ID
@@ -315,6 +349,7 @@ export const URL_TO_VARIANT: Record<string, string> = {
   '/umzugsofferten-v4': 'variant-c',
   '/umzugsofferten-v5': 'variant-d',
   '/umzugsofferten-v6': 'variant-e',
+  '/umzugsofferten-v7': 'variant-f',
 };
 
 // Get variant from URL path

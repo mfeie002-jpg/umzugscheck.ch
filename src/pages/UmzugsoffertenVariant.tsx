@@ -26,6 +26,7 @@ import { GodModeCalculator } from "@/components/god-mode-v3/GodModeCalculator";
 import { VideoFirstCalculator } from "@/components/video-first-v4/VideoFirstCalculator";
 import { MarketplaceWizard } from "@/components/marketplace-v5/MarketplaceWizard";
 import { UltimateWizard } from "@/components/ultimate-v6/UltimateWizard";
+import { SwissMoveWizard } from "@/components/swissmove-v7/SwissMoveWizard";
 import { Link, useLocation } from "react-router-dom";
 import { getVariantFromPath, type FlowVariantConfig } from "@/lib/flow-variants";
 import { useEffect } from "react";
@@ -65,6 +66,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
         return 'Umzugs-Marketplace | Partner-Offerten vergleichen & buchen | Umzugscheck.ch';
       case 'variant-e':
         return 'Ultimate Umzug | 6-Tier God Mode | Umzugscheck.ch';
+      case 'variant-f':
+        return 'SwissMove | Umzug in 90 Sekunden buchen | Umzugscheck.ch';
       default:
         return 'Umzugsofferten Schweiz kostenlos vergleichen | Umzugscheck.ch';
     }
@@ -82,6 +85,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
         return 'Der komplette Umzugs-Marketplace: Video/Inventar erfassen, Partner-Fixpreise vergleichen, online buchen.';
       case 'variant-e':
         return 'Das ultimative Umzugserlebnis: 6 Service-Levels, Video-KI-Analyse, Timeline-Dashboard und Fixpreis-Garantie.';
+      case 'variant-f':
+        return 'Dein Umzug in 90 Sekunden gebucht. 4 Service-Level, Live-Tracking, Crew-Profile und Fixpreis-Garantie.';
       default:
         return 'Erhalten Sie gratis Umzugsofferten von geprüften Umzugsfirmen in der Schweiz. Schnell vergleichen, transparente Preise.';
     }
@@ -111,6 +116,7 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
   const isVideoFirstV4 = variant.id === 'variant-c';
   const isMarketplaceV5 = variant.id === 'variant-d';
   const isUltimateV6 = variant.id === 'variant-e';
+  const isSwissMoveV7 = variant.id === 'variant-f';
 
   return (
     <div className={cn(
@@ -151,6 +157,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
             <MarketplaceWizard />
           ) : isUltimateV6 ? (
             <UltimateWizard />
+          ) : isSwissMoveV7 ? (
+            <SwissMoveWizard />
           ) : (
             <MultiStepCalculatorVariant variant={variant} />
           )}
@@ -213,6 +221,7 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
                 <Link to="/umzugsofferten-v4" className="block text-primary hover:underline py-1 active:opacity-70">Variant C</Link>
                 <Link to="/umzugsofferten-v5" className="block text-primary hover:underline py-1 active:opacity-70">Variant D</Link>
                 <Link to="/umzugsofferten-v6" className="block text-primary hover:underline py-1 active:opacity-70">Variant E (V6)</Link>
+                <Link to="/umzugsofferten-v7" className="block text-primary hover:underline py-1 active:opacity-70">Variant F (V7)</Link>
               </div>
             </div>
           </div>
