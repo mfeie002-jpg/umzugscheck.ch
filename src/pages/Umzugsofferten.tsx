@@ -70,9 +70,10 @@ const Umzugsofferten = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <ExitIntentPopup />
-      <ConsentBanner />
-      <DebugOverlay />
+      {/* Popups disabled for cleaner UX */}
+      {/* <ExitIntentPopup /> */}
+      {/* <ConsentBanner /> */}
+      {/* <DebugOverlay /> */}
       <PageEnhancements />
       <Helmet>
         <title>Umzugsofferten Schweiz kostenlos vergleichen | Umzugscheck.ch</title>
