@@ -128,7 +128,7 @@ const CALCULATOR_FLOWS = [
   },
   {
     id: "umzugsofferten-v9",
-    name: "V9",
+    name: "V9 - ZeroFriction",
     path: "/umzugsofferten-v9",
     steps: [
       { step: 1, name: "Step 1 - Start" },
@@ -137,6 +137,7 @@ const CALCULATOR_FLOWS = [
       { step: 4, name: "Step 4 - Customize" },
       { step: 5, name: "Step 5 - Firmen" },
       { step: 6, name: "Step 6 - Bestätigen" },
+      { step: 7, name: "Step 7 - Success" },
     ],
   },
 ];
