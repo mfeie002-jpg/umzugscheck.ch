@@ -194,19 +194,6 @@ serve(async (req) => {
     const validFormats = ["png", "jpg", "pdf"];
     const outputFormat = validFormats.includes(format) ? format : "png";
 
-    // ScreenshotMachine only supports specific delay values (ms)
-    const allowedDelays = [0, 200, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
-    const delayMsRaw = typeof delay === "number" ? delay : Number(delay);
-    const defaultDelay = 10000;
-    const delayMsClamped = Number.isFinite(delayMsRaw)
-      ? Math.max(0, Math.min(10000, delayMsRaw))
-      : defaultDelay;
-    const effectiveDelay = allowedDelays.reduce(
-      (prev, curr) =>
-        Math.abs(curr - delayMsClamped) < Math.abs(prev - delayMsClamped) ? curr : prev,
-      allowedDelays[0]
-    );
-
     if (!url) {
       return new Response(
         JSON.stringify({ error: "URL is required" }),
@@ -227,6 +214,17 @@ serve(async (req) => {
       isFullPage = true;
       console.log(`Detected tall viewport (${dimension}); switching to xfull stitching.`);
     }
+
+    // ScreenshotMachine delay is in milliseconds; allow longer waits for SPA rendering.
+    // Previous implementation incorrectly limited delay to 10s, causing screenshots of loading states.
+    const delayMsRaw = typeof delay === "number" ? delay : Number(delay);
+    const defaultDelay = isFullPage ? 15000 : 6000;
+    const minDelay = isFullPage ? 15000 : 0;
+    const maxDelay = isFullPage ? 60000 : 20000;
+    const delayMsClamped = Number.isFinite(delayMsRaw)
+      ? Math.max(minDelay, Math.min(maxDelay, delayMsRaw))
+      : defaultDelay;
+    const effectiveDelay = Math.round(delayMsClamped);
 
     let deviceType = "desktop";
     if (width <= 480) {
