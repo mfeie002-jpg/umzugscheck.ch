@@ -77,6 +77,7 @@ import { ScrollToTop } from "./components/ScrollToTop";
 import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
 import { ScrollProgressBar } from "./components/ScrollProgressBar";
 import { ScreenshotRenderModeRoot } from "@/components/ScreenshotRenderModeRoot";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 
 // Lazy load non-critical UI components
 const AIMovingAssistant = lazy(() => import("./components/AIMovingAssistant").then(m => ({ default: m.AIMovingAssistant })));
@@ -294,6 +295,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <AnalyticsTracker />
                 <ScreenshotRenderModeRoot />
                 <CriticalCSS />
                 <CriticalCSSLoader />
