@@ -228,14 +228,15 @@ serve(async (req) => {
       }
     })();
 
-    // In capture-mode we intentionally wait longer because the funnel pre-fills data and loads async content.
+    // In capture-mode we intentionally wait a bit longer because the funnel pre-fills data and loads async content.
+    // IMPORTANT: Keep this conservative to avoid Edge/Provider timeouts in bulk runs.
     const defaultDelay = isFullPage
-      ? (isCaptureMode ? 30000 : 15000)
+      ? (isCaptureMode ? 15000 : 12000)
       : 6000;
     const minDelay = isFullPage
-      ? (isCaptureMode ? 25000 : 15000)
+      ? (isCaptureMode ? 8000 : 8000)
       : 0;
-    const maxDelay = isFullPage ? 60000 : 20000;
+    const maxDelay = isFullPage ? 45000 : 20000;
 
     const delayMsClamped = Number.isFinite(delayMsRaw)
       ? Math.max(minDelay, Math.min(maxDelay, delayMsRaw))

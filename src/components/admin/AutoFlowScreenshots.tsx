@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/data/constants";
 import {
@@ -156,29 +157,37 @@ interface CaptureResult {
 }
 
 export function AutoFlowScreenshots() {
+  const defaultPublicBaseUrl = useMemo(() => {
+    if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
+    const { origin, hostname } = window.location;
+    const isLovableHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
+    return (isLovableHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+  }, []);
+
+  const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPublicBaseUrl);
   const [selectedFlows, setSelectedFlows] = useState<string[]>(
     CALCULATOR_FLOWS.map((f) => f.id)
   );
   const [captureDesktop, setCaptureDesktop] = useState(true);
   const [captureMobile, setCaptureMobile] = useState(true);
+  const [fullPage, setFullPage] = useState(true);
+  const [delayMs, setDelayMs] = useState(15000);
+
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0, currentItem: "" });
   const [results, setResults] = useState<CaptureResult[]>([]);
 
-  const getBaseUrl = () => {
-    // Screenshot providers cannot access Lovable preview/sandbox domains (login wall).
-    // Default to the public site URL so automation works reliably.
-    if (typeof window === "undefined") return SITE_CONFIG.url;
+  // Debug: run the same capture multiple times to verify stability
+  const [debugFlowId, setDebugFlowId] = useState(CALCULATOR_FLOWS[0]?.id || "");
+  const [debugStep, setDebugStep] = useState(1);
+  const [debugRuns, setDebugRuns] = useState(10);
+  const [debugRunning, setDebugRunning] = useState(false);
+  const [debugStats, setDebugStats] = useState<{ ok: number; fail: number; lastError?: string } | null>(null);
 
-    const { hostname, origin } = window.location;
-    const isLovableHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-
-    if (isLovableHost) return SITE_CONFIG.url.replace(/\/$/, "");
-    return origin;
-  };
+  const getBaseUrl = () => (baseUrlOverride.trim() || defaultPublicBaseUrl).replace(/\/$/, "");
 
   const buildCaptureUrl = (flowPath: string, step: number) => {
-    const baseUrl = getBaseUrl().replace(/\/$/, "");
+    const baseUrl = getBaseUrl();
     // uc_cb busts caches for screenshot tooling.
     return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_render=1&uc_cb=${Date.now()}`;
   };
@@ -246,15 +255,15 @@ export function AutoFlowScreenshots() {
 
           const captureUrl = buildCaptureUrl(flow.path, stepDef.step);
 
-            try {
-              const result = await captureScreenshot({
-                url: captureUrl,
-                dimension: dim.value,
-                delay: 8000, // Give time for animations
-                format: "png",
-                fullPage: true,
-                noCache: true,
-              });
+          try {
+            const result = await captureScreenshot({
+              url: captureUrl,
+              dimension: dim.value,
+              delay: delayMs,
+              format: "png",
+              fullPage,
+              noCache: true,
+            });
 
             const captureResult: CaptureResult = {
               flowId: flow.id,
@@ -342,6 +351,52 @@ export function AutoFlowScreenshots() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Base URL + capture settings */}
+          <div className="grid grid-cols-1 gap-3 rounded-lg border border-border p-3">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Base URL (wo die Screenshots gemacht werden)</label>
+              <Input
+                value={baseUrlOverride}
+                onChange={(e) => setBaseUrlOverride(e.target.value)}
+                placeholder={defaultPublicBaseUrl}
+              />
+              <p className="text-xs text-muted-foreground">
+                Tipp: Muss öffentlich erreichbar sein (Preview-Domains haben oft eine Login-Wall).
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Delay (ms)</label>
+                <Input
+                  type="number"
+                  value={delayMs}
+                  min={0}
+                  step={1000}
+                  onChange={(e) => setDelayMs(Math.max(0, Number(e.target.value) || 0))}
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-6">
+                <Checkbox checked={fullPage} onCheckedChange={(v) => setFullPage(Boolean(v))} />
+                <span className="text-sm">Full Page</span>
+              </div>
+
+              <div className="flex items-center justify-end sm:justify-start pt-6">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setBaseUrlOverride(defaultPublicBaseUrl);
+                    toast.success("Base URL zurückgesetzt");
+                  }}
+                >
+                  Reset
+                </Button>
+              </div>
+            </div>
+          </div>
+
           {/* Quick Actions */}
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={selectAllFlows}>
@@ -413,31 +468,118 @@ export function AutoFlowScreenshots() {
           </div>
 
           {/* Summary & Action */}
-          <div className="flex items-center justify-between pt-4 border-t">
-            <div className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">
-                {calculateTotalCaptures()}
-              </span>{" "}
-              Screenshots werden erstellt
+          <div className="flex flex-col gap-3 pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {calculateTotalCaptures()}
+                </span>{" "}
+                Screenshots werden erstellt
+              </div>
+              <Button
+                onClick={runAutomaticCapture}
+                disabled={isRunning || selectedFlows.length === 0}
+                className="gap-2"
+              >
+                {isRunning ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Läuft...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4" />
+                    Alle Screenshots erstellen
+                  </>
+                )}
+              </Button>
             </div>
-            <Button
-              onClick={runAutomaticCapture}
-              disabled={isRunning || selectedFlows.length === 0}
-              className="gap-2"
-            >
-              {isRunning ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Läuft...
-                </>
-              ) : (
-                <>
-                  <Play className="h-4 w-4" />
-                  Alle Screenshots erstellen
-                </>
+
+            {/* Stability test */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end rounded-lg border border-border p-3">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Debug Flow</label>
+                <Input value={debugFlowId} onChange={(e) => setDebugFlowId(e.target.value)} placeholder="umzugsofferten" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Step</label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={debugStep}
+                  onChange={(e) => setDebugStep(Math.max(1, Number(e.target.value) || 1))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Runs</label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={25}
+                  value={debugRuns}
+                  onChange={(e) => setDebugRuns(Math.min(25, Math.max(1, Number(e.target.value) || 10)))}
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  disabled={debugRunning}
+                  onClick={async () => {
+                    const flow = CALCULATOR_FLOWS.find((f) => f.id === debugFlowId);
+                    if (!flow) {
+                      toast.error("Unbekannter Flow (ID prüfen)");
+                      return;
+                    }
+
+                    const urlToTest = buildCaptureUrl(flow.path, debugStep);
+                    setDebugRunning(true);
+                    setDebugStats(null);
+
+                    let ok = 0;
+                    let fail = 0;
+                    let lastError: string | undefined;
+
+                    for (let i = 0; i < debugRuns; i++) {
+                      try {
+                        const r = await captureScreenshot({
+                          url: urlToTest,
+                          dimension: DIMENSIONS.desktop.value,
+                          delay: delayMs,
+                          format: "png",
+                          fullPage,
+                          noCache: true,
+                        });
+                        if (r.success) ok++;
+                        else {
+                          fail++;
+                          lastError = r.error;
+                        }
+                      } catch (e) {
+                        fail++;
+                        lastError = e instanceof Error ? e.message : "Unknown error";
+                      }
+                      await new Promise((resolve) => setTimeout(resolve, 900));
+                    }
+
+                    setDebugStats({ ok, fail, lastError });
+                    setDebugRunning(false);
+                    toast.success(`Debug fertig: ${ok}/${debugRuns} OK`);
+                  }}
+                >
+                  {debugRunning ? "Testing…" : "Run Test"}
+                </Button>
+              </div>
+
+              {debugStats && (
+                <div className="md:col-span-4 text-xs text-muted-foreground">
+                  Ergebnis: <span className="text-foreground font-medium">{debugStats.ok}</span> OK, {debugStats.fail} Fail
+                  {debugStats.lastError ? ` • Last error: ${debugStats.lastError}` : ""}
+                </div>
               )}
-            </Button>
+            </div>
           </div>
+
+          {/* end Flow Selection card */}
         </CardContent>
       </Card>
 
