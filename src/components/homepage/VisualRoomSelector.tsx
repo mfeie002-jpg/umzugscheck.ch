@@ -29,14 +29,26 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
   onChange,
   className = ""
 }: VisualRoomSelectorProps) {
+  const hasSelection = value !== "";
+  
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="text-sm font-medium flex items-center gap-2">
-        <Home className="w-4 h-4 text-primary" />
-        Wohnungsgrösse
-      </label>
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium flex items-center gap-2">
+          <Home className="w-4 h-4 text-primary" />
+          Wohnungsgrösse
+        </label>
+        {!hasSelection && (
+          <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse font-medium">
+            👆 Bitte auswählen
+          </span>
+        )}
+      </div>
       
-      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+      <div className={cn(
+        "grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 p-2 rounded-xl transition-all",
+        !hasSelection && "ring-2 ring-amber-400/50 bg-amber-50/50 dark:bg-amber-900/10"
+      )}>
         {roomOptions.map((option, index) => {
           const isSelected = value === option.value;
           const Icon = option.icon;
@@ -78,6 +90,12 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
           );
         })}
       </div>
+      
+      {!hasSelection && (
+        <p className="text-[10px] text-muted-foreground text-center">
+          Wählen Sie Ihre Wohnungsgrösse für eine Preisschätzung
+        </p>
+      )}
     </div>
   );
 });

@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, ArrowLeft, Shield, CheckCircle, Video, Camera, 
   MapPin, TrendingDown, Package, Sparkles, Brush, Trash2, Warehouse,
-  Plus, Minus, Info, Star, Clock, Award, User, Mail, Phone, Calendar
+  Plus, Minus, Info, Star, Clock, Award, User, Mail, Phone, Calendar,
+  Filter, List, LayoutGrid, Zap, Map
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,11 +37,11 @@ const swissPostalCodes = [
 const services = [
   { 
     id: "umzug", 
-    label: "Umzug", 
-    description: "Transport & Ein-/Ausladen",
+    label: "Umzug (Basis)", 
+    description: "Ihr kompletter Umzug: Transport aller Möbel & Gegenstände von A nach B, inkl. professionelles Ein- und Ausladen durch erfahrene Möbelpacker.",
     priceRange: "Inkl.",
-    details: "Professioneller Transport Ihrer Möbel und Gegenstände vom alten zum neuen Zuhause. Inklusive sicheres Ein- und Ausladen.",
-    benefits: ["Erfahrene Möbelpacker", "Schutzverpackung inklusive", "Versicherter Transport"],
+    details: "Der Basis-Umzugsservice umfasst den kompletten Transport Ihrer Einrichtung. Unsere erfahrenen Teams schützen Ihre Möbel mit Decken und Gurten, tragen alles sicher raus und wieder rein.",
+    benefits: ["Erfahrene 2-3 Mann Teams", "Schutzverpackung für empfindliche Möbel", "Versicherter Transport bis CHF 50'000"],
     icon: <Package className="w-4 h-4" />,
     priceAdd: 0,
     popular: true,
@@ -49,21 +50,21 @@ const services = [
   { 
     id: "einpacken", 
     label: "Einpack-Service", 
-    description: "Wir packen alles für Sie ein",
+    description: "Keine Lust auf Kartonpacken? Wir übernehmen das komplett – Geschirr, Kleidung, Bücher, alles bruchsicher verpackt.",
     priceRange: "+CHF 300–500",
-    details: "Professionelles Einpacken aller Gegenstände in Kartons. Geschirr, Gläser, Bücher – alles wird fachgerecht und bruchsicher verpackt. Sie müssen keinen Finger rühren!",
-    benefits: ["Spart Ihnen 1–2 Tage Arbeit", "Bruchsicheres Verpacken durch Profis", "Kartonmaterial & Polsterung inklusive", "Ideal wenn wenig Zeit"],
+    details: "Professionelles Einpacken aller Gegenstände in Kartons. Geschirr, Gläser, Bücher – alles wird fachgerecht und bruchsicher verpackt. Sie müssen keinen Finger rühren und sparen 1-2 Tage Stress!",
+    benefits: ["Spart Ihnen 1–2 Tage Arbeit", "Bruchsicheres Verpacken durch Profis", "Kartonmaterial & Polsterung inklusive", "Perfekt bei Zeitmangel oder Rückenproblemen"],
     icon: <Package className="w-4 h-4" />,
     priceAdd: 400,
     popular: true,
-    highlight: true // New flag to visually emphasize
+    highlight: true
   },
   { 
     id: "auspacken", 
     label: "Auspack-Service", 
-    description: "Kartons auspacken am Zielort",
+    description: "Sofort einzugsbereit! Wir packen alle Kartons am Zielort aus und entsorgen das Verpackungsmaterial.",
     priceRange: "+CHF 200–400",
-    details: "Wir packen alle Kartons am neuen Ort aus und entsorgen das Verpackungsmaterial. Sie können sofort einziehen und geniessen!",
+    details: "Wir packen alle Kartons am neuen Ort aus, stellen Dinge an den gewünschten Platz und entsorgen das Verpackungsmaterial. Sie können am Abend bereits entspannt ankommen!",
     benefits: ["Sofort einzugsbereit", "Kartonentsorgung inklusive", "Zeitersparnis von 1 Tag", "Stressfreier Start im neuen Zuhause"],
     icon: <Sparkles className="w-4 h-4" />,
     priceAdd: 300,
@@ -73,10 +74,10 @@ const services = [
   { 
     id: "reinigung", 
     label: "Endreinigung", 
-    description: "Abgabereinigung alte Wohnung",
+    description: "Professionelle Abgabereinigung der alten Wohnung nach CH-Standard – mit Abnahmegarantie vom Vermieter.",
     priceRange: "+CHF 250–450",
-    details: "Professionelle Endreinigung nach Schweizer Standard. Inklusive Abnahmegarantie – falls nicht akzeptiert, reinigen wir kostenlos nach.",
-    benefits: ["Abnahmegarantie", "Alle Räume inkl. Küche/Bad", "Fenster innen/aussen"],
+    details: "Professionelle Endreinigung nach Schweizer Standard. Inklusive Abnahmegarantie – falls der Vermieter nicht akzeptiert, reinigen wir kostenlos nach bis es passt!",
+    benefits: ["Abnahmegarantie inklusive", "Alle Räume inkl. Küche & Bad", "Fenster innen & aussen", "Backofen & Kühlschrank gereinigt"],
     icon: <Brush className="w-4 h-4" />,
     priceAdd: 350,
     popular: true 
@@ -84,21 +85,21 @@ const services = [
   { 
     id: "entsorgung", 
     label: "Entsorgung", 
-    description: "Sperrmüll & alte Möbel",
+    description: "Alte Möbel, Sperrmüll oder Elektrogeräte? Wir entsorgen alles fachgerecht und umweltfreundlich.",
     priceRange: "+CHF 150–300",
-    details: "Fachgerechte Entsorgung von Sperrmüll, alten Möbeln und Elektrogeräten. Umweltfreundlich und gesetzeskonform.",
-    benefits: ["Umweltgerechte Entsorgung", "Keine Selbstfahrt zur Deponie", "Elektrogeräte inklusive"],
+    details: "Fachgerechte Entsorgung von Sperrmüll, alten Möbeln und Elektrogeräten. Umweltfreundlich und gesetzeskonform – Sie müssen nicht selbst zur Deponie fahren.",
+    benefits: ["Umweltgerechte Entsorgung", "Keine Selbstfahrt zur Deponie nötig", "Elektrogeräte & Sondermüll inklusive"],
     icon: <Trash2 className="w-4 h-4" />,
     priceAdd: 200,
     popular: false 
   },
   { 
     id: "lagerung", 
-    label: "Lagerung", 
-    description: "Zwischenlagerung bei Bedarf",
+    label: "Zwischenlagerung", 
+    description: "Noch keine neue Wohnung bereit? Sichere, klimatisierte Lagerung Ihrer Möbel – flexibel von 1 Woche bis 12 Monate.",
     priceRange: "+CHF 100–200/Mt",
-    details: "Sichere, klimatisierte Lagerung Ihrer Möbel und Gegenstände. Ideal bei Übergangszeiten oder Renovierungen.",
-    benefits: ["Klimatisierte Räume", "24/7 Überwachung", "Flexible Laufzeit"],
+    details: "Sichere, klimatisierte Lagerung Ihrer Möbel und Gegenstände. Ideal bei Übergangszeiten, Renovierungen oder wenn die neue Wohnung noch nicht bereit ist.",
+    benefits: ["Klimatisierte, saubere Räume", "24/7 Videoüberwachung & Alarm", "Flexible Laufzeit ohne Mindestdauer"],
     icon: <Warehouse className="w-4 h-4" />,
     priceAdd: 150,
     popular: false 
@@ -171,6 +172,8 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
   const [currentStep, setCurrentStep] = useState(1);
   const [expandedService, setExpandedService] = useState<string | null>(null);
   const [didAutoAdvance, setDidAutoAdvance] = useState(false);
+  const [companyFilter, setCompanyFilter] = useState<"alle" | "günstig" | "top" | "schnell">("alle");
+  const [showComparisonView, setShowComparisonView] = useState(false);
   
   const [formData, setFormData] = useState<FormData>(() => {
     try {
@@ -372,7 +375,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                formData.apartmentSize !== "" &&
                formData.selectedServices.length > 0;
       case 3:
-        return formData.selectedCompanies.length > 0;
+        return formData.selectedCompanies.length >= 3;
       case 4:
         return formData.name.trim() !== "" && 
                formData.email.trim() !== "" && 
@@ -561,16 +564,72 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   </motion.div>
                 )}
 
+                {/* Move Date */}
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    Umzugsdatum (optional)
+                  </label>
+                  <Input
+                    type="date"
+                    value={formData.moveDate}
+                    onChange={(e) => updateFormData("moveDate", e.target.value)}
+                    className="h-10 rounded-xl"
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+
+                {/* KI Video-Analyzer Promotion */}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  onClick={() => updateFormData("useVideoAI", !formData.useVideoAI)}
+                  className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    formData.useVideoAI
+                      ? "border-secondary bg-secondary/10"
+                      : "border-primary/30 bg-gradient-to-r from-primary/5 to-secondary/5 hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                      formData.useVideoAI ? "bg-secondary text-secondary-foreground" : "bg-primary/20"
+                    }`}>
+                      <Video className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-bold">🤖 KI Video-Analyse</p>
+                        <span className="text-[8px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-full font-medium">
+                          NEU
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Filmen Sie Ihre Wohnung – unsere KI erstellt ein exaktes Inventar
+                      </p>
+                    </div>
+                    <div
+                      className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 ${
+                        formData.useVideoAI ? "bg-secondary border-secondary" : "border-border"
+                      }`}
+                    >
+                      {formData.useVideoAI && (
+                        <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+
                 {/* Services with Expand */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">Was brauchen Sie?</label>
-                    <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
+                    <label className="text-sm font-medium">Welche Leistungen brauchen Sie?</label>
+                    <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Plus className="w-2.5 h-2.5" />
-                      Klick auf + für Details
+                      Details
                     </span>
                   </div>
-                  <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                  <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1">
                     {services.map((service) => {
                       const isSelected = formData.selectedServices.includes(service.id);
                       const isExpanded = expandedService === service.id;
@@ -700,7 +759,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
             </motion.div>
           )}
 
-          {/* Step 3: Company Ranking - styled like CompanyComparisonSection on Homepage */}
+          {/* Step 3: Company Ranking with Filters, Comparison */}
           {currentStep === 3 && (
             <motion.div
               key="step3-companies"
@@ -709,142 +768,186 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="space-y-4"
+              className="space-y-3"
             >
               {/* Header */}
-              <div className="text-center mb-2">
+              <div className="text-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-2">
                   <Sparkles className="w-3 h-3" />
                   Firmen vergleichen
                 </span>
                 <h3 className="text-lg font-bold">
-                  Transparenter <span className="text-secondary">Offertenvergleich</span>
+                  Wählen Sie <span className="text-secondary">mind. 3 Firmen</span>
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  Wählen Sie Firmen für Ihre Offerten
+                <p className="text-xs text-muted-foreground">
+                  Mehr Offerten = bessere Vergleichsmöglichkeit
                 </p>
               </div>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-2 p-2.5 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border border-green-200 dark:border-green-800">
-                <div className="text-center">
-                  <p className="text-sm font-bold text-green-700 dark:text-green-400">bis 40%</p>
-                  <p className="text-[9px] text-green-600/80">Sparpotenzial</p>
-                </div>
-                <div className="text-center border-x border-green-200 dark:border-green-700">
-                  <p className="text-sm font-bold text-green-700 dark:text-green-400">24-48h</p>
-                  <p className="text-[9px] text-green-600/80">Offerten</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-sm font-bold text-green-700 dark:text-green-400">100%</p>
-                  <p className="text-[9px] text-green-600/80">Gratis</p>
-                </div>
+              {/* Filter Bar */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                <Filter className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                {[
+                  { id: "alle", label: "Alle", icon: List },
+                  { id: "top", label: "Top bewertet", icon: Star },
+                  { id: "günstig", label: "Günstigste", icon: TrendingDown },
+                  { id: "schnell", label: "Schnell", icon: Zap },
+                ].map((filter) => (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => setCompanyFilter(filter.id as typeof companyFilter)}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium whitespace-nowrap transition-all ${
+                      companyFilter === filter.id
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    }`}
+                  >
+                    <filter.icon className="w-3 h-3" />
+                    {filter.label}
+                  </button>
+                ))}
               </div>
 
-              {/* Company Cards - styled like CompanyComparisonSection */}
-              <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-                {matchingCompanies.map((company, index) => {
-                  const priceEst = getCompanyPrice(formData.apartmentSize, company.price_level);
-                  const isSelected = formData.selectedCompanies.includes(company.id);
-                  const isRecommended = company.is_featured;
+              {/* Selection Counter */}
+              <div className={`p-2 rounded-lg text-center text-xs font-medium transition-all ${
+                formData.selectedCompanies.length >= 3
+                  ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                  : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+              }`}>
+                {formData.selectedCompanies.length < 3 ? (
+                  <>👆 Noch {3 - formData.selectedCompanies.length} Firma{3 - formData.selectedCompanies.length > 1 ? "en" : ""} auswählen</>
+                ) : (
+                  <>✓ {formData.selectedCompanies.length} Firmen ausgewählt – Vergleich bereit!</>
+                )}
+              </div>
 
-                  return (
-                    <motion.div
-                      key={company.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      onClick={() => toggleCompany(company.id)}
-                      className={`relative bg-card rounded-xl border-2 overflow-hidden cursor-pointer transition-all hover:shadow-md ${
-                        isSelected
-                          ? "border-secondary ring-2 ring-secondary/20"
-                          : isRecommended
-                          ? "border-primary/30 hover:border-primary/50"
-                          : "border-border hover:border-primary/30"
-                      }`}
-                    >
-                      {/* Recommended Badge */}
-                      {isRecommended && (
-                        <div className="bg-secondary text-secondary-foreground text-center py-1 text-[10px] font-semibold flex items-center justify-center gap-1">
-                          <Award className="w-3 h-3" />
-                          Empfohlen
-                        </div>
-                      )}
+              {/* Company Cards */}
+              <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
+                {matchingCompanies
+                  .filter((company) => {
+                    if (companyFilter === "alle") return true;
+                    if (companyFilter === "top") return company.rating >= 4.5 || company.is_featured;
+                    if (companyFilter === "günstig") return company.price_level === "günstig";
+                    if (companyFilter === "schnell") return (company.response_time_avg_hours || 24) <= 4;
+                    return true;
+                  })
+                  .map((company, index) => {
+                    const priceEst = getCompanyPrice(formData.apartmentSize, company.price_level);
+                    const isSelected = formData.selectedCompanies.includes(company.id);
+                    const isRecommended = company.is_featured;
 
-                      <div className="p-3">
-                        {/* Selection Checkbox + Company Header */}
-                        <div className="flex items-start gap-2 mb-2">
-                          <div
-                            className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 mt-0.5 ${
-                              isSelected ? "bg-secondary border-secondary" : "border-border"
-                            }`}
-                          >
-                            {isSelected && (
-                              <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
-                            )}
+                    return (
+                      <motion.div
+                        key={company.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        onClick={() => toggleCompany(company.id)}
+                        className={`relative bg-card rounded-xl border-2 overflow-hidden cursor-pointer transition-all hover:shadow-md ${
+                          isSelected
+                            ? "border-secondary ring-2 ring-secondary/20"
+                            : isRecommended
+                            ? "border-primary/30 hover:border-primary/50"
+                            : "border-border hover:border-primary/30"
+                        }`}
+                      >
+                        {/* Recommended Badge */}
+                        {isRecommended && (
+                          <div className="bg-secondary text-secondary-foreground text-center py-0.5 text-[9px] font-semibold flex items-center justify-center gap-1">
+                            <Award className="w-2.5 h-2.5" />
+                            Empfohlen
                           </div>
+                        )}
 
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-bold text-sm truncate">
-                                {company.name}
-                              </span>
-                              <Badge variant="outline" className="text-[8px] text-green-600 border-green-600/30 bg-green-50 shrink-0 px-1 py-0">
-                                Verifiziert
-                              </Badge>
+                        <div className="p-2.5">
+                          <div className="flex items-start gap-2">
+                            {/* Checkbox */}
+                            <div
+                              className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 mt-0.5 ${
+                                isSelected ? "bg-secondary border-secondary" : "border-border"
+                              }`}
+                            >
+                              {isSelected && (
+                                <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
+                              )}
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <div className="flex items-center gap-0.5">
-                                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                <span className="font-semibold">{company.rating}</span>
+
+                            {/* Company Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 mb-0.5">
+                                <span className="font-bold text-xs truncate">{company.name}</span>
+                                <Badge variant="outline" className="text-[7px] text-green-600 border-green-600/30 bg-green-50 shrink-0 px-1 py-0">
+                                  ✓
+                                </Badge>
                               </div>
-                              <span>({company.review_count} Bewertungen)</span>
+                              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                <span className="flex items-center gap-0.5">
+                                  <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+                                  {company.rating}
+                                </span>
+                                <span>•</span>
+                                <span className="flex items-center gap-0.5">
+                                  <Clock className="w-2.5 h-2.5" />
+                                  &lt;{Math.round(company.response_time_avg_hours || 2)}h
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Price */}
+                            <div className="text-right shrink-0">
+                              <p className="text-xs font-bold text-primary">
+                                CHF {priceEst.min}–{priceEst.max}
+                              </p>
+                              <p className="text-[9px] text-muted-foreground">
+                                {company.price_level === "günstig" ? "💰 Günstig" : company.price_level === "premium" ? "⭐ Premium" : "Fair"}
+                              </p>
                             </div>
                           </div>
                         </div>
-
-                        {/* Price Box - like CompanyComparisonSection */}
-                        <div className="bg-muted/50 rounded-lg p-2.5 mb-2">
-                          <div className="text-[10px] text-muted-foreground mb-0.5">Geschätzter Preis</div>
-                          <div className="text-base font-bold text-primary">
-                            CHF {priceEst.min.toLocaleString()}–{priceEst.max.toLocaleString()}
-                          </div>
-                        </div>
-
-                        {/* Response Time */}
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
-                          <Clock className="w-3 h-3" />
-                          <span>Antwortzeit: &lt;{Math.round(company.response_time_avg_hours || 2)}h</span>
-                        </div>
-
-                        {/* Services */}
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {company.services_offered.slice(0, 3).map((s) => (
-                            <Badge key={s} variant="secondary" className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5">
-                              {s}
-                            </Badge>
-                          ))}
-                        </div>
-
-                        {/* Certifications */}
-                        <div className="flex flex-wrap gap-1.5">
-                          {["Versichert", "Geprüft"].map((cert) => (
-                            <span key={cert} className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                              <CheckCircle className="w-3 h-3 text-green-500" />
-                              {cert}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                      </motion.div>
+                    );
+                  })}
               </div>
 
-              {formData.selectedCompanies.length > 0 && (
-                <p className="text-center text-xs text-green-600 dark:text-green-400 font-medium">
-                  ✓ {formData.selectedCompanies.length} Firma{formData.selectedCompanies.length > 1 ? "en" : ""} ausgewählt
-                </p>
+              {/* Comparison Preview when 3+ selected */}
+              {formData.selectedCompanies.length >= 3 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-bold text-green-800 dark:text-green-300">
+                      📊 Vergleich Ihrer Auswahl
+                    </p>
+                    <Badge className="text-[9px] bg-green-600 text-white">
+                      {formData.selectedCompanies.length} Firmen
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    {formData.selectedCompanies.slice(0, 3).map((companyId) => {
+                      const company = matchingCompanies.find((c) => c.id === companyId);
+                      if (!company) return null;
+                      const priceEst = getCompanyPrice(formData.apartmentSize, company.price_level);
+                      return (
+                        <div key={companyId} className="bg-white/50 dark:bg-black/20 rounded-lg p-1.5">
+                          <p className="text-[9px] font-semibold truncate">{company.name}</p>
+                          <p className="text-[10px] font-bold text-primary">CHF {priceEst.min}</p>
+                          <div className="flex items-center justify-center gap-0.5 text-[8px]">
+                            <Star className="w-2 h-2 fill-yellow-400 text-yellow-400" />
+                            {company.rating}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {formData.selectedCompanies.length > 3 && (
+                    <p className="text-[9px] text-green-600 dark:text-green-400 text-center mt-1">
+                      +{formData.selectedCompanies.length - 3} weitere
+                    </p>
+                  )}
+                </motion.div>
               )}
             </motion.div>
           )}
