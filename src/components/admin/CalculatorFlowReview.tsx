@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,6 +57,7 @@ export function CalculatorFlowReview() {
   const [customPrompt, setCustomPrompt] = useState("");
   const [captureProgress, setCaptureProgress] = useState(0);
   const [captureStatus, setCaptureStatus] = useState("");
+  const [baseUrlOverride, setBaseUrlOverride] = useState("");
 
   const calculatorOptions = [
     { value: "umzugsofferten", label: "Umzugsofferten-Flow", path: "/" },
@@ -109,16 +111,16 @@ export function CalculatorFlowReview() {
     setIsCapturing(true);
     setCaptureProgress(0);
     setCapturedSteps([]);
-    
-    const baseUrl = window.location.origin;
+
+    const baseUrl = (baseUrlOverride.trim() || window.location.origin).replace(/\/$/, "");
     const steps: FlowStep[] = [];
     const totalOperations = STEP_CONFIGS.length * 3; // desktop + mobile + html per step
     let completedOps = 0;
-    
+
     for (let i = 0; i < STEP_CONFIGS.length; i++) {
       const config = STEP_CONFIGS[i];
       const fullUrl = `${baseUrl}${config.path}`;
-      
+
       // Desktop screenshot
       setCaptureStatus(`Step ${config.step}: Desktop Screenshot...`);
       const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop);
@@ -549,6 +551,30 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
     window.open(path, '_blank');
   };
 
+  const toPngDataUrl = (value: string) =>
+    value.startsWith("data:") ? value : `data:image/png;base64,${value}`;
+
+  const downloadPng = async (value: string, filename: string) => {
+    try {
+      const dataUrl = toPngDataUrl(value);
+      const blob = await (await fetch(dataUrl)).blob();
+      saveAs(blob, filename);
+    } catch (err) {
+      console.error("PNG download failed:", err);
+      toast.error("Screenshot-Download fehlgeschlagen");
+    }
+  };
+
+  const downloadHtml = (html: string, filename: string) => {
+    try {
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      saveAs(blob, filename);
+    } catch (err) {
+      console.error("HTML download failed:", err);
+      toast.error("HTML-Download fehlgeschlagen");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -580,6 +606,20 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="flex-1">
+              <label className="text-sm font-medium mb-2 block">Screenshot Base-URL (optional)</label>
+              <Input
+                value={baseUrlOverride}
+                onChange={(e) => setBaseUrlOverride(e.target.value)}
+                placeholder={window.location.origin}
+                inputMode="url"
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Von dieser URL werden Screenshots/HTML geholt (z.B. deine Live-Domain). Leer lassen = aktuelle Preview.
+              </p>
+            </div>
+
             <div className="flex items-end gap-2 flex-wrap">
               <Button 
                 variant="outline"
@@ -663,9 +703,9 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                         <p className="text-xs text-muted-foreground mb-1 text-center">Desktop</p>
                         {step.screenshotDesktop ? (
                           <img 
-                            src={step.screenshotDesktop.startsWith('data:') ? step.screenshotDesktop : `data:image/png;base64,${step.screenshotDesktop}`}
-                            alt={`Step ${step.step} Desktop`}
-                            className="w-full h-24 object-cover object-top rounded border"
+                            src={toPngDataUrl(step.screenshotDesktop)}
+                            alt={`Step ${step.step} Desktop Screenshot`}
+                            className="w-full h-24 rounded border bg-muted object-contain"
                           />
                         ) : (
                           <div className="w-full h-24 bg-muted rounded border flex items-center justify-center">
@@ -678,9 +718,9 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                         <p className="text-xs text-muted-foreground mb-1 text-center">Mobile</p>
                         {step.screenshotMobile ? (
                           <img 
-                            src={step.screenshotMobile.startsWith('data:') ? step.screenshotMobile : `data:image/png;base64,${step.screenshotMobile}`}
-                            alt={`Step ${step.step} Mobile`}
-                            className="w-full h-24 object-cover object-top rounded border"
+                            src={toPngDataUrl(step.screenshotMobile)}
+                            alt={`Step ${step.step} Mobile Screenshot`}
+                            className="w-full h-24 rounded border bg-muted object-contain"
                           />
                         ) : (
                           <div className="w-full h-24 bg-muted rounded border flex items-center justify-center">
@@ -718,6 +758,36 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                       {step.url && (
                         <p className="text-xs text-muted-foreground font-mono">{step.url}</p>
                       )}
+
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={!step.screenshotDesktop}
+                          onClick={() => step.screenshotDesktop && downloadPng(step.screenshotDesktop, `step-${step.step}-desktop.png`)}
+                        >
+                          <Download className="w-3 h-3 mr-1" />
+                          Desktop PNG
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={!step.screenshotMobile}
+                          onClick={() => step.screenshotMobile && downloadPng(step.screenshotMobile, `step-${step.step}-mobile.png`)}
+                        >
+                          <Download className="w-3 h-3 mr-1" />
+                          Mobile PNG
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={!step.html}
+                          onClick={() => step.html && downloadHtml(step.html, `step-${step.step}.html`)}
+                        >
+                          <FileCode className="w-3 h-3 mr-1" />
+                          HTML
+                        </Button>
+                      </div>
                       
                       {step.html && (
                         <details className="mt-3 text-xs">
