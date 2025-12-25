@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
+import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
 import { toast } from "sonner";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -91,26 +92,24 @@ export function CalculatorFlowReview() {
   const captureScreenshot = async (url: string, dimension: string): Promise<string | null> => {
     try {
       console.log(`Capturing screenshot: ${url} with dimension: ${dimension}`);
-      const { data, error } = await supabase.functions.invoke('capture-screenshot', {
-        body: { 
-          url, 
-          dimension,
-          fullPage: false,
-          delay: 4000
-        }
+      const result = await captureScreenshotService({
+        url,
+        dimension,
+        delay: 8000,
+        format: "png",
+        fullPage: false,
+        scroll: true,
+        noCache: true,
       });
-      
-      if (error) {
-        console.error('Screenshot error:', error);
-        throw error;
-      }
-      
-      // Handle various response formats from the edge function
-      const imageData = data?.image || data?.data?.screenshot || data?.screenshot || null;
-      console.log(`Screenshot captured: ${imageData ? 'SUCCESS' : 'FAILED'} (${imageData?.substring(0, 50)}...)`);
-      return imageData;
+
+      console.log(
+        `Screenshot captured: ${result.success ? "SUCCESS" : "FAILED"} (${result.image?.substring(0, 50)}...)`
+      );
+
+      if (!result.success) return null;
+      return result.image || null;
     } catch (err) {
-      console.error('Screenshot capture failed:', err);
+      console.error("Screenshot capture failed:", err);
       return null;
     }
   };
@@ -856,7 +855,7 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
     value.startsWith("data:") ? value : `data:image/png;base64,${value}`;
 
   const base64ToBlob = (base64: string, mime = "image/png") => {
-    const clean = base64.replace(/^data:[^;]+;base64,/, "");
+    const clean = base64.replace(/^data:[^;]+;base64,/, "").replace(/\s+/g, "");
     const binary = atob(clean);
     const len = binary.length;
     const bytes = new Uint8Array(len);
@@ -864,27 +863,47 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
     return new Blob([bytes], { type: mime });
   };
 
+  const downloadBlob = (blob: Blob, filename: string) => {
+    try {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } catch (err) {
+      // Fallback
+      saveAs(blob, filename);
+    }
+  };
+
   const downloadPng = async (value: string, filename: string) => {
     try {
-      // Avoid fetch(data:...) which is flaky in some browser/embed contexts.
       const dataUrl = toPngDataUrl(value);
       const mimeMatch = dataUrl.match(/^data:([^;]+);base64,/);
       const mime = mimeMatch?.[1] || "image/png";
       const blob = base64ToBlob(dataUrl, mime);
-      saveAs(blob, filename);
+      downloadBlob(blob, filename);
     } catch (err) {
       console.error("PNG download failed:", err);
-      toast.error("Screenshot-Download fehlgeschlagen");
+      toast.error(
+        `Screenshot-Download fehlgeschlagen${err instanceof Error ? `: ${err.message}` : ""}`
+      );
     }
   };
 
   const downloadHtml = (html: string, filename: string) => {
     try {
       const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-      saveAs(blob, filename);
+      downloadBlob(blob, filename);
     } catch (err) {
       console.error("HTML download failed:", err);
-      toast.error("HTML-Download fehlgeschlagen");
+      toast.error(
+        `HTML-Download fehlgeschlagen${err instanceof Error ? `: ${err.message}` : ""}`
+      );
     }
   };
 
