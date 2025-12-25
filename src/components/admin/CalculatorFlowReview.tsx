@@ -49,7 +49,9 @@ const STEP_CONFIGS = [
 
 // Helper to build capture URL for a given flow and step
 const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number) => {
-  return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}`;
+  // uc_render=1 enables render-mode patches (e.g. IntersectionObserver + eager images)
+  // uc_cb busts caches for screenshot tooling.
+  return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_render=1&uc_cb=${Date.now()}`;
 };
 
 const DIMENSIONS = {
@@ -853,10 +855,22 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
   const toPngDataUrl = (value: string) =>
     value.startsWith("data:") ? value : `data:image/png;base64,${value}`;
 
+  const base64ToBlob = (base64: string, mime = "image/png") => {
+    const clean = base64.replace(/^data:[^;]+;base64,/, "");
+    const binary = atob(clean);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: mime });
+  };
+
   const downloadPng = async (value: string, filename: string) => {
     try {
+      // Avoid fetch(data:...) which is flaky in some browser/embed contexts.
       const dataUrl = toPngDataUrl(value);
-      const blob = await (await fetch(dataUrl)).blob();
+      const mimeMatch = dataUrl.match(/^data:([^;]+);base64,/);
+      const mime = mimeMatch?.[1] || "image/png";
+      const blob = base64ToBlob(dataUrl, mime);
       saveAs(blob, filename);
     } catch (err) {
       console.error("PNG download failed:", err);
