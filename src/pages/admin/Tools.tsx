@@ -27,6 +27,7 @@ import { RegressionTestingPanel } from "@/components/admin/RegressionTestingPane
 import { ScheduledMonitoringPanel } from "@/components/admin/ScheduledMonitoringPanel";
 import { ToolsDocumentation } from "@/components/admin/ToolsDocumentation";
 import { ToolsWizard } from "@/components/admin/ToolsWizard";
+import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -2207,10 +2208,14 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
 
         {/* Tools Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="ai-feedback" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               AI Package
+            </TabsTrigger>
+            <TabsTrigger value="calculator-review" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              Calculator Review
             </TabsTrigger>
             <TabsTrigger value="screenshots" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
@@ -2995,6 +3000,11 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          {/* Calculator Flow Review Tab */}
+          <TabsContent value="calculator-review">
+            <CalculatorFlowReview />
           </TabsContent>
 
           {/* SEO HTML Analyzer Tab */}
