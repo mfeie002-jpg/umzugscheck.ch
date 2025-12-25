@@ -501,6 +501,7 @@ const App = () => (
                             <Route path="/umzugsofferten-v6" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v7" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
+                            <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
                             <Route path="/flow-tester" element={<FlowTester />} />
                             <Route path="/umzugsofferten/bestaetigung" element={<UmzugsoffertenBestaetigung />} />
                             <Route path="/umzugsofferten/:region" element={<RegionalOfferten />} />
