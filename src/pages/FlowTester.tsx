@@ -116,6 +116,15 @@ const FLOWS: FlowConfig[] = [
     path: '/umzugsofferten-v8',
     color: 'bg-emerald-500',
     features: ['Computer Vision Scan', 'Auto-Proposal', 'Zero Decisions']
+  },
+  {
+    id: 'v9',
+    name: 'Zero Friction',
+    version: 'V9',
+    description: 'Minimaler Aufwand, maximale Conversion',
+    path: '/umzugsofferten-v9',
+    color: 'bg-rose-500',
+    features: ['3-Klick Flow', 'Smart Defaults', 'Instant Quote', 'Zero Friction']
   }
 ];
 
@@ -243,7 +252,7 @@ export default function FlowTester() {
         </div>
         <CardTitle>Flow Tester Registrierung</CardTitle>
         <p className="text-muted-foreground text-sm">
-          Testen Sie alle 8 Umzugsofferten-Flows und helfen Sie uns, den besten zu finden.
+          Testen Sie alle 9 Umzugsofferten-Flows und helfen Sie uns, den besten zu finden.
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
