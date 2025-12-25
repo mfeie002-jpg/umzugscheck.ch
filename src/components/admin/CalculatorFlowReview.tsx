@@ -68,6 +68,7 @@ export function CalculatorFlowReview() {
     { value: "umzugsofferten-v6", label: "V6 - Ultimate (6-Tier)", path: "/umzugsofferten-v6" },
     { value: "umzugsofferten-v7", label: "V7 - SwissMove (90s)", path: "/umzugsofferten-v7" },
     { value: "umzugsofferten-v8", label: "V8 - Decision-Free", path: "/umzugsofferten-v8" },
+    { value: "umzugsofferten-v9", label: "V9 - Zero Friction ⭐", path: "/umzugsofferten-v9" },
     { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner" },
     { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner" },
     { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },

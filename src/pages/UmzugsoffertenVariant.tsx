@@ -28,6 +28,7 @@ import { MarketplaceWizard } from "@/components/marketplace-v5/MarketplaceWizard
 import { UltimateWizard } from "@/components/ultimate-v6/UltimateWizard";
 import { SwissMoveWizard } from "@/components/swissmove-v7/SwissMoveWizard";
 import { DecisionFreeWizard } from "@/components/decisionfree-v8/DecisionFreeWizard";
+import { ZeroFrictionWizard } from "@/components/zerofriction-v9/ZeroFrictionWizard";
 import { Link, useLocation } from "react-router-dom";
 import { getVariantFromPath, type FlowVariantConfig } from "@/lib/flow-variants";
 import { useEffect } from "react";
@@ -71,6 +72,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
         return 'SwissMove | Umzug in 90 Sekunden buchen | Umzugscheck.ch';
       case 'variant-g':
         return 'Decision-Free Umzug | KI-Inventarisierung & eUmzug | Umzugscheck.ch';
+      case 'variant-h':
+        return 'Zero Friction | Umzug in 3 Minuten gebucht | Umzugscheck.ch';
       default:
         return 'Umzugsofferten Schweiz kostenlos vergleichen | Umzugscheck.ch';
     }
@@ -92,6 +95,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
         return 'Dein Umzug in 90 Sekunden gebucht. 4 Service-Level, Live-Tracking, Crew-Profile und Fixpreis-Garantie.';
       case 'variant-g':
         return 'Decision-Free Umzugsplattform: KI-Video-Inventarisierung, eUmzugCH-Integration, Crew-Profile, Live-Tracking und 100% Fixpreis-Garantie.';
+      case 'variant-h':
+        return 'Zero Friction Umzug: Minimal Input, Maximum Output. In 3 Minuten gebucht, Fixpreis, 0-100 Service-Level, Schweizer Qualität.';
       default:
         return 'Erhalten Sie gratis Umzugsofferten von geprüften Umzugsfirmen in der Schweiz. Schnell vergleichen, transparente Preise.';
     }
@@ -123,6 +128,7 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
   const isUltimateV6 = variant.id === 'variant-e';
   const isSwissMoveV7 = variant.id === 'variant-f';
   const isDecisionFreeV8 = variant.id === 'variant-g';
+  const isZeroFrictionV9 = variant.id === 'variant-h';
 
   return (
     <div className={cn(
@@ -167,6 +173,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
             <SwissMoveWizard />
           ) : isDecisionFreeV8 ? (
             <DecisionFreeWizard />
+          ) : isZeroFrictionV9 ? (
+            <ZeroFrictionWizard />
           ) : (
             <MultiStepCalculatorVariant variant={variant} />
           )}
@@ -231,6 +239,7 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
                 <Link to="/umzugsofferten-v6" className="block text-primary hover:underline py-1 active:opacity-70">Variant E (V6)</Link>
                 <Link to="/umzugsofferten-v7" className="block text-primary hover:underline py-1 active:opacity-70">Variant F (V7)</Link>
                 <Link to="/umzugsofferten-v8" className="block text-primary hover:underline py-1 active:opacity-70">Variant G (V8)</Link>
+                <Link to="/umzugsofferten-v9" className="block text-primary hover:underline py-1 active:opacity-70 font-bold">Variant H (V9) ⭐</Link>
                 <Link to="/flow-tester" className="block text-primary hover:underline py-1 active:opacity-70 font-semibold">Flow Tester →</Link>
               </div>
             </div>

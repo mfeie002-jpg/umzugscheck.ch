@@ -354,6 +354,39 @@ export const VARIANT_G: FlowVariantConfig = {
   cardStyle: 'elevated',
 };
 
+// Variant H: Zero Friction V9 - Ultimate Optimization
+export const VARIANT_H: FlowVariantConfig = {
+  id: 'variant-h',
+  name: 'Zero Friction V9',
+  description: 'Ultimative Optimierung: Minimal Input, Maximum Output, 3-Minuten-Buchung',
+  
+  steps: ['location', 'pricing', 'summary', 'contact'],
+  
+  showProgressBar: true,
+  progressStyle: 'bar',
+  layout: 'wizard',
+  
+  headline: 'Umzug in 3 Minuten gebucht',
+  subheadline: 'Fixpreis • Keine versteckten Kosten • Schweizer Qualität',
+  ctaText: 'Verbindlich buchen',
+  trustBadges: true,
+  
+  showPriceEstimate: true,
+  showCompanyPreview: false,
+  showVideoAIOption: true,
+  showServiceDetails: true,
+  showSavingsCalculator: true,
+  
+  companySelectionMode: 'none',
+  maxCompanySelections: 0,
+  
+  submitOptions: ['direct'],
+  defaultSubmitOption: 'direct',
+  
+  accentColor: 'emerald',
+  cardStyle: 'elevated',
+};
+
 export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'control': VARIANT_CONTROL,
   'variant-a': VARIANT_A,
@@ -363,6 +396,7 @@ export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'variant-e': VARIANT_E,
   'variant-f': VARIANT_F,
   'variant-g': VARIANT_G,
+  'variant-h': VARIANT_H,
 };
 
 // Get variant by ID
@@ -385,6 +419,7 @@ export const URL_TO_VARIANT: Record<string, string> = {
   '/umzugsofferten-v6': 'variant-e',
   '/umzugsofferten-v7': 'variant-f',
   '/umzugsofferten-v8': 'variant-g',
+  '/umzugsofferten-v9': 'variant-h',
 };
 
 // Get variant from URL path
