@@ -71,8 +71,8 @@ const PRESET_URLS = [
   { label: "Reddit", url: "https://www.reddit.com" },
 ];
 
-// Comprehensive list of example pages - user can customize
-const TOP_20_URLS = [
+// Default placeholder - will be populated by user input + URL discovery
+const DEFAULT_TOP_20_URLS = [
   "https://example.com",
 ];
 
@@ -195,6 +195,66 @@ export function ScreenshotMachine() {
   const [bundleLoading, setBundleLoading] = useState<string | null>(null);
   const [bundleProgress, setBundleProgress] = useState({ current: 0, total: 0, dimension: "" });
 
+  // Domain URL discovery
+  const [domainUrl, setDomainUrl] = useState("https://www.umzugscheck.ch");
+  const [discoveredUrls, setDiscoveredUrls] = useState<string[]>(DEFAULT_TOP_20_URLS);
+  const [discoveringUrls, setDiscoveringUrls] = useState(false);
+
+  // Discover top pages from domain via firecrawl-map
+  const discoverTopPages = async () => {
+    if (!domainUrl) {
+      toast.error("Bitte gib eine Domain-URL ein");
+      return;
+    }
+
+    setDiscoveringUrls(true);
+    toast.info("Entdecke Top-Seiten...");
+
+    try {
+      const { data, error } = await supabase.functions.invoke('firecrawl-map', {
+        body: { 
+          url: domainUrl, 
+          options: { 
+            limit: 20,
+            includeSubdomains: false
+          } 
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.links && Array.isArray(data.links)) {
+        const urls = data.links.slice(0, 20);
+        setDiscoveredUrls(urls);
+        toast.success(`${urls.length} Seiten entdeckt!`);
+      } else {
+        // Fallback: generate common URLs
+        const baseUrl = new URL(domainUrl).origin;
+        const fallbackUrls = [
+          baseUrl,
+          `${baseUrl}/umzugsofferten`,
+          `${baseUrl}/umzugsfirmen`,
+          `${baseUrl}/preisrechner`,
+          `${baseUrl}/rechner`,
+          `${baseUrl}/services`,
+          `${baseUrl}/kontakt`,
+          `${baseUrl}/ueber-uns`,
+          `${baseUrl}/faq`,
+          `${baseUrl}/ratgeber`,
+        ];
+        setDiscoveredUrls(fallbackUrls);
+        toast.info(`Fallback: ${fallbackUrls.length} Standard-URLs generiert`);
+      }
+    } catch (error) {
+      console.error("URL discovery error:", error);
+      // Fallback: use domain as single URL
+      setDiscoveredUrls([domainUrl]);
+      toast.warning("URL-Discovery fehlgeschlagen. Nur Haupt-URL verwendet.");
+    } finally {
+      setDiscoveringUrls(false);
+    }
+  };
+
   // Capture screenshot with specific dimension override
   const captureWithDimension = async (targetUrl: string, overrideDimension: string): Promise<ScreenshotResult | null> => {
     const urlForShot = addScreenshotRenderParamIfHost(targetUrl, UC_RENDER_HOSTS);
@@ -231,7 +291,7 @@ export function ScreenshotMachine() {
       return;
     }
 
-    const urls = bundle.isFullAudit ? TOP_20_URLS : [targetUrl];
+    const urls = bundle.isFullAudit ? discoveredUrls : [targetUrl];
     const dimensions = bundle.dimensions;
     const totalCaptures = urls.length * dimensions.length;
 
@@ -542,9 +602,9 @@ export function ScreenshotMachine() {
     const zip = new JSZip();
     
     try {
-      for (let i = 0; i < TOP_20_URLS.length; i++) {
-        const targetUrl = TOP_20_URLS[i];
-        toast.info(`Verarbeite ${i + 1}/${TOP_20_URLS.length}: ${new URL(targetUrl).hostname}${new URL(targetUrl).pathname}`);
+      for (let i = 0; i < discoveredUrls.length; i++) {
+        const targetUrl = discoveredUrls[i];
+        toast.info(`Verarbeite ${i + 1}/${discoveredUrls.length}: ${new URL(targetUrl).hostname}${new URL(targetUrl).pathname}`);
         
         const hostname = new URL(targetUrl).hostname;
         const pathname = new URL(targetUrl).pathname.replace(/\//g, '_') || 'index';
@@ -869,7 +929,7 @@ export function ScreenshotMachine() {
                     </span>
                     <Badge variant="secondary" className="text-xs">
                       {bundle.dimensions.length} Auflösungen
-                      {bundle.isFullAudit && ` × ${TOP_20_URLS.length} Seiten`}
+                      {bundle.isFullAudit && ` × ${discoveredUrls.length} Seiten`}
                     </Badge>
                   </Button>
                 );
@@ -882,18 +942,66 @@ export function ScreenshotMachine() {
             )}
           </div>
 
+          {/* Domain URL Discovery */}
+          <div className="p-4 bg-secondary/10 rounded-lg border border-secondary/20 space-y-4">
+            <div className="space-y-2">
+              <Label className="text-base font-medium flex items-center gap-2">
+                <ExternalLink className="h-4 w-4" />
+                Domain für Top-Seiten Entdeckung
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Gib eine Domain ein, um automatisch die wichtigsten Seiten zu entdecken
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="https://www.example.com"
+                value={domainUrl}
+                onChange={(e) => setDomainUrl(e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                onClick={discoverTopPages}
+                disabled={discoveringUrls}
+                variant="secondary"
+              >
+                {discoveringUrls ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Entdecke...
+                  </>
+                ) : (
+                  <>
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Top {discoveredUrls.length > 1 ? discoveredUrls.length : 20} entdecken
+                  </>
+                )}
+              </Button>
+            </div>
+            {discoveredUrls.length > 0 && discoveredUrls[0] !== "https://example.com" && (
+              <div className="text-xs text-muted-foreground">
+                <p className="font-medium mb-1">{discoveredUrls.length} Seiten entdeckt:</p>
+                <div className="max-h-32 overflow-y-auto space-y-0.5 bg-muted/50 p-2 rounded text-xs font-mono">
+                  {discoveredUrls.map((u, i) => (
+                    <div key={i} className="truncate">{i+1}. {u}</div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Top 20 Quick Action */}
           <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label className="text-base font-medium">Top 20 Seiten</Label>
+                <Label className="text-base font-medium">Top {discoveredUrls.length} Seiten</Label>
                 <p className="text-sm text-muted-foreground">
-                  Alle wichtigen Seiten inkl. Screenshot + HTML als ZIP herunterladen
+                  Alle {discoveredUrls.length} entdeckten Seiten inkl. Screenshot + HTML als ZIP herunterladen
                 </p>
               </div>
               <Button 
                 onClick={downloadTop20WithHtml}
-                disabled={top20Loading}
+                disabled={top20Loading || discoveredUrls.length === 0}
                 variant="default"
               >
                 {top20Loading ? (
@@ -904,7 +1012,7 @@ export function ScreenshotMachine() {
                 ) : (
                   <>
                     <FolderArchive className="h-4 w-4 mr-2" />
-                    Top 20 ZIP + HTML
+                    Top {discoveredUrls.length} ZIP + HTML
                   </>
                 )}
               </Button>
