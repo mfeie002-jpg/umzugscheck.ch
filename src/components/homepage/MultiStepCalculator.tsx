@@ -686,7 +686,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
             </motion.div>
           )}
 
-          {/* Step 3: Company Ranking */}
+          {/* Step 3: Company Ranking - styled like CompanyComparisonSection on Homepage */}
           {currentStep === 3 && (
             <motion.div
               key="step3-companies"
@@ -697,9 +697,14 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               transition={{ duration: 0.2 }}
               className="space-y-4"
             >
-              <div className="text-center">
+              {/* Header */}
+              <div className="text-center mb-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-2">
+                  <Sparkles className="w-3 h-3" />
+                  Firmen vergleichen
+                </span>
                 <h3 className="text-lg font-bold">
-                  {matchingCompanies.length} passende Firmen
+                  Transparenter <span className="text-secondary">Offertenvergleich</span>
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   Wählen Sie Firmen für Ihre Offerten
@@ -722,86 +727,101 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                 </div>
               </div>
 
-              {/* Company List */}
-              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+              {/* Company Cards - styled like CompanyComparisonSection */}
+              <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
                 {matchingCompanies.map((company, index) => {
                   const priceEst = getCompanyPrice(formData.apartmentSize, company.price_level);
                   const isSelected = formData.selectedCompanies.includes(company.id);
+                  const isRecommended = company.is_featured;
 
                   return (
                     <motion.div
                       key={company.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.03 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => toggleCompany(company.id)}
+                      className={`relative bg-card rounded-xl border-2 overflow-hidden cursor-pointer transition-all hover:shadow-md ${
+                        isSelected
+                          ? "border-secondary ring-2 ring-secondary/20"
+                          : isRecommended
+                          ? "border-primary/30 hover:border-primary/50"
+                          : "border-border hover:border-primary/30"
+                      }`}
                     >
-                      <button
-                        type="button"
-                        onClick={() => toggleCompany(company.id)}
-                        className={`w-full p-2.5 rounded-xl border-2 text-left transition-all ${
-                          isSelected
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/30"
-                        }`}
-                      >
-                        <div className="flex items-start gap-2.5">
+                      {/* Recommended Badge */}
+                      {isRecommended && (
+                        <div className="bg-secondary text-secondary-foreground text-center py-1 text-[10px] font-semibold flex items-center justify-center gap-1">
+                          <Award className="w-3 h-3" />
+                          Empfohlen
+                        </div>
+                      )}
+
+                      <div className="p-3">
+                        {/* Selection Checkbox + Company Header */}
+                        <div className="flex items-start gap-2 mb-2">
                           <div
-                            className={`w-4 h-4 rounded flex items-center justify-center border-2 shrink-0 mt-0.5 ${
-                              isSelected ? "bg-primary border-primary" : "border-border"
+                            className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 mt-0.5 ${
+                              isSelected ? "bg-secondary border-secondary" : "border-border"
                             }`}
                           >
                             {isSelected && (
-                              <CheckCircle className="w-3 h-3 text-primary-foreground" />
+                              <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
                             )}
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5 mb-0.5">
-                              <span className="font-semibold text-xs truncate">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-bold text-sm truncate">
                                 {company.name}
                               </span>
-                              {company.is_featured && (
-                                <Badge
-                                  variant="secondary"
-                                  className="text-[8px] px-1 py-0 h-3.5 bg-primary/10 text-primary"
-                                >
-                                  <Award className="w-2 h-2 mr-0.5" />
-                                  Top
-                                </Badge>
-                              )}
+                              <Badge variant="outline" className="text-[8px] text-green-600 border-green-600/30 bg-green-50 shrink-0 px-1 py-0">
+                                Verifiziert
+                              </Badge>
                             </div>
-
-                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <div className="flex items-center gap-0.5">
-                                <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
-                                <span className="font-medium">{company.rating}</span>
+                                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                <span className="font-semibold">{company.rating}</span>
                               </div>
-                              <span>({company.review_count})</span>
-                              <span className="flex items-center gap-0.5">
-                                <Clock className="w-2.5 h-2.5" />
-                                &lt;{Math.round(company.response_time_avg_hours || 2)}h
-                              </span>
+                              <span>({company.review_count} Bewertungen)</span>
                             </div>
-
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {company.services_offered.slice(0, 2).map((s) => (
-                                <span key={s} className="text-[9px] bg-muted px-1 py-0.5 rounded">
-                                  {s}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="text-right shrink-0">
-                            <p className="text-xs font-bold text-primary">
-                              CHF {priceEst.min}–{priceEst.max}
-                            </p>
-                            <p className="text-[9px] text-muted-foreground">
-                              {company.price_level === "günstig" ? "Günstig" : company.price_level === "premium" ? "Premium" : "Fair"}
-                            </p>
                           </div>
                         </div>
-                      </button>
+
+                        {/* Price Box - like CompanyComparisonSection */}
+                        <div className="bg-muted/50 rounded-lg p-2.5 mb-2">
+                          <div className="text-[10px] text-muted-foreground mb-0.5">Geschätzter Preis</div>
+                          <div className="text-base font-bold text-primary">
+                            CHF {priceEst.min.toLocaleString()}–{priceEst.max.toLocaleString()}
+                          </div>
+                        </div>
+
+                        {/* Response Time */}
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
+                          <Clock className="w-3 h-3" />
+                          <span>Antwortzeit: &lt;{Math.round(company.response_time_avg_hours || 2)}h</span>
+                        </div>
+
+                        {/* Services */}
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {company.services_offered.slice(0, 3).map((s) => (
+                            <Badge key={s} variant="secondary" className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5">
+                              {s}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        {/* Certifications */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {["Versichert", "Geprüft"].map((cert) => (
+                            <span key={cert} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                              <CheckCircle className="w-3 h-3 text-green-500" />
+                              {cert}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </motion.div>
                   );
                 })}
