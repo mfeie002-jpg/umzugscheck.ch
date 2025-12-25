@@ -126,13 +126,16 @@ export function CalculatorFlowReview() {
     setCapturedSteps([]);
 
     const baseUrl = (baseUrlOverride.trim() || window.location.origin).replace(/\/$/, "");
+    const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
+    const calculatorPath = selectedCalc?.path || '/umzugsofferten';
     const steps: FlowStep[] = [];
     const totalOperations = STEP_CONFIGS.length * 3; // desktop + mobile + html per step
     let completedOps = 0;
 
     for (let i = 0; i < STEP_CONFIGS.length; i++) {
       const config = STEP_CONFIGS[i];
-      const fullUrl = `${baseUrl}${config.path}`;
+      // Construct URL with calculator path + step parameter
+      const fullUrl = `${baseUrl}${calculatorPath}?step=${config.step}`;
 
       // Desktop screenshot
       setCaptureStatus(`Step ${config.step}: Desktop Screenshot...`);
