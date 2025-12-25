@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { SITE_CONFIG } from "@/data/constants";
 import {
   Camera,
   Download,
@@ -168,15 +169,19 @@ export function AutoFlowScreenshots() {
   const [results, setResults] = useState<CaptureResult[]>([]);
 
   const getBaseUrl = () => {
-    // Use the current origin or the lovable preview URL
-    if (typeof window !== "undefined") {
-      return window.location.origin;
-    }
-    return "";
+    // Screenshot providers cannot access Lovable preview/sandbox domains (login wall).
+    // Default to the public site URL so automation works reliably.
+    if (typeof window === "undefined") return SITE_CONFIG.url;
+
+    const { hostname, origin } = window.location;
+    const isLovableHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
+
+    if (isLovableHost) return SITE_CONFIG.url.replace(/\/$/, "");
+    return origin;
   };
 
   const buildCaptureUrl = (flowPath: string, step: number) => {
-    const baseUrl = getBaseUrl();
+    const baseUrl = getBaseUrl().replace(/\/$/, "");
     return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_render=1`;
   };
 
