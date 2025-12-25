@@ -231,6 +231,8 @@ serve(async (req) => {
     }
 
     // Build ScreenshotMachine API URL
+    const effectiveTimeout = isFullPage ? "60000" : "20000";
+
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
       url: url,
@@ -239,7 +241,8 @@ serve(async (req) => {
       cacheLimit: "0",
       delay: String(effectiveDelay),
       js: "true",
-      timeout: "20000",
+      // Full-page renders can take significantly longer.
+      timeout: effectiveTimeout,
     });
 
     // Add hash authentication if secret phrase is configured
@@ -253,7 +256,8 @@ serve(async (req) => {
 
     params.set("device", deviceType);
 
-    const effectiveZoom = deviceType === "desktop" && isFullPage ? "100" : "200";
+    // ScreenshotMachine full-length mode ('xfull') is much more reliable with zoom=100.
+    const effectiveZoom = isFullPage ? "100" : deviceType === "desktop" ? "100" : "200";
     params.set("zoom", effectiveZoom);
     params.set("accept-language", "de-CH,de;q=0.9,en;q=0.8");
 
