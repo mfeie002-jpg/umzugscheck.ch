@@ -84,6 +84,7 @@ type WizardStep =
   | 'refine'          // Optional: Video scan or quick details
   | 'service'         // Service level slider (0-100)
   | 'customize'       // Add-ons & date (smart defaults)
+  | 'companies'       // Company comparison & selection
   | 'confirm'         // Summary + contact + pay
   | 'success';        // Booking confirmed + next steps
 
@@ -115,6 +116,7 @@ interface MoveData {
     phone: string;
   };
   comments: string;
+  selectedCompanies: string[];
 }
 
 interface PriceBreakdown {
@@ -193,7 +195,75 @@ const ADDONS = [
   { id: 'admin', name: 'Admin-Paket', icon: FileCheck, price: 150, desc: 'eUmzug, Ummeldungen, alles' },
 ];
 
-// ============================================
+// Demo companies for selection
+const DEMO_COMPANIES = [
+  {
+    id: 'zurich-1',
+    name: 'Premium Umzug AG',
+    logo: '🏆',
+    rating: 4.9,
+    reviewCount: 247,
+    priceLevel: 'premium' as const,
+    location: 'Zürich',
+    features: ['Express-Service', 'Möbelmontage', 'Versicherung'],
+    isSponsored: true,
+    responseTime: '< 2 Std.',
+    priceEstimate: 1650,
+  },
+  {
+    id: 'zurich-2',
+    name: 'SwissMove GmbH',
+    logo: '🚚',
+    rating: 4.7,
+    reviewCount: 189,
+    priceLevel: 'fair' as const,
+    location: 'Zürich',
+    features: ['Wochenendservice', 'Lagerung', 'Entsorgung'],
+    isSponsored: false,
+    responseTime: '< 4 Std.',
+    priceEstimate: 1380,
+  },
+  {
+    id: 'bern-1',
+    name: 'Berner Transport',
+    logo: '📦',
+    rating: 4.8,
+    reviewCount: 156,
+    priceLevel: 'fair' as const,
+    location: 'Bern',
+    features: ['Familienunternehmen', 'Seniorenumzüge', 'Klaviertransport'],
+    isSponsored: false,
+    responseTime: '< 3 Std.',
+    priceEstimate: 1420,
+  },
+  {
+    id: 'basel-1',
+    name: 'Express Zügle AG',
+    logo: '⚡',
+    rating: 4.6,
+    reviewCount: 203,
+    priceLevel: 'günstig' as const,
+    location: 'Basel',
+    features: ['Schnell & günstig', 'Kurzfristig verfügbar'],
+    isSponsored: false,
+    responseTime: '< 1 Std.',
+    priceEstimate: 1190,
+  },
+  {
+    id: 'zurich-3',
+    name: 'Komfort Umzüge',
+    logo: '✨',
+    rating: 4.5,
+    reviewCount: 98,
+    priceLevel: 'fair' as const,
+    location: 'Winterthur',
+    features: ['Rundum-Sorglos', 'Endreinigung inklusive'],
+    isSponsored: false,
+    responseTime: '< 6 Std.',
+    priceEstimate: 1520,
+  },
+];
+
 // HELPER FUNCTIONS
 // ============================================
 
@@ -306,7 +376,8 @@ export function ZeroFrictionWizard() {
       2: 'refine',
       3: 'service',
       4: 'customize',
-      5: 'confirm',
+      5: 'companies',
+      6: 'confirm',
     };
     return stepMap[captureStep] || 'start';
   };
@@ -346,6 +417,7 @@ export function ZeroFrictionWizard() {
           phone: demoData.phone 
         },
         comments: '',
+        selectedCompanies: [],
       };
     }
     
@@ -373,6 +445,7 @@ export function ZeroFrictionWizard() {
       estimatedVolume: 35,
       contact: { name: '', email: '', phone: '' },
       comments: '',
+      selectedCompanies: [],
     };
   });
 
@@ -437,7 +510,7 @@ export function ZeroFrictionWizard() {
   };
 
   const goNext = () => {
-    const stepOrder: WizardStep[] = ['start', 'refine', 'service', 'customize', 'confirm', 'success'];
+    const stepOrder: WizardStep[] = ['start', 'refine', 'service', 'customize', 'companies', 'confirm', 'success'];
     const currentIndex = stepOrder.indexOf(step);
     if (currentIndex < stepOrder.length - 1) {
       setStep(stepOrder[currentIndex + 1]);
@@ -445,7 +518,7 @@ export function ZeroFrictionWizard() {
   };
 
   const goBack = () => {
-    const stepOrder: WizardStep[] = ['start', 'refine', 'service', 'customize', 'confirm', 'success'];
+    const stepOrder: WizardStep[] = ['start', 'refine', 'service', 'customize', 'companies', 'confirm', 'success'];
     const currentIndex = stepOrder.indexOf(step);
     if (currentIndex > 0) {
       setStep(stepOrder[currentIndex - 1]);
@@ -456,13 +529,25 @@ export function ZeroFrictionWizard() {
     setStep('confirm');
   };
 
+  const toggleCompanySelection = (companyId: string) => {
+    setMoveData(prev => {
+      const isSelected = prev.selectedCompanies.includes(companyId);
+      if (isSelected) {
+        return { ...prev, selectedCompanies: prev.selectedCompanies.filter(id => id !== companyId) };
+      } else if (prev.selectedCompanies.length < 5) {
+        return { ...prev, selectedCompanies: [...prev.selectedCompanies, companyId] };
+      }
+      return prev;
+    });
+  };
+
   // Get current tier info
   const currentTier = SERVICE_TIERS.reduce((prev, curr) => 
     curr.level <= moveData.serviceLevel ? curr : prev
   , SERVICE_TIERS[0]);
 
-  const stepTitles = ['Start', 'Details', 'Service', 'Extras', 'Buchen'];
-  const stepIndex = ['start', 'refine', 'service', 'customize', 'confirm'].indexOf(step);
+  const stepTitles = ['Start', 'Details', 'Service', 'Extras', 'Firmen', 'Buchen'];
+  const stepIndex = ['start', 'refine', 'service', 'customize', 'companies', 'confirm'].indexOf(step);
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -980,7 +1065,7 @@ export function ZeroFrictionWizard() {
                     Zurück
                   </Button>
                   <Button onClick={goNext} className="flex-[2]">
-                    Zur Buchung
+                    Firmen wählen
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
@@ -989,7 +1074,139 @@ export function ZeroFrictionWizard() {
           </motion.div>
         )}
 
-        {/* STEP 5: CONFIRM - Summary + contact + pay */}
+        {/* STEP 5: COMPANIES - Company comparison & selection */}
+        {step === 'companies' && (
+          <motion.div
+            key="companies"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <Card className="border-2 border-primary/20 shadow-lg">
+              <CardContent className="p-6 space-y-6">
+                <div className="text-center mb-2">
+                  <h2 className="text-xl font-semibold mb-2">Passende Umzugsfirmen</h2>
+                  <p className="text-muted-foreground text-sm">
+                    Wählen Sie 1-5 Firmen für Ihre Offerten aus
+                  </p>
+                </div>
+
+                {/* Selection counter */}
+                <div className="flex items-center justify-between bg-muted/50 rounded-lg p-3">
+                  <span className="text-sm text-muted-foreground">
+                    {moveData.selectedCompanies.length} von max. 5 Firmen gewählt
+                  </span>
+                  <Badge variant={moveData.selectedCompanies.length > 0 ? "default" : "secondary"}>
+                    {moveData.selectedCompanies.length === 0 ? 'Keine Auswahl' : `${moveData.selectedCompanies.length} gewählt`}
+                  </Badge>
+                </div>
+
+                {/* Company list */}
+                <div className="space-y-3">
+                  {DEMO_COMPANIES.map((company) => {
+                    const isSelected = moveData.selectedCompanies.includes(company.id);
+                    return (
+                      <div
+                        key={company.id}
+                        onClick={() => toggleCompanySelection(company.id)}
+                        className={cn(
+                          "flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all",
+                          isSelected 
+                            ? "border-primary bg-primary/5 shadow-md" 
+                            : "border-border hover:border-primary/50 hover:bg-muted/30",
+                          company.isSponsored && "ring-1 ring-amber-300"
+                        )}
+                      >
+                        {/* Logo */}
+                        <div className="text-3xl shrink-0">{company.logo}</div>
+                        
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-semibold">{company.name}</h3>
+                            {company.isSponsored && (
+                              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
+                                Gesponsert
+                              </Badge>
+                            )}
+                            <Badge 
+                              variant="outline" 
+                              className={cn(
+                                "text-xs",
+                                company.priceLevel === 'günstig' && "bg-green-50 text-green-700 border-green-200",
+                                company.priceLevel === 'fair' && "bg-blue-50 text-blue-700 border-blue-200",
+                                company.priceLevel === 'premium' && "bg-purple-50 text-purple-700 border-purple-200"
+                              )}
+                            >
+                              {company.priceLevel}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                            <span className="flex items-center gap-1">
+                              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                              {company.rating} ({company.reviewCount})
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3.5 w-3.5" />
+                              {company.location}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3.5 w-3.5" />
+                              {company.responseTime}
+                            </span>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {company.features.map((feature, i) => (
+                              <Badge key={i} variant="secondary" className="text-xs font-normal">
+                                {feature}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Price & Selection */}
+                        <div className="text-right shrink-0">
+                          <p className="text-lg font-bold text-primary">
+                            ab {formatCHF(company.priceEstimate)}
+                          </p>
+                          <div className={cn(
+                            "mt-2 h-6 w-6 rounded-full border-2 flex items-center justify-center ml-auto transition-all",
+                            isSelected 
+                              ? "border-primary bg-primary" 
+                              : "border-muted-foreground/30"
+                          )}>
+                            {isSelected && <Check className="h-4 w-4 text-primary-foreground" />}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={goBack} className="flex-1">
+                    Zurück
+                  </Button>
+                  <Button 
+                    onClick={goNext} 
+                    className="flex-[2]"
+                    disabled={moveData.selectedCompanies.length === 0}
+                  >
+                    {moveData.selectedCompanies.length === 0 
+                      ? 'Bitte Firma wählen' 
+                      : `Mit ${moveData.selectedCompanies.length} Firma${moveData.selectedCompanies.length > 1 ? 'en' : ''} fortfahren`}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* STEP 6: CONFIRM - Summary + contact + pay */}
         {step === 'confirm' && (
           <motion.div
             key="confirm"
