@@ -24,6 +24,7 @@ import { MultiStepCalculatorVariant } from "@/components/homepage/MultiStepCalcu
 import { PremiumCalculator } from "@/components/premium-v2/PremiumCalculator";
 import { GodModeCalculator } from "@/components/god-mode-v3/GodModeCalculator";
 import { VideoFirstCalculator } from "@/components/video-first-v4/VideoFirstCalculator";
+import { MarketplaceWizard } from "@/components/marketplace-v5/MarketplaceWizard";
 import { Link, useLocation } from "react-router-dom";
 import { getVariantFromPath, type FlowVariantConfig } from "@/lib/flow-variants";
 import { useEffect } from "react";
@@ -59,6 +60,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
         return 'Umzug buchen | One Slider, Zero Stress | Umzugscheck.ch';
       case 'variant-c':
         return 'Video-Umzugsrechner | KI-Fixpreise in 60 Sekunden | Umzugscheck.ch';
+      case 'variant-d':
+        return 'Umzugs-Marketplace | Partner-Offerten vergleichen & buchen | Umzugscheck.ch';
       default:
         return 'Umzugsofferten Schweiz kostenlos vergleichen | Umzugscheck.ch';
     }
@@ -72,6 +75,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
         return 'Ein Regler. Alles geregelt. Wählen Sie wie viel Sie selbst machen wollen – wir kümmern uns um den Rest.';
       case 'variant-c':
         return 'Video hochladen, KI analysiert, Fixpreis erhalten. Der schnellste Weg zu Ihrem Umzugsangebot.';
+      case 'variant-d':
+        return 'Der komplette Umzugs-Marketplace: Video/Inventar erfassen, Partner-Fixpreise vergleichen, online buchen.';
       default:
         return 'Erhalten Sie gratis Umzugsofferten von geprüften Umzugsfirmen in der Schweiz. Schnell vergleichen, transparente Preise.';
     }
@@ -99,6 +104,7 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
   const isPremiumV2 = variant.id === 'variant-a';
   const isGodModeV3 = variant.id === 'variant-b';
   const isVideoFirstV4 = variant.id === 'variant-c';
+  const isMarketplaceV5 = variant.id === 'variant-d';
 
   return (
     <div className={cn(
@@ -135,6 +141,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
             <GodModeCalculator />
           ) : isVideoFirstV4 ? (
             <VideoFirstCalculator />
+          ) : isMarketplaceV5 ? (
+            <MarketplaceWizard />
           ) : (
             <MultiStepCalculatorVariant variant={variant} />
           )}

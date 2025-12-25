@@ -496,6 +496,7 @@ const App = () => (
                             <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v3" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v4" element={<UmzugsoffertenVariant />} />
+                            <Route path="/umzugsofferten-v5" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten/bestaetigung" element={<UmzugsoffertenBestaetigung />} />
                             <Route path="/umzugsofferten/:region" element={<RegionalOfferten />} />
                             <Route path="/preise" element={<Pricing />} />
