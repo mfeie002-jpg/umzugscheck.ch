@@ -157,14 +157,16 @@ interface CaptureResult {
 }
 
 export function AutoFlowScreenshots() {
-  // Default to current origin (preview) instead of production
-  // This ensures we capture what's actually deployed in the current preview
-  const defaultPreviewUrl = useMemo(() => {
+  // IMPORTANT: Screenshot providers usually cannot access preview/sandbox domains (login-wall / auth-gate).
+  // Default to a publicly reachable base URL when we detect a Lovable host.
+  const defaultPublicBaseUrl = useMemo(() => {
     if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-    return window.location.origin.replace(/\/$/, "");
+    const { origin, hostname } = window.location;
+    const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
+    return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
   }, []);
 
-  const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPreviewUrl);
+  const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPublicBaseUrl);
   const [selectedFlows, setSelectedFlows] = useState<string[]>(
     CALCULATOR_FLOWS.map((f) => f.id)
   );
@@ -184,7 +186,7 @@ export function AutoFlowScreenshots() {
   const [debugRunning, setDebugRunning] = useState(false);
   const [debugStats, setDebugStats] = useState<{ ok: number; fail: number; lastError?: string } | null>(null);
 
-  const getBaseUrl = () => (baseUrlOverride.trim() || defaultPreviewUrl).replace(/\/$/, "");
+  const getBaseUrl = () => (baseUrlOverride.trim() || defaultPublicBaseUrl).replace(/\/$/, "");
 
   const buildCaptureUrl = (flowPath: string, step: number) => {
     const baseUrl = getBaseUrl();
@@ -359,7 +361,7 @@ export function AutoFlowScreenshots() {
               <Input
                 value={baseUrlOverride}
                 onChange={(e) => setBaseUrlOverride(e.target.value)}
-                placeholder={defaultPreviewUrl}
+                placeholder={defaultPublicBaseUrl}
               />
               <p className="text-xs text-muted-foreground">
                 Tipp: Muss öffentlich erreichbar sein (Preview-Domains haben oft eine Login-Wall).
@@ -388,7 +390,7 @@ export function AutoFlowScreenshots() {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setBaseUrlOverride(defaultPreviewUrl);
+                    setBaseUrlOverride(defaultPublicBaseUrl);
                     toast.success("Base URL zurückgesetzt");
                   }}
                 >
