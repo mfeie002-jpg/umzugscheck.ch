@@ -48,6 +48,18 @@ const STEP_CONFIGS = [
   { step: 4, name: "Kontakt & Absenden", description: "Name, Email, Absenden" },
 ];
 
+const getDefaultPublicBaseUrl = (): string => {
+  if (typeof window === "undefined") return "";
+  const { protocol, hostname } = window.location;
+
+  // Protected preview domains (id-preview--) are not accessible to the screenshot service.
+  // Switch to the public sandbox host so automation can render without login.
+  const m = hostname.match(/^id-preview--([a-f0-9-]+)\.lovable\.app$/i);
+  if (m?.[1]) return `${protocol}//${m[1]}.lovableproject.com`;
+
+  return `${protocol}//${hostname}`;
+};
+
 // Helper to build capture URL for a given flow and step
 const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number) => {
   // uc_render=1 enables render-mode patches (e.g. IntersectionObserver + eager images)
@@ -69,10 +81,8 @@ export function CalculatorFlowReview() {
   const [customPrompt, setCustomPrompt] = useState("");
   const [captureProgress, setCaptureProgress] = useState(0);
   const [captureStatus, setCaptureStatus] = useState("");
-  // Default: current origin (prevents capturing from an outdated preview URL)
-  const [baseUrlOverride, setBaseUrlOverride] = useState(() =>
-    typeof window !== "undefined" ? window.location.origin : ""
-  );
+  // Default: use a public base URL (the preview domain can show a login wall to the screenshot service)
+  const [baseUrlOverride, setBaseUrlOverride] = useState(() => getDefaultPublicBaseUrl());
 
   const calculatorOptions = [
     { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
@@ -146,7 +156,7 @@ export function CalculatorFlowReview() {
     setCaptureProgress(0);
     setCapturedSteps([]);
 
-    const baseUrl = (baseUrlOverride.trim() || window.location.origin).replace(/\/$/, "");
+    const baseUrl = (baseUrlOverride.trim() || getDefaultPublicBaseUrl()).replace(/\/$/, "");
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
     const steps: FlowStep[] = [];
@@ -202,7 +212,7 @@ export function CalculatorFlowReview() {
       step: config.step,
       name: config.name,
       description: config.description,
-      url: buildCaptureUrl(window.location.origin, calculatorPath, config.step),
+      url: buildCaptureUrl(getDefaultPublicBaseUrl(), calculatorPath, config.step),
       html: getMockHtml(config.step),
     }));
     
@@ -549,7 +559,7 @@ export function CalculatorFlowReview() {
     setCaptureProgress(0);
     setCaptureStatus("Starte Export aller Flows...");
 
-    const baseUrl = (baseUrlOverride.trim() || window.location.origin).replace(/\/$/, "");
+    const baseUrl = (baseUrlOverride.trim() || getDefaultPublicBaseUrl()).replace(/\/$/, "");
     const zip = new JSZip();
     const exportDate = new Date().toISOString().split('T')[0];
     const rootFolder = zip.folder(`all-flows-export-${exportDate}`);
@@ -977,11 +987,11 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               <Input
                 value={baseUrlOverride}
                 onChange={(e) => setBaseUrlOverride(e.target.value)}
-                placeholder={window.location.origin}
+                placeholder={getDefaultPublicBaseUrl()}
                 inputMode="url"
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                Von dieser URL werden Screenshots/HTML geholt (z.B. deine Live-Domain). Leer lassen = aktuelle Preview.
+                Von dieser URL werden Screenshots/HTML geholt (z.B. deine Live-Domain). Leer lassen = öffentliche Sandbox (kein Login).
               </p>
             </div>
 
