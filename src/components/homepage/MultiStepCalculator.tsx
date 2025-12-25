@@ -4,7 +4,7 @@ import {
   ArrowRight, ArrowLeft, Shield, CheckCircle, Video, Camera, 
   MapPin, TrendingDown, Package, Sparkles, Brush, Trash2, Warehouse,
   Plus, Minus, Info, Star, Clock, Award, User, Mail, Phone, Calendar,
-  Filter, List, LayoutGrid, Zap, Map
+  Filter, List, LayoutGrid, Zap, Map, Users, AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,8 @@ import { MoveTypeInitialStep } from "./MoveTypeInitialStep";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
 import { getCantonFromZip } from "@/lib/zip-to-canton";
 import { getCantonConfig } from "@/lib/cantonConfigMap";
+import { CompanyComparisonTable } from "./CompanyComparisonTable";
+import { PackageSavingsCard } from "./PackageSavingsCard";
 
 // Storage key for form persistence
 const FORM_STORAGE_KEY = "umzugscheck_form_data";
@@ -47,7 +49,8 @@ const services = [
     icon: <Package className="w-4 h-4" />,
     priceAdd: 0,
     popular: true,
-    default: true 
+    default: true,
+    bookingPercent: 100, // Everyone books this
   },
   { 
     id: "einpacken", 
@@ -59,7 +62,8 @@ const services = [
     icon: <Package className="w-4 h-4" />,
     priceAdd: 400,
     popular: true,
-    highlight: true
+    highlight: true,
+    bookingPercent: 73, // 73% of users book this
   },
   { 
     id: "auspacken", 
@@ -71,7 +75,8 @@ const services = [
     icon: <Sparkles className="w-4 h-4" />,
     priceAdd: 300,
     popular: true,
-    highlight: true
+    highlight: true,
+    bookingPercent: 52, // 52% book this
   },
   { 
     id: "reinigung", 
@@ -82,7 +87,8 @@ const services = [
     benefits: ["Abnahmegarantie inklusive", "Alle Räume inkl. Küche & Bad", "Fenster innen & aussen", "Backofen & Kühlschrank gereinigt"],
     icon: <Brush className="w-4 h-4" />,
     priceAdd: 350,
-    popular: true 
+    popular: true,
+    bookingPercent: 45, // 45% book this
   },
   { 
     id: "entsorgung", 
@@ -93,7 +99,8 @@ const services = [
     benefits: ["Umweltgerechte Entsorgung", "Keine Selbstfahrt zur Deponie nötig", "Elektrogeräte & Sondermüll inklusive"],
     icon: <Trash2 className="w-4 h-4" />,
     priceAdd: 200,
-    popular: false 
+    popular: false,
+    bookingPercent: 28, // 28% book this
   },
   { 
     id: "lagerung", 
@@ -104,7 +111,8 @@ const services = [
     benefits: ["Klimatisierte, saubere Räume", "24/7 Videoüberwachung & Alarm", "Flexible Laufzeit ohne Mindestdauer"],
     icon: <Warehouse className="w-4 h-4" />,
     priceAdd: 150,
-    popular: false 
+    popular: false,
+    bookingPercent: 12, // 12% book this
   },
 ];
 
@@ -436,7 +444,8 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
         return formData.fromLocation.trim() !== "" && 
                formData.toLocation.trim() !== "" && 
                formData.apartmentSize !== "" &&
-               formData.selectedServices.length > 0;
+               formData.selectedServices.length > 0 &&
+               formData.moveDate !== ""; // Date is now required
       case 3:
         return formData.selectedCompanies.length >= 3;
       case 4:
@@ -627,18 +636,25 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   </motion.div>
                 )}
 
-                {/* Move Date */}
+                {/* Move Date - NOW REQUIRED */}
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    Umzugsdatum (optional)
+                    <Calendar className="w-4 h-4 text-primary" />
+                    Umzugsdatum *
+                    {!formData.moveDate && (
+                      <span className="text-[9px] text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        Pflichtfeld
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="date"
                     value={formData.moveDate}
                     onChange={(e) => updateFormData("moveDate", e.target.value)}
-                    className="h-10 rounded-xl"
+                    className={`h-10 rounded-xl ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
                     min={new Date().toISOString().split('T')[0]}
+                    required
                   />
                 </div>
 
@@ -817,6 +833,13 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                       );
                     })}
                   </div>
+
+                  {/* Package Savings Card */}
+                  <PackageSavingsCard
+                    services={services}
+                    selectedServices={formData.selectedServices}
+                    onSelectPackage={(serviceIds) => updateFormData("selectedServices", serviceIds)}
+                  />
                 </div>
               </div>
             </motion.div>
@@ -847,283 +870,16 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                 </p>
               </div>
 
-              {/* Table Header */}
-              <div className="hidden sm:grid sm:grid-cols-[40px_50px_1fr_100px_100px_90px_80px] gap-2 px-3 py-2 bg-muted/50 rounded-lg text-[10px] font-semibold text-muted-foreground items-center">
-                <div className="text-center"></div>
-                <div className="text-center">Rang</div>
-                <div>Umzugsfirma</div>
-                <div className="text-center">Match</div>
-                <div className="text-center">Preislevel</div>
-                <div className="text-center">Bewertung</div>
-                <div className="text-center">Verfügbar</div>
-              </div>
-
-              {/* Selection Counter */}
-              <div className={`p-2 rounded-lg text-center text-xs font-medium transition-all ${
-                formData.selectedCompanies.length >= 3
-                  ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                  : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
-              }`}>
-                {formData.selectedCompanies.length < 3 ? (
-                  <>👆 Noch {3 - formData.selectedCompanies.length} Firma{3 - formData.selectedCompanies.length > 1 ? "en" : ""} auswählen</>
-                ) : (
-                  <>✓ {formData.selectedCompanies.length} Firmen ausgewählt – Vergleich bereit!</>
-                )}
-              </div>
-
-              {/* Company List */}
-              <div className="space-y-2 max-h-[350px] overflow-y-auto pr-1">
-                {matchingCompanies
-                  .filter((company) => {
-                    if (companyFilter === "alle") return true;
-                    if (companyFilter === "top") return company.rating >= 4.5 || company.is_featured;
-                    if (companyFilter === "günstig") return company.price_level === "günstig";
-                    if (companyFilter === "schnell") return (company.response_time_avg_hours || 24) <= 4;
-                    return true;
-                  })
-                  .map((company, index) => {
-                    const isSelected = formData.selectedCompanies.includes(company.id);
-                    const isRecommended = company.is_featured;
-                    const matchPercent = Math.round(85 + (company.rating - 4) * 10 + (company.is_featured ? 5 : 0));
-                    const rankNum = index + 1;
-
-                    return (
-                      <motion.div
-                        key={company.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.03 }}
-                        onClick={() => toggleCompany(company.id)}
-                        className={`relative bg-card rounded-xl border-2 overflow-hidden cursor-pointer transition-all hover:shadow-md ${
-                          isSelected
-                            ? "border-secondary ring-2 ring-secondary/20"
-                            : isRecommended
-                            ? "border-primary/30 hover:border-primary/50"
-                            : "border-border hover:border-primary/30"
-                        }`}
-                      >
-                        {/* Recommended Badge */}
-                        {isRecommended && (
-                          <div className="bg-secondary text-secondary-foreground text-center py-0.5 text-[9px] font-semibold flex items-center justify-center gap-1">
-                            <Award className="w-2.5 h-2.5" />
-                            Empfohlen
-                          </div>
-                        )}
-
-                        <div className="p-3">
-                          {/* Desktop: Table-like layout */}
-                          <div className="hidden sm:grid sm:grid-cols-[40px_50px_1fr_100px_100px_90px_80px] gap-2 items-center">
-                            {/* Checkbox */}
-                            <div className="flex justify-center">
-                              <div
-                                className={`w-5 h-5 rounded flex items-center justify-center border-2 ${
-                                  isSelected ? "bg-secondary border-secondary" : "border-border"
-                                }`}
-                              >
-                                {isSelected && (
-                                  <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Rank */}
-                            <div className="flex justify-center">
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
-                                rankNum === 1 
-                                  ? "bg-amber-400 text-amber-900" 
-                                  : rankNum === 2 
-                                  ? "bg-gray-300 text-gray-700"
-                                  : rankNum === 3
-                                  ? "bg-amber-600 text-white"
-                                  : "bg-muted text-muted-foreground"
-                              }`}>
-                                {rankNum === 1 && <Award className="w-4 h-4" />}
-                                {rankNum !== 1 && rankNum}
-                              </div>
-                            </div>
-
-                            {/* Company Info */}
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center font-bold text-sm shrink-0">
-                                  {company.name.charAt(0)}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <p className="font-bold text-sm truncate">{company.name}</p>
-                                  <p className="text-[10px] text-muted-foreground truncate">
-                                    {company.service_areas?.[0] || "Schweizweit"}
-                                  </p>
-                                  {/* Services */}
-                                  <div className="flex flex-wrap gap-1 mt-1">
-                                    {company.services_offered.slice(0, 3).map((service) => (
-                                      <span key={service} className="text-[8px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                                        {service}
-                                      </span>
-                                    ))}
-                                  </div>
-                                  {company.price_level === "günstig" && (
-                                    <p className="text-[9px] text-green-600 font-medium mt-0.5">✨ Bis 35% günstiger</p>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Match % */}
-                            <div className="text-center">
-                              <span className="inline-block px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold">
-                                % {matchPercent}% Match
-                              </span>
-                            </div>
-
-                            {/* Price Level */}
-                            <div className="text-center">
-                              <span className="text-sm font-medium">
-                                <span className={company.price_level === "günstig" || company.price_level === "fair" || company.price_level === "premium" ? "text-foreground" : "text-muted-foreground/40"}>CHF </span>
-                                <span className={company.price_level === "fair" || company.price_level === "premium" ? "text-foreground" : "text-muted-foreground/40"}>CHF </span>
-                                <span className={company.price_level === "premium" ? "text-foreground" : "text-muted-foreground/40"}>CHF</span>
-                              </span>
-                            </div>
-
-                            {/* Rating */}
-                            <div className="text-center">
-                              <div className="flex items-center justify-center gap-1">
-                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                <span className="font-bold text-sm">{company.rating}</span>
-                                <span className="text-muted-foreground text-xs">({company.review_count})</span>
-                              </div>
-                            </div>
-
-                            {/* Availability */}
-                            <div className="text-center">
-                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-medium">
-                                <Calendar className="w-3 h-3" />
-                                Verfügbar
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Mobile: Compact layout */}
-                          <div className="sm:hidden">
-                            <div className="flex items-start gap-2">
-                              {/* Checkbox + Rank */}
-                              <div className="flex flex-col items-center gap-1">
-                                <div
-                                  className={`w-5 h-5 rounded flex items-center justify-center border-2 ${
-                                    isSelected ? "bg-secondary border-secondary" : "border-border"
-                                  }`}
-                                >
-                                  {isSelected && (
-                                    <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
-                                  )}
-                                </div>
-                                <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${
-                                  rankNum === 1 
-                                    ? "bg-amber-400 text-amber-900" 
-                                    : rankNum <= 3
-                                    ? "bg-gray-200 text-gray-700"
-                                    : "bg-muted text-muted-foreground"
-                                }`}>
-                                  {rankNum}
-                                </div>
-                              </div>
-
-                              {/* Company Info */}
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-1.5 mb-0.5">
-                                  <span className="font-bold text-xs truncate">{company.name}</span>
-                                </div>
-                                <p className="text-[10px] text-muted-foreground mb-1">
-                                  {company.service_areas?.[0] || "Schweizweit"}
-                                </p>
-                                <div className="flex items-center gap-2 text-[10px]">
-                                  <span className="px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium">
-                                    {matchPercent}% Match
-                                  </span>
-                                  <span className="text-muted-foreground">
-                                    {company.price_level === "günstig" ? "💰" : company.price_level === "premium" ? "⭐⭐⭐" : "⭐⭐"}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Rating */}
-                              <div className="text-right shrink-0">
-                                <div className="flex items-center gap-0.5">
-                                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                  <span className="font-bold text-xs">{company.rating}</span>
-                                </div>
-                                <p className="text-[9px] text-muted-foreground">({company.review_count})</p>
-                              </div>
-                            </div>
-
-                            {/* Services */}
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {company.services_offered.slice(0, 4).map((service) => {
-                                const isSelectedService = formData.selectedServices.some(selectedId => {
-                                  const matchingNames = serviceIdToCompanyService[selectedId] || [];
-                                  return matchingNames.some(name => 
-                                    service.toLowerCase().includes(name.toLowerCase())
-                                  );
-                                });
-                                return (
-                                  <span 
-                                    key={service} 
-                                    className={`text-[8px] px-1.5 py-0.5 rounded-full ${
-                                      isSelectedService 
-                                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium" 
-                                        : "bg-muted text-muted-foreground"
-                                    }`}
-                                  >
-                                    {isSelectedService && "✓ "}{service}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-              </div>
-
-              {/* Comparison Preview when 3+ selected */}
-              {formData.selectedCompanies.length >= 3 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-3 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-bold text-green-800 dark:text-green-300">
-                      📊 Vergleich Ihrer Auswahl
-                    </p>
-                    <Badge className="text-[9px] bg-green-600 text-white">
-                      {formData.selectedCompanies.length} Firmen
-                    </Badge>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    {formData.selectedCompanies.slice(0, 3).map((companyId) => {
-                      const company = matchingCompanies.find((c) => c.id === companyId);
-                      if (!company) return null;
-                      const priceEst = getCompanyPrice(formData.apartmentSize, company.price_level);
-                      return (
-                        <div key={companyId} className="bg-white/50 dark:bg-black/20 rounded-lg p-1.5">
-                          <p className="text-[9px] font-semibold truncate">{company.name}</p>
-                          <p className="text-[10px] font-bold text-primary">CHF {priceEst.min}</p>
-                          <div className="flex items-center justify-center gap-0.5 text-[8px]">
-                            <Star className="w-2 h-2 fill-yellow-400 text-yellow-400" />
-                            {company.rating}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {formData.selectedCompanies.length > 3 && (
-                    <p className="text-[9px] text-green-600 dark:text-green-400 text-center mt-1">
-                      +{formData.selectedCompanies.length - 3} weitere
-                    </p>
-                  )}
-                </motion.div>
-              )}
+              {/* Company Comparison Table with Filters */}
+              <CompanyComparisonTable
+                companies={matchingCompanies}
+                selectedCompanies={formData.selectedCompanies}
+                selectedServices={formData.selectedServices}
+                serviceIdToCompanyService={serviceIdToCompanyService}
+                apartmentSize={formData.apartmentSize}
+                onToggleCompany={toggleCompany}
+                getCompanyPrice={getCompanyPrice}
+              />
             </motion.div>
           )}
 
