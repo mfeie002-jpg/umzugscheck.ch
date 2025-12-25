@@ -24,7 +24,8 @@ import {
   Trophy,
   FileText,
   Gauge,
-  Sparkles
+  Sparkles,
+  Gavel
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -54,6 +55,12 @@ const navItems = [
     title: "Leads", 
     href: "/admin/leads", 
     icon: Users 
+  },
+  { 
+    title: "Bieter-Aufträge", 
+    href: "/admin/listings", 
+    icon: Gavel,
+    badge: "NEU"
   },
   { 
     title: "Firmen", 
