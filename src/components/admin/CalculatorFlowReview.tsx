@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { SITE_CONFIG } from "@/data/constants";
 import { supabase } from "@/integrations/supabase/client";
 import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
 import { toast } from "sonner";
@@ -49,14 +50,14 @@ const STEP_CONFIGS = [
 ];
 
 const getDefaultPublicBaseUrl = (): string => {
-  if (typeof window === "undefined") return "";
+  // Screenshot providers cannot access Lovable preview/sandbox domains (login wall).
+  // Default to the public site URL so automated captures work.
+  if (typeof window === "undefined") return SITE_CONFIG.url;
+
   const { protocol, hostname } = window.location;
+  const isLovableHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
 
-  // Protected preview domains (id-preview--) are not accessible to the screenshot service.
-  // Switch to the public sandbox host so automation can render without login.
-  const m = hostname.match(/^id-preview--([a-f0-9-]+)\.lovable\.app$/i);
-  if (m?.[1]) return `${protocol}//${m[1]}.lovableproject.com`;
-
+  if (isLovableHost) return SITE_CONFIG.url;
   return `${protocol}//${hostname}`;
 };
 
@@ -991,7 +992,7 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                 inputMode="url"
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                Von dieser URL werden Screenshots/HTML geholt (z.B. deine Live-Domain). Leer lassen = öffentliche Sandbox (kein Login).
+                Von dieser URL werden Screenshots/HTML geholt (z.B. deine Live-Domain). Standard = öffentliche Live-URL.
               </p>
             </div>
 
