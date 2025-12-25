@@ -157,21 +157,21 @@ interface CaptureResult {
 }
 
 export function AutoFlowScreenshots() {
-  const defaultPublicBaseUrl = useMemo(() => {
+  // Default to current origin (preview) instead of production
+  // This ensures we capture what's actually deployed in the current preview
+  const defaultPreviewUrl = useMemo(() => {
     if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-    const { origin, hostname } = window.location;
-    const isLovableHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-    return (isLovableHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+    return window.location.origin.replace(/\/$/, "");
   }, []);
 
-  const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPublicBaseUrl);
+  const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPreviewUrl);
   const [selectedFlows, setSelectedFlows] = useState<string[]>(
     CALCULATOR_FLOWS.map((f) => f.id)
   );
   const [captureDesktop, setCaptureDesktop] = useState(true);
   const [captureMobile, setCaptureMobile] = useState(true);
   const [fullPage, setFullPage] = useState(true);
-  const [delayMs, setDelayMs] = useState(15000);
+  const [delayMs, setDelayMs] = useState(25000); // 25s default for lazy-loaded SPAs
 
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0, currentItem: "" });
@@ -184,11 +184,12 @@ export function AutoFlowScreenshots() {
   const [debugRunning, setDebugRunning] = useState(false);
   const [debugStats, setDebugStats] = useState<{ ok: number; fail: number; lastError?: string } | null>(null);
 
-  const getBaseUrl = () => (baseUrlOverride.trim() || defaultPublicBaseUrl).replace(/\/$/, "");
+  const getBaseUrl = () => (baseUrlOverride.trim() || defaultPreviewUrl).replace(/\/$/, "");
 
   const buildCaptureUrl = (flowPath: string, step: number) => {
     const baseUrl = getBaseUrl();
     // uc_cb busts caches for screenshot tooling.
+    // uc_render=1 triggers render-mode patches (eager images, IntersectionObserver bypass)
     return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_render=1&uc_cb=${Date.now()}`;
   };
 
@@ -358,7 +359,7 @@ export function AutoFlowScreenshots() {
               <Input
                 value={baseUrlOverride}
                 onChange={(e) => setBaseUrlOverride(e.target.value)}
-                placeholder={defaultPublicBaseUrl}
+                placeholder={defaultPreviewUrl}
               />
               <p className="text-xs text-muted-foreground">
                 Tipp: Muss öffentlich erreichbar sein (Preview-Domains haben oft eine Login-Wall).
@@ -387,7 +388,7 @@ export function AutoFlowScreenshots() {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setBaseUrlOverride(defaultPublicBaseUrl);
+                    setBaseUrlOverride(defaultPreviewUrl);
                     toast.success("Base URL zurückgesetzt");
                   }}
                 >
