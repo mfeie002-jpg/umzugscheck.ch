@@ -847,29 +847,15 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                 </p>
               </div>
 
-              {/* Filter Bar */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                <Filter className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                {[
-                  { id: "alle", label: "Alle", icon: List },
-                  { id: "top", label: "Top bewertet", icon: Star },
-                  { id: "günstig", label: "Günstigste", icon: TrendingDown },
-                  { id: "schnell", label: "Schnell", icon: Zap },
-                ].map((filter) => (
-                  <button
-                    key={filter.id}
-                    type="button"
-                    onClick={() => setCompanyFilter(filter.id as typeof companyFilter)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium whitespace-nowrap transition-all ${
-                      companyFilter === filter.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground hover:bg-muted/80"
-                    }`}
-                  >
-                    <filter.icon className="w-3 h-3" />
-                    {filter.label}
-                  </button>
-                ))}
+              {/* Table Header */}
+              <div className="hidden sm:grid sm:grid-cols-[40px_50px_1fr_100px_100px_90px_80px] gap-2 px-3 py-2 bg-muted/50 rounded-lg text-[10px] font-semibold text-muted-foreground items-center">
+                <div className="text-center"></div>
+                <div className="text-center">Rang</div>
+                <div>Umzugsfirma</div>
+                <div className="text-center">Match</div>
+                <div className="text-center">Preislevel</div>
+                <div className="text-center">Bewertung</div>
+                <div className="text-center">Verfügbar</div>
               </div>
 
               {/* Selection Counter */}
@@ -885,8 +871,8 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                 )}
               </div>
 
-              {/* Company Cards */}
-              <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
+              {/* Company List */}
+              <div className="space-y-2 max-h-[350px] overflow-y-auto pr-1">
                 {matchingCompanies
                   .filter((company) => {
                     if (companyFilter === "alle") return true;
@@ -896,9 +882,10 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                     return true;
                   })
                   .map((company, index) => {
-                    const priceEst = getCompanyPrice(formData.apartmentSize, company.price_level);
                     const isSelected = formData.selectedCompanies.includes(company.id);
                     const isRecommended = company.is_featured;
+                    const matchPercent = Math.round(85 + (company.rating - 4) * 10 + (company.is_featured ? 5 : 0));
+                    const rankNum = index + 1;
 
                     return (
                       <motion.div
@@ -923,75 +910,174 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                           </div>
                         )}
 
-                        <div className="p-2.5">
-                          <div className="flex items-start gap-2 mb-2">
+                        <div className="p-3">
+                          {/* Desktop: Table-like layout */}
+                          <div className="hidden sm:grid sm:grid-cols-[40px_50px_1fr_100px_100px_90px_80px] gap-2 items-center">
                             {/* Checkbox */}
-                            <div
-                              className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 mt-0.5 ${
-                                isSelected ? "bg-secondary border-secondary" : "border-border"
-                              }`}
-                            >
-                              {isSelected && (
-                                <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
-                              )}
+                            <div className="flex justify-center">
+                              <div
+                                className={`w-5 h-5 rounded flex items-center justify-center border-2 ${
+                                  isSelected ? "bg-secondary border-secondary" : "border-border"
+                                }`}
+                              >
+                                {isSelected && (
+                                  <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Rank */}
+                            <div className="flex justify-center">
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
+                                rankNum === 1 
+                                  ? "bg-amber-400 text-amber-900" 
+                                  : rankNum === 2 
+                                  ? "bg-gray-300 text-gray-700"
+                                  : rankNum === 3
+                                  ? "bg-amber-600 text-white"
+                                  : "bg-muted text-muted-foreground"
+                              }`}>
+                                {rankNum === 1 && <Award className="w-4 h-4" />}
+                                {rankNum !== 1 && rankNum}
+                              </div>
                             </div>
 
                             {/* Company Info */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 mb-0.5">
-                                <span className="font-bold text-xs truncate">{company.name}</span>
-                                <Badge variant="outline" className="text-[7px] text-green-600 border-green-600/30 bg-green-50 shrink-0 px-1 py-0">
-                                  ✓
-                                </Badge>
-                              </div>
-                              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                                <span className="flex items-center gap-0.5">
-                                  <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
-                                  {company.rating}
-                                </span>
-                                <span>•</span>
-                                <span className="flex items-center gap-0.5">
-                                  <Clock className="w-2.5 h-2.5" />
-                                  &lt;{Math.round(company.response_time_avg_hours || 2)}h
-                                </span>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center font-bold text-sm shrink-0">
+                                  {company.name.charAt(0)}
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="font-bold text-sm truncate">{company.name}</p>
+                                  <p className="text-[10px] text-muted-foreground truncate">
+                                    {company.service_areas?.[0] || "Schweizweit"}
+                                  </p>
+                                  {/* Services */}
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {company.services_offered.slice(0, 3).map((service) => (
+                                      <span key={service} className="text-[8px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                                        {service}
+                                      </span>
+                                    ))}
+                                  </div>
+                                  {company.price_level === "günstig" && (
+                                    <p className="text-[9px] text-green-600 font-medium mt-0.5">✨ Bis 35% günstiger</p>
+                                  )}
+                                </div>
                               </div>
                             </div>
 
-                            {/* Price */}
-                            <div className="text-right shrink-0">
-                              <p className="text-xs font-bold text-primary">
-                                CHF {priceEst.min}–{priceEst.max}
-                              </p>
-                              <p className="text-[9px] text-muted-foreground">
-                                {company.price_level === "günstig" ? "💰 Günstig" : company.price_level === "premium" ? "⭐ Premium" : "Fair"}
-                              </p>
+                            {/* Match % */}
+                            <div className="text-center">
+                              <span className="inline-block px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold">
+                                % {matchPercent}% Match
+                              </span>
+                            </div>
+
+                            {/* Price Level */}
+                            <div className="text-center">
+                              <span className="text-sm font-medium">
+                                <span className={company.price_level === "günstig" || company.price_level === "fair" || company.price_level === "premium" ? "text-foreground" : "text-muted-foreground/40"}>CHF </span>
+                                <span className={company.price_level === "fair" || company.price_level === "premium" ? "text-foreground" : "text-muted-foreground/40"}>CHF </span>
+                                <span className={company.price_level === "premium" ? "text-foreground" : "text-muted-foreground/40"}>CHF</span>
+                              </span>
+                            </div>
+
+                            {/* Rating */}
+                            <div className="text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-bold text-sm">{company.rating}</span>
+                                <span className="text-muted-foreground text-xs">({company.review_count})</span>
+                              </div>
+                            </div>
+
+                            {/* Availability */}
+                            <div className="text-center">
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-medium">
+                                <Calendar className="w-3 h-3" />
+                                Verfügbar
+                              </span>
                             </div>
                           </div>
-                          
-                          {/* Services offered - show which selected services they provide */}
-                          <div className="flex flex-wrap gap-1">
-                            {company.services_offered.slice(0, 5).map((service) => {
-                              // Check if this service matches any of the user's selected services
-                              const isSelectedService = formData.selectedServices.some(selectedId => {
-                                const matchingNames = serviceIdToCompanyService[selectedId] || [];
-                                return matchingNames.some(name => 
-                                  service.toLowerCase().includes(name.toLowerCase())
-                                );
-                              });
-                              
-                              return (
-                                <span 
-                                  key={service} 
-                                  className={`text-[8px] px-1.5 py-0.5 rounded-full ${
-                                    isSelectedService 
-                                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium" 
-                                      : "bg-muted text-muted-foreground"
+
+                          {/* Mobile: Compact layout */}
+                          <div className="sm:hidden">
+                            <div className="flex items-start gap-2">
+                              {/* Checkbox + Rank */}
+                              <div className="flex flex-col items-center gap-1">
+                                <div
+                                  className={`w-5 h-5 rounded flex items-center justify-center border-2 ${
+                                    isSelected ? "bg-secondary border-secondary" : "border-border"
                                   }`}
                                 >
-                                  {isSelectedService && "✓ "}{service}
-                                </span>
-                              );
-                            })}
+                                  {isSelected && (
+                                    <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
+                                  )}
+                                </div>
+                                <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${
+                                  rankNum === 1 
+                                    ? "bg-amber-400 text-amber-900" 
+                                    : rankNum <= 3
+                                    ? "bg-gray-200 text-gray-700"
+                                    : "bg-muted text-muted-foreground"
+                                }`}>
+                                  {rankNum}
+                                </div>
+                              </div>
+
+                              {/* Company Info */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5 mb-0.5">
+                                  <span className="font-bold text-xs truncate">{company.name}</span>
+                                </div>
+                                <p className="text-[10px] text-muted-foreground mb-1">
+                                  {company.service_areas?.[0] || "Schweizweit"}
+                                </p>
+                                <div className="flex items-center gap-2 text-[10px]">
+                                  <span className="px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium">
+                                    {matchPercent}% Match
+                                  </span>
+                                  <span className="text-muted-foreground">
+                                    {company.price_level === "günstig" ? "💰" : company.price_level === "premium" ? "⭐⭐⭐" : "⭐⭐"}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Rating */}
+                              <div className="text-right shrink-0">
+                                <div className="flex items-center gap-0.5">
+                                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                  <span className="font-bold text-xs">{company.rating}</span>
+                                </div>
+                                <p className="text-[9px] text-muted-foreground">({company.review_count})</p>
+                              </div>
+                            </div>
+
+                            {/* Services */}
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {company.services_offered.slice(0, 4).map((service) => {
+                                const isSelectedService = formData.selectedServices.some(selectedId => {
+                                  const matchingNames = serviceIdToCompanyService[selectedId] || [];
+                                  return matchingNames.some(name => 
+                                    service.toLowerCase().includes(name.toLowerCase())
+                                  );
+                                });
+                                return (
+                                  <span 
+                                    key={service} 
+                                    className={`text-[8px] px-1.5 py-0.5 rounded-full ${
+                                      isSelectedService 
+                                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium" 
+                                        : "bg-muted text-muted-foreground"
+                                    }`}
+                                  >
+                                    {isSelectedService && "✓ "}{service}
+                                  </span>
+                                );
+                              })}
+                            </div>
                           </div>
                         </div>
                       </motion.div>
