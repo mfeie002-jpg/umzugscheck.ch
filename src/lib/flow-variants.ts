@@ -157,9 +157,40 @@ export const VARIANT_B: FlowVariantConfig = {
   cardStyle: 'elevated',
   accentColor: 'gradient',
 };
-
-// Variant C: Conversational/guided flow
+// Variant C: Video-First AI V4 Experience
 export const VARIANT_C: FlowVariantConfig = {
+  id: 'variant-c',
+  name: 'Video-First AI V4',
+  description: 'KI-Video-Kalkulator als USP mit Fixpreis-Angeboten',
+  
+  steps: ['moveType', 'location', 'services', 'companies', 'summary', 'contact'],
+  
+  showProgressBar: true,
+  progressStyle: 'steps',
+  layout: 'fullWidth',
+  
+  headline: 'Video hochladen. Fixpreis erhalten.',
+  subheadline: 'KI-Analyse in 60 Sekunden • Verbindliche Festpreise',
+  ctaText: 'Jetzt Fixpreis erhalten',
+  trustBadges: true,
+  
+  showPriceEstimate: true,
+  showCompanyPreview: true,
+  showVideoAIOption: true,
+  showServiceDetails: true,
+  showSavingsCalculator: true,
+  
+  companySelectionMode: 'multi',
+  maxCompanySelections: 5,
+  
+  submitOptions: ['direct', 'publish'],
+  defaultSubmitOption: 'direct',
+  
+  accentColor: 'blue',
+  cardStyle: 'elevated',
+};
+
+export const VARIANT_C_ORIGINAL: FlowVariantConfig = {
   id: 'variant-c',
   name: 'Conversational',
   description: 'Guided Q&A style: Each question on its own screen',
