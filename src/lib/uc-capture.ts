@@ -4,6 +4,8 @@ export interface UcCaptureParams {
   enabled: boolean;
   step: number | null;
   focus: UcCaptureFocus | null;
+  flow: string | null; // e.g., "v1", "v2", "v5" - deterministic flow selection
+  render: boolean; // uc_render=1 for eager images / IntersectionObserver bypass
 }
 
 export function getUcCaptureParams(search: string): UcCaptureParams {
@@ -14,14 +16,18 @@ export function getUcCaptureParams(search: string): UcCaptureParams {
     const step = stepRaw ? Number(stepRaw) : null;
     const focusRaw = params.get("uc_focus");
     const focus = focusRaw === "options" || focusRaw === "contact" ? focusRaw : null;
+    const flow = params.get("uc_flow");
+    const render = params.get("uc_render") === "1";
 
     return {
       enabled,
       step: Number.isFinite(step) ? step : null,
       focus,
+      flow,
+      render,
     };
   } catch {
-    return { enabled: false, step: null, focus: null };
+    return { enabled: false, step: null, focus: null, flow: null, render: false };
   }
 }
 

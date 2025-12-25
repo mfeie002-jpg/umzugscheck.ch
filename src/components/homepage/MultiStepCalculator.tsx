@@ -15,6 +15,7 @@ import { useABTest } from "@/hooks/use-ab-test";
 import { getUcCaptureParams, getTomorrowISODate, getDefaultCaptureContact } from "@/lib/uc-capture";
 import { postalCodeSchema, emailSchema, nameSchema, phoneSchema } from "@/lib/form-validation";
 import { ValidatedInput } from "@/components/ui/ValidatedInput";
+import { CaptureReadySentinel } from "@/components/CaptureReadySentinel";
 import { VisualRoomSelector } from "./VisualRoomSelector";
 import { MoveTypeInitialStep } from "./MoveTypeInitialStep";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
@@ -1082,6 +1083,14 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
           </div>
         </div>
       </div>
+      
+      {/* Capture-ready sentinel for screenshot automation */}
+      <CaptureReadySentinel 
+        step={currentStep} 
+        flow="v1" 
+        isReady={true}
+        metadata={{ variant: "control" }}
+      />
     </div>
   );
 });

@@ -340,6 +340,24 @@ serve(async (req) => {
     console.log("Requesting screenshot from ScreenshotMachine API");
     const response = await fetch(apiUrl);
 
+    // Check for ScreenshotMachine-specific error header (e.g., invalid_selector, timeout)
+    const smErrorHeader = response.headers.get("x-screenshotmachine-response");
+    if (smErrorHeader && smErrorHeader !== "ok") {
+      console.error(`ScreenshotMachine error header: ${smErrorHeader}`);
+      return new Response(
+        JSON.stringify({ 
+          error: `ScreenshotMachine error: ${smErrorHeader}`,
+          smError: smErrorHeader,
+          hint: smErrorHeader === "invalid_selector" 
+            ? "The capture-ready selector was not found - wizard may not have rendered"
+            : smErrorHeader === "timeout"
+            ? "Page took too long to render - try increasing delay"
+            : undefined
+        }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Screenshot API error: ${response.status}`, errorText);

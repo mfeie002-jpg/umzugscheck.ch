@@ -173,7 +173,7 @@ export function AutoFlowScreenshots() {
   const [captureDesktop, setCaptureDesktop] = useState(true);
   const [captureMobile, setCaptureMobile] = useState(true);
   const [fullPage, setFullPage] = useState(true);
-  const [delayMs, setDelayMs] = useState(25000); // 25s default for lazy-loaded SPAs
+  const [delayMs, setDelayMs] = useState(30000); // 30s default for lazy-loaded SPAs (recommended by ScreenshotMachine docs)
 
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0, currentItem: "" });
@@ -188,12 +188,12 @@ export function AutoFlowScreenshots() {
 
   const getBaseUrl = () => (baseUrlOverride.trim() || defaultPublicBaseUrl).replace(/\/$/, "");
 
-  const buildCaptureUrl = (flowPath: string, step: number) => {
+  const buildCaptureUrl = (flowId: string, flowPath: string, step: number) => {
     const baseUrl = getBaseUrl();
     // uc_cb busts caches for screenshot tooling.
-    // NOTE: uc_render=1 was causing issues - the ScreenshotRenderModeRoot patches may conflict.
-    // ScreenshotMachine works without uc_render, so we follow the same pattern.
-    return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_cb=${Date.now()}`;
+    // uc_flow makes the flow selection deterministic (prevents default-flow mismatch)
+    // uc_capture enables capture mode with prefilled demo data
+    return `${baseUrl}${flowPath}?uc_capture=1&uc_flow=${flowId}&uc_step=${step}&uc_cb=${Date.now()}`;
   };
 
   const toggleFlow = (flowId: string) => {
@@ -257,7 +257,7 @@ export function AutoFlowScreenshots() {
             currentItem: itemLabel,
           });
 
-          const captureUrl = buildCaptureUrl(flow.path, stepDef.step);
+          const captureUrl = buildCaptureUrl(flow.id, flow.path, stepDef.step);
 
           try {
             const result = await captureScreenshot({
@@ -535,7 +535,7 @@ export function AutoFlowScreenshots() {
                       return;
                     }
 
-                    const urlToTest = buildCaptureUrl(flow.path, debugStep);
+                    const urlToTest = buildCaptureUrl(flow.id, flow.path, debugStep);
                     setDebugRunning(true);
                     setDebugStats(null);
 
