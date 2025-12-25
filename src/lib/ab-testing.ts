@@ -179,3 +179,15 @@ abTesting.registerTest({
     { id: 'variant_a', name: 'Table View', weight: 0.5 }
   ]
 });
+
+// Umzugsofferten Flow Variants A/B Test
+abTesting.registerTest({
+  id: 'offerten_flow',
+  name: 'Umzugsofferten Flow Variants',
+  variants: [
+    { id: 'control', name: 'Control (4-step)', weight: 0.25 },
+    { id: 'variant-a', name: 'Simplified 3-Step', weight: 0.25 },
+    { id: 'variant-b', name: 'Price-First', weight: 0.25 },
+    { id: 'variant-c', name: 'Conversational', weight: 0.25 }
+  ]
+});
