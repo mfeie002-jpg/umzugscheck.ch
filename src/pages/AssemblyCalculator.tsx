@@ -9,12 +9,13 @@ import { Wrench, ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { calculateAssemblyPrice, AssemblyCalculatorInput } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/pricing";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { CalculatorEvents, ConversionEvents } from "@/lib/analytics-tracking";
 import {
   Form,
   FormControl,
@@ -69,6 +70,11 @@ const AssemblyCalculator = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Track calculator start
+  useEffect(() => {
+    CalculatorEvents.started('montage-rechner');
+  }, []);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,6 +97,18 @@ const AssemblyCalculator = () => {
     try {
       const calculation = calculateAssemblyPrice(values as AssemblyCalculatorInput);
       setResult(calculation);
+
+      // Track calculator completion
+      CalculatorEvents.priceShown({ 
+        version: 'montage-rechner', 
+        priceMin: calculation.priceRange.min, 
+        priceMax: calculation.priceRange.max 
+      });
+      ConversionEvents.calculatorCompleted({ 
+        version: 'montage-rechner', 
+        estimatedPrice: calculation.totalPrice,
+        duration: calculation.estimatedHours 
+      });
       
       // Create estimate session
       const { data: sessionData, error: sessionError } = await supabase.functions.invoke(

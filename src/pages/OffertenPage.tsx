@@ -15,6 +15,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Helmet } from "react-helmet";
+import { CalculatorEvents, FormEvents, ConversionEvents } from "@/lib/analytics-tracking";
 
 const formSchema = z.object({
   fromAddress: z.string().trim().min(3, "Bitte geben Sie eine gültige Adresse ein").max(200),
@@ -39,6 +40,12 @@ const OffertenPage = () => {
   });
   const [recentActivity, setRecentActivity] = useState("Vanessa aus Luzern");
 
+  // Track funnel start
+  useEffect(() => {
+    CalculatorEvents.started('offerten-funnel');
+    FormEvents.started('offerten-funnel');
+  }, []);
+
   useEffect(() => {
     const names = ["Vanessa aus Luzern", "Thomas aus Zürich", "Sarah aus Bern", "Marco aus Basel"];
     let idx = 0;
@@ -52,6 +59,8 @@ const OffertenPage = () => {
   const progress = (step / 4) * 100;
 
   const handleNext = () => {
+    const stepNames = ['adressen', 'zimmer', 'services', 'kontakt'];
+
     if (step === 1) {
       const result = z.object({
         fromAddress: formSchema.shape.fromAddress,
@@ -59,6 +68,7 @@ const OffertenPage = () => {
       }).safeParse(formData);
       
       if (!result.success) {
+        FormEvents.validationError({ formName: 'offerten-funnel', fieldName: 'address', errorType: 'invalid' });
         toast({
           title: "Fehler",
           description: result.error.errors[0].message,
@@ -70,6 +80,7 @@ const OffertenPage = () => {
     
     if (step === 2) {
       if (!formData.rooms) {
+        FormEvents.validationError({ formName: 'offerten-funnel', fieldName: 'rooms', errorType: 'required' });
         toast({
           title: "Fehler",
           description: "Bitte wählen Sie die Zimmeranzahl",
@@ -82,6 +93,7 @@ const OffertenPage = () => {
     if (step === 4) {
       const result = formSchema.safeParse(formData);
       if (!result.success) {
+        FormEvents.validationError({ formName: 'offerten-funnel', fieldName: 'contact', errorType: 'invalid' });
         toast({
           title: "Fehler",
           description: result.error.errors[0].message,
@@ -90,6 +102,15 @@ const OffertenPage = () => {
         return;
       }
       
+      // Track form submission
+      FormEvents.submitted({ formName: 'offerten-funnel', success: true });
+      ConversionEvents.offerteSubmitted({
+        calculatorType: 'offerten-funnel',
+        fromCity: formData.fromAddress,
+        toCity: formData.toAddress,
+        companiesSelected: 0
+      });
+      
       // Submit form
       toast({
         title: "Offerte angefordert!",
@@ -97,6 +118,13 @@ const OffertenPage = () => {
       });
       return;
     }
+
+    // Track step completion
+    CalculatorEvents.stepCompleted({ 
+      version: 'offerten-funnel', 
+      step: step, 
+      stepName: stepNames[step - 1] 
+    });
 
     setStep(step + 1);
   };

@@ -8,8 +8,8 @@ import { AICalculator } from "@/components/calculator/AICalculator";
 import { Calculator as CalculatorIcon, Wrench, Sparkles } from "lucide-react";
 import { OtherCalculators } from "@/components/OtherCalculators";
 import { useSwipeable } from "react-swipeable";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { CalculatorEvents, NavigationEvents } from "@/lib/analytics-tracking";
 const SERVICE_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "Service",
@@ -44,6 +44,18 @@ const SERVICE_SCHEMA = {
 
 const Calculator = () => {
   const [activeTab, setActiveTab] = useState("quick");
+
+  // Track calculator page view
+  useEffect(() => {
+    CalculatorEvents.started('umzugsrechner');
+  }, []);
+
+  // Track tab changes
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    NavigationEvents.tabChanged(value);
+    CalculatorEvents.stepCompleted({ version: 'umzugsrechner', step: 1, stepName: `tab_${value}` });
+  };
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
@@ -99,7 +111,7 @@ const Calculator = () => {
         <section className="py-8 sm:py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto gap-2 bg-white p-2 rounded-xl shadow-medium">
                   <TabsTrigger 
                     value="quick" 
