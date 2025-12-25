@@ -286,13 +286,16 @@ serve(async (req) => {
     });
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
-    // IMPORTANT: Do NOT force scroll-to-bottom for full-page captures.
-    // Some engines end up capturing the *bottom* viewport if xfull isn't honored.
-    const shouldScroll = (typeof isCaptureMode === "boolean" && isCaptureMode) || Boolean(scroll);
+    // IMPORTANT: Do NOT force any scroll behavior automatically.
+    // For full-page captures we rely on `xfull` stitching. Forced scrolling can make the provider
+    // capture only the last viewport (often the footer).
+    const shouldScroll = Boolean(scroll);
     if (shouldScroll) {
       params.set("scroll", "true");
       params.set("scrolldelay", "2500");
-      console.log(isCaptureMode ? "Scroll enabled (capture-mode preload)" : "Scroll enabled (scroll=true)");
+      // Only scroll-to-bottom for viewport captures. For full-page stitching this can break output.
+      if (!isFullPage) params.set("scrollto", "bottom");
+      console.log(`Scroll enabled (${isFullPage ? "fullPage=false required" : "viewport"})`);
     }
 
     // Add hash authentication if secret phrase is configured
