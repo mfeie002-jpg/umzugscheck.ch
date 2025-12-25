@@ -255,12 +255,46 @@ export const VARIANT_D: FlowVariantConfig = {
   cardStyle: 'elevated',
 };
 
+// Variant E: Ultimate V6 - God Mode with 6-Tier Architecture
+export const VARIANT_E: FlowVariantConfig = {
+  id: 'variant-e',
+  name: 'Ultimate V6',
+  description: 'God Mode mit 6-Tier Service Architecture, Timeline & Trust Dashboard',
+  
+  steps: ['moveType', 'location', 'services', 'pricing', 'summary', 'contact'],
+  
+  showProgressBar: true,
+  progressStyle: 'steps',
+  layout: 'wizard',
+  
+  headline: 'Ultimatives Umzugserlebnis',
+  subheadline: '6 Service-Levels • Video-KI • Timeline-Dashboard',
+  ctaText: 'Jetzt buchen',
+  trustBadges: true,
+  
+  showPriceEstimate: true,
+  showCompanyPreview: false,
+  showVideoAIOption: true,
+  showServiceDetails: true,
+  showSavingsCalculator: true,
+  
+  companySelectionMode: 'none',
+  maxCompanySelections: 0,
+  
+  submitOptions: ['direct'],
+  defaultSubmitOption: 'direct',
+  
+  accentColor: 'purple',
+  cardStyle: 'elevated',
+};
+
 export const FLOW_VARIANTS: Record<string, FlowVariantConfig> = {
   'control': VARIANT_CONTROL,
   'variant-a': VARIANT_A,
   'variant-b': VARIANT_B,
   'variant-c': VARIANT_C,
   'variant-d': VARIANT_D,
+  'variant-e': VARIANT_E,
 };
 
 // Get variant by ID
@@ -280,6 +314,7 @@ export const URL_TO_VARIANT: Record<string, string> = {
   '/umzugsofferten-v3': 'variant-b',
   '/umzugsofferten-v4': 'variant-c',
   '/umzugsofferten-v5': 'variant-d',
+  '/umzugsofferten-v6': 'variant-e',
 };
 
 // Get variant from URL path
