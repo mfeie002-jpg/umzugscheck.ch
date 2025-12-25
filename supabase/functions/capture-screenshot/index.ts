@@ -270,14 +270,13 @@ serve(async (req) => {
     });
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
-    // (In our app this prevents capturing the "Wird geladen..." state.)
-    const shouldScroll = Boolean(scroll) || isFullPage;
+    // IMPORTANT: Do NOT force scroll for full-page captures.
+    // Some engines end up capturing the *bottom* viewport if xfull isn't honored.
+    const shouldScroll = Boolean(scroll);
     if (shouldScroll) {
       params.set("scroll", "true");
-      if (isFullPage) {
-        params.set("scrollto", "bottom");
-        params.set("scrolldelay", "2000");
-      }
+      params.set("scrolldelay", "2000");
+      console.log("Scroll enabled (scroll=true)");
     }
 
     // Add hash authentication if secret phrase is configured
