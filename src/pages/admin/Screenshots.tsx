@@ -1,8 +1,9 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ScreenshotMachine } from "@/components/admin/ScreenshotMachine";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
+import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Search, FileCode2 } from "lucide-react";
+import { Camera, Search, Zap } from "lucide-react";
 
 export default function Screenshots() {
   return (
@@ -15,17 +16,25 @@ export default function Screenshots() {
           </p>
         </div>
         
-        <Tabs defaultValue="screenshots" className="space-y-4">
+        <Tabs defaultValue="auto-flows" className="space-y-4">
           <TabsList>
+            <TabsTrigger value="auto-flows" className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Auto Flow-Screenshots
+            </TabsTrigger>
             <TabsTrigger value="screenshots" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
-              Screenshots
+              Manuell
             </TabsTrigger>
             <TabsTrigger value="seo-html" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
               SEO HTML Analyse
             </TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="auto-flows">
+            <AutoFlowScreenshots />
+          </TabsContent>
           
           <TabsContent value="screenshots">
             <ScreenshotMachine />
