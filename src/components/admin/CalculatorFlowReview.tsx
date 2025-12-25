@@ -93,6 +93,52 @@ export function CalculatorFlowReview() {
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [pageLimit, setPageLimit] = useState<number>(20);
 
+  // Schnellauswahl preset URLs
+  const PRESET_URLS = [
+    { label: "Homepage", url: `${SITE_CONFIG.url}/` },
+    { label: "Firmen", url: `${SITE_CONFIG.url}/firmen` },
+    { label: "Preisrechner", url: `${SITE_CONFIG.url}/umzugsrechner` },
+    { label: "Offerten", url: `${SITE_CONFIG.url}/umzugsofferten` },
+    { label: "Ratgeber", url: `${SITE_CONFIG.url}/ratgeber` },
+    { label: "Reinigung", url: `${SITE_CONFIG.url}/reinigungsrechner` },
+    { label: "Entsorgung", url: `${SITE_CONFIG.url}/entsorgungsrechner` },
+    { label: "Zürich", url: `${SITE_CONFIG.url}/umzugsfirma-zuerich` },
+    { label: "Bern", url: `${SITE_CONFIG.url}/umzugsfirma-bern` },
+    { label: "Basel", url: `${SITE_CONFIG.url}/umzugsfirma-basel` },
+  ];
+
+  const addPresetUrl = (url: string) => {
+    if (!discoveredPages.includes(url)) {
+      setDiscoveredPages(prev => [...prev, url]);
+      toast.success("URL hinzugefügt");
+    } else {
+      toast.info("URL bereits in der Liste");
+    }
+  };
+
+  const addAllPresets = () => {
+    const newUrls = PRESET_URLS.map(p => p.url).filter(u => !discoveredPages.includes(u));
+    if (newUrls.length > 0) {
+      setDiscoveredPages(prev => [...prev, ...newUrls]);
+      toast.success(`${newUrls.length} URLs hinzugefügt`);
+    } else {
+      toast.info("Alle URLs bereits in der Liste");
+    }
+  };
+
+  const copyAllUrlsToClipboard = () => {
+    if (discoveredPages.length === 0) {
+      toast.error("Keine URLs zum Kopieren");
+      return;
+    }
+    navigator.clipboard.writeText(discoveredPages.join('\n'));
+    toast.success(`${discoveredPages.length} URLs kopiert`);
+  };
+
+  const removeUrl = (url: string) => {
+    setDiscoveredPages(prev => prev.filter(u => u !== url));
+  };
+
   const calculatorOptions = [
     { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
     { value: "umzugsofferten-v2", label: "V2 - Premium Full-Journey", path: "/umzugsofferten-v2" },
@@ -1246,33 +1292,81 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
               </Button>
             </div>
           </div>
+
+          {/* Schnellauswahl */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Schnellauswahl</label>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={addAllPresets}
+                className="text-xs h-7"
+              >
+                Alle hinzufügen
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {PRESET_URLS.map((preset) => (
+                <Button
+                  key={preset.url}
+                  size="sm"
+                  variant="outline"
+                  className="text-xs h-7"
+                  onClick={() => addPresetUrl(preset.url)}
+                >
+                  {preset.label}
+                </Button>
+              ))}
+            </div>
+          </div>
           
           {/* Discovered Pages List */}
           {discoveredPages.length > 0 && (
             <div className="border rounded-lg p-3 bg-muted/30">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">{discoveredPages.length} Seiten gefunden</span>
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  onClick={() => setDiscoveredPages([])}
-                >
-                  <RefreshCw className="w-3 h-3 mr-1" />
-                  Reset
-                </Button>
+                <span className="text-sm font-medium">{discoveredPages.length} Seiten in der Liste</span>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    onClick={copyAllUrlsToClipboard}
+                    className="h-7"
+                  >
+                    <Copy className="w-3 h-3 mr-1" />
+                    Kopieren
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    onClick={() => setDiscoveredPages([])}
+                    className="h-7"
+                  >
+                    <RefreshCw className="w-3 h-3 mr-1" />
+                    Reset
+                  </Button>
+                </div>
               </div>
               <div className="max-h-48 overflow-y-auto space-y-1">
                 {discoveredPages.map((url, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs font-mono text-muted-foreground py-1 border-b border-border/50 last:border-0">
                     <Badge variant="outline" className="w-6 justify-center shrink-0">{i + 1}</Badge>
-                    <span className="truncate">{url}</span>
+                    <span className="truncate flex-1">{url}</span>
                     <Button 
                       size="sm" 
                       variant="ghost" 
-                      className="h-6 w-6 p-0 ml-auto shrink-0"
+                      className="h-6 w-6 p-0 shrink-0"
                       onClick={() => window.open(url, '_blank')}
                     >
                       <ExternalLink className="w-3 h-3" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-6 w-6 p-0 shrink-0 text-destructive hover:text-destructive"
+                      onClick={() => removeUrl(url)}
+                    >
+                      ×
                     </Button>
                   </div>
                 ))}
