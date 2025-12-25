@@ -211,6 +211,8 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
                 <Link to="/umzugsofferten-v2" className="block text-primary hover:underline py-1 active:opacity-70">Variant A</Link>
                 <Link to="/umzugsofferten-v3" className="block text-primary hover:underline py-1 active:opacity-70">Variant B</Link>
                 <Link to="/umzugsofferten-v4" className="block text-primary hover:underline py-1 active:opacity-70">Variant C</Link>
+                <Link to="/umzugsofferten-v5" className="block text-primary hover:underline py-1 active:opacity-70">Variant D</Link>
+                <Link to="/umzugsofferten-v6" className="block text-primary hover:underline py-1 active:opacity-70">Variant E (V6)</Link>
               </div>
             </div>
           </div>
