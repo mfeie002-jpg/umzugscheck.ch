@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.ai-flow-generator]
 verify_jwt = false
+
+[functions.extract-page-data]
+verify_jwt = false
