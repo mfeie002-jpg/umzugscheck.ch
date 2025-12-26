@@ -11,6 +11,7 @@ import { AdminHelpButton } from "@/components/admin/AdminHelpSystem";
 import { FlowFeedbackVariants } from "@/components/admin/FlowFeedbackVariants";
 import { CustomFlowManager } from "@/components/admin/CustomFlowManager";
 import { CHATGPT_PROMPT_ENHANCEMENTS, getAllEnhancementsMarkdown } from "@/lib/chatgpt-prompt-enhancements";
+import { CONTEXT_DATA_ITEMS, getAvailableContextData, getPlannedContextData, getContextDataChecklistMarkdown } from "@/lib/chatgpt-context-data";
 import { AIFlowGenerator } from "@/components/admin/AIFlowGenerator";
 import { FLOW_CONFIGS, getFlowVariants, getTotalStepsAllFlows } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
@@ -524,14 +525,14 @@ Tägliche Captures mit Diff-Detection.
 
         {/* Main Tabs */}
         <Tabs defaultValue="export" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 max-w-2xl">
+          <TabsList className="grid w-full grid-cols-6 max-w-3xl">
             <TabsTrigger value="export" className="gap-2">
               <Rocket className="h-4 w-4" />
               Export
             </TabsTrigger>
-            <TabsTrigger value="prompts" className="gap-2">
-              <Brain className="h-4 w-4" />
-              10 Prompts
+            <TabsTrigger value="context" className="gap-2">
+              <Package className="h-4 w-4" />
+              Kontext-Daten
             </TabsTrigger>
             <TabsTrigger value="variants" className="gap-2">
               <GitCompare className="h-4 w-4" />
@@ -541,11 +542,141 @@ Tägliche Captures mit Diff-Detection.
               <Layers className="h-4 w-4" />
               Custom Flows
             </TabsTrigger>
+            <TabsTrigger value="prompts" className="gap-2">
+              <Brain className="h-4 w-4" />
+              Prompts
+            </TabsTrigger>
             <TabsTrigger value="tools" className="gap-2">
               <Wand2 className="h-4 w-4" />
               Tools
             </TabsTrigger>
           </TabsList>
+
+          {/* Kontext-Daten Tab - Was wir ChatGPT bereitstellen können */}
+          <TabsContent value="context" className="space-y-6">
+            <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-primary/10">
+                      <Package className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">Kontext-Daten für ChatGPT</CardTitle>
+                      <CardDescription>
+                        Was wir ChatGPT bereitstellen können für bessere Analyse
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="gap-2"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(getContextDataChecklistMarkdown());
+                      toast.success('Kontext-Daten Checkliste kopiert!');
+                    }}
+                  >
+                    <Copy className="h-4 w-4" />
+                    Checkliste kopieren
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Available Data */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                Verfügbar ({getAvailableContextData().length} Datenquellen)
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {getAvailableContextData().map((item) => (
+                  <Card key={item.id} className="relative overflow-hidden hover:border-primary/50 transition-colors">
+                    <div className={`absolute top-0 left-0 w-1 h-full ${
+                      item.priority === 'P0' ? 'bg-red-500' : 
+                      item.priority === 'P1' ? 'bg-yellow-500' : 'bg-green-500'
+                    }`} />
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <span className="font-medium text-sm">{item.title}</span>
+                        <div className="flex items-center gap-1">
+                          <Badge variant={item.priority === 'P0' ? 'destructive' : 'secondary'} className="text-xs">
+                            {item.priority}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {item.dataType}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2 pt-0">
+                      <p className="text-xs text-muted-foreground">{item.description}</p>
+                      <p className="text-xs text-primary font-medium">📍 {item.howToGet}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Planned Data */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Clock className="h-5 w-5 text-yellow-500" />
+                Geplant ({getPlannedContextData().length} Datenquellen)
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {getPlannedContextData().map((item) => (
+                  <Card key={item.id} className="relative overflow-hidden opacity-70">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-muted" />
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <span className="font-medium text-sm">{item.title}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {item.dataType}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2 pt-0">
+                      <p className="text-xs text-muted-foreground">{item.description}</p>
+                      <p className="text-xs text-muted-foreground italic">🔜 In Entwicklung</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Actions for Context Data */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-primary" />
+                  Empfohlene Kombination
+                </CardTitle>
+                <CardDescription>
+                  Diese 5 Datenquellen liefern maximale Analyse-Qualität
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-5 gap-3">
+                  {[
+                    { icon: Image, label: "Screenshots", desc: "Desktop + Mobile", href: "/admin/screenshots" },
+                    { icon: Code, label: "HTML", desc: "Rendered", href: "/admin/tools?tab=seo" },
+                    { icon: Target, label: "Funnel", desc: "Analytics", href: "/admin/funnel" },
+                    { icon: Sparkles, label: "A/B Tests", desc: "Resultate", href: "/admin/ab-testing" },
+                    { icon: BarChart3, label: "Lighthouse", desc: "Scores", href: "/admin/tools" },
+                  ].map((item, i) => (
+                    <Link key={i} to={item.href}>
+                      <Card className="h-full hover:border-primary/50 transition-colors cursor-pointer text-center p-4">
+                        <item.icon className="h-6 w-6 mx-auto mb-2 text-primary" />
+                        <div className="font-medium text-sm">{item.label}</div>
+                        <div className="text-xs text-muted-foreground">{item.desc}</div>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* 10 ChatGPT Prompt Enhancements */}
           <TabsContent value="prompts" className="space-y-6">
