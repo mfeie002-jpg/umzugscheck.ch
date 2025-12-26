@@ -580,7 +580,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                             Tester
                           </Button>
                         </Link>
-                        <Link to={`/admin/tools?tab=autoflow&flow=${selectedFlow}&variant=${variant.key}`}>
+                        <Link to={`/admin/tools?tab=screenshots`}>
                           <Button size="sm" variant="default">
                             <Camera className="h-3 w-3 mr-1" />
                             Screenshots
@@ -620,7 +620,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                           Testen
                         </Button>
                       </Link>
-                      <Link to={`/admin/tools?tab=autoflow&flow=${selectedFlow}&variant=${entry.variant_label}`}>
+                      <Link to={`/admin/tools?tab=screenshots`}>
                         <Button size="sm" variant="default">
                           <Camera className="h-3 w-3 mr-1" />
                           Screenshots
