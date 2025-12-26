@@ -341,11 +341,10 @@ serve(async (req) => {
     // that is still an early/blank render.
     const effectiveTimeoutMs = Math.min(120000, effectiveDelay + 60000);
 
-    // READY contract (Sentinel 2.0): in capture-mode, auto-wait for the app-reported "ready" state.
-    // The sentinel always exists, but only matches when data-status="ready".
-    const selector =
-      requestedSelector ??
-      (isCaptureMode ? "#uc-capture-sentinel[data-status=\"ready\"]" : null);
+    // ScreenshotMachine's `selector` parameter crops the screenshot to that element.
+    // We therefore ONLY set it when the caller explicitly requests element-capture.
+    // (For readiness we rely on delay + our in-app debug sentinel, not provider-side selectors.)
+    const selector = requestedSelector;
 
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
@@ -358,11 +357,10 @@ serve(async (req) => {
       timeout: String(effectiveTimeoutMs),
     });
 
-    // Optional selector probe (only if explicitly requested by the caller).
-    // Note: We do NOT auto-require selectors for capture-mode anymore; reliability > strictness.
+    // Optional element capture (only if explicitly requested by the caller)
     if (selector) {
       params.set("selector", selector);
-      console.log(`Selector enabled: ${selector}`);
+      console.log(`Selector enabled (element capture): ${selector}`);
     }
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
