@@ -76,15 +76,13 @@ const STEP_CONFIGS = [
 ];
 
 const getDefaultPublicBaseUrl = (): string => {
-  // Screenshot providers cannot access Lovable preview/sandbox domains (login wall).
-  // Default to the public site URL so automated captures work.
-  if (typeof window === "undefined") return SITE_CONFIG.url;
+  // IMPORTANT: Screenshot providers must capture from a publicly reachable domain.
+  // Use VITE_CAPTURE_BASE_URL to ensure captures target the SAME deployed build as the admin tool.
+  // Fallback to SITE_CONFIG.url (production).
+  const envBase = (import.meta as any)?.env?.VITE_CAPTURE_BASE_URL as string | undefined;
+  if (envBase && typeof envBase === "string") return envBase.replace(/\/$/, "");
 
-  const { protocol, hostname } = window.location;
-  const isLovableHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-
-  if (isLovableHost) return SITE_CONFIG.url;
-  return `${protocol}//${hostname}`;
+  return SITE_CONFIG.url.replace(/\/$/, "");
 };
 
 // Helper to build capture URL for a given flow and step
