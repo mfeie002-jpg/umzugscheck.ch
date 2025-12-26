@@ -681,29 +681,57 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-4">
-              <Link to="/admin/tools?tab=calculator-review">
-                <Card className="p-4 hover:border-primary/50 transition-colors cursor-pointer">
+              <a href="/admin/tools?tab=calculator-review" target="_blank" rel="noopener noreferrer">
+                <Card className="p-4 hover:border-primary/50 transition-colors cursor-pointer h-full">
                   <div className="flex items-center gap-3">
                     <Rocket className="h-8 w-8 text-primary" />
                     <div>
                       <div className="font-medium">Calculator Review</div>
-                      <div className="text-xs text-muted-foreground">Flow-Analyse mit Screenshots</div>
+                      <div className="text-xs text-muted-foreground">Flow-Analyse öffnen (neuer Tab)</div>
                     </div>
                   </div>
                 </Card>
-              </Link>
-              <Link to="/admin/tools?tab=regression">
-                <Card className="p-4 hover:border-primary/50 transition-colors cursor-pointer">
+              </a>
+              <a href="/admin/tools?tab=regression" target="_blank" rel="noopener noreferrer">
+                <Card className="p-4 hover:border-primary/50 transition-colors cursor-pointer h-full">
                   <div className="flex items-center gap-3">
                     <GitCompare className="h-8 w-8 text-orange-500" />
                     <div>
                       <div className="font-medium">Visual Diff</div>
-                      <div className="text-xs text-muted-foreground">Pixel-Vergleich</div>
+                      <div className="text-xs text-muted-foreground">Pixel-Vergleich (neuer Tab)</div>
                     </div>
                   </div>
                 </Card>
-              </Link>
+              </a>
+            </div>
+
+            {/* Direct Variant Links */}
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Direkt testen:</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {(() => {
+                  const flowNumber = getFlowNumber();
+                  const codedVariants = Object.entries(VARIANT_REGISTRY)
+                    .filter(([key]) => key.startsWith(`v${flowNumber}`))
+                    .slice(0, 6);
+                  
+                  return codedVariants.map(([key, config]) => (
+                    <a 
+                      key={key}
+                      href={`/umzugsofferten?variant=${key}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-2 border rounded-lg hover:bg-muted/50 text-sm"
+                    >
+                      <Eye className="h-3 w-3" />
+                      <span className="font-mono">{key}</span>
+                      <ExternalLink className="h-3 w-3 ml-auto opacity-50" />
+                    </a>
+                  ));
+                })()}
+              </div>
             </div>
 
             {/* All entries summary */}
