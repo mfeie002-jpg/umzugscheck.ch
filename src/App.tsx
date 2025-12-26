@@ -78,6 +78,7 @@ import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
 import { ScrollProgressBar } from "./components/ScrollProgressBar";
 import { ScreenshotRenderModeRoot } from "@/components/ScreenshotRenderModeRoot";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
+import { FunnelModeProvider } from "@/components/funnel/FunnelModeProvider";
 
 // Lazy load non-critical UI components
 const AIMovingAssistant = lazy(() => import("./components/AIMovingAssistant").then(m => ({ default: m.AIMovingAssistant })));
@@ -297,6 +298,7 @@ const App = () => (
               <BrowserRouter>
                 <AnalyticsTracker />
                 <ScreenshotRenderModeRoot />
+                <FunnelModeProvider />
                 <CriticalCSS />
                 <CriticalCSSLoader />
                 <ResourceHints />
