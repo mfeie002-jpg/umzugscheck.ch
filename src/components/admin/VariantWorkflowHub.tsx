@@ -60,7 +60,7 @@ interface VariantEntry {
   variant_label: string;
   variant_name: string;
   prompt: string;
-  status: "pending" | "completed";
+  status: "pending" | "done";
   created_at: string;
   executed_at?: string;
   output_flow_id?: string;
@@ -209,7 +209,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
       await supabase
         .from("flow_feedback_variants")
         .update({ 
-          status: "completed",
+          status: "done",
           executed_at: new Date().toISOString(),
           output_flow_id: `${selectedFlow}-${entry.variant_label}`
         })
@@ -235,7 +235,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
   };
 
   const pendingEntries = entries.filter(e => e.status === "pending");
-  const completedEntries = entries.filter(e => e.status === "completed");
+  const completedEntries = entries.filter(e => e.status === "done");
 
   // Workflow step indicators
   const steps = [
