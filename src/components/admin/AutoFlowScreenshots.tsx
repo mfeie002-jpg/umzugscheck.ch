@@ -143,26 +143,26 @@ const CALCULATOR_FLOWS = [
   },
 ];
 
-// Hero-only presets (captures just the top section with calculator)
+// Viewport presets for automated step captures
+// NOTE: For calculator step screenshots we default to a full viewport so the step content is actually visible.
 const DIMENSION_PRESETS = {
   desktop: [
-    { value: "1920x600", label: "Hero Only (1920x600)", recommended: true },
-    { value: "1920x800", label: "Extended Hero (1920x800)" },
-    { value: "1920x1080", label: "Full Viewport (1920x1080)" },
+    { value: "1920x1080", label: "Full Viewport (1920x1080)", recommended: true },
+    { value: "1920x800", label: "Extended Viewport (1920x800)" },
+    { value: "1920x600", label: "Hero Only (1920x600)" },
     { value: "1920xfull", label: "Full Page (1920xfull)" },
   ],
   mobile: [
-    { value: "390x500", label: "Hero Only (390x500)", recommended: true },
-    { value: "390x700", label: "Extended Hero (390x700)" },
-    { value: "390x844", label: "Full Viewport (390x844)" },
+    { value: "390x844", label: "Full Viewport (390x844)", recommended: true },
+    { value: "390x700", label: "Extended Viewport (390x700)" },
+    { value: "390x500", label: "Hero Only (390x500)" },
     { value: "390xfull", label: "Full Page (390xfull)" },
   ],
 };
 
-// Default to hero-only dimensions for faster, more reliable captures
 const DEFAULT_DIMENSIONS = {
-  desktop: DIMENSION_PRESETS.desktop[0], // Hero Only
-  mobile: DIMENSION_PRESETS.mobile[0],   // Hero Only
+  desktop: DIMENSION_PRESETS.desktop[0],
+  mobile: DIMENSION_PRESETS.mobile[0],
 };
 
 interface CaptureResult {
@@ -287,6 +287,9 @@ export function AutoFlowScreenshots() {
               delay: delayMs,
               format: "png",
               fullPage,
+              // For step captures (viewport), scrolling can end up at the footer.
+              // Keep it off unless we explicitly decide to test it.
+              scroll: false,
               noCache: true,
             });
 

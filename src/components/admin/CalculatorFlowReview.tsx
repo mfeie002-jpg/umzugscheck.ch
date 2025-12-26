@@ -126,8 +126,8 @@ const generateStepMeta = (
   step,
   stepName,
   dimensions: {
-    desktop: desktopDim || "1920x600",
-    mobile: mobileDim || "390x500",
+    desktop: desktopDim || "1920x1080",
+    mobile: mobileDim || "390x844",
   },
   capturedAt: new Date().toISOString(),
   captureMode: true,
@@ -140,24 +140,23 @@ const generateStepMeta = (
   screenshotProvider: "screenshotmachine",
 });
 
-// Hero-only presets: captures just the top section (header + calculator)
-// This is more reliable and faster than full viewport
+// Viewport presets for step captures
+// NOTE: For calculator step screenshots we default to a full viewport so the step content is visible.
 const DIMENSION_PRESETS = {
   desktop: [
-    { value: "1920x600", label: "Hero Only (1920x600)", recommended: true },
-    { value: "1920x800", label: "Extended Hero (1920x800)" },
-    { value: "1920x1080", label: "Full Viewport (1920x1080)" },
+    { value: "1920x1080", label: "Full Viewport (1920x1080)", recommended: true },
+    { value: "1920x800", label: "Extended Viewport (1920x800)" },
+    { value: "1920x600", label: "Hero Only (1920x600)" },
     { value: "1920xfull", label: "Full Page (1920xfull)" },
   ],
   mobile: [
-    { value: "390x500", label: "Hero Only (390x500)", recommended: true },
-    { value: "390x700", label: "Extended Hero (390x700)" },
-    { value: "390x844", label: "Full Viewport (390x844)" },
+    { value: "390x844", label: "Full Viewport (390x844)", recommended: true },
+    { value: "390x700", label: "Extended Viewport (390x700)" },
+    { value: "390x500", label: "Hero Only (390x500)" },
     { value: "390xfull", label: "Full Page (390xfull)" },
   ],
 };
 
-// Default to hero-only for flow captures (faster, more reliable)
 const DEFAULT_DIMENSIONS = {
   desktop: DIMENSION_PRESETS.desktop[0],
   mobile: DIMENSION_PRESETS.mobile[0],
