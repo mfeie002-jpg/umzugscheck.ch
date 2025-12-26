@@ -272,10 +272,15 @@ serve(async (req) => {
     }
 
     // Build ScreenshotMachine API URL
-    // For full-page captures we allow longer total execution time (delay + render).
-    const effectiveTimeoutMs = isFullPage ? Math.min(120000, effectiveDelay + 60000) : 20000;
+    // IMPORTANT: timeout must be >= delay, otherwise the provider can return a "success" image
+    // that is still an early/blank render.
+    const effectiveTimeoutMs = Math.min(120000, effectiveDelay + 60000);
 
-    const selector = requestedSelector;
+    // READY contract (Sentinel 2.0): in capture-mode, auto-wait for the app-reported "ready" state.
+    // The sentinel always exists, but only matches when data-status="ready".
+    const selector =
+      requestedSelector ??
+      (isCaptureMode ? "#uc-capture-sentinel[data-status=\"ready\"]" : null);
 
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
