@@ -89,10 +89,10 @@ export const CONTEXT_DATA_ITEMS: ContextDataItem[] = [
   {
     id: 'heatmap-data',
     title: 'Heatmap/Click-Daten',
-    description: 'Wo User klicken, scrollen, hovern',
+    description: 'Wo User klicken, scrollen, hovern - inkl. Dead Clicks',
     dataType: 'analytics',
-    availability: 'planned',
-    howToGet: 'Analytics Tab (simulierte Daten verfügbar)',
+    availability: 'available',
+    howToGet: 'extract-page-data Edge Function → heatmapData',
     priority: 'P1'
   },
   {
@@ -116,11 +116,11 @@ export const CONTEXT_DATA_ITEMS: ContextDataItem[] = [
   {
     id: 'form-structure',
     title: 'Formular-Struktur Analyse',
-    description: 'Alle Formularfelder, Labels, Validierung, Required-Status',
+    description: 'Alle Formularfelder, Labels, Validierung, Required-Status pro Step',
     dataType: 'json',
-    availability: 'planned',
-    howToGet: 'Aus HTML extrahieren (geplant)',
-    priority: 'P2'
+    availability: 'available',
+    howToGet: 'extract-page-data Edge Function → formStructure',
+    priority: 'P1'
   },
   {
     id: 'user-feedback',
@@ -133,21 +133,21 @@ export const CONTEXT_DATA_ITEMS: ContextDataItem[] = [
   },
   {
     id: 'session-recordings',
-    title: 'Session Recordings',
-    description: 'Aufgezeichnete User-Sessions (Video/GIF)',
+    title: 'Session Recordings / User Flows',
+    description: 'User-Journey-Daten: Pfade, Exit-Pages, Session-Dauer',
     dataType: 'analytics',
-    availability: 'planned',
-    howToGet: 'Hotjar/Clarity Integration (geplant)',
-    priority: 'P2'
+    availability: 'available',
+    howToGet: 'extract-page-data Edge Function → sessionData',
+    priority: 'P1'
   },
   {
     id: 'error-logs',
     title: 'JavaScript Error Logs',
-    description: 'Console Errors, Network Failures pro Seite',
+    description: 'Console Errors, Network Failures, React Warnings',
     dataType: 'json',
-    availability: 'planned',
-    howToGet: 'Error Tracking Tab (geplant)',
-    priority: 'P2'
+    availability: 'available',
+    howToGet: 'extract-page-data Edge Function → errorLogs',
+    priority: 'P1'
   },
   {
     id: 'regional-data',
@@ -170,20 +170,20 @@ export const CONTEXT_DATA_ITEMS: ContextDataItem[] = [
   {
     id: 'copy-inventory',
     title: 'Text/Copy Inventar',
-    description: 'Alle Headlines, CTAs, Labels, Microcopy extrahiert',
+    description: 'Alle Headlines, CTAs, Labels, Microcopy, Placeholders extrahiert',
     dataType: 'json',
-    availability: 'planned',
-    howToGet: 'Aus HTML extrahieren (geplant)',
-    priority: 'P2'
+    availability: 'available',
+    howToGet: 'extract-page-data Edge Function → copyInventory',
+    priority: 'P1'
   },
   {
     id: 'color-palette',
     title: 'Design Tokens / Farben',
-    description: 'Verwendete Farben, Fonts, Spacing aus CSS',
+    description: 'Farben, Fonts, Spacing, Border-Radius, Shadows aus HTML/CSS',
     dataType: 'json',
-    availability: 'planned',
-    howToGet: 'CSS Analyse (geplant)',
-    priority: 'P2'
+    availability: 'available',
+    howToGet: 'extract-page-data Edge Function → designTokens',
+    priority: 'P1'
   },
   {
     id: 'pdf-summary',
