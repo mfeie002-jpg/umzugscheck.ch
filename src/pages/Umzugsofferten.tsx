@@ -12,11 +12,12 @@
  * Brand: Swiss quality, trustworthy, neutral, "digital Swiss watch" vibe
  * Colors: Primary red for CTAs, grey neutrals, green ONLY for checkmarks/verification
  * 
- * VARIANT SUPPORT via URL parameters:
- * - ?v=a → Variante A (ChatGPT Analyse - UX Optimization)
- * - ?v=b → Variante B (Mobile-First Redesign)
- * - ?v=c → Variante C (Conversion Boost)
- * - ?v=ultimate → Ultimate kombinierte Version
+ * FLOW VERSIONS via URL parameters:
+ * - (none) → V1/V9 Control (Baseline)
+ * - ?v=2 → V2 (UX Optimization)
+ * - ?v=3 → V3 (Mobile-First Redesign)
+ * - ?v=4 → V4 (Conversion Boost)
+ * - ?v=5 → V5 Ultimate (Best of all combined)
  */
 
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
@@ -46,40 +47,46 @@ import { MultiStepCalculatorUltimate } from "@/components/homepage/MultiStepCalc
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 
-// Variant configuration based on AI analysis results
-type FlowVersion = 'control' | 'a' | 'b' | 'c' | 'ultimate';
+// Flow version types - numeric versioning
+type FlowVersion = 'v1' | 'v2' | 'v3' | 'v4' | 'v5';
 
 interface VersionMeta {
   title: string;
   description: string;
   headline: string;
+  label: string;
 }
 
 const VERSION_META: Record<FlowVersion, VersionMeta> = {
-  control: {
+  v1: {
     title: "Umzugsofferten Schweiz kostenlos vergleichen | Umzugscheck.ch",
     description: "Erhalten Sie gratis Umzugsofferten von geprüften Umzugsfirmen in der Schweiz. Schnell vergleichen, transparente Preise, echte Bewertungen – in ca. 2 Minuten.",
     headline: "Umzugsofferten Schweiz kostenlos vergleichen",
+    label: "V1 (Control)",
   },
-  a: {
-    title: "Umzugsofferten V1.a – UX-optimiert | Umzugscheck.ch",
+  v2: {
+    title: "Umzugsofferten V2 – UX-optimiert | Umzugscheck.ch",
     description: "Optimierte Nutzerführung mit klareren Fortschrittsanzeigen, verständlicherer Terminologie und erhöhtem Vertrauen.",
     headline: "Umzugsofferten – UX-optimierte Version",
+    label: "V2",
   },
-  b: {
-    title: "Umzugsofferten V1.b – Mobile-First | Umzugscheck.ch",
+  v3: {
+    title: "Umzugsofferten V3 – Mobile-First | Umzugscheck.ch",
     description: "Mobile-First Redesign mit Touch-optimierten CTAs, Sticky Footer und verbesserter Thumb-Zone-Navigation.",
     headline: "Umzugsofferten – Mobile-First Version",
+    label: "V3",
   },
-  c: {
-    title: "Umzugsofferten V1.c – Conversion Boost | Umzugscheck.ch",
+  v4: {
+    title: "Umzugsofferten V4 – Conversion Boost | Umzugscheck.ch",
     description: "Maximale Conversion mit größeren CTAs, Trust-Signals in Hero, Social Proof und weniger Formularfeldern.",
     headline: "Umzugsofferten – Conversion-optimierte Version",
+    label: "V4",
   },
-  ultimate: {
-    title: "Umzugsofferten Ultimate V2 | Umzugscheck.ch",
+  v5: {
+    title: "Umzugsofferten V5 Ultimate | Umzugscheck.ch",
     description: "Die beste Kombination aus allen Optimierungen: UX, Mobile, Conversion – das Beste vereint.",
     headline: "Umzugsofferten – Ultimate Version",
+    label: "V5 Ultimate",
   },
 };
 
@@ -87,21 +94,21 @@ const Umzugsofferten = () => {
   const [searchParams] = useSearchParams();
   const versionParam = searchParams.get('v');
   
-  // Determine which version to show
+  // Determine which version to show (numeric versioning)
   const version: FlowVersion = 
-    versionParam === 'a' ? 'a' :
-    versionParam === 'b' ? 'b' :
-    versionParam === 'c' ? 'c' :
-    versionParam === 'ultimate' ? 'ultimate' :
-    'control';
+    versionParam === '2' ? 'v2' :
+    versionParam === '3' ? 'v3' :
+    versionParam === '4' ? 'v4' :
+    versionParam === '5' ? 'v5' :
+    'v1';
   
   const meta = VERSION_META[version];
   
   // Track variant view for analytics
   useEffect(() => {
-    if (version !== 'control') {
-      localStorage.setItem('uc_flow_variant', `v1.${version}`);
-      console.log(`[Flow Variant] Viewing: V1.${version}`);
+    if (version !== 'v1') {
+      localStorage.setItem('uc_flow_variant', version);
+      console.log(`[Flow Variant] Viewing: ${version}`);
     }
   }, [version]);
 
@@ -129,7 +136,7 @@ const Umzugsofferten = () => {
     "@type": "WebPage",
     "name": meta.title,
     "description": meta.description,
-    "url": `https://umzugscheck.ch/umzugsofferten${version !== 'control' ? `?v=${version}` : ''}`,
+    "url": `https://umzugscheck.ch/umzugsofferten${version !== 'v1' ? `?v=${version.replace('v', '')}` : ''}`,
     "isPartOf": {
       "@type": "WebSite",
       "name": "umzugscheck.ch",
@@ -140,13 +147,13 @@ const Umzugsofferten = () => {
   // Render the appropriate calculator based on version
   const renderCalculator = () => {
     switch (version) {
-      case 'a':
+      case 'v2':
         return <MultiStepCalculatorVariantA />;
-      case 'b':
+      case 'v3':
         return <MultiStepCalculatorVariantB />;
-      case 'c':
+      case 'v4':
         return <MultiStepCalculatorVariantC />;
-      case 'ultimate':
+      case 'v5':
         return <MultiStepCalculatorUltimate />;
       default:
         return <MultiStepCalculator />;
@@ -169,7 +176,7 @@ const Umzugsofferten = () => {
         />
         <link rel="canonical" href="https://umzugscheck.ch/umzugsofferten" />
         {/* noindex for test variants */}
-        {version !== 'control' && <meta name="robots" content="noindex, nofollow" />}
+        {version !== 'v1' && <meta name="robots" content="noindex, nofollow" />}
 
         {/* Open Graph */}
         <meta property="og:title" content={meta.title} />
@@ -196,9 +203,9 @@ const Umzugsofferten = () => {
           <div className="flex items-center justify-between">
             <Breadcrumbs items={[{ label: "Umzugsofferten vergleichen" }]} />
             {/* Version indicator for testing */}
-            {version !== 'control' && (
+            {version !== 'v1' && (
               <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full font-medium">
-                V1.{version.toUpperCase()}
+                {meta.label}
               </span>
             )}
           </div>
@@ -263,11 +270,11 @@ const Umzugsofferten = () => {
               </div>
               <div className="space-y-2 sm:space-y-2.5">
                 <h3 className="font-medium text-foreground text-xs sm:text-sm">Flow-Versionen</h3>
-                <Link to="/umzugsofferten" className="block text-primary hover:underline py-1 active:opacity-70">Control</Link>
-                <Link to="/umzugsofferten?v=a" className="block text-primary hover:underline py-1 active:opacity-70">V1.a – UX-optimiert</Link>
-                <Link to="/umzugsofferten?v=b" className="block text-primary hover:underline py-1 active:opacity-70">V1.b – Mobile-First</Link>
-                <Link to="/umzugsofferten?v=c" className="block text-primary hover:underline py-1 active:opacity-70">V1.c – Conversion</Link>
-                <Link to="/umzugsofferten?v=ultimate" className="block text-primary hover:underline py-1 active:opacity-70 font-bold">Ultimate V2 ⭐</Link>
+                <Link to="/umzugsofferten" className="block text-primary hover:underline py-1 active:opacity-70">V1 (Control)</Link>
+                <Link to="/umzugsofferten?v=2" className="block text-primary hover:underline py-1 active:opacity-70">V2 – UX-optimiert</Link>
+                <Link to="/umzugsofferten?v=3" className="block text-primary hover:underline py-1 active:opacity-70">V3 – Mobile-First</Link>
+                <Link to="/umzugsofferten?v=4" className="block text-primary hover:underline py-1 active:opacity-70">V4 – Conversion</Link>
+                <Link to="/umzugsofferten?v=5" className="block text-primary hover:underline py-1 active:opacity-70 font-bold">V5 Ultimate ⭐</Link>
               </div>
             </div>
           </div>
