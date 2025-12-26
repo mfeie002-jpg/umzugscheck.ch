@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { AdminHelpButton } from "@/components/admin/AdminHelpSystem";
+import { AIFlowGenerator } from "@/components/admin/AIFlowGenerator";
 import { FLOW_CONFIGS, getFlowVariants, getTotalStepsAllFlows } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
 import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
@@ -44,7 +46,8 @@ import {
   Play,
   FileCode,
   HelpCircle,
-  BookOpen
+  BookOpen,
+  Wand2
 } from "lucide-react";
 
 // ============================================================================
@@ -516,8 +519,26 @@ Tägliche Captures mit Diff-Detection.
           </div>
         </div>
 
-        {/* Ultimate Export Button */}
-        <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-background">
+        {/* Main Tabs */}
+        <Tabs defaultValue="export" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-3 max-w-lg">
+            <TabsTrigger value="export" className="gap-2">
+              <Rocket className="h-4 w-4" />
+              Export
+            </TabsTrigger>
+            <TabsTrigger value="generator" className="gap-2">
+              <Wand2 className="h-4 w-4" />
+              Flow Generator
+            </TabsTrigger>
+            <TabsTrigger value="tools" className="gap-2">
+              <Layers className="h-4 w-4" />
+              Tools
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="export" className="space-y-6">
+            {/* Ultimate Export Button */}
+            <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-background">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -559,58 +580,6 @@ Tägliche Captures mit Diff-Detection.
             )}
           </CardContent>
         </Card>
-
-        {/* Quick Actions Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {quickActions.map((action, i) => (
-            action.href ? (
-              <Link key={i} to={action.href}>
-                <Card className={`h-full hover:border-primary/50 transition-colors cursor-pointer ${action.primary ? 'border-primary/30' : ''}`}>
-                  <CardContent className="p-4 text-center">
-                    <action.icon className={`h-6 w-6 mx-auto mb-2 ${action.primary ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <div className="font-medium text-sm">{action.label}</div>
-                    <div className="text-xs text-muted-foreground">{action.desc}</div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ) : (
-              <Card 
-                key={i} 
-                className={`h-full cursor-pointer ${action.primary ? 'border-primary/30 hover:border-primary' : 'hover:border-primary/50'} transition-colors`}
-                onClick={action.action}
-              >
-                <CardContent className="p-4 text-center">
-                  <action.icon className={`h-6 w-6 mx-auto mb-2 ${action.primary ? 'text-primary' : 'text-muted-foreground'}`} />
-                  <div className="font-medium text-sm">{action.label}</div>
-                  <div className="text-xs text-muted-foreground">{action.desc}</div>
-                </CardContent>
-              </Card>
-            )
-          ))}
-        </div>
-
-        {/* Tool Categories */}
-        <div className="grid md:grid-cols-3 gap-4">
-          {toolCategories.map((cat, i) => (
-            <Card key={i}>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{cat.title}</CardTitle>
-                <CardDescription>{cat.desc}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {cat.tools.map((tool, j) => (
-                  <Link key={j} to={tool.href}>
-                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors">
-                      <tool.icon className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">{tool.name}</span>
-                      <ArrowRight className="h-3 w-3 ml-auto text-muted-foreground" />
-                    </div>
-                  </Link>
-                ))}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
 
         {/* Flow Overview */}
         <Card>
@@ -679,6 +648,66 @@ Tägliche Captures mit Diff-Detection.
             </div>
           </CardContent>
         </Card>
+        </TabsContent>
+
+          <TabsContent value="generator">
+            <AIFlowGenerator />
+          </TabsContent>
+
+          <TabsContent value="tools" className="space-y-6">
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {quickActions.map((action, i) => (
+                action.href ? (
+                  <Link key={i} to={action.href}>
+                    <Card className={`h-full hover:border-primary/50 transition-colors cursor-pointer ${action.primary ? 'border-primary/30' : ''}`}>
+                      <CardContent className="p-4 text-center">
+                        <action.icon className={`h-6 w-6 mx-auto mb-2 ${action.primary ? 'text-primary' : 'text-muted-foreground'}`} />
+                        <div className="font-medium text-sm">{action.label}</div>
+                        <div className="text-xs text-muted-foreground">{action.desc}</div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ) : (
+                  <Card 
+                    key={i} 
+                    className={`h-full cursor-pointer ${action.primary ? 'border-primary/30 hover:border-primary' : 'hover:border-primary/50'} transition-colors`}
+                    onClick={action.action}
+                  >
+                    <CardContent className="p-4 text-center">
+                      <action.icon className={`h-6 w-6 mx-auto mb-2 ${action.primary ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <div className="font-medium text-sm">{action.label}</div>
+                      <div className="text-xs text-muted-foreground">{action.desc}</div>
+                    </CardContent>
+                  </Card>
+                )
+              ))}
+            </div>
+
+            {/* Tool Categories */}
+            <div className="grid md:grid-cols-3 gap-4">
+              {toolCategories.map((cat, i) => (
+                <Card key={i}>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">{cat.title}</CardTitle>
+                    <CardDescription>{cat.desc}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {cat.tools.map((tool, j) => (
+                      <Link key={j} to={tool.href}>
+                        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors">
+                          <tool.icon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{tool.name}</span>
+                          <ArrowRight className="h-3 w-3 ml-auto text-muted-foreground" />
+                        </div>
+                      </Link>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </AdminLayout>
   );
