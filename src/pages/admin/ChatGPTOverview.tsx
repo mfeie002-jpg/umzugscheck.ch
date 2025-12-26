@@ -1,0 +1,745 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import { FLOW_CONFIGS, getFlowVariants, getTotalStepsAllFlows } from "@/data/flowConfigs";
+import { supabase } from "@/integrations/supabase/client";
+import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
+import { SITE_CONFIG } from "@/data/constants";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+import { toast } from "sonner";
+import {
+  Sparkles,
+  Download,
+  FileText,
+  Image,
+  Code,
+  Zap,
+  Package,
+  CheckCircle,
+  ArrowRight,
+  ExternalLink,
+  Copy,
+  Loader2,
+  Brain,
+  BarChart3,
+  Target,
+  Lightbulb,
+  Rocket,
+  Eye,
+  Layers,
+  Globe,
+  MessageSquare
+} from "lucide-react";
+
+const ChatGPTOverview = () => {
+  const navigate = useNavigate();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState("");
+
+  const flowVariants = getFlowVariants();
+  const totalSteps = getTotalStepsAllFlows();
+
+  // Ultimate 1-Click Export - captures EVERYTHING
+  const handleUltimateExport = async () => {
+    setIsGenerating(true);
+    setProgress(0);
+    setStatus("Starte Ultimate Export...");
+
+    try {
+      const zip = new JSZip();
+      const exportDate = new Date().toISOString().split('T')[0];
+      const rootFolder = zip.folder(`ultimate-chatgpt-export-${exportDate}`);
+      if (!rootFolder) throw new Error("Could not create ZIP folder");
+
+      const baseUrl = SITE_CONFIG.url.replace(/\/$/, '');
+      let currentOp = 0;
+      const totalOps = flowVariants.reduce((sum, f) => sum + f.steps.length * 3, 0) + 10;
+
+      // Master data structure
+      const masterData: any = {
+        exportDate: new Date().toISOString(),
+        baseUrl,
+        project: SITE_CONFIG.name,
+        totalFlows: flowVariants.length,
+        totalSteps,
+        flows: {},
+      };
+
+      // Process each flow
+      for (const flow of flowVariants) {
+        const flowFolder = rootFolder.folder(flow.id);
+        if (!flowFolder) continue;
+
+        const flowData: any = {
+          id: flow.id,
+          label: flow.label,
+          path: flow.path,
+          description: flow.description,
+          totalSteps: flow.steps.length,
+          steps: [],
+        };
+
+        // Process each step
+        for (const stepConfig of flow.steps) {
+          const stepFolder = flowFolder.folder(`step-${stepConfig.step}`);
+          if (!stepFolder) continue;
+
+          setStatus(`${flow.label} - Step ${stepConfig.step}/${flow.steps.length}...`);
+
+          const captureUrl = `${baseUrl}${flow.path}?uc_capture=1&uc_step=${stepConfig.step}&uc_flow=${flow.id.replace('umzugsofferten-', 'v').replace('umzugsofferten', 'v1')}`;
+
+          // Desktop Screenshot
+          currentOp++;
+          setProgress((currentOp / totalOps) * 100);
+          let desktopScreenshot: string | null = null;
+          try {
+            const result = await captureScreenshotService({
+              url: captureUrl,
+              dimension: '1920x1080',
+              delay: 30000,
+              format: 'png',
+              fullPage: false,
+              noCache: true,
+            });
+            if (result.success && result.image) {
+              desktopScreenshot = result.image;
+              const base64Data = result.image.replace(/^data:image\/\w+;base64,/, '');
+              stepFolder.file('desktop.png', base64Data, { base64: true });
+            }
+          } catch (e) {
+            console.error('Desktop screenshot failed:', e);
+          }
+
+          // Mobile Screenshot
+          currentOp++;
+          setProgress((currentOp / totalOps) * 100);
+          let mobileScreenshot: string | null = null;
+          try {
+            const result = await captureScreenshotService({
+              url: captureUrl,
+              dimension: '390x844',
+              delay: 30000,
+              format: 'png',
+              fullPage: false,
+              noCache: true,
+            });
+            if (result.success && result.image) {
+              mobileScreenshot = result.image;
+              const base64Data = result.image.replace(/^data:image\/\w+;base64,/, '');
+              stepFolder.file('mobile.png', base64Data, { base64: true });
+            }
+          } catch (e) {
+            console.error('Mobile screenshot failed:', e);
+          }
+
+          // HTML
+          currentOp++;
+          setProgress((currentOp / totalOps) * 100);
+          let html: string | null = null;
+          try {
+            const { data } = await supabase.functions.invoke('capture-rendered-html', {
+              body: { url: captureUrl, waitFor: 5000, formats: ['html'] }
+            });
+            if (data?.html) {
+              html = data.html;
+              stepFolder.file('rendered.html', html);
+            }
+          } catch (e) {
+            console.error('HTML capture failed:', e);
+          }
+
+          // Step meta
+          const stepMeta = {
+            step: stepConfig.step,
+            name: stepConfig.name,
+            description: stepConfig.description,
+            url: captureUrl,
+            hasDesktop: !!desktopScreenshot,
+            hasMobile: !!mobileScreenshot,
+            hasHtml: !!html,
+            htmlLength: html?.length || 0,
+            capturedAt: new Date().toISOString(),
+          };
+          stepFolder.file('meta.json', JSON.stringify(stepMeta, null, 2));
+          
+          // Step prompt
+          stepFolder.file('step-prompt.md', generateStepPrompt(flow, stepConfig, stepMeta));
+
+          flowData.steps.push(stepMeta);
+        }
+
+        // Flow-level files
+        flowFolder.file('flow-info.json', JSON.stringify(flowData, null, 2));
+        flowFolder.file('flow-prompt.md', generateFlowPrompt(flow, flowData.steps));
+
+        masterData.flows[flow.id] = flowData;
+      }
+
+      // Master files
+      setStatus("Generiere Master-Prompts...");
+      currentOp += 5;
+      setProgress((currentOp / totalOps) * 100);
+
+      rootFolder.file('all-flows.json', JSON.stringify(masterData, null, 2));
+      rootFolder.file('MASTER-PROMPT.md', generateMasterPrompt(masterData));
+      rootFolder.file('QUICK-COMPARE.md', generateQuickComparePrompt(masterData));
+      rootFolder.file('V10-SYNTHESIS.md', generateV10SynthesisPrompt(masterData));
+      rootFolder.file('README.md', generateReadme(masterData));
+      rootFolder.file('IMPROVEMENTS.md', generateImprovements());
+
+      // Generate ZIP
+      setStatus("ZIP wird erstellt...");
+      setProgress(98);
+      const blob = await zip.generateAsync({ type: 'blob' });
+      saveAs(blob, `ultimate-chatgpt-export-${exportDate}.zip`);
+
+      setProgress(100);
+      setStatus("");
+      toast.success(`Ultimate Export fertig! ${flowVariants.length} Flows, ${totalSteps} Steps`);
+    } catch (error) {
+      console.error('Ultimate export failed:', error);
+      toast.error('Export fehlgeschlagen');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Helper functions for prompts
+  const generateStepPrompt = (flow: any, stepConfig: any, meta: any) => `# Step ${stepConfig.step}: ${stepConfig.name}
+
+**Flow:** ${flow.label}
+**URL:** ${meta.url}
+**Beschreibung:** ${stepConfig.description}
+
+## Dateien in diesem Ordner:
+- desktop.png - Desktop Screenshot ${meta.hasDesktop ? '✓' : '✗'}
+- mobile.png - Mobile Screenshot ${meta.hasMobile ? '✓' : '✗'}
+- rendered.html - HTML (${meta.hasHtml ? `${(meta.htmlLength/1024).toFixed(1)}KB` : 'N/A'})
+- meta.json - Metadaten
+
+## Analyse-Aufgaben:
+1. **Desktop UX** - Layout, Hierarchie, CTA
+2. **Mobile UX** - Touch, Scroll, Lesbarkeit
+3. **Friction** - Was stoppt den User?
+4. **Trust** - Vertrauenssignale
+5. **Copy** - Klarheit
+
+## Gewünschte Ausgabe:
+- 3 Stärken, 3 Schwächen, 3 Verbesserungen
+`;
+
+  const generateFlowPrompt = (flow: any, steps: any[]) => `# Flow-Analyse: ${flow.label}
+
+**Path:** ${flow.path}
+**Beschreibung:** ${flow.description}
+**Steps:** ${steps.length}
+
+## Step-Übersicht:
+${steps.map(s => `- Step ${s.step}: ${s.name} (D: ${s.hasDesktop ? '✓' : '✗'}, M: ${s.hasMobile ? '✓' : '✗'}, H: ${s.hasHtml ? '✓' : '✗'})`).join('\n')}
+
+## Analyse:
+1. Ist der Flow logisch?
+2. Step-by-Step UX
+3. Übergänge klar?
+4. Mobile Experience?
+5. Conversion-Optimierung?
+
+## Output:
+- Flow-Score (1-10)
+- Top 3 Stärken/Schwächen
+- Top 5 Verbesserungen
+`;
+
+  const generateMasterPrompt = (data: any) => `# 🚀 Ultimate Flow-Analyse - ${data.project}
+
+## Export: ${data.exportDate}
+## Base URL: ${data.baseUrl}
+## Flows: ${data.totalFlows} | Steps: ${data.totalSteps}
+
+---
+
+Du bist ein UX-Experte. Analysiere ALLE Flows und erstelle V10 "Ultimate Flow".
+
+## Alle Flows:
+${Object.values(data.flows).map((f: any) => `
+### ${f.label}
+- Path: ${f.path}
+- Steps: ${f.totalSteps}
+- Beschreibung: ${f.description}
+${f.steps.map((s: any) => `  - Step ${s.step}: ${s.name}`).join('\n')}
+`).join('\n')}
+
+---
+
+## Aufgaben:
+
+### 1. Flow-by-Flow Analyse
+Für jeden Flow: Score (1-10), Stärken, Schwächen
+
+### 2. Step-Vergleich
+Welcher Flow hat den besten Step 1? Step 2? etc.
+
+### 3. Best Practices
+Top 10 Best Practices aus allen Flows
+
+### 4. V10 "Ultimate Flow"
+Kombiniere die besten Elemente zu einem perfekten Flow
+
+### 5. Roadmap
+Priorisierte Implementierung
+
+---
+
+**Struktur:** Jeder Flow-Ordner enthält step-1/, step-2/, etc. mit desktop.png, mobile.png, rendered.html
+`;
+
+  const generateQuickComparePrompt = (data: any) => `# Quick Compare - Alle ${data.totalFlows} Flows
+
+## Schnell-Fragen:
+1. Welcher Flow hat die beste UX?
+2. Welcher ist am schnellsten?
+3. Welcher wirkt am vertrauenswürdigsten?
+4. Welcher hat das beste Mobile-Design?
+5. Welcher ist am innovativsten?
+
+## Ranking erstellen (1-${data.totalFlows}):
+- Conversion-Potenzial
+- User Experience
+- Geschwindigkeit
+- Trust
+- Innovation
+
+## Empfehlung:
+**Favorit für Production:** ___
+**Begründung:** ___
+`;
+
+  const generateV10SynthesisPrompt = (data: any) => `# V10 "Ultimate Flow" Synthese
+
+## Ziel:
+Erstelle V10 durch Kombination der besten Elemente aller ${data.totalFlows} Flows.
+
+## Analyse-Framework:
+1. Welcher Flow hat den besten Einstieg? → Übernehmen
+2. Welcher Flow hat die beste Dateneingabe? → Übernehmen
+3. Welcher Flow hat die beste Firmenauswahl? → Übernehmen
+4. Welcher Flow hat den besten Abschluss? → Übernehmen
+
+## V10 Anforderungen:
+- ⏱️ Unter 2 Minuten komplett
+- 📱 Mobile-First
+- 🛡️ Maximales Vertrauen
+- ⚡ Zero Friction
+- 🎯 Höchste Conversion
+
+## Lieferformat:
+1. Step-by-Step Beschreibung
+2. Wireframe-Beschreibung pro Step
+3. Begründung (welches Element von welchem Flow)
+4. A/B-Test Roadmap
+`;
+
+  const generateReadme = (data: any) => `# Ultimate ChatGPT Export
+
+## ${data.project}
+**Export:** ${data.exportDate}
+**Flows:** ${data.totalFlows}
+**Total Steps:** ${data.totalSteps}
+
+## Struktur:
+\`\`\`
+${Object.keys(data.flows).map(k => `${k}/
+  ├── flow-info.json
+  ├── flow-prompt.md
+${data.flows[k].steps.map((s: any) => `  └── step-${s.step}/
+      ├── desktop.png
+      ├── mobile.png
+      ├── rendered.html
+      └── meta.json`).join('\n')}`).join('\n')}
+MASTER-PROMPT.md
+QUICK-COMPARE.md
+V10-SYNTHESIS.md
+README.md
+IMPROVEMENTS.md
+\`\`\`
+
+## Verwendung:
+1. ZIP zu ChatGPT/Claude hochladen
+2. MASTER-PROMPT.md für Gesamtanalyse
+3. QUICK-COMPARE.md für schnellen Vergleich
+4. V10-SYNTHESIS.md für Ultimate Flow Design
+5. flow-prompt.md für einzelne Flows
+`;
+
+  const generateImprovements = () => `# 🎯 10 Zusätzliche Verbesserungsvorschläge
+
+## Für maximale Conversion und UX-Perfektion:
+
+### 1. 🎬 Session Recording Integration
+Implementiere Hotjar/FullStory-ähnliche Session Recordings direkt im Admin-Tool.
+Ermöglicht: Echte User-Journey-Analyse statt nur Screenshots.
+
+### 2. 🤖 Automatische A/B-Test-Auswertung
+AI analysiert automatisch welche Flow-Variante besser performt.
+Liefert statistische Signifikanz und klare Empfehlungen.
+
+### 3. 📊 Real-Time Conversion Tracking per Step
+Zeige Drop-off-Rate pro Step in Echtzeit.
+Identifiziere sofort den problematischsten Step.
+
+### 4. 🔥 Heatmap-Overlay für Screenshots
+Generiere synthetische Heatmaps basierend auf UX-Best-Practices.
+Zeige wo User vermutlich klicken/scrollen.
+
+### 5. 🌍 Multi-Language Flow Comparison
+Vergleiche DE/FR/IT-Versionen automatisch.
+Identifiziere Inkonsistenzen zwischen Sprachversionen.
+
+### 6. 📱 Device-Specific Optimierung
+Separate Analyse für iOS vs Android vs Desktop.
+Geräte-spezifische Empfehlungen.
+
+### 7. ⚡ Lighthouse Integration pro Step
+Performance-Score für jeden einzelnen Step.
+Identifiziere langsame Steps die Conversion killen.
+
+### 8. 🎯 Competitor Flow Capture
+Erfasse automatisch Competitor-Flows (Movu, MoveAgain, etc.).
+Side-by-side Vergleich.
+
+### 9. 📝 Automatische Copy-Analyse
+AI analysiert alle Texte auf Conversion-Potenzial.
+Schlägt optimierte Headlines/CTAs vor.
+
+### 10. 🔄 Continuous Monitoring
+Tägliche automatische Captures mit Diff-Detection.
+Alert bei unbeabsichtigten UI-Änderungen.
+
+---
+
+## Implementierungs-Priorität:
+
+| # | Feature | Impact | Effort | Priority |
+|---|---------|--------|--------|----------|
+| 3 | Real-Time Conversion | 🔥🔥🔥 | Medium | P0 |
+| 1 | Session Recording | 🔥🔥🔥 | High | P1 |
+| 7 | Lighthouse/Step | 🔥🔥 | Low | P1 |
+| 2 | Auto A/B Auswertung | 🔥🔥🔥 | Medium | P1 |
+| 9 | Copy-Analyse | 🔥🔥 | Medium | P2 |
+| 8 | Competitor Capture | 🔥🔥 | Medium | P2 |
+| 4 | Heatmap-Overlay | 🔥 | Medium | P3 |
+| 10 | Continuous Monitoring | 🔥🔥 | Low | P2 |
+| 5 | Multi-Language | 🔥 | Medium | P3 |
+| 6 | Device-Specific | 🔥 | High | P3 |
+`;
+
+  // Stats for display
+  const analysisCapabilities = [
+    { icon: Image, label: "Screenshots", value: `${totalSteps * 2}+`, desc: "Desktop + Mobile pro Step" },
+    { icon: Code, label: "HTML Captures", value: `${totalSteps}+`, desc: "Rendered HTML pro Step" },
+    { icon: FileText, label: "AI Prompts", value: "15+", desc: "Spezialisierte Analyse-Prompts" },
+    { icon: Layers, label: "Flow Varianten", value: flowVariants.length.toString(), desc: "Unterschiedliche Wizard-Flows" },
+  ];
+
+  return (
+    <AdminLayout>
+      <div className="space-y-8">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-primary/5 p-8 border">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+          <div className="relative">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Brain className="h-8 w-8 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold">ChatGPT Analyse Suite</h1>
+                <p className="text-muted-foreground">Alles was wir für KI-Analyse bereitstellen</p>
+              </div>
+            </div>
+
+            {/* Stats Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+              {analysisCapabilities.map((stat, i) => (
+                <Card key={i} className="bg-background/50 backdrop-blur">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <stat.icon className="h-5 w-5 text-primary" />
+                      <div>
+                        <div className="text-2xl font-bold">{stat.value}</div>
+                        <div className="text-xs text-muted-foreground">{stat.label}</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Ultimate Export Button */}
+        <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-background">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="p-4 rounded-2xl bg-primary text-primary-foreground">
+                  <Rocket className="h-8 w-8" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold">🚀 Ultimate 1-Click Export</h2>
+                  <p className="text-muted-foreground">
+                    Alle {flowVariants.length} Flows × {totalSteps} Steps = Screenshots, HTML, Prompts in einem ZIP
+                  </p>
+                </div>
+              </div>
+              <Button 
+                size="lg" 
+                onClick={handleUltimateExport}
+                disabled={isGenerating}
+                className="min-w-[200px] h-14 text-lg"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    {Math.round(progress)}%
+                  </>
+                ) : (
+                  <>
+                    <Zap className="mr-2 h-5 w-5" />
+                    Alles Exportieren
+                  </>
+                )}
+              </Button>
+            </div>
+            {isGenerating && (
+              <div className="mt-4 space-y-2">
+                <Progress value={progress} className="h-2" />
+                <p className="text-sm text-muted-foreground text-center">{status}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Flow Overview */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Layers className="h-5 w-5" />
+              Alle {flowVariants.length} Flow-Varianten
+            </CardTitle>
+            <CardDescription>
+              Jede Variante hat unterschiedliche Steps und Ansätze
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {flowVariants.map((flow) => (
+                <Card key={flow.id} className="relative overflow-hidden">
+                  <div className={`absolute top-0 left-0 w-1 h-full ${flow.color}`} />
+                  <CardContent className="p-4 pl-5">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-semibold">{flow.label}</h3>
+                      <Badge variant="secondary">{flow.steps.length} Steps</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">{flow.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {flow.steps.map((step) => (
+                        <Badge key={step.step} variant="outline" className="text-xs">
+                          {step.step}. {step.name}
+                        </Badge>
+                      ))}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-3 w-full"
+                      onClick={() => window.open(flow.path, '_blank')}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-1" />
+                      Flow öffnen
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Available Tools */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Verfügbare Analyse-Tools</CardTitle>
+            <CardDescription>Alle Werkzeuge die wir für ChatGPT-Analyse bereitstellen</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="exports" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="exports">Exports</TabsTrigger>
+                <TabsTrigger value="prompts">Prompts</TabsTrigger>
+                <TabsTrigger value="tools">Tools</TabsTrigger>
+                <TabsTrigger value="automation">Automation</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="exports" className="mt-4 space-y-3">
+                {[
+                  { icon: Package, title: "Ultimate Export", desc: "Alle Flows komplett mit allen Steps", action: () => handleUltimateExport() },
+                  { icon: Image, title: "Screenshot Package", desc: "Desktop + Mobile Screenshots aller Steps", action: () => navigate('/admin/tools') },
+                  { icon: Code, title: "HTML Captures", desc: "Gerenderte HTML aller Steps", action: () => navigate('/admin/tools') },
+                  { icon: FileText, title: "Manuelles Package", desc: "Flexibel wählbare Inhalte", action: () => navigate('/admin/tools') },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <item.icon className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={item.action}>
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="prompts" className="mt-4 space-y-3">
+                {[
+                  { title: "Master-Prompt", desc: "Komplette Analyse aller Flows", included: true },
+                  { title: "Quick Compare", desc: "Schneller Vergleich", included: true },
+                  { title: "V10 Synthesis", desc: "Ultimate Flow erstellen", included: true },
+                  { title: "Step-Prompts", desc: "Pro Step individuell", included: true },
+                  { title: "Flow-Prompts", desc: "Pro Flow individuell", included: true },
+                  { title: "SEO Audit", desc: "SEO-spezifische Analyse", included: true },
+                  { title: "Accessibility Audit", desc: "Barrierefreiheit prüfen", included: true },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center gap-3">
+                      <MessageSquare className="h-4 w-4 text-primary" />
+                      <div>
+                        <p className="font-medium text-sm">{item.title}</p>
+                        <p className="text-xs text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                    <Badge variant={item.included ? "default" : "secondary"}>
+                      {item.included ? <CheckCircle className="h-3 w-3" /> : "Optional"}
+                    </Badge>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="tools" className="mt-4 space-y-3">
+                {[
+                  { icon: Eye, title: "Screenshot Machine", desc: "Desktop/Mobile/Tablet Captures", path: '/admin/tools' },
+                  { icon: Code, title: "SEO HTML Analyzer", desc: "Raw vs Rendered HTML", path: '/admin/tools' },
+                  { icon: Target, title: "Regression Testing", desc: "Baseline-Vergleiche", path: '/admin/tools' },
+                  { icon: BarChart3, title: "AutoFlow Dashboard", desc: "Automatische Flow-Analyse", path: '/admin/tools' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(item.path)}>
+                    <div className="flex items-center gap-3">
+                      <item.icon className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="automation" className="mt-4 space-y-3">
+                {[
+                  { title: "Scheduled Monitoring", desc: "Tägliche automatische Captures", status: "Aktiv" },
+                  { title: "Regression Alerts", desc: "Email bei UI-Änderungen", status: "Konfigurierbar" },
+                  { title: "AutoFlow AI", desc: "KI-gestützte Flow-Analyse", status: "Beta" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border">
+                    <div>
+                      <p className="font-medium">{item.title}</p>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                    <Badge variant="outline">{item.status}</Badge>
+                  </div>
+                ))}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+
+        {/* 10 Additional Improvements */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-yellow-500" />
+              10 Zusätzliche Verbesserungsvorschläge
+            </CardTitle>
+            <CardDescription>Für maximale Conversion und UX-Perfektion</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                { num: 1, title: "Session Recording", desc: "Echte User-Journeys aufzeichnen", impact: "🔥🔥🔥" },
+                { num: 2, title: "Auto A/B-Auswertung", desc: "KI analysiert welche Variante gewinnt", impact: "🔥🔥🔥" },
+                { num: 3, title: "Real-Time Conversion", desc: "Drop-off pro Step in Echtzeit", impact: "🔥🔥🔥" },
+                { num: 4, title: "Heatmap-Overlay", desc: "Synthetische Klick-Heatmaps", impact: "🔥🔥" },
+                { num: 5, title: "Multi-Language Compare", desc: "DE/FR/IT automatisch vergleichen", impact: "🔥" },
+                { num: 6, title: "Device-Specific", desc: "iOS vs Android vs Desktop", impact: "🔥" },
+                { num: 7, title: "Lighthouse/Step", desc: "Performance pro Step messen", impact: "🔥🔥" },
+                { num: 8, title: "Competitor Capture", desc: "Movu, MoveAgain automatisch erfassen", impact: "🔥🔥" },
+                { num: 9, title: "Copy-Analyse", desc: "KI optimiert Headlines/CTAs", impact: "🔥🔥" },
+                { num: 10, title: "Continuous Monitoring", desc: "Tägliche Diff-Detection", impact: "🔥🔥" },
+              ].map((item) => (
+                <div key={item.num} className="flex items-start gap-3 p-3 rounded-lg border">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+                    {item.num}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-sm">{item.title}</p>
+                      <span className="text-xs">{item.impact}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <Button variant="outline" className="h-auto py-4" onClick={() => navigate('/admin/tools')}>
+            <div className="text-left">
+              <p className="font-semibold">→ Tools Dashboard</p>
+              <p className="text-xs text-muted-foreground">Alle Analyse-Tools</p>
+            </div>
+          </Button>
+          <Button variant="outline" className="h-auto py-4" onClick={() => window.open('/admin/tools', '_blank')}>
+            <div className="text-left">
+              <p className="font-semibold">→ Neues Tab</p>
+              <p className="text-xs text-muted-foreground">Tools in neuem Tab öffnen</p>
+            </div>
+          </Button>
+          <Button variant="outline" className="h-auto py-4" onClick={() => {
+            navigator.clipboard.writeText(window.location.origin + '/admin/chatgpt-overview');
+            toast.success('URL kopiert!');
+          }}>
+            <div className="text-left">
+              <p className="font-semibold">→ URL kopieren</p>
+              <p className="text-xs text-muted-foreground">Diese Seite teilen</p>
+            </div>
+          </Button>
+        </div>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default ChatGPTOverview;
