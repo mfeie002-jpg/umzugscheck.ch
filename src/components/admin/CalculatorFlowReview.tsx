@@ -1051,16 +1051,16 @@ Dieser Export enthält:
     }
   };
 
-  // Export ALL flow variants at once with source code
+  // Export ALL flow variants at once with source code - COMPLETE with ALL STEPS
   const exportAllFlows = async () => {
     setIsExportingAll(true);
     setCaptureProgress(0);
-    setCaptureStatus("Starte Export aller Flows...");
+    setCaptureStatus("Starte Export aller Flows (alle Steps)...");
 
     const baseUrl = (baseUrlOverride.trim() || getDefaultPublicBaseUrl()).replace(/\/$/, "");
     const zip = new JSZip();
     const exportDate = new Date().toISOString().split('T')[0];
-    const rootFolder = zip.folder(`all-flows-export-${exportDate}`);
+    const rootFolder = zip.folder(`all-flows-complete-${exportDate}`);
 
     if (!rootFolder) {
       setIsExportingAll(false);
@@ -1071,14 +1071,18 @@ Dieser Export enthält:
     // Fetch source code first
     setCaptureStatus("Lade Source Code...");
     const sourceFiles = await fetchSourceFiles();
-    setCaptureProgress(5);
+    setCaptureProgress(3);
 
     const totalFlows = flowVariants.length;
-    let completedFlows = 0;
+    const totalSteps = STEP_CONFIGS.length;
+    const totalOperations = totalFlows * totalSteps * 3 + totalFlows; // (desktop + mobile + html) * steps + info per flow
+    let completedOps = 0;
 
     const allFlowsData: Record<string, any> = {
       exportDate: new Date().toISOString(),
       baseUrl,
+      stepsPerFlow: totalSteps,
+      stepConfigs: STEP_CONFIGS,
       flows: {},
     };
 
@@ -1087,32 +1091,72 @@ Dieser Export enthält:
       const flowFolder = rootFolder.folder(flowFolderName);
       if (!flowFolder) continue;
 
-      setCaptureStatus(`${flow.label}: Desktop Screenshot...`);
-      // Use deterministic capture mode so the screenshot/HTML fetch never depends on cookies/localStorage
-      // (and avoids any login walls / gated previews).
       const ucFlowId = getUcFlowIdForCalculator(flow.value);
-      const fullUrl = buildCaptureUrl(baseUrl, flow.path, 1, ucFlowId);
+      const flowStepsData: any[] = [];
 
-      // Capture desktop screenshot
-      const desktopScreenshot = await captureScreenshot(fullUrl, selectedDesktopDim.value, { fullPage: selectedDesktopDim.value.includes('full') });
+      // Capture ALL steps for this flow
+      for (const stepConfig of STEP_CONFIGS) {
+        const stepFolder = flowFolder.folder(`step-${stepConfig.step}`);
+        if (!stepFolder) continue;
 
-      setCaptureStatus(`${flow.label}: Mobile Screenshot...`);
-      const mobileScreenshot = await captureScreenshot(fullUrl, selectedMobileDim.value, { fullPage: selectedMobileDim.value.includes('full') });
+        const fullUrl = buildCaptureUrl(baseUrl, flow.path, stepConfig.step, ucFlowId);
 
-      setCaptureStatus(`${flow.label}: HTML...`);
-      const html = await captureRenderedHtml(fullUrl);
+        // Desktop screenshot
+        setCaptureStatus(`${flow.label} Step ${stepConfig.step}/${totalSteps}: Desktop...`);
+        const desktopScreenshot = await captureScreenshot(fullUrl, selectedDesktopDim.value, { 
+          fullPage: selectedDesktopDim.value.includes('full') 
+        });
+        completedOps++;
+        setCaptureProgress(3 + (completedOps / totalOperations) * 90);
 
-      // Save to folder
-      if (desktopScreenshot) {
-        const base64Data = desktopScreenshot.replace(/^data:image\/\w+;base64,/, '');
-        flowFolder.file('screenshot-desktop.png', base64Data, { base64: true });
-      }
-      if (mobileScreenshot) {
-        const base64Data = mobileScreenshot.replace(/^data:image\/\w+;base64,/, '');
-        flowFolder.file('screenshot-mobile.png', base64Data, { base64: true });
-      }
-      if (html) {
-        flowFolder.file('page.html', html);
+        // Mobile screenshot
+        setCaptureStatus(`${flow.label} Step ${stepConfig.step}/${totalSteps}: Mobile...`);
+        const mobileScreenshot = await captureScreenshot(fullUrl, selectedMobileDim.value, { 
+          fullPage: selectedMobileDim.value.includes('full') 
+        });
+        completedOps++;
+        setCaptureProgress(3 + (completedOps / totalOperations) * 90);
+
+        // HTML
+        setCaptureStatus(`${flow.label} Step ${stepConfig.step}/${totalSteps}: HTML...`);
+        const html = await captureRenderedHtml(fullUrl);
+        completedOps++;
+        setCaptureProgress(3 + (completedOps / totalOperations) * 90);
+
+        // Save to step folder
+        if (desktopScreenshot) {
+          const base64Data = desktopScreenshot.replace(/^data:image\/\w+;base64,/, '');
+          stepFolder.file('desktop.png', base64Data, { base64: true });
+        }
+        if (mobileScreenshot) {
+          const base64Data = mobileScreenshot.replace(/^data:image\/\w+;base64,/, '');
+          stepFolder.file('mobile.png', base64Data, { base64: true });
+        }
+        if (html) {
+          stepFolder.file('rendered.html', html);
+        }
+
+        // Meta JSON for this step
+        const stepMeta = generateStepMeta(
+          fullUrl, flow.value, flow.path, stepConfig.step, stepConfig.name,
+          desktopScreenshot || undefined, mobileScreenshot || undefined, html || undefined,
+          selectedDesktopDim.value, selectedMobileDim.value
+        );
+        stepFolder.file('meta.json', JSON.stringify(stepMeta, null, 2));
+
+        // Step-specific prompt
+        stepFolder.file('step-prompt.md', generateExportStepPrompt(flow.label, stepConfig, stepMeta));
+
+        flowStepsData.push({
+          step: stepConfig.step,
+          name: stepConfig.name,
+          description: stepConfig.description,
+          url: fullUrl,
+          hasDesktop: !!desktopScreenshot,
+          hasMobile: !!mobileScreenshot,
+          hasHtml: !!html,
+          htmlLength: html?.length || 0,
+        });
       }
 
       // Add source code to flow folder
@@ -1123,25 +1167,23 @@ Dieser Export enthält:
         });
       }
 
-      // Create flow info JSON
+      // Create flow info JSON with all steps
       const flowInfo = {
         id: flow.value,
         name: flow.label,
         path: flow.path,
-        fullUrl,
-        hasDesktopScreenshot: !!desktopScreenshot,
-        hasMobileScreenshot: !!mobileScreenshot,
-        hasHtml: !!html,
+        totalSteps: totalSteps,
+        steps: flowStepsData,
         hasSourceCode: !!(sourceFiles && sourceFiles[flow.value]),
-        htmlLength: html?.length || 0,
         capturedAt: new Date().toISOString(),
       };
-      flowFolder.file('info.json', JSON.stringify(flowInfo, null, 2));
-      
-      allFlowsData.flows[flow.value] = flowInfo;
+      flowFolder.file('flow-info.json', JSON.stringify(flowInfo, null, 2));
 
-      completedFlows++;
-      setCaptureProgress(5 + (completedFlows / totalFlows) * 85);
+      // Flow-specific analysis prompt
+      flowFolder.file('flow-prompt.md', generateSingleFlowPrompt(flow, flowStepsData));
+
+      completedOps++;
+      allFlowsData.flows[flow.value] = flowInfo;
     }
 
     // Add shared source files
@@ -1155,8 +1197,8 @@ Dieser Export enthält:
     // Add master JSON with all flows info
     rootFolder.file('all-flows.json', JSON.stringify(allFlowsData, null, 2));
 
-    // Add comprehensive analysis prompt
-    rootFolder.file('chatgpt-analysis-prompt.md', generateAllFlowsPrompt(allFlowsData));
+    // Add comprehensive analysis prompt (updated for all steps)
+    rootFolder.file('chatgpt-master-prompt.md', generateAllFlowsCompletePrompt(allFlowsData));
 
     // Add comparison prompt
     rootFolder.file('comparison-prompt.md', generateComparisonPrompt());
@@ -1167,16 +1209,208 @@ Dieser Export enthält:
     // Add Deep Research Prompt
     rootFolder.file('deep-research-prompt.md', generateDeepResearchPrompt());
 
+    // Add README with complete structure
+    rootFolder.file('README.md', generateAllFlowsReadme(allFlowsData));
+
     setCaptureProgress(95);
     setCaptureStatus("ZIP wird erstellt...");
     const blob = await zip.generateAsync({ type: 'blob' });
-    downloadBlob(blob, `all-flows-export-${exportDate}.zip`);
+    downloadBlob(blob, `all-flows-complete-${exportDate}.zip`);
 
     setCaptureProgress(100);
     setCaptureStatus("");
     setIsExportingAll(false);
-    toast.success(`Alle ${totalFlows} Flows mit Source Code exportiert!`);
+    toast.success(`Alle ${totalFlows} Flows mit je ${totalSteps} Steps komplett exportiert!`);
   };
+
+  // Generate prompt for a single step in export (different signature)
+  const generateExportStepPrompt = (flowLabel: string, stepConfig: typeof STEP_CONFIGS[0], meta: StepMeta) => `# Step ${stepConfig.step}: ${stepConfig.name}
+**Flow:** ${flowLabel}
+**URL:** ${meta.url}
+**Beschreibung:** ${stepConfig.description}
+
+## Analyse-Aufgaben für diesen Step:
+1. **Desktop UX** - Layout, Hierarchie, CTA-Sichtbarkeit
+2. **Mobile UX** - Touch-Targets, Scroll, Lesbarkeit
+3. **Friction-Analyse** - Was könnte User stoppen?
+4. **Trust-Signale** - Vorhanden? Fehlend?
+5. **Copy-Qualität** - Klarheit, Überzeugungskraft
+
+## Gewünschte Ausgabe:
+- 3 Stärken
+- 3 Schwächen
+- 3 konkrete Verbesserungsvorschläge (priorisiert)
+`;
+
+  // Generate prompt for a single flow (all steps)
+  const generateSingleFlowPrompt = (flow: typeof flowVariants[0], stepsData: any[]) => `# Flow-Analyse: ${flow.label}
+**Path:** ${flow.path}
+**Erfasste Steps:** ${stepsData.length}
+
+## Step-Übersicht:
+${stepsData.map(s => `
+### Step ${s.step}: ${s.name}
+- URL: ${s.url}
+- Desktop: ${s.hasDesktop ? '✓' : '✗'}
+- Mobile: ${s.hasMobile ? '✓' : '✗'}
+- HTML: ${s.hasHtml ? `✓ (${(s.htmlLength / 1024).toFixed(1)} KB)` : '✗'}
+`).join('')}
+
+## Analyse-Aufgaben:
+1. **Gesamtfluss** - Ist der Flow logisch und intuitiv?
+2. **Step-by-Step UX** - Analysiere jeden Step einzeln
+3. **Übergänge** - Sind die Übergänge zwischen Steps klar?
+4. **Mobile Experience** - Funktioniert der Flow auf Mobile gut?
+5. **Conversion-Optimierung** - Wo sind die größten Friction-Points?
+
+## Gewünschte Ausgabe:
+- Flow-Score (1-10)
+- Top 3 Stärken
+- Top 3 Schwächen
+- Top 5 priorisierte Verbesserungen
+`;
+
+  // Generate README for all flows export
+  const generateAllFlowsReadme = (data: Record<string, any>) => `# Kompletter Flow-Export - Alle ${Object.keys(data.flows).length} Varianten
+
+## Exportdatum: ${data.exportDate}
+## Base URL: ${data.baseUrl}
+## Steps pro Flow: ${data.stepsPerFlow}
+
+---
+
+## Struktur
+
+\`\`\`
+${Object.keys(data.flows).map(key => {
+  const flow = data.flows[key];
+  return `${key.replace('umzugsofferten', 'v1').replace('-v', 'v')}/
+├── flow-info.json
+├── flow-prompt.md
+├── source-code/
+${flow.steps.map((s: any) => `├── step-${s.step}/
+│   ├── desktop.png
+│   ├── mobile.png
+│   ├── rendered.html
+│   ├── meta.json
+│   └── step-prompt.md`).join('\n')}`;
+}).join('\n')}
+shared/
+all-flows.json
+chatgpt-master-prompt.md
+comparison-prompt.md
+swiss-market-analysis.md
+deep-research-prompt.md
+README.md
+\`\`\`
+
+## Inhalt pro Step:
+- **desktop.png** - Desktop Screenshot (${data.flows[Object.keys(data.flows)[0]]?.steps?.[0]?.hasDesktop ? 'verfügbar' : 'je nach Capture'})
+- **mobile.png** - Mobile Screenshot
+- **rendered.html** - Gerendertes HTML
+- **meta.json** - Metadaten (URL, Dimensionen, Timestamp)
+- **step-prompt.md** - Step-spezifischer ChatGPT Prompt
+
+## Verwendung:
+1. Lade die ZIP in ChatGPT/Claude hoch
+2. Für Gesamtanalyse: Nutze \`chatgpt-master-prompt.md\`
+3. Für einzelnen Flow: Nutze \`flow-prompt.md\` im Flow-Ordner
+4. Für einzelnen Step: Nutze \`step-prompt.md\` im Step-Ordner
+5. Für Vergleich: Nutze \`comparison-prompt.md\`
+
+## Flow-Übersicht:
+${Object.entries(data.flows).map(([key, flow]: [string, any]) => `
+### ${flow.name}
+- ID: ${flow.id}
+- Path: ${flow.path}
+- Steps: ${flow.totalSteps}
+- Source Code: ${flow.hasSourceCode ? '✓' : '✗'}
+`).join('')}
+
+---
+Erstellt: ${new Date().toLocaleString('de-CH')}
+`;
+
+  // Generate comprehensive prompt for all flows with all steps
+  const generateAllFlowsCompletePrompt = (data: Record<string, any>) => `# Umzugscheck.ch - Komplette Flow-Analyse (Alle ${Object.keys(data.flows).length} Varianten, Alle Steps)
+
+## Exportdatum: ${data.exportDate}
+## Base URL: ${data.baseUrl}
+## Steps pro Flow: ${data.stepsPerFlow}
+
+---
+
+Du bist ein UX-Experte und Conversion-Optimierer. Analysiere ALLE Flows mit ALLEN Steps und erstelle eine optimierte Version 10.
+
+## Die ${Object.keys(data.flows).length} Flows mit je ${data.stepsPerFlow} Steps:
+
+${Object.entries(data.flows).map(([key, flow]: [string, any]) => `
+### ${flow.name}
+- **Path:** ${flow.path}
+- **Source Code:** ${flow.hasSourceCode ? '✓' : '✗'}
+
+**Steps:**
+${flow.steps.map((s: any) => `  - Step ${s.step}: ${s.name} (Desktop: ${s.hasDesktop ? '✓' : '✗'}, Mobile: ${s.hasMobile ? '✓' : '✗'}, HTML: ${s.hasHtml ? `${(s.htmlLength / 1024).toFixed(1)}KB` : '✗'})`).join('\n')}
+`).join('')}
+
+---
+
+## Analyse-Aufgaben:
+
+### Phase 1: Step-by-Step Analyse (für JEDEN Flow)
+Für jeden der ${data.stepsPerFlow} Steps analysiere:
+1. ✅ **Desktop UX** - Layout, Hierarchie, CTAs
+2. 📱 **Mobile UX** - Touch, Scroll, Lesbarkeit
+3. ⚡ **Friction** - Was stoppt den User?
+4. 🛡️ **Trust** - Vertrauenssignale vorhanden?
+5. ✍️ **Copy** - Klarheit und Überzeugungskraft
+
+### Phase 2: Flow-Vergleich
+| Flow | Step 1 | Step 2 | Step 3 | Step 4 | Gesamt |
+|------|--------|--------|--------|--------|--------|
+| V1   | ...    | ...    | ...    | ...    | ...    |
+| V2   | ...    | ...    | ...    | ...    | ...    |
+| ...  | ...    | ...    | ...    | ...    | ...    |
+
+### Phase 3: Best Practices Extraktion
+- Welcher Flow hat den besten Step 1?
+- Welcher Flow hat den besten Step 2?
+- Welcher Flow hat den besten Step 3?
+- Welcher Flow hat den besten Step 4?
+
+### Phase 4: V10 "Ultimate Flow" Design
+Kombiniere die besten Elemente:
+- Bester Step 1 von: ___
+- Bester Step 2 von: ___
+- Bester Step 3 von: ___
+- Bester Step 4 von: ___
+
+---
+
+## Gewünschtes Output-Format:
+
+### 1. Flow-Ranking (Gesamt)
+| Rank | Flow | Score | Stärken | Schwächen |
+|------|------|-------|---------|-----------|
+
+### 2. Step-Ranking (Bester pro Step)
+| Step | Bester Flow | Warum |
+|------|-------------|-------|
+
+### 3. Top 10 Best Practices (aus allen Flows/Steps)
+
+### 4. V10 "Ultimate Flow" - Detailliert
+- Step 1: [Beschreibung + woher übernommen]
+- Step 2: [Beschreibung + woher übernommen]
+- Step 3: [Beschreibung + woher übernommen]
+- Step 4: [Beschreibung + woher übernommen]
+
+### 5. Priorisierte Implementierungs-Roadmap
+
+---
+
+**Dateien befinden sich in den jeweiligen Flow-Ordnern unter step-1/, step-2/, step-3/, step-4/**
+`;
 
   const generateAllFlowsPrompt = (data: Record<string, any>) => `# Umzugscheck.ch - Alle 9 Flow-Varianten Analyse
 
