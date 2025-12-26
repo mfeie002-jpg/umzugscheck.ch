@@ -93,16 +93,14 @@ const getUcFlowIdForCalculator = (calculatorValue: string): string | null => {
   const match = calculatorValue.match(/-v(\d+)/i);
   return match?.[1] ? `v${match[1]}` : "v1";
 };
-
 const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, ucFlowId?: string | null) => {
-  // uc_render=1 enables render-mode patches (e.g. IntersectionObserver + eager images)
   // uc_flow makes flow selection deterministic (prevents default-flow mismatch)
   // uc_cb busts caches for screenshot tooling.
-  const u = new URL(`${baseUrl}${flowPath}`);
+  // NOTE: We NO longer add uc_render=1 - it was causing blank screenshots in heavy SPA flows.
+  const u = new URL(flowPath, baseUrl);
   u.searchParams.set("uc_capture", "1");
   u.searchParams.set("uc_step", String(step));
   if (ucFlowId) u.searchParams.set("uc_flow", ucFlowId);
-  u.searchParams.set("uc_render", "1");
   u.searchParams.set("uc_cb", String(Date.now()));
   return u.toString();
 };
