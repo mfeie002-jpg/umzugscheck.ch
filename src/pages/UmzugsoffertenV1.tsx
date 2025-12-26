@@ -20,7 +20,7 @@ import {
   BottomStickyCTA,
   PageEnhancements,
 } from "@/components/offerten-v2";
-import { MultiStepCalculator } from "@/components/homepage/MultiStepCalculator";
+import { MultiStepCalculatorV1 } from "@/components/funnel-v1";
 import { Link } from "react-router-dom";
 
 const UmzugsoffertenV1 = () => {
@@ -46,7 +46,7 @@ const UmzugsoffertenV1 = () => {
 
         {/* Hero with Comparison Wizard */}
         <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-4 sm:pt-6">
-          <MultiStepCalculator />
+          <MultiStepCalculatorV1 />
         </section>
 
         {/* AI Insights Strip */}
