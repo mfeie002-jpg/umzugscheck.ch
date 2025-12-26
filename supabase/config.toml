@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.get-source-files]
 verify_jwt = false
+
+[functions.ai-generate-context]
+verify_jwt = false
