@@ -567,6 +567,342 @@ export type Database = {
         }
         Relationships: []
       }
+      flow_alert_settings: {
+        Row: {
+          alert_type: string
+          created_at: string
+          email: string
+          flow_id: string | null
+          id: string
+          is_active: boolean | null
+          last_triggered_at: string | null
+          threshold_value: number | null
+          updated_at: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          email: string
+          flow_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          threshold_value?: number | null
+          updated_at?: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          email?: string
+          flow_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          threshold_value?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flow_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          alert_type: string
+          created_at: string
+          flow_id: string | null
+          id: string
+          is_acknowledged: boolean | null
+          message: string | null
+          metadata: Json | null
+          setting_id: string | null
+          severity: string
+          title: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          alert_type: string
+          created_at?: string
+          flow_id?: string | null
+          id?: string
+          is_acknowledged?: boolean | null
+          message?: string | null
+          metadata?: Json | null
+          setting_id?: string | null
+          severity?: string
+          title: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          alert_type?: string
+          created_at?: string
+          flow_id?: string | null
+          id?: string
+          is_acknowledged?: boolean | null
+          message?: string | null
+          metadata?: Json | null
+          setting_id?: string | null
+          severity?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_alerts_setting_id_fkey"
+            columns: ["setting_id"]
+            isOneToOne: false
+            referencedRelation: "flow_alert_settings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flow_analysis_runs: {
+        Row: {
+          accessibility_score: number | null
+          ai_recommendations: Json | null
+          ai_summary: string | null
+          completed_at: string | null
+          conversion_score: number | null
+          created_at: string
+          flow_id: string
+          flow_name: string
+          id: string
+          metadata: Json | null
+          overall_score: number | null
+          performance_score: number | null
+          run_type: string
+          started_at: string | null
+          status: string
+          steps_captured: number | null
+          total_steps: number | null
+          ux_score: number | null
+        }
+        Insert: {
+          accessibility_score?: number | null
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          completed_at?: string | null
+          conversion_score?: number | null
+          created_at?: string
+          flow_id: string
+          flow_name: string
+          id?: string
+          metadata?: Json | null
+          overall_score?: number | null
+          performance_score?: number | null
+          run_type?: string
+          started_at?: string | null
+          status?: string
+          steps_captured?: number | null
+          total_steps?: number | null
+          ux_score?: number | null
+        }
+        Update: {
+          accessibility_score?: number | null
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          completed_at?: string | null
+          conversion_score?: number | null
+          created_at?: string
+          flow_id?: string
+          flow_name?: string
+          id?: string
+          metadata?: Json | null
+          overall_score?: number | null
+          performance_score?: number | null
+          run_type?: string
+          started_at?: string | null
+          status?: string
+          steps_captured?: number | null
+          total_steps?: number | null
+          ux_score?: number | null
+        }
+        Relationships: []
+      }
+      flow_scheduled_jobs: {
+        Row: {
+          created_at: string
+          flow_ids: string[]
+          id: string
+          is_active: boolean | null
+          last_run_at: string | null
+          name: string
+          next_run_at: string | null
+          notify_email: string | null
+          schedule: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          flow_ids: string[]
+          id?: string
+          is_active?: boolean | null
+          last_run_at?: string | null
+          name: string
+          next_run_at?: string | null
+          notify_email?: string | null
+          schedule: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          flow_ids?: string[]
+          id?: string
+          is_active?: boolean | null
+          last_run_at?: string | null
+          name?: string
+          next_run_at?: string | null
+          notify_email?: string | null
+          schedule?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flow_step_metrics: {
+        Row: {
+          ai_issues: Json | null
+          ai_suggestions: Json | null
+          contrast_issues: number | null
+          created_at: string
+          cumulative_layout_shift: number | null
+          desktop_screenshot_url: string | null
+          estimated_completion_rate: number | null
+          estimated_drop_off_rate: number | null
+          first_contentful_paint_ms: number | null
+          flow_id: string
+          form_fields_count: number | null
+          id: string
+          largest_contentful_paint_ms: number | null
+          load_time_ms: number | null
+          mobile_friendliness_score: number | null
+          mobile_screenshot_url: string | null
+          required_fields_count: number | null
+          run_id: string | null
+          step_name: string | null
+          step_number: number
+          step_url: string | null
+          time_to_interactive_ms: number | null
+          touch_target_issues: number | null
+        }
+        Insert: {
+          ai_issues?: Json | null
+          ai_suggestions?: Json | null
+          contrast_issues?: number | null
+          created_at?: string
+          cumulative_layout_shift?: number | null
+          desktop_screenshot_url?: string | null
+          estimated_completion_rate?: number | null
+          estimated_drop_off_rate?: number | null
+          first_contentful_paint_ms?: number | null
+          flow_id: string
+          form_fields_count?: number | null
+          id?: string
+          largest_contentful_paint_ms?: number | null
+          load_time_ms?: number | null
+          mobile_friendliness_score?: number | null
+          mobile_screenshot_url?: string | null
+          required_fields_count?: number | null
+          run_id?: string | null
+          step_name?: string | null
+          step_number: number
+          step_url?: string | null
+          time_to_interactive_ms?: number | null
+          touch_target_issues?: number | null
+        }
+        Update: {
+          ai_issues?: Json | null
+          ai_suggestions?: Json | null
+          contrast_issues?: number | null
+          created_at?: string
+          cumulative_layout_shift?: number | null
+          desktop_screenshot_url?: string | null
+          estimated_completion_rate?: number | null
+          estimated_drop_off_rate?: number | null
+          first_contentful_paint_ms?: number | null
+          flow_id?: string
+          form_fields_count?: number | null
+          id?: string
+          largest_contentful_paint_ms?: number | null
+          load_time_ms?: number | null
+          mobile_friendliness_score?: number | null
+          mobile_screenshot_url?: string | null
+          required_fields_count?: number | null
+          run_id?: string | null
+          step_name?: string | null
+          step_number?: number
+          step_url?: string | null
+          time_to_interactive_ms?: number | null
+          touch_target_issues?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_step_metrics_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "flow_analysis_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flow_ux_issues: {
+        Row: {
+          affected_element: string | null
+          category: string
+          created_at: string
+          description: string | null
+          flow_id: string
+          id: string
+          is_resolved: boolean | null
+          issue_type: string
+          recommendation: string | null
+          resolved_at: string | null
+          run_id: string | null
+          screenshot_url: string | null
+          severity: string
+          step_number: number | null
+          title: string
+        }
+        Insert: {
+          affected_element?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          flow_id: string
+          id?: string
+          is_resolved?: boolean | null
+          issue_type: string
+          recommendation?: string | null
+          resolved_at?: string | null
+          run_id?: string | null
+          screenshot_url?: string | null
+          severity: string
+          step_number?: number | null
+          title: string
+        }
+        Update: {
+          affected_element?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          flow_id?: string
+          id?: string
+          is_resolved?: boolean | null
+          issue_type?: string
+          recommendation?: string | null
+          resolved_at?: string | null
+          run_id?: string | null
+          screenshot_url?: string | null
+          severity?: string
+          step_number?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_ux_issues_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "flow_analysis_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flow_versions: {
         Row: {
           ai_feedback: string | null

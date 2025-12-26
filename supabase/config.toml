@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.ai-generate-context]
 verify_jwt = false
+
+[functions.auto-analyze-flow]
+verify_jwt = false
