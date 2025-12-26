@@ -21,7 +21,7 @@ export { V2eExperimental } from './V2eExperimental';
 
 // V3 Variants (Mobile-First)
 export { V3aMobileFirst } from './V3aMobileFirst';
-export { V3aFeedbackBased } from './V3aFeedbackBased';
+
 export { V3bSwipeNavigation } from './V3bSwipeNavigation';
 export { V3cBottomSheet } from './V3cBottomSheet';
 export { V3dThumbZone } from './V3dThumbZone';
@@ -55,7 +55,7 @@ export const VARIANT_REGISTRY: Record<string, {
   'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
   // V3 - Mobile-First
   'v3a': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3a Mobile First' },
-  'v3a-feedback': { component: 'V3aFeedbackBased', stepCount: 4, label: 'V3a Feedback Based' },
+  
   'v3b': { component: 'V3bSwipeNavigation', stepCount: 4, label: 'V3b Swipe Navigation' },
   'v3c': { component: 'V3cBottomSheet', stepCount: 4, label: 'V3c Bottom Sheet' },
   'v3d': { component: 'V3dThumbZone', stepCount: 3, label: 'V3d Thumb Zone' },
