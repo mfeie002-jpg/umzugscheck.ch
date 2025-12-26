@@ -270,6 +270,7 @@ const AdminListings = lazy(() => import("./pages/admin/Listings"));
 const ChatGPTOverview = lazy(() => import("./pages/admin/ChatGPTOverview"));
 const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
+const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
@@ -490,6 +491,7 @@ const App = () => (
                             <Route path="/admin/chatgpt" element={<ChatGPTOverview />} />
                             <Route path="/admin/ai-command" element={<AICommandCenter />} />
                             <Route path="/admin/capabilities" element={<AdminCapabilities />} />
+                            <Route path="/admin/varianten-testen" element={<VariantTestHub />} />
                             <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
                             <Route path="/admin/v3-varianten" element={<Navigate to="/v3-varianten" replace />} />
                             <Route path="/admin/funnel" element={<FunnelAnalytics />} />
