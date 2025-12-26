@@ -39,7 +39,22 @@ import {
   V2bSimplifiedLabels, 
   V2cTrustFocused, 
   V2dSpeedOptimized, 
-  V2eExperimental 
+  V2eExperimental,
+  V3aMobileFirst,
+  V3bSwipeNavigation,
+  V3cBottomSheet,
+  V3dThumbZone,
+  V3eFullscreen,
+  V4aUrgencyBased,
+  V4bSocialProof,
+  V4cValueFirst,
+  V4dGamified,
+  V4eMinimalFriction,
+  V5aHighContrast,
+  V5bScreenReader,
+  V5cKeyboardNav,
+  V5dLargeText,
+  V5eReducedMotion,
 } from "@/components/calculator-variants";
 import { Link } from "react-router-dom";
 import { useFlowVersion } from "@/hooks/useFlowVersion";
@@ -93,6 +108,27 @@ const Umzugsofferten = () => {
     if (parsed.flowCode === '2c') return <V2cTrustFocused />;
     if (parsed.flowCode === '2d') return <V2dSpeedOptimized />;
     if (parsed.flowCode === '2e') return <V2eExperimental />;
+    
+    // V3 Sub-variants - Mobile-First (3a, 3b, 3c, 3d, 3e)
+    if (parsed.flowCode === '3a') return <V3aMobileFirst />;
+    if (parsed.flowCode === '3b') return <V3bSwipeNavigation />;
+    if (parsed.flowCode === '3c') return <V3cBottomSheet />;
+    if (parsed.flowCode === '3d') return <V3dThumbZone />;
+    if (parsed.flowCode === '3e') return <V3eFullscreen />;
+    
+    // V4 Sub-variants - Conversion-Focused (4a, 4b, 4c, 4d, 4e)
+    if (parsed.flowCode === '4a') return <V4aUrgencyBased />;
+    if (parsed.flowCode === '4b') return <V4bSocialProof />;
+    if (parsed.flowCode === '4c') return <V4cValueFirst />;
+    if (parsed.flowCode === '4d') return <V4dGamified />;
+    if (parsed.flowCode === '4e') return <V4eMinimalFriction />;
+    
+    // V5 Sub-variants - Accessibility-Focused (5a, 5b, 5c, 5d, 5e)
+    if (parsed.flowCode === '5a') return <V5aHighContrast />;
+    if (parsed.flowCode === '5b') return <V5bScreenReader />;
+    if (parsed.flowCode === '5c') return <V5cKeyboardNav />;
+    if (parsed.flowCode === '5d') return <V5dLargeText />;
+    if (parsed.flowCode === '5e') return <V5eReducedMotion />;
     
     // Main versions
     switch (componentName) {
