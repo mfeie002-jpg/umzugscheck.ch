@@ -77,6 +77,7 @@ import { ScrollToTop } from "./components/ScrollToTop";
 import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
 import { ScrollProgressBar } from "./components/ScrollProgressBar";
 import { ScreenshotRenderModeRoot } from "@/components/ScreenshotRenderModeRoot";
+import { CaptureDebugOverlay } from "@/components/CaptureDebugOverlay";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { FunnelModeProvider } from "@/components/funnel/FunnelModeProvider";
 
@@ -299,6 +300,7 @@ const App = () => (
               <BrowserRouter>
                 <AnalyticsTracker />
                 <ScreenshotRenderModeRoot />
+                <CaptureDebugOverlay />
                 <FunnelModeProvider />
                 <CriticalCSS />
                 <CriticalCSSLoader />
@@ -508,7 +510,10 @@ const App = () => (
                             <Route path="/umzugsofferten-v7" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
+                            {/* Flow tester routes with redirect for typos/old URLs */}
                             <Route path="/flow-tester" element={<FlowTester />} />
+                            <Route path="/flow-test" element={<Navigate to="/flow-tester" replace />} />
+                            <Route path="/flowtester" element={<Navigate to="/flow-tester" replace />} />
                             <Route path="/umzugsofferten/bestaetigung" element={<UmzugsoffertenBestaetigung />} />
                             <Route path="/umzugsofferten/:region" element={<RegionalOfferten />} />
                             <Route path="/preise" element={<Pricing />} />

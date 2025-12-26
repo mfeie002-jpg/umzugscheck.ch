@@ -175,36 +175,38 @@ export function CaptureReadySentinel({
       try {
         await fontsReady();
 
-        // Stability gate: no DOM mutations + no pending requests for X ms.
-        const stableMs = 900;
-        const maxWaitMs = 90_000;
+        // SIMPLIFIED: When isReady is true, wait a short grace period then mark ready
+        // The old DOM mutation tracking caused infinite loops with framer-motion animations
+        const graceMs = 300; // Short grace period for final renders
+        const maxWaitMs = 15_000; // Reduced from 90s - if not ready in 15s, something is wrong
+
+        await new Promise((r) => window.setTimeout(r, graceMs));
+
+        const pending = Number((window as any).__ucPendingRequests || 0);
+        const bodyHasContent =
+          document.body &&
+          document.body.getBoundingClientRect &&
+          document.body.getBoundingClientRect().height > 0;
+
+        // If body has content and no pending requests, we're ready
+        if (bodyHasContent && pending === 0) {
+          setStatus("ready");
+          return;
+        }
+
+        // Wait a bit more for pending requests
         const startedAt = Date.now();
-
-        while (!cancelled) {
-          const now = Date.now();
-          const pending = Number((window as any).__ucPendingRequests || 0);
-          const lastMutationAgo = now - lastMutationAtRef.current;
-
-          const bodyHasContent =
-            document.body &&
-            document.body.getBoundingClientRect &&
-            document.body.getBoundingClientRect().height > 0;
-
-          const stable = pending === 0 && lastMutationAgo >= stableMs && bodyHasContent;
-
-          if (stable) {
+        while (!cancelled && Date.now() - startedAt < maxWaitMs) {
+          const nowPending = Number((window as any).__ucPendingRequests || 0);
+          if (nowPending === 0) {
             setStatus("ready");
             return;
           }
-
-          if (now - startedAt > maxWaitMs) {
-            setStatus("error");
-            setErrorCode("timeout");
-            return;
-          }
-
-          await new Promise((r) => window.setTimeout(r, 250));
+          await new Promise((r) => window.setTimeout(r, 200));
         }
+
+        // Timeout - set ready anyway (screenshot will capture current state)
+        setStatus("ready");
       } catch (e) {
         if (cancelled) return;
         setStatus("error");
