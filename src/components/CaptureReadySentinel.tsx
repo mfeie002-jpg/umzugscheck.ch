@@ -224,31 +224,48 @@ export function CaptureReadySentinel({
   }, []);
 
   // Stability-based auto-ready with full contract checks
+  // CRITICAL: If route-chunk doesn't load, we still need to set ready after timeout
+  // so the provider can at least capture something (even if blank - for debugging)
   useEffect(() => {
     if (state.status !== "loading") return;
 
-    const graceMs = 300; // Initial grace period
-    const stabilityMs = 400; // No mutations for this long = stable
-    const maxWaitMs = 25000; // 25 seconds max wait
+    const graceMs = 500; // Initial grace period for JS execution
+    const stabilityMs = 300; // No mutations for this long = stable  
+    const maxWaitMs = 12000; // 12 seconds max wait (shorter to avoid provider timeout)
+    const forceReadyMs = 8000; // Force ready after 8s even without stability
     const startedAt = Date.now();
+
+    // Force ready timeout - ensures we always mark ready eventually
+    const forceReadyTimeout = window.setTimeout(() => {
+      if (state.status === "loading") {
+        console.warn("[CaptureReadySentinel] Force-ready after timeout");
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+        setState(s => ({ 
+          ...s, 
+          status: "ready", 
+          reason: `force-ready after ${forceReadyMs}ms`,
+          scrollY: 0,
+        }));
+      }
+    }, forceReadyMs);
 
     const checkReady = async () => {
       const pending = Number((window as any).__ucPendingRequests || 0);
       const elapsed = Date.now() - startedAt;
       const msSinceLastMutation = Date.now() - lastMutationRef.current;
       
-      // Check fonts ready
+      // Check fonts ready (with short timeout)
       let fontsReady = true;
       try {
         if (document.fonts?.ready) {
           await Promise.race([
             document.fonts.ready,
-            new Promise(r => setTimeout(r, 2000)), // 2s timeout for fonts
+            new Promise(r => setTimeout(r, 1500)),
           ]);
           fontsReady = document.fonts.status === "loaded";
         }
       } catch {
-        fontsReady = true; // Assume ready on error
+        fontsReady = true;
       }
 
       // Update debug state
@@ -260,17 +277,18 @@ export function CaptureReadySentinel({
         scrollY: window.scrollY,
       }));
 
-      // Ready conditions (ALL must be true):
-      const bodyHasContent = document.body?.getBoundingClientRect?.()?.height > 100;
+      // Ready conditions - more lenient to avoid hanging
+      const bodyHasContent = document.body?.getBoundingClientRect?.()?.height > 50;
       const noNetworkPending = pending === 0;
       const domStable = msSinceLastMutation >= stabilityMs;
-      const isReady = bodyHasContent && noNetworkPending && domStable && fontsReady;
+      
+      // Be more lenient: ready if network settled OR dom stable with content
+      const isReady = (noNetworkPending && bodyHasContent) || (domStable && bodyHasContent && elapsed > 2000);
 
       if (isReady) {
-        // Scroll to top before capture
+        window.clearTimeout(forceReadyTimeout);
         window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
         
-        // Wait 2 RAFs for paint
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             setState(s => ({ 
@@ -285,7 +303,7 @@ export function CaptureReadySentinel({
       }
 
       if (elapsed >= maxWaitMs) {
-        // Timeout - mark ready anyway but with warning
+        window.clearTimeout(forceReadyTimeout);
         window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
         setState(s => ({ 
           ...s, 
@@ -296,13 +314,13 @@ export function CaptureReadySentinel({
         return;
       }
 
-      // Keep checking
-      timeoutRef.current = window.setTimeout(checkReady, 200);
+      timeoutRef.current = window.setTimeout(checkReady, 150);
     };
 
     timeoutRef.current = window.setTimeout(checkReady, graceMs);
 
     return () => {
+      window.clearTimeout(forceReadyTimeout);
       if (timeoutRef.current) {
         window.clearTimeout(timeoutRef.current);
       }
