@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getUcCaptureParams } from "@/lib/uc-capture";
 
@@ -32,19 +31,10 @@ export function CaptureReadySentinel({
 }: CaptureReadySentinelProps) {
   const location = useLocation();
   const captureParams = getUcCaptureParams(location.search);
-  const [mounted, setMounted] = useState(false);
   
-  // Delay mounting slightly to ensure DOM is stable
-  useEffect(() => {
-    if (isReady) {
-      const timer = setTimeout(() => setMounted(true), 100);
-      return () => clearTimeout(timer);
-    }
-    setMounted(false);
-  }, [isReady]);
-  
-  // Only render in capture mode when ready
-  if (!captureParams.enabled || !isReady || !mounted) {
+  // Render immediately when in capture mode and ready - no delay needed
+  // ScreenshotMachine already waits 30s for the selector to appear
+  if (!captureParams.enabled || !isReady) {
     return null;
   }
   
