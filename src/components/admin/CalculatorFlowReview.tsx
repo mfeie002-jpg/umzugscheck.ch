@@ -32,7 +32,8 @@ import {
   Search,
   History,
   Monitor,
-  Smartphone
+  Smartphone,
+  FileJson
 } from "lucide-react";
 
 interface StepMeta {
@@ -848,6 +849,101 @@ export function CalculatorFlowReview() {
     const blob = await zip.generateAsync({ type: 'blob' });
     downloadBlob(blob, `${folderName}.zip`);
     toast.success('ChatGPT-Package heruntergeladen (Screenshots + HTML + Meta)');
+  };
+
+  // Download metadata only (JSON + HTML, no screenshots)
+  const downloadMetadataOnlyZip = async () => {
+    if (capturedSteps.length === 0) {
+      toast.error("Keine Steps vorhanden. Bitte erst 'Demo laden' oder Steps erfassen.");
+      return;
+    }
+
+    const zip = new JSZip();
+    const selectedLabel = calculatorOptions.find(c => c.value === selectedCalculator)?.label || selectedCalculator;
+    const folderName = `metadata-only-${selectedCalculator}-${new Date().toISOString().split('T')[0]}`;
+    const folder = zip.folder(folderName);
+
+    if (!folder) return;
+
+    // Add README
+    folder.file('README.md', `# Metadata Export (ohne Screenshots)
+
+## Calculator: ${selectedLabel}
+## Exportiert: ${new Date().toISOString()}
+
+Dieser Export enthält:
+- **index.json** - Maschinenlesbarer Index aller Steps
+- **all-steps-meta.json** - Kombinierte Metadaten aller Steps
+- Pro Step-Ordner:
+  - **meta.json** - Step-Metadaten (URL, Dimensionen, Timestamps)
+  - **rendered.html** - Gerenderte HTML-Struktur
+  - **step-prompt.md** - ChatGPT Prompt für diesen Step
+
+**Keine Screenshots enthalten** - ideal für schnellen Export oder wenn Screenshots manuell erstellt wurden.
+`);
+
+    // Add comprehensive index
+    const index = {
+      exportedAt: new Date().toISOString(),
+      exportType: 'metadata-only',
+      calculator: selectedLabel,
+      calculatorId: selectedCalculator,
+      stepsCount: capturedSteps.length,
+      steps: capturedSteps.map(s => ({
+        step: s.step,
+        name: s.name,
+        description: s.description,
+        url: s.url,
+        hasHtml: !!s.html,
+        htmlLength: s.html?.length || 0,
+        meta: s.meta,
+      })),
+    };
+    folder.file('index.json', JSON.stringify(index, null, 2));
+
+    // Add combined meta for all steps (useful for AI analysis)
+    const allStepsMeta = {
+      calculator: selectedLabel,
+      calculatorId: selectedCalculator,
+      exportedAt: new Date().toISOString(),
+      steps: capturedSteps.map(s => ({
+        step: s.step,
+        name: s.name,
+        description: s.description,
+        url: s.url,
+        dimensions: s.meta?.dimensions || { desktop: '1920x1080', mobile: '390x844' },
+        capturedAt: s.meta?.capturedAt,
+        htmlPreview: s.html ? s.html.substring(0, 500) + '...' : null,
+        htmlLength: s.html?.length || 0,
+      })),
+    };
+    folder.file('all-steps-meta.json', JSON.stringify(allStepsMeta, null, 2));
+
+    // Add each step (HTML + meta only)
+    for (const step of capturedSteps) {
+      const stepFolder = folder.folder(`step-${step.step}-${step.name.replace(/\s+/g, '-').toLowerCase()}`);
+      if (!stepFolder) continue;
+
+      // HTML (rendered outer layer)
+      if (step.html) {
+        stepFolder.file('rendered.html', step.html);
+      }
+
+      // Meta JSON
+      if (step.meta) {
+        stepFolder.file('meta.json', JSON.stringify(step.meta, null, 2));
+      }
+
+      // Step-specific prompt
+      stepFolder.file('step-prompt.md', generateStepPrompt(step));
+    }
+
+    // Add combined prompt for all steps
+    folder.file('analysis-prompt.md', generatePromptTemplate());
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    downloadBlob(blob, `${folderName}.zip`);
+    toast.success('Metadata-Package heruntergeladen (JSON + HTML, ohne Screenshots)');
   };
 
   // Fetch source code from edge function
@@ -1914,7 +2010,15 @@ ${JSON.stringify(step.meta || {}, null, 2)}
               className="bg-green-600 hover:bg-green-700"
             >
               <Package className="w-4 h-4 mr-2" />
-              ZIP Download (ChatGPT Package)
+              ZIP Download (alles)
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={downloadMetadataOnlyZip}
+              disabled={capturedSteps.length === 0}
+            >
+              <FileJson className="w-4 h-4 mr-2" />
+              Nur Metadata (JSON + HTML)
             </Button>
           </div>
           
