@@ -2252,6 +2252,172 @@ ${JSON.stringify(step.meta || {}, null, 2)}
         </CardContent>
       </Card>
 
+      {/* Flow Overview Export Section */}
+      <Card className="border-2 border-primary/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-primary" />
+            Flow-Überblick & Meta-Analyse
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Exportiere jeden Flow einzeln für tiefere Analyse, oder generiere einen Meta-Analyse Prompt für übergreifende Patterns.
+          </p>
+
+          {/* Flow Grid with Export Buttons */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {flowVariants.map((flow) => (
+              <div 
+                key={flow.value}
+                className={`border rounded-lg p-3 transition-colors ${
+                  selectedCalculator === flow.value 
+                    ? 'border-primary bg-primary/5' 
+                    : 'hover:border-primary/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-sm">{flow.label}</span>
+                  {flow.value === 'umzugsofferten-v9' && (
+                    <Badge className="bg-amber-500">⭐</Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant={selectedCalculator === flow.value ? "default" : "outline"}
+                    className="flex-1 h-8 text-xs"
+                    onClick={() => {
+                      setSelectedCalculator(flow.value);
+                      toast.success(`${flow.label} ausgewählt`);
+                    }}
+                  >
+                    <Eye className="w-3 h-3 mr-1" />
+                    Auswählen
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0"
+                    onClick={() => window.open(flow.path, '_blank')}
+                    title="In neuem Tab öffnen"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Meta Analysis Prompt Generator */}
+          <div className="border-t pt-4">
+            <h4 className="font-medium flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              Meta-Analyse Prompt
+            </h4>
+            <p className="text-sm text-muted-foreground mb-3">
+              Nachdem du jeden Flow einzeln analysiert hast, nutze diesen Prompt um übergreifende Patterns zu erkennen.
+            </p>
+            <div className="bg-muted rounded-lg p-4 max-h-48 overflow-y-auto">
+              <pre className="text-xs whitespace-pre-wrap font-mono">
+{`# Meta-Analyse: Alle ${flowVariants.length} Umzugsofferten Flows
+
+Du hast bereits ${flowVariants.length} verschiedene Flow-Varianten für Umzugsofferten analysiert:
+
+${flowVariants.map((f, i) => `${i + 1}. ${f.label}`).join('\n')}
+
+## Aufgabe
+
+Analysiere die übergreifenden Patterns und beantworte:
+
+### 1. Conversion-Patterns
+- Welche UI-Elemente funktionieren konsistent gut/schlecht?
+- Welche Step-Anzahl zeigt beste Conversion-Raten?
+- Gibt es optimale Formular-Längen?
+
+### 2. UX-Patterns  
+- Welche Navigation-Patterns sind am effektivsten?
+- Wie wirkt sich Vertrauensbildung auf Conversion aus?
+- Mobile vs Desktop: Welche Anpassungen sind kritisch?
+
+### 3. Empfehlungen
+- Welche 3 Elements sollten ALLE Flows haben?
+- Was sollte KEIN Flow haben?
+- Welcher Flow ist der beste Ausgangspunkt für V10?
+
+### 4. V10 Konzept
+Basierend auf allen Erkenntnissen:
+- Skizziere den idealen "V10" Flow
+- Kombiniere die besten Elemente
+- Adressiere die häufigsten Schwächen`}
+              </pre>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <Button
+                size="sm"
+                onClick={() => {
+                  const metaPrompt = `# Meta-Analyse: Alle ${flowVariants.length} Umzugsofferten Flows
+
+Du hast bereits ${flowVariants.length} verschiedene Flow-Varianten für Umzugsofferten analysiert:
+
+${flowVariants.map((f, i) => `${i + 1}. ${f.label}`).join('\n')}
+
+## Aufgabe
+
+Analysiere die übergreifenden Patterns und beantworte:
+
+### 1. Conversion-Patterns
+- Welche UI-Elemente funktionieren konsistent gut/schlecht?
+- Welche Step-Anzahl zeigt beste Conversion-Raten?
+- Gibt es optimale Formular-Längen?
+
+### 2. UX-Patterns  
+- Welche Navigation-Patterns sind am effektivsten?
+- Wie wirkt sich Vertrauensbildung auf Conversion aus?
+- Mobile vs Desktop: Welche Anpassungen sind kritisch?
+
+### 3. Empfehlungen
+- Welche 3 Elements sollten ALLE Flows haben?
+- Was sollte KEIN Flow haben?
+- Welcher Flow ist der beste Ausgangspunkt für V10?
+
+### 4. V10 Konzept
+Basierend auf allen Erkenntnissen:
+- Skizziere den idealen "V10" Flow
+- Kombiniere die besten Elemente
+- Adressiere die häufigsten Schwächen`;
+                  navigator.clipboard.writeText(metaPrompt);
+                  toast.success('Meta-Analyse Prompt kopiert');
+                }}
+              >
+                <Copy className="w-3 h-3 mr-1" />
+                Prompt kopieren
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => window.open('https://chat.openai.com', '_blank')}
+              >
+                <ExternalLink className="w-3 h-3 mr-1" />
+                ChatGPT
+              </Button>
+            </div>
+          </div>
+
+          {/* Workflow Tip */}
+          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-3 text-sm">
+            <strong className="text-blue-700 dark:text-blue-300">💡 Empfohlener Workflow:</strong>
+            <ol className="mt-2 space-y-1 text-muted-foreground">
+              <li>1. Wähle einen Flow aus der Liste oben</li>
+              <li>2. Klicke "Alle Steps erfassen" → "ZIP Download"</li>
+              <li>3. Lade ZIP in ChatGPT hoch für detaillierte Analyse</li>
+              <li>4. Wiederhole für alle 9 Flows</li>
+              <li>5. Nutze den Meta-Analyse Prompt für übergreifende Erkenntnisse</li>
+            </ol>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Version Manager */}
       <FlowVersionManager 
         flowId={selectedCalculator} 
