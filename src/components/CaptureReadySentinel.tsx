@@ -3,24 +3,23 @@ import { useLocation } from "react-router-dom";
 import { getUcCaptureParams } from "@/lib/uc-capture";
 
 /**
- * Sentinel 2.0 for screenshot automation.
+ * Sentinel 2.0 for screenshot automation with "READY Contract".
  * 
- * - Always rendered at root level in capture mode
- * - Exposes global API for routes to signal readiness
- * - Auto-catches unhandled errors and sets status=error
- * - Never causes infinite loops from animation observation
+ * Ready = ALL of these conditions are true:
+ * 1. Step component mounted (caller calls markReady OR auto-detect)
+ * 2. All network requests settled (no pending fetch/XHR)
+ * 3. Fonts ready (document.fonts.ready)
+ * 4. No DOM mutations for X ms (MutationObserver)
+ * 5. Above-the-fold content visible (body height > threshold)
+ * 6. Scroll position at top (for consistent captures)
  */
 
 type CaptureStatus = "loading" | "ready" | "error";
 
 interface CaptureReadySentinelProps {
-  /** The current step being rendered (optional - will use URL params if not provided) */
   step?: number | string;
-  /** The flow variant being rendered (optional - will use URL params if not provided) */
   flow?: string;
-  /** Whether the wizard content is fully ready (optional - enables immediate ready) */
   isReady?: boolean;
-  /** Optional additional metadata for debugging */
   metadata?: Record<string, string | number | boolean>;
 }
 
@@ -30,7 +29,16 @@ interface SentinelState {
   step: string | number;
   flow: string;
   pendingRequests: number;
+  fontsReady: boolean;
+  lastMutationAt: number;
+  scrollY: number;
+  buildId: string;
 }
+
+// Build ID for mismatch detection
+const BUILD_ID = typeof import.meta !== "undefined" 
+  ? `${new Date().toISOString().slice(0, 10)}-${Math.random().toString(36).slice(2, 8)}`
+  : "unknown";
 
 // Patch fetch/XHR to track pending network requests
 function ensureNetworkPendingPatch() {
@@ -111,9 +119,15 @@ export function CaptureReadySentinel({
     step: effectiveStep,
     flow: effectiveFlow,
     pendingRequests: 0,
+    fontsReady: false,
+    lastMutationAt: Date.now(),
+    scrollY: 0,
+    buildId: BUILD_ID,
   });
 
   const timeoutRef = useRef<number | null>(null);
+  const mutationObserverRef = useRef<MutationObserver | null>(null);
+  const lastMutationRef = useRef<number>(Date.now());
 
   // Update state when props change
   useEffect(() => {
@@ -124,13 +138,14 @@ export function CaptureReadySentinel({
     }));
   }, [effectiveStep, effectiveFlow]);
 
-  // If isReady prop is explicitly true, mark ready immediately
+  // If isReady prop is explicitly true, mark ready immediately (after scroll to top)
   useEffect(() => {
     if (propIsReady === true && state.status === "loading") {
-      // Small delay to ensure DOM is painted
       const t = window.setTimeout(() => {
-        setState(s => ({ ...s, status: "ready", reason: "isReady prop" }));
-      }, 100);
+        // Ensure we're at the top
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+        setState(s => ({ ...s, status: "ready", reason: "isReady prop", scrollY: 0 }));
+      }, 150);
       return () => window.clearTimeout(t);
     }
   }, [propIsReady, state.status]);
@@ -138,7 +153,7 @@ export function CaptureReadySentinel({
   // Only render in capture mode
   if (!captureParams.enabled) return null;
 
-  // Expose global API for routes/components to signal readiness
+  // Expose global API and setup stability checks
   useEffect(() => {
     ensureNetworkPendingPatch();
 
@@ -146,7 +161,13 @@ export function CaptureReadySentinel({
     
     // Global readiness API
     w.__UC_MARK_READY = () => {
-      setState(s => ({ ...s, status: "ready", reason: "markReady called" }));
+      // Always scroll to top before marking ready
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setState(s => ({ ...s, status: "ready", reason: "markReady called", scrollY: 0 }));
+        });
+      });
     };
     
     w.__UC_MARK_LOADING = () => {
@@ -177,53 +198,106 @@ export function CaptureReadySentinel({
     window.addEventListener("error", onError);
     window.addEventListener("unhandledrejection", onRejection);
 
+    // Setup MutationObserver to track DOM stability
+    try {
+      mutationObserverRef.current = new MutationObserver(() => {
+        lastMutationRef.current = Date.now();
+      });
+      mutationObserverRef.current.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true,
+      });
+    } catch {
+      // ignore
+    }
+
     return () => {
       window.removeEventListener("error", onError);
       window.removeEventListener("unhandledrejection", onRejection);
       delete w.__UC_MARK_READY;
       delete w.__UC_MARK_LOADING;
       delete w.__UC_MARK_ERROR;
+      mutationObserverRef.current?.disconnect();
     };
   }, []);
 
-  // Auto-ready after grace period if no explicit markReady called
-  // This ensures we don't hang forever
+  // Stability-based auto-ready with full contract checks
   useEffect(() => {
     if (state.status !== "loading") return;
 
-    // Short grace period, then check conditions
-    const graceMs = 500;
-    const maxWaitMs = 20000; // 20 seconds max wait
-
+    const graceMs = 300; // Initial grace period
+    const stabilityMs = 400; // No mutations for this long = stable
+    const maxWaitMs = 25000; // 25 seconds max wait
     const startedAt = Date.now();
 
-    const checkReady = () => {
+    const checkReady = async () => {
       const pending = Number((window as any).__ucPendingRequests || 0);
       const elapsed = Date.now() - startedAt;
+      const msSinceLastMutation = Date.now() - lastMutationRef.current;
       
-      // Update pending count for debug display
-      setState(s => ({ ...s, pendingRequests: pending }));
+      // Check fonts ready
+      let fontsReady = true;
+      try {
+        if (document.fonts?.ready) {
+          await Promise.race([
+            document.fonts.ready,
+            new Promise(r => setTimeout(r, 2000)), // 2s timeout for fonts
+          ]);
+          fontsReady = document.fonts.status === "loaded";
+        }
+      } catch {
+        fontsReady = true; // Assume ready on error
+      }
 
-      // Ready conditions:
-      // 1. No pending network requests AND body has content
-      // 2. OR timeout reached
-      const bodyHasContent =
-        document.body &&
-        document.body.getBoundingClientRect &&
-        document.body.getBoundingClientRect().height > 50;
+      // Update debug state
+      setState(s => ({ 
+        ...s, 
+        pendingRequests: pending,
+        fontsReady,
+        lastMutationAt: lastMutationRef.current,
+        scrollY: window.scrollY,
+      }));
 
-      if (pending === 0 && bodyHasContent) {
-        setState(s => ({ ...s, status: "ready", reason: "auto-ready: no pending, content visible" }));
+      // Ready conditions (ALL must be true):
+      const bodyHasContent = document.body?.getBoundingClientRect?.()?.height > 100;
+      const noNetworkPending = pending === 0;
+      const domStable = msSinceLastMutation >= stabilityMs;
+      const isReady = bodyHasContent && noNetworkPending && domStable && fontsReady;
+
+      if (isReady) {
+        // Scroll to top before capture
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+        
+        // Wait 2 RAFs for paint
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setState(s => ({ 
+              ...s, 
+              status: "ready", 
+              reason: `auto-ready: pending=${pending}, stable=${msSinceLastMutation}ms, fonts=${fontsReady}`,
+              scrollY: 0,
+            }));
+          });
+        });
         return;
       }
 
       if (elapsed >= maxWaitMs) {
-        setState(s => ({ ...s, status: "ready", reason: `timeout after ${elapsed}ms (pending: ${pending})` }));
+        // Timeout - mark ready anyway but with warning
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+        setState(s => ({ 
+          ...s, 
+          status: "ready", 
+          reason: `timeout ${elapsed}ms (pending=${pending}, stable=${msSinceLastMutation}ms)`,
+          scrollY: 0,
+        }));
         return;
       }
 
       // Keep checking
-      timeoutRef.current = window.setTimeout(checkReady, 250);
+      timeoutRef.current = window.setTimeout(checkReady, 200);
     };
 
     timeoutRef.current = window.setTimeout(checkReady, graceMs);
@@ -241,6 +315,7 @@ export function CaptureReadySentinel({
     (window as any).__UC_CAPTURE_DEBUG = {
       ...state,
       timestamp: Date.now(),
+      buildId: BUILD_ID,
     };
   }, [state]);
 
@@ -252,12 +327,12 @@ export function CaptureReadySentinel({
       data-uc-flow={state.flow}
       data-uc-reason={state.reason}
       data-uc-pending={state.pendingRequests}
-      data-uc-scroll={typeof window !== "undefined" ? String(window.scrollY) : "0"}
+      data-uc-fonts={state.fontsReady ? "ready" : "loading"}
+      data-uc-mutation-age={Date.now() - state.lastMutationAt}
+      data-uc-scroll={state.scrollY}
+      data-uc-build={BUILD_ID}
       data-uc-timestamp={Date.now()}
       style={{
-        // IMPORTANT: viewport-sized to make provider `selector` cropping safe.
-        // The screenshot provider crops to the selector's bounding box.
-        // By making this box = viewport, we avoid 1px "micro screenshots".
         position: "fixed",
         inset: 0,
         width: "100vw",
@@ -271,19 +346,12 @@ export function CaptureReadySentinel({
   );
 }
 
-/**
- * Hook to check if we're in capture mode
- */
 export function useIsCaptureMode(): boolean {
   const location = useLocation();
   const params = getUcCaptureParams(location.search);
   return params.enabled;
 }
 
-/**
- * Hook to mark the current component/page as ready for capture.
- * Call this when your component has finished loading all critical data.
- */
 export function useMarkCaptureReady() {
   const isCaptureMode = useIsCaptureMode();
   
