@@ -505,14 +505,11 @@ serve(async (req) => {
       console.log(`Output image dimensions: ${pngDims.width}x${pngDims.height}`);
     }
 
-    const shouldRetryBlank = (() => {
-      if (!isPng) return false;
-      if (isFullPage) return false;
-      if (!isCaptureMode) return false;
-      const minBytes =
-        deviceType === "desktop" ? 120_000 : deviceType === "tablet" ? 70_000 : 45_000;
-      return bytes.byteLength > 0 && bytes.byteLength < minBytes;
-    })();
+    // Heuristic blank retry DISABLED:
+    // Previously tried to detect "blank" captures by file size and auto-retry as xfull.
+    // This caused false positives (legit small images) and unpredictable behavior.
+    // If the screenshot is actually blank, increasing delay or using xfull manually is more reliable.
+    const shouldRetryBlank = false;
 
     if (shouldRetryBlank) {
       console.warn(
