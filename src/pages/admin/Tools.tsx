@@ -29,6 +29,7 @@ import { ToolsDocumentation } from "@/components/admin/ToolsDocumentation";
 import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
+import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -3005,15 +3006,28 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
 
           {/* Calculator Flow Review Tab */}
           <TabsContent value="calculator-review">
-            <div className="space-y-8">
-              <CalculatorFlowReview />
+            <Tabs defaultValue="manual" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3 max-w-lg">
+                <TabsTrigger value="manual">Manuell + Export</TabsTrigger>
+                <TabsTrigger value="autoflow">
+                  <Zap className="h-4 w-4 mr-1" />
+                  AutoFlow AI
+                </TabsTrigger>
+                <TabsTrigger value="screenshots">Screenshots</TabsTrigger>
+              </TabsList>
               
-              {/* Auto Flow Screenshots Section */}
-              <div className="border-t pt-8">
-                <h2 className="text-2xl font-bold mb-4">Flow Screenshots</h2>
+              <TabsContent value="manual">
+                <CalculatorFlowReview />
+              </TabsContent>
+              
+              <TabsContent value="autoflow">
+                <AutoFlowDashboard />
+              </TabsContent>
+              
+              <TabsContent value="screenshots">
                 <AutoFlowScreenshots />
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           {/* SEO HTML Analyzer Tab */}
