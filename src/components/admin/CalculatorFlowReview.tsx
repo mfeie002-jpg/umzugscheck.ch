@@ -30,7 +30,9 @@ import {
   Package,
   Globe,
   Search,
-  History
+  History,
+  Monitor,
+  Smartphone
 } from "lucide-react";
 
 interface StepMeta {
@@ -114,7 +116,9 @@ const generateStepMeta = (
   stepName: string,
   desktopScreenshot?: string,
   mobileScreenshot?: string,
-  html?: string
+  html?: string,
+  desktopDim?: string,
+  mobileDim?: string
 ): StepMeta => ({
   url,
   flow: flowId,
@@ -122,8 +126,8 @@ const generateStepMeta = (
   step,
   stepName,
   dimensions: {
-    desktop: DIMENSIONS.desktop,
-    mobile: DIMENSIONS.mobile,
+    desktop: desktopDim || "1920x600",
+    mobile: mobileDim || "390x500",
   },
   capturedAt: new Date().toISOString(),
   captureMode: true,
@@ -136,10 +140,33 @@ const generateStepMeta = (
   screenshotProvider: "screenshotmachine",
 });
 
+// Hero-only presets: captures just the top section (header + calculator)
+// This is more reliable and faster than full viewport
+const DIMENSION_PRESETS = {
+  desktop: [
+    { value: "1920x600", label: "Hero Only (1920x600)", recommended: true },
+    { value: "1920x800", label: "Extended Hero (1920x800)" },
+    { value: "1920x1080", label: "Full Viewport (1920x1080)" },
+    { value: "1920xfull", label: "Full Page (1920xfull)" },
+  ],
+  mobile: [
+    { value: "390x500", label: "Hero Only (390x500)", recommended: true },
+    { value: "390x700", label: "Extended Hero (390x700)" },
+    { value: "390x844", label: "Full Viewport (390x844)" },
+    { value: "390xfull", label: "Full Page (390xfull)" },
+  ],
+};
+
+// Default to hero-only for flow captures (faster, more reliable)
+const DEFAULT_DIMENSIONS = {
+  desktop: DIMENSION_PRESETS.desktop[0],
+  mobile: DIMENSION_PRESETS.mobile[0],
+};
+
+// Legacy constant for backward compatibility
 const DIMENSIONS = {
-  desktop: "1920x1080",
-  // iPhone 12/13/14 viewport (good default for mobile capture)
-  mobile: "390x844",
+  desktop: DEFAULT_DIMENSIONS.desktop.value,
+  mobile: DEFAULT_DIMENSIONS.mobile.value,
 };
 
 export function CalculatorFlowReview() {
@@ -152,6 +179,10 @@ export function CalculatorFlowReview() {
   const [captureStatus, setCaptureStatus] = useState("");
   // Default: use a public base URL (the preview domain can show a login wall to the screenshot service)
   const [baseUrlOverride, setBaseUrlOverride] = useState(() => getDefaultPublicBaseUrl());
+  
+  // Dimension selection state (Hero-Only by default for faster, more reliable captures)
+  const [selectedDesktopDim, setSelectedDesktopDim] = useState(DEFAULT_DIMENSIONS.desktop);
+  const [selectedMobileDim, setSelectedMobileDim] = useState(DEFAULT_DIMENSIONS.mobile);
   
   // URL Discovery state
   const [discoveryUrl, setDiscoveryUrl] = useState<string>(SITE_CONFIG.url);
@@ -293,13 +324,13 @@ export function CalculatorFlowReview() {
 
       // Desktop screenshot
       setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Desktop Screenshot...`);
-      const desktopScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.desktop, { fullPage: true });
+      const desktopScreenshot = await captureScreenshot(pageUrl, selectedDesktopDim.value, { fullPage: selectedDesktopDim.value.includes('full') });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
 
       // Mobile screenshot
       setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Mobile Screenshot...`);
-      const mobileScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.mobile, { fullPage: true });
+      const mobileScreenshot = await captureScreenshot(pageUrl, selectedMobileDim.value, { fullPage: selectedMobileDim.value.includes('full') });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
 
@@ -317,7 +348,9 @@ export function CalculatorFlowReview() {
         pageName,
         desktopScreenshot || undefined,
         mobileScreenshot || undefined,
-        html || undefined
+        html || undefined,
+        selectedDesktopDim.value,
+        selectedMobileDim.value
       );
 
       steps.push({
@@ -416,15 +449,15 @@ export function CalculatorFlowReview() {
       // Construct URL with uc_capture mode for deterministic step rendering
       const fullUrl = buildCaptureUrl(baseUrl, calculatorPath, config.step, ucFlowId);
 
-      // Desktop screenshot (viewport only)
+      // Desktop screenshot (viewport only for hero captures)
       setCaptureStatus(`Step ${config.step}: Desktop Screenshot...`);
-      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop, { fullPage: false });
+      const desktopScreenshot = await captureScreenshot(fullUrl, selectedDesktopDim.value, { fullPage: selectedDesktopDim.value.includes('full') });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
       
-      // Mobile screenshot (viewport only)
+      // Mobile screenshot (viewport only for hero captures)
       setCaptureStatus(`Step ${config.step}: Mobile Screenshot...`);
-      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile, { fullPage: false });
+      const mobileScreenshot = await captureScreenshot(fullUrl, selectedMobileDim.value, { fullPage: selectedMobileDim.value.includes('full') });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
       
@@ -879,10 +912,10 @@ export function CalculatorFlowReview() {
       const fullUrl = buildCaptureUrl(baseUrl, flow.path, 1, ucFlowId);
 
       // Capture desktop screenshot
-      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop, { fullPage: false });
+      const desktopScreenshot = await captureScreenshot(fullUrl, selectedDesktopDim.value, { fullPage: selectedDesktopDim.value.includes('full') });
 
       setCaptureStatus(`${flow.label}: Mobile Screenshot...`);
-      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile, { fullPage: false });
+      const mobileScreenshot = await captureScreenshot(fullUrl, selectedMobileDim.value, { fullPage: selectedMobileDim.value.includes('full') });
 
       setCaptureStatus(`${flow.label}: HTML...`);
       const html = await captureRenderedHtml(fullUrl);
@@ -1396,35 +1429,90 @@ ${JSON.stringify(step.meta || {}, null, 2)}
                 Von dieser URL werden Screenshots/HTML geholt (z.B. deine Live-Domain). Standard = öffentliche Live-URL.
               </p>
             </div>
-
-            <div className="flex items-end gap-2 flex-wrap">
-              <Button 
-                variant="outline"
-                onClick={() => openInNewTab(calculatorOptions.find(c => c.value === selectedCalculator)?.path || '/')}
+          </div>
+          
+          {/* Dimension Selection */}
+          <div className="grid grid-cols-2 gap-4 p-3 bg-muted/50 rounded-lg">
+            <div>
+              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+                <Monitor className="w-4 h-4" />
+                Desktop Dimension
+              </label>
+              <Select
+                value={selectedDesktopDim.value}
+                onValueChange={(val) => {
+                  const preset = DIMENSION_PRESETS.desktop.find(p => p.value === val);
+                  if (preset) setSelectedDesktopDim(preset);
+                }}
               >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Öffnen
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={generateMockSteps}
-                disabled={isCapturing || isExportingAll}
-              >
-                <Play className="w-4 h-4 mr-2" />
-                Demo laden
-              </Button>
-              <Button 
-                onClick={captureAllSteps}
-                disabled={isCapturing || isExportingAll}
-              >
-                {isCapturing ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Camera className="w-4 h-4 mr-2" />
-                )}
-                Alle Steps erfassen
-              </Button>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DIMENSION_PRESETS.desktop.map((preset) => (
+                    <SelectItem key={preset.value} value={preset.value}>
+                      {preset.label} {preset.recommended && "⭐"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+                <Smartphone className="w-4 h-4" />
+                Mobile Dimension
+              </label>
+              <Select
+                value={selectedMobileDim.value}
+                onValueChange={(val) => {
+                  const preset = DIMENSION_PRESETS.mobile.find(p => p.value === val);
+                  if (preset) setSelectedMobileDim(preset);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DIMENSION_PRESETS.mobile.map((preset) => (
+                    <SelectItem key={preset.value} value={preset.value}>
+                      {preset.label} {preset.recommended && "⭐"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <p className="col-span-2 text-xs text-muted-foreground">
+              ⭐ Hero Only empfohlen: Schnellere, zuverlässigere Captures – erfasst nur den oberen Bereich mit Calculator.
+            </p>
+          </div>
+
+          <div className="flex items-end gap-2 flex-wrap">
+            <Button 
+              variant="outline"
+              onClick={() => openInNewTab(calculatorOptions.find(c => c.value === selectedCalculator)?.path || '/')}
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Öffnen
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={generateMockSteps}
+              disabled={isCapturing || isExportingAll}
+            >
+              <Play className="w-4 h-4 mr-2" />
+              Demo laden
+            </Button>
+            <Button 
+              onClick={captureAllSteps}
+              disabled={isCapturing || isExportingAll}
+            >
+              {isCapturing ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Camera className="w-4 h-4 mr-2" />
+              )}
+              Alle Steps erfassen
+            </Button>
           </div>
           
           {(isCapturing || isExportingAll) && (
