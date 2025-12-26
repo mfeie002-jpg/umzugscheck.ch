@@ -107,8 +107,7 @@ export function CalculatorFlowReview() {
     { label: "Homepage", url: `${SITE_CONFIG.url}/` },
     { label: "Firmen", url: `${SITE_CONFIG.url}/firmen` },
     { label: "Preisrechner", url: `${SITE_CONFIG.url}/umzugsrechner` },
-    // IMPORTANT: use the dedicated V1 test route (not the live /umzugsofferten page)
-    { label: "Offerten", url: `${SITE_CONFIG.url}/umzugsofferten-v1` },
+    { label: "Offerten", url: `${SITE_CONFIG.url}/umzugsofferten` },
     { label: "Ratgeber", url: `${SITE_CONFIG.url}/ratgeber` },
     { label: "Reinigung", url: `${SITE_CONFIG.url}/reinigungsrechner` },
     { label: "Entsorgung", url: `${SITE_CONFIG.url}/entsorgungsrechner` },
@@ -150,7 +149,7 @@ export function CalculatorFlowReview() {
   };
 
   const calculatorOptions = [
-    { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten-v1" },
+    { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
     { value: "umzugsofferten-v2", label: "V2 - Premium Full-Journey", path: "/umzugsofferten-v2" },
     { value: "umzugsofferten-v3", label: "V3 - God Mode", path: "/umzugsofferten-v3" },
     { value: "umzugsofferten-v4", label: "V4 - Video-First AI", path: "/umzugsofferten-v4" },
