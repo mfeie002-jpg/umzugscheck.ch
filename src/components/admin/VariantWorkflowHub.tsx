@@ -682,13 +682,13 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <Link to="/admin/flow-analysis">
+              <Link to="/admin/tools?tab=calculator-review">
                 <Card className="p-4 hover:border-primary/50 transition-colors cursor-pointer">
                   <div className="flex items-center gap-3">
                     <Rocket className="h-8 w-8 text-primary" />
                     <div>
-                      <div className="font-medium">Flow-Analyse</div>
-                      <div className="text-xs text-muted-foreground">Detaillierte Analyse</div>
+                      <div className="font-medium">Calculator Review</div>
+                      <div className="text-xs text-muted-foreground">Flow-Analyse mit Screenshots</div>
                     </div>
                   </div>
                 </Card>
