@@ -1023,18 +1023,24 @@ export default function HeroAIQuoteCalculator() {
                         <span>{currentStep.microcopy}</span>
                       </div>
                       
-                      <div className="flex gap-3">
+                      {/* Buttons - Sticky on mobile */}
+                      <div className="flex gap-3 
+                                      md:relative md:bg-transparent md:p-0
+                                      sticky bottom-0 left-0 right-0 -mx-4 sm:-mx-6 md:mx-0 px-4 sm:px-6 md:px-0 py-3 md:py-0
+                                      bg-card/98 backdrop-blur-lg border-t border-border/30 md:border-0
+                                      shadow-[0_-4px_16px_rgba(0,0,0,0.06)] md:shadow-none
+                                      pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:pb-0">
                         <Button
                           variant="outline"
                           onClick={() => updateState({ step: 3 })}
-                          className="flex-1"
+                          className="flex-1 h-12 md:h-11"
                         >
                           Zurück
                         </Button>
                         <Button
                           onClick={handleSubmit}
                           disabled={!canSubmit || isSubmitting}
-                          className="flex-1 gap-2"
+                          className="flex-1 h-12 md:h-11 gap-2 font-semibold"
                         >
                           {isSubmitting ? (
                             <>

@@ -1315,3 +1315,136 @@ html {
 .will-change-opacity {
   will-change: opacity;
 }
+
+/* ========================================
+   FUNNEL MODE - ChatGPT UX Analysis P0
+   ======================================== 
+   Focus Mode: minimize distractions during conversion steps
+   - Header reduced to minimal (logo + back + help)
+   - Footer hidden
+   - Marketing sections collapsed/hidden
+   - Bottom nav disabled on mobile
+*/
+
+html.uc-funnel header:not(.funnel-header),
+html.uc-funnel footer:not(.funnel-footer),
+html.uc-funnel .marketing-sections,
+html.uc-funnel .site-bottom-nav,
+html.uc-funnel [data-funnel-hide="true"] {
+  display: none !important;
+}
+
+/* Minimal header in funnel mode */
+html.uc-funnel main {
+  padding-top: 0;
+}
+
+/* Sticky CTA Bar for Mobile - P0/P1 Priority */
+.uc-cta-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid hsl(var(--border) / 0.5);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dark .uc-cta-bar {
+  background: rgba(15, 23, 42, 0.96);
+}
+
+.uc-cta-bar .uc-cta-btn {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.uc-cta-bar .uc-cta-hint {
+  margin-top: 8px;
+  font-size: 11px;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* Error/Hint color semantics - P0 Priority */
+/* Red = Errors ONLY. Info/hints should be neutral/blue */
+.uc-error-box {
+  background: hsl(0 84% 95%);
+  border: 1px solid hsl(0 84% 80%);
+  color: hsl(0 72% 51%);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.dark .uc-error-box {
+  background: hsl(0 50% 15%);
+  border-color: hsl(0 50% 30%);
+  color: hsl(0 84% 70%);
+}
+
+/* Info box - neutral, not alarming */
+.uc-info-box {
+  background: hsl(210 40% 96%);
+  border: 1px solid hsl(210 40% 85%);
+  color: hsl(210 40% 30%);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.dark .uc-info-box {
+  background: hsl(210 30% 18%);
+  border-color: hsl(210 30% 28%);
+  color: hsl(210 40% 80%);
+}
+
+/* Success/confirmation box */
+.uc-success-box {
+  background: hsl(142 50% 95%);
+  border: 1px solid hsl(142 50% 70%);
+  color: hsl(142 50% 30%);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.dark .uc-success-box {
+  background: hsl(142 30% 15%);
+  border-color: hsl(142 30% 30%);
+  color: hsl(142 50% 70%);
+}
+
+/* Inline error message (field-level) */
+.uc-field-error {
+  color: hsl(0 72% 51%);
+  font-size: 11px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Minimum touch target (44px) per Apple HIG */
+.uc-touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Company card fully clickable on mobile */
+@media (max-width: 768px) {
+  .uc-company-card {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .uc-company-card:active {
+    background: hsl(var(--accent));
+    transform: scale(0.99);
+  }
+}

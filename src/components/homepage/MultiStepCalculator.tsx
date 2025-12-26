@@ -371,6 +371,34 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
 
   // 4 steps: MoveType → Location+Size+Services → CompanyRanking → Contact
   const totalSteps = 4;
+  
+  // Auto-select recommended companies when entering step 3 (P0 priority)
+  useEffect(() => {
+    if (currentStep === 3 && formData.selectedCompanies.length === 0) {
+      const companies = getMatchingCompanies();
+      // Pre-select top 2-3 recommended companies (featured first, then by rating)
+      const recommended = companies
+        .filter(c => c.is_featured || c.rating >= 4.5)
+        .slice(0, 3)
+        .map(c => c.id);
+      
+      // If not enough featured, add top-rated
+      if (recommended.length < 2) {
+        const additional = companies
+          .filter(c => !recommended.includes(c.id))
+          .slice(0, 3 - recommended.length)
+          .map(c => c.id);
+        recommended.push(...additional);
+      }
+      
+      if (recommended.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          selectedCompanies: recommended
+        }));
+      }
+    }
+  }, [currentStep]);
 
   const updateFormData = (field: keyof FormData, value: string | string[] | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -544,7 +572,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Header with Progress */}
+      {/* Header with Progress - P0 Accessible Stepper */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-medium text-muted-foreground">
@@ -556,16 +584,25 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
           </div>
         </div>
         
-        <div className="flex gap-1.5">
-          {[1, 2, 3, 4].map((step) => (
-            <div
+        {/* Accessible stepper per ChatGPT analysis */}
+        <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
+          {[
+            { step: 1, label: "Typ" },
+            { step: 2, label: "Details" },
+            { step: 3, label: "Firmen" },
+            { step: 4, label: "Kontakt" },
+          ].map(({ step, label }) => (
+            <li
               key={step}
               className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
                 step <= currentStep ? 'bg-primary' : 'bg-border'
               }`}
+              role="listitem"
+              aria-current={step === currentStep ? "step" : undefined}
+              aria-label={`Schritt ${step}: ${label}${step < currentStep ? " (abgeschlossen)" : step === currentStep ? " (aktuell)" : ""}`}
             />
           ))}
-        </div>
+        </ol>
         
         <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
           <span className={currentStep >= 1 ? 'text-primary font-medium' : ''}>Typ</span>
@@ -901,17 +938,24 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               transition={{ duration: 0.2 }}
               className="space-y-3"
             >
-              {/* Header */}
+              {/* Header with pre-selection info */}
               <div className="text-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-2">
                   <Sparkles className="w-3 h-3" />
                   Firmen vergleichen
                 </span>
                 <h3 className="text-lg font-bold">
-                  Wählen Sie <span className="text-secondary">mind. 3 Firmen</span>
+                  {formData.selectedCompanies.length >= 3 ? (
+                    <><span className="text-secondary">{formData.selectedCompanies.length} Firmen</span> ausgewählt</>
+                  ) : (
+                    <>Wählen Sie <span className="text-secondary">mind. 3 Firmen</span></>
+                  )}
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  Mehr Offerten = bessere Vergleichsmöglichkeit
+                  {formData.selectedCompanies.length > 0 
+                    ? "Empfohlen vorausgewählt – jederzeit änderbar"
+                    : "Mehr Offerten = bessere Vergleichsmöglichkeit"
+                  }
                 </p>
               </div>
 
@@ -986,32 +1030,48 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   showSuccessIcon={false}
                 />
 
-                {/* Privacy */}
+                {/* Privacy with enhanced trust messaging */}
                 <div className="flex items-start gap-2.5">
                   <Checkbox
                     id="privacy"
                     checked={formData.privacyAccepted}
                     onCheckedChange={(checked) => updateFormData("privacyAccepted", !!checked)}
-                    className="mt-0.5"
+                    className="mt-0.5 h-5 w-5"
                   />
-                  <label htmlFor="privacy" className="text-[10px] text-muted-foreground cursor-pointer leading-relaxed">
+                  <label htmlFor="privacy" className="text-[11px] text-muted-foreground cursor-pointer leading-relaxed">
                     Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline">Datenschutzerklärung</a> und 
-                    bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden. <span className="text-green-600 dark:text-green-400 font-medium">Keine Werbeanrufe.</span>
+                    bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden.
                   </label>
+                </div>
+                
+                {/* P0: Trust reassurance directly at submit - NOT red box */}
+                <div className="uc-success-box flex items-start gap-2 mt-2">
+                  <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-green-600 dark:text-green-400" />
+                  <div className="text-xs">
+                    <span className="font-medium text-green-700 dark:text-green-300">Ihre Daten sind sicher:</span>{" "}
+                    <span className="text-green-600 dark:text-green-400">
+                      Keine Werbeanrufe · Nur an ausgewählte Firmen · 100% unverbindlich
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Navigation Buttons */}
-        <div className="flex gap-3 mt-6">
+        {/* Navigation Buttons - Sticky on mobile (P0 Priority) */}
+        <div className="flex gap-3 mt-6 md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
+                        sticky bottom-0 left-0 right-0 -mx-6 px-6 py-4 
+                        bg-card/98 backdrop-blur-lg border-t border-border/50 
+                        shadow-[0_-4px_20px_rgba(0,0,0,0.08)]
+                        pb-[calc(1rem+env(safe-area-inset-bottom))]
+                        md:pb-0 md:shadow-none z-30">
           {currentStep > 1 && (
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
-              className="h-11 rounded-xl px-4"
+              className="h-12 md:h-11 rounded-xl px-4 min-w-[90px]"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
               Zurück
@@ -1023,9 +1083,12 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               type="button"
               onClick={handleNext}
               disabled={!canProceed()}
-              className="flex-1 h-11 rounded-xl bg-primary hover:bg-primary-hover"
+              className="flex-1 h-12 md:h-11 rounded-xl bg-primary hover:bg-primary-hover text-base font-semibold"
             >
-              {currentStep === 3 ? `Mit ${formData.selectedCompanies.length || "0"} Firmen weiter` : "Weiter"}
+              {currentStep === 3 
+                ? `Mit ${formData.selectedCompanies.length || "0"} Firmen weiter` 
+                : "Weiter"
+              }
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
@@ -1039,6 +1102,22 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               {getSubmitButtonText()}
             </Button>
           )}
+        </div>
+        
+        {/* Trust reassurance below CTA (P0 Priority) */}
+        <div className="hidden md:flex items-center justify-center gap-4 pt-2 text-[10px] text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Shield className="w-3 h-3 text-green-500" />
+            Kein Spam
+          </span>
+          <span className="flex items-center gap-1">
+            <CheckCircle className="w-3 h-3 text-green-500" />
+            100% unverbindlich
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3 text-primary" />
+            Antwort in 24h
+          </span>
         </div>
 
         {/* Alternative Video CTA */}
