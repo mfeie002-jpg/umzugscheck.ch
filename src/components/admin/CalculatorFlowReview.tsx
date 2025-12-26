@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { FlowVersionManager } from "./FlowVersionManager";
+import AutoFlowDashboard from "./AutoFlowDashboard";
 import { 
   Camera, 
   Copy, 
@@ -33,7 +34,8 @@ import {
   History,
   Monitor,
   Smartphone,
-  FileJson
+  FileJson,
+  Zap
 } from "lucide-react";
 
 interface StepMeta {
