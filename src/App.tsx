@@ -224,7 +224,7 @@ const UmzugsoffertenV1b = lazy(() => import("./pages/UmzugsoffertenV1b"));
 const UmzugsoffertenV2a = lazy(() => import("./pages/UmzugsoffertenV2a"));
 const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
-const FlowTester = lazy(() => import("./pages/FlowTester"));
+import FlowTester from "./pages/FlowTester";
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
