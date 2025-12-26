@@ -138,12 +138,33 @@ export const deferNonCriticalJS = () => {
 
 // Register service worker
 export const registerServiceWorker = async () => {
-  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  // Never register SW during screenshot capture / render modes.
+  // Screenshot providers often reuse a browser profile; SW caching can cause build-mismatch and blank captures.
+  const isCaptureLike = (() => {
     try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      console.log('SW registered:', registration.scope);
+      const sp = new URLSearchParams(window.location.search);
+      return sp.get("uc_capture") === "1" || sp.get("uc_render") === "1" || sp.has("uc_step");
+    } catch {
+      return false;
+    }
+  })();
+
+  if ("serviceWorker" in navigator && isCaptureLike) {
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.unregister()));
+    } catch {
+      // ignore
+    }
+    return;
+  }
+
+  if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+    try {
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      console.log("SW registered:", registration.scope);
     } catch (error) {
-      console.log('SW registration failed:', error);
+      console.log("SW registration failed:", error);
     }
   }
 };
