@@ -33,6 +33,27 @@ import {
   History
 } from "lucide-react";
 
+interface StepMeta {
+  url: string;
+  flow: string;
+  flowPath: string;
+  step: number;
+  stepName: string;
+  dimensions: {
+    desktop: string;
+    mobile: string;
+  };
+  capturedAt: string;
+  captureMode: boolean;
+  hasDesktop: boolean;
+  hasMobile: boolean;
+  hasHtml: boolean;
+  desktopSize?: number;
+  mobileSize?: number;
+  htmlLength?: number;
+  screenshotProvider: string;
+}
+
 interface FlowStep {
   step: number;
   name: string;
@@ -41,6 +62,7 @@ interface FlowStep {
   screenshotMobile?: string;
   html?: string;
   url?: string;
+  meta?: StepMeta;
 }
 
 // Step configs using uc_capture mode for deterministic screenshot capture
@@ -66,18 +88,50 @@ const getDefaultPublicBaseUrl = (): string => {
 };
 
 // Helper to build capture URL for a given flow and step
-const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, flowId?: string) => {
+// CRITICAL: Always include uc_flow to ensure deterministic flow selection
+const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, flowId: string) => {
   // uc_render=1 enables render-mode patches (e.g. IntersectionObserver + eager images)
   // uc_flow makes flow selection deterministic (prevents default-flow mismatch)
   // uc_cb busts caches for screenshot tooling.
   const u = new URL(`${baseUrl}${flowPath}`);
   u.searchParams.set("uc_capture", "1");
   u.searchParams.set("uc_step", String(step));
+  u.searchParams.set("uc_flow", flowId);
   u.searchParams.set("uc_render", "1");
-  if (flowId) u.searchParams.set("uc_flow", flowId);
   u.searchParams.set("uc_cb", String(Date.now()));
   return u.toString();
 };
+
+// Generate meta JSON for ChatGPT analysis
+const generateStepMeta = (
+  url: string, 
+  flowId: string, 
+  flowPath: string, 
+  step: number, 
+  stepName: string,
+  desktopScreenshot?: string,
+  mobileScreenshot?: string,
+  html?: string
+): StepMeta => ({
+  url,
+  flow: flowId,
+  flowPath,
+  step,
+  stepName,
+  dimensions: {
+    desktop: DIMENSIONS.desktop,
+    mobile: DIMENSIONS.mobile,
+  },
+  capturedAt: new Date().toISOString(),
+  captureMode: true,
+  hasDesktop: !!desktopScreenshot,
+  hasMobile: !!mobileScreenshot,
+  hasHtml: !!html,
+  desktopSize: desktopScreenshot ? Math.round(desktopScreenshot.length * 0.75) : undefined,
+  mobileSize: mobileScreenshot ? Math.round(mobileScreenshot.length * 0.75) : undefined,
+  htmlLength: html?.length,
+  screenshotProvider: "screenshotmachine",
+});
 
 const DIMENSIONS = {
   desktop: "1920x1080",
@@ -328,6 +382,7 @@ export function CalculatorFlowReview() {
     const baseUrl = (baseUrlOverride.trim() || getDefaultPublicBaseUrl()).replace(/\/$/, "");
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
+    const flowId = selectedCalc?.value || 'umzugsofferten';
     const steps: FlowStep[] = [];
     const totalOperations = STEP_CONFIGS.length * 3; // desktop + mobile + html per step
     let completedOps = 0;
@@ -335,7 +390,8 @@ export function CalculatorFlowReview() {
     for (let i = 0; i < STEP_CONFIGS.length; i++) {
       const config = STEP_CONFIGS[i];
       // Construct URL with uc_capture mode for deterministic step rendering
-      const fullUrl = buildCaptureUrl(baseUrl, calculatorPath, config.step);
+      // CRITICAL: Include flowId to ensure correct flow is rendered
+      const fullUrl = buildCaptureUrl(baseUrl, calculatorPath, config.step, flowId);
 
       // Desktop screenshot
       setCaptureStatus(`Step ${config.step}: Desktop Screenshot...`);
@@ -355,6 +411,18 @@ export function CalculatorFlowReview() {
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
       
+      // Generate meta JSON for ChatGPT analysis
+      const meta = generateStepMeta(
+        fullUrl,
+        flowId,
+        calculatorPath,
+        config.step,
+        config.name,
+        desktopScreenshot || undefined,
+        mobileScreenshot || undefined,
+        html || undefined
+      );
+      
       steps.push({
         step: config.step,
         name: config.name,
@@ -363,6 +431,7 @@ export function CalculatorFlowReview() {
         screenshotDesktop: desktopScreenshot || undefined,
         screenshotMobile: mobileScreenshot || undefined,
         html: html || undefined,
+        meta,
       });
     }
     
@@ -377,13 +446,18 @@ export function CalculatorFlowReview() {
   const generateMockSteps = () => {
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
-    const mockSteps: FlowStep[] = STEP_CONFIGS.map(config => ({
-      step: config.step,
-      name: config.name,
-      description: config.description,
-      url: buildCaptureUrl(getDefaultPublicBaseUrl(), calculatorPath, config.step),
-      html: getMockHtml(config.step),
-    }));
+    const flowId = selectedCalc?.value || 'umzugsofferten';
+    const mockSteps: FlowStep[] = STEP_CONFIGS.map(config => {
+      const url = buildCaptureUrl(getDefaultPublicBaseUrl(), calculatorPath, config.step, flowId);
+      return {
+        step: config.step,
+        name: config.name,
+        description: config.description,
+        url,
+        html: getMockHtml(config.step),
+        meta: generateStepMeta(url, flowId, calculatorPath, config.step, config.name, undefined, undefined, getMockHtml(config.step)),
+      };
+    });
     
     setCapturedSteps(mockSteps);
     toast.success("Demo-Steps geladen (ohne Screenshots)");
@@ -761,7 +835,7 @@ export function CalculatorFlowReview() {
       setCaptureStatus(`${flow.label}: Desktop Screenshot...`);
       // Use deterministic capture mode so the screenshot/HTML fetch never depends on cookies/localStorage
       // (and avoids any login walls / gated previews).
-      const fullUrl = buildCaptureUrl(baseUrl, flow.path, 1);
+      const fullUrl = buildCaptureUrl(baseUrl, flow.path, 1, flow.value);
 
       // Capture desktop screenshot
       const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop);
@@ -1119,6 +1193,106 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
         `HTML-Download fehlgeschlagen${err instanceof Error ? `: ${err.message}` : ""}`
       );
     }
+  };
+
+  const downloadJson = (data: object, filename: string) => {
+    try {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
+      downloadBlob(blob, filename);
+    } catch (err) {
+      console.error("JSON download failed:", err);
+      toast.error(
+        `JSON-Download fehlgeschlagen${err instanceof Error ? `: ${err.message}` : ""}`
+      );
+    }
+  };
+
+  // All-in-One ZIP download for a single step
+  const downloadStepZip = async (step: FlowStep) => {
+    try {
+      const zip = new JSZip();
+      const folderName = `step-${step.step}-${step.name.replace(/\s+/g, '-').toLowerCase()}`;
+      const folder = zip.folder(folderName);
+      if (!folder) return;
+
+      // Add desktop screenshot
+      if (step.screenshotDesktop) {
+        const base64Data = step.screenshotDesktop.replace(/^data:image\/\w+;base64,/, '');
+        folder.file('desktop.png', base64Data, { base64: true });
+      }
+
+      // Add mobile screenshot
+      if (step.screenshotMobile) {
+        const base64Data = step.screenshotMobile.replace(/^data:image\/\w+;base64,/, '');
+        folder.file('mobile.png', base64Data, { base64: true });
+      }
+
+      // Add HTML
+      if (step.html) {
+        folder.file('rendered.html', step.html);
+      }
+
+      // Add meta JSON (for ChatGPT analysis)
+      if (step.meta) {
+        folder.file('meta.json', JSON.stringify(step.meta, null, 2));
+      }
+
+      // Add ChatGPT-ready prompt
+      folder.file('chatgpt-prompt.md', generateStepPrompt(step));
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      downloadBlob(blob, `${folderName}.zip`);
+      toast.success(`Step ${step.step} ZIP heruntergeladen`);
+    } catch (err) {
+      console.error("Step ZIP download failed:", err);
+      toast.error(
+        `ZIP-Download fehlgeschlagen${err instanceof Error ? `: ${err.message}` : ""}`
+      );
+    }
+  };
+
+  // Generate ChatGPT prompt for a single step
+  const generateStepPrompt = (step: FlowStep): string => {
+    return `# Step ${step.step}: ${step.name}
+
+## Beschreibung
+${step.description}
+
+## URL
+${step.url || 'N/A'}
+
+## Analyse-Aufgaben
+
+Analysiere diesen Calculator-Step und gib Feedback zu:
+
+1. **UX/Usability**
+   - Ist der nächste Schritt klar?
+   - Sind alle Inputs verständlich?
+   - Mobile-Optimierung?
+
+2. **Visual Design**
+   - Visueller Fokus richtig gesetzt?
+   - CTAs prominent genug?
+   - Vertrauenswürdiges Design?
+
+3. **Conversion-Optimierung**
+   - Friction Points?
+   - Mögliche Verbesserungen?
+   - A/B-Test-Ideen?
+
+## Verfügbare Dateien
+
+- \`desktop.png\` - Desktop Screenshot (${step.screenshotDesktop ? '✓' : '✗'})
+- \`mobile.png\` - Mobile Screenshot (${step.screenshotMobile ? '✓' : '✗'})
+- \`rendered.html\` - Gerenderte HTML-Seite (${step.html ? `${(step.html.length / 1024).toFixed(1)} KB` : '✗'})
+- \`meta.json\` - Capture Metadaten (${step.meta ? '✓' : '✗'})
+
+## Metadaten
+
+\`\`\`json
+${JSON.stringify(step.meta || {}, null, 2)}
+\`\`\`
+`;
   };
 
   return (
@@ -1490,7 +1664,7 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                           onClick={() => step.screenshotDesktop && downloadPng(step.screenshotDesktop, `step-${step.step}-desktop.png`)}
                         >
                           <Download className="w-3 h-3 mr-1" />
-                          Desktop PNG
+                          Desktop
                         </Button>
                         <Button
                           size="sm"
@@ -1499,7 +1673,7 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                           onClick={() => step.screenshotMobile && downloadPng(step.screenshotMobile, `step-${step.step}-mobile.png`)}
                         >
                           <Download className="w-3 h-3 mr-1" />
-                          Mobile PNG
+                          Mobile
                         </Button>
                         <Button
                           size="sm"
@@ -1509,6 +1683,25 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
                         >
                           <FileCode className="w-3 h-3 mr-1" />
                           HTML
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={!step.meta}
+                          onClick={() => step.meta && downloadJson(step.meta, `step-${step.step}-meta.json`)}
+                        >
+                          <FileText className="w-3 h-3 mr-1" />
+                          Meta-JSON
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="bg-green-600 hover:bg-green-700"
+                          disabled={!step.screenshotDesktop && !step.screenshotMobile && !step.html}
+                          onClick={() => downloadStepZip(step)}
+                        >
+                          <Package className="w-3 h-3 mr-1" />
+                          All-in-One ZIP
                         </Button>
                       </div>
                       
