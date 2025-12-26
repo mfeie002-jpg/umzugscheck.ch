@@ -14,6 +14,7 @@ import { useLocation } from 'react-router-dom';
 // Routes that should activate funnel mode
 const FUNNEL_ROUTES = [
   '/umzugsofferten',
+  '/umzugsofferten-v1',
   '/rechner',
   '/umzugsrechner',
   '/offerten',
