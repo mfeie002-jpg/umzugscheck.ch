@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.auto-analyze-flow]
 verify_jwt = false
+
+[functions.ai-flow-generator]
+verify_jwt = false

@@ -86,6 +86,12 @@ const navStructure: NavItem[] = [
     badge: "NEU"
   },
   { 
+    title: "Flow Generator", 
+    href: "/admin/ai-command?tab=generator", 
+    icon: Sparkles,
+    badge: "AI"
+  },
+  { 
     title: "Prompt Library", 
     href: "/admin/ai-export", 
     icon: Copy
