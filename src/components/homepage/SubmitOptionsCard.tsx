@@ -2,14 +2,21 @@ import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Send, Globe, Sparkles, CheckCircle, Users, Clock, 
-  TrendingDown, Shield, Zap, Crown, Gavel
+  TrendingDown, Shield, Zap, Crown, Gavel, Info
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SubmitOption {
   id: "direct" | "publish" | "both";
   label: string;
   description: string;
+  tooltip: string; // ChatGPT Recommendation #6: Tooltip for each method
   icon: React.ReactNode;
   benefits: string[];
   badge?: string;
@@ -21,6 +28,7 @@ const submitOptions: SubmitOption[] = [
     id: "direct",
     label: "Direkt anfragen",
     description: "Ihre ausgewählten Firmen werden direkt kontaktiert und melden sich mit Offerten.",
+    tooltip: "Schnellster Weg: Wir senden Ihre Anfrage direkt an die ausgewählten Firmen. Sie erhalten in 24-48h persönliche Offerten per E-Mail.",
     icon: <Send className="w-5 h-5" />,
     benefits: [
       "Schnelle Antwort (24-48h)",
@@ -32,6 +40,7 @@ const submitOptions: SubmitOption[] = [
     id: "publish",
     label: "Ausschreibung publizieren",
     description: "Ihr Umzug wird im Portal veröffentlicht – registrierte Firmen können darauf bieten.",
+    tooltip: "Wie eine Auktion: Ihr Umzug wird anonym publiziert. Firmen sehen nur PLZ & Datum und bieten um den Auftrag – oft günstigere Preise durch Wettbewerb.",
     icon: <Gavel className="w-5 h-5" />,
     benefits: [
       "Mehr Angebote erhalten",
@@ -44,6 +53,7 @@ const submitOptions: SubmitOption[] = [
     id: "both",
     label: "Beides",
     description: "Beste Kombination: Direktkontakt + öffentliche Ausschreibung für maximale Auswahl.",
+    tooltip: "Die beste Wahl: Sie erhalten sowohl schnelle Offerten von Top-Firmen als auch günstige Angebote durch die öffentliche Ausschreibung. Maximale Auswahl, volle Kontrolle.",
     icon: <Crown className="w-5 h-5" />,
     benefits: [
       "Maximale Reichweite",
@@ -71,19 +81,20 @@ export const SubmitOptionsCard = memo(function SubmitOptionsCard({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-semibold">Wie möchten Sie Offerten erhalten?</label>
-        <button
-          type="button"
-          onClick={() => setShowDetails(!showDetails)}
-          className="text-[10px] text-primary hover:underline"
-        >
-          {showDetails ? "Weniger" : "Mehr Info"}
-        </button>
-      </div>
+    <TooltipProvider>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-semibold">Wie möchten Sie Offerten erhalten?</label>
+          <button
+            type="button"
+            onClick={() => setShowDetails(!showDetails)}
+            className="text-[10px] text-primary hover:underline"
+          >
+            {showDetails ? "Weniger" : "Mehr Info"}
+          </button>
+        </div>
 
-      <div className="grid gap-2">
+        <div className="grid gap-2">
         {submitOptions.map((option) => {
           const isSelected = value === option.id;
           
@@ -142,7 +153,20 @@ export const SubmitOptionsCard = memo(function SubmitOptionsCard({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold mb-0.5">{option.label}</p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-sm font-bold mb-0.5">{option.label}</p>
+                    {/* ChatGPT Recommendation #6: Info tooltip */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button type="button" className="text-muted-foreground hover:text-foreground">
+                          <Info className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-[250px] text-xs">
+                        {option.tooltip}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <p className="text-[10px] text-muted-foreground leading-relaxed">
                     {option.description}
                   </p>
@@ -199,18 +223,19 @@ export const SubmitOptionsCard = memo(function SubmitOptionsCard({
             </motion.button>
           );
         })}
-      </div>
+        </div>
 
-      {/* Info Box */}
-      <div className="p-2.5 rounded-lg bg-muted/50 border border-border">
-        <div className="flex items-start gap-2">
-          <Shield className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-          <div className="text-[9px] text-muted-foreground leading-relaxed">
-            <strong className="text-foreground">Sicher & diskret:</strong> Bei der Ausschreibung sehen Firmen nur 
-            PLZ und Umzugsdatum – keine persönlichen Daten. Erst nach Ihrem OK werden Kontaktdaten geteilt.
+        {/* Info Box */}
+        <div className="p-2.5 rounded-lg bg-muted/50 border border-border">
+          <div className="flex items-start gap-2">
+            <Shield className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+            <div className="text-[9px] text-muted-foreground leading-relaxed">
+              <strong className="text-foreground">Sicher & diskret:</strong> Bei der Ausschreibung sehen Firmen nur 
+              PLZ und Umzugsdatum – keine persönlichen Daten. Erst nach Ihrem OK werden Kontaktdaten geteilt.
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 });

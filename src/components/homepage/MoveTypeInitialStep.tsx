@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Home, Building2, Briefcase, Package, LucideIcon } from "lucide-react";
+import { Home, Building2, Briefcase, Package, LucideIcon, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MoveTypeOption {
@@ -52,6 +52,7 @@ interface MoveTypeInitialStepProps {
  * Micro-Commitment Entry Point
  * Simple click-based selection to reduce cognitive load
  * Psychology: Foot-in-the-door technique - one click investment
+ * ChatGPT UX Recommendation: Visual confirmation with checkmark + single selection hint
  */
 export const MoveTypeInitialStep = memo(function MoveTypeInitialStep({
   value,
@@ -64,6 +65,10 @@ export const MoveTypeInitialStep = memo(function MoveTypeInitialStep({
         <h3 className="text-lg font-bold mb-1">Was möchten Sie zügeln?</h3>
         <p className="text-sm text-muted-foreground">
           Wählen Sie einfach aus – wir finden die passenden Firmen
+        </p>
+        {/* ChatGPT Recommendation #10: Hint for single selection */}
+        <p className="text-xs text-muted-foreground/70 mt-1">
+          (Nur eine Option wählbar)
         </p>
       </div>
       
@@ -83,13 +88,24 @@ export const MoveTypeInitialStep = memo(function MoveTypeInitialStep({
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                "flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all min-h-[100px] touch-manipulation",
+                "relative flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all min-h-[100px] touch-manipulation",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-medium ring-2 ring-primary/20"
                   : "border-border bg-card hover:border-primary/40 hover:bg-muted/30 hover:shadow-soft"
               )}
               aria-pressed={isSelected}
             >
+              {/* ChatGPT Recommendation #10: Checkmark for selected state */}
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute top-2 right-2"
+                >
+                  <CheckCircle className="w-5 h-5 text-primary fill-primary/20" />
+                </motion.div>
+              )}
+              
               <div className={cn(
                 "w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors",
                 isSelected ? "bg-primary/20" : "bg-muted"
