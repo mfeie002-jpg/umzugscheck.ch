@@ -34,6 +34,13 @@ import { MultiStepCalculatorVariantA } from "@/components/homepage/MultiStepCalc
 import { MultiStepCalculatorVariantB } from "@/components/homepage/MultiStepCalculatorVariantB";
 import { MultiStepCalculatorVariantC } from "@/components/homepage/MultiStepCalculatorVariantC";
 import { MultiStepCalculatorUltimate } from "@/components/homepage/MultiStepCalculatorUltimate";
+import { 
+  V2aProgressEnhanced, 
+  V2bSimplifiedLabels, 
+  V2cTrustFocused, 
+  V2dSpeedOptimized, 
+  V2eExperimental 
+} from "@/components/calculator-variants";
 import { Link } from "react-router-dom";
 import { useFlowVersion } from "@/hooks/useFlowVersion";
 
@@ -80,6 +87,14 @@ const Umzugsofferten = () => {
 
   // Render the appropriate calculator based on version
   const renderCalculator = () => {
+    // V2 Sub-variants (2a, 2b, 2c, 2d, 2e)
+    if (parsed.flowCode === '2a') return <V2aProgressEnhanced />;
+    if (parsed.flowCode === '2b') return <V2bSimplifiedLabels />;
+    if (parsed.flowCode === '2c') return <V2cTrustFocused />;
+    if (parsed.flowCode === '2d') return <V2dSpeedOptimized />;
+    if (parsed.flowCode === '2e') return <V2eExperimental />;
+    
+    // Main versions
     switch (componentName) {
       case 'MultiStepCalculatorVariantA':
         return <MultiStepCalculatorVariantA />;
@@ -200,12 +215,15 @@ const Umzugsofferten = () => {
               </div>
               <div className="space-y-2 sm:space-y-2.5">
                 <h3 className="font-medium text-foreground text-xs sm:text-sm">Flow-Versionen</h3>
-                <Link to="/umzugsofferten" className="block text-primary hover:underline py-1 active:opacity-70">V1 (Control)</Link>
-                <Link to="/umzugsofferten?v=2" className="block text-primary hover:underline py-1 active:opacity-70">V2 – UX</Link>
-                <Link to="/umzugsofferten?v=2a" className="block text-primary hover:underline py-1 active:opacity-70 pl-2 text-xs">↳ V2.a</Link>
-                <Link to="/umzugsofferten?v=3" className="block text-primary hover:underline py-1 active:opacity-70">V3 – Mobile</Link>
-                <Link to="/umzugsofferten?v=4" className="block text-primary hover:underline py-1 active:opacity-70">V4 – Conversion</Link>
-                <Link to="/umzugsofferten?v=5" className="block text-primary hover:underline py-1 active:opacity-70">V5</Link>
+                <Link to="/umzugsofferten" className="block text-primary hover:underline py-1 active:opacity-70">V1 Control</Link>
+                <Link to="/umzugsofferten?v=2" className="block text-primary hover:underline py-1 active:opacity-70">V2 UX</Link>
+                <Link to="/umzugsofferten?v=2a" className="block text-primary hover:underline py-1 active:opacity-70 pl-2 text-xs">↳ 2a Progress</Link>
+                <Link to="/umzugsofferten?v=2b" className="block text-primary hover:underline py-1 active:opacity-70 pl-2 text-xs">↳ 2b Simplified</Link>
+                <Link to="/umzugsofferten?v=2c" className="block text-primary hover:underline py-1 active:opacity-70 pl-2 text-xs">↳ 2c Trust</Link>
+                <Link to="/umzugsofferten?v=2d" className="block text-primary hover:underline py-1 active:opacity-70 pl-2 text-xs">↳ 2d Speed</Link>
+                <Link to="/umzugsofferten?v=2e" className="block text-primary hover:underline py-1 active:opacity-70 pl-2 text-xs">↳ 2e Chat</Link>
+                <Link to="/umzugsofferten?v=3" className="block text-primary hover:underline py-1 active:opacity-70">V3 Mobile</Link>
+                <Link to="/umzugsofferten?v=4" className="block text-primary hover:underline py-1 active:opacity-70">V4 Conversion</Link>
                 <Link to="/umzugsofferten?v=ultimate" className="block text-primary hover:underline py-1 active:opacity-70 font-bold">Ultimate ⭐</Link>
               </div>
             </div>
