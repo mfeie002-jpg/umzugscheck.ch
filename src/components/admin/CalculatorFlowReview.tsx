@@ -66,10 +66,17 @@ const getDefaultPublicBaseUrl = (): string => {
 };
 
 // Helper to build capture URL for a given flow and step
-const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number) => {
+const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, flowId?: string) => {
   // uc_render=1 enables render-mode patches (e.g. IntersectionObserver + eager images)
+  // uc_flow makes flow selection deterministic (prevents default-flow mismatch)
   // uc_cb busts caches for screenshot tooling.
-  return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}&uc_render=1&uc_cb=${Date.now()}`;
+  const u = new URL(`${baseUrl}${flowPath}`);
+  u.searchParams.set("uc_capture", "1");
+  u.searchParams.set("uc_step", String(step));
+  u.searchParams.set("uc_render", "1");
+  if (flowId) u.searchParams.set("uc_flow", flowId);
+  u.searchParams.set("uc_cb", String(Date.now()));
+  return u.toString();
 };
 
 const DIMENSIONS = {
@@ -100,7 +107,8 @@ export function CalculatorFlowReview() {
     { label: "Homepage", url: `${SITE_CONFIG.url}/` },
     { label: "Firmen", url: `${SITE_CONFIG.url}/firmen` },
     { label: "Preisrechner", url: `${SITE_CONFIG.url}/umzugsrechner` },
-    { label: "Offerten", url: `${SITE_CONFIG.url}/umzugsofferten` },
+    // IMPORTANT: use the dedicated V1 test route (not the live /umzugsofferten page)
+    { label: "Offerten", url: `${SITE_CONFIG.url}/umzugsofferten-v1` },
     { label: "Ratgeber", url: `${SITE_CONFIG.url}/ratgeber` },
     { label: "Reinigung", url: `${SITE_CONFIG.url}/reinigungsrechner` },
     { label: "Entsorgung", url: `${SITE_CONFIG.url}/entsorgungsrechner` },
@@ -142,7 +150,7 @@ export function CalculatorFlowReview() {
   };
 
   const calculatorOptions = [
-    { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
+    { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten-v1" },
     { value: "umzugsofferten-v2", label: "V2 - Premium Full-Journey", path: "/umzugsofferten-v2" },
     { value: "umzugsofferten-v3", label: "V3 - God Mode", path: "/umzugsofferten-v3" },
     { value: "umzugsofferten-v4", label: "V4 - Video-First AI", path: "/umzugsofferten-v4" },

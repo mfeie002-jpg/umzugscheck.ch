@@ -30,7 +30,8 @@ const CALCULATOR_FLOWS = [
   {
     id: "umzugsofferten",
     name: "V1 - Control",
-    path: "/umzugsofferten",
+    // NOTE: use the dedicated test route to avoid capturing the live /umzugsofferten page.
+    path: "/umzugsofferten-v1",
     steps: [
       { step: 1, name: "Step 1 - Umzugstyp" },
       { step: 2, name: "Step 2 - Details" },
