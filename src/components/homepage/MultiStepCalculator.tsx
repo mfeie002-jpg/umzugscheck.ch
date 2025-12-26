@@ -164,6 +164,135 @@ const getCompanyPrice = (size: string, priceLevel: string) => {
   };
 };
 
+// ServiceCard component for cleaner code
+interface ServiceCardProps {
+  service: typeof services[0];
+  isSelected: boolean;
+  isExpanded: boolean;
+  onToggle: () => void;
+  onExpand: () => void;
+}
+
+function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: ServiceCardProps) {
+  return (
+    <div
+      className={`rounded-xl border-2 transition-all ${
+        isSelected
+          ? "border-primary bg-primary/5"
+          : "border-border hover:border-primary/30"
+      }`}
+    >
+      {/* Main Row */}
+      <div
+        role="button"
+        tabIndex={service.id === "umzug" ? -1 : 0}
+        onClick={onToggle}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onToggle();
+          }
+        }}
+        className={`w-full flex items-center gap-2.5 p-2.5 text-left cursor-pointer ${
+          service.id === "umzug" ? "cursor-default" : ""
+        }`}
+        aria-disabled={service.id === "umzug"}
+      >
+        <div
+          className={`w-4 h-4 rounded flex items-center justify-center border-2 shrink-0 ${
+            isSelected
+              ? "bg-primary border-primary"
+              : "border-border"
+          }`}
+        >
+          {isSelected && (
+            <CheckCircle className="w-3 h-3 text-primary-foreground" />
+          )}
+        </div>
+
+        <div
+          className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+            isSelected ? "bg-primary/20" : "bg-muted"
+          }`}
+        >
+          {service.icon}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <p className="text-xs font-semibold truncate">{service.label}</p>
+            {(service as any).highlight && (
+              <span className="text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold shrink-0 animate-pulse">
+                💡 Tipp
+              </span>
+            )}
+            {service.popular && !(service as any).highlight && (
+              <span className="text-[8px] bg-secondary text-secondary-foreground px-1 py-0.5 rounded-full font-medium shrink-0">
+                Beliebt
+              </span>
+            )}
+          </div>
+          <p className="text-[10px] text-muted-foreground truncate">
+            {service.description}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className={`text-[10px] font-medium ${(service as any).highlight ? 'text-secondary' : 'text-primary'}`}>
+            {service.priceRange}
+          </span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onExpand();
+            }}
+            className={`p-0.5 rounded-full transition-colors ${isExpanded ? 'bg-primary/20' : 'hover:bg-muted'}`}
+            aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
+          >
+            {isExpanded ? (
+              <Minus className="w-3.5 h-3.5 text-primary" />
+            ) : (
+              <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Expandable Details */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-3 pb-3 pt-1 border-t border-border/50 mx-2.5">
+              <div className="flex items-start gap-1.5 mb-2 mt-1.5">
+                <Info className="w-3 h-3 text-primary shrink-0 mt-0.5" />
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  {service.details}
+                </p>
+              </div>
+              
+              <div className="space-y-1">
+                {service.benefits.map((benefit, i) => (
+                  <div key={i} className="flex items-start gap-1.5 text-[10px] text-muted-foreground">
+                    <CheckCircle className="w-2.5 h-2.5 text-green-500 shrink-0 mt-0.5" />
+                    <span>{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 interface FormData {
   moveType: string;
   fromLocation: string;
@@ -781,7 +910,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                   </div>
                 </motion.div>
 
-                {/* Services with Expand */}
+                {/* Services with Expand - ChatGPT Recommendation #2: Show only important services first */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Welche Leistungen brauchen Sie?</label>
@@ -790,131 +919,75 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                       Details
                     </span>
                   </div>
-                  <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1">
-                    {services.map((service) => {
+                  
+                  {/* Popular services (always visible) */}
+                  <div className="space-y-2">
+                    {services.filter(s => s.popular || s.id === "umzug").map((service) => {
                       const isSelected = formData.selectedServices.includes(service.id);
                       const isExpanded = expandedService === service.id;
                       
                       return (
-                        <div
+                        <ServiceCard 
                           key={service.id}
-                          className={`rounded-xl border-2 transition-all ${
-                            isSelected
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/30"
-                          }`}
-                        >
-                          {/* Main Row */}
-                          <div
-                            role="button"
-                            tabIndex={service.id === "umzug" ? -1 : 0}
-                            onClick={() => toggleService(service.id)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault();
-                                toggleService(service.id);
-                              }
-                            }}
-                            className={`w-full flex items-center gap-2.5 p-2.5 text-left cursor-pointer ${
-                              service.id === "umzug" ? "cursor-default" : ""
-                            }`}
-                            aria-disabled={service.id === "umzug"}
-                          >
-                            <div
-                              className={`w-4 h-4 rounded flex items-center justify-center border-2 shrink-0 ${
-                                isSelected
-                                  ? "bg-primary border-primary"
-                                  : "border-border"
-                              }`}
-                            >
-                              {isSelected && (
-                                <CheckCircle className="w-3 h-3 text-primary-foreground" />
-                              )}
-                            </div>
-
-                            <div
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                                isSelected ? "bg-primary/20" : "bg-muted"
-                              }`}
-                            >
-                              {service.icon}
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <p className="text-xs font-semibold truncate">{service.label}</p>
-                                {(service as any).highlight && (
-                                  <span className="text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold shrink-0 animate-pulse">
-                                    💡 Tipp
-                                  </span>
-                                )}
-                                {service.popular && !(service as any).highlight && (
-                                  <span className="text-[8px] bg-secondary text-secondary-foreground px-1 py-0.5 rounded-full font-medium shrink-0">
-                                    Beliebt
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-[10px] text-muted-foreground truncate">
-                                {service.description}
-                              </p>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              <span className={`text-[10px] font-medium ${(service as any).highlight ? 'text-secondary' : 'text-primary'}`}>
-                                {service.priceRange}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setExpandedService(isExpanded ? null : service.id);
-                                }}
-                                className={`p-0.5 rounded-full transition-colors ${isExpanded ? 'bg-primary/20' : 'hover:bg-muted'}`}
-                                aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
-                              >
-                                {isExpanded ? (
-                                  <Minus className="w-3.5 h-3.5 text-primary" />
-                                ) : (
-                                  <Plus className="w-3.5 h-3.5 text-muted-foreground" />
-                                )}
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Expandable Details */}
-                          <AnimatePresence>
-                            {isExpanded && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="overflow-hidden"
-                              >
-                                <div className="px-3 pb-3 pt-1 border-t border-border/50 mx-2.5">
-                                  <div className="flex items-start gap-1.5 mb-2 mt-1.5">
-                                    <Info className="w-3 h-3 text-primary shrink-0 mt-0.5" />
-                                    <p className="text-[10px] text-muted-foreground leading-relaxed">
-                                      {service.details}
-                                    </p>
-                                  </div>
-                                  
-                                  <div className="space-y-1">
-                                    {service.benefits.map((benefit, i) => (
-                                      <div key={i} className="flex items-start gap-1.5 text-[10px] text-muted-foreground">
-                                        <CheckCircle className="w-2.5 h-2.5 text-green-500 shrink-0 mt-0.5" />
-                                        <span>{benefit}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
+                          service={service}
+                          isSelected={isSelected}
+                          isExpanded={isExpanded}
+                          onToggle={() => toggleService(service.id)}
+                          onExpand={() => setExpandedService(isExpanded ? null : service.id)}
+                        />
                       );
                     })}
                   </div>
+                  
+                  {/* Less popular services (collapsible) */}
+                  {services.filter(s => !s.popular && s.id !== "umzug").length > 0 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setExpandedService(expandedService === "more-services" ? null : "more-services")}
+                        className="w-full flex items-center justify-center gap-2 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {expandedService === "more-services" ? (
+                          <>
+                            <Minus className="w-3.5 h-3.5" />
+                            Weniger anzeigen
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="w-3.5 h-3.5" />
+                            Weitere Services anzeigen
+                          </>
+                        )}
+                      </button>
+                      
+                      <AnimatePresence>
+                        {expandedService === "more-services" && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="space-y-2 overflow-hidden"
+                          >
+                            {services.filter(s => !s.popular && s.id !== "umzug").map((service) => {
+                              const isSelected = formData.selectedServices.includes(service.id);
+                              const isServiceExpanded = expandedService === service.id;
+                              
+                              return (
+                                <ServiceCard 
+                                  key={service.id}
+                                  service={service}
+                                  isSelected={isSelected}
+                                  isExpanded={isServiceExpanded}
+                                  onToggle={() => toggleService(service.id)}
+                                  onExpand={() => setExpandedService(isServiceExpanded ? null : service.id)}
+                                />
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  )}
 
                   {/* Package Savings Card */}
                   <PackageSavingsCard
@@ -938,7 +1011,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
               transition={{ duration: 0.2 }}
               className="space-y-3"
             >
-              {/* Header with pre-selection info */}
+              {/* Header with pre-selection info - ChatGPT Recommendation #5 */}
               <div className="text-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-2">
                   <Sparkles className="w-3 h-3" />
@@ -956,6 +1029,10 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
                     ? "Empfohlen vorausgewählt – jederzeit änderbar"
                     : "Mehr Offerten = bessere Vergleichsmöglichkeit"
                   }
+                </p>
+                {/* ChatGPT Recommendation #5: Explain pre-selection criteria */}
+                <p className="text-[10px] text-muted-foreground/80 mt-1 italic">
+                  💡 Empfohlen basierend auf Bewertungen, Verfügbarkeit & Nähe zu Ihrem Standort
                 </p>
               </div>
 
@@ -1120,7 +1197,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
           </span>
         </div>
 
-        {/* Alternative Video CTA */}
+        {/* Alternative Video CTA - ChatGPT Recommendation #7: Different color for secondary CTA */}
         {currentStep === 1 && (
           <>
             <div className="relative my-4">
@@ -1134,11 +1211,11 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
 
             <Button
               type="button"
-              variant="outline"
-              className="w-full h-10 rounded-xl border-primary/30 hover:bg-primary/5 font-medium text-sm"
+              variant="ghost"
+              className="w-full h-10 rounded-xl border border-muted hover:bg-muted/50 font-medium text-sm text-muted-foreground hover:text-foreground"
               onClick={() => navigate('/umzugsrechner?tab=ai')}
             >
-              <Video className="w-4 h-4 mr-2 text-primary" />
+              <Video className="w-4 h-4 mr-2" />
               Video hochladen & KI berechnet
             </Button>
           </>
