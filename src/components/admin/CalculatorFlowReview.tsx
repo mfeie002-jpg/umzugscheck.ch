@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { SITE_CONFIG } from "@/data/constants";
+import { FLOW_CONFIGS, getFlowSteps, getFlowVariants, getUcFlowId, getTotalStepsAllFlows, OTHER_CALCULATORS } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
 import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
 import { toast } from "sonner";
@@ -70,33 +71,42 @@ interface FlowStep {
   meta?: StepMeta;
 }
 
-// Step configs using uc_capture mode for deterministic screenshot capture
-// uc_capture=1 enables capture mode (prefilled demo data)
-// uc_step=N sets the specific step to render
-const STEP_CONFIGS = [
-  { step: 1, name: "Umzugstyp wählen", description: "Wohnung, Haus, Büro auswählen" },
-  { step: 2, name: "Details & Services", description: "Adressen, Grösse, Datum, Services" },
-  { step: 3, name: "Firmenauswahl", description: "Passende Firmen auswählen" },
-  { step: 4, name: "Kontakt & Absenden", description: "Name, Email, Absenden" },
+// Step configs now come from FLOW_CONFIGS - use dynamic step count per flow
+// Default fallback for non-flow calculators
+const DEFAULT_STEP_CONFIGS = [
+  { step: 1, name: "Step 1", description: "First step" },
+  { step: 2, name: "Step 2", description: "Second step" },
+  { step: 3, name: "Step 3", description: "Third step" },
+  { step: 4, name: "Step 4", description: "Fourth step" },
 ];
 
+// Helper function to get step configs for current calculator
+const getStepConfigsForCalculator = (calculatorValue: string) => {
+  // Check if it's a flow variant
+  if (FLOW_CONFIGS[calculatorValue]) {
+    return FLOW_CONFIGS[calculatorValue].steps;
+  }
+  // Check other calculators
+  const otherCalc = OTHER_CALCULATORS.find(c => c.value === calculatorValue);
+  if (otherCalc) {
+    return Array.from({ length: otherCalc.steps }, (_, i) => ({
+      step: i + 1,
+      name: `Step ${i + 1}`,
+      description: `Step ${i + 1} of ${otherCalc.label}`,
+    }));
+  }
+  return DEFAULT_STEP_CONFIGS;
+};
+
 const getDefaultPublicBaseUrl = (): string => {
-  // IMPORTANT: Screenshot providers must capture from a publicly reachable domain.
-  // Use VITE_CAPTURE_BASE_URL to ensure captures target the SAME deployed build as the admin tool.
-  // Fallback to SITE_CONFIG.url (production).
   const envBase = (import.meta as any)?.env?.VITE_CAPTURE_BASE_URL as string | undefined;
   if (envBase && typeof envBase === "string") return envBase.replace(/\/$/, "");
-
   return SITE_CONFIG.url.replace(/\/$/, "");
 };
 
-// Helper to build capture URL for a given flow and step
-// CRITICAL: Always include uc_flow (v1/v2/...) for deterministic selection when available
+// Helper to get uc_flow ID - now using centralized function
 const getUcFlowIdForCalculator = (calculatorValue: string): string | null => {
-  if (!calculatorValue.startsWith("umzugsofferten")) return null;
-  if (calculatorValue === "umzugsofferten") return "v1";
-  const match = calculatorValue.match(/-v(\d+)/i);
-  return match?.[1] ? `v${match[1]}` : "v1";
+  return getUcFlowId(calculatorValue);
 };
 const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, ucFlowId?: string | null) => {
   // uc_flow makes flow selection deterministic (prevents default-flow mismatch)
@@ -482,12 +492,13 @@ export function CalculatorFlowReview() {
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
     const ucFlowId = selectedCalc ? getUcFlowIdForCalculator(selectedCalc.value) : null;
+    const stepConfigs = getStepConfigsForCalculator(selectedCalculator);
     const steps: FlowStep[] = [];
-    const totalOperations = STEP_CONFIGS.length * 3; // desktop + mobile + html per step
+    const totalOperations = stepConfigs.length * 3; // desktop + mobile + html per step
     let completedOps = 0;
 
-    for (let i = 0; i < STEP_CONFIGS.length; i++) {
-      const config = STEP_CONFIGS[i];
+    for (let i = 0; i < stepConfigs.length; i++) {
+      const config = stepConfigs[i];
       // Construct URL with uc_capture mode for deterministic step rendering
       const fullUrl = buildCaptureUrl(baseUrl, calculatorPath, config.step, ucFlowId);
 
@@ -581,7 +592,8 @@ export function CalculatorFlowReview() {
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
     const ucFlowId = selectedCalc ? getUcFlowIdForCalculator(selectedCalc.value) : null;
-    const mockSteps: FlowStep[] = STEP_CONFIGS.map(config => {
+    const stepConfigs = getStepConfigsForCalculator(selectedCalculator);
+    const mockSteps: FlowStep[] = stepConfigs.map(config => {
       const url = buildCaptureUrl(getDefaultPublicBaseUrl(), calculatorPath, config.step, ucFlowId);
       const html = getMockHtml(config.step);
       return {
@@ -1074,15 +1086,18 @@ Dieser Export enthält:
     setCaptureProgress(3);
 
     const totalFlows = flowVariants.length;
-    const totalSteps = STEP_CONFIGS.length;
-    const totalOperations = totalFlows * totalSteps * 3 + totalFlows; // (desktop + mobile + html) * steps + info per flow
+    // Calculate total operations across all flows with their dynamic step counts
+    let totalOperations = 0;
+    flowVariants.forEach(flow => {
+      const flowStepConfigs = getStepConfigsForCalculator(flow.value);
+      totalOperations += flowStepConfigs.length * 3 + 1; // (desktop + mobile + html) * steps + info per flow
+    });
     let completedOps = 0;
 
     const allFlowsData: Record<string, any> = {
       exportDate: new Date().toISOString(),
       baseUrl,
-      stepsPerFlow: totalSteps,
-      stepConfigs: STEP_CONFIGS,
+      flowCount: totalFlows,
       flows: {},
     };
 
@@ -1092,10 +1107,12 @@ Dieser Export enthält:
       if (!flowFolder) continue;
 
       const ucFlowId = getUcFlowIdForCalculator(flow.value);
+      const flowStepConfigs = getStepConfigsForCalculator(flow.value);
+      const totalSteps = flowStepConfigs.length;
       const flowStepsData: any[] = [];
 
-      // Capture ALL steps for this flow
-      for (const stepConfig of STEP_CONFIGS) {
+      // Capture ALL steps for this flow (using dynamic step count)
+      for (const stepConfig of flowStepConfigs) {
         const stepFolder = flowFolder.folder(`step-${stepConfig.step}`);
         if (!stepFolder) continue;
 
@@ -1220,11 +1237,11 @@ Dieser Export enthält:
     setCaptureProgress(100);
     setCaptureStatus("");
     setIsExportingAll(false);
-    toast.success(`Alle ${totalFlows} Flows mit je ${totalSteps} Steps komplett exportiert!`);
+    toast.success(`Alle ${totalFlows} Flows komplett exportiert!`);
   };
 
   // Generate prompt for a single step in export (different signature)
-  const generateExportStepPrompt = (flowLabel: string, stepConfig: typeof STEP_CONFIGS[0], meta: StepMeta) => `# Step ${stepConfig.step}: ${stepConfig.name}
+  const generateExportStepPrompt = (flowLabel: string, stepConfig: { step: number; name: string; description: string }, meta: StepMeta) => `# Step ${stepConfig.step}: ${stepConfig.name}
 **Flow:** ${flowLabel}
 **URL:** ${meta.url}
 **Beschreibung:** ${stepConfig.description}
