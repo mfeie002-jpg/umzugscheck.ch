@@ -23,6 +23,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { FLOW_CONFIGS } from "@/data/flowConfigs";
+import { VARIANT_REGISTRY } from "@/components/calculator-variants";
 import { toast } from "sonner";
 import { 
   Sparkles, 
@@ -537,10 +538,65 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Completed variants ready for screenshots */}
-            {completedEntries.length > 0 ? (
+            {/* Coded variants from VARIANT_REGISTRY */}
+            {(() => {
+              const flowNumber = getFlowNumber();
+              const codedVariants = Object.entries(VARIANT_REGISTRY)
+                .filter(([key]) => key.startsWith(`v${flowNumber}`))
+                .map(([key, config]) => ({ key, ...config }));
+              
+              return codedVariants.length > 0 ? (
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                    <FileCode className="h-3 w-3" />
+                    Kodierte Varianten (VARIANT_REGISTRY):
+                  </Label>
+                  {codedVariants.map(variant => (
+                    <div 
+                      key={variant.key}
+                      className="flex items-center justify-between p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20"
+                    >
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-4 w-4 text-blue-600" />
+                        <div>
+                          <div className="font-mono font-bold text-sm">
+                            {variant.key}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {variant.label} • {variant.stepCount} Steps
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Link to={`/umzugsofferten?variant=${variant.key}`} target="_blank">
+                          <Button size="sm" variant="outline">
+                            <Eye className="h-3 w-3 mr-1" />
+                            Live
+                          </Button>
+                        </Link>
+                        <Link to={`/admin/flow-tester?variant=${variant.key}`}>
+                          <Button size="sm" variant="outline">
+                            <Play className="h-3 w-3 mr-1" />
+                            Tester
+                          </Button>
+                        </Link>
+                        <Link to={`/admin/tools?tab=autoflow&flow=${selectedFlow}&variant=${variant.key}`}>
+                          <Button size="sm" variant="default">
+                            <Camera className="h-3 w-3 mr-1" />
+                            Screenshots
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : null;
+            })()}
+
+            {/* Completed variants from DB */}
+            {completedEntries.length > 0 && (
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Implementierte Varianten:</Label>
+                <Label className="text-xs text-muted-foreground">Über Workflow implementiert:</Label>
                 {completedEntries.map(entry => (
                   <div 
                     key={entry.id}
@@ -574,13 +630,23 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Camera className="h-10 w-10 mx-auto mb-2 opacity-30" />
-                <p className="text-sm">Keine implementierten Varianten</p>
-                <p className="text-xs">Implementiere zuerst eine Variante in Schritt 3</p>
-              </div>
             )}
+
+            {/* Empty state only if no coded variants AND no DB entries */}
+            {(() => {
+              const flowNumber = getFlowNumber();
+              const hasCodedVariants = Object.keys(VARIANT_REGISTRY).some(key => key.startsWith(`v${flowNumber}`));
+              if (!hasCodedVariants && completedEntries.length === 0) {
+                return (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Camera className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                    <p className="text-sm">Keine implementierten Varianten</p>
+                    <p className="text-xs">Implementiere zuerst eine Variante in Schritt 3</p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
 
             <Separator />
 
