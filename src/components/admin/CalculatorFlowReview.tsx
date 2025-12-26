@@ -169,6 +169,42 @@ const DIMENSIONS = {
   mobile: DEFAULT_DIMENSIONS.mobile.value,
 };
 
+// AI-generated context interface
+interface AIContext {
+  competitors: {
+    direct: string[];
+    indirect: string[];
+    analysis: string;
+  };
+  targetAudience: {
+    primary: string;
+    secondary: string;
+    painPoints: string[];
+    motivations: string[];
+  };
+  businessGoals: {
+    primary: string;
+    secondary: string[];
+    kpis: string[];
+    conversionPath: string;
+  };
+  successMetrics: {
+    conversion: {
+      current_estimate: string;
+      target: string;
+      blockers: string[];
+    };
+    ux: {
+      strengths: string[];
+      weaknesses: string[];
+    };
+    trustSignals: {
+      existing: string[];
+      missing: string[];
+    };
+  };
+}
+
 export function CalculatorFlowReview() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [isExportingAll, setIsExportingAll] = useState(false);
@@ -189,6 +225,10 @@ export function CalculatorFlowReview() {
   const [discoveredPages, setDiscoveredPages] = useState<string[]>([]);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [pageLimit, setPageLimit] = useState<number>(20);
+  
+  // AI Context state
+  const [aiContext, setAiContext] = useState<AIContext | null>(null);
+  const [isGeneratingContext, setIsGeneratingContext] = useState(false);
 
   // Schnellauswahl preset URLs
   const PRESET_URLS = [
@@ -499,6 +539,42 @@ export function CalculatorFlowReview() {
     toast.success(`${successCount} von ${steps.length} Steps erfasst (Desktop + Mobile)`);
   };
 
+  // Generate AI Context (4 critical questions for ChatGPT analysis)
+  const generateAIContext = async () => {
+    setIsGeneratingContext(true);
+    try {
+      const baseUrl = (baseUrlOverride.trim() || getDefaultPublicBaseUrl()).replace(/\/$/, "");
+      const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
+      const projectUrl = baseUrl + (selectedCalc?.path || '/umzugsofferten');
+      
+      // Get HTML from first captured step if available
+      const htmlContent = capturedSteps[0]?.html || '';
+      
+      const { data, error } = await supabase.functions.invoke('ai-generate-context', {
+        body: {
+          projectUrl,
+          projectName: 'Umzugscheck.ch',
+          htmlContent,
+          currentDescription: 'Schweizer Umzugsvergleichsplattform - Lead-Generierung für Umzugsfirmen'
+        }
+      });
+
+      if (error) throw error;
+      
+      if (data?.success && data?.context) {
+        setAiContext(data.context);
+        toast.success('AI-Kontext erfolgreich generiert!');
+      } else {
+        throw new Error(data?.error || 'Kontext-Generierung fehlgeschlagen');
+      }
+    } catch (err) {
+      console.error('AI context generation failed:', err);
+      toast.error(err instanceof Error ? err.message : 'AI-Kontext konnte nicht generiert werden');
+    } finally {
+      setIsGeneratingContext(false);
+    }
+  };
+
   const generateMockSteps = () => {
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
@@ -799,6 +875,7 @@ export function CalculatorFlowReview() {
       exportedAt: new Date().toISOString(),
       calculator: selectedLabel,
       calculatorId: selectedCalculator,
+      hasAIContext: !!aiContext,
       steps: capturedSteps.map(s => ({
         step: s.step,
         name: s.name,
@@ -814,6 +891,14 @@ export function CalculatorFlowReview() {
       })),
     };
     folder.file('index.json', JSON.stringify(index, null, 2));
+
+    // Add AI Context if available
+    if (aiContext) {
+      folder.file('ai-context.json', JSON.stringify({
+        generatedAt: new Date().toISOString(),
+        context: aiContext
+      }, null, 2));
+    }
 
     // Add each step
     for (const step of capturedSteps) {
@@ -1257,12 +1342,54 @@ ${capturedSteps.map(s => `- Step ${s.step}: ${s.name}
 Erstellt: ${new Date().toLocaleString('de-CH')}
 `;
 
-  const generatePromptTemplate = () => `## Umzugsofferten Flow Analyse (ChatGPT Package)
+  const generatePromptTemplate = () => {
+    // Build AI context section if available
+    const aiContextSection = aiContext ? `
+---
+
+## 🎯 KRITISCHER PROJEKT-KONTEXT (AI-generiert)
+
+### 1. Wettbewerbsanalyse
+**Direkte Konkurrenten:** ${aiContext.competitors.direct.join(', ')}
+**Indirekte Konkurrenten:** ${aiContext.competitors.indirect.join(', ')}
+**Analyse:** ${aiContext.competitors.analysis}
+
+### 2. Zielgruppen-Analyse
+**Primäre Zielgruppe:** ${aiContext.targetAudience.primary}
+**Sekundäre Zielgruppe:** ${aiContext.targetAudience.secondary}
+**Pain Points:**
+${aiContext.targetAudience.painPoints.map(p => `- ${p}`).join('\n')}
+**Motivationen:**
+${aiContext.targetAudience.motivations.map(m => `- ${m}`).join('\n')}
+
+### 3. Business-Ziele
+**Hauptziel:** ${aiContext.businessGoals.primary}
+**Nebenziele:** ${aiContext.businessGoals.secondary.join(', ')}
+**KPIs:**
+${aiContext.businessGoals.kpis.map(k => `- ${k}`).join('\n')}
+**Conversion-Pfad:** ${aiContext.businessGoals.conversionPath}
+
+### 4. Erfolgsmetriken
+**Conversion:**
+- Aktuelle Schätzung: ${aiContext.successMetrics.conversion.current_estimate}
+- Ziel: ${aiContext.successMetrics.conversion.target}
+- Blocker: ${aiContext.successMetrics.conversion.blockers.join(', ') || 'Keine identifiziert'}
+
+**UX-Stärken:** ${aiContext.successMetrics.ux.strengths.join(', ') || 'Analyse erforderlich'}
+**UX-Schwächen:** ${aiContext.successMetrics.ux.weaknesses.join(', ') || 'Analyse erforderlich'}
+
+**Trust-Signale vorhanden:** ${aiContext.successMetrics.trustSignals.existing.join(', ') || 'Keine identifiziert'}
+**Trust-Signale fehlend:** ${aiContext.successMetrics.trustSignals.missing.join(', ') || 'Keine identifiziert'}
+
+---
+` : '';
+
+    return `## Umzugsofferten Flow Analyse (ChatGPT Package)
 
 Ich habe eine ZIP hochgeladen. Bitte nutze **index.json** als Inhaltsverzeichnis und analysiere die Steps anhand der Screenshots + rendered.html.
 
 **Calculator:** ${calculatorOptions.find(c => c.value === selectedCalculator)?.label}
-
+${aiContextSection}
 ### Dateien pro Step (im jeweiligen step-Ordner)
 - desktop.png
 - mobile.png
@@ -1294,6 +1421,7 @@ ${capturedSteps.map(step => `
 - Optional: konkrete Copy-/Layout-Verbesserungen
 
 ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
+  };
 
   const copyPromptToClipboard = () => {
     navigator.clipboard.writeText(generatePromptTemplate());
@@ -1992,6 +2120,87 @@ ${JSON.stringify(step.meta || {}, null, 2)}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* AI Context Generation Section */}
+          <div className="rounded-lg border-2 border-dashed border-primary/30 p-4 bg-primary/5">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  AI-Kontext für vollständige Analyse
+                </h4>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Generiert automatisch: Wettbewerber, Zielgruppe, Business-Ziele, Erfolgsmetriken
+                </p>
+              </div>
+              <Button 
+                onClick={generateAIContext}
+                disabled={isGeneratingContext}
+                variant={aiContext ? "outline" : "default"}
+                size="sm"
+              >
+                {isGeneratingContext ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generiere...
+                  </>
+                ) : aiContext ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Neu generieren
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Kontext generieren
+                  </>
+                )}
+              </Button>
+            </div>
+            
+            {aiContext && (
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                <div className="rounded-md bg-background p-3 border">
+                  <h5 className="font-medium text-xs text-primary mb-2 flex items-center gap-1">
+                    🏢 Wettbewerber
+                  </h5>
+                  <p className="text-xs text-muted-foreground">
+                    {aiContext.competitors.direct.slice(0, 3).join(', ')}
+                  </p>
+                </div>
+                <div className="rounded-md bg-background p-3 border">
+                  <h5 className="font-medium text-xs text-primary mb-2 flex items-center gap-1">
+                    👥 Zielgruppe
+                  </h5>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {aiContext.targetAudience.primary}
+                  </p>
+                </div>
+                <div className="rounded-md bg-background p-3 border">
+                  <h5 className="font-medium text-xs text-primary mb-2 flex items-center gap-1">
+                    🎯 Business-Ziel
+                  </h5>
+                  <p className="text-xs text-muted-foreground">
+                    {aiContext.businessGoals.primary}
+                  </p>
+                </div>
+                <div className="rounded-md bg-background p-3 border">
+                  <h5 className="font-medium text-xs text-primary mb-2 flex items-center gap-1">
+                    📊 Conversion-Ziel
+                  </h5>
+                  <p className="text-xs text-muted-foreground">
+                    {aiContext.successMetrics.conversion.current_estimate} → {aiContext.successMetrics.conversion.target}
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {!aiContext && !isGeneratingContext && (
+              <p className="text-xs text-amber-600 mt-2">
+                ⚠️ Ohne AI-Kontext kann ChatGPT nur eine oberflächliche Analyse durchführen. Klicke auf "Kontext generieren" für beste Ergebnisse.
+              </p>
+            )}
+          </div>
+
           <div className="bg-muted rounded-lg p-4 max-h-48 overflow-y-auto">
             <pre className="text-xs whitespace-pre-wrap font-mono">
               {generatePromptTemplate()}
