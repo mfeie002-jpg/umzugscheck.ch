@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { AdminHelpButton } from "@/components/admin/AdminHelpSystem";
 import { FLOW_CONFIGS, getFlowVariants, getTotalStepsAllFlows } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
 import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
@@ -41,7 +42,9 @@ import {
   Send,
   Bot,
   Play,
-  FileCode
+  FileCode,
+  HelpCircle,
+  BookOpen
 } from "lucide-react";
 
 // ============================================================================
@@ -473,13 +476,24 @@ Tägliche Captures mit Diff-Detection.
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-primary/5 p-8 border">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
           <div className="relative">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 rounded-xl bg-primary/10">
-                <Brain className="h-8 w-8 text-primary" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <Brain className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold">AI Command Center</h1>
+                  <p className="text-muted-foreground">Alles für KI-Analyse – 1 Klick entfernt</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold">AI Command Center</h1>
-                <p className="text-muted-foreground">Alles für KI-Analyse – 1 Klick entfernt</p>
+              <div className="flex items-center gap-2">
+                <Link to="/admin/capabilities">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    Alle Funktionen
+                  </Button>
+                </Link>
+                <AdminHelpButton section="ai-command" />
               </div>
             </div>
 

@@ -460,6 +460,14 @@ export const InlineHelp = ({ section, compact = false }: InlineHelpProps) => {
 };
 
 // ============================================================================
+// ADMIN HELP BUTTON (Alias for InlineHelp)
+// ============================================================================
+
+export const AdminHelpButton = ({ section }: { section: string }) => {
+  return <InlineHelp section={section} compact />;
+};
+
+// ============================================================================
 // SECTION HELP CONTENT
 // ============================================================================
 
