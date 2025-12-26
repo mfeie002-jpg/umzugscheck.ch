@@ -3,17 +3,13 @@ import { useLocation } from "react-router-dom";
 import { getUcCaptureParams } from "@/lib/uc-capture";
 
 /**
- * Sentinel 2.1 for screenshot automation with "READY Contract".
+ * Sentinel 2.2 - ChatGPT Fixes Applied
  * 
- * CRITICAL FIX: We no longer "force-ready" after timeout.
- * Ready = Step content is ACTUALLY visible (not just body > 50px).
- * 
- * Ready conditions (ALL must be true):
- * 1. Step-specific content visible (wizard card or main calculator)
- * 2. Network requests settled (no pending fetch/XHR for 500ms)
- * 3. Fonts ready
- * 4. No DOM mutations for 300ms
- * 5. Scroll position at top
+ * FIXES:
+ * 1. scrollToTopSafe() - removes "instant" ScrollBehavior which throws in headless Chrome
+ * 2. Resource error capturing (capture phase)
+ * 3. Proper hook ordering (enabled gating in effects, null render at end)
+ * 4. Only ONE sentinel should exist in app (routes call markReady(), don't mount their own)
  */
 
 type CaptureStatus = "loading" | "ready" | "error";
@@ -42,6 +38,25 @@ interface SentinelState {
 const BUILD_ID = typeof import.meta !== "undefined" 
   ? `${new Date().toISOString().slice(0, 10)}-${Math.random().toString(36).slice(2, 8)}`
   : "unknown";
+
+/**
+ * CRITICAL FIX: Safe scrollTo that works in headless Chrome
+ * "instant" is NOT a valid ScrollBehavior in some Chrome versions and can throw.
+ */
+function scrollToTopSafe() {
+  try {
+    // Most robust across browsers/headless
+    window.scrollTo(0, 0);
+  } catch {
+    // ignore
+  }
+  try {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  } catch {
+    // ignore
+  }
+}
 
 // Patch fetch/XHR to track pending network requests
 function ensureNetworkPendingPatch() {
@@ -109,26 +124,16 @@ function ensureNetworkPendingPatch() {
  * This prevents "ready" when only shell/header is visible.
  */
 function isStepContentVisible(): boolean {
-  // Look for wizard/calculator content elements
   const selectors = [
-    // MultiStepCalculator wizard cards
     '[data-step-content]',
     '.wizard-step',
-    // Calculator form elements
     'form[data-calculator]',
-    // Generic step containers
     '[class*="step-"]',
-    // Main calculator cards
     '.calculator-card',
-    // Motion containers from framer-motion (usually the step content)
     '[data-testid="calculator-step"]',
-    // Fallback: any substantial content area
     'main section',
-    // Check for actual form inputs (indicates wizard loaded)
     'input[name="fromLocation"], input[name="toLocation"]',
-    // Check for service selection cards
     '[data-service-id]',
-    // Check for company cards in step 3
     '[data-company-id]',
   ];
 
@@ -137,7 +142,6 @@ function isStepContentVisible(): boolean {
       const el = document.querySelector(sel);
       if (el) {
         const rect = el.getBoundingClientRect();
-        // Element must have substantial size and be in viewport
         if (rect.width > 100 && rect.height > 100 && rect.top < window.innerHeight) {
           return true;
         }
@@ -147,7 +151,6 @@ function isStepContentVisible(): boolean {
     }
   }
 
-  // Fallback: check if body has substantial content (not just header)
   const bodyHeight = document.body?.getBoundingClientRect?.()?.height || 0;
   const hasMultipleElements = document.querySelectorAll('main > *').length > 2;
   
@@ -162,6 +165,7 @@ export function CaptureReadySentinel({
 }: CaptureReadySentinelProps = {}) {
   const location = useLocation();
   const captureParams = getUcCaptureParams(location.search);
+  const enabled = captureParams.enabled;
 
   const effectiveStep = propStep ?? captureParams.step ?? "unknown";
   const effectiveFlow = propFlow ?? captureParams.flow ?? "unknown";
@@ -194,29 +198,27 @@ export function CaptureReadySentinel({
 
   // If isReady prop is explicitly true, mark ready immediately (after scroll to top)
   useEffect(() => {
+    if (!enabled) return;
     if (propIsReady === true && state.status === "loading") {
       const t = window.setTimeout(() => {
-        // Ensure we're at the top
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+        scrollToTopSafe();
         setState(s => ({ ...s, status: "ready", reason: "isReady prop", scrollY: 0 }));
       }, 150);
       return () => window.clearTimeout(t);
     }
-  }, [propIsReady, state.status]);
-
-  // Only render in capture mode
-  if (!captureParams.enabled) return null;
+  }, [enabled, propIsReady, state.status]);
 
   // Expose global API and setup stability checks
   useEffect(() => {
+    if (!enabled) return;
+    
     ensureNetworkPendingPatch();
 
     const w = window as any;
     
     // Global readiness API
     w.__UC_MARK_READY = () => {
-      // Always scroll to top before marking ready
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+      scrollToTopSafe();
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setState(s => ({ ...s, status: "ready", reason: "markReady called", scrollY: 0 }));
@@ -249,8 +251,19 @@ export function CaptureReadySentinel({
       }));
     };
 
+    // FIX: Catch resource load errors (script/link) - must use capture phase
+    const onResourceError = (ev: Event) => {
+      const t = ev.target as any;
+      const src = t?.src || t?.href;
+      if (src && (t?.tagName === "SCRIPT" || t?.tagName === "LINK")) {
+        console.error("[CaptureReadySentinel] Resource error:", src);
+        setState(s => ({ ...s, status: "error", reason: `resource error: ${src}` }));
+      }
+    };
+
     window.addEventListener("error", onError);
     window.addEventListener("unhandledrejection", onRejection);
+    window.addEventListener("error", onResourceError, true); // capture phase for resource errors
 
     // Setup MutationObserver to track DOM stability
     try {
@@ -270,22 +283,23 @@ export function CaptureReadySentinel({
     return () => {
       window.removeEventListener("error", onError);
       window.removeEventListener("unhandledrejection", onRejection);
+      window.removeEventListener("error", onResourceError, true);
       delete w.__UC_MARK_READY;
       delete w.__UC_MARK_LOADING;
       delete w.__UC_MARK_ERROR;
       mutationObserverRef.current?.disconnect();
     };
-  }, []);
+  }, [enabled]);
 
   // Stability-based auto-ready with REAL content detection
-  // NO force-ready timeout - we wait for actual content
   useEffect(() => {
+    if (!enabled) return;
     if (state.status !== "loading") return;
 
-    const graceMs = 800; // Initial grace period for JS execution
-    const stabilityMs = 300; // No mutations for this long = stable
-    const networkSettleMs = 500; // No network activity for this long
-    const maxWaitMs = 45000; // 45 seconds max wait (then error, not fake-ready)
+    const graceMs = 800;
+    const stabilityMs = 300;
+    const networkSettleMs = 500;
+    const maxWaitMs = 45000;
     const startedAt = Date.now();
     let lastNetworkSettled = 0;
 
@@ -294,7 +308,6 @@ export function CaptureReadySentinel({
       const elapsed = Date.now() - startedAt;
       const msSinceLastMutation = Date.now() - lastMutationRef.current;
       
-      // Track network settling
       if (pending === 0) {
         if (lastNetworkSettled === 0) lastNetworkSettled = Date.now();
       } else {
@@ -302,7 +315,6 @@ export function CaptureReadySentinel({
       }
       const networkSettled = lastNetworkSettled > 0 && (Date.now() - lastNetworkSettled) >= networkSettleMs;
       
-      // Check fonts ready
       let fontsReady = true;
       try {
         if (document.fonts?.ready) {
@@ -316,10 +328,8 @@ export function CaptureReadySentinel({
         fontsReady = true;
       }
 
-      // CRITICAL: Check if step content is actually visible
       const contentVisible = isStepContentVisible();
 
-      // Update debug state
       setState(s => ({ 
         ...s, 
         pendingRequests: pending,
@@ -329,12 +339,11 @@ export function CaptureReadySentinel({
         contentVisible,
       }));
 
-      // Ready conditions - ALL must be true (no shortcuts)
       const domStable = msSinceLastMutation >= stabilityMs;
       const isReady = contentVisible && networkSettled && domStable && fontsReady;
 
       if (isReady) {
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+        scrollToTopSafe();
         
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -352,7 +361,7 @@ export function CaptureReadySentinel({
 
       // Timeout - mark ERROR (not ready!) so we know something's wrong
       if (elapsed >= maxWaitMs) {
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+        scrollToTopSafe();
         setState(s => ({ 
           ...s, 
           status: "error", 
@@ -372,7 +381,7 @@ export function CaptureReadySentinel({
         window.clearTimeout(timeoutRef.current);
       }
     };
-  }, [state.status]);
+  }, [enabled, state.status]);
 
   // Expose debug info globally
   useEffect(() => {
@@ -383,6 +392,10 @@ export function CaptureReadySentinel({
       buildId: BUILD_ID,
     };
   }, [state]);
+
+  // CRITICAL: Render null at END, after all hooks have run
+  // This prevents hook order issues when enabled changes
+  if (!enabled) return null;
 
   const elapsedSec = Math.round((Date.now() - state.lastMutationAt) / 1000);
 

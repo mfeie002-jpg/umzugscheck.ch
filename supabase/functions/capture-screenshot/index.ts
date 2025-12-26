@@ -247,7 +247,9 @@ serve(async (req) => {
     const waitForReadySentinel =
       (body as any)?.waitForReadySentinel === true || (isCaptureMode && (body as any)?.waitForReadySentinel !== false);
 
-    const requestedSelector = explicitSelector || (waitForReadySentinel ? '#uc-capture-sentinel[data-status="ready"]' : null);
+    // FIX: Wait for "not loading" instead of just "ready" - this captures error states too
+    // so we can see the error reason in the screenshot instead of blank timeout
+    const requestedSelector = explicitSelector || (waitForReadySentinel ? '#uc-capture-sentinel:not([data-status="loading"])' : null);
 
     // NOTE: We NO longer auto-add uc_render=1.
     // The uc_render parameter triggers special render-mode logic (IntersectionObserver patches, scroll sweeps)
