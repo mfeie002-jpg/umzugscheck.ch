@@ -537,7 +537,17 @@ const App = () => (
                             <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
                             {/* Flow tester routes with redirect for typos/old URLs */}
-                            <Route path="/flow-tester" element={<FlowTester />} />
+                            <Route
+                              path="/flow-tester"
+                              element={
+                                <div className="min-h-[50vh]">
+                                  <div className="px-4 py-3 text-xs text-muted-foreground">
+                                    FlowTester Route aktiv
+                                  </div>
+                                  <FlowTester />
+                                </div>
+                              }
+                            />
                             <Route path="/v3-varianten" element={<V3VariantComparison />} />
                             <Route path="/flow-test" element={<RedirectWithQuery to="/flow-tester" />} />
                             <Route path="/flowtester" element={<RedirectWithQuery to="/flow-tester" />} />
