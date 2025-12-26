@@ -347,24 +347,73 @@ serve(async (req) => {
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
 
     console.log("Requesting screenshot from ScreenshotMachine API");
-    const response = await fetch(apiUrl);
+    let response = await fetch(apiUrl);
 
     // Check for ScreenshotMachine-specific error header (e.g., invalid_selector, timeout)
     const smErrorHeader = response.headers.get("x-screenshotmachine-response");
     if (smErrorHeader && smErrorHeader !== "ok") {
       console.error(`ScreenshotMachine error header: ${smErrorHeader}`);
-      return new Response(
-        JSON.stringify({ 
-          error: `ScreenshotMachine error: ${smErrorHeader}`,
-          smError: smErrorHeader,
-          hint: smErrorHeader === "invalid_selector" 
-            ? "The capture-ready selector was not found - wizard may not have rendered"
-            : smErrorHeader === "timeout"
-            ? "Page took too long to render - try increasing delay"
-            : undefined
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+
+      // If capture-ready selector is missing, retry ONCE without selector.
+      // This keeps "Screenshot Machine" behavior (which doesn't require a selector)
+      // while still allowing deterministic checks when the sentinel exists.
+      if (smErrorHeader === "invalid_selector" && selector) {
+        console.warn("Selector not found; retrying without selector (fallback mode)");
+
+        const retryParams = new URLSearchParams(params);
+        retryParams.delete("selector");
+        const retryApiUrl = `https://api.screenshotmachine.com?${retryParams.toString()}`;
+
+        const retryResponse = await fetch(retryApiUrl);
+        const retryErrorHeader = retryResponse.headers.get("x-screenshotmachine-response");
+        if (retryErrorHeader && retryErrorHeader !== "ok") {
+          console.error(`Retry ScreenshotMachine error header: ${retryErrorHeader}`);
+          return new Response(
+            JSON.stringify({
+              error: `ScreenshotMachine error: ${smErrorHeader}`,
+              smError: smErrorHeader,
+              hint: "The capture-ready selector was not found (and fallback also failed).",
+              selector,
+              fallbackAttempted: true,
+              fallbackError: retryErrorHeader,
+            }),
+            // IMPORTANT: return 200 so the client can show the error without throwing "Edge function returned 500"
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+
+        if (!retryResponse.ok) {
+          const errorText = await retryResponse.text();
+          console.error(`Retry Screenshot API error: ${retryResponse.status}`, errorText);
+          return new Response(
+            JSON.stringify({
+              error: `Screenshot API error: ${retryResponse.status}`,
+              details: errorText,
+              selector,
+              fallbackAttempted: true,
+            }),
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+
+        // Swap in the successful fallback response
+        // NOTE: we keep the original `response` variable usage below by reassigning.
+        response = retryResponse;
+      } else {
+        return new Response(
+          JSON.stringify({
+            error: `ScreenshotMachine error: ${smErrorHeader}`,
+            smError: smErrorHeader,
+            hint: smErrorHeader === "invalid_selector"
+              ? "The capture-ready selector was not found - wizard may not have rendered"
+              : smErrorHeader === "timeout"
+              ? "Page took too long to render - try increasing delay"
+              : undefined,
+          }),
+          // IMPORTANT: return 200 so the client can show the error without throwing "Edge function returned 500"
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     if (!response.ok) {
