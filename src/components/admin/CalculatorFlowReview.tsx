@@ -294,25 +294,36 @@ export function CalculatorFlowReview() {
     for (let i = 0; i < discoveredPages.length; i++) {
       const pageUrl = discoveredPages[i];
       const pageName = new URL(pageUrl).pathname || '/';
-      
+
       // Desktop screenshot
       setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Desktop Screenshot...`);
       const desktopScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.desktop, { fullPage: true });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
-      
+
       // Mobile screenshot
       setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Mobile Screenshot...`);
       const mobileScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.mobile, { fullPage: true });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
-      
+
       // Capture HTML
       setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: HTML...`);
       const html = await captureRenderedHtml(pageUrl);
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
-      
+
+      const meta = generateStepMeta(
+        pageUrl,
+        "page",
+        pageName,
+        i + 1,
+        pageName,
+        desktopScreenshot || undefined,
+        mobileScreenshot || undefined,
+        html || undefined
+      );
+
       steps.push({
         step: i + 1,
         name: pageName,
@@ -321,13 +332,14 @@ export function CalculatorFlowReview() {
         screenshotDesktop: desktopScreenshot || undefined,
         screenshotMobile: mobileScreenshot || undefined,
         html: html || undefined,
+        meta,
       });
     }
-    
+
     setCapturedSteps(steps);
     setCaptureStatus("");
     setIsCapturing(false);
-    
+
     const successCount = steps.filter(s => s.screenshotDesktop || s.screenshotMobile || s.html).length;
     toast.success(`${successCount} von ${steps.length} Seiten erfasst`);
   };
@@ -742,55 +754,71 @@ export function CalculatorFlowReview() {
 
   const downloadAsZip = async () => {
     const zip = new JSZip();
-    const folderName = `umzugsofferten-flow-${new Date().toISOString().split('T')[0]}`;
+    const selectedLabel = calculatorOptions.find(c => c.value === selectedCalculator)?.label || selectedCalculator;
+    const folderName = `chatgpt-package-${selectedCalculator}-${new Date().toISOString().split('T')[0]}`;
     const folder = zip.folder(folderName);
-    
+
     if (!folder) return;
-    
-    // Add README
+
+    // Add README + prompt
     folder.file('README.md', generateReadme());
-    
+    folder.file('chatgpt-prompt.md', generatePromptTemplate());
+
+    // Add a machine-readable index for ChatGPT (helps it orient quickly)
+    const index = {
+      exportedAt: new Date().toISOString(),
+      calculator: selectedLabel,
+      calculatorId: selectedCalculator,
+      steps: capturedSteps.map(s => ({
+        step: s.step,
+        name: s.name,
+        description: s.description,
+        url: s.url,
+        files: {
+          desktop: s.screenshotDesktop ? 'desktop.png' : null,
+          mobile: s.screenshotMobile ? 'mobile.png' : null,
+          html: s.html ? 'rendered.html' : null,
+          meta: s.meta ? 'meta.json' : null,
+          prompt: 'step-prompt.md',
+        },
+      })),
+    };
+    folder.file('index.json', JSON.stringify(index, null, 2));
+
     // Add each step
     for (const step of capturedSteps) {
       const stepFolder = folder.folder(`step-${step.step}-${step.name.replace(/\s+/g, '-').toLowerCase()}`);
       if (!stepFolder) continue;
-      
-      // Add HTML
+
+      // HTML (rendered outer layer)
       if (step.html) {
-        stepFolder.file('page.html', step.html);
+        stepFolder.file('rendered.html', step.html);
       }
-      
-      // Add desktop screenshot
+
+      // Desktop screenshot
       if (step.screenshotDesktop) {
         const base64Data = step.screenshotDesktop.replace(/^data:image\/\w+;base64,/, '');
-        stepFolder.file('screenshot-desktop.png', base64Data, { base64: true });
+        stepFolder.file('desktop.png', base64Data, { base64: true });
       }
-      
-      // Add mobile screenshot
+
+      // Mobile screenshot
       if (step.screenshotMobile) {
         const base64Data = step.screenshotMobile.replace(/^data:image\/\w+;base64,/, '');
-        stepFolder.file('screenshot-mobile.png', base64Data, { base64: true });
+        stepFolder.file('mobile.png', base64Data, { base64: true });
       }
-      
-      // Add step info
-      stepFolder.file('info.json', JSON.stringify({
-        step: step.step,
-        name: step.name,
-        description: step.description,
-        url: step.url,
-        hasDesktopScreenshot: !!step.screenshotDesktop,
-        hasMobileScreenshot: !!step.screenshotMobile,
-        hasHtml: !!step.html,
-        capturedAt: new Date().toISOString(),
-      }, null, 2));
+
+      // Meta JSON (ChatGPT-friendly)
+      if (step.meta) {
+        stepFolder.file('meta.json', JSON.stringify(step.meta, null, 2));
+      }
+
+      // Step-specific prompt (so you can upload 1 folder + prompt)
+      stepFolder.file('step-prompt.md', generateStepPrompt(step));
     }
-    
-    // Add prompt file
-    folder.file('chatgpt-prompt.md', generatePromptTemplate());
-    
+
     const blob = await zip.generateAsync({ type: 'blob' });
     downloadBlob(blob, `${folderName}.zip`);
-    toast.success('ZIP mit Desktop + Mobile Screenshots heruntergeladen');
+    toast.success('ChatGPT-Package heruntergeladen (Screenshots + HTML + Meta)');
   };
 
   // Fetch source code from edge function
@@ -1070,59 +1098,75 @@ Lade die Screenshots aus den jeweiligen Ordnern hoch für eine visuelle Analyse.
 - V10 Ultimate Design mit A/B Roadmap
 `;
 
-  const generateReadme = () => `# Umzugsofferten Flow Review
+  const generateReadme = () => `# ChatGPT Review Package
 
 ## Übersicht
-Dieser Export enthält Desktop und Mobile Screenshots sowie HTML aller Steps des Umzugsofferten-Flows.
+Dieses Package enthält pro Step:
+- Desktop Screenshot (desktop.png)
+- Mobile Screenshot (mobile.png)
+- Rendered HTML Outer Layer (rendered.html)
+- Meta-JSON (meta.json) für Kontext (URL, Step, Dimensions, Timestamp)
 
 ## Inhalt
 ${capturedSteps.map(s => `- Step ${s.step}: ${s.name}
   - Desktop: ${s.screenshotDesktop ? '✓' : '✗'}
   - Mobile: ${s.screenshotMobile ? '✓' : '✗'}
-  - HTML: ${s.html ? '✓' : '✗'}`).join('\n')}
+  - HTML: ${s.html ? '✓' : '✗'}
+  - Meta: ${s.meta ? '✓' : '✗'}`).join('\n')}
 
-## Dateien pro Step
-- screenshot-desktop.png (1920x1080)
-- screenshot-mobile.png (375x812)
-- page.html
-- info.json
+## Struktur
+- index.json (schnelle Übersicht für ChatGPT)
+- chatgpt-prompt.md (Master-Prompt)
+- step-*/
+  - desktop.png
+  - mobile.png
+  - rendered.html
+  - meta.json
+  - step-prompt.md
 
-## Verwendung mit ChatGPT/Claude
-1. Öffne chatgpt-prompt.md
-2. Kopiere den Inhalt
-3. Lade die Screenshots hoch
-4. Füge den Prompt ein
+## Verwendung
+1. Lade die ZIP in ChatGPT/Claude hoch.
+2. Kopiere den Inhalt aus chatgpt-prompt.md.
+3. Falls du nur 1 Step analysieren willst: nutze step-prompt.md im Step-Ordner.
 
 Erstellt: ${new Date().toLocaleString('de-CH')}
 `;
 
-  const generatePromptTemplate = () => `## Umzugsofferten Flow Analyse
+  const generatePromptTemplate = () => `## Umzugsofferten Flow Analyse (ChatGPT Package)
 
-Ich möchte den folgenden Calculator-Flow analysieren lassen:
+Ich habe eine ZIP hochgeladen. Bitte nutze **index.json** als Inhaltsverzeichnis und analysiere die Steps anhand der Screenshots + rendered.html.
 
 **Calculator:** ${calculatorOptions.find(c => c.value === selectedCalculator)?.label}
+
+### Dateien pro Step (im jeweiligen step-Ordner)
+- desktop.png
+- mobile.png
+- rendered.html (HTML outer layer)
+- meta.json (URL + Step-Kontext)
+- step-prompt.md (optional)
 
 ### Flow Steps:
 ${capturedSteps.map(step => `
 **Step ${step.step}: ${step.name}**
 - URL: ${step.url || 'N/A'}
 - Beschreibung: ${step.description}
-- Desktop Screenshot: ${step.screenshotDesktop ? '✓ Vorhanden (screenshot-desktop.png)' : '✗ Nicht erfasst'}
-- Mobile Screenshot: ${step.screenshotMobile ? '✓ Vorhanden (screenshot-mobile.png)' : '✗ Nicht erfasst'}
-- HTML: ${step.html ? '✓ Vorhanden (page.html)' : '✗ Nicht erfasst'}
+- Desktop Screenshot: ${step.screenshotDesktop ? '✓ (desktop.png)' : '✗'}
+- Mobile Screenshot: ${step.screenshotMobile ? '✓ (mobile.png)' : '✗'}
+- HTML: ${step.html ? '✓ (rendered.html)' : '✗'}
+- Meta: ${step.meta ? '✓ (meta.json)' : '✗'}
 `).join('\n')}
 
 ### Analyse-Aufgaben:
-1. **UX-Analyse Desktop:** Bewerte die Benutzerführung und Conversion-Optimierung auf Desktop
-2. **UX-Analyse Mobile:** Bewerte die mobile Nutzererfahrung und Touch-Optimierung
-3. **Design-Feedback:** Identifiziere Verbesserungspotenziale im UI (Desktop & Mobile)
-4. **Responsive Vergleich:** Vergleiche Desktop vs Mobile und identifiziere Inkonsistenzen
-5. **Conversion-Tipps:** Gib konkrete Empfehlungen zur Steigerung der Abschlussrate
+1. **UX-Analyse Desktop**: Benutzerführung, Hierarchie, CTA, Conversion
+2. **UX-Analyse Mobile**: Touch, Scroll, Sticky-CTAs, Lesbarkeit, Friction
+3. **Design/Trust**: Seriösität, Trust-Signale, Copy, Fehlerzustände
+4. **Step-Friction**: Welche Inputs/Entscheidungen bremsen?
+5. **Konkrete Empfehlungen**: Priorisiert (Impact/Confidence/Effort)
 
 ### Gewünschte Ausgabe:
-- Übersichtliche Zusammenfassung
-- Priorisierte Verbesserungsvorschläge für Desktop und Mobile
-- Konkrete Code-Snippets wo hilfreich
+- Kurz-Zusammenfassung pro Step
+- Priorisierte ToDos (Top 10)
+- Optional: konkrete Copy-/Layout-Verbesserungen
 
 ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
 
@@ -1786,7 +1830,7 @@ ${JSON.stringify(step.meta || {}, null, 2)}
               className="bg-green-600 hover:bg-green-700"
             >
               <Package className="w-4 h-4 mr-2" />
-              ZIP Download (Screenshots + HTML)
+              ZIP Download (ChatGPT Package)
             </Button>
           </div>
           
