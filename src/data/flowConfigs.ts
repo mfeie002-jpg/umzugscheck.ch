@@ -234,18 +234,18 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 4, name: 'Kontakt', description: 'Absenden' },
     ],
   },
-  'v3a-feedback': {
-    id: 'v3a-feedback',
-    label: 'V3a - Feedback Based',
-    path: '/flow-tester?variant=v3a-feedback',
-    color: 'bg-green-500',
-    description: 'ChatGPT Feedback optimiert',
+  'v3g': {
+    id: 'v3g',
+    label: 'V3g - Feedback Based',
+    path: '/flow-tester?variant=v3g',
+    color: 'bg-green-600',
+    description: 'ChatGPT UX-Analyse optimiert',
     parentFlow: 'umzugsofferten-v3',
     steps: [
-      { step: 1, name: 'Service wählen', description: 'Slider & Preis' },
-      { step: 2, name: 'Details', description: 'PLZ & Datum' },
-      { step: 3, name: 'Überprüfen', description: 'Überspringbar' },
-      { step: 4, name: 'Kontakt', description: 'Absenden' },
+      { step: 1, name: 'Service wählen', description: 'Slider-Delegation & Preis' },
+      { step: 2, name: 'Details', description: 'Adressen & Datum' },
+      { step: 3, name: 'So geht\'s weiter', description: 'Ablauf & Trust' },
+      { step: 4, name: 'Kontakt', description: 'Offerten anfordern' },
     ],
   },
   'v3b': {
