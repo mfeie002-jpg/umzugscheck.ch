@@ -490,6 +490,8 @@ const App = () => (
                             <Route path="/admin/chatgpt" element={<ChatGPTOverview />} />
                             <Route path="/admin/ai-command" element={<AICommandCenter />} />
                             <Route path="/admin/capabilities" element={<AdminCapabilities />} />
+                            <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
+                            <Route path="/admin/v3-varianten" element={<Navigate to="/v3-varianten" replace />} />
                             <Route path="/admin/funnel" element={<FunnelAnalytics />} />
                             <Route path="/admin/conversions" element={<ConversionAnalytics />} />
                             <Route path="/admin/dynamic-pricing" element={<DynamicPricing />} />
