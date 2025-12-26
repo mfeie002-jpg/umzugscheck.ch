@@ -107,14 +107,34 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
   const suggestNextVersion = (): string => {
     if (versions.length === 0) return "1.0";
     
-    const latestVersion = versions[0].version_number;
-    const parts = latestVersion.split('.');
-    if (parts.length === 2) {
+    // Find the highest version number and increment
+    const versionNumbers = versions.map(v => {
+      const parts = v.version_number.split('.');
       const major = parseInt(parts[0]) || 1;
       const minor = parseInt(parts[1]) || 0;
-      return `${major}.${minor + 1}`;
+      return { major, minor, raw: v.version_number };
+    });
+    
+    // Sort by major then minor descending
+    versionNumbers.sort((a, b) => {
+      if (a.major !== b.major) return b.major - a.major;
+      return b.minor - a.minor;
+    });
+    
+    const highest = versionNumbers[0];
+    let nextMajor = highest.major;
+    let nextMinor = highest.minor + 1;
+    
+    // Check if this version already exists, if so increment until unique
+    let candidate = `${nextMajor}.${nextMinor}`;
+    const existingVersions = new Set(versions.map(v => v.version_number));
+    
+    while (existingVersions.has(candidate)) {
+      nextMinor++;
+      candidate = `${nextMajor}.${nextMinor}`;
     }
-    return "1.0";
+    
+    return candidate;
   };
 
   const saveVersion = async () => {
