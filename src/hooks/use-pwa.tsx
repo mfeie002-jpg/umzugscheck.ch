@@ -5,8 +5,17 @@ export const usePWA = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
-    // Register service worker
-    if ("serviceWorker" in navigator) {
+    const isCaptureLike = (() => {
+      try {
+        const sp = new URLSearchParams(window.location.search);
+        return sp.get("uc_capture") === "1" || sp.get("uc_render") === "1" || sp.has("uc_step");
+      } catch {
+        return false;
+      }
+    })();
+
+    // Register service worker (skip in capture/render modes)
+    if ("serviceWorker" in navigator && !isCaptureLike) {
       navigator.serviceWorker
         .register("/sw.js")
         .then((registration) => {
@@ -15,6 +24,11 @@ export const usePWA = () => {
         .catch((error) => {
           console.error("Service Worker registration failed:", error);
         });
+    }
+
+    // If we're in capture mode, ensure old SWs are removed (prevents cached build mismatches)
+    if ("serviceWorker" in navigator && isCaptureLike) {
+      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
     }
 
     // Listen for install prompt

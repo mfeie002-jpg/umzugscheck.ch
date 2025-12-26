@@ -8,6 +8,11 @@ export interface ScreenshotOptions {
   fullPage?: boolean;
   scroll?: boolean;
   noCache?: boolean;
+  /**
+   * When true, the backend will use a selector that waits for the capture sentinel.
+   * In capture-mode URLs this defaults to true unless explicitly set to false.
+   */
+  waitForReadySentinel?: boolean;
 }
 
 export interface ScreenshotResult {
@@ -38,6 +43,24 @@ export async function captureScreenshot(options: ScreenshotOptions): Promise<Scr
       }
     })();
 
+    const isCaptureLike = (() => {
+      try {
+        const u = new URL(urlWithCacheBuster);
+        return u.searchParams.get('uc_capture') === '1' || u.searchParams.get('uc_render') === '1' || u.searchParams.has('uc_step');
+      } catch {
+        return urlWithCacheBuster.includes('uc_capture=1') || urlWithCacheBuster.includes('uc_step=') || urlWithCacheBuster.includes('uc_render=1');
+      }
+    })();
+
+    // In capture mode we default to NO provider-side scrolling (it often ends at footer/blank),
+    // and instead rely on the in-app stabilization + long delay.
+    const effectiveScroll = options.fullPage
+      ? false
+      : (options.scroll ?? (isCaptureLike ? false : true));
+
+    // In capture mode we default to waiting for the in-app sentinel.
+    const waitForReadySentinel = options.waitForReadySentinel ?? isCaptureLike;
+
     const { data, error } = await supabase.functions.invoke('capture-screenshot', {
       body: {
         url: urlWithCacheBuster,
@@ -47,8 +70,12 @@ export async function captureScreenshot(options: ScreenshotOptions): Promise<Scr
         fullPage: options.fullPage || false,
         // IMPORTANT: many "scroll" based full-page captures create large white gaps.
         // When fullPage is requested, rely on stitching mode instead of scrolling.
-        scroll: options.fullPage ? false : options.scroll !== false,
+        scroll: options.fullPage ? false : effectiveScroll,
         noCache: options.noCache !== false,
+        // Enables provider-side selector for capture-ready (safe because sentinel is viewport-sized)
+        ...(waitForReadySentinel
+          ? { waitForReadySentinel: true, selector: '#uc-capture-sentinel[data-status="ready"]' }
+          : {}),
       },
     });
 

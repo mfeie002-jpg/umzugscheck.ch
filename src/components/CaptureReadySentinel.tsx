@@ -252,21 +252,22 @@ export function CaptureReadySentinel({
       data-uc-flow={state.flow}
       data-uc-reason={state.reason}
       data-uc-pending={state.pendingRequests}
+      data-uc-scroll={typeof window !== "undefined" ? String(window.scrollY) : "0"}
       data-uc-timestamp={Date.now()}
       style={{
+        // IMPORTANT: viewport-sized to make provider `selector` cropping safe.
+        // The screenshot provider crops to the selector's bounding box.
+        // By making this box = viewport, we avoid 1px "micro screenshots".
         position: "fixed",
-        left: 0,
-        bottom: 0,
-        width: 1,
-        height: 1,
-        opacity: 0.01,
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
+        opacity: 0.0001,
         pointerEvents: "none",
-        zIndex: 999999,
+        zIndex: 0,
       }}
       aria-hidden="true"
-    >
-      {state.status}:{state.reason || "none"}
-    </div>
+    />
   );
 }
 

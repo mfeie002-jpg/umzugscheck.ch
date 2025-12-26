@@ -159,6 +159,53 @@ function getPngDimensions(bytes: Uint8Array): { width: number; height: number } 
   return { width, height };
 }
 
+function extractAssetUrlsFromHtml(html: string, baseUrl: string): string[] {
+  const out = new Set<string>();
+  const push = (raw: string) => {
+    try {
+      if (!raw) return;
+      if (raw.startsWith("data:")) return;
+      const u = new URL(raw, baseUrl).toString();
+      if (u.includes("/assets/") || u.endsWith(".js") || u.endsWith(".css")) out.add(u);
+    } catch {
+      // ignore
+    }
+  };
+
+  for (const m of html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)) push(m[1]);
+  for (const m of html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["']/gi)) push(m[1]);
+
+  return [...out];
+}
+
+async function fetchAssetHealth(url: string, traceId: string) {
+  try {
+    const res = await fetch(url, {
+      redirect: "follow",
+      headers: {
+        "cache-control": "no-cache",
+        pragma: "no-cache",
+      },
+    });
+
+    const ct = res.headers.get("content-type") || "";
+    const cc = res.headers.get("cache-control") || "";
+
+    console.log(`[${traceId}] AssetHealth: ${res.status} ${url} ct=${ct} cc=${cc}`);
+
+    return {
+      ok: res.ok,
+      status: res.status,
+      url,
+      contentType: ct,
+      cacheControl: cc,
+    };
+  } catch (e) {
+    console.log(`[${traceId}] AssetHealth: error ${url} ${(e as any)?.message || String(e)}`);
+    return { ok: false, status: 0, url, contentType: "", cacheControl: "" };
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -178,14 +225,29 @@ serve(async (req) => {
       scroll = true,
       noCache = true,
     } = body ?? {};
+    // Determine capture-mode early (used for delays + safer defaults)
+    const isCaptureMode = (() => {
+      try {
+        const u = new URL(url);
+        return u.searchParams.get("uc_capture") === "1" || u.searchParams.has("uc_step") || u.searchParams.get("uc_render") === "1";
+      } catch {
+        const s = String(url);
+        return s.includes("uc_capture=1") || s.includes("uc_step=") || s.includes("uc_render=1");
+      }
+    })();
 
-    // Optional: allow callers to request a specific selector explicitly.
-    // We DO NOT auto-enable selectors anymore because it caused unreliable captures on heavy SPA funnels
-    // (e.g. umzugscheck /umzugsofferten variants) even with long delays.
-    const requestedSelector =
+    // Optional selector:
+    // - If caller passes `selector`, we use it (element capture)
+    // - If caller passes `waitForReadySentinel`, we use our sentinel (readiness + safe cropping)
+    const explicitSelector =
       typeof (body as any)?.selector === "string" && (body as any).selector.trim().length > 0
         ? (body as any).selector.trim()
         : null;
+
+    const waitForReadySentinel =
+      (body as any)?.waitForReadySentinel === true || (isCaptureMode && (body as any)?.waitForReadySentinel !== false);
+
+    const requestedSelector = explicitSelector || (waitForReadySentinel ? '#uc-capture-sentinel[data-status="ready"]' : null);
 
     // NOTE: We NO longer auto-add uc_render=1.
     // The uc_render parameter triggers special render-mode logic (IntersectionObserver patches, scroll sweeps)
@@ -213,6 +275,8 @@ serve(async (req) => {
       contentType: string;
       finalUrl: string;
       hasAssets: boolean;
+      assetsFound?: number;
+      assetsChecked?: Array<{ ok: boolean; status: number; url: string; contentType: string; cacheControl: string }>;
       error?: string;
     } | null = null;
 
@@ -222,25 +286,34 @@ serve(async (req) => {
         redirect: "follow",
         headers: {
           "User-Agent": "Mozilla/5.0 (compatible; UmzugscheckBot/1.0; preflight)",
-          "Accept": "text/html",
+          Accept: "text/html",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
         },
       });
-      
+
       const contentType = preflightResponse.headers.get("content-type") || "";
-      const htmlSnippet = contentType.includes("text/html") 
-        ? (await preflightResponse.text()).slice(0, 1000)
-        : "";
-      
+      const htmlText = contentType.includes("text/html") ? await preflightResponse.text() : "";
+
+      const assetUrls = contentType.includes("text/html")
+        ? extractAssetUrlsFromHtml(htmlText, preflightResponse.url)
+        : [];
+
+      const assetsChecked = await Promise.all(assetUrls.slice(0, 3).map((a) => fetchAssetHealth(a, traceId)));
+
       preflightInfo = {
         status: preflightResponse.status,
         contentType,
         finalUrl: preflightResponse.url,
-        hasAssets: htmlSnippet.includes("/assets/") || htmlSnippet.includes(".js"),
+        hasAssets: assetUrls.length > 0,
+        assetsFound: assetUrls.length,
+        assetsChecked,
       };
 
-      console.log(`[${traceId}] Preflight: status=${preflightInfo.status}, contentType=${contentType.slice(0,50)}, finalUrl=${preflightInfo.finalUrl}, hasAssets=${preflightInfo.hasAssets}`);
+      console.log(
+        `[${traceId}] Preflight: status=${preflightInfo.status}, contentType=${contentType.slice(0, 50)}, finalUrl=${preflightInfo.finalUrl}, hasAssets=${preflightInfo.hasAssets}, assetsFound=${preflightInfo.assetsFound}`
+      );
 
-      // Check for obvious issues
       if (preflightResponse.status === 404) {
         console.error(`[${traceId}] Preflight 404 - URL not found: ${url}`);
       }
@@ -283,14 +356,7 @@ serve(async (req) => {
     // Previous implementation incorrectly limited delay to 10s, causing screenshots of loading states.
     const delayMsRaw = typeof delay === "number" ? delay : Number(delay);
 
-    const isCaptureMode = (() => {
-      try {
-        const u = new URL(url);
-        return u.searchParams.get("uc_capture") === "1" || u.searchParams.has("uc_step");
-      } catch {
-        return String(url).includes("uc_capture=1") || String(url).includes("uc_step=");
-      }
-    })();
+    // (isCaptureMode computed earlier)
 
     // In capture-mode we intentionally wait much longer because the funnel:
     // 1. Is lazy-loaded (React Suspense)
@@ -364,16 +430,19 @@ serve(async (req) => {
     }
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
-    // IMPORTANT: Do NOT force any scroll behavior automatically.
-    // For full-page captures we rely on `xfull` stitching. Forced scrolling can make the provider
-    // capture only the last viewport (often the footer).
-    const shouldScroll = Boolean(scroll);
+    // IMPORTANT:
+    // - For capture-mode funnels (uc_capture / uc_step) we default to NO scrolling.
+    //   Provider scrolling often ends at the footer/blank and results in "header + white" screenshots.
+    // - For full-page captures we rely on `xfull` stitching.
+    const scrollExplicit = typeof scroll === "boolean";
+    const shouldScroll = scrollExplicit ? Boolean(scroll) : (!isCaptureMode && !isFullPage);
+
     if (shouldScroll) {
       params.set("scroll", "true");
       params.set("scrolldelay", "2500");
-      // Only scroll-to-bottom for viewport captures. For full-page stitching this can break output.
-      if (!isFullPage) params.set("scrollto", "bottom");
-      console.log(`Scroll enabled (${isFullPage ? "fullPage=false required" : "viewport"})`);
+      // Only scroll-to-bottom for NON-capture viewport screenshots.
+      if (!isFullPage && !isCaptureMode) params.set("scrollto", "bottom");
+      console.log(`Scroll enabled (${isFullPage ? "fullPage" : "viewport"})`);
     }
 
     // Add hash authentication if secret phrase is configured
@@ -421,52 +490,75 @@ serve(async (req) => {
     if (smErrorHeader && smErrorHeader !== "ok") {
       console.error(`ScreenshotMachine error header: ${smErrorHeader}`);
 
-      // If capture-ready selector is missing, retry ONCE without selector.
-      // This keeps "Screenshot Machine" behavior (which doesn't require a selector)
-      // while still allowing deterministic checks when the sentinel exists.
-      if (smErrorHeader === "invalid_selector" && selector) {
-        console.warn("Selector not found; retrying without selector (fallback mode)");
+       // If capture-ready selector is missing, retry with MORE delay (same selector) once.
+       // If it still fails, retry ONCE without selector.
+       // This avoids "too-early" screenshots on heavy SPAs, while still keeping a fallback.
+       if (smErrorHeader === "invalid_selector" && selector) {
+         console.warn("Selector not found; retrying with increased delay (selector mode)");
 
-        const retryParams = new URLSearchParams(params);
-        retryParams.delete("selector");
-        const retryApiUrl = `https://api.screenshotmachine.com?${retryParams.toString()}`;
+         const retryDelay = Math.min(60000, effectiveDelay + 8000);
+         const retryTimeout = Math.min(120000, retryDelay + 60000);
 
-        const retryResponse = await fetch(retryApiUrl);
-        const retryErrorHeader = retryResponse.headers.get("x-screenshotmachine-response");
-        if (retryErrorHeader && retryErrorHeader !== "ok") {
-          console.error(`Retry ScreenshotMachine error header: ${retryErrorHeader}`);
-          return new Response(
-            JSON.stringify({
-              error: `ScreenshotMachine error: ${smErrorHeader}`,
-              smError: smErrorHeader,
-              hint: "The capture-ready selector was not found (and fallback also failed).",
-              selector,
-              fallbackAttempted: true,
-              fallbackError: retryErrorHeader,
-            }),
-            // IMPORTANT: return 200 so the client can show the error without throwing "Edge function returned 500"
-            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
-        }
+         if (retryDelay > effectiveDelay) {
+           const retryParams1 = new URLSearchParams(params);
+           retryParams1.set("delay", String(retryDelay));
+           retryParams1.set("timeout", String(retryTimeout));
+           const retryApiUrl1 = `https://api.screenshotmachine.com?${retryParams1.toString()}`;
 
-        if (!retryResponse.ok) {
-          const errorText = await retryResponse.text();
-          console.error(`Retry Screenshot API error: ${retryResponse.status}`, errorText);
-          return new Response(
-            JSON.stringify({
-              error: `Screenshot API error: ${retryResponse.status}`,
-              details: errorText,
-              selector,
-              fallbackAttempted: true,
-            }),
-            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
-        }
+           const retryResponse1 = await fetch(retryApiUrl1);
+           const retryErrorHeader1 = retryResponse1.headers.get("x-screenshotmachine-response");
 
-        // Swap in the successful fallback response
-        // NOTE: we keep the original `response` variable usage below by reassigning.
-        response = retryResponse;
-      } else {
+           if (!retryErrorHeader1 || retryErrorHeader1 === "ok") {
+             response = retryResponse1;
+           } else {
+             console.warn(`Retry (selector+delay) error header: ${retryErrorHeader1}`);
+           }
+         }
+
+         // If still failing with selector, fallback without selector
+         const afterRetryHeader = response.headers.get("x-screenshotmachine-response");
+         if (afterRetryHeader && afterRetryHeader !== "ok") {
+           console.warn("Selector still not found; retrying without selector (fallback mode)");
+
+           const retryParams = new URLSearchParams(params);
+           retryParams.delete("selector");
+           const retryApiUrl = `https://api.screenshotmachine.com?${retryParams.toString()}`;
+
+           const retryResponse = await fetch(retryApiUrl);
+           const retryErrorHeader = retryResponse.headers.get("x-screenshotmachine-response");
+           if (retryErrorHeader && retryErrorHeader !== "ok") {
+             console.error(`Retry ScreenshotMachine error header: ${retryErrorHeader}`);
+             return new Response(
+               JSON.stringify({
+                 error: `ScreenshotMachine error: ${smErrorHeader}`,
+                 smError: smErrorHeader,
+                 hint: "The capture-ready selector was not found (and fallback also failed).",
+                 selector,
+                 fallbackAttempted: true,
+                 fallbackError: retryErrorHeader,
+               }),
+               // IMPORTANT: return 200 so the client can show the error without throwing "Edge function returned 500"
+               { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+             );
+           }
+
+           if (!retryResponse.ok) {
+             const errorText = await retryResponse.text();
+             console.error(`Retry Screenshot API error: ${retryResponse.status}`, errorText);
+             return new Response(
+               JSON.stringify({
+                 error: `Screenshot API error: ${retryResponse.status}`,
+                 details: errorText,
+                 selector,
+                 fallbackAttempted: true,
+               }),
+               { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+             );
+           }
+
+           response = retryResponse;
+         }
+       } else {
         return new Response(
           JSON.stringify({
             error: `ScreenshotMachine error: ${smErrorHeader}`,
