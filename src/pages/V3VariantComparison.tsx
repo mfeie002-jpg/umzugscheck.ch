@@ -385,9 +385,9 @@ export default function V3VariantComparison() {
                     Erstelle neue Varianten basierend auf ChatGPT-Feedback im Admin-Bereich.
                   </p>
                   <Button asChild variant="outline">
-                    <Link to="/admin/tools?tab=calculator-review">
+                    <Link to="/admin/tools?tab=screenshots">
                       <BarChart3 className="h-4 w-4 mr-2" />
-                      Zum Workflow Hub
+                      Screenshots vergleichen
                     </Link>
                   </Button>
                 </Card>
@@ -406,7 +406,7 @@ export default function V3VariantComparison() {
                 </Link>
               </Button>
               <Button asChild variant="outline">
-                <Link to="/admin/tools?tab=calculator-review">
+                <Link to="/admin/tools?tab=screenshots">
                   <Eye className="h-4 w-4 mr-2" />
                   Screenshots vergleichen
                 </Link>
