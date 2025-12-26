@@ -88,15 +88,22 @@ const getDefaultPublicBaseUrl = (): string => {
 };
 
 // Helper to build capture URL for a given flow and step
-// CRITICAL: Always include uc_flow to ensure deterministic flow selection
-const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, flowId: string) => {
+// CRITICAL: Always include uc_flow (v1/v2/...) for deterministic selection when available
+const getUcFlowIdForCalculator = (calculatorValue: string): string | null => {
+  if (!calculatorValue.startsWith("umzugsofferten")) return null;
+  if (calculatorValue === "umzugsofferten") return "v1";
+  const match = calculatorValue.match(/-v(\d+)/i);
+  return match?.[1] ? `v${match[1]}` : "v1";
+};
+
+const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, ucFlowId?: string | null) => {
   // uc_render=1 enables render-mode patches (e.g. IntersectionObserver + eager images)
   // uc_flow makes flow selection deterministic (prevents default-flow mismatch)
   // uc_cb busts caches for screenshot tooling.
   const u = new URL(`${baseUrl}${flowPath}`);
   u.searchParams.set("uc_capture", "1");
   u.searchParams.set("uc_step", String(step));
-  u.searchParams.set("uc_flow", flowId);
+  if (ucFlowId) u.searchParams.set("uc_flow", ucFlowId);
   u.searchParams.set("uc_render", "1");
   u.searchParams.set("uc_cb", String(Date.now()));
   return u.toString();
@@ -290,13 +297,13 @@ export function CalculatorFlowReview() {
       
       // Desktop screenshot
       setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Desktop Screenshot...`);
-      const desktopScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.desktop);
+      const desktopScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.desktop, { fullPage: true });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
       
       // Mobile screenshot
       setCaptureStatus(`Seite ${i + 1}/${discoveredPages.length}: Mobile Screenshot...`);
-      const mobileScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.mobile);
+      const mobileScreenshot = await captureScreenshot(pageUrl, DIMENSIONS.mobile, { fullPage: true });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
       
@@ -325,16 +332,24 @@ export function CalculatorFlowReview() {
     toast.success(`${successCount} von ${steps.length} Seiten erfasst`);
   };
 
-  const captureScreenshot = async (url: string, dimension: string): Promise<string | null> => {
+  const captureScreenshot = async (
+    url: string,
+    dimension: string,
+    opts: { fullPage?: boolean; delay?: number } = {}
+  ): Promise<string | null> => {
     try {
+      const fullPage = opts.fullPage ?? false;
+      const delay = opts.delay ?? (String(url).includes("uc_capture=1") ? 30000 : 12000);
+
       console.log(`Capturing screenshot: ${url} with dimension: ${dimension}`);
       const result = await captureScreenshotService({
         url,
         dimension,
-        delay: 8000,
+        delay,
         format: "png",
-        fullPage: true,
-        scroll: true,
+        fullPage,
+        // For step captures (viewport), scrolling can end up in the footer. Keep it off.
+        scroll: false,
         noCache: true,
       });
 
@@ -382,7 +397,7 @@ export function CalculatorFlowReview() {
     const baseUrl = (baseUrlOverride.trim() || getDefaultPublicBaseUrl()).replace(/\/$/, "");
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
-    const flowId = selectedCalc?.value || 'umzugsofferten';
+    const ucFlowId = selectedCalc ? getUcFlowIdForCalculator(selectedCalc.value) : null;
     const steps: FlowStep[] = [];
     const totalOperations = STEP_CONFIGS.length * 3; // desktop + mobile + html per step
     let completedOps = 0;
@@ -390,18 +405,17 @@ export function CalculatorFlowReview() {
     for (let i = 0; i < STEP_CONFIGS.length; i++) {
       const config = STEP_CONFIGS[i];
       // Construct URL with uc_capture mode for deterministic step rendering
-      // CRITICAL: Include flowId to ensure correct flow is rendered
-      const fullUrl = buildCaptureUrl(baseUrl, calculatorPath, config.step, flowId);
+      const fullUrl = buildCaptureUrl(baseUrl, calculatorPath, config.step, ucFlowId);
 
-      // Desktop screenshot
+      // Desktop screenshot (viewport only)
       setCaptureStatus(`Step ${config.step}: Desktop Screenshot...`);
-      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop);
+      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop, { fullPage: false });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
       
-      // Mobile screenshot
+      // Mobile screenshot (viewport only)
       setCaptureStatus(`Step ${config.step}: Mobile Screenshot...`);
-      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile);
+      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile, { fullPage: false });
       completedOps++;
       setCaptureProgress((completedOps / totalOperations) * 100);
       
@@ -414,7 +428,7 @@ export function CalculatorFlowReview() {
       // Generate meta JSON for ChatGPT analysis
       const meta = generateStepMeta(
         fullUrl,
-        flowId,
+        ucFlowId || "unknown",
         calculatorPath,
         config.step,
         config.name,
@@ -446,16 +460,17 @@ export function CalculatorFlowReview() {
   const generateMockSteps = () => {
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
-    const flowId = selectedCalc?.value || 'umzugsofferten';
+    const ucFlowId = selectedCalc ? getUcFlowIdForCalculator(selectedCalc.value) : null;
     const mockSteps: FlowStep[] = STEP_CONFIGS.map(config => {
-      const url = buildCaptureUrl(getDefaultPublicBaseUrl(), calculatorPath, config.step, flowId);
+      const url = buildCaptureUrl(getDefaultPublicBaseUrl(), calculatorPath, config.step, ucFlowId);
+      const html = getMockHtml(config.step);
       return {
         step: config.step,
         name: config.name,
         description: config.description,
         url,
-        html: getMockHtml(config.step),
-        meta: generateStepMeta(url, flowId, calculatorPath, config.step, config.name, undefined, undefined, getMockHtml(config.step)),
+        html,
+        meta: generateStepMeta(url, ucFlowId || "unknown", calculatorPath, config.step, config.name, undefined, undefined, html),
       };
     });
     
@@ -835,13 +850,14 @@ export function CalculatorFlowReview() {
       setCaptureStatus(`${flow.label}: Desktop Screenshot...`);
       // Use deterministic capture mode so the screenshot/HTML fetch never depends on cookies/localStorage
       // (and avoids any login walls / gated previews).
-      const fullUrl = buildCaptureUrl(baseUrl, flow.path, 1, flow.value);
+      const ucFlowId = getUcFlowIdForCalculator(flow.value);
+      const fullUrl = buildCaptureUrl(baseUrl, flow.path, 1, ucFlowId);
 
       // Capture desktop screenshot
-      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop);
+      const desktopScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.desktop, { fullPage: false });
 
       setCaptureStatus(`${flow.label}: Mobile Screenshot...`);
-      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile);
+      const mobileScreenshot = await captureScreenshot(fullUrl, DIMENSIONS.mobile, { fullPage: false });
 
       setCaptureStatus(`${flow.label}: HTML...`);
       const html = await captureRenderedHtml(fullUrl);
