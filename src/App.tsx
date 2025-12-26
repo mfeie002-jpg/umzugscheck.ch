@@ -217,7 +217,9 @@ const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 
 // Other pages
 const Umzugsofferten = lazy(() => import("./pages/Umzugsofferten"));
+const UmzugsoffertenBaseline = lazy(() => import("./pages/UmzugsoffertenBaseline"));
 const UmzugsoffertenV1 = lazy(() => import("./pages/UmzugsoffertenV1"));
+const UmzugsoffertenV1a = lazy(() => import("./pages/UmzugsoffertenV1a"));
 const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 const FlowTester = lazy(() => import("./pages/FlowTester"));
@@ -505,7 +507,9 @@ const App = () => (
                             <Route path="/anbieter/preise" element={<ProviderPricing />} />
                             <Route path="/anbieter/portal" element={<ProviderPortal />} />
                             <Route path="/umzugsofferten" element={<Umzugsofferten />} />
+                            <Route path="/umzugsofferten-baseline" element={<UmzugsoffertenBaseline />} />
                             <Route path="/umzugsofferten-v1" element={<UmzugsoffertenV1 />} />
+                            <Route path="/umzugsofferten-v1a" element={<UmzugsoffertenV1a />} />
                             <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v3" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v4" element={<UmzugsoffertenVariant />} />
