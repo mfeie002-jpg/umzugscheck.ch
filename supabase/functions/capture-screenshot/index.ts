@@ -164,6 +164,9 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Generate trace ID for request correlation
+  const traceId = crypto.randomUUID().slice(0, 8);
+
   try {
     const body = await req.json();
     let {
@@ -195,9 +198,71 @@ serve(async (req) => {
 
     if (!url) {
       return new Response(
-        JSON.stringify({ error: "URL is required" }),
+        JSON.stringify({ error: "URL is required", traceId }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    console.log(`[${traceId}] Starting capture for: ${url}`);
+
+    // === PREFLIGHT CHECK ===
+    // Fetch the target URL to verify it's accessible and returns HTML
+    // This helps diagnose 404s, redirects, and build mismatches early
+    let preflightInfo: {
+      status: number;
+      contentType: string;
+      finalUrl: string;
+      hasAssets: boolean;
+      error?: string;
+    } | null = null;
+
+    try {
+      const preflightResponse = await fetch(url, {
+        method: "GET",
+        redirect: "follow",
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; UmzugscheckBot/1.0; preflight)",
+          "Accept": "text/html",
+        },
+      });
+      
+      const contentType = preflightResponse.headers.get("content-type") || "";
+      const htmlSnippet = contentType.includes("text/html") 
+        ? (await preflightResponse.text()).slice(0, 1000)
+        : "";
+      
+      preflightInfo = {
+        status: preflightResponse.status,
+        contentType,
+        finalUrl: preflightResponse.url,
+        hasAssets: htmlSnippet.includes("/assets/") || htmlSnippet.includes(".js"),
+      };
+
+      console.log(`[${traceId}] Preflight: status=${preflightInfo.status}, contentType=${contentType.slice(0,50)}, finalUrl=${preflightInfo.finalUrl}, hasAssets=${preflightInfo.hasAssets}`);
+
+      // Check for obvious issues
+      if (preflightResponse.status === 404) {
+        console.error(`[${traceId}] Preflight 404 - URL not found: ${url}`);
+      }
+      if (preflightResponse.status >= 500) {
+        console.error(`[${traceId}] Preflight ${preflightResponse.status} - Server error`);
+      }
+      if (!contentType.includes("text/html")) {
+        console.warn(`[${traceId}] Preflight: unexpected content-type (not HTML)`);
+      }
+      if (preflightInfo.finalUrl !== url) {
+        console.log(`[${traceId}] Preflight: URL was redirected to ${preflightInfo.finalUrl}`);
+      }
+    } catch (preflightError) {
+      const errMsg = preflightError instanceof Error ? preflightError.message : String(preflightError);
+      console.warn(`[${traceId}] Preflight failed: ${errMsg}`);
+      preflightInfo = {
+        status: 0,
+        contentType: "",
+        finalUrl: url,
+        hasAssets: false,
+        error: errMsg,
+      };
     }
 
     // Parse dimension to detect mobile/tablet
@@ -520,6 +585,8 @@ serve(async (req) => {
         imageWidth: pngDims?.width ?? null,
         imageHeight: pngDims?.height ?? null,
         capturedAt: new Date().toISOString(),
+        traceId,
+        preflight: preflightInfo,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
