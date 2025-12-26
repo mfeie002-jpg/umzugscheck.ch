@@ -6,7 +6,11 @@
  * - V3.a-e: Mobile-first variants
  * - V4.a-e: Conversion-focused variants
  * - V5.a-e: Accessibility-focused variants
+ * 
+ * Each variant exports its step count for dynamic capture
  */
+
+import { SUB_VARIANT_CONFIGS, getFlowStepCount } from '@/data/flowConfigs';
 
 // V2 Variants (UX-Optimized)
 export { V2aProgressEnhanced } from './V2aProgressEnhanced';
@@ -37,31 +41,53 @@ export { V5cKeyboardNav } from './V5cKeyboardNav';
 export { V5dLargeText } from './V5dLargeText';
 export { V5eReducedMotion } from './V5eReducedMotion';
 
-// Variant Registry for dynamic loading
-export const VARIANT_REGISTRY: Record<string, string> = {
+// Variant Registry with step counts for dynamic capture
+export const VARIANT_REGISTRY: Record<string, { 
+  component: string; 
+  stepCount: number;
+  label: string;
+}> = {
   // V2 - UX Optimized
-  '2a': 'V2aProgressEnhanced',
-  '2b': 'V2bSimplifiedLabels',
-  '2c': 'V2cTrustFocused',
-  '2d': 'V2dSpeedOptimized',
-  '2e': 'V2eExperimental',
+  'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Progress Enhanced' },
+  'v2b': { component: 'V2bSimplifiedLabels', stepCount: 4, label: 'V2b Simplified Labels' },
+  'v2c': { component: 'V2cTrustFocused', stepCount: 4, label: 'V2c Trust Focused' },
+  'v2d': { component: 'V2dSpeedOptimized', stepCount: 3, label: 'V2d Speed Optimized' },
+  'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
   // V3 - Mobile-First
-  '3a': 'V3aMobileFirst',
-  '3a-feedback': 'V3aFeedbackBased',
-  '3b': 'V3bSwipeNavigation',
-  '3c': 'V3cBottomSheet',
-  '3d': 'V3dThumbZone',
-  '3e': 'V3eFullscreen',
+  'v3a': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3a Mobile First' },
+  'v3a-feedback': { component: 'V3aFeedbackBased', stepCount: 4, label: 'V3a Feedback Based' },
+  'v3b': { component: 'V3bSwipeNavigation', stepCount: 4, label: 'V3b Swipe Navigation' },
+  'v3c': { component: 'V3cBottomSheet', stepCount: 4, label: 'V3c Bottom Sheet' },
+  'v3d': { component: 'V3dThumbZone', stepCount: 3, label: 'V3d Thumb Zone' },
+  'v3e': { component: 'V3eFullscreen', stepCount: 3, label: 'V3e Fullscreen' },
   // V4 - Conversion-Focused
-  '4a': 'V4aUrgencyBased',
-  '4b': 'V4bSocialProof',
-  '4c': 'V4cValueFirst',
-  '4d': 'V4dGamified',
-  '4e': 'V4eMinimalFriction',
+  'v4a': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4a Urgency Based' },
+  'v4b': { component: 'V4bSocialProof', stepCount: 3, label: 'V4b Social Proof' },
+  'v4c': { component: 'V4cValueFirst', stepCount: 3, label: 'V4c Value First' },
+  'v4d': { component: 'V4dGamified', stepCount: 4, label: 'V4d Gamified' },
+  'v4e': { component: 'V4eMinimalFriction', stepCount: 2, label: 'V4e Minimal Friction' },
   // V5 - Accessibility-Focused
-  '5a': 'V5aHighContrast',
-  '5b': 'V5bScreenReader',
-  '5c': 'V5cKeyboardNav',
-  '5d': 'V5dLargeText',
-  '5e': 'V5eReducedMotion',
+  'v5a': { component: 'V5aHighContrast', stepCount: 4, label: 'V5a High Contrast' },
+  'v5b': { component: 'V5bScreenReader', stepCount: 3, label: 'V5b Screen Reader' },
+  'v5c': { component: 'V5cKeyboardNav', stepCount: 3, label: 'V5c Keyboard Nav' },
+  'v5d': { component: 'V5dLargeText', stepCount: 3, label: 'V5d Large Text' },
+  'v5e': { component: 'V5eReducedMotion', stepCount: 3, label: 'V5e Reduced Motion' },
 };
+
+// Get step count for a variant
+export const getVariantStepCount = (variantId: string): number => {
+  const normalizedId = variantId.toLowerCase().replace('v', '');
+  const variant = VARIANT_REGISTRY[`v${normalizedId}`] || VARIANT_REGISTRY[variantId];
+  return variant?.stepCount || 4;
+};
+
+// Get all variants with their step counts
+export const getAllVariantsWithSteps = () => {
+  return Object.entries(VARIANT_REGISTRY).map(([id, config]) => ({
+    id,
+    ...config,
+  }));
+};
+
+// Re-export flow config functions for convenience
+export { SUB_VARIANT_CONFIGS, getFlowStepCount } from '@/data/flowConfigs';

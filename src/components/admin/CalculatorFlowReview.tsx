@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { SITE_CONFIG } from "@/data/constants";
-import { FLOW_CONFIGS, getFlowSteps, getFlowVariants, getUcFlowId, getTotalStepsAllFlows, OTHER_CALCULATORS } from "@/data/flowConfigs";
+import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS, getFlowSteps, getFlowVariants, getUcFlowId, getTotalStepsAllFlows, OTHER_CALCULATORS, getFlowConfig } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
 import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
 import { toast } from "sonner";
@@ -81,11 +81,16 @@ const DEFAULT_STEP_CONFIGS = [
   { step: 4, name: "Step 4", description: "Fourth step" },
 ];
 
-// Helper function to get step configs for current calculator
+// Helper function to get step configs for current calculator (supports main flows + sub-variants)
 const getStepConfigsForCalculator = (calculatorValue: string) => {
-  // Check if it's a flow variant
+  // Check if it's a main flow variant
   if (FLOW_CONFIGS[calculatorValue]) {
     return FLOW_CONFIGS[calculatorValue].steps;
+  }
+  // Check if it's a sub-variant (v2a, v3a-feedback, etc.)
+  const subVariantId = calculatorValue.toLowerCase().replace('-', '');
+  if (SUB_VARIANT_CONFIGS[subVariantId]) {
+    return SUB_VARIANT_CONFIGS[subVariantId].steps;
   }
   // Check other calculators
   const otherCalc = OTHER_CALCULATORS.find(c => c.value === calculatorValue);
