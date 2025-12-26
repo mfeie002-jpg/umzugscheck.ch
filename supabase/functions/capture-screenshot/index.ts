@@ -408,9 +408,10 @@ serve(async (req) => {
     const effectiveTimeoutMs = Math.min(120000, effectiveDelay + 60000);
 
     // ScreenshotMachine's `selector` parameter crops the screenshot to that element.
-    // We therefore ONLY set it when the caller explicitly requests element-capture.
-    // (For readiness we rely on delay + our in-app debug sentinel, not provider-side selectors.)
-    const selector = requestedSelector;
+    // CRITICAL FIX: Do NOT use selector for fullPage/xfull captures - it causes wrong cropping.
+    // For viewport captures, selector is safe (sentinel is viewport-sized).
+    const useSelector = requestedSelector && !isFullPage && !isDimensionFull;
+    const selector = useSelector ? requestedSelector : null;
 
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
@@ -423,10 +424,12 @@ serve(async (req) => {
       timeout: String(effectiveTimeoutMs),
     });
 
-    // Optional element capture (only if explicitly requested by the caller)
+    // Optional element capture (only for viewport captures, NOT fullPage)
     if (selector) {
       params.set("selector", selector);
-      console.log(`Selector enabled (element capture): ${selector}`);
+      console.log(`Selector enabled (viewport capture): ${selector}`);
+    } else if (requestedSelector && isFullPage) {
+      console.log(`Selector DISABLED for fullPage capture (would cause wrong cropping)`);
     }
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
