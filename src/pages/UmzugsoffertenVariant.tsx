@@ -31,8 +31,10 @@ import { DecisionFreeWizard } from "@/components/decisionfree-v8/DecisionFreeWiz
 import { ZeroFrictionWizard } from "@/components/zerofriction-v9/ZeroFrictionWizard";
 import { Link, useLocation } from "react-router-dom";
 import { getVariantFromPath, type FlowVariantConfig } from "@/lib/flow-variants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { getUcCaptureParams } from "@/lib/uc-capture";
+import { CaptureReadySentinel } from "@/components/CaptureReadySentinel";
 
 interface UmzugsoffertenVariantProps {
   variantId?: string;
@@ -40,6 +42,8 @@ interface UmzugsoffertenVariantProps {
 
 const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
   const location = useLocation();
+  const captureParams = getUcCaptureParams(location.search);
+  const [captureReady, setCaptureReady] = useState(false);
   
   // Get variant config from prop or URL
   const variant: FlowVariantConfig = variantId 
@@ -54,6 +58,16 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
     // Log for debugging
     console.log(`[Flow Variant] Viewing: ${variant.id} - ${variant.name}`);
   }, [variant.id, variant.name]);
+
+  // In capture mode, mark "ready" only after first client paint.
+  useEffect(() => {
+    if (!captureParams.enabled) {
+      setCaptureReady(false);
+      return;
+    }
+    const t = window.setTimeout(() => setCaptureReady(true), 0);
+    return () => window.clearTimeout(t);
+  }, [captureParams.enabled, captureParams.step, captureParams.flow, variant.id]);
 
   // Dynamic SEO based on variant
   const getTitle = () => {
@@ -245,6 +259,14 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
             </div>
           </div>
         </section>
+
+        {/* Capture-ready sentinel for screenshot automation */}
+        <CaptureReadySentinel
+          step={captureParams.step ?? 1}
+          flow={captureParams.flow ?? variant.id}
+          isReady={captureReady}
+          metadata={{ variant: variant.id, route: location.pathname }}
+        />
       </main>
 
       {/* Mobile Sticky CTA */}
