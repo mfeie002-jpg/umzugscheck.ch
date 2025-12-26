@@ -34,10 +34,6 @@ const UmzugsoffertenBaseline = () => {
       </Helmet>
 
       <main id="main-content">
-        {/* Test Banner */}
-        <div className="bg-blue-500 text-white text-center py-2 px-4 text-sm font-medium">
-          📋 Baseline (Original) – Ausgangspunkt für neue Test-Versionen
-        </div>
 
         {/* Breadcrumbs */}
         <div className="container mx-auto px-4 sm:px-6 pt-3 sm:pt-4 max-w-6xl">

@@ -44,10 +44,6 @@ const UmzugsoffertenV1a = () => {
       </Helmet>
 
       <main id="main-content">
-        {/* Test Banner */}
-        <div className="bg-amber-500 text-amber-950 text-center py-2 px-4 text-sm font-medium">
-          🧪 Test V1.a – ChatGPT Mobile UX Optimierungen
-        </div>
 
         {/* Breadcrumbs */}
         <div className="container mx-auto px-4 sm:px-6 pt-3 sm:pt-4 max-w-6xl">

@@ -162,13 +162,6 @@ const UmzugsoffertenVariant = ({ variantId }: UmzugsoffertenVariantProps) => {
         <div className="container mx-auto px-4 sm:px-6 pt-3 sm:pt-4 max-w-6xl">
           <h1 className="sr-only">{variant.headline}</h1>
           <Breadcrumbs items={[{ label: "Umzugsofferten vergleichen" }]} />
-          
-          {/* Variant indicator for testing */}
-          <div className="mt-2 inline-flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-            <span className="font-medium">Variante:</span>
-            <span>{variant.name}</span>
-            <span className="text-muted-foreground/60">({variant.id})</span>
-          </div>
         </div>
 
         {/* Hero with Calculator - Use specific calculator for each variant */}
