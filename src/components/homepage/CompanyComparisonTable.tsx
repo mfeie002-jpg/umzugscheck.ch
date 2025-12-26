@@ -227,9 +227,9 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         )}
       </AnimatePresence>
 
-      {/* Selection Counter */}
+      {/* Selection Counter - ChatGPT #5: improved text size */}
       <div
-        className={`p-2.5 rounded-lg text-center text-xs font-medium transition-all ${
+        className={`p-2.5 rounded-lg text-center text-[12px] font-medium transition-all ${
           selectedCompanies.length >= 3
             ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
             : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
@@ -339,9 +339,17 @@ function CompanyCard({
     >
       {/* Promoted Badge */}
       {isPromoted && (
-        <div className="bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-center py-1 text-[9px] font-bold flex items-center justify-center gap-1">
+        <div className="bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-center py-1 text-[10px] font-bold flex items-center justify-center gap-1">
           <Sparkles className="w-3 h-3" />
           Gesponsert · Premium Partner
+        </div>
+      )}
+      
+      {/* ChatGPT #9: "Empfohlen"-Badge for recommended companies */}
+      {!isPromoted && isSelected && (
+        <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-center py-1 text-[10px] font-bold flex items-center justify-center gap-1">
+          <Award className="w-3 h-3" />
+          Empfohlen
         </div>
       )}
 
@@ -400,14 +408,14 @@ function CompanyCard({
                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                   <span className="font-bold text-sm">{company.rating}</span>
                 </div>
-                <p className="text-[9px] text-muted-foreground">({company.review_count} Bew.)</p>
+                <p className="text-[10px] text-muted-foreground">({company.review_count} Bew.)</p>
               </div>
             </div>
 
             {/* Stats Row */}
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              {/* Match */}
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-semibold">
+              {/* Match - ChatGPT #5: improved text size */}
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[11px] font-semibold">
                 <Zap className="w-2.5 h-2.5" />
                 {matchPercent}% Match
               </span>

@@ -79,7 +79,8 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         </p>
       </div>
       
-      <div className="grid grid-cols-2 gap-3">
+      {/* ChatGPT #3: 3-spaltig zentriert für bessere Balance (mit 4 Optionen jetzt 2x2) */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-md mx-auto">
         {moveTypeOptions.map((option, index) => {
           const isSelected = value === option.value;
           const Icon = option.icon;
@@ -130,7 +131,8 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
               )}>
                 {option.label}
               </span>
-              <span className="text-xs text-muted-foreground mt-0.5">
+              {/* ChatGPT #5: Mindestschriftgröße 12px für bessere Lesbarkeit */}
+              <span className="text-[12px] text-muted-foreground mt-0.5">
                 {option.description}
               </span>
             </motion.button>

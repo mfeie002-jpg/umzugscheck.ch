@@ -37,16 +37,75 @@ import { SubmitOptionsCardV1 } from "./SubmitOptionsCardV1";
 // Storage key for form persistence
 const FORM_STORAGE_KEY = "umzugscheck_form_data_v1";
 
+// Extended Swiss postal codes for better autocomplete (ChatGPT #1)
 const swissPostalCodes = [
+  // Zürich area
   { code: "8001", city: "Zürich" },
   { code: "8002", city: "Zürich" },
+  { code: "8003", city: "Zürich" },
+  { code: "8004", city: "Zürich" },
+  { code: "8005", city: "Zürich" },
+  { code: "8006", city: "Zürich" },
+  { code: "8008", city: "Zürich" },
+  { code: "8032", city: "Zürich" },
+  { code: "8037", city: "Zürich" },
+  { code: "8045", city: "Zürich" },
+  { code: "8048", city: "Zürich" },
+  { code: "8055", city: "Zürich" },
+  { code: "8057", city: "Zürich" },
+  // Bern area
   { code: "3000", city: "Bern" },
   { code: "3011", city: "Bern" },
+  { code: "3012", city: "Bern" },
+  { code: "3013", city: "Bern" },
+  { code: "3014", city: "Bern" },
+  { code: "3018", city: "Bern" },
+  // Basel area
   { code: "4000", city: "Basel" },
+  { code: "4001", city: "Basel" },
+  { code: "4051", city: "Basel" },
+  { code: "4052", city: "Basel" },
+  { code: "4053", city: "Basel" },
+  { code: "4055", city: "Basel" },
+  // Luzern
   { code: "6000", city: "Luzern" },
+  { code: "6003", city: "Luzern" },
+  { code: "6004", city: "Luzern" },
+  { code: "6005", city: "Luzern" },
+  // Geneva
   { code: "1200", city: "Genève" },
+  { code: "1201", city: "Genève" },
+  { code: "1202", city: "Genève" },
+  { code: "1203", city: "Genève" },
+  { code: "1204", city: "Genève" },
+  { code: "1205", city: "Genève" },
+  // Lausanne
+  { code: "1000", city: "Lausanne" },
+  { code: "1003", city: "Lausanne" },
+  { code: "1004", city: "Lausanne" },
+  { code: "1005", city: "Lausanne" },
+  // Other major cities
   { code: "9000", city: "St. Gallen" },
+  { code: "9001", city: "St. Gallen" },
   { code: "8400", city: "Winterthur" },
+  { code: "8401", city: "Winterthur" },
+  { code: "5000", city: "Aarau" },
+  { code: "5400", city: "Baden" },
+  { code: "6900", city: "Lugano" },
+  { code: "7000", city: "Chur" },
+  { code: "2000", city: "Neuchâtel" },
+  { code: "1700", city: "Fribourg" },
+  { code: "8200", city: "Schaffhausen" },
+  { code: "4600", city: "Olten" },
+  { code: "2500", city: "Biel/Bienne" },
+  { code: "3600", city: "Thun" },
+  { code: "8500", city: "Frauenfeld" },
+  { code: "8600", city: "Dübendorf" },
+  { code: "8700", city: "Küsnacht" },
+  { code: "8800", city: "Thalwil" },
+  { code: "8810", city: "Horgen" },
+  { code: "8820", city: "Wädenswil" },
+  { code: "8610", city: "Uster" },
 ];
 
 // Enhanced services with detailed info
@@ -206,12 +265,13 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
         }`}
         aria-disabled={service.id === "umzug"}
       >
+        {/* ChatGPT #4: Deutlicherer Selektionsindikator mit größerem Häkchen */}
         <div
-          className={`w-4 h-4 rounded flex items-center justify-center border-2 shrink-0 ${
+          className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 ${
             isSelected ? "bg-primary border-primary" : "border-border"
           }`}
         >
-          {isSelected && <CheckCircle className="w-3 h-3 text-primary-foreground" />}
+          {isSelected && <CheckCircle className="w-4 h-4 text-primary-foreground" />}
         </div>
 
         <div
@@ -224,19 +284,21 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <p className="text-xs font-semibold truncate">{service.label}</p>
+            {/* ChatGPT #5: Mindestschriftgröße 12px */}
+            <p className="text-[12px] font-semibold truncate">{service.label}</p>
             {(service as any).highlight && (
-              <span className="text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold shrink-0 animate-pulse">
+              <span className="text-[9px] bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold shrink-0 animate-pulse">
                 💡 Tipp
               </span>
             )}
             {service.popular && !(service as any).highlight && (
-              <span className="text-[8px] bg-secondary text-secondary-foreground px-1 py-0.5 rounded-full font-medium shrink-0">
+              <span className="text-[9px] bg-secondary text-secondary-foreground px-1 py-0.5 rounded-full font-medium shrink-0">
                 Beliebt
               </span>
             )}
           </div>
-          <p className="text-[10px] text-muted-foreground truncate">
+          {/* ChatGPT #5: Mindestschriftgröße 12px für Beschreibung */}
+          <p className="text-[11px] text-muted-foreground truncate">
             {service.description}
           </p>
         </div>
@@ -546,7 +608,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                formData.toLocation.trim() !== "" && 
                formData.apartmentSize !== "" &&
                formData.selectedServices.length > 0 &&
-               formData.moveDate !== "";
+               formData.moveDate !== ""; // moveDate can be a date string or "flexible"
       case 3:
         return formData.selectedCompanies.length >= 3;
       case 4:
@@ -686,7 +748,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               </div>
 
               <div className="space-y-3">
-                {/* Location Inputs */}
+                {/* Location Inputs - ChatGPT #10: Mobile-freundliche Input mit Pattern */}
                 <div className="grid grid-cols-2 gap-2">
                   <ValidatedInput
                     schema={postalCodeSchema}
@@ -694,9 +756,9 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     onValueChange={(v) => updateFormData("fromLocation", v)}
                     label="Von"
                     icon={<MapPin className="w-4 h-4 text-primary" />}
-                    placeholder="PLZ/Ort"
+                    placeholder="PLZ Ort"
                     list="from-suggestions-v1"
-                    inputMode="text"
+                    autoComplete="postal-code"
                   />
                   <ValidatedInput
                     schema={postalCodeSchema}
@@ -704,9 +766,9 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     onValueChange={(v) => updateFormData("toLocation", v)}
                     label="Nach"
                     icon={<MapPin className="w-4 h-4 text-secondary" />}
-                    placeholder="PLZ/Ort"
+                    placeholder="PLZ Ort"
                     list="to-suggestions-v1"
-                    inputMode="text"
+                    autoComplete="postal-code"
                   />
                 </div>
                 <datalist id="from-suggestions-v1">
@@ -750,27 +812,35 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </motion.div>
                 )}
 
-                {/* Move Date */}
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-primary" />
-                    Umzugsdatum *
-                    {!formData.moveDate && (
-                      <span className="text-[9px] text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" />
-                        Pflichtfeld
-                      </span>
-                    )}
+              {/* Move Date - ChatGPT #2: Option "Datum noch nicht fix" */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-primary" />
+                  Umzugsdatum
+                </label>
+                <div className="flex items-center gap-2 mb-2">
+                  <Checkbox
+                    id="date-flexible-v1"
+                    checked={formData.moveDate === "flexible"}
+                    onCheckedChange={(checked) => {
+                      updateFormData("moveDate", checked ? "flexible" : "");
+                    }}
+                    className="h-4 w-4"
+                  />
+                  <label htmlFor="date-flexible-v1" className="text-[12px] text-muted-foreground cursor-pointer">
+                    Termin noch offen / flexibel
                   </label>
+                </div>
+                {formData.moveDate !== "flexible" && (
                   <Input
                     type="date"
-                    value={formData.moveDate}
+                    value={formData.moveDate === "flexible" ? "" : formData.moveDate}
                     onChange={(e) => updateFormData("moveDate", e.target.value)}
                     className={`h-10 rounded-xl ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
                     min={new Date().toISOString().split('T')[0]}
-                    required
                   />
-                </div>
+                )}
+              </div>
 
                 {/* KI Video-Analyzer */}
                 <motion.div
@@ -923,15 +993,15 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     <>Wählen Sie <span className="text-secondary">mind. 3 Firmen</span></>
                   )}
                 </h3>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   {formData.selectedCompanies.length > 0 
                     ? "Empfohlen vorausgewählt – jederzeit änderbar"
                     : "Mehr Offerten = bessere Vergleichsmöglichkeit"
                   }
                 </p>
-                {/* V1: Pre-selection explanation */}
-                <p className="text-[10px] text-muted-foreground/80 mt-1 italic">
-                  💡 Empfohlen basierend auf Bewertungen, Verfügbarkeit & Nähe zu Ihrem Standort
+                {/* V1/ChatGPT #9: Pre-selection explanation improved */}
+                <p className="text-[11px] text-muted-foreground/80 mt-1 italic">
+                  💡 Firmen mit „Empfohlen"-Badge basieren auf Bewertungen, Verfügbarkeit & Nähe zu Ihrem Standort
                 </p>
               </div>
 
@@ -1064,15 +1134,21 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
-            <Button
-              type="button"
-              onClick={handleSubmit}
-              disabled={!canProceed()}
-              className="flex-1 h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-cta"
-            >
-              <CheckCircle className="w-5 h-5 mr-2" />
-              {getSubmitButtonText()}
-            </Button>
+            <div className="flex-1 flex flex-col items-center">
+              <Button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!canProceed()}
+                className="w-full h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-cta"
+              >
+                <CheckCircle className="w-5 h-5 mr-2" />
+                {getSubmitButtonText()}
+              </Button>
+              {/* ChatGPT #8: Kostenlos & unverbindlich beim Submit-Button */}
+              <p className="text-[11px] text-muted-foreground mt-2 text-center">
+                ✓ 100% kostenlos & unverbindlich · Keine versteckten Kosten
+              </p>
+            </div>
           )}
         </div>
         
