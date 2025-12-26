@@ -396,6 +396,45 @@ export type Database = {
           },
         ]
       }
+      custom_flow_configs: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          flow_id: string
+          id: string
+          is_active: boolean
+          label: string
+          path: string
+          steps: Json
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          flow_id: string
+          id?: string
+          is_active?: boolean
+          label: string
+          path: string
+          steps?: Json
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          flow_id?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          path?: string
+          steps?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_automation_settings: {
         Row: {
           alert_type: string

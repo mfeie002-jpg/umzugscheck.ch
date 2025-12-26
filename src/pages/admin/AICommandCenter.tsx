@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { AdminHelpButton } from "@/components/admin/AdminHelpSystem";
 import { FlowFeedbackVariants } from "@/components/admin/FlowFeedbackVariants";
+import { CustomFlowManager } from "@/components/admin/CustomFlowManager";
+import { CHATGPT_PROMPT_ENHANCEMENTS, getAllEnhancementsMarkdown } from "@/lib/chatgpt-prompt-enhancements";
 import { AIFlowGenerator } from "@/components/admin/AIFlowGenerator";
 import { FLOW_CONFIGS, getFlowVariants, getTotalStepsAllFlows } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
@@ -522,27 +524,127 @@ Tägliche Captures mit Diff-Detection.
 
         {/* Main Tabs */}
         <Tabs defaultValue="export" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4 max-w-xl">
+          <TabsList className="grid w-full grid-cols-5 max-w-2xl">
             <TabsTrigger value="export" className="gap-2">
               <Rocket className="h-4 w-4" />
               Export
             </TabsTrigger>
+            <TabsTrigger value="prompts" className="gap-2">
+              <Brain className="h-4 w-4" />
+              10 Prompts
+            </TabsTrigger>
             <TabsTrigger value="variants" className="gap-2">
               <GitCompare className="h-4 w-4" />
-              Varianten
+              Feedback
             </TabsTrigger>
-            <TabsTrigger value="generator" className="gap-2">
-              <Wand2 className="h-4 w-4" />
-              Generator
+            <TabsTrigger value="custom" className="gap-2">
+              <Layers className="h-4 w-4" />
+              Custom Flows
             </TabsTrigger>
             <TabsTrigger value="tools" className="gap-2">
-              <Layers className="h-4 w-4" />
+              <Wand2 className="h-4 w-4" />
               Tools
             </TabsTrigger>
           </TabsList>
 
+          {/* 10 ChatGPT Prompt Enhancements */}
+          <TabsContent value="prompts" className="space-y-6">
+            <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-primary/10">
+                      <Brain className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">10 ChatGPT Prompt Enhancements</CardTitle>
+                      <CardDescription>
+                        World-Class Prompts für maximale AI-Feedback-Qualität
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="gap-2"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(getAllEnhancementsMarkdown());
+                      toast.success('Alle 10 Prompts kopiert!');
+                    }}
+                  >
+                    <Copy className="h-4 w-4" />
+                    Alle kopieren
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {CHATGPT_PROMPT_ENHANCEMENTS.map((enhancement, i) => (
+                <Card key={enhancement.id} className="relative overflow-hidden">
+                  <div className={`absolute top-0 left-0 w-1 h-full ${
+                    enhancement.priority === 'P0' ? 'bg-red-500' : 
+                    enhancement.priority === 'P1' ? 'bg-yellow-500' : 'bg-green-500'
+                  }`} />
+                  <CardHeader className="pb-2">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">{i + 1}</Badge>
+                        <span className="font-medium">{enhancement.title}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Badge variant={enhancement.priority === 'P0' ? 'destructive' : 'secondary'}>
+                          {enhancement.priority}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {enhancement.category}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      {enhancement.description}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1"
+                        onClick={async () => {
+                          await navigator.clipboard.writeText(enhancement.prompt);
+                          toast.success(`"${enhancement.title}" kopiert!`);
+                        }}
+                      >
+                        <Copy className="h-3 w-3" />
+                        Kopieren
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => {
+                          const w = window.open('', '_blank');
+                          if (w) {
+                            w.document.write(`<pre style="white-space:pre-wrap;font-family:monospace;padding:20px;">${enhancement.prompt}</pre>`);
+                          }
+                        }}
+                      >
+                        <Eye className="h-3 w-3" />
+                        Ansehen
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
           <TabsContent value="variants" className="space-y-6">
             <FlowFeedbackVariants />
+          </TabsContent>
+
+          <TabsContent value="custom" className="space-y-6">
+            <CustomFlowManager />
           </TabsContent>
 
           <TabsContent value="export" className="space-y-6">
