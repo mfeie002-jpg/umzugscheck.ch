@@ -28,6 +28,10 @@ import {
   X
 } from "lucide-react";
 
+// Helper to ensure proper data URL format for screenshots
+const toPngDataUrl = (value: string) =>
+  value.startsWith("data:") ? value : `data:image/png;base64,${value}`;
+
 interface FlowVersion {
   id: string;
   flow_id: string;
@@ -544,7 +548,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                         <div className="border rounded-lg overflow-hidden bg-muted/30">
                           {(selectedVersionA.screenshots as Record<string, string>)?.[`step${compareStep}Desktop`] ? (
                             <img
-                              src={(selectedVersionA.screenshots as Record<string, string>)[`step${compareStep}Desktop`]}
+                              src={toPngDataUrl((selectedVersionA.screenshots as Record<string, string>)[`step${compareStep}Desktop`])}
                               alt={`Version A Step ${compareStep}`}
                               className="w-full"
                             />
@@ -563,7 +567,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                         <div className="border rounded-lg overflow-hidden bg-muted/30">
                           {(selectedVersionB.screenshots as Record<string, string>)?.[`step${compareStep}Desktop`] ? (
                             <img
-                              src={(selectedVersionB.screenshots as Record<string, string>)[`step${compareStep}Desktop`]}
+                              src={toPngDataUrl((selectedVersionB.screenshots as Record<string, string>)[`step${compareStep}Desktop`])}
                               alt={`Version B Step ${compareStep}`}
                               className="w-full"
                             />
