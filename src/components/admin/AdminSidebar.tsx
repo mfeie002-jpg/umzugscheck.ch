@@ -47,6 +47,13 @@ const navItems = [
     highlight: true,
     badge: "NEU"
   },
+  { 
+    title: "ChatGPT Ultimate", 
+    href: "/admin/chatgpt", 
+    icon: Sparkles,
+    highlight: true,
+    badge: "⭐"
+  },
   {
     type: "divider",
     title: "Verwaltung"
