@@ -318,9 +318,9 @@ serve(async (req) => {
       console.log("No secret phrase configured, using simple API key auth");
     }
 
-    // ScreenshotMachine full-length mode ('xfull') is most reliable with zoom=100.
-    const effectiveZoom = isFullPage ? "100" : deviceType === "desktop" ? "100" : "200";
-    params.set("zoom", effectiveZoom);
+    // ScreenshotMachine is most reliable with zoom=100 across devices.
+    // Using zoom=200 for phones can push SPA content out of the captured viewport (blank center).
+    const effectiveZoom = "100";
     params.set("accept-language", "de-CH,de;q=0.9,en;q=0.8");
 
     // ScreenshotMachine expects a `device` parameter even for full-length ("...xfull") screenshots.
