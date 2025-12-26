@@ -3,13 +3,15 @@ import { useLocation } from "react-router-dom";
 import { getUcCaptureParams } from "@/lib/uc-capture";
 
 /**
- * Sentinel 2.2 - ChatGPT Fixes Applied
+ * Sentinel 2.3 - ChatGPT Self-Sabotage Fixes
  * 
- * FIXES:
- * 1. scrollToTopSafe() - removes "instant" ScrollBehavior which throws in headless Chrome
- * 2. Resource error capturing (capture phase)
- * 3. Proper hook ordering (enabled gating in effects, null render at end)
- * 4. Only ONE sentinel should exist in app (routes call markReady(), don't mount their own)
+ * CRITICAL FIXES:
+ * 1. MutationObserver ignores mutations from sentinel itself (prevents infinite loop)
+ * 2. Removed Date.now() attributes that caused constant mutations
+ * 3. Throttled debug updates (500ms) to avoid triggering mutations
+ * 4. Uses [data-uc-capture-root="1"] for critical content detection (not just body height)
+ * 5. Force-ERROR on timeout (not ready) so we know something's wrong
+ * 6. Only ONE sentinel should exist - routes call markReady(), don't mount their own
  */
 
 type CaptureStatus = "loading" | "ready" | "error";
@@ -34,18 +36,16 @@ interface SentinelState {
   contentVisible: boolean;
 }
 
-// Build ID for mismatch detection
+// Build ID for mismatch detection - generated ONCE at module load
 const BUILD_ID = typeof import.meta !== "undefined" 
   ? `${new Date().toISOString().slice(0, 10)}-${Math.random().toString(36).slice(2, 8)}`
   : "unknown";
 
 /**
  * CRITICAL FIX: Safe scrollTo that works in headless Chrome
- * "instant" is NOT a valid ScrollBehavior in some Chrome versions and can throw.
  */
 function scrollToTopSafe() {
   try {
-    // Most robust across browsers/headless
     window.scrollTo(0, 0);
   } catch {
     // ignore
@@ -120,19 +120,27 @@ function ensureNetworkPendingPatch() {
 }
 
 /**
- * Check if step-specific content is actually rendered.
+ * CRITICAL FIX: Check for explicit capture root marker
  * This prevents "ready" when only shell/header is visible.
+ * Routes must add data-uc-capture-root="1" to their main content.
  */
-function isStepContentVisible(): boolean {
+function isCriticalContentVisible(): boolean {
+  // Primary: explicit marker from route component
+  const criticalEl = document.querySelector('[data-uc-capture-root="1"]');
+  if (criticalEl) {
+    const rect = (criticalEl as HTMLElement).getBoundingClientRect();
+    if (rect.height > 80 && rect.width > 100) {
+      return true;
+    }
+  }
+  
+  // Fallback selectors for step content
   const selectors = [
     '[data-step-content]',
     '.wizard-step',
     'form[data-calculator]',
-    '[class*="step-"]',
     '.calculator-card',
     '[data-testid="calculator-step"]',
-    'main section',
-    'input[name="fromLocation"], input[name="toLocation"]',
     '[data-service-id]',
     '[data-company-id]',
   ];
@@ -151,10 +159,12 @@ function isStepContentVisible(): boolean {
     }
   }
 
+  // Last resort: body has substantial content beyond header
   const bodyHeight = document.body?.getBoundingClientRect?.()?.height || 0;
-  const hasMultipleElements = document.querySelectorAll('main > *').length > 2;
+  const mainContent = document.querySelector('main');
+  const mainHeight = mainContent?.getBoundingClientRect?.()?.height || 0;
   
-  return bodyHeight > 400 && hasMultipleElements;
+  return bodyHeight > 600 && mainHeight > 300;
 }
 
 export function CaptureReadySentinel({
@@ -186,6 +196,9 @@ export function CaptureReadySentinel({
   const timeoutRef = useRef<number | null>(null);
   const mutationObserverRef = useRef<MutationObserver | null>(null);
   const lastMutationRef = useRef<number>(Date.now());
+  const sentinelElRef = useRef<HTMLDivElement | null>(null);
+  const lastDebugUpdateRef = useRef<number>(0);
+  const startedAtRef = useRef<number>(Date.now());
 
   // Update state when props change
   useEffect(() => {
@@ -196,7 +209,7 @@ export function CaptureReadySentinel({
     }));
   }, [effectiveStep, effectiveFlow]);
 
-  // If isReady prop is explicitly true, mark ready immediately (after scroll to top)
+  // If isReady prop is explicitly true, mark ready immediately
   useEffect(() => {
     if (!enabled) return;
     if (propIsReady === true && state.status === "loading") {
@@ -208,7 +221,7 @@ export function CaptureReadySentinel({
     }
   }, [enabled, propIsReady, state.status]);
 
-  // Expose global API and setup stability checks
+  // Expose global API and setup error handlers
   useEffect(() => {
     if (!enabled) return;
     
@@ -251,7 +264,7 @@ export function CaptureReadySentinel({
       }));
     };
 
-    // FIX: Catch resource load errors (script/link) - must use capture phase
+    // Catch resource load errors (capture phase)
     const onResourceError = (ev: Event) => {
       const t = ev.target as any;
       const src = t?.src || t?.href;
@@ -263,18 +276,37 @@ export function CaptureReadySentinel({
 
     window.addEventListener("error", onError);
     window.addEventListener("unhandledrejection", onRejection);
-    window.addEventListener("error", onResourceError, true); // capture phase for resource errors
+    window.addEventListener("error", onResourceError, true);
 
-    // Setup MutationObserver to track DOM stability
+    // CRITICAL FIX: MutationObserver that ignores sentinel's own mutations
     try {
-      mutationObserverRef.current = new MutationObserver(() => {
-        lastMutationRef.current = Date.now();
+      mutationObserverRef.current = new MutationObserver((mutations) => {
+        const sentinelEl = sentinelElRef.current;
+        
+        // Check if any mutation is NOT from sentinel
+        for (const m of mutations) {
+          // Skip mutations that are inside the sentinel element
+          if (sentinelEl && m.target && sentinelEl.contains(m.target as Node)) {
+            continue;
+          }
+          // Skip watermark element mutations
+          const watermark = document.getElementById('uc-capture-watermark');
+          if (watermark && m.target && watermark.contains(m.target as Node)) {
+            continue;
+          }
+          
+          // Real DOM mutation detected
+          lastMutationRef.current = Date.now();
+          break;
+        }
       });
+      
+      // CRITICAL FIX: Don't observe attributes (framer motion, your own data-attrs cause noise)
       mutationObserverRef.current.observe(document.body, {
         childList: true,
         subtree: true,
-        attributes: true,
-        characterData: true,
+        attributes: false,  // DISABLED - was causing self-mutation loop
+        characterData: false, // DISABLED
       });
     } catch {
       // ignore
@@ -291,21 +323,21 @@ export function CaptureReadySentinel({
     };
   }, [enabled]);
 
-  // Stability-based auto-ready with REAL content detection
+  // Stability-based auto-ready with CRITICAL CONTENT detection
   useEffect(() => {
     if (!enabled) return;
     if (state.status !== "loading") return;
 
-    const graceMs = 800;
-    const stabilityMs = 300;
-    const networkSettleMs = 500;
-    const maxWaitMs = 45000;
-    const startedAt = Date.now();
+    const graceMs = 500; // Reduced grace period
+    const stabilityMs = 200; // Reduced stability requirement
+    const networkSettleMs = 300; // Reduced network settle time
+    const maxWaitMs = 15000; // Reduced max wait (was 45s)
+    startedAtRef.current = Date.now();
     let lastNetworkSettled = 0;
 
     const checkReady = async () => {
       const pending = Number((window as any).__ucPendingRequests || 0);
-      const elapsed = Date.now() - startedAt;
+      const elapsed = Date.now() - startedAtRef.current;
       const msSinceLastMutation = Date.now() - lastMutationRef.current;
       
       if (pending === 0) {
@@ -320,7 +352,7 @@ export function CaptureReadySentinel({
         if (document.fonts?.ready) {
           await Promise.race([
             document.fonts.ready,
-            new Promise(r => setTimeout(r, 2000)),
+            new Promise(r => setTimeout(r, 1000)), // Reduced timeout
           ]);
           fontsReady = document.fonts.status === "loaded";
         }
@@ -328,19 +360,26 @@ export function CaptureReadySentinel({
         fontsReady = true;
       }
 
-      const contentVisible = isStepContentVisible();
+      const contentVisible = isCriticalContentVisible();
 
-      setState(s => ({ 
-        ...s, 
-        pendingRequests: pending,
-        fontsReady,
-        lastMutationAt: lastMutationRef.current,
-        scrollY: window.scrollY,
-        contentVisible,
-      }));
+      // CRITICAL FIX: Throttle debug updates to avoid causing mutations
+      const now = Date.now();
+      if (now - lastDebugUpdateRef.current > 500) {
+        lastDebugUpdateRef.current = now;
+        setState(s => ({ 
+          ...s, 
+          pendingRequests: pending,
+          fontsReady,
+          lastMutationAt: lastMutationRef.current,
+          scrollY: window.scrollY,
+          contentVisible,
+        }));
+      }
 
       const domStable = msSinceLastMutation >= stabilityMs;
-      const isReady = contentVisible && networkSettled && domStable && fontsReady;
+      
+      // Ready when: content visible AND (network idle OR stable for a while)
+      const isReady = contentVisible && (networkSettled || (domStable && elapsed > 2000));
 
       if (isReady) {
         scrollToTopSafe();
@@ -350,7 +389,7 @@ export function CaptureReadySentinel({
             setState(s => ({ 
               ...s, 
               status: "ready", 
-              reason: `content-ready: net=${pending}, stable=${msSinceLastMutation}ms, fonts=${fontsReady}`,
+              reason: `auto: net=${pending}, stable=${msSinceLastMutation}ms`,
               scrollY: 0,
               contentVisible: true,
             }));
@@ -359,19 +398,19 @@ export function CaptureReadySentinel({
         return;
       }
 
-      // Timeout - mark ERROR (not ready!) so we know something's wrong
+      // CRITICAL FIX: Mark ERROR on timeout (not ready!) so we see what's wrong
       if (elapsed >= maxWaitMs) {
         scrollToTopSafe();
         setState(s => ({ 
           ...s, 
           status: "error", 
-          reason: `timeout ${elapsed}ms: content=${contentVisible}, net=${pending}, stable=${msSinceLastMutation}ms`,
+          reason: `timeout: content=${contentVisible}, net=${pending}, stable=${msSinceLastMutation}ms`,
           scrollY: 0,
         }));
         return;
       }
 
-      timeoutRef.current = window.setTimeout(checkReady, 200);
+      timeoutRef.current = window.setTimeout(checkReady, 150);
     };
 
     timeoutRef.current = window.setTimeout(checkReady, graceMs);
@@ -388,21 +427,19 @@ export function CaptureReadySentinel({
     (window as any).__UC_CAPTURE_STATUS = state.status;
     (window as any).__UC_CAPTURE_DEBUG = {
       ...state,
-      timestamp: Date.now(),
       buildId: BUILD_ID,
+      elapsedMs: Date.now() - startedAtRef.current,
     };
   }, [state]);
 
-  // CRITICAL: Render null at END, after all hooks have run
-  // This prevents hook order issues when enabled changes
+  // CRITICAL: Render null at END after all hooks
   if (!enabled) return null;
-
-  const elapsedSec = Math.round((Date.now() - state.lastMutationAt) / 1000);
 
   return (
     <>
-      {/* Sentinel element - viewport-sized for selector-based capture */}
+      {/* Sentinel element - NO Date.now() attributes! */}
       <div
+        ref={sentinelElRef}
         id="uc-capture-sentinel"
         data-status={state.status}
         data-uc-step={state.step}
@@ -411,10 +448,7 @@ export function CaptureReadySentinel({
         data-uc-pending={state.pendingRequests}
         data-uc-fonts={state.fontsReady ? "ready" : "loading"}
         data-uc-content={state.contentVisible ? "visible" : "hidden"}
-        data-uc-mutation-age={Date.now() - state.lastMutationAt}
-        data-uc-scroll={state.scrollY}
         data-uc-build={BUILD_ID}
-        data-uc-timestamp={Date.now()}
         style={{
           position: "fixed",
           inset: 0,
@@ -427,7 +461,7 @@ export function CaptureReadySentinel({
         aria-hidden="true"
       />
       
-      {/* Debug watermark - visible in screenshot for debugging */}
+      {/* Debug watermark - visible in screenshot */}
       <div
         id="uc-capture-watermark"
         style={{
@@ -450,9 +484,9 @@ export function CaptureReadySentinel({
           wordBreak: "break-all",
         }}
       >
-        <div><strong>{state.status.toUpperCase()}</strong> s{state.step} {state.flow}</div>
-        <div>net:{state.pendingRequests} mut:{elapsedSec}s cnt:{state.contentVisible ? "✓" : "✗"}</div>
-        <div style={{ fontSize: 7, opacity: 0.8 }}>{BUILD_ID}</div>
+        <div><strong>{state.status.toUpperCase()}</strong> s{state.step}</div>
+        <div>net:{state.pendingRequests} cnt:{state.contentVisible ? "✓" : "✗"}</div>
+        {state.reason && <div style={{ fontSize: 7 }}>{state.reason.slice(0, 50)}</div>}
       </div>
     </>
   );
