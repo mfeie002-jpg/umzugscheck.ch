@@ -3,15 +3,17 @@ import { useLocation } from "react-router-dom";
 import { getUcCaptureParams } from "@/lib/uc-capture";
 
 /**
- * Sentinel 2.0 for screenshot automation with "READY Contract".
+ * Sentinel 2.1 for screenshot automation with "READY Contract".
  * 
- * Ready = ALL of these conditions are true:
- * 1. Step component mounted (caller calls markReady OR auto-detect)
- * 2. All network requests settled (no pending fetch/XHR)
- * 3. Fonts ready (document.fonts.ready)
- * 4. No DOM mutations for X ms (MutationObserver)
- * 5. Above-the-fold content visible (body height > threshold)
- * 6. Scroll position at top (for consistent captures)
+ * CRITICAL FIX: We no longer "force-ready" after timeout.
+ * Ready = Step content is ACTUALLY visible (not just body > 50px).
+ * 
+ * Ready conditions (ALL must be true):
+ * 1. Step-specific content visible (wizard card or main calculator)
+ * 2. Network requests settled (no pending fetch/XHR for 500ms)
+ * 3. Fonts ready
+ * 4. No DOM mutations for 300ms
+ * 5. Scroll position at top
  */
 
 type CaptureStatus = "loading" | "ready" | "error";
@@ -33,6 +35,7 @@ interface SentinelState {
   lastMutationAt: number;
   scrollY: number;
   buildId: string;
+  contentVisible: boolean;
 }
 
 // Build ID for mismatch detection
@@ -101,6 +104,56 @@ function ensureNetworkPendingPatch() {
   }
 }
 
+/**
+ * Check if step-specific content is actually rendered.
+ * This prevents "ready" when only shell/header is visible.
+ */
+function isStepContentVisible(): boolean {
+  // Look for wizard/calculator content elements
+  const selectors = [
+    // MultiStepCalculator wizard cards
+    '[data-step-content]',
+    '.wizard-step',
+    // Calculator form elements
+    'form[data-calculator]',
+    // Generic step containers
+    '[class*="step-"]',
+    // Main calculator cards
+    '.calculator-card',
+    // Motion containers from framer-motion (usually the step content)
+    '[data-testid="calculator-step"]',
+    // Fallback: any substantial content area
+    'main section',
+    // Check for actual form inputs (indicates wizard loaded)
+    'input[name="fromLocation"], input[name="toLocation"]',
+    // Check for service selection cards
+    '[data-service-id]',
+    // Check for company cards in step 3
+    '[data-company-id]',
+  ];
+
+  for (const sel of selectors) {
+    try {
+      const el = document.querySelector(sel);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        // Element must have substantial size and be in viewport
+        if (rect.width > 100 && rect.height > 100 && rect.top < window.innerHeight) {
+          return true;
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // Fallback: check if body has substantial content (not just header)
+  const bodyHeight = document.body?.getBoundingClientRect?.()?.height || 0;
+  const hasMultipleElements = document.querySelectorAll('main > *').length > 2;
+  
+  return bodyHeight > 400 && hasMultipleElements;
+}
+
 export function CaptureReadySentinel({
   step: propStep,
   flow: propFlow,
@@ -123,6 +176,7 @@ export function CaptureReadySentinel({
     lastMutationAt: Date.now(),
     scrollY: 0,
     buildId: BUILD_ID,
+    contentVisible: false,
   });
 
   const timeoutRef = useRef<number | null>(null);
@@ -223,50 +277,47 @@ export function CaptureReadySentinel({
     };
   }, []);
 
-  // Stability-based auto-ready with full contract checks
-  // CRITICAL: If route-chunk doesn't load, we still need to set ready after timeout
-  // so the provider can at least capture something (even if blank - for debugging)
+  // Stability-based auto-ready with REAL content detection
+  // NO force-ready timeout - we wait for actual content
   useEffect(() => {
     if (state.status !== "loading") return;
 
-    const graceMs = 500; // Initial grace period for JS execution
-    const stabilityMs = 300; // No mutations for this long = stable  
-    const maxWaitMs = 12000; // 12 seconds max wait (shorter to avoid provider timeout)
-    const forceReadyMs = 8000; // Force ready after 8s even without stability
+    const graceMs = 800; // Initial grace period for JS execution
+    const stabilityMs = 300; // No mutations for this long = stable
+    const networkSettleMs = 500; // No network activity for this long
+    const maxWaitMs = 45000; // 45 seconds max wait (then error, not fake-ready)
     const startedAt = Date.now();
-
-    // Force ready timeout - ensures we always mark ready eventually
-    const forceReadyTimeout = window.setTimeout(() => {
-      if (state.status === "loading") {
-        console.warn("[CaptureReadySentinel] Force-ready after timeout");
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-        setState(s => ({ 
-          ...s, 
-          status: "ready", 
-          reason: `force-ready after ${forceReadyMs}ms`,
-          scrollY: 0,
-        }));
-      }
-    }, forceReadyMs);
+    let lastNetworkSettled = 0;
 
     const checkReady = async () => {
       const pending = Number((window as any).__ucPendingRequests || 0);
       const elapsed = Date.now() - startedAt;
       const msSinceLastMutation = Date.now() - lastMutationRef.current;
       
-      // Check fonts ready (with short timeout)
+      // Track network settling
+      if (pending === 0) {
+        if (lastNetworkSettled === 0) lastNetworkSettled = Date.now();
+      } else {
+        lastNetworkSettled = 0;
+      }
+      const networkSettled = lastNetworkSettled > 0 && (Date.now() - lastNetworkSettled) >= networkSettleMs;
+      
+      // Check fonts ready
       let fontsReady = true;
       try {
         if (document.fonts?.ready) {
           await Promise.race([
             document.fonts.ready,
-            new Promise(r => setTimeout(r, 1500)),
+            new Promise(r => setTimeout(r, 2000)),
           ]);
           fontsReady = document.fonts.status === "loaded";
         }
       } catch {
         fontsReady = true;
       }
+
+      // CRITICAL: Check if step content is actually visible
+      const contentVisible = isStepContentVisible();
 
       // Update debug state
       setState(s => ({ 
@@ -275,18 +326,14 @@ export function CaptureReadySentinel({
         fontsReady,
         lastMutationAt: lastMutationRef.current,
         scrollY: window.scrollY,
+        contentVisible,
       }));
 
-      // Ready conditions - more lenient to avoid hanging
-      const bodyHasContent = document.body?.getBoundingClientRect?.()?.height > 50;
-      const noNetworkPending = pending === 0;
+      // Ready conditions - ALL must be true (no shortcuts)
       const domStable = msSinceLastMutation >= stabilityMs;
-      
-      // Be more lenient: ready if network settled OR dom stable with content
-      const isReady = (noNetworkPending && bodyHasContent) || (domStable && bodyHasContent && elapsed > 2000);
+      const isReady = contentVisible && networkSettled && domStable && fontsReady;
 
       if (isReady) {
-        window.clearTimeout(forceReadyTimeout);
         window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
         
         requestAnimationFrame(() => {
@@ -294,33 +341,33 @@ export function CaptureReadySentinel({
             setState(s => ({ 
               ...s, 
               status: "ready", 
-              reason: `auto-ready: pending=${pending}, stable=${msSinceLastMutation}ms, fonts=${fontsReady}`,
+              reason: `content-ready: net=${pending}, stable=${msSinceLastMutation}ms, fonts=${fontsReady}`,
               scrollY: 0,
+              contentVisible: true,
             }));
           });
         });
         return;
       }
 
+      // Timeout - mark ERROR (not ready!) so we know something's wrong
       if (elapsed >= maxWaitMs) {
-        window.clearTimeout(forceReadyTimeout);
         window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
         setState(s => ({ 
           ...s, 
-          status: "ready", 
-          reason: `timeout ${elapsed}ms (pending=${pending}, stable=${msSinceLastMutation}ms)`,
+          status: "error", 
+          reason: `timeout ${elapsed}ms: content=${contentVisible}, net=${pending}, stable=${msSinceLastMutation}ms`,
           scrollY: 0,
         }));
         return;
       }
 
-      timeoutRef.current = window.setTimeout(checkReady, 150);
+      timeoutRef.current = window.setTimeout(checkReady, 200);
     };
 
     timeoutRef.current = window.setTimeout(checkReady, graceMs);
 
     return () => {
-      window.clearTimeout(forceReadyTimeout);
       if (timeoutRef.current) {
         window.clearTimeout(timeoutRef.current);
       }
@@ -337,30 +384,64 @@ export function CaptureReadySentinel({
     };
   }, [state]);
 
+  const elapsedSec = Math.round((Date.now() - state.lastMutationAt) / 1000);
+
   return (
-    <div
-      id="uc-capture-sentinel"
-      data-status={state.status}
-      data-uc-step={state.step}
-      data-uc-flow={state.flow}
-      data-uc-reason={state.reason}
-      data-uc-pending={state.pendingRequests}
-      data-uc-fonts={state.fontsReady ? "ready" : "loading"}
-      data-uc-mutation-age={Date.now() - state.lastMutationAt}
-      data-uc-scroll={state.scrollY}
-      data-uc-build={BUILD_ID}
-      data-uc-timestamp={Date.now()}
-      style={{
-        position: "fixed",
-        inset: 0,
-        width: "100vw",
-        height: "100vh",
-        opacity: 0.0001,
-        pointerEvents: "none",
-        zIndex: 0,
-      }}
-      aria-hidden="true"
-    />
+    <>
+      {/* Sentinel element - viewport-sized for selector-based capture */}
+      <div
+        id="uc-capture-sentinel"
+        data-status={state.status}
+        data-uc-step={state.step}
+        data-uc-flow={state.flow}
+        data-uc-reason={state.reason}
+        data-uc-pending={state.pendingRequests}
+        data-uc-fonts={state.fontsReady ? "ready" : "loading"}
+        data-uc-content={state.contentVisible ? "visible" : "hidden"}
+        data-uc-mutation-age={Date.now() - state.lastMutationAt}
+        data-uc-scroll={state.scrollY}
+        data-uc-build={BUILD_ID}
+        data-uc-timestamp={Date.now()}
+        style={{
+          position: "fixed",
+          inset: 0,
+          width: "100vw",
+          height: "100vh",
+          opacity: 0.0001,
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+        aria-hidden="true"
+      />
+      
+      {/* Debug watermark - visible in screenshot for debugging */}
+      <div
+        id="uc-capture-watermark"
+        style={{
+          position: "fixed",
+          bottom: 4,
+          right: 4,
+          padding: "2px 6px",
+          background: state.status === "ready" 
+            ? "rgba(22,163,74,0.9)" 
+            : state.status === "error" 
+              ? "rgba(220,38,38,0.9)" 
+              : "rgba(245,158,11,0.9)",
+          color: "white",
+          borderRadius: 4,
+          fontSize: 9,
+          fontFamily: "monospace",
+          zIndex: 99999,
+          lineHeight: 1.3,
+          maxWidth: 200,
+          wordBreak: "break-all",
+        }}
+      >
+        <div><strong>{state.status.toUpperCase()}</strong> s{state.step} {state.flow}</div>
+        <div>net:{state.pendingRequests} mut:{elapsedSec}s cnt:{state.contentVisible ? "✓" : "✗"}</div>
+        <div style={{ fontSize: 7, opacity: 0.8 }}>{BUILD_ID}</div>
+      </div>
+    </>
   );
 }
 
