@@ -424,12 +424,68 @@ serve(async (req) => {
       );
     }
 
-    const imageBuffer = await response.arrayBuffer();
-    const bytes = new Uint8Array(imageBuffer);
+    // Read the screenshot bytes
+    let imageBuffer = await response.arrayBuffer();
+    let bytes = new Uint8Array(imageBuffer);
 
-    const pngDims = outputFormat === "png" ? getPngDimensions(bytes) : null;
+    // Heuristic: detect "blank" captures (very small PNGs are typically mostly-white/empty)
+    // and retry once as a full-length capture (xfull) to force the provider to render more content.
+    // We only do this for capture-mode URLs to avoid changing behavior for normal screenshots.
+    const isPng = outputFormat === "png";
+    let pngDims = isPng ? getPngDimensions(bytes) : null;
     if (pngDims) {
       console.log(`Output image dimensions: ${pngDims.width}x${pngDims.height}`);
+    }
+
+    const shouldRetryBlank = (() => {
+      if (!isPng) return false;
+      if (isFullPage) return false;
+      if (!isCaptureMode) return false;
+      const minBytes =
+        deviceType === "desktop" ? 120_000 : deviceType === "tablet" ? 70_000 : 45_000;
+      return bytes.byteLength > 0 && bytes.byteLength < minBytes;
+    })();
+
+    if (shouldRetryBlank) {
+      console.warn(
+        `Heuristic blank screenshot suspected (${bytes.byteLength} bytes). Retrying as full-page (xfull).`
+      );
+
+      const safeWidth = Number.isFinite(width) && width > 0 ? width : 1920;
+      const retryParams = new URLSearchParams(params);
+      retryParams.set("dimension", `${safeWidth}xfull`);
+      retryParams.set("timeout", String(Math.min(120000, effectiveDelay + 60000)));
+      // Avoid scroll-to-bottom behavior on the retry; rely on xfull stitching.
+      retryParams.delete("scroll");
+      retryParams.delete("scrolldelay");
+      retryParams.delete("scrollto");
+
+      const retryApiUrl = `https://api.screenshotmachine.com?${retryParams.toString()}`;
+      const retryResponse = await fetch(retryApiUrl);
+      const retryHeader = retryResponse.headers.get("x-screenshotmachine-response");
+
+      if (retryHeader && retryHeader !== "ok") {
+        console.warn(`Retry (xfull) error header: ${retryHeader}`);
+      } else if (retryResponse.ok) {
+        const retryBuffer = await retryResponse.arrayBuffer();
+        const retryBytes = new Uint8Array(retryBuffer);
+
+        if (retryBytes.byteLength > bytes.byteLength) {
+          imageBuffer = retryBuffer;
+          bytes = retryBytes;
+          pngDims = getPngDimensions(bytes);
+          if (pngDims) {
+            console.log(`Output image dimensions (retry): ${pngDims.width}x${pngDims.height}`);
+          }
+        } else {
+          console.warn(
+            `Retry (xfull) did not improve size (${retryBytes.byteLength} <= ${bytes.byteLength}); keeping original.`
+          );
+        }
+      } else {
+        const errorText = await retryResponse.text();
+        console.warn(`Retry (xfull) HTTP error: ${retryResponse.status}`, errorText);
+      }
     }
 
     let base64 = "";
