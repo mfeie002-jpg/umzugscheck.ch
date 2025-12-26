@@ -716,6 +716,54 @@ export type Database = {
         }
         Relationships: []
       }
+      flow_feedback_variants: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          executed_at: string | null
+          flow_id: string
+          id: string
+          output_flow_id: string | null
+          prompt: string
+          result_json: Json | null
+          status: string
+          updated_at: string
+          variant_label: string
+          variant_name: string
+          zip_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          executed_at?: string | null
+          flow_id: string
+          id?: string
+          output_flow_id?: string | null
+          prompt: string
+          result_json?: Json | null
+          status?: string
+          updated_at?: string
+          variant_label: string
+          variant_name: string
+          zip_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          executed_at?: string | null
+          flow_id?: string
+          id?: string
+          output_flow_id?: string | null
+          prompt?: string
+          result_json?: Json | null
+          status?: string
+          updated_at?: string
+          variant_label?: string
+          variant_name?: string
+          zip_url?: string | null
+        }
+        Relationships: []
+      }
       flow_scheduled_jobs: {
         Row: {
           created_at: string

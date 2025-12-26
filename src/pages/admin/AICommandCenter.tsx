@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { AdminHelpButton } from "@/components/admin/AdminHelpSystem";
+import { FlowFeedbackVariants } from "@/components/admin/FlowFeedbackVariants";
 import { AIFlowGenerator } from "@/components/admin/AIFlowGenerator";
 import { FLOW_CONFIGS, getFlowVariants, getTotalStepsAllFlows } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
@@ -521,20 +522,28 @@ Tägliche Captures mit Diff-Detection.
 
         {/* Main Tabs */}
         <Tabs defaultValue="export" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 max-w-lg">
+          <TabsList className="grid w-full grid-cols-4 max-w-xl">
             <TabsTrigger value="export" className="gap-2">
               <Rocket className="h-4 w-4" />
               Export
             </TabsTrigger>
+            <TabsTrigger value="variants" className="gap-2">
+              <GitCompare className="h-4 w-4" />
+              Varianten
+            </TabsTrigger>
             <TabsTrigger value="generator" className="gap-2">
               <Wand2 className="h-4 w-4" />
-              Flow Generator
+              Generator
             </TabsTrigger>
             <TabsTrigger value="tools" className="gap-2">
               <Layers className="h-4 w-4" />
               Tools
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="variants" className="space-y-6">
+            <FlowFeedbackVariants />
+          </TabsContent>
 
           <TabsContent value="export" className="space-y-6">
             {/* Ultimate Export Button */}
