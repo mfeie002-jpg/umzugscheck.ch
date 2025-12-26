@@ -349,7 +349,9 @@ export function CalculatorFlowReview() {
   ): Promise<string | null> => {
     try {
       const fullPage = opts.fullPage ?? false;
-      const delay = opts.delay ?? (String(url).includes("uc_capture=1") ? 30000 : 12000);
+      const isCapture = String(url).includes("uc_capture=1") || String(url).includes("uc_step=");
+      // Umzugsofferten variants are heavy (many lazy-loaded sections). Give them more time.
+      const delay = opts.delay ?? (isCapture ? 45000 : 12000);
 
       console.log(`Capturing screenshot: ${url} with dimension: ${dimension}`);
       const result = await captureScreenshotService({
