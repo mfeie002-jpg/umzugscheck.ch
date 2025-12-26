@@ -992,56 +992,80 @@ export type Database = {
       }
       flow_versions: {
         Row: {
+          adjustment_number: number | null
           ai_feedback: string | null
           ai_feedback_date: string | null
           ai_feedback_source: string | null
+          config: Json | null
           created_at: string
           created_by: string | null
           description: string | null
+          flow_code: string | null
           flow_id: string
+          flow_number: number | null
           html_snapshots: Json
           id: string
+          is_active: boolean | null
           is_baseline: boolean | null
           is_live: boolean | null
+          is_ultimate: boolean | null
+          parent_flow_code: string | null
           screenshots: Json
           step_configs: Json
           tags: string[] | null
+          variant_letter: string | null
           version_name: string | null
           version_number: string
         }
         Insert: {
+          adjustment_number?: number | null
           ai_feedback?: string | null
           ai_feedback_date?: string | null
           ai_feedback_source?: string | null
+          config?: Json | null
           created_at?: string
           created_by?: string | null
           description?: string | null
+          flow_code?: string | null
           flow_id: string
+          flow_number?: number | null
           html_snapshots?: Json
           id?: string
+          is_active?: boolean | null
           is_baseline?: boolean | null
           is_live?: boolean | null
+          is_ultimate?: boolean | null
+          parent_flow_code?: string | null
           screenshots?: Json
           step_configs?: Json
           tags?: string[] | null
+          variant_letter?: string | null
           version_name?: string | null
           version_number: string
         }
         Update: {
+          adjustment_number?: number | null
           ai_feedback?: string | null
           ai_feedback_date?: string | null
           ai_feedback_source?: string | null
+          config?: Json | null
           created_at?: string
           created_by?: string | null
           description?: string | null
+          flow_code?: string | null
           flow_id?: string
+          flow_number?: number | null
           html_snapshots?: Json
           id?: string
+          is_active?: boolean | null
           is_baseline?: boolean | null
           is_live?: boolean | null
+          is_ultimate?: boolean | null
+          parent_flow_code?: string | null
           screenshots?: Json
           step_configs?: Json
           tags?: string[] | null
+          variant_letter?: string | null
           version_name?: string | null
           version_number?: string
         }
