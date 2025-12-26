@@ -1,15 +1,34 @@
 import { useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
-// Apply the screenshot rendering class + in-view fixes as early as possible (before first paint).
-// Many screenshot engines capture before React effects run, which can leave whileInView sections hidden.
+function getCaptureRenderMode() {
+  if (typeof window === "undefined") {
+    return { enabled: false, capture: false, render: false };
+  }
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const capture = params.get("uc_capture") === "1";
+    const render = params.get("uc_render") === "1";
+    return { enabled: capture || render, capture, render };
+  } catch {
+    return { enabled: false, capture: false, render: false };
+  }
+}
+
+// Apply the screenshot rendering hooks as early as possible (before first paint).
+// Many screenshot engines capture before React effects run.
 if (typeof window !== "undefined") {
   try {
-    if (isScreenshotRenderMode()) {
-      document.documentElement.classList.add("uc-render");
+    const mode = getCaptureRenderMode();
 
-      // Patch IntersectionObserver in screenshot mode so whileInView/useInView content renders immediately.
-      // This avoids relying on scroll sweeps which some screenshot engines ignore.
+    if (mode.enabled) {
+      // Classes:
+      // - uc-render: legacy "render mode" (explicit uc_render=1)
+      // - uc-capture: capture-mode (uc_capture=1)
+      if (mode.render || isScreenshotRenderMode()) document.documentElement.classList.add("uc-render");
+      if (mode.capture) document.documentElement.classList.add("uc-capture");
+
+      // Patch IntersectionObserver so whileInView/useInView content renders immediately.
       const w = window as any;
       if (!w.__ucIntersectionObserverPatched && "IntersectionObserver" in window) {
         w.__ucIntersectionObserverPatched = true;
@@ -63,25 +82,55 @@ if (typeof window !== "undefined") {
   }
 }
 
-
 /**
- * Adds a global CSS hook for screenshot rendering (uc_render=1).
- * Goal: avoid "white blocks" caused by in-view animations (e.g. framer-motion whileInView)
- * and eager-load images even if they were marked as `loading=lazy`.
+ * Capture-mode render stabilizer.
+ * - Avoid hidden whileInView sections (IntersectionObserver patch above)
+ * - Eager-load images
+ * - Freeze animations/transitions (reduce flakiness)
+ * - IMPORTANT: No scroll-sweeps in capture-mode (can trigger blank/odd states in providers)
  */
 export function ScreenshotRenderModeRoot() {
   useEffect(() => {
     const el = document.documentElement;
-    const enabled = isScreenshotRenderMode();
+    const mode = getCaptureRenderMode();
 
-    if (enabled) el.classList.add("uc-render");
+    // Maintain classes
+    if (mode.render || isScreenshotRenderMode()) el.classList.add("uc-render");
     else el.classList.remove("uc-render");
 
+    if (mode.capture) el.classList.add("uc-capture");
+    else el.classList.remove("uc-capture");
+
+    let styleEl: HTMLStyleElement | null = null;
     let t1: number | undefined;
     let t2: number | undefined;
 
-    if (enabled) {
-      // Force eager loading for all images so full-page screenshot tools don't capture unloaded lazy images.
+    if (mode.enabled) {
+      // Inject capture-safe CSS overrides
+      styleEl = document.getElementById("uc-capture-style") as HTMLStyleElement | null;
+      if (!styleEl) {
+        styleEl = document.createElement("style");
+        styleEl.id = "uc-capture-style";
+        styleEl.textContent = `
+          html.uc-capture *,
+          html.uc-render * {
+            scroll-behavior: auto !important;
+            animation-duration: 1ms !important;
+            animation-delay: 0ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 1ms !important;
+            transition-delay: 0ms !important;
+          }
+          @media (prefers-reduced-motion: no-preference) {
+            html.uc-capture {
+              --uc-reduce-motion: 1;
+            }
+          }
+        `;
+        document.head.appendChild(styleEl);
+      }
+
+      // Force eager loading for all images
       const imgs = Array.from(document.images);
       imgs.forEach((img) => {
         try {
@@ -93,49 +142,62 @@ export function ScreenshotRenderModeRoot() {
         }
       });
 
-      // Trigger IntersectionObserver-based animations (framer-motion whileInView / useInView)
-      // by doing a quick scroll sweep. Many screenshot engines don't scroll, leaving sections hidden.
-      const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      t1 = window.setTimeout(() => {
-        try {
-          window.scrollTo({ top: maxY, left: 0, behavior: "instant" as ScrollBehavior });
-        } catch {
+      // Scroll sweeps are ONLY for explicit uc_render=1 (not for capture-mode)
+      if (mode.render || isScreenshotRenderMode()) {
+        const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        t1 = window.setTimeout(() => {
           try {
-            window.scrollTo(0, maxY);
+            window.scrollTo({ top: maxY, left: 0, behavior: "instant" as ScrollBehavior });
+          } catch {
+            try {
+              window.scrollTo(0, maxY);
+            } catch {
+              // ignore
+            }
+          }
+          try {
+            window.dispatchEvent(new Event("scroll"));
           } catch {
             // ignore
           }
-        }
-        try {
-          window.dispatchEvent(new Event("scroll"));
-        } catch {
-          // ignore
-        }
-      }, 100);
+        }, 100);
 
-      t2 = window.setTimeout(() => {
-        try {
-          window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-        } catch {
+        t2 = window.setTimeout(() => {
           try {
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+          } catch {
+            try {
+              window.scrollTo(0, 0);
+            } catch {
+              // ignore
+            }
+          }
+          try {
+            window.dispatchEvent(new Event("scroll"));
+            window.dispatchEvent(new Event("resize"));
           } catch {
             // ignore
           }
-        }
-        try {
-          window.dispatchEvent(new Event("scroll"));
-          window.dispatchEvent(new Event("resize"));
-        } catch {
-          // ignore
-        }
-      }, 350);
+        }, 350);
+      }
     }
 
     return () => {
       if (t1) window.clearTimeout(t1);
       if (t2) window.clearTimeout(t2);
-      el.classList.remove("uc-render");
+      try {
+        el.classList.remove("uc-render");
+        el.classList.remove("uc-capture");
+      } catch {
+        // ignore
+      }
+
+      try {
+        const s = document.getElementById("uc-capture-style");
+        if (s) s.remove();
+      } catch {
+        // ignore
+      }
     };
   }, []);
 
