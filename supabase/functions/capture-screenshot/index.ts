@@ -354,27 +354,23 @@ serve(async (req) => {
       console.log(`Detected tall viewport (${dimension}); switching to xfull stitching.`);
     }
 
-    // ScreenshotMachine delay is in milliseconds; allow longer waits for SPA rendering.
-    // Previous implementation incorrectly limited delay to 10s, causing screenshots of loading states.
+    // ScreenshotMachine API ONLY accepts these delay values (in ms):
+    // 0, 200, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000
+    // Maximum is 10000ms (10 seconds)!
+    const ALLOWED_DELAYS = [0, 200, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
+    
     const delayMsRaw = typeof delay === "number" ? delay : Number(delay);
-
-    // (isCaptureMode computed earlier)
-
-    // In capture-mode we intentionally wait much longer because the funnel:
-    // 1. Is lazy-loaded (React Suspense)
-    // 2. Pre-fills data and loads async content
-    // 3. May have animations that need to complete
-    // CRITICAL: SPAs with lazy-loading need 20-30+ seconds to fully render
-    const defaultDelay = isFullPage
-      ? (isCaptureMode ? 25000 : 15000)
-      : (isCaptureMode ? 20000 : 6000);
-    const minDelay = isCaptureMode ? 15000 : (isFullPage ? 8000 : 0);
-    const maxDelay = 60000; // Allow up to 60 seconds
-
-    const delayMsClamped = Number.isFinite(delayMsRaw)
-      ? Math.max(minDelay, Math.min(maxDelay, delayMsRaw))
-      : defaultDelay;
-    const effectiveDelay = Math.round(delayMsClamped);
+    
+    // For capture mode and full page, use maximum allowed delay (10000ms)
+    const defaultDelay = (isCaptureMode || isFullPage) ? 10000 : 6000;
+    
+    // Find the closest allowed delay value
+    const targetDelay = Number.isFinite(delayMsRaw) ? delayMsRaw : defaultDelay;
+    const effectiveDelay = ALLOWED_DELAYS.reduce((prev, curr) => 
+      Math.abs(curr - targetDelay) < Math.abs(prev - targetDelay) ? curr : prev
+    );
+    
+    console.log(`[${traceId}] Delay: requested=${delayMsRaw}ms, effective=${effectiveDelay}ms (API max: 10000ms)`);
 
     let deviceType = "desktop";
     if (width <= 480) {
