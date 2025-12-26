@@ -149,7 +149,16 @@ export const registerServiceWorker = async () => {
     }
   })();
 
-  if ("serviceWorker" in navigator && isCaptureLike) {
+  const isLovablePreview = (() => {
+    try {
+      return window.location.hostname.endsWith("lovableproject.com");
+    } catch {
+      return false;
+    }
+  })();
+
+  // In preview or capture modes we always disable SW to avoid cached build mismatches.
+  if ("serviceWorker" in navigator && (isCaptureLike || isLovablePreview)) {
     try {
       const regs = await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map((r) => r.unregister()));
@@ -162,6 +171,7 @@ export const registerServiceWorker = async () => {
   if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
     try {
       const registration = await navigator.serviceWorker.register("/sw.js");
+      await registration.update().catch(() => {});
       console.log("SW registered:", registration.scope);
     } catch (error) {
       console.log("SW registration failed:", error);

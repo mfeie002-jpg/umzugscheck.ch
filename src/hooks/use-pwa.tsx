@@ -14,21 +14,37 @@ export const usePWA = () => {
       }
     })();
 
-    // Register service worker (skip in capture/render modes)
-    if ("serviceWorker" in navigator && !isCaptureLike) {
+    const isLovablePreview = (() => {
+      try {
+        return window.location.hostname.endsWith("lovableproject.com");
+      } catch {
+        return false;
+      }
+    })();
+
+    // In preview we always disable SW to avoid cached build mismatches / broken navigation.
+    // In capture mode we also remove any existing SWs.
+    if ("serviceWorker" in navigator && (isCaptureLike || isLovablePreview)) {
+      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
+    }
+
+    // Register service worker only in real production environments (not preview) and not in capture/render modes.
+    if (
+      "serviceWorker" in navigator &&
+      process.env.NODE_ENV === "production" &&
+      !isCaptureLike &&
+      !isLovablePreview
+    ) {
       navigator.serviceWorker
         .register("/sw.js")
         .then((registration) => {
+          // Make sure we pick up the newest SW quickly.
+          registration.update().catch(() => {});
           console.log("Service Worker registered:", registration);
         })
         .catch((error) => {
           console.error("Service Worker registration failed:", error);
         });
-    }
-
-    // If we're in capture mode, ensure old SWs are removed (prevents cached build mismatches)
-    if ("serviceWorker" in navigator && isCaptureLike) {
-      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
     }
 
     // Listen for install prompt
