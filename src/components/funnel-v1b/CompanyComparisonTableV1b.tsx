@@ -1,25 +1,13 @@
 /**
  * CompanyComparisonTableV1b - ChatGPT Rec #8: Reduced info density
  */
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Star, CheckCircle, Clock, MapPin, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
-
-interface Company {
-  id: string;
-  name: string;
-  company_name: string;
-  rating: number;
-  review_count: number;
-  price_level: "günstig" | "fair" | "premium";
-  is_featured: boolean;
-  services_offered: string[];
-  short_description?: string | null;
-}
+import type { CompanyData } from "@/lib/ranking-algorithm";
 
 interface Props {
-  companies: Company[];
+  companies: CompanyData[];
   selectedCompanies: string[];
   selectedServices: string[];
   serviceIdToCompanyService: Record<string, string[]>;
