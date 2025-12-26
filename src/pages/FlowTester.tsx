@@ -59,6 +59,7 @@ interface TesterInfo {
 }
 
 const FLOWS: FlowConfig[] = [
+  // === MAIN FLOWS (V1-V9) ===
   {
     id: 'v1',
     name: 'Classic Flow',
@@ -139,6 +140,194 @@ const FLOWS: FlowConfig[] = [
     path: '/umzugsofferten-v9',
     color: 'bg-rose-500',
     features: ['3-Klick Flow', 'Smart Defaults', 'Instant Quote', 'Zero Friction']
+  },
+  
+  // === V2 SUB-VARIANTS (UX-Optimierung) ===
+  {
+    id: 'v2a',
+    name: 'V2a Progress Enhanced',
+    version: 'V2.A',
+    description: 'Visueller Fortschritt mit Micro-Animations',
+    path: '/umzugsofferten?v=2a',
+    color: 'bg-green-400',
+    features: ['Progress Ring', 'Micro-Animations', 'Step Tracker']
+  },
+  {
+    id: 'v2b',
+    name: 'V2b Simplified Labels',
+    version: 'V2.B',
+    description: 'Vereinfachte Beschriftungen & Texte',
+    path: '/umzugsofferten?v=2b',
+    color: 'bg-green-600',
+    features: ['Simple Labels', 'Klare Sprache', 'Weniger Text']
+  },
+  {
+    id: 'v2c',
+    name: 'V2c Trust Focused',
+    version: 'V2.C',
+    description: 'Vertrauenselemente überall',
+    path: '/umzugsofferten?v=2c',
+    color: 'bg-green-700',
+    features: ['Trust Badges', 'Testimonials', 'Garantien']
+  },
+  {
+    id: 'v2d',
+    name: 'V2d Speed Optimized',
+    version: 'V2.D',
+    description: 'Auf Geschwindigkeit getrimmt',
+    path: '/umzugsofferten?v=2d',
+    color: 'bg-green-800',
+    features: ['Minimal Fields', 'Auto-Complete', 'Fast Track']
+  },
+  {
+    id: 'v2e',
+    name: 'V2e Experimental',
+    version: 'V2.E',
+    description: 'Experimentelle Features',
+    path: '/umzugsofferten?v=2e',
+    color: 'bg-lime-500',
+    features: ['AI Suggestions', 'Smart Defaults', 'Predictions']
+  },
+
+  // === V3 SUB-VARIANTS (Mobile-First) ===
+  {
+    id: 'v3a',
+    name: 'V3a Mobile First',
+    version: 'V3.A',
+    description: 'Touch-optimiert für Mobile',
+    path: '/umzugsofferten?v=3a',
+    color: 'bg-purple-400',
+    features: ['Large Touch Targets', 'Bottom Nav', 'Mobile Hero']
+  },
+  {
+    id: 'v3b',
+    name: 'V3b Swipe Navigation',
+    version: 'V3.B',
+    description: 'Swipe zwischen Steps',
+    path: '/umzugsofferten?v=3b',
+    color: 'bg-purple-600',
+    features: ['Swipe Gestures', 'Carousel Steps', 'Fluid Motion']
+  },
+  {
+    id: 'v3c',
+    name: 'V3c Bottom Sheet',
+    version: 'V3.C',
+    description: 'Native Bottom Sheet UX',
+    path: '/umzugsofferten?v=3c',
+    color: 'bg-purple-700',
+    features: ['Bottom Sheet', 'Pull-to-Dismiss', 'Overlay Inputs']
+  },
+  {
+    id: 'v3d',
+    name: 'V3d Thumb Zone',
+    version: 'V3.D',
+    description: 'Optimiert für Daumen-Erreichbarkeit',
+    path: '/umzugsofferten?v=3d',
+    color: 'bg-purple-800',
+    features: ['Thumb Zone', 'Bottom Actions', 'One-Hand Use']
+  },
+  {
+    id: 'v3e',
+    name: 'V3e Fullscreen',
+    version: 'V3.E',
+    description: 'Immersives Fullscreen-Erlebnis',
+    path: '/umzugsofferten?v=3e',
+    color: 'bg-violet-500',
+    features: ['Fullscreen', 'No Distractions', 'Focus Mode']
+  },
+
+  // === V4 SUB-VARIANTS (Conversion-Focused) ===
+  {
+    id: 'v4a',
+    name: 'V4a Urgency Based',
+    version: 'V4.A',
+    description: 'FOMO & Dringlichkeit',
+    path: '/umzugsofferten?v=4a',
+    color: 'bg-orange-400',
+    features: ['Countdown Timer', 'Limited Slots', 'Urgency Badges']
+  },
+  {
+    id: 'v4b',
+    name: 'V4b Social Proof',
+    version: 'V4.B',
+    description: 'Social Proof überall',
+    path: '/umzugsofferten?v=4b',
+    color: 'bg-orange-600',
+    features: ['Live Activity', 'Reviews', 'User Count']
+  },
+  {
+    id: 'v4c',
+    name: 'V4c Value First',
+    version: 'V4.C',
+    description: 'Wert vor Preis',
+    path: '/umzugsofferten?v=4c',
+    color: 'bg-orange-700',
+    features: ['Value Props', 'Benefits First', 'ROI Calculator']
+  },
+  {
+    id: 'v4d',
+    name: 'V4d Gamified',
+    version: 'V4.D',
+    description: 'Gamification-Elemente',
+    path: '/umzugsofferten?v=4d',
+    color: 'bg-orange-800',
+    features: ['Points', 'Achievements', 'Progress Rewards']
+  },
+  {
+    id: 'v4e',
+    name: 'V4e Minimal Friction',
+    version: 'V4.E',
+    description: 'Minimal Friction Design',
+    path: '/umzugsofferten?v=4e',
+    color: 'bg-amber-500',
+    features: ['Smart Defaults', 'Skip Options', 'Express Lane']
+  },
+
+  // === V5 SUB-VARIANTS (Accessibility-Focused) ===
+  {
+    id: 'v5a',
+    name: 'V5a High Contrast',
+    version: 'V5.A',
+    description: 'Hoher Kontrast für Sichtbarkeit',
+    path: '/umzugsofferten?v=5a',
+    color: 'bg-pink-400',
+    features: ['High Contrast', 'Large Text', 'Clear Borders']
+  },
+  {
+    id: 'v5b',
+    name: 'V5b Screen Reader',
+    version: 'V5.B',
+    description: 'Screen Reader optimiert',
+    path: '/umzugsofferten?v=5b',
+    color: 'bg-pink-600',
+    features: ['ARIA Labels', 'Screen Reader', 'Focus Management']
+  },
+  {
+    id: 'v5c',
+    name: 'V5c Keyboard Nav',
+    version: 'V5.C',
+    description: 'Vollständige Tastatur-Navigation',
+    path: '/umzugsofferten?v=5c',
+    color: 'bg-pink-700',
+    features: ['Tab Navigation', 'Shortcuts', 'No Mouse Required']
+  },
+  {
+    id: 'v5d',
+    name: 'V5d Large Text',
+    version: 'V5.D',
+    description: 'Extra grosse Schrift',
+    path: '/umzugsofferten?v=5d',
+    color: 'bg-pink-800',
+    features: ['Large Text', 'Readable Fonts', 'Generous Spacing']
+  },
+  {
+    id: 'v5e',
+    name: 'V5e Reduced Motion',
+    version: 'V5.E',
+    description: 'Weniger Animationen',
+    path: '/umzugsofferten?v=5e',
+    color: 'bg-rose-400',
+    features: ['No Animations', 'Calm UI', 'Focus on Content']
   }
 ];
 
@@ -304,7 +493,7 @@ export default function FlowTester() {
         </div>
         <CardTitle>Flow Tester Registrierung</CardTitle>
         <p className="text-muted-foreground text-sm">
-          Testen Sie alle 9 Umzugsofferten-Flows und helfen Sie uns, den besten zu finden.
+          Testen Sie alle 29 Umzugsofferten-Flows (9 Haupt-Varianten + 20 Sub-Varianten) und helfen Sie uns, den besten zu finden.
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
