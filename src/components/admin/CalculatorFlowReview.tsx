@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { FlowVersionManager } from "./FlowVersionManager";
-import { FeedbackToVariantGenerator } from "./FeedbackToVariantGenerator";
+import { VariantWorkflowHub } from "./VariantWorkflowHub";
 import AutoFlowDashboard from "./AutoFlowDashboard";
 import { 
   Camera, 
@@ -2677,8 +2677,8 @@ Basierend auf allen Erkenntnissen:
         </CardContent>
       </Card>
 
-      {/* Feedback to Variant Generator */}
-      <FeedbackToVariantGenerator />
+      {/* Variant Workflow Hub */}
+      <VariantWorkflowHub />
 
       {/* Version Manager */}
       <FlowVersionManager 
