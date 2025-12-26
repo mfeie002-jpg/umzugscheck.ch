@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { FLOW_CONFIGS, getFlowVariants } from "@/data/flowConfigs";
 import { toast } from "sonner";
@@ -28,7 +30,10 @@ import {
   RefreshCw,
   Zap,
   FileText,
-  GitBranch
+  GitBranch,
+  MessageSquare,
+  ExternalLink,
+  Wand2
 } from "lucide-react";
 
 interface FeedbackVariant {
@@ -62,6 +67,15 @@ const STATUS_CONFIG: Record<string, { icon: any; color: string; label: string }>
   error: { icon: XCircle, color: "text-destructive", label: "Fehler" }
 };
 
+// Suggested prompts based on common feedback patterns
+const QUICK_PROMPTS = [
+  { label: "Mobile-First Redesign", prompt: "Komplettes Mobile-First Redesign: Touch-optimierte CTAs (min. 48px), Thumb-Zone-optimiertes Layout, Sticky Footer CTA, weniger Text, mehr visuelle Hierarchie." },
+  { label: "Conversion Boost", prompt: "Maximale Conversion: Größere CTAs, Trust-Signals in Hero, Social Proof, weniger Formularfelder, Progressive Disclosure, Exit-Intent." },
+  { label: "Speed & Performance", prompt: "Performance-Optimierung: Lazy Loading, kritischer CSS-Path, kleinere Bilder, weniger JavaScript, optimierte Fonts." },
+  { label: "Trust & Credibility", prompt: "Mehr Vertrauen: Partner-Logos, Zertifikate, Kundenbewertungen, Erfolgsgeschichten, Geld-zurück-Garantie, transparente Preise." },
+  { label: "Simplification", prompt: "Radikal vereinfachen: Nur 1 CTA pro Step, weniger Optionen, klarere Sprache, weniger Schritte, Auto-Fill wo möglich." },
+];
+
 export const FlowFeedbackVariants = () => {
   const [variants, setVariants] = useState<FeedbackVariant[]>([]);
   const [selectedFlow, setSelectedFlow] = useState("umzugsofferten");
@@ -72,12 +86,18 @@ export const FlowFeedbackVariants = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showResultDialog, setShowResultDialog] = useState(false);
   const [selectedResult, setSelectedResult] = useState<FeedbackVariant | null>(null);
+  const [activeTab, setActiveTab] = useState("variants");
   
   // Form state
   const [formVariantName, setFormVariantName] = useState("A");
   const [formLabel, setFormLabel] = useState("");
   const [formPrompt, setFormPrompt] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  
+  // Quick paste state
+  const [quickPasteText, setQuickPasteText] = useState("");
+  const [quickPasteLabel, setQuickPasteLabel] = useState("");
+  const [isQuickCreating, setIsQuickCreating] = useState(false);
 
   const flowVariants = getFlowVariants();
 
@@ -283,9 +303,55 @@ Generiere die verbesserte Version.`,
     toast.success('In Zwischenablage kopiert');
   };
 
+  // Quick create from pasted ChatGPT analysis
+  const handleQuickCreate = async () => {
+    if (!quickPasteText.trim()) {
+      toast.error('Bitte ChatGPT-Analyse einfügen');
+      return;
+    }
+
+    setIsQuickCreating(true);
+    
+    try {
+      // Find next available variant name
+      const used = variants.map(v => v.variant_name);
+      const nextVariant = ['A', 'B', 'C', 'D', 'E', 'F'].find(n => !used.includes(n));
+      
+      if (!nextVariant) {
+        toast.error('Alle Varianten (A-F) bereits belegt');
+        return;
+      }
+
+      // Auto-generate label if not provided
+      const label = quickPasteLabel.trim() || `ChatGPT Analyse ${new Date().toLocaleDateString('de-CH')}`;
+
+      // Create the variant
+      const { error } = await supabase
+        .from('flow_feedback_variants')
+        .insert({
+          flow_id: selectedFlow,
+          variant_name: nextVariant,
+          variant_label: label,
+          prompt: quickPasteText
+        });
+
+      if (error) throw error;
+      
+      toast.success(`Variante ${nextVariant} erstellt! Jetzt ausführen für V1.${nextVariant.toLowerCase()}`);
+      setQuickPasteText("");
+      setQuickPasteLabel("");
+      fetchVariants();
+    } catch (err: any) {
+      console.error('Quick create failed:', err);
+      toast.error(err.message || 'Erstellen fehlgeschlagen');
+    } finally {
+      setIsQuickCreating(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header with Tabs */}
       <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-background">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -301,6 +367,12 @@ Generiere die verbesserte Version.`,
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Link to="/flow-tester" target="_blank">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <ExternalLink className="h-4 w-4" />
+                  Flow Tester
+                </Button>
+              </Link>
               <Select value={selectedFlow} onValueChange={setSelectedFlow}>
                 <SelectTrigger className="w-[200px]">
                   <SelectValue />
@@ -316,6 +388,86 @@ Generiere die verbesserte Version.`,
             </div>
           </div>
         </CardHeader>
+      </Card>
+
+      {/* Quick Paste Section - NEW */}
+      <Card className="border-dashed border-2 border-primary/30">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-primary" />
+            <CardTitle className="text-lg">ChatGPT Analyse einfügen</CardTitle>
+          </div>
+          <CardDescription>
+            Paste deine ChatGPT-Analyse hier ein → automatisch neue Variante erstellen → ausführen für V1.a, V1.b etc.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-3">
+              <Textarea
+                value={quickPasteText}
+                onChange={(e) => setQuickPasteText(e.target.value)}
+                placeholder="Hier ChatGPT-Analyse oder eigene Verbesserungsvorschläge einfügen...
+
+Beispiel:
+## Verbesserungen für Step 1:
+- Hero-Headline klarer formulieren
+- CTA-Button größer und kontrastreicher
+- Trust-Badges unter dem CTA hinzufügen
+
+## Step 2 Optimierungen:
+- Formularfelder auf das Wesentliche reduzieren
+- Progressive Disclosure implementieren
+..."
+                className="min-h-[150px] font-mono text-sm"
+              />
+            </div>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">Label (optional)</Label>
+                <Input
+                  value={quickPasteLabel}
+                  onChange={(e) => setQuickPasteLabel(e.target.value)}
+                  placeholder="z.B. Mobile UX Fix"
+                  className="text-sm"
+                />
+              </div>
+              <Button 
+                onClick={handleQuickCreate}
+                disabled={isQuickCreating || !quickPasteText.trim()}
+                className="w-full gap-2"
+              >
+                {isQuickCreating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Wand2 className="h-4 w-4" />
+                )}
+                Variante erstellen
+              </Button>
+              <div className="text-xs text-muted-foreground">
+                Nächste: Variante {['A', 'B', 'C', 'D', 'E', 'F'].find(n => !variants.map(v => v.variant_name).includes(n)) || '(voll)'}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Prompts */}
+          <div className="pt-2 border-t">
+            <Label className="text-xs text-muted-foreground mb-2 block">Schnell-Vorlagen:</Label>
+            <div className="flex flex-wrap gap-2">
+              {QUICK_PROMPTS.map((qp, i) => (
+                <Button
+                  key={i}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => setQuickPasteText(qp.prompt)}
+                >
+                  {qp.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </CardContent>
       </Card>
 
       {/* Actions Bar */}
