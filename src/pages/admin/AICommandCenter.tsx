@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { AdminHelpButton } from "@/components/admin/AdminHelpSystem";
-import { FlowFeedbackVariants } from "@/components/admin/FlowFeedbackVariants";
+import { VariantWorkflowHub } from "@/components/admin/VariantWorkflowHub";
 import { CustomFlowManager } from "@/components/admin/CustomFlowManager";
 import { CHATGPT_PROMPT_ENHANCEMENTS, getAllEnhancementsMarkdown } from "@/lib/chatgpt-prompt-enhancements";
 import { CONTEXT_DATA_ITEMS, getAvailableContextData, getPlannedContextData, getContextDataChecklistMarkdown } from "@/lib/chatgpt-context-data";
@@ -771,7 +771,7 @@ Tägliche Captures mit Diff-Detection.
           </TabsContent>
 
           <TabsContent value="variants" className="space-y-6">
-            <FlowFeedbackVariants />
+            <VariantWorkflowHub />
           </TabsContent>
 
           <TabsContent value="custom" className="space-y-6">
