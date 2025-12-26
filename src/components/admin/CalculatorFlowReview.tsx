@@ -12,6 +12,7 @@ import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-
 import { toast } from "sonner";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { FlowVersionManager } from "./FlowVersionManager";
 import { 
   Camera, 
   Copy, 
@@ -28,7 +29,8 @@ import {
   RefreshCw,
   Package,
   Globe,
-  Search
+  Search,
+  History
 } from "lucide-react";
 
 interface FlowStep {
@@ -1593,6 +1595,12 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
         </CardContent>
       </Card>
 
+      {/* Version Manager */}
+      <FlowVersionManager 
+        flowId={selectedCalculator} 
+        currentSteps={capturedSteps}
+      />
+
       {/* Tips */}
       <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
         <CardContent className="p-4">
@@ -1604,6 +1612,7 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
             <li>• Verwende GPT-4 Vision oder Claude 3 für visuelle Analyse</li>
             <li>• Das HTML ermöglicht detaillierte Code-Verbesserungsvorschläge</li>
             <li>• Frage nach A/B-Test-Ideen für Conversion-Optimierung</li>
+            <li>• Speichere Versionen mit AI Feedback für spätere Vergleiche</li>
           </ul>
         </CardContent>
       </Card>

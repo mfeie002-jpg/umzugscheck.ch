@@ -567,6 +567,63 @@ export type Database = {
         }
         Relationships: []
       }
+      flow_versions: {
+        Row: {
+          ai_feedback: string | null
+          ai_feedback_date: string | null
+          ai_feedback_source: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          flow_id: string
+          html_snapshots: Json
+          id: string
+          is_baseline: boolean | null
+          is_live: boolean | null
+          screenshots: Json
+          step_configs: Json
+          tags: string[] | null
+          version_name: string | null
+          version_number: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          ai_feedback_date?: string | null
+          ai_feedback_source?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          flow_id: string
+          html_snapshots?: Json
+          id?: string
+          is_baseline?: boolean | null
+          is_live?: boolean | null
+          screenshots?: Json
+          step_configs?: Json
+          tags?: string[] | null
+          version_name?: string | null
+          version_number: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          ai_feedback_date?: string | null
+          ai_feedback_source?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          flow_id?: string
+          html_snapshots?: Json
+          id?: string
+          is_baseline?: boolean | null
+          is_live?: boolean | null
+          screenshots?: Json
+          step_configs?: Json
+          tags?: string[] | null
+          version_name?: string | null
+          version_number?: string
+        }
+        Relationships: []
+      }
       historical_pricing: {
         Row: {
           avg_price: number
