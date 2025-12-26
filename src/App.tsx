@@ -341,7 +341,7 @@ const App = () => (
                 <ScrollToTopOnRoute />
                 <ScrollToTop />
                 
-                <Suspense fallback={null}>
+                <Suspense fallback={<PageLoadingFallback />}>
                   <MobilePullToRefresh>
                     <SwipeNavigationWrapper>
                       <main className="flex-1 pb-16 md:pb-0">
