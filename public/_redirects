@@ -1,0 +1,6 @@
+# SPA Fallback - All routes serve index.html for React Router
+# Assets with hashes are served directly
+/assets/*  /assets/:splat  200
+
+# All other routes fall back to index.html for client-side routing
+/*    /index.html   200

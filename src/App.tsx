@@ -78,6 +78,8 @@ import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
 import { ScrollProgressBar } from "./components/ScrollProgressBar";
 import { ScreenshotRenderModeRoot } from "@/components/ScreenshotRenderModeRoot";
 import { CaptureDebugOverlay } from "@/components/CaptureDebugOverlay";
+import { CaptureReadySentinel } from "@/components/CaptureReadySentinel";
+import { RedirectWithQuery } from "@/components/RedirectWithQuery";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { FunnelModeProvider } from "@/components/funnel/FunnelModeProvider";
 
@@ -300,7 +302,9 @@ const App = () => (
               <BrowserRouter>
                 <AnalyticsTracker />
                 <ScreenshotRenderModeRoot />
+                <CaptureReadySentinel />
                 <CaptureDebugOverlay />
+                <FunnelModeProvider />
                 <FunnelModeProvider />
                 <CriticalCSS />
                 <CriticalCSSLoader />
@@ -512,8 +516,9 @@ const App = () => (
                             <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
                             {/* Flow tester routes with redirect for typos/old URLs */}
                             <Route path="/flow-tester" element={<FlowTester />} />
-                            <Route path="/flow-test" element={<Navigate to="/flow-tester" replace />} />
-                            <Route path="/flowtester" element={<Navigate to="/flow-tester" replace />} />
+                            <Route path="/flow-test" element={<RedirectWithQuery to="/flow-tester" />} />
+                            <Route path="/flowtester" element={<RedirectWithQuery to="/flow-tester" />} />
+                            <Route path="/flow-tester/" element={<RedirectWithQuery to="/flow-tester" />} />
                             <Route path="/umzugsofferten/bestaetigung" element={<UmzugsoffertenBestaetigung />} />
                             <Route path="/umzugsofferten/:region" element={<RegionalOfferten />} />
                             <Route path="/preise" element={<Pricing />} />
