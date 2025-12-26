@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/data/constants";
 import {
@@ -142,9 +143,26 @@ const CALCULATOR_FLOWS = [
   },
 ];
 
-const DIMENSIONS = {
-  desktop: { value: "1920x1080", label: "Desktop (1920x1080)" },
-  mobile: { value: "390x844", label: "Mobile (390x844)" },
+// Hero-only presets (captures just the top section with calculator)
+const DIMENSION_PRESETS = {
+  desktop: [
+    { value: "1920x600", label: "Hero Only (1920x600)", recommended: true },
+    { value: "1920x800", label: "Extended Hero (1920x800)" },
+    { value: "1920x1080", label: "Full Viewport (1920x1080)" },
+    { value: "1920xfull", label: "Full Page (1920xfull)" },
+  ],
+  mobile: [
+    { value: "390x500", label: "Hero Only (390x500)", recommended: true },
+    { value: "390x700", label: "Extended Hero (390x700)" },
+    { value: "390x844", label: "Full Viewport (390x844)" },
+    { value: "390xfull", label: "Full Page (390xfull)" },
+  ],
+};
+
+// Default to hero-only dimensions for faster, more reliable captures
+const DEFAULT_DIMENSIONS = {
+  desktop: DIMENSION_PRESETS.desktop[0], // Hero Only
+  mobile: DIMENSION_PRESETS.mobile[0],   // Hero Only
 };
 
 interface CaptureResult {
@@ -173,7 +191,9 @@ export function AutoFlowScreenshots() {
   );
   const [captureDesktop, setCaptureDesktop] = useState(true);
   const [captureMobile, setCaptureMobile] = useState(true);
-  const [fullPage, setFullPage] = useState(true);
+  const [selectedDesktopDim, setSelectedDesktopDim] = useState(DEFAULT_DIMENSIONS.desktop);
+  const [selectedMobileDim, setSelectedMobileDim] = useState(DEFAULT_DIMENSIONS.mobile);
+  const [fullPage, setFullPage] = useState(false); // Default false for hero-only captures
   const [delayMs, setDelayMs] = useState(30000); // 30s default for lazy-loaded SPAs (recommended by ScreenshotMachine docs)
 
   const [isRunning, setIsRunning] = useState(false);
@@ -240,8 +260,8 @@ export function AutoFlowScreenshots() {
     let captureCount = 0;
 
     const dimensionsToCapture = [
-      ...(captureDesktop ? [DIMENSIONS.desktop] : []),
-      ...(captureMobile ? [DIMENSIONS.mobile] : []),
+      ...(captureDesktop ? [selectedDesktopDim] : []),
+      ...(captureMobile ? [selectedMobileDim] : []),
     ];
 
     for (const flowId of selectedFlows) {
@@ -442,34 +462,87 @@ export function AutoFlowScreenshots() {
             ))}
           </div>
 
-          {/* Dimension Selection */}
-          <div className="flex gap-4 pt-2">
-            <div
-              className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer ${
-                captureDesktop ? "border-primary bg-primary/5" : "border-border"
-              }`}
-              onClick={() => setCaptureDesktop(!captureDesktop)}
-            >
-              <Checkbox
-                checked={captureDesktop}
-                onCheckedChange={() => setCaptureDesktop(!captureDesktop)}
-              />
-              <Monitor className="h-4 w-4" />
-              <span>Desktop (1920x1080)</span>
+          {/* Dimension Selection with Dropdowns */}
+          <div className="flex flex-col gap-4 pt-2">
+            <div className="flex gap-4">
+              {/* Desktop Toggle + Dropdown */}
+              <div className="flex-1 space-y-2">
+                <div
+                  className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer ${
+                    captureDesktop ? "border-primary bg-primary/5" : "border-border"
+                  }`}
+                  onClick={() => setCaptureDesktop(!captureDesktop)}
+                >
+                  <Checkbox
+                    checked={captureDesktop}
+                    onCheckedChange={() => setCaptureDesktop(!captureDesktop)}
+                  />
+                  <Monitor className="h-4 w-4" />
+                  <span>Desktop</span>
+                </div>
+                {captureDesktop && (
+                  <Select
+                    value={selectedDesktopDim.value}
+                    onValueChange={(val) => {
+                      const preset = DIMENSION_PRESETS.desktop.find(p => p.value === val);
+                      if (preset) setSelectedDesktopDim(preset);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DIMENSION_PRESETS.desktop.map((preset) => (
+                        <SelectItem key={preset.value} value={preset.value}>
+                          {preset.label} {preset.recommended && "⭐"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+
+              {/* Mobile Toggle + Dropdown */}
+              <div className="flex-1 space-y-2">
+                <div
+                  className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer ${
+                    captureMobile ? "border-primary bg-primary/5" : "border-border"
+                  }`}
+                  onClick={() => setCaptureMobile(!captureMobile)}
+                >
+                  <Checkbox
+                    checked={captureMobile}
+                    onCheckedChange={() => setCaptureMobile(!captureMobile)}
+                  />
+                  <Smartphone className="h-4 w-4" />
+                  <span>Mobile</span>
+                </div>
+                {captureMobile && (
+                  <Select
+                    value={selectedMobileDim.value}
+                    onValueChange={(val) => {
+                      const preset = DIMENSION_PRESETS.mobile.find(p => p.value === val);
+                      if (preset) setSelectedMobileDim(preset);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DIMENSION_PRESETS.mobile.map((preset) => (
+                        <SelectItem key={preset.value} value={preset.value}>
+                          {preset.label} {preset.recommended && "⭐"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
             </div>
-            <div
-              className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer ${
-                captureMobile ? "border-primary bg-primary/5" : "border-border"
-              }`}
-              onClick={() => setCaptureMobile(!captureMobile)}
-            >
-              <Checkbox
-                checked={captureMobile}
-                onCheckedChange={() => setCaptureMobile(!captureMobile)}
-              />
-              <Smartphone className="h-4 w-4" />
-              <span>Mobile (390x844)</span>
-            </div>
+            
+            <p className="text-xs text-muted-foreground">
+              ⭐ Hero Only empfohlen: Schnellere, zuverlässigere Captures – erfasst nur den oberen Bereich mit Calculator.
+            </p>
           </div>
 
           {/* Summary & Action */}
@@ -548,7 +621,7 @@ export function AutoFlowScreenshots() {
                       try {
                         const r = await captureScreenshot({
                           url: urlToTest,
-                          dimension: DIMENSIONS.desktop.value,
+                          dimension: selectedDesktopDim.value,
                           delay: delayMs,
                           format: "png",
                           fullPage,
