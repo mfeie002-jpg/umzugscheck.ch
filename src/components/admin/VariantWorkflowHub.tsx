@@ -574,13 +574,13 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                             Live
                           </Button>
                         </Link>
-                        <Link to={`/admin/flow-tester?variant=${variant.key}`}>
+                        <Link to={`/flow-tester?variant=${variant.key}`}>
                           <Button size="sm" variant="outline">
                             <Play className="h-3 w-3 mr-1" />
                             Tester
                           </Button>
                         </Link>
-                        <Link to={`/admin/tools?tab=screenshots`}>
+                        <Link to="/admin/tools?tab=calculator-review">
                           <Button size="sm" variant="default">
                             <Camera className="h-3 w-3 mr-1" />
                             Screenshots
@@ -620,7 +620,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                           Testen
                         </Button>
                       </Link>
-                      <Link to={`/admin/tools?tab=screenshots`}>
+                      <Link to="/admin/tools?tab=calculator-review">
                         <Button size="sm" variant="default">
                           <Camera className="h-3 w-3 mr-1" />
                           Screenshots
@@ -651,10 +651,16 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             <Separator />
 
             <div className="flex gap-2">
-              <Link to="/admin/tools?tab=autoflow" className="flex-1">
+              <Link to="/admin/tools?tab=calculator-review" className="flex-1">
+                <Button variant="outline" className="w-full gap-2">
+                  <Camera className="h-4 w-4" />
+                  Screenshot Tool
+                </Button>
+              </Link>
+              <Link to="/flow-tester" className="flex-1">
                 <Button variant="outline" className="w-full gap-2">
                   <Play className="h-4 w-4" />
-                  AutoFlow öffnen
+                  Flow Tester
                 </Button>
               </Link>
               <Button onClick={() => setActiveStep(5)} className="flex-1">

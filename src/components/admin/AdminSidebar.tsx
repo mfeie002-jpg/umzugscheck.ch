@@ -39,7 +39,8 @@ import {
   Settings,
   Shield,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Play
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -122,6 +123,18 @@ const navStructure: NavItem[] = [
   
   // ========== FUNNELS & UX ==========
   { type: "divider", title: "🎯 Funnels & UX" },
+  { 
+    title: "Flow Tester", 
+    href: "/flow-tester", 
+    icon: Play,
+    highlight: true,
+    badge: "TEST"
+  },
+  { 
+    title: "V3 Varianten", 
+    href: "/v3-varianten", 
+    icon: GitCompare
+  },
   { 
     title: "Funnel Analytics", 
     href: "/admin/funnel", 
