@@ -165,6 +165,7 @@ serve(async (req) => {
   }
 
   try {
+    const body = await req.json();
     let {
       url,
       dimension = "1920x1080",
@@ -173,7 +174,15 @@ serve(async (req) => {
       fullPage = false,
       scroll = true,
       noCache = true,
-    } = await req.json();
+    } = body ?? {};
+
+    // Optional: allow callers to request a specific selector explicitly.
+    // We DO NOT auto-enable selectors anymore because it caused unreliable captures on heavy SPA funnels
+    // (e.g. umzugscheck /umzugsofferten variants) even with long delays.
+    const requestedSelector =
+      typeof (body as any)?.selector === "string" && (body as any).selector.trim().length > 0
+        ? (body as any).selector.trim()
+        : null;
 
     // Auto-add uc_render=1 for umzugscheck.ch to avoid lazy-loading issues
     try {
@@ -276,7 +285,7 @@ serve(async (req) => {
     // For full-page captures we allow longer total execution time (delay + render).
     const effectiveTimeoutMs = isFullPage ? Math.min(120000, effectiveDelay + 60000) : 20000;
 
-    const selector = isCaptureMode ? "#uc-capture-ready" : null;
+    const selector = requestedSelector;
 
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
@@ -289,11 +298,11 @@ serve(async (req) => {
       timeout: String(effectiveTimeoutMs),
     });
 
-    // In capture-mode, require a deterministic "ready" sentinel before we accept a screenshot.
-    // This prevents capturing loading spinners / blank states.
+    // Optional selector probe (only if explicitly requested by the caller).
+    // Note: We do NOT auto-require selectors for capture-mode anymore; reliability > strictness.
     if (selector) {
       params.set("selector", selector);
-      console.log(`Capture-mode selector enabled: ${selector}`);
+      console.log(`Selector enabled: ${selector}`);
     }
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
