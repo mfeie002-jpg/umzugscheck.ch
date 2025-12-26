@@ -278,35 +278,60 @@ export function CaptureReadySentinel({
     window.addEventListener("unhandledrejection", onRejection);
     window.addEventListener("error", onResourceError, true);
 
-    // CRITICAL FIX: MutationObserver that ignores sentinel's own mutations
+    // CRITICAL FIX: MutationObserver that ignores animated/toast elements
     try {
       mutationObserverRef.current = new MutationObserver((mutations) => {
         const sentinelEl = sentinelElRef.current;
         
-        // Check if any mutation is NOT from sentinel
+        // Elements to ignore (toasts, chat widgets, animations)
+        const ignoreSelectors = [
+          '#uc-capture-sentinel',
+          '#uc-capture-watermark',
+          '[data-sonner-toaster]',     // Sonner toast container
+          '.sonner-toast',              // Sonner toasts
+          '[role="status"]',            // Toast announcements
+          '.chat-widget',               // Chat widgets
+          '[class*="Toaster"]',         // Generic toaster containers
+          '[class*="toast"]',           // Generic toast classes
+          '[class*="notification"]',    // Notification containers
+          '[style*="transform"]',       // Animated elements (framer-motion etc)
+        ];
+        
         for (const m of mutations) {
-          // Skip mutations that are inside the sentinel element
-          if (sentinelEl && m.target && sentinelEl.contains(m.target as Node)) {
-            continue;
-          }
-          // Skip watermark element mutations
-          const watermark = document.getElementById('uc-capture-watermark');
-          if (watermark && m.target && watermark.contains(m.target as Node)) {
-            continue;
+          const target = m.target as Element | null;
+          if (!target) continue;
+          
+          // Skip if target matches any ignore selector
+          let shouldIgnore = false;
+          
+          if (sentinelEl && sentinelEl.contains(target)) {
+            shouldIgnore = true;
+          } else {
+            for (const sel of ignoreSelectors) {
+              try {
+                if (target.matches?.(sel) || target.closest?.(sel)) {
+                  shouldIgnore = true;
+                  break;
+                }
+              } catch {
+                // ignore invalid selectors
+              }
+            }
           }
           
-          // Real DOM mutation detected
-          lastMutationRef.current = Date.now();
-          break;
+          if (!shouldIgnore) {
+            lastMutationRef.current = Date.now();
+            break;
+          }
         }
       });
       
-      // CRITICAL FIX: Don't observe attributes (framer motion, your own data-attrs cause noise)
+      // Only observe childList - NO attributes (animations cause constant noise)
       mutationObserverRef.current.observe(document.body, {
         childList: true,
         subtree: true,
-        attributes: false,  // DISABLED - was causing self-mutation loop
-        characterData: false, // DISABLED
+        attributes: false,
+        characterData: false,
       });
     } catch {
       // ignore
