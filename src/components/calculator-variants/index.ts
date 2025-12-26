@@ -17,6 +17,7 @@ export { V2eExperimental } from './V2eExperimental';
 
 // V3 Variants (Mobile-First)
 export { V3aMobileFirst } from './V3aMobileFirst';
+export { V3aFeedbackBased } from './V3aFeedbackBased';
 export { V3bSwipeNavigation } from './V3bSwipeNavigation';
 export { V3cBottomSheet } from './V3cBottomSheet';
 export { V3dThumbZone } from './V3dThumbZone';
@@ -46,6 +47,7 @@ export const VARIANT_REGISTRY: Record<string, string> = {
   '2e': 'V2eExperimental',
   // V3 - Mobile-First
   '3a': 'V3aMobileFirst',
+  '3a-feedback': 'V3aFeedbackBased',
   '3b': 'V3bSwipeNavigation',
   '3c': 'V3cBottomSheet',
   '3d': 'V3dThumbZone',
