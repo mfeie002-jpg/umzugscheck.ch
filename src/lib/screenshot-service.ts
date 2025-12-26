@@ -61,11 +61,15 @@ export async function captureScreenshot(options: ScreenshotOptions): Promise<Scr
     // In capture mode we default to waiting for the in-app sentinel.
     const waitForReadySentinel = options.waitForReadySentinel ?? isCaptureLike;
 
+    // ScreenshotMachine API only allows delays: 0, 200, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000
+    // Maximum is 10000ms (10 seconds)
+    const requestedDelay = options.delay || 10000; // Default to max for reliability
+    
     const { data, error } = await supabase.functions.invoke('capture-screenshot', {
       body: {
         url: urlWithCacheBuster,
         dimension: options.dimension || '1920x1080',
-        delay: options.delay || 6000,
+        delay: Math.min(requestedDelay, 10000), // Cap at API max
         format: options.format || 'png',
         fullPage: options.fullPage || false,
         // IMPORTANT: many "scroll" based full-page captures create large white gaps.
