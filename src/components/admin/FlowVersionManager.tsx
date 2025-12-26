@@ -32,6 +32,26 @@ import {
 const toPngDataUrl = (value: string) =>
   value.startsWith("data:") ? value : `data:image/png;base64,${value}`;
 
+// Extract flow major version from the flowId used in admin tools.
+// Examples:
+// - "umzugsofferten" -> 1
+// - "umzugsofferten-v3" -> 3
+const getFlowMajorFromFlowId = (flowId: string): number | null => {
+  if (flowId === "umzugsofferten") return 1;
+  const match = flowId.match(/-v(\d+)/i);
+  if (!match) return null;
+  const n = Number(match[1]);
+  return Number.isFinite(n) ? n : null;
+};
+
+const parseMinorFromVersionNumber = (raw: string): number | null => {
+  const cleaned = String(raw).trim().replace(/^v/i, "");
+  const parts = cleaned.split(".");
+  const minorRaw = parts.length > 1 ? parts[1] : parts[0];
+  const n = Number.parseInt(minorRaw, 10);
+  return Number.isFinite(n) ? n : null;
+};
+
 interface FlowVersion {
   id: string;
   flow_id: string;
@@ -86,6 +106,21 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
     fetchVersions();
   }, [flowId]);
 
+  const flowMajor = getFlowMajorFromFlowId(flowId);
+
+  const formatVersion = (raw?: string | null): string => {
+    if (!raw) return "";
+    const cleaned = String(raw).trim().replace(/^v/i, "");
+    const parts = cleaned.split(".");
+    // if stored like "1.5" -> minor=5; if stored like "5" -> minor=5
+    const minor = parts.length > 1 ? parts[1] : parts[0];
+
+    // In the Admin Flow tools, we want the major version to follow the selected flow (V1..V9)
+    // so comparisons don't accidentally show v1.x while reviewing V3.
+    if (flowMajor !== null) return `v${flowMajor}.${minor}`;
+    return `v${cleaned}`;
+  };
+
   const fetchVersions = async () => {
     try {
       const { data, error } = await supabase
@@ -105,35 +140,52 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
   };
 
   const suggestNextVersion = (): string => {
+    // If we're inside a specific V1..V9 flow in the admin tools, always suggest that major.
+    if (flowMajor !== null) {
+      const minors = versions
+        .map((v) => parseMinorFromVersionNumber(v.version_number))
+        .filter((n): n is number => n !== null);
+
+      const nextMinor = (minors.length ? Math.max(...minors) : 0) + 1;
+      let candidate = `${flowMajor}.${nextMinor}`;
+      const existingVersions = new Set(versions.map((v) => v.version_number));
+      // Ensure uniqueness (in case user mixed formats)
+      while (existingVersions.has(candidate) || existingVersions.has(`v${candidate}`)) {
+        const minor = (parseMinorFromVersionNumber(candidate) ?? nextMinor) + 1;
+        candidate = `${flowMajor}.${minor}`;
+      }
+      return candidate;
+    }
+
     if (versions.length === 0) return "1.0";
-    
+
     // Find the highest version number and increment
-    const versionNumbers = versions.map(v => {
+    const versionNumbers = versions.map((v) => {
       const parts = v.version_number.split('.');
       const major = parseInt(parts[0]) || 1;
       const minor = parseInt(parts[1]) || 0;
       return { major, minor, raw: v.version_number };
     });
-    
+
     // Sort by major then minor descending
     versionNumbers.sort((a, b) => {
       if (a.major !== b.major) return b.major - a.major;
       return b.minor - a.minor;
     });
-    
+
     const highest = versionNumbers[0];
     let nextMajor = highest.major;
     let nextMinor = highest.minor + 1;
-    
+
     // Check if this version already exists, if so increment until unique
     let candidate = `${nextMajor}.${nextMinor}`;
-    const existingVersions = new Set(versions.map(v => v.version_number));
-    
+    const existingVersions = new Set(versions.map((v) => v.version_number));
+
     while (existingVersions.has(candidate)) {
       nextMinor++;
       candidate = `${nextMajor}.${nextMinor}`;
     }
-    
+
     return candidate;
   };
 
@@ -358,7 +410,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
               >
                 <div className="flex items-center gap-3">
                   <div className="font-mono text-lg font-semibold">
-                    v{version.version_number}
+                    {formatVersion(version.version_number)}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -448,7 +500,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>
-                AI Feedback für v{selectedVersionForFeedback?.version_number}
+                AI Feedback für {selectedVersionForFeedback ? formatVersion(selectedVersionForFeedback.version_number) : ""}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -502,7 +554,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                     <SelectContent>
                       {versions.map(v => (
                         <SelectItem key={v.id} value={v.id}>
-                          v{v.version_number}
+                          {formatVersion(v.version_number)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -562,7 +614,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <div className="text-center font-medium mb-2">
-                          v{selectedVersionA.version_number}
+                          {formatVersion(selectedVersionA.version_number)}
                           {selectedVersionA.is_baseline && " (Baseline)"}
                         </div>
                         <div className="border rounded-lg overflow-hidden bg-muted/30">
@@ -581,7 +633,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                       </div>
                       <div>
                         <div className="text-center font-medium mb-2">
-                          v{selectedVersionB.version_number}
+                          {formatVersion(selectedVersionB.version_number)}
                           {selectedVersionB.is_baseline && " (Baseline)"}
                         </div>
                         <div className="border rounded-lg overflow-hidden bg-muted/30">
@@ -605,7 +657,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <div className="text-center font-medium mb-2">
-                          v{selectedVersionA.version_number} Konfiguration
+                          {formatVersion(selectedVersionA.version_number)} Konfiguration
                         </div>
                         <ScrollArea className="h-[400px] border rounded-lg p-4">
                           <pre className="text-xs font-mono whitespace-pre-wrap">
@@ -615,7 +667,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                       </div>
                       <div>
                         <div className="text-center font-medium mb-2">
-                          v{selectedVersionB.version_number} Konfiguration
+                          {formatVersion(selectedVersionB.version_number)} Konfiguration
                         </div>
                         <ScrollArea className="h-[400px] border rounded-lg p-4">
                           <pre className="text-xs font-mono whitespace-pre-wrap">
@@ -630,7 +682,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <div className="text-center font-medium mb-2">
-                          v{selectedVersionA.version_number} Feedback
+                          {formatVersion(selectedVersionA.version_number)} Feedback
                           {selectedVersionA.ai_feedback_source && (
                             <Badge variant="outline" className="ml-2">
                               {selectedVersionA.ai_feedback_source}
@@ -651,7 +703,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                       </div>
                       <div>
                         <div className="text-center font-medium mb-2">
-                          v{selectedVersionB.version_number} Feedback
+                          {formatVersion(selectedVersionB.version_number)} Feedback
                           {selectedVersionB.ai_feedback_source && (
                             <Badge variant="outline" className="ml-2">
                               {selectedVersionB.ai_feedback_source}
