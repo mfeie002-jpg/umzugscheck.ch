@@ -387,14 +387,19 @@ serve(async (req) => {
       `Capturing screenshot for: ${url}, dimension: ${dimension}, device: ${deviceType}, delay: ${effectiveDelay}ms, fullPage: ${isFullPage}`
     );
 
+    // CRITICAL FIX: Don't use "xfull" dimensions - ScreenshotMachine doesn't handle them reliably
+    // (returns 1912x768 instead of the expected dimension). Use fixed tall heights instead.
     let effectiveDimension = dimension;
-    if (isFullPage && !isDimensionFull) {
-      // Respect requested viewport width for full-page captures (e.g., 390xfull, 1920xfull).
-      const safeWidth = Number.isFinite(width) && width > 0 ? width : 1920;
-      effectiveDimension = `${safeWidth}xfull`;
+    const safeWidth = Number.isFinite(width) && width > 0 ? width : 1920;
+    
+    if (isFullPage || isDimensionFull) {
+      // Use fixed tall height instead of xfull - much more reliable
+      const tallHeight = deviceType === "phone" ? 3000 : 2500;
+      effectiveDimension = `${safeWidth}x${tallHeight}`;
+      console.log(`Capture strategy: fixed-tall (avoiding unreliable xfull), effectiveDimension: ${effectiveDimension}`);
+    } else {
+      console.log(`Capture strategy: viewport, effectiveDimension: ${effectiveDimension}`);
     }
-
-    console.log(`Capture strategy: ${isFullPage ? "xfull" : "viewport"}, effectiveDimension: ${effectiveDimension}`);
 
     if (!SCREENSHOT_API_KEY) {
       console.error("SCREENSHOTMACHINE_API_KEY not configured");
@@ -409,10 +414,9 @@ serve(async (req) => {
     // that is still an early/blank render.
     const effectiveTimeoutMs = Math.min(120000, effectiveDelay + 60000);
 
-    // ScreenshotMachine's `selector` parameter crops the screenshot to that element.
-    // CRITICAL FIX: Do NOT use selector for fullPage/xfull captures - it causes wrong cropping.
-    // For viewport captures, selector is safe (sentinel is viewport-sized).
-    const useSelector = requestedSelector && !isFullPage && !isDimensionFull;
+    // CRITICAL FIX: Always use selector for capture-mode URLs to wait for readiness
+    // Since we no longer use xfull, selector won't cause cropping issues
+    const useSelector = requestedSelector && !isDimensionFull;
     const selector = useSelector ? requestedSelector : null;
 
     const params = new URLSearchParams({
