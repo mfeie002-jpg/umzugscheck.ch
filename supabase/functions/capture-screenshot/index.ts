@@ -184,20 +184,10 @@ serve(async (req) => {
         ? (body as any).selector.trim()
         : null;
 
-    // Auto-add uc_render=1 for umzugscheck.ch to avoid lazy-loading issues
-    try {
-      const parsedUrl = new URL(url);
-      if (
-        parsedUrl.hostname === "umzugscheck.ch" ||
-        parsedUrl.hostname.endsWith(".umzugscheck.ch")
-      ) {
-        parsedUrl.searchParams.set("uc_render", "1");
-        url = parsedUrl.toString();
-        console.log("Added uc_render=1 for umzugscheck.ch URL");
-      }
-    } catch (e) {
-      console.warn("Could not parse URL for uc_render injection:", e);
-    }
+    // NOTE: We NO longer auto-add uc_render=1.
+    // The uc_render parameter triggers special render-mode logic (IntersectionObserver patches, scroll sweeps)
+    // which can cause blank screens in heavy SPA flows. Manual captures work without it.
+    // If the caller wants uc_render, they should add it themselves in the URL.
 
     // Validate format
     const validFormats = ["png", "jpg", "pdf"];
