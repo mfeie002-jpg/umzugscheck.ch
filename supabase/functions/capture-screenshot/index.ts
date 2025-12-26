@@ -276,6 +276,8 @@ serve(async (req) => {
     // For full-page captures we allow longer total execution time (delay + render).
     const effectiveTimeoutMs = isFullPage ? Math.min(120000, effectiveDelay + 60000) : 20000;
 
+    const selector = isCaptureMode ? "#uc-capture-ready" : null;
+
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
       url: url,
@@ -286,6 +288,13 @@ serve(async (req) => {
       js: "true",
       timeout: String(effectiveTimeoutMs),
     });
+
+    // In capture-mode, require a deterministic "ready" sentinel before we accept a screenshot.
+    // This prevents capturing loading spinners / blank states.
+    if (selector) {
+      params.set("selector", selector);
+      console.log(`Capture-mode selector enabled: ${selector}`);
+    }
 
     // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
     // IMPORTANT: Do NOT force any scroll behavior automatically.
