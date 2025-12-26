@@ -1,6 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { 
+  LayoutDashboard,
+  ChevronLeft,
+  ChevronRight,
+  Home,
   Users, 
   Building2, 
   MessageSquare, 
@@ -9,10 +13,6 @@ import {
   Wrench,
   Download,
   Camera,
-  LayoutDashboard,
-  ChevronLeft,
-  ChevronRight,
-  Home,
   Calendar,
   BarChart3,
   PieChart,
@@ -25,39 +25,138 @@ import {
   FileText,
   Gauge,
   Sparkles,
-  Gavel
+  Gavel,
+  Package,
+  Rocket,
+  Eye,
+  History,
+  GitCompare,
+  Zap,
+  Bot,
+  Send,
+  Copy,
+  Layers,
+  Settings,
+  Shield,
+  Clock,
+  AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 
-const navItems = [
+// ============================================================================
+// NEW STRUCTURED NAVIGATION - VORZEIGEMODEL ARCHITECTURE
+// ============================================================================
+
+interface NavItem {
+  title: string;
+  href?: string;
+  icon?: any;
+  badge?: string;
+  highlight?: boolean;
+  exact?: boolean;
+  type?: 'divider';
+}
+
+const navStructure: NavItem[] = [
+  // ========== DASHBOARD ==========
   { 
     title: "Dashboard", 
     href: "/admin", 
     icon: LayoutDashboard,
     exact: true
   },
-  // KI-Analyse at top for prominence
+  
+  // ========== AI COMMAND CENTER (HERO) ==========
+  { type: "divider", title: "🧠 AI Command Center" },
   { 
-    title: "KI-Analyse & Export", 
-    href: "/admin/ai-export", 
+    title: "KI-Zentrale", 
+    href: "/admin/ai-command", 
     icon: Brain,
+    highlight: true,
+    badge: "⚡"
+  },
+  { 
+    title: "1-Click Export", 
+    href: "/admin/chatgpt", 
+    icon: Rocket,
     highlight: true,
     badge: "NEU"
   },
   { 
-    title: "ChatGPT Ultimate", 
-    href: "/admin/chatgpt", 
-    icon: Sparkles,
-    highlight: true,
-    badge: "⭐"
+    title: "Prompt Library", 
+    href: "/admin/ai-export", 
+    icon: Copy
   },
-  {
-    type: "divider",
-    title: "Verwaltung"
+  
+  // ========== CAPTURE & EVIDENCE ==========
+  { type: "divider", title: "📸 Capture & Evidence" },
+  { 
+    title: "Screenshot Machine", 
+    href: "/admin/screenshots", 
+    icon: Camera
   },
+  { 
+    title: "Auto-Flow Capture", 
+    href: "/admin/tools", 
+    icon: Layers
+  },
+  { 
+    title: "HTML Analyzer", 
+    href: "/admin/tools?tab=seo", 
+    icon: FileText
+  },
+  { 
+    title: "Regression Tests", 
+    href: "/admin/tools?tab=regression", 
+    icon: GitCompare
+  },
+  
+  // ========== FUNNELS & UX ==========
+  { type: "divider", title: "🎯 Funnels & UX" },
+  { 
+    title: "Funnel Analytics", 
+    href: "/admin/funnel", 
+    icon: Target
+  },
+  { 
+    title: "A/B Tests", 
+    href: "/admin/ab-testing", 
+    icon: FlaskConical
+  },
+  { 
+    title: "Conversion Events", 
+    href: "/admin/conversions", 
+    icon: Zap
+  },
+  
+  // ========== ANALYTICS & REPORTS ==========
+  { type: "divider", title: "📊 Analytics & Reports" },
+  { 
+    title: "Übersicht", 
+    href: "/admin/analytics", 
+    icon: BarChart3
+  },
+  { 
+    title: "ML Analytics", 
+    href: "/admin/ml-analytics", 
+    icon: Bot
+  },
+  { 
+    title: "Preisanalyse", 
+    href: "/admin/pricing-analytics", 
+    icon: Gauge
+  },
+  { 
+    title: "Reports", 
+    href: "/admin/reports", 
+    icon: FileText
+  },
+  
+  // ========== VERWALTUNG ==========
+  { type: "divider", title: "👥 Verwaltung" },
   { 
     title: "Leads", 
     href: "/admin/leads", 
@@ -94,49 +193,9 @@ const navItems = [
     href: "/admin/availability", 
     icon: Calendar 
   },
-  {
-    type: "divider",
-    title: "Analytics"
-  },
-  { 
-    title: "Übersicht", 
-    href: "/admin/analytics", 
-    icon: BarChart3 
-  },
-  { 
-    title: "Funnel", 
-    href: "/admin/funnel", 
-    icon: Target 
-  },
-  { 
-    title: "Conversions", 
-    href: "/admin/conversions", 
-    icon: PieChart 
-  },
-  { 
-    title: "KI-Analytics", 
-    href: "/admin/ml-analytics", 
-    icon: Brain 
-  },
-  { 
-    title: "Preise", 
-    href: "/admin/pricing-analytics", 
-    icon: Gauge 
-  },
-  { 
-    title: "A/B Tests", 
-    href: "/admin/ab-testing", 
-    icon: FlaskConical 
-  },
-  { 
-    title: "Reports", 
-    href: "/admin/reports", 
-    icon: FileText 
-  },
-  {
-    type: "divider",
-    title: "Finanzen"
-  },
+  
+  // ========== BILLING & FINANCE ==========
+  { type: "divider", title: "💰 Billing & Finance" },
   { 
     title: "Abrechnung", 
     href: "/admin/billing", 
@@ -152,25 +211,22 @@ const navItems = [
     href: "/admin/dynamic-pricing", 
     icon: TrendingUp 
   },
-  {
-    type: "divider",
-    title: "Einstellungen"
-  },
+  
+  // ========== AUTOMATIONS ==========
+  { type: "divider", title: "⚙️ Automations" },
   { 
     title: "E-Mail Automation", 
     href: "/admin/email-automation", 
     icon: Mail 
   },
   { 
-    title: "Screenshots", 
-    href: "/admin/screenshots", 
-    icon: Camera
+    title: "Scheduled Jobs", 
+    href: "/admin/tools?tab=monitoring", 
+    icon: Clock 
   },
-  { 
-    title: "Tools & Downloads", 
-    href: "/admin/tools", 
-    icon: Wrench
-  },
+  
+  // ========== SETTINGS ==========
+  { type: "divider", title: "🔧 Settings & Admin" },
   { 
     title: "Code Export", 
     href: "/admin/code-export", 
@@ -186,7 +242,9 @@ export function AdminSidebar() {
     if (exact) {
       return location.pathname === href;
     }
-    return location.pathname.startsWith(href);
+    // Handle query params in href
+    const [path] = href.split('?');
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -197,8 +255,11 @@ export function AdminSidebar() {
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center justify-between">
         {!collapsed && (
-          <Link to="/admin" className="font-bold text-lg text-primary">
-            Admin
+          <Link to="/admin" className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-primary/10">
+              <Brain className="h-5 w-5 text-primary" />
+            </div>
+            <span className="font-bold text-lg">Admin</span>
           </Link>
         )}
         <Button 
@@ -211,14 +272,50 @@ export function AdminSidebar() {
         </Button>
       </div>
 
+      {/* Quick Actions (visible when expanded) */}
+      {!collapsed && (
+        <div className="p-2 border-b border-border">
+          <div className="flex flex-wrap gap-1">
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link 
+                    to="/admin/ai-command"
+                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-xs font-medium transition-colors"
+                  >
+                    <Rocket className="h-3 w-3" />
+                    <span>AI Export</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>1-Click ChatGPT Export</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link 
+                    to="/admin/screenshots"
+                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-muted hover:bg-muted/80 text-xs font-medium transition-colors"
+                  >
+                    <Camera className="h-3 w-3" />
+                    <span>Capture</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>Screenshot Machine</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto p-2">
-        {navItems.map((item, index) => {
+        {navStructure.map((item, index) => {
           if (item.type === "divider") {
             return (
-              <div key={index} className="my-4">
+              <div key={index} className="my-3">
                 {!collapsed && (
-                  <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <p className="px-3 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                     {item.title}
                   </p>
                 )}
@@ -235,7 +332,7 @@ export function AdminSidebar() {
               key={item.href}
               to={item.href!}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors mb-1 relative",
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors mb-0.5 relative",
                 "hover:bg-accent hover:text-accent-foreground",
                 active && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground",
                 item.highlight && !active && "bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary border border-primary/20 hover:from-primary/20 hover:to-orange-500/20",
@@ -246,7 +343,7 @@ export function AdminSidebar() {
                 <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-orange-500" />
               )}
               <Icon className={cn(
-                "h-5 w-5 shrink-0", 
+                "h-4 w-4 shrink-0", 
                 active && "text-primary-foreground",
                 item.highlight && !active && "text-primary"
               )} />
@@ -254,7 +351,7 @@ export function AdminSidebar() {
                 <>
                   <span className="text-sm font-medium flex-1">{item.title}</span>
                   {item.badge && (
-                    <Badge variant="default" className="text-[10px] px-1.5 py-0 h-4 bg-orange-500 hover:bg-orange-500">
+                    <Badge variant="default" className="text-[9px] px-1 py-0 h-4 bg-orange-500 hover:bg-orange-500">
                       {item.badge}
                     </Badge>
                   )}
@@ -274,7 +371,7 @@ export function AdminSidebar() {
                   <TooltipContent side="right" className="flex items-center gap-2">
                     {item.title}
                     {item.badge && (
-                      <Badge variant="default" className="text-[10px] px-1.5 py-0 h-4 bg-orange-500">
+                      <Badge variant="default" className="text-[9px] px-1 py-0 h-4 bg-orange-500">
                         {item.badge}
                       </Badge>
                     )}
@@ -293,13 +390,13 @@ export function AdminSidebar() {
         <Link
           to="/"
           className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
+            "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
             "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
             collapsed && "justify-center px-2"
           )}
           title={collapsed ? "Zur Website" : undefined}
         >
-          <Home className="h-5 w-5 shrink-0" />
+          <Home className="h-4 w-4 shrink-0" />
           {!collapsed && <span className="text-sm">Zur Website</span>}
         </Link>
       </div>

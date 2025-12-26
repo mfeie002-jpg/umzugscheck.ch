@@ -267,6 +267,7 @@ const AdminScreenshots = lazy(() => import("./pages/admin/Screenshots"));
 const AdminAIExport = lazy(() => import("./pages/admin/AIExport"));
 const AdminListings = lazy(() => import("./pages/admin/Listings"));
 const ChatGPTOverview = lazy(() => import("./pages/admin/ChatGPTOverview"));
+const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
@@ -485,6 +486,10 @@ const App = () => (
                             <Route path="/admin/ai-export" element={<AdminAIExport />} />
                             <Route path="/admin/listings" element={<AdminListings />} />
                             <Route path="/admin/chatgpt" element={<ChatGPTOverview />} />
+                            <Route path="/admin/ai-command" element={<AICommandCenter />} />
+                            <Route path="/admin/funnel" element={<FunnelAnalytics />} />
+                            <Route path="/admin/conversions" element={<ConversionAnalytics />} />
+                            <Route path="/admin/dynamic-pricing" element={<DynamicPricing />} />
                             <Route path="/kunden-onboarding" element={<KundenOnboarding />} />
                             <Route path="/ratgeber/umzugstipps" element={<UmzugstippsGuide />} />
                             <Route path="/ratgeber/tipps" element={<UmzugstippsGuide />} />
