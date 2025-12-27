@@ -25,7 +25,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
-  X
+  X,
+  Camera,
+  Loader2
 } from "lucide-react";
 
 // Helper to ensure proper data URL format for screenshots
@@ -109,6 +111,9 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   const [selectedVersionForFeedback, setSelectedVersionForFeedback] = useState<FlowVersion | null>(null);
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackSource, setFeedbackSource] = useState("chatgpt");
+  const [updateScreenshotsDialogOpen, setUpdateScreenshotsDialogOpen] = useState(false);
+  const [selectedVersionForScreenshots, setSelectedVersionForScreenshots] = useState<FlowVersion | null>(null);
+  const [isUpdatingScreenshots, setIsUpdatingScreenshots] = useState(false);
 
   useEffect(() => {
     fetchVersions();
@@ -283,6 +288,62 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
     } catch (err) {
       console.error('Failed to save version:', err);
       toast.error('Version konnte nicht gespeichert werden');
+    }
+  };
+
+  // Update screenshots for an existing version
+  const updateVersionScreenshots = async () => {
+    if (!selectedVersionForScreenshots) return;
+    
+    const hasScreenshots = currentSteps.some(s => s.screenshotDesktop || s.screenshotMobile);
+    if (!hasScreenshots) {
+      toast.error("Keine Screenshots vorhanden. Erfasse zuerst Screenshots.");
+      return;
+    }
+    
+    setIsUpdatingScreenshots(true);
+    try {
+      // Convert current steps to storage format
+      const screenshots: Record<string, string> = {};
+      const htmlSnapshots: Record<string, string> = {};
+      
+      currentSteps.forEach((step) => {
+        if (step.screenshotDesktop) {
+          screenshots[`step${step.step}Desktop`] = step.screenshotDesktop;
+        }
+        if (step.screenshotMobile) {
+          screenshots[`step${step.step}Mobile`] = step.screenshotMobile;
+        }
+        if (step.html) {
+          htmlSnapshots[`step${step.step}`] = step.html;
+        }
+      });
+
+      const { error } = await supabase
+        .from('flow_versions')
+        .update({
+          screenshots,
+          html_snapshots: htmlSnapshots,
+          step_configs: currentSteps.map(s => ({
+            step: s.step,
+            name: s.name,
+            description: s.description,
+            url: s.url
+          })),
+        })
+        .eq('id', selectedVersionForScreenshots.id);
+
+      if (error) throw error;
+      
+      toast.success(`Screenshots für ${formatVersion(selectedVersionForScreenshots.version_number)} aktualisiert`);
+      setUpdateScreenshotsDialogOpen(false);
+      setSelectedVersionForScreenshots(null);
+      fetchVersions();
+    } catch (err) {
+      console.error('Failed to update screenshots:', err);
+      toast.error('Screenshots konnten nicht aktualisiert werden');
+    } finally {
+      setIsUpdatingScreenshots(false);
     }
   };
 
@@ -544,6 +605,18 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                     variant="ghost"
                     size="icon"
                     onClick={() => {
+                      setSelectedVersionForScreenshots(version);
+                      setUpdateScreenshotsDialogOpen(true);
+                    }}
+                    title="Screenshots aktualisieren"
+                    disabled={currentSteps.length === 0}
+                  >
+                    <Camera className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
                       setSelectedVersionForFeedback(version);
                       setFeedbackText(version.ai_feedback || "");
                       setFeedbackSource(version.ai_feedback_source || "chatgpt");
@@ -623,6 +696,82 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                 <Save className="h-4 w-4 mr-2" />
                 Feedback speichern
               </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Update Screenshots Dialog */}
+        <Dialog open={updateScreenshotsDialogOpen} onOpenChange={setUpdateScreenshotsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Camera className="h-5 w-5" />
+                Screenshots aktualisieren
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              {selectedVersionForScreenshots && (
+                <>
+                  <div className="p-3 bg-accent rounded-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-mono font-bold">{formatVersion(selectedVersionForScreenshots.version_number)}</span>
+                      {selectedVersionForScreenshots.version_name && (
+                        <span className="text-muted-foreground">- {selectedVersionForScreenshots.version_name}</span>
+                      )}
+                      {selectedVersionForScreenshots.is_baseline && (
+                        <Badge variant="secondary" className="text-xs">
+                          <Star className="h-3 w-3 mr-1" />
+                          Baseline
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Die aktuell erfassten Screenshots werden in diese Version gespeichert.
+                    </p>
+                  </div>
+                  
+                  {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length === 0 ? (
+                    <div className="p-3 bg-destructive/10 rounded-lg border border-destructive/30 text-destructive">
+                      <div className="font-medium text-sm mb-1">⚠️ Keine Screenshots vorhanden!</div>
+                      <p className="text-xs">
+                        Du musst zuerst Screenshots für diese Variante aufnehmen (Capture-Button),
+                        bevor du sie in eine Version speichern kannst.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">
+                      {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length} Screenshots werden gespeichert
+                    </div>
+                  )}
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => setUpdateScreenshotsDialogOpen(false)}
+                    >
+                      Abbrechen
+                    </Button>
+                    <Button 
+                      onClick={updateVersionScreenshots}
+                      className="flex-1"
+                      disabled={isUpdatingScreenshots || currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length === 0}
+                    >
+                      {isUpdatingScreenshots ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Aktualisiere...
+                        </>
+                      ) : (
+                        <>
+                          <Camera className="h-4 w-4 mr-2" />
+                          Screenshots speichern
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
           </DialogContent>
         </Dialog>
