@@ -223,6 +223,7 @@ const UmzugsoffertenV1 = lazy(() => import("./pages/UmzugsoffertenV1"));
 const UmzugsoffertenV1a = lazy(() => import("./pages/UmzugsoffertenV1a"));
 const UmzugsoffertenV1b = lazy(() => import("./pages/UmzugsoffertenV1b"));
 const UmzugsoffertenV2a = lazy(() => import("./pages/UmzugsoffertenV2a"));
+const UmzugsoffertenV9D = lazy(() => import("./pages/UmzugsoffertenV9D"));
 const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 import FlowTester from "./pages/FlowTester";
@@ -537,6 +538,7 @@ const App = () => (
                             <Route path="/umzugsofferten-v7" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
+                            <Route path="/umzugsofferten-v9d" element={<UmzugsoffertenV9D />} />
                             {/* Flow tester already defined at top, only redirects here */}
                             <Route path="/v3-varianten" element={<V3VariantComparison />} />
                             <Route path="/flow-test" element={<RedirectWithQuery to="/flow-tester" />} />
