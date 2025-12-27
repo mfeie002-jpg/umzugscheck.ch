@@ -2308,8 +2308,14 @@ ${customPrompt ? `### Zusätzliche Anweisungen:\n${customPrompt}` : ''}`;
     window.open(path, '_blank');
   };
 
-  const toPngDataUrl = (value: string) =>
-    value.startsWith("data:") ? value : `data:image/png;base64,${value}`;
+  const toPngDataUrl = (value: string) => {
+    // If it's already a data URL, use as-is
+    if (value.startsWith("data:")) return value;
+    // If it's an HTTP(S) URL (e.g., Supabase Storage), use as-is
+    if (value.startsWith("http://") || value.startsWith("https://")) return value;
+    // Otherwise, treat as base64 and add data URL prefix
+    return `data:image/png;base64,${value}`;
+  };
 
   const base64ToBlob = (base64: string, mime = "image/png") => {
     const clean = base64.replace(/^data:[^;]+;base64,/, "").replace(/\s+/g, "");
