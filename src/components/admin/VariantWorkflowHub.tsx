@@ -134,8 +134,10 @@ export function VariantWorkflowHub() {
   };
 
   const getFlowNumber = () => {
+    // Handle V1 which is just "umzugsofferten" without -v1
+    if (selectedFlow === "umzugsofferten") return "1";
     const match = selectedFlow.match(/v(\d+)/);
-    return match ? match[1] : "3";
+    return match ? match[1] : "1";
   };
 
   const getComponentName = () => {
