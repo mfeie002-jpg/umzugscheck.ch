@@ -606,6 +606,57 @@ export type Database = {
         }
         Relationships: []
       }
+      export_jobs: {
+        Row: {
+          completed_at: string | null
+          config: Json | null
+          created_at: string
+          created_by: string | null
+          download_url: string | null
+          error_message: string | null
+          file_size_bytes: number | null
+          id: string
+          include_sub_variants: boolean | null
+          job_type: string
+          progress: number | null
+          progress_message: string | null
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          download_url?: string | null
+          error_message?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          include_sub_variants?: boolean | null
+          job_type?: string
+          progress?: number | null
+          progress_message?: string | null
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          download_url?: string | null
+          error_message?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          include_sub_variants?: boolean | null
+          job_type?: string
+          progress?: number | null
+          progress_message?: string | null
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       flow_alert_settings: {
         Row: {
           alert_type: string

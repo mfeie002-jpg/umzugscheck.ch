@@ -38,3 +38,6 @@ verify_jwt = false
 
 [functions.extract-page-data]
 verify_jwt = false
+
+[functions.background-export]
+verify_jwt = false
