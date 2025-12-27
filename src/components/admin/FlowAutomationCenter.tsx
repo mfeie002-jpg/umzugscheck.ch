@@ -57,6 +57,18 @@ const FLOW_OPTIONS = Object.entries(FLOW_CONFIGS).map(([key, config]) => ({
   color: config.color
 }));
 
+// Special "all flows" option for multi-version feedback
+const ALL_FLOWS_OPTION = {
+  id: 'all-flows-v1-v9',
+  label: 'Alle Flows (V1-V9)',
+  path: '/all',
+  steps: 0,
+  color: 'bg-gradient-to-r from-blue-500 to-purple-500'
+};
+
+// Combined options for AI feedback dropdown
+const FEEDBACK_FLOW_OPTIONS = [ALL_FLOWS_OPTION, ...FLOW_OPTIONS];
+
 interface AnalysisResult {
   flowId: string;
   flowName: string;
@@ -105,10 +117,19 @@ export function FlowAutomationCenter() {
   const [exportingFlowId, setExportingFlowId] = useState<string | null>(null);
   const [bulkMode, setBulkMode] = useState(true); // Default to bulk mode for full AI responses
 
-  // Get flow number from ID
+  // Get flow number from ID - handles special "all-flows" case
   const getFlowNumber = (flowId: string) => {
+    if (flowId === 'all-flows-v1-v9') return 'All';
     const match = flowId.match(/v(\d+)/);
     return match ? match[1] : "1";
+  };
+
+  // Get display label for version badge (handles multi-flow case)
+  const getVersionBadgeLabel = (flowId: string, variantLabel: string) => {
+    if (flowId === 'all-flows-v1-v9') {
+      return `Multi.${variantLabel}`;
+    }
+    return `V${getFlowNumber(flowId)}.${variantLabel}`;
   };
 
   // Export single flow as ZIP
@@ -430,40 +451,36 @@ Antworte auf Deutsch.`;
   // Generate Lovable implementation prompt
   const generateImplementationPrompt = () => {
     const flowNumber = getFlowNumber(selectedFlow);
-    const componentName = `V${flowNumber}${variantLetter.toLowerCase()}FeedbackBased`;
+    const isMultiFlow = selectedFlow === 'all-flows-v1-v9';
+    const componentName = isMultiFlow 
+      ? `Multi${variantLetter.toUpperCase()}FeedbackBased`
+      : `V${flowNumber}${variantLetter.toLowerCase()}FeedbackBased`;
+    const versionLabel = isMultiFlow ? `Multi.${variantLetter}` : `V${flowNumber}.${variantLetter}`;
 
-    return `# Neue Flow-Variante erstellen: V${flowNumber}.${variantLetter}
+    if (isMultiFlow) {
+      return `# Implementiere ${versionLabel}: ${variantName || 'Multi-Flow Optimierung'}
 
-## Ziel
-Erstelle eine neue Variante "${variantName || 'Feedback-basierte Optimierung'}" basierend auf dem folgenden AI-Feedback.
+## Komponente: \`${componentName}.tsx\`
 
-## Komponente
-- **Datei:** \`src/components/calculator-variants/${componentName}.tsx\`
-- **Export-Name:** \`${componentName}\`
-
-## AI-Feedback / Verbesserungsvorschläge
+## Feedback:
 
 ${feedbackText}
 
----
+## Erstelle die Komponente in src/components/calculator-variants/${componentName}.tsx
 
-## Implementierungsanweisungen
+Diese Variante basiert auf einer Analyse aller Flows (V1-V9) und implementiert die übergreifenden Verbesserungen.
+`;
+    }
 
-1. **Erstelle die neue Komponente** in \`src/components/calculator-variants/${componentName}.tsx\`
-2. **Orientiere dich am Stil** der existierenden V${flowNumber}a-e Varianten
-3. **Implementiere alle Verbesserungen** aus dem Feedback
-4. **Exportiere die Komponente** in \`src/components/calculator-variants/index.ts\`
-5. **Füge sie zum VARIANT_REGISTRY hinzu** mit der korrekten stepCount
+    return `# Implementiere ${versionLabel}: ${variantName || 'Feedback-basierte Optimierung'}
 
-## Technische Anforderungen
-- React + TypeScript
-- shadcn/ui Komponenten
-- Tailwind CSS
-- Mobile-first & responsive
-- 4-Step Wizard Flow (oder wie im Feedback spezifiziert)
+## Komponente: \`${componentName}.tsx\`
 
-## Nach der Implementierung
-Die Variante wird automatisch unter \`/umzugsofferten?v=${flowNumber}${variantLetter}\` verfügbar sein.
+## Feedback:
+
+${feedbackText}
+
+## Erstelle die Komponente in src/components/calculator-variants/${componentName}.tsx
 `;
   };
 
@@ -475,6 +492,8 @@ Die Variante wird automatisch unter \`/umzugsofferten?v=${flowNumber}${variantLe
     }
 
     setIsSubmitting(true);
+    const isMultiFlow = selectedFlow === 'all-flows-v1-v9';
+    const versionLabel = isMultiFlow ? `Multi.${variantLetter}` : `V${getFlowNumber(selectedFlow)}.${variantLetter}`;
 
     try {
       // Save to database
@@ -483,7 +502,7 @@ Die Variante wird automatisch unter \`/umzugsofferten?v=${flowNumber}${variantLe
         .insert({
           flow_id: selectedFlow,
           variant_label: variantLetter.toLowerCase(),
-          variant_name: variantName.trim() || `V${getFlowNumber(selectedFlow)}.${variantLetter} - AI Feedback`,
+          variant_name: variantName.trim() || `${versionLabel} - AI Feedback`,
           prompt: feedbackText.trim(),
           status: "pending",
         });
@@ -556,10 +575,14 @@ Die Variante wird automatisch unter \`/umzugsofferten?v=${flowNumber}${variantLe
 
   // Copy prompt for existing entry
   const copyEntryPrompt = async (entry: FeedbackEntry) => {
+    const isMultiFlow = entry.flow_id === 'all-flows-v1-v9';
     const flowNumber = getFlowNumber(entry.flow_id);
-    const componentName = `V${flowNumber}${entry.variant_label.toLowerCase()}FeedbackBased`;
+    const componentName = isMultiFlow 
+      ? `Multi${entry.variant_label.toUpperCase()}FeedbackBased`
+      : `V${flowNumber}${entry.variant_label.toLowerCase()}FeedbackBased`;
+    const versionLabel = getVersionBadgeLabel(entry.flow_id, entry.variant_label);
 
-    const prompt = `# Implementiere V${flowNumber}.${entry.variant_label}: ${entry.variant_name}
+    const prompt = `# Implementiere ${versionLabel}: ${entry.variant_name}
 
 ## Komponente: \`${componentName}.tsx\`
 
@@ -871,7 +894,7 @@ Bitte analysiere diesen Flow und gib mir:
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {FLOW_OPTIONS.map(flow => (
+                      {FEEDBACK_FLOW_OPTIONS.map(flow => (
                         <SelectItem key={flow.id} value={flow.id}>
                           <div className="flex items-center gap-2">
                             <div className={`w-2 h-2 rounded-full ${flow.color}`} />
@@ -893,7 +916,7 @@ Bitte analysiere diesen Flow und gib mir:
                       maxLength={1}
                     />
                     <span className="text-lg font-bold text-primary">
-                      → V{getFlowNumber(selectedFlow)}.{variantLetter}
+                      → {getVersionBadgeLabel(selectedFlow, variantLetter)}
                     </span>
                   </div>
                 </div>
@@ -1061,7 +1084,7 @@ Beispiel:
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Badge variant={entry.status === 'done' ? "default" : "secondary"}>
-                            V{getFlowNumber(entry.flow_id)}.{entry.variant_label}
+                            {getVersionBadgeLabel(entry.flow_id, entry.variant_label)}
                           </Badge>
                           <span className="font-medium">{entry.variant_name}</span>
                           <Badge variant="outline" className="text-xs">
