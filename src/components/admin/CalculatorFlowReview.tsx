@@ -2463,14 +2463,6 @@ ${JSON.stringify(step.meta || {}, null, 2)}
                       </SelectItem>
                     ))}
                     
-                    {/* Sub-Variants */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Sub-Varianten (Coded)</div>
-                    {subVariantOptions.map(opt => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                    
                     {/* Database Flows */}
                     {databaseFlowOptions.length > 0 && (
                       <>
