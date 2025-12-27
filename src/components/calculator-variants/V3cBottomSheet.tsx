@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { X, ChevronUp, Layers } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const STEPS = [
   { id: 1, title: 'Umzugsart', icon: '🏠' },
@@ -17,7 +18,8 @@ const STEPS = [
 ];
 
 export const V3cBottomSheet: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [sheetExpanded, setSheetExpanded] = useState(true);
   const progress = (currentStep / STEPS.length) * 100;
 

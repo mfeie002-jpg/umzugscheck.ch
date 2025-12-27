@@ -8,9 +8,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Clock, Users, AlertTriangle, Zap, TrendingUp } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 export const V4aUrgencyBased: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [timeLeft, setTimeLeft] = useState(892); // 14:52 minutes
   const [activeUsers, setActiveUsers] = useState(23);
   const progress = (currentStep / 4) * 100;

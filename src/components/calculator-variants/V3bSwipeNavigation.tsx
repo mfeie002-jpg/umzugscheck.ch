@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ChevronLeft, ChevronRight, Hand } from 'lucide-react';
 import { useSwipeable } from 'react-swipeable';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const STEPS = [
   { id: 1, title: 'Umzugsart wählen' },
@@ -18,8 +19,9 @@ const STEPS = [
 ];
 
 export const V3bSwipeNavigation: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [swipeHint, setSwipeHint] = useState(true);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [swipeHint, setSwipeHint] = useState(initialStep === 1); // Only show hint on step 1
   const progress = (currentStep / STEPS.length) * 100;
 
   const handlers = useSwipeable({

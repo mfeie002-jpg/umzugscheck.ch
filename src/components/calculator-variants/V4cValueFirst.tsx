@@ -8,9 +8,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Gift, Percent, Clock, Shield, Calculator, ChevronRight } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 export const V4cValueFirst: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(0); // Start with value proposition
+  const initialStep = useInitialStep(0); // V4c starts at 0 for value proposition
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [estimatedSaving, setEstimatedSaving] = useState(450);
   const progress = (currentStep / 4) * 100;
 

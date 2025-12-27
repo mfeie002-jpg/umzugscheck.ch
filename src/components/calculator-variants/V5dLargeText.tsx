@@ -8,11 +8,13 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Type, Plus, Minus } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const STEPS = ['Art', 'Wo', 'Was', 'Kontakt'];
 
 export const V5dLargeText: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [selected, setSelected] = useState<string | null>('privat');
   const [fontSize, setFontSize] = useState(1.25); // 1.25rem = 20px base
   const progress = (currentStep / STEPS.length) * 100;

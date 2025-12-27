@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Keyboard } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const OPTIONS = [
   { id: 'privat', label: 'Privatumzug', shortcut: '1' },
@@ -16,7 +17,8 @@ const OPTIONS = [
 ];
 
 export const V5cKeyboardNav: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);

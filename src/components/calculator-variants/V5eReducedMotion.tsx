@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Pause, Check } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const STEPS = [
   { id: 1, title: 'Schritt 1: Umzugsart' },
@@ -17,7 +18,8 @@ const STEPS = [
 ];
 
 export const V5eReducedMotion: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [selected, setSelected] = useState<string>('privat');
   const progress = (currentStep / STEPS.length) * 100;
 
