@@ -219,18 +219,52 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
 
   const markAsImplemented = async (entry: VariantEntry) => {
     try {
+      const flowNumber = getFlowNumber();
+      const variantLetter = entry.variant_label.toLowerCase();
+      const flowCode = `V${flowNumber}.${variantLetter}`;
+      const versionNumber = `${flowNumber}.${variantLetter}`;
+      
+      // 1. Update flow_feedback_variants status
       await supabase
         .from("flow_feedback_variants")
         .update({ 
           status: "done",
           executed_at: new Date().toISOString(),
-          output_flow_id: `${selectedFlow}-${entry.variant_label}`
+          output_flow_id: `${selectedFlow}-${variantLetter}`
         })
         .eq("id", entry.id);
 
-      toast.success(`V${getFlowNumber()}.${entry.variant_label} als implementiert markiert`);
+      // 2. CRITICAL: Also create entry in flow_versions for AI feedback tracking
+      // This is what enables the ⭐ icon and stores the ChatGPT feedback
+      const { error: versionError } = await supabase
+        .from("flow_versions")
+        .upsert({
+          flow_id: selectedFlow,
+          flow_code: flowCode,
+          version_number: versionNumber,
+          version_name: entry.variant_name,
+          description: `ChatGPT Agent: ${entry.variant_name}`,
+          ai_feedback: entry.prompt, // Store the original ChatGPT feedback
+          ai_feedback_source: 'ChatGPT',
+          ai_feedback_date: new Date().toISOString(),
+          is_active: true,
+          flow_number: parseInt(flowNumber, 10),
+          variant_letter: variantLetter,
+        }, {
+          onConflict: 'flow_id,version_number',
+          ignoreDuplicates: false
+        });
+
+      if (versionError) {
+        console.error('Failed to create flow_versions entry:', versionError);
+        // Still continue - the main update succeeded
+      }
+
+      toast.success(`V${flowNumber}.${variantLetter} als implementiert markiert`);
       fetchEntries();
+      refetchVariants(); // Refresh to show the ⭐ icon
     } catch (err) {
+      console.error('markAsImplemented failed:', err);
       toast.error("Fehler beim Aktualisieren");
     }
   };
