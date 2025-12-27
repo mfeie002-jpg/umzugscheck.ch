@@ -155,4 +155,31 @@ src/pages/
 
 ---
 
+## 🔧 Admin Tools.tsx Refactoring Plan
+
+**Status:** 3349 Zeilen - Kritisch für Wartbarkeit
+
+### Struktur-Analyse:
+| Zeilen | Inhalt |
+|--------|--------|
+| 1-99 | Imports, Types, Interfaces |
+| 100-500 | Helper functions, Constants |
+| 500-900 | Auto-analyze, URL discovery logic |
+| 900-2500 | Inline Edge Function templates (Strings) |
+| 2500-3349 | UI Components (Tabs, Cards) |
+
+### Empfohlene Extraktion:
+1. `AIWebsiteAnalyzer.tsx` - Auto-analyze + runAutoAnalyze logic
+2. `ProjectConfigPanel.tsx` - Config state + auto-fill
+3. `ManualPackageExport.tsx` - ZIP generation logic
+4. `EdgeFunctionTemplates.ts` - Alle inline function strings als Konstanten
+5. `UrlDiscoveryPanel.tsx` - Firecrawl URL discovery
+
+### Priorität:
+- [ ] Edge Function Strings auslagern (einfachste Änderung, größte Impact)
+- [ ] Auto-analyze in eigene Komponente
+- [ ] UI-Tabs in Sub-Komponenten splitten
+
+---
+
 *Letzte Aktualisierung: Dezember 2024*
