@@ -44,6 +44,7 @@ import {
   GitCompare,
   Rocket
 } from "lucide-react";
+import { ScreenshotCaptureStep } from "./ScreenshotCaptureStep";
 
 // Flow versions with variants
 const FLOW_OPTIONS = Object.entries(FLOW_CONFIGS).map(([key, config]) => ({
@@ -535,110 +536,12 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
 
       {/* Step 4: Screenshot Capture */}
       {activeStep === 4 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Camera className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <CardTitle className="text-lg">4. Screenshots erfassen</CardTitle>
-                <CardDescription>Erfasse alle Steps der neuen Variante</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* All static sub-variants for this flow */}
-            {(() => {
-              const allSubVariants = getSubVariantsForFlow(selectedFlow)
-                .filter(v => v.source === 'static-sub'); // Only show static configs, not workflow duplicates
-              
-              return allSubVariants.length > 0 ? (
-                <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground flex items-center gap-2">
-                    <FileCode className="h-3 w-3" />
-                    Feedback-Varianten für {selectedFlow}:
-                  </Label>
-                  {allSubVariants.map(variant => (
-                    <div 
-                      key={variant.id}
-                      className="flex items-center justify-between p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20"
-                    >
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-4 w-4 text-blue-600" />
-                        <div>
-                          <div className="font-mono font-bold text-sm">
-                            {variant.label}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {variant.description} • {variant.stepCount} Steps
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => window.open(variant.liveUrl, '_blank')}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          Live
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => navigate(variant.testerUrl)}
-                        >
-                          <Play className="h-3 w-3 mr-1" />
-                          Tester
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="default"
-                          onClick={() => navigate(variant.screenshotUrl)}
-                        >
-                          <Camera className="h-3 w-3 mr-1" />
-                          Screenshots
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Camera className="h-10 w-10 mx-auto mb-2 opacity-30" />
-                  <p className="text-sm">Keine Varianten für diesen Flow</p>
-                  <p className="text-xs">Wähle einen anderen Flow oder erstelle eine Variante</p>
-                </div>
-              );
-            })()}
-
-            <Separator />
-
-            <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                className="flex-1 gap-2"
-                onClick={() => navigate(`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`)}
-              >
-                <Camera className="h-4 w-4" />
-                Screenshot Tool
-              </Button>
-              <Button 
-                variant="outline" 
-                className="flex-1 gap-2"
-                onClick={() => navigate('/flow-tester')}
-              >
-                <Play className="h-4 w-4" />
-                Flow Tester
-              </Button>
-              <Button onClick={() => setActiveStep(5)} className="flex-1">
-                Weiter zu Vergleich
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <ScreenshotCaptureStep
+          selectedFlow={selectedFlow}
+          getSubVariantsForFlow={getSubVariantsForFlow}
+          navigate={navigate}
+          onNext={() => setActiveStep(5)}
+        />
       )}
 
       {/* Step 5: Compare */}
