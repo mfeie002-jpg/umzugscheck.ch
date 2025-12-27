@@ -342,7 +342,7 @@ const AdminRoutes = () => (
   <Suspense fallback={<PageLoadingFallback />}>
     <AnimatedRoutes>
       <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/login" element={<Navigate to="/auth?admin=true" replace />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/companies" element={<CompaniesAdmin />} />
       <Route path="/admin/reviews" element={<AdminReviews />} />
