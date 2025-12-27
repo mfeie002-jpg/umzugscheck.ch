@@ -504,11 +504,18 @@ const AdminTools = () => {
   const [activeTab, setActiveTab] = useState(urlTab || 'ai-feedback');
   const [showAllTools, setShowAllTools] = useState(!!urlTab); // Show tools if tab is specified in URL
   
-  // Sync tab from URL when it changes
+  // Sync tab from URL when it changes and scroll to tabs
   useEffect(() => {
     if (urlTab) {
       setActiveTab(urlTab);
       setShowAllTools(true);
+      // Scroll to tabs section after a short delay to ensure render
+      setTimeout(() => {
+        const tabsElement = document.getElementById('tools-tabs-section');
+        if (tabsElement) {
+          tabsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
   }, [urlTab]);
   
@@ -2447,6 +2454,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
         </Card>
 
         {/* Tools Tabs */}
+        <div id="tools-tabs-section">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="ai-feedback" className="flex items-center gap-2">
@@ -3316,6 +3324,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
             <ScheduledMonitoringPanel />
           </TabsContent>
         </Tabs>
+        </div>
 
         {/* Quick Links */}
         <Card className="mt-8">
