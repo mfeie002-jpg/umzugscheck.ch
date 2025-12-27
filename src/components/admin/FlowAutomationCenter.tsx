@@ -103,6 +103,7 @@ export function FlowAutomationCenter() {
   const [recentEntries, setRecentEntries] = useState<FeedbackEntry[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [exportingFlowId, setExportingFlowId] = useState<string | null>(null);
+  const [bulkMode, setBulkMode] = useState(true); // Default to bulk mode for full AI responses
 
   // Get flow number from ID
   const getFlowNumber = (flowId: string) => {
@@ -907,16 +908,44 @@ Bitte analysiere diesen Flow und gib mir:
                 </div>
               </div>
 
+              {/* Feedback Input Mode Toggle */}
+              <div className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
+                <Label className="text-sm font-medium">Eingabe-Modus:</Label>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant={!bulkMode ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setBulkMode(false)}
+                  >
+                    Einzelne Punkte
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={bulkMode ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setBulkMode(true)}
+                  >
+                    Komplette AI-Antwort
+                  </Button>
+                </div>
+              </div>
+
               {/* Feedback Input */}
               <div>
                 <Label className="text-xs flex items-center gap-1">
                   <Sparkles className="h-3 w-3" />
-                  ChatGPT / Gemini Feedback
+                  {bulkMode ? "Komplette ChatGPT / Gemini Antwort" : "ChatGPT / Gemini Feedback"}
                 </Label>
                 <Textarea
                   value={feedbackText}
                   onChange={(e) => setFeedbackText(e.target.value)}
-                  placeholder={`Füge hier das AI-Feedback ein...
+                  placeholder={bulkMode 
+                    ? `Füge hier die komplette ChatGPT/Gemini Antwort ein...
+
+Die AI-Antwort wird automatisch als Kontext für die Implementierung verwendet.
+Du kannst die gesamte Antwort inklusive Codebeispielen einfügen.`
+                    : `Füge hier das AI-Feedback ein...
 
 Beispiel:
 ## Verbesserungsvorschläge für V${getFlowNumber(selectedFlow)}
@@ -925,11 +954,14 @@ Beispiel:
 2. **Progress-Anzeige verbessern**: Prozentanzeige hinzufügen
 3. **Mobile Touch-Targets**: Mindestens 44px für alle klickbaren Elemente
 ...`}
-                  rows={12}
+                  rows={bulkMode ? 20 : 12}
                   className="font-mono text-sm mt-1"
                 />
                 <div className="text-xs text-muted-foreground mt-1">
                   {feedbackText.length} Zeichen
+                  {bulkMode && feedbackText.length > 1000 && (
+                    <span className="text-green-600 ml-2">✓ Umfangreiche Antwort erkannt</span>
+                  )}
                 </div>
               </div>
 
