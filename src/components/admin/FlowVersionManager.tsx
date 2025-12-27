@@ -454,7 +454,6 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
               <DialogTrigger asChild>
                 <Button
                   size="sm"
-                  disabled={currentSteps.length === 0}
                   onClick={() => {
                     // Pre-fill from variant config if available
                     if (variantConfig) {
