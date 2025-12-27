@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { SITE_CONFIG } from "@/data/constants";
-import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS, getFlowSteps, getFlowVariants, getUcFlowId, getTotalStepsAllFlows, OTHER_CALCULATORS, getFlowConfig } from "@/data/flowConfigs";
+import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS, getFlowSteps, getFlowVariants, getUcFlowId, getTotalStepsAllFlows, OTHER_CALCULATORS, getFlowConfig, FlowConfig, FlowStepConfig } from "@/data/flowConfigs";
+import { VARIANT_REGISTRY } from "@/components/calculator-variants";
 import { supabase } from "@/integrations/supabase/client";
 import { captureScreenshot as captureScreenshotService } from "@/lib/screenshot-service";
 import { toast } from "sonner";
@@ -247,6 +248,16 @@ export function CalculatorFlowReview() {
   // AI Context state
   const [aiContext, setAiContext] = useState<AIContext | null>(null);
   const [isGeneratingContext, setIsGeneratingContext] = useState(false);
+  
+  // Loaded variant config state (for sub-variants)
+  const [loadedVariantConfig, setLoadedVariantConfig] = useState<{
+    id: string;
+    label: string;
+    path: string;
+    steps: FlowStepConfig[];
+    description: string;
+    component?: string;
+  } | null>(null);
 
   // Schnellauswahl preset URLs
   const PRESET_URLS = [
@@ -294,23 +305,91 @@ export function CalculatorFlowReview() {
     setDiscoveredPages(prev => prev.filter(u => u !== url));
   };
 
-  const calculatorOptions = [
-    { value: "umzugsofferten", label: "V1 - Control Flow", path: "/umzugsofferten" },
-    { value: "umzugsofferten-v2", label: "V2 - Premium Full-Journey", path: "/umzugsofferten-v2" },
-    { value: "umzugsofferten-v3", label: "V3 - God Mode", path: "/umzugsofferten-v3" },
-    { value: "umzugsofferten-v4", label: "V4 - Video-First AI", path: "/umzugsofferten-v4" },
-    { value: "umzugsofferten-v5", label: "V5 - Marketplace Wizard", path: "/umzugsofferten-v5" },
-    { value: "umzugsofferten-v6", label: "V6 - Ultimate (6-Tier)", path: "/umzugsofferten-v6" },
-    { value: "umzugsofferten-v7", label: "V7 - SwissMove (90s)", path: "/umzugsofferten-v7" },
-    { value: "umzugsofferten-v8", label: "V8 - Decision-Free", path: "/umzugsofferten-v8" },
-    { value: "umzugsofferten-v9", label: "V9 - Zero Friction ⭐", path: "/umzugsofferten-v9" },
-    { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner" },
-    { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner" },
-    { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
-  ];
+  // Build calculator options from FLOW_CONFIGS + SUB_VARIANT_CONFIGS + VARIANT_REGISTRY
+  const buildCalculatorOptions = () => {
+    const options: { value: string; label: string; path: string; isSubVariant?: boolean; component?: string }[] = [];
+    
+    // Main flows from FLOW_CONFIGS
+    Object.values(FLOW_CONFIGS).forEach(config => {
+      options.push({
+        value: config.id,
+        label: config.label,
+        path: config.path,
+        isSubVariant: false,
+      });
+    });
+    
+    // Sub-variants from SUB_VARIANT_CONFIGS (coded components)
+    Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
+      const registryEntry = VARIANT_REGISTRY[id];
+      options.push({
+        value: id,
+        label: `${config.label} (coded)`,
+        path: config.path,
+        isSubVariant: true,
+        component: registryEntry?.component,
+      });
+    });
+    
+    // Other calculators
+    options.push(
+      { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner" },
+      { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner" },
+      { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
+    );
+    
+    return options;
+  };
+  
+  const calculatorOptions = buildCalculatorOptions();
 
-  // Only flow variants (V1-V9) for bulk export
-  const flowVariants = calculatorOptions.filter(c => c.value.startsWith('umzugsofferten'));
+  // Only main flow variants (V1-V9) for bulk export
+  const flowVariants = calculatorOptions.filter(c => c.value.startsWith('umzugsofferten') && !c.isSubVariant);
+  
+  // Load variant config when a sub-variant is selected
+  const loadVariantConfig = () => {
+    const selected = calculatorOptions.find(c => c.value === selectedCalculator);
+    if (!selected?.isSubVariant) {
+      // Main flow - try FLOW_CONFIGS
+      const mainConfig = FLOW_CONFIGS[selectedCalculator];
+      if (mainConfig) {
+        setLoadedVariantConfig({
+          id: mainConfig.id,
+          label: mainConfig.label,
+          path: mainConfig.path,
+          steps: mainConfig.steps,
+          description: mainConfig.description,
+        });
+        toast.success(`${mainConfig.label} Config geladen`);
+      } else {
+        toast.info("Keine Config für diesen Calculator");
+        setLoadedVariantConfig(null);
+      }
+      return;
+    }
+    
+    // Sub-variant - load from SUB_VARIANT_CONFIGS
+    const subConfig = SUB_VARIANT_CONFIGS[selectedCalculator];
+    const registryEntry = VARIANT_REGISTRY[selectedCalculator];
+    
+    if (subConfig) {
+      setLoadedVariantConfig({
+        id: subConfig.id,
+        label: subConfig.label,
+        path: subConfig.path,
+        steps: subConfig.steps,
+        description: subConfig.description,
+        component: registryEntry?.component,
+      });
+      toast.success(`${subConfig.label} Config geladen (${subConfig.steps.length} Steps)`);
+    } else {
+      toast.error("Config nicht gefunden");
+      setLoadedVariantConfig(null);
+    }
+  };
+  
+  // Check if current selection is a sub-variant
+  const isSubVariantSelected = calculatorOptions.find(c => c.value === selectedCalculator)?.isSubVariant;
 
   // Discover top pages using firecrawl-map
   const discoverTopPages = async () => {
@@ -569,12 +648,23 @@ export function CalculatorFlowReview() {
       // Get HTML from first captured step if available
       const htmlContent = capturedSteps[0]?.html || '';
       
+      // Include loaded variant config in context generation
+      const variantInfo = loadedVariantConfig ? {
+        variantId: loadedVariantConfig.id,
+        variantLabel: loadedVariantConfig.label,
+        variantDescription: loadedVariantConfig.description,
+        variantComponent: loadedVariantConfig.component,
+        variantSteps: loadedVariantConfig.steps,
+        isCodedVariant: !!loadedVariantConfig.component,
+      } : null;
+      
       const { data, error } = await supabase.functions.invoke('ai-generate-context', {
         body: {
           projectUrl,
           projectName: 'Umzugscheck.ch',
           htmlContent,
-          currentDescription: 'Schweizer Umzugsvergleichsplattform - Lead-Generierung für Umzugsfirmen'
+          currentDescription: 'Schweizer Umzugsvergleichsplattform - Lead-Generierung für Umzugsfirmen',
+          variantInfo, // Include variant data for enriched context
         }
       });
 
@@ -582,7 +672,7 @@ export function CalculatorFlowReview() {
       
       if (data?.success && data?.context) {
         setAiContext(data.context);
-        toast.success('AI-Kontext erfolgreich generiert!');
+        toast.success(`AI-Kontext erfolgreich generiert${loadedVariantConfig ? ` für ${loadedVariantConfig.label}` : ''}!`);
       } else {
         throw new Error(data?.error || 'Kontext-Generierung fehlgeschlagen');
       }
@@ -1913,6 +2003,52 @@ ${JSON.stringify(step.meta || {}, null, 2)}
             </div>
           </div>
           
+          {/* Variant Config Loading Section */}
+          <div className="p-4 border rounded-lg bg-muted/30 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileJson className="w-4 h-4 text-primary" />
+                <span className="font-medium">Variant-Daten laden</span>
+                {isSubVariantSelected && (
+                  <Badge variant="secondary" className="text-xs">Coded Component</Badge>
+                )}
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={loadVariantConfig}
+              >
+                <RefreshCw className="w-3 h-3 mr-1" />
+                Config laden
+              </Button>
+            </div>
+            
+            {loadedVariantConfig && (
+              <div className="bg-background p-3 rounded-lg border space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-sm">{loadedVariantConfig.label}</span>
+                  <Badge variant="outline">{loadedVariantConfig.steps.length} Steps</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{loadedVariantConfig.description}</p>
+                {loadedVariantConfig.component && (
+                  <p className="text-xs font-mono text-primary">
+                    Component: {loadedVariantConfig.component}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {loadedVariantConfig.steps.map((step) => (
+                    <Badge key={step.step} variant="secondary" className="text-xs">
+                      {step.step}. {step.name}
+                    </Badge>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground pt-2 border-t mt-2">
+                  ✓ Diese Config wird für Screenshots, Kontext-Generierung und Version speichern verwendet
+                </p>
+              </div>
+            )}
+          </div>
+          
           {/* Dimension Selection */}
           <div className="grid grid-cols-2 gap-4 p-3 bg-muted/50 rounded-lg">
             <div>
@@ -2684,6 +2820,7 @@ Basierend auf allen Erkenntnissen:
       <FlowVersionManager 
         flowId={selectedCalculator} 
         currentSteps={capturedSteps}
+        variantConfig={loadedVariantConfig}
       />
 
       {/* Tips */}

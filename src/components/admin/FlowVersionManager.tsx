@@ -84,9 +84,17 @@ interface FlowVersionManagerProps {
   flowId: string;
   currentSteps: FlowStep[];
   onVersionSelect?: (version: FlowVersion) => void;
+  variantConfig?: {
+    id: string;
+    label: string;
+    path: string;
+    steps: { step: number; name: string; description: string }[];
+    description: string;
+    component?: string;
+  } | null;
 }
 
-export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: FlowVersionManagerProps) {
+export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, variantConfig }: FlowVersionManagerProps) {
   const [versions, setVersions] = useState<FlowVersion[]>([]);
   const [loading, setLoading] = useState(true);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -212,14 +220,25 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
         }
       });
 
+      // Build config that includes variant info if available
+      const configData = variantConfig ? {
+        variantId: variantConfig.id,
+        variantLabel: variantConfig.label,
+        variantPath: variantConfig.path,
+        variantDescription: variantConfig.description,
+        variantComponent: variantConfig.component,
+        variantSteps: variantConfig.steps,
+        isCodedVariant: !!variantConfig.component,
+      } : null;
+
       const { error } = await supabase
         .from('flow_versions')
         .insert({
           flow_id: flowId,
           version_number: newVersionNumber.trim(),
-          version_name: newVersionName.trim() || null,
-          description: newVersionDescription.trim() || null,
-          step_configs: currentSteps.map(s => ({
+          version_name: newVersionName.trim() || (variantConfig?.label || null),
+          description: newVersionDescription.trim() || (variantConfig?.description || null),
+          step_configs: variantConfig?.steps || currentSteps.map(s => ({
             step: s.step,
             name: s.name,
             description: s.description,
@@ -227,12 +246,13 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
           })),
           screenshots,
           html_snapshots: htmlSnapshots,
-          is_baseline: versions.length === 0, // First version is baseline
+          is_baseline: versions.length === 0,
+          config: configData, // Store variant config in the config column
         });
 
       if (error) throw error;
 
-      toast.success(`Version ${newVersionNumber} gespeichert`);
+      toast.success(`Version ${newVersionNumber} gespeichert${variantConfig ? ` (${variantConfig.label})` : ''}`);
       setSaveDialogOpen(false);
       setNewVersionNumber("");
       setNewVersionName("");
@@ -381,8 +401,20 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect }: Fl
                       rows={3}
                     />
                   </div>
+                  {variantConfig && (
+                    <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge variant="secondary" className="text-xs">Coded Variant</Badge>
+                        <span className="font-medium text-sm">{variantConfig.label}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{variantConfig.description}</p>
+                      {variantConfig.component && (
+                        <p className="text-xs font-mono text-primary mt-1">Component: {variantConfig.component}</p>
+                      )}
+                    </div>
+                  )}
                   <div className="text-sm text-muted-foreground">
-                    {currentSteps.length} Steps mit {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length} Screenshots werden gespeichert
+                    {variantConfig?.steps?.length || currentSteps.length} Steps mit {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length} Screenshots werden gespeichert
                   </div>
                   <Button onClick={saveVersion} className="w-full">
                     <Save className="h-4 w-4 mr-2" />
