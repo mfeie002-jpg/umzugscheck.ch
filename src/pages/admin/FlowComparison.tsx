@@ -261,62 +261,62 @@ export default function FlowComparison() {
             const Component = VARIANT_COMPONENT_MAP[variant.id];
             
             return (
-              <Card key={variant.id} className="overflow-hidden">
-                <CardHeader className={`${variant.color} text-white`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <Badge variant="secondary" className="bg-white/20 text-white">
-                          #{index + 1}
-                        </Badge>
-                        {variant.isMain && (
-                          <Badge variant="secondary" className="bg-white/30 text-white">
-                            Hauptflow
+              <div key={variant.id} id={variant.id} className="scroll-mt-24">
+                <Card className="overflow-hidden border-2">
+                  <CardHeader className={`${variant.color} text-white`}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <Badge variant="secondary" className="bg-white/20 text-white text-lg px-3 py-1">
+                            #{index + 1}
                           </Badge>
-                        )}
+                          <Badge variant="secondary" className="bg-white/10 text-white font-mono">
+                            {variant.id}
+                          </Badge>
+                          {variant.isMain && (
+                            <Badge variant="secondary" className="bg-white/30 text-white">
+                              Hauptflow
+                            </Badge>
+                          )}
+                        </div>
+                        <CardTitle className="text-2xl mt-3">{variant.label}</CardTitle>
+                        <CardDescription className="text-white/80 mt-1">
+                          {variant.description} • {variant.stepCount} Steps
+                        </CardDescription>
                       </div>
-                      <CardTitle className="text-2xl mt-2">{variant.label}</CardTitle>
-                      <CardDescription className="text-white/80 mt-1">
-                        {variant.description} • {variant.stepCount} Steps
-                      </CardDescription>
+                      
+                      <div className="flex items-center gap-2">
+                        <Link to={variant.path} target="_blank">
+                          <Button variant="secondary" size="sm">
+                            <Eye className="h-4 w-4 mr-2" />
+                            Live
+                          </Button>
+                        </Link>
+                        <Link to={`/admin/tools?tab=calculator-review&flow=${variant.id}`}>
+                          <Button variant="secondary" size="sm">
+                            <Camera className="h-4 w-4 mr-2" />
+                            Screenshot
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Link to={variant.path} target="_blank">
-                        <Button variant="secondary" size="sm">
-                          <Eye className="h-4 w-4 mr-2" />
-                          Live ansehen
-                        </Button>
-                      </Link>
-                      <Link to={`/admin/tools?tab=calculator-review&flow=${variant.id}`}>
-                        <Button variant="secondary" size="sm">
-                          <Camera className="h-4 w-4 mr-2" />
-                          Screenshot
-                        </Button>
-                      </Link>
+                  </CardHeader>
+                  
+                  <CardContent className="p-0">
+                    <div className="bg-background p-6 lg:p-8">
+                      {Component ? (
+                        <div className="max-w-4xl mx-auto">
+                          <Component />
+                        </div>
+                      ) : (
+                        <div className="text-center py-12 text-muted-foreground">
+                          <p>Komponente für <code className="bg-muted px-2 py-1 rounded">{variant.id}</code> nicht gefunden</p>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="p-0">
-                  <div className="bg-background p-4 sm:p-6 lg:p-8">
-                    {Component ? (
-                      <div className="max-w-4xl mx-auto">
-                        <Component />
-                      </div>
-                    ) : (
-                      <div className="text-center py-12 text-muted-foreground">
-                        <p>Komponente für {variant.id} nicht gefunden</p>
-                        <p className="text-sm mt-1">
-                          Bitte in <code>VARIANT_COMPONENT_MAP</code> registrieren
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-                
-                {index < variants.length - 1 && <Separator />}
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             );
           })
         )}
