@@ -49,7 +49,8 @@ interface StepAnalysis {
   };
 }
 
-async function captureScreenshot(url: string, device: 'desktop' | 'mobile'): Promise<string | null> {
+// Capture screenshot and return base64 for AI analysis
+async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile'): Promise<Uint8Array | null> {
   if (!SCREENSHOTMACHINE_KEY) {
     console.log('No SCREENSHOTMACHINE_API_KEY, skipping screenshot');
     return null;
@@ -76,12 +77,54 @@ async function captureScreenshot(url: string, device: 'desktop' | 'mobile'): Pro
     
     const blob = await response.blob();
     const arrayBuffer = await blob.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-    return `data:image/png;base64,${base64}`;
+    return new Uint8Array(arrayBuffer);
   } catch (error) {
     console.error('Screenshot error:', error);
     return null;
   }
+}
+
+// Upload screenshot to Supabase Storage and return public URL
+async function uploadScreenshotToStorage(
+  supabase: any,
+  imageData: Uint8Array,
+  flowId: string,
+  runId: string,
+  stepNumber: number,
+  device: 'desktop' | 'mobile'
+): Promise<string | null> {
+  const fileName = `${flowId}/${runId}/step-${stepNumber}-${device}.png`;
+  
+  try {
+    const { error: uploadError } = await supabase.storage
+      .from('flow-screenshots')
+      .upload(fileName, imageData, {
+        contentType: 'image/png',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error(`Storage upload failed for ${fileName}:`, uploadError);
+      return null;
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('flow-screenshots')
+      .getPublicUrl(fileName);
+
+    console.log(`Screenshot uploaded: ${publicUrl}`);
+    return publicUrl;
+  } catch (error) {
+    console.error('Storage upload error:', error);
+    return null;
+  }
+}
+
+// Convert Uint8Array to base64 data URL for AI analysis
+function toBase64DataUrl(data: Uint8Array): string {
+  const base64 = btoa(String.fromCharCode(...data));
+  return `data:image/png;base64,${base64}`;
 }
 
 async function analyzeStepWithAI(
@@ -344,26 +387,38 @@ serve(async (req) => {
 
       console.log(`Analyzing step ${step}: ${stepUrl}`);
 
-      // Capture screenshots
-      const [desktopScreenshot, mobileScreenshot] = await Promise.all([
-        captureScreenshot(stepUrl, 'desktop'),
-        captureScreenshot(stepUrl, 'mobile')
+      // Capture screenshots as binary data
+      const [desktopData, mobileData] = await Promise.all([
+        captureScreenshotBase64(stepUrl, 'desktop'),
+        captureScreenshotBase64(stepUrl, 'mobile')
       ]);
 
-      console.log(`Screenshots captured - Desktop: ${desktopScreenshot ? 'yes' : 'no'}, Mobile: ${mobileScreenshot ? 'yes' : 'no'}`);
+      console.log(`Screenshots captured - Desktop: ${desktopData ? 'yes' : 'no'}, Mobile: ${mobileData ? 'yes' : 'no'}`);
 
-      // Analyze with AI
+      // Convert to base64 for AI analysis
+      const desktopBase64 = desktopData ? toBase64DataUrl(desktopData) : null;
+      const mobileBase64 = mobileData ? toBase64DataUrl(mobileData) : null;
+
+      // Analyze with AI (using base64 for vision)
       const analysis = await analyzeStepWithAI(
         step,
         stepName,
         flowConfig.name,
-        desktopScreenshot,
-        mobileScreenshot
+        desktopBase64,
+        mobileBase64
       );
 
       stepAnalyses.push(analysis);
 
-      // Store step metrics
+      // Upload screenshots to Storage and get public URLs
+      const [desktopUrl, mobileUrl] = await Promise.all([
+        desktopData ? uploadScreenshotToStorage(supabase, desktopData, flowId, run.id, step, 'desktop') : null,
+        mobileData ? uploadScreenshotToStorage(supabase, mobileData, flowId, run.id, step, 'mobile') : null
+      ]);
+
+      console.log(`Screenshots uploaded - Desktop: ${desktopUrl ? 'yes' : 'no'}, Mobile: ${mobileUrl ? 'yes' : 'no'}`);
+
+      // Store step metrics with Storage URLs (not base64!)
       await supabase.from('flow_step_metrics').insert({
         run_id: run.id,
         flow_id: flowId,
@@ -372,8 +427,8 @@ serve(async (req) => {
         step_url: stepUrl,
         mobile_friendliness_score: analysis.scores.mobile,
         estimated_completion_rate: analysis.scores.conversion,
-        desktop_screenshot_url: desktopScreenshot,
-        mobile_screenshot_url: mobileScreenshot,
+        desktop_screenshot_url: desktopUrl,
+        mobile_screenshot_url: mobileUrl,
         ai_issues: analysis.issues,
         ai_suggestions: analysis.suggestions,
       });
