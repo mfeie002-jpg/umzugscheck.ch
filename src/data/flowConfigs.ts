@@ -161,6 +161,21 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
+  // V1b - ChatGPT Agent Optimized
+  'v1b': {
+    id: 'v1b',
+    label: 'V1b ChatGPT Agent',
+    path: '/umzugsofferten?variant=v1b',
+    color: 'bg-blue-500',
+    description: 'V1b: 4-Step Flow mit ChatGPT Feedback - Typ, Services, Firmen, Kontakt',
+    parentFlow: 'umzugsofferten',
+    steps: [
+      { step: 1, name: 'Typ & Details', description: 'Umzugstyp, Grösse, Adressen' },
+      { step: 2, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 3, name: 'Firmen', description: 'Firmenauswahl vergleichen' },
+      { step: 4, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
   // V2 - Premium Feedback
   'v2f': {
     id: 'v2f',
