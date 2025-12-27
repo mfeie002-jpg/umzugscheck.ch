@@ -25,7 +25,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { FLOW_CONFIGS } from "@/data/flowConfigs";
+import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from "@/data/flowConfigs";
 import { toast } from "sonner";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -118,6 +118,10 @@ export function FlowAutomationCenter() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportingFlowId, setExportingFlowId] = useState<string | null>(null);
   const [bulkMode, setBulkMode] = useState(true); // Default to bulk mode for full AI responses
+  const [selectedVariantFlowNumber, setSelectedVariantFlowNumber] = useState<number>(2);
+  const [isAnalyzingVariants, setIsAnalyzingVariants] = useState(false);
+  const [variantAnalysisProgress, setVariantAnalysisProgress] = useState(0);
+  const [variantAnalysisResults, setVariantAnalysisResults] = useState<AnalysisResult[]>([]);
 
   // Get flow number from ID - handles special "all-flows" case
   const getFlowNumber = (flowId: string) => {
@@ -450,6 +454,98 @@ Antworte auf Deutsch.`;
     toast.success("Alle 9 Flows analysiert!");
   };
 
+  // Get all variants for a specific flow number (e.g., 2 for V2a, V2b, etc.)
+  const getVariantsForFlowNumber = (flowNum: number) => {
+    const variants: Array<{ id: string; label: string; path: string }> = [];
+    
+    // Add main flow
+    const mainKey = flowNum === 1 ? 'umzugsofferten' : `umzugsofferten-v${flowNum}`;
+    const mainFlow = FLOW_CONFIGS[mainKey];
+    if (mainFlow) {
+      variants.push({ id: mainKey, label: mainFlow.label, path: mainFlow.path });
+    }
+    
+    // Add sub-variants (v2a, v2b, v2c, etc.)
+    Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
+      const match = id.match(/^v(\d+)([a-z])$/i);
+      if (match && parseInt(match[1], 10) === flowNum) {
+        variants.push({ id, label: config.label, path: config.path });
+      }
+    });
+    
+    return variants;
+  };
+
+  // Analyze all variants of a specific flow number
+  const analyzeFlowVariants = async (flowNum: number) => {
+    const variants = getVariantsForFlowNumber(flowNum);
+    if (variants.length === 0) {
+      toast.error(`Keine Varianten für V${flowNum} gefunden`);
+      return;
+    }
+
+    setIsAnalyzingVariants(true);
+    setVariantAnalysisProgress(0);
+    setVariantAnalysisResults(variants.map(v => ({
+      flowId: v.id,
+      flowName: v.label,
+      status: 'pending' as const
+    })));
+
+    const baseUrl = window.location.origin.includes('localhost') 
+      ? 'https://www.umzugscheck.ch'
+      : window.location.origin;
+
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      setCurrentFlowAnalyzing(variant.id);
+      
+      setVariantAnalysisResults(prev => prev.map(r => 
+        r.flowId === variant.id ? { ...r, status: 'running' as const } : r
+      ));
+
+      try {
+        const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
+          body: { 
+            flowId: variant.id, 
+            runType: 'manual',
+            baseUrl 
+          }
+        });
+
+        if (error) throw error;
+
+        setVariantAnalysisResults(prev => prev.map(r => 
+          r.flowId === variant.id ? {
+            ...r,
+            status: 'completed' as const,
+            score: data.overallScore,
+            issuesCount: data.issuesCount,
+            criticalCount: data.criticalCount,
+            summary: data.summary
+          } : r
+        ));
+
+        toast.success(`${variant.label} analysiert: Score ${data.overallScore}/100`);
+      } catch (error) {
+        console.error(`Error analyzing ${variant.id}:`, error);
+        setVariantAnalysisResults(prev => prev.map(r => 
+          r.flowId === variant.id ? {
+            ...r,
+            status: 'error' as const,
+            error: error instanceof Error ? error.message : 'Unbekannter Fehler'
+          } : r
+        ));
+      }
+
+      setVariantAnalysisProgress(((i + 1) / variants.length) * 100);
+    }
+
+    setIsAnalyzingVariants(false);
+    setCurrentFlowAnalyzing(null);
+    toast.success(`Alle ${variants.length} V${flowNum} Varianten analysiert!`);
+  };
+
   // Generate Lovable implementation prompt
   const generateImplementationPrompt = () => {
     const flowNumber = getFlowNumber(selectedFlow);
@@ -670,10 +766,95 @@ ${entry.prompt}
                 ))}
               </div>
 
+              {/* Variant-specific Analysis */}
+              <div className="p-4 border rounded-lg bg-muted/20 space-y-3">
+                <Label className="text-sm font-medium">Alle Varianten eines Flows analysieren:</Label>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Select
+                    value={selectedVariantFlowNumber.toString()}
+                    onValueChange={(v) => setSelectedVariantFlowNumber(parseInt(v, 10))}
+                  >
+                    <SelectTrigger className="w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                        <SelectItem key={num} value={num.toString()}>
+                          V{num}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    onClick={() => analyzeFlowVariants(selectedVariantFlowNumber)}
+                    disabled={isAnalyzingVariants || isAnalyzing}
+                    className="gap-2"
+                  >
+                    {isAnalyzingVariants ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Analysiere...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-4 w-4" />
+                        Alle V{selectedVariantFlowNumber} Varianten analysieren
+                      </>
+                    )}
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    ({getVariantsForFlowNumber(selectedVariantFlowNumber).length} Varianten)
+                  </span>
+                </div>
+
+                {isAnalyzingVariants && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>V{selectedVariantFlowNumber} Varianten</span>
+                      <span>{Math.round(variantAnalysisProgress)}%</span>
+                    </div>
+                    <Progress value={variantAnalysisProgress} />
+                  </div>
+                )}
+
+                {variantAnalysisResults.length > 0 && (
+                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                    {variantAnalysisResults.map((r) => (
+                      <div
+                        key={r.flowId}
+                        className={`p-3 rounded-lg border ${
+                          r.status === 'completed'
+                            ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800'
+                            : r.status === 'error'
+                            ? 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800'
+                            : r.status === 'running'
+                            ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800'
+                            : 'bg-muted/50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-sm">{r.flowId}</span>
+                          {r.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                          {r.status === 'error' && <AlertCircle className="h-4 w-4 text-red-600" />}
+                          {r.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-600" />}
+                        </div>
+                        {r.score !== undefined && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Score: {r.score}/100 • {r.issuesCount} Issues
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
               <div className="grid gap-2 sm:grid-cols-2">
                 <Button
                   onClick={analyzeAllFlows}
-                  disabled={isAnalyzing}
+                  disabled={isAnalyzing || isAnalyzingVariants}
                   size="lg"
                   className="w-full gap-2"
                 >
@@ -685,7 +866,7 @@ ${entry.prompt}
                   ) : (
                     <>
                       <Play className="h-5 w-5" />
-                      Alle 9 Flows analysieren (V1-V9)
+                      Alle 9 Haupt-Flows analysieren (V1-V9)
                     </>
                   )}
                 </Button>
@@ -694,7 +875,7 @@ ${entry.prompt}
                   type="button"
                   variant="outline"
                   onClick={loadLatestAnalysisResults}
-                  disabled={isAnalyzing || isLoadingResults}
+                  disabled={isAnalyzing || isLoadingResults || isAnalyzingVariants}
                   size="lg"
                   className="w-full gap-2"
                 >
