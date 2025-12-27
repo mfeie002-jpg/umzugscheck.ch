@@ -17,7 +17,7 @@ const AdminLogin = () => {
   const [existingAdminEmail, setExistingAdminEmail] = useState<string | null>(null);
   const [checkingSession, setCheckingSession] = useState(true);
 
-  // Check if already authenticated
+  // Check if already authenticated - always show this screen first
   useEffect(() => {
     let cancelled = false;
 
@@ -25,7 +25,7 @@ const AdminLogin = () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-          setCheckingSession(false);
+          if (!cancelled) setCheckingSession(false);
           return;
         }
 
@@ -35,10 +35,17 @@ const AdminLogin = () => {
           _role: "admin",
         });
 
-        if (!roleError && isAdmin && !cancelled) {
-          setExistingAdminEmail(session.user.email ?? session.user.id);
+        if (!cancelled) {
+          if (!roleError && isAdmin) {
+            // Show the "already logged in" screen - don't auto-redirect
+            setExistingAdminEmail(session.user.email ?? session.user.id);
+          } else {
+            // User is logged in but not an admin - sign out first
+            await supabase.auth.signOut();
+          }
+          setCheckingSession(false);
         }
-      } finally {
+      } catch (error) {
         if (!cancelled) setCheckingSession(false);
       }
     };
