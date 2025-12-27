@@ -222,6 +222,7 @@ const UmzugsoffertenBaseline = lazy(() => import("./pages/UmzugsoffertenBaseline
 const UmzugsoffertenV1 = lazy(() => import("./pages/UmzugsoffertenV1"));
 const UmzugsoffertenV1a = lazy(() => import("./pages/UmzugsoffertenV1a"));
 const UmzugsoffertenV1b = lazy(() => import("./pages/UmzugsoffertenV1b"));
+const UmzugsoffertenV1d = lazy(() => import("./pages/UmzugsoffertenV1d"));
 const UmzugsoffertenV2a = lazy(() => import("./pages/UmzugsoffertenV2a"));
 const UmzugsoffertenV9D = lazy(() => import("./pages/UmzugsoffertenV9D"));
 const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
@@ -539,6 +540,7 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1" element={<UmzugsoffertenV1 />} />
           <Route path="/umzugsofferten-v1a" element={<UmzugsoffertenV1a />} />
           <Route path="/umzugsofferten-v1b" element={<UmzugsoffertenV1b />} />
+          <Route path="/umzugsofferten-v1d" element={<UmzugsoffertenV1d />} />
           <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
           <Route path="/umzugsofferten-v2a" element={<UmzugsoffertenV2a />} />
           <Route path="/umzugsofferten-v3" element={<UmzugsoffertenVariant />} />
