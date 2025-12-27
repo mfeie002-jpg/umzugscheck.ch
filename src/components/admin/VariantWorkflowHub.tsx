@@ -10,7 +10,6 @@
  */
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,7 +22,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { FLOW_CONFIGS } from "@/data/flowConfigs";
-import { VARIANT_REGISTRY } from "@/components/calculator-variants";
+import { useAllFlowVariants } from "@/hooks/useAllFlowVariants";
 import { toast } from "sonner";
 import { 
   Sparkles, 
@@ -68,7 +67,7 @@ interface VariantEntry {
 
 export function VariantWorkflowHub() {
   // State
-  const [selectedFlow, setSelectedFlow] = useState("umzugsofferten-v3");
+  const [selectedFlow, setSelectedFlow] = useState("umzugsofferten-v9");
   const [feedbackText, setFeedbackText] = useState("");
   const [targetVariant, setTargetVariant] = useState("");
   const [variantName, setVariantName] = useState("");
@@ -76,6 +75,14 @@ export function VariantWorkflowHub() {
   const [copied, setCopied] = useState(false);
   const [entries, setEntries] = useState<VariantEntry[]>([]);
   const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+
+  // Use unified flow variants hook
+  const { 
+    getSubVariantsForFlow, 
+    pendingWorkflowVariants, 
+    completedWorkflowVariants,
+    refetch: refetchVariants 
+  } = useAllFlowVariants(selectedFlow);
 
   useEffect(() => {
     fetchEntries();
@@ -117,6 +124,7 @@ export function VariantWorkflowHub() {
 
       if (error) throw error;
       setEntries((data || []) as unknown as VariantEntry[]);
+      refetchVariants();
     } catch (err) {
       console.error("Failed to fetch entries:", err);
     }
@@ -538,32 +546,38 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Coded variants from VARIANT_REGISTRY */}
+            {/* All variants for this flow (static + workflow) */}
             {(() => {
-              const flowNumber = getFlowNumber();
-              const codedVariants = Object.entries(VARIANT_REGISTRY)
-                .filter(([key]) => key.startsWith(`v${flowNumber}`))
-                .map(([key, config]) => ({ key, ...config }));
+              const allSubVariants = getSubVariantsForFlow(selectedFlow);
               
-              return codedVariants.length > 0 ? (
+              return allSubVariants.length > 0 ? (
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground flex items-center gap-2">
                     <FileCode className="h-3 w-3" />
-                    Kodierte Varianten (VARIANT_REGISTRY):
+                    Alle Varianten für {selectedFlow}:
                   </Label>
-                  {codedVariants.map(variant => (
+                  {allSubVariants.map(variant => (
                     <div 
-                      key={variant.key}
-                      className="flex items-center justify-between p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20"
+                      key={variant.id}
+                      className={`flex items-center justify-between p-3 border rounded-lg ${
+                        variant.source === 'workflow' 
+                          ? 'bg-green-50 dark:bg-green-950/20' 
+                          : 'bg-blue-50 dark:bg-blue-950/20'
+                      }`}
                     >
                       <div className="flex items-center gap-3">
-                        <CheckCircle className="h-4 w-4 text-blue-600" />
+                        <CheckCircle className={`h-4 w-4 ${
+                          variant.source === 'workflow' ? 'text-green-600' : 'text-blue-600'
+                        }`} />
                         <div>
                           <div className="font-mono font-bold text-sm">
-                            {variant.key}
+                            {variant.label}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            {variant.label} • {variant.stepCount} Steps
+                            {variant.description} • {variant.stepCount} Steps
+                            {variant.source === 'workflow' && (
+                              <Badge variant="outline" className="ml-2 text-[10px]">Workflow</Badge>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -571,7 +585,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => window.open(`/umzugsofferten?variant=${variant.key}`, '_blank')}
+                          onClick={() => window.open(variant.liveUrl, '_blank')}
                         >
                           <Eye className="h-3 w-3 mr-1" />
                           Live
@@ -579,7 +593,61 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => window.location.href = `/flow-tester?variant=${variant.key}`}
+                          onClick={() => window.location.href = variant.testerUrl}
+                        >
+                          <Play className="h-3 w-3 mr-1" />
+                          Tester
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="default"
+                          onClick={() => window.location.href = variant.screenshotUrl}
+                        >
+                          <Camera className="h-3 w-3 mr-1" />
+                          Screenshots
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : null;
+            })()}
+
+            {/* Completed workflow variants that aren't yet in static config */}
+            {completedEntries.length > 0 && (
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">Workflow-Varianten (neu erstellt):</Label>
+                {completedEntries.map(entry => {
+                  const variantKey = `v${getFlowNumber()}${entry.variant_label.toLowerCase()}`;
+                  return (
+                    <div 
+                      key={entry.id}
+                      className="flex items-center justify-between p-3 border rounded-lg bg-emerald-50 dark:bg-emerald-950/20"
+                    >
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-4 w-4 text-emerald-600" />
+                        <div>
+                          <div className="font-mono font-bold text-sm">
+                            V{getFlowNumber()}.{entry.variant_label.toUpperCase()}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {entry.variant_name}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => window.open(`/umzugsofferten?variant=${variantKey}`, '_blank')}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Live
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => window.location.href = `/flow-tester?variant=${variantKey}`}
                         >
                           <Play className="h-3 w-3 mr-1" />
                           Tester
@@ -594,59 +662,15 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : null;
-            })()}
-
-            {/* Completed variants from DB */}
-            {completedEntries.length > 0 && (
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Über Workflow implementiert:</Label>
-                {completedEntries.map(entry => (
-                  <div 
-                    key={entry.id}
-                    className="flex items-center justify-between p-3 border rounded-lg bg-green-50 dark:bg-green-950/20"
-                  >
-                    <div className="flex items-center gap-3">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <div>
-                        <div className="font-mono font-bold text-sm">
-                          V{getFlowNumber()}.{entry.variant_label}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {entry.variant_name}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => window.location.href = `/flow-tester?variant=v${getFlowNumber()}${entry.variant_label}`}
-                      >
-                        <Eye className="h-3 w-3 mr-1" />
-                        Testen
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="default"
-                        onClick={() => window.location.href = `/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}
-                      >
-                        <Camera className="h-3 w-3 mr-1" />
-                        Screenshots
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
-            {/* Empty state only if no coded variants AND no DB entries */}
+            {/* Empty state */}
             {(() => {
-              const flowNumber = getFlowNumber();
-              const hasCodedVariants = Object.keys(VARIANT_REGISTRY).some(key => key.startsWith(`v${flowNumber}`));
-              if (!hasCodedVariants && completedEntries.length === 0) {
+              const allSubVariants = getSubVariantsForFlow(selectedFlow);
+              if (allSubVariants.length === 0 && completedEntries.length === 0) {
                 return (
                   <div className="text-center py-8 text-muted-foreground">
                     <Camera className="h-10 w-10 mx-auto mb-2 opacity-30" />
@@ -731,26 +755,19 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             <div className="space-y-2">
               <Label className="text-xs text-muted-foreground">Direkt testen:</Label>
               <div className="grid grid-cols-3 gap-2">
-                {(() => {
-                  const flowNumber = getFlowNumber();
-                  const codedVariants = Object.entries(VARIANT_REGISTRY)
-                    .filter(([key]) => key.startsWith(`v${flowNumber}`))
-                    .slice(0, 6);
-                  
-                  return codedVariants.map(([key, config]) => (
-                    <a 
-                      key={key}
-                      href={`/umzugsofferten?variant=${key}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 p-2 border rounded-lg hover:bg-muted/50 text-sm"
-                    >
-                      <Eye className="h-3 w-3" />
-                      <span className="font-mono">{key}</span>
-                      <ExternalLink className="h-3 w-3 ml-auto opacity-50" />
-                    </a>
-                  ));
-                })()}
+                {getSubVariantsForFlow(selectedFlow).slice(0, 6).map(variant => (
+                  <a 
+                    key={variant.id}
+                    href={variant.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 border rounded-lg hover:bg-muted/50 text-sm"
+                  >
+                    <Eye className="h-3 w-3" />
+                    <span className="font-mono">{variant.id}</span>
+                    <ExternalLink className="h-3 w-3 ml-auto opacity-50" />
+                  </a>
+                ))}
               </div>
             </div>
 
