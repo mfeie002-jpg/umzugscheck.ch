@@ -326,11 +326,15 @@ interface AIContext {
   };
 }
 
-export function CalculatorFlowReview() {
+interface CalculatorFlowReviewProps {
+  initialFlow?: string;
+}
+
+export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps = {}) {
   const [isCapturing, setIsCapturing] = useState(false);
   const [isExportingAll, setIsExportingAll] = useState(false);
   const [capturedSteps, setCapturedSteps] = useState<FlowStep[]>([]);
-  const [selectedCalculator, setSelectedCalculator] = useState("umzugsofferten");
+  const [selectedCalculator, setSelectedCalculator] = useState(initialFlow || "umzugsofferten");
   const [customPrompt, setCustomPrompt] = useLocalStorage("uc-project-instructions", DEFAULT_PROJECT_INSTRUCTIONS);
   const [captureProgress, setCaptureProgress] = useState(0);
   const [captureStatus, setCaptureStatus] = useState("");

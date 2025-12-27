@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -494,9 +495,22 @@ const AdminTools = () => {
   const [selectedDiscoveredUrls, setSelectedDiscoveredUrls] = useState<Set<string>>(new Set());
   const [urlDiscoveryUrl, setUrlDiscoveryUrl] = useState('');
   
+  // URL params for tab/flow selection
+  const [searchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab');
+  const urlFlow = searchParams.get('flow');
+  
   // Wizard state
-  const [activeTab, setActiveTab] = useState('ai-feedback');
-  const [showAllTools, setShowAllTools] = useState(false);
+  const [activeTab, setActiveTab] = useState(urlTab || 'ai-feedback');
+  const [showAllTools, setShowAllTools] = useState(!!urlTab); // Show tools if tab is specified in URL
+  
+  // Sync tab from URL when it changes
+  useEffect(() => {
+    if (urlTab) {
+      setActiveTab(urlTab);
+      setShowAllTools(true);
+    }
+  }, [urlTab]);
   
   // Auto-fill state
   const [isAutoFilling, setIsAutoFilling] = useState(false);
@@ -3269,7 +3283,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               </TabsList>
               
               <TabsContent value="manual">
-                <CalculatorFlowReview />
+                <CalculatorFlowReview initialFlow={urlFlow || undefined} />
               </TabsContent>
               
               <TabsContent value="autoflow" className="space-y-6">
