@@ -91,9 +91,10 @@ const StickyContactBar = lazy(() => import("./components/StickyContactBar").then
 const CustomerOnboarding = lazy(() => import("./components/CustomerOnboarding").then(m => ({ default: m.CustomerOnboarding })));
 const ProviderOnboarding = lazy(() => import("./components/ProviderOnboarding").then(m => ({ default: m.ProviderOnboarding })));
 const FloatingActionButton = lazy(() => import("./components/mobile/FloatingActionButton").then(m => ({ default: m.FloatingActionButton })));
-const MobilePullToRefresh = lazy(() => import("./components/MobilePullToRefresh").then(m => ({ default: m.MobilePullToRefresh })));
-const MobileBottomSheetNav = lazy(() => import("./components/mobile/MobileBottomSheetNav").then(m => ({ default: m.MobileBottomSheetNav })));
-const SwipeNavigationWrapper = lazy(() => import("./components/mobile/SwipeNavigationWrapper").then(m => ({ default: m.SwipeNavigationWrapper })));
+// Mobile wrappers imported directly to avoid lazy loading issues
+import { MobilePullToRefresh } from "./components/MobilePullToRefresh";
+import { MobileBottomSheetNav } from "./components/mobile/MobileBottomSheetNav";
+import { SwipeNavigationWrapper } from "./components/mobile/SwipeNavigationWrapper";
 const MobileSearchButton = lazy(() => import("./components/mobile/MobileSearchButton").then(m => ({ default: m.MobileSearchButton })));
 const MobileBottomNav = lazy(() => import("./components/MobileBottomNav"));
 
@@ -342,12 +343,13 @@ const App = () => (
                 <ScrollToTopOnRoute />
                 <ScrollToTop />
                 
-                <Suspense fallback={<PageLoadingFallback />}>
-                  <MobilePullToRefresh>
-                    <SwipeNavigationWrapper>
-                      <main className="flex-1 pb-16 md:pb-0">
-                        <Suspense fallback={<PageLoadingFallback />}>
-                          <AnimatedRoutes>
+                <MobilePullToRefresh>
+                  <SwipeNavigationWrapper>
+                    <main className="flex-1 pb-16 md:pb-0">
+                      <Suspense fallback={<PageLoadingFallback />}>
+                        <AnimatedRoutes>
+                            {/* Flow tester as first route to ensure it matches */}
+                            <Route path="/flow-tester" element={<FlowTester />} />
                             <Route path="/" element={<IndexPremium />} />
                             <Route path="/landing" element={<LandingPage />} />
                             <Route path="/old-home" element={<Index />} />
@@ -536,8 +538,7 @@ const App = () => (
                             <Route path="/umzugsofferten-v7" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
                             <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
-                            {/* Flow tester routes with redirect for typos/old URLs */}
-                            <Route path="/flow-tester" element={<FlowTester />} />
+                            {/* Flow tester already defined at top, only redirects here */}
                             <Route path="/v3-varianten" element={<V3VariantComparison />} />
                             <Route path="/flow-test" element={<RedirectWithQuery to="/flow-tester" />} />
                             <Route path="/flowtester" element={<RedirectWithQuery to="/flow-tester" />} />
@@ -606,7 +607,6 @@ const App = () => (
                       </main>
                     </SwipeNavigationWrapper>
                   </MobilePullToRefresh>
-                </Suspense>
                 
                 <Footer />
                 

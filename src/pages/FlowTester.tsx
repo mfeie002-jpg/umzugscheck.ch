@@ -361,6 +361,9 @@ const FINAL_QUESTIONS = [
 ];
 
 export default function FlowTester() {
+  // Debug log to verify component renders
+  console.log('[FlowTester] Component is rendering');
+  
   const [testerInfo, setTesterInfo] = useState<TesterInfo>({ name: '', email: '', role: 'user' });
   const [isRegistered, setIsRegistered] = useState(false);
   const [currentFlowIndex, setCurrentFlowIndex] = useState<number | null>(null);
