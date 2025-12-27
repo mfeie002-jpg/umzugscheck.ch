@@ -305,19 +305,30 @@ const formatCHF = (amount: number): string => {
 // SUB-COMPONENTS
 // ============================================
 
+const STEP_LABELS = ['Adressen', 'Details', 'Service-Level', 'Extras & Datum', 'Firmen', 'Kontakt'];
+
 const StepIndicator = ({ currentStep, steps }: { currentStep: number; steps: string[] }) => (
-  <div className="flex items-center justify-center gap-2 mb-6">
-    {steps.map((_, index) => (
-      <div
-        key={index}
-        className={cn(
-          "h-2 rounded-full transition-all duration-300",
-          index < currentStep ? "w-8 bg-primary" :
-          index === currentStep ? "w-12 bg-primary" :
-          "w-8 bg-muted"
-        )}
-      />
-    ))}
+  <div className="mb-6">
+    {/* Progress bars */}
+    <div className="flex items-center justify-center gap-2 mb-2">
+      {steps.map((_, index) => (
+        <div
+          key={index}
+          className={cn(
+            "h-2 rounded-full transition-all duration-300",
+            index < currentStep ? "w-8 bg-primary" :
+            index === currentStep ? "w-12 bg-primary" :
+            "w-8 bg-muted"
+          )}
+        />
+      ))}
+    </div>
+    {/* Step labels */}
+    <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+      <span className="font-medium text-foreground">{STEP_LABELS[currentStep]}</span>
+      <span>•</span>
+      <span>Schritt {currentStep + 1} von {steps.length}</span>
+    </div>
   </div>
 );
 
@@ -385,6 +396,7 @@ export function ZeroFrictionWizard() {
   const [step, setStep] = useState<WizardStep>(getInitialStep());
   const [isCalculating, setIsCalculating] = useState(false);
   const [showVideoOption, setShowVideoOption] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{fromZip?: string; toZip?: string; moveDate?: string}>({});
   
   const [moveData, setMoveData] = useState<MoveData>(() => {
     // In capture mode, use prefilled demo data
@@ -459,8 +471,16 @@ export function ZeroFrictionWizard() {
     }
   }, [moveData]);
 
+  // Validate Swiss ZIP code (4 digits, starts with 1-9)
+  const isValidSwissZip = (zip: string): boolean => {
+    return /^[1-9][0-9]{3}$/.test(zip);
+  };
+
   // Auto-fill city from ZIP (simplified)
   const handleZipChange = (field: 'fromZip' | 'toZip', value: string) => {
+    // Only allow numeric input
+    const numericValue = value.replace(/\D/g, '').slice(0, 4);
+    
     setMoveData(prev => {
       const cityField = field === 'fromZip' ? 'fromCity' : 'toCity';
       const cities: Record<string, string> = {
@@ -474,11 +494,22 @@ export function ZeroFrictionWizard() {
       };
       return {
         ...prev,
-        [field]: value,
-        [cityField]: cities[value] || prev[cityField],
+        [field]: numericValue,
+        [cityField]: cities[numericValue] || (numericValue.length === 4 ? prev[cityField] : ''),
         estimatedVolume: getEstimatedVolume(prev.rooms),
       };
     });
+    
+    // Validate and set error
+    if (numericValue.length === 4) {
+      if (!isValidSwissZip(numericValue)) {
+        setValidationErrors(prev => ({ ...prev, [field]: 'Ungültige Schweizer PLZ' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, [field]: undefined }));
+      }
+    } else if (numericValue.length > 0) {
+      setValidationErrors(prev => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const handleServiceLevelChange = (value: number[]) => {
@@ -594,12 +625,21 @@ export function ZeroFrictionWizard() {
                         placeholder="z.B. 8001"
                         value={moveData.fromZip}
                         onChange={(e) => handleZipChange('fromZip', e.target.value)}
-                        className="text-lg h-12"
+                        className={cn(
+                          "text-lg h-12",
+                          validationErrors.fromZip && "border-destructive focus-visible:ring-destructive"
+                        )}
                         maxLength={4}
+                        inputMode="numeric"
                       />
-                      {moveData.fromCity && (
+                      {validationErrors.fromZip ? (
+                        <p className="text-sm text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3.5 w-3.5" />
+                          {validationErrors.fromZip}
+                        </p>
+                      ) : moveData.fromCity ? (
                         <p className="text-sm text-muted-foreground">{moveData.fromCity}</p>
-                      )}
+                      ) : null}
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium flex items-center gap-2">
@@ -610,18 +650,36 @@ export function ZeroFrictionWizard() {
                         placeholder="z.B. 3011"
                         value={moveData.toZip}
                         onChange={(e) => handleZipChange('toZip', e.target.value)}
-                        className="text-lg h-12"
+                        className={cn(
+                          "text-lg h-12",
+                          validationErrors.toZip && "border-destructive focus-visible:ring-destructive"
+                        )}
                         maxLength={4}
+                        inputMode="numeric"
                       />
-                      {moveData.toCity && (
+                      {validationErrors.toZip ? (
+                        <p className="text-sm text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3.5 w-3.5" />
+                          {validationErrors.toZip}
+                        </p>
+                      ) : moveData.toCity ? (
                         <p className="text-sm text-muted-foreground">{moveData.toCity}</p>
-                      )}
+                      ) : null}
                     </div>
                   </div>
 
-                  {/* Quick room selector */}
+                  {/* Quick room selector with tooltip */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Wohnungsgrösse</Label>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium">Wohnungsgrösse</Label>
+                      <div className="group relative">
+                        <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                          Anzahl Zimmer ohne Küche/Bad
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
+                        </div>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-6 gap-2">
                       {[1, 2, 3, 4, 5, 6].map((rooms) => (
                         <Button
@@ -786,7 +844,16 @@ export function ZeroFrictionWizard() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm">Stockwerk</Label>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm">Stockwerk</Label>
+                      <div className="group relative">
+                        <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                          EG = Erdgeschoss, 1 = 1. Stock usw.
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
+                        </div>
+                      </div>
+                    </div>
                     <div className="flex gap-2">
                       {[0, 1, 2, 3, 4].map((floor) => (
                         <Button
@@ -965,7 +1032,7 @@ export function ZeroFrictionWizard() {
                 <div className="text-center mb-2">
                   <h2 className="text-xl font-semibold mb-2">Extras & Umzugsdatum</h2>
                   <p className="text-muted-foreground text-sm">
-                    Wir haben die beliebtesten Optionen vorausgewählt
+                    Beliebte Optionen vorausgewählt – <span className="text-primary font-medium">jederzeit änderbar</span>
                   </p>
                 </div>
 
@@ -1006,22 +1073,31 @@ export function ZeroFrictionWizard() {
 
                 {/* Add-ons grid */}
                 <div className="space-y-3">
-                  <Label>Zusatzleistungen</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>Zusatzleistungen</Label>
+                    <span className="text-xs text-muted-foreground">Klicken zum Ändern</span>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {ADDONS.map((addon) => {
                       const isActive = moveData.addons[addon.id as keyof typeof moveData.addons];
                       const Icon = addon.icon;
+                      const isPreselected = addon.id === 'cleaning' || addon.id === 'furniture';
                       return (
                         <div
                           key={addon.id}
                           onClick={() => handleAddonToggle(addon.id)}
                           className={cn(
-                            "flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all",
+                            "flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all relative",
                             isActive 
                               ? "border-primary bg-primary/5" 
                               : "border-muted hover:border-primary/50"
                           )}
                         >
+                          {isPreselected && isActive && (
+                            <Badge variant="outline" className="absolute -top-2 -right-2 text-[10px] bg-background px-1.5 py-0">
+                              Empfohlen
+                            </Badge>
+                          )}
                           <div className={cn(
                             "p-2 rounded-lg",
                             isActive ? "bg-primary text-primary-foreground" : "bg-muted"
