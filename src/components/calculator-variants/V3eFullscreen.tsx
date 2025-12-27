@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ArrowLeft, Home, Building2, Heart, MapPin, Package, User, Sparkles } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const QUESTIONS = [
   {
@@ -44,7 +45,9 @@ const QUESTIONS = [
 ];
 
 export const V3eFullscreen: React.FC = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  // Note: V3e uses 0-based index for questions, so uc_step=1 maps to index 0
+  const initialStep = useInitialStep(1);
+  const [currentQuestion, setCurrentQuestion] = useState(Math.max(0, initialStep - 1));
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const question = QUESTIONS[currentQuestion];
   const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;

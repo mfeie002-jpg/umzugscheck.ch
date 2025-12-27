@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Volume2 } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const STEPS = [
   { id: 1, title: 'Umzugsart', description: 'Wählen Sie die Art Ihres Umzugs' },
@@ -17,7 +18,8 @@ const STEPS = [
 ];
 
 export const V5bScreenReader: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [selected, setSelected] = useState<string | null>('privat');
   const liveRegionRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);

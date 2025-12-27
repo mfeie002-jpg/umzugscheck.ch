@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trophy, Star, Zap, Gift, Lock, Unlock, Sparkles, Medal } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const REWARDS = [
   { step: 1, label: 'Starter', icon: Star, unlocked: true },
@@ -16,8 +17,9 @@ const REWARDS = [
 ];
 
 export const V4dGamified: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [points, setPoints] = useState(50);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [points, setPoints] = useState(50 + (initialStep - 1) * 100);
   const [showReward, setShowReward] = useState(false);
 
   const handleNext = () => {

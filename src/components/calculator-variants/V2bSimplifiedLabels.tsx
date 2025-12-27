@@ -15,6 +15,7 @@ import { ArrowRight, ArrowLeft, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import { useInitialStep } from "@/hooks/use-initial-step";
 
 const MOVE_TYPES = [
   { id: "wohnung", emoji: "🏠", label: "Wohnung" },
@@ -31,7 +32,8 @@ const SIZES = [
 
 export const V2bSimplifiedLabels = memo(function V2bSimplifiedLabels() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [step, setStep] = useState(initialStep);
   const [data, setData] = useState({
     type: "",
     from: "",

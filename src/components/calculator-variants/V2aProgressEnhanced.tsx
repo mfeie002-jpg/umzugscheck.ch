@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useInitialStep } from "@/hooks/use-initial-step";
 
 const MOVE_TYPES = [
   { id: "wohnung", label: "Wohnung", icon: Home, description: "1-5+ Zimmer Wohnung" },
@@ -44,7 +45,8 @@ const APARTMENT_SIZES = [
 
 export const V2aProgressEnhanced = memo(function V2aProgressEnhanced() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [formData, setFormData] = useState({
     moveType: "",
     fromLocation: "",

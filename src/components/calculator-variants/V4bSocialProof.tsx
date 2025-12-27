@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Star, Users, CheckCircle2, Quote, Award, ThumbsUp } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const TESTIMONIALS = [
   { name: 'Sandra M.', location: 'Zürich', text: 'Beste Entscheidung! 3 Offerten in 2 Stunden.', rating: 5 },
@@ -16,7 +17,8 @@ const TESTIMONIALS = [
 ];
 
 export const V4bSocialProof: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const progress = (currentStep / 4) * 100;
 
   return (

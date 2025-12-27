@@ -8,11 +8,13 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Eye, Check, Circle } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 const STEPS = ['Umzugsart', 'Adressen', 'Services', 'Kontakt'];
 
 export const V5aHighContrast: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [selected, setSelected] = useState<string | null>('privat');
   const progress = (currentStep / STEPS.length) * 100;
 

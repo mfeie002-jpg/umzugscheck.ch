@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
+import { useInitialStep } from "@/hooks/use-initial-step";
 
 const MOVE_TYPES = [
   { id: "wohnung", label: "Wohnung", icon: Home },
@@ -38,7 +39,8 @@ const APARTMENT_SIZES = ["Studio", "1-1.5", "2-2.5", "3-3.5", "4-4.5", "5+"];
 
 export const V2cTrustFocused = memo(function V2cTrustFocused() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [step, setStep] = useState(initialStep);
   const [data, setData] = useState({
     type: "",
     from: "",

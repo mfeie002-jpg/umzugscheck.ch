@@ -8,9 +8,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Check, Loader2, Zap, Sparkles } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
 
 export const V4eMinimalFriction: React.FC = () => {
-  const [step, setStep] = useState(1);
+  const initialStep = useInitialStep(1);
+  const [step, setStep] = useState(initialStep);
   const [loading, setLoading] = useState(false);
   const [fromZip, setFromZip] = useState('');
   const [toZip, setToZip] = useState('');
