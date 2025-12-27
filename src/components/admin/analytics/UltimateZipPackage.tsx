@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Package, Download, Loader2, Link, Copy, CheckCircle2, FileArchive, Globe, Camera, BarChart3, Code, Zap, Users, TrendingUp, Shield, Lightbulb } from "lucide-react";
+import { Package, Download, Loader2, Link, Copy, CheckCircle2, FileArchive, Globe, Camera, BarChart3, Code, Zap, Users, TrendingUp, Shield, Lightbulb, Info } from "lucide-react";
+import { GeminiLimitsInfo } from "@/components/ui/GeminiLimitsInfo";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
@@ -1448,6 +1449,9 @@ Lies zuerst die Datei REVIEW_REQUEST.md für die konkreten Fragen.`;
             <p className="text-sm text-purple-700">Strukturiert für beste AI-Analyse-Resultate</p>
           </div>
         </div>
+
+        {/* Gemini Upload Limits */}
+        <GeminiLimitsInfo />
 
         {/* Configuration */}
         <div className="grid gap-4 md:grid-cols-2">
