@@ -608,10 +608,9 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                       setSelectedVersionForScreenshots(version);
                       setUpdateScreenshotsDialogOpen(true);
                     }}
-                    title="Screenshots aktualisieren"
-                    disabled={currentSteps.length === 0}
+                    title={currentSteps.length === 0 ? "Zuerst Screenshots erfassen" : "Screenshots aktualisieren"}
                   >
-                    <Camera className="h-4 w-4" />
+                    <Camera className={`h-4 w-4 ${currentSteps.length === 0 ? 'text-muted-foreground' : ''}`} />
                   </Button>
                   <Button
                     variant="ghost"
