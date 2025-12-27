@@ -51,7 +51,6 @@ export const AnimatedRoutes = ({ children }: AnimatedRoutesProps) => {
         variants={pageVariants}
         transition={pageTransition}
       >
-        {/* ✅ Routes bekommt die echte Location (pathname + search getrennt) */}
         <Routes location={location}>
           {children}
         </Routes>
