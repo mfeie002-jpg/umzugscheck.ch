@@ -387,7 +387,28 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                 <Button
                   size="sm"
                   disabled={currentSteps.length === 0}
-                  onClick={() => setNewVersionNumber(suggestNextVersion())}
+                  onClick={() => {
+                    // Pre-fill from variant config if available
+                    if (variantConfig) {
+                      // Extract version from variant ID (e.g., "v9a" → "9.a", "v9a__wf__xxx" → "9.a")
+                      const cleanId = variantConfig.id.split('__')[0]; // Remove __wf__ suffix if present
+                      const match = cleanId.match(/v(\d+)([a-z])?/i);
+                      if (match) {
+                        const major = match[1];
+                        const letter = match[2]?.toLowerCase() || '';
+                        setNewVersionNumber(`${major}.${letter}`);
+                      } else {
+                        setNewVersionNumber(suggestNextVersion());
+                      }
+                      // Extract name from label (e.g., "V9.A - Gemini (Workflow)" → "Gemini")
+                      const labelMatch = variantConfig.label.match(/V\d+\.[A-Z]\s*-\s*(.+?)(?:\s*\(|$)/i);
+                      const extractedName = labelMatch ? labelMatch[1].trim() : variantConfig.label;
+                      setNewVersionName(extractedName);
+                      setNewVersionDescription(variantConfig.description || '');
+                    } else {
+                      setNewVersionNumber(suggestNextVersion());
+                    }
+                  }}
                 >
                   <Save className="h-4 w-4 mr-1" />
                   Version speichern
