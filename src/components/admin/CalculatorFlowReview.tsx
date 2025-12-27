@@ -1322,6 +1322,198 @@ Dieser Export enthält:
     toast.success('Metadata-Package heruntergeladen (JSON + HTML, ohne Screenshots)');
   };
 
+  // Download Gemini-optimized ZIP (single file structure, inline images)
+  const downloadGeminiZip = async () => {
+    if (capturedSteps.length === 0) {
+      toast.error("Keine Steps vorhanden. Bitte erst 'Demo laden' oder Steps erfassen.");
+      return;
+    }
+
+    const zip = new JSZip();
+    const selectedLabel = calculatorOptions.find(c => c.value === selectedCalculator)?.label || selectedCalculator;
+    const folderName = `gemini-package-${selectedCalculator}-${new Date().toISOString().split('T')[0]}`;
+    const folder = zip.folder(folderName);
+
+    if (!folder) return;
+
+    // Gemini prefers a single comprehensive markdown file with embedded context
+    let geminiPrompt = `# 🔮 Gemini Flow-Analyse: ${selectedLabel}
+
+## Exportiert: ${new Date().toISOString()}
+## Calculator: ${selectedCalculator}
+## Anzahl Steps: ${capturedSteps.length}
+
+---
+
+## 📋 Analyse-Anweisungen
+
+Analysiere die beigefügten Screenshots und HTML-Dateien für jeden Step. Fokussiere auf:
+
+### 1. UX/Conversion-Analyse
+- Visuelle Hierarchie und Call-to-Action Platzierung
+- Mobile-First Design und Touch-Targets
+- Formular-Friction und Drop-off Risiken
+- Trust-Signale und Sicherheitsgefühl
+
+### 2. Technische Qualität
+- Semantic HTML Struktur
+- Accessibility (WCAG 2.1)
+- Performance-Indikatoren im Code
+
+### 3. Conversion-Optimierung
+- A/B-Test Vorschläge
+- Quick Wins vs. größere Änderungen
+- Priorisierte Empfehlungen
+
+---
+
+## 📂 Struktur
+
+\`\`\`
+${folderName}/
+├── GEMINI-PROMPT.md (diese Datei)
+├── index.json (maschinenlesbar)
+├── all-screenshots/ (alle Bilder)
+│   ├── step-1-desktop.png
+│   ├── step-1-mobile.png
+│   └── ...
+├── all-html/ (alle HTML-Dateien)
+│   ├── step-1.html
+│   └── ...
+└── combined-analysis.md (alle Steps zusammen)
+\`\`\`
+
+---
+
+## 🎯 Steps Übersicht
+
+`;
+
+    // Add step summaries to prompt
+    capturedSteps.forEach((step, idx) => {
+      geminiPrompt += `### Step ${step.step}: ${step.name}
+- **URL:** ${step.url}
+- **Beschreibung:** ${step.description}
+- **Screenshots:** ${step.screenshotDesktop ? '✓ Desktop' : '✗ Desktop'} | ${step.screenshotMobile ? '✓ Mobile' : '✗ Mobile'}
+- **HTML:** ${step.html ? `✓ (${step.html.length} Zeichen)` : '✗'}
+
+`;
+    });
+
+    // Add AI context if available
+    if (aiContext) {
+      geminiPrompt += `---
+
+## 🧠 AI-Kontext (automatisch generiert)
+
+### Wettbewerber
+${aiContext.competitors?.direct?.join(', ') || 'Nicht definiert'}
+
+### Zielgruppe
+${aiContext.targetAudience?.primary || 'Nicht definiert'}
+
+### Business-Ziel
+${aiContext.businessGoals?.primary || 'Nicht definiert'}
+
+### Conversion-Ziel
+${aiContext.successMetrics?.conversion?.target || 'Nicht definiert'}
+
+`;
+    }
+
+    geminiPrompt += `---
+
+## 📝 Bitte analysiere jeden Step und gib konkrete, priorisierte Empfehlungen.
+
+**Gewünschtes Output-Format:**
+1. Executive Summary (3-5 Sätze)
+2. Pro Step: Stärken, Schwächen, Quick Wins
+3. Übergreifende Patterns
+4. Top 5 priorisierte Maßnahmen
+`;
+
+    folder.file('GEMINI-PROMPT.md', geminiPrompt);
+
+    // Add comprehensive index.json
+    const index = {
+      exportedAt: new Date().toISOString(),
+      exportType: 'gemini-optimized',
+      calculator: selectedLabel,
+      calculatorId: selectedCalculator,
+      stepsCount: capturedSteps.length,
+      aiContext: aiContext || null,
+      steps: capturedSteps.map(s => ({
+        step: s.step,
+        name: s.name,
+        description: s.description,
+        url: s.url,
+        files: {
+          desktopScreenshot: s.screenshotDesktop ? `all-screenshots/step-${s.step}-desktop.png` : null,
+          mobileScreenshot: s.screenshotMobile ? `all-screenshots/step-${s.step}-mobile.png` : null,
+          html: s.html ? `all-html/step-${s.step}.html` : null,
+        },
+        meta: s.meta,
+      })),
+    };
+    folder.file('index.json', JSON.stringify(index, null, 2));
+
+    // Create all-screenshots folder
+    const screenshotsFolder = folder.folder('all-screenshots');
+    if (screenshotsFolder) {
+      for (const step of capturedSteps) {
+        if (step.screenshotDesktop) {
+          const base64Data = step.screenshotDesktop.replace(/^data:image\/\w+;base64,/, '');
+          screenshotsFolder.file(`step-${step.step}-desktop.png`, base64Data, { base64: true });
+        }
+        if (step.screenshotMobile) {
+          const base64Data = step.screenshotMobile.replace(/^data:image\/\w+;base64,/, '');
+          screenshotsFolder.file(`step-${step.step}-mobile.png`, base64Data, { base64: true });
+        }
+      }
+    }
+
+    // Create all-html folder
+    const htmlFolder = folder.folder('all-html');
+    if (htmlFolder) {
+      for (const step of capturedSteps) {
+        if (step.html) {
+          htmlFolder.file(`step-${step.step}.html`, step.html);
+        }
+      }
+    }
+
+    // Create combined analysis markdown (all steps in one file for easy upload)
+    let combinedMd = `# Kombinierte Step-Analyse: ${selectedLabel}
+
+Exportiert: ${new Date().toISOString()}
+
+---
+
+`;
+    capturedSteps.forEach(step => {
+      combinedMd += `## Step ${step.step}: ${step.name}
+
+**URL:** ${step.url}
+**Beschreibung:** ${step.description}
+
+### Screenshots
+- Desktop: \`all-screenshots/step-${step.step}-desktop.png\`
+- Mobile: \`all-screenshots/step-${step.step}-mobile.png\`
+
+### HTML-Struktur
+Siehe: \`all-html/step-${step.step}.html\`
+
+---
+
+`;
+    });
+    folder.file('combined-analysis.md', combinedMd);
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    downloadBlob(blob, `${folderName}.zip`);
+    toast.success('Gemini-Package heruntergeladen (optimiert für Google Gemini)');
+  };
+
   // Fetch source code from edge function
   const fetchSourceFiles = async (): Promise<Record<string, Record<string, string>> | null> => {
     try {
@@ -2876,6 +3068,15 @@ ${JSON.stringify(step.meta || {}, null, 2)}
             >
               <Package className="w-4 h-4 mr-2" />
               ZIP Download (alles)
+            </Button>
+            <Button 
+              variant="default" 
+              onClick={downloadGeminiZip}
+              disabled={capturedSteps.length === 0}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Package className="w-4 h-4 mr-2" />
+              ZIP für Gemini
             </Button>
             <Button 
               variant="outline" 
