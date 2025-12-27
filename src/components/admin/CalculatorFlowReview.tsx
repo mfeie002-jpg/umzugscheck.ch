@@ -569,19 +569,37 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     });
     
     // Sub-variants from SUB_VARIANT_CONFIGS (coded components)
-    // Feedback variants get their own group, separate from main flows
+    // Categorize into:
+    // - feedback: Primary feedback variants (v1a, v2f, v3a, ..., v9a) - one per main flow
+    // - extended: Extended V9 variants (v9b, v9c, v9d) and multi variants
+    // - sub: Other sub-variants
     Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
       const registryEntry = VARIANT_REGISTRY[id];
-      // All single-letter variants from SUB_VARIANT_CONFIGS are feedback variants
-      // Pattern: v + digit(s) + single letter (e.g., v1a, v2f, v9a, v10a)
-      const isFeedbackVariant = /^v\d+[a-z]$/i.test(id);
+      
+      // Primary feedback variants: v1a, v2f, v3a, v4f, v5f, v6a, v7a, v8a, v9a
+      // Pattern: v + single digit + single letter (one per main flow)
+      const isPrimaryFeedback = /^v[1-9][a-f]$/i.test(id);
+      
+      // Extended V9 variants: v9b, v9c, v9d
+      const isExtendedV9 = /^v9[b-z]$/i.test(id);
+      
+      // Multi variants: multi-a, multi-b, etc.
+      const isMulti = id.startsWith('multi');
+      
+      let group = 'sub';
+      if (isPrimaryFeedback) {
+        group = 'feedback';
+      } else if (isExtendedV9 || isMulti) {
+        group = 'extended';
+      }
+      
       options.push({
         value: id,
         label: config.label,
         path: config.path,
         isSubVariant: true,
         component: registryEntry?.component,
-        group: isFeedbackVariant ? 'feedback' : 'sub',
+        group,
       });
     });
     
@@ -614,6 +632,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
   const calculatorOptions = buildCalculatorOptions();
   const mainFlowOptions = calculatorOptions.filter(o => o.group === 'main');
   const feedbackVariantOptions = calculatorOptions.filter(o => o.group === 'feedback');
+  const extendedVariantOptions = calculatorOptions.filter(o => o.group === 'extended');
   const subVariantOptions = calculatorOptions.filter(o => o.group === 'sub');
   const databaseFlowOptions = calculatorOptions.filter(o => o.group === 'database');
   const otherCalculatorOptions = calculatorOptions.filter(o => o.group === 'other');
@@ -2505,6 +2524,21 @@ ${JSON.stringify(step.meta || {}, null, 2)}
                           Feedback-Varianten (V1a-V9a)
                         </div>
                         {feedbackVariantOptions.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </>
+                    )}
+                    
+                    {/* Extended V9 Variants (V9b, V9c, V9d, Multi) */}
+                    {extendedVariantOptions.length > 0 && (
+                      <>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2 flex items-center gap-1">
+                          <Sparkles className="h-3 w-3" />
+                          Erweiterte V9 Varianten
+                        </div>
+                        {extendedVariantOptions.map(opt => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
                           </SelectItem>
