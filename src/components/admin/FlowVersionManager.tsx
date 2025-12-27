@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
 import { useBackgroundScreenshotJob } from "@/hooks/useBackgroundScreenshotJob";
 import { SUB_VARIANT_CONFIGS, FLOW_CONFIGS } from "@/data/flowConfigs";
+import { SITE_CONFIG } from "@/data/constants";
 import { 
   Save, 
   GitCompare, 
@@ -1134,20 +1135,22 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                             return;
                           }
                           
-                          // Determine the base URL from the first step's url if available
-                          // Otherwise fall back to constructing from flow_code
-                          let baseUrl = `${window.location.origin}/umzugsofferten`;
+                          // Use production URL to avoid auth-bridge redirect on preview hosts
+                          const isPreviewHost = window.location.hostname.includes('lovable.app') || 
+                                                window.location.hostname.includes('lovableproject.com');
+                          const publicBase = isPreviewHost ? SITE_CONFIG.url : window.location.origin;
                           
-                          // Check if step has a URL and extract the base
+                          // Determine the base URL from flow_code or first step's url
+                          let baseUrl = `${publicBase}/umzugsofferten`;
+                          
+                          // Check if step has a URL and extract the variant
                           const firstStepUrl = dbStepConfigs[0]?.url;
                           if (firstStepUrl) {
                             try {
                               const parsedUrl = new URL(firstStepUrl);
-                              // Use just the origin + pathname + variant param
-                              baseUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
                               const variant = parsedUrl.searchParams.get('variant');
                               if (variant) {
-                                baseUrl += `?variant=${variant}`;
+                                baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
                               }
                             } catch (e) {
                               console.warn('Could not parse step URL, using default baseUrl');
@@ -1158,7 +1161,7 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                             if (flowCode) {
                               // e.g. "V3.a" -> "v3a"
                               const variant = flowCode.toLowerCase().replace('.', '');
-                              baseUrl = `${window.location.origin}/umzugsofferten?variant=${variant}`;
+                              baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
                             }
                           }
                           
