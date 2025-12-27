@@ -1071,6 +1071,228 @@ const AdminTools = () => {
     }
   };
 
+  // ============================================================================
+  // GEMINI OPTIMIZED PACKAGE (max 10 files, combined text content)
+  // ============================================================================
+
+  const generateGeminiPackage = async () => {
+    if (!config.projectUrl) {
+      toast.error('Bitte URL eingeben');
+      return;
+    }
+
+    const hasSelection = Object.values(packageOptions).some(v => v);
+    if (!hasSelection) {
+      toast.error('Bitte mindestens eine Option auswählen');
+      return;
+    }
+
+    setIsGenerating(true);
+    setProgress(0);
+    setStatus('Initialisiere Gemini-optimiertes Package...');
+
+    try {
+      const zip = new JSZip();
+      const collectedImages: { name: string; data: Uint8Array }[] = [];
+      let combinedTextContent = `# ${config.projectName} - Gemini AI Analysis Package\n`;
+      combinedTextContent += `## Generiert am ${new Date().toLocaleDateString('de-CH')}\n\n`;
+      combinedTextContent += `**URL:** ${config.projectUrl}\n`;
+      combinedTextContent += `**Beschreibung:** ${config.description}\n`;
+      combinedTextContent += `**Ziele:** ${config.goals}\n`;
+      combinedTextContent += `**Zielgruppe:** ${config.targetAudience}\n\n`;
+      combinedTextContent += `---\n\n`;
+      
+      const allPages = [
+        { path: '/', name: 'homepage' },
+        ...config.additionalPages.map((p, i) => ({ 
+          path: p.startsWith('/') ? p : `/${p}`, 
+          name: p.replace(/\//g, '-').replace(/^-/, '') || `page-${i + 1}` 
+        }))
+      ];
+
+      // Limit to max 5 pages for Gemini (to stay under 10 images with desktop+mobile)
+      const limitedPages = allPages.slice(0, 5);
+      if (allPages.length > 5) {
+        combinedTextContent += `⚠️ **Hinweis:** Auf 5 Seiten begrenzt (Gemini-Limit: max 10 Bilder pro Prompt)\n\n`;
+      }
+
+      let stepsPerPage = 0;
+      if (packageOptions.desktopScreenshots) stepsPerPage++;
+      if (packageOptions.mobileScreenshots) stepsPerPage++;
+      if (packageOptions.rawHtml) stepsPerPage++;
+      if (packageOptions.renderedHtml) stepsPerPage++;
+      
+      const totalSteps = limitedPages.length * stepsPerPage + 2;
+      let currentStep = 0;
+
+      for (const page of limitedPages) {
+        const fullUrl = `${config.projectUrl.replace(/\/$/, '')}${page.path}`;
+        combinedTextContent += `## Seite: ${page.name}\n`;
+        combinedTextContent += `**URL:** ${fullUrl}\n\n`;
+        
+        // Desktop screenshot (only if under 10 total)
+        if (packageOptions.desktopScreenshots && collectedImages.length < 10) {
+          setStatus(`Desktop Screenshot: ${page.name}...`);
+          try {
+            const result = await captureScreenshot({
+              url: fullUrl,
+              dimension: '1920x1080',
+              fullPage: false, // Not full page for Gemini to keep file size manageable
+              delay: 5000,
+            });
+            if (result.success && result.image) {
+              const base64Data = result.image.split(',')[1];
+              const byteCharacters = atob(base64Data);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let j = 0; j < byteCharacters.length; j++) {
+                byteNumbers[j] = byteCharacters.charCodeAt(j);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              collectedImages.push({ 
+                name: `${String(collectedImages.length + 1).padStart(2, '0')}_${page.name}_desktop.png`, 
+                data: byteArray 
+              });
+              combinedTextContent += `📷 Desktop Screenshot: Siehe Bild ${collectedImages.length}\n`;
+            }
+          } catch (e) {
+            console.error('Desktop screenshot failed:', e);
+          }
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
+        }
+
+        // Mobile screenshot (only if under 10 total)
+        if (packageOptions.mobileScreenshots && collectedImages.length < 10) {
+          setStatus(`Mobile Screenshot: ${page.name}...`);
+          try {
+            const result = await captureScreenshot({
+              url: fullUrl,
+              dimension: '393x852',
+              fullPage: false,
+              delay: 5000,
+            });
+            if (result.success && result.image) {
+              const base64Data = result.image.split(',')[1];
+              const byteCharacters = atob(base64Data);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let j = 0; j < byteCharacters.length; j++) {
+                byteNumbers[j] = byteCharacters.charCodeAt(j);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              collectedImages.push({ 
+                name: `${String(collectedImages.length + 1).padStart(2, '0')}_${page.name}_mobile.png`, 
+                data: byteArray 
+              });
+              combinedTextContent += `📱 Mobile Screenshot: Siehe Bild ${collectedImages.length}\n`;
+            }
+          } catch (e) {
+            console.error('Mobile screenshot failed:', e);
+          }
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
+        }
+
+        // Raw HTML - append to combined text (truncated for token limits)
+        if (packageOptions.rawHtml) {
+          setStatus(`Raw HTML abrufen: ${page.name}...`);
+          const rawHtml = await fetchHtmlContent(fullUrl);
+          if (rawHtml) {
+            // Truncate to ~5000 chars per page to stay under token limits
+            const truncatedHtml = rawHtml.length > 5000 
+              ? rawHtml.substring(0, 5000) + '\n... [gekürzt für Gemini Token-Limit]' 
+              : rawHtml;
+            combinedTextContent += `\n### Raw HTML (${page.name})\n\`\`\`html\n${truncatedHtml}\n\`\`\`\n\n`;
+          }
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
+        }
+
+        // Rendered HTML - append to combined text (truncated)
+        if (packageOptions.renderedHtml) {
+          setStatus(`Rendered HTML abrufen: ${page.name}...`);
+          const renderedHtml = await fetchRenderedHtml(fullUrl);
+          if (renderedHtml) {
+            const truncatedHtml = renderedHtml.length > 5000 
+              ? renderedHtml.substring(0, 5000) + '\n... [gekürzt für Gemini Token-Limit]' 
+              : renderedHtml;
+            combinedTextContent += `\n### Rendered HTML (${page.name})\n\`\`\`html\n${truncatedHtml}\n\`\`\`\n\n`;
+          }
+          currentStep++;
+          setProgress((currentStep / totalSteps) * 100);
+        }
+
+        combinedTextContent += `---\n\n`;
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+
+      // Add analysis prompts to combined text
+      if (packageOptions.prompts) {
+        setStatus('Füge Analyse-Prompts hinzu...');
+        combinedTextContent += `\n# 📝 Analyse-Anweisungen für Gemini\n\n`;
+        combinedTextContent += `Bitte analysiere die beigefügten Screenshots und den HTML-Code. Fokussiere auf:\n\n`;
+        combinedTextContent += `## 1. UX/UI Analyse\n- Visuelle Hierarchie und Layout\n- Mobile Responsiveness\n- Call-to-Action Effektivität\n- User Flow Optimierung\n\n`;
+        combinedTextContent += `## 2. SEO Analyse\n- Meta Tags und Struktur\n- Heading Hierarchie (H1-H6)\n- Internal Linking\n\n`;
+        combinedTextContent += `## 3. Conversion Optimierung\n- Form Design und Platzierung\n- Trust Signals\n- Value Proposition Klarheit\n- Friction Points\n\n`;
+        combinedTextContent += `## 4. Empfehlungen\n- Quick Wins (einfach umsetzbar)\n- Mittelfristige Verbesserungen\n- Strategische Empfehlungen\n\n`;
+        combinedTextContent += `Bitte gib spezifische, umsetzbare Empfehlungen mit Beispielen aus den Screenshots.\n`;
+        currentStep++;
+        setProgress((currentStep / totalSteps) * 100);
+      }
+
+      // Add all images to ZIP (max 10)
+      setStatus('Erstelle Gemini-optimiertes ZIP...');
+      for (const img of collectedImages) {
+        zip.file(img.name, img.data);
+      }
+      
+      // Add single combined text file
+      zip.file('KOMPLETT_ANALYSE.md', combinedTextContent);
+      
+      // Add Gemini-specific README
+      const geminiReadme = `# Gemini-Optimiertes Package
+
+## 📋 Gemini Upload-Limits
+- **Max. 10 Bilder** pro Prompt ✅
+- **Max. 32.000 Tokens** (Free) / 1 Mio Tokens (Advanced) ✅
+- Alle Texte in **einer Datei** kombiniert ✅
+
+## 📁 Inhalt
+- ${collectedImages.length} Screenshots (nummeriert)
+- KOMPLETT_ANALYSE.md (alle Infos + HTML + Prompts)
+
+## 🚀 So verwendest du es mit Gemini
+
+1. Öffne gemini.google.com
+2. Klicke auf "Dateien hinzufügen"
+3. Lade ALLE ${collectedImages.length + 1} Dateien aus diesem ZIP hoch:
+   - Alle .png Bilder
+   - KOMPLETT_ANALYSE.md
+4. Schreibe: "Analysiere diese Website basierend auf den Informationen in der Markdown-Datei"
+5. Erhalte detaillierte Analyse!
+
+## ⚡ Tipps für beste Ergebnisse
+- Gemini Advanced empfohlen für längere Analysen
+- Bei Timeout: Frage in mehreren Schritten
+- Bilder werden automatisch analysiert
+`;
+      zip.file('README_GEMINI.md', geminiReadme);
+
+      currentStep++;
+      setProgress(100);
+
+      const content = await zip.generateAsync({ type: 'blob' });
+      saveAs(content, `${config.projectName.toLowerCase().replace(/\s+/g, '-')}-gemini-package-${new Date().toISOString().split('T')[0]}.zip`);
+
+      setStatus('Fertig!');
+      toast.success(`Gemini-Package erstellt! ${collectedImages.length} Bilder + 1 kombinierte Textdatei`);
+    } catch (error) {
+      console.error('Gemini package generation failed:', error);
+      toast.error('Fehler beim Erstellen des Gemini-Packages');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const generateReadme = () => {
     const selectedItems: string[] = [];
     if (packageOptions.desktopScreenshots || packageOptions.mobileScreenshots) {
@@ -2822,25 +3044,50 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                     </div>
                   )}
                   
-                  <Button 
-                    onClick={generatePackage} 
-                    disabled={isGenerating || !Object.values(packageOptions).some(v => v)}
-                    className="w-full"
-                    size="lg"
-                    variant="outline"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Generiere...
-                      </>
-                    ) : (
-                      <>
-                        <Package className="h-4 w-4 mr-2" />
-                        Package erstellen
-                      </>
-                    )}
-                  </Button>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button 
+                      onClick={generatePackage} 
+                      disabled={isGenerating || !Object.values(packageOptions).some(v => v)}
+                      className="w-full"
+                      size="lg"
+                      variant="outline"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Generiere...
+                        </>
+                      ) : (
+                        <>
+                          <Package className="h-4 w-4 mr-2" />
+                          Standard ZIP
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button 
+                      onClick={generateGeminiPackage} 
+                      disabled={isGenerating || !Object.values(packageOptions).some(v => v)}
+                      className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                      size="lg"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Generiere...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Für Gemini
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  
+                  <p className="text-xs text-muted-foreground text-center">
+                    💡 Gemini-Package: Max. 10 Bilder + alle Texte in 1 Datei kombiniert
+                  </p>
                 </CardContent>
               </Card>
             </div>
