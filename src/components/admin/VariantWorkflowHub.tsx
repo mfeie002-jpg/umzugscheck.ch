@@ -568,24 +568,24 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Link to={`/umzugsofferten?variant=${variant.key}`} target="_blank">
-                          <Button size="sm" variant="outline">
+                        <Button asChild size="sm" variant="outline">
+                          <Link to={`/umzugsofferten?variant=${variant.key}`} target="_blank" rel="noopener noreferrer">
                             <Eye className="h-3 w-3 mr-1" />
                             Live
-                          </Button>
-                        </Link>
-                        <Link to={`/flow-tester?variant=${variant.key}`}>
-                          <Button size="sm" variant="outline">
+                          </Link>
+                        </Button>
+                        <Button asChild size="sm" variant="outline">
+                          <Link to={`/flow-tester?variant=${variant.key}`}>
                             <Play className="h-3 w-3 mr-1" />
                             Tester
-                          </Button>
-                        </Link>
-                        <Link to="/admin/tools?tab=calculator-review">
-                          <Button size="sm" variant="default">
+                          </Link>
+                        </Button>
+                        <Button asChild size="sm" variant="default">
+                          <Link to={`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}>
                             <Camera className="h-3 w-3 mr-1" />
                             Screenshots
-                          </Button>
-                        </Link>
+                          </Link>
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -614,18 +614,18 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Link to={`/flow-tester?variant=v${getFlowNumber()}${entry.variant_label}`}>
-                        <Button size="sm" variant="outline">
+                      <Button asChild size="sm" variant="outline">
+                        <Link to={`/flow-tester?variant=v${getFlowNumber()}${entry.variant_label}`}>
                           <Eye className="h-3 w-3 mr-1" />
                           Testen
-                        </Button>
-                      </Link>
-                      <Link to="/admin/tools?tab=calculator-review">
-                        <Button size="sm" variant="default">
+                        </Link>
+                      </Button>
+                      <Button asChild size="sm" variant="default">
+                        <Link to={`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}>
                           <Camera className="h-3 w-3 mr-1" />
                           Screenshots
-                        </Button>
-                      </Link>
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -651,18 +651,18 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             <Separator />
 
             <div className="flex gap-2">
-              <Link to="/admin/tools?tab=calculator-review" className="flex-1">
-                <Button variant="outline" className="w-full gap-2">
+              <Button asChild variant="outline" className="w-full gap-2 flex-1">
+                <Link to={`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}>
                   <Camera className="h-4 w-4" />
                   Screenshot Tool
-                </Button>
-              </Link>
-              <Link to="/flow-tester" className="flex-1">
-                <Button variant="outline" className="w-full gap-2">
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full gap-2 flex-1">
+                <Link to="/flow-tester">
                   <Play className="h-4 w-4" />
                   Flow Tester
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               <Button onClick={() => setActiveStep(5)} className="flex-1">
                 Weiter zu Vergleich
                 <ArrowRight className="h-4 w-4 ml-2" />
