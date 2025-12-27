@@ -39,7 +39,8 @@ import {
   Monitor,
   Smartphone,
   FileJson,
-  Zap
+  Zap,
+  Database
 } from "lucide-react";
 
 interface StepMeta {
@@ -355,6 +356,19 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
   const [aiContext, setAiContext] = useState<AIContext | null>(null);
   const [isGeneratingContext, setIsGeneratingContext] = useState(false);
   
+  // Dynamic flow configs from database
+  const [dbFlowConfigs, setDbFlowConfigs] = useState<Array<{
+    id: string;
+    flow_id: string;
+    label: string;
+    path: string;
+    steps: FlowStepConfig[];
+    color: string;
+    description: string;
+    is_active: boolean;
+  }>>([]);
+  const [isSyncingFlows, setIsSyncingFlows] = useState(false);
+  
   // Loaded variant config state (for sub-variants)
   const [loadedVariantConfig, setLoadedVariantConfig] = useState<{
     id: string;
@@ -364,6 +378,44 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     description: string;
     component?: string;
   } | null>(null);
+
+  // Load dynamic flow configs from database
+  const syncFlowConfigs = async () => {
+    setIsSyncingFlows(true);
+    try {
+      const { data, error } = await supabase
+        .from('custom_flow_configs')
+        .select('*')
+        .eq('is_active', true)
+        .order('flow_id', { ascending: true });
+      
+      if (error) throw error;
+      
+      const configs = (data || []).map(row => ({
+        id: row.id,
+        flow_id: row.flow_id,
+        label: row.label,
+        path: row.path,
+        steps: Array.isArray(row.steps) ? (row.steps as unknown as FlowStepConfig[]) : [],
+        color: row.color,
+        description: row.description || '',
+        is_active: row.is_active,
+      }));
+      
+      setDbFlowConfigs(configs);
+      toast.success(`${configs.length} dynamische Flow-Configs geladen`);
+    } catch (error) {
+      console.error('Failed to sync flow configs:', error);
+      toast.error('Fehler beim Laden der Flow-Configs');
+    } finally {
+      setIsSyncingFlows(false);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    syncFlowConfigs();
+  }, []);
 
   // Schnellauswahl preset URLs
   const PRESET_URLS = [
@@ -411,9 +463,9 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     setDiscoveredPages(prev => prev.filter(u => u !== url));
   };
 
-  // Build calculator options from FLOW_CONFIGS + SUB_VARIANT_CONFIGS + VARIANT_REGISTRY
+  // Build calculator options from FLOW_CONFIGS + SUB_VARIANT_CONFIGS + VARIANT_REGISTRY + DB
   const buildCalculatorOptions = () => {
-    const options: { value: string; label: string; path: string; isSubVariant?: boolean; component?: string; group?: string }[] = [];
+    const options: { value: string; label: string; path: string; isSubVariant?: boolean; component?: string; group?: string; isDatabase?: boolean }[] = [];
     
     // Main flows from FLOW_CONFIGS
     Object.values(FLOW_CONFIGS).forEach(config => {
@@ -439,6 +491,22 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
       });
     });
     
+    // Dynamic flows from database (custom_flow_configs)
+    dbFlowConfigs.forEach(config => {
+      // Avoid duplicates with static configs
+      const existsInStatic = options.some(o => o.value === config.flow_id);
+      if (!existsInStatic) {
+        options.push({
+          value: config.flow_id,
+          label: `${config.label} (DB)`,
+          path: config.path,
+          isSubVariant: true,
+          group: 'database',
+          isDatabase: true,
+        });
+      }
+    });
+    
     // Other calculators
     options.push(
       { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner", group: 'other' },
@@ -452,6 +520,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
   const calculatorOptions = buildCalculatorOptions();
   const mainFlowOptions = calculatorOptions.filter(o => o.group === 'main');
   const subVariantOptions = calculatorOptions.filter(o => o.group === 'sub');
+  const databaseFlowOptions = calculatorOptions.filter(o => o.group === 'database');
   const otherCalculatorOptions = calculatorOptions.filter(o => o.group === 'other');
 
   // Only main flow variants (V1-V9) for bulk export
@@ -2086,36 +2155,67 @@ ${JSON.stringify(step.meta || {}, null, 2)}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="text-sm font-medium mb-2 block">Calculator</label>
-              <Select value={selectedCalculator} onValueChange={setSelectedCalculator}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="max-h-[400px]">
-                  {/* Main Flows */}
-                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Haupt-Flows (V1-V9)</div>
-                  {mainFlowOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                  
-                  {/* Sub-Variants */}
-                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Sub-Varianten (Coded)</div>
-                  {subVariantOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                  
-                  {/* Other Calculators */}
-                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Andere Rechner</div>
-                  {otherCalculatorOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex gap-2">
+                <Select value={selectedCalculator} onValueChange={setSelectedCalculator}>
+                  <SelectTrigger className="flex-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[400px]">
+                    {/* Main Flows */}
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Haupt-Flows (V1-V9)</div>
+                    {mainFlowOptions.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                    
+                    {/* Sub-Variants */}
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Sub-Varianten (Coded)</div>
+                    {subVariantOptions.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                    
+                    {/* Database Flows */}
+                    {databaseFlowOptions.length > 0 && (
+                      <>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2 flex items-center gap-1">
+                          <Database className="h-3 w-3" />
+                          Dynamische Varianten (DB)
+                        </div>
+                        {databaseFlowOptions.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </>
+                    )}
+                    
+                    {/* Other Calculators */}
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Andere Rechner</div>
+                    {otherCalculatorOptions.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={syncFlowConfigs}
+                  disabled={isSyncingFlows}
+                  title="Flow-Configs aus Datenbank synchronisieren"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isSyncingFlows ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+              {databaseFlowOptions.length > 0 && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {databaseFlowOptions.length} dynamische Varianten aus DB geladen
+                </p>
+              )}
             </div>
 
             <div className="flex-1">
