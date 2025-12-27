@@ -309,7 +309,11 @@ interface FormData {
   submitOption: "direct" | "publish" | "both";
 }
 
-export const MultiStepCalculator = memo(function MultiStepCalculator() {
+interface MultiStepCalculatorProps {
+  initialStep?: number;
+}
+
+export const MultiStepCalculator = memo(function MultiStepCalculator({ initialStep }: MultiStepCalculatorProps) {
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -320,6 +324,10 @@ export const MultiStepCalculator = memo(function MultiStepCalculator() {
     // If in capture mode with a specific step, start at that step
     if (captureParams.enabled && captureParams.step) {
       return captureParams.step;
+    }
+    // Use initialStep prop if provided
+    if (initialStep !== undefined && initialStep >= 1) {
+      return initialStep;
     }
     return 1;
   });
