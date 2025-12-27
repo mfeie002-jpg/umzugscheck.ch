@@ -21,6 +21,7 @@ import {
   Globe, RefreshCw
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FlowAutomationCenter } from "@/components/admin/FlowAutomationCenter";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
@@ -501,7 +502,7 @@ const AdminTools = () => {
   const urlFlow = searchParams.get('flow');
   
   // Wizard state
-  const [activeTab, setActiveTab] = useState(urlTab || 'ai-feedback');
+  const [activeTab, setActiveTab] = useState(urlTab || 'flow-automation');
   const [showAllTools, setShowAllTools] = useState(!!urlTab); // Show tools if tab is specified in URL
   
   // Sync tab from URL when it changes and scroll to tabs
@@ -529,6 +530,7 @@ const AdminTools = () => {
     setShowAllTools(true);
     // Map tool IDs to tabs
     const tabMap: Record<string, string> = {
+      'flow-automation': 'flow-automation',
       'mega-export': 'ai-feedback',
       '1-click-ai': 'ai-feedback',
       'manual-package': 'ai-feedback',
@@ -537,7 +539,7 @@ const AdminTools = () => {
       'prompt-generator': 'ai-feedback',
       'url-discovery': 'ai-feedback'
     };
-    setActiveTab(tabMap[toolId] || 'ai-feedback');
+    setActiveTab(tabMap[toolId] || 'flow-automation');
   };
   useEffect(() => {
     const loadStats = async () => {
@@ -2456,7 +2458,11 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
         {/* Tools Tabs */}
         <div id="tools-tabs-section">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
+            <TabsTrigger value="flow-automation" className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Flow Automation
+            </TabsTrigger>
             <TabsTrigger value="ai-feedback" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               AI Package
@@ -2482,6 +2488,11 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               Monitoring
             </TabsTrigger>
           </TabsList>
+
+          {/* Flow Automation Tab - NEW */}
+          <TabsContent value="flow-automation">
+            <FlowAutomationCenter />
+          </TabsContent>
 
           {/* AI Feedback Package Tab */}
           <TabsContent value="ai-feedback">
