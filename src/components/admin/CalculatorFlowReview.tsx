@@ -542,13 +542,14 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     // Sub-variants from SUB_VARIANT_CONFIGS (coded components)
     Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
       const registryEntry = VARIANT_REGISTRY[id];
+      const isFeatured = id === "v9a"; // keep the dropdown clean, but expose the implemented V9.a
       options.push({
         value: id,
-        label: `${config.label} (coded)`,
+        label: isFeatured ? config.label : `${config.label} (coded)`,
         path: config.path,
         isSubVariant: true,
         component: registryEntry?.component,
-        group: 'sub',
+        group: isFeatured ? 'main' : 'sub',
       });
     });
     
