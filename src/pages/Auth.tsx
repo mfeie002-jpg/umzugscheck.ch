@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { Mail, Lock, User, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Mail, Lock, User, ArrowRight, Shield } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Bitte gültige E-Mail-Adresse eingeben").max(255),
@@ -29,9 +30,13 @@ const signupSchema = z.object({
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { user, signIn, signUp } = useAuth();
+  const { user, signIn, signUp, isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Check if redirected from admin login
+  const isAdminLogin = searchParams.get("admin") === "true";
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -51,13 +56,17 @@ const Auth = () => {
     },
   });
 
+  // Redirect logged-in users appropriately
   if (user) {
+    if (isAdmin) {
+      return <Navigate to="/admin" replace />;
+    }
     return <Navigate to="/" replace />;
   }
 
   const onLogin = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
-    const { error } = await signIn(values.email, values.password);
+    const { error, data } = await signIn(values.email, values.password);
 
     if (error) {
       toast({
@@ -67,12 +76,38 @@ const Auth = () => {
           : error.message,
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Erfolgreich angemeldet!",
-        description: "Willkommen zurück",
+      setIsLoading(false);
+      return;
+    }
+    
+    // Check if user has admin role
+    if (data?.user) {
+      const { data: hasAdminRole } = await supabase.rpc("has_role", {
+        _user_id: data.user.id,
+        _role: "admin",
       });
-      navigate("/");
+      
+      if (hasAdminRole) {
+        toast({
+          title: "Admin Login erfolgreich!",
+          description: "Willkommen im Admin-Dashboard",
+        });
+        navigate("/admin");
+      } else if (isAdminLogin) {
+        // User tried admin login but doesn't have admin role
+        toast({
+          title: "Zugriff verweigert",
+          description: "Sie haben keine Admin-Berechtigung.",
+          variant: "destructive",
+        });
+        await supabase.auth.signOut();
+      } else {
+        toast({
+          title: "Erfolgreich angemeldet!",
+          description: "Willkommen zurück",
+        });
+        navigate("/");
+      }
     }
     setIsLoading(false);
   };
@@ -102,12 +137,20 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-light p-4">
       <Card className="w-full max-w-md shadow-strong">
         <CardHeader className="text-center">
-          <div className="w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-2xl">U</span>
+          <div className={`w-16 h-16 ${isAdminLogin ? 'bg-gradient-to-br from-primary to-primary-dark' : 'bg-gradient-hero'} rounded-full flex items-center justify-center mx-auto mb-4`}>
+            {isAdminLogin ? (
+              <Shield className="w-8 h-8 text-white" />
+            ) : (
+              <span className="text-white font-bold text-2xl">U</span>
+            )}
           </div>
-          <CardTitle className="text-2xl">Umzugscheck.ch</CardTitle>
+          <CardTitle className="text-2xl">
+            {isAdminLogin ? "Admin Login" : "Umzugscheck.ch"}
+          </CardTitle>
           <CardDescription>
-            Melden Sie sich an oder erstellen Sie ein Konto
+            {isAdminLogin 
+              ? "Zugang zum Admin-Dashboard" 
+              : "Melden Sie sich an oder erstellen Sie ein Konto"}
           </CardDescription>
         </CardHeader>
         <CardContent>
