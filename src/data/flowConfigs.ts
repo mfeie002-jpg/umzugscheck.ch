@@ -182,6 +182,22 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 5, name: 'Firmen & Kontakt', description: '3 Empfehlungen vorselektiert, Checkbox UI' },
     ],
   },
+  'v9c': {
+    id: 'v9c',
+    label: 'V9c Zero Friction Optimized',
+    path: '/umzugsofferten?variant=v9c',
+    color: 'bg-sky-600',
+    description: 'Alle 10 Empfehlungen: Tooltips, Funnel-Fokus, keine Vorauswahl, Filter/Sort, Trust-Badges',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'PLZ + Zimmer mit Tooltips' },
+      { step: 2, name: 'Details', description: 'Stockwerk/Lift mit Erklärungen' },
+      { step: 3, name: 'Services', description: 'Service-Level Karten' },
+      { step: 4, name: 'Extras & Datum', description: 'Keine Vorauswahl, Flex-Erklärung' },
+      { step: 5, name: 'Firmen', description: 'Filter & Sortierung, Trust-Info' },
+      { step: 6, name: 'Kontakt', description: 'Übersicht + Kontaktformular' },
+    ],
+  },
   'v9d': {
     id: 'v9d',
     label: 'V9d Main Gemini',
