@@ -8,13 +8,14 @@
  * - 4 Steps → 2 Steps (Umzugsdetails → Kontakt)
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Shield, CheckCircle2, Lock, MapPin, Calendar, User, Mail, Phone, ArrowLeft, Send } from 'lucide-react';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
 
 const STEPS = [
   { id: 1, title: 'Umzugsdetails' },
@@ -158,17 +159,34 @@ function Field({
 }
 
 export const V1aFeedbackBased: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
-    fromZip: '',
-    toZip: '',
-    moveDate: '',
-    name: '',
-    email: '',
-    phone: '',
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
+  
+  // Initialize step from capture mode or default to 1
+  const [currentStep, setCurrentStep] = useState(() => {
+    if (isCaptureMode && captureStep !== null && captureStep >= 1 && captureStep <= 2) {
+      return captureStep;
+    }
+    return 1;
   });
+  
+  // Initialize form data - use demo data in capture mode
+  const [formData, setFormData] = useState(() => ({
+    fromZip: isCaptureMode ? demoData.fromPostal : '',
+    toZip: isCaptureMode ? demoData.toPostal : '',
+    moveDate: isCaptureMode ? demoData.moveDate : '',
+    name: isCaptureMode ? demoData.name : '',
+    email: isCaptureMode ? demoData.email : '',
+    phone: isCaptureMode ? demoData.phone : '',
+  }));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Update step when capture params change
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null && captureStep >= 1 && captureStep <= 2) {
+      setCurrentStep(captureStep);
+    }
+  }, [isCaptureMode, captureStep]);
 
   const updateField = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));

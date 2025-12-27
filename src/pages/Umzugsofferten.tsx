@@ -55,11 +55,17 @@ import {
   V5cKeyboardNav,
   V5dLargeText,
   V5eReducedMotion,
+  V1aFeedbackBased,
+  V1bFeedbackBased,
+  V1cFeedbackBased,
 } from "@/components/calculator-variants";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useFlowVersion } from "@/hooks/useFlowVersion";
 
 const Umzugsofferten = () => {
+  const [searchParams] = useSearchParams();
+  const variantParam = searchParams.get('variant');
+  
   const { 
     parsed, 
     label, 
@@ -102,7 +108,16 @@ const Umzugsofferten = () => {
 
   // Render the appropriate calculator based on version
   const renderCalculator = () => {
-    // V2 Sub-variants (2a, 2b, 2c, 2d, 2e)
+    // Check ?variant= param first for feedback-based variants (v1a, v1b, v1c, etc.)
+    if (variantParam) {
+      const v = variantParam.toLowerCase();
+      if (v === 'v1a') return <V1aFeedbackBased />;
+      if (v === 'v1b') return <V1bFeedbackBased />;
+      if (v === 'v1c') return <V1cFeedbackBased />;
+      // v1d and v1e don't have separate components yet - fall through to default
+    }
+    
+    // V2 Sub-variants (2a, 2b, 2c, 2d, 2e) via ?v= param
     if (parsed.flowCode === '2a') return <V2aProgressEnhanced />;
     if (parsed.flowCode === '2b') return <V2bSimplifiedLabels />;
     if (parsed.flowCode === '2c') return <V2cTrustFocused />;
