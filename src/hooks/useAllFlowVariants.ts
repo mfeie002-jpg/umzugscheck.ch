@@ -153,9 +153,12 @@ export function useAllFlowVariants(selectedFlowFilter?: string) {
       
       // Only add if not already in static config (or update with DB info)
       if (!existsInStatic && variant.status === 'done') {
+        // Use a consistent ID format that matches what CalculatorFlowReview expects
+        const variantId = `v${parsed.flowNumber}${variantLetter}`;
+        
         allVariants.push({
-          id: `${variant.flow_id}-${variantLetter}`,
-          label: `V${parsed.flowNumber}.${variantLetter?.toUpperCase()} - ${variant.variant_name}`,
+          id: variantId,
+          label: `V${parsed.flowNumber}${variantLetter?.toUpperCase()} - ${variant.variant_name}`,
           path: urls.liveUrl,
           ...urls,
           color: 'bg-emerald-500',

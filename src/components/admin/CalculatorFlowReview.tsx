@@ -380,19 +380,29 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     component?: string;
   } | null>(null);
 
-  // Load dynamic flow configs from database
+  // Load dynamic flow configs from database (custom_flow_configs + flow_feedback_variants)
   const syncFlowConfigs = async () => {
     setIsSyncingFlows(true);
     try {
-      const { data, error } = await supabase
+      // Load from custom_flow_configs
+      const { data: customConfigs, error: customError } = await supabase
         .from('custom_flow_configs')
         .select('*')
         .eq('is_active', true)
         .order('flow_id', { ascending: true });
       
-      if (error) throw error;
+      if (customError) throw customError;
       
-      const configs = (data || []).map(row => ({
+      // Load from flow_feedback_variants (completed workflow variants)
+      const { data: workflowVariants, error: workflowError } = await supabase
+        .from('flow_feedback_variants')
+        .select('*')
+        .eq('status', 'done')
+        .order('created_at', { ascending: false });
+      
+      if (workflowError) throw workflowError;
+      
+      const configs = (customConfigs || []).map(row => ({
         id: row.id,
         flow_id: row.flow_id,
         label: row.label,
@@ -403,8 +413,34 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
         is_active: row.is_active,
       }));
       
-      setDbFlowConfigs(configs);
-      toast.success(`${configs.length} dynamische Flow-Configs geladen`);
+      // Add workflow variants (V9.A, V9.B, etc.) 
+      const workflowConfigs = (workflowVariants || []).map(row => {
+        // Parse flow_id to get flow number (e.g., "umzugsofferten-v9" -> 9)
+        const flowMatch = row.flow_id.match(/v(\d+)/i);
+        const flowNumber = flowMatch ? parseInt(flowMatch[1], 10) : 1;
+        const variantLetter = row.variant_label?.toLowerCase() || 'a';
+        const variantId = `v${flowNumber}${variantLetter}`;
+        
+        return {
+          id: row.id,
+          flow_id: variantId,
+          label: `V${flowNumber}${variantLetter.toUpperCase()} - ${row.variant_name}`,
+          path: `/umzugsofferten?variant=${variantId}`,
+          steps: [] as FlowStepConfig[], // Workflow variants inherit parent steps
+          color: 'bg-emerald-500',
+          description: row.variant_name || 'Workflow-created variant',
+          is_active: true,
+        };
+      });
+      
+      // Filter out workflow configs that already exist in static SUB_VARIANT_CONFIGS
+      const filteredWorkflowConfigs = workflowConfigs.filter(wc => 
+        !SUB_VARIANT_CONFIGS[wc.flow_id]
+      );
+      
+      setDbFlowConfigs([...configs, ...filteredWorkflowConfigs]);
+      const total = configs.length + filteredWorkflowConfigs.length;
+      toast.success(`${total} dynamische Flow-Configs geladen (${filteredWorkflowConfigs.length} Workflow-Varianten)`);
     } catch (error) {
       console.error('Failed to sync flow configs:', error);
       toast.error('Fehler beim Laden der Flow-Configs');
