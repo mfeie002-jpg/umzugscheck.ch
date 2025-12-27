@@ -776,8 +776,9 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
                 value={formData.moveType}
                 onChange={(v) => {
                   updateFormData("moveType", v);
-                  // Auto-advance to step 2 unless disabled (e.g., for baseline screenshots)
-                  if (!disableAutoAdvance) {
+                  // Auto-advance to step 2 unless disabled or in capture mode
+                  // Capture mode must stay at the step defined by uc_step URL param
+                  if (!disableAutoAdvance && !captureParams.enabled) {
                     setTimeout(() => setCurrentStep(2), 300);
                   }
                 }}
