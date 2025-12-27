@@ -129,12 +129,34 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
     return `v${cleaned}`;
   };
 
+  // Build alternative flow_id patterns to query
+  // E.g., for "umzugsofferten-v9" also include "v9a", "v9b", "V9.a", etc.
+  const getFlowIdPatterns = (baseFlowId: string): string[] => {
+    const patterns: string[] = [baseFlowId];
+    
+    // Extract major version number
+    const match = baseFlowId.match(/v(\d+)/i);
+    if (match) {
+      const majorVersion = match[1];
+      // Add patterns for sub-variants
+      const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+      letters.forEach(letter => {
+        patterns.push(`v${majorVersion}${letter}`);
+        patterns.push(`V${majorVersion}.${letter}`);
+      });
+    }
+    
+    return patterns;
+  };
+
   const fetchVersions = async () => {
     try {
+      const patterns = getFlowIdPatterns(flowId);
+      
       const { data, error } = await supabase
         .from('flow_versions')
         .select('*')
-        .eq('flow_id', flowId)
+        .in('flow_id', patterns)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
