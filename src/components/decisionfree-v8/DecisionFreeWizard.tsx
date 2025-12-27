@@ -15,7 +15,7 @@ import {
   CreditCard, Calendar, User, Mail, CheckCircle2, Gift,
   Eye, Video, Bot, Headphones
 } from 'lucide-react';
-import { CountUp } from '@/components/ui/count-up';
+import { CountUp } from '@/components/ui/animated-counter';
 import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 type Step = 'welcome' | 'scan' | 'proposal' | 'confirm' | 'dashboard' | 'moving-day';

@@ -138,16 +138,20 @@ src/pages/
 | Komponenten-Ordner | 40+ | 15-20 |
 | Lose Komponenten | 180+ | 30-50 |
 | index.css Zeilen | 1450 | ~650 ✅ |
+| Counter-Komponenten | 6 | 1 ✅ |
+| Rating-Komponenten | 4 | 1 ✅ |
 
 ---
 
 ## ⚡ Quick Wins (Sofort machbar)
 
 1. [x] Design System konsolidieren (index.css)
-2. [ ] Ungenutzte Imports in App.tsx entfernen
-3. [ ] Dead Routes aus Router entfernen
-4. [ ] Duplicate Keyframes entfernen ✅
-5. [ ] Gemini-Button hinzugefügt ✅
+2. [x] AnimatedCounter konsolidiert (6→1 Datei)
+3. [x] RatingStars konsolidiert (4→1 Datei)
+4. [ ] Ungenutzte Imports in App.tsx entfernen
+5. [ ] Dead Routes aus Router entfernen
+6. [x] Duplicate Keyframes entfernen
+7. [x] Gemini-Button hinzugefügt
 
 ---
 

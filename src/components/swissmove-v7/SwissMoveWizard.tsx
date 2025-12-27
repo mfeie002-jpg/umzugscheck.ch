@@ -13,7 +13,7 @@ import {
   MessageCircle, Phone, Mail, ArrowRight, Zap, Heart, Award,
   Navigation, Camera, Bell, FileText, Settings, HelpCircle
 } from 'lucide-react';
-import { CountUp } from '@/components/ui/count-up';
+import { CountUp } from '@/components/ui/animated-counter';
 import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 type Step = 'landing' | 'configure' | 'checkout' | 'dashboard' | 'tracking';

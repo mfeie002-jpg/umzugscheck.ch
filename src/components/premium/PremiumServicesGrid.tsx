@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BlurReveal } from "@/components/common/BlurReveal";
-import { NumberTicker } from "@/components/common/NumberTicker";
+import { NumberTicker } from "@/components/ui/animated-counter";
 import { GradientBorder } from "@/components/common/GradientBorder";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
