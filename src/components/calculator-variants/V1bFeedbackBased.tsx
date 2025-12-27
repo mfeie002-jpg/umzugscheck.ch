@@ -11,7 +11,7 @@
  * - Mobile-first responsive Design
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
 import { 
   Shield, CheckCircle2, Lock, MapPin, Calendar, User, Mail, Phone, 
   ArrowLeft, ArrowRight, Send, Home, Building2, Briefcase, Info,
@@ -856,22 +857,39 @@ function Step4Contact({
 // === Main Component ===
 
 export const V1bFeedbackBased: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
-    moveType: 'apartment',
-    apartmentSize: '',
-    fromZip: '',
-    toZip: '',
-    moveDate: '',
-    selectedServices: ['basic'],
-    selectedCompanies: ['1', '2', '3'],
-    name: '',
-    email: '',
-    phone: '',
-    privacyAccepted: false,
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
+  
+  // Initialize step from capture mode or default to 1
+  const [currentStep, setCurrentStep] = useState(() => {
+    if (isCaptureMode && captureStep !== null && captureStep >= 1 && captureStep <= 4) {
+      return captureStep;
+    }
+    return 1;
   });
+  
+  // Initialize form data - use demo data in capture mode
+  const [formData, setFormData] = useState(() => ({
+    moveType: 'apartment',
+    apartmentSize: isCaptureMode ? demoData.apartmentSize : '',
+    fromZip: isCaptureMode ? demoData.fromPostal : '',
+    toZip: isCaptureMode ? demoData.toPostal : '',
+    moveDate: isCaptureMode ? demoData.moveDate : '',
+    selectedServices: isCaptureMode ? ['basic', 'packing', 'cleaning'] : ['basic'],
+    selectedCompanies: ['1', '2', '3'],
+    name: isCaptureMode ? demoData.name : '',
+    email: isCaptureMode ? demoData.email : '',
+    phone: isCaptureMode ? demoData.phone : '',
+    privacyAccepted: isCaptureMode ? true : false,
+  }));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  // Update step when capture params change (for URL navigation)
+  useEffect(() => {
+    if (isCaptureMode && captureStep !== null && captureStep >= 1 && captureStep <= 4) {
+      setCurrentStep(captureStep);
+    }
+  }, [isCaptureMode, captureStep]);
 
   const updateField = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
