@@ -357,10 +357,10 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
   const [aiContext, setAiContext] = useState<AIContext | null>(null);
   const [isGeneratingContext, setIsGeneratingContext] = useState(false);
   
-  // Dynamic flow configs from database
   const [dbFlowConfigs, setDbFlowConfigs] = useState<Array<{
     id: string;
     flow_id: string;
+    originalFlowId?: string;
     label: string;
     path: string;
     steps: FlowStepConfig[];
@@ -587,11 +587,52 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
   // Only main flow variants (V1-V9) for bulk export
   const flowVariants = calculatorOptions.filter(c => c.value.startsWith('umzugsofferten') && !c.isSubVariant);
   
-  // Load variant config when a sub-variant is selected
+  // Load variant config when a sub-variant (or DB variant) is selected
   const loadVariantConfig = () => {
     const selected = calculatorOptions.find(c => c.value === selectedCalculator);
-    if (!selected?.isSubVariant) {
-      // Main flow - try FLOW_CONFIGS
+    if (!selected) {
+      toast.error("Calculator nicht gefunden");
+      setLoadedVariantConfig(null);
+      return;
+    }
+
+    // 1) Dynamic DB configs (custom_flow_configs + workflow variants)
+    const dbConfig = dbFlowConfigs.find(c => c.flow_id === selectedCalculator);
+    if (dbConfig) {
+      const stepsFromDb = Array.isArray(dbConfig.steps) ? dbConfig.steps : [];
+
+      // Workflow-Varianten haben aktuell keine eigenen Steps → erben vom Parent-Flow (z.B. umzugsofferten-v9)
+      const steps = stepsFromDb.length
+        ? stepsFromDb
+        : (() => {
+            const explicitParent = dbConfig.originalFlowId;
+            if (explicitParent && FLOW_CONFIGS[explicitParent]) return FLOW_CONFIGS[explicitParent].steps;
+
+            const match = dbConfig.flow_id.match(/^v(\d+)[a-z]$/i);
+            const flowNumber = match ? parseInt(match[1], 10) : 1;
+            const parentId = flowNumber === 1 ? 'umzugsofferten' : `umzugsofferten-v${flowNumber}`;
+            return FLOW_CONFIGS[parentId]?.steps || [];
+          })();
+
+      if (!steps.length) {
+        toast.error("Config gefunden, aber keine Steps vorhanden");
+        setLoadedVariantConfig(null);
+        return;
+      }
+
+      setLoadedVariantConfig({
+        id: dbConfig.flow_id,
+        label: dbConfig.label,
+        path: dbConfig.path,
+        steps,
+        description: dbConfig.description,
+      });
+      toast.success(`${dbConfig.label} Config geladen (${steps.length} Steps)`);
+      return;
+    }
+
+    // 2) Main flow - try FLOW_CONFIGS
+    if (!selected.isSubVariant) {
       const mainConfig = FLOW_CONFIGS[selectedCalculator];
       if (mainConfig) {
         setLoadedVariantConfig({
@@ -608,11 +649,11 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
       }
       return;
     }
-    
-    // Sub-variant - load from SUB_VARIANT_CONFIGS
+
+    // 3) Sub-variant (coded) - load from SUB_VARIANT_CONFIGS
     const subConfig = SUB_VARIANT_CONFIGS[selectedCalculator];
     const registryEntry = VARIANT_REGISTRY[selectedCalculator];
-    
+
     if (subConfig) {
       setLoadedVariantConfig({
         id: subConfig.id,
