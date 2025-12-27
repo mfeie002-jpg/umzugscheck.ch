@@ -21,94 +21,50 @@ interface CaptureRequest {
   captureMobile?: boolean;
 }
 
-const SCREENSHOT_API_KEY = '5b91f9'; // ScreenshotMachine API key
-
 interface ScreenshotError {
   type: 'quota_exceeded' | 'api_error' | 'network_error';
   message: string;
 }
 
-async function captureScreenshot(url: string, dimension: string): Promise<{ data: string | null; error: ScreenshotError | null }> {
+async function captureViaBackend(
+  supabase: any,
+  url: string,
+  dimension: string
+): Promise<{ data: string | null; error: ScreenshotError | null }> {
   try {
-    const params = new URLSearchParams({
-      key: SCREENSHOT_API_KEY,
-      url: url,
-      dimension: dimension,
-      format: 'png',
-      delay: '10000',
-      cacheLimit: '0',
+    const { data, error } = await supabase.functions.invoke('capture-screenshot', {
+      body: {
+        url,
+        dimension,
+        format: 'png',
+        delay: 10000,
+        fullPage: false,
+        scroll: false,
+        noCache: true,
+        // capture-mode URLs rely on the in-app sentinel
+        waitForReadySentinel: true,
+      },
     });
 
-    const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
-    console.log(`Capturing screenshot: ${url} at ${dimension}`);
-    
-    const response = await fetch(apiUrl);
-    
-    // Check content type - if it's not an image, it's likely an error response
-    const contentType = response.headers.get('content-type') || '';
-    
-    if (!response.ok) {
-      console.error(`Screenshot API error: ${response.status}`);
-      
-      // Check for quota exceeded (402 Payment Required or similar)
-      if (response.status === 402 || response.status === 429) {
-        return { 
-          data: null, 
-          error: { 
-            type: 'quota_exceeded', 
-            message: 'Screenshot-Kontingent aufgebraucht. Bitte Plan upgraden oder auf nächste Abrechnungsperiode warten.' 
-          } 
-        };
-      }
-      
-      return { 
-        data: null, 
-        error: { type: 'api_error', message: `API Fehler: ${response.status}` } 
-      };
+    if (error) {
+      return { data: null, error: { type: 'api_error', message: error.message } };
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    
-    // Check if response is too small (likely an error page or empty response)
-    if (arrayBuffer.byteLength < 1000) {
-      const textResponse = new TextDecoder().decode(arrayBuffer);
-      console.error('Unexpected small response:', textResponse);
-      
-      // Check for quota/credit related error messages
-      if (textResponse.toLowerCase().includes('credit') || 
-          textResponse.toLowerCase().includes('quota') ||
-          textResponse.toLowerCase().includes('limit') ||
-          textResponse.toLowerCase().includes('exceeded')) {
-        return { 
-          data: null, 
-          error: { 
-            type: 'quota_exceeded', 
-            message: 'Screenshot-Kontingent aufgebraucht. Bitte Plan upgraden oder auf nächste Abrechnungsperiode warten.' 
-          } 
-        };
-      }
-      
-      return { 
-        data: null, 
-        error: { type: 'api_error', message: 'Ungültige API-Antwort erhalten' } 
-      };
+    if (!data || (data as any)?.error) {
+      const msg = (data as any)?.error || 'Unbekannter Screenshot-Fehler';
+      const lower = String(msg).toLowerCase();
+      const type: ScreenshotError['type'] =
+        lower.includes('quota') || lower.includes('credit') || lower.includes('limit') || lower.includes('402')
+          ? 'quota_exceeded'
+          : 'api_error';
+      return { data: null, error: { type, message: String(msg) } };
     }
 
-    const bytes = new Uint8Array(arrayBuffer);
-
-    // Detect actual image type (ScreenshotMachine sometimes returns GIF/JPG bytes)
-    const isPng = bytes.length >= 4 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
-    const isGif = bytes.length >= 4 && bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38;
-    const isJpg = bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
-
-    const mime = isPng ? 'image/png' : isGif ? 'image/gif' : isJpg ? 'image/jpeg' : 'application/octet-stream';
-    const base64 = btoa(String.fromCharCode(...bytes));
-    return { data: `data:${mime};base64,${base64}`, error: null };
-  } catch (error) {
-    console.error('Screenshot capture error:', error);
-    return { 
-      data: null, 
-      error: { type: 'network_error', message: error instanceof Error ? error.message : 'Netzwerkfehler' } 
+    return { data: (data as any).image ?? null, error: null };
+  } catch (e) {
+    return {
+      data: null,
+      error: { type: 'network_error', message: e instanceof Error ? e.message : 'Netzwerkfehler' },
     };
   }
 }
@@ -175,28 +131,28 @@ Deno.serve(async (req) => {
       // Capture desktop screenshot
       if (captureDesktop) {
         console.log(`Capturing desktop for step ${stepNum}`);
-        const result = await captureScreenshot(stepUrl, '1920x1080');
-        
-        if (result.error) {
-          console.error(`Screenshot error for step ${stepNum}:`, result.error);
-          
-          // If quota exceeded, fail the entire job with clear message
-          if (result.error.type === 'quota_exceeded') {
-            await supabase
-              .from('export_jobs')
-              .update({ 
-                status: 'failed',
-                error_message: result.error.message,
-                completed_at: new Date().toISOString()
-              })
-              .eq('id', jobId);
+        const result = await captureViaBackend(supabase, stepUrl, '1920x1080');
 
-            return new Response(
-              JSON.stringify({ success: false, error: result.error.message, errorType: 'quota_exceeded' }),
-              { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
-            );
-          }
-        } else if (result.data) {
+        if (result.error) {
+          console.error(`Screenshot error for step ${stepNum} (desktop):`, result.error);
+
+          await supabase
+            .from('export_jobs')
+            .update({
+              status: 'failed',
+              error_message: result.error.message,
+              completed_at: new Date().toISOString(),
+            })
+            .eq('id', jobId);
+
+          const status = result.error.type === 'quota_exceeded' ? 402 : 500;
+          return new Response(
+            JSON.stringify({ success: false, error: result.error.message, errorType: result.error.type }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status }
+          );
+        }
+
+        if (result.data) {
           screenshots[`step${stepNum}Desktop`] = result.data;
           console.log(`Desktop screenshot captured for step ${stepNum}`);
         }
@@ -205,27 +161,28 @@ Deno.serve(async (req) => {
       // Capture mobile screenshot
       if (captureMobile) {
         console.log(`Capturing mobile for step ${stepNum}`);
-        const result = await captureScreenshot(stepUrl, '375x812');
-        
-        if (result.error) {
-          console.error(`Screenshot error for step ${stepNum}:`, result.error);
-          
-          if (result.error.type === 'quota_exceeded') {
-            await supabase
-              .from('export_jobs')
-              .update({ 
-                status: 'failed',
-                error_message: result.error.message,
-                completed_at: new Date().toISOString()
-              })
-              .eq('id', jobId);
+        const result = await captureViaBackend(supabase, stepUrl, '390x844');
 
-            return new Response(
-              JSON.stringify({ success: false, error: result.error.message, errorType: 'quota_exceeded' }),
-              { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
-            );
-          }
-        } else if (result.data) {
+        if (result.error) {
+          console.error(`Screenshot error for step ${stepNum} (mobile):`, result.error);
+
+          await supabase
+            .from('export_jobs')
+            .update({
+              status: 'failed',
+              error_message: result.error.message,
+              completed_at: new Date().toISOString(),
+            })
+            .eq('id', jobId);
+
+          const status = result.error.type === 'quota_exceeded' ? 402 : 500;
+          return new Response(
+            JSON.stringify({ success: false, error: result.error.message, errorType: result.error.type }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status }
+          );
+        }
+
+        if (result.data) {
           screenshots[`step${stepNum}Mobile`] = result.data;
           console.log(`Mobile screenshot captured for step ${stepNum}`);
         }
