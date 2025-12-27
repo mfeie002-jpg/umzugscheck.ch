@@ -186,19 +186,40 @@ Wenn du etwas ausarbeitest:
 Handle immer so, als würdest du
 das Referenzprojekt deiner Karriere bauen.`;
 
-// Helper function to get step configs for current calculator (supports main flows + sub-variants)
-const getStepConfigsForCalculator = (calculatorValue: string) => {
+// Helper function to get step configs for current calculator (supports main flows + sub-variants + DB/workflow)
+const getStepConfigsForCalculator = (
+  calculatorValue: string,
+  dbConfigs?: Array<{ flow_id: string; originalFlowId?: string; steps: FlowStepConfig[] }>
+) => {
   // Check if it's a main flow variant
   if (FLOW_CONFIGS[calculatorValue]) {
     return FLOW_CONFIGS[calculatorValue].steps;
   }
+
   // Check if it's a sub-variant (v2a, v3a-feedback, etc.)
   const subVariantId = calculatorValue.toLowerCase().replace('-', '');
   if (SUB_VARIANT_CONFIGS[subVariantId]) {
     return SUB_VARIANT_CONFIGS[subVariantId].steps;
   }
+
+  // Check DB/workflow configs
+  if (dbConfigs?.length) {
+    const db = dbConfigs.find((c) => c.flow_id === calculatorValue);
+    if (db) {
+      if (Array.isArray(db.steps) && db.steps.length) return db.steps;
+
+      const explicitParent = db.originalFlowId;
+      if (explicitParent && FLOW_CONFIGS[explicitParent]) return FLOW_CONFIGS[explicitParent].steps;
+
+      const match = calculatorValue.match(/^v(\d+)[a-z]/i);
+      const flowNumber = match ? parseInt(match[1], 10) : 1;
+      const parentId = flowNumber === 1 ? 'umzugsofferten' : `umzugsofferten-v${flowNumber}`;
+      return FLOW_CONFIGS[parentId]?.steps || DEFAULT_STEP_CONFIGS;
+    }
+  }
+
   // Check other calculators
-  const otherCalc = OTHER_CALCULATORS.find(c => c.value === calculatorValue);
+  const otherCalc = OTHER_CALCULATORS.find((c) => c.value === calculatorValue);
   if (otherCalc) {
     return Array.from({ length: otherCalc.steps }, (_, i) => ({
       step: i + 1,
@@ -206,6 +227,7 @@ const getStepConfigsForCalculator = (calculatorValue: string) => {
       description: `Step ${i + 1} of ${otherCalc.label}`,
     }));
   }
+
   return DEFAULT_STEP_CONFIGS;
 };
 
@@ -215,9 +237,16 @@ const getDefaultPublicBaseUrl = (): string => {
   return SITE_CONFIG.url.replace(/\/$/, "");
 };
 
-// Helper to get uc_flow ID - now using centralized function
+// Helper to get uc_flow ID
+// - main flows: umzugsofferten-v9 → v9
+// - workflow aliases (e.g. v9a__wf__xxxx) → v9
 const getUcFlowIdForCalculator = (calculatorValue: string): string | null => {
-  return getUcFlowId(calculatorValue);
+  const direct = getUcFlowId(calculatorValue);
+  if (direct) return direct;
+
+  const cleaned = calculatorValue.split("__wf__")[0];
+  const match = cleaned.match(/^v(\d+)/i);
+  return match ? `v${match[1]}` : null;
 };
 const buildCaptureUrl = (baseUrl: string, flowPath: string, step: number, ucFlowId?: string | null) => {
   // uc_flow makes flow selection deterministic (prevents default-flow mismatch)
@@ -436,14 +465,15 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
           variantLetter = /[a-z]/.test(nameFirst) ? nameFirst : 'x';
         }
         
-        const variantId = `v${flowNumber}${variantLetter}`;
-        
+        const baseVariantId = `v${flowNumber}${variantLetter}`;
+        const workflowKey = `${baseVariantId}__wf__${String(row.id).slice(0, 8)}`;
+
         return {
           id: row.id,
-          flow_id: variantId,
+          flow_id: workflowKey,
           originalFlowId: row.flow_id, // Keep original for reference
-          label: `V${flowNumber}.${variantLetter.toUpperCase()} - ${row.variant_name}`,
-          path: `/umzugsofferten?variant=${variantId}`,
+          label: `V${flowNumber}.${variantLetter.toUpperCase()} - ${row.variant_name} (Workflow)`,
+          path: `/umzugsofferten?variant=${baseVariantId}`,
           steps: [] as FlowStepConfig[], // Workflow variants inherit parent steps
           color: 'bg-emerald-500',
           description: row.variant_name || 'Workflow-created variant',
@@ -451,13 +481,11 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
         };
       });
       
-      // Filter out workflow configs that already exist in static SUB_VARIANT_CONFIGS
-      // Also deduplicate by flow_id (keep first occurrence)
+      // Keep workflow variants even if a coded variant exists.
+      // We dedupe only by the computed flow_id (which is unique per workflow row).
       const seenFlowIds = new Set<string>();
-      const filteredWorkflowConfigs = workflowConfigs.filter(wc => {
-        if (SUB_VARIANT_CONFIGS[wc.flow_id] || seenFlowIds.has(wc.flow_id)) {
-          return false;
-        }
+      const filteredWorkflowConfigs = workflowConfigs.filter((wc) => {
+        if (seenFlowIds.has(wc.flow_id)) return false;
         seenFlowIds.add(wc.flow_id);
         return true;
       });
@@ -860,7 +888,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
     const ucFlowId = selectedCalc ? getUcFlowIdForCalculator(selectedCalc.value) : null;
-    const stepConfigs = getStepConfigsForCalculator(selectedCalculator);
+    const stepConfigs = getStepConfigsForCalculator(selectedCalculator, dbFlowConfigs);
     const steps: FlowStep[] = [];
     const totalOperations = stepConfigs.length * 3; // desktop + mobile + html per step
     let completedOps = 0;
@@ -971,7 +999,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     const selectedCalc = calculatorOptions.find(c => c.value === selectedCalculator);
     const calculatorPath = selectedCalc?.path || '/umzugsofferten';
     const ucFlowId = selectedCalc ? getUcFlowIdForCalculator(selectedCalc.value) : null;
-    const stepConfigs = getStepConfigsForCalculator(selectedCalculator);
+    const stepConfigs = getStepConfigsForCalculator(selectedCalculator, dbFlowConfigs);
     const mockSteps: FlowStep[] = stepConfigs.map(config => {
       const url = buildCaptureUrl(getDefaultPublicBaseUrl(), calculatorPath, config.step, ucFlowId);
       const html = getMockHtml(config.step);

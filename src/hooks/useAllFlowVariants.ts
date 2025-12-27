@@ -64,7 +64,8 @@ function generateVariantUrls(flowNumber: number, variantLetter?: string) {
     return {
       liveUrl: `/umzugsofferten?variant=${variantKey}`,
       testerUrl: `/flow-tester?variant=${variantKey}`,
-      screenshotUrl: `/admin/tools?tab=calculator-review&flow=umzugsofferten-v${flowNumber}`,
+      // IMPORTANT: open the screenshot tool with the variant preselected
+      screenshotUrl: `/admin/tools?tab=calculator-review&flow=${variantKey}`,
     };
   }
   
