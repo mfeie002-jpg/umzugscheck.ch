@@ -57,9 +57,10 @@ const Auth = () => {
   });
 
   // Redirect logged-in users appropriately
+  // IMPORTANT: Admin users should only be redirected to /admin when they explicitly came from the admin login.
   if (user) {
-    if (isAdmin) {
-      return <Navigate to="/admin" replace />;
+    if (isAdminLogin) {
+      return isAdmin ? <Navigate to="/admin" replace /> : <Navigate to="/" replace />;
     }
     return <Navigate to="/" replace />;
   }
@@ -86,22 +87,25 @@ const Auth = () => {
         _user_id: data.user.id,
         _role: "admin",
       });
-      
-      if (hasAdminRole) {
-        toast({
-          title: "Admin Login erfolgreich!",
-          description: "Willkommen im Admin-Dashboard",
-        });
-        navigate("/admin");
-      } else if (isAdminLogin) {
-        // User tried admin login but doesn't have admin role
-        toast({
-          title: "Zugriff verweigert",
-          description: "Sie haben keine Admin-Berechtigung.",
-          variant: "destructive",
-        });
-        await supabase.auth.signOut();
+
+      if (isAdminLogin) {
+        // User came from /admin/login, so enforce admin-only access
+        if (hasAdminRole) {
+          toast({
+            title: "Admin Login erfolgreich!",
+            description: "Willkommen im Admin-Dashboard",
+          });
+          navigate("/admin");
+        } else {
+          toast({
+            title: "Zugriff verweigert",
+            description: "Sie haben keine Admin-Berechtigung.",
+            variant: "destructive",
+          });
+          await supabase.auth.signOut();
+        }
       } else {
+        // Normal login always goes to the main site (even for admins)
         toast({
           title: "Erfolgreich angemeldet!",
           description: "Willkommen zurück",
