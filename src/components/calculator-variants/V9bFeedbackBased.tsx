@@ -1,17 +1,18 @@
 /**
- * V9b - Main Agent (Feedback-basiert)
+ * V9b - ChatGPT Pro Ext Flow
  * 
- * Basiert auf detailliertem Agent UX Feedback:
- * - 5 Schritte: Adressen → Details → Services → Extras/Datum → Firmen → Kontakt (inline)
- * - Progress-Indicator mit Beschriftungen
- * - Tooltips & Hilfetexte bei kritischen Feldern
- * - Kundenbewertungen & Zertifikate nahe CTAs
- * - Opt-out für vorausgewählte Extras (nichts vorausgewählt)
- * - Such-, Filter- und Sortierfunktionen bei Firmenliste
- * - Responsive Date-Picker
- * - Datensicherheit/Transparenz beim Video-Scan
- * - Fehler- und Validierungszustände sichtbar
- * - Funnel-Fokus: keine ablenkenden Elemente
+ * Basiert auf detailliertem ChatGPT UX-Feedback mit Top 10 Optimierungen:
+ * 
+ * 1. CH-konforme Zimmergrössen (2.5, 3.5, 4.5)
+ * 2. Funnel-Modus: Navigation minimiert im Flow
+ * 3. Video-Scan mit Privacy Trust Signals
+ * 4. Service-Pakete als Karten statt Slider
+ * 5. Sticky Price Bar auf Mobile
+ * 6. Vereinfachte Firmenauswahl mit 3 Empfehlungen
+ * 7. Preis-Konsistenz (Fixpreis durchgängig)
+ * 8. CH Datum/Locale mit Flexibilitäts-Explanation
+ * 9. Trust im Flow verstärkt
+ * 10. Mobile-optimiert mit grossen Touch-Targets
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -22,8 +23,6 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   ArrowRight, 
   ArrowLeft, 
@@ -37,122 +36,116 @@ import {
   MapPin,
   Calendar,
   Home,
-  Truck,
   Package,
   Sparkles,
-  Info,
-  CheckCircle,
+  CheckCircle2,
   Building,
-  Video,
   Lock,
   Trash2,
   Archive,
-  Wrench,
-  FileText,
-  Users,
-  ChevronDown,
+  Loader2,
   ChevronUp,
-  HelpCircle,
-  AlertCircle,
-  ArrowUpDown,
-  Filter,
+  Users,
   Award,
-  Zap
+  Video,
+  Info
 } from 'lucide-react';
 import { useInitialStep } from '@/hooks/use-initial-step';
 
+// 5 fokussierte Steps (ChatGPT Feedback: klare Step-Konsistenz)
 const STEPS = [
-  { id: 1, title: 'Adressen', shortTitle: 'Adressen', description: 'Von/Nach + Grösse' },
-  { id: 2, title: 'Details', shortTitle: 'Details', description: 'Stockwerk & Lift' },
-  { id: 3, title: 'Service-Level', shortTitle: 'Service', description: 'Paket wählen' },
-  { id: 4, title: 'Extras & Datum', shortTitle: 'Extras', description: 'Zusatzleistungen' },
-  { id: 5, title: 'Firmenauswahl', shortTitle: 'Firmen', description: 'Offerten anfordern' },
+  { id: 1, title: 'Adressen', shortTitle: 'Von/Nach' },
+  { id: 2, title: 'Details', shortTitle: 'Wohnung' },
+  { id: 3, title: 'Services', shortTitle: 'Paket' },
+  { id: 4, title: 'Extras & Datum', shortTitle: 'Extras' },
+  { id: 5, title: 'Firmen & Kontakt', shortTitle: 'Absenden' },
 ];
 
-// CH-konforme Zimmergrössen mit Tooltip
+// CH-konforme Zimmergrössen (Feedback #4)
 const ROOM_OPTIONS = [
-  { value: '1', label: '1 Zi.' },
-  { value: '1.5', label: '1.5 Zi.' },
-  { value: '2', label: '2 Zi.' },
-  { value: '2.5', label: '2.5 Zi.' },
-  { value: '3', label: '3 Zi.' },
-  { value: '3.5', label: '3.5 Zi.' },
-  { value: '4', label: '4 Zi.' },
-  { value: '4.5', label: '4.5 Zi.' },
-  { value: '5', label: '5 Zi.' },
-  { value: '5.5', label: '5.5 Zi.' },
-  { value: '6+', label: '6+ Zi.' },
+  { value: '1', label: '1' },
+  { value: '1.5', label: '1.5' },
+  { value: '2', label: '2' },
+  { value: '2.5', label: '2.5' },
+  { value: '3', label: '3' },
+  { value: '3.5', label: '3.5' },
+  { value: '4', label: '4' },
+  { value: '4.5', label: '4.5' },
+  { value: '5', label: '5' },
+  { value: '5.5', label: '5.5' },
+  { value: '6+', label: '6+' },
 ];
 
 const FLOOR_OPTIONS = [
-  { value: 'EG', label: 'EG / Parterre', tooltip: 'Erdgeschoss, kein Treppenaufwand' },
-  { value: '1', label: '1. OG', tooltip: '1 Stockwerk über Erdgeschoss' },
-  { value: '2', label: '2. OG', tooltip: '2 Stockwerke über Erdgeschoss' },
-  { value: '3', label: '3. OG', tooltip: '3 Stockwerke über Erdgeschoss' },
-  { value: '4', label: '4. OG', tooltip: '4 Stockwerke über Erdgeschoss' },
-  { value: '5+', label: '5+ OG', tooltip: '5 oder mehr Stockwerke' },
-  { value: 'DG', label: 'Dachgeschoss', tooltip: 'Unter dem Dach' },
+  { value: 'EG', label: 'Erdgeschoss' },
+  { value: '1', label: '1. Stock' },
+  { value: '2', label: '2. Stock' },
+  { value: '3', label: '3. Stock' },
+  { value: '4', label: '4. Stock' },
+  { value: '5+', label: '5+ Stock' },
 ];
 
-const LIFT_OPTIONS = [
-  { value: 'none', label: 'Kein Lift', price: '+15%' },
-  { value: 'normal', label: 'Personenlift', price: '±0' },
-  { value: 'cargo', label: 'Warenlift', price: '-5%' },
-];
-
-// Service-Pakete
+// Service-Pakete als Karten (Feedback #10 - Slider → Karten)
 const SERVICE_PACKAGES = [
   {
     id: 'basis',
     name: 'Basis',
-    description: 'Sie packen selbst, wir transportieren',
-    features: ['Transport', '2 Träger', 'Transportversicherung'],
-    priceMultiplier: 0.7,
+    description: 'Sie packen, wir transportieren',
+    features: ['Transport', '2 Zügelhelfer', 'Basisversicherung'],
+    priceDelta: '- CHF 450',
+    multiplier: 0.7,
   },
   {
     id: 'standard',
     name: 'Standard',
     tag: 'Beliebt',
-    description: 'Kompletter Umzug ohne Aufwand',
-    features: ['Transport', '3 Träger', 'Möbelmontage', 'Vollversicherung'],
-    priceMultiplier: 1.0,
+    description: 'Komplettes Zügeln ohne Stress',
+    features: ['Transport', '3 Zügelhelfer', 'Möbelmontage', 'Vollversicherung'],
+    priceDelta: 'Inklusiv',
+    multiplier: 1.0,
   },
   {
     id: 'komfort',
     name: 'Komfort',
     tag: 'Empfohlen',
-    description: 'Rundum-Sorglos inkl. Packservice',
-    features: ['Alles aus Standard', 'Ein- & Auspacken', 'Kartonmaterial', 'Nachbetreuung'],
-    priceMultiplier: 1.4,
+    description: 'Rundum-Sorglos mit Packservice',
+    features: ['Alles aus Standard', 'Ein- & Auspacken', 'Verpackungsmaterial', 'Nachbetreuung'],
+    priceDelta: '+ CHF 650',
+    multiplier: 1.35,
   },
 ];
 
-// Extras - KEINE vorausgewählt (gemäss Feedback)
+// Extras (Feedback: nichts vorauswählen, nur "Beliebt"-Tag)
 const EXTRAS = [
-  { id: 'packing', label: 'Ein- & Auspacken', price: 350, icon: Package, popular: true },
-  { id: 'cleaning', label: 'Endreinigung', price: 280, icon: Sparkles, popular: true },
-  { id: 'disposal', label: 'Entsorgung', price: 150, icon: Trash2, popular: false },
-  { id: 'storage', label: 'Zwischenlagerung', price: 200, icon: Archive, popular: false },
-  { id: 'assembly', label: 'Möbelmontage', price: 180, icon: Wrench, popular: false },
-  { id: 'admin', label: 'Admin-Paket', description: 'Ummeldungen, Post, etc.', price: 95, icon: FileText, popular: false },
+  { id: 'packing', label: 'Ein-/Auspacken', price: 320, popular: true },
+  { id: 'cleaning', label: 'Endreinigung', price: 380, popular: true },
+  { id: 'disposal', label: 'Entsorgung', price: 150 },
+  { id: 'storage', label: 'Zwischenlagerung', price: 200 },
+  { id: 'admin', label: 'Admin-Paket', price: 50 },
 ];
 
-// Mock companies mit mehr Daten für Sortierung/Filter
+// Mock Firmen (Feedback #6: 3 Empfehlungen vorselektiert)
 const COMPANIES = [
-  { id: '1', name: 'Züri Umzüge AG', rating: 4.9, reviews: 342, responseTime: 2, region: 'Zürich', verified: true, premium: true, expressService: true, price: 'fair' },
-  { id: '2', name: 'SwissMove GmbH', rating: 4.8, reviews: 218, responseTime: 4, region: 'Zürich', verified: true, premium: false, expressService: true, price: 'günstig' },
-  { id: '3', name: 'Blitz Transporte', rating: 4.7, reviews: 156, responseTime: 3, region: 'Aargau', verified: true, premium: false, expressService: true, price: 'günstig' },
-  { id: '4', name: 'Profi Umzug Schweiz', rating: 4.6, reviews: 89, responseTime: 6, region: 'Bern', verified: true, premium: false, expressService: false, price: 'premium' },
-  { id: '5', name: 'Express Möbeltransport', rating: 4.5, reviews: 67, responseTime: 8, region: 'Basel', verified: true, premium: false, expressService: true, price: 'fair' },
+  { id: '1', name: 'Züri Zügel AG', rating: 4.9, reviews: 342, responseTime: '< 2h', recommended: true, premium: true },
+  { id: '2', name: 'SwissMove GmbH', rating: 4.8, reviews: 218, responseTime: '< 4h', recommended: true },
+  { id: '3', name: 'Profi Transport', rating: 4.7, reviews: 156, responseTime: '< 3h', recommended: true },
+  { id: '4', name: 'Express Zügel', rating: 4.6, reviews: 89, responseTime: '< 6h' },
+  { id: '5', name: 'Blitz Umzüge', rating: 4.5, reviews: 67, responseTime: '< 8h' },
 ];
 
-// Fake customer reviews
-const CUSTOMER_REVIEWS = [
-  { name: 'M. Keller', location: 'Zürich', text: 'Schnell und zuverlässig!', rating: 5 },
-  { name: 'S. Brunner', location: 'Bern', text: 'Sehr professionell, gerne wieder.', rating: 5 },
-];
-
-type SortOption = 'recommended' | 'rating' | 'reviews' | 'response';
+// Schweizer PLZ Autocomplete
+const SWISS_CITIES: Record<string, string> = {
+  '8000': 'Zürich', '8001': 'Zürich', '8002': 'Zürich', '8003': 'Zürich',
+  '8004': 'Zürich', '8005': 'Zürich', '8006': 'Zürich', '8008': 'Zürich',
+  '8032': 'Zürich', '8037': 'Zürich', '8038': 'Zürich', '8041': 'Zürich',
+  '8044': 'Zürich', '8045': 'Zürich', '8046': 'Zürich', '8047': 'Zürich',
+  '8048': 'Zürich', '8049': 'Zürich', '8050': 'Zürich', '8400': 'Winterthur',
+  '3000': 'Bern', '3001': 'Bern', '3004': 'Bern', '3005': 'Bern',
+  '3006': 'Bern', '3007': 'Bern', '3008': 'Bern', '4000': 'Basel',
+  '4001': 'Basel', '4051': 'Basel', '4052': 'Basel', '1000': 'Lausanne',
+  '1200': 'Genève', '1201': 'Genève', '6000': 'Luzern', '9000': 'St. Gallen',
+  '5000': 'Aarau', '6300': 'Zug', '6330': 'Cham',
+};
 
 export const V9bFeedbackBased: React.FC = () => {
   const initialStep = useInitialStep(1);
@@ -163,135 +156,87 @@ export const V9bFeedbackBased: React.FC = () => {
   const [fromCity, setFromCity] = useState('');
   const [toZip, setToZip] = useState('');
   const [toCity, setToCity] = useState('');
-  const [rooms, setRooms] = useState('');
   
   // Step 2: Details
-  const [floor, setFloor] = useState('');
-  const [lift, setLift] = useState('');
-  const [videoScan, setVideoScan] = useState(false);
+  const [rooms, setRooms] = useState('3.5');
+  const [fromFloor, setFromFloor] = useState('');
+  const [toFloor, setToFloor] = useState('');
+  const [fromLift, setFromLift] = useState<boolean | null>(null);
+  const [toLift, setToLift] = useState<boolean | null>(null);
+  const [showVideoScan, setShowVideoScan] = useState(false);
   
-  // Step 3: Service
+  // Step 3: Services
   const [selectedPackage, setSelectedPackage] = useState('standard');
   
   // Step 4: Extras & Datum
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [moveDate, setMoveDate] = useState('');
   const [dateFlexible, setDateFlexible] = useState(false);
-  const [selectedExtras, setSelectedExtras] = useState<string[]>([]); // KEINE vorausgewählt
   
-  // Step 5: Firmen + Kontakt (kombiniert)
-  const [selectedCompanies, setSelectedCompanies] = useState<string[]>(['1', '2', '3']);
-  const [sortBy, setSortBy] = useState<SortOption>('recommended');
-  const [filterExpress, setFilterExpress] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
-  
-  // Kontakt
+  // Step 5: Firmen & Kontakt
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>(['1', '2', '3']); // Pre-selected recommendations
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [consent, setConsent] = useState(false);
   
-  // Validation states
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   
   const progress = (currentStep / STEPS.length) * 100;
-  
-  // Validation
-  const validateField = (field: string, value: string) => {
-    const newErrors = { ...errors };
-    
-    switch (field) {
-      case 'fromZip':
-      case 'toZip':
-        if (value && !/^\d{4}$/.test(value)) {
-          newErrors[field] = 'Bitte gültige PLZ eingeben (4 Ziffern)';
-        } else {
-          delete newErrors[field];
-        }
-        break;
-      case 'email':
-        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          newErrors[field] = 'Bitte gültige E-Mail eingeben';
-        } else {
-          delete newErrors[field];
-        }
-        break;
-      case 'name':
-        if (value && value.length < 2) {
-          newErrors[field] = 'Name zu kurz';
-        } else {
-          delete newErrors[field];
-        }
-        break;
-    }
-    
-    setErrors(newErrors);
-  };
 
-  const handleBlur = (field: string) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
-  };
+  // Auto-fill city from PLZ
+  useEffect(() => {
+    if (fromZip.length === 4 && SWISS_CITIES[fromZip]) {
+      setFromCity(SWISS_CITIES[fromZip]);
+    }
+  }, [fromZip]);
   
-  // Calculate price
+  useEffect(() => {
+    if (toZip.length === 4 && SWISS_CITIES[toZip]) {
+      setToCity(SWISS_CITIES[toZip]);
+    }
+  }, [toZip]);
+
+  // Conditional Lift
+  const showFromLift = fromFloor && fromFloor !== 'EG';
+  const showToLift = toFloor && toFloor !== 'EG';
+
+  // Calculate Fixpreis (konsistent durchgängig - Feedback #7)
   const basePrice = useMemo(() => {
     const roomValue = parseFloat(rooms) || 3;
-    const floorValue = floor === 'EG' ? 0 : floor === 'DG' ? 5 : parseInt(floor) || 2;
-    const liftBonus = lift === 'none' ? 1.15 : lift === 'cargo' ? 0.95 : 1;
-    
-    const base = 800 + (roomValue * 320) + (floorValue * 80);
-    return Math.round(base * liftBonus);
-  }, [rooms, floor, lift]);
-  
+    const floorCost = (parseInt(fromFloor) || 0) * 40 + (parseInt(toFloor) || 0) * 40;
+    const liftDiscount = (fromLift ? -50 : 0) + (toLift ? -50 : 0);
+    return Math.round(900 + (roomValue * 280) + floorCost + liftDiscount);
+  }, [rooms, fromFloor, toFloor, fromLift, toLift]);
+
   const packagePrice = useMemo(() => {
     const pkg = SERVICE_PACKAGES.find(p => p.id === selectedPackage);
-    return Math.round(basePrice * (pkg?.priceMultiplier || 1));
+    return Math.round(basePrice * (pkg?.multiplier || 1));
   }, [basePrice, selectedPackage]);
-  
-  const extrasTotal = useMemo(() => {
-    return selectedExtras.reduce((sum, id) => {
-      const extra = EXTRAS.find(e => e.id === id);
+
+  const extrasPrice = useMemo(() => {
+    return selectedExtras.reduce((sum, extraId) => {
+      const extra = EXTRAS.find(e => e.id === extraId);
       return sum + (extra?.price || 0);
     }, 0);
   }, [selectedExtras]);
-  
-  const totalPrice = packagePrice + extrasTotal;
-  const savedAmount = Math.round(totalPrice * 0.25);
 
-  // Sorted & filtered companies
-  const sortedCompanies = useMemo(() => {
-    let filtered = [...COMPANIES];
-    
-    if (filterExpress) {
-      filtered = filtered.filter(c => c.expressService);
-    }
-    
-    switch (sortBy) {
-      case 'rating':
-        return filtered.sort((a, b) => b.rating - a.rating);
-      case 'reviews':
-        return filtered.sort((a, b) => b.reviews - a.reviews);
-      case 'response':
-        return filtered.sort((a, b) => a.responseTime - b.responseTime);
-      default:
-        // Recommended: combination of rating, reviews, and premium
-        return filtered.sort((a, b) => {
-          const scoreA = a.rating * 10 + (a.premium ? 5 : 0) + (a.reviews / 50);
-          const scoreB = b.rating * 10 + (b.premium ? 5 : 0) + (b.reviews / 50);
-          return scoreB - scoreA;
-        });
-    }
-  }, [sortBy, filterExpress]);
+  const totalFixpreis = packagePrice + extrasPrice;
+  
+  // Savings calculation
+  const marketPrice = Math.round(totalFixpreis * 1.25);
+  const savings = marketPrice - totalFixpreis;
 
   const canProceed = () => {
     switch (currentStep) {
-      case 1: return fromZip.length === 4 && toZip.length === 4 && rooms && Object.keys(errors).length === 0;
-      case 2: return floor && lift;
+      case 1: return fromZip.length === 4 && toZip.length === 4;
+      case 2: return rooms && fromFloor && toFloor && 
+               (!showFromLift || fromLift !== null) && 
+               (!showToLift || toLift !== null);
       case 3: return selectedPackage;
-      case 4: return true;
-      case 5: return selectedCompanies.length >= 1 && (!showContactForm || (name && email && consent));
+      case 4: return true; // Extras & Datum optional
+      case 5: return selectedCompanies.length >= 1 && name && email && consent;
       default: return true;
     }
   };
@@ -304,11 +249,7 @@ export const V9bFeedbackBased: React.FC = () => {
 
   const handleBack = () => {
     if (currentStep > 1) {
-      if (showContactForm) {
-        setShowContactForm(false);
-      } else {
-        setCurrentStep(currentStep - 1);
-      }
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -329,7 +270,7 @@ export const V9bFeedbackBased: React.FC = () => {
   const toggleCompany = (id: string) => {
     setSelectedCompanies(prev => {
       if (prev.includes(id)) {
-        return prev.filter(c => c !== id);
+        return prev.length > 1 ? prev.filter(c => c !== id) : prev;
       } else if (prev.length < 5) {
         return [...prev, id];
       }
@@ -337,17 +278,21 @@ export const V9bFeedbackBased: React.FC = () => {
     });
   };
 
-  // Completion Screen
+  const acceptRecommendations = () => {
+    setSelectedCompanies(['1', '2', '3']);
+  };
+
+  // Success Screen
   if (isComplete) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-in zoom-in">
             <Check className="h-10 w-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Anfrage gesendet!</h1>
           <p className="text-muted-foreground mb-6">
-            Sie erhalten in Kürze Offerten von {selectedCompanies.length} geprüften Umzugsfirmen.
+            {selectedCompanies.length} geprüfte Zügelfirmen erhalten Ihre Anfrage.
           </p>
           
           <Card className="p-6 mb-6">
@@ -358,10 +303,10 @@ export const V9bFeedbackBased: React.FC = () => {
               </div>
               <div>
                 <div className="text-2xl font-bold">24h</div>
-                <div className="text-xs text-muted-foreground">Ø Antwortzeit</div>
+                <div className="text-xs text-muted-foreground">Antwortzeit</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-green-600">0 CHF</div>
+                <div className="text-2xl font-bold text-green-600">CHF 0</div>
                 <div className="text-xs text-muted-foreground">Für Sie</div>
               </div>
             </div>
@@ -374,11 +319,11 @@ export const V9bFeedbackBased: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Shield className="h-4 w-4 text-primary" />
-              <span>Ihre Daten werden nur an ausgewählte Firmen weitergegeben</span>
+              <span>Daten nur an ausgewählte Firmen</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <FileText className="h-4 w-4 text-primary" />
-              <span>Umzug-Checkliste per E-Mail zugestellt</span>
+              <Lock className="h-4 w-4 text-primary" />
+              <span>Keine Weitergabe an Dritte</span>
             </div>
           </div>
         </div>
@@ -387,908 +332,638 @@ export const V9bFeedbackBased: React.FC = () => {
   }
 
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-32 md:pb-24">
-        {/* Funnel Header - Minimiert, kein ablenkender Content */}
-        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-          <div className="max-w-2xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                {(currentStep > 1 || showContactForm) && (
-                  <Button variant="ghost" size="sm" onClick={handleBack} className="h-8 w-8 p-0">
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
-                )}
-                <span className="text-sm font-medium">
-                  Schritt {currentStep} von {STEPS.length}
-                </span>
-              </div>
-              <Badge variant="secondary" className="text-xs">
-                V9.b Agent
-              </Badge>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-36 md:pb-24">
+      {/* Minimaler Funnel Header (Feedback #2: Navigation minimieren) */}
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="max-w-xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              {currentStep > 1 && (
+                <Button variant="ghost" size="sm" onClick={handleBack} className="h-8 w-8 p-0">
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              )}
+              <span className="text-sm font-medium">
+                Schritt {currentStep} von {STEPS.length}
+              </span>
             </div>
-            <Progress value={progress} className="h-2" />
-            
-            {/* Step indicators mit Labels - Desktop */}
-            <div className="hidden sm:flex justify-between mt-3">
-              {STEPS.map((step) => (
-                <div
-                  key={step.id}
-                  className={`flex items-center gap-1.5 text-xs transition-colors ${
-                    step.id === currentStep
-                      ? 'text-primary font-medium'
-                      : step.id < currentStep
-                      ? 'text-primary/60'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${
-                    step.id < currentStep
-                      ? 'bg-primary text-primary-foreground'
-                      : step.id === currentStep
-                      ? 'bg-primary/20 text-primary border border-primary'
-                      : 'bg-muted'
-                  }`}>
-                    {step.id < currentStep ? <Check className="h-3 w-3" /> : step.id}
-                  </div>
-                  <div>
-                    <div className="font-medium">{step.shortTitle}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Mobile: Current step label */}
-            <div className="sm:hidden mt-2 text-center text-sm text-muted-foreground">
-              {STEPS[currentStep - 1]?.title} • {STEPS[currentStep - 1]?.description}
-            </div>
+            <Badge variant="secondary" className="text-xs">
+              V9.b ChatGPT
+            </Badge>
           </div>
+          <Progress value={progress} className="h-1.5" />
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="max-w-2xl mx-auto px-4 py-6">
-          
-          {/* Step 1: Adressen + Wohnungsgrösse */}
-          {currentStep === 1 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold mb-2">In 3 Minuten zur Umzugs-Offerte</h1>
-                <p className="text-muted-foreground">
-                  Kostenlos & unverbindlich • Keine Registrierung nötig
-                </p>
+      {/* Main Content */}
+      <div className="max-w-xl mx-auto px-4 py-6">
+        
+        {/* Step 1: Adressen (Feedback: PLZ mit Autocomplete) */}
+        {currentStep === 1 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold mb-2">In 3 Minuten zur Offerte</h1>
+              <p className="text-muted-foreground text-sm">
+                Von wo nach wo zügeln Sie?
+              </p>
+            </div>
+            
+            {/* Trust Badges Above the Fold (Feedback #9) */}
+            <div className="flex flex-wrap justify-center gap-3 text-xs text-muted-foreground mb-6">
+              <span className="flex items-center gap-1">
+                <Shield className="h-3 w-3 text-green-600" /> Geprüfte Firmen
+              </span>
+              <span className="flex items-center gap-1">
+                <Star className="h-3 w-3 text-yellow-500" /> 4.8/5 Bewertung
+              </span>
+              <span className="flex items-center gap-1">
+                <Users className="h-3 w-3" /> 12'000+ Umzüge
+              </span>
+            </div>
+            
+            {/* Von */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-sm font-medium">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    Von (Auszugsort)
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      placeholder="PLZ eingeben (z.B. 8001)"
+                      value={fromZip}
+                      onChange={(e) => setFromZip(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      className="text-lg h-12"
+                      maxLength={4}
+                    />
+                    {fromCity && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-green-600 flex items-center gap-1">
+                        <CheckCircle2 className="h-4 w-4" />
+                        {fromCity}
+                      </div>
+                    )}
+                  </div>
+                  {fromZip.length === 4 && !SWISS_CITIES[fromZip] && (
+                    <Input
+                      placeholder="Ort eingeben"
+                      value={fromCity}
+                      onChange={(e) => setFromCity(e.target.value)}
+                      className="mt-2"
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Nach */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-sm font-medium">
+                    <Home className="h-4 w-4 text-green-600" />
+                    Nach (Einzugsort)
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      placeholder="PLZ eingeben (z.B. 3000)"
+                      value={toZip}
+                      onChange={(e) => setToZip(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      className="text-lg h-12"
+                      maxLength={4}
+                    />
+                    {toCity && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-green-600 flex items-center gap-1">
+                        <CheckCircle2 className="h-4 w-4" />
+                        {toCity}
+                      </div>
+                    )}
+                  </div>
+                  {toZip.length === 4 && !SWISS_CITIES[toZip] && (
+                    <Input
+                      placeholder="Ort eingeben"
+                      value={toCity}
+                      onChange={(e) => setToCity(e.target.value)}
+                      className="mt-2"
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Route Summary */}
+            {fromCity && toCity && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <span className="font-medium">{fromCity}</span>
+                <ArrowRight className="h-4 w-4" />
+                <span className="font-medium">{toCity}</span>
               </div>
-              
-              {/* Customer Review Snippet - Trust */}
-              <div className="flex items-center justify-center gap-3 p-3 bg-muted/50 rounded-lg">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-primary/20 border-2 border-background flex items-center justify-center text-xs font-medium">
-                      {String.fromCharCode(64 + i)}
+            )}
+          </div>
+        )}
+
+        {/* Step 2: Details (Feedback: CH-Zimmer, Video-Scan Trust) */}
+        {currentStep === 2 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold mb-2">Ihre Wohnung</h1>
+              <p className="text-muted-foreground text-sm">
+                Wohnungsgrösse und Stockwerk
+              </p>
+            </div>
+            
+            {/* Optional: Video-Scan (Feedback #3: Privacy Trust) */}
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Video className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">Optional: 60-Sek.-Video</span>
+                      <Badge variant="outline" className="text-xs">Genauer</Badge>
                     </div>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Für noch genaueren Fixpreis. Video wird nur zur Berechnung genutzt und danach gelöscht.
+                    </p>
+                    {!showVideoScan ? (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setShowVideoScan(true)}
+                        className="text-xs"
+                      >
+                        Video-Scan starten
+                      </Button>
+                    ) : (
+                      <div className="flex items-center gap-2 text-green-600 text-sm">
+                        <CheckCircle2 className="h-4 w-4" />
+                        Video bereit
+                      </div>
+                    )}
+                  </div>
+                  <button 
+                    className="text-muted-foreground hover:text-foreground p-1"
+                    onClick={() => {}}
+                  >
+                    <Info className="h-4 w-4" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* CH-konforme Zimmergrösse (Feedback #4) */}
+            <Card>
+              <CardContent className="p-5">
+                <Label className="text-sm font-medium mb-3 block">
+                  Wohnungsgrösse (z.B. 3.5-Zimmer)
+                </Label>
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                  {ROOM_OPTIONS.map((room) => (
+                    <button
+                      key={room.value}
+                      onClick={() => setRooms(room.value)}
+                      className={`p-2.5 rounded-lg border-2 text-center text-sm font-medium transition-all ${
+                        rooms === room.value
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      {room.label}
+                    </button>
                   ))}
                 </div>
-                <div className="text-sm">
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                    ))}
-                    <span className="font-medium ml-1">4.8/5</span>
-                  </div>
-                  <div className="text-muted-foreground text-xs">12'847+ erfolgreiche Umzüge</div>
+              </CardContent>
+            </Card>
+            
+            {/* Stockwerk Von */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <Label className="text-sm font-medium">Stockwerk Auszug</Label>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {FLOOR_OPTIONS.map((floor) => (
+                    <button
+                      key={floor.value}
+                      onClick={() => setFromFloor(floor.value)}
+                      className={`p-2.5 rounded-lg border-2 text-center text-sm font-medium transition-all ${
+                        fromFloor === floor.value
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      {floor.value === 'EG' ? 'EG' : floor.value}
+                    </button>
+                  ))}
                 </div>
-              </div>
-              
-              {/* Addresses */}
-              <Card>
-                <CardContent className="p-5 space-y-4">
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-medium">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      Von (Auszugsort)
-                    </Label>
-                    <div className="flex gap-2">
-                      <div className="w-28">
-                        <Input
-                          placeholder="PLZ"
-                          value={fromZip}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, '').slice(0, 4);
-                            setFromZip(val);
-                            validateField('fromZip', val);
-                          }}
-                          onBlur={() => handleBlur('fromZip')}
-                          inputMode="numeric"
-                          maxLength={4}
-                          className={touched.fromZip && errors.fromZip ? 'border-destructive' : ''}
-                        />
-                        {touched.fromZip && errors.fromZip && (
-                          <p className="text-destructive text-xs mt-1 flex items-center gap-1">
-                            <AlertCircle className="h-3 w-3" />
-                            {errors.fromZip}
-                          </p>
-                        )}
-                      </div>
-                      <Input
-                        placeholder="Ort (optional)"
-                        value={fromCity}
-                        onChange={(e) => setFromCity(e.target.value)}
-                        className="flex-1"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-medium">
-                      <Home className="h-4 w-4 text-green-600" />
-                      Nach (Einzugsort)
-                    </Label>
-                    <div className="flex gap-2">
-                      <div className="w-28">
-                        <Input
-                          placeholder="PLZ"
-                          value={toZip}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, '').slice(0, 4);
-                            setToZip(val);
-                            validateField('toZip', val);
-                          }}
-                          onBlur={() => handleBlur('toZip')}
-                          inputMode="numeric"
-                          maxLength={4}
-                          className={touched.toZip && errors.toZip ? 'border-destructive' : ''}
-                        />
-                        {touched.toZip && errors.toZip && (
-                          <p className="text-destructive text-xs mt-1 flex items-center gap-1">
-                            <AlertCircle className="h-3 w-3" />
-                            {errors.toZip}
-                          </p>
-                        )}
-                      </div>
-                      <Input
-                        placeholder="Ort (optional)"
-                        value={toCity}
-                        onChange={(e) => setToCity(e.target.value)}
-                        className="flex-1"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* CH-konforme Zimmergrösse mit Tooltip */}
-              <Card>
-                <CardContent className="p-5">
-                  <Label className="flex items-center gap-2 text-sm font-medium mb-3">
-                    Wohnungsgrösse
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Schweizer Zimmerzählung: Küche/Bad nicht mitgezählt.</p>
-                        <p>Beispiel: 3.5 Zi. = 3 Zimmer + Wohnbereich</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                    {ROOM_OPTIONS.map((room) => (
+                
+                {showFromLift && (
+                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                    <Label className="text-sm">Lift vorhanden (Auszug)?</Label>
+                    <div className="grid grid-cols-2 gap-2">
                       <button
-                        key={room.value}
-                        onClick={() => setRooms(room.value)}
-                        className={`p-2.5 rounded-lg border-2 text-center text-sm font-medium transition-all ${
-                          rooms === room.value
+                        onClick={() => setFromLift(true)}
+                        className={`p-3 rounded-lg border-2 text-center font-medium transition-all ${
+                          fromLift === true
                             ? 'border-primary bg-primary/10 text-primary'
                             : 'border-border hover:border-primary/50'
                         }`}
                       >
-                        {room.label}
+                        <Building className="h-5 w-5 mx-auto mb-1" />
+                        Ja, Lift
                       </button>
-                    ))}
+                      <button
+                        onClick={() => setFromLift(false)}
+                        className={`p-3 rounded-lg border-2 text-center font-medium transition-all ${
+                          fromLift === false
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <ChevronUp className="h-5 w-5 mx-auto mb-1" />
+                        Kein Lift
+                      </button>
+                    </div>
                   </div>
-                  {!rooms && touched.rooms && (
-                    <p className="text-destructive text-xs mt-2 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" />
-                      Bitte Wohnungsgrösse wählen
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-              
-              {/* Sofort-Schätzung */}
-              {fromZip.length === 4 && toZip.length === 4 && rooms && (
-                <Card className="bg-primary/5 border-primary/20">
+                )}
+              </CardContent>
+            </Card>
+            
+            {/* Stockwerk Nach */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <Label className="text-sm font-medium">Stockwerk Einzug</Label>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {FLOOR_OPTIONS.map((floor) => (
+                    <button
+                      key={floor.value}
+                      onClick={() => setToFloor(floor.value)}
+                      className={`p-2.5 rounded-lg border-2 text-center text-sm font-medium transition-all ${
+                        toFloor === floor.value
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      {floor.value === 'EG' ? 'EG' : floor.value}
+                    </button>
+                  ))}
+                </div>
+                
+                {showToLift && (
+                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                    <Label className="text-sm">Lift vorhanden (Einzug)?</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setToLift(true)}
+                        className={`p-3 rounded-lg border-2 text-center font-medium transition-all ${
+                          toLift === true
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <Building className="h-5 w-5 mx-auto mb-1" />
+                        Ja, Lift
+                      </button>
+                      <button
+                        onClick={() => setToLift(false)}
+                        className={`p-3 rounded-lg border-2 text-center font-medium transition-all ${
+                          toLift === false
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <ChevronUp className="h-5 w-5 mx-auto mb-1" />
+                        Kein Lift
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Step 3: Services (Feedback #10: Paket-Karten statt Slider) */}
+        {currentStep === 3 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold mb-2">Wählen Sie Ihr Service-Level</h1>
+              <p className="text-muted-foreground text-sm">
+                Sie können später anpassen
+              </p>
+            </div>
+            
+            {/* Service-Pakete als Karten */}
+            <div className="space-y-3">
+              {SERVICE_PACKAGES.map((pkg) => (
+                <Card 
+                  key={pkg.id}
+                  className={`cursor-pointer transition-all ${
+                    selectedPackage === pkg.id 
+                      ? 'ring-2 ring-primary border-primary' 
+                      : 'hover:border-primary/50'
+                  }`}
+                  onClick={() => setSelectedPackage(pkg.id)}
+                >
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-start justify-between mb-2">
                       <div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          Live-Schätzung
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-lg">{pkg.name}</span>
+                          {pkg.tag && (
+                            <Badge variant={pkg.tag === 'Empfohlen' ? 'default' : 'secondary'} className="text-xs">
+                              {pkg.tag}
+                            </Badge>
+                          )}
                         </div>
-                        <div className="text-xl font-bold">
-                          CHF {basePrice.toLocaleString('de-CH')} – {Math.round(basePrice * 1.4).toLocaleString('de-CH')}
+                        <p className="text-sm text-muted-foreground">{pkg.description}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className={`text-sm font-medium ${
+                          pkg.priceDelta.includes('-') ? 'text-green-600' : 
+                          pkg.priceDelta.includes('+') ? 'text-amber-600' : 'text-muted-foreground'
+                        }`}>
+                          {pkg.priceDelta}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {pkg.features.map((feature, i) => (
+                        <span key={i} className="text-xs bg-muted px-2 py-1 rounded-md">
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                    {selectedPackage === pkg.id && (
+                      <div className="mt-3 pt-3 border-t flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Ihr Fixpreis:</span>
+                        <span className="font-bold text-lg">CHF {packagePrice.toLocaleString('de-CH')}</span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Extras & Datum (Feedback: nichts vorauswählen, Flex-Explanation) */}
+        {currentStep === 4 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold mb-2">Datum & Extras</h1>
+              <p className="text-muted-foreground text-sm">
+                Optional - Sie können alles anpassen
+              </p>
+            </div>
+            
+            {/* Datum (Feedback #8: CH Format + Flex Explanation) */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <Label className="flex items-center gap-2 text-sm font-medium">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  Wunschtermin
+                </Label>
+                
+                <Input
+                  type="date"
+                  value={moveDate}
+                  onChange={(e) => setMoveDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="h-12"
+                />
+                
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="flexible"
+                    checked={dateFlexible}
+                    onCheckedChange={(checked) => setDateFlexible(checked as boolean)}
+                  />
+                  <div>
+                    <label htmlFor="flexible" className="text-sm cursor-pointer font-medium">
+                      ±3 Tage flexibel
+                    </label>
+                    <p className="text-xs text-muted-foreground">
+                      Wir planen um Ihren Wunschtermin – günstiger bei freien Slots (bis 15% Ersparnis)
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Extras (Feedback: nichts vorauswählen, Beliebt-Tag) */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <Label className="text-sm font-medium">Zusatzleistungen (optional)</Label>
+                <div className="grid gap-2">
+                  {EXTRAS.map((extra) => (
+                    <button
+                      key={extra.id}
+                      onClick={() => toggleExtra(extra.id)}
+                      className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
+                        selectedExtras.includes(extra.id)
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Checkbox checked={selectedExtras.includes(extra.id)} />
+                        <span className="font-medium">{extra.label}</span>
+                        {extra.popular && (
+                          <Badge variant="secondary" className="text-xs">Beliebt</Badge>
+                        )}
+                      </div>
+                      <span className="text-sm text-muted-foreground">+ CHF {extra.price}</span>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Step 5: Firmen & Kontakt (Feedback #6: Empfehlungen vorselektiert, Checkbox UI) */}
+        {currentStep === 5 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold mb-2">Passende Umzugsfirmen</h1>
+              <p className="text-muted-foreground text-sm">
+                Wir empfehlen 3 Firmen (beste Passung). Sie können bis zu 5 wählen.
+              </p>
+            </div>
+            
+            {/* Quick Accept (Feedback: "Empfehlung übernehmen") */}
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={acceptRecommendations}
+            >
+              <Award className="h-4 w-4 mr-2" />
+              Empfehlung übernehmen (3 Firmen)
+            </Button>
+            
+            {/* Firmen-Liste mit Checkbox UI (Feedback: Checkbox statt Kreise) */}
+            <div className="space-y-2">
+              {COMPANIES.map((company) => (
+                <Card 
+                  key={company.id}
+                  className={`cursor-pointer transition-all ${
+                    selectedCompanies.includes(company.id)
+                      ? 'ring-2 ring-primary border-primary'
+                      : 'hover:border-primary/50'
+                  }`}
+                  onClick={() => toggleCompany(company.id)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <Checkbox checked={selectedCompanies.includes(company.id)} />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{company.name}</span>
+                          {company.recommended && (
+                            <Badge variant="secondary" className="text-xs">Empfohlen</Badge>
+                          )}
+                          {company.premium && (
+                            <Badge variant="default" className="text-xs">Premium</Badge>
+                          )}
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          Typischer Marktpreis für {rooms} Zimmer
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                          <span className="flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            {company.rating}
+                          </span>
+                          <span>{company.reviews} Bewertungen</span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {company.responseTime}
+                          </span>
                         </div>
                       </div>
-                      <Badge variant="secondary" className="text-green-600 bg-green-50">
-                        <Award className="h-3 w-3 mr-1" />
-                        Bis 25% sparen
-                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
-              )}
-              
-              {/* Trust signals - Zertifikate */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="flex flex-col items-center text-center p-3 bg-muted/30 rounded-lg">
-                  <Shield className="h-5 w-5 text-primary mb-1" />
-                  <span className="text-xs font-medium">Vollversichert</span>
-                </div>
-                <div className="flex flex-col items-center text-center p-3 bg-muted/30 rounded-lg">
-                  <Check className="h-5 w-5 text-green-600 mb-1" />
-                  <span className="text-xs font-medium">Geprüfte Firmen</span>
-                </div>
-                <div className="flex flex-col items-center text-center p-3 bg-muted/30 rounded-lg">
-                  <Clock className="h-5 w-5 text-primary mb-1" />
-                  <span className="text-xs font-medium">Antwort in 24h</span>
-                </div>
-              </div>
+              ))}
             </div>
-          )}
-
-          {/* Step 2: Details (Stockwerk, Lift, Video-Scan) */}
-          {currentStep === 2 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold mb-2">Noch ein paar Details</h1>
-                <p className="text-muted-foreground">
-                  Für eine genauere Preisberechnung
-                </p>
-              </div>
-              
-              {/* Video-Scan Option mit Datenschutz-Info */}
-              <Card className={`border-2 ${videoScan ? 'border-primary bg-primary/5' : 'border-dashed'}`}>
-                <CardContent className="p-5">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Video className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">KI Video-Scan</span>
-                        <Badge variant="outline" className="text-xs">Optional</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Filmen Sie Ihre Wohnung in 60 Sekunden für einen exakten Fixpreis.
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3 p-2 bg-muted/50 rounded">
-                        <Lock className="h-3 w-3 flex-shrink-0" />
-                        <span>Ihre Aufnahmen werden <strong>nur zur Preisberechnung</strong> genutzt und <strong>sofort gelöscht</strong>. Keine Speicherung.</span>
-                      </div>
-                      <Button 
-                        variant={videoScan ? "default" : "outline"} 
-                        size="sm"
-                        onClick={() => setVideoScan(!videoScan)}
-                      >
-                        {videoScan ? (
-                          <>
-                            <Check className="h-4 w-4 mr-1" />
-                            Aktiviert
-                          </>
-                        ) : (
-                          'Video-Scan aktivieren'
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Stockwerk mit Tooltips */}
-              <Card>
-                <CardContent className="p-5">
-                  <Label className="flex items-center gap-2 text-sm font-medium mb-3">
-                    In welchem Stockwerk wohnen Sie?
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>EG = Erdgeschoss/Parterre (keine Treppen)</p>
-                        <p>OG = Obergeschoss</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                    {FLOOR_OPTIONS.map((f) => (
-                      <Tooltip key={f.value}>
-                        <TooltipTrigger asChild>
-                          <button
-                            onClick={() => setFloor(f.value)}
-                            className={`p-2.5 rounded-lg border-2 text-center text-sm font-medium transition-all ${
-                              floor === f.value
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border hover:border-primary/50'
-                            }`}
-                          >
-                            {f.label}
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{f.tooltip}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Lift mit Preisindikator */}
-              <Card>
-                <CardContent className="p-5">
-                  <Label className="text-sm font-medium mb-3 block">
-                    Lift vorhanden?
-                  </Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {LIFT_OPTIONS.map((l) => (
-                      <button
-                        key={l.value}
-                        onClick={() => setLift(l.value)}
-                        className={`p-3 rounded-lg border-2 text-center transition-all ${
-                          lift === l.value
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:border-primary/50'
-                        }`}
-                      >
-                        <div className="text-sm font-medium">{l.label}</div>
-                        <div className="text-xs text-muted-foreground">{l.price}</div>
-                      </button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Price Update */}
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-xs text-muted-foreground">Geschätzter Fixpreis</div>
-                      <div className="text-xl font-bold">CHF {packagePrice.toLocaleString('de-CH')}</div>
-                    </div>
-                    <Badge variant="secondary" className="text-green-600 bg-green-50">
-                      CHF {savedAmount} gespart
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
+            
+            <div className="text-center text-sm text-muted-foreground">
+              {selectedCompanies.length} von 5 Firmen ausgewählt
             </div>
-          )}
-
-          {/* Step 3: Services (Paket-Karten) */}
-          {currentStep === 3 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold mb-2">Wählen Sie Ihr Service-Level</h1>
-                <p className="text-muted-foreground">
-                  Sie können später anpassen
-                </p>
-              </div>
-              
-              {/* Service Packages als Karten */}
-              <div className="space-y-3">
-                {SERVICE_PACKAGES.map((pkg) => {
-                  const pkgPrice = Math.round(basePrice * pkg.priceMultiplier);
-                  const isSelected = selectedPackage === pkg.id;
-                  const priceDiff = pkgPrice - Math.round(basePrice * 1.0); // Diff to Standard
-                  
-                  return (
-                    <Card 
-                      key={pkg.id}
-                      className={`cursor-pointer transition-all ${
-                        isSelected 
-                          ? 'border-2 border-primary bg-primary/5 shadow-md' 
-                          : 'border hover:border-primary/50'
-                      }`}
-                      onClick={() => setSelectedPackage(pkg.id)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-bold text-lg">{pkg.name}</span>
-                              {pkg.tag && (
-                                <Badge variant={pkg.id === 'komfort' ? 'default' : 'secondary'} className="text-xs">
-                                  {pkg.tag}
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-3">{pkg.description}</p>
-                            <div className="flex flex-wrap gap-2">
-                              {pkg.features.map((f, i) => (
-                                <span key={i} className="text-xs bg-muted px-2 py-1 rounded-full flex items-center gap-1">
-                                  <Check className="h-3 w-3 text-primary" />
-                                  {f}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="text-right pl-4">
-                            <div className="text-lg font-bold">CHF {pkgPrice.toLocaleString('de-CH')}</div>
-                            {pkg.id !== 'standard' && (
-                              <div className={`text-xs ${priceDiff > 0 ? 'text-orange-600' : 'text-green-600'}`}>
-                                {priceDiff > 0 ? '+' : ''}{priceDiff.toLocaleString('de-CH')} CHF
-                              </div>
-                            )}
-                            <div className={`mt-2 w-5 h-5 rounded-full border-2 flex items-center justify-center ml-auto ${
-                              isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
-                            }`}>
-                              {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Extras & Datum */}
-          {currentStep === 4 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold mb-2">Datum & Extras</h1>
-                <p className="text-muted-foreground">
-                  Alles optional – wählen Sie nur was Sie brauchen
-                </p>
-              </div>
-              
-              {/* Datum */}
-              <Card>
-                <CardContent className="p-5 space-y-4">
-                  <Label className="flex items-center gap-2 text-sm font-medium">
-                    <Calendar className="h-4 w-4 text-primary" />
-                    Wunschtermin
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Format: TT.MM.JJJJ</p>
-                        <p>Flexible Termine können günstiger sein.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  
-                  <Input
-                    type="date"
-                    value={moveDate}
-                    onChange={(e) => setMoveDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full"
-                  />
-                  
-                  <div className="flex items-start gap-2">
-                    <Checkbox
-                      id="flexible"
-                      checked={dateFlexible}
-                      onCheckedChange={(checked) => setDateFlexible(checked as boolean)}
-                    />
-                    <div>
-                      <label htmlFor="flexible" className="text-sm font-medium cursor-pointer">
-                        ±3 Tage flexibel
-                      </label>
-                      <p className="text-xs text-muted-foreground">
-                        Wir planen um Ihren Wunschtermin – günstiger bei freien Slots
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {dateFlexible && (
-                    <Badge variant="secondary" className="text-green-600 bg-green-50">
-                      <Sparkles className="h-3 w-3 mr-1" />
-                      Bis zu 15% sparen möglich
-                    </Badge>
-                  )}
-                </CardContent>
-              </Card>
-              
-              {/* Extras Grid - KEINE vorausgewählt */}
-              <Card>
-                <CardContent className="p-5">
-                  <Label className="text-sm font-medium mb-1 block">
-                    Zusatzleistungen (optional)
-                  </Label>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Wählen Sie nur was Sie brauchen. Beliebt bei anderen Kunden markiert.
-                  </p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {EXTRAS.map((extra) => {
-                      const isSelected = selectedExtras.includes(extra.id);
-                      const Icon = extra.icon;
-                      
-                      return (
-                        <button
-                          key={extra.id}
-                          onClick={() => toggleExtra(extra.id)}
-                          className={`p-3 rounded-lg border-2 text-left transition-all ${
-                            isSelected 
-                              ? 'border-primary bg-primary/5' 
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                        >
-                          <div className="flex items-start gap-2">
-                            <Icon className={`h-4 w-4 mt-0.5 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1">
-                                <span className="text-sm font-medium truncate">{extra.label}</span>
-                                {extra.popular && (
-                                  <Badge variant="outline" className="text-[10px] px-1 py-0">Beliebt</Badge>
-                                )}
-                              </div>
-                              {extra.description && (
-                                <div className="text-xs text-muted-foreground">{extra.description}</div>
-                              )}
-                              <div className="text-xs text-primary">+CHF {extra.price}</div>
-                            </div>
-                            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                              isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
-                            }`}>
-                              {isSelected && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Price Breakdown */}
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Basis ({SERVICE_PACKAGES.find(p => p.id === selectedPackage)?.name})</span>
-                    <span>CHF {packagePrice.toLocaleString('de-CH')}</span>
-                  </div>
-                  {extrasTotal > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Extras ({selectedExtras.length})</span>
-                      <span>+CHF {extrasTotal.toLocaleString('de-CH')}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between font-bold text-lg pt-2 border-t">
-                    <span>Fixpreis</span>
-                    <span>CHF {totalPrice.toLocaleString('de-CH')}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Step 5: Firmenauswahl + Kontakt */}
-          {currentStep === 5 && !showContactForm && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold mb-2">Passende Umzugsfirmen</h1>
-                <p className="text-muted-foreground">
-                  Wählen Sie 1–5 Firmen für Ihre Offerten
-                </p>
-              </div>
-              
-              {/* Filter & Sort Controls */}
-              <div className="flex flex-wrap gap-2 items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant={filterExpress ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setFilterExpress(!filterExpress)}
-                  >
-                    <Zap className="h-3 w-3 mr-1" />
-                    Express
-                  </Button>
-                </div>
-                <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                  <SelectTrigger className="w-40 h-8 text-xs">
-                    <ArrowUpDown className="h-3 w-3 mr-1" />
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="recommended">Empfohlen</SelectItem>
-                    <SelectItem value="rating">Beste Bewertung</SelectItem>
-                    <SelectItem value="reviews">Meiste Reviews</SelectItem>
-                    <SelectItem value="response">Schnellste Antwort</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Company List */}
-              <div className="space-y-3">
-                {sortedCompanies.map((company, index) => {
-                  const isSelected = selectedCompanies.includes(company.id);
-                  
-                  return (
-                    <Card 
-                      key={company.id}
-                      className={`cursor-pointer transition-all ${
-                        isSelected 
-                          ? 'border-2 border-primary bg-primary/5' 
-                          : 'border hover:border-primary/50'
-                      }`}
-                      onClick={() => toggleCompany(company.id)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                          {/* Checkbox */}
-                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                            isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
-                          }`}>
-                            {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
-                          </div>
-                          
-                          {/* Company Logo Placeholder */}
-                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                            <Building className="h-5 w-5 text-muted-foreground" />
-                          </div>
-                          
-                          {/* Company Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-medium">{company.name}</span>
-                              {company.premium && (
-                                <Badge variant="secondary" className="text-xs bg-yellow-50 text-yellow-700">
-                                  Premium
-                                </Badge>
-                              )}
-                              {company.expressService && (
-                                <Badge variant="outline" className="text-xs">
-                                  <Zap className="h-2.5 w-2.5 mr-0.5" />
-                                  Express
-                                </Badge>
-                              )}
-                              {company.verified && (
-                                <Shield className="h-3.5 w-3.5 text-green-600" />
-                              )}
-                            </div>
-                            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
-                              <span className="flex items-center gap-1">
-                                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                {company.rating} ({company.reviews})
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {company.responseTime}h Antwort
-                              </span>
-                              <span className="text-muted-foreground/60">{company.region}</span>
-                            </div>
-                          </div>
-                          
-                          {/* Price indicator */}
-                          <Badge variant="outline" className="text-xs capitalize">
-                            {company.price}
-                          </Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-              
-              {/* Selection Info */}
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg text-sm">
-                <span className="text-muted-foreground">Ausgewählt:</span>
-                <span className="font-medium">
-                  {selectedCompanies.length} von max. 5 Firmen
-                </span>
-              </div>
-              
-              {selectedCompanies.length === 0 && (
-                <p className="text-destructive text-sm flex items-center gap-1 justify-center">
-                  <AlertCircle className="h-4 w-4" />
-                  Bitte wählen Sie mindestens 1 Firma (Empfehlung: 3)
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Step 5: Kontakt Form (nach Firmenwahl) */}
-          {currentStep === 5 && showContactForm && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold mb-2">Fast geschafft!</h1>
-                <p className="text-muted-foreground">
-                  Wohin sollen wir die Offerten senden?
-                </p>
-              </div>
-              
-              <Card>
-                <CardContent className="p-5 space-y-4">
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-medium">
-                      <User className="h-4 w-4 text-primary" />
-                      Ihr Name *
-                    </Label>
+            
+            {/* Kontaktdaten */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <Label className="text-sm font-medium">Ihre Kontaktdaten</Label>
+                
+                <div className="space-y-3">
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Max Muster"
+                      placeholder="Name"
                       value={name}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                        validateField('name', e.target.value);
-                      }}
-                      onBlur={() => handleBlur('name')}
-                      className={touched.name && errors.name ? 'border-destructive' : ''}
+                      onChange={(e) => setName(e.target.value)}
+                      className="pl-10 h-12"
                     />
-                    {touched.name && errors.name && (
-                      <p className="text-destructive text-xs flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.name}
-                      </p>
-                    )}
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-medium">
-                      <Mail className="h-4 w-4 text-primary" />
-                      E-Mail *
-                    </Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       type="email"
-                      placeholder="max@beispiel.ch"
+                      placeholder="E-Mail"
                       value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        validateField('email', e.target.value);
-                      }}
-                      onBlur={() => handleBlur('email')}
-                      className={touched.email && errors.email ? 'border-destructive' : ''}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 h-12"
                     />
-                    {touched.email && errors.email && (
-                      <p className="text-destructive text-xs flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.email}
-                      </p>
-                    )}
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-medium">
-                      <Phone className="h-4 w-4 text-primary" />
-                      Telefon (optional)
-                    </Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       type="tel"
-                      placeholder="+41 79 123 45 67"
+                      placeholder="Telefon (optional)"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
+                      inputMode="tel"
+                      className="pl-10 h-12"
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Nur für Rückfragen zu Ihrer Anfrage
-                    </p>
                   </div>
-                </CardContent>
-              </Card>
-              
-              {/* Summary */}
-              <Card className="bg-muted/30">
-                <CardContent className="p-4 space-y-2 text-sm">
-                  <div className="font-medium mb-2">Ihre Zusammenfassung</div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Umzug</span>
-                    <span>{fromZip} → {toZip}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Wohnung</span>
-                    <span>{rooms} Zimmer</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Service</span>
-                    <span>{SERVICE_PACKAGES.find(p => p.id === selectedPackage)?.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Firmen</span>
-                    <span>{selectedCompanies.length} ausgewählt</span>
-                  </div>
-                  <div className="flex justify-between font-bold pt-2 border-t">
-                    <span>Fixpreis</span>
-                    <span>CHF {totalPrice.toLocaleString('de-CH')}</span>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Consent */}
-              <div className="flex items-start gap-2">
-                <Checkbox
-                  id="consent"
-                  checked={consent}
-                  onCheckedChange={(checked) => setConsent(checked as boolean)}
-                />
-                <label htmlFor="consent" className="text-sm text-muted-foreground cursor-pointer">
-                  Ich akzeptiere die AGB und Datenschutzbestimmungen. Meine Daten werden nur an die {selectedCompanies.length} ausgewählten Firmen weitergegeben.
-                </label>
-              </div>
-              
-              {/* Trust */}
-              <div className="flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Shield className="h-3 w-3" /> SSL verschlüsselt
-                </span>
-                <span className="flex items-center gap-1">
-                  <Lock className="h-3 w-3" /> Keine Weitergabe an Dritte
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
+                </div>
+                
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="consent"
+                    checked={consent}
+                    onCheckedChange={(checked) => setConsent(checked as boolean)}
+                  />
+                  <label htmlFor="consent" className="text-xs text-muted-foreground cursor-pointer">
+                    Ich akzeptiere die <a href="/datenschutz" className="underline">Datenschutzbestimmungen</a> und dass meine Daten an die ausgewählten Firmen weitergegeben werden.
+                  </label>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
 
-        {/* Sticky Bottom CTA */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border p-4">
-          <div className="max-w-2xl mx-auto">
-            {/* Price reminder on mobile */}
-            {currentStep >= 3 && currentStep < 5 && (
-              <div className="flex justify-between items-center mb-2 text-sm">
-                <span className="text-muted-foreground">Fixpreis</span>
-                <span className="font-bold">CHF {totalPrice.toLocaleString('de-CH')}</span>
-              </div>
+      {/* Sticky Bottom CTA (Feedback #5: Sticky Bar auf Mobile) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4 z-40">
+        <div className="max-w-xl mx-auto">
+          {/* Price Summary (Feedback #7: Preis-Konsistenz, Breakdown) */}
+          <div className="flex items-center justify-between mb-3 text-sm">
+            <div>
+              <span className="text-muted-foreground">Ihr Fixpreis: </span>
+              <span className="font-bold text-lg">CHF {totalFixpreis.toLocaleString('de-CH')}</span>
+              {extrasPrice > 0 && (
+                <span className="text-xs text-muted-foreground ml-1">
+                  (inkl. Extras CHF {extrasPrice})
+                </span>
+              )}
+            </div>
+            {savings > 0 && (
+              <Badge variant="secondary" className="text-green-600">
+                CHF {savings.toLocaleString('de-CH')} gespart
+              </Badge>
             )}
-            
-            <Button
-              size="lg"
-              className="w-full h-12 text-base font-semibold"
-              onClick={() => {
-                if (currentStep === 5) {
-                  if (!showContactForm) {
-                    setShowContactForm(true);
-                  } else {
-                    handleSubmit();
-                  }
-                } else {
-                  handleNext();
-                }
-              }}
+          </div>
+          
+          {currentStep < STEPS.length ? (
+            <Button 
+              className="w-full h-12 text-lg" 
+              onClick={handleNext}
+              disabled={!canProceed()}
+            >
+              {currentStep === STEPS.length - 1 ? 'Firmen wählen' : 'Weiter'}
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          ) : (
+            <Button 
+              className="w-full h-12 text-lg bg-green-600 hover:bg-green-700" 
+              onClick={handleSubmit}
               disabled={!canProceed() || isSubmitting}
             >
               {isSubmitting ? (
                 <>
-                  <div className="h-5 w-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
-                  Wird gesendet...
-                </>
-              ) : currentStep === 5 && showContactForm ? (
-                <>
-                  Anfrage an {selectedCompanies.length} Firmen senden
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </>
-              ) : currentStep === 5 ? (
-                <>
-                  {selectedCompanies.length >= 1 
-                    ? `Weiter mit ${selectedCompanies.length} Firmen`
-                    : 'Bitte mindestens 1 Firma wählen'
-                  }
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </>
-              ) : currentStep === 1 ? (
-                <>
-                  Fixpreis berechnen
-                  <ArrowRight className="h-5 w-5 ml-2" />
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Sende...
                 </>
               ) : (
                 <>
-                  Weiter
-                  <ArrowRight className="h-5 w-5 ml-2" />
+                  Anfrage an {selectedCompanies.length} Firmen senden
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </>
               )}
             </Button>
-            
-            <p className="text-center text-xs text-muted-foreground mt-2">
-              Kostenlos & unverbindlich • Keine Registrierung nötig
-            </p>
-          </div>
+          )}
+          
+          {/* Trust Microcopy */}
+          <p className="text-xs text-center text-muted-foreground mt-2">
+            Kostenlos & unverbindlich • Keine Registrierung nötig
+          </p>
         </div>
       </div>
-    </TooltipProvider>
+    </div>
   );
 };
 
