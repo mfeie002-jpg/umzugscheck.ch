@@ -745,20 +745,46 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
               </Button>
             )}
             {versions.length > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSelectedVersionsForBatch(new Set());
-                  setBatchQueue([]);
-                  setBatchCurrentIndex(0);
-                  setIsBatchRunning(false);
-                  setBatchScreenshotDialogOpen(true);
-                }}
-              >
-                <Layers className="h-4 w-4 mr-1" />
-                Batch-Capture
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (isBatchRunning) {
+                      // If batch is running, just open the dialog to show progress
+                      setBatchScreenshotDialogOpen(true);
+                    } else {
+                      setSelectedVersionsForBatch(new Set());
+                      setBatchQueue([]);
+                      setBatchCurrentIndex(0);
+                      setBatchScreenshotDialogOpen(true);
+                    }
+                  }}
+                >
+                  {isBatchRunning ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                      Batch: {batchCurrentIndex + 1}/{batchQueue.length}
+                    </>
+                  ) : (
+                    <>
+                      <Layers className="h-4 w-4 mr-1" />
+                      Batch-Capture
+                    </>
+                  )}
+                </Button>
+                {isBatchRunning && activeJob && (
+                  <div className="flex items-center gap-2 px-2 py-1 bg-primary/10 rounded-md border border-primary/30">
+                    <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-primary transition-all duration-300"
+                        style={{ width: `${activeJob.progress}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground">{activeJob.progress}%</span>
+                  </div>
+                )}
+              </>
             )}
             {versions.length >= 2 && (
               <Button
