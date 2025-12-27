@@ -568,18 +568,19 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     });
     
     // Sub-variants from SUB_VARIANT_CONFIGS (coded components)
-    // Show all feedback variants (v1a-v9a) as featured in main group
+    // Show all feedback variants (v1a, v2f, v3a, ..., v9a etc.) as featured in main group
     Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
       const registryEntry = VARIANT_REGISTRY[id];
-      // All single-letter variants (v1a, v2a, ..., v9a) are featured
-      const isFeatured = /^v\d+[a-z]$/i.test(id);
+      // All single-letter variants from SUB_VARIANT_CONFIGS are considered feedback variants
+      // Pattern: v + digit(s) + single letter (e.g., v1a, v2f, v9a, v10a)
+      const isFeedbackVariant = /^v\d+[a-z]$/i.test(id);
       options.push({
         value: id,
         label: config.label,
         path: config.path,
         isSubVariant: true,
         component: registryEntry?.component,
-        group: isFeatured ? 'main' : 'sub',
+        group: isFeedbackVariant ? 'main' : 'sub',
       });
     });
     
