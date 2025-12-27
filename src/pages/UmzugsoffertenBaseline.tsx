@@ -41,9 +41,9 @@ const UmzugsoffertenBaseline = () => {
           <Breadcrumbs items={[{ label: "Baseline Test" }]} />
         </div>
 
-        {/* Hero with Comparison Wizard - ORIGINAL MultiStepCalculator starting at Step 2 */}
+        {/* Hero with Comparison Wizard - ORIGINAL MultiStepCalculator */}
         <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-4 sm:pt-6">
-          <MultiStepCalculator initialStep={2} />
+          <MultiStepCalculator initialStep={1} />
         </section>
 
         {/* AI Insights Strip */}
