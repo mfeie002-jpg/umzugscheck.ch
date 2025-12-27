@@ -31,8 +31,11 @@ import {
   X,
   Camera,
   Loader2,
-  CloudUpload
+  CloudUpload,
+  Download
 } from "lucide-react";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 // Helper to ensure proper URL/data URL format for screenshots
 const toPngDataUrl = (value: string) => {
@@ -472,6 +475,114 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
     setCompareDialogOpen(true);
   };
 
+  // Export version as ZIP with all screenshots and HTML
+  const exportVersionAsZip = async (version: FlowVersion) => {
+    const screenshots = version.screenshots as Record<string, string> | null;
+    const htmlSnapshots = version.html_snapshots as Record<string, string> | null;
+    const stepConfigs = version.step_configs as { step: number; name: string; description?: string; url?: string }[] | null;
+
+    if (!screenshots || Object.keys(screenshots).length === 0) {
+      toast.error("Diese Version hat keine Screenshots zum Exportieren");
+      return;
+    }
+
+    try {
+      const zip = new JSZip();
+      const versionLabel = formatVersion(version.version_number);
+      const folderName = `${version.flow_id}-${versionLabel}-${new Date().toISOString().split('T')[0]}`;
+      const rootFolder = zip.folder(folderName);
+      if (!rootFolder) return;
+
+      // Add metadata
+      rootFolder.file('version-info.json', JSON.stringify({
+        id: version.id,
+        flow_id: version.flow_id,
+        flow_code: version.flow_code,
+        version_number: version.version_number,
+        version_name: version.version_name,
+        description: version.description,
+        created_at: version.created_at,
+        is_baseline: version.is_baseline,
+        is_live: version.is_live,
+        ai_feedback_source: version.ai_feedback_source,
+        ai_feedback_date: version.ai_feedback_date,
+        step_configs: stepConfigs,
+        exportedAt: new Date().toISOString()
+      }, null, 2));
+
+      // Add AI feedback if available
+      if (version.ai_feedback) {
+        rootFolder.file('ai-feedback.md', `# AI Feedback für ${versionLabel}\n\n**Quelle:** ${version.ai_feedback_source || 'unknown'}\n**Datum:** ${version.ai_feedback_date || 'unknown'}\n\n---\n\n${version.ai_feedback}`);
+      }
+
+      // Add screenshots folder
+      const screenshotsFolder = rootFolder.folder('screenshots');
+      if (screenshotsFolder) {
+        for (const [key, value] of Object.entries(screenshots)) {
+          if (!value) continue;
+          // Extract step number and type from key (e.g., "step1Desktop", "step2Mobile")
+          const match = key.match(/step(\d+)(Desktop|Mobile)/i);
+          if (match) {
+            const stepNum = match[1];
+            const deviceType = match[2].toLowerCase();
+            const filename = `step-${stepNum}-${deviceType}.png`;
+            
+            // Handle data URL or raw base64
+            let base64Data = value;
+            if (value.startsWith('data:')) {
+              base64Data = value.split(',')[1] || value;
+            }
+            screenshotsFolder.file(filename, base64Data, { base64: true });
+          }
+        }
+      }
+
+      // Add HTML snapshots if available
+      if (htmlSnapshots && Object.keys(htmlSnapshots).length > 0) {
+        const htmlFolder = rootFolder.folder('html');
+        if (htmlFolder) {
+          for (const [key, value] of Object.entries(htmlSnapshots)) {
+            if (!value) continue;
+            const match = key.match(/step(\d+)/i);
+            if (match) {
+              const stepNum = match[1];
+              htmlFolder.file(`step-${stepNum}.html`, value);
+            }
+          }
+        }
+      }
+
+      // Add README
+      const stepsList = stepConfigs?.map(s => `- Step ${s.step}: ${s.name}${s.description ? ` - ${s.description}` : ''}`).join('\n') || 'Keine Step-Konfiguration verfügbar';
+      rootFolder.file('README.md', `# ${version.flow_id} - ${versionLabel}
+
+${version.version_name ? `## ${version.version_name}\n\n` : ''}${version.description || ''}
+
+## Exportiert am
+${new Date().toLocaleString('de-CH')}
+
+## Steps
+${stepsList}
+
+## Dateien
+- \`version-info.json\` - Alle Metadaten
+- \`screenshots/\` - Desktop & Mobile Screenshots
+- \`html/\` - Rendered HTML Snapshots
+${version.ai_feedback ? '- `ai-feedback.md` - AI Analyse' : ''}
+
+## Verwendung
+Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX/Conversion-Analyse.
+`);
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      saveAs(blob, `${folderName}.zip`);
+      toast.success(`ZIP für ${versionLabel} heruntergeladen`);
+    } catch (err) {
+      console.error('Failed to export version as ZIP:', err);
+      toast.error('ZIP-Export fehlgeschlagen');
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-4 text-muted-foreground">Lade Versionen...</div>;
   }
@@ -485,6 +596,81 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
             Flow Versionen
           </CardTitle>
           <div className="flex gap-2">
+            {versions.some(v => v.screenshots && Object.keys(v.screenshots as Record<string, string> || {}).length > 0) && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={async () => {
+                  const versionsWithScreenshots = versions.filter(v => v.screenshots && Object.keys(v.screenshots as Record<string, string> || {}).length > 0);
+                  if (versionsWithScreenshots.length === 0) {
+                    toast.error("Keine Versionen mit Screenshots vorhanden");
+                    return;
+                  }
+                  
+                  try {
+                    const zip = new JSZip();
+                    const exportDate = new Date().toISOString().split('T')[0];
+                    
+                    for (const version of versionsWithScreenshots) {
+                      const versionLabel = formatVersion(version.version_number);
+                      const versionFolder = zip.folder(`${versionLabel}${version.version_name ? `-${version.version_name.replace(/\s+/g, '-')}` : ''}`);
+                      if (!versionFolder) continue;
+                      
+                      const screenshots = version.screenshots as Record<string, string>;
+                      const htmlSnapshots = version.html_snapshots as Record<string, string> | null;
+                      
+                      // Add screenshots
+                      for (const [key, value] of Object.entries(screenshots)) {
+                        if (!value) continue;
+                        const match = key.match(/step(\d+)(Desktop|Mobile)/i);
+                        if (match) {
+                          const filename = `step-${match[1]}-${match[2].toLowerCase()}.png`;
+                          let base64Data = value;
+                          if (value.startsWith('data:')) {
+                            base64Data = value.split(',')[1] || value;
+                          }
+                          versionFolder.file(filename, base64Data, { base64: true });
+                        }
+                      }
+                      
+                      // Add HTML if available
+                      if (htmlSnapshots) {
+                        for (const [key, value] of Object.entries(htmlSnapshots)) {
+                          if (!value) continue;
+                          const match = key.match(/step(\d+)/i);
+                          if (match) {
+                            versionFolder.file(`step-${match[1]}.html`, value);
+                          }
+                        }
+                      }
+                      
+                      // Add version info
+                      versionFolder.file('info.json', JSON.stringify({
+                        version_number: version.version_number,
+                        version_name: version.version_name,
+                        flow_code: version.flow_code,
+                        ai_feedback_source: version.ai_feedback_source,
+                        created_at: version.created_at
+                      }, null, 2));
+                      
+                      if (version.ai_feedback) {
+                        versionFolder.file('ai-feedback.md', version.ai_feedback);
+                      }
+                    }
+                    
+                    const blob = await zip.generateAsync({ type: 'blob' });
+                    saveAs(blob, `${flowId}-all-versions-${exportDate}.zip`);
+                    toast.success(`${versionsWithScreenshots.length} Versionen als ZIP heruntergeladen`);
+                  } catch (err) {
+                    console.error('Failed to export all versions:', err);
+                    toast.error('ZIP-Export fehlgeschlagen');
+                  }
+                }}
+              >
+                <Download className="h-4 w-4 mr-1" />
+                Alle als ZIP
+              </Button>
+            )}
             {versions.length >= 2 && (
               <Button
                 variant="outline"
@@ -652,6 +838,15 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => exportVersionAsZip(version)}
+                    title="Als ZIP herunterladen (Screenshots + HTML + Metadata)"
+                    disabled={!version.screenshots || Object.keys(version.screenshots as Record<string, string> || {}).length === 0}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
                   <Button
                     variant="ghost"
                     size="icon"
