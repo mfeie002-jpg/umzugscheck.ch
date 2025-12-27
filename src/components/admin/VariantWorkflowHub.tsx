@@ -689,7 +689,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
           <CardContent className="space-y-4">
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-4">
-              <a href="/admin/tools?tab=calculator-review" target="_blank" rel="noopener noreferrer">
+              <a href={`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`} target="_blank" rel="noopener noreferrer">
                 <Card className="p-4 hover:border-primary/50 transition-colors cursor-pointer h-full">
                   <div className="flex items-center gap-3">
                     <Rocket className="h-8 w-8 text-primary" />
@@ -700,7 +700,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                   </div>
                 </Card>
               </a>
-              <a href="/admin/tools?tab=regression" target="_blank" rel="noopener noreferrer">
+              <a href={`/admin/tools?tab=regression&flow=${encodeURIComponent(selectedFlow)}`} target="_blank" rel="noopener noreferrer">
                 <Card className="p-4 hover:border-primary/50 transition-colors cursor-pointer h-full">
                   <div className="flex items-center gap-3">
                     <GitCompare className="h-8 w-8 text-orange-500" />
