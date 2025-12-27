@@ -115,7 +115,11 @@ export function ScreenshotCaptureStep({
                   <Button 
                     size="sm" 
                     variant="default"
-                    onClick={() => navigate(currentVariant.screenshotUrl)}
+                    onClick={() => {
+                      // Open the live view with capture mode enabled for manual screenshot
+                      const captureUrl = `${currentVariant.liveUrl}${currentVariant.liveUrl.includes('?') ? '&' : '?'}uc_capture=1&uc_step=1`;
+                      window.open(captureUrl, '_blank');
+                    }}
                   >
                     <Camera className="h-3 w-3 mr-1" />
                     Screenshots erfassen
