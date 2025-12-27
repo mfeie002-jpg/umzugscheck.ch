@@ -1,6 +1,34 @@
-# Welcome to your Lovable project
+# Umzugscheck.ch
 
-## Project info
+> **Das Vorzeigemodell der Schweizer Umzugsbranche.**  
+> Der Archetyp, an dem sich alle anderen orientieren werden.
+
+[![Digital Marketing Award Target](https://img.shields.io/badge/Ziel-Award%20Winner%202026-gold)]()
+[![Best Practice](https://img.shields.io/badge/Standard-Best%20Practice-green)]()
+
+---
+
+## 🎯 Vision
+
+Wir bauen nicht „besser als die Konkurrenz" – wir bauen so, dass Vergleiche aufhören und wir der Maßstab werden.
+
+**Unser Anspruch:** Best-Case-Scenario in jeder Dimension:
+- ⚡ Performance
+- 🎨 UX/UI
+- 📈 Conversion
+- 🔧 Wartbarkeit
+- 🚀 Skalierbarkeit
+
+---
+
+## 📚 Dokumentation
+
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** – Technische Architektur & Philosophie
+- **[docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)** – Contribution Guidelines
+
+---
+
+## Project Info
 
 **URL**: https://lovable.dev/projects/b7b3f27c-b0ec-4009-8d99-c7e3876c2490
 
