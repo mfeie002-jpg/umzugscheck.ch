@@ -1107,6 +1107,60 @@ export type Database = {
         }
         Relationships: []
       }
+      homepage_ab_config: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      homepage_ab_events: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          flow_variant: string
+          id: string
+          metadata: Json | null
+          page_path: string | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          flow_variant: string
+          id?: string
+          metadata?: Json | null
+          page_path?: string | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          flow_variant?: string
+          id?: string
+          metadata?: Json | null
+          page_path?: string | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       lead_bids: {
         Row: {
           bid_amount: number
@@ -3134,6 +3188,19 @@ export type Database = {
         Returns: string[]
       }
       get_canton_from_postal: { Args: { postal_code: string }; Returns: string }
+      get_homepage_ab_stats: {
+        Args: { p_days?: number }
+        Returns: {
+          conversion_rate: number
+          cta_clicks: number
+          cta_rate: number
+          flow_variant: string
+          funnel_rate: number
+          funnel_starts: number
+          impressions: number
+          lead_submits: number
+        }[]
+      }
       get_provider_conversion_history: {
         Args: { p_provider_id: string }
         Returns: Json
