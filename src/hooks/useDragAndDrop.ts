@@ -1,4 +1,10 @@
 import { useState, useCallback, useRef, DragEvent } from 'react';
+import { 
+  GEMINI_LIMITS, 
+  getMaxFileSizeForType, 
+  formatBytes,
+  getFileCategory 
+} from '@/lib/gemini-limits';
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -7,7 +13,8 @@ interface FileWithPreview extends File {
 interface UseDragAndDropOptions {
   accept?: string[];
   maxFiles?: number;
-  maxSize?: number; // in bytes
+  maxSize?: number; // in bytes - if not provided, uses Gemini limits based on file type
+  useGeminiLimits?: boolean; // Enable Gemini-specific validation
   onDrop?: (files: FileWithPreview[]) => void;
   onError?: (error: string) => void;
 }
@@ -30,8 +37,9 @@ interface UseDragAndDropReturn {
 export function useDragAndDrop(options: UseDragAndDropOptions = {}): UseDragAndDropReturn {
   const {
     accept = ['image/*', 'application/pdf'],
-    maxFiles = 10,
-    maxSize = 10 * 1024 * 1024, // 10MB default
+    maxFiles = GEMINI_LIMITS.MAX_FILES_PER_PROMPT, // Default to Gemini limit
+    maxSize, // If not provided, will use Gemini limits per file type
+    useGeminiLimits = true, // Enable Gemini limits by default
     onDrop,
     onError
   } = options;
@@ -42,9 +50,25 @@ export function useDragAndDrop(options: UseDragAndDropOptions = {}): UseDragAndD
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = useCallback((file: File): boolean => {
+    // Determine max size: use provided maxSize, or Gemini limits if enabled
+    let effectiveMaxSize: number;
+    
+    if (maxSize !== undefined) {
+      effectiveMaxSize = maxSize;
+    } else if (useGeminiLimits) {
+      effectiveMaxSize = getMaxFileSizeForType(file.type);
+    } else {
+      effectiveMaxSize = 10 * 1024 * 1024; // 10MB fallback
+    }
+
     // Check file size
-    if (file.size > maxSize) {
-      onError?.(`File ${file.name} is too large. Max size is ${maxSize / 1024 / 1024}MB`);
+    if (file.size > effectiveMaxSize) {
+      const category = getFileCategory(file.type);
+      const isVideo = category === 'VIDEO';
+      onError?.(
+        `Datei "${file.name}" ist zu gross. ` +
+        `Maximum für ${isVideo ? 'Videos' : 'Dateien'}: ${formatBytes(effectiveMaxSize)}`
+      );
       return false;
     }
 
@@ -58,20 +82,25 @@ export function useDragAndDrop(options: UseDragAndDropOptions = {}): UseDragAndD
     });
 
     if (!isValidType) {
-      onError?.(`File ${file.name} has invalid type`);
+      onError?.(`Dateityp von "${file.name}" wird nicht unterstützt`);
       return false;
     }
 
     return true;
-  }, [accept, maxSize, onError]);
+  }, [accept, maxSize, useGeminiLimits, onError]);
 
   const processFiles = useCallback((fileList: FileList | File[]) => {
     const newFiles: FileWithPreview[] = [];
     const filesArray = Array.from(fileList);
 
+    // Check total file count against Gemini limit
+    const totalFiles = files.length + filesArray.length;
+    if (totalFiles > maxFiles) {
+      onError?.(`Maximal ${maxFiles} Dateien pro Prompt erlaubt (Gemini Limit)`);
+    }
+
     for (const file of filesArray) {
       if (files.length + newFiles.length >= maxFiles) {
-        onError?.(`Maximum ${maxFiles} files allowed`);
         break;
       }
 
