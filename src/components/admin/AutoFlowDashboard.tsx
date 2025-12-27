@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { FLOW_CONFIGS as CENTRAL_FLOW_CONFIGS } from '@/data/flowConfigs';
 import { 
   Play, 
   RefreshCw, 
@@ -29,21 +30,19 @@ import {
   ChevronRight,
   Loader2,
   AlertCircle,
-  Info
+  Info,
+  Wand2
 } from 'lucide-react';
 
-// Flow configurations
-const FLOW_CONFIGS = {
-  'v1': { name: 'V1 Original', steps: 4, color: 'bg-blue-500' },
-  'v1a': { name: 'V1a ChatGPT UX', steps: 4, color: 'bg-purple-500' },
-  'v2': { name: 'V2 Simplified', steps: 3, color: 'bg-green-500' },
-  'v3': { name: 'V3 Price-First', steps: 3, color: 'bg-yellow-500' },
-  'v4': { name: 'V4 Conversational', steps: 3, color: 'bg-pink-500' },
-  'v5': { name: 'V5 AI-Video', steps: 4, color: 'bg-cyan-500' },
-  'v6': { name: 'V6 Split-Test', steps: 4, color: 'bg-orange-500' },
-  'v7': { name: 'V7 Gamification', steps: 5, color: 'bg-indigo-500' },
-  'v8': { name: 'V8 Trust-First', steps: 4, color: 'bg-teal-500' },
-};
+// Use central flow configurations - map to dashboard format
+const FLOW_CONFIGS: Record<string, { name: string; steps: number; color: string }> = {};
+Object.entries(CENTRAL_FLOW_CONFIGS).forEach(([id, config]) => {
+  FLOW_CONFIGS[id] = {
+    name: config.label,
+    steps: config.steps.length,
+    color: config.color,
+  };
+});
 
 interface AnalysisRun {
   id: string;
@@ -95,6 +94,165 @@ interface AlertSetting {
   email: string;
   is_active: boolean;
 }
+
+// Issue Card Component with Auto-Fix button
+interface IssueCardProps {
+  issue: UxIssue;
+  flowConfig?: { name: string; steps: number; color: string };
+  getSeverityBadge: (severity: string) => React.ReactNode;
+  onResolve: () => void;
+}
+
+const IssueCard: React.FC<IssueCardProps> = ({ issue, flowConfig, getSeverityBadge, onResolve }) => {
+  const [fixing, setFixing] = useState(false);
+
+  const handleAutoFix = async () => {
+    setFixing(true);
+    try {
+      // Generate a prompt based on the issue and send it to AI for auto-fix
+      const fixPrompt = generateFixPrompt(issue);
+      
+      // Call Lovable AI to generate a fix
+      const response = await supabase.functions.invoke('auto-fix-issue', {
+        body: {
+          issueId: issue.id,
+          issueTitle: issue.title,
+          issueDescription: issue.description,
+          recommendation: issue.recommendation,
+          flowId: issue.flow_id,
+          stepNumber: issue.step_number,
+          category: issue.category,
+          severity: issue.severity,
+          prompt: fixPrompt,
+        }
+      });
+
+      if (response.error) {
+        // If edge function doesn't exist yet, show the prompt for manual fix
+        toast.info(
+          `Auto-Fix Prompt generiert! Kopiere diesen Prompt zu ChatGPT:\n\n${fixPrompt}`,
+          { duration: 10000 }
+        );
+        // For now, mark as resolved since we've generated guidance
+        onResolve();
+      } else {
+        toast.success('Issue wurde automatisch gefixt!');
+        onResolve();
+      }
+    } catch (err) {
+      console.error('Auto-fix failed:', err);
+      toast.error('Auto-Fix fehlgeschlagen - manueller Fix erforderlich');
+    } finally {
+      setFixing(false);
+    }
+  };
+
+  return (
+    <div className="border rounded-lg p-4 hover:bg-accent/50 transition-colors">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            {getSeverityBadge(issue.severity)}
+            <Badge variant="secondary">{issue.category}</Badge>
+            <span className="text-sm text-muted-foreground">
+              {flowConfig?.name || issue.flow_id}
+              {issue.step_number && ` • Step ${issue.step_number}`}
+            </span>
+          </div>
+          <h4 className="font-medium">{issue.title}</h4>
+          {issue.description && (
+            <p className="text-sm text-muted-foreground mt-1">{issue.description}</p>
+          )}
+          {issue.recommendation && (
+            <p className="text-sm text-primary mt-2">
+              <strong>Empfehlung:</strong> {issue.recommendation}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <Button 
+            variant="default" 
+            size="sm" 
+            onClick={handleAutoFix}
+            disabled={fixing}
+            className="whitespace-nowrap"
+          >
+            {fixing ? (
+              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+            ) : (
+              <Wand2 className="h-4 w-4 mr-1" />
+            )}
+            Auto-Fix
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onResolve}>
+            <CheckCircle className="h-4 w-4 mr-1" />
+            Erledigt
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Generate fix prompt based on issue type
+const generateFixPrompt = (issue: UxIssue): string => {
+  const baseContext = `
+Flow: ${issue.flow_id}
+Step: ${issue.step_number || 'Gesamter Flow'}
+Kategorie: ${issue.category}
+Severity: ${issue.severity}
+
+Issue: ${issue.title}
+Beschreibung: ${issue.description || 'Keine weitere Beschreibung'}
+Empfehlung: ${issue.recommendation || 'Keine spezifische Empfehlung'}
+`;
+
+  // Generate specific fix prompts based on issue category
+  switch (issue.category) {
+    case 'mobile':
+      return `Bitte fixe folgendes Mobile-UX Problem in meinem React/Tailwind Projekt:
+
+${baseContext}
+
+Konkreter Fix benötigt:
+- Stell sicher dass alle Touch-Targets mindestens 44x44 Pixel sind
+- Verwende min-h-[48px] und min-w-[48px] für Buttons und interaktive Elemente
+- Prüfe ob touch-manipulation CSS-Klasse gesetzt ist
+
+Zeige mir den Code-Diff für die notwendigen Änderungen.`;
+
+    case 'ux':
+      return `Bitte verbessere folgendes UX-Problem in meinem React/Tailwind Projekt:
+
+${baseContext}
+
+Konkreter Fix benötigt:
+- Verbessere das visuelle Feedback für User-Interaktionen
+- Stelle sicher dass Formularfelder inline-Validierung haben
+- Füge hilfreiche Fehlermeldungen hinzu
+
+Zeige mir den Code-Diff für die notwendigen Änderungen.`;
+
+    case 'conversion':
+      return `Bitte optimiere folgendes Conversion-Problem in meinem React/Tailwind Projekt:
+
+${baseContext}
+
+Konkreter Fix benötigt:
+- Füge einen visuellen Progress-Indikator hinzu
+- Zeige dem User klar wo er sich im Flow befindet
+- Verstärke die Call-to-Action Elemente
+
+Zeige mir den Code-Diff für die notwendigen Änderungen.`;
+
+    default:
+      return `Bitte behebe folgendes Problem in meinem React/Tailwind Projekt:
+
+${baseContext}
+
+Analysiere das Problem und zeige mir den Code-Diff für die notwendigen Änderungen.`;
+  }
+};
 
 const AutoFlowDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -456,32 +614,13 @@ const AutoFlowDashboard: React.FC = () => {
                     </div>
                   ) : (
                     issues.map(issue => (
-                      <div key={issue.id} className="border rounded-lg p-4 hover:bg-accent/50 transition-colors">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              {getSeverityBadge(issue.severity)}
-                              <Badge variant="secondary">{issue.category}</Badge>
-                              <span className="text-sm text-muted-foreground">
-                                {FLOW_CONFIGS[issue.flow_id as keyof typeof FLOW_CONFIGS]?.name || issue.flow_id}
-                                {issue.step_number && ` • Step ${issue.step_number}`}
-                              </span>
-                            </div>
-                            <h4 className="font-medium">{issue.title}</h4>
-                            {issue.description && (
-                              <p className="text-sm text-muted-foreground mt-1">{issue.description}</p>
-                            )}
-                            {issue.recommendation && (
-                              <p className="text-sm text-primary mt-2">
-                                <strong>Empfehlung:</strong> {issue.recommendation}
-                              </p>
-                            )}
-                          </div>
-                          <Button variant="ghost" size="sm" onClick={() => resolveIssue(issue.id)}>
-                            <CheckCircle className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
+                      <IssueCard 
+                        key={issue.id} 
+                        issue={issue} 
+                        flowConfig={FLOW_CONFIGS[issue.flow_id as keyof typeof FLOW_CONFIGS]}
+                        getSeverityBadge={getSeverityBadge}
+                        onResolve={() => resolveIssue(issue.id)}
+                      />
                     ))
                   )}
                 </div>

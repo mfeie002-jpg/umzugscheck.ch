@@ -30,6 +30,7 @@ import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
+import ABTestToggle from "@/components/admin/ABTestToggle";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -3020,7 +3021,8 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                 <CalculatorFlowReview />
               </TabsContent>
               
-              <TabsContent value="autoflow">
+              <TabsContent value="autoflow" className="space-y-6">
+                <ABTestToggle />
                 <AutoFlowDashboard />
               </TabsContent>
               
