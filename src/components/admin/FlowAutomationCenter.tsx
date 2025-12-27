@@ -10,6 +10,7 @@
  * 4. Fortschritts-Anzeige
  */
 
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,8 @@ import {
   Zap,
   Download,
   Eye,
-  Archive
+  Archive,
+  Layers
 } from "lucide-react";
 
 // Flow options from config
@@ -653,6 +655,21 @@ ${entry.prompt}
                 </AlertDescription>
               </Alert>
 
+              {/* Quick Links to Comparison Pages */}
+              <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/30 rounded-lg">
+                <span className="text-sm font-medium text-muted-foreground mr-2">
+                  <Layers className="h-4 w-4 inline mr-1" />
+                  Varianten vergleichen:
+                </span>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                  <Link key={num} to={`/admin/flow-comparison/${num}`}>
+                    <Button variant="outline" size="sm" className="h-7 px-2">
+                      V{num}
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+
               <div className="grid gap-2 sm:grid-cols-2">
                 <Button
                   onClick={analyzeAllFlows}
@@ -852,6 +869,20 @@ Bitte analysiere diesen Flow und gib mir:
                                       <Download className="h-4 w-4" />
                                     )}
                                   </Button>
+                                  <Link 
+                                    to={`/admin/flow-comparison/${getFlowNumber(result.flowId)}`}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 px-2"
+                                      title="Alle Varianten vergleichen"
+                                    >
+                                      <Layers className="h-4 w-4" />
+                                    </Button>
+                                  </Link>
                                   <Copy className="h-4 w-4 text-muted-foreground" />
                                 </>
                               )}
