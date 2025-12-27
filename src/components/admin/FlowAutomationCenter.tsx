@@ -10,7 +10,7 @@
  * 4. Fortschritts-Anzeige
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -77,7 +77,14 @@ interface FeedbackEntry {
 
 export function FlowAutomationCenter() {
   // Analysis state
-  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>([]);
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>(() =>
+    FLOW_OPTIONS.map((flow) => ({
+      flowId: flow.id,
+      flowName: flow.label,
+      status: "pending" as const,
+    }))
+  );
+  const [isLoadingResults, setIsLoadingResults] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [currentFlowAnalyzing, setCurrentFlowAnalyzing] = useState<string | null>(null);
@@ -95,6 +102,52 @@ export function FlowAutomationCenter() {
   const getFlowNumber = (flowId: string) => {
     const match = flowId.match(/v(\d+)/);
     return match ? match[1] : "1";
+  };
+
+  const loadLatestAnalysisResults = async () => {
+    setIsLoadingResults(true);
+    try {
+      const { data, error } = await supabase
+        .from("flow_analysis_runs")
+        .select("id, flow_id, status, overall_score, ai_summary, created_at, metadata")
+        .eq("status", "completed")
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      if (error) throw error;
+
+      const latestByFlow = new Map<string, any>();
+      (data ?? []).forEach((row: any) => {
+        if (!latestByFlow.has(row.flow_id)) latestByFlow.set(row.flow_id, row);
+      });
+
+      setAnalysisResults(
+        FLOW_OPTIONS.map((flow) => {
+          const row = latestByFlow.get(flow.id);
+          if (!row) {
+            return { flowId: flow.id, flowName: flow.label, status: "pending" as const };
+          }
+
+          const meta = (row.metadata ?? {}) as any;
+          return {
+            flowId: flow.id,
+            flowName: flow.label,
+            status: "completed" as const,
+            score: row.overall_score ?? undefined,
+            summary: row.ai_summary ?? undefined,
+            issuesCount: meta.issuesCount ?? meta.issues_count ?? undefined,
+            criticalCount: meta.criticalCount ?? meta.critical_count ?? undefined,
+          };
+        })
+      );
+
+      toast.success("Letzte Analyse-Ergebnisse geladen");
+    } catch (e) {
+      console.error("loadLatestAnalysisResults error:", e);
+      toast.error("Konnte letzte Analyse-Ergebnisse nicht laden");
+    } finally {
+      setIsLoadingResults(false);
+    }
   };
 
   // Analyze all 9 flows
@@ -310,9 +363,10 @@ ${entry.prompt}
   };
 
   // Initial load
-  useState(() => {
+  useEffect(() => {
     fetchRecentEntries();
-  });
+    loadLatestAnalysisResults();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -366,24 +420,47 @@ ${entry.prompt}
                 </AlertDescription>
               </Alert>
 
-              <Button 
-                onClick={analyzeAllFlows} 
-                disabled={isAnalyzing}
-                size="lg"
-                className="w-full gap-2"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Analysiere {currentFlowAnalyzing}...
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-5 w-5" />
-                    Alle 9 Flows analysieren (V1-V9)
-                  </>
-                )}
-              </Button>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Button
+                  onClick={analyzeAllFlows}
+                  disabled={isAnalyzing}
+                  size="lg"
+                  className="w-full gap-2"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Analysiere {currentFlowAnalyzing}...
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-5 w-5" />
+                      Alle 9 Flows analysieren (V1-V9)
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={loadLatestAnalysisResults}
+                  disabled={isAnalyzing || isLoadingResults}
+                  size="lg"
+                  className="w-full gap-2"
+                >
+                  {isLoadingResults ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Lade Ergebnisse...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-5 w-5" />
+                      Letzte Ergebnisse laden
+                    </>
+                  )}
+                </Button>
+              </div>
 
               {isAnalyzing && (
                 <div className="space-y-2">
@@ -402,29 +479,34 @@ ${entry.prompt}
                     <Button
                       variant="outline"
                       size="sm"
+                      disabled={!analysisResults.some((r) => r.status === "completed")}
                       onClick={async () => {
                         const exportData = {
                           exportedAt: new Date().toISOString(),
-                          flows: analysisResults.map(r => ({
+                          flows: analysisResults.map((r) => ({
                             flowId: r.flowId,
                             flowName: r.flowName,
                             score: r.score,
                             issuesCount: r.issuesCount,
                             criticalCount: r.criticalCount,
-                            summary: r.summary
-                          }))
+                            summary: r.summary,
+                          })),
                         };
-                        
+
                         const prompt = `# Umzugscheck.ch Flow-Analyse Ergebnisse
 
 Hier sind die Analyse-Ergebnisse für alle 9 Flows (V1-V9):
 
-${analysisResults.filter(r => r.status === 'completed').map(r => `
+${analysisResults
+  .filter((r) => r.status === "completed")
+  .map(
+    (r) => `
 ## ${r.flowName}
-- **Score:** ${r.score}/100
-- **Issues:** ${r.issuesCount} (${r.criticalCount} kritisch)
-${r.summary ? `- **Summary:** ${r.summary}` : ''}
-`).join('\n')}
+- **Score:** ${r.score ?? "—"}/100
+- **Issues:** ${r.issuesCount ?? "—"} (${r.criticalCount ?? "—"} kritisch)
+${r.summary ? `- **Summary:** ${r.summary}` : ""}`
+  )
+  .join("\n")}
 
 ---
 
@@ -435,7 +517,7 @@ ${r.summary ? `- **Summary:** ${r.summary}` : ''}
 
 Fokus: Mobile-UX, Trust-Elemente, CTA-Optimierung, Formular-Vereinfachung.
 Antworte auf Deutsch.`;
-                        
+
                         await navigator.clipboard.writeText(prompt);
                         toast.success("Export-Prompt kopiert!", {
                           description: "Füge ihn in ChatGPT oder Gemini ein.",
@@ -488,9 +570,9 @@ Antworte auf Deutsch.`;
                                 onClick={async () => {
                                   const singlePrompt = `# ${result.flowName} - Detailanalyse
 
-Score: ${result.score}/100
-Issues: ${result.issuesCount} (${result.criticalCount} kritisch)
-${result.summary ? `\nSummary: ${result.summary}` : ''}
+Score: ${result.score ?? "—"}/100
+Issues: ${result.issuesCount ?? "—"} (${result.criticalCount ?? "—"} kritisch)
+${result.summary ? `\nSummary: ${result.summary}` : ""}
 
 Bitte analysiere diesen Flow und gib mir:
 1. Die 3 kritischsten UX-Probleme
