@@ -1,11 +1,13 @@
 /**
  * AutoVersionScreenshots - Automatische Screenshot-Erfassung für alle Flow-Versionen
  * 
- * Erfasst Screenshots für alle existierenden Versionen in der DB und speichert
- * die neuen Screenshots direkt in die flow_versions Tabelle.
+ * Features:
+ * - Auto-Sync: Neue Versionen werden automatisch erkannt und Screenshots erfasst
+ * - Storage: Screenshots werden in Supabase Storage gespeichert (nicht als base64 in DB)
+ * - Realtime: Überwacht flow_versions Tabelle auf neue Einträge
  */
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/data/constants";
@@ -28,6 +31,8 @@ import {
   Database,
   Zap,
   Save,
+  Radio,
+  CloudUpload,
 } from "lucide-react";
 import { captureScreenshot } from "@/lib/screenshot-service";
 import { Json } from "@/integrations/supabase/types";
@@ -62,22 +67,12 @@ interface FlowVersion {
   config: Json;
 }
 
-interface CaptureJob {
-  versionId: string;
-  flowId: string;
-  versionNumber: string;
-  versionName: string | null;
-  variant?: string;
-  steps: number;
-  path: string;
-}
-
 interface CaptureResult {
   versionId: string;
   step: number;
   dimension: "desktop" | "mobile";
   success: boolean;
-  imageBase64?: string;
+  url?: string;
   error?: string;
 }
 
@@ -99,12 +94,12 @@ export function AutoVersionScreenshots() {
   const [delayMs, setDelayMs] = useState(10000);
   const [progress, setProgress] = useState({ current: 0, total: 0, message: "" });
   const [results, setResults] = useState<CaptureResult[]>([]);
+  const [autoSync, setAutoSync] = useState(true);
+  const [pendingQueue, setPendingQueue] = useState<string[]>([]);
+  const processingRef = useRef(false);
 
-  useEffect(() => {
-    fetchVersions();
-  }, []);
-
-  const fetchVersions = async () => {
+  // Fetch all versions
+  const fetchVersions = useCallback(async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -127,7 +122,59 @@ export function AutoVersionScreenshots() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchVersions();
+  }, [fetchVersions]);
+
+  // Realtime subscription for auto-sync
+  useEffect(() => {
+    if (!autoSync) return;
+
+    const channel = supabase
+      .channel("flow_versions_changes")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "flow_versions" },
+        (payload) => {
+          const newVersion = payload.new as FlowVersion;
+          console.log("New version detected:", newVersion.version_number);
+          
+          // Add to pending queue if no screenshots
+          const screenshots = newVersion.screenshots as Record<string, string> | null;
+          if (!screenshots || Object.keys(screenshots).length === 0) {
+            setPendingQueue(prev => [...prev, newVersion.id]);
+            setVersions(prev => [newVersion, ...prev]);
+            toast.info(`Neue Version erkannt: ${newVersion.version_number}`);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [autoSync]);
+
+  // Process pending queue automatically
+  useEffect(() => {
+    if (pendingQueue.length === 0 || processingRef.current || !autoSync) return;
+
+    const processQueue = async () => {
+      processingRef.current = true;
+      const versionId = pendingQueue[0];
+      
+      await captureVersionScreenshots(versionId);
+      
+      setPendingQueue(prev => prev.slice(1));
+      processingRef.current = false;
+    };
+
+    // Small delay before starting
+    const timeout = setTimeout(processQueue, 2000);
+    return () => clearTimeout(timeout);
+  }, [pendingQueue, autoSync]);
 
   const getFlowPath = (version: FlowVersion): { path: string; steps: number } | null => {
     // Check for V9 variants first
@@ -184,6 +231,178 @@ export function AutoVersionScreenshots() {
     return `${base}${path}${separator}uc_capture=1&uc_step=${step}&uc_cb=${Date.now()}`;
   };
 
+  // Upload screenshot to Supabase Storage
+  const uploadScreenshot = async (
+    versionId: string,
+    step: number,
+    dimension: "desktop" | "mobile",
+    base64Data: string
+  ): Promise<string | null> => {
+    try {
+      // Convert base64 to blob
+      const base64Clean = base64Data.replace(/^data:image\/\w+;base64,/, "");
+      const byteCharacters = atob(base64Clean);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "image/png" });
+
+      // Create unique path
+      const fileName = `${versionId}/step${step}_${dimension}_${Date.now()}.png`;
+      
+      const { data, error } = await supabase.storage
+        .from("flow-screenshots")
+        .upload(fileName, blob, {
+          contentType: "image/png",
+          upsert: true,
+        });
+
+      if (error) {
+        console.error("Storage upload error:", error);
+        return null;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("flow-screenshots")
+        .getPublicUrl(data.path);
+
+      return publicUrl;
+    } catch (err) {
+      console.error("Failed to upload screenshot:", err);
+      return null;
+    }
+  };
+
+  // Capture screenshots for a single version
+  const captureVersionScreenshots = async (versionId: string) => {
+    const version = versions.find(v => v.id === versionId);
+    if (!version) return;
+
+    const flowInfo = getFlowPath(version);
+    if (!flowInfo) {
+      console.warn(`No flow path found for version ${version.version_number}`);
+      return;
+    }
+
+    const dimensions = [
+      ...(captureDesktop ? [{ type: "desktop" as const, value: "1920x1080" }] : []),
+      ...(captureMobile ? [{ type: "mobile" as const, value: "390x844" }] : []),
+    ];
+
+    if (dimensions.length === 0) return;
+
+    const totalCaptures = flowInfo.steps * dimensions.length;
+    let captureCount = 0;
+    const screenshotUrls: Record<string, string> = {};
+    const captureResults: CaptureResult[] = [];
+
+    setIsRunning(true);
+
+    for (let step = 1; step <= flowInfo.steps; step++) {
+      for (const dim of dimensions) {
+        captureCount++;
+        const dimLabel = dim.type === "desktop" ? "Desktop" : "Mobile";
+        setProgress({
+          current: captureCount,
+          total: totalCaptures,
+          message: `${version.version_number} - Step ${step}: ${dimLabel}...`,
+        });
+
+        const url = buildCaptureUrl(flowInfo.path, step);
+
+        try {
+          const result = await captureScreenshot({
+            url,
+            dimension: dim.value,
+            delay: delayMs,
+            format: "png",
+            fullPage: false,
+            scroll: false,
+            noCache: true,
+          });
+
+          if (result.success && result.image) {
+            // Upload to storage
+            const publicUrl = await uploadScreenshot(versionId, step, dim.type, result.image);
+            
+            if (publicUrl) {
+              const key = `step${step}${dim.type === "desktop" ? "Desktop" : "Mobile"}`;
+              screenshotUrls[key] = publicUrl;
+              
+              captureResults.push({
+                versionId,
+                step,
+                dimension: dim.type,
+                success: true,
+                url: publicUrl,
+              });
+            } else {
+              captureResults.push({
+                versionId,
+                step,
+                dimension: dim.type,
+                success: false,
+                error: "Storage upload failed",
+              });
+            }
+          } else {
+            captureResults.push({
+              versionId,
+              step,
+              dimension: dim.type,
+              success: false,
+              error: result.error || "Capture failed",
+            });
+          }
+        } catch (err) {
+          captureResults.push({
+            versionId,
+            step,
+            dimension: dim.type,
+            success: false,
+            error: err instanceof Error ? err.message : "Unknown error",
+          });
+        }
+
+        // Small delay between captures
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+    }
+
+    // Save URLs to DB (much smaller than base64!)
+    if (Object.keys(screenshotUrls).length > 0) {
+      setProgress(prev => ({ ...prev, message: `${version.version_number}: Speichere...` }));
+      
+      try {
+        const { error } = await supabase
+          .from("flow_versions")
+          .update({ screenshots: screenshotUrls })
+          .eq("id", versionId);
+
+        if (error) {
+          console.error(`Failed to save screenshots for ${version.version_number}:`, error);
+          toast.error(`Fehler beim Speichern: ${version.version_number}`);
+        } else {
+          toast.success(`${version.version_number}: ${Object.keys(screenshotUrls).length} Screenshots gespeichert`);
+          // Update local state
+          setVersions(prev => prev.map(v => 
+            v.id === versionId ? { ...v, screenshots: screenshotUrls } : v
+          ));
+        }
+      } catch (err) {
+        console.error(`Exception saving screenshots:`, err);
+        toast.error(`Fehler beim Speichern: ${version.version_number}`);
+      }
+    }
+
+    setResults(prev => [...prev, ...captureResults]);
+    setIsRunning(false);
+  };
+
+  // Run capture for selected versions
   const runCapture = async () => {
     if (selectedVersions.length === 0) {
       toast.error("Bitte wähle mindestens eine Version aus");
@@ -195,131 +414,14 @@ export function AutoVersionScreenshots() {
       return;
     }
 
-    setIsRunning(true);
     setResults([]);
 
-    const jobs: CaptureJob[] = [];
     for (const versionId of selectedVersions) {
-      const version = versions.find(v => v.id === versionId);
-      if (!version) continue;
-
-      const flowInfo = getFlowPath(version);
-      if (!flowInfo) {
-        console.warn(`No flow path found for version ${version.version_number}`);
-        continue;
-      }
-
-      jobs.push({
-        versionId: version.id,
-        flowId: version.flow_id,
-        versionNumber: version.version_number,
-        versionName: version.version_name,
-        steps: flowInfo.steps,
-        path: flowInfo.path,
-      });
+      await captureVersionScreenshots(versionId);
     }
 
-    const dimensions = [
-      ...(captureDesktop ? [{ type: "desktop" as const, value: "1920x1080" }] : []),
-      ...(captureMobile ? [{ type: "mobile" as const, value: "390x844" }] : []),
-    ];
-
-    const totalCaptures = jobs.reduce((acc, job) => acc + job.steps * dimensions.length, 0);
-    let captureCount = 0;
-    const allResults: CaptureResult[] = [];
-    const screenshotUpdates: Map<string, Record<string, string>> = new Map();
-
-    for (const job of jobs) {
-      // Initialize screenshot object for this version
-      if (!screenshotUpdates.has(job.versionId)) {
-        screenshotUpdates.set(job.versionId, {});
-      }
-
-      for (let step = 1; step <= job.steps; step++) {
-        for (const dim of dimensions) {
-          captureCount++;
-          const dimLabel = dim.type === "desktop" ? "Desktop" : "Mobile";
-          setProgress({
-            current: captureCount,
-            total: totalCaptures,
-            message: `${job.versionNumber} - Step ${step}: ${dimLabel}...`,
-          });
-
-          const url = buildCaptureUrl(job.path, step);
-
-          try {
-            const result = await captureScreenshot({
-              url,
-              dimension: dim.value,
-              delay: delayMs,
-              format: "png",
-              fullPage: false,
-              scroll: false,
-              noCache: true,
-            });
-
-            const captureResult: CaptureResult = {
-              versionId: job.versionId,
-              step,
-              dimension: dim.type,
-              success: result.success,
-              imageBase64: result.image,
-              error: result.error,
-            };
-
-            allResults.push(captureResult);
-            setResults([...allResults]);
-
-            if (result.success && result.image) {
-              const key = `step${step}${dim.type === "desktop" ? "Desktop" : "Mobile"}`;
-              const current = screenshotUpdates.get(job.versionId) || {};
-              current[key] = result.image;
-              screenshotUpdates.set(job.versionId, current);
-            }
-          } catch (err) {
-            allResults.push({
-              versionId: job.versionId,
-              step,
-              dimension: dim.type,
-              success: false,
-              error: err instanceof Error ? err.message : "Unknown error",
-            });
-            setResults([...allResults]);
-          }
-
-          // Small delay between captures
-          await new Promise(resolve => setTimeout(resolve, 1500));
-        }
-      }
-
-      // Save screenshots to DB after each version is complete
-      const screenshots = screenshotUpdates.get(job.versionId);
-      if (screenshots && Object.keys(screenshots).length > 0) {
-        setProgress(prev => ({ ...prev, message: `${job.versionNumber}: Speichere in DB...` }));
-        
-        try {
-          const { error } = await supabase
-            .from("flow_versions")
-            .update({ screenshots })
-            .eq("id", job.versionId);
-
-          if (error) {
-            console.error(`Failed to save screenshots for ${job.versionNumber}:`, error);
-            toast.error(`Fehler beim Speichern: ${job.versionNumber}`);
-          } else {
-            toast.success(`${job.versionNumber}: ${Object.keys(screenshots).length} Screenshots gespeichert`);
-          }
-        } catch (err) {
-          console.error(`Exception saving screenshots:`, err);
-        }
-      }
-    }
-
-    setIsRunning(false);
-    const successCount = allResults.filter(r => r.success).length;
-    toast.success(`Fertig! ${successCount}/${totalCaptures} Screenshots erfolgreich`);
-    
-    // Refresh versions list
+    const successCount = results.filter(r => r.success).length;
+    toast.success(`Fertig! Screenshots erfolgreich erfasst`);
     fetchVersions();
   };
 
@@ -346,15 +448,37 @@ export function AutoVersionScreenshots() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Database className="h-5 w-5" />
-            Auto-Screenshots für alle Versionen
-          </CardTitle>
-          <CardDescription>
-            Erfasst automatisch Screenshots für alle gespeicherten Flow-Versionen und speichert sie in der DB
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Auto-Screenshots für alle Versionen
+              </CardTitle>
+              <CardDescription>
+                Erfasst automatisch Screenshots und speichert sie in Storage
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Radio className={`h-4 w-4 ${autoSync ? "text-green-500 animate-pulse" : "text-muted-foreground"}`} />
+              <span className="text-sm">Auto-Sync</span>
+              <Switch checked={autoSync} onCheckedChange={setAutoSync} />
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Auto-Sync Status */}
+          {autoSync && (
+            <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+              <Radio className="h-4 w-4 text-green-500 animate-pulse" />
+              <span className="text-sm text-green-700 dark:text-green-300">
+                Auto-Sync aktiv: Neue Versionen werden automatisch erfasst
+              </span>
+              {pendingQueue.length > 0 && (
+                <Badge variant="secondary">{pendingQueue.length} in Warteschlange</Badge>
+              )}
+            </div>
+          )}
+
           {/* Settings */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg">
             <div className="space-y-2">
@@ -414,12 +538,15 @@ export function AutoVersionScreenshots() {
                 const screenshotCount = getScreenshotCount(version);
                 const flowInfo = getFlowPath(version);
                 const isSelected = selectedVersions.includes(version.id);
+                const isPending = pendingQueue.includes(version.id);
 
                 return (
                   <div
                     key={version.id}
                     className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                      isSelected ? "bg-primary/10 border border-primary/30" : "hover:bg-muted/50"
+                      isSelected ? "bg-primary/10 border border-primary/30" : 
+                      isPending ? "bg-yellow-50 border border-yellow-300" : 
+                      "hover:bg-muted/50"
                     }`}
                     onClick={() => toggleVersion(version.id)}
                   >
@@ -438,9 +565,15 @@ export function AutoVersionScreenshots() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
+                      {isPending && (
+                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                          Wartend
+                        </Badge>
+                      )}
                       {screenshotCount > 0 ? (
                         <Badge variant="secondary" className="bg-green-100 text-green-700">
-                          <Camera className="h-3 w-3 mr-1" />
+                          <CloudUpload className="h-3 w-3 mr-1" />
                           {screenshotCount}
                         </Badge>
                       ) : (
@@ -534,8 +667,8 @@ export function AutoVersionScreenshots() {
                         <Badge variant="outline" className="text-xs">Step {result.step}</Badge>
                         <span className="capitalize">{result.dimension}</span>
                       </div>
-                      {result.success && result.imageBase64 && (
-                        <img src={result.imageBase64} alt="" className="h-8 w-auto rounded" />
+                      {result.success && result.url && (
+                        <img src={result.url} alt="" className="h-8 w-auto rounded" />
                       )}
                       {result.error && (
                         <span className="text-xs truncate max-w-[200px]">{result.error}</span>
