@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ReviewSubmissionForm } from "@/components/review/ReviewSubmissionForm";
+import { ReviewSubmissionForm } from "@/components/reviews/ReviewSubmissionForm";
 
 export default function ReviewSubmission() {
   const { requestId } = useParams();

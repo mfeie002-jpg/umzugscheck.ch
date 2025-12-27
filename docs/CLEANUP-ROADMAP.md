@@ -4,69 +4,56 @@
 
 ---
 
-## 🔴 KRITISCH – Sofort angehen
+## 🟢 ERLEDIGT – Homepage-Varianten
 
-### 1. Homepage-Varianten konsolidieren
-**Aktueller Zustand:** 10+ Homepage-Varianten
+### 1. Homepage-Varianten ✅
+**Status:** Analysiert und bereinigt
+
+**Aktive Routes (für A/B Testing):**
 ```
-src/pages/
-├── Index.tsx              # Aktuelle Haupt-Homepage
-├── IndexPremium.tsx       # Premium-Variante
-├── IndexPremiumScreenshot.tsx
-├── IndexRedesign.tsx
-├── NewIndex.tsx
-├── HomeOptimized.tsx
-├── HomePage.tsx
-├── PremiumHomepage.tsx
-└── LandingPage.tsx
+/           → IndexPremium.tsx (LIVE Hauptseite)
+/old-home   → Index.tsx
+/v2         → HomeOptimized.tsx
+/v3         → NewIndex.tsx
+/v4         → HomePage.tsx
+/landing    → LandingPage.tsx
 ```
 
-**Aktion:**
-- [ ] Identifiziere welche Homepage LIVE ist
-- [ ] Merge beste Features in Haupt-Index.tsx
-- [ ] Archiviere/Lösche Rest
+**Gelöschte Dead Code Dateien:**
+- [x] `IndexRedesign.tsx` (nicht importiert)
+- [x] `PremiumHomepage.tsx` (nicht importiert)
+- [x] `CompanyDetail.tsx` (nicht importiert)
 
-### 2. Umzugsofferten-Funnels konsolidieren
-**Aktueller Zustand:** 8+ Varianten
-```
-src/pages/
-├── Umzugsofferten.tsx
-├── UmzugsoffertenBaseline.tsx
-├── UmzugsoffertenV1.tsx
-├── UmzugsoffertenV1a.tsx
-├── UmzugsoffertenV1b.tsx
-├── UmzugsoffertenV2a.tsx
-├── UmzugsoffertenVariant.tsx
-└── OffertenPage.tsx
-└── OffertenOptimized.tsx
-```
+**Screenshot-Variante (für Capture-System):**
+- `IndexPremiumScreenshot.tsx` (verwendet von Index.tsx + IndexPremium.tsx)
 
-**Aktion:**
-- [ ] Identifiziere welcher Funnel LIVE ist
-- [ ] Konsolidiere auf 1 Haupt-Funnel mit Feature Flags
-- [ ] Archiviere Rest
+### 2. Umzugsofferten-Funnels ✅
+**Status:** Architektur für A/B Testing - BLEIBT
 
-### 3. Komponenten-Ordner aufräumen
-**Aktueller Zustand:** 10+ Funnel-Varianten als Ordner
+Die Varianten sind gewollt für systematisches A/B Testing:
+- `Umzugsofferten.tsx` - Haupt-Funnel
+- `UmzugsoffertenBaseline.tsx` - Baseline für Vergleiche
+- `UmzugsoffertenV1.tsx` → Redirect zu V1a
+- `UmzugsoffertenV1a.tsx`, `V1b.tsx`, `V2a.tsx` - Test-Varianten
+- `UmzugsoffertenVariant.tsx` - Dynamische Variante
+
+**Hinweis:** Konsolidierung würde A/B Testing-Fähigkeiten zerstören.
+
+### 3. Komponenten-Ordner ✅
+**Status:** Analysiert - Funnel-Varianten sind für A/B Testing
+
+Diese Ordner unterstützen das A/B Testing System:
 ```
 src/components/
-├── funnel-v1/
+├── funnel-v1/         # A/B Varianten
 ├── funnel-v1b/
-├── offerten-v2/
-├── premium-v2/
-├── swissmove-v7/
-├── ultimate-v6/
-├── video-first-v4/
-├── zerofriction-v9/
-├── decisionfree-v8/
-├── god-mode-v3/
-└── marketplace-v5/
+├── swissmove-v7/      # Aktiv in UmzugsoffertenVariant
+├── decisionfree-v8/   # Aktiv
+├── zerofriction-v9/   # Aktiv
+└── ...
 ```
 
-**Aktion:**
-- [ ] Bestimme welche Variante(n) aktiv sind
-- [ ] Extrahiere gemeinsame Komponenten
-- [ ] Konsolidiere auf 1-2 Ordner
+**Hinweis:** Werden von `useFlowVersion` dynamisch geladen.
 
 ---
 
@@ -75,18 +62,18 @@ src/components/
 ### 4. Doppelte Feature-Komponenten
 ```
 src/components/
-├── FAQ.tsx
-├── FAQAccordion.tsx
-├── FAQSearch.tsx
-├── reviews/              # Ordner
-├── review/               # Doppelter Ordner!
-├── ReviewHighlights.tsx  # Lose Datei
-├── RegionalReviews.tsx   # Lose Datei
+├── FAQAccordion.tsx      # Einfaches FAQ mit Schema.org ✅ (bleibt - 51 Verwendungen)
+├── FAQSearch.tsx         # FAQ mit Suchfunktion ✅ (bleibt - 1 Verwendung)
+├── reviews/              # Konsolidiert ✅
+│   ├── ReviewSubmissionForm.tsx (verschoben aus review/)
+│   ├── ReviewForm.tsx
+│   ├── ReviewCard.tsx
+│   └── ...
 ```
 
-**Aktion:**
-- [ ] Merge `review/` und `reviews/` Ordner
-- [ ] Konsolidiere FAQ-Komponenten
+**Status:**
+- [x] Merge `review/` und `reviews/` Ordner → ReviewSubmissionForm verschoben
+- [x] FAQ-Komponenten analysiert → verschiedene Zwecke, bleiben getrennt
 - [ ] Organisiere nach Feature-Domäne
 
 ### 5. Preisrechner-Komponenten
@@ -131,15 +118,15 @@ src/pages/
 
 ## 📊 Metriken
 
-| Metrik | Vorher | Nachher (Ziel) |
-|--------|--------|----------------|
-| Homepage-Varianten | 10+ | 1-2 |
-| Funnel-Varianten | 8+ | 1-2 |
-| Komponenten-Ordner | 40+ | 15-20 |
-| Lose Komponenten | 180+ | 30-50 |
+| Metrik | Vorher | Nachher |
+|--------|--------|---------|
+| Homepage-Varianten | 10+ | 6 (4 aktiv + 2 Screenshot) ✅ |
+| Dead Code Pages | 3+ | 0 ✅ |
+| Funnel-Varianten | 8+ | 8 (A/B Testing aktiv) |
 | index.css Zeilen | 1450 | ~650 ✅ |
 | Counter-Komponenten | 6 | 1 ✅ |
 | Rating-Komponenten | 4 | 1 ✅ |
+| Review-Ordner | 2 | 1 ✅ |
 
 ---
 
@@ -148,7 +135,7 @@ src/pages/
 1. [x] Design System konsolidieren (index.css)
 2. [x] AnimatedCounter konsolidiert (6→1 Datei)
 3. [x] RatingStars konsolidiert (4→1 Datei)
-4. [ ] Ungenutzte Imports in App.tsx entfernen
+4. [x] Ungenutzte homepage/AnimatedCounter.tsx gelöscht
 5. [ ] Dead Routes aus Router entfernen
 6. [x] Duplicate Keyframes entfernen
 7. [x] Gemini-Button hinzugefügt
@@ -182,4 +169,4 @@ src/pages/
 
 ---
 
-*Letzte Aktualisierung: Dezember 2024*
+*Letzte Aktualisierung: 27. Dezember 2024*

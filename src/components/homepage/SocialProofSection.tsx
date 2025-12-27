@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { Star, CheckCircle, MapPin, Users, TrendingUp, Award, Zap, Shield } from "lucide-react";
-import { AnimatedCounter } from "./AnimatedCounter";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useEffect, useRef, useState } from "react";
 
 const stats = [
