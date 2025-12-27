@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.background-export]
 verify_jwt = false
+
+[functions.trigger-flow-analysis]
+verify_jwt = false
