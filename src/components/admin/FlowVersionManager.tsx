@@ -271,24 +271,46 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
         isCodedVariant: !!variantConfig.component,
       } : null;
 
-      const { error } = await supabase
+      // Check if version already exists
+      const { data: existingVersion } = await supabase
         .from('flow_versions')
-        .insert({
-          flow_id: flowId,
-          version_number: newVersionNumber.trim(),
-          version_name: newVersionName.trim() || (variantConfig?.label || null),
-          description: newVersionDescription.trim() || (variantConfig?.description || null),
-          step_configs: variantConfig?.steps || currentSteps.map(s => ({
-            step: s.step,
-            name: s.name,
-            description: s.description,
-            url: s.url
-          })),
-          screenshots,
-          html_snapshots: htmlSnapshots,
-          is_baseline: versions.length === 0,
-          config: configData, // Store variant config in the config column
-        });
+        .select('id')
+        .eq('flow_id', flowId)
+        .eq('version_number', newVersionNumber.trim())
+        .maybeSingle();
+
+      const versionPayload = {
+        flow_id: flowId,
+        version_number: newVersionNumber.trim(),
+        version_name: newVersionName.trim() || (variantConfig?.label || null),
+        description: newVersionDescription.trim() || (variantConfig?.description || null),
+        step_configs: variantConfig?.steps || currentSteps.map(s => ({
+          step: s.step,
+          name: s.name,
+          description: s.description,
+          url: s.url
+        })),
+        screenshots,
+        html_snapshots: htmlSnapshots,
+        is_baseline: versions.length === 0,
+        config: configData,
+      };
+
+      let error;
+      if (existingVersion?.id) {
+        // Update existing version
+        const result = await supabase
+          .from('flow_versions')
+          .update(versionPayload)
+          .eq('id', existingVersion.id);
+        error = result.error;
+      } else {
+        // Insert new version
+        const result = await supabase
+          .from('flow_versions')
+          .insert(versionPayload);
+        error = result.error;
+      }
 
       if (error) throw error;
 
