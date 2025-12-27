@@ -963,7 +963,10 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                           }
                           
                           // Determine the base URL for the flow
-                          const baseUrl = `${window.location.origin}/umzugsofferten`;
+                          // Prefer static config path (includes variant query) so screenshots match the selected version
+                          const baseUrl = staticConfig?.path
+                            ? `${window.location.origin}${staticConfig.path}`
+                            : `${window.location.origin}/umzugsofferten`;
                           
                           await startJob({
                             versionId: selectedVersionForBackgroundScreenshots.id,
