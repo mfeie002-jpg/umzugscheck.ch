@@ -413,12 +413,28 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                       )}
                     </div>
                   )}
-                  <div className="text-sm text-muted-foreground">
-                    {variantConfig?.steps?.length || currentSteps.length} Steps mit {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length} Screenshots werden gespeichert
-                  </div>
-                  <Button onClick={saveVersion} className="w-full">
+                  {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length === 0 ? (
+                    <div className="p-3 bg-destructive/10 rounded-lg border border-destructive/30 text-destructive">
+                      <div className="font-medium text-sm mb-1">⚠️ Keine Screenshots vorhanden!</div>
+                      <p className="text-xs">
+                        Du musst zuerst Screenshots für diese Variante aufnehmen (Capture-Button), 
+                        sonst werden leere oder alte Screenshots gespeichert.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">
+                      {variantConfig?.steps?.length || currentSteps.length} Steps mit {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length} Screenshots werden gespeichert
+                    </div>
+                  )}
+                  <Button 
+                    onClick={saveVersion} 
+                    className="w-full"
+                    variant={currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length === 0 ? "outline" : "default"}
+                  >
                     <Save className="h-4 w-4 mr-2" />
-                    Speichern
+                    {currentSteps.filter(s => s.screenshotDesktop || s.screenshotMobile).length === 0 
+                      ? "Trotzdem speichern (ohne Screenshots)" 
+                      : "Speichern"}
                   </Button>
                 </div>
               </DialogContent>
