@@ -23,7 +23,12 @@ interface CaptureRequest {
 
 const SCREENSHOT_API_KEY = '5b91f9'; // ScreenshotMachine API key
 
-async function captureScreenshot(url: string, dimension: string): Promise<string | null> {
+interface ScreenshotError {
+  type: 'quota_exceeded' | 'api_error' | 'network_error';
+  message: string;
+}
+
+async function captureScreenshot(url: string, dimension: string): Promise<{ data: string | null; error: ScreenshotError | null }> {
   try {
     const params = new URLSearchParams({
       key: SCREENSHOT_API_KEY,
@@ -39,17 +44,64 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
     
     const response = await fetch(apiUrl);
     
+    // Check content type - if it's not an image, it's likely an error response
+    const contentType = response.headers.get('content-type') || '';
+    
     if (!response.ok) {
       console.error(`Screenshot API error: ${response.status}`);
-      return null;
+      
+      // Check for quota exceeded (402 Payment Required or similar)
+      if (response.status === 402 || response.status === 429) {
+        return { 
+          data: null, 
+          error: { 
+            type: 'quota_exceeded', 
+            message: 'Screenshot-Kontingent aufgebraucht. Bitte Plan upgraden oder auf nächste Abrechnungsperiode warten.' 
+          } 
+        };
+      }
+      
+      return { 
+        data: null, 
+        error: { type: 'api_error', message: `API Fehler: ${response.status}` } 
+      };
     }
 
     const arrayBuffer = await response.arrayBuffer();
+    
+    // Check if response is too small (likely an error page or empty response)
+    if (arrayBuffer.byteLength < 1000) {
+      const textResponse = new TextDecoder().decode(arrayBuffer);
+      console.error('Unexpected small response:', textResponse);
+      
+      // Check for quota/credit related error messages
+      if (textResponse.toLowerCase().includes('credit') || 
+          textResponse.toLowerCase().includes('quota') ||
+          textResponse.toLowerCase().includes('limit') ||
+          textResponse.toLowerCase().includes('exceeded')) {
+        return { 
+          data: null, 
+          error: { 
+            type: 'quota_exceeded', 
+            message: 'Screenshot-Kontingent aufgebraucht. Bitte Plan upgraden oder auf nächste Abrechnungsperiode warten.' 
+          } 
+        };
+      }
+      
+      return { 
+        data: null, 
+        error: { type: 'api_error', message: 'Ungültige API-Antwort erhalten' } 
+      };
+    }
+
     const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-    return `data:image/png;base64,${base64}`;
+    return { data: `data:image/png;base64,${base64}`, error: null };
   } catch (error) {
     console.error('Screenshot capture error:', error);
-    return null;
+    return { 
+      data: null, 
+      error: { type: 'network_error', message: error instanceof Error ? error.message : 'Netzwerkfehler' } 
+    };
   }
 }
 
@@ -110,24 +162,59 @@ Deno.serve(async (req) => {
       // Capture desktop screenshot
       if (captureDesktop) {
         console.log(`Capturing desktop for step ${stepNum}`);
-        const desktopImage = await captureScreenshot(stepUrl, '1920x1080');
-        if (desktopImage) {
-          screenshots[`step${stepNum}Desktop`] = desktopImage;
+        const result = await captureScreenshot(stepUrl, '1920x1080');
+        
+        if (result.error) {
+          console.error(`Screenshot error for step ${stepNum}:`, result.error);
+          
+          // If quota exceeded, fail the entire job with clear message
+          if (result.error.type === 'quota_exceeded') {
+            await supabase
+              .from('export_jobs')
+              .update({ 
+                status: 'failed',
+                error_message: result.error.message,
+                completed_at: new Date().toISOString()
+              })
+              .eq('id', jobId);
+
+            return new Response(
+              JSON.stringify({ success: false, error: result.error.message, errorType: 'quota_exceeded' }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
+            );
+          }
+        } else if (result.data) {
+          screenshots[`step${stepNum}Desktop`] = result.data;
           console.log(`Desktop screenshot captured for step ${stepNum}`);
-        } else {
-          console.warn(`Failed to capture desktop screenshot for step ${stepNum}`);
         }
       }
 
       // Capture mobile screenshot
       if (captureMobile) {
         console.log(`Capturing mobile for step ${stepNum}`);
-        const mobileImage = await captureScreenshot(stepUrl, '375x812');
-        if (mobileImage) {
-          screenshots[`step${stepNum}Mobile`] = mobileImage;
+        const result = await captureScreenshot(stepUrl, '375x812');
+        
+        if (result.error) {
+          console.error(`Screenshot error for step ${stepNum}:`, result.error);
+          
+          if (result.error.type === 'quota_exceeded') {
+            await supabase
+              .from('export_jobs')
+              .update({ 
+                status: 'failed',
+                error_message: result.error.message,
+                completed_at: new Date().toISOString()
+              })
+              .eq('id', jobId);
+
+            return new Response(
+              JSON.stringify({ success: false, error: result.error.message, errorType: 'quota_exceeded' }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
+            );
+          }
+        } else if (result.data) {
+          screenshots[`step${stepNum}Mobile`] = result.data;
           console.log(`Mobile screenshot captured for step ${stepNum}`);
-        } else {
-          console.warn(`Failed to capture mobile screenshot for step ${stepNum}`);
         }
       }
 
