@@ -247,19 +247,43 @@ function TrustBadges() {
     <div className="flex flex-wrap items-center justify-center gap-4 py-3 px-4 bg-muted/30 border-b border-border text-xs">
       <div className="flex items-center gap-1.5">
         <Shield className="h-4 w-4 text-primary" />
-        <span className="text-muted-foreground">100% Fixpreis</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <Star className="h-4 w-4 text-amber-500" />
-        <span className="text-muted-foreground">4.8/5 (2'340 Bewertungen)</span>
+        <span className="text-muted-foreground">Unverbindlich</span>
+        <span className="text-muted-foreground/60">– keine Pflicht</span>
       </div>
       <div className="flex items-center gap-1.5">
         <CheckCircle2 className="h-4 w-4 text-primary" />
-        <span className="text-muted-foreground">Geprüfte Schweizer Firmen</span>
+        <span className="text-muted-foreground">Geprüfte Firmen</span>
+        <span className="text-muted-foreground/60">– CH-Partner</span>
       </div>
       <div className="flex items-center gap-1.5">
         <Lock className="h-4 w-4 text-primary" />
-        <span className="text-muted-foreground">Sichere Datenübertragung</span>
+        <span className="text-muted-foreground">Datenschutz</span>
+        <span className="text-muted-foreground/60">– DSG/DSGVO</span>
+      </div>
+    </div>
+  );
+}
+
+function TransparencyPanel() {
+  return (
+    <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
+      <h4 className="font-medium text-sm flex items-center gap-2">
+        <Info className="h-4 w-4 text-primary" />
+        Was passiert als Nächstes?
+      </h4>
+      <div className="grid gap-2 text-xs text-muted-foreground">
+        <div className="flex items-start gap-2">
+          <div className="shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-xs">1</div>
+          <span>Ihre Anfrage geht an die ausgewählten Firmen</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <div className="shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-xs">2</div>
+          <span>Sie erhalten 2-5 unverbindliche Offerten per E-Mail</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <div className="shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-xs">3</div>
+          <span>Vergleichen Sie in Ruhe – keine Verpflichtung</span>
+        </div>
       </div>
     </div>
   );
@@ -984,7 +1008,10 @@ function Step6Contact({
         </p>
       </div>
 
-      {/* Summary card */}
+      {/* Transparency panel - Was passiert als Nächstes? */}
+      <TransparencyPanel />
+
+      {/* Summary card - editable */}
       <Card className="p-4 bg-muted/30">
         <div className="flex items-center justify-between mb-3">
           <span className="font-semibold">Ihre Anfrage</span>
@@ -1311,7 +1338,7 @@ export const V9cFeedbackBased: React.FC = () => {
           </AnimatePresence>
         </div>
 
-        {/* Sticky CTA */}
+        {/* Sticky CTA with improved copy */}
         <StickyFooterCTA
           primaryLabel={
             currentStep === 6
@@ -1319,13 +1346,21 @@ export const V9cFeedbackBased: React.FC = () => {
                 ? 'Wird gesendet...'
                 : 'Offerten erhalten'
               : currentStep === 5
-              ? 'Weiter zu Kontakt'
-              : 'Weiter'
+              ? `${formData.selectedCompanies.length > 0 ? `${formData.selectedCompanies.length} Firma${formData.selectedCompanies.length > 1 ? 'en' : ''} anfragen` : 'Firma wählen'}`
+              : currentStep === 4
+              ? 'Firmen auswählen'
+              : currentStep === 3
+              ? 'Service bestätigen'
+              : currentStep === 2
+              ? 'Weiter zu Services'
+              : 'Preis berechnen'
           }
           onPrimary={currentStep === 6 ? handleSubmit : handleNext}
           disabled={!canContinue || isSubmitting}
           hint={
-            currentStep === 6
+            currentStep === 1
+              ? 'Unverbindlich • Kostenlos • Schweizer Qualität'
+              : currentStep === 6
               ? 'Kostenlos • Unverbindlich • Geprüfte Partner'
               : undefined
           }
