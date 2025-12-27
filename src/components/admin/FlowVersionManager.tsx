@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -127,7 +127,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   const [isUpdatingScreenshots, setIsUpdatingScreenshots] = useState(false);
   const [backgroundScreenshotDialogOpen, setBackgroundScreenshotDialogOpen] = useState(false);
   const [selectedVersionForBackgroundScreenshots, setSelectedVersionForBackgroundScreenshots] = useState<FlowVersion | null>(null);
-  
+  const [autoRefreshedJobId, setAutoRefreshedJobId] = useState<string | null>(null);
   const { activeJob, isPolling, startJob, clearJob, checkPendingJobs } = useBackgroundScreenshotJob();
 
   useEffect(() => {
@@ -141,6 +141,14 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
     }
   }, [backgroundScreenshotDialogOpen, selectedVersionForBackgroundScreenshots?.id, checkPendingJobs]);
 
+  // When a background job completes, auto-refresh versions so screenshots show up even if the dialog was closed.
+  useEffect(() => {
+    if (!activeJob || activeJob.status !== "completed") return;
+    if (autoRefreshedJobId === activeJob.id) return;
+
+    fetchVersions();
+    setAutoRefreshedJobId(activeJob.id);
+  }, [activeJob, autoRefreshedJobId]);
   const flowMajor = getFlowMajorFromFlowId(flowId);
 
   const formatVersion = (raw?: string | null): string => {
@@ -158,43 +166,43 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
 
   // Build alternative flow_id patterns to query
   // E.g., for "umzugsofferten-v9" also include "v9a", "v9b", "V9.a", etc.
-  const getFlowIdPatterns = (baseFlowId: string): string[] => {
+  const getFlowIdPatterns = useCallback((baseFlowId: string): string[] => {
     const patterns: string[] = [baseFlowId];
-    
+
     // Extract major version number
     const match = baseFlowId.match(/v(\d+)/i);
     if (match) {
       const majorVersion = match[1];
       // Add patterns for sub-variants
-      const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-      letters.forEach(letter => {
+      const letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+      letters.forEach((letter) => {
         patterns.push(`v${majorVersion}${letter}`);
         patterns.push(`V${majorVersion}.${letter}`);
       });
     }
-    
-    return patterns;
-  };
 
-  const fetchVersions = async () => {
+    return patterns;
+  }, []);
+
+  async function fetchVersions() {
     try {
       const patterns = getFlowIdPatterns(flowId);
-      
+
       const { data, error } = await supabase
-        .from('flow_versions')
-        .select('*')
-        .in('flow_id', patterns)
-        .order('created_at', { ascending: false });
+        .from("flow_versions")
+        .select("*")
+        .in("flow_id", patterns)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setVersions(data || []);
     } catch (err) {
-      console.error('Failed to fetch versions:', err);
-      toast.error('Versionen konnten nicht geladen werden');
+      console.error("Failed to fetch versions:", err);
+      toast.error("Versionen konnten nicht geladen werden");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const suggestNextVersion = (): string => {
     // If we're inside a specific V1..V9 flow in the admin tools, always suggest that major.
