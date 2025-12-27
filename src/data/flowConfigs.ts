@@ -153,7 +153,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v2a': {
     id: 'v2a',
     label: 'V2a - Progress Enhanced',
-    path: '/flow-tester?variant=v2a',
+    path: '/umzugsofferten?v=2a',
     color: 'bg-purple-400',
     description: 'Animated step indicators with icons',
     parentFlow: 'umzugsofferten-v2',
@@ -167,7 +167,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v2b': {
     id: 'v2b',
     label: 'V2b - Simplified Labels',
-    path: '/flow-tester?variant=v2b',
+    path: '/umzugsofferten?v=2b',
     color: 'bg-purple-300',
     description: 'Cleaner, simpler labels',
     parentFlow: 'umzugsofferten-v2',
@@ -181,7 +181,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v2c': {
     id: 'v2c',
     label: 'V2c - Trust Focused',
-    path: '/flow-tester?variant=v2c',
+    path: '/umzugsofferten?v=2c',
     color: 'bg-purple-500',
     description: 'Enhanced trust signals',
     parentFlow: 'umzugsofferten-v2',
@@ -195,7 +195,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v2d': {
     id: 'v2d',
     label: 'V2d - Speed Optimized',
-    path: '/flow-tester?variant=v2d',
+    path: '/umzugsofferten?v=2d',
     color: 'bg-purple-600',
     description: 'Fastest completion time',
     parentFlow: 'umzugsofferten-v2',
@@ -208,7 +208,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v2e': {
     id: 'v2e',
     label: 'V2e - Experimental',
-    path: '/flow-tester?variant=v2e',
+    path: '/umzugsofferten?v=2e',
     color: 'bg-purple-700',
     description: 'Experimental features',
     parentFlow: 'umzugsofferten-v2',
@@ -223,7 +223,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v3a': {
     id: 'v3a',
     label: 'V3a - Mobile First',
-    path: '/flow-tester?variant=v3a',
+    path: '/umzugsofferten?v=3a',
     color: 'bg-green-400',
     description: 'Touch-optimized, large targets',
     parentFlow: 'umzugsofferten-v3',
@@ -237,7 +237,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v3g': {
     id: 'v3g',
     label: 'V3g - Feedback Based',
-    path: '/flow-tester?variant=v3g',
+    path: '/umzugsofferten?v=3g',
     color: 'bg-green-600',
     description: 'ChatGPT UX-Analyse optimiert',
     parentFlow: 'umzugsofferten-v3',
@@ -251,7 +251,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v3b': {
     id: 'v3b',
     label: 'V3b - Swipe Navigation',
-    path: '/flow-tester?variant=v3b',
+    path: '/umzugsofferten?v=3b',
     color: 'bg-green-300',
     description: 'Swipe between steps',
     parentFlow: 'umzugsofferten-v3',
@@ -265,7 +265,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v3c': {
     id: 'v3c',
     label: 'V3c - Bottom Sheet',
-    path: '/flow-tester?variant=v3c',
+    path: '/umzugsofferten?v=3c',
     color: 'bg-green-500',
     description: 'Native app-like sheets',
     parentFlow: 'umzugsofferten-v3',
@@ -279,7 +279,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v3d': {
     id: 'v3d',
     label: 'V3d - Thumb Zone',
-    path: '/flow-tester?variant=v3d',
+    path: '/umzugsofferten?v=3d',
     color: 'bg-green-600',
     description: 'Optimized for thumb reach',
     parentFlow: 'umzugsofferten-v3',
@@ -292,7 +292,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v3e': {
     id: 'v3e',
     label: 'V3e - Fullscreen',
-    path: '/flow-tester?variant=v3e',
+    path: '/umzugsofferten?v=3e',
     color: 'bg-green-700',
     description: 'Immersive fullscreen',
     parentFlow: 'umzugsofferten-v3',
@@ -307,7 +307,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v4a': {
     id: 'v4a',
     label: 'V4a - Urgency Based',
-    path: '/flow-tester?variant=v4a',
+    path: '/umzugsofferten?v=4a',
     color: 'bg-pink-400',
     description: 'Scarcity and time pressure',
     parentFlow: 'umzugsofferten-v4',
@@ -321,7 +321,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v4b': {
     id: 'v4b',
     label: 'V4b - Social Proof',
-    path: '/flow-tester?variant=v4b',
+    path: '/umzugsofferten?v=4b',
     color: 'bg-pink-300',
     description: 'Reviews and testimonials',
     parentFlow: 'umzugsofferten-v4',
@@ -334,7 +334,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v4c': {
     id: 'v4c',
     label: 'V4c - Value First',
-    path: '/flow-tester?variant=v4c',
+    path: '/umzugsofferten?v=4c',
     color: 'bg-pink-500',
     description: 'Show value before asking',
     parentFlow: 'umzugsofferten-v4',
@@ -347,7 +347,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v4d': {
     id: 'v4d',
     label: 'V4d - Gamified',
-    path: '/flow-tester?variant=v4d',
+    path: '/umzugsofferten?v=4d',
     color: 'bg-pink-600',
     description: 'Game-like progress',
     parentFlow: 'umzugsofferten-v4',
@@ -361,7 +361,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v4e': {
     id: 'v4e',
     label: 'V4e - Minimal Friction',
-    path: '/flow-tester?variant=v4e',
+    path: '/umzugsofferten?v=4e',
     color: 'bg-pink-700',
     description: 'Absolute minimum fields',
     parentFlow: 'umzugsofferten-v4',
@@ -375,7 +375,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v5a': {
     id: 'v5a',
     label: 'V5a - High Contrast',
-    path: '/flow-tester?variant=v5a',
+    path: '/umzugsofferten?v=5a',
     color: 'bg-yellow-400',
     description: 'WCAG AAA contrast',
     parentFlow: 'umzugsofferten-v5',
@@ -389,7 +389,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v5b': {
     id: 'v5b',
     label: 'V5b - Screen Reader',
-    path: '/flow-tester?variant=v5b',
+    path: '/umzugsofferten?v=5b',
     color: 'bg-yellow-300',
     description: 'Full screen reader support',
     parentFlow: 'umzugsofferten-v5',
@@ -402,7 +402,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v5c': {
     id: 'v5c',
     label: 'V5c - Keyboard Nav',
-    path: '/flow-tester?variant=v5c',
+    path: '/umzugsofferten?v=5c',
     color: 'bg-yellow-500',
     description: 'Full keyboard navigation',
     parentFlow: 'umzugsofferten-v5',
@@ -415,7 +415,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v5d': {
     id: 'v5d',
     label: 'V5d - Large Text',
-    path: '/flow-tester?variant=v5d',
+    path: '/umzugsofferten?v=5d',
     color: 'bg-yellow-600',
     description: 'Extra large font sizes',
     parentFlow: 'umzugsofferten-v5',
@@ -428,7 +428,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v5e': {
     id: 'v5e',
     label: 'V5e - Reduced Motion',
-    path: '/flow-tester?variant=v5e',
+    path: '/umzugsofferten?v=5e',
     color: 'bg-yellow-700',
     description: 'No animations',
     parentFlow: 'umzugsofferten-v5',
