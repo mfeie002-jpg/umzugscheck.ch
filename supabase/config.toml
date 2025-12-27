@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.trigger-flow-analysis]
 verify_jwt = false
+
+[functions.capture-flow-screenshots-background]
+verify_jwt = false

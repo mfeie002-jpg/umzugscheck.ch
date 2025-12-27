@@ -9,9 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
+import { useBackgroundScreenshotJob } from "@/hooks/useBackgroundScreenshotJob";
 import { 
   Save, 
   GitCompare, 
@@ -27,7 +29,8 @@ import {
   Check,
   X,
   Camera,
-  Loader2
+  Loader2,
+  CloudUpload
 } from "lucide-react";
 
 // Helper to ensure proper data URL format for screenshots
@@ -114,6 +117,10 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   const [updateScreenshotsDialogOpen, setUpdateScreenshotsDialogOpen] = useState(false);
   const [selectedVersionForScreenshots, setSelectedVersionForScreenshots] = useState<FlowVersion | null>(null);
   const [isUpdatingScreenshots, setIsUpdatingScreenshots] = useState(false);
+  const [backgroundScreenshotDialogOpen, setBackgroundScreenshotDialogOpen] = useState(false);
+  const [selectedVersionForBackgroundScreenshots, setSelectedVersionForBackgroundScreenshots] = useState<FlowVersion | null>(null);
+  
+  const { activeJob, isPolling, startJob, clearJob } = useBackgroundScreenshotJob();
 
   useEffect(() => {
     fetchVersions();
@@ -605,10 +612,21 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                     variant="ghost"
                     size="icon"
                     onClick={() => {
+                      setSelectedVersionForBackgroundScreenshots(version);
+                      setBackgroundScreenshotDialogOpen(true);
+                    }}
+                    title="Background Screenshot-Erfassung (Seite kann geschlossen werden)"
+                  >
+                    <CloudUpload className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
                       setSelectedVersionForScreenshots(version);
                       setUpdateScreenshotsDialogOpen(true);
                     }}
-                    title={currentSteps.length === 0 ? "Zuerst Screenshots erfassen" : "Screenshots aktualisieren"}
+                    title={currentSteps.length === 0 ? "Zuerst Screenshots erfassen" : "Screenshots aktualisieren (aus aktueller Session)"}
                   >
                     <Camera className={`h-4 w-4 ${currentSteps.length === 0 ? 'text-muted-foreground' : ''}`} />
                   </Button>
@@ -769,6 +787,132 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                       )}
                     </Button>
                   </div>
+                </>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Background Screenshot Dialog */}
+        <Dialog open={backgroundScreenshotDialogOpen} onOpenChange={setBackgroundScreenshotDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <CloudUpload className="h-5 w-5" />
+                Background Screenshot-Erfassung
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              {selectedVersionForBackgroundScreenshots && (
+                <>
+                  <div className="p-3 bg-accent rounded-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-mono font-bold">{formatVersion(selectedVersionForBackgroundScreenshots.version_number)}</span>
+                      {selectedVersionForBackgroundScreenshots.version_name && (
+                        <span className="text-muted-foreground">- {selectedVersionForBackgroundScreenshots.version_name}</span>
+                      )}
+                      {selectedVersionForBackgroundScreenshots.is_baseline && (
+                        <Badge variant="secondary" className="text-xs">
+                          <Star className="h-3 w-3 mr-1" />
+                          Baseline
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Screenshots werden im Hintergrund erfasst. Du kannst diese Seite schliessen.
+                    </p>
+                  </div>
+                  
+                  {(() => {
+                    const stepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
+                    const hasStepConfigs = stepConfigs && Array.isArray(stepConfigs) && stepConfigs.length > 0;
+                    
+                    if (!hasStepConfigs) {
+                      return (
+                        <div className="p-3 bg-destructive/10 rounded-lg border border-destructive/30 text-destructive">
+                          <div className="font-medium text-sm mb-1">⚠️ Keine Step-Konfiguration vorhanden!</div>
+                          <p className="text-xs">
+                            Diese Version hat keine Step-Konfiguration. Background-Screenshots können nur für Versionen mit Steps erfasst werden.
+                          </p>
+                        </div>
+                      );
+                    }
+                    
+                    return (
+                      <div className="text-sm text-muted-foreground">
+                        {stepConfigs.length} Steps werden im Hintergrund erfasst (Desktop + Mobile)
+                      </div>
+                    );
+                  })()}
+                  
+                  {activeJob && (
+                    <div className="p-3 bg-primary/10 rounded-lg border border-primary/30">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">
+                          {activeJob.status === 'pending' && 'Job wird gestartet...'}
+                          {activeJob.status === 'processing' && 'Screenshots werden erfasst...'}
+                          {activeJob.status === 'completed' && 'Fertig!'}
+                          {activeJob.status === 'failed' && 'Fehler!'}
+                        </span>
+                        <span className="text-sm text-muted-foreground">{activeJob.progress}%</span>
+                      </div>
+                      <Progress value={activeJob.progress} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-2">{activeJob.progressMessage}</p>
+                      {activeJob.status === 'completed' && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-2 w-full"
+                          onClick={() => {
+                            clearJob();
+                            fetchVersions();
+                            setBackgroundScreenshotDialogOpen(false);
+                          }}
+                        >
+                          Schliessen & Aktualisieren
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  
+                  {!activeJob && (
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => setBackgroundScreenshotDialogOpen(false)}
+                      >
+                        Abbrechen
+                      </Button>
+                      <Button 
+                        onClick={async () => {
+                          const stepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
+                          if (!stepConfigs || !Array.isArray(stepConfigs) || stepConfigs.length === 0) {
+                            toast.error('Keine Step-Konfiguration vorhanden');
+                            return;
+                          }
+                          
+                          // Determine the base URL for the flow
+                          const baseUrl = `${window.location.origin}/umzugsofferten`;
+                          
+                          await startJob({
+                            versionId: selectedVersionForBackgroundScreenshots.id,
+                            flowId: selectedVersionForBackgroundScreenshots.flow_id,
+                            steps: stepConfigs,
+                            baseUrl,
+                          });
+                        }}
+                        className="flex-1"
+                        disabled={(() => {
+                          const stepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
+                          return !stepConfigs || !Array.isArray(stepConfigs) || stepConfigs.length === 0;
+                        })()}
+                      >
+                        <CloudUpload className="h-4 w-4 mr-2" />
+                        Background-Erfassung starten
+                      </Button>
+                    </div>
+                  )}
                 </>
               )}
             </div>
