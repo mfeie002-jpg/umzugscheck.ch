@@ -141,8 +141,10 @@ export function useAllFlowVariants(selectedFlowFilter?: string) {
   });
 
   // 3. Add dynamic workflow-created variants from DB
+  // IMPORTANT: Always add workflow variants, even if a static variant exists with same letter
+  // This ensures "2 fertig" badge actually shows the workflow variants in the list
   if (dbVariants) {
-    const seenIds = new Set<string>();
+    const seenWorkflowIds = new Set<string>();
     
     dbVariants.forEach((variant) => {
       // Parse flow_id to get flow number
@@ -166,16 +168,15 @@ export function useAllFlowVariants(selectedFlowFilter?: string) {
       
       const urls = generateVariantUrls(parsed.flowNumber, variantLetter);
       
-      // Check if this already exists in static configs
-      const staticKey = `v${parsed.flowNumber}${variantLetter}`;
-      const existsInStatic = SUB_VARIANT_CONFIGS[staticKey];
+      // Create a unique ID for this workflow variant using DB id
+      const workflowKey = `v${parsed.flowNumber}${variantLetter}__wf__${String(variant.id).slice(0, 8)}`;
       
-      // Only add if not already in static config and not seen yet
-      if (!existsInStatic && variant.status === 'done' && !seenIds.has(staticKey)) {
-        seenIds.add(staticKey);
+      // Only add completed variants, avoid duplicates by DB id
+      if (variant.status === 'done' && !seenWorkflowIds.has(variant.id)) {
+        seenWorkflowIds.add(variant.id);
         
         allVariants.push({
-          id: staticKey,
+          id: workflowKey,
           label: `V${parsed.flowNumber}.${variantLetter?.toUpperCase()} - ${variant.variant_name}`,
           path: urls.liveUrl,
           ...urls,
