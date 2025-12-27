@@ -400,6 +400,9 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
 
   // Persist form data to localStorage AND sync with uc_prefill for /umzugsofferten page
   useEffect(() => {
+    // In capture mode we MUST stay deterministic and avoid writing prefill that can auto-skip steps.
+    if (captureParams.enabled) return;
+
     try {
       // Save to main form storage
       localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify({
@@ -414,7 +417,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
         phone: formData.phone,
         useVideoAI: formData.useVideoAI,
       }));
-      
+
       // Also save to uc_prefill format for HeroAIQuoteCalculator on /umzugsofferten
       if (formData.fromLocation || formData.toLocation) {
         localStorage.setItem('uc_prefill', JSON.stringify({
@@ -429,10 +432,13 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
     } catch (e) {
       console.error("Error saving form data:", e);
     }
-  }, [formData]);
+  }, [formData, captureParams.enabled]);
 
   // Prefill from URL (?from=&to=&size=&services=) or uc_prefill and auto-skip steps
   useEffect(() => {
+    // In capture mode we MUST not auto-skip steps.
+    if (captureParams.enabled) return;
+
     try {
       const params = new URLSearchParams(location.search);
       const from = params.get("from") || "";
@@ -469,11 +475,14 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
     } catch {
       // ignore
     }
-  }, [location.search]);
+  }, [location.search, captureParams.enabled]);
 
   // Auto-advance from step 2 -> step 3 ONLY when coming from URL prefill
   // Do NOT auto-advance when user is manually filling the form
   useEffect(() => {
+    // In capture mode we MUST not auto-advance.
+    if (captureParams.enabled) return;
+
     if (didAutoAdvance) return;
     if (currentStep !== 2) return;
 
@@ -481,7 +490,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
     // This prevents jumping away when user is still selecting services
     const params = new URLSearchParams(location.search);
     const hasUrlPrefill = params.get("from") || params.get("to") || params.get("size");
-    
+
     if (!hasUrlPrefill) return; // Don't auto-advance for manual entry
 
     const ready =
@@ -494,7 +503,7 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
       setDidAutoAdvance(true);
       setCurrentStep(3);
     }
-  }, [currentStep, didAutoAdvance, formData, location.search]);
+  }, [captureParams.enabled, currentStep, didAutoAdvance, formData, location.search]);
 
   // A/B Test for submit button
   const { variant: submitVariant, trackConversion: trackSubmit } = useABTest('calculator_submit');
