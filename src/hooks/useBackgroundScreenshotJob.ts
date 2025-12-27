@@ -88,7 +88,8 @@ export function useBackgroundScreenshotJob() {
   // Start a new background job
   const startJob = async (params: StartJobParams): Promise<string | null> => {
     try {
-      // Create job record first (job_type is inferred from config)
+      // Create job record first
+      // NOTE: We set job_type explicitly so the UI can reliably find/resume jobs after reload.
       const configData = {
         type: 'screenshot_capture',
         versionId: params.versionId,
@@ -100,6 +101,7 @@ export function useBackgroundScreenshotJob() {
       const { data: jobData, error: jobError } = await supabase
         .from('export_jobs')
         .insert({
+          job_type: 'screenshot_capture',
           status: 'pending',
           progress: 0,
           progress_message: 'Job wird gestartet...',
@@ -149,31 +151,31 @@ export function useBackgroundScreenshotJob() {
     setIsPolling(false);
   };
 
-  // Check for any pending jobs on mount
+  // Check for any pending jobs (e.g. after reload)
   const checkPendingJobs = async (versionId: string) => {
     try {
       const { data, error } = await supabase
         .from('export_jobs')
-        .select('id, status, progress, progress_message, error_message, config')
-        .eq('job_type', 'screenshot_capture')
+        .select('id, status, progress, progress_message, error_message, config, created_at')
         .in('status', ['pending', 'processing'])
         .order('created_at', { ascending: false })
-        .limit(1);
+        .limit(10);
 
       if (error) throw error;
 
-      if (data && data.length > 0) {
-        const job = data[0];
-        const config = job.config as { versionId?: string } | null;
-        if (config?.versionId === versionId) {
-          setActiveJob({
-            id: job.id,
-            status: job.status as BackgroundJobStatus['status'],
-            progress: job.progress || 0,
-            progressMessage: job.progress_message || '',
-            error: job.error_message || undefined,
-          });
-        }
+      const match = (data || []).find((job) => {
+        const config = job.config as { versionId?: string; type?: string } | null;
+        return config?.type === 'screenshot_capture' && config?.versionId === versionId;
+      });
+
+      if (match) {
+        setActiveJob({
+          id: match.id,
+          status: match.status as BackgroundJobStatus['status'],
+          progress: match.progress || 0,
+          progressMessage: match.progress_message || '',
+          error: match.error_message || undefined,
+        });
       }
     } catch (err) {
       console.error('Failed to check pending jobs:', err);

@@ -128,11 +128,18 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   const [backgroundScreenshotDialogOpen, setBackgroundScreenshotDialogOpen] = useState(false);
   const [selectedVersionForBackgroundScreenshots, setSelectedVersionForBackgroundScreenshots] = useState<FlowVersion | null>(null);
   
-  const { activeJob, isPolling, startJob, clearJob } = useBackgroundScreenshotJob();
+  const { activeJob, isPolling, startJob, clearJob, checkPendingJobs } = useBackgroundScreenshotJob();
 
   useEffect(() => {
     fetchVersions();
   }, [flowId]);
+
+  // If the dialog is opened (or after reload), try to resume any running screenshot job for this version
+  useEffect(() => {
+    if (backgroundScreenshotDialogOpen && selectedVersionForBackgroundScreenshots?.id) {
+      checkPendingJobs(selectedVersionForBackgroundScreenshots.id);
+    }
+  }, [backgroundScreenshotDialogOpen, selectedVersionForBackgroundScreenshots?.id, checkPendingJobs]);
 
   const flowMajor = getFlowMajorFromFlowId(flowId);
 
