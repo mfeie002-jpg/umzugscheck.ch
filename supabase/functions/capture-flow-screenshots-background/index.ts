@@ -198,10 +198,21 @@ Deno.serve(async (req) => {
 
     console.log(`All screenshots captured. Total: ${Object.keys(screenshots).length}`);
 
-    // Update the flow_version with new screenshots
+    // Build step_configs from the steps we captured
+    const stepConfigs = steps.map(s => ({
+      step: s.step,
+      name: s.name,
+      description: s.description || '',
+    }));
+
+    // Update the flow_version with new screenshots AND step_configs
+    // This ensures step_configs are always saved even for new variants
     const { error: updateError } = await supabase
       .from('flow_versions')
-      .update({ screenshots })
+      .update({ 
+        screenshots,
+        step_configs: stepConfigs 
+      })
       .eq('id', versionId);
 
     if (updateError) {
