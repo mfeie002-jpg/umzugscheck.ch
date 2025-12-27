@@ -33,9 +33,15 @@ import {
   CloudUpload
 } from "lucide-react";
 
-// Helper to ensure proper data URL format for screenshots
-const toPngDataUrl = (value: string) =>
-  value.startsWith("data:") ? value : `data:image/png;base64,${value}`;
+// Helper to ensure proper URL/data URL format for screenshots
+const toPngDataUrl = (value: string) => {
+  // If it's already a data URL, use as-is
+  if (value.startsWith("data:")) return value;
+  // If it's an HTTP(S) URL (e.g., Supabase Storage), use as-is
+  if (value.startsWith("http://") || value.startsWith("https://")) return value;
+  // Otherwise, treat as base64 and add data URL prefix
+  return `data:image/png;base64,${value}`;
+};
 
 // Extract flow major version from the flowId used in admin tools.
 // Examples:
