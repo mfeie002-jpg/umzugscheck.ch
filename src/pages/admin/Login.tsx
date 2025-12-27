@@ -24,7 +24,10 @@ const AdminLogin = () => {
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session) return;
+        if (!session) {
+          setCheckingSession(false);
+          return;
+        }
 
         // Check if user has admin role
         const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
@@ -45,6 +48,15 @@ const AdminLogin = () => {
       cancelled = true;
     };
   }, []);
+
+  const handleLogoutAndContinue = async () => {
+    await supabase.auth.signOut();
+    setExistingAdminEmail(null);
+  };
+
+  const handleContinueAsAdmin = () => {
+    navigate("/admin");
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +105,67 @@ const AdminLogin = () => {
       setIsLoading(false);
     }
   };
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
+        <div className="animate-pulse text-muted-foreground">Lade...</div>
+      </div>
+    );
+  }
+
+  // Show existing admin session notice
+  if (existingAdminEmail) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
+        <Card className="w-full max-w-md shadow-xl border-2">
+          <CardHeader className="text-center space-y-4">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center shadow-lg">
+              <Shield className="w-10 h-10 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold">Bereits angemeldet</CardTitle>
+              <CardDescription>
+                Du bist eingeloggt als Admin
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-muted rounded-lg flex items-center gap-3">
+              <User className="w-5 h-5 text-muted-foreground" />
+              <span className="font-medium">{existingAdminEmail}</span>
+            </div>
+            
+            <Button
+              onClick={handleContinueAsAdmin}
+              className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90"
+            >
+              Zum Admin-Dashboard
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">oder</span>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              onClick={handleLogoutAndContinue}
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <AlertTriangle className="w-4 h-4" />
+              Mit anderem Account anmelden
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
