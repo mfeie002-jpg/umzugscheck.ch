@@ -1,4 +1,31 @@
-import React, { useState, useMemo } from 'react';
+/**
+ * Multi.a - ChatGPT Pro Multi-Flow Optimierung
+ * 
+ * Basiert auf einer umfassenden Analyse aller Flows (V1-V9) und implementiert
+ * die übergreifenden UX-Verbesserungen:
+ * 
+ * P0 Mobile-Baseline:
+ * - Sticky CTA (immer erreichbar, Safe-Area korrekt)
+ * - Progress Header (reduziert Abbruch massiv)
+ * - Keine Layout-Overflow
+ * - Große Inputs + richtige Keyboards
+ * 
+ * P1 Form-Reduktion:
+ * - Pflichtfelder halbiert
+ * - "Weiss nicht" Option überall
+ * - Autocomplete + inputMode
+ * 
+ * P1 Trust früh:
+ * - Trust Bar direkt unter Header
+ * - Unverbindlich, Datenschutz, geprüfte Partner
+ * 
+ * P2 Flow-Architektur:
+ * - 3 Steps statt 4-6
+ * - Progressive Disclosure für optionale Details
+ * - Review-Card vor Absenden
+ */
+
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +51,10 @@ import {
   Truck,
   Package,
   Clock,
-  ArrowLeft
+  ArrowLeft,
+  Sparkles,
+  Timer,
+  Lock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { StickyFooterCTA } from '@/components/StickyFooterCTA';
@@ -38,10 +68,12 @@ interface FormData {
   toZip: string;
   toCity: string;
   moveDate: string;
+  dateFlexible: boolean;
   rooms: string;
   floor: string;
-  hasLift: boolean | null;
-  services: string[];
+  hasLift: 'yes' | 'no' | 'unknown' | null;
+  serviceLevel: 'basis' | 'standard' | 'komfort';
+  extras: string[];
   name: string;
   email: string;
   phone: string;
@@ -52,7 +84,7 @@ interface FormData {
 // ============================================================================
 const STEPS = [
   { id: 1, title: 'Umzugsdetails', icon: MapPin },
-  { id: 2, title: 'Services', icon: Package },
+  { id: 2, title: 'Service-Level', icon: Package },
   { id: 3, title: 'Kontakt', icon: User },
 ];
 
@@ -60,100 +92,52 @@ const ROOM_OPTIONS = ['1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5', '5.5'
 
 const FLOOR_OPTIONS = ['EG', '1', '2', '3', '4', '5+'];
 
-const SERVICE_OPTIONS = [
-  { id: 'transport', label: 'Transport', icon: Truck, included: true },
-  { id: 'packing', label: 'Ein-/Auspacken', icon: Package },
-  { id: 'furniture', label: 'Möbelmontage', icon: Building },
-  { id: 'cleaning', label: 'Endreinigung', icon: Star },
-  { id: 'storage', label: 'Zwischenlagerung', icon: Home },
+const SERVICE_LEVELS = [
+  { 
+    id: 'basis', 
+    name: 'Basis', 
+    description: 'Sie packen, wir zügeln',
+    features: ['Transport', '2 Helfer', 'Basisversicherung'],
+    priceHint: 'ab CHF 490'
+  },
+  { 
+    id: 'standard', 
+    name: 'Standard', 
+    description: 'Komplettes Zügeln ohne Stress',
+    features: ['Transport', '3 Helfer', 'Möbelmontage', 'Vollversicherung'],
+    priceHint: 'ab CHF 890',
+    recommended: true
+  },
+  { 
+    id: 'komfort', 
+    name: 'Komfort', 
+    description: 'Rundum-Sorglos mit Packservice',
+    features: ['Alles aus Standard', 'Ein-/Auspacken', 'Verpackungsmaterial'],
+    priceHint: 'ab CHF 1\'290'
+  },
+];
+
+const EXTRA_OPTIONS = [
+  { id: 'cleaning', label: 'Endreinigung', icon: Sparkles },
+  { id: 'storage', label: 'Zwischenlagerung', icon: Building },
+  { id: 'piano', label: 'Klaviertransport', icon: Package },
 ];
 
 const SWISS_CITIES: Record<string, string> = {
-  '8000': 'Zürich',
-  '8001': 'Zürich',
-  '8004': 'Zürich',
-  '8005': 'Zürich',
-  '8006': 'Zürich',
-  '8008': 'Zürich',
-  '8032': 'Zürich',
-  '8037': 'Zürich',
-  '8038': 'Zürich',
-  '8041': 'Zürich',
-  '8044': 'Zürich',
-  '8045': 'Zürich',
-  '8046': 'Zürich',
-  '8047': 'Zürich',
-  '8048': 'Zürich',
-  '8049': 'Zürich',
-  '8050': 'Zürich',
-  '8051': 'Zürich',
-  '8052': 'Zürich',
-  '8053': 'Zürich',
-  '8055': 'Zürich',
-  '8057': 'Zürich',
-  '3000': 'Bern',
-  '3001': 'Bern',
-  '3004': 'Bern',
-  '3005': 'Bern',
-  '3006': 'Bern',
-  '3007': 'Bern',
-  '3008': 'Bern',
-  '3010': 'Bern',
-  '3011': 'Bern',
-  '3012': 'Bern',
-  '3013': 'Bern',
-  '3014': 'Bern',
-  '3015': 'Bern',
-  '4000': 'Basel',
-  '4001': 'Basel',
-  '4051': 'Basel',
-  '4052': 'Basel',
-  '4053': 'Basel',
-  '4054': 'Basel',
-  '4055': 'Basel',
-  '4056': 'Basel',
-  '4057': 'Basel',
-  '4058': 'Basel',
-  '1000': 'Lausanne',
-  '1003': 'Lausanne',
-  '1004': 'Lausanne',
-  '1005': 'Lausanne',
-  '1006': 'Lausanne',
-  '1007': 'Lausanne',
-  '1010': 'Lausanne',
-  '1200': 'Genève',
-  '1201': 'Genève',
-  '1202': 'Genève',
-  '1203': 'Genève',
-  '1204': 'Genève',
-  '1205': 'Genève',
-  '1206': 'Genève',
-  '1207': 'Genève',
-  '1208': 'Genève',
-  '1209': 'Genève',
-  '6000': 'Luzern',
-  '6003': 'Luzern',
-  '6004': 'Luzern',
-  '6005': 'Luzern',
-  '6006': 'Luzern',
-  '9000': 'St. Gallen',
-  '9008': 'St. Gallen',
-  '9010': 'St. Gallen',
-  '9011': 'St. Gallen',
-  '9012': 'St. Gallen',
-  '5000': 'Aarau',
-  '5001': 'Aarau',
-  '5004': 'Aarau',
-  '6300': 'Zug',
-  '6301': 'Zug',
-  '6302': 'Zug',
-  '6330': 'Cham',
-  '8400': 'Winterthur',
-  '8401': 'Winterthur',
-  '8402': 'Winterthur',
-  '8404': 'Winterthur',
-  '8405': 'Winterthur',
-  '8406': 'Winterthur',
+  '8000': 'Zürich', '8001': 'Zürich', '8004': 'Zürich', '8005': 'Zürich',
+  '8006': 'Zürich', '8008': 'Zürich', '8032': 'Zürich', '8037': 'Zürich',
+  '8038': 'Zürich', '8041': 'Zürich', '8044': 'Zürich', '8045': 'Zürich',
+  '8046': 'Zürich', '8047': 'Zürich', '8048': 'Zürich', '8049': 'Zürich',
+  '8050': 'Zürich', '8051': 'Zürich', '8052': 'Zürich', '8053': 'Zürich',
+  '8055': 'Zürich', '8057': 'Zürich', '8400': 'Winterthur', '8401': 'Winterthur',
+  '3000': 'Bern', '3001': 'Bern', '3004': 'Bern', '3005': 'Bern',
+  '3006': 'Bern', '3007': 'Bern', '3008': 'Bern', '3010': 'Bern',
+  '4000': 'Basel', '4001': 'Basel', '4051': 'Basel', '4052': 'Basel',
+  '4053': 'Basel', '4054': 'Basel', '4055': 'Basel', '4056': 'Basel',
+  '1000': 'Lausanne', '1003': 'Lausanne', '1004': 'Lausanne', '1005': 'Lausanne',
+  '1200': 'Genève', '1201': 'Genève', '1202': 'Genève', '1203': 'Genève',
+  '6000': 'Luzern', '6003': 'Luzern', '6004': 'Luzern', '6005': 'Luzern',
+  '9000': 'St. Gallen', '9008': 'St. Gallen', '5000': 'Aarau', '6300': 'Zug',
 };
 
 // ============================================================================
@@ -172,7 +156,9 @@ function ProgressHeader({ step, total, title }: { step: number; total: number; t
               Schritt {step} von {total}
             </p>
           </div>
-          <div className="text-right">
+          <div className="flex items-center gap-2">
+            <Timer className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">~90 Sek.</span>
             <span className="text-sm font-semibold text-primary">{pct}%</span>
           </div>
         </div>
@@ -196,8 +182,8 @@ function TrustBar() {
             <span className="text-muted-foreground">Geprüfte Firmen</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5 text-primary" />
-            <span className="text-muted-foreground">CH-Partner</span>
+            <Lock className="h-3.5 w-3.5 text-primary" />
+            <span className="text-muted-foreground">DSG/DSGVO</span>
           </div>
         </div>
       </div>
@@ -216,6 +202,7 @@ function FormField({
   autoComplete,
   inputMode,
   icon: Icon,
+  suffix,
 }: {
   label: string;
   name: string;
@@ -227,6 +214,7 @@ function FormField({
   autoComplete?: string;
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
   icon?: React.ElementType;
+  suffix?: string;
 }) {
   return (
     <div className="space-y-1.5">
@@ -249,9 +237,15 @@ function FormField({
           className={cn(
             'h-12 rounded-xl text-base',
             Icon && 'pl-10',
+            suffix && 'pr-16',
             error && 'border-destructive focus-visible:ring-destructive'
           )}
         />
+        {suffix && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            {suffix}
+          </span>
+        )}
       </div>
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
@@ -287,53 +281,54 @@ function OptionButton({
   );
 }
 
-function ServiceCard({
-  service,
+function ServiceLevelCard({
+  level,
   selected,
-  onToggle,
+  onSelect,
 }: {
-  service: typeof SERVICE_OPTIONS[0];
+  level: typeof SERVICE_LEVELS[0];
   selected: boolean;
-  onToggle: () => void;
+  onSelect: () => void;
 }) {
-  const Icon = service.icon;
   return (
     <button
       type="button"
-      onClick={onToggle}
-      disabled={service.included}
+      onClick={onSelect}
       className={cn(
-        'relative flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all w-full',
+        'relative w-full rounded-2xl border-2 p-4 text-left transition-all',
         'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-        service.included
-          ? 'border-primary/30 bg-primary/5 cursor-default'
-          : selected
-          ? 'border-primary bg-primary/10'
+        selected
+          ? 'border-primary bg-primary/5'
           : 'border-border bg-background hover:border-primary/50'
       )}
     >
-      <div
-        className={cn(
-          'flex h-10 w-10 items-center justify-center rounded-lg',
-          selected || service.included ? 'bg-primary/20' : 'bg-muted'
-        )}
-      >
-        <Icon className={cn('h-5 w-5', selected || service.included ? 'text-primary' : 'text-muted-foreground')} />
-      </div>
-      <div className="flex-1">
-        <p className="font-medium text-foreground">{service.label}</p>
-        {service.included && (
-          <p className="text-xs text-muted-foreground">Inklusive</p>
-        )}
-      </div>
-      {!service.included && (
-        <Checkbox checked={selected} className="h-5 w-5" />
-      )}
-      {service.included && (
-        <Badge variant="secondary" className="text-xs">
-          Inkl.
+      {level.recommended && (
+        <Badge className="absolute -top-2.5 left-4 bg-primary text-primary-foreground text-xs">
+          Empfohlen
         </Badge>
       )}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-foreground">{level.name}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{level.description}</p>
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {level.features.map((f) => (
+              <span key={f} className="text-xs bg-muted px-2 py-0.5 rounded">
+                {f}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="text-right shrink-0">
+          <p className="text-sm font-medium text-muted-foreground">{level.priceHint}</p>
+          <div className={cn(
+            'mt-2 w-5 h-5 rounded-full border-2 flex items-center justify-center',
+            selected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
+          )}>
+            {selected && <CheckCircle2 className="h-3 w-3 text-primary-foreground" />}
+          </div>
+        </div>
+      </div>
     </button>
   );
 }
@@ -365,6 +360,20 @@ function ReviewCard({
   );
 }
 
+function TimeExpectation() {
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 border border-border">
+      <Timer className="h-5 w-5 text-primary shrink-0" />
+      <div>
+        <p className="text-sm font-medium text-foreground">Dauer: ca. 90 Sekunden</p>
+        <p className="text-xs text-muted-foreground">
+          Wir fragen nur das Nötigste. Deine Eingaben bleiben erhalten.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ============================================================================
 // STEP COMPONENTS
 // ============================================================================
@@ -388,7 +397,7 @@ function Step1Details({
         onChange({ fromCity: city });
       }
     }
-  }, [data.fromZip]);
+  }, [data.fromZip, data.fromCity, onChange]);
 
   React.useEffect(() => {
     if (data.toZip.length >= 4) {
@@ -397,10 +406,12 @@ function Step1Details({
         onChange({ toCity: city });
       }
     }
-  }, [data.toZip]);
+  }, [data.toZip, data.toCity, onChange]);
 
   return (
     <div className="space-y-6 pb-32">
+      <TimeExpectation />
+      
       {/* Main inputs */}
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
@@ -414,6 +425,7 @@ function Step1Details({
             autoComplete="postal-code"
             error={errors.fromZip}
             icon={MapPin}
+            suffix={data.fromCity || undefined}
           />
           <FormField
             label="Nach (PLZ)"
@@ -425,12 +437,13 @@ function Step1Details({
             autoComplete="postal-code"
             error={errors.toZip}
             icon={MapPin}
+            suffix={data.toCity || undefined}
           />
         </div>
 
         {/* City display */}
         {(data.fromCity || data.toCity) && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground px-1">
             {data.fromCity && <span>{data.fromCity}</span>}
             {data.fromCity && data.toCity && <span>→</span>}
             {data.toCity && <span>{data.toCity}</span>}
@@ -446,6 +459,15 @@ function Step1Details({
           error={errors.moveDate}
           icon={Calendar}
         />
+        
+        {/* Date flexible checkbox */}
+        <label className="flex items-center gap-2 cursor-pointer">
+          <Checkbox
+            checked={data.dateFlexible}
+            onCheckedChange={(checked) => onChange({ dateFlexible: !!checked })}
+          />
+          <span className="text-sm text-muted-foreground">Datum flexibel (±2 Wochen)</span>
+        </label>
 
         {/* Room selection */}
         <div className="space-y-2">
@@ -465,7 +487,7 @@ function Step1Details({
         </div>
       </div>
 
-      {/* Advanced options */}
+      {/* Advanced options (Progressive Disclosure) */}
       <div className="border rounded-xl overflow-hidden">
         <button
           type="button"
@@ -491,20 +513,20 @@ function Step1Details({
             >
               <div className="p-4 pt-0 space-y-4 border-t">
                 <p className="text-xs text-muted-foreground">
-                  Optional – hilft für genauere Offerten.
+                  Optional – hilft für genauere Offerten. Du kannst auch "Weiss nicht" wählen.
                 </p>
 
                 {/* Floor selection */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Stockwerk (Von)</Label>
+                  <Label className="text-sm font-medium">Stockwerk (Auszug)</Label>
                   <div className="flex flex-wrap gap-2">
                     {FLOOR_OPTIONS.map((floor) => (
                       <OptionButton
                         key={floor}
                         selected={data.floor === floor}
-                        onClick={() => onChange({ floor: floor })}
+                        onClick={() => onChange({ floor })}
                       >
-                        {floor}
+                        {floor === 'EG' ? 'EG' : `${floor}. OG`}
                       </OptionButton>
                     ))}
                     <OptionButton
@@ -517,31 +539,33 @@ function Step1Details({
                   </div>
                 </div>
 
-                {/* Lift */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Lift vorhanden?</Label>
-                  <div className="flex gap-2">
-                    <OptionButton
-                      selected={data.hasLift === true}
-                      onClick={() => onChange({ hasLift: true })}
-                    >
-                      Ja
-                    </OptionButton>
-                    <OptionButton
-                      selected={data.hasLift === false}
-                      onClick={() => onChange({ hasLift: false })}
-                    >
-                      Nein
-                    </OptionButton>
-                    <OptionButton
-                      selected={data.hasLift === null}
-                      onClick={() => onChange({ hasLift: null })}
-                      className="text-muted-foreground"
-                    >
-                      Weiss nicht
-                    </OptionButton>
+                {/* Lift - only show if floor > EG */}
+                {data.floor && data.floor !== 'EG' && data.floor !== 'unknown' && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Lift vorhanden?</Label>
+                    <div className="flex gap-2">
+                      <OptionButton
+                        selected={data.hasLift === 'yes'}
+                        onClick={() => onChange({ hasLift: 'yes' })}
+                      >
+                        Ja
+                      </OptionButton>
+                      <OptionButton
+                        selected={data.hasLift === 'no'}
+                        onClick={() => onChange({ hasLift: 'no' })}
+                      >
+                        Nein
+                      </OptionButton>
+                      <OptionButton
+                        selected={data.hasLift === 'unknown'}
+                        onClick={() => onChange({ hasLift: 'unknown' })}
+                        className="text-muted-foreground"
+                      >
+                        Weiss nicht
+                      </OptionButton>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -566,44 +590,77 @@ function Step2Services({
   data: FormData;
   onChange: (updates: Partial<FormData>) => void;
 }) {
-  const toggleService = (serviceId: string) => {
-    const current = data.services;
-    const updated = current.includes(serviceId)
-      ? current.filter((s) => s !== serviceId)
-      : [...current, serviceId];
-    onChange({ services: updated });
+  const toggleExtra = (extraId: string) => {
+    const current = data.extras;
+    const updated = current.includes(extraId)
+      ? current.filter((e) => e !== extraId)
+      : [...current, extraId];
+    onChange({ extras: updated });
   };
 
   return (
     <div className="space-y-6 pb-32">
       <div className="space-y-2">
-        <h2 className="text-lg font-semibold text-foreground">Gewünschte Services</h2>
+        <h2 className="text-lg font-semibold text-foreground">Service-Level wählen</h2>
         <p className="text-sm text-muted-foreground">
-          Transport ist immer inklusive. Wähle optionale Zusatzleistungen.
+          Wähle dein Paket – du kannst später noch anpassen.
         </p>
       </div>
 
+      {/* Service Level Cards */}
       <div className="space-y-3">
-        {SERVICE_OPTIONS.map((service) => (
-          <ServiceCard
-            key={service.id}
-            service={service}
-            selected={data.services.includes(service.id)}
-            onToggle={() => toggleService(service.id)}
+        {SERVICE_LEVELS.map((level) => (
+          <ServiceLevelCard
+            key={level.id}
+            level={level}
+            selected={data.serviceLevel === level.id}
+            onSelect={() => onChange({ serviceLevel: level.id as FormData['serviceLevel'] })}
           />
         ))}
       </div>
 
-      {/* Quick summary */}
-      <Card className="p-4 bg-muted/30">
-        <div className="flex items-center gap-2 mb-2">
-          <Clock className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">Ausgewählt</span>
+      {/* Extra services */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium">Zusätzliche Services (optional)</Label>
+        <div className="grid grid-cols-1 gap-2">
+          {EXTRA_OPTIONS.map((extra) => {
+            const Icon = extra.icon;
+            const isSelected = data.extras.includes(extra.id);
+            return (
+              <button
+                key={extra.id}
+                type="button"
+                onClick={() => toggleExtra(extra.id)}
+                className={cn(
+                  'flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all',
+                  'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+                  isSelected
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border bg-background hover:border-primary/50'
+                )}
+              >
+                <div className={cn(
+                  'flex h-9 w-9 items-center justify-center rounded-lg',
+                  isSelected ? 'bg-primary/20' : 'bg-muted'
+                )}>
+                  <Icon className={cn('h-4 w-4', isSelected ? 'text-primary' : 'text-muted-foreground')} />
+                </div>
+                <span className="flex-1 font-medium text-foreground">{extra.label}</span>
+                <Checkbox checked={isSelected} className="h-5 w-5" />
+              </button>
+            );
+          })}
         </div>
-        <p className="text-sm text-muted-foreground">
-          Transport{data.services.length > 0 && ` + ${data.services.length} Extras`}
-        </p>
-      </Card>
+      </div>
+
+      {/* Skip option */}
+      <button
+        type="button"
+        onClick={() => onChange({ serviceLevel: 'standard', extras: [] })}
+        className="w-full text-center text-sm text-muted-foreground hover:text-foreground py-2"
+      >
+        Später entscheiden – erstmal Offerten erhalten
+      </button>
     </div>
   );
 }
@@ -631,21 +688,26 @@ function Step3Contact({
     
     if (data.moveDate) {
       const date = new Date(data.moveDate);
-      items.push({ 
-        label: 'Datum', 
-        value: date.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' })
-      });
+      let dateStr = date.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      if (data.dateFlexible) dateStr += ' (flexibel)';
+      items.push({ label: 'Datum', value: dateStr });
     }
     
     if (data.rooms) {
       items.push({ label: 'Grösse', value: `${data.rooms} Zimmer` });
     }
     
-    const serviceCount = data.services.length;
-    items.push({ 
-      label: 'Services', 
-      value: `Transport${serviceCount > 0 ? ` + ${serviceCount} Extras` : ''}` 
-    });
+    const level = SERVICE_LEVELS.find(l => l.id === data.serviceLevel);
+    if (level) {
+      items.push({ label: 'Service', value: level.name });
+    }
+    
+    if (data.extras.length > 0) {
+      const extraLabels = data.extras.map(id => 
+        EXTRA_OPTIONS.find(e => e.id === id)?.label
+      ).filter(Boolean);
+      items.push({ label: 'Extras', value: extraLabels.join(', ') });
+    }
     
     return items;
   }, [data]);
@@ -708,7 +770,7 @@ function Step3Contact({
 
       {/* Data protection */}
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Shield className="h-4 w-4" />
+        <Lock className="h-4 w-4" />
         <span>Daten werden nur an ausgewählte CH-Partner weitergegeben (DSG/DSGVO)</span>
       </div>
     </div>
@@ -727,10 +789,12 @@ export const MultiAFeedbackBased: React.FC = () => {
     toZip: '',
     toCity: '',
     moveDate: '',
+    dateFlexible: false,
     rooms: '',
     floor: '',
     hasLift: null,
-    services: ['transport'],
+    serviceLevel: 'standard',
+    extras: [],
     name: '',
     email: '',
     phone: '',
@@ -739,7 +803,7 @@ export const MultiAFeedbackBased: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const updateFormData = (updates: Partial<FormData>) => {
+  const updateFormData = useCallback((updates: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
     // Clear errors for updated fields
     const updatedKeys = Object.keys(updates);
@@ -748,9 +812,9 @@ export const MultiAFeedbackBased: React.FC = () => {
       updatedKeys.forEach((key) => delete next[key]);
       return next;
     });
-  };
+  }, []);
 
-  const validateStep = (step: number): boolean => {
+  const validateStep = useCallback((step: number): boolean => {
     const newErrors: Record<string, string> = {};
 
     if (step === 1) {
@@ -782,25 +846,25 @@ export const MultiAFeedbackBased: React.FC = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [formData]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (validateStep(currentStep)) {
       if (currentStep < STEPS.length) {
         setCurrentStep(currentStep + 1);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
-  };
+  }, [currentStep, validateStep]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  };
+  }, [currentStep]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!validateStep(3)) return;
 
     setIsSubmitting(true);
@@ -810,7 +874,7 @@ export const MultiAFeedbackBased: React.FC = () => {
     
     setIsSubmitting(false);
     setIsSubmitted(true);
-  };
+  }, [validateStep]);
 
   const canContinue = useMemo(() => {
     if (currentStep === 1) {
@@ -822,7 +886,7 @@ export const MultiAFeedbackBased: React.FC = () => {
       );
     }
     if (currentStep === 2) {
-      return true; // Services are optional (transport is always included)
+      return true; // Service level has default
     }
     if (currentStep === 3) {
       return (
@@ -848,12 +912,20 @@ export const MultiAFeedbackBased: React.FC = () => {
           </div>
           <h1 className="text-2xl font-bold text-foreground">Anfrage gesendet!</h1>
           <p className="text-muted-foreground">
-            Du erhältst in Kürze unverbindliche Offerten von geprüften Umzugsfirmen per E-Mail.
+            Du erhältst in Kürze unverbindliche Offerten von geprüften Umzugsfirmen per E-Mail an <strong>{formData.email}</strong>.
           </p>
-          <div className="pt-4">
-            <Badge variant="secondary" className="text-sm">
+          <div className="pt-4 flex flex-col gap-2">
+            <Badge variant="secondary" className="text-sm mx-auto">
               Durchschnittlich 3 Offerten in 24h
             </Badge>
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground mt-2">
+              <span className="flex items-center gap-1">
+                <Shield className="h-3 w-3" /> Unverbindlich
+              </span>
+              <span className="flex items-center gap-1">
+                <Lock className="h-3 w-3" /> Datenschutz
+              </span>
+            </div>
           </div>
         </motion.div>
       </div>
