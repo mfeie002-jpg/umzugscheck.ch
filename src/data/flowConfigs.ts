@@ -148,6 +148,103 @@ export const FLOW_CONFIGS: Record<string, FlowConfig> = {
 
 // Sub-Variant Configurations for V9 feedback-based variants
 export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
+  // V1 - Control Flow Feedback
+  'v1a': {
+    id: 'v1a',
+    label: 'V1a Control (Feedback)',
+    path: '/umzugsofferten?variant=v1a',
+    color: 'bg-blue-600',
+    description: 'V1 Feedback: 2-Step, Sticky CTA, Trust, Minimalfelder',
+    parentFlow: 'umzugsofferten',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ Von-Nach, Datum, Zimmer' },
+      { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V2 - Premium Feedback
+  'v2f': {
+    id: 'v2f',
+    label: 'V2f Premium (Feedback)',
+    path: '/umzugsofferten-v2?variant=v2f',
+    color: 'bg-purple-600',
+    description: 'V2 Feedback: Free-First, 3 Steps, Plan-Auswahl, Sticky CTA',
+    parentFlow: 'umzugsofferten-v2',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer' },
+      { step: 2, name: 'Plan wählen', description: 'Gratis oder Premium' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V4 - Video-First Feedback
+  'v4f': {
+    id: 'v4f',
+    label: 'V4f Video-First (Feedback)',
+    path: '/umzugsofferten-v4?variant=v4f',
+    color: 'bg-pink-600',
+    description: 'V4 Feedback: Video optional, Skip-Button, Lazy-Load, Sticky CTA',
+    parentFlow: 'umzugsofferten-v4',
+    steps: [
+      { step: 1, name: 'Video (Optional)', description: 'Video-Hero mit Skip' },
+      { step: 2, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V5 - Marketplace Feedback
+  'v5f': {
+    id: 'v5f',
+    label: 'V5f Marketplace (Feedback)',
+    path: '/umzugsofferten-v5?variant=v5f',
+    color: 'bg-yellow-600',
+    description: 'V5 Feedback: Top-3-Empfehlung, Trust-Badges, Filter/Sort',
+    parentFlow: 'umzugsofferten-v5',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer' },
+      { step: 2, name: 'Firmenauswahl', description: 'Top-3 Empfehlungen mit Filter' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V6 - Ultimate Feedback
+  'v6a': {
+    id: 'v6a',
+    label: 'V6a Ultimate (Feedback)',
+    path: '/umzugsofferten-v6?variant=v6a',
+    color: 'bg-orange-600',
+    description: 'V6 Feedback: 3 Pakete statt 6 Tiers, Card-Snap, Gratis-Option',
+    parentFlow: 'umzugsofferten-v6',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer' },
+      { step: 2, name: 'Paket wählen', description: '3 Pakete mit Snap-Scroll' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V7 - SwissMove Feedback
+  'v7a': {
+    id: 'v7a',
+    label: 'V7a SwissMove (Feedback)',
+    path: '/umzugsofferten-v7?variant=v7a',
+    color: 'bg-indigo-600',
+    description: 'V7 Feedback: 90s-Timer, Save/Resume, Auto-Advance',
+    parentFlow: 'umzugsofferten-v7',
+    steps: [
+      { step: 1, name: 'Quick Details', description: 'PLZ, Datum, Zimmer' },
+      { step: 2, name: 'Services', description: 'Schnelle Service-Auswahl' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V8 - Decision-Free Feedback
+  'v8a': {
+    id: 'v8a',
+    label: 'V8a Decision-Free (Feedback)',
+    path: '/umzugsofferten-v8?variant=v8a',
+    color: 'bg-teal-600',
+    description: 'V8 Feedback: 2-Step, Review-Card, Transparenz-Panel',
+    parentFlow: 'umzugsofferten-v8',
+    steps: [
+      { step: 1, name: 'Kurze Eingabe', description: 'PLZ, Datum, Zimmer' },
+      { step: 2, name: 'Review & Kontakt', description: 'Überblick + Kontaktdaten' },
+    ],
+  },
+  // V9 Variants
   'v9a': {
     id: 'v9a',
     label: 'V9.a Gemini Archetyp ⭐',
@@ -217,6 +314,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 9, name: 'Kontakt', description: 'Kontaktdaten' },
     ],
   },
+  // Multi - ChatGPT Pro
   'multi-a': {
     id: 'multi-a',
     label: 'Multi.a ChatGPT Pro',
