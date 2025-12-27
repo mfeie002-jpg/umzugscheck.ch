@@ -638,8 +638,15 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                   
                   <TabsContent value="visual" className="mt-4">
                     {(() => {
-                      // Calculate max steps dynamically based on available screenshots
+                      // Calculate max steps - prioritize step_configs, then fall back to screenshots
                       const getMaxSteps = (version: FlowVersion): number => {
+                        // First check step_configs (source of truth for step count)
+                        const stepConfigs = version.step_configs as Array<{ step: number; name?: string }> | null;
+                        if (stepConfigs && Array.isArray(stepConfigs) && stepConfigs.length > 0) {
+                          return stepConfigs.length;
+                        }
+                        
+                        // Fall back to counting screenshots if no step_configs
                         const screenshots = version.screenshots as Record<string, string> | null;
                         if (!screenshots) return 0;
                         let max = 0;
