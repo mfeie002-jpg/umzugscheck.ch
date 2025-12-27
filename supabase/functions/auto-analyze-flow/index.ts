@@ -6,20 +6,21 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Flow configurations with step counts
+// Flow configurations matching the central FLOW_CONFIGS - use the same IDs!
 const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: string }> = {
-  'v1': { name: 'V1 Original', steps: 4, baseUrl: '/umzugsofferten' },
-  'v1a': { name: 'V1a ChatGPT UX', steps: 4, baseUrl: '/umzugsofferten-v1a' },
-  'v2': { name: 'V2 Simplified', steps: 3, baseUrl: '/umzugsofferten-v2' },
-  'v3': { name: 'V3 Price-First', steps: 3, baseUrl: '/umzugsofferten-v3' },
-  'v4': { name: 'V4 Conversational', steps: 3, baseUrl: '/umzugsofferten-v4' },
-  'v5': { name: 'V5 AI-Video', steps: 4, baseUrl: '/umzugsofferten-v5' },
-  'v6': { name: 'V6 Split-Test', steps: 4, baseUrl: '/umzugsofferten-v6' },
-  'v7': { name: 'V7 Gamification', steps: 5, baseUrl: '/umzugsofferten-v7' },
-  'v8': { name: 'V8 Trust-First', steps: 4, baseUrl: '/umzugsofferten-v8' },
+  // Main flows (matching src/data/flowConfigs.ts)
+  'umzugsofferten': { name: 'V1 - Control Flow', steps: 4, baseUrl: '/umzugsofferten' },
+  'umzugsofferten-v2': { name: 'V2 - Premium Full-Journey', steps: 6, baseUrl: '/umzugsofferten-v2' },
+  'umzugsofferten-v3': { name: 'V3 - God Mode', steps: 4, baseUrl: '/umzugsofferten-v3' },
+  'umzugsofferten-v4': { name: 'V4 - Video-First AI', steps: 5, baseUrl: '/umzugsofferten-v4' },
+  'umzugsofferten-v5': { name: 'V5 - Marketplace Wizard', steps: 5, baseUrl: '/umzugsofferten-v5' },
+  'umzugsofferten-v6': { name: 'V6 - Ultimate (6-Tier)', steps: 6, baseUrl: '/umzugsofferten-v6' },
+  'umzugsofferten-v7': { name: 'V7 - SwissMove (90s)', steps: 3, baseUrl: '/umzugsofferten-v7' },
+  'umzugsofferten-v8': { name: 'V8 - Decision-Free', steps: 5, baseUrl: '/umzugsofferten-v8' },
+  'umzugsofferten-v9': { name: 'V9 - Zero Friction', steps: 5, baseUrl: '/umzugsofferten-v9' },
 };
 
-const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_KEY');
+const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY');
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -50,7 +51,7 @@ interface StepAnalysis {
 
 async function captureScreenshot(url: string, device: 'desktop' | 'mobile'): Promise<string | null> {
   if (!SCREENSHOTMACHINE_KEY) {
-    console.log('No SCREENSHOTMACHINE_KEY, skipping screenshot');
+    console.log('No SCREENSHOTMACHINE_API_KEY, skipping screenshot');
     return null;
   }
 
@@ -61,7 +62,9 @@ async function captureScreenshot(url: string, device: 'desktop' | 'mobile'): Pro
     dimension: dimension,
     format: 'png',
     cacheLimit: '0',
-    delay: '3000',
+    delay: '5000',
+    js: 'true',
+    scroll: 'true',
   });
 
   try {
@@ -93,9 +96,17 @@ async function analyzeStepWithAI(
     return {
       stepNumber,
       stepName,
-      issues: [],
+      issues: [
+        {
+          severity: 'info',
+          category: 'setup',
+          title: 'API Key fehlt',
+          description: 'LOVABLE_API_KEY nicht konfiguriert',
+          recommendation: 'LOVABLE_API_KEY in Secrets hinzufügen'
+        }
+      ],
       suggestions: ['AI analysis not available - add LOVABLE_API_KEY'],
-      scores: { mobile: 70, conversion: 70, ux: 70 }
+      scores: { mobile: 65, conversion: 65, ux: 65 }
     };
   }
 
@@ -166,7 +177,8 @@ Antworte im folgenden JSON-Format:
     });
 
     if (!response.ok) {
-      console.error('AI analysis failed:', await response.text());
+      const errorText = await response.text();
+      console.error('AI analysis failed:', errorText);
       throw new Error('AI analysis failed');
     }
 
@@ -186,9 +198,17 @@ Antworte im folgenden JSON-Format:
     return {
       stepNumber,
       stepName,
-      issues: [],
-      suggestions: ['AI-Analyse fehlgeschlagen'],
-      scores: { mobile: 70, conversion: 70, ux: 70 }
+      issues: [
+        {
+          severity: 'warning',
+          category: 'ux',
+          title: 'AI-Analyse fehlgeschlagen',
+          description: String(error),
+          recommendation: 'Manuell überprüfen'
+        }
+      ],
+      suggestions: ['AI-Analyse fehlgeschlagen - manuell prüfen'],
+      scores: { mobile: 60, conversion: 60, ux: 60 }
     };
   }
 }
@@ -266,18 +286,24 @@ serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    const { flowId, runType = 'manual', baseUrl = 'https://umzugscheck.ch' }: AnalysisRequest = await req.json();
+    const { flowId, runType = 'manual', baseUrl = 'https://www.umzugscheck.ch' }: AnalysisRequest = await req.json();
 
     console.log(`Starting analysis for flow: ${flowId}`);
 
-    // Validate flow
+    // Validate flow - check if flow exists
     const flowConfig = FLOW_CONFIGS[flowId];
     if (!flowConfig) {
+      console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
       return new Response(
-        JSON.stringify({ error: `Unknown flow: ${flowId}` }),
+        JSON.stringify({ 
+          error: `Unknown flow: ${flowId}`,
+          available: Object.keys(FLOW_CONFIGS)
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    console.log(`Flow config found: ${flowConfig.name} with ${flowConfig.steps} steps`);
 
     // Create analysis run
     const { data: run, error: runError } = await supabase
@@ -313,7 +339,7 @@ serve(async (req) => {
 
     // Analyze each step
     for (let step = 1; step <= flowConfig.steps; step++) {
-      const stepUrl = `${baseUrl}${flowConfig.baseUrl}?uc_flow=${flowId}&uc_step=${step}&uc_capture=1`;
+      const stepUrl = `${baseUrl}${flowConfig.baseUrl}?uc_step=${step}&uc_capture=1`;
       const stepName = `Step ${step}`;
 
       console.log(`Analyzing step ${step}: ${stepUrl}`);
@@ -323,6 +349,8 @@ serve(async (req) => {
         captureScreenshot(stepUrl, 'desktop'),
         captureScreenshot(stepUrl, 'mobile')
       ]);
+
+      console.log(`Screenshots captured - Desktop: ${desktopScreenshot ? 'yes' : 'no'}, Mobile: ${mobileScreenshot ? 'yes' : 'no'}`);
 
       // Analyze with AI
       const analysis = await analyzeStepWithAI(
@@ -400,7 +428,7 @@ serve(async (req) => {
         completed_at: new Date().toISOString(),
         overall_score: overallScore,
         conversion_score: avgConversion,
-        performance_score: avgMobile, // Using mobile as performance proxy
+        performance_score: avgMobile,
         ux_score: avgUx,
         ai_summary: summary,
         ai_recommendations: recommendations,
@@ -410,7 +438,6 @@ serve(async (req) => {
     // Check for alerts
     const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
     if (criticalIssues > 0) {
-      // Check alert settings
       const { data: alertSettings } = await supabase
         .from('flow_alert_settings')
         .select('*')

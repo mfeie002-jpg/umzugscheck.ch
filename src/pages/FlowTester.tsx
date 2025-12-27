@@ -1012,9 +1012,14 @@ export default function FlowTester() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
-        {/* Header */}
-        <header className="border-b bg-background/80 backdrop-blur-lg sticky top-0 z-40">
+      <SEOHead 
+        pageType="main-page"
+        pageName="Flow Tester"
+        url="/flow-tester"
+      />
+      <div className="min-h-[60vh] bg-gradient-to-b from-background to-muted/30">
+        {/* Inline Header - no duplicate navigation */}
+        <div className="border-b bg-background/80 backdrop-blur-lg sticky top-16 z-30">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
@@ -1040,7 +1045,7 @@ export default function FlowTester() {
               </div>
             )}
           </div>
-        </header>
+        </div>
 
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8">
@@ -1108,13 +1113,6 @@ export default function FlowTester() {
 
         {/* Feedback Modal */}
         {renderFeedbackModal()}
-
-        {/* Footer */}
-        <footer className="border-t py-6 mt-auto">
-          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-            Flow Tester • Umzugscheck.ch A/B Testing Suite
-          </div>
-        </footer>
       </div>
     </>
   );
