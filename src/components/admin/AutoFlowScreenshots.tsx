@@ -141,6 +141,22 @@ const CALCULATOR_FLOWS = [
       { step: 7, name: "Step 7 - Success" },
     ],
   },
+  {
+    id: "v9a",
+    name: "V9.a Gemini Archetyp ⭐",
+    path: "/umzugsofferten?variant=v9a",
+    steps: [
+      { step: 1, name: "Step 1 - Start (Privat/Geschäftlich)" },
+      { step: 2, name: "Step 2 - Von wo?" },
+      { step: 3, name: "Step 3 - Nach wo?" },
+      { step: 4, name: "Step 4 - Wann?" },
+      { step: 5, name: "Step 5 - Wohnung" },
+      { step: 6, name: "Step 6 - Inventar" },
+      { step: 7, name: "Step 7 - Services" },
+      { step: 8, name: "Step 8 - Analyse" },
+      { step: 9, name: "Step 9 - Kontakt" },
+    ],
+  },
 ];
 
 // Viewport presets for automated step captures
