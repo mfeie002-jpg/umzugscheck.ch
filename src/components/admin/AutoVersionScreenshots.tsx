@@ -177,9 +177,22 @@ export function AutoVersionScreenshots() {
   }, [pendingQueue, autoSync]);
 
   const getFlowPath = (version: FlowVersion): { path: string; steps: number } | null => {
-    // Check for V9 variants first
-    const config = version.config as { variantId?: string } | null;
-    if (config?.variantId) {
+    const config = version.config as {
+      variantId?: unknown;
+      variantPath?: unknown;
+      variantSteps?: unknown;
+    } | null;
+
+    // Prefer explicit variantPath stored in version config (e.g. v1a-v1e, v2f, ...)
+    const variantPath = typeof config?.variantPath === "string" ? config.variantPath : null;
+    const variantSteps = Array.isArray(config?.variantSteps) ? (config?.variantSteps as unknown[]) : null;
+    if (variantPath) {
+      const fallbackSteps = FLOW_DEFINITIONS[version.flow_id]?.maxSteps ?? 4;
+      return { path: variantPath, steps: variantSteps?.length ?? fallbackSteps };
+    }
+
+    // Check for V9 variants
+    if (typeof config?.variantId === "string") {
       const variantLetter = config.variantId.replace("v9-variant-", "").toUpperCase();
       const variantConfig = V9_VARIANTS[variantLetter];
       if (variantConfig) {
