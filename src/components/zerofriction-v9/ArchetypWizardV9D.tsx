@@ -625,8 +625,10 @@ export function ArchetypWizardV9D() {
     setStep('success');
   };
 
-  const stepIndex = ['address-from', 'address-to', 'details', 'result-teasing', 'contact'].indexOf(step);
-  const totalSteps = 5;
+  // User-facing steps (excluding analyzing/success which are overlays/transitions)
+  const USER_FACING_STEPS: WizardStep[] = ['address-from', 'address-to', 'details', 'result-teasing', 'contact'];
+  const stepIndex = USER_FACING_STEPS.indexOf(step);
+  const totalSteps = USER_FACING_STEPS.length;
 
   return (
     <>
