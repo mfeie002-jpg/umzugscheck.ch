@@ -18,6 +18,7 @@ import { saveAs } from "file-saver";
 import { FlowVersionManager } from "./FlowVersionManager";
 import { VariantWorkflowHub } from "./VariantWorkflowHub";
 import AutoFlowDashboard from "./AutoFlowDashboard";
+import { AddFlowDialog } from "./AddFlowDialog";
 import { 
   Camera, 
   Copy, 
@@ -2210,6 +2211,7 @@ ${JSON.stringify(step.meta || {}, null, 2)}
                 >
                   <RefreshCw className={`h-4 w-4 ${isSyncingFlows ? 'animate-spin' : ''}`} />
                 </Button>
+                <AddFlowDialog onFlowAdded={syncFlowConfigs} />
               </div>
               {databaseFlowOptions.length > 0 && (
                 <p className="mt-1 text-xs text-muted-foreground">
