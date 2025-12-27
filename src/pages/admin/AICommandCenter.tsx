@@ -12,6 +12,7 @@ import { VariantWorkflowHub } from "@/components/admin/VariantWorkflowHub";
 import { CustomFlowManager } from "@/components/admin/CustomFlowManager";
 import { CHATGPT_PROMPT_ENHANCEMENTS, getAllEnhancementsMarkdown } from "@/lib/chatgpt-prompt-enhancements";
 import { CONTEXT_DATA_ITEMS, getAvailableContextData, getPlannedContextData, getContextDataChecklistMarkdown } from "@/lib/chatgpt-context-data";
+import { GeminiLimitsInfo } from "@/components/ui/GeminiLimitsInfo";
 import { AIFlowGenerator } from "@/components/admin/AIFlowGenerator";
 import { FLOW_CONFIGS, getFlowVariants, getTotalStepsAllFlows } from "@/data/flowConfigs";
 import { supabase } from "@/integrations/supabase/client";
@@ -822,6 +823,9 @@ Tägliche Captures mit Diff-Detection.
             )}
           </CardContent>
         </Card>
+
+        {/* Gemini Upload Limits Info */}
+        <GeminiLimitsInfo className="border-amber-200 dark:border-amber-800" />
 
         {/* Flow Overview */}
         <Card>

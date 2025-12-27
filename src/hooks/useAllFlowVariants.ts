@@ -141,24 +141,41 @@ export function useAllFlowVariants(selectedFlowFilter?: string) {
 
   // 3. Add dynamic workflow-created variants from DB
   if (dbVariants) {
+    const seenIds = new Set<string>();
+    
     dbVariants.forEach((variant) => {
       // Parse flow_id to get flow number
       const parsed = parseFlowId(variant.flow_id);
-      const variantLetter = variant.variant_label?.toLowerCase();
+      
+      // Normalize variant_label - extract just the letter if it contains one
+      let variantLetter = 'a';
+      const label = variant.variant_label || '';
+      
+      // Try to extract single letter variant (a, b, c, etc.)
+      const letterMatch = label.match(/^([a-z])$/i) || label.match(/\.([a-z])$/i);
+      if (letterMatch) {
+        variantLetter = letterMatch[1].toLowerCase();
+      } else if (label.length === 1 && /[a-z]/i.test(label)) {
+        variantLetter = label.toLowerCase();
+      } else {
+        // Generate based on first letter of variant name
+        const nameFirst = (variant.variant_name || 'a').charAt(0).toLowerCase();
+        variantLetter = /[a-z]/.test(nameFirst) ? nameFirst : 'x';
+      }
+      
       const urls = generateVariantUrls(parsed.flowNumber, variantLetter);
       
       // Check if this already exists in static configs
       const staticKey = `v${parsed.flowNumber}${variantLetter}`;
       const existsInStatic = SUB_VARIANT_CONFIGS[staticKey];
       
-      // Only add if not already in static config (or update with DB info)
-      if (!existsInStatic && variant.status === 'done') {
-        // Use a consistent ID format that matches what CalculatorFlowReview expects
-        const variantId = `v${parsed.flowNumber}${variantLetter}`;
+      // Only add if not already in static config and not seen yet
+      if (!existsInStatic && variant.status === 'done' && !seenIds.has(staticKey)) {
+        seenIds.add(staticKey);
         
         allVariants.push({
-          id: variantId,
-          label: `V${parsed.flowNumber}${variantLetter?.toUpperCase()} - ${variant.variant_name}`,
+          id: staticKey,
+          label: `V${parsed.flowNumber}.${variantLetter?.toUpperCase()} - ${variant.variant_name}`,
           path: urls.liveUrl,
           ...urls,
           color: 'bg-emerald-500',

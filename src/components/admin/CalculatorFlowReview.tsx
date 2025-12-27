@@ -418,13 +418,31 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
         // Parse flow_id to get flow number (e.g., "umzugsofferten-v9" -> 9)
         const flowMatch = row.flow_id.match(/v(\d+)/i);
         const flowNumber = flowMatch ? parseInt(flowMatch[1], 10) : 1;
-        const variantLetter = row.variant_label?.toLowerCase() || 'a';
+        
+        // Normalize variant_label - extract just the letter if it contains one
+        // Handles: "a", "b", "c", "V3.a", "ChatGPT Pro Extended" etc.
+        let variantLetter = 'a';
+        const label = row.variant_label || '';
+        
+        // Try to extract single letter variant (a, b, c, etc.)
+        const letterMatch = label.match(/^([a-z])$/i) || label.match(/\.([a-z])$/i);
+        if (letterMatch) {
+          variantLetter = letterMatch[1].toLowerCase();
+        } else if (label.length === 1 && /[a-z]/i.test(label)) {
+          variantLetter = label.toLowerCase();
+        } else {
+          // Generate a unique letter based on position or use first letter of name
+          const nameFirst = (row.variant_name || 'a').charAt(0).toLowerCase();
+          variantLetter = /[a-z]/.test(nameFirst) ? nameFirst : 'x';
+        }
+        
         const variantId = `v${flowNumber}${variantLetter}`;
         
         return {
           id: row.id,
           flow_id: variantId,
-          label: `V${flowNumber}${variantLetter.toUpperCase()} - ${row.variant_name}`,
+          originalFlowId: row.flow_id, // Keep original for reference
+          label: `V${flowNumber}.${variantLetter.toUpperCase()} - ${row.variant_name}`,
           path: `/umzugsofferten?variant=${variantId}`,
           steps: [] as FlowStepConfig[], // Workflow variants inherit parent steps
           color: 'bg-emerald-500',
@@ -434,9 +452,15 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
       });
       
       // Filter out workflow configs that already exist in static SUB_VARIANT_CONFIGS
-      const filteredWorkflowConfigs = workflowConfigs.filter(wc => 
-        !SUB_VARIANT_CONFIGS[wc.flow_id]
-      );
+      // Also deduplicate by flow_id (keep first occurrence)
+      const seenFlowIds = new Set<string>();
+      const filteredWorkflowConfigs = workflowConfigs.filter(wc => {
+        if (SUB_VARIANT_CONFIGS[wc.flow_id] || seenFlowIds.has(wc.flow_id)) {
+          return false;
+        }
+        seenFlowIds.add(wc.flow_id);
+        return true;
+      });
       
       setDbFlowConfigs([...configs, ...filteredWorkflowConfigs]);
       const total = configs.length + filteredWorkflowConfigs.length;
