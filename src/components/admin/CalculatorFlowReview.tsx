@@ -307,7 +307,7 @@ export function CalculatorFlowReview() {
 
   // Build calculator options from FLOW_CONFIGS + SUB_VARIANT_CONFIGS + VARIANT_REGISTRY
   const buildCalculatorOptions = () => {
-    const options: { value: string; label: string; path: string; isSubVariant?: boolean; component?: string }[] = [];
+    const options: { value: string; label: string; path: string; isSubVariant?: boolean; component?: string; group?: string }[] = [];
     
     // Main flows from FLOW_CONFIGS
     Object.values(FLOW_CONFIGS).forEach(config => {
@@ -316,6 +316,7 @@ export function CalculatorFlowReview() {
         label: config.label,
         path: config.path,
         isSubVariant: false,
+        group: 'main',
       });
     });
     
@@ -328,20 +329,24 @@ export function CalculatorFlowReview() {
         path: config.path,
         isSubVariant: true,
         component: registryEntry?.component,
+        group: 'sub',
       });
     });
     
     // Other calculators
     options.push(
-      { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner" },
-      { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner" },
-      { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner" },
+      { value: "reinigung", label: "Reinigungsrechner", path: "/reinigungsrechner", group: 'other' },
+      { value: "entsorgung", label: "Entsorgungsrechner", path: "/entsorgungsrechner", group: 'other' },
+      { value: "firmenumzug", label: "Firmenumzug-Rechner", path: "/firmenumzug-rechner", group: 'other' },
     );
     
     return options;
   };
   
   const calculatorOptions = buildCalculatorOptions();
+  const mainFlowOptions = calculatorOptions.filter(o => o.group === 'main');
+  const subVariantOptions = calculatorOptions.filter(o => o.group === 'sub');
+  const otherCalculatorOptions = calculatorOptions.filter(o => o.group === 'other');
 
   // Only main flow variants (V1-V9) for bulk export
   const flowVariants = calculatorOptions.filter(c => c.value.startsWith('umzugsofferten') && !c.isSubVariant);
@@ -1979,8 +1984,26 @@ ${JSON.stringify(step.meta || {}, null, 2)}
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {calculatorOptions.map(opt => (
+                <SelectContent className="max-h-[400px]">
+                  {/* Main Flows */}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Haupt-Flows (V1-V9)</div>
+                  {mainFlowOptions.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                  
+                  {/* Sub-Variants */}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Sub-Varianten (Coded)</div>
+                  {subVariantOptions.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                  
+                  {/* Other Calculators */}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Andere Rechner</div>
+                  {otherCalculatorOptions.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </SelectItem>
