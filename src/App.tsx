@@ -323,7 +323,7 @@ const App = () => (
                 <PerformanceMonitor />
                 <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
                 <PreloadResources />
-                <PWAInstallPrompt />
+                {/* PWAInstallPrompt disabled */}
                 <PerformanceDebugOverlay />
                 <div className="flex flex-col min-h-screen bg-background">
                 <Navigation />
