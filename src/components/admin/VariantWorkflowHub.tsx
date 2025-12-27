@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -67,6 +68,7 @@ interface VariantEntry {
 
 export function VariantWorkflowHub() {
   // State
+  const navigate = useNavigate();
   const [selectedFlow, setSelectedFlow] = useState("umzugsofferten-v9");
   const [feedbackText, setFeedbackText] = useState("");
   const [targetVariant, setTargetVariant] = useState("");
@@ -593,7 +595,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => window.location.href = variant.testerUrl}
+                          onClick={() => navigate(variant.testerUrl)}
                         >
                           <Play className="h-3 w-3 mr-1" />
                           Tester
@@ -601,7 +603,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         <Button 
                           size="sm" 
                           variant="default"
-                          onClick={() => window.location.href = variant.screenshotUrl}
+                          onClick={() => navigate(variant.screenshotUrl)}
                         >
                           <Camera className="h-3 w-3 mr-1" />
                           Screenshots
@@ -647,7 +649,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => window.location.href = `/flow-tester?variant=${variantKey}`}
+                          onClick={() => navigate(`/flow-tester?variant=${variantKey}`)}
                         >
                           <Play className="h-3 w-3 mr-1" />
                           Tester
@@ -655,7 +657,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         <Button 
                           size="sm" 
                           variant="default"
-                          onClick={() => window.location.href = `/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}
+                          onClick={() => navigate(`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`)}
                         >
                           <Camera className="h-3 w-3 mr-1" />
                           Screenshots
@@ -688,7 +690,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
               <Button 
                 variant="outline" 
                 className="flex-1 gap-2"
-                onClick={() => window.location.href = `/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}
+                onClick={() => navigate(`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`)}
               >
                 <Camera className="h-4 w-4" />
                 Screenshot Tool
@@ -696,7 +698,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
               <Button 
                 variant="outline" 
                 className="flex-1 gap-2"
-                onClick={() => window.location.href = '/flow-tester'}
+                onClick={() => navigate('/flow-tester')}
               >
                 <Play className="h-4 w-4" />
                 Flow Tester
