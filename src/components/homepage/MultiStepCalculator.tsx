@@ -311,9 +311,10 @@ interface FormData {
 
 interface MultiStepCalculatorProps {
   initialStep?: number;
+  disableAutoAdvance?: boolean;
 }
 
-export const MultiStepCalculator = memo(function MultiStepCalculator({ initialStep }: MultiStepCalculatorProps) {
+export const MultiStepCalculator = memo(function MultiStepCalculator({ initialStep, disableAutoAdvance = false }: MultiStepCalculatorProps) {
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -766,7 +767,10 @@ export const MultiStepCalculator = memo(function MultiStepCalculator({ initialSt
                 value={formData.moveType}
                 onChange={(v) => {
                   updateFormData("moveType", v);
-                  setTimeout(() => setCurrentStep(2), 300);
+                  // Auto-advance to step 2 unless disabled (e.g., for baseline screenshots)
+                  if (!disableAutoAdvance) {
+                    setTimeout(() => setCurrentStep(2), 300);
+                  }
                 }}
               />
             </motion.div>
