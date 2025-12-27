@@ -43,6 +43,9 @@ export { V5cKeyboardNav } from './V5cKeyboardNav';
 export { V5dLargeText } from './V5dLargeText';
 export { V5eReducedMotion } from './V5eReducedMotion';
 
+// V9 Variants (Main Pro Extended)
+export { V9aFeedbackBased } from './V9aFeedbackBased';
+
 // Variant Registry with step counts for dynamic capture
 export const VARIANT_REGISTRY: Record<string, { 
   component: string; 
@@ -76,6 +79,8 @@ export const VARIANT_REGISTRY: Record<string, {
   'v5c': { component: 'V5cKeyboardNav', stepCount: 3, label: 'V5c Keyboard Nav' },
   'v5d': { component: 'V5dLargeText', stepCount: 3, label: 'V5d Large Text' },
   'v5e': { component: 'V5eReducedMotion', stepCount: 3, label: 'V5e Reduced Motion' },
+  // V9 - Main Pro Extended
+  'v9a': { component: 'V9aFeedbackBased', stepCount: 6, label: 'V9a Main Pro Ext' },
 };
 
 // Get step count for a variant
