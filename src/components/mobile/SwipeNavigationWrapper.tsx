@@ -33,7 +33,11 @@ export const SwipeNavigationWrapper = ({ children }: SwipeNavigationWrapperProps
     prevPage 
   } = useSwipeNavigation();
 
-  if (!isMobile) {
+  // Wenn nicht mobile oder auf deaktivierten Routen: Children normal rendern ohne Wrapper
+  const disabledRoutes = ['/flow-tester', '/capture', '/admin'];
+  const isDisabled = !isMobile || disabledRoutes.some(route => location.pathname.startsWith(route));
+  
+  if (isDisabled) {
     return <>{children}</>;
   }
 
