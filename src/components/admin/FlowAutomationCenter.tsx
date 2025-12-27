@@ -26,6 +26,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from "@/data/flowConfigs";
+import { SITE_CONFIG } from "@/data/constants";
 import { toast } from "sonner";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -399,9 +400,12 @@ Antworte auf Deutsch.`;
     }));
     setAnalysisResults(results);
 
-    const baseUrl = window.location.origin.includes('localhost') 
-      ? 'https://www.umzugscheck.ch'
-      : window.location.origin;
+    const baseUrl = (() => {
+      if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
+      const { origin, hostname } = window.location;
+      const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
+      return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+    })();
 
     for (let i = 0; i < FLOW_OPTIONS.length; i++) {
       const flow = FLOW_OPTIONS[i];
@@ -492,9 +496,12 @@ Antworte auf Deutsch.`;
       status: 'pending' as const
     })));
 
-    const baseUrl = window.location.origin.includes('localhost') 
-      ? 'https://www.umzugscheck.ch'
-      : window.location.origin;
+    const baseUrl = (() => {
+      if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
+      const { origin, hostname } = window.location;
+      const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
+      return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+    })();
 
     for (let i = 0; i < variants.length; i++) {
       const variant = variants[i];
