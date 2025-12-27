@@ -657,7 +657,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         <Button 
                           size="sm" 
                           variant="default"
-                          onClick={() => navigate(`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`)}
+                          onClick={() => navigate(`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(variantKey)}`)}
                         >
                           <Camera className="h-3 w-3 mr-1" />
                           Screenshots
