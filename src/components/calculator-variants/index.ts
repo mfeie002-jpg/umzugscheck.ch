@@ -14,6 +14,7 @@ import { SUB_VARIANT_CONFIGS, getFlowStepCount } from '@/data/flowConfigs';
 
 // V1 Variants (Control Flow)
 export { V1aFeedbackBased } from './V1aFeedbackBased';
+export { V1bFeedbackBased } from './V1bFeedbackBased';
 
 // V2 Variants (UX-Optimized)
 export { V2aProgressEnhanced } from './V2aProgressEnhanced';
@@ -75,6 +76,7 @@ export const VARIANT_REGISTRY: Record<string, {
 }> = {
   // V1 - Control Flow
   'v1a': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1a Control (Feedback)' },
+  'v1b': { component: 'V1bFeedbackBased', stepCount: 4, label: 'V1b ChatGPT Agent' },
   // V2 - UX Optimized
   'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Progress Enhanced' },
   'v2b': { component: 'V2bSimplifiedLabels', stepCount: 4, label: 'V2b Simplified Labels' },
