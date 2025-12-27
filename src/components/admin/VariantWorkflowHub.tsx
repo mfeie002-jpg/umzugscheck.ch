@@ -568,23 +568,29 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button asChild size="sm" variant="outline">
-                          <Link to={`/umzugsofferten?variant=${variant.key}`} target="_blank" rel="noopener noreferrer">
-                            <Eye className="h-3 w-3 mr-1" />
-                            Live
-                          </Link>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => window.open(`/umzugsofferten?variant=${variant.key}`, '_blank')}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Live
                         </Button>
-                        <Button asChild size="sm" variant="outline">
-                          <Link to={`/flow-tester?variant=${variant.key}`}>
-                            <Play className="h-3 w-3 mr-1" />
-                            Tester
-                          </Link>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => window.location.href = `/flow-tester?variant=${variant.key}`}
+                        >
+                          <Play className="h-3 w-3 mr-1" />
+                          Tester
                         </Button>
-                        <Button asChild size="sm" variant="default">
-                          <Link to={`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}>
-                            <Camera className="h-3 w-3 mr-1" />
-                            Screenshots
-                          </Link>
+                        <Button 
+                          size="sm" 
+                          variant="default"
+                          onClick={() => window.location.href = `/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}
+                        >
+                          <Camera className="h-3 w-3 mr-1" />
+                          Screenshots
                         </Button>
                       </div>
                     </div>
@@ -614,17 +620,21 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button asChild size="sm" variant="outline">
-                        <Link to={`/flow-tester?variant=v${getFlowNumber()}${entry.variant_label}`}>
-                          <Eye className="h-3 w-3 mr-1" />
-                          Testen
-                        </Link>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => window.location.href = `/flow-tester?variant=v${getFlowNumber()}${entry.variant_label}`}
+                      >
+                        <Eye className="h-3 w-3 mr-1" />
+                        Testen
                       </Button>
-                      <Button asChild size="sm" variant="default">
-                        <Link to={`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}>
-                          <Camera className="h-3 w-3 mr-1" />
-                          Screenshots
-                        </Link>
+                      <Button 
+                        size="sm" 
+                        variant="default"
+                        onClick={() => window.location.href = `/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}
+                      >
+                        <Camera className="h-3 w-3 mr-1" />
+                        Screenshots
                       </Button>
                     </div>
                   </div>
@@ -651,17 +661,21 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             <Separator />
 
             <div className="flex gap-2">
-              <Button asChild variant="outline" className="w-full gap-2 flex-1">
-                <Link to={`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}>
-                  <Camera className="h-4 w-4" />
-                  Screenshot Tool
-                </Link>
+              <Button 
+                variant="outline" 
+                className="flex-1 gap-2"
+                onClick={() => window.location.href = `/admin/tools?tab=calculator-review&flow=${encodeURIComponent(selectedFlow)}`}
+              >
+                <Camera className="h-4 w-4" />
+                Screenshot Tool
               </Button>
-              <Button asChild variant="outline" className="w-full gap-2 flex-1">
-                <Link to="/flow-tester">
-                  <Play className="h-4 w-4" />
-                  Flow Tester
-                </Link>
+              <Button 
+                variant="outline" 
+                className="flex-1 gap-2"
+                onClick={() => window.location.href = '/flow-tester'}
+              >
+                <Play className="h-4 w-4" />
+                Flow Tester
               </Button>
               <Button onClick={() => setActiveStep(5)} className="flex-1">
                 Weiter zu Vergleich
