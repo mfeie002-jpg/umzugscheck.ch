@@ -74,6 +74,13 @@ const navStructure: NavItem[] = [
   // ========== AI COMMAND CENTER (HERO) ==========
   { type: "divider", title: "🧠 AI Command Center" },
   { 
+    title: "Flow Automation", 
+    href: "/admin/tools?tab=flow-automation", 
+    icon: Zap,
+    highlight: true,
+    badge: "🚀"
+  },
+  { 
     title: "KI-Zentrale", 
     href: "/admin/ai-command", 
     icon: Brain,
