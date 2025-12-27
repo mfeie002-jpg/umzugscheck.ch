@@ -58,6 +58,7 @@ interface NavItem {
   badge?: string;
   highlight?: boolean;
   exact?: boolean;
+  external?: boolean;
   type?: 'divider';
 }
 
@@ -133,12 +134,14 @@ const navStructure: NavItem[] = [
   { 
     title: "Flow Tester", 
     href: "/flow-tester", 
-    icon: Play
+    icon: Play,
+    external: true  // Opens in new tab
   },
   { 
     title: "V3 Varianten", 
     href: "/v3-varianten", 
-    icon: GitCompare
+    icon: GitCompare,
+    external: true
   },
   { 
     title: "Funnel Analytics", 
@@ -351,10 +354,14 @@ export function AdminSidebar() {
           const Icon = item.icon!;
           const active = isActive(item.href!, item.exact);
 
+          const linkProps = item.external 
+            ? { to: item.href!, target: "_blank", rel: "noopener noreferrer" }
+            : { to: item.href! };
+
           const NavContent = (
             <Link
               key={item.href}
-              to={item.href!}
+              {...linkProps}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors mb-0.5 relative",
                 "hover:bg-accent hover:text-accent-foreground",
@@ -374,6 +381,9 @@ export function AdminSidebar() {
               {!collapsed && (
                 <>
                   <span className="text-sm font-medium flex-1">{item.title}</span>
+                  {item.external && (
+                    <ChevronRight className="h-3 w-3 text-muted-foreground rotate-[-45deg]" />
+                  )}
                   {item.badge && (
                     <Badge variant="default" className="text-[9px] px-1 py-0 h-4 bg-orange-500 hover:bg-orange-500">
                       {item.badge}
