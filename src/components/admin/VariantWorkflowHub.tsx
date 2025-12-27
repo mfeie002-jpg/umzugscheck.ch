@@ -22,7 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
-import { FLOW_CONFIGS } from "@/data/flowConfigs";
+import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from "@/data/flowConfigs";
 import { useAllFlowVariants } from "@/hooks/useAllFlowVariants";
 import { toast } from "sonner";
 import { 
@@ -93,6 +93,12 @@ export function VariantWorkflowHub() {
   }, [selectedFlow]);
 
   const suggestNextVariant = async () => {
+    const extractLetter = (raw: string): string | null => {
+      const label = (raw || '').trim();
+      const m = label.match(/^([a-z])$/i) || label.match(/\.([a-z])$/i);
+      return m?.[1]?.toLowerCase() ?? null;
+    };
+
     try {
       const { data } = await supabase
         .from("flow_feedback_variants")
@@ -100,9 +106,18 @@ export function VariantWorkflowHub() {
         .eq("flow_id", selectedFlow)
         .order("created_at", { ascending: false });
 
-      const usedVariants = new Set((data || []).map(v => v.variant_label.toLowerCase()));
-      
-      // Find first unused letter
+      const dbLetters = (data || [])
+        .map(v => extractLetter(v.variant_label))
+        .filter(Boolean) as string[];
+
+      const staticLetters = Object.values(SUB_VARIANT_CONFIGS)
+        .filter(v => v.parentFlow === selectedFlow)
+        .map(v => v.id.match(/^v\d+([a-z])$/i)?.[1]?.toLowerCase() ?? null)
+        .filter(Boolean) as string[];
+
+      const usedVariants = new Set([...dbLetters, ...staticLetters]);
+
+      // Find first unused letter (avoid collisions with existing coded variants)
       for (const letter of ALL_VARIANT_LETTERS) {
         if (!usedVariants.has(letter)) {
           setTargetVariant(letter);
@@ -234,30 +249,44 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
         })
         .eq("id", entry.id);
 
-      // 2. CRITICAL: Also create entry in flow_versions for AI feedback tracking
+      // 2. CRITICAL: Also create/update entry in flow_versions for AI feedback tracking
       // This is what enables the ⭐ icon and stores the ChatGPT feedback
-      const { error: versionError } = await supabase
+      const { data: existingVersion, error: existingError } = await supabase
         .from("flow_versions")
-        .upsert({
-          flow_id: selectedFlow,
-          flow_code: flowCode,
-          version_number: versionNumber,
-          version_name: entry.variant_name,
-          description: `ChatGPT Agent: ${entry.variant_name}`,
-          ai_feedback: entry.prompt, // Store the original ChatGPT feedback
-          ai_feedback_source: 'ChatGPT',
-          ai_feedback_date: new Date().toISOString(),
-          is_active: true,
-          flow_number: parseInt(flowNumber, 10),
-          variant_letter: variantLetter,
-        }, {
-          onConflict: 'flow_id,version_number',
-          ignoreDuplicates: false
-        });
+        .select("id")
+        .eq("flow_id", selectedFlow)
+        .eq("version_number", versionNumber)
+        .maybeSingle();
 
-      if (versionError) {
-        console.error('Failed to create flow_versions entry:', versionError);
-        // Still continue - the main update succeeded
+      if (existingError) {
+        console.error('Failed to check existing flow_versions entry:', existingError);
+      }
+
+      const versionPayload = {
+        flow_id: selectedFlow,
+        flow_code: flowCode,
+        version_number: versionNumber,
+        version_name: entry.variant_name,
+        description: `ChatGPT Agent: ${entry.variant_name}`,
+        ai_feedback: entry.prompt,
+        ai_feedback_source: 'ChatGPT',
+        ai_feedback_date: new Date().toISOString(),
+        is_active: true,
+        flow_number: parseInt(flowNumber, 10),
+        variant_letter: variantLetter,
+      };
+
+      if (existingVersion?.id) {
+        const { error: updateError } = await supabase
+          .from("flow_versions")
+          .update(versionPayload)
+          .eq("id", existingVersion.id);
+        if (updateError) console.error('Failed to update flow_versions entry:', updateError);
+      } else {
+        const { error: insertError } = await supabase
+          .from("flow_versions")
+          .insert(versionPayload);
+        if (insertError) console.error('Failed to insert flow_versions entry:', insertError);
       }
 
       toast.success(`V${flowNumber}.${variantLetter} als implementiert markiert`);

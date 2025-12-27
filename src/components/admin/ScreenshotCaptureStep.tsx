@@ -31,9 +31,9 @@ export function ScreenshotCaptureStep({
 }: ScreenshotCaptureStepProps) {
   const [selectedVariant, setSelectedVariant] = useState<string>("");
   
-  // Get all static sub-variants for this flow
+  // Get all sub-variants for this flow (static + workflow-created)
   const allSubVariants = getSubVariantsForFlow(selectedFlow)
-    .filter(v => v.source === 'static-sub');
+    .filter(v => v.source === 'static-sub' || v.source === 'workflow');
   
   // Find the currently selected variant
   const currentVariant = allSubVariants.find(v => v.id === selectedVariant);
