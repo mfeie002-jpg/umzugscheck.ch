@@ -33,7 +33,9 @@ import {
   Camera,
   Loader2,
   CloudUpload,
-  Download
+  Download,
+  Layers,
+  CheckSquare
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -133,6 +135,13 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   const [selectedVersionForBackgroundScreenshots, setSelectedVersionForBackgroundScreenshots] = useState<FlowVersion | null>(null);
   const [autoRefreshedJobId, setAutoRefreshedJobId] = useState<string | null>(null);
   const { activeJob, isPolling, startJob, clearJob, checkPendingJobs } = useBackgroundScreenshotJob();
+  
+  // Batch screenshot state
+  const [batchScreenshotDialogOpen, setBatchScreenshotDialogOpen] = useState(false);
+  const [selectedVersionsForBatch, setSelectedVersionsForBatch] = useState<Set<string>>(new Set());
+  const [batchQueue, setBatchQueue] = useState<FlowVersion[]>([]);
+  const [batchCurrentIndex, setBatchCurrentIndex] = useState(0);
+  const [isBatchRunning, setIsBatchRunning] = useState(false);
 
   useEffect(() => {
     fetchVersions();
@@ -153,6 +162,69 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
     fetchVersions();
     setAutoRefreshedJobId(activeJob.id);
   }, [activeJob, autoRefreshedJobId]);
+
+  // Handle batch job progression
+  useEffect(() => {
+    if (!isBatchRunning || !activeJob) return;
+    
+    if (activeJob.status === 'completed') {
+      // Move to next version in batch
+      const nextIndex = batchCurrentIndex + 1;
+      if (nextIndex < batchQueue.length) {
+        setBatchCurrentIndex(nextIndex);
+        clearJob();
+        // Start next job after a short delay
+        setTimeout(() => {
+          startBatchJob(batchQueue[nextIndex], nextIndex, batchQueue.length);
+        }, 1000);
+      } else {
+        // Batch complete
+        setBatchCurrentIndex(nextIndex);
+        toast.success(`Alle ${batchQueue.length} Versionen erfolgreich erfasst!`);
+      }
+    } else if (activeJob.status === 'failed') {
+      toast.error(`Fehler bei Version ${batchCurrentIndex + 1}: ${activeJob.error}`);
+    }
+  }, [activeJob?.status, isBatchRunning, batchCurrentIndex, batchQueue]);
+
+  // Start a single batch job for a version
+  const startBatchJob = async (version: FlowVersion, index: number, total: number) => {
+    const dbStepConfigs = version.step_configs as Array<{ step: number; name: string; description?: string; url?: string }> | null;
+    
+    if (!dbStepConfigs || dbStepConfigs.length === 0) {
+      toast.error(`Version ${formatVersion(version.version_number)}: Keine Step-Konfiguration`);
+      return;
+    }
+    
+    const isPreviewHost = window.location.hostname.includes('lovable.app') || 
+                          window.location.hostname.includes('lovableproject.com');
+    const publicBase = isPreviewHost ? SITE_CONFIG.url : window.location.origin;
+    
+    let baseUrl = `${publicBase}/umzugsofferten`;
+    const firstStepUrl = dbStepConfigs[0]?.url;
+    if (firstStepUrl) {
+      try {
+        const parsedUrl = new URL(firstStepUrl);
+        const variant = parsedUrl.searchParams.get('variant');
+        if (variant) {
+          baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
+        }
+      } catch (e) {
+        // ignore
+      }
+    } else if (version.flow_code) {
+      const variant = version.flow_code.toLowerCase().replace('.', '');
+      baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
+    }
+    
+    await startJob({
+      versionId: version.id,
+      flowId: version.flow_id,
+      steps: dbStepConfigs,
+      baseUrl,
+    });
+  };
+
   const flowMajor = getFlowMajorFromFlowId(flowId);
 
   const formatVersion = (raw?: string | null): string => {
@@ -672,6 +744,22 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                 Alle als ZIP
               </Button>
             )}
+            {versions.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSelectedVersionsForBatch(new Set());
+                  setBatchQueue([]);
+                  setBatchCurrentIndex(0);
+                  setIsBatchRunning(false);
+                  setBatchScreenshotDialogOpen(true);
+                }}
+              >
+                <Layers className="h-4 w-4 mr-1" />
+                Batch-Capture
+              </Button>
+            )}
             {versions.length >= 2 && (
               <Button
                 variant="outline"
@@ -1183,6 +1271,178 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                       </Button>
                     </div>
                   )}
+                </>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Batch Screenshot Dialog */}
+        <Dialog open={batchScreenshotDialogOpen} onOpenChange={(open) => {
+          if (!isBatchRunning) setBatchScreenshotDialogOpen(open);
+        }}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Layers className="h-5 w-5" />
+                Batch Screenshot-Erfassung
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              {!isBatchRunning ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    Wähle mehrere Versionen aus, um deren Screenshots nacheinander zu erfassen:
+                  </p>
+                  <ScrollArea className="h-64 border rounded-lg p-2">
+                    <div className="space-y-2">
+                      {versions.filter(v => {
+                        const sc = v.step_configs as Array<{ step: number }> | null;
+                        return sc && Array.isArray(sc) && sc.length > 0;
+                      }).map(version => {
+                        const isSelected = selectedVersionsForBatch.has(version.id);
+                        return (
+                          <div 
+                            key={version.id}
+                            className={`p-2 rounded-lg border cursor-pointer transition-colors ${isSelected ? 'bg-primary/10 border-primary' : 'hover:bg-accent'}`}
+                            onClick={() => {
+                              const newSet = new Set(selectedVersionsForBatch);
+                              if (isSelected) {
+                                newSet.delete(version.id);
+                              } else {
+                                newSet.add(version.id);
+                              }
+                              setSelectedVersionsForBatch(newSet);
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <CheckSquare className={`h-4 w-4 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
+                              <span className="font-mono font-bold">{formatVersion(version.version_number)}</span>
+                              {version.version_name && (
+                                <span className="text-sm text-muted-foreground">- {version.version_name}</span>
+                              )}
+                              {version.is_baseline && (
+                                <Badge variant="secondary" className="text-xs">Baseline</Badge>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      {selectedVersionsForBatch.size} Versionen ausgewählt
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const allIds = versions
+                            .filter(v => {
+                              const sc = v.step_configs as Array<{ step: number }> | null;
+                              return sc && Array.isArray(sc) && sc.length > 0;
+                            })
+                            .map(v => v.id);
+                          setSelectedVersionsForBatch(new Set(allIds));
+                        }}
+                      >
+                        Alle auswählen
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedVersionsForBatch(new Set())}
+                      >
+                        Keine
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => setBatchScreenshotDialogOpen(false)}
+                    >
+                      Abbrechen
+                    </Button>
+                    <Button
+                      className="flex-1"
+                      disabled={selectedVersionsForBatch.size === 0}
+                      onClick={async () => {
+                        const queue = versions.filter(v => selectedVersionsForBatch.has(v.id));
+                        setBatchQueue(queue);
+                        setBatchCurrentIndex(0);
+                        setIsBatchRunning(true);
+                        
+                        // Start first job
+                        if (queue.length > 0) {
+                          await startBatchJob(queue[0], 0, queue.length);
+                        }
+                      }}
+                    >
+                      <CloudUpload className="h-4 w-4 mr-2" />
+                      {selectedVersionsForBatch.size} Versionen erfassen
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="p-3 bg-primary/10 rounded-lg border border-primary/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">
+                        Batch-Erfassung: {batchCurrentIndex + 1} / {batchQueue.length}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {Math.round(((batchCurrentIndex) / batchQueue.length) * 100)}%
+                      </span>
+                    </div>
+                    <Progress value={(batchCurrentIndex / batchQueue.length) * 100} className="h-2 mb-2" />
+                    {batchQueue[batchCurrentIndex] && (
+                      <p className="text-sm">
+                        Aktuell: <span className="font-mono font-bold">{formatVersion(batchQueue[batchCurrentIndex].version_number)}</span>
+                        {batchQueue[batchCurrentIndex].version_name && ` - ${batchQueue[batchCurrentIndex].version_name}`}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {activeJob && (
+                    <div className="p-3 bg-accent rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm">
+                          {activeJob.status === 'pending' && 'Job wird gestartet...'}
+                          {activeJob.status === 'processing' && 'Screenshots werden erfasst...'}
+                          {activeJob.status === 'completed' && 'Version fertig!'}
+                          {activeJob.status === 'failed' && 'Fehler!'}
+                        </span>
+                        <span className="text-sm text-muted-foreground">{activeJob.progress}%</span>
+                      </div>
+                      <Progress value={activeJob.progress} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-1">{activeJob.progressMessage}</p>
+                    </div>
+                  )}
+                  
+                  {batchCurrentIndex >= batchQueue.length && (
+                    <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/30">
+                      <p className="text-sm text-green-700 font-medium">
+                        Alle {batchQueue.length} Versionen erfolgreich erfasst!
+                      </p>
+                    </div>
+                  )}
+                  
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      clearJob();
+                      setIsBatchRunning(false);
+                      setBatchScreenshotDialogOpen(false);
+                      fetchVersions();
+                    }}
+                  >
+                    {batchCurrentIndex >= batchQueue.length ? 'Schliessen' : 'Abbrechen'}
+                  </Button>
                 </>
               )}
             </div>
