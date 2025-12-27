@@ -860,28 +860,9 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                   </div>
                   
                   {(() => {
-                    // First try to get steps from static config (more accurate)
-                    const versionNumber = selectedVersionForBackgroundScreenshots.version_number;
-                    const flowCode = selectedVersionForBackgroundScreenshots.flow_code;
-                    
-                    // Try to find matching static config by version number or flow_code
-                    const variantId = versionNumber?.match(/\d+\.(\w+)/)?.[1] || 
-                                     flowCode?.toLowerCase().match(/v\d+\.?(\w+)/)?.[1];
-                    const staticConfig = variantId ? 
-                      SUB_VARIANT_CONFIGS[`v9${variantId}`] || 
-                      SUB_VARIANT_CONFIGS[variantId] || 
-                      FLOW_CONFIGS[`v9${variantId}`] : null;
-                    
-                    // Use static config steps if available and has more steps, otherwise fall back to DB steps
+                    // Always prefer DB step_configs - they are the source of truth for the saved version
                     const dbStepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
-                    const staticSteps = staticConfig?.steps;
-                    
-                    // Prefer static config if it exists and has steps
-                    const stepConfigs = (staticSteps && staticSteps.length > 0) 
-                      ? staticSteps 
-                      : (dbStepConfigs && Array.isArray(dbStepConfigs) ? dbStepConfigs : null);
-                    
-                    const hasStepConfigs = stepConfigs && stepConfigs.length > 0;
+                    const hasStepConfigs = dbStepConfigs && Array.isArray(dbStepConfigs) && dbStepConfigs.length > 0;
                     
                     if (!hasStepConfigs) {
                       return (
@@ -896,10 +877,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                     
                     return (
                       <div className="text-sm text-muted-foreground">
-                        {stepConfigs.length} Steps werden im Hintergrund erfasst (Desktop + Mobile)
-                        {staticSteps && dbStepConfigs && staticSteps.length !== dbStepConfigs.length && (
-                          <span className="text-xs text-primary ml-1">(aus Config)</span>
-                        )}
+                        {dbStepConfigs.length} Steps werden im Hintergrund erfasst (Desktop + Mobile)
                       </div>
                     );
                   })()}
@@ -945,55 +923,51 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                       </Button>
                       <Button 
                         onClick={async () => {
-                          // Get steps from static config first (more accurate)
-                          const versionNumber = selectedVersionForBackgroundScreenshots.version_number;
-                          const flowCode = selectedVersionForBackgroundScreenshots.flow_code;
+                          // Always use DB step_configs - they are the source of truth
+                          const dbStepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string; url?: string }> | null;
                           
-                          const variantId = versionNumber?.match(/\d+\.(\w+)/)?.[1] || 
-                                           flowCode?.toLowerCase().match(/v\d+\.?(\w+)/)?.[1];
-                          const staticConfig = variantId ? 
-                            SUB_VARIANT_CONFIGS[`v9${variantId}`] || 
-                            SUB_VARIANT_CONFIGS[variantId] || 
-                            FLOW_CONFIGS[`v9${variantId}`] : null;
-                          
-                          const dbStepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
-                          const staticSteps = staticConfig?.steps;
-                          
-                          // Use static config if available, otherwise DB steps
-                          const stepConfigs = (staticSteps && staticSteps.length > 0) 
-                            ? staticSteps 
-                            : (dbStepConfigs && Array.isArray(dbStepConfigs) ? dbStepConfigs : null);
-                          
-                          if (!stepConfigs || stepConfigs.length === 0) {
+                          if (!dbStepConfigs || dbStepConfigs.length === 0) {
                             toast.error('Keine Step-Konfiguration vorhanden');
                             return;
                           }
                           
-                          // Determine the base URL for the flow
-                          // Prefer static config path (includes variant query) so screenshots match the selected version
-                          const baseUrl = staticConfig?.path
-                            ? `${window.location.origin}${staticConfig.path}`
-                            : `${window.location.origin}/umzugsofferten`;
+                          // Determine the base URL from the first step's url if available
+                          // Otherwise fall back to constructing from flow_code
+                          let baseUrl = `${window.location.origin}/umzugsofferten`;
+                          
+                          // Check if step has a URL and extract the base
+                          const firstStepUrl = dbStepConfigs[0]?.url;
+                          if (firstStepUrl) {
+                            try {
+                              const parsedUrl = new URL(firstStepUrl);
+                              // Use just the origin + pathname + variant param
+                              baseUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
+                              const variant = parsedUrl.searchParams.get('variant');
+                              if (variant) {
+                                baseUrl += `?variant=${variant}`;
+                              }
+                            } catch (e) {
+                              console.warn('Could not parse step URL, using default baseUrl');
+                            }
+                          } else {
+                            // Fallback: construct from flow_code if available
+                            const flowCode = selectedVersionForBackgroundScreenshots.flow_code;
+                            if (flowCode) {
+                              // e.g. "V3.a" -> "v3a"
+                              const variant = flowCode.toLowerCase().replace('.', '');
+                              baseUrl = `${window.location.origin}/umzugsofferten?variant=${variant}`;
+                            }
+                          }
                           
                           await startJob({
                             versionId: selectedVersionForBackgroundScreenshots.id,
                             flowId: selectedVersionForBackgroundScreenshots.flow_id,
-                            steps: stepConfigs,
+                            steps: dbStepConfigs,
                             baseUrl,
                           });
                         }}
                         className="flex-1"
                         disabled={(() => {
-                          // Check if we have steps from either static config or DB
-                          const versionNumber = selectedVersionForBackgroundScreenshots.version_number;
-                          const variantId = versionNumber?.match(/\d+\.(\w+)/)?.[1];
-                          const staticConfig = variantId ? 
-                            SUB_VARIANT_CONFIGS[`v9${variantId}`] || 
-                            SUB_VARIANT_CONFIGS[variantId] : null;
-                          const staticSteps = staticConfig?.steps;
-                          
-                          if (staticSteps && staticSteps.length > 0) return false;
-                          
                           const stepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
                           return !stepConfigs || !Array.isArray(stepConfigs) || stepConfigs.length === 0;
                         })()}
