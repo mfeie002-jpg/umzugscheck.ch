@@ -1278,9 +1278,7 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
         </Dialog>
 
         {/* Batch Screenshot Dialog */}
-        <Dialog open={batchScreenshotDialogOpen} onOpenChange={(open) => {
-          if (!isBatchRunning) setBatchScreenshotDialogOpen(open);
-        }}>
+        <Dialog open={batchScreenshotDialogOpen} onOpenChange={setBatchScreenshotDialogOpen}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
