@@ -46,6 +46,7 @@ export { V5eReducedMotion } from './V5eReducedMotion';
 // V9 Variants (Main Pro Extended)
 export { V9aFeedbackBased } from './V9aFeedbackBased';
 export { V9bFeedbackBased } from './V9bFeedbackBased';
+export { V9dFeedbackBased } from './V9dFeedbackBased';
 
 // Variant Registry with step counts for dynamic capture
 export const VARIANT_REGISTRY: Record<string, { 
@@ -83,6 +84,7 @@ export const VARIANT_REGISTRY: Record<string, {
   // V9 - Main Pro Extended
   'v9a': { component: 'V9aFeedbackBased', stepCount: 6, label: 'V9a Main Pro Ext' },
   'v9b': { component: 'V9bFeedbackBased', stepCount: 5, label: 'V9b Main Agent' },
+  'v9d': { component: 'V9dFeedbackBased', stepCount: 9, label: 'V9d Main Gemini' },
 };
 
 // Get step count for a variant
