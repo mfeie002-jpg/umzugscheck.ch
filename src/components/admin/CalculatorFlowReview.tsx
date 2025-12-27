@@ -568,12 +568,14 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     });
     
     // Sub-variants from SUB_VARIANT_CONFIGS (coded components)
+    // Show all feedback variants (v1a-v9a) as featured in main group
     Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
       const registryEntry = VARIANT_REGISTRY[id];
-      const isFeatured = id === "v9a"; // keep the dropdown clean, but expose the implemented V9.a
+      // All single-letter variants (v1a, v2a, ..., v9a) are featured
+      const isFeatured = /^v\d+[a-z]$/i.test(id);
       options.push({
         value: id,
-        label: isFeatured ? config.label : `${config.label} (coded)`,
+        label: config.label,
         path: config.path,
         isSubVariant: true,
         component: registryEntry?.component,
