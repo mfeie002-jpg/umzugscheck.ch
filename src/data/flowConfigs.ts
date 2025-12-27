@@ -201,6 +201,19 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 9, name: 'Kontakt', description: 'Kontaktdaten' },
     ],
   },
+  'multi-a': {
+    id: 'multi-a',
+    label: 'Multi.a ChatGPT Pro',
+    path: '/umzugsofferten?variant=multi-a',
+    color: 'bg-rose-600',
+    description: 'ChatGPT Mobile Fix Pack: 3 Steps, Sticky CTA, Trust Bar, Progressive Disclosure',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer + optionale Details' },
+      { step: 2, name: 'Services', description: 'Transport inkl. + optionale Extras' },
+      { step: 3, name: 'Kontakt', description: 'Review + Kontaktdaten + Consent' },
+    ],
+  },
 };
 
 // Combined config for all flows (main + sub-variants)
