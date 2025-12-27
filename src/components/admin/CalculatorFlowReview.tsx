@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,6 +82,107 @@ const DEFAULT_STEP_CONFIGS = [
   { step: 3, name: "Step 3", description: "Third step" },
   { step: 4, name: "Step 4", description: "Fourth step" },
 ];
+
+// Default project instructions that persist across sessions
+const DEFAULT_PROJECT_INSTRUCTIONS = `SYSTEM / CORE BUILD PHILOSOPHY
+
+Du baust dieses Projekt immer nach dieser einen Art:
+
+Wir entwickeln das Vorzeigemodell der gesamten Branche.
+Dieses Produkt ist der Archetyp, an dem sich alle anderen orientieren werden.
+
+Unser Anspruch ist Best-Case-Scenario Only:
+– technisch
+– konzeptionell
+– UX / UI
+– Conversion
+– Performance
+– Skalierbarkeit
+– Wartbarkeit
+– Automatisierung
+
+QUALITÄTSANSPRUCH
+
+Es wird immer die bestmögliche technische Lösung gewählt – nicht die schnellste, nicht die bequemste, sondern die sauberste, stabilste und zukunftssicherste.
+
+Shortcuts sind nur erlaubt, wenn sie messbar keinen Nachteil bringen.
+
+Wenn es eine bessere Lösung gibt, wird sie gefunden.
+
+OPTIMIERUNGS-DOGMA
+
+Dieses Projekt basiert auf:
+– echten Usern
+– echtem Verhalten
+– Daten
+– Feedback
+– Iteration
+– kontinuierlicher Optimierung
+
+Wir hören erst dann auf zu optimieren,
+wenn objektiv nichts mehr zu optimieren ist.
+
+„Gut genug" existiert hier nicht.
+
+ARCHETYPE-REGEL
+
+Alles, was hier entsteht, wird so gebaut,
+dass man später sagen kann:
+
+„So MUSS man das machen."
+
+Jede Entscheidung muss erklären können:
+– Warum ist das die Referenzlösung?
+– Warum ist das der Standard?
+– Warum kopieren andere genau das?
+
+UX / UI / FLOW-REGEL
+
+Die User Experience muss:
+– maximal klar
+– maximal intuitiv
+– maximal stressfrei
+– maximal logisch
+
+Jeder Klick hat einen Zweck.
+Jede Sekunde spart mentale Energie.
+Jeder Flow fühlt sich „selbstverständlich richtig" an.
+
+DENKWEISE
+
+Denk nicht in Seiten.
+Denk nicht in Features.
+Denk nicht in Komponenten.
+
+Denk in:
+– Systemen
+– Zusammenhängen
+– Hebeln
+– Skaleneffekten
+– langfristiger Dominanz
+
+BENCHMARK
+
+Wir bauen nicht „besser als die Konkurrenz".
+
+Wir bauen so, dass:
+– Konkurrenz irrelevant wirkt
+– Vergleiche aufhören
+– wir der Maßstab werden
+
+Ziel: Digital Marketing Award Winner 2026
+(Strategie, UX, Conversion, Automatisierung, Innovation)
+
+ABSCHLUSSREGEL
+
+Wenn du etwas ausarbeitest:
+– denke einen Schritt weiter als gefordert
+– schlage zusätzliche Optimierungen vor
+– identifiziere blinde Flecken
+– nenne Dinge, die man noch besser machen kann
+
+Handle immer so, als würdest du
+das Referenzprojekt deiner Karriere bauen.`;
 
 // Helper function to get step configs for current calculator (supports main flows + sub-variants)
 const getStepConfigsForCalculator = (calculatorValue: string) => {
@@ -229,7 +331,7 @@ export function CalculatorFlowReview() {
   const [isExportingAll, setIsExportingAll] = useState(false);
   const [capturedSteps, setCapturedSteps] = useState<FlowStep[]>([]);
   const [selectedCalculator, setSelectedCalculator] = useState("umzugsofferten");
-  const [customPrompt, setCustomPrompt] = useState("");
+  const [customPrompt, setCustomPrompt] = useLocalStorage("uc-project-instructions", DEFAULT_PROJECT_INSTRUCTIONS);
   const [captureProgress, setCaptureProgress] = useState(0);
   const [captureStatus, setCaptureStatus] = useState("");
   // Default: use a public base URL (the preview domain can show a login wall to the screenshot service)
@@ -2511,21 +2613,51 @@ ${JSON.stringify(step.meta || {}, null, 2)}
         </CardContent>
       </Card>
 
-      {/* Custom Prompt */}
+      {/* Custom Prompt - Persisted to LocalStorage */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            Zusätzliche Anweisungen (optional)
+            Zusätzliche Anweisungen (Projekt-weit gespeichert)
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           <Textarea
             placeholder="z.B. 'Fokussiere dich besonders auf Mobile UX' oder 'Analysiere die CTA-Platzierung'"
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
-            rows={3}
+            rows={8}
+            className="font-mono text-xs"
           />
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">
+              ✅ Automatisch gespeichert • Gilt für alle Seiten & Exporte
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setCustomPrompt(DEFAULT_PROJECT_INSTRUCTIONS);
+                  toast.success("Standard-Anweisungen wiederhergestellt");
+                }}
+              >
+                <RefreshCw className="h-3 w-3 mr-1" />
+                Reset
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  navigator.clipboard.writeText(customPrompt);
+                  toast.success("Anweisungen kopiert!");
+                }}
+              >
+                <Copy className="h-3 w-3 mr-1" />
+                Kopieren
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
