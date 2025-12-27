@@ -94,8 +94,16 @@ async function captureScreenshot(url: string, dimension: string): Promise<{ data
       };
     }
 
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-    return { data: `data:image/png;base64,${base64}`, error: null };
+    const bytes = new Uint8Array(arrayBuffer);
+
+    // Detect actual image type (ScreenshotMachine sometimes returns GIF/JPG bytes)
+    const isPng = bytes.length >= 4 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
+    const isGif = bytes.length >= 4 && bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38;
+    const isJpg = bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+
+    const mime = isPng ? 'image/png' : isGif ? 'image/gif' : isJpg ? 'image/jpeg' : 'application/octet-stream';
+    const base64 = btoa(String.fromCharCode(...bytes));
+    return { data: `data:${mime};base64,${base64}`, error: null };
   } catch (error) {
     console.error('Screenshot capture error:', error);
     return { 
@@ -156,8 +164,13 @@ Deno.serve(async (req) => {
         })
         .eq('id', jobId);
 
-      // Build URL for this step
-      const stepUrl = `${baseUrl}?uc_capture=1&uc_step=${stepNum}`;
+      // Build URL for this step (preserve existing query params like ?variant=v9b)
+      const stepUrlObj = new URL(baseUrl);
+      stepUrlObj.searchParams.set('uc_capture', '1');
+      stepUrlObj.searchParams.set('uc_step', String(stepNum));
+      stepUrlObj.searchParams.set('uc_flow', flowId);
+      stepUrlObj.searchParams.set('uc_cb', String(Date.now()));
+      const stepUrl = stepUrlObj.toString();
 
       // Capture desktop screenshot
       if (captureDesktop) {
