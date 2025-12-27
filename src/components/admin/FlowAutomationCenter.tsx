@@ -396,41 +396,120 @@ ${entry.prompt}
               )}
 
               {analysisResults.length > 0 && (
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Ergebnisse:</Label>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">Ergebnisse:</Label>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={async () => {
+                        const exportData = {
+                          exportedAt: new Date().toISOString(),
+                          flows: analysisResults.map(r => ({
+                            flowId: r.flowId,
+                            flowName: r.flowName,
+                            score: r.score,
+                            issuesCount: r.issuesCount,
+                            criticalCount: r.criticalCount,
+                            summary: r.summary
+                          }))
+                        };
+                        
+                        const prompt = `# Umzugscheck.ch Flow-Analyse Ergebnisse
+
+Hier sind die Analyse-Ergebnisse für alle 9 Flows (V1-V9):
+
+${analysisResults.filter(r => r.status === 'completed').map(r => `
+## ${r.flowName}
+- **Score:** ${r.score}/100
+- **Issues:** ${r.issuesCount} (${r.criticalCount} kritisch)
+${r.summary ? `- **Summary:** ${r.summary}` : ''}
+`).join('\n')}
+
+---
+
+**Aufgabe:** Analysiere diese Ergebnisse und gib mir für jeden Flow:
+1. Die 3 kritischsten UX-Probleme
+2. Konkrete Verbesserungsvorschläge mit Code-Beispielen (React/Tailwind)
+3. Priorisierte Massnahmen für mehr Conversions
+
+Fokus: Mobile-UX, Trust-Elemente, CTA-Optimierung, Formular-Vereinfachung.
+Antworte auf Deutsch.`;
+                        
+                        await navigator.clipboard.writeText(prompt);
+                        toast.success("Export-Prompt kopiert!", {
+                          description: "Füge ihn in ChatGPT oder Gemini ein.",
+                        });
+                      }}
+                      className="gap-2"
+                    >
+                      <Download className="h-4 w-4" />
+                      Export für ChatGPT/Gemini
+                    </Button>
+                  </div>
+                  
                   <div className="grid gap-2">
                     {analysisResults.map(result => (
                       <div 
                         key={result.flowId}
-                        className={`flex items-center justify-between p-3 rounded-lg border ${
+                        className={`p-3 rounded-lg border transition-colors ${
                           result.status === 'completed' ? 'bg-green-50 dark:bg-green-950/20 border-green-200' :
                           result.status === 'running' ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-200' :
                           result.status === 'error' ? 'bg-red-50 dark:bg-red-950/20 border-red-200' :
                           'bg-muted/50'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          {result.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-600" />}
-                          {result.status === 'running' && <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />}
-                          {result.status === 'error' && <AlertCircle className="h-4 w-4 text-red-600" />}
-                          {result.status === 'pending' && <div className="h-4 w-4 rounded-full bg-muted" />}
-                          <span className="font-medium">{result.flowName}</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            {result.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                            {result.status === 'running' && <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />}
+                            {result.status === 'error' && <AlertCircle className="h-4 w-4 text-red-600" />}
+                            {result.status === 'pending' && <div className="h-4 w-4 rounded-full bg-muted" />}
+                            <span className="font-medium">{result.flowName}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {result.score !== undefined && (
+                              <Badge variant={result.score >= 70 ? "default" : "destructive"}>
+                                Score: {result.score}/100
+                              </Badge>
+                            )}
+                            {result.issuesCount !== undefined && (
+                              <Badge variant="outline">
+                                {result.issuesCount} Issues ({result.criticalCount} kritisch)
+                              </Badge>
+                            )}
+                            {result.error && (
+                              <Badge variant="destructive">{result.error}</Badge>
+                            )}
+                            {result.status === 'completed' && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={async () => {
+                                  const singlePrompt = `# ${result.flowName} - Detailanalyse
+
+Score: ${result.score}/100
+Issues: ${result.issuesCount} (${result.criticalCount} kritisch)
+${result.summary ? `\nSummary: ${result.summary}` : ''}
+
+Bitte analysiere diesen Flow und gib mir:
+1. Die 3 kritischsten UX-Probleme
+2. Konkrete Code-Fixes (React + Tailwind)
+3. Quick-Wins für sofortige Verbesserung`;
+                                  await navigator.clipboard.writeText(singlePrompt);
+                                  toast.success(`${result.flowName} Prompt kopiert!`);
+                                }}
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {result.score !== undefined && (
-                            <Badge variant={result.score >= 70 ? "default" : "destructive"}>
-                              Score: {result.score}/100
-                            </Badge>
-                          )}
-                          {result.issuesCount !== undefined && (
-                            <Badge variant="outline">
-                              {result.issuesCount} Issues ({result.criticalCount} kritisch)
-                            </Badge>
-                          )}
-                          {result.error && (
-                            <Badge variant="destructive">{result.error}</Badge>
-                          )}
-                        </div>
+                        {result.summary && (
+                          <p className="text-sm text-muted-foreground mt-2 pl-7">
+                            {result.summary}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>
