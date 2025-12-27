@@ -81,6 +81,7 @@ interface FlowVersion {
   step_configs: Json;
   screenshots: Json;
   html_snapshots: Json;
+  config: Json | null;
   ai_feedback: string | null;
   ai_feedback_source: string | null;
   ai_feedback_date: string | null;
@@ -199,22 +200,37 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
     const isPreviewHost = window.location.hostname.includes('lovable.app') || 
                           window.location.hostname.includes('lovableproject.com');
     const publicBase = isPreviewHost ? SITE_CONFIG.url : window.location.origin;
-    
-    let baseUrl = `${publicBase}/umzugsofferten`;
-    const firstStepUrl = dbStepConfigs[0]?.url;
-    if (firstStepUrl) {
-      try {
-        const parsedUrl = new URL(firstStepUrl);
-        const variant = parsedUrl.searchParams.get('variant');
-        if (variant) {
-          baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
+
+    // Default to the selected flow's base path
+    const basePath = FLOW_CONFIGS[flowId]?.path || SUB_VARIANT_CONFIGS[flowId]?.path || "/umzugsofferten";
+    let baseUrl = `${publicBase}${basePath}`;
+
+    // Prefer explicit variantPath stored in the version config (coded variants like v1a-v1e)
+    const versionConfig = version.config as { variantPath?: unknown; variantId?: unknown } | null;
+    const variantPath = typeof versionConfig?.variantPath === "string" ? versionConfig.variantPath : null;
+    const variantId = typeof versionConfig?.variantId === "string" ? versionConfig.variantId : null;
+
+    if (variantPath) {
+      baseUrl = `${publicBase}${variantPath.startsWith("/") ? "" : "/"}${variantPath}`;
+    } else if (variantId && SUB_VARIANT_CONFIGS[variantId]) {
+      baseUrl = `${publicBase}${SUB_VARIANT_CONFIGS[variantId].path}`;
+    } else {
+      // Fallback: try to extract ?variant= from stored step URLs
+      const firstStepUrl = dbStepConfigs[0]?.url;
+      if (firstStepUrl) {
+        try {
+          const parsedUrl = new URL(firstStepUrl);
+          const v = parsedUrl.searchParams.get('variant');
+          if (v) {
+            baseUrl = `${publicBase}${basePath}${basePath.includes("?") ? "&" : "?"}variant=${v}`;
+          }
+        } catch (e) {
+          // ignore
         }
-      } catch (e) {
-        // ignore
+      } else if (version.flow_code) {
+        const v = version.flow_code.toLowerCase().replace('.', '');
+        baseUrl = `${publicBase}${basePath}${basePath.includes("?") ? "&" : "?"}variant=${v}`;
       }
-    } else if (version.flow_code) {
-      const variant = version.flow_code.toLowerCase().replace('.', '');
-      baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
     }
     
     await startJob({
