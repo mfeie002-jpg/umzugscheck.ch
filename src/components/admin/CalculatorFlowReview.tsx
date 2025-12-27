@@ -41,7 +41,8 @@ import {
   Smartphone,
   FileJson,
   Zap,
-  Database
+  Database,
+  MessageSquare
 } from "lucide-react";
 
 interface StepMeta {
@@ -568,10 +569,10 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     });
     
     // Sub-variants from SUB_VARIANT_CONFIGS (coded components)
-    // Show all feedback variants (v1a, v2f, v3a, ..., v9a etc.) as featured in main group
+    // Feedback variants get their own group, separate from main flows
     Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
       const registryEntry = VARIANT_REGISTRY[id];
-      // All single-letter variants from SUB_VARIANT_CONFIGS are considered feedback variants
+      // All single-letter variants from SUB_VARIANT_CONFIGS are feedback variants
       // Pattern: v + digit(s) + single letter (e.g., v1a, v2f, v9a, v10a)
       const isFeedbackVariant = /^v\d+[a-z]$/i.test(id);
       options.push({
@@ -580,7 +581,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
         path: config.path,
         isSubVariant: true,
         component: registryEntry?.component,
-        group: isFeedbackVariant ? 'main' : 'sub',
+        group: isFeedbackVariant ? 'feedback' : 'sub',
       });
     });
     
@@ -612,6 +613,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
   
   const calculatorOptions = buildCalculatorOptions();
   const mainFlowOptions = calculatorOptions.filter(o => o.group === 'main');
+  const feedbackVariantOptions = calculatorOptions.filter(o => o.group === 'feedback');
   const subVariantOptions = calculatorOptions.filter(o => o.group === 'sub');
   const databaseFlowOptions = calculatorOptions.filter(o => o.group === 'database');
   const otherCalculatorOptions = calculatorOptions.filter(o => o.group === 'other');
@@ -2494,6 +2496,21 @@ ${JSON.stringify(step.meta || {}, null, 2)}
                         {opt.label}
                       </SelectItem>
                     ))}
+                    
+                    {/* Feedback Variants */}
+                    {feedbackVariantOptions.length > 0 && (
+                      <>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2 flex items-center gap-1">
+                          <MessageSquare className="h-3 w-3" />
+                          Feedback-Varianten (V1a-V9a)
+                        </div>
+                        {feedbackVariantOptions.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </>
+                    )}
                     
                     {/* Database Flows */}
                     {databaseFlowOptions.length > 0 && (
