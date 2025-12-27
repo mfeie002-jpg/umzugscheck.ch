@@ -531,44 +531,9 @@ Antworte auf Deutsch.`;
                   </div>
                   
                   <div className="grid gap-2">
-                    {analysisResults.map(result => (
-                      <div 
-                        key={result.flowId}
-                        className={`p-3 rounded-lg border transition-colors ${
-                          result.status === 'completed' ? 'bg-green-50 dark:bg-green-950/20 border-green-200' :
-                          result.status === 'running' ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-200' :
-                          result.status === 'error' ? 'bg-red-50 dark:bg-red-950/20 border-red-200' :
-                          'bg-muted/50'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            {result.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-600" />}
-                            {result.status === 'running' && <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />}
-                            {result.status === 'error' && <AlertCircle className="h-4 w-4 text-red-600" />}
-                            {result.status === 'pending' && <div className="h-4 w-4 rounded-full bg-muted" />}
-                            <span className="font-medium">{result.flowName}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {result.score !== undefined && (
-                              <Badge variant={result.score >= 70 ? "default" : "destructive"}>
-                                Score: {result.score}/100
-                              </Badge>
-                            )}
-                            {result.issuesCount !== undefined && (
-                              <Badge variant="outline">
-                                {result.issuesCount} Issues ({result.criticalCount} kritisch)
-                              </Badge>
-                            )}
-                            {result.error && (
-                              <Badge variant="destructive">{result.error}</Badge>
-                            )}
-                            {result.status === 'completed' && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={async () => {
-                                  const singlePrompt = `# ${result.flowName} - Detailanalyse
+                    {analysisResults.map((result) => {
+                      const copyPrompt = async () => {
+                        const singlePrompt = `# ${result.flowName} - Detailanalyse
 
 Score: ${result.score ?? "—"}/100
 Issues: ${result.issuesCount ?? "—"} (${result.criticalCount ?? "—"} kritisch)
@@ -578,22 +543,71 @@ Bitte analysiere diesen Flow und gib mir:
 1. Die 3 kritischsten UX-Probleme
 2. Konkrete Code-Fixes (React + Tailwind)
 3. Quick-Wins für sofortige Verbesserung`;
-                                  await navigator.clipboard.writeText(singlePrompt);
-                                  toast.success(`${result.flowName} Prompt kopiert!`);
-                                }}
-                              >
-                                <Copy className="h-4 w-4" />
-                              </Button>
-                            )}
+                        await navigator.clipboard.writeText(singlePrompt);
+                        toast.success(`${result.flowName} Prompt kopiert!`);
+                      };
+
+                      return (
+                        <button
+                          type="button"
+                          key={result.flowId}
+                          onClick={() => {
+                            if (result.status === "completed") copyPrompt();
+                          }}
+                          disabled={result.status !== "completed"}
+                          className={`w-full text-left p-3 rounded-lg border transition-colors cursor-pointer disabled:cursor-default ${
+                            result.status === "completed"
+                              ? "bg-green-50 dark:bg-green-950/20 border-green-200 hover:bg-green-100 dark:hover:bg-green-950/30"
+                              : result.status === "running"
+                              ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200"
+                              : result.status === "error"
+                              ? "bg-red-50 dark:bg-red-950/20 border-red-200"
+                              : "bg-muted/50"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              {result.status === "completed" && (
+                                <CheckCircle className="h-4 w-4 text-green-600" />
+                              )}
+                              {result.status === "running" && (
+                                <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />
+                              )}
+                              {result.status === "error" && (
+                                <AlertCircle className="h-4 w-4 text-red-600" />
+                              )}
+                              {result.status === "pending" && (
+                                <div className="h-4 w-4 rounded-full bg-muted" />
+                              )}
+                              <span className="font-medium">{result.flowName}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {result.score !== undefined && (
+                                <Badge variant={result.score >= 70 ? "default" : "destructive"}>
+                                  Score: {result.score}/100
+                                </Badge>
+                              )}
+                              {result.issuesCount !== undefined && (
+                                <Badge variant="outline">
+                                  {result.issuesCount} Issues ({result.criticalCount} kritisch)
+                                </Badge>
+                              )}
+                              {result.error && (
+                                <Badge variant="destructive">{result.error}</Badge>
+                              )}
+                              {result.status === "completed" && (
+                                <Copy className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </div>
                           </div>
-                        </div>
-                        {result.summary && (
-                          <p className="text-sm text-muted-foreground mt-2 pl-7">
-                            {result.summary}
-                          </p>
-                        )}
-                      </div>
-                    ))}
+                          {result.summary && (
+                            <p className="text-sm text-muted-foreground mt-2 pl-7">
+                              {result.summary}
+                            </p>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
