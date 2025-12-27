@@ -275,6 +275,7 @@ const ChatGPTOverview = lazy(() => import("./pages/admin/ChatGPTOverview"));
 const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
+const FlowComparison = lazy(() => import("./pages/admin/FlowComparison"));
 
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
@@ -373,6 +374,7 @@ const AdminRoutes = () => (
       <Route path="/admin/ai-command" element={<AICommandCenter />} />
       <Route path="/admin/capabilities" element={<AdminCapabilities />} />
       <Route path="/admin/varianten-testen" element={<VariantTestHub />} />
+      <Route path="/admin/flow-comparison/:flowNumber" element={<FlowComparison />} />
       <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
       <Route path="/admin/v3-varianten" element={<Navigate to="/v3-varianten" replace />} />
       <Route path="/admin/funnel" element={<FunnelAnalytics />} />
