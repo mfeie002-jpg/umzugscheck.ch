@@ -315,7 +315,6 @@ const App = () => (
                 <CaptureReadySentinel />
                 <CaptureDebugOverlay />
                 <FunnelModeProvider />
-                <FunnelModeProvider />
                 <CriticalCSS />
                 <CriticalCSSLoader />
                 <ResourceHints />

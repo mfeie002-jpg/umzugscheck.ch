@@ -2788,7 +2788,7 @@ ${JSON.stringify(step.meta || {}, null, 2)}
               onClick={() => window.open('https://chat.openai.com', '_blank')}
             >
               <ExternalLink className="w-4 h-4 mr-2" />
-              ChatGPT öffnen
+              ChatGPT
             </Button>
             <Button 
               variant="secondary"
@@ -2796,7 +2796,15 @@ ${JSON.stringify(step.meta || {}, null, 2)}
               onClick={() => window.open('https://claude.ai', '_blank')}
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              Claude öffnen
+              Claude
+            </Button>
+            <Button 
+              variant="secondary"
+              className="flex-1"
+              onClick={() => window.open('https://gemini.google.com', '_blank')}
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Gemini
             </Button>
           </div>
         </CardContent>
