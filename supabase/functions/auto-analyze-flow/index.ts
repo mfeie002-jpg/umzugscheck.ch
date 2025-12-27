@@ -18,6 +18,54 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'umzugsofferten-v7': { name: 'V7 - SwissMove (90s)', steps: 3, baseUrl: '/umzugsofferten-v7' },
   'umzugsofferten-v8': { name: 'V8 - Decision-Free', steps: 5, baseUrl: '/umzugsofferten-v8' },
   'umzugsofferten-v9': { name: 'V9 - Zero Friction', steps: 5, baseUrl: '/umzugsofferten-v9' },
+  // Sub-variants (v1a, v1b, v1c, etc.)
+  'v1a': { name: 'V1a Control (Feedback)', steps: 2, baseUrl: '/umzugsofferten?variant=v1a' },
+  'v1b': { name: 'V1b ChatGPT Agent', steps: 4, baseUrl: '/umzugsofferten?variant=v1b' },
+  'v1c': { name: 'V1c Variant', steps: 3, baseUrl: '/umzugsofferten?variant=v1c' },
+  'v1d': { name: 'V1d Variant', steps: 3, baseUrl: '/umzugsofferten?variant=v1d' },
+  'v1e': { name: 'V1e Variant', steps: 3, baseUrl: '/umzugsofferten?variant=v1e' },
+  // V2 sub-variants
+  'v2a': { name: 'V2a Progress Enhanced', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2a' },
+  'v2b': { name: 'V2b Simplified Labels', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2b' },
+  'v2c': { name: 'V2c Trust Focused', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2c' },
+  'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2d' },
+  'v2e': { name: 'V2e Experimental', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2e' },
+  'v2f': { name: 'V2f Premium (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v2?variant=v2f' },
+  // V3 sub-variants
+  'v3a': { name: 'V3a Mobile First', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3a' },
+  'v3b': { name: 'V3b Swipe Navigation', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3b' },
+  'v3c': { name: 'V3c Bottom Sheet', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3c' },
+  'v3d': { name: 'V3d Thumb Zone', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3d' },
+  'v3e': { name: 'V3e Fullscreen', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3e' },
+  'v3f': { name: 'V3f Feedback', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3f' },
+  'v3g': { name: 'V3g Feedback', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3g' },
+  // V4 sub-variants
+  'v4a': { name: 'V4a Urgency Based', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4a' },
+  'v4b': { name: 'V4b Social Proof', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4b' },
+  'v4c': { name: 'V4c Value First', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4c' },
+  'v4d': { name: 'V4d Gamified', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4d' },
+  'v4e': { name: 'V4e Minimal Friction', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4e' },
+  'v4f': { name: 'V4f Feedback', steps: 3, baseUrl: '/umzugsofferten-v4?variant=v4f' },
+  // V5 sub-variants
+  'v5a': { name: 'V5a High Contrast', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5a' },
+  'v5b': { name: 'V5b Screen Reader', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5b' },
+  'v5c': { name: 'V5c Keyboard Nav', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5c' },
+  'v5d': { name: 'V5d Large Text', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5d' },
+  'v5e': { name: 'V5e Reduced Motion', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5e' },
+  'v5f': { name: 'V5f Feedback', steps: 3, baseUrl: '/umzugsofferten-v5?variant=v5f' },
+  // V6 sub-variants
+  'v6a': { name: 'V6a Ultimate (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v6?variant=v6a' },
+  // V7 sub-variants
+  'v7a': { name: 'V7a SwissMove (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v7?variant=v7a' },
+  // V8 sub-variants
+  'v8a': { name: 'V8a Decision-Free (Feedback)', steps: 2, baseUrl: '/umzugsofferten-v8?variant=v8a' },
+  // V9 sub-variants
+  'v9a': { name: 'V9.a Gemini Archetyp', steps: 9, baseUrl: '/umzugsofferten?variant=v9a' },
+  'v9b': { name: 'V9.b Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9b' },
+  'v9c': { name: 'V9.c Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9c' },
+  'v9d': { name: 'V9.d Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9d' },
+  // Multi-variants
+  'multi-a': { name: 'Multi.A Feedback Based', steps: 4, baseUrl: '/umzugsofferten?variant=multi-a' },
 };
 
 const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY');
