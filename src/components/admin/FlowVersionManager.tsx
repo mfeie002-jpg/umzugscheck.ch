@@ -637,68 +637,93 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
                   </TabsList>
                   
                   <TabsContent value="visual" className="mt-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCompareStep(Math.max(1, compareStep - 1))}
-                        disabled={compareStep <= 1}
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        Vorheriger Step
-                      </Button>
-                      <span className="font-medium">Step {compareStep}</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCompareStep(Math.min(4, compareStep + 1))}
-                        disabled={compareStep >= 4}
-                      >
-                        Nächster Step
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    {(() => {
+                      // Calculate max steps dynamically based on available screenshots
+                      const getMaxSteps = (version: FlowVersion): number => {
+                        const screenshots = version.screenshots as Record<string, string> | null;
+                        if (!screenshots) return 0;
+                        let max = 0;
+                        Object.keys(screenshots).forEach(key => {
+                          const match = key.match(/step(\d+)/i);
+                          if (match) {
+                            const stepNum = parseInt(match[1], 10);
+                            if (stepNum > max) max = stepNum;
+                          }
+                        });
+                        return max;
+                      };
+                      
+                      const maxStepsA = getMaxSteps(selectedVersionA);
+                      const maxStepsB = getMaxSteps(selectedVersionB);
+                      const maxSteps = Math.max(maxStepsA, maxStepsB, 1);
+                      
+                      return (
+                        <>
+                          <div className="flex items-center justify-between mb-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCompareStep(Math.max(1, compareStep - 1))}
+                              disabled={compareStep <= 1}
+                            >
+                              <ChevronLeft className="h-4 w-4" />
+                              Vorheriger Step
+                            </Button>
+                            <span className="font-medium">Step {compareStep} / {maxSteps}</span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCompareStep(Math.min(maxSteps, compareStep + 1))}
+                              disabled={compareStep >= maxSteps}
+                            >
+                              Nächster Step
+                              <ChevronRight className="h-4 w-4" />
+                            </Button>
+                          </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-center font-medium mb-2">
-                          {formatVersion(selectedVersionA.version_number)}
-                          {selectedVersionA.is_baseline && " (Baseline)"}
-                        </div>
-                        <div className="border rounded-lg overflow-hidden bg-muted/30">
-                          {(selectedVersionA.screenshots as Record<string, string>)?.[`step${compareStep}Desktop`] ? (
-                            <img
-                              src={toPngDataUrl((selectedVersionA.screenshots as Record<string, string>)[`step${compareStep}Desktop`])}
-                              alt={`Version A Step ${compareStep}`}
-                              className="w-full"
-                            />
-                          ) : (
-                            <div className="h-64 flex items-center justify-center text-muted-foreground">
-                              Kein Screenshot
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <div className="text-center font-medium mb-2">
+                                {formatVersion(selectedVersionA.version_number)}
+                                {selectedVersionA.is_baseline && " (Baseline)"}
+                              </div>
+                              <div className="border rounded-lg overflow-hidden bg-muted/30">
+                                {(selectedVersionA.screenshots as Record<string, string>)?.[`step${compareStep}Desktop`] ? (
+                                  <img
+                                    src={toPngDataUrl((selectedVersionA.screenshots as Record<string, string>)[`step${compareStep}Desktop`])}
+                                    alt={`Version A Step ${compareStep}`}
+                                    className="w-full"
+                                  />
+                                ) : (
+                                  <div className="h-64 flex items-center justify-center text-muted-foreground">
+                                    Kein Screenshot für Step {compareStep}
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-center font-medium mb-2">
-                          {formatVersion(selectedVersionB.version_number)}
-                          {selectedVersionB.is_baseline && " (Baseline)"}
-                        </div>
-                        <div className="border rounded-lg overflow-hidden bg-muted/30">
-                          {(selectedVersionB.screenshots as Record<string, string>)?.[`step${compareStep}Desktop`] ? (
-                            <img
-                              src={toPngDataUrl((selectedVersionB.screenshots as Record<string, string>)[`step${compareStep}Desktop`])}
-                              alt={`Version B Step ${compareStep}`}
-                              className="w-full"
-                            />
-                          ) : (
-                            <div className="h-64 flex items-center justify-center text-muted-foreground">
-                              Kein Screenshot
+                            <div>
+                              <div className="text-center font-medium mb-2">
+                                {formatVersion(selectedVersionB.version_number)}
+                                {selectedVersionB.is_baseline && " (Baseline)"}
+                              </div>
+                              <div className="border rounded-lg overflow-hidden bg-muted/30">
+                                {(selectedVersionB.screenshots as Record<string, string>)?.[`step${compareStep}Desktop`] ? (
+                                  <img
+                                    src={toPngDataUrl((selectedVersionB.screenshots as Record<string, string>)[`step${compareStep}Desktop`])}
+                                    alt={`Version B Step ${compareStep}`}
+                                    className="w-full"
+                                  />
+                                ) : (
+                                  <div className="h-64 flex items-center justify-center text-muted-foreground">
+                                    Kein Screenshot für Step {compareStep}
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </TabsContent>
                   
                   <TabsContent value="config" className="mt-4">
