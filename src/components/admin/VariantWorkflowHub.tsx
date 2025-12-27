@@ -548,38 +548,30 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* All variants for this flow (static + workflow) */}
+            {/* All static sub-variants for this flow */}
             {(() => {
-              const allSubVariants = getSubVariantsForFlow(selectedFlow);
+              const allSubVariants = getSubVariantsForFlow(selectedFlow)
+                .filter(v => v.source === 'static-sub'); // Only show static configs, not workflow duplicates
               
               return allSubVariants.length > 0 ? (
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground flex items-center gap-2">
                     <FileCode className="h-3 w-3" />
-                    Alle Varianten für {selectedFlow}:
+                    Feedback-Varianten für {selectedFlow}:
                   </Label>
                   {allSubVariants.map(variant => (
                     <div 
                       key={variant.id}
-                      className={`flex items-center justify-between p-3 border rounded-lg ${
-                        variant.source === 'workflow' 
-                          ? 'bg-green-50 dark:bg-green-950/20' 
-                          : 'bg-blue-50 dark:bg-blue-950/20'
-                      }`}
+                      className="flex items-center justify-between p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20"
                     >
                       <div className="flex items-center gap-3">
-                        <CheckCircle className={`h-4 w-4 ${
-                          variant.source === 'workflow' ? 'text-green-600' : 'text-blue-600'
-                        }`} />
+                        <CheckCircle className="h-4 w-4 text-blue-600" />
                         <div>
                           <div className="font-mono font-bold text-sm">
                             {variant.label}
                           </div>
                           <div className="text-xs text-muted-foreground">
                             {variant.description} • {variant.stepCount} Steps
-                            {variant.source === 'workflow' && (
-                              <Badge variant="outline" className="ml-2 text-[10px]">Workflow</Badge>
-                            )}
                           </div>
                         </div>
                       </div>
@@ -612,76 +604,13 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
                     </div>
                   ))}
                 </div>
-              ) : null;
-            })()}
-
-            {/* Completed workflow variants that aren't yet in static config */}
-            {completedEntries.length > 0 && (
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Workflow-Varianten (neu erstellt):</Label>
-                {completedEntries.map(entry => {
-                  const variantKey = `v${getFlowNumber()}${entry.variant_label.toLowerCase()}`;
-                  return (
-                    <div 
-                      key={entry.id}
-                      className="flex items-center justify-between p-3 border rounded-lg bg-emerald-50 dark:bg-emerald-950/20"
-                    >
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-4 w-4 text-emerald-600" />
-                        <div>
-                          <div className="font-mono font-bold text-sm">
-                            V{getFlowNumber()}.{entry.variant_label.toUpperCase()}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {entry.variant_name}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => window.open(`/umzugsofferten?variant=${variantKey}`, '_blank')}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          Live
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => navigate(`/flow-tester?variant=${variantKey}`)}
-                        >
-                          <Play className="h-3 w-3 mr-1" />
-                          Tester
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="default"
-                          onClick={() => navigate(`/admin/tools?tab=calculator-review&flow=${encodeURIComponent(variantKey)}`)}
-                        >
-                          <Camera className="h-3 w-3 mr-1" />
-                          Screenshots
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Empty state */}
-            {(() => {
-              const allSubVariants = getSubVariantsForFlow(selectedFlow);
-              if (allSubVariants.length === 0 && completedEntries.length === 0) {
-                return (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Camera className="h-10 w-10 mx-auto mb-2 opacity-30" />
-                    <p className="text-sm">Keine implementierten Varianten</p>
-                    <p className="text-xs">Implementiere zuerst eine Variante in Schritt 3</p>
-                  </div>
-                );
-              }
-              return null;
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Camera className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm">Keine Varianten für diesen Flow</p>
+                  <p className="text-xs">Wähle einen anderen Flow oder erstelle eine Variante</p>
+                </div>
+              );
             })()}
 
             <Separator />
