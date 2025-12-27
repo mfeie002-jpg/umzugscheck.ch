@@ -52,17 +52,26 @@ import { toast } from "sonner";
 import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 // ============================================
-// TYPES
+// TYPES & STEP CONFIGURATION (Single Source of Truth)
 // ============================================
 
-type WizardStep = 
-  | 'address-from'    // Progressive: Only FROM address
-  | 'address-to'      // Progressive: Only TO address
-  | 'details'         // Rooms, floor, elevator
-  | 'analyzing'       // Labor Illusion loading
-  | 'result-teasing'  // Blurred companies preview
-  | 'contact'         // Final contact form
-  | 'success';
+// Step configuration - add/remove steps here and everything updates automatically
+const STEP_CONFIG = [
+  { id: 'address-from', label: 'Start', showInProgress: true },
+  { id: 'address-to', label: 'Ziel', showInProgress: true },
+  { id: 'details', label: 'Details', showInProgress: true },
+  { id: 'analyzing', label: 'Analyse', showInProgress: false }, // Overlay, not in progress
+  { id: 'result-teasing', label: 'Firmen', showInProgress: true },
+  { id: 'contact', label: 'Kontakt', showInProgress: true },
+  { id: 'success', label: 'Fertig', showInProgress: false }, // End state, not in progress
+] as const;
+
+// Auto-generate types from config
+type WizardStep = typeof STEP_CONFIG[number]['id'];
+
+// Auto-filter user-facing steps for progress indicator
+const USER_FACING_STEPS = STEP_CONFIG.filter(s => s.showInProgress).map(s => s.id);
+const ALL_STEPS = STEP_CONFIG.map(s => s.id);
 
 interface MoveData {
   fromZip: string;
@@ -590,24 +599,23 @@ export function ArchetypWizardV9D() {
   const goNext = () => {
     if (!validateStep(step)) return;
 
-    const stepOrder: WizardStep[] = ['address-from', 'address-to', 'details', 'analyzing', 'result-teasing', 'contact', 'success'];
-    const currentIndex = stepOrder.indexOf(step);
+    const currentIndex = ALL_STEPS.indexOf(step);
     
     if (step === 'details') {
       setShowAnalyzing(true);
       return;
     }
     
-    if (currentIndex < stepOrder.length - 1) {
-      setStep(stepOrder[currentIndex + 1]);
+    if (currentIndex < ALL_STEPS.length - 1) {
+      setStep(ALL_STEPS[currentIndex + 1]);
     }
   };
 
   const goBack = () => {
-    const stepOrder: WizardStep[] = ['address-from', 'address-to', 'details', 'result-teasing', 'contact'];
-    const currentIndex = stepOrder.indexOf(step);
+    // For back navigation, skip non-user-facing steps
+    const currentIndex = USER_FACING_STEPS.indexOf(step);
     if (currentIndex > 0) {
-      setStep(stepOrder[currentIndex - 1]);
+      setStep(USER_FACING_STEPS[currentIndex - 1]);
     }
   };
 
@@ -625,8 +633,7 @@ export function ArchetypWizardV9D() {
     setStep('success');
   };
 
-  // User-facing steps (excluding analyzing/success which are overlays/transitions)
-  const USER_FACING_STEPS: WizardStep[] = ['address-from', 'address-to', 'details', 'result-teasing', 'contact'];
+  // Auto-calculated from STEP_CONFIG
   const stepIndex = USER_FACING_STEPS.indexOf(step);
   const totalSteps = USER_FACING_STEPS.length;
 
