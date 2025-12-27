@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { CountUpNumber } from "./CountUpNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 
 interface StatItemProps {
@@ -38,7 +38,7 @@ export const StatsRow = memo(({
             "font-bold text-primary",
             variant === "compact" ? "text-xl md:text-2xl" : "text-2xl md:text-3xl"
           )}>
-            <CountUpNumber value={stat.value} suffix={stat.suffix || ""} />
+            <AnimatedCounter value={stat.value} suffix={stat.suffix || ""} />
           </div>
           <div className={cn(
             "text-muted-foreground",

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 import { GlowingCard } from "@/components/common/GlowingCard";
 import { BlurReveal } from "@/components/common/BlurReveal";
-import { AnimatedCounter } from "@/components/common/AnimatedCounter";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 const usps = [

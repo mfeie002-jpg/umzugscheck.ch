@@ -48,7 +48,7 @@ export const StatsCard = memo(function StatsCard({
         <Icon className={cn("w-5 h-5", colors[color].icon)} />
       </div>
       <div className="text-2xl md:text-3xl font-bold mb-1">
-        <AnimatedCounter end={value} prefix={prefix} suffix={suffix} />
+        <AnimatedCounter value={value} prefix={prefix} suffix={suffix} />
       </div>
       <div className="text-xs text-muted-foreground">{label}</div>
     </motion.div>
