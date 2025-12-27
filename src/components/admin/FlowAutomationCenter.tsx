@@ -26,6 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { FLOW_CONFIGS } from "@/data/flowConfigs";
 import { toast } from "sonner";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import {
   Play,
   Sparkles,
@@ -42,7 +44,8 @@ import {
   RefreshCw,
   Zap,
   Download,
-  Eye
+  Eye,
+  Archive
 } from "lucide-react";
 
 // Flow options from config
@@ -63,6 +66,7 @@ interface AnalysisResult {
   criticalCount?: number;
   summary?: string;
   error?: string;
+  runId?: string;
 }
 
 interface FeedbackEntry {
@@ -97,11 +101,215 @@ export function FlowAutomationCenter() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [recentEntries, setRecentEntries] = useState<FeedbackEntry[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportingFlowId, setExportingFlowId] = useState<string | null>(null);
 
   // Get flow number from ID
   const getFlowNumber = (flowId: string) => {
     const match = flowId.match(/v(\d+)/);
     return match ? match[1] : "1";
+  };
+
+  // Export single flow as ZIP
+  const exportFlowZip = async (result: AnalysisResult) => {
+    if (result.status !== "completed") return;
+    setExportingFlowId(result.flowId);
+
+    try {
+      const zip = new JSZip();
+      const flowFolder = zip.folder(result.flowId) as JSZip;
+
+      // Add analysis summary
+      const analysisJson = {
+        flowId: result.flowId,
+        flowName: result.flowName,
+        score: result.score,
+        issuesCount: result.issuesCount,
+        criticalCount: result.criticalCount,
+        summary: result.summary,
+        exportedAt: new Date().toISOString(),
+      };
+      flowFolder.file("analysis.json", JSON.stringify(analysisJson, null, 2));
+
+      // Add ChatGPT prompt
+      const prompt = `# ${result.flowName} - Detailanalyse
+
+Score: ${result.score ?? "—"}/100
+Issues: ${result.issuesCount ?? "—"} (${result.criticalCount ?? "—"} kritisch)
+${result.summary ? `\nSummary: ${result.summary}` : ""}
+
+Bitte analysiere diesen Flow und gib mir:
+1. Die 3 kritischsten UX-Probleme
+2. Konkrete Code-Fixes (React + Tailwind)
+3. Quick-Wins für sofortige Verbesserung
+
+Fokus: Mobile-UX, Trust-Elemente, CTA-Optimierung.
+Antworte auf Deutsch.`;
+      flowFolder.file("chatgpt-prompt.md", prompt);
+
+      // Fetch step metrics with screenshots and issues
+      if (result.runId) {
+        const { data: steps } = await supabase
+          .from("flow_step_metrics")
+          .select("*")
+          .eq("run_id", result.runId)
+          .order("step_number", { ascending: true });
+
+        if (steps && steps.length > 0) {
+          const stepsFolder = flowFolder.folder("steps") as JSZip;
+          for (const step of steps) {
+            const stepFolder = stepsFolder.folder(`step-${step.step_number}`) as JSZip;
+
+            // Add step info
+            stepFolder.file(
+              "info.json",
+              JSON.stringify(
+                {
+                  stepNumber: step.step_number,
+                  stepName: step.step_name,
+                  stepUrl: step.step_url,
+                  issues: step.ai_issues,
+                  suggestions: step.ai_suggestions,
+                },
+                null,
+                2
+              )
+            );
+
+            // Try to fetch desktop screenshot if URL exists
+            if (step.desktop_screenshot_url && !step.desktop_screenshot_url.startsWith("data:")) {
+              try {
+                const resp = await fetch(step.desktop_screenshot_url);
+                if (resp.ok) {
+                  const blob = await resp.blob();
+                  stepFolder.file("desktop.png", blob);
+                }
+              } catch {
+                /* ignore */
+              }
+            }
+
+            // Try to fetch mobile screenshot if URL exists
+            if (step.mobile_screenshot_url && !step.mobile_screenshot_url.startsWith("data:")) {
+              try {
+                const resp = await fetch(step.mobile_screenshot_url);
+                if (resp.ok) {
+                  const blob = await resp.blob();
+                  stepFolder.file("mobile.png", blob);
+                }
+              } catch {
+                /* ignore */
+              }
+            }
+          }
+        }
+      }
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      saveAs(blob, `${result.flowId}-export.zip`);
+      toast.success(`${result.flowName} ZIP heruntergeladen`);
+    } catch (e) {
+      console.error("Export error:", e);
+      toast.error("Fehler beim Export");
+    } finally {
+      setExportingFlowId(null);
+    }
+  };
+
+  // Export all flows as single ZIP
+  const exportAllFlowsZip = async () => {
+    const completedResults = analysisResults.filter((r) => r.status === "completed");
+    if (completedResults.length === 0) {
+      toast.error("Keine abgeschlossenen Analysen zum Exportieren");
+      return;
+    }
+
+    setIsExporting(true);
+
+    try {
+      const zip = new JSZip();
+
+      // Add combined prompt
+      const combinedPrompt = `# Umzugscheck.ch Flow-Analyse Ergebnisse
+
+Hier sind die Analyse-Ergebnisse für alle ${completedResults.length} Flows:
+
+${completedResults
+  .map(
+    (r) => `## ${r.flowName}
+- **Score:** ${r.score ?? "—"}/100
+- **Issues:** ${r.issuesCount ?? "—"} (${r.criticalCount ?? "—"} kritisch)
+${r.summary ? `- **Summary:** ${r.summary}` : ""}`
+  )
+  .join("\n\n")}
+
+---
+
+**Aufgabe:** Analysiere diese Ergebnisse und gib mir für jeden Flow:
+1. Die 3 kritischsten UX-Probleme
+2. Konkrete Verbesserungsvorschläge mit Code-Beispielen (React/Tailwind)
+3. Priorisierte Massnahmen für mehr Conversions
+
+Fokus: Mobile-UX, Trust-Elemente, CTA-Optimierung, Formular-Vereinfachung.
+Antworte auf Deutsch.`;
+
+      zip.file("chatgpt-prompt-all.md", combinedPrompt);
+
+      // Add each flow
+      for (const result of completedResults) {
+        const flowFolder = zip.folder(result.flowId) as JSZip;
+
+        const analysisJson = {
+          flowId: result.flowId,
+          flowName: result.flowName,
+          score: result.score,
+          issuesCount: result.issuesCount,
+          criticalCount: result.criticalCount,
+          summary: result.summary,
+          exportedAt: new Date().toISOString(),
+        };
+        flowFolder.file("analysis.json", JSON.stringify(analysisJson, null, 2));
+
+        // Fetch step metrics
+        if (result.runId) {
+          const { data: steps } = await supabase
+            .from("flow_step_metrics")
+            .select("*")
+            .eq("run_id", result.runId)
+            .order("step_number", { ascending: true });
+
+          if (steps && steps.length > 0) {
+            const stepsFolder = flowFolder.folder("steps") as JSZip;
+            for (const step of steps) {
+              const stepFolder = stepsFolder.folder(`step-${step.step_number}`) as JSZip;
+              stepFolder.file(
+                "info.json",
+                JSON.stringify(
+                  {
+                    stepNumber: step.step_number,
+                    stepName: step.step_name,
+                    stepUrl: step.step_url,
+                    issues: step.ai_issues,
+                    suggestions: step.ai_suggestions,
+                  },
+                  null,
+                  2
+                )
+              );
+            }
+          }
+        }
+      }
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      saveAs(blob, `umzugscheck-flows-export-${new Date().toISOString().slice(0, 10)}.zip`);
+      toast.success("Alle Flows als ZIP heruntergeladen");
+    } catch (e) {
+      console.error("Export all error:", e);
+      toast.error("Fehler beim Export");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const loadLatestAnalysisResults = async () => {
@@ -137,6 +345,7 @@ export function FlowAutomationCenter() {
             summary: row.ai_summary ?? undefined,
             issuesCount: meta.issuesCount ?? meta.issues_count ?? undefined,
             criticalCount: meta.criticalCount ?? meta.critical_count ?? undefined,
+            runId: row.id,
           };
         })
       );
@@ -474,26 +683,15 @@ ${entry.prompt}
 
               {analysisResults.length > 0 && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <Label className="text-sm font-medium">Ergebnisse:</Label>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={!analysisResults.some((r) => r.status === "completed")}
-                      onClick={async () => {
-                        const exportData = {
-                          exportedAt: new Date().toISOString(),
-                          flows: analysisResults.map((r) => ({
-                            flowId: r.flowId,
-                            flowName: r.flowName,
-                            score: r.score,
-                            issuesCount: r.issuesCount,
-                            criticalCount: r.criticalCount,
-                            summary: r.summary,
-                          })),
-                        };
-
-                        const prompt = `# Umzugscheck.ch Flow-Analyse Ergebnisse
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!analysisResults.some((r) => r.status === "completed")}
+                        onClick={async () => {
+                          const prompt = `# Umzugscheck.ch Flow-Analyse Ergebnisse
 
 Hier sind die Analyse-Ergebnisse für alle 9 Flows (V1-V9):
 
@@ -518,16 +716,32 @@ ${r.summary ? `- **Summary:** ${r.summary}` : ""}`
 Fokus: Mobile-UX, Trust-Elemente, CTA-Optimierung, Formular-Vereinfachung.
 Antworte auf Deutsch.`;
 
-                        await navigator.clipboard.writeText(prompt);
-                        toast.success("Export-Prompt kopiert!", {
-                          description: "Füge ihn in ChatGPT oder Gemini ein.",
-                        });
-                      }}
-                      className="gap-2"
-                    >
-                      <Download className="h-4 w-4" />
-                      Export für ChatGPT/Gemini
-                    </Button>
+                          await navigator.clipboard.writeText(prompt);
+                          toast.success("Export-Prompt kopiert!", {
+                            description: "Füge ihn in ChatGPT oder Gemini ein.",
+                          });
+                        }}
+                        className="gap-2"
+                      >
+                        <Copy className="h-4 w-4" />
+                        Prompt kopieren
+                      </Button>
+
+                      <Button
+                        variant="default"
+                        size="sm"
+                        disabled={!analysisResults.some((r) => r.status === "completed") || isExporting}
+                        onClick={exportAllFlowsZip}
+                        className="gap-2"
+                      >
+                        {isExporting ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Archive className="h-4 w-4" />
+                        )}
+                        Alle als ZIP
+                      </Button>
+                    </div>
                   </div>
                   
                   <div className="grid gap-2">
@@ -596,7 +810,26 @@ Bitte analysiere diesen Flow und gib mir:
                                 <Badge variant="destructive">{result.error}</Badge>
                               )}
                               {result.status === "completed" && (
-                                <Copy className="h-4 w-4 text-muted-foreground" />
+                                <>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      exportFlowZip(result);
+                                    }}
+                                    disabled={exportingFlowId === result.flowId}
+                                    className="h-7 px-2"
+                                  >
+                                    {exportingFlowId === result.flowId ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <Download className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                  <Copy className="h-4 w-4 text-muted-foreground" />
+                                </>
                               )}
                             </div>
                           </div>
