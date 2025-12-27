@@ -146,9 +146,59 @@ export const FLOW_CONFIGS: Record<string, FlowConfig> = {
   },
 };
 
-// Sub-Variant Configurations - Empty (all variants deleted)
-// These can be recreated via the admin workflow system
-export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {};
+// Sub-Variant Configurations for V9 feedback-based variants
+export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
+  'v9a': {
+    id: 'v9a',
+    label: 'V9.5 Main Pro Ext',
+    path: '/umzugsofferten?variant=v9a',
+    color: 'bg-cyan-600',
+    description: 'V9a mit 6-Step Pro-Erweiterung',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'Start- und Zieladresse' },
+      { step: 2, name: 'Details', description: 'Etage, Lift, Zimmerzahl' },
+      { step: 3, name: 'Service', description: 'Service-Level wählen' },
+      { step: 4, name: 'Extras', description: 'Zusatzleistungen' },
+      { step: 5, name: 'Firmen', description: 'Firmenauswahl' },
+      { step: 6, name: 'Kontakt', description: 'Kontaktdaten' },
+    ],
+  },
+  'v9b': {
+    id: 'v9b',
+    label: 'V9b Main Agent',
+    path: '/umzugsofferten?variant=v9b',
+    color: 'bg-cyan-700',
+    description: 'V9b Agent-basiert mit 5 Steps',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'Von-Nach Eingabe' },
+      { step: 2, name: 'Details', description: 'Wohnungsdetails' },
+      { step: 3, name: 'Services', description: 'Service-Auswahl' },
+      { step: 4, name: 'Extras & Datum', description: 'Zusatzoptionen' },
+      { step: 5, name: 'Firmen & Kontakt', description: 'Auswahl und Absenden' },
+    ],
+  },
+  'v9d': {
+    id: 'v9d',
+    label: 'V9d Main Gemini',
+    path: '/umzugsofferten?variant=v9d',
+    color: 'bg-emerald-600',
+    description: 'V9d Gemini-Archetyp mit 9 Steps',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Start', description: 'Privat oder Firma' },
+      { step: 2, name: 'Von', description: 'Startadresse' },
+      { step: 3, name: 'Nach', description: 'Zieladresse' },
+      { step: 4, name: 'Wann', description: 'Umzugsdatum' },
+      { step: 5, name: 'Wohnung', description: 'Zimmer, Etage, Lift' },
+      { step: 6, name: 'Inventar', description: 'Visuelles Inventar' },
+      { step: 7, name: 'Services', description: 'Zusatzservices' },
+      { step: 8, name: 'Ergebnis', description: 'Result Teasing' },
+      { step: 9, name: 'Kontakt', description: 'Kontaktdaten' },
+    ],
+  },
+};
 
 // Combined config for all flows (main + sub-variants)
 export const getAllFlowConfigs = (): Record<string, FlowConfig> => ({
