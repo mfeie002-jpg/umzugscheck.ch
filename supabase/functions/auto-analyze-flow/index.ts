@@ -10,6 +10,7 @@ const corsHeaders = {
 const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: string }> = {
   // Main flows (matching src/data/flowConfigs.ts)
   'umzugsofferten': { name: 'V1 - Control Flow', steps: 4, baseUrl: '/umzugsofferten' },
+  'umzugsofferten-v1': { name: 'V1 - Control Flow', steps: 4, baseUrl: '/umzugsofferten' },
   'umzugsofferten-v2': { name: 'V2 - Premium Full-Journey', steps: 6, baseUrl: '/umzugsofferten-v2' },
   'umzugsofferten-v3': { name: 'V3 - God Mode', steps: 4, baseUrl: '/umzugsofferten-v3' },
   'umzugsofferten-v4': { name: 'V4 - Video-First AI', steps: 5, baseUrl: '/umzugsofferten-v4' },
