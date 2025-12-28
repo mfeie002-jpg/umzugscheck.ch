@@ -15,7 +15,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [existingAdminEmail, setExistingAdminEmail] = useState<string | null>(null);
-  const [checkingSession, setCheckingSession] = useState(true);
+  const [checkingSession, setCheckingSession] = useState(false);
 
   // Check if already authenticated - always show this screen first
   useEffect(() => {
@@ -99,11 +99,18 @@ const AdminLogin = () => {
       if (error) throw error;
 
       if (data.user) {
-        // Check if user has admin role
-        const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
+        // Check if user has admin role (with timeout to avoid hanging)
+        const roleCheckPromise = supabase.rpc("has_role", {
           _user_id: data.user.id,
           _role: "admin",
         });
+
+        const { data: isAdmin, error: roleError } = await Promise.race([
+          roleCheckPromise,
+          new Promise<{ data: null; error: Error }>((_, reject) =>
+            setTimeout(() => reject({ data: null, error: new Error("Role check timeout") }), 3000)
+          ),
+        ]).catch(() => ({ data: null, error: new Error("Role check failed") }));
 
         if (roleError || !isAdmin) {
           await supabase.auth.signOut();
@@ -133,13 +140,9 @@ const AdminLogin = () => {
     }
   };
 
-  if (checkingSession) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
-        <div className="animate-pulse text-muted-foreground">Lade...</div>
-      </div>
-    );
-  }
+  // Note: We don't block the UI while checking session/roles, to avoid a stuck loading screen
+  // if the database is under load (statement timeouts).
+  // `existingAdminEmail` will show the "Bereits angemeldet" screen once available.
 
   // Show existing admin session notice
   if (existingAdminEmail) {
