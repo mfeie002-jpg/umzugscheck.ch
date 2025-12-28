@@ -176,6 +176,48 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 4, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
+  // V1c - Gemini Pro Optimized
+  'v1c': {
+    id: 'v1c',
+    label: 'V1c Gemini Pro',
+    path: '/umzugsofferten-v1c',
+    color: 'bg-blue-400',
+    description: 'V1c: Gemini Pro optimiert',
+    parentFlow: 'umzugsofferten-v1',
+    steps: [
+      { step: 1, name: 'Details', description: 'Umzugsdetails eingeben' },
+      { step: 2, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V1d - ChatGPT Pro Extended
+  'v1d': {
+    id: 'v1d',
+    label: 'V1d ChatGPT Pro Ext',
+    path: '/umzugsofferten-v1d',
+    color: 'bg-blue-300',
+    description: 'V1d: ChatGPT Pro Extended',
+    parentFlow: 'umzugsofferten-v1',
+    steps: [
+      { step: 1, name: 'Details', description: 'Umzugsdetails eingeben' },
+      { step: 2, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V1e - ChatGPT Research
+  'v1e': {
+    id: 'v1e',
+    label: 'V1e ChatGPT Research',
+    path: '/umzugsofferten-v1e',
+    color: 'bg-blue-200',
+    description: 'V1e: ChatGPT Research variant',
+    parentFlow: 'umzugsofferten-v1',
+    steps: [
+      { step: 1, name: 'Details', description: 'Umzugsdetails eingeben' },
+      { step: 2, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
   // V2 - Premium Feedback
   'v2f': {
     id: 'v2f',
