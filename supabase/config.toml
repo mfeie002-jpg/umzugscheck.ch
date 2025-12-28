@@ -53,3 +53,6 @@ verify_jwt = false
 
 [functions.deep-flow-analysis]
 verify_jwt = false
+
+[functions.ai-fix-flow]
+verify_jwt = false
