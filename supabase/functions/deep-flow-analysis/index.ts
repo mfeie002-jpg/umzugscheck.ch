@@ -159,6 +159,8 @@ const SWISS_6_STEP_FRAMEWORK = [
 // ============================================================================
 interface DeepAnalysisRequest {
   flowIds: string[];
+  flowId?: string; // parent flow id (e.g. umzugsofferten-v2)
+  flowVersion?: string; // e.g. v2
   analysisType: 'comprehensive' | 'comparison' | 'synthesis';
   includeRecommendations?: boolean;
 }
@@ -869,14 +871,49 @@ function createMockSynthesis(analyses: FlowDeepAnalysis[]): WinnerSynthesis {
 // ============================================================================
 // BACKGROUND ANALYSIS FUNCTION
 // ============================================================================
-async function runAnalysisInBackground(
-  flowIds: string[],
-  analysisType: string,
-  supabaseUrl: string,
-  supabaseKey: string
-): Promise<void> {
-  // Create new client inside background task
+async function runAnalysisInBackground(params: {
+  runId: string;
+  parentFlowId: string;
+  flowVersion?: string;
+  flowIds: string[];
+  analysisType: string;
+  supabaseUrl: string;
+  supabaseKey: string;
+}): Promise<void> {
+  const { runId, parentFlowId, flowVersion, flowIds, analysisType, supabaseUrl, supabaseKey } = params;
+
   const bgSupabase = createClient(supabaseUrl, supabaseKey);
+
+  const withRetry = async <T>(label: string, fn: () => Promise<T>, retries = 3): Promise<T> => {
+    let lastErr: unknown;
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        return await fn();
+      } catch (e) {
+        lastErr = e;
+        console.error(`[Background] ${label} failed (attempt ${attempt}/${retries})`, e);
+        await new Promise((r) => setTimeout(r, 400 * attempt));
+      }
+    }
+    throw lastErr;
+  };
+
+  const totalSteps = flowIds.length + ((analysisType === 'comparison' || analysisType === 'synthesis') ? 1 : 0);
+
+  // Mark as running + set totals
+  await withRetry('init run update', async () =>
+    bgSupabase
+      .from('flow_analysis_runs')
+      .update({
+        status: 'running',
+        steps_captured: 0,
+        total_steps: totalSteps,
+        started_at: new Date().toISOString(),
+        completed_at: null,
+      })
+      .eq('id', runId)
+  );
+
   const V1_CONFIGS: Record<string, string> = {
     'v1': 'V1 - Control Flow',
     'v1a': 'V1a Control (Feedback)',
@@ -889,77 +926,101 @@ async function runAnalysisInBackground(
   };
 
   try {
-    console.log(`[Background] Starting ${analysisType} analysis for flows:`, flowIds);
+    console.log(`[Background] Starting ${analysisType} analysis for parent=${parentFlowId} (${flowVersion ?? 'n/a'}) flows:`, flowIds);
 
-    // Analyze each flow
-    const analysisPromises = flowIds.map(flowId => {
-      const flowName = V1_CONFIGS[flowId] || flowId;
-      return analyzeFlowDeep(flowId, flowName);
-    });
+    const analyses: FlowDeepAnalysis[] = [];
 
-    const analyses = await Promise.all(analysisPromises);
-    console.log(`[Background] Completed analysis of ${analyses.length} flows`);
+    for (let i = 0; i < flowIds.length; i++) {
+      const fid = flowIds[i];
+      const flowName = V1_CONFIGS[fid] || fid;
+      const result = await analyzeFlowDeep(fid, flowName);
+      analyses.push(result);
+
+      await withRetry('progress update', async () =>
+        bgSupabase
+          .from('flow_analysis_runs')
+          .update({ steps_captured: i + 1, total_steps: totalSteps })
+          .eq('id', runId)
+      );
+    }
 
     let synthesis: WinnerSynthesis | null = null;
     if (analysisType === 'comparison' || analysisType === 'synthesis') {
       synthesis = await synthesizeWinner(analyses);
       console.log('[Background] Winner synthesis complete:', synthesis?.winner?.flowId);
+
+      await withRetry('synthesis progress update', async () =>
+        bgSupabase
+          .from('flow_analysis_runs')
+          .update({ steps_captured: flowIds.length + 1, total_steps: totalSteps })
+          .eq('id', runId)
+      );
     }
 
-    // Store results
-    const { error: runError } = await bgSupabase
-      .from('flow_analysis_runs')
-      .insert({
-        flow_id: flowIds.join(','),
-        flow_name: `Deep Archetyp Analysis: ${flowIds.length} Flows`,
-        run_type: 'deep-archetyp-analysis',
-        status: 'completed',
-        started_at: new Date().toISOString(),
-        completed_at: new Date().toISOString(),
-        overall_score: synthesis?.winner?.totalScore || analyses[0]?.overallScore || 0,
-        ai_summary: synthesis?.winner?.reasoning || 'Archetypzentrierte Analyse abgeschlossen',
-        ai_recommendations: synthesis ? [synthesis] : analyses,
-        metadata: {
-          analysisType,
-          flowCount: flowIds.length,
-          archetypes: Object.keys(ARCHETYPES),
-          swissFramework: SWISS_6_STEP_FRAMEWORK.map(s => s.name),
-          analyses: analyses.map(a => ({
-            flowId: a.flowId,
-            score: a.overallScore,
-            categoryScores: a.categoryScores,
-            archetypeScores: a.archetypeScores?.map(as => ({ archetype: as.archetype, score: as.score }))
-          })),
-          synthesis: synthesis ? {
-            winner: synthesis.winner,
-            ranking: synthesis.ranking,
-            archetypeWinners: synthesis.archetypeWinners
-          } : null
-        }
-      });
+    // Store UI-ready analyses (what the admin UI expects)
+    const uiAnalyses = analyses.map((a) => ({
+      flowId: a.flowId,
+      flowName: a.flowName,
+      overallScore: a.overallScore,
+      categoryScores: a.categoryScores,
+      elements: a.elements ?? [],
+      strengths: a.strengths ?? [],
+      weaknesses: a.weaknesses ?? [],
+      keyInsights: a.keyInsights ?? [],
+      conversionKillers: a.conversionKillers ?? [],
+      quickWins: a.quickWins ?? [],
+      stepByStepAnalysis: a.stepByStepAnalysis ?? [],
+    }));
 
-    if (runError) {
-      console.error('[Background] Error storing analysis:', runError);
+    const overallScore = synthesis?.winner?.totalScore || Math.round(uiAnalyses.reduce((acc, a) => acc + (a.overallScore || 0), 0) / Math.max(1, uiAnalyses.length));
+    const aiSummary = synthesis?.winner?.reasoning || 'Archetypzentrierte Analyse abgeschlossen';
+
+    const { error: updateError } = await withRetry('final run update', async () =>
+      bgSupabase
+        .from('flow_analysis_runs')
+        .update({
+          flow_id: parentFlowId,
+          flow_name: `Deep Archetyp Analysis: ${flowVersion ?? parentFlowId}`,
+          run_type: 'deep-archetyp-analysis',
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          overall_score: overallScore,
+          ai_summary: aiSummary,
+          ai_recommendations: synthesis ? [synthesis] : [],
+          metadata: {
+            analysisType,
+            flowCount: flowIds.length,
+            analyses: uiAnalyses,
+            synthesis: synthesis ? {
+              winner: synthesis.winner,
+              ranking: synthesis.ranking,
+              archetypeWinners: synthesis.archetypeWinners,
+            } : null,
+          },
+          steps_captured: totalSteps,
+          total_steps: totalSteps,
+        })
+        .eq('id', runId)
+    );
+
+    if (updateError) {
+      console.error('[Background] Error updating run:', updateError);
     } else {
       console.log('[Background] Analysis stored successfully');
     }
   } catch (error) {
     console.error('[Background] Analysis error:', error);
-    
-    // Store error state
-    const errorSupabase = createClient(supabaseUrl, supabaseKey);
-    await errorSupabase
-      .from('flow_analysis_runs')
-      .insert({
-        flow_id: flowIds.join(','),
-        flow_name: `Deep Archetyp Analysis: ${flowIds.length} Flows`,
-        run_type: 'deep-archetyp-analysis',
-        status: 'error',
-        started_at: new Date().toISOString(),
-        completed_at: new Date().toISOString(),
-        ai_summary: `Fehler: ${String(error)}`,
-        metadata: { error: String(error) }
-      });
+    await withRetry('error run update', async () =>
+      bgSupabase
+        .from('flow_analysis_runs')
+        .update({
+          status: 'failed',
+          completed_at: new Date().toISOString(),
+          ai_summary: `Fehler: ${String(error)}`,
+          metadata: { error: String(error) },
+        })
+        .eq('id', runId)
+    );
   }
 }
 
@@ -975,7 +1036,14 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { flowIds, analysisType = 'comprehensive', includeRecommendations = true, background = false }: DeepAnalysisRequest & { background?: boolean } = body;
+    const {
+      flowIds,
+      flowId: parentFlowId,
+      flowVersion,
+      analysisType = 'comprehensive',
+      includeRecommendations = true,
+      background = false,
+    } = body as DeepAnalysisRequest & { background?: boolean };
 
     console.log(`Starting ${analysisType} analysis for flows:`, flowIds, `Background: ${background}`);
 
@@ -986,28 +1054,71 @@ serve(async (req) => {
       );
     }
 
-    // BACKGROUND MODE: Use EdgeRuntime.waitUntil() to run analysis in background
+    // BACKGROUND MODE: Create a run record now (so UI can show progress) and run analysis in background
     if (background) {
       console.log('[Background Mode] Starting analysis - user can leave page');
-      
+
+      const parentId = parentFlowId || 'unknown-flow';
+      const totalSteps = flowIds.length + ((analysisType === 'comparison' || analysisType === 'synthesis') ? 1 : 0);
+
+      const { data: runRow, error: createRunError } = await supabase
+        .from('flow_analysis_runs')
+        .insert({
+          flow_id: parentId,
+          flow_name: `Deep Archetyp Analysis: ${flowVersion ?? parentId}`,
+          run_type: 'deep-archetyp-analysis',
+          status: 'running',
+          started_at: new Date().toISOString(),
+          steps_captured: 0,
+          total_steps: totalSteps,
+          metadata: {
+            analysisType,
+            flowCount: flowIds.length,
+            flowVersion: flowVersion ?? null,
+            flowIds,
+          },
+        })
+        .select('id, started_at, total_steps, steps_captured, status')
+        .single();
+
+      if (createRunError || !runRow?.id) {
+        console.error('Error creating run record:', createRunError);
+        return new Response(
+          JSON.stringify({ error: 'Konnte Analyse-Run nicht initialisieren' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // @ts-ignore
+      const startBg = () => runAnalysisInBackground({
+        runId: runRow.id,
+        parentFlowId: parentId,
+        flowVersion,
+        flowIds,
+        analysisType,
+        supabaseUrl: SUPABASE_URL,
+        supabaseKey: SUPABASE_SERVICE_ROLE_KEY,
+      });
+
       // @ts-ignore - EdgeRuntime is available in Deno Deploy
       if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
         // @ts-ignore
-        EdgeRuntime.waitUntil(runAnalysisInBackground(flowIds, analysisType, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY));
+        EdgeRuntime.waitUntil(startBg());
       } else {
-        // Fallback: just start the promise without waiting
-        runAnalysisInBackground(flowIds, analysisType, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+        startBg();
       }
 
       return new Response(
         JSON.stringify({
           success: true,
           background: true,
-          message: 'Analyse läuft im Hintergrund. Sie können die Seite verlassen.',
+          runId: runRow.id,
+          totalSteps,
+          message: 'Analyse läuft im Hintergrund. Fortschritt wird live angezeigt.',
           flowCount: flowIds.length,
           analysisType,
           checkStatusAt: '/admin/flow-deep-analysis',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -1039,30 +1150,48 @@ serve(async (req) => {
     }
 
     // Store results
+    const parentId = parentFlowId || 'unknown-flow';
+
+    const uiAnalyses = analyses.map((a) => ({
+      flowId: a.flowId,
+      flowName: a.flowName,
+      overallScore: a.overallScore,
+      categoryScores: a.categoryScores,
+      elements: a.elements ?? [],
+      strengths: a.strengths ?? [],
+      weaknesses: a.weaknesses ?? [],
+      keyInsights: a.keyInsights ?? [],
+      conversionKillers: a.conversionKillers ?? [],
+      quickWins: a.quickWins ?? [],
+      stepByStepAnalysis: a.stepByStepAnalysis ?? [],
+    }));
+
+    const totalSteps = flowIds.length + ((analysisType === 'comparison' || analysisType === 'synthesis') ? 1 : 0);
+
     const { data: analysisRun, error: runError } = await supabase
       .from('flow_analysis_runs')
       .insert({
-        flow_id: flowIds.join(','),
-        flow_name: `Deep Archetyp Analysis: ${flowIds.length} Flows`,
+        flow_id: parentId,
+        flow_name: `Deep Archetyp Analysis: ${flowVersion ?? parentId}`,
         run_type: 'deep-archetyp-analysis',
         status: 'completed',
         started_at: new Date().toISOString(),
         completed_at: new Date().toISOString(),
+        steps_captured: totalSteps,
+        total_steps: totalSteps,
         overall_score: synthesis?.winner?.totalScore || analyses[0]?.overallScore || 0,
         ai_summary: synthesis?.winner?.reasoning || 'Archetypzentrierte Analyse abgeschlossen',
-        ai_recommendations: synthesis ? [synthesis] : analyses,
+        ai_recommendations: synthesis ? [synthesis] : [],
         metadata: {
           analysisType,
           flowCount: flowIds.length,
-          archetypes: Object.keys(ARCHETYPES),
-          swissFramework: SWISS_6_STEP_FRAMEWORK.map(s => s.name),
-          analyses: analyses.map(a => ({
-            flowId: a.flowId,
-            score: a.overallScore,
-            categoryScores: a.categoryScores,
-            archetypeScores: a.archetypeScores?.map(as => ({ archetype: as.archetype, score: as.score }))
-          }))
-        }
+          analyses: uiAnalyses,
+          synthesis: synthesis ? {
+            winner: synthesis.winner,
+            ranking: synthesis.ranking,
+            archetypeWinners: synthesis.archetypeWinners,
+          } : null,
+        },
       })
       .select()
       .single();

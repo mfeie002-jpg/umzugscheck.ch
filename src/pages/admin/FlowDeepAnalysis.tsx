@@ -222,6 +222,7 @@ export default function FlowDeepAnalysis() {
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isBackgroundAnalysis, setIsBackgroundAnalysis] = useState(false);
+  const [foregroundProgress, setForegroundProgress] = useState(0);
   const [analyses, setAnalyses] = useState<FlowAnalysis[]>([]);
   const [synthesis, setSynthesis] = useState<Synthesis | null>(null);
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
@@ -255,6 +256,25 @@ export default function FlowDeepAnalysis() {
       return prev;
     });
   }, [selectedFlowVersion, setSearchParams]);
+
+  // Foreground progress (shadcn Progress braucht eine Zahl – undefined macht ihn unsichtbar)
+  useEffect(() => {
+    if (!isAnalyzing) {
+      setForegroundProgress(0);
+      return;
+    }
+
+    setForegroundProgress(10);
+    const interval = setInterval(() => {
+      setForegroundProgress((p) => {
+        if (p >= 90) return 90;
+        const inc = 4 + Math.random() * 8;
+        return Math.min(90, Math.round(p + inc));
+      });
+    }, 700);
+
+    return () => clearInterval(interval);
+  }, [isAnalyzing]);
 
   // Fetch available variants for the selected flow
   useEffect(() => {
@@ -619,11 +639,24 @@ export default function FlowDeepAnalysis() {
       if (error) throw error;
 
       if (background) {
-        // Background mode - just show confirmation
+        // Background mode - show confirmation + start live progress card
         toast({
           title: 'Analyse läuft im Hintergrund',
-          description: 'Sie können die Seite verlassen. Ergebnisse werden automatisch gespeichert.',
+          description: 'Sie können die Seite verlassen. Fortschritt & Resultate werden gespeichert.',
         });
+
+        if (data?.runId) {
+          setBackgroundJob({
+            id: data.runId,
+            status: 'running',
+            stepsCaptured: 0,
+            totalSteps: data.totalSteps || availableVariants.length,
+            startedAt: new Date().toISOString(),
+          });
+          setAnalyses([]);
+          setSynthesis(null);
+        }
+
         setIsAnalyzing(false);
         setIsBackgroundAnalysis(false);
         return;
@@ -961,7 +994,7 @@ export default function FlowDeepAnalysis() {
                   Analysiere {availableVariants.length} {selectedFlowVersion.toUpperCase()} Flows auf Element-Level
                 </p>
               </div>
-              <Progress value={undefined} className="max-w-xs mx-auto" />
+              <Progress value={foregroundProgress} className="max-w-xs mx-auto" />
             </CardContent>
           </Card>
         )}
