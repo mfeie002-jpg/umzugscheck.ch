@@ -345,8 +345,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => (
 const AdminRoutes = () => (
   <Suspense fallback={<PageLoadingFallback />}>
     <AnimatedRoutes>
-      <Route path="/admin" element={<AdminDashboard />} />
+      {/* Login MUST be before other admin routes to ensure it matches first */}
       <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/companies" element={<CompaniesAdmin />} />
       <Route path="/admin/reviews" element={<AdminReviews />} />
