@@ -25,7 +25,6 @@ export { V2bFeedbackBased } from './V2bFeedbackBased';
 export { V2cArchetypCalculator } from './V2cArchetypCalculator';
 export { V2cTrustFocused } from './V2cTrustFocused';
 export { V2dFeedbackBased } from './V2dFeedbackBased';
-export { V2dSpeedOptimized } from './V2dSpeedOptimized';
 export { V2eExperimental } from './V2eExperimental';
 export { V2fFeedbackBased } from './V2fFeedbackBased';
 
@@ -92,7 +91,6 @@ export const VARIANT_REGISTRY: Record<string, {
   'v2b': { component: 'V2bFeedbackBased', stepCount: 6, label: 'V2b ChatGPT Agent' },
   'v2c': { component: 'V2cArchetypCalculator', stepCount: 6, label: 'V2c Archetyp (Strategic)' },
   'v2d': { component: 'V2dFeedbackBased', stepCount: 6, label: 'V2d ChatGPT Pro' },
-  'v2d-speed': { component: 'V2dSpeedOptimized', stepCount: 3, label: 'V2d Speed Optimized' },
   'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
   'v2f': { component: 'V2fFeedbackBased', stepCount: 3, label: 'V2f Premium (Feedback)' },
   // V3 - Mobile-First

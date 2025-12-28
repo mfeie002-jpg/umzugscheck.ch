@@ -27,7 +27,7 @@ import {
   V2aProgressEnhanced,
   V2bFeedbackBased,
   V2cTrustFocused,
-  V2dSpeedOptimized,
+  V2dFeedbackBased,
   V2eExperimental,
   V2fFeedbackBased,
   // V3 variants
@@ -79,7 +79,7 @@ const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
   'v2a': V2aProgressEnhanced,
   'v2b': V2bFeedbackBased,
   'v2c': V2cTrustFocused,
-  'v2d': V2dSpeedOptimized,
+  'v2d': V2dFeedbackBased,
   'v2e': V2eExperimental,
   'v2f': V2fFeedbackBased,
   // V3 variants
