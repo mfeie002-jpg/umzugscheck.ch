@@ -139,3 +139,8 @@ export { ScrollRevealSection } from './ScrollRevealSection';
 export { LiveDot } from './LiveDot';
 export { GradientBackground } from './GradientBackground';
 export { BadgeWithIcon } from './BadgeWithIcon';
+
+// Wave 8 - Archetyp Edition Components
+export { SwissTrustBadges, HeroTrustStrip, ASTAGBadge, GuaranteeBadge, MiniTrustIndicator } from './SwissTrustBadges';
+export { StickyCTABar, FloatingCTAButton } from './StickyCTABar';
+export { PriceRangeDisplay, ZuegeltagIndicator, FlexDateBadge } from './PriceRangeDisplay';
