@@ -26,7 +26,7 @@ export { V2cTrustFocused } from './V2cTrustFocused';
 export { V2dSpeedOptimized } from './V2dSpeedOptimized';
 export { V2eExperimental } from './V2eExperimental';
 export { V2fFeedbackBased } from './V2fFeedbackBased';
-export { V2ArchetypCalculator } from './V2ArchetypCalculator';
+export { V2cArchetypCalculator } from './V2cArchetypCalculator';
 
 // V3 Variants (Mobile-First)
 export { V3aMobileFirst } from './V3aMobileFirst';

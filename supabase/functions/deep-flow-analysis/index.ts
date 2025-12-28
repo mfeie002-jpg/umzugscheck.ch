@@ -821,6 +821,103 @@ function createMockSynthesis(analyses: FlowDeepAnalysis[]): WinnerSynthesis {
 }
 
 // ============================================================================
+// BACKGROUND ANALYSIS FUNCTION
+// ============================================================================
+async function runAnalysisInBackground(
+  flowIds: string[],
+  analysisType: string,
+  supabaseUrl: string,
+  supabaseKey: string
+): Promise<void> {
+  // Create new client inside background task
+  const bgSupabase = createClient(supabaseUrl, supabaseKey);
+  const V1_CONFIGS: Record<string, string> = {
+    'v1': 'V1 - Control Flow',
+    'v1a': 'V1a Control (Feedback)',
+    'v1b': 'V1b ChatGPT Agent',
+    'v1c': 'V1c Gemini Pro',
+    'v1d': 'V1d ChatGPT Pro Ext',
+    'v1e': 'V1e ChatGPT Research',
+    'baseline': 'Baseline Control',
+    'umzugsofferten-v1': 'V1 - Control Flow'
+  };
+
+  try {
+    console.log(`[Background] Starting ${analysisType} analysis for flows:`, flowIds);
+
+    // Analyze each flow
+    const analysisPromises = flowIds.map(flowId => {
+      const flowName = V1_CONFIGS[flowId] || flowId;
+      return analyzeFlowDeep(flowId, flowName);
+    });
+
+    const analyses = await Promise.all(analysisPromises);
+    console.log(`[Background] Completed analysis of ${analyses.length} flows`);
+
+    let synthesis: WinnerSynthesis | null = null;
+    if (analysisType === 'comparison' || analysisType === 'synthesis') {
+      synthesis = await synthesizeWinner(analyses);
+      console.log('[Background] Winner synthesis complete:', synthesis?.winner?.flowId);
+    }
+
+    // Store results
+    const { error: runError } = await bgSupabase
+      .from('flow_analysis_runs')
+      .insert({
+        flow_id: flowIds.join(','),
+        flow_name: `Deep Archetyp Analysis: ${flowIds.length} Flows`,
+        run_type: 'deep-archetyp-analysis',
+        status: 'completed',
+        started_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        overall_score: synthesis?.winner?.totalScore || analyses[0]?.overallScore || 0,
+        ai_summary: synthesis?.winner?.reasoning || 'Archetypzentrierte Analyse abgeschlossen',
+        ai_recommendations: synthesis ? [synthesis] : analyses,
+        metadata: {
+          analysisType,
+          flowCount: flowIds.length,
+          archetypes: Object.keys(ARCHETYPES),
+          swissFramework: SWISS_6_STEP_FRAMEWORK.map(s => s.name),
+          analyses: analyses.map(a => ({
+            flowId: a.flowId,
+            score: a.overallScore,
+            categoryScores: a.categoryScores,
+            archetypeScores: a.archetypeScores?.map(as => ({ archetype: as.archetype, score: as.score }))
+          })),
+          synthesis: synthesis ? {
+            winner: synthesis.winner,
+            ranking: synthesis.ranking,
+            archetypeWinners: synthesis.archetypeWinners
+          } : null
+        }
+      });
+
+    if (runError) {
+      console.error('[Background] Error storing analysis:', runError);
+    } else {
+      console.log('[Background] Analysis stored successfully');
+    }
+  } catch (error) {
+    console.error('[Background] Analysis error:', error);
+    
+    // Store error state
+    const errorSupabase = createClient(supabaseUrl, supabaseKey);
+    await errorSupabase
+      .from('flow_analysis_runs')
+      .insert({
+        flow_id: flowIds.join(','),
+        flow_name: `Deep Archetyp Analysis: ${flowIds.length} Flows`,
+        run_type: 'deep-archetyp-analysis',
+        status: 'error',
+        started_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        ai_summary: `Fehler: ${String(error)}`,
+        metadata: { error: String(error) }
+      });
+  }
+}
+
+// ============================================================================
 // MAIN HANDLER
 // ============================================================================
 serve(async (req) => {
@@ -831,9 +928,10 @@ serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    const { flowIds, analysisType = 'comprehensive', includeRecommendations = true }: DeepAnalysisRequest = await req.json();
+    const body = await req.json();
+    const { flowIds, analysisType = 'comprehensive', includeRecommendations = true, background = false }: DeepAnalysisRequest & { background?: boolean } = body;
 
-    console.log(`Starting ${analysisType} analysis for flows:`, flowIds);
+    console.log(`Starting ${analysisType} analysis for flows:`, flowIds, `Background: ${background}`);
 
     if (!flowIds || flowIds.length === 0) {
       return new Response(
@@ -842,7 +940,34 @@ serve(async (req) => {
       );
     }
 
-    // V1 flow configs
+    // BACKGROUND MODE: Use EdgeRuntime.waitUntil() to run analysis in background
+    if (background) {
+      console.log('[Background Mode] Starting analysis - user can leave page');
+      
+      // @ts-ignore - EdgeRuntime is available in Deno Deploy
+      if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
+        // @ts-ignore
+        EdgeRuntime.waitUntil(runAnalysisInBackground(flowIds, analysisType, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY));
+      } else {
+        // Fallback: just start the promise without waiting
+        runAnalysisInBackground(flowIds, analysisType, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          background: true,
+          message: 'Analyse läuft im Hintergrund. Sie können die Seite verlassen.',
+          flowCount: flowIds.length,
+          analysisType,
+          checkStatusAt: '/admin/flow-deep-analysis',
+          timestamp: new Date().toISOString()
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // FOREGROUND MODE: Wait for analysis to complete
     const V1_CONFIGS: Record<string, string> = {
       'v1': 'V1 - Control Flow',
       'v1a': 'V1a Control (Feedback)',
@@ -850,6 +975,7 @@ serve(async (req) => {
       'v1c': 'V1c Gemini Pro',
       'v1d': 'V1d ChatGPT Pro Ext',
       'v1e': 'V1e ChatGPT Research',
+      'baseline': 'Baseline Control',
       'umzugsofferten-v1': 'V1 - Control Flow'
     };
 
