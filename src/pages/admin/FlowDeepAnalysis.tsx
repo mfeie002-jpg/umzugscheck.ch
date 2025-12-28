@@ -521,72 +521,76 @@ export default function FlowDeepAnalysis() {
           }
         }
         
-        // Fallback: check flow_analysis_runs directly
-        const { data, error } = await supabase
+        // Fallback: check latest deep-analysis run for this flow (more robust than tracking by id)
+        if (!flowConfig) return;
+
+        const { data: latestDeepRun, error: latestDeepRunError } = await supabase
           .from('flow_analysis_runs')
           .select('*')
-          .eq('id', backgroundJob.id)
+          .eq('run_type', 'deep-archetyp-analysis')
+          .eq('flow_id', flowConfig.flowId)
+          .order('created_at', { ascending: false })
+          .limit(1)
           .maybeSingle();
-        
-        if (error || !data) {
-          // Check if there's any running job for this flow
-          if (flowConfig) {
-            const { data: latestRun } = await supabase
-              .from('flow_analysis_runs')
-              .select('*')
-              .eq('flow_id', flowConfig.flowId)
-              .in('status', ['running', 'pending'])
-              .order('created_at', { ascending: false })
-              .limit(1)
-              .maybeSingle();
-            
-            if (latestRun) {
-              setBackgroundJob({
-                id: latestRun.id,
-                status: latestRun.status,
-                stepsCaptured: latestRun.steps_captured || 0,
-                totalSteps: latestRun.total_steps || 0,
-                startedAt: latestRun.started_at
-              });
-            }
-          }
+
+        if (latestDeepRunError || !latestDeepRun) {
+          // Nothing to track anymore
+          setBackgroundJob(null);
           return;
         }
-        
-        if (data.status === 'completed') {
+
+        if (latestDeepRun.status === 'completed') {
           setBackgroundJob(null);
-          const metadata = data.metadata as any;
+          const metadata = latestDeepRun.metadata as any;
           if (metadata?.analyses && Array.isArray(metadata.analyses)) {
-            setAnalyses(metadata.analyses.map((a: any) => ({
-              flowId: a.flowId || '',
-              flowName: a.flowName || '',
-              overallScore: a.overallScore || 0,
-              categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
-              elements: a.elements || [],
-              strengths: a.strengths || [],
-              weaknesses: a.weaknesses || [],
-              keyInsights: a.keyInsights || [],
-              conversionKillers: a.conversionKillers || [],
-              quickWins: a.quickWins || [],
-              stepByStepAnalysis: a.stepByStepAnalysis || []
-            })));
+            setAnalyses(
+              metadata.analyses.map((a: any) => ({
+                flowId: a.flowId || '',
+                flowName: a.flowName || '',
+                overallScore: a.overallScore || 0,
+                categoryScores:
+                  a.categoryScores ||
+                  ({ ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 } as any),
+                elements: a.elements || [],
+                strengths: a.strengths || [],
+                weaknesses: a.weaknesses || [],
+                keyInsights: a.keyInsights || [],
+                conversionKillers: a.conversionKillers || [],
+                quickWins: a.quickWins || [],
+                stepByStepAnalysis: a.stepByStepAnalysis || [],
+              }))
+            );
           }
-          const aiRecs = data.ai_recommendations as any;
+          const aiRecs = latestDeepRun.ai_recommendations as any;
           if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
             setSynthesis(aiRecs[0] as any);
           }
           toast({ title: 'Analyse abgeschlossen', description: 'Ergebnisse wurden geladen.' });
-        } else if (data.status === 'failed') {
-          setBackgroundJob(null);
-          toast({ title: 'Analyse fehlgeschlagen', description: 'Die Hintergrund-Analyse ist fehlgeschlagen.', variant: 'destructive' });
-        } else {
-          setBackgroundJob(prev => prev ? {
-            ...prev,
-            status: data.status,
-            stepsCaptured: data.steps_captured || 0,
-            totalSteps: data.total_steps || 0
-          } : null);
+          return;
         }
+
+        if (latestDeepRun.status === 'failed') {
+          setBackgroundJob(null);
+          toast({
+            title: 'Analyse fehlgeschlagen',
+            description: 'Die Hintergrund-Analyse ist fehlgeschlagen.',
+            variant: 'destructive',
+          });
+          return;
+        }
+
+        setBackgroundJob(prev =>
+          prev
+            ? {
+                ...prev,
+                id: latestDeepRun.id,
+                status: latestDeepRun.status,
+                stepsCaptured: latestDeepRun.steps_captured || 0,
+                totalSteps: latestDeepRun.total_steps || 0,
+                startedAt: latestDeepRun.started_at,
+              }
+            : null
+        );
       } catch (err) {
         console.error('Error in poll:', err);
       }
