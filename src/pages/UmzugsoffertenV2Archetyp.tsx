@@ -21,7 +21,7 @@ import {
   BottomStickyCTA,
   PageEnhancements,
 } from "@/components/offerten-v2";
-import { V2ArchetypCalculator } from "@/components/calculator-variants";
+import { V2cArchetypCalculator } from "@/components/calculator-variants";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Target, Shield, Zap } from "lucide-react";
@@ -66,7 +66,7 @@ const UmzugsoffertenV2Archetyp = () => {
         </div>
 
         <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-2 sm:pt-4 pb-8">
-          <V2ArchetypCalculator />
+          <V2cArchetypCalculator />
         </section>
 
         <AIInsightsBar />

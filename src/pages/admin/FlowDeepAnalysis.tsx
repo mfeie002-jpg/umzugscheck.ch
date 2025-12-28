@@ -206,16 +206,55 @@ export default function FlowDeepAnalysis() {
   const { toast } = useToast();
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isBackgroundAnalysis, setIsBackgroundAnalysis] = useState(false);
   const [analyses, setAnalyses] = useState<FlowAnalysis[]>([]);
   const [synthesis, setSynthesis] = useState<Synthesis | null>(null);
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const runDeepAnalysis = async () => {
+  // Check for previous analysis results on load
+  useEffect(() => {
+    const checkForResults = async () => {
+      const { data, error } = await supabase
+        .from('flow_analysis_runs')
+        .select('*')
+        .eq('run_type', 'deep-archetyp-analysis')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (data && !error && data.status === 'completed') {
+        // Load previous results
+        const metadata = data.metadata as any;
+        if (metadata?.analyses) {
+          setAnalyses(metadata.analyses.map((a: any) => ({
+            ...a,
+            elements: [],
+            strengths: [],
+            weaknesses: [],
+            keyInsights: [],
+            conversionKillers: [],
+            quickWins: [],
+            stepByStepAnalysis: []
+          })));
+        }
+        if (data.ai_recommendations?.[0]) {
+          setSynthesis(data.ai_recommendations[0] as any);
+        }
+      }
+    };
+    checkForResults();
+  }, []);
+
+  const runDeepAnalysis = async (background = false) => {
     setIsAnalyzing(true);
+    setIsBackgroundAnalysis(background);
+    
     toast({
-      title: 'Tiefenanalyse gestartet',
-      description: `Analysiere ${V1_FLOW_IDS.length} V1 Varianten...`,
+      title: background ? 'Hintergrund-Analyse gestartet' : 'Tiefenanalyse gestartet',
+      description: background 
+        ? 'Sie können die Seite verlassen. Ergebnisse werden gespeichert.'
+        : `Analysiere ${V1_FLOW_IDS.length} V1 Varianten...`,
     });
 
     try {
@@ -223,11 +262,23 @@ export default function FlowDeepAnalysis() {
         body: {
           flowIds: V1_FLOW_IDS,
           analysisType: 'synthesis',
-          includeRecommendations: true
+          includeRecommendations: true,
+          background
         }
       });
 
       if (error) throw error;
+
+      if (background) {
+        // Background mode - just show confirmation
+        toast({
+          title: 'Analyse läuft im Hintergrund',
+          description: 'Sie können die Seite verlassen. Ergebnisse werden automatisch gespeichert.',
+        });
+        setIsAnalyzing(false);
+        setIsBackgroundAnalysis(false);
+        return;
+      }
 
       setAnalyses(data.analyses || []);
       setSynthesis(data.synthesis || null);
@@ -245,6 +296,7 @@ export default function FlowDeepAnalysis() {
       });
     } finally {
       setIsAnalyzing(false);
+      setIsBackgroundAnalysis(false);
     }
   };
 
@@ -274,24 +326,36 @@ export default function FlowDeepAnalysis() {
               </div>
             </div>
             
-            <Button 
-              onClick={runDeepAnalysis} 
-              disabled={isAnalyzing}
-              size="lg"
-              className="gap-2"
-            >
-              {isAnalyzing ? (
-                <>
-                  <RefreshCw className="h-5 w-5 animate-spin" />
-                  Analysiere...
-                </>
-              ) : (
-                <>
-                  <Play className="h-5 w-5" />
-                  Tiefenanalyse starten
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => runDeepAnalysis(true)} 
+                disabled={isAnalyzing}
+                variant="outline"
+                size="lg"
+                className="gap-2"
+              >
+                <RefreshCw className="h-5 w-5" />
+                Hintergrund
+              </Button>
+              <Button 
+                onClick={() => runDeepAnalysis(false)} 
+                disabled={isAnalyzing}
+                size="lg"
+                className="gap-2"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <RefreshCw className="h-5 w-5 animate-spin" />
+                    Analysiere...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-5 w-5" />
+                    Tiefenanalyse starten
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -316,10 +380,16 @@ export default function FlowDeepAnalysis() {
                   <Badge key={id} variant="outline">{id}</Badge>
                 ))}
               </div>
-              <Button onClick={runDeepAnalysis} size="lg" className="gap-2">
-                <Play className="h-5 w-5" />
-                Jetzt alle V1 Flows analysieren
-              </Button>
+              <div className="flex gap-2 flex-wrap justify-center">
+                <Button onClick={() => runDeepAnalysis(false)} size="lg" className="gap-2">
+                  <Play className="h-5 w-5" />
+                  Jetzt analysieren
+                </Button>
+                <Button onClick={() => runDeepAnalysis(true)} variant="outline" size="lg" className="gap-2">
+                  <RefreshCw className="h-5 w-5" />
+                  Im Hintergrund
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}

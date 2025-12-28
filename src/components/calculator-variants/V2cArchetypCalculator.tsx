@@ -231,7 +231,7 @@ const MATCHED_COMPANIES = [
   { id: '3', name: 'Blitz Transport', rating: 4.7, reviews: 156, astag: true, guarantee: false, priceRange: '1\'780 - 2\'100' },
 ];
 
-export const V2ArchetypCalculator: React.FC = () => {
+export const V2cArchetypCalculator: React.FC = () => {
   const initialStep = useInitialStep(1);
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [detectedArchetype, setDetectedArchetype] = useState<keyof typeof ARCHETYPES | null>(null);
@@ -1265,4 +1265,4 @@ export const V2ArchetypCalculator: React.FC = () => {
   );
 };
 
-export default V2ArchetypCalculator;
+export default V2cArchetypCalculator;
