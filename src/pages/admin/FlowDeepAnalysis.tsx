@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Play, Trophy, Target, Zap, CheckCircle, AlertTriangle,
   AlertCircle, ChevronRight, Star, TrendingUp, Eye, Code, Download,
-  RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award
+  RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -26,8 +26,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
 
 interface ElementAnalysis {
   elementType: string;
@@ -730,6 +732,24 @@ export default function FlowDeepAnalysis() {
             </CardContent>
           </Card>
         )}
+
+        {/* Analysis Queue Panel - Always visible */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <Collapsible>
+            <CollapsibleTrigger asChild>
+              <Button variant="outline" className="w-full gap-2 justify-between">
+                <span className="flex items-center gap-2">
+                  <ListOrdered className="h-4 w-4" />
+                  Analyse-Queue
+                </span>
+                <ChevronRight className="h-4 w-4 transition-transform ui-open:rotate-90" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2">
+              <AnalysisQueuePanel availableFlows={ALL_FLOWS} />
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
 
         {/* Background Job Progress State */}
         {backgroundJob && !isAnalyzing && (

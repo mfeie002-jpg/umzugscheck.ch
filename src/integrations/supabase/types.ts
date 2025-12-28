@@ -743,6 +743,48 @@ export type Database = {
           },
         ]
       }
+      flow_analysis_queue: {
+        Row: {
+          completed_at: string | null
+          created_by: string | null
+          error_message: string | null
+          flow_id: string
+          flow_version: string
+          id: string
+          priority: number
+          queued_at: string
+          result_run_id: string | null
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_by?: string | null
+          error_message?: string | null
+          flow_id: string
+          flow_version: string
+          id?: string
+          priority?: number
+          queued_at?: string
+          result_run_id?: string | null
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_by?: string | null
+          error_message?: string | null
+          flow_id?: string
+          flow_version?: string
+          id?: string
+          priority?: number
+          queued_at?: string
+          result_run_id?: string | null
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       flow_analysis_runs: {
         Row: {
           accessibility_score: number | null
