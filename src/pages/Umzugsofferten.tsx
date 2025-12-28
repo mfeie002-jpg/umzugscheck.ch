@@ -38,7 +38,7 @@ import {
   V2aProgressEnhanced, 
   V2bFeedbackBased, 
   V2cTrustFocused, 
-  V2dSpeedOptimized, 
+  V2dFeedbackBased, 
   V2eExperimental,
   V3aMobileFirst,
   V3bSwipeNavigation,
@@ -121,7 +121,7 @@ const Umzugsofferten = () => {
     if (parsed.flowCode === '2a') return <V2aProgressEnhanced />;
     if (parsed.flowCode === '2b') return <V2bFeedbackBased />;
     if (parsed.flowCode === '2c') return <V2cTrustFocused />;
-    if (parsed.flowCode === '2d') return <V2dSpeedOptimized />;
+    if (parsed.flowCode === '2d') return <V2dFeedbackBased />;
     if (parsed.flowCode === '2e') return <V2eExperimental />;
     
     // V3 Sub-variants - Mobile-First (3a, 3b, 3c, 3d, 3e)
