@@ -17,6 +17,18 @@ const AdminLogin = () => {
   const [existingAdminEmail, setExistingAdminEmail] = useState<string | null>(null);
   const [checkingSession, setCheckingSession] = useState(false);
 
+  // Prevent "infinite loading" when backend signOut hangs (network/db issues)
+  const safeSignOut = async () => {
+    try {
+      await Promise.race([
+        supabase.auth.signOut(),
+        new Promise<void>((resolve) => setTimeout(resolve, 2000)),
+      ]);
+    } catch {
+      // ignore
+    }
+  };
+
   // Check if already authenticated - always show this screen first
   useEffect(() => {
     let cancelled = false;
@@ -58,8 +70,8 @@ const AdminLogin = () => {
             // Show the "already logged in" screen - don't auto-redirect
             setExistingAdminEmail(session.user.email ?? session.user.id);
           } else {
-            // User is logged in but not an admin - sign out first
-            await supabase.auth.signOut();
+            // User is logged in but not an admin - sign out first (non-blocking)
+            await safeSignOut();
           }
           setCheckingSession(false);
         }
@@ -77,7 +89,7 @@ const AdminLogin = () => {
   }, []);
 
   const handleLogoutAndContinue = async () => {
-    await supabase.auth.signOut();
+    await safeSignOut();
     setExistingAdminEmail(null);
   };
 
@@ -120,7 +132,7 @@ const AdminLogin = () => {
         ]).catch(() => ({ data: null, error: new Error("Role check failed") }));
 
         if (roleError || !isAdmin) {
-          await supabase.auth.signOut();
+          await safeSignOut();
           toast({
             title: "Zugriff verweigert",
             description: "Sie haben keine Admin-Berechtigung.",
