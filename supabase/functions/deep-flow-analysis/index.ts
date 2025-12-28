@@ -10,10 +10,176 @@ const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+// ============================================================================
+// SWISS MARKET ARCHETYPES (from Strategic Analysis)
+// ============================================================================
+const ARCHETYPES = {
+  securitySeeker: {
+    name: 'Sicherheits-Sucher',
+    nameEn: 'Security-Seeker',
+    description: 'Familien, 45+, Langzeitmieter. Risikoaversion dominiert.',
+    triggers: ['Garantie', 'Zertifikate', 'ASTAG', 'Fixpreis', 'Versicherung'],
+    painPoints: ['Hidden Costs', 'Unseriöse Anbieter', 'Schäden'],
+    uxNeeds: ['Validierung nach jedem Schritt', 'Detaillierte Versicherungsinfo', 'Video-Call Option'],
+    conversionTrigger: 'Fixpreis-Garantie & Abnahmegarantie'
+  },
+  efficiencyMaximizer: {
+    name: 'Effizienz-Maximierer',
+    nameEn: 'Efficiency-Maximizer',
+    description: 'Expats, Professionals 25-45. Zeit ist Geld.',
+    triggers: ['One-Click', 'AI-Video', 'Full-Service', 'English'],
+    painPoints: ['Lange Formulare', 'Telefonische Rückfragen', 'Sprachbarrieren'],
+    uxNeeds: ['Auto-Complete überall', 'Mobile-First', 'WhatsApp-Kommunikation'],
+    conversionTrigger: '"Fertig in 2 Minuten", "Alles aus einer Hand"'
+  },
+  valueHunter: {
+    name: 'Preis-Jäger',
+    nameEn: 'Value-Hunter',
+    description: 'Studenten, junge Paare. Misstrauen gegenüber "Abzocke".',
+    triggers: ['Preisvergleich', 'Sparen', 'Rabatt', 'Transparent'],
+    painPoints: ['Intransparente Pauschalangebote', 'Versteckte Kosten'],
+    uxNeeds: ['Dynamischer Spar-Rechner', 'Vergleichs-Modus', 'Eigenleistungs-Optionen'],
+    conversionTrigger: '"Sparen Sie 20% am 15. des Monats"'
+  },
+  overwhelmedParent: {
+    name: 'Chaos-Manager',
+    nameEn: 'Overwhelmed Parent',
+    description: 'Familien im Umbruch. Kognitive Last am Limit.',
+    triggers: ['Checkliste', 'Speichern', 'Erinnerung', 'Struktur'],
+    painPoints: ['Zu viele Entscheidungen', 'Abstrakte Fragen', 'Überforderung'],
+    uxNeeds: ['Häppchen-Schritte', 'Save & Continue', 'Proaktive Erinnerungen'],
+    conversionTrigger: '"Wir denken an alles", "Nichts vergessen"'
+  }
+};
+
+// ============================================================================
+// SWISS MARKET 6-STEP FRAMEWORK
+// ============================================================================
+const SWISS_6_STEP_FRAMEWORK = [
+  {
+    step: 1,
+    name: 'Kontextueller Einstieg & Geolocation',
+    germanName: 'Der "Hook"',
+    criticalElements: [
+      'Smart Location Intelligence (Google Places + Swiss Post API)',
+      'Etagen-Frage & Lift-Toggle',
+      'Intent-Segmentierung (Transport/Rundum-Sorglos/Reinigung)'
+    ],
+    swissSpecific: [
+      'Quartierbezeichnungen vs PLZ',
+      'LKW-Zufahrt-Validierung',
+      'Metadaten für Möbellift'
+    ],
+    benchmark: 'Movu: Einfaches PLZ-Formular ohne Validierung'
+  },
+  {
+    step: 2,
+    name: 'Temporale Logik & Flexibilität',
+    germanName: 'Das "Wann"',
+    criticalElements: [
+      'Zügeltag-Ampel-System',
+      'Flex-Date Interface (+/- 3 Tage)',
+      'Yield Management Integration'
+    ],
+    swissSpecific: [
+      'Offizielle Zügeltage (31.3, 30.6, 30.9)',
+      'Kantonale Unterschiede',
+      'Surge Pricing Transparenz'
+    ],
+    benchmark: 'Movu: Starre Datumswähler ohne Spar-Hinweise'
+  },
+  {
+    step: 3,
+    name: 'Inventar-Erfassung',
+    germanName: 'Der kognitive Kern',
+    criticalElements: [
+      'KI-Video-Inventar (Yembo-Style)',
+      'Raum-Presets mit Durchschnittsinventar',
+      'Granulare Suche für Preis-Jäger'
+    ],
+    swissSpecific: [
+      'Kellerlager typisch für CH',
+      'Estrich/Dachboden-Frage',
+      'Kartonanzahl-Berechnung statt Abfrage'
+    ],
+    benchmark: 'Movu: Manuelle Listen, hohe Fehlerquote, Preisstreitigkeiten'
+  },
+  {
+    step: 4,
+    name: 'Service-Anreicherung',
+    germanName: 'Upselling mit Kontext',
+    criticalElements: [
+      'Kontextuelles Upselling basierend auf Inventar',
+      'Abnahmegarantie-Integration',
+      'Montage/Demontage intelligent vorschlagen'
+    ],
+    swissSpecific: [
+      'Endreinigung = Pflicht, nicht Luxus',
+      'Abnahmegarantie = Killer-Feature',
+      'Downsizing-Optionen (Entsorgung/Lagerung)'
+    ],
+    benchmark: 'Movu: Checkbox-Listen ohne Kontext'
+  },
+  {
+    step: 5,
+    name: 'Identität, Vertrauen & Verifikation',
+    germanName: 'Point of Sale',
+    criticalElements: [
+      'OTP-Authentifizierung (SMS)',
+      'Trust Badges (ASTAG, VSU, SSL)',
+      'Dynamische Social Proof'
+    ],
+    swissSpecific: [
+      'ASTAG Plus Zertifizierung',
+      'nDSG-Konformität (CH-Datenschutz)',
+      'Serverstandort Schweiz kommunizieren'
+    ],
+    benchmark: 'Movu: "Geprüfte Partner" ohne konkrete Zertifikate'
+  },
+  {
+    step: 6,
+    name: 'Conversion & Nurturing',
+    germanName: 'Das Dashboard',
+    criticalElements: [
+      'Interaktives Dashboard statt Danke-Seite',
+      'Preisaufschlüsselung',
+      'Experten-Call Booking'
+    ],
+    swissSpecific: [
+      'Checkliste: Ummeldung, Betreibungsamt, Schule',
+      'Karton-Partner-Integration (Topkartons.ch)',
+      'T-8 Wochen Nurturing-Sequenz'
+    ],
+    benchmark: 'Movu: "Danke, wir melden uns" - dann Vakuum'
+  }
+];
+
+// ============================================================================
+// INTERFACES
+// ============================================================================
 interface DeepAnalysisRequest {
   flowIds: string[];
   analysisType: 'comprehensive' | 'comparison' | 'synthesis';
   includeRecommendations?: boolean;
+}
+
+interface ArchetypeScore {
+  archetype: string;
+  score: number;
+  reasoning: string;
+  missingElements: string[];
+  improvements: string[];
+}
+
+interface SwissMarketScore {
+  category: string;
+  score: number;
+  elements: {
+    name: string;
+    present: boolean;
+    quality: 'excellent' | 'good' | 'needs-improvement' | 'missing';
+    recommendation?: string;
+  }[];
 }
 
 interface ElementAnalysis {
@@ -31,6 +197,7 @@ interface ElementAnalysis {
     description: string;
     recommendation: string;
     effort: 'low' | 'medium' | 'high';
+    impactOnArchetype?: string;
   }>;
   bestPractices: string[];
   improvements: string[];
@@ -49,12 +216,27 @@ interface FlowDeepAnalysis {
     trust: number;
     clarity: number;
   };
+  archetypeScores: ArchetypeScore[];
+  swissMarketScores: SwissMarketScore[];
+  sixStepAnalysis: Array<{
+    step: number;
+    name: string;
+    score: number;
+    implemented: string[];
+    missing: string[];
+    swissSpecificScore: number;
+  }>;
   elements: ElementAnalysis[];
   strengths: string[];
   weaknesses: string[];
   keyInsights: string[];
   conversionKillers: string[];
   quickWins: string[];
+  movuComparison: {
+    betterThan: string[];
+    worseThan: string[];
+    differentiators: string[];
+  };
   stepByStepAnalysis: Array<{
     step: number;
     name: string;
@@ -71,6 +253,7 @@ interface WinnerSynthesis {
     flowName: string;
     totalScore: number;
     reasoning: string;
+    archetypeFit: { [key: string]: number };
   };
   ranking: Array<{
     position: number;
@@ -78,22 +261,33 @@ interface WinnerSynthesis {
     score: number;
     keyStrength: string;
     keyWeakness: string;
+    bestForArchetype: string;
   }>;
+  archetypeWinners: {
+    securitySeeker: { flowId: string; score: number };
+    efficiencyMaximizer: { flowId: string; score: number };
+    valueHunter: { flowId: string; score: number };
+    overwhelmedParent: { flowId: string; score: number };
+  };
   bestElements: Array<{
     element: string;
     sourceFlow: string;
     reason: string;
     implementation: string;
+    archetypeValue: string[];
   }>;
   ultimateFlow: {
     name: string;
     description: string;
+    philosophy: string;
+    targetArchetypes: string[];
     steps: Array<{
       number: number;
       name: string;
       sourceFlow: string;
       elements: string[];
       improvements: string[];
+      swissMarketFeatures: string[];
     }>;
     expectedConversionLift: string;
     implementationPriority: Array<{
@@ -102,7 +296,15 @@ interface WinnerSynthesis {
       effort: 'low' | 'medium' | 'high';
       impact: 'low' | 'medium' | 'high';
       sourceFlow: string;
+      affectedArchetypes: string[];
     }>;
+    swissMarketDifferentiators: string[];
+    movuCompetitiveAdvantage: string[];
+  };
+  roadmap: {
+    phase1: { title: string; duration: string; items: string[] };
+    phase2: { title: string; duration: string; items: string[] };
+    phase3: { title: string; duration: string; items: string[] };
   };
   codeChanges: Array<{
     file: string;
@@ -110,65 +312,38 @@ interface WinnerSynthesis {
     currentState: string;
     proposedChange: string;
     implementation: string;
+    priority: number;
   }>;
 }
 
+// ============================================================================
+// AI ANALYSIS FUNCTIONS
+// ============================================================================
 async function analyzeFlowDeep(flowId: string, flowName: string): Promise<FlowDeepAnalysis> {
   if (!LOVABLE_API_KEY) {
     return createMockAnalysis(flowId, flowName);
   }
 
-  const prompt = `Du bist ein Elite UX/Conversion-Experte. Führe eine TIEFENANALYSE des Flow "${flowName}" (ID: ${flowId}) durch.
+  const archetypesJson = JSON.stringify(ARCHETYPES, null, 2);
+  const frameworkJson = JSON.stringify(SWISS_6_STEP_FRAMEWORK, null, 2);
 
-Analysiere JEDEN einzelnen Element-Typ systematisch:
+  const prompt = `Du bist ein Elite UX/Conversion-Experte für den SCHWEIZER UMZUGSMARKT.
 
-1. **BUTTONS & CTAs**
-   - Grösse (min 44x44px für Mobile)
-   - Kontrast und Farbe
-   - Text-Klarheit
-   - Position (Thumb Zone)
-   - Hover/Active States
+Führe eine ARCHETYPZENTRIERTE TIEFENANALYSE des Flow "${flowName}" (ID: ${flowId}) durch.
 
-2. **INPUT FIELDS**
-   - Label-Klarheit
-   - Placeholder-Qualität
-   - Validation-Feedback
-   - Keyboard-Typen (tel, email, etc.)
-   - Autofill-Attribute
+## SCHWEIZER MARKT-ARCHETYPEN:
+${archetypesJson}
 
-3. **TEXT & COPYWRITING**
-   - Headlines (H1-H3 Hierarchie)
-   - Microcopy
-   - Error Messages
-   - Trust Signals
-   - Benefit-Kommunikation
+## SWISS 6-STEP FRAMEWORK (Benchmark gegen Movu.ch):
+${frameworkJson}
 
-4. **LAYOUT & VISUAL HIERARCHY**
-   - White Space
-   - Grid-Konsistenz
-   - F-Pattern / Z-Pattern
-   - Above-the-Fold Content
-   - Visual Flow
+## ANALYSE-AUFTRAG:
 
-5. **FORMS**
-   - Feldanzahl
-   - Progressive Disclosure
-   - Required vs Optional
-   - Form-Länge
-   - Mobile Keyboard
-
-6. **NAVIGATION & PROGRESS**
-   - Progress Indicator
-   - Back-Button
-   - Step-Bezeichnungen
-   - Orientation
-
-7. **TRUST ELEMENTS**
-   - Badges
-   - Testimonials
-   - Logos
-   - Garantien
-   - Datenschutz
+1. **ARCHETYPEN-SCORING**: Bewerte wie gut der Flow jeden Archetyp bedient (0-100)
+2. **6-STEP FRAMEWORK**: Prüfe ob jeder der 6 kritischen Schritte implementiert ist
+3. **SWISS MARKET SPEZIFIKA**: Sind CH-spezifische Elemente vorhanden? (Zügeltage, Abnahmegarantie, ASTAG)
+4. **ELEMENT-LEVEL ANALYSE**: Buttons, Inputs, Trust-Elemente, Progress, etc.
+5. **MOVU VERGLEICH**: Wo ist dieser Flow besser/schlechter als Movu.ch?
 
 Antworte im JSON-Format:
 {
@@ -182,34 +357,67 @@ Antworte im JSON-Format:
     "trust": 0-100,
     "clarity": 0-100
   },
-  "elements": [
+  "archetypeScores": [
     {
-      "elementType": "button|input|text|image|layout|form|navigation|trust|progress",
-      "elementName": "z.B. Primary CTA, Email Input, Trust Badge",
-      "scores": {
-        "visibility": 0-100,
-        "usability": 0-100,
-        "conversion": 0-100,
-        "mobile": 0-100,
-        "accessibility": 0-100
-      },
-      "issues": [
-        {
-          "severity": "critical|warning|info",
-          "description": "Was ist das Problem?",
-          "recommendation": "Wie beheben?",
-          "effort": "low|medium|high"
-        }
-      ],
-      "bestPractices": ["Was wird gut gemacht"],
+      "archetype": "Sicherheits-Sucher",
+      "score": 0-100,
+      "reasoning": "Warum dieser Score?",
+      "missingElements": ["Was fehlt für diesen Archetyp?"],
       "improvements": ["Konkrete Verbesserungen"]
     }
   ],
-  "strengths": ["Top 3-5 Stärken"],
-  "weaknesses": ["Top 3-5 Schwächen"],
+  "swissMarketScores": [
+    {
+      "category": "Zügeltag-Awareness",
+      "score": 0-100,
+      "elements": [
+        {
+          "name": "Flex-Date Option",
+          "present": true/false,
+          "quality": "excellent|good|needs-improvement|missing",
+          "recommendation": "..."
+        }
+      ]
+    }
+  ],
+  "sixStepAnalysis": [
+    {
+      "step": 1,
+      "name": "Kontextueller Einstieg",
+      "score": 0-100,
+      "implemented": ["Was ist vorhanden"],
+      "missing": ["Was fehlt"],
+      "swissSpecificScore": 0-100
+    }
+  ],
+  "elements": [
+    {
+      "elementType": "button|input|text|...",
+      "elementName": "Primary CTA",
+      "scores": { "visibility": 80, "usability": 75, "conversion": 70, "mobile": 72, "accessibility": 65 },
+      "issues": [
+        {
+          "severity": "critical|warning|info",
+          "description": "...",
+          "recommendation": "...",
+          "effort": "low|medium|high",
+          "impactOnArchetype": "Sicherheits-Sucher"
+        }
+      ],
+      "bestPractices": ["..."],
+      "improvements": ["..."]
+    }
+  ],
+  "strengths": ["Top 5 Stärken"],
+  "weaknesses": ["Top 5 Schwächen"],
   "keyInsights": ["Wichtigste Erkenntnisse"],
   "conversionKillers": ["Was kostet Conversions?"],
-  "quickWins": ["Schnelle Verbesserungen mit grossem Impact"],
+  "quickWins": ["Low-Effort, High-Impact Verbesserungen"],
+  "movuComparison": {
+    "betterThan": ["Wo besser als Movu"],
+    "worseThan": ["Wo schlechter als Movu"],
+    "differentiators": ["Alleinstellungsmerkmale"]
+  },
   "stepByStepAnalysis": [
     {
       "step": 1,
@@ -234,7 +442,10 @@ Antworte im JSON-Format:
         messages: [
           { 
             role: 'system', 
-            content: 'Du bist ein Elite UX/Conversion-Experte mit 15+ Jahren Erfahrung. Du analysierst Flows mit chirurgischer Präzision und gibst konkrete, umsetzbare Empfehlungen. Antworte immer im JSON-Format.' 
+            content: `Du bist ein Elite UX/Conversion-Experte mit 15+ Jahren Erfahrung im SCHWEIZER UMZUGSMARKT.
+Du kennst die Besonderheiten: Zügeltage, Wohnungsabgabe-Ängste, ASTAG-Zertifizierung, "Swissness" als Trust-Signal.
+Du analysierst Flows mit archetypzentrierter Methodik und gibst konkrete, umsetzbare Empfehlungen.
+Antworte immer im JSON-Format.` 
           },
           { role: 'user', content: prompt }
         ],
@@ -272,41 +483,48 @@ async function synthesizeWinner(analyses: FlowDeepAnalysis[]): Promise<WinnerSyn
     flowName: a.flowName,
     overallScore: a.overallScore,
     categoryScores: a.categoryScores,
+    archetypeScores: a.archetypeScores,
+    sixStepAnalysis: a.sixStepAnalysis,
     strengths: a.strengths,
     weaknesses: a.weaknesses,
     quickWins: a.quickWins,
-    conversionKillers: a.conversionKillers
+    conversionKillers: a.conversionKillers,
+    movuComparison: a.movuComparison
   }));
 
-  const prompt = `Du bist der ultimative UX-Stratege. Basierend auf der Tiefenanalyse aller Flows, bestimme:
+  const prompt = `Du bist der ultimative UX-Stratege für den SCHWEIZER UMZUGSMARKT.
+
+Basierend auf der archetypzentrierten Tiefenanalyse aller Flows, erstelle:
 
 ANALYSIERTE FLOWS:
 ${JSON.stringify(analysisData, null, 2)}
 
-AUFGABEN:
+## SCHWEIZER MARKT-ARCHETYPEN:
+${JSON.stringify(ARCHETYPES, null, 2)}
+
+## AUFGABEN:
 
 1. **GEWINNER BESTIMMEN**
    - Welcher Flow ist objektiv der beste?
-   - Begründe mit Scores und qualitativen Faktoren
+   - Archetypen-Fit pro Flow bewerten
+   - Begründe mit Scores und Swiss-Market-Kriterien
 
-2. **RANKING ERSTELLEN**
-   - Alle Flows nach Qualität sortieren
-   - Key Strength und Weakness pro Flow
+2. **ARCHETYPEN-GEWINNER**
+   - Welcher Flow ist am besten für welchen Archetyp?
 
-3. **BEST ELEMENTS IDENTIFIZIEREN**
-   - Welche Elemente sind in welchem Flow am besten?
-   - Z.B. "Der CTA von V1a ist besser als der von V1b"
+3. **ULTIMATE FLOW BLUEPRINT**
+   - Kombiniere die besten Elemente ALLER Flows
+   - Integriere Swiss-Market-Spezifika (Zügeltage, Abnahmegarantie, ASTAG)
+   - Design für alle 4 Archetypen gleichzeitig
+   - Definiere jeden der 6 Steps
 
-4. **ULTIMATE FLOW DESIGNEN**
-   - Kombiniere die besten Elemente aller Flows
-   - Definiere jeden Step
-   - Liste die besten Elemente pro Step
-   - Beschreibe erwartete Conversion-Steigerung
+4. **ROADMAP**
+   - Phase 1: Quick Wins (1-3 Monate)
+   - Phase 2: AI Integration (4-6 Monate)
+   - Phase 3: Ecosystem (6+ Monate)
 
-5. **IMPLEMENTIERUNGS-PRIORITÄTEN**
-   - Was sollte zuerst umgesetzt werden?
-   - Effort vs Impact Matrix
-   - Konkrete Code-Änderungen
+5. **MOVU COMPETITIVE ADVANTAGE**
+   - Wie schlägt der Ultimate Flow Movu.ch?
 
 Antworte im JSON-Format:
 {
@@ -314,57 +532,33 @@ Antworte im JSON-Format:
     "flowId": "v1a",
     "flowName": "Name",
     "totalScore": 85,
-    "reasoning": "Warum ist dieser Flow der Beste?"
+    "reasoning": "...",
+    "archetypeFit": { "securitySeeker": 80, "efficiencyMaximizer": 75, ... }
   },
-  "ranking": [
-    {
-      "position": 1,
-      "flowId": "v1a",
-      "score": 85,
-      "keyStrength": "Bestes Element",
-      "keyWeakness": "Grösstes Problem"
-    }
-  ],
-  "bestElements": [
-    {
-      "element": "Primary CTA",
-      "sourceFlow": "v1a",
-      "reason": "Warum ist dieses Element das beste?",
-      "implementation": "Wie übernehmen wir das?"
-    }
-  ],
+  "ranking": [...],
+  "archetypeWinners": {
+    "securitySeeker": { "flowId": "v1a", "score": 85 },
+    "efficiencyMaximizer": { "flowId": "v1b", "score": 90 },
+    ...
+  },
+  "bestElements": [...],
   "ultimateFlow": {
-    "name": "Ultimate V1 - Best of All",
-    "description": "Kombiniert die besten Elemente aller V1-Varianten",
-    "steps": [
-      {
-        "number": 1,
-        "name": "Step Name",
-        "sourceFlow": "Von welchem Flow kommt dieser Step?",
-        "elements": ["Element 1", "Element 2"],
-        "improvements": ["Was wird verbessert?"]
-      }
-    ],
-    "expectedConversionLift": "+15-25%",
-    "implementationPriority": [
-      {
-        "priority": 1,
-        "change": "Was ändern?",
-        "effort": "low|medium|high",
-        "impact": "low|medium|high",
-        "sourceFlow": "Von wo kommt die Idee?"
-      }
-    ]
+    "name": "Ultimate V1 - Swiss Archetyp",
+    "description": "...",
+    "philosophy": "Archetypzentriert, Swiss-Market-optimiert",
+    "targetArchetypes": ["Alle 4"],
+    "steps": [...],
+    "expectedConversionLift": "+25-40%",
+    "implementationPriority": [...],
+    "swissMarketDifferentiators": ["Zügeltag-Ampel", "Abnahmegarantie", "ASTAG-Badges"],
+    "movuCompetitiveAdvantage": ["KI-Video-Inventar", "Fixpreis-Garantie", "Flex-Date"]
   },
-  "codeChanges": [
-    {
-      "file": "src/components/xyz.tsx",
-      "component": "ComponentName",
-      "currentState": "Was ist jetzt?",
-      "proposedChange": "Was soll es werden?",
-      "implementation": "Konkreter Code-Vorschlag"
-    }
-  ]
+  "roadmap": {
+    "phase1": { "title": "Fix the Basics", "duration": "Monate 1-3", "items": [...] },
+    "phase2": { "title": "AI Integration", "duration": "Monate 4-6", "items": [...] },
+    "phase3": { "title": "Ecosystem", "duration": "Monate 6+", "items": [...] }
+  },
+  "codeChanges": [...]
 }`;
 
   try {
@@ -379,7 +573,7 @@ Antworte im JSON-Format:
         messages: [
           { 
             role: 'system', 
-            content: 'Du bist ein Elite UX-Stratege. Du findest die beste Lösung durch systematische Analyse und Synthese. Antworte im JSON-Format.' 
+            content: 'Du bist ein Elite UX-Stratege für den Schweizer Umzugsmarkt. Du findest die beste Lösung durch archetypzentrierte Analyse und Swiss-Market-Synthese. Antworte im JSON-Format.' 
           },
           { role: 'user', content: prompt }
         ],
@@ -401,20 +595,74 @@ Antworte im JSON-Format:
   }
 }
 
+// ============================================================================
+// MOCK DATA GENERATORS
+// ============================================================================
 function createMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
   return {
     flowId,
     flowName,
     overallScore: 72,
     categoryScores: {
-      ux: 75,
-      conversion: 70,
-      mobile: 68,
-      accessibility: 65,
-      performance: 78,
-      trust: 72,
-      clarity: 74
+      ux: 75, conversion: 70, mobile: 68, accessibility: 65,
+      performance: 78, trust: 72, clarity: 74
     },
+    archetypeScores: [
+      {
+        archetype: 'Sicherheits-Sucher',
+        score: 65,
+        reasoning: 'Fehlende Garantie-Badges und Versicherungsinfos',
+        missingElements: ['ASTAG-Badge', 'Fixpreis-Garantie', 'Abnahmegarantie'],
+        improvements: ['Trust-Badges hinzufügen', 'Garantie prominent platzieren']
+      },
+      {
+        archetype: 'Effizienz-Maximierer',
+        score: 78,
+        reasoning: 'Guter Mobile-Flow, aber kein AI-Video-Inventar',
+        missingElements: ['KI-Video-Inventar', 'One-Click-Buchung'],
+        improvements: ['Video-Upload integrieren', 'Schritte reduzieren']
+      },
+      {
+        archetype: 'Preis-Jäger',
+        score: 60,
+        reasoning: 'Keine Spar-Tipps oder dynamische Preisanzeige',
+        missingElements: ['Flex-Date Rabatte', 'Eigenleistungs-Rechner'],
+        improvements: ['Spar-Rechner einbauen', 'Preisaufschlüsselung']
+      },
+      {
+        archetype: 'Chaos-Manager',
+        score: 70,
+        reasoning: 'Struktur vorhanden, aber keine Save-Funktion',
+        missingElements: ['Save & Continue', 'Checklisten', 'Erinnerungen'],
+        improvements: ['Magic-Link zum Fortsetzen', 'Proaktive Tipps']
+      }
+    ],
+    swissMarketScores: [
+      {
+        category: 'Zügeltag-Awareness',
+        score: 40,
+        elements: [
+          { name: 'Flex-Date Option', present: false, quality: 'missing', recommendation: 'Flex-Date +/- 3 Tage integrieren' },
+          { name: 'Ampel-System', present: false, quality: 'missing', recommendation: 'Farbcodierung für Auslastung' }
+        ]
+      },
+      {
+        category: 'Swiss Trust Signals',
+        score: 55,
+        elements: [
+          { name: 'ASTAG Badge', present: false, quality: 'missing', recommendation: 'ASTAG Plus Logo im Footer' },
+          { name: 'Swiss Hosting', present: true, quality: 'good' }
+        ]
+      }
+    ],
+    sixStepAnalysis: SWISS_6_STEP_FRAMEWORK.map((step, i) => ({
+      step: step.step,
+      name: step.name,
+      score: 60 + Math.floor(Math.random() * 30),
+      implemented: step.criticalElements.slice(0, 1),
+      missing: step.criticalElements.slice(1),
+      swissSpecificScore: 50 + Math.floor(Math.random() * 40)
+    })),
     elements: [
       {
         elementType: 'button',
@@ -423,27 +671,49 @@ function createMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis 
         issues: [
           {
             severity: 'warning',
-            description: 'CTA könnte prominenter sein',
-            recommendation: 'Grössere Button-Size und höherer Kontrast',
-            effort: 'low'
+            description: 'CTA nicht sticky auf Mobile',
+            recommendation: 'Sticky CTA am unteren Bildschirmrand',
+            effort: 'low',
+            impactOnArchetype: 'Effizienz-Maximierer'
           }
         ],
         bestPractices: ['Klarer Text', 'Gute Farbe'],
-        improvements: ['Sticky CTA auf Mobile', 'Hover-Animation']
+        improvements: ['Sticky CTA', 'Hover-Animation', 'Loading State']
+      },
+      {
+        elementType: 'trust',
+        elementName: 'Trust Badges',
+        scores: { visibility: 40, usability: 60, conversion: 50, mobile: 45, accessibility: 70 },
+        issues: [
+          {
+            severity: 'critical',
+            description: 'Keine Trust-Badges sichtbar',
+            recommendation: 'ASTAG, SSL, Datenschutz Badges hinzufügen',
+            effort: 'low',
+            impactOnArchetype: 'Sicherheits-Sucher'
+          }
+        ],
+        bestPractices: [],
+        improvements: ['ASTAG Badge', 'Swiss Made', 'SSL-Siegel', 'nDSG-Konform']
       }
     ],
-    strengths: ['Klare Struktur', 'Gute UX'],
-    weaknesses: ['Mobile-Optimierung', 'Trust-Elemente fehlen'],
-    keyInsights: ['Flow könnte um 20% verbessert werden'],
-    conversionKillers: ['Zu viele Formularfelder'],
-    quickWins: ['Sticky CTA', 'Trust Badges'],
+    strengths: ['Klare Struktur', 'Gute Mobile-Responsiveness', 'Sauberes Design'],
+    weaknesses: ['Fehlende Trust-Signale', 'Kein Swiss-Market-Fokus', 'Keine Flex-Date Option'],
+    keyInsights: ['Flow könnte mit Swiss-Fokus um 30% verbessert werden'],
+    conversionKillers: ['Keine Abnahmegarantie', 'Kein Fixpreis', 'Zu abstrakte Inventar-Fragen'],
+    quickWins: ['Trust Badges', 'Sticky CTA', 'Flex-Date Option', 'ASTAG Logo'],
+    movuComparison: {
+      betterThan: ['Moderneres Design'],
+      worseThan: ['Keine Move Captains', 'Kein Ökosystem', 'Weniger Trust'],
+      differentiators: ['Potential für KI-Video-Inventar']
+    },
     stepByStepAnalysis: [
       {
         step: 1,
         name: 'Umzugsdetails',
         score: 75,
         dropOffRisk: 'medium',
-        friction: ['Zu viele Felder'],
+        friction: ['Zu viele Felder', 'Keine Smart-Location'],
         positives: ['Klare Beschriftung']
       }
     ]
@@ -459,50 +729,100 @@ function createMockSynthesis(analyses: FlowDeepAnalysis[]): WinnerSynthesis {
       flowId: winner.flowId,
       flowName: winner.flowName,
       totalScore: winner.overallScore,
-      reasoning: `${winner.flowName} erreicht den höchsten Gesamtscore durch ausgewogene UX und Conversion-Optimierung.`
+      reasoning: `${winner.flowName} erreicht den höchsten Gesamtscore durch ausgewogene Archetypen-Abdeckung.`,
+      archetypeFit: {
+        securitySeeker: 70,
+        efficiencyMaximizer: 75,
+        valueHunter: 65,
+        overwhelmedParent: 72
+      }
     },
     ranking: sorted.map((a, i) => ({
       position: i + 1,
       flowId: a.flowId,
       score: a.overallScore,
       keyStrength: a.strengths?.[0] || 'Gute Grundstruktur',
-      keyWeakness: a.weaknesses?.[0] || 'Optimierungspotenzial vorhanden'
+      keyWeakness: a.weaknesses?.[0] || 'Optimierungspotenzial',
+      bestForArchetype: ['Sicherheits-Sucher', 'Effizienz-Maximierer', 'Preis-Jäger', 'Chaos-Manager'][i % 4]
     })),
+    archetypeWinners: {
+      securitySeeker: { flowId: sorted[0]?.flowId || 'v1a', score: 75 },
+      efficiencyMaximizer: { flowId: sorted[1]?.flowId || 'v1b', score: 80 },
+      valueHunter: { flowId: sorted[2]?.flowId || 'v1c', score: 70 },
+      overwhelmedParent: { flowId: sorted[0]?.flowId || 'v1a', score: 72 }
+    },
     bestElements: [
       {
-        element: 'Primary CTA',
+        element: 'Primary CTA Design',
         sourceFlow: winner.flowId,
-        reason: 'Höchste Conversion-Rate durch optimale Platzierung',
-        implementation: 'Sticky CTA mit Animation übernehmen'
+        reason: 'Höchste Conversion durch optimale Platzierung',
+        implementation: 'Sticky CTA mit Hover-Animation',
+        archetypeValue: ['Effizienz-Maximierer', 'Chaos-Manager']
+      },
+      {
+        element: 'Trust Badge Placement',
+        sourceFlow: 'v1a',
+        reason: 'Baut Vertrauen bei Sicherheits-Suchern',
+        implementation: 'ASTAG + SSL + Abnahmegarantie sichtbar',
+        archetypeValue: ['Sicherheits-Sucher']
       }
     ],
     ultimateFlow: {
-      name: 'Ultimate V1 - Best of All',
-      description: 'Kombiniert die besten Elemente aller analysierten Flows',
-      steps: [
-        {
-          number: 1,
-          name: 'Optimierter Start',
-          sourceFlow: winner.flowId,
-          elements: ['Trust Badge', 'Clear Headline', 'Minimal Fields'],
-          improvements: ['Google Places', 'Auto-Advance']
-        }
-      ],
-      expectedConversionLift: '+15-25%',
+      name: 'Ultimate V1 - Swiss Archetyp Edition',
+      description: 'Der perfekte Flow für den Schweizer Markt: Archetypzentriert, vertrauensbildend, effizient.',
+      philosophy: 'Swissness + AI + Archetypes = Marktführerschaft',
+      targetArchetypes: ['Alle 4 Archetypen gleichzeitig bedienen'],
+      steps: SWISS_6_STEP_FRAMEWORK.map((step, i) => ({
+        number: step.step,
+        name: step.germanName,
+        sourceFlow: sorted[i % sorted.length]?.flowId || 'v1a',
+        elements: step.criticalElements,
+        improvements: ['KI-Integration', 'Swiss-Fokus'],
+        swissMarketFeatures: step.swissSpecific
+      })),
+      expectedConversionLift: '+25-40%',
       implementationPriority: [
-        {
-          priority: 1,
-          change: 'Sticky CTA implementieren',
-          effort: 'low',
-          impact: 'high',
-          sourceFlow: winner.flowId
-        }
-      ]
+        { priority: 1, change: 'Trust Badges (ASTAG, Abnahmegarantie)', effort: 'low', impact: 'high', sourceFlow: 'v1a', affectedArchetypes: ['Sicherheits-Sucher'] },
+        { priority: 2, change: 'Sticky CTA auf Mobile', effort: 'low', impact: 'high', sourceFlow: winner.flowId, affectedArchetypes: ['Effizienz-Maximierer', 'Chaos-Manager'] },
+        { priority: 3, change: 'Flex-Date mit Spar-Anzeige', effort: 'medium', impact: 'high', sourceFlow: 'v1c', affectedArchetypes: ['Preis-Jäger'] },
+        { priority: 4, change: 'KI-Video-Inventar', effort: 'high', impact: 'high', sourceFlow: 'v1b', affectedArchetypes: ['Effizienz-Maximierer'] }
+      ],
+      swissMarketDifferentiators: ['Zügeltag-Ampel', 'Abnahmegarantie-Prominent', 'ASTAG-Zertifizierung', 'nDSG-Konform'],
+      movuCompetitiveAdvantage: ['KI-Video statt Listen', 'Fixpreis statt Schätzung', 'Flex-Date mit Yield Management', 'Interaktives Dashboard statt Danke-Seite']
     },
-    codeChanges: []
+    roadmap: {
+      phase1: {
+        title: 'Fix the Basics',
+        duration: 'Monate 1-3',
+        items: ['Trust Badges implementieren', 'Sticky CTA', 'Google Places + Swiss Post Validierung', 'Flex-Date Ampel']
+      },
+      phase2: {
+        title: 'AI Integration',
+        duration: 'Monate 4-6',
+        items: ['KI-Video-Inventar (Yembo-Style)', 'Kontextuelles Upselling', 'Raum-Presets mit CH-Durchschnitt']
+      },
+      phase3: {
+        title: 'Ecosystem',
+        duration: 'Monate 6+',
+        items: ['Move Dashboard', 'Topkartons-Integration', 'Nurturing-Sequenzen', 'Experten-Call Booking']
+      }
+    },
+    codeChanges: [
+      {
+        file: 'src/components/calculator/TrustBadges.tsx',
+        component: 'TrustBadges',
+        currentState: 'Keine Trust-Badges vorhanden',
+        proposedChange: 'ASTAG, SSL, Abnahmegarantie Badges',
+        implementation: 'Komponente mit Logo-Grid und Hover-Tooltips',
+        priority: 1
+      }
+    ]
   };
 }
 
+// ============================================================================
+// MAIN HANDLER
+// ============================================================================
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -522,7 +842,7 @@ serve(async (req) => {
       );
     }
 
-    // V1 flow configs from our data
+    // V1 flow configs
     const V1_CONFIGS: Record<string, string> = {
       'v1': 'V1 - Control Flow',
       'v1a': 'V1a Control (Feedback)',
@@ -533,7 +853,7 @@ serve(async (req) => {
       'umzugsofferten-v1': 'V1 - Control Flow'
     };
 
-    // Analyze each flow in parallel
+    // Analyze each flow
     const analysisPromises = flowIds.map(flowId => {
       const flowName = V1_CONFIGS[flowId] || flowId;
       return analyzeFlowDeep(flowId, flowName);
@@ -546,26 +866,29 @@ serve(async (req) => {
       synthesis = await synthesizeWinner(analyses);
     }
 
-    // Store results in database
+    // Store results
     const { data: analysisRun, error: runError } = await supabase
       .from('flow_analysis_runs')
       .insert({
         flow_id: flowIds.join(','),
-        flow_name: `Deep Analysis: ${flowIds.length} Flows`,
-        run_type: 'deep-analysis',
+        flow_name: `Deep Archetyp Analysis: ${flowIds.length} Flows`,
+        run_type: 'deep-archetyp-analysis',
         status: 'completed',
         started_at: new Date().toISOString(),
         completed_at: new Date().toISOString(),
         overall_score: synthesis?.winner?.totalScore || analyses[0]?.overallScore || 0,
-        ai_summary: synthesis?.winner?.reasoning || 'Analyse abgeschlossen',
+        ai_summary: synthesis?.winner?.reasoning || 'Archetypzentrierte Analyse abgeschlossen',
         ai_recommendations: synthesis ? [synthesis] : analyses,
         metadata: {
           analysisType,
           flowCount: flowIds.length,
+          archetypes: Object.keys(ARCHETYPES),
+          swissFramework: SWISS_6_STEP_FRAMEWORK.map(s => s.name),
           analyses: analyses.map(a => ({
             flowId: a.flowId,
             score: a.overallScore,
-            categoryScores: a.categoryScores
+            categoryScores: a.categoryScores,
+            archetypeScores: a.archetypeScores?.map(as => ({ archetype: as.archetype, score: as.score }))
           }))
         }
       })
@@ -582,10 +905,14 @@ serve(async (req) => {
         runId: analysisRun?.id,
         analyses,
         synthesis,
+        archetypes: ARCHETYPES,
+        swissFramework: SWISS_6_STEP_FRAMEWORK,
         summary: {
           totalFlows: flowIds.length,
           winner: synthesis?.winner,
+          archetypeWinners: synthesis?.archetypeWinners,
           averageScore: Math.round(analyses.reduce((acc, a) => acc + a.overallScore, 0) / analyses.length),
+          roadmap: synthesis?.roadmap,
           timestamp: new Date().toISOString()
         }
       }),
