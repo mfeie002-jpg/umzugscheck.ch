@@ -1,6 +1,27 @@
+/**
+ * ============================================================================
+ * AI FIX FLOW - ARCHETYP EDGE FUNCTION
+ * ============================================================================
+ * 
+ * Automatische KI-gestützte Optimierung von Flows basierend auf Analyseergebnissen.
+ * Generiert konkrete, umsetzbare Verbesserungsvorschläge nach Award-Level Standards.
+ * 
+ * ARCHETYP-QUALITÄTSSTANDARD:
+ * - Archetypzentrierte Optimierungen
+ * - Swiss Market Best Practices
+ * - Konkrete Code-Vorschläge
+ * - Priorisierte Implementierungsreihenfolge
+ * 
+ * @version 2.0.0 - Archetyp Edition
+ * @author Umzugscheck.ch Team
+ */
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -10,6 +31,35 @@ const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+// ============================================================================
+// SWISS MARKET ARCHETYPES
+// ============================================================================
+const ARCHETYPES = {
+  securitySeeker: {
+    name: 'Sicherheits-Sucher',
+    triggers: ['Garantie', 'ASTAG', 'Fixpreis', 'Versicherung', 'Zertifikate'],
+    conversionTrigger: 'Fixpreis-Garantie & Abnahmegarantie'
+  },
+  efficiencyMaximizer: {
+    name: 'Effizienz-Maximierer',
+    triggers: ['One-Click', 'AI-Video', 'Full-Service', 'Schnell'],
+    conversionTrigger: '"Fertig in 2 Minuten", "Alles aus einer Hand"'
+  },
+  valueHunter: {
+    name: 'Preis-Jäger',
+    triggers: ['Preisvergleich', 'Sparen', 'Rabatt', 'Transparent'],
+    conversionTrigger: '"Sparen Sie 20% am 15. des Monats"'
+  },
+  overwhelmedParent: {
+    name: 'Chaos-Manager',
+    triggers: ['Checkliste', 'Speichern', 'Erinnerung', 'Struktur'],
+    conversionTrigger: '"Wir denken an alles", "Nichts vergessen"'
+  }
+};
+
+// ============================================================================
+// TYPES
+// ============================================================================
 interface FixRequest {
   flowId: string;
   flowName: string;
@@ -29,76 +79,99 @@ interface FixRequest {
         recommendation: string;
       }>;
     }>;
+    archetypeScores?: Array<{
+      archetype: string;
+      score: number;
+      improvements: string[];
+    }>;
   };
-  targetScore?: number; // Target score to achieve (default 95+)
+  targetScore?: number;
 }
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+// ============================================================================
+// LOGGING UTILITIES
+// ============================================================================
+const log = {
+  info: (msg: string, data?: unknown) => console.log(`[AI-Fix] ℹ️ ${msg}`, data ? JSON.stringify(data) : ''),
+  success: (msg: string, data?: unknown) => console.log(`[AI-Fix] ✅ ${msg}`, data ? JSON.stringify(data) : ''),
+  warn: (msg: string, data?: unknown) => console.warn(`[AI-Fix] ⚠️ ${msg}`, data ? JSON.stringify(data) : ''),
+  error: (msg: string, data?: unknown) => console.error(`[AI-Fix] ❌ ${msg}`, data ? JSON.stringify(data) : ''),
+};
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+// ============================================================================
+// PROMPT BUILDER
+// ============================================================================
+function buildOptimizationPrompt(body: FixRequest): string {
+  const { flowId, flowName, analysis, targetScore = 95 } = body;
 
-  try {
-    const body: FixRequest = await req.json();
-    const { flowId, flowName, analysis, targetScore = 95 } = body;
+  // Build issues summary
+  const issuesSummary = analysis.elements?.flatMap(el => 
+    el.issues.map(issue => `- [${issue.severity.toUpperCase()}] ${el.elementName}: ${issue.description} → ${issue.recommendation}`)
+  ).join('\n') || 'Keine detaillierten Element-Issues vorhanden';
 
-    console.log(`[AI Fix Flow] Starting fix for ${flowId} (${flowName}), target: ${targetScore}+`);
+  // Build archetype summary
+  const archetypeSummary = analysis.archetypeScores?.map(as => 
+    `- ${as.archetype}: ${as.score}/100 | Verbesserungen: ${as.improvements.join(', ')}`
+  ).join('\n') || 'Keine Archetypen-Scores vorhanden';
 
-    if (!LOVABLE_API_KEY) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'LOVABLE_API_KEY not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+  return `Du bist ein Elite UX/Conversion-Architekt mit 15+ Jahren Erfahrung im SCHWEIZER UMZUGSMARKT.
+Deine Aufgabe: Erstelle einen VOLLSTÄNDIG OPTIMIERTEN Flow nach Award-Level Standards.
 
-    // Build comprehensive prompt based on analysis
-    const issuesSummary = analysis.elements?.flatMap(el => 
-      el.issues.map(issue => `- [${issue.severity.toUpperCase()}] ${el.elementName}: ${issue.description} → ${issue.recommendation}`)
-    ).join('\n') || 'No element-level issues provided';
+# ANALYSE DES FLOWS "${flowName}" (ID: ${flowId})
 
-    const prompt = `Du bist ein Elite UX/Conversion-Architekt mit Award-Level Output.
+## AKTUELLER STAND
+- **Gesamt-Score:** ${analysis.overallScore}/100
+- **Ziel-Score:** ${targetScore}+/100
+- **Gap zu schließen:** ${targetScore - analysis.overallScore} Punkte
 
-ANALYSE DES FLOWS "${flowName}" (ID: ${flowId}):
-- Aktueller Score: ${analysis.overallScore}/100
-- Ziel-Score: ${targetScore}+/100
+## KATEGORIE-SCORES
+${Object.entries(analysis.categoryScores || {}).map(([k, v]) => `- ${k}: ${v}/100`).join('\n')}
 
-CATEGORY SCORES:
-${Object.entries(analysis.categoryScores).map(([k, v]) => `- ${k}: ${v}/100`).join('\n')}
+## ARCHETYPEN-FIT
+${archetypeSummary}
 
-STÄRKEN (beibehalten):
-${analysis.strengths.map(s => `✓ ${s}`).join('\n')}
+## STÄRKEN (beibehalten & verstärken)
+${analysis.strengths?.map(s => `✓ ${s}`).join('\n') || 'Keine dokumentiert'}
 
-SCHWÄCHEN (beheben):
-${analysis.weaknesses.map(w => `✗ ${w}`).join('\n')}
+## SCHWÄCHEN (kritisch beheben)
+${analysis.weaknesses?.map(w => `✗ ${w}`).join('\n') || 'Keine dokumentiert'}
 
-CONVERSION KILLERS (kritisch):
-${analysis.conversionKillers.map(ck => `🚨 ${ck}`).join('\n')}
+## CONVERSION KILLERS (sofort eliminieren)
+${analysis.conversionKillers?.map(ck => `🚨 ${ck}`).join('\n') || 'Keine dokumentiert'}
 
-QUICK WINS (sofort umsetzbar):
-${analysis.quickWins.map(qw => `⚡ ${qw}`).join('\n')}
+## QUICK WINS (low effort, high impact)
+${analysis.quickWins?.map(qw => `⚡ ${qw}`).join('\n') || 'Keine dokumentiert'}
 
-ELEMENT-LEVEL ISSUES:
+## ELEMENT-LEVEL ISSUES
 ${issuesSummary}
 
-## DEIN AUFTRAG:
+---
 
-Erstelle einen VOLLSTÄNDIG OPTIMIERTEN Flow, der:
-1. ALLE Schwächen behebt
-2. ALLE Quick Wins implementiert
-3. ALLE Conversion Killers eliminiert
-4. Score von ${targetScore}+ erreicht
-5. Swiss Market Best Practices befolgt (ASTAG, Zügeltage, Abnahmegarantie)
-6. Archetypzentriert für: Sicherheits-Sucher, Effizienz-Maximierer, Preis-Jäger, Chaos-Manager
+# DEIN AUFTRAG
 
-Antworte im JSON-Format:
+Erstelle einen VOLLSTÄNDIG OPTIMIERTEN Flow Blueprint, der:
+
+1. **ALLE Schwächen behebt** - Keine Kompromisse
+2. **ALLE Quick Wins implementiert** - Low-hanging fruits zuerst
+3. **ALLE Conversion Killers eliminiert** - Kritisch für ROI
+4. **Score von ${targetScore}+ erreicht** - Messbares Ziel
+5. **Swiss Market Best Practices befolgt** - ASTAG, Zügeltage, Abnahmegarantie
+6. **Alle 4 Archetypen bedient** - Sicherheits-Sucher, Effizienz-Maximierer, Preis-Jäger, Chaos-Manager
+
+# OUTPUT FORMAT (JSON)
+
 {
   "optimizedFlow": {
     "name": "Optimierter Flow Name",
     "version": "v${flowId}-optimized",
-    "description": "Kurze Beschreibung der Optimierungen",
+    "description": "Kurze Beschreibung der Hauptoptimierungen",
     "expectedScore": 95-100,
+    "archetypeImprovements": {
+      "securitySeeker": ["Konkrete Verbesserung 1", "..."],
+      "efficiencyMaximizer": ["..."],
+      "valueHunter": ["..."],
+      "overwhelmedParent": ["..."]
+    },
     "changes": [
       {
         "component": "ComponentName",
@@ -108,7 +181,9 @@ Antworte im JSON-Format:
         "description": "Was wird geändert",
         "before": "Aktueller Zustand (kurz)",
         "after": "Neuer Zustand (kurz)",
-        "impact": "Score-Verbesserung +X",
+        "impact": "+X Score-Punkte",
+        "effort": "low|medium|high",
+        "affectedArchetypes": ["securitySeeker", "..."],
         "implementation": "// React/TypeScript Code Snippet"
       }
     ],
@@ -117,6 +192,7 @@ Antworte im JSON-Format:
         "name": "NewComponentName",
         "file": "src/components/...",
         "purpose": "Warum brauchen wir das?",
+        "archetypeValue": ["Welche Archetypen profitieren?"],
         "code": "// Vollständiger React Component Code"
       }
     ],
@@ -126,6 +202,13 @@ Antworte im JSON-Format:
         "change": "Was wird geändert",
         "code": "// Code Snippet"
       }
+    ],
+    "swissMarketFeatures": [
+      {
+        "feature": "Feature Name",
+        "implementation": "Wie umsetzen",
+        "impact": "Erwarteter Effekt"
+      }
     ]
   },
   "summary": {
@@ -134,18 +217,89 @@ Antworte im JSON-Format:
     "newComponents": 0,
     "expectedScoreGain": 0,
     "implementationTime": "X Stunden",
-    "keyImprovements": ["..."]
+    "keyImprovements": ["Top 5 Verbesserungen"],
+    "riskAssessment": "low|medium|high"
   },
   "archetypeImpact": {
-    "securitySeeker": { "before": 0, "after": 0, "improvements": ["..."] },
+    "securitySeeker": { 
+      "before": 0, 
+      "after": 0, 
+      "improvements": ["..."],
+      "triggersCovered": ["Garantie", "..."]
+    },
     "efficiencyMaximizer": { "before": 0, "after": 0, "improvements": ["..."] },
     "valueHunter": { "before": 0, "after": 0, "improvements": ["..."] },
     "overwhelmedParent": { "before": 0, "after": 0, "improvements": ["..."] }
+  },
+  "implementationRoadmap": {
+    "phase1_quickWins": {
+      "duration": "1-2 Tage",
+      "items": ["..."],
+      "expectedScoreGain": 10
+    },
+    "phase2_coreOptimizations": {
+      "duration": "3-5 Tage",
+      "items": ["..."],
+      "expectedScoreGain": 15
+    },
+    "phase3_advancedFeatures": {
+      "duration": "1-2 Wochen",
+      "items": ["..."],
+      "expectedScoreGain": 10
+    }
+  },
+  "qualityChecklist": [
+    { "item": "Trust Badges vorhanden", "status": "todo|done", "priority": "high" },
+    { "item": "Sticky CTA auf Mobile", "status": "todo|done", "priority": "high" },
+    { "item": "Flex-Date Option", "status": "todo|done", "priority": "medium" }
+  ]
+}
+
+WICHTIG: 
+- Sei KONKRET mit Code-Beispielen
+- Priorisiere nach Impact/Effort Ratio
+- Berücksichtige Mobile-First
+- Alle Scores müssen begründet sein`;
+}
+
+// ============================================================================
+// MAIN HANDLER
+// ============================================================================
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
   }
-}`;
 
-    console.log('[AI Fix Flow] Calling AI for optimization...');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  const startTime = Date.now();
 
+  try {
+    const body: FixRequest = await req.json();
+    const { flowId, flowName, analysis, targetScore = 95 } = body;
+
+    log.info(`Starting AI fix for "${flowName}"`, { 
+      flowId, 
+      currentScore: analysis.overallScore,
+      targetScore 
+    });
+
+    // Validate API key
+    if (!LOVABLE_API_KEY) {
+      log.error('LOVABLE_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'AI-Integration nicht konfiguriert. Bitte LOVABLE_API_KEY setzen.' 
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Build the prompt
+    const prompt = buildOptimizationPrompt(body);
+    log.info('Prompt built, calling AI...');
+
+    // Call AI API
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -161,19 +315,26 @@ Antworte im JSON-Format:
 Du produzierst Award-Level, archetypzentrierte Optimierungen.
 Deine Outputs sind KONKRET, UMSETZBAR und VOLLSTÄNDIG.
 Du kennst React, TypeScript, Tailwind CSS und moderne UX-Patterns.
-Antworte immer im JSON-Format.`
+Du beachtest die 4 Schweizer Umzugs-Archetypen: ${Object.values(ARCHETYPES).map(a => a.name).join(', ')}.
+Antworte IMMER im JSON-Format.`
           },
           { role: 'user', content: prompt }
         ],
-        response_format: { type: 'json_object' }
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+        max_tokens: 8000
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[AI Fix Flow] AI error:', errorText);
+      log.error('AI API error', { status: response.status, error: errorText });
       return new Response(
-        JSON.stringify({ success: false, error: 'AI optimization failed' }),
+        JSON.stringify({ 
+          success: false, 
+          error: `AI-Optimierung fehlgeschlagen: ${response.status}`,
+          details: errorText.substring(0, 200)
+        }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -184,21 +345,25 @@ Antworte immer im JSON-Format.`
     let optimizationResult;
     try {
       optimizationResult = JSON.parse(content);
+      log.success('AI response parsed successfully');
     } catch (e) {
-      console.error('[AI Fix Flow] Failed to parse AI response:', e);
-      optimizationResult = { error: 'Failed to parse optimization result', raw: content };
+      log.error('Failed to parse AI response', e);
+      optimizationResult = { 
+        error: 'Failed to parse optimization result', 
+        raw: content.substring(0, 1000) 
+      };
     }
 
-    console.log('[AI Fix Flow] Optimization complete, storing result...');
-
-    // Store the optimization result as a new flow_feedback_variant
+    // Store the optimization result
+    log.info('Storing optimization result...');
+    
     const { data: variant, error: insertError } = await supabase
       .from('flow_feedback_variants')
       .insert({
         flow_id: flowId,
-        variant_name: `${flowName} - AI Optimized`,
-        variant_label: `${flowId}-fix`,
-        prompt: `Auto-Fix based on analysis (Score: ${analysis.overallScore} → ${targetScore}+)`,
+        variant_name: `${flowName} - AI Archetyp Optimiert`,
+        variant_label: `${flowId}-fix-${Date.now()}`,
+        prompt: `Auto-Fix: Score ${analysis.overallScore} → ${targetScore}+ | ${new Date().toISOString()}`,
         status: 'completed',
         executed_at: new Date().toISOString(),
         result_json: optimizationResult
@@ -207,10 +372,13 @@ Antworte immer im JSON-Format.`
       .single();
 
     if (insertError) {
-      console.error('[AI Fix Flow] Error storing variant:', insertError);
+      log.error('Error storing variant', insertError);
+    } else {
+      log.success('Variant stored', { id: variant?.id });
     }
 
-    console.log(`[AI Fix Flow] Complete! Variant ID: ${variant?.id}`);
+    const duration = Date.now() - startTime;
+    log.success(`Completed in ${duration}ms`);
 
     return new Response(
       JSON.stringify({
@@ -221,15 +389,24 @@ Antworte immer im JSON-Format.`
         originalScore: analysis.overallScore,
         targetScore,
         optimization: optimizationResult,
+        duration,
         timestamp: new Date().toISOString()
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
-    console.error('[AI Fix Flow] Error:', error);
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    log.error(`Failed after ${duration}ms`, { error: errorMessage });
+    
     return new Response(
-      JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ 
+        success: false, 
+        error: errorMessage,
+        duration
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
