@@ -275,7 +275,28 @@ const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 const FlowComparison = lazy(() => import("./pages/admin/FlowComparison"));
-const FlowDeepAnalysis = lazy(() => import("./pages/admin/FlowDeepAnalysis"));
+const FlowDeepAnalysis = lazy(() =>
+  import("./pages/admin/FlowDeepAnalysis").catch((err) => {
+    const msg = String((err as any)?.message ?? err);
+    const isChunkError =
+      /Failed to fetch dynamically imported module|ChunkLoadError|Loading chunk|Importing a module script failed/i.test(
+        msg
+      );
+
+    if (isChunkError) {
+      const key = "uc:chunk-reload-once";
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        const url = new URL(window.location.href);
+        url.searchParams.set("__reload", Date.now().toString());
+        window.location.replace(url.toString());
+      }
+    }
+
+    throw err;
+  })
+);
+
 
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
