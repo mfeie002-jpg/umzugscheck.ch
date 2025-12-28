@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { FLOW_CONFIGS as CENTRAL_FLOW_CONFIGS } from '@/data/flowConfigs';
+import { FLOW_CONFIGS as CENTRAL_FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
 import { 
   Play, 
   RefreshCw, 
@@ -35,16 +35,29 @@ import {
   Info,
   Wand2,
   Wrench,
-  Copy
+  Copy,
+  Filter
 } from 'lucide-react';
 
-// Use central flow configurations - map to dashboard format
-const FLOW_CONFIGS: Record<string, { name: string; steps: number; color: string }> = {};
+// Use central flow configurations - map to dashboard format (main flows + sub-variants)
+const FLOW_CONFIGS: Record<string, { name: string; steps: number; color: string; parentFlow?: string }> = {};
+
+// Add main flows
 Object.entries(CENTRAL_FLOW_CONFIGS).forEach(([id, config]) => {
   FLOW_CONFIGS[id] = {
     name: config.label,
     steps: config.steps.length,
     color: config.color,
+  };
+});
+
+// Add all sub-variants
+Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
+  FLOW_CONFIGS[id] = {
+    name: config.label,
+    steps: config.steps.length,
+    color: config.color,
+    parentFlow: config.parentFlow,
   };
 });
 
@@ -500,6 +513,8 @@ ${issueList}
 Bitte gib mir die Änderungen als Code-Diffs aus.`;
 };
 
+type FlowFilterType = 'all' | 'main' | 'variants';
+
 const AutoFlowDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [runs, setRuns] = useState<AnalysisRun[]>([]);
@@ -509,6 +524,43 @@ const AutoFlowDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState<string | null>(null);
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
+  const [flowFilter, setFlowFilter] = useState<FlowFilterType>('all');
+  const [selectedFlowNumber, setSelectedFlowNumber] = useState<number | null>(null);
+
+  // Get filtered flows based on filter settings
+  const getFilteredFlows = () => {
+    return Object.entries(FLOW_CONFIGS).filter(([flowId, config]) => {
+      // Filter by main vs variants
+      const isMainFlow = flowId.startsWith('umzugsofferten-');
+      const isVariant = !isMainFlow;
+      
+      if (flowFilter === 'main' && !isMainFlow) return false;
+      if (flowFilter === 'variants' && isMainFlow) return false;
+      
+      // Filter by flow number if selected
+      if (selectedFlowNumber !== null) {
+        const flowNumberMatch = flowId.match(/v(\d+)/i);
+        if (flowNumberMatch) {
+          const flowNum = parseInt(flowNumberMatch[1], 10);
+          if (flowNum !== selectedFlowNumber) return false;
+        } else {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+  };
+
+  // Get available flow numbers for filtering
+  const getFlowNumbers = (): number[] => {
+    const numbers = new Set<number>();
+    Object.keys(FLOW_CONFIGS).forEach(flowId => {
+      const match = flowId.match(/v(\d+)/i);
+      if (match) numbers.add(parseInt(match[1], 10));
+    });
+    return Array.from(numbers).sort((a, b) => a - b);
+  };
 
   // Fetch data
   useEffect(() => {
@@ -744,30 +796,105 @@ const AutoFlowDashboard: React.FC = () => {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
+          {/* Filter Controls */}
+          <Card>
+            <CardContent className="py-4">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Filter:</span>
+                </div>
+                
+                {/* Flow Type Filter */}
+                <div className="flex gap-1">
+                  <Button 
+                    variant={flowFilter === 'all' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setFlowFilter('all')}
+                  >
+                    Alle ({Object.keys(FLOW_CONFIGS).length})
+                  </Button>
+                  <Button 
+                    variant={flowFilter === 'main' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setFlowFilter('main')}
+                  >
+                    Hauptflows ({Object.keys(CENTRAL_FLOW_CONFIGS).length})
+                  </Button>
+                  <Button 
+                    variant={flowFilter === 'variants' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setFlowFilter('variants')}
+                  >
+                    Sub-Varianten ({Object.keys(SUB_VARIANT_CONFIGS).length})
+                  </Button>
+                </div>
+
+                {/* Separator */}
+                <div className="h-6 w-px bg-border" />
+                
+                {/* Flow Number Filter */}
+                <div className="flex gap-1 flex-wrap">
+                  <Button 
+                    variant={selectedFlowNumber === null ? 'secondary' : 'ghost'} 
+                    size="sm"
+                    onClick={() => setSelectedFlowNumber(null)}
+                  >
+                    Alle
+                  </Button>
+                  {getFlowNumbers().map(num => (
+                    <Button 
+                      key={num}
+                      variant={selectedFlowNumber === num ? 'secondary' : 'ghost'} 
+                      size="sm"
+                      onClick={() => setSelectedFlowNumber(num)}
+                    >
+                      V{num}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Flow Cards */}
           <div className="space-y-4">
-            {Object.entries(FLOW_CONFIGS).map(([flowId, config]) => {
-              const run = latestRuns[flowId];
-              const flowIssues = issues.filter(i => i.flow_id === flowId);
-              const criticalCount = flowIssues.filter(i => i.severity === 'critical').length;
-              const warningCount = flowIssues.filter(i => i.severity === 'warning').length;
-              
-              return (
-                <FlowResultCard
-                  key={flowId}
-                  flowId={flowId}
-                  config={config}
-                  run={run}
-                  flowIssues={flowIssues}
-                  criticalCount={criticalCount}
-                  warningCount={warningCount}
-                  analyzing={analyzing}
-                  onAnalyze={() => runAnalysis(flowId)}
-                  onResolveIssue={resolveIssue}
-                  getScoreColor={getScoreColor}
-                  getSeverityBadge={getSeverityBadge}
-                />
-              );
-            })}
+            {getFilteredFlows().length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  <p>Keine Flows für diesen Filter gefunden.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              getFilteredFlows().map(([flowId, config]) => {
+                const run = latestRuns[flowId];
+                const flowIssues = issues.filter(i => i.flow_id === flowId);
+                const criticalCount = flowIssues.filter(i => i.severity === 'critical').length;
+                const warningCount = flowIssues.filter(i => i.severity === 'warning').length;
+                
+                return (
+                  <FlowResultCard
+                    key={flowId}
+                    flowId={flowId}
+                    config={config}
+                    run={run}
+                    flowIssues={flowIssues}
+                    criticalCount={criticalCount}
+                    warningCount={warningCount}
+                    analyzing={analyzing}
+                    onAnalyze={() => runAnalysis(flowId)}
+                    onResolveIssue={resolveIssue}
+                    getScoreColor={getScoreColor}
+                    getSeverityBadge={getSeverityBadge}
+                  />
+                );
+              })
+            )}
+          </div>
+
+          {/* Stats Summary for current filter */}
+          <div className="text-sm text-muted-foreground text-center">
+            Zeige {getFilteredFlows().length} von {Object.keys(FLOW_CONFIGS).length} Flows
           </div>
         </TabsContent>
 
