@@ -463,7 +463,7 @@ Antworte auf Deutsch.`;
     const variants: Array<{ id: string; label: string; path: string }> = [];
     
     // Add main flow
-    const mainKey = flowNum === 1 ? 'umzugsofferten' : `umzugsofferten-v${flowNum}`;
+    const mainKey = `umzugsofferten-v${flowNum}`;
     const mainFlow = FLOW_CONFIGS[mainKey];
     if (mainFlow) {
       variants.push({ id: mainKey, label: mainFlow.label, path: mainFlow.path });

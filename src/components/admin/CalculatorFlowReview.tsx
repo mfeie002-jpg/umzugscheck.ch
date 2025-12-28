@@ -214,7 +214,7 @@ const getStepConfigsForCalculator = (
 
       const match = calculatorValue.match(/^v(\d+)[a-z]/i);
       const flowNumber = match ? parseInt(match[1], 10) : 1;
-      const parentId = flowNumber === 1 ? 'umzugsofferten' : `umzugsofferten-v${flowNumber}`;
+      const parentId = `umzugsofferten-v${flowNumber}`;
       return FLOW_CONFIGS[parentId]?.steps || DEFAULT_STEP_CONFIGS;
     }
   }
@@ -663,7 +663,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
 
             const match = dbConfig.flow_id.match(/^v(\d+)[a-z]$/i);
             const flowNumber = match ? parseInt(match[1], 10) : 1;
-            const parentId = flowNumber === 1 ? 'umzugsofferten' : `umzugsofferten-v${flowNumber}`;
+            const parentId = `umzugsofferten-v${flowNumber}`;
             return FLOW_CONFIGS[parentId]?.steps || [];
           })();
 

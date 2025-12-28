@@ -20,10 +20,10 @@ export interface FlowConfig {
 
 // Main Flow Configurations (V1-V9)
 export const FLOW_CONFIGS: Record<string, FlowConfig> = {
-  'umzugsofferten': {
-    id: 'umzugsofferten',
+  'umzugsofferten-v1': {
+    id: 'umzugsofferten-v1',
     label: 'V1 - Control Flow',
-    path: '/umzugsofferten',
+    path: '/umzugsofferten-v1',
     color: 'bg-blue-500',
     description: 'Original 4-Step Wizard mit klassischem Aufbau',
     steps: [
@@ -152,10 +152,10 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v1a': {
     id: 'v1a',
     label: 'V1a Control (Feedback)',
-    path: '/umzugsofferten?variant=v1a',
+    path: '/umzugsofferten-v1a',
     color: 'bg-blue-600',
     description: 'V1 Feedback: 2-Step, Sticky CTA, Trust, Minimalfelder',
-    parentFlow: 'umzugsofferten',
+    parentFlow: 'umzugsofferten-v1',
     steps: [
       { step: 1, name: 'Umzugsdetails', description: 'PLZ Von-Nach, Datum, Zimmer' },
       { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
@@ -165,10 +165,10 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v1b': {
     id: 'v1b',
     label: 'V1b ChatGPT Agent',
-    path: '/umzugsofferten?variant=v1b',
+    path: '/umzugsofferten-v1b',
     color: 'bg-blue-500',
     description: 'V1b: 4-Step Flow mit ChatGPT Feedback - Typ, Services, Firmen, Kontakt',
-    parentFlow: 'umzugsofferten',
+    parentFlow: 'umzugsofferten-v1',
     steps: [
       { step: 1, name: 'Typ & Details', description: 'Umzugstyp, Grösse, Adressen' },
       { step: 2, name: 'Services', description: 'Zusatzleistungen wählen' },
@@ -263,7 +263,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v9a': {
     id: 'v9a',
     label: 'V9.a Gemini Archetyp ⭐',
-    path: '/umzugsofferten?variant=v9a',
+    path: '/umzugsofferten-v9a',
     color: 'bg-emerald-500',
     description: 'Gemini V9 - Alle 10 Optimierungen für maximale Conversion',
     parentFlow: 'umzugsofferten-v9',
@@ -282,7 +282,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v9b': {
     id: 'v9b',
     label: 'V9b ChatGPT Pro Ext ⭐',
-    path: '/umzugsofferten?variant=v9b',
+    path: '/umzugsofferten-v9b',
     color: 'bg-cyan-700',
     description: 'ChatGPT-optimiert: CH-Zimmer, Paket-Karten, Sticky CTA, 3 Empfehlungen',
     parentFlow: 'umzugsofferten-v9',
@@ -297,7 +297,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v9c': {
     id: 'v9c',
     label: 'V9c Zero Friction Optimized',
-    path: '/umzugsofferten?variant=v9c',
+    path: '/umzugsofferten-v9c',
     color: 'bg-sky-600',
     description: 'Alle 10 Empfehlungen: Tooltips, Funnel-Fokus, keine Vorauswahl, Filter/Sort, Trust-Badges',
     parentFlow: 'umzugsofferten-v9',
@@ -313,7 +313,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v9d': {
     id: 'v9d',
     label: 'V9d Main Gemini',
-    path: '/umzugsofferten?variant=v9d',
+    path: '/umzugsofferten-v9d',
     color: 'bg-emerald-600',
     description: 'V9d Gemini-Archetyp mit 9 Steps',
     parentFlow: 'umzugsofferten-v9',
@@ -333,7 +333,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'multi-a': {
     id: 'multi-a',
     label: 'Multi.a ChatGPT Pro',
-    path: '/umzugsofferten?variant=multi-a',
+    path: '/umzugsofferten-multi-a',
     color: 'bg-rose-600',
     description: 'ChatGPT Mobile Fix Pack: 3 Steps, Sticky CTA, Trust Bar, Progressive Disclosure',
     parentFlow: 'umzugsofferten-v9',
@@ -402,7 +402,6 @@ export const getFlowConfig = (flowId: string): FlowConfig | undefined => {
 // Get uc_flow ID from calculator value
 export const getUcFlowId = (calculatorValue: string): string | null => {
   if (!calculatorValue.startsWith('umzugsofferten')) return null;
-  if (calculatorValue === 'umzugsofferten') return 'v1';
   const match = calculatorValue.match(/-v(\d+)/i);
   return match?.[1] ? `v${match[1]}` : 'v1';
 };

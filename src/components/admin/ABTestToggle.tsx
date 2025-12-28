@@ -99,7 +99,7 @@ const ABTestToggle: React.FC = () => {
           <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2">
             {FLOW_VARIANTS.map((variant, i) => {
               const variantStats = stats.find(s => s.flow_variant === variant);
-              const isControl = variant === 'umzugsofferten';
+              const isControl = variant === 'umzugsofferten-v1';
               
               return (
                 <div 
