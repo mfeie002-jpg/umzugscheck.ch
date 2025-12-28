@@ -119,10 +119,12 @@ export function FlowAutomationCenter() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportingFlowId, setExportingFlowId] = useState<string | null>(null);
   const [bulkMode, setBulkMode] = useState(true); // Default to bulk mode for full AI responses
-  const [selectedVariantFlowNumber, setSelectedVariantFlowNumber] = useState<number>(2);
+  const [selectedVariantFlowNumber, setSelectedVariantFlowNumber] = useState<number>(1);
   const [isAnalyzingVariants, setIsAnalyzingVariants] = useState(false);
   const [variantAnalysisProgress, setVariantAnalysisProgress] = useState(0);
   const [variantAnalysisResults, setVariantAnalysisResults] = useState<AnalysisResult[]>([]);
+  const [dbVariantsCache, setDbVariantsCache] = useState<Record<number, Array<{ id: string; label: string; path: string }>>>({});
+  const [isLoadingVariants, setIsLoadingVariants] = useState(false);
 
   // Get flow number from ID - handles special "all-flows" case
   const getFlowNumber = (flowId: string) => {
@@ -458,31 +460,91 @@ Antworte auf Deutsch.`;
     toast.success("Alle 9 Flows analysiert!");
   };
 
-  // Get all variants for a specific flow number (e.g., 2 for V2a, V2b, etc.)
-  const getVariantsForFlowNumber = (flowNum: number) => {
+  // Load variants from database for a specific flow number
+  const loadVariantsFromDb = async (flowNum: number): Promise<Array<{ id: string; label: string; path: string }>> => {
+    // Check cache first
+    if (dbVariantsCache[flowNum]) {
+      return dbVariantsCache[flowNum];
+    }
+
+    const flowId = `umzugsofferten-v${flowNum}`;
+    const { data: dbVariants, error } = await supabase
+      .from('flow_versions')
+      .select('flow_code, version_name, flow_id')
+      .eq('flow_id', flowId)
+      .eq('is_active', true)
+      .order('flow_code');
+
+    if (error) {
+      console.error('Error loading variants:', error);
+      return [];
+    }
+
     const variants: Array<{ id: string; label: string; path: string }> = [];
-    
-    // Add main flow
+
+    // Add main flow from config
     const mainKey = `umzugsofferten-v${flowNum}`;
     const mainFlow = FLOW_CONFIGS[mainKey];
     if (mainFlow) {
       variants.push({ id: mainKey, label: mainFlow.label, path: mainFlow.path });
     }
-    
-    // Add sub-variants (v2a, v2b, v2c, etc.)
+
+    // Add variants from database
+    dbVariants?.forEach((v) => {
+      if (!v.flow_code) return;
+      
+      // Skip if it's just the main flow baseline
+      const isBaseline = v.flow_code.toLowerCase() === `v${flowNum}` || v.flow_code.toLowerCase() === mainKey;
+      if (isBaseline) return;
+
+      // Parse flow_code like "V1.b" or "v1b"
+      const flowCode = v.flow_code.toLowerCase().replace('.', '');
+      const label = v.version_name || flowCode.toUpperCase();
+      
+      // Determine the path - check SUB_VARIANT_CONFIGS first, then generate
+      const subConfig = SUB_VARIANT_CONFIGS[flowCode];
+      const path = subConfig?.path || `/umzugsofferten-${flowCode}`;
+
+      // Avoid duplicates
+      if (!variants.find(existing => existing.id === flowCode)) {
+        variants.push({ id: flowCode, label, path });
+      }
+    });
+
+    // Also add from SUB_VARIANT_CONFIGS for completeness
     Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
       const match = id.match(/^v(\d+)([a-z])$/i);
       if (match && parseInt(match[1], 10) === flowNum) {
-        variants.push({ id, label: config.label, path: config.path });
+        if (!variants.find(existing => existing.id === id)) {
+          variants.push({ id, label: config.label, path: config.path });
+        }
       }
     });
-    
+
+    // Cache the result
+    setDbVariantsCache(prev => ({ ...prev, [flowNum]: variants }));
     return variants;
   };
 
+  // Get all variants for a specific flow number (uses cached DB data)
+  const getVariantsForFlowNumber = (flowNum: number) => {
+    return dbVariantsCache[flowNum] || [];
+  };
+
+  // Load variants when flow number changes
+  useEffect(() => {
+    const loadVariants = async () => {
+      setIsLoadingVariants(true);
+      await loadVariantsFromDb(selectedVariantFlowNumber);
+      setIsLoadingVariants(false);
+    };
+    loadVariants();
+  }, [selectedVariantFlowNumber]);
+
   // Analyze all variants of a specific flow number
   const analyzeFlowVariants = async (flowNum: number) => {
-    const variants = getVariantsForFlowNumber(flowNum);
+    // Load variants fresh from DB
+    const variants = await loadVariantsFromDb(flowNum);
     if (variants.length === 0) {
       toast.error(`Keine Varianten für V${flowNum} gefunden`);
       return;
