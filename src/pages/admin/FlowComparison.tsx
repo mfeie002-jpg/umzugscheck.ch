@@ -23,6 +23,8 @@ import {
   V1aFeedbackBased,
   V1bFeedbackBased,
   V1cFeedbackBased,
+  V1dFeedbackBased,
+  V1eFeedbackBased,
   // V2 variants
   V2aProgressEnhanced,
   V2bFeedbackBased,
@@ -75,7 +77,12 @@ const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
   'v1': MultiStepCalculator,
   'v1a': V1aFeedbackBased,
   'v1b': V1bFeedbackBased,
-  // V2 variants
+  'v1c': V1cFeedbackBased,
+  'v1d': V1dFeedbackBased,
+  'v1e': V1eFeedbackBased,
+  // V2 main + variants
+  'umzugsofferten-v2': V2aProgressEnhanced,
+  'v2': V2aProgressEnhanced,
   'v2a': V2aProgressEnhanced,
   'v2b': V2bFeedbackBased,
   'v2c': V2cTrustFocused,
@@ -83,6 +90,8 @@ const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
   'v2e': V2eExperimental,
   'v2f': V2fFeedbackBased,
   // V3 variants
+  'umzugsofferten-v3': V3aMobileFirst,
+  'v3': V3aMobileFirst,
   'v3a': V3aMobileFirst,
   'v3a-pro': V3aFeedbackBased,
   'v3b': V3bSwipeNavigation,
@@ -92,6 +101,8 @@ const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
   'v3e': V3eFullscreen,
   'v3g': V3gFeedbackBased,
   // V4 variants
+  'umzugsofferten-v4': V4aUrgencyBased,
+  'v4': V4aUrgencyBased,
   'v4a': V4aUrgencyBased,
   'v4b': V4bSocialProof,
   'v4c': V4cValueFirst,
@@ -99,6 +110,8 @@ const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
   'v4e': V4eMinimalFriction,
   'v4f': V4fFeedbackBased,
   // V5 variants
+  'umzugsofferten-v5': V5aHighContrast,
+  'v5': V5aHighContrast,
   'v5a': V5aHighContrast,
   'v5b': V5bScreenReader,
   'v5c': V5cKeyboardNav,
@@ -106,12 +119,20 @@ const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
   'v5e': V5eReducedMotion,
   'v5f': V5fFeedbackBased,
   // V6 variants
+  'umzugsofferten-v6': V6aFeedbackBased,
+  'v6': V6aFeedbackBased,
   'v6a': V6aFeedbackBased,
   // V7 variants
+  'umzugsofferten-v7': V7aFeedbackBased,
+  'v7': V7aFeedbackBased,
   'v7a': V7aFeedbackBased,
   // V8 variants
+  'umzugsofferten-v8': V8aFeedbackBased,
+  'v8': V8aFeedbackBased,
   'v8a': V8aFeedbackBased,
   // V9 variants
+  'umzugsofferten-v9': V9aFeedbackBased,
+  'v9': V9aFeedbackBased,
   'v9a': V9aFeedbackBased,
   'v9b': V9bFeedbackBased,
   'v9c': V9cFeedbackBased,
