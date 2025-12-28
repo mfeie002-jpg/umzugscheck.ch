@@ -297,6 +297,31 @@ export default function FlowDeepAnalysis() {
         const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
         if (!flowConfig) return;
         
+        // First check for running queue items
+        const { data: queueData } = await supabase
+          .from('flow_analysis_queue')
+          .select('*')
+          .eq('flow_id', flowConfig.flowId)
+          .in('status', ['queued', 'processing'])
+          .order('queued_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (queueData) {
+          // There's an active queue item
+          setBackgroundJob({
+            id: queueData.id,
+            status: queueData.status === 'processing' ? 'running' : 'queued',
+            stepsCaptured: 0,
+            totalSteps: 0,
+            startedAt: queueData.started_at
+          });
+          setAnalyses([]);
+          setSynthesis(null);
+          return;
+        }
+        
+        // Then check flow_analysis_runs
         const { data, error } = await supabase
           .from('flow_analysis_runs')
           .select('*')
@@ -365,26 +390,104 @@ export default function FlowDeepAnalysis() {
     checkForResults();
   }, [selectedFlowVersion]);
 
-  // Poll for background job progress
+  // Poll for background job progress (checks both queue and runs)
   useEffect(() => {
     if (!backgroundJob || backgroundJob.status === 'completed') return;
     
+    const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
+    
     const pollInterval = setInterval(async () => {
       try {
+        // First check queue status
+        const { data: queueData } = await supabase
+          .from('flow_analysis_queue')
+          .select('*')
+          .eq('id', backgroundJob.id)
+          .maybeSingle();
+        
+        if (queueData) {
+          if (queueData.status === 'completed' && queueData.result_run_id) {
+            // Queue item completed, load results from the run
+            const { data: runData } = await supabase
+              .from('flow_analysis_runs')
+              .select('*')
+              .eq('id', queueData.result_run_id)
+              .single();
+            
+            if (runData && runData.status === 'completed') {
+              setBackgroundJob(null);
+              const metadata = runData.metadata as any;
+              if (metadata?.analyses && Array.isArray(metadata.analyses)) {
+                setAnalyses(metadata.analyses.map((a: any) => ({
+                  flowId: a.flowId || '',
+                  flowName: a.flowName || '',
+                  overallScore: a.overallScore || 0,
+                  categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
+                  elements: a.elements || [],
+                  strengths: a.strengths || [],
+                  weaknesses: a.weaknesses || [],
+                  keyInsights: a.keyInsights || [],
+                  conversionKillers: a.conversionKillers || [],
+                  quickWins: a.quickWins || [],
+                  stepByStepAnalysis: a.stepByStepAnalysis || []
+                })));
+              }
+              const aiRecs = runData.ai_recommendations as any;
+              if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
+                setSynthesis(aiRecs[0] as any);
+              }
+              toast({ title: 'Analyse abgeschlossen', description: 'Ergebnisse wurden geladen.' });
+              return;
+            }
+          } else if (queueData.status === 'failed') {
+            setBackgroundJob(null);
+            toast({ title: 'Analyse fehlgeschlagen', description: queueData.error_message || 'Die Analyse ist fehlgeschlagen.', variant: 'destructive' });
+            return;
+          } else if (queueData.status === 'processing' || queueData.status === 'queued') {
+            // Still processing/queued
+            setBackgroundJob(prev => prev ? {
+              ...prev,
+              status: queueData.status === 'processing' ? 'running' : 'queued',
+              startedAt: queueData.started_at
+            } : null);
+            return;
+          }
+        }
+        
+        // Fallback: check flow_analysis_runs directly
         const { data, error } = await supabase
           .from('flow_analysis_runs')
           .select('*')
           .eq('id', backgroundJob.id)
-          .single();
+          .maybeSingle();
         
-        if (error) {
-          console.error('Error polling job status:', error);
+        if (error || !data) {
+          // Check if there's any running job for this flow
+          if (flowConfig) {
+            const { data: latestRun } = await supabase
+              .from('flow_analysis_runs')
+              .select('*')
+              .eq('flow_id', flowConfig.flowId)
+              .in('status', ['running', 'pending'])
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            
+            if (latestRun) {
+              setBackgroundJob({
+                id: latestRun.id,
+                status: latestRun.status,
+                stepsCaptured: latestRun.steps_captured || 0,
+                totalSteps: latestRun.total_steps || 0,
+                startedAt: latestRun.started_at
+              });
+            }
+          }
           return;
         }
         
         if (data.status === 'completed') {
           setBackgroundJob(null);
-          // Load results
           const metadata = data.metadata as any;
           if (metadata?.analyses && Array.isArray(metadata.analyses)) {
             setAnalyses(metadata.analyses.map((a: any) => ({
@@ -410,7 +513,6 @@ export default function FlowDeepAnalysis() {
           setBackgroundJob(null);
           toast({ title: 'Analyse fehlgeschlagen', description: 'Die Hintergrund-Analyse ist fehlgeschlagen.', variant: 'destructive' });
         } else {
-          // Update progress
           setBackgroundJob(prev => prev ? {
             ...prev,
             status: data.status,
@@ -421,10 +523,10 @@ export default function FlowDeepAnalysis() {
       } catch (err) {
         console.error('Error in poll:', err);
       }
-    }, 3000); // Poll every 3 seconds
+    }, 3000);
     
     return () => clearInterval(pollInterval);
-  }, [backgroundJob?.id, backgroundJob?.status, toast]);
+  }, [backgroundJob?.id, backgroundJob?.status, selectedFlowVersion, toast]);
 
   // Function to load results from database
   const loadAnalysisResults = async () => {
