@@ -4,6 +4,12 @@
  * Access: /admin/flow-comparison/1 (for V1), /admin/flow-comparison/2 (for V2), etc.
  * 
  * Each variant is rendered in a card with its calculator component
+ * 
+ * IMPORTANT: When adding new flow variants:
+ * 1. Add to SUB_VARIANT_CONFIGS in src/data/flowConfigs.ts
+ * 2. Create component in src/components/calculator-variants/
+ * 3. Export from src/components/calculator-variants/index.ts
+ * 4. Add mapping in src/lib/flowComponentRegistry.ts
  */
 
 import { useParams, Link } from 'react-router-dom';
@@ -11,135 +17,8 @@ import { ArrowLeft, Eye, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
-
-// Import all V1 variant components
-import { MultiStepCalculator } from '@/components/homepage/MultiStepCalculator';
-
-// Import all calculator variant components
-import {
-  // V1 variants
-  V1aFeedbackBased,
-  V1bFeedbackBased,
-  V1cFeedbackBased,
-  V1dFeedbackBased,
-  V1eFeedbackBased,
-  // V2 variants
-  V2aProgressEnhanced,
-  V2bFeedbackBased,
-  V2cTrustFocused,
-  V2dFeedbackBased,
-  V2eExperimental,
-  V2fFeedbackBased,
-  // V3 variants
-  V3aMobileFirst,
-  V3bSwipeNavigation,
-  V3cBottomSheet,
-  V3dThumbZone,
-  V3eFullscreen,
-  V3aFeedbackBased,
-  V3bFeedbackBased,
-  V3gFeedbackBased,
-  // V4 variants
-  V4aUrgencyBased,
-  V4bSocialProof,
-  V4cValueFirst,
-  V4dGamified,
-  V4eMinimalFriction,
-  V4fFeedbackBased,
-  // V5 variants
-  V5aHighContrast,
-  V5bScreenReader,
-  V5cKeyboardNav,
-  V5dLargeText,
-  V5eReducedMotion,
-  V5fFeedbackBased,
-  // V6 variants
-  V6aFeedbackBased,
-  // V7 variants
-  V7aFeedbackBased,
-  // V8 variants
-  V8aFeedbackBased,
-  // V9 variants
-  V9aFeedbackBased,
-  V9bFeedbackBased,
-  V9cFeedbackBased,
-  V9dFeedbackBased,
-  // Multi variants
-  MultiAFeedbackBased,
-} from '@/components/calculator-variants';
-
-// Map flow codes to components
-const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
-  // V1 main + variants
-  'umzugsofferten-v1': MultiStepCalculator,
-  'v1': MultiStepCalculator,
-  'v1a': V1aFeedbackBased,
-  'v1b': V1bFeedbackBased,
-  'v1c': V1cFeedbackBased,
-  'v1d': V1dFeedbackBased,
-  'v1e': V1eFeedbackBased,
-  // V2 main + variants
-  'umzugsofferten-v2': V2aProgressEnhanced,
-  'v2': V2aProgressEnhanced,
-  'v2a': V2aProgressEnhanced,
-  'v2b': V2bFeedbackBased,
-  'v2c': V2cTrustFocused,
-  'v2d': V2dFeedbackBased,
-  'v2e': V2eExperimental,
-  'v2f': V2fFeedbackBased,
-  // V3 variants
-  'umzugsofferten-v3': V3aMobileFirst,
-  'v3': V3aMobileFirst,
-  'v3a': V3aMobileFirst,
-  'v3a-pro': V3aFeedbackBased,
-  'v3b': V3bSwipeNavigation,
-  'v3b-feedback': V3bFeedbackBased,
-  'v3c': V3cBottomSheet,
-  'v3d': V3dThumbZone,
-  'v3e': V3eFullscreen,
-  'v3g': V3gFeedbackBased,
-  // V4 variants
-  'umzugsofferten-v4': V4aUrgencyBased,
-  'v4': V4aUrgencyBased,
-  'v4a': V4aUrgencyBased,
-  'v4b': V4bSocialProof,
-  'v4c': V4cValueFirst,
-  'v4d': V4dGamified,
-  'v4e': V4eMinimalFriction,
-  'v4f': V4fFeedbackBased,
-  // V5 variants
-  'umzugsofferten-v5': V5aHighContrast,
-  'v5': V5aHighContrast,
-  'v5a': V5aHighContrast,
-  'v5b': V5bScreenReader,
-  'v5c': V5cKeyboardNav,
-  'v5d': V5dLargeText,
-  'v5e': V5eReducedMotion,
-  'v5f': V5fFeedbackBased,
-  // V6 variants
-  'umzugsofferten-v6': V6aFeedbackBased,
-  'v6': V6aFeedbackBased,
-  'v6a': V6aFeedbackBased,
-  // V7 variants
-  'umzugsofferten-v7': V7aFeedbackBased,
-  'v7': V7aFeedbackBased,
-  'v7a': V7aFeedbackBased,
-  // V8 variants
-  'umzugsofferten-v8': V8aFeedbackBased,
-  'v8': V8aFeedbackBased,
-  'v8a': V8aFeedbackBased,
-  // V9 variants
-  'umzugsofferten-v9': V9aFeedbackBased,
-  'v9': V9aFeedbackBased,
-  'v9a': V9aFeedbackBased,
-  'v9b': V9bFeedbackBased,
-  'v9c': V9cFeedbackBased,
-  'v9d': V9dFeedbackBased,
-  // Multi variants
-  'multi-a': MultiAFeedbackBased,
-};
+import { FLOW_COMPONENT_REGISTRY } from '@/lib/flowComponentRegistry';
 
 // Get main flow key for a number
 function getMainFlowKey(flowNumber: number): string {
@@ -274,7 +153,7 @@ export default function FlowComparison() {
           </Card>
         ) : (
           variants.map((variant, index) => {
-            const Component = VARIANT_COMPONENT_MAP[variant.id];
+            const Component = FLOW_COMPONENT_REGISTRY[variant.id];
             
             return (
               <div key={variant.id} id={variant.id} className="scroll-mt-24">
