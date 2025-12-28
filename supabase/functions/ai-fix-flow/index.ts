@@ -342,12 +342,30 @@ Antworte IMMER im JSON-Format.`
     const aiData = await response.json();
     const content = aiData.choices?.[0]?.message?.content || '{}';
     
+    // Robust JSON extraction - handle markdown code blocks and text around JSON
+    let jsonContent = content;
+    
+    // Remove markdown code blocks if present
+    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) {
+      jsonContent = jsonMatch[1].trim();
+    }
+    
+    // Try to find JSON object if there's text around it
+    if (!jsonContent.startsWith('{')) {
+      const firstBrace = jsonContent.indexOf('{');
+      const lastBrace = jsonContent.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        jsonContent = jsonContent.substring(firstBrace, lastBrace + 1);
+      }
+    }
+    
     let optimizationResult;
     try {
-      optimizationResult = JSON.parse(content);
+      optimizationResult = JSON.parse(jsonContent);
       log.success('AI response parsed successfully');
     } catch (e) {
-      log.error('Failed to parse AI response', e);
+      log.error('Failed to parse AI response, content preview:', jsonContent.substring(0, 500));
       optimizationResult = { 
         error: 'Failed to parse optimization result', 
         raw: content.substring(0, 1000) 
