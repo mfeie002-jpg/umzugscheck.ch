@@ -16,7 +16,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Play, Trophy, Target, Zap, CheckCircle, AlertTriangle,
   AlertCircle, ChevronRight, Star, TrendingUp, Eye, Code, Download,
-  RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered
+  RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered,
+  Wand2, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -243,6 +244,9 @@ export default function FlowDeepAnalysis() {
     totalSteps: number;
     startedAt: string | null;
   } | null>(null);
+
+  // Fix-It state tracking
+  const [fixingFlowId, setFixingFlowId] = useState<string | null>(null);
 
   // Update URL when flow version changes
   useEffect(() => {
@@ -662,6 +666,56 @@ export default function FlowDeepAnalysis() {
     }
   };
 
+  // AI Fix Flow function
+  const handleFixFlow = async (analysis: FlowAnalysis) => {
+    setFixingFlowId(analysis.flowId);
+    
+    toast({
+      title: 'AI-Optimierung gestartet',
+      description: `Generiere Award-Level Optimierungen für ${analysis.flowName}...`,
+    });
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-fix-flow', {
+        body: {
+          flowId: analysis.flowId,
+          flowName: analysis.flowName,
+          analysis: {
+            overallScore: analysis.overallScore,
+            categoryScores: analysis.categoryScores,
+            strengths: analysis.strengths,
+            weaknesses: analysis.weaknesses,
+            conversionKillers: analysis.conversionKillers,
+            quickWins: analysis.quickWins,
+            elements: analysis.elements
+          },
+          targetScore: 95
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Optimierung abgeschlossen!',
+        description: `${data.optimization?.summary?.totalChanges || 0} Änderungen generiert. Score: ${analysis.overallScore} → ${data.optimization?.optimizedFlow?.expectedScore || 95}+`,
+      });
+
+      // Open the generated variant for viewing
+      if (data.variantId) {
+        window.open(`/admin/flow-feedback-variants?variant=${data.variantId}`, '_blank');
+      }
+    } catch (error) {
+      console.error('Fix flow error:', error);
+      toast({
+        title: 'Fehler',
+        description: 'AI-Optimierung konnte nicht durchgeführt werden',
+        variant: 'destructive'
+      });
+    } finally {
+      setFixingFlowId(null);
+    }
+  };
+
   const selectedAnalysis = analyses.find(a => a.flowId === selectedFlow);
 
   return (
@@ -1035,10 +1089,29 @@ export default function FlowDeepAnalysis() {
                           )}
                         </div>
 
-                        <Button variant="outline" size="sm" className="w-full gap-2">
-                          <Eye className="h-4 w-4" />
-                          Details ansehen
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" className="flex-1 gap-2">
+                            <Eye className="h-4 w-4" />
+                            Details
+                          </Button>
+                          <Button 
+                            variant="default" 
+                            size="sm" 
+                            className="flex-1 gap-2 bg-gradient-to-r from-primary to-primary/80"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleFixFlow(analysis);
+                            }}
+                            disabled={fixingFlowId === analysis.flowId}
+                          >
+                            {fixingFlowId === analysis.flowId ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Wand2 className="h-4 w-4" />
+                            )}
+                            Fix it
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -1095,6 +1168,21 @@ export default function FlowDeepAnalysis() {
                           </div>
                         ))}
                       </div>
+                      
+                      {/* Fix it Button in comparison tab */}
+                      <Separator className="my-4" />
+                      <Button 
+                        onClick={() => handleFixFlow(selectedAnalysis)}
+                        disabled={fixingFlowId === selectedAnalysis.flowId}
+                        className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80"
+                      >
+                        {fixingFlowId === selectedAnalysis.flowId ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Wand2 className="h-4 w-4" />
+                        )}
+                        AI Auto-Fix generieren
+                      </Button>
                     </CardContent>
                   </Card>
 
