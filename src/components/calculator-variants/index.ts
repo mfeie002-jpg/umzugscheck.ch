@@ -16,6 +16,8 @@ import { SUB_VARIANT_CONFIGS, getFlowStepCount } from '@/data/flowConfigs';
 export { V1aFeedbackBased } from './V1aFeedbackBased';
 export { V1bFeedbackBased } from './V1bFeedbackBased';
 export { V1cFeedbackBased } from './V1cFeedbackBased';
+export { V1dFeedbackBased } from './V1dFeedbackBased';
+export { V1eFeedbackBased } from './V1eFeedbackBased';
 
 // V2 Variants (UX-Optimized)
 export { V2aProgressEnhanced } from './V2aProgressEnhanced';
@@ -24,6 +26,7 @@ export { V2cTrustFocused } from './V2cTrustFocused';
 export { V2dSpeedOptimized } from './V2dSpeedOptimized';
 export { V2eExperimental } from './V2eExperimental';
 export { V2fFeedbackBased } from './V2fFeedbackBased';
+export { V2ArchetypCalculator } from './V2ArchetypCalculator';
 
 // V3 Variants (Mobile-First)
 export { V3aMobileFirst } from './V3aMobileFirst';
@@ -80,6 +83,8 @@ export const VARIANT_REGISTRY: Record<string, {
   'v1a': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1a Control (Feedback)' },
   'v1b': { component: 'V1bFeedbackBased', stepCount: 4, label: 'V1b ChatGPT Agent' },
   'v1c': { component: 'V1cFeedbackBased', stepCount: 4, label: 'V1c Archetyp (Strategic)' },
+  'v1d': { component: 'V1dFeedbackBased', stepCount: 4, label: 'V1d Optimized Funnel' },
+  'v1e': { component: 'V1eFeedbackBased', stepCount: 4, label: 'V1e Trust Enhanced' },
   // V2 - UX Optimized
   'v2': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2 UX Optimized' },
   'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Progress Enhanced' },
