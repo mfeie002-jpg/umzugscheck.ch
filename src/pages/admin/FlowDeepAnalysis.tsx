@@ -232,6 +232,15 @@ export default function FlowDeepAnalysis() {
   // Available variants for the selected flow
   const [availableVariants, setAvailableVariants] = useState<string[]>([]);
   const [loadingVariants, setLoadingVariants] = useState(false);
+  
+  // Background job tracking
+  const [backgroundJob, setBackgroundJob] = useState<{
+    id: string;
+    status: string;
+    stepsCaptured: number;
+    totalSteps: number;
+    startedAt: string | null;
+  } | null>(null);
 
   // Update URL when flow version changes
   useEffect(() => {
@@ -279,7 +288,7 @@ export default function FlowDeepAnalysis() {
     fetchVariants();
   }, [selectedFlowVersion]);
 
-  // Check for previous analysis results on load
+  // Check for previous analysis results and running jobs on load
   useEffect(() => {
     const checkForResults = async () => {
       try {
@@ -300,8 +309,80 @@ export default function FlowDeepAnalysis() {
           return;
         }
 
-        if (data && data.status === 'completed') {
-          // Load previous results
+        if (data) {
+          // Check if it's a running job
+          if (data.status === 'running' || data.status === 'pending') {
+            setBackgroundJob({
+              id: data.id,
+              status: data.status,
+              stepsCaptured: data.steps_captured || 0,
+              totalSteps: data.total_steps || 0,
+              startedAt: data.started_at
+            });
+            // Clear any previous results when there's an active job
+            setAnalyses([]);
+            setSynthesis(null);
+          } else if (data.status === 'completed') {
+            setBackgroundJob(null);
+            // Load previous results
+            const metadata = data.metadata as any;
+            if (metadata?.analyses && Array.isArray(metadata.analyses)) {
+              setAnalyses(metadata.analyses.map((a: any) => ({
+                flowId: a.flowId || '',
+                flowName: a.flowName || '',
+                overallScore: a.overallScore || 0,
+                categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
+                elements: a.elements || [],
+                strengths: a.strengths || [],
+                weaknesses: a.weaknesses || [],
+                keyInsights: a.keyInsights || [],
+                conversionKillers: a.conversionKillers || [],
+                quickWins: a.quickWins || [],
+                stepByStepAnalysis: a.stepByStepAnalysis || []
+              })));
+            }
+            const aiRecs = data.ai_recommendations as any;
+            if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
+              setSynthesis(aiRecs[0] as any);
+            }
+          } else {
+            // Failed or other status
+            setBackgroundJob(null);
+            setAnalyses([]);
+            setSynthesis(null);
+          }
+        } else {
+          setBackgroundJob(null);
+          setAnalyses([]);
+          setSynthesis(null);
+        }
+      } catch (err) {
+        console.error('Error in checkForResults:', err);
+      }
+    };
+    checkForResults();
+  }, [selectedFlowVersion]);
+
+  // Poll for background job progress
+  useEffect(() => {
+    if (!backgroundJob || backgroundJob.status === 'completed') return;
+    
+    const pollInterval = setInterval(async () => {
+      try {
+        const { data, error } = await supabase
+          .from('flow_analysis_runs')
+          .select('*')
+          .eq('id', backgroundJob.id)
+          .single();
+        
+        if (error) {
+          console.error('Error polling job status:', error);
+          return;
+        }
+        
+        if (data.status === 'completed') {
+          setBackgroundJob(null);
+          // Load results
           const metadata = data.metadata as any;
           if (metadata?.analyses && Array.isArray(metadata.analyses)) {
             setAnalyses(metadata.analyses.map((a: any) => ({
@@ -322,17 +403,26 @@ export default function FlowDeepAnalysis() {
           if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
             setSynthesis(aiRecs[0] as any);
           }
+          toast({ title: 'Analyse abgeschlossen', description: 'Ergebnisse wurden geladen.' });
+        } else if (data.status === 'failed') {
+          setBackgroundJob(null);
+          toast({ title: 'Analyse fehlgeschlagen', description: 'Die Hintergrund-Analyse ist fehlgeschlagen.', variant: 'destructive' });
         } else {
-          // Clear results when switching flows if no data
-          setAnalyses([]);
-          setSynthesis(null);
+          // Update progress
+          setBackgroundJob(prev => prev ? {
+            ...prev,
+            status: data.status,
+            stepsCaptured: data.steps_captured || 0,
+            totalSteps: data.total_steps || 0
+          } : null);
         }
       } catch (err) {
-        console.error('Error in checkForResults:', err);
+        console.error('Error in poll:', err);
       }
-    };
-    checkForResults();
-  }, [selectedFlowVersion]);
+    }, 3000); // Poll every 3 seconds
+    
+    return () => clearInterval(pollInterval);
+  }, [backgroundJob?.id, backgroundJob?.status, toast]);
 
   // Function to load results from database
   const loadAnalysisResults = async () => {
@@ -557,7 +647,7 @@ export default function FlowDeepAnalysis() {
 
       <main className="container mx-auto px-4 py-8">
         {/* No Analysis State */}
-        {analyses.length === 0 && !isAnalyzing && (
+        {analyses.length === 0 && !isAnalyzing && !backgroundJob && (
           <Card className="max-w-2xl mx-auto text-center py-16">
             <CardContent className="space-y-6">
               <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
@@ -641,7 +731,48 @@ export default function FlowDeepAnalysis() {
           </Card>
         )}
 
-        {/* Loading State */}
+        {/* Background Job Progress State */}
+        {backgroundJob && !isAnalyzing && (
+          <Card className="max-w-2xl mx-auto border-primary/50">
+            <CardContent className="py-12 text-center space-y-6">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                <RefreshCw className="h-10 w-10 text-primary animate-spin" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
+                  <Badge variant="outline" className="bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300">
+                    {backgroundJob.status === 'running' ? 'Läuft' : 'Wartend'}
+                  </Badge>
+                  Hintergrund-Analyse aktiv
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  {selectedFlowVersion.toUpperCase()} Flow wird analysiert
+                </p>
+                {backgroundJob.totalSteps > 0 && (
+                  <div className="space-y-2">
+                    <Progress 
+                      value={(backgroundJob.stepsCaptured / backgroundJob.totalSteps) * 100} 
+                      className="max-w-xs mx-auto h-3" 
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      {backgroundJob.stepsCaptured} / {backgroundJob.totalSteps} Schritte
+                    </p>
+                  </div>
+                )}
+                {backgroundJob.startedAt && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Gestartet: {new Date(backgroundJob.startedAt).toLocaleTimeString('de-CH')}
+                  </p>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Diese Seite aktualisiert automatisch alle 3 Sekunden...
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Loading State (foreground analysis) */}
         {isAnalyzing && (
           <Card className="max-w-2xl mx-auto">
             <CardContent className="py-16 text-center space-y-6">
