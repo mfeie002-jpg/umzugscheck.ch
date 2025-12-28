@@ -22,18 +22,36 @@ const AdminLogin = () => {
     let cancelled = false;
 
     const checkAuth = async () => {
+      // Add timeout to prevent infinite loading on DB issues
+      const timeoutId = setTimeout(() => {
+        if (!cancelled) {
+          console.warn("Auth check timed out, showing login form");
+          setCheckingSession(false);
+        }
+      }, 5000);
+
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
+          clearTimeout(timeoutId);
           if (!cancelled) setCheckingSession(false);
           return;
         }
 
-        // Check if user has admin role
-        const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
+        // Check if user has admin role - with shorter timeout
+        const roleCheckPromise = supabase.rpc("has_role", {
           _user_id: session.user.id,
           _role: "admin",
         });
+
+        const { data: isAdmin, error: roleError } = await Promise.race([
+          roleCheckPromise,
+          new Promise<{ data: null; error: Error }>((_, reject) =>
+            setTimeout(() => reject({ data: null, error: new Error("Role check timeout") }), 3000)
+          ),
+        ]).catch(() => ({ data: null, error: new Error("Role check failed") }));
+
+        clearTimeout(timeoutId);
 
         if (!cancelled) {
           if (!roleError && isAdmin) {
@@ -46,6 +64,8 @@ const AdminLogin = () => {
           setCheckingSession(false);
         }
       } catch (error) {
+        clearTimeout(timeoutId);
+        console.error("Auth check error:", error);
         if (!cancelled) setCheckingSession(false);
       }
     };
