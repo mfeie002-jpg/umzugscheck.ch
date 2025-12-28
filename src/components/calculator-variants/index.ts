@@ -21,13 +21,13 @@ export { V1eFeedbackBased } from './V1eFeedbackBased';
 
 // V2 Variants (UX-Optimized)
 export { V2aProgressEnhanced } from './V2aProgressEnhanced';
-export { V2bSimplifiedLabels } from './V2bSimplifiedLabels';
-export { V2bOptimized } from './V2bOptimized';
+export { V2bFeedbackBased } from './V2bFeedbackBased';
+export { V2cArchetypCalculator } from './V2cArchetypCalculator';
 export { V2cTrustFocused } from './V2cTrustFocused';
+export { V2dFeedbackBased } from './V2dFeedbackBased';
 export { V2dSpeedOptimized } from './V2dSpeedOptimized';
 export { V2eExperimental } from './V2eExperimental';
 export { V2fFeedbackBased } from './V2fFeedbackBased';
-export { V2cArchetypCalculator } from './V2cArchetypCalculator';
 
 // V3 Variants (Mobile-First)
 export { V3aMobileFirst } from './V3aMobileFirst';
@@ -86,13 +86,13 @@ export const VARIANT_REGISTRY: Record<string, {
   'v1c': { component: 'V1cFeedbackBased', stepCount: 4, label: 'V1c Archetyp (Strategic)' },
   'v1d': { component: 'V1dFeedbackBased', stepCount: 4, label: 'V1d Optimized Funnel' },
   'v1e': { component: 'V1eFeedbackBased', stepCount: 4, label: 'V1e Trust Enhanced' },
-  // V2 - UX Optimized
-  'v2': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2 UX Optimized' },
-  'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Progress Enhanced' },
-  'v2b': { component: 'V2bOptimized', stepCount: 6, label: 'V2b ChatGPT Optimized' },
-  'v2b-simple': { component: 'V2bSimplifiedLabels', stepCount: 3, label: 'V2b Simplified Labels' },
-  'v2c': { component: 'V2cTrustFocused', stepCount: 4, label: 'V2c Trust Focused' },
-  'v2d': { component: 'V2dSpeedOptimized', stepCount: 3, label: 'V2d Speed Optimized' },
+  // V2 - UX Optimized (Gemini/ChatGPT Feedback Series)
+  'v2': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2 Baseline' },
+  'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Gemini Feedback' },
+  'v2b': { component: 'V2bFeedbackBased', stepCount: 6, label: 'V2b ChatGPT Agent' },
+  'v2c': { component: 'V2cArchetypCalculator', stepCount: 6, label: 'V2c Archetyp (Strategic)' },
+  'v2d': { component: 'V2dFeedbackBased', stepCount: 6, label: 'V2d ChatGPT Pro' },
+  'v2d-speed': { component: 'V2dSpeedOptimized', stepCount: 3, label: 'V2d Speed Optimized' },
   'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
   'v2f': { component: 'V2fFeedbackBased', stepCount: 3, label: 'V2f Premium (Feedback)' },
   // V3 - Mobile-First

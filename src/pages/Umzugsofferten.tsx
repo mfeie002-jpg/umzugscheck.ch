@@ -36,7 +36,7 @@ import { MultiStepCalculatorVariantC } from "@/components/homepage/MultiStepCalc
 import { MultiStepCalculatorUltimate } from "@/components/homepage/MultiStepCalculatorUltimate";
 import { 
   V2aProgressEnhanced, 
-  V2bSimplifiedLabels, 
+  V2bFeedbackBased, 
   V2cTrustFocused, 
   V2dSpeedOptimized, 
   V2eExperimental,
@@ -119,7 +119,7 @@ const Umzugsofferten = () => {
     
     // V2 Sub-variants (2a, 2b, 2c, 2d, 2e) via ?v= param
     if (parsed.flowCode === '2a') return <V2aProgressEnhanced />;
-    if (parsed.flowCode === '2b') return <V2bSimplifiedLabels />;
+    if (parsed.flowCode === '2b') return <V2bFeedbackBased />;
     if (parsed.flowCode === '2c') return <V2cTrustFocused />;
     if (parsed.flowCode === '2d') return <V2dSpeedOptimized />;
     if (parsed.flowCode === '2e') return <V2eExperimental />;

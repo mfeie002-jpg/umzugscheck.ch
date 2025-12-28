@@ -11,8 +11,10 @@ const componentLoaders: Record<string, () => Promise<{ default: React.ComponentT
   'V1cFeedbackBased': () => import('@/components/calculator-variants/V1cFeedbackBased').then(m => ({ default: m.V1cFeedbackBased })),
   // V2 Variants
   'V2aProgressEnhanced': () => import('@/components/calculator-variants/V2aProgressEnhanced').then(m => ({ default: m.V2aProgressEnhanced })),
-  'V2bSimplifiedLabels': () => import('@/components/calculator-variants/V2bSimplifiedLabels').then(m => ({ default: m.V2bSimplifiedLabels })),
+  'V2bFeedbackBased': () => import('@/components/calculator-variants/V2bFeedbackBased').then(m => ({ default: m.V2bFeedbackBased })),
+  'V2cArchetypCalculator': () => import('@/components/calculator-variants/V2cArchetypCalculator').then(m => ({ default: m.V2cArchetypCalculator })),
   'V2cTrustFocused': () => import('@/components/calculator-variants/V2cTrustFocused').then(m => ({ default: m.V2cTrustFocused })),
+  'V2dFeedbackBased': () => import('@/components/calculator-variants/V2dFeedbackBased').then(m => ({ default: m.V2dFeedbackBased })),
   'V2dSpeedOptimized': () => import('@/components/calculator-variants/V2dSpeedOptimized').then(m => ({ default: m.V2dSpeedOptimized })),
   'V2eExperimental': () => import('@/components/calculator-variants/V2eExperimental').then(m => ({ default: m.V2eExperimental })),
   'V2fFeedbackBased': () => import('@/components/calculator-variants/V2fFeedbackBased').then(m => ({ default: m.V2fFeedbackBased })),
