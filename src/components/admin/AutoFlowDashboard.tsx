@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { FLOW_CONFIGS as CENTRAL_FLOW_CONFIGS } from '@/data/flowConfigs';
@@ -28,10 +29,13 @@ import {
   BarChart3,
   Eye,
   ChevronRight,
+  ChevronDown,
   Loader2,
   AlertCircle,
   Info,
-  Wand2
+  Wand2,
+  Wrench,
+  Copy
 } from 'lucide-react';
 
 // Use central flow configurations - map to dashboard format
@@ -252,6 +256,248 @@ ${baseContext}
 
 Analysiere das Problem und zeige mir den Code-Diff für die notwendigen Änderungen.`;
   }
+};
+
+// Flow Result Card Component - Expandable with Issues and Fix Button
+interface FlowResultCardProps {
+  flowId: string;
+  config: { name: string; steps: number; color: string };
+  run: AnalysisRun | undefined;
+  flowIssues: UxIssue[];
+  criticalCount: number;
+  warningCount: number;
+  analyzing: string | null;
+  onAnalyze: () => void;
+  onResolveIssue: (issueId: string) => Promise<void>;
+  getScoreColor: (score: number | null) => string;
+  getSeverityBadge: (severity: string) => React.ReactNode;
+}
+
+const FlowResultCard: React.FC<FlowResultCardProps> = ({
+  flowId,
+  config,
+  run,
+  flowIssues,
+  criticalCount,
+  warningCount,
+  analyzing,
+  onAnalyze,
+  onResolveIssue,
+  getScoreColor,
+  getSeverityBadge,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [fixingAll, setFixingAll] = useState(false);
+
+  const totalIssues = flowIssues.length;
+
+  const handleFixAllIssues = async () => {
+    if (flowIssues.length === 0) return;
+    
+    setFixingAll(true);
+    
+    // Generate a combined prompt for all issues
+    const combinedPrompt = generateCombinedFixPrompt(flowId, flowIssues);
+    
+    try {
+      // Copy to clipboard
+      await navigator.clipboard.writeText(combinedPrompt);
+      toast.success('Fix-Prompt in Zwischenablage kopiert! Füge ihn in ChatGPT ein.', { duration: 5000 });
+    } catch (err) {
+      // Fallback for clipboard API
+      toast.info('Fix-Prompt generiert - siehe Konsole', { duration: 5000 });
+      console.log('Fix Prompt:', combinedPrompt);
+    }
+    
+    setFixingAll(false);
+  };
+
+  return (
+    <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+      <Card className={`transition-shadow hover:shadow-lg ${isExpanded ? 'ring-2 ring-primary' : ''}`}>
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CheckCircle className={`h-5 w-5 ${run?.overall_score && run.overall_score >= 60 ? 'text-green-500' : run?.overall_score ? 'text-yellow-500' : 'text-muted-foreground'}`} />
+                <div className={`w-3 h-3 rounded-full ${config.color}`} />
+                <CardTitle className="text-lg">{config.name}</CardTitle>
+              </div>
+              <div className="flex items-center gap-4">
+                {run?.overall_score !== null && run?.overall_score !== undefined && (
+                  <Badge variant={run.overall_score < 50 ? "destructive" : "secondary"} className="text-sm px-3 py-1">
+                    Score: {run.overall_score}/100
+                  </Badge>
+                )}
+                {totalIssues > 0 && (
+                  <Badge variant="outline" className="text-sm">
+                    {totalIssues} Issues ({criticalCount} kritisch)
+                  </Badge>
+                )}
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); }}>
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  {isExpanded ? (
+                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </div>
+              </div>
+            </div>
+            {run?.ai_summary && (
+              <CardDescription className="mt-2 line-clamp-2">
+                {run.ai_summary}
+              </CardDescription>
+            )}
+          </CardHeader>
+        </CollapsibleTrigger>
+
+        <CollapsibleContent>
+          <CardContent className="pt-0 space-y-4">
+            {/* Score Bars */}
+            {run && (
+              <div className="grid grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-1">
+                    <Smartphone className="h-4 w-4" /> Mobile
+                  </div>
+                  <div className={`text-2xl font-bold ${getScoreColor(run.performance_score)}`}>
+                    {run.performance_score || 0}/100
+                  </div>
+                  <Progress value={run.performance_score || 0} className="h-2 mt-2" />
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-1">
+                    <TrendingUp className="h-4 w-4" /> Conversion
+                  </div>
+                  <div className={`text-2xl font-bold ${getScoreColor(run.conversion_score)}`}>
+                    {run.conversion_score || 0}/100
+                  </div>
+                  <Progress value={run.conversion_score || 0} className="h-2 mt-2" />
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-1">
+                    <Zap className="h-4 w-4" /> UX
+                  </div>
+                  <div className={`text-2xl font-bold ${getScoreColor(run.ux_score)}`}>
+                    {run.ux_score || 0}/100
+                  </div>
+                  <Progress value={run.ux_score || 0} className="h-2 mt-2" />
+                </div>
+              </div>
+            )}
+
+            {/* Issues List */}
+            {flowIssues.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4" />
+                    Gefundene Issues ({flowIssues.length})
+                  </h4>
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    onClick={handleFixAllIssues}
+                    disabled={fixingAll}
+                  >
+                    {fixingAll ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Wrench className="h-4 w-4 mr-2" />
+                    )}
+                    Alle fixen (Prompt kopieren)
+                  </Button>
+                </div>
+                
+                <ScrollArea className="max-h-[400px]">
+                  <div className="space-y-2">
+                    {flowIssues.map(issue => (
+                      <IssueCard 
+                        key={issue.id} 
+                        issue={issue} 
+                        flowConfig={config}
+                        getSeverityBadge={getSeverityBadge}
+                        onResolve={() => onResolveIssue(issue.id)}
+                      />
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            )}
+
+            {flowIssues.length === 0 && run && (
+              <div className="text-center py-6 text-green-600 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                <CheckCircle className="h-8 w-8 mx-auto mb-2" />
+                <p className="font-medium">Keine offenen Issues!</p>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2 pt-2">
+              <Button 
+                variant={run ? "outline" : "default"}
+                size="sm"
+                onClick={onAnalyze}
+                disabled={!!analyzing}
+                className="flex-1"
+              >
+                {analyzing === flowId ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Play className="h-4 w-4 mr-2" />
+                )}
+                {run ? 'Erneut analysieren' : 'Jetzt analysieren'}
+              </Button>
+              {run && (
+                <Button variant="outline" size="sm" asChild>
+                  <a href={`/umzugsofferten?v=${flowId.replace('umzugsofferten-', '')}`} target="_blank" rel="noopener noreferrer">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Live ansehen
+                  </a>
+                </Button>
+              )}
+            </div>
+
+            {/* Last Analysis Timestamp */}
+            {run && (
+              <div className="text-xs text-muted-foreground text-right">
+                Letzte Analyse: {new Date(run.created_at).toLocaleString('de-CH')}
+              </div>
+            )}
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+};
+
+// Generate combined fix prompt for all issues of a flow
+const generateCombinedFixPrompt = (flowId: string, issues: UxIssue[]): string => {
+  const issueList = issues.map((issue, index) => `
+${index + 1}. **${issue.title}** (${issue.severity})
+   - Kategorie: ${issue.category}
+   - Step: ${issue.step_number || 'Gesamter Flow'}
+   - Beschreibung: ${issue.description || 'Keine'}
+   - Empfehlung: ${issue.recommendation || 'Keine'}`).join('\n');
+
+  return `# UX/Conversion Fix für Flow: ${flowId}
+
+Bitte behebe die folgenden ${issues.length} Issues in meinem React/Tailwind Projekt:
+
+## Gefundene Issues:
+${issueList}
+
+## Anforderungen:
+1. Zeige mir für jeden Issue den konkreten Code-Fix
+2. Nutze Tailwind CSS für Styling-Änderungen
+3. Stelle sicher, dass alle Touch-Targets mindestens 44x44 Pixel sind
+4. Füge hilfreiche Fehlermeldungen und Feedback hinzu
+5. Optimiere die Conversion durch bessere CTAs und Progress-Indikatoren
+
+Bitte gib mir die Änderungen als Code-Diffs aus.`;
 };
 
 const AutoFlowDashboard: React.FC = () => {
@@ -498,100 +744,28 @@ const AutoFlowDashboard: React.FC = () => {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="space-y-4">
             {Object.entries(FLOW_CONFIGS).map(([flowId, config]) => {
               const run = latestRuns[flowId];
               const flowIssues = issues.filter(i => i.flow_id === flowId);
+              const criticalCount = flowIssues.filter(i => i.severity === 'critical').length;
+              const warningCount = flowIssues.filter(i => i.severity === 'warning').length;
               
               return (
-                <Card key={flowId} className={`hover:shadow-lg transition-shadow ${selectedFlow === flowId ? 'ring-2 ring-primary' : ''}`}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${config.color}`} />
-                        <CardTitle className="text-lg">{config.name}</CardTitle>
-                      </div>
-                      {run?.overall_score && (
-                        <span className={`text-2xl font-bold ${getScoreColor(run.overall_score)}`}>
-                          {run.overall_score}
-                        </span>
-                      )}
-                    </div>
-                    <CardDescription>{config.steps} Steps</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {run ? (
-                      <>
-                        {/* Score Bars */}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="flex items-center gap-1">
-                              <Smartphone className="h-3 w-3" /> Mobile
-                            </span>
-                            <span>{run.performance_score || '-'}/100</span>
-                          </div>
-                          <Progress value={run.performance_score || 0} className="h-1.5" />
-                          
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="flex items-center gap-1">
-                              <TrendingUp className="h-3 w-3" /> Conversion
-                            </span>
-                            <span>{run.conversion_score || '-'}/100</span>
-                          </div>
-                          <Progress value={run.conversion_score || 0} className="h-1.5" />
-                          
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="flex items-center gap-1">
-                              <Zap className="h-3 w-3" /> UX
-                            </span>
-                            <span>{run.ux_score || '-'}/100</span>
-                          </div>
-                          <Progress value={run.ux_score || 0} className="h-1.5" />
-                        </div>
-
-                        {/* Issues Summary */}
-                        {flowIssues.length > 0 && (
-                          <div className="flex gap-2 flex-wrap">
-                            {flowIssues.filter(i => i.severity === 'critical').length > 0 && (
-                              <Badge variant="destructive">
-                                {flowIssues.filter(i => i.severity === 'critical').length} kritisch
-                              </Badge>
-                            )}
-                            {flowIssues.filter(i => i.severity === 'warning').length > 0 && (
-                              <Badge variant="outline" className="border-yellow-500">
-                                {flowIssues.filter(i => i.severity === 'warning').length} Warnungen
-                              </Badge>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Last Analysis */}
-                        <div className="text-xs text-muted-foreground">
-                          Letzte Analyse: {new Date(run.created_at).toLocaleString('de-CH')}
-                        </div>
-                      </>
-                    ) : (
-                      <div className="text-center py-4 text-muted-foreground">
-                        Noch nicht analysiert
-                      </div>
-                    )}
-
-                    <Button 
-                      className="w-full" 
-                      variant={run ? "outline" : "default"}
-                      size="sm"
-                      onClick={() => runAnalysis(flowId)}
-                      disabled={!!analyzing}
-                    >
-                      {analyzing === flowId ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Play className="h-4 w-4 mr-2" />
-                      )}
-                      {run ? 'Erneut analysieren' : 'Jetzt analysieren'}
-                    </Button>
-                  </CardContent>
-                </Card>
+                <FlowResultCard
+                  key={flowId}
+                  flowId={flowId}
+                  config={config}
+                  run={run}
+                  flowIssues={flowIssues}
+                  criticalCount={criticalCount}
+                  warningCount={warningCount}
+                  analyzing={analyzing}
+                  onAnalyze={() => runAnalysis(flowId)}
+                  onResolveIssue={resolveIssue}
+                  getScoreColor={getScoreColor}
+                  getSeverityBadge={getSeverityBadge}
+                />
               );
             })}
           </div>
