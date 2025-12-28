@@ -148,6 +148,8 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   // Edit version state
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedVersionForEdit, setSelectedVersionForEdit] = useState<FlowVersion | null>(null);
+  const [editVersionNumber, setEditVersionNumber] = useState("");
+  const [editFlowCode, setEditFlowCode] = useState("");
   const [editVersionName, setEditVersionName] = useState("");
   const [editVersionDescription, setEditVersionDescription] = useState("");
   const [isEditSaving, setIsEditSaving] = useState(false);
@@ -534,6 +536,8 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
       const { error } = await supabase
         .from('flow_versions')
         .update({
+          version_number: editVersionNumber.trim() || selectedVersionForEdit.version_number,
+          flow_code: editFlowCode.trim() || null,
           version_name: editVersionName.trim() || null,
           description: editVersionDescription.trim() || null,
         })
@@ -1069,6 +1073,8 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                     size="icon"
                     onClick={() => {
                       setSelectedVersionForEdit(version);
+                      setEditVersionNumber(version.version_number || "");
+                      setEditFlowCode(version.flow_code || "");
                       setEditVersionName(version.version_name || "");
                       setEditVersionDescription(version.description || "");
                       setEditDialogOpen(true);
@@ -1155,20 +1161,24 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
             <div className="space-y-4 py-4">
               {selectedVersionForEdit && (
                 <>
-                  <div className="p-3 bg-accent rounded-lg">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono font-bold">{formatVersion(selectedVersionForEdit.version_number)}</span>
-                      {selectedVersionForEdit.flow_code && (
-                        <Badge variant="secondary" className="text-xs">
-                          {selectedVersionForEdit.flow_code}
-                        </Badge>
-                      )}
-                      {selectedVersionForEdit.is_baseline && (
-                        <Badge variant="secondary" className="text-xs">
-                          <Star className="h-3 w-3 mr-1" />
-                          Baseline
-                        </Badge>
-                      )}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label>Versionsnummer</Label>
+                      <Input
+                        value={editVersionNumber}
+                        onChange={(e) => setEditVersionNumber(e.target.value)}
+                        placeholder="z.B. 2.a"
+                        className="font-mono"
+                      />
+                    </div>
+                    <div>
+                      <Label>Flow Code</Label>
+                      <Input
+                        value={editFlowCode}
+                        onChange={(e) => setEditFlowCode(e.target.value)}
+                        placeholder="z.B. V2.a"
+                        className="font-mono"
+                      />
                     </div>
                   </div>
                   
@@ -1187,7 +1197,7 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                       value={editVersionDescription}
                       onChange={(e) => setEditVersionDescription(e.target.value)}
                       placeholder="Was macht diese Version besonders?"
-                      rows={4}
+                      rows={3}
                     />
                   </div>
                   
