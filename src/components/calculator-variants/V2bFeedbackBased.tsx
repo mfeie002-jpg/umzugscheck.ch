@@ -230,7 +230,7 @@ const TESTIMONIALS = [
   { name: "Marco T.", city: "Basel", text: "Preis-Leistung stimmt, gerne wieder!", rating: 5 },
 ];
 
-export const V2bOptimized = memo(function V2bOptimized() {
+export const V2bFeedbackBased = memo(function V2bFeedbackBased() {
   const navigate = useNavigate();
   const initialStep = useInitialStep(1);
   const [currentStep, setCurrentStep] = useState(initialStep);
@@ -1002,4 +1002,4 @@ export const V2bOptimized = memo(function V2bOptimized() {
   );
 });
 
-export default V2bOptimized;
+V2bFeedbackBased.displayName = 'V2bFeedbackBased';
