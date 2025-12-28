@@ -215,32 +215,45 @@ export default function FlowDeepAnalysis() {
   // Check for previous analysis results on load
   useEffect(() => {
     const checkForResults = async () => {
-      const { data, error } = await supabase
-        .from('flow_analysis_runs')
-        .select('*')
-        .eq('run_type', 'deep-archetyp-analysis')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-      
-      if (data && !error && data.status === 'completed') {
-        // Load previous results
-        const metadata = data.metadata as any;
-        if (metadata?.analyses) {
-          setAnalyses(metadata.analyses.map((a: any) => ({
-            ...a,
-            elements: [],
-            strengths: [],
-            weaknesses: [],
-            keyInsights: [],
-            conversionKillers: [],
-            quickWins: [],
-            stepByStepAnalysis: []
-          })));
+      try {
+        const { data, error } = await supabase
+          .from('flow_analysis_runs')
+          .select('*')
+          .eq('run_type', 'deep-archetyp-analysis')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (error) {
+          console.error('Error loading previous analysis:', error);
+          return;
         }
-        if (data.ai_recommendations?.[0]) {
-          setSynthesis(data.ai_recommendations[0] as any);
+
+        if (data && data.status === 'completed') {
+          // Load previous results
+          const metadata = data.metadata as any;
+          if (metadata?.analyses && Array.isArray(metadata.analyses)) {
+            setAnalyses(metadata.analyses.map((a: any) => ({
+              flowId: a.flowId || '',
+              flowName: a.flowName || '',
+              overallScore: a.overallScore || 0,
+              categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
+              elements: a.elements || [],
+              strengths: a.strengths || [],
+              weaknesses: a.weaknesses || [],
+              keyInsights: a.keyInsights || [],
+              conversionKillers: a.conversionKillers || [],
+              quickWins: a.quickWins || [],
+              stepByStepAnalysis: a.stepByStepAnalysis || []
+            })));
+          }
+          const aiRecs = data.ai_recommendations as any;
+          if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
+            setSynthesis(aiRecs[0] as any);
+          }
         }
+      } catch (err) {
+        console.error('Error in checkForResults:', err);
       }
     };
     checkForResults();
