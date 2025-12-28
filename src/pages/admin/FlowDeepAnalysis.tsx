@@ -1,5 +1,5 @@
 /**
- * Flow Deep Analysis Page - Comprehensive visual analysis of all V1 flow variants
+ * Flow Deep Analysis Page - Comprehensive visual analysis of all flow variants (V1-V9)
  * 
  * Features:
  * - Side-by-side visual comparison
@@ -7,6 +7,7 @@
  * - AI-powered recommendations
  * - Winner determination and synthesis
  * - Automatic optimization suggestions
+ * - Support for all flow versions V1-V9
  */
 
 import { useState, useEffect } from 'react';
@@ -24,6 +25,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -124,8 +126,18 @@ interface Synthesis {
   }>;
 }
 
-// V1 Flow IDs - All 6 variants including v1d (Optimized) and v1e (Trust Enhanced)
-const V1_FLOW_IDS = ['v1a', 'v1b', 'v1c', 'v1d', 'v1e', 'baseline'];
+// All available flow versions
+const ALL_FLOWS = [
+  { id: 'v1', label: 'V1', flowId: 'umzugsofferten-v1' },
+  { id: 'v2', label: 'V2', flowId: 'umzugsofferten-v2' },
+  { id: 'v3', label: 'V3', flowId: 'umzugsofferten-v3' },
+  { id: 'v4', label: 'V4', flowId: 'umzugsofferten-v4' },
+  { id: 'v5', label: 'V5', flowId: 'umzugsofferten-v5' },
+  { id: 'v6', label: 'V6', flowId: 'umzugsofferten-v6' },
+  { id: 'v7', label: 'V7', flowId: 'umzugsofferten-v7' },
+  { id: 'v8', label: 'V8', flowId: 'umzugsofferten-v8' },
+  { id: 'v9', label: 'V9', flowId: 'umzugsofferten-v9' },
+];
 
 const ScoreRing = ({ score, size = 'md', label }: { score: number; size?: 'sm' | 'md' | 'lg'; label?: string }) => {
   const sizeClasses = {
@@ -202,7 +214,7 @@ const EffortBadge = ({ effort }: { effort: string }) => {
 };
 
 export default function FlowDeepAnalysis() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -211,15 +223,74 @@ export default function FlowDeepAnalysis() {
   const [synthesis, setSynthesis] = useState<Synthesis | null>(null);
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  
+  // Selected flow for analysis (default to V1)
+  const [selectedFlowVersion, setSelectedFlowVersion] = useState<string>(() => {
+    return searchParams.get('flow') || 'v1';
+  });
+  
+  // Available variants for the selected flow
+  const [availableVariants, setAvailableVariants] = useState<string[]>([]);
+  const [loadingVariants, setLoadingVariants] = useState(false);
+
+  // Update URL when flow version changes
+  useEffect(() => {
+    setSearchParams(prev => {
+      prev.set('flow', selectedFlowVersion);
+      return prev;
+    });
+  }, [selectedFlowVersion, setSearchParams]);
+
+  // Fetch available variants for the selected flow
+  useEffect(() => {
+    const fetchVariants = async () => {
+      setLoadingVariants(true);
+      try {
+        const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
+        if (!flowConfig) {
+          setAvailableVariants([]);
+          return;
+        }
+        
+        const { data, error } = await supabase
+          .from('flow_versions')
+          .select('version_number, flow_code, version_name')
+          .eq('flow_id', flowConfig.flowId)
+          .eq('is_active', true)
+          .order('version_number');
+        
+        if (error) {
+          console.error('Error fetching variants:', error);
+          setAvailableVariants([]);
+          return;
+        }
+        
+        const variantIds = (data || []).map(v => 
+          v.flow_code?.toLowerCase() || `${selectedFlowVersion}.${v.version_number}`
+        );
+        setAvailableVariants(variantIds);
+      } catch (err) {
+        console.error('Error in fetchVariants:', err);
+        setAvailableVariants([]);
+      } finally {
+        setLoadingVariants(false);
+      }
+    };
+    fetchVariants();
+  }, [selectedFlowVersion]);
 
   // Check for previous analysis results on load
   useEffect(() => {
     const checkForResults = async () => {
       try {
+        const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
+        if (!flowConfig) return;
+        
         const { data, error } = await supabase
           .from('flow_analysis_runs')
           .select('*')
           .eq('run_type', 'deep-archetyp-analysis')
+          .eq('flow_id', flowConfig.flowId)
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle();
@@ -251,29 +322,46 @@ export default function FlowDeepAnalysis() {
           if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
             setSynthesis(aiRecs[0] as any);
           }
+        } else {
+          // Clear results when switching flows if no data
+          setAnalyses([]);
+          setSynthesis(null);
         }
       } catch (err) {
         console.error('Error in checkForResults:', err);
       }
     };
     checkForResults();
-  }, []);
+  }, [selectedFlowVersion]);
 
   const runDeepAnalysis = async (background = false) => {
+    if (availableVariants.length === 0) {
+      toast({
+        title: 'Keine Varianten',
+        description: `Keine aktiven Varianten für ${selectedFlowVersion.toUpperCase()} gefunden.`,
+        variant: 'destructive'
+      });
+      return;
+    }
+    
     setIsAnalyzing(true);
     setIsBackgroundAnalysis(background);
+    
+    const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
     
     toast({
       title: background ? 'Hintergrund-Analyse gestartet' : 'Tiefenanalyse gestartet',
       description: background 
         ? 'Sie können die Seite verlassen. Ergebnisse werden gespeichert.'
-        : `Analysiere ${V1_FLOW_IDS.length} V1 Varianten...`,
+        : `Analysiere ${availableVariants.length} ${selectedFlowVersion.toUpperCase()} Varianten...`,
     });
 
     try {
       const { data, error } = await supabase.functions.invoke('deep-flow-analysis', {
         body: {
-          flowIds: V1_FLOW_IDS,
+          flowIds: availableVariants,
+          flowId: flowConfig?.flowId,
+          flowVersion: selectedFlowVersion,
           analysisType: 'synthesis',
           includeRecommendations: true,
           background
@@ -331,7 +419,7 @@ export default function FlowDeepAnalysis() {
               <div>
                 <h1 className="text-2xl font-bold flex items-center gap-2">
                   <Sparkles className="h-6 w-6 text-primary" />
-                  V1 Flow Tiefenanalyse
+                  Flow Tiefenanalyse
                 </h1>
                 <p className="text-sm text-muted-foreground">
                   Element-Level Analyse • AI-Recommendations • Winner Synthesis
@@ -339,10 +427,24 @@ export default function FlowDeepAnalysis() {
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex items-center gap-3">
+              {/* Flow Version Selector */}
+              <Select value={selectedFlowVersion} onValueChange={setSelectedFlowVersion}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Flow wählen" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ALL_FLOWS.map(flow => (
+                    <SelectItem key={flow.id} value={flow.id}>
+                      {flow.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
               <Button 
                 onClick={() => runDeepAnalysis(true)} 
-                disabled={isAnalyzing}
+                disabled={isAnalyzing || loadingVariants || availableVariants.length === 0}
                 variant="outline"
                 size="lg"
                 className="gap-2"
@@ -352,7 +454,7 @@ export default function FlowDeepAnalysis() {
               </Button>
               <Button 
                 onClick={() => runDeepAnalysis(false)} 
-                disabled={isAnalyzing}
+                disabled={isAnalyzing || loadingVariants || availableVariants.length === 0}
                 size="lg"
                 className="gap-2"
               >
@@ -382,26 +484,69 @@ export default function FlowDeepAnalysis() {
                 <BarChart3 className="h-10 w-10 text-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold mb-2">Umfassende V1 Flow Analyse</h2>
+                <h2 className="text-2xl font-bold mb-2">
+                  Umfassende {selectedFlowVersion.toUpperCase()} Flow Analyse
+                </h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Analysiere alle V1 Varianten auf Element-Level. Erhalte AI-Recommendations, 
+                  Analysiere alle {selectedFlowVersion.toUpperCase()} Varianten auf Element-Level. Erhalte AI-Recommendations, 
                   identifiziere den Gewinner und generiere die ultimative Version.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {V1_FLOW_IDS.map(id => (
-                  <Badge key={id} variant="outline">{id}</Badge>
-                ))}
-              </div>
+              
+              {loadingVariants ? (
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  Lade Varianten...
+                </div>
+              ) : availableVariants.length > 0 ? (
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {availableVariants.map(id => (
+                    <Badge key={id} variant="outline">{id}</Badge>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-muted-foreground text-sm">
+                  Keine aktiven Varianten für {selectedFlowVersion.toUpperCase()} gefunden
+                </div>
+              )}
+              
               <div className="flex gap-2 flex-wrap justify-center">
-                <Button onClick={() => runDeepAnalysis(false)} size="lg" className="gap-2">
+                <Button 
+                  onClick={() => runDeepAnalysis(false)} 
+                  size="lg" 
+                  className="gap-2"
+                  disabled={loadingVariants || availableVariants.length === 0}
+                >
                   <Play className="h-5 w-5" />
                   Jetzt analysieren
                 </Button>
-                <Button onClick={() => runDeepAnalysis(true)} variant="outline" size="lg" className="gap-2">
+                <Button 
+                  onClick={() => runDeepAnalysis(true)} 
+                  variant="outline" 
+                  size="lg" 
+                  className="gap-2"
+                  disabled={loadingVariants || availableVariants.length === 0}
+                >
                   <RefreshCw className="h-5 w-5" />
                   Im Hintergrund
                 </Button>
+              </div>
+              
+              {/* Flow Selector Buttons */}
+              <div className="pt-4 border-t">
+                <p className="text-sm text-muted-foreground mb-3">Flow auswählen:</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {ALL_FLOWS.map(flow => (
+                    <Button
+                      key={flow.id}
+                      variant={selectedFlowVersion === flow.id ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelectedFlowVersion(flow.id)}
+                    >
+                      {flow.label}
+                    </Button>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -417,7 +562,7 @@ export default function FlowDeepAnalysis() {
               <div>
                 <h2 className="text-xl font-bold mb-2">AI Tiefenanalyse läuft...</h2>
                 <p className="text-muted-foreground">
-                  Analysiere {V1_FLOW_IDS.length} Flows auf Element-Level
+                  Analysiere {availableVariants.length} {selectedFlowVersion.toUpperCase()} Flows auf Element-Level
                 </p>
               </div>
               <Progress value={undefined} className="max-w-xs mx-auto" />
