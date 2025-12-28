@@ -14,7 +14,9 @@ export const ErrorState = ({
   onRetry 
 }: ErrorStateProps) => {
   const handleReload = () => {
-    window.location.reload();
+    const url = new URL(window.location.href);
+    url.searchParams.set("__reload", Date.now().toString());
+    window.location.replace(url.toString());
   };
   
   return (
