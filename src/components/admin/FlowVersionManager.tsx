@@ -168,6 +168,15 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   useEffect(() => {
     if (!isBatchRunning || !activeJob) return;
     
+    // Safety check: ensure batchCurrentIndex is within valid range
+    if (batchQueue.length === 0 || batchCurrentIndex >= batchQueue.length) {
+      // Batch is complete or invalid state
+      if (activeJob.status === 'completed' && batchQueue.length > 0) {
+        toast.success(`Alle ${batchQueue.length} Versionen erfolgreich erfasst!`);
+      }
+      return;
+    }
+    
     if (activeJob.status === 'completed') {
       // Move to next version in batch
       const nextIndex = batchCurrentIndex + 1;
@@ -179,7 +188,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
           startBatchJob(batchQueue[nextIndex], nextIndex, batchQueue.length);
         }, 1000);
       } else {
-        // Batch complete
+        // Batch complete - set index to queue length to trigger "all done" UI
         setBatchCurrentIndex(nextIndex);
         toast.success(`Alle ${batchQueue.length} Versionen erfolgreich erfasst!`);
       }
@@ -1432,17 +1441,17 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                   <div className="p-3 bg-primary/10 rounded-lg border border-primary/30">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">
-                        Batch-Erfassung: {batchCurrentIndex + 1} / {batchQueue.length}
+                        Batch-Erfassung: {Math.min(batchCurrentIndex + 1, batchQueue.length)} / {batchQueue.length}
                       </span>
                       <span className="text-sm text-muted-foreground">
-                        {Math.round(((batchCurrentIndex) / batchQueue.length) * 100)}%
+                        {batchQueue.length > 0 ? Math.min(100, Math.round((batchCurrentIndex / batchQueue.length) * 100)) : 0}%
                       </span>
                     </div>
-                    <Progress value={(batchCurrentIndex / batchQueue.length) * 100} className="h-2 mb-2" />
-                    {batchQueue[batchCurrentIndex] && (
+                    <Progress value={batchQueue.length > 0 ? Math.min(100, (batchCurrentIndex / batchQueue.length) * 100) : 0} className="h-2 mb-2" />
+                    {batchQueue[Math.min(batchCurrentIndex, batchQueue.length - 1)] && batchCurrentIndex < batchQueue.length && (
                       <p className="text-sm">
-                        Aktuell: <span className="font-mono font-bold">{formatVersion(batchQueue[batchCurrentIndex].version_number)}</span>
-                        {batchQueue[batchCurrentIndex].version_name && ` - ${batchQueue[batchCurrentIndex].version_name}`}
+                        Aktuell: <span className="font-mono font-bold">{formatVersion(batchQueue[Math.min(batchCurrentIndex, batchQueue.length - 1)].version_number)}</span>
+                        {batchQueue[Math.min(batchCurrentIndex, batchQueue.length - 1)].version_name && ` - ${batchQueue[Math.min(batchCurrentIndex, batchQueue.length - 1)].version_name}`}
                       </p>
                     )}
                   </div>
