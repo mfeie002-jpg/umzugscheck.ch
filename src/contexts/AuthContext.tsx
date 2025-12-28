@@ -39,31 +39,63 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        checkAdminStatus(session.user.id);
+    // Check for existing session (timeout-safe to avoid infinite loading)
+    (async () => {
+      const timeoutMs = 6000;
+      try {
+        const result = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("getSession timeout")), timeoutMs)
+          ),
+        ]);
+
+        const currentSession = result.data.session;
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+
+        if (currentSession?.user) {
+          await checkAdminStatus(currentSession.user.id);
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        logger.error("Error loading session", error);
+        setSession(null);
+        setUser(null);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    })();
 
     return () => subscription.unsubscribe();
   }, []);
 
   const checkAdminStatus = async (userId: string) => {
     try {
-      const { data, error } = await supabase.rpc("has_role", {
+      const roleCheckPromise = supabase.rpc("has_role", {
         _user_id: userId,
         _role: "admin",
       });
 
-      setIsAdmin(!error && Boolean(data));
+      const { data, error } = await Promise.race([
+        roleCheckPromise,
+        new Promise<{ data: null; error: Error }>((_, reject) =>
+          setTimeout(
+            () => reject({ data: null, error: new Error("Role check timeout") }),
+            3000
+          )
+        ),
+      ]).catch(() => ({ data: null, error: new Error("Role check failed") }));
+
+      const admin = !error && Boolean(data);
+      setIsAdmin(admin);
+      return admin;
     } catch (error) {
       logger.error("Error checking admin status", error);
       setIsAdmin(false);
+      return false;
     }
   };
 
