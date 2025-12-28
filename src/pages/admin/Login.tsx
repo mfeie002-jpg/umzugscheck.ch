@@ -102,18 +102,11 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      // Authenticate (with timeout to avoid hanging UI)
-      const signInPromise = supabase.auth.signInWithPassword({
+      // Authenticate
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
-      const { data, error } = await Promise.race([
-        signInPromise,
-        new Promise<{ data: null; error: Error }>((_, reject) =>
-          setTimeout(() => reject({ data: null, error: new Error("Login timeout") }), 8000)
-        ),
-      ]).catch(() => ({ data: null as any, error: new Error("Login timeout") }));
 
       if (error) throw error;
 
