@@ -10,10 +10,10 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, adminChecked, loading } = useAuth();
 
-  // Loading state
-  if (loading) {
+  // Loading state (also while admin role is being verified)
+  if (loading || (user && !adminChecked)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -21,10 +21,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     );
   }
 
-  // Not authenticated or not admin -> redirect to login
-  if (!user || !isAdmin) {
+  // Not authenticated -> redirect to login
+  if (!user) {
     return <Navigate to="/admin/login" replace />;
   }
+
+  // Authenticated but not admin -> redirect to login
+  if (!isAdmin) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
 
   return (
     <div className="min-h-screen flex w-full bg-background">

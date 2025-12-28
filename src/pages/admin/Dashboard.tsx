@@ -201,21 +201,6 @@ const AdminDashboard = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <RefreshCw className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Laden...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user || !isAdmin) {
-    return <Navigate to="/auth" replace />;
-  }
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "new":
