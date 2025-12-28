@@ -460,7 +460,33 @@ Antworte immer im JSON-Format.`
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '{}';
-    const parsed = JSON.parse(content);
+    
+    // Robust JSON extraction - handle markdown code blocks and text around JSON
+    let jsonContent = content;
+    
+    // Remove markdown code blocks if present
+    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) {
+      jsonContent = jsonMatch[1].trim();
+    }
+    
+    // Try to find JSON object if there's text around it
+    if (!jsonContent.startsWith('{')) {
+      const firstBrace = jsonContent.indexOf('{');
+      const lastBrace = jsonContent.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        jsonContent = jsonContent.substring(firstBrace, lastBrace + 1);
+      }
+    }
+    
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonContent);
+    } catch (parseError) {
+      console.error('JSON parse failed, content preview:', jsonContent.substring(0, 500));
+      console.error('Parse error:', parseError);
+      return createMockAnalysis(flowId, flowName);
+    }
 
     return {
       flowId,
@@ -588,7 +614,27 @@ Antworte im JSON-Format:
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '{}';
-    return JSON.parse(content);
+    
+    // Robust JSON extraction
+    let jsonContent = content;
+    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) {
+      jsonContent = jsonMatch[1].trim();
+    }
+    if (!jsonContent.startsWith('{')) {
+      const firstBrace = jsonContent.indexOf('{');
+      const lastBrace = jsonContent.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        jsonContent = jsonContent.substring(firstBrace, lastBrace + 1);
+      }
+    }
+    
+    try {
+      return JSON.parse(jsonContent);
+    } catch (parseError) {
+      console.error('Synthesis JSON parse failed, preview:', jsonContent.substring(0, 500));
+      return createMockSynthesis(analyses);
+    }
   } catch (error) {
     console.error('Synthesis error:', error);
     return createMockSynthesis(analyses);
