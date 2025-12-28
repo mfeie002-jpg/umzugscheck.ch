@@ -76,10 +76,12 @@ export const VARIANT_REGISTRY: Record<string, {
   label: string;
 }> = {
   // V1 - Control Flow
+  'v1': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1 Control' },
   'v1a': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1a Control (Feedback)' },
   'v1b': { component: 'V1bFeedbackBased', stepCount: 4, label: 'V1b ChatGPT Agent' },
   'v1c': { component: 'V1cFeedbackBased', stepCount: 4, label: 'V1c Archetyp (Strategic)' },
   // V2 - UX Optimized
+  'v2': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2 UX Optimized' },
   'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Progress Enhanced' },
   'v2b': { component: 'V2bSimplifiedLabels', stepCount: 4, label: 'V2b Simplified Labels' },
   'v2c': { component: 'V2cTrustFocused', stepCount: 4, label: 'V2c Trust Focused' },
@@ -87,6 +89,7 @@ export const VARIANT_REGISTRY: Record<string, {
   'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
   'v2f': { component: 'V2fFeedbackBased', stepCount: 3, label: 'V2f Premium (Feedback)' },
   // V3 - Mobile-First
+  'v3': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3 Mobile-First' },
   'v3a': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3a Mobile First' },
   'v3a-pro': { component: 'V3aFeedbackBased', stepCount: 4, label: 'V3a Pro (Feedback)' },
   'v3b-feedback': { component: 'V3bFeedbackBased', stepCount: 4, label: 'V3b Feedback Based' },
@@ -96,6 +99,7 @@ export const VARIANT_REGISTRY: Record<string, {
   'v3d': { component: 'V3dThumbZone', stepCount: 3, label: 'V3d Thumb Zone' },
   'v3e': { component: 'V3eFullscreen', stepCount: 3, label: 'V3e Fullscreen' },
   // V4 - Conversion-Focused
+  'v4': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4 Conversion' },
   'v4a': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4a Urgency Based' },
   'v4b': { component: 'V4bSocialProof', stepCount: 3, label: 'V4b Social Proof' },
   'v4c': { component: 'V4cValueFirst', stepCount: 3, label: 'V4c Value First' },
@@ -103,6 +107,7 @@ export const VARIANT_REGISTRY: Record<string, {
   'v4e': { component: 'V4eMinimalFriction', stepCount: 2, label: 'V4e Minimal Friction' },
   'v4f': { component: 'V4fFeedbackBased', stepCount: 3, label: 'V4f Video-First (Feedback)' },
   // V5 - Accessibility-Focused
+  'v5': { component: 'V5aHighContrast', stepCount: 4, label: 'V5 Accessibility' },
   'v5a': { component: 'V5aHighContrast', stepCount: 4, label: 'V5a High Contrast' },
   'v5b': { component: 'V5bScreenReader', stepCount: 3, label: 'V5b Screen Reader' },
   'v5c': { component: 'V5cKeyboardNav', stepCount: 3, label: 'V5c Keyboard Nav' },
@@ -110,12 +115,16 @@ export const VARIANT_REGISTRY: Record<string, {
   'v5e': { component: 'V5eReducedMotion', stepCount: 3, label: 'V5e Reduced Motion' },
   'v5f': { component: 'V5fFeedbackBased', stepCount: 3, label: 'V5f Marketplace (Feedback)' },
   // V6 - Ultimate 6-Tier
+  'v6': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6 Ultimate' },
   'v6a': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6a Ultimate (Feedback)' },
   // V7 - SwissMove 90s
+  'v7': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7 SwissMove' },
   'v7a': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7a SwissMove (Feedback)' },
   // V8 - Decision-Free
+  'v8': { component: 'V8aFeedbackBased', stepCount: 2, label: 'V8 Decision-Free' },
   'v8a': { component: 'V8aFeedbackBased', stepCount: 2, label: 'V8a Decision-Free (Feedback)' },
   // V9 - Main Pro Extended
+  'v9': { component: 'V9aFeedbackBased', stepCount: 6, label: 'V9 Main Pro' },
   'v9a': { component: 'V9aFeedbackBased', stepCount: 6, label: 'V9a Main Pro Ext' },
   'v9b': { component: 'V9bFeedbackBased', stepCount: 5, label: 'V9b Main Agent' },
   'v9c': { component: 'V9cFeedbackBased', stepCount: 5, label: 'V9c Zero Friction Optimized' },
