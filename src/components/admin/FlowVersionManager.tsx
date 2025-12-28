@@ -35,7 +35,8 @@ import {
   CloudUpload,
   Download,
   Layers,
-  CheckSquare
+  CheckSquare,
+  Pencil
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -143,6 +144,13 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
   const [batchQueue, setBatchQueue] = useState<FlowVersion[]>([]);
   const [batchCurrentIndex, setBatchCurrentIndex] = useState(0);
   const [isBatchRunning, setIsBatchRunning] = useState(false);
+  
+  // Edit version state
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedVersionForEdit, setSelectedVersionForEdit] = useState<FlowVersion | null>(null);
+  const [editVersionName, setEditVersionName] = useState("");
+  const [editVersionDescription, setEditVersionDescription] = useState("");
+  const [isEditSaving, setIsEditSaving] = useState(false);
 
   useEffect(() => {
     fetchVersions();
@@ -515,6 +523,32 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
     } catch (err) {
       console.error('Failed to delete version:', err);
       toast.error('Löschen fehlgeschlagen');
+    }
+  };
+
+  const saveEditedVersion = async () => {
+    if (!selectedVersionForEdit) return;
+    
+    setIsEditSaving(true);
+    try {
+      const { error } = await supabase
+        .from('flow_versions')
+        .update({
+          version_name: editVersionName.trim() || null,
+          description: editVersionDescription.trim() || null,
+        })
+        .eq('id', selectedVersionForEdit.id);
+
+      if (error) throw error;
+      toast.success('Version aktualisiert');
+      setEditDialogOpen(false);
+      setSelectedVersionForEdit(null);
+      fetchVersions();
+    } catch (err) {
+      console.error('Failed to update version:', err);
+      toast.error('Aktualisierung fehlgeschlagen');
+    } finally {
+      setIsEditSaving(false);
     }
   };
 
@@ -1030,6 +1064,19 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                   >
                     <GitCompare className="h-4 w-4" />
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setSelectedVersionForEdit(version);
+                      setEditVersionName(version.version_name || "");
+                      setEditVersionDescription(version.description || "");
+                      setEditDialogOpen(true);
+                    }}
+                    title="Details bearbeiten"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
                   {!version.is_baseline && (
                     <Button
                       variant="ghost"
@@ -1092,6 +1139,86 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                 <Save className="h-4 w-4 mr-2" />
                 Feedback speichern
               </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Version Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Pencil className="h-5 w-5" />
+                Version bearbeiten
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              {selectedVersionForEdit && (
+                <>
+                  <div className="p-3 bg-accent rounded-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-mono font-bold">{formatVersion(selectedVersionForEdit.version_number)}</span>
+                      {selectedVersionForEdit.flow_code && (
+                        <Badge variant="secondary" className="text-xs">
+                          {selectedVersionForEdit.flow_code}
+                        </Badge>
+                      )}
+                      {selectedVersionForEdit.is_baseline && (
+                        <Badge variant="secondary" className="text-xs">
+                          <Star className="h-3 w-3 mr-1" />
+                          Baseline
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label>Name</Label>
+                    <Input
+                      value={editVersionName}
+                      onChange={(e) => setEditVersionName(e.target.value)}
+                      placeholder="z.B. Gemini, ChatGPT Pro, etc."
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Beschreibung</Label>
+                    <Textarea
+                      value={editVersionDescription}
+                      onChange={(e) => setEditVersionDescription(e.target.value)}
+                      placeholder="Was macht diese Version besonders?"
+                      rows={4}
+                    />
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => setEditDialogOpen(false)}
+                    >
+                      Abbrechen
+                    </Button>
+                    <Button 
+                      onClick={saveEditedVersion}
+                      className="flex-1"
+                      disabled={isEditSaving}
+                    >
+                      {isEditSaving ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Speichern...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4 mr-2" />
+                          Speichern
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
           </DialogContent>
         </Dialog>
