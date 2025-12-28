@@ -336,7 +336,24 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                 <div className={`w-3 h-3 rounded-full ${config.color}`} />
                 <CardTitle className="text-lg">{config.name}</CardTitle>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                {/* Analyze Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAnalyze();
+                  }}
+                  disabled={!!analyzing}
+                  className="h-8"
+                >
+                  {analyzing === flowId ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Play className="h-4 w-4" />
+                  )}
+                </Button>
                 {run?.overall_score !== null && run?.overall_score !== undefined && (
                   <Badge variant={run.overall_score < 50 ? "destructive" : "secondary"} className="text-sm px-3 py-1">
                     Score: {run.overall_score}/100
