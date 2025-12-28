@@ -334,6 +334,56 @@ export default function FlowDeepAnalysis() {
     checkForResults();
   }, [selectedFlowVersion]);
 
+  // Function to load results from database
+  const loadAnalysisResults = async () => {
+    try {
+      const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
+      if (!flowConfig) return false;
+      
+      const { data, error } = await supabase
+        .from('flow_analysis_runs')
+        .select('*')
+        .eq('run_type', 'deep-archetyp-analysis')
+        .eq('flow_id', flowConfig.flowId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error loading analysis:', error);
+        return false;
+      }
+
+      if (data && data.status === 'completed') {
+        const metadata = data.metadata as any;
+        if (metadata?.analyses && Array.isArray(metadata.analyses)) {
+          setAnalyses(metadata.analyses.map((a: any) => ({
+            flowId: a.flowId || '',
+            flowName: a.flowName || '',
+            overallScore: a.overallScore || 0,
+            categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
+            elements: a.elements || [],
+            strengths: a.strengths || [],
+            weaknesses: a.weaknesses || [],
+            keyInsights: a.keyInsights || [],
+            conversionKillers: a.conversionKillers || [],
+            quickWins: a.quickWins || [],
+            stepByStepAnalysis: a.stepByStepAnalysis || []
+          })));
+        }
+        const aiRecs = data.ai_recommendations as any;
+        if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
+          setSynthesis(aiRecs[0] as any);
+        }
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('Error in loadAnalysisResults:', err);
+      return false;
+    }
+  };
+
   const runDeepAnalysis = async (background = false) => {
     if (availableVariants.length === 0) {
       toast({
@@ -381,8 +431,14 @@ export default function FlowDeepAnalysis() {
         return;
       }
 
+      // Set results directly from response
       setAnalyses(data.analyses || []);
       setSynthesis(data.synthesis || null);
+      
+      // Also set selectedFlow to first analyzed flow for immediate display
+      if (data.analyses?.length > 0) {
+        setSelectedFlow(data.analyses[0].flowId);
+      }
       
       toast({
         title: 'Analyse abgeschlossen',
@@ -398,6 +454,17 @@ export default function FlowDeepAnalysis() {
     } finally {
       setIsAnalyzing(false);
       setIsBackgroundAnalysis(false);
+    }
+  };
+
+  // Function to refresh/reload results from database
+  const refreshResults = async () => {
+    toast({ title: 'Lade Ergebnisse...', description: 'Suche nach gespeicherten Analysen...' });
+    const found = await loadAnalysisResults();
+    if (found) {
+      toast({ title: 'Ergebnisse geladen', description: 'Gespeicherte Analyse wurde gefunden und geladen.' });
+    } else {
+      toast({ title: 'Keine Ergebnisse', description: 'Keine gespeicherten Analysen gefunden.', variant: 'destructive' });
     }
   };
 
@@ -441,6 +508,19 @@ export default function FlowDeepAnalysis() {
                   ))}
                 </SelectContent>
               </Select>
+              
+              {/* Refresh Results Button */}
+              <Button 
+                onClick={refreshResults} 
+                disabled={isAnalyzing}
+                variant="ghost"
+                size="lg"
+                className="gap-2"
+                title="Gespeicherte Ergebnisse laden"
+              >
+                <Download className="h-5 w-5" />
+                Laden
+              </Button>
               
               <Button 
                 onClick={() => runDeepAnalysis(true)} 
@@ -529,6 +609,15 @@ export default function FlowDeepAnalysis() {
                 >
                   <RefreshCw className="h-5 w-5" />
                   Im Hintergrund
+                </Button>
+                <Button 
+                  onClick={refreshResults} 
+                  variant="ghost" 
+                  size="lg" 
+                  className="gap-2"
+                >
+                  <Download className="h-5 w-5" />
+                  Ergebnisse laden
                 </Button>
               </div>
               
