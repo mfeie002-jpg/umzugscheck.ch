@@ -10,7 +10,7 @@
  * - Support for all flow versions V1-V9
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -219,7 +219,10 @@ const EffortBadge = ({ effort }: { effort: string }) => {
 export default function FlowDeepAnalysis() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
-  
+
+  const ANALYSIS_STALL_TIMEOUT_MS = 15 * 60 * 1000; // 15 Minuten
+  const autoTimeoutAppliedForJobIdRef = useRef<string | null>(null);
+
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isBackgroundAnalysis, setIsBackgroundAnalysis] = useState(false);
   const [foregroundProgress, setForegroundProgress] = useState(0);
@@ -227,16 +230,16 @@ export default function FlowDeepAnalysis() {
   const [synthesis, setSynthesis] = useState<Synthesis | null>(null);
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   // Selected flow for analysis (default to V1)
   const [selectedFlowVersion, setSelectedFlowVersion] = useState<string>(() => {
     return searchParams.get('flow') || 'v1';
   });
-  
+
   // Available variants for the selected flow
   const [availableVariants, setAvailableVariants] = useState<string[]>([]);
   const [loadingVariants, setLoadingVariants] = useState(false);
-  
+
   // Background job tracking
   const [backgroundJob, setBackgroundJob] = useState<{
     id: string;
@@ -245,6 +248,28 @@ export default function FlowDeepAnalysis() {
     totalSteps: number;
     startedAt: string | null;
   } | null>(null);
+
+  const markBackgroundJobFailed = async (jobId: string, reason: string) => {
+    const now = new Date().toISOString();
+
+    // Try both tables (depending on whether we track a queue item or a run)
+    await Promise.all([
+      supabase
+        .from('flow_analysis_queue')
+        .update({ status: 'failed', completed_at: now, error_message: reason })
+        .eq('id', jobId),
+      supabase
+        .from('flow_analysis_runs')
+        .update({ status: 'failed', completed_at: now })
+        .eq('id', jobId),
+    ]);
+  };
+
+  const cancelBackgroundJob = async (reason = 'Abgebrochen') => {
+    if (!backgroundJob) return;
+    await markBackgroundJobFailed(backgroundJob.id, reason);
+    setBackgroundJob(null);
+  };
 
   // Fix-It state tracking
   const [fixingFlowId, setFixingFlowId] = useState<string | null>(null);
@@ -428,7 +453,25 @@ export default function FlowDeepAnalysis() {
           .select('*')
           .eq('id', backgroundJob.id)
           .maybeSingle();
-        
+
+        // Auto-timeout after 15 minutes (prevents infinite "running" states)
+        const startedAtIso = (queueData as any)?.started_at ?? backgroundJob.startedAt;
+        const isTimedOut =
+          !!startedAtIso &&
+          ['running', 'queued', 'processing', 'pending'].includes(String((queueData as any)?.status ?? backgroundJob.status)) &&
+          Date.now() - Date.parse(String(startedAtIso)) > ANALYSIS_STALL_TIMEOUT_MS;
+
+        if (isTimedOut && autoTimeoutAppliedForJobIdRef.current !== backgroundJob.id) {
+          autoTimeoutAppliedForJobIdRef.current = backgroundJob.id;
+          await cancelBackgroundJob('Timeout: Analyse hat länger als 15 Minuten gedauert.');
+          toast({
+            title: 'Analyse abgebrochen',
+            description: 'Die Analyse hing fest und wurde nach 15 Minuten automatisch abgebrochen. Bitte erneut starten.',
+            variant: 'destructive',
+          });
+          return;
+        }
+
         if (queueData) {
           if (queueData.status === 'completed' && queueData.result_run_id) {
             // Queue item completed, load results from the run
