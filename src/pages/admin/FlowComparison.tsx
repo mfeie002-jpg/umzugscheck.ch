@@ -71,10 +71,10 @@ import {
 // Map flow codes to components
 const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
   // V1 main + variants
-  'umzugsofferten': MultiStepCalculator,
+  'umzugsofferten-v1': MultiStepCalculator,
+  'v1': MultiStepCalculator,
   'v1a': V1aFeedbackBased,
   'v1b': V1bFeedbackBased,
-  'v1c': V1cFeedbackBased,
   // V2 variants
   'v2a': V2aProgressEnhanced,
   'v2b': V2bSimplifiedLabels,
@@ -122,7 +122,6 @@ const VARIANT_COMPONENT_MAP: Record<string, React.ComponentType> = {
 
 // Get main flow key for a number
 function getMainFlowKey(flowNumber: number): string {
-  if (flowNumber === 1) return 'umzugsofferten';
   return `umzugsofferten-v${flowNumber}`;
 }
 
@@ -180,12 +179,8 @@ function getAllFlowNumbers(): number[] {
   
   // From main flows
   Object.keys(FLOW_CONFIGS).forEach(key => {
-    if (key === 'umzugsofferten') {
-      numbers.add(1);
-    } else {
-      const match = key.match(/umzugsofferten-v(\d+)/);
-      if (match) numbers.add(parseInt(match[1], 10));
-    }
+    const match = key.match(/umzugsofferten-v(\d+)/);
+    if (match) numbers.add(parseInt(match[1], 10));
   });
   
   // From sub-variants

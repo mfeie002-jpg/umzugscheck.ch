@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 // 9 Main Flow Variants for A/B Testing
 const FLOW_VARIANTS = [
-  'umzugsofferten',      // V1 - Control
+  'umzugsofferten-v1',   // V1 - Control
   'umzugsofferten-v2',   // V2 - Premium
   'umzugsofferten-v3',   // V3 - God Mode
   'umzugsofferten-v4',   // V4 - Video AI
@@ -90,7 +90,7 @@ export const useHomepageABTest = () => {
           setState({ isActive: true, assignedVariant: variant, loading: false });
         } else {
           // When inactive, always use V1 (control)
-          setState({ isActive: false, assignedVariant: 'umzugsofferten', loading: false });
+          setState({ isActive: false, assignedVariant: 'umzugsofferten-v1', loading: false });
         }
       } catch (err) {
         console.error('AB Test check failed:', err);
@@ -124,8 +124,8 @@ export const useHomepageABTest = () => {
 
   // Get the flow path for the assigned variant
   const getFlowPath = useCallback((): string => {
-    if (!state.assignedVariant || state.assignedVariant === 'umzugsofferten') {
-      return '/umzugsofferten';
+    if (!state.assignedVariant) {
+      return '/umzugsofferten-v1';
     }
     return `/${state.assignedVariant}`;
   }, [state.assignedVariant]);

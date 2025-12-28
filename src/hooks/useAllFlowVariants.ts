@@ -70,7 +70,7 @@ function generateVariantUrls(flowNumber: number, variantLetter?: string) {
   }
   
   // Main flow URLs
-  const flowId = flowNumber === 1 ? 'umzugsofferten' : `umzugsofferten-v${flowNumber}`;
+  const flowId = `umzugsofferten-v${flowNumber}`;
   return {
     liveUrl: `/${flowId}`,
     testerUrl: `/flow-tester?flow=${flowId}`,
