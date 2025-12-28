@@ -251,6 +251,30 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
 
       // 2. CRITICAL: Also create/update entry in flow_versions for AI feedback tracking
       // This is what enables the ⭐ icon and stores the ChatGPT feedback
+      
+      // First, get the baseline version to copy step_configs from
+      const { data: baselineVersion } = await supabase
+        .from("flow_versions")
+        .select("step_configs")
+        .eq("flow_id", selectedFlow)
+        .eq("is_baseline", true)
+        .maybeSingle();
+      
+      // Generate step_configs for the new variant based on baseline
+      let stepConfigs: any[] = [];
+      if (baselineVersion?.step_configs && Array.isArray(baselineVersion.step_configs)) {
+        const variantSuffix = variantLetter; // e.g., 'a', 'b', 'c', 'd'
+        stepConfigs = (baselineVersion.step_configs as any[]).map((step: any) => ({
+          ...step,
+          // Update URL to point to the new variant
+          url: step.url 
+            ? step.url
+                .replace(/uc_flow=[^&]+/, `uc_flow=v${flowNumber}${variantSuffix}`)
+                .replace(/umzugsofferten-v\d+/, `umzugsofferten-v${flowNumber}${variantSuffix}`)
+            : `https://www.umzugscheck.ch/umzugsofferten-v${flowNumber}${variantSuffix}?uc_capture=1&uc_step=${step.step}&uc_flow=v${flowNumber}${variantSuffix}`
+        }));
+      }
+      
       const { data: existingVersion, error: existingError } = await supabase
         .from("flow_versions")
         .select("id")
@@ -274,6 +298,7 @@ Exportiere die Komponente und füge sie zum index.ts hinzu.`;
         is_active: true,
         flow_number: parseInt(flowNumber, 10),
         variant_letter: variantLetter,
+        step_configs: stepConfigs, // Include step_configs from baseline!
       };
 
       if (existingVersion?.id) {
