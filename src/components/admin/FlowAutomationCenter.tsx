@@ -887,33 +887,55 @@ ${entry.prompt}
                 )}
 
                 {variantAnalysisResults.length > 0 && (
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                    {variantAnalysisResults.map((r) => (
-                      <div
-                        key={r.flowId}
-                        className={`p-3 rounded-lg border ${
-                          r.status === 'completed'
-                            ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800'
-                            : r.status === 'error'
-                            ? 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800'
-                            : r.status === 'running'
-                            ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800'
-                            : 'bg-muted/50'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm">{r.flowId}</span>
-                          {r.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-600" />}
-                          {r.status === 'error' && <AlertCircle className="h-4 w-4 text-red-600" />}
-                          {r.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-600" />}
-                        </div>
-                        {r.score !== undefined && (
-                          <div className="text-xs text-muted-foreground mt-1">
-                            Score: {r.score}/100 • {r.issuesCount} Issues
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Ergebnisse:</span>
+                      <Link to={`/admin/flow-comparison/${selectedVariantFlowNumber}`}>
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <Eye className="h-4 w-4" />
+                          Detaillierte Ergebnisse ansehen
+                        </Button>
+                      </Link>
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                      {variantAnalysisResults.map((r) => (
+                        <div
+                          key={r.flowId}
+                          className={`p-3 rounded-lg border ${
+                            r.status === 'completed'
+                              ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800'
+                              : r.status === 'error'
+                              ? 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800'
+                              : r.status === 'running'
+                              ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800'
+                              : 'bg-muted/50'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-sm">{r.flowId}</span>
+                            {r.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                            {r.status === 'error' && <AlertCircle className="h-4 w-4 text-red-600" />}
+                            {r.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-600" />}
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {r.score !== undefined && (
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Score: {r.score}/100 • {r.issuesCount} Issues
+                              {r.criticalCount !== undefined && r.criticalCount > 0 && (
+                                <span className="text-red-600 ml-1">({r.criticalCount} kritisch)</span>
+                              )}
+                            </div>
+                          )}
+                          {r.runId && (
+                            <Link 
+                              to={`/admin/flow-comparison/${selectedVariantFlowNumber}?runId=${r.runId}`}
+                              className="text-xs text-primary hover:underline mt-1 inline-block"
+                            >
+                              Details →
+                            </Link>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
