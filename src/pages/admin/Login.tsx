@@ -1,21 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, User, Shield, ArrowRight, AlertTriangle } from "lucide-react";
+import { Lock, User, Shield, ArrowRight, AlertTriangle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const { user, isAdmin, adminChecked, loading, signIn } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [existingAdminEmail, setExistingAdminEmail] = useState<string | null>(null);
-  const [checkingSession, setCheckingSession] = useState(false);
 
   // Prevent "infinite loading" when backend signOut hangs (network/db issues)
   const safeSignOut = async () => {
@@ -29,68 +31,8 @@ const AdminLogin = () => {
     }
   };
 
-  // Check if already authenticated - always show this screen first
-  useEffect(() => {
-    let cancelled = false;
-
-    const checkAuth = async () => {
-      // Add timeout to prevent infinite loading on DB issues
-      const timeoutId = setTimeout(() => {
-        if (!cancelled) {
-          console.warn("Auth check timed out, showing login form");
-          setCheckingSession(false);
-        }
-      }, 5000);
-
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          clearTimeout(timeoutId);
-          if (!cancelled) setCheckingSession(false);
-          return;
-        }
-
-        // Check if user has admin role - with shorter timeout
-        const roleCheckPromise = supabase.rpc("has_role", {
-          _user_id: session.user.id,
-          _role: "admin",
-        });
-
-        const { data: isAdmin, error: roleError } = await Promise.race([
-          roleCheckPromise,
-          new Promise<{ data: null; error: Error }>((_, reject) =>
-            setTimeout(() => reject({ data: null, error: new Error("Role check timeout") }), 3000)
-          ),
-        ]).catch(() => ({ data: null, error: new Error("Role check failed") }));
-
-        clearTimeout(timeoutId);
-
-        if (!cancelled) {
-          if (!roleError && isAdmin) {
-            // Show the "already logged in" screen - don't auto-redirect
-            setExistingAdminEmail(session.user.email ?? session.user.id);
-          } else {
-            // User is logged in but not an admin - sign out first (non-blocking)
-            await safeSignOut();
-          }
-          setCheckingSession(false);
-        }
-      } catch (error) {
-        clearTimeout(timeoutId);
-        console.error("Auth check error:", error);
-        if (!cancelled) setCheckingSession(false);
-      }
-    };
-
-    checkAuth();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const handleLogoutAndContinue = async () => {
     await safeSignOut();
-    setExistingAdminEmail(null);
   };
 
   const handleContinueAsAdmin = () => {
@@ -102,49 +44,20 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      // Authenticate
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
+      const { error } = await signIn(email, password);
       if (error) throw error;
 
-      if (data.user) {
-        // Check if user has admin role (with timeout to avoid hanging)
-        const roleCheckPromise = supabase.rpc("has_role", {
-          _user_id: data.user.id,
-          _role: "admin",
-        });
+      toast({
+        title: "Erfolgreich angemeldet",
+        description: "Admin-Zugriff wird geprüft…",
+      });
 
-        const { data: isAdmin, error: roleError } = await Promise.race([
-          roleCheckPromise,
-          new Promise<{ data: null; error: Error }>((_, reject) =>
-            setTimeout(() => reject({ data: null, error: new Error("Role check timeout") }), 3000)
-          ),
-        ]).catch(() => ({ data: null, error: new Error("Role check failed") }));
-
-        if (roleError || !isAdmin) {
-          await safeSignOut();
-          toast({
-            title: "Zugriff verweigert",
-            description: "Sie haben keine Admin-Berechtigung.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        toast({
-          title: "Erfolgreich angemeldet",
-          description: "Willkommen im Admin-Dashboard",
-        });
-        
-        navigate("/admin");
-      }
+      // AdminLayout übernimmt die sichere Rollenprüfung; kein doppelter has_role Check hier.
+      navigate("/admin");
     } catch (error: any) {
       toast({
         title: "Anmeldefehler",
-        description: error.message || "Ungültige E-Mail oder Passwort",
+        description: error?.message || "Ungültige E-Mail oder Passwort",
         variant: "destructive",
       });
     } finally {
@@ -152,12 +65,20 @@ const AdminLogin = () => {
     }
   };
 
-  // Note: We don't block the UI while checking session/roles, to avoid a stuck loading screen
-  // if the database is under load (statement timeouts).
-  // `existingAdminEmail` will show the "Bereits angemeldet" screen once available.
+  // While the session and role are being verified, show a stable loading UI
+  if (loading || (user && !adminChecked)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>Admin-Zugriff wird geprüft…</span>
+        </div>
+      </div>
+    );
+  }
 
   // Show existing admin session notice
-  if (existingAdminEmail) {
+  if (user && isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
         <Card className="w-full max-w-md shadow-xl border-2">
@@ -167,17 +88,15 @@ const AdminLogin = () => {
             </div>
             <div>
               <CardTitle className="text-2xl font-bold">Bereits angemeldet</CardTitle>
-              <CardDescription>
-                Du bist eingeloggt als Admin
-              </CardDescription>
+              <CardDescription>Du bist eingeloggt als Admin</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-4 bg-muted rounded-lg flex items-center gap-3">
               <User className="w-5 h-5 text-muted-foreground" />
-              <span className="font-medium">{existingAdminEmail}</span>
+              <span className="font-medium">{user.email ?? user.id}</span>
             </div>
-            
+
             <Button
               onClick={handleContinueAsAdmin}
               className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90"
@@ -218,12 +137,21 @@ const AdminLogin = () => {
           </div>
           <div>
             <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-            <CardDescription>
-              Zugang zum Admin-Dashboard
-            </CardDescription>
+            <CardDescription>Zugang zum Admin-Dashboard</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
+          {user && !isAdmin && (
+            <div className="mb-6 rounded-lg border bg-muted/40 p-4 text-sm">
+              <p className="font-medium">Du bist bereits eingeloggt, aber ohne Admin-Rechte.</p>
+              <div className="mt-3 flex flex-col gap-2">
+                <Button variant="outline" onClick={handleLogoutAndContinue} className="w-full">
+                  Abmelden und neu versuchen
+                </Button>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">E-Mail</Label>
@@ -268,9 +196,7 @@ const AdminLogin = () => {
           </form>
 
           <div className="mt-6 pt-6 border-t space-y-4">
-            <p className="text-sm text-center text-muted-foreground">
-              Noch kein Konto?
-            </p>
+            <p className="text-sm text-center text-muted-foreground">Noch kein Konto?</p>
             <Button
               type="button"
               variant="outline"
