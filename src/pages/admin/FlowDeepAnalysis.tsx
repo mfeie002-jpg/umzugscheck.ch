@@ -124,8 +124,8 @@ interface Synthesis {
   }>;
 }
 
-// V1 Flow IDs
-const V1_FLOW_IDS = ['v1', 'v1a', 'v1b', 'v1c', 'v1d', 'v1e'];
+// V1 Flow IDs - All 6 variants including v1d (Optimized) and v1e (Trust Enhanced)
+const V1_FLOW_IDS = ['v1a', 'v1b', 'v1c', 'v1d', 'v1e', 'baseline'];
 
 const ScoreRing = ({ score, size = 'md', label }: { score: number; size?: 'sm' | 'md' | 'lg'; label?: string }) => {
   const sizeClasses = {
