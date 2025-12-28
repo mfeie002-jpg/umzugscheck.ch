@@ -87,33 +87,24 @@ serve(async (req) => {
       );
     }
 
-    // Call the deep-flow-analysis function directly with fetch to include auth
-    const analysisResponse = await fetch(`${supabaseUrl}/functions/v1/deep-flow-analysis`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseServiceKey}`,
-        'apikey': supabaseServiceKey,
-      },
-      body: JSON.stringify({
+    // Call deep-flow-analysis (now public via config.toml) using the Supabase client
+    const { data: analysisResult, error: analysisError } = await supabase.functions.invoke('deep-flow-analysis', {
+      body: {
         flowIds: variantIds,
         flowId: queueItem.flow_id,
         flowVersion: queueItem.flow_version,
         analysisType: 'synthesis',
         includeRecommendations: true,
-        background: true // Run in background mode
-      })
+        background: true
+      }
     });
-
-    const analysisResult = await analysisResponse.json().catch(() => null);
-    const analysisError = analysisResponse.ok ? null : new Error(analysisResult?.error || 'Analysis failed');
 
     if (analysisError) {
       console.error('[Queue Processor] Analysis error:', analysisError);
       await supabase
         .from('flow_analysis_queue')
-        .update({ 
-          status: 'failed', 
+        .update({
+          status: 'failed',
           completed_at: new Date().toISOString(),
           error_message: analysisError.message || 'Analysis failed'
         })
