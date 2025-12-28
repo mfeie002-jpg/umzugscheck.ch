@@ -226,6 +226,24 @@ const UmzugsoffertenV1c = lazy(() => import("./pages/UmzugsoffertenV1c"));
 const UmzugsoffertenV1d = lazy(() => import("./pages/UmzugsoffertenV1d"));
 const UmzugsoffertenV1e = lazy(() => import("./pages/UmzugsoffertenV1e"));
 const UmzugsoffertenV2a = lazy(() => import("./pages/UmzugsoffertenV2a"));
+const UmzugsoffertenV2b = lazy(() => import("./pages/UmzugsoffertenV2b"));
+const UmzugsoffertenV3a = lazy(() => import("./pages/UmzugsoffertenV3a"));
+const UmzugsoffertenV3b = lazy(() => import("./pages/UmzugsoffertenV3b"));
+const UmzugsoffertenV3c = lazy(() => import("./pages/UmzugsoffertenV3c"));
+const UmzugsoffertenV3d = lazy(() => import("./pages/UmzugsoffertenV3d"));
+const UmzugsoffertenV3e = lazy(() => import("./pages/UmzugsoffertenV3e"));
+const UmzugsoffertenV4a = lazy(() => import("./pages/UmzugsoffertenV4a"));
+const UmzugsoffertenV4b = lazy(() => import("./pages/UmzugsoffertenV4b"));
+const UmzugsoffertenV4c = lazy(() => import("./pages/UmzugsoffertenV4c"));
+const UmzugsoffertenV4d = lazy(() => import("./pages/UmzugsoffertenV4d"));
+const UmzugsoffertenV4e = lazy(() => import("./pages/UmzugsoffertenV4e"));
+const UmzugsoffertenV5a = lazy(() => import("./pages/UmzugsoffertenV5a"));
+const UmzugsoffertenV5d = lazy(() => import("./pages/UmzugsoffertenV5d"));
+const UmzugsoffertenV5e = lazy(() => import("./pages/UmzugsoffertenV5e"));
+const UmzugsoffertenV8a = lazy(() => import("./pages/UmzugsoffertenV8a"));
+const UmzugsoffertenV9a = lazy(() => import("./pages/UmzugsoffertenV9a"));
+const UmzugsoffertenV9b = lazy(() => import("./pages/UmzugsoffertenV9b"));
+const UmzugsoffertenV9c = lazy(() => import("./pages/UmzugsoffertenV9c"));
 const UmzugsoffertenV9D = lazy(() => import("./pages/UmzugsoffertenV9D"));
 const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
@@ -550,13 +568,31 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1e" element={<UmzugsoffertenV1e />} />
           <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
           <Route path="/umzugsofferten-v2a" element={<UmzugsoffertenV2a />} />
+          <Route path="/umzugsofferten-v2b" element={<UmzugsoffertenV2b />} />
           <Route path="/umzugsofferten-v3" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v3a" element={<UmzugsoffertenV3a />} />
+          <Route path="/umzugsofferten-v3b" element={<UmzugsoffertenV3b />} />
+          <Route path="/umzugsofferten-v3c" element={<UmzugsoffertenV3c />} />
+          <Route path="/umzugsofferten-v3d" element={<UmzugsoffertenV3d />} />
+          <Route path="/umzugsofferten-v3e" element={<UmzugsoffertenV3e />} />
           <Route path="/umzugsofferten-v4" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v4a" element={<UmzugsoffertenV4a />} />
+          <Route path="/umzugsofferten-v4b" element={<UmzugsoffertenV4b />} />
+          <Route path="/umzugsofferten-v4c" element={<UmzugsoffertenV4c />} />
+          <Route path="/umzugsofferten-v4d" element={<UmzugsoffertenV4d />} />
+          <Route path="/umzugsofferten-v4e" element={<UmzugsoffertenV4e />} />
           <Route path="/umzugsofferten-v5" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v5a" element={<UmzugsoffertenV5a />} />
+          <Route path="/umzugsofferten-v5d" element={<UmzugsoffertenV5d />} />
+          <Route path="/umzugsofferten-v5e" element={<UmzugsoffertenV5e />} />
           <Route path="/umzugsofferten-v6" element={<UmzugsoffertenVariant />} />
           <Route path="/umzugsofferten-v7" element={<UmzugsoffertenVariant />} />
           <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v8a" element={<UmzugsoffertenV8a />} />
           <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v9a" element={<UmzugsoffertenV9a />} />
+          <Route path="/umzugsofferten-v9b" element={<UmzugsoffertenV9b />} />
+          <Route path="/umzugsofferten-v9c" element={<UmzugsoffertenV9c />} />
           <Route path="/umzugsofferten-v9d" element={<UmzugsoffertenV9D />} />
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
