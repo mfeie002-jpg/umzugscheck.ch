@@ -22,6 +22,7 @@ export { V1eFeedbackBased } from './V1eFeedbackBased';
 // V2 Variants (UX-Optimized)
 export { V2aProgressEnhanced } from './V2aProgressEnhanced';
 export { V2bSimplifiedLabels } from './V2bSimplifiedLabels';
+export { V2bOptimized } from './V2bOptimized';
 export { V2cTrustFocused } from './V2cTrustFocused';
 export { V2dSpeedOptimized } from './V2dSpeedOptimized';
 export { V2eExperimental } from './V2eExperimental';
@@ -88,7 +89,8 @@ export const VARIANT_REGISTRY: Record<string, {
   // V2 - UX Optimized
   'v2': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2 UX Optimized' },
   'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Progress Enhanced' },
-  'v2b': { component: 'V2bSimplifiedLabels', stepCount: 4, label: 'V2b Simplified Labels' },
+  'v2b': { component: 'V2bOptimized', stepCount: 6, label: 'V2b ChatGPT Optimized' },
+  'v2b-simple': { component: 'V2bSimplifiedLabels', stepCount: 3, label: 'V2b Simplified Labels' },
   'v2c': { component: 'V2cTrustFocused', stepCount: 4, label: 'V2c Trust Focused' },
   'v2d': { component: 'V2dSpeedOptimized', stepCount: 3, label: 'V2d Speed Optimized' },
   'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
