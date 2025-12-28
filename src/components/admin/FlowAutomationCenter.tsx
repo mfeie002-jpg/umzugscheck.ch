@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from "@/data/flowConfigs";
 import { SITE_CONFIG } from "@/data/constants";
@@ -48,7 +49,10 @@ import {
   Download,
   Eye,
   Archive,
-  Layers
+  Layers,
+  ChevronDown,
+  ChevronRight,
+  Wrench
 } from "lucide-react";
 
 // Flow options from config
@@ -92,6 +96,181 @@ interface FeedbackEntry {
   prompt: string;
   status: string;
   created_at: string;
+}
+
+// Expandable Flow Result Component
+interface ExpandableFlowResultProps {
+  result: AnalysisResult;
+  onCopyPrompt: () => void;
+  onCopyFixPrompt: () => void;
+  onExport: () => void;
+  isExporting: boolean;
+  getFlowNumber: (flowId: string) => string | number;
+}
+
+function ExpandableFlowResult({
+  result,
+  onCopyPrompt,
+  onCopyFixPrompt,
+  onExport,
+  isExporting,
+  getFlowNumber,
+}: ExpandableFlowResultProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const bgClass =
+    result.status === "completed"
+      ? "bg-card border-green-200 dark:border-green-800"
+      : result.status === "running"
+      ? "bg-card border-blue-200 dark:border-blue-800"
+      : result.status === "error"
+      ? "bg-card border-red-200 dark:border-red-800"
+      : "bg-muted/50";
+
+  return (
+    <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+      <div className={`rounded-lg border transition-all ${bgClass} ${isExpanded ? "ring-2 ring-primary/20" : ""}`}>
+        <CollapsibleTrigger asChild>
+          <button
+            type="button"
+            className="w-full text-left p-4 flex items-center justify-between cursor-pointer hover:bg-accent/50 transition-colors rounded-t-lg"
+          >
+            <div className="flex items-center gap-3">
+              {result.status === "completed" && (
+                <CheckCircle className="h-5 w-5 text-green-600" />
+              )}
+              {result.status === "running" && (
+                <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+              )}
+              {result.status === "error" && (
+                <AlertCircle className="h-5 w-5 text-red-600" />
+              )}
+              {result.status === "pending" && (
+                <div className="h-5 w-5 rounded-full bg-muted" />
+              )}
+              <span className="font-semibold">{result.flowName}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              {result.score !== undefined && (
+                <Badge variant={result.score >= 70 ? "default" : "destructive"} className="px-3 py-1">
+                  Score: {result.score}/100
+                </Badge>
+              )}
+              {isExpanded ? (
+                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+              ) : (
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              )}
+            </div>
+          </button>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent>
+          <div className="px-4 pb-4 space-y-4 border-t pt-4">
+            {/* Summary */}
+            {result.summary && (
+              <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg">
+                {result.summary}
+              </p>
+            )}
+
+            {/* Stats */}
+            {result.status === "completed" && (
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className={`text-2xl font-bold ${(result.score ?? 0) >= 70 ? "text-green-600" : (result.score ?? 0) >= 40 ? "text-yellow-600" : "text-red-600"}`}>
+                    {result.score ?? 0}/100
+                  </div>
+                  <div className="text-xs text-muted-foreground">Gesamt-Score</div>
+                </div>
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="text-2xl font-bold">{result.issuesCount ?? 0}</div>
+                  <div className="text-xs text-muted-foreground">Issues</div>
+                </div>
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="text-2xl font-bold text-red-600">{result.criticalCount ?? 0}</div>
+                  <div className="text-xs text-muted-foreground">Kritisch</div>
+                </div>
+              </div>
+            )}
+
+            {result.error && (
+              <div className="p-3 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200">
+                <span className="text-sm text-red-600">{result.error}</span>
+              </div>
+            )}
+
+            {/* Actions */}
+            {result.status === "completed" && (
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCopyFixPrompt();
+                  }}
+                  className="gap-2"
+                >
+                  <Wrench className="h-4 w-4" />
+                  Fix-Prompt kopieren
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCopyPrompt();
+                  }}
+                  className="gap-2"
+                >
+                  <Copy className="h-4 w-4" />
+                  Analyse-Prompt
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onExport();
+                  }}
+                  disabled={isExporting}
+                  className="gap-2"
+                >
+                  {isExporting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Download className="h-4 w-4" />
+                  )}
+                  ZIP Export
+                </Button>
+                <Link
+                  to={`/admin/flow-comparison/${getFlowNumber(result.flowId)}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Layers className="h-4 w-4" />
+                    Varianten
+                  </Button>
+                </Link>
+                <Link
+                  to={`/umzugsofferten?v=${result.flowId.replace('umzugsofferten-', '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Eye className="h-4 w-4" />
+                    Live ansehen
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
+  );
 }
 
 export function FlowAutomationCenter() {
@@ -1081,7 +1260,7 @@ Antworte auf Deutsch.`;
                     </div>
                   </div>
                   
-                  <div className="grid gap-2">
+                  <div className="grid gap-3">
                     {analysisResults.map((result) => {
                       const copyPrompt = async () => {
                         const singlePrompt = `# ${result.flowName} - Detailanalyse
@@ -1098,98 +1277,45 @@ Bitte analysiere diesen Flow und gib mir:
                         toast.success(`${result.flowName} Prompt kopiert!`);
                       };
 
+                      const copyFixPrompt = async () => {
+                        const fixPrompt = `# Fix für ${result.flowName}
+
+## Aktuelle Situation:
+- **Score:** ${result.score ?? "—"}/100
+- **Issues:** ${result.issuesCount ?? "—"} (${result.criticalCount ?? "—"} kritisch)
+${result.summary ? `- **Zusammenfassung:** ${result.summary}` : ""}
+
+## Aufgabe:
+Bitte behebe die kritischen UX-Probleme in diesem Flow. Fokus auf:
+
+1. **Mobile-Optimierung:** Touch-Targets mindestens 44x44px, Abstände optimieren
+2. **Trust-Elemente:** Badges, Bewertungen, Garantien sichtbarer machen
+3. **CTA-Optimierung:** Buttons kontrastreicher, klare Handlungsaufforderungen
+4. **Formular-UX:** Weniger Felder, bessere Labels, Inline-Validierung
+
+## Technische Anforderungen:
+- React + TypeScript
+- Tailwind CSS
+- Mobile-First Design
+- Barrierefreie Komponenten
+
+Zeige mir die konkreten Code-Änderungen als Diffs.`;
+                        await navigator.clipboard.writeText(fixPrompt);
+                        toast.success(`Fix-Prompt für ${result.flowName} kopiert!`, {
+                          description: "Füge ihn in Lovable oder ChatGPT ein."
+                        });
+                      };
+
                       return (
-                        <button
-                          type="button"
+                        <ExpandableFlowResult
                           key={result.flowId}
-                          onClick={() => {
-                            if (result.status === "completed") copyPrompt();
-                          }}
-                          disabled={result.status !== "completed"}
-                          className={`w-full text-left p-3 rounded-lg border transition-colors cursor-pointer disabled:cursor-default ${
-                            result.status === "completed"
-                              ? "bg-green-50 dark:bg-green-950/20 border-green-200 hover:bg-green-100 dark:hover:bg-green-950/30"
-                              : result.status === "running"
-                              ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200"
-                              : result.status === "error"
-                              ? "bg-red-50 dark:bg-red-950/20 border-red-200"
-                              : "bg-muted/50"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              {result.status === "completed" && (
-                                <CheckCircle className="h-4 w-4 text-green-600" />
-                              )}
-                              {result.status === "running" && (
-                                <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />
-                              )}
-                              {result.status === "error" && (
-                                <AlertCircle className="h-4 w-4 text-red-600" />
-                              )}
-                              {result.status === "pending" && (
-                                <div className="h-4 w-4 rounded-full bg-muted" />
-                              )}
-                              <span className="font-medium">{result.flowName}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {result.score !== undefined && (
-                                <Badge variant={result.score >= 70 ? "default" : "destructive"}>
-                                  Score: {result.score}/100
-                                </Badge>
-                              )}
-                              {result.issuesCount !== undefined && (
-                                <Badge variant="outline">
-                                  {result.issuesCount} Issues ({result.criticalCount} kritisch)
-                                </Badge>
-                              )}
-                              {result.error && (
-                                <Badge variant="destructive">{result.error}</Badge>
-                              )}
-                              {result.status === "completed" && (
-                                <>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      exportFlowZip(result);
-                                    }}
-                                    disabled={exportingFlowId === result.flowId}
-                                    className="h-7 px-2"
-                                  >
-                                    {exportingFlowId === result.flowId ? (
-                                      <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                      <Download className="h-4 w-4" />
-                                    )}
-                                  </Button>
-                                  <Link 
-                                    to={`/admin/flow-comparison/${getFlowNumber(result.flowId)}`}
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-7 px-2"
-                                      title="Alle Varianten vergleichen"
-                                    >
-                                      <Layers className="h-4 w-4" />
-                                    </Button>
-                                  </Link>
-                                  <Copy className="h-4 w-4 text-muted-foreground" />
-                                </>
-                              )}
-                            </div>
-                          </div>
-                          {result.summary && (
-                            <p className="text-sm text-muted-foreground mt-2 pl-7">
-                              {result.summary}
-                            </p>
-                          )}
-                        </button>
+                          result={result}
+                          onCopyPrompt={copyPrompt}
+                          onCopyFixPrompt={copyFixPrompt}
+                          onExport={() => exportFlowZip(result)}
+                          isExporting={exportingFlowId === result.flowId}
+                          getFlowNumber={getFlowNumber}
+                        />
                       );
                     })}
                   </div>
