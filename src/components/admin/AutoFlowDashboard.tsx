@@ -36,7 +36,10 @@ import {
   Wand2,
   Wrench,
   Copy,
-  Filter
+  Filter,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 
 // Use central flow configurations - map to dashboard format (main flows + sub-variants)
@@ -531,6 +534,8 @@ Bitte gib mir die Änderungen als Code-Diffs aus.`;
 };
 
 type FlowFilterType = 'all' | 'main' | 'variants';
+type SortOption = 'name' | 'score' | 'issues' | 'date';
+type SortDirection = 'asc' | 'desc';
 
 const AutoFlowDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -543,10 +548,12 @@ const AutoFlowDashboard: React.FC = () => {
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
   const [flowFilter, setFlowFilter] = useState<FlowFilterType>('all');
   const [selectedFlowNumber, setSelectedFlowNumber] = useState<number | null>(null);
+  const [sortBy, setSortBy] = useState<SortOption>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  // Get filtered flows based on filter settings
+  // Get filtered and sorted flows based on filter and sort settings
   const getFilteredFlows = () => {
-    return Object.entries(FLOW_CONFIGS).filter(([flowId, config]) => {
+    const filtered = Object.entries(FLOW_CONFIGS).filter(([flowId, config]) => {
       // Filter by main vs variants
       const isMainFlow = flowId.startsWith('umzugsofferten-');
       const isVariant = !isMainFlow;
@@ -567,6 +574,43 @@ const AutoFlowDashboard: React.FC = () => {
       
       return true;
     });
+
+    // Sort flows
+    filtered.sort((a, b) => {
+      const [flowIdA, configA] = a;
+      const [flowIdB, configB] = b;
+      const runA = latestRuns[flowIdA];
+      const runB = latestRuns[flowIdB];
+      const issuesA = issues.filter(i => i.flow_id === flowIdA);
+      const issuesB = issues.filter(i => i.flow_id === flowIdB);
+
+      let comparison = 0;
+
+      switch (sortBy) {
+        case 'name':
+          comparison = configA.name.localeCompare(configB.name, 'de');
+          break;
+        case 'score':
+          const scoreA = runA?.overall_score ?? -1;
+          const scoreB = runB?.overall_score ?? -1;
+          comparison = scoreB - scoreA; // Higher score first by default
+          break;
+        case 'issues':
+          const criticalA = issuesA.filter(i => i.severity === 'critical').length;
+          const criticalB = issuesB.filter(i => i.severity === 'critical').length;
+          comparison = criticalB - criticalA; // More issues first by default
+          break;
+        case 'date':
+          const dateA = runA?.created_at ? new Date(runA.created_at).getTime() : 0;
+          const dateB = runB?.created_at ? new Date(runB.created_at).getTime() : 0;
+          comparison = dateB - dateA; // Newest first by default
+          break;
+      }
+
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+    return filtered;
   };
 
   // Get available flow numbers for filtering
@@ -813,7 +857,7 @@ const AutoFlowDashboard: React.FC = () => {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
-          {/* Filter Controls */}
+          {/* Filter & Sort Controls */}
           <Card>
             <CardContent className="py-4">
               <div className="flex flex-wrap items-center gap-4">
@@ -867,6 +911,43 @@ const AutoFlowDashboard: React.FC = () => {
                       onClick={() => setSelectedFlowNumber(num)}
                     >
                       V{num}
+                    </Button>
+                  ))}
+                </div>
+
+                {/* Separator */}
+                <div className="h-6 w-px bg-border" />
+
+                {/* Sort Controls */}
+                <div className="flex items-center gap-2">
+                  <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Sortieren:</span>
+                </div>
+                <div className="flex gap-1">
+                  {[
+                    { id: 'name', label: 'Name' },
+                    { id: 'score', label: 'Score' },
+                    { id: 'issues', label: 'Issues' },
+                    { id: 'date', label: 'Datum' },
+                  ].map(option => (
+                    <Button 
+                      key={option.id}
+                      variant={sortBy === option.id ? 'default' : 'outline'} 
+                      size="sm"
+                      onClick={() => {
+                        if (sortBy === option.id) {
+                          setSortDirection(d => d === 'asc' ? 'desc' : 'asc');
+                        } else {
+                          setSortBy(option.id as SortOption);
+                          setSortDirection('asc');
+                        }
+                      }}
+                      className="flex items-center gap-1"
+                    >
+                      {option.label}
+                      {sortBy === option.id && (
+                        sortDirection === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+                      )}
                     </Button>
                   ))}
                 </div>
