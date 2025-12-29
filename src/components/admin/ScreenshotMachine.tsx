@@ -196,7 +196,7 @@ export function ScreenshotMachine() {
   const [bundleProgress, setBundleProgress] = useState({ current: 0, total: 0, dimension: "" });
 
   // Domain URL discovery
-  const [domainUrl, setDomainUrl] = useState("https://www.umzugscheck.ch");
+  const [domainUrl, setDomainUrl] = useState("https://preview--umzugscheckv2.lovable.app");
   const [discoveredUrls, setDiscoveredUrls] = useState<string[]>(DEFAULT_TOP_20_URLS);
   const [discoveringUrls, setDiscoveringUrls] = useState(false);
 

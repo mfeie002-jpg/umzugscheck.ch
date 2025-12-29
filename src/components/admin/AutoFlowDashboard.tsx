@@ -18,6 +18,9 @@ import {
   AlertTriangle, 
   CheckCircle, 
   XCircle,
+  X,
+  Trash2,
+  StopCircle,
   TrendingUp,
   TrendingDown,
   Clock,
@@ -286,6 +289,7 @@ interface FlowResultCardProps {
   baseUrl: string;
   onAnalyze: () => void;
   onResolveIssue: (issueId: string) => Promise<void>;
+  onDeleteRun: (runId: string) => Promise<void>;
   getScoreColor: (score: number | null) => string;
   getSeverityBadge: (severity: string) => React.ReactNode;
 }
@@ -301,6 +305,7 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
   baseUrl,
   onAnalyze,
   onResolveIssue,
+  onDeleteRun,
   getScoreColor,
   getSeverityBadge,
 }) => {
@@ -493,12 +498,23 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                 {run ? 'Erneut analysieren' : 'Jetzt analysieren'}
               </Button>
               {run && (
-                <Button variant="outline" size="sm" asChild>
-                  <a href={`${baseUrl}/umzugsofferten?v=${flowId.replace('umzugsofferten-', '')}`} target="_blank" rel="noopener noreferrer">
-                    <Eye className="h-4 w-4 mr-2" />
-                    Live ansehen
-                  </a>
-                </Button>
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={`${baseUrl}/umzugsofferten?v=${flowId.replace('umzugsofferten-', '')}`} target="_blank" rel="noopener noreferrer">
+                      <Eye className="h-4 w-4 mr-2" />
+                      Live ansehen
+                    </a>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => onDeleteRun(run.id)}
+                    className="text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Löschen
+                  </Button>
+                </>
               )}
             </div>
 
@@ -840,6 +856,57 @@ const AutoFlowDashboard: React.FC = () => {
     toast.success('Issue als gelöst markiert');
   };
 
+  // Cancel a running analysis
+  const cancelAnalysis = async (flowId: string) => {
+    try {
+      // Update status to 'cancelled' in DB
+      await supabase
+        .from('flow_analysis_runs')
+        .update({ status: 'cancelled', completed_at: new Date().toISOString() })
+        .eq('flow_id', flowId)
+        .eq('status', 'running');
+      
+      // Remove from running analyses
+      setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
+      toast.success('Analyse abgebrochen');
+    } catch (error) {
+      console.error('Cancel error:', error);
+      toast.error('Abbrechen fehlgeschlagen');
+    }
+  };
+
+  // Cancel all running analyses
+  const cancelAllAnalyses = async () => {
+    try {
+      await supabase
+        .from('flow_analysis_runs')
+        .update({ status: 'cancelled', completed_at: new Date().toISOString() })
+        .eq('status', 'running');
+      
+      setRunningAnalyses([]);
+      toast.success('Alle Analysen abgebrochen');
+    } catch (error) {
+      console.error('Cancel all error:', error);
+      toast.error('Abbrechen fehlgeschlagen');
+    }
+  };
+
+  // Delete an analysis run
+  const deleteRun = async (runId: string) => {
+    try {
+      // Delete related issues first
+      await supabase.from('flow_ux_issues').delete().eq('run_id', runId);
+      // Delete the run
+      await supabase.from('flow_analysis_runs').delete().eq('id', runId);
+      
+      setRuns(prev => prev.filter(r => r.id !== runId));
+      toast.success('Analyse gelöscht');
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Löschen fehlgeschlagen');
+    }
+  };
+
   // Get latest run per flow
   const getLatestRuns = () => {
     const latest: Record<string, AnalysisRun> = {};
@@ -944,7 +1011,18 @@ const AutoFlowDashboard: React.FC = () => {
             <div className="flex items-center gap-2 mb-3">
               <Loader2 className="h-5 w-5 text-primary animate-spin" />
               <span className="font-medium">{runningAnalyses.length} Analyse{runningAnalyses.length > 1 ? 'n' : ''} laufen im Hintergrund</span>
-              <Badge variant="outline" className="ml-auto">Du kannst die Seite verlassen</Badge>
+              <div className="ml-auto flex items-center gap-2">
+                <Badge variant="outline">Du kannst die Seite verlassen</Badge>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={cancelAllAnalyses}
+                  className="h-7"
+                >
+                  <StopCircle className="h-4 w-4 mr-1" />
+                  Alle stoppen
+                </Button>
+              </div>
             </div>
             <div className="space-y-3">
               {runningAnalyses.map(analysis => {
@@ -957,9 +1035,19 @@ const AutoFlowDashboard: React.FC = () => {
                   <div key={analysis.flowId} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium">{analysis.flowName}</span>
-                      <span className="text-muted-foreground">
-                        Step {analysis.stepsCompleted || 0}/{analysis.totalSteps || '?'} • {elapsed}s
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">
+                          Step {analysis.stepsCompleted || 0}/{analysis.totalSteps || '?'} • {elapsed}s
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => cancelAnalysis(analysis.flowId)}
+                          className="h-6 w-6 p-0 hover:bg-destructive/20 hover:text-destructive"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     <div className="w-full">
                       <Progress value={progress} className="h-2" />
@@ -1182,6 +1270,7 @@ const AutoFlowDashboard: React.FC = () => {
                     baseUrl={baseUrl}
                     onAnalyze={() => runAnalysis(flowId)}
                     onResolveIssue={resolveIssue}
+                    onDeleteRun={deleteRun}
                     getScoreColor={getScoreColor}
                     getSeverityBadge={getSeverityBadge}
                   />

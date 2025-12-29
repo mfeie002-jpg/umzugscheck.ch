@@ -33,11 +33,17 @@ export const SERVICES = [
 export const SITE_CONFIG = {
   name: 'umzugscheck.ch',
   url: 'https://www.umzugscheck.ch',
+  previewUrl: 'https://preview--umzugscheckv2.lovable.app',
   description: 'Schweizer Vergleichsportal für Umzugsfirmen',
   logo: '/assets/umzugscheck-logo.png',
   ogImage: '/assets/og-image.png',
   twitterHandle: '@umzugscheck',
 } as const;
+
+// For analysis tools - always use Preview for real-time testing
+export const getAnalysisBaseUrl = (): string => {
+  return SITE_CONFIG.previewUrl;
+};
 
 export const CTA_TEXTS = {
   primary: 'JETZT GRATIS OFFERTEN VERGLEICHEN',

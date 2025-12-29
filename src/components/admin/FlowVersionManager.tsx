@@ -216,9 +216,8 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
       return;
     }
     
-    const isPreviewHost = window.location.hostname.includes('lovable.app') || 
-                          window.location.hostname.includes('lovableproject.com');
-    const publicBase = isPreviewHost ? SITE_CONFIG.url : window.location.origin;
+    // Always use Preview URL for real-time analysis
+    const publicBase = SITE_CONFIG.previewUrl;
 
     // Default to the selected flow's base path
     const basePath = FLOW_CONFIGS[flowId]?.path || SUB_VARIANT_CONFIGS[flowId]?.path || "/umzugsofferten";
@@ -1411,10 +1410,8 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                             return;
                           }
                           
-                          // Use production URL to avoid auth-bridge redirect on preview hosts
-                          const isPreviewHost = window.location.hostname.includes('lovable.app') || 
-                                                window.location.hostname.includes('lovableproject.com');
-                          const publicBase = isPreviewHost ? SITE_CONFIG.url : window.location.origin;
+                          // Always use Preview URL for real-time analysis
+                          const publicBase = SITE_CONFIG.previewUrl;
                           
                           // Determine the base URL from flow_code or first step's url
                           let baseUrl = `${publicBase}/umzugsofferten`;

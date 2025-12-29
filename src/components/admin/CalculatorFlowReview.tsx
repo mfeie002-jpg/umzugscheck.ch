@@ -235,7 +235,8 @@ const getStepConfigsForCalculator = (
 const getDefaultPublicBaseUrl = (): string => {
   const envBase = (import.meta as any)?.env?.VITE_CAPTURE_BASE_URL as string | undefined;
   if (envBase && typeof envBase === "string") return envBase.replace(/\/$/, "");
-  return SITE_CONFIG.url.replace(/\/$/, "");
+  // Default to Preview URL for real-time analysis
+  return SITE_CONFIG.previewUrl.replace(/\/$/, "");
 };
 
 // Helper to get uc_flow ID
@@ -378,7 +379,7 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
   const [selectedMobileDim, setSelectedMobileDim] = useState(DEFAULT_DIMENSIONS.mobile);
   
   // URL Discovery state
-  const [discoveryUrl, setDiscoveryUrl] = useState<string>(SITE_CONFIG.url);
+  const [discoveryUrl, setDiscoveryUrl] = useState<string>(SITE_CONFIG.previewUrl);
   const [discoveredPages, setDiscoveredPages] = useState<string[]>([]);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [pageLimit, setPageLimit] = useState<number>(20);
@@ -507,18 +508,18 @@ export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps 
     syncFlowConfigs();
   }, []);
 
-  // Schnellauswahl preset URLs
+  // Schnellauswahl preset URLs - Use Preview for real-time testing
   const PRESET_URLS = [
-    { label: "Homepage", url: `${SITE_CONFIG.url}/` },
-    { label: "Firmen", url: `${SITE_CONFIG.url}/firmen` },
-    { label: "Preisrechner", url: `${SITE_CONFIG.url}/umzugsrechner` },
-    { label: "Offerten", url: `${SITE_CONFIG.url}/umzugsofferten` },
-    { label: "Ratgeber", url: `${SITE_CONFIG.url}/ratgeber` },
-    { label: "Reinigung", url: `${SITE_CONFIG.url}/reinigungsrechner` },
-    { label: "Entsorgung", url: `${SITE_CONFIG.url}/entsorgungsrechner` },
-    { label: "Zürich", url: `${SITE_CONFIG.url}/umzugsfirma-zuerich` },
-    { label: "Bern", url: `${SITE_CONFIG.url}/umzugsfirma-bern` },
-    { label: "Basel", url: `${SITE_CONFIG.url}/umzugsfirma-basel` },
+    { label: "Homepage", url: `${SITE_CONFIG.previewUrl}/` },
+    { label: "Firmen", url: `${SITE_CONFIG.previewUrl}/firmen` },
+    { label: "Preisrechner", url: `${SITE_CONFIG.previewUrl}/umzugsrechner` },
+    { label: "Offerten", url: `${SITE_CONFIG.previewUrl}/umzugsofferten` },
+    { label: "Ratgeber", url: `${SITE_CONFIG.previewUrl}/ratgeber` },
+    { label: "Reinigung", url: `${SITE_CONFIG.previewUrl}/reinigungsrechner` },
+    { label: "Entsorgung", url: `${SITE_CONFIG.previewUrl}/entsorgungsrechner` },
+    { label: "Zürich", url: `${SITE_CONFIG.previewUrl}/umzugsfirma-zuerich` },
+    { label: "Bern", url: `${SITE_CONFIG.previewUrl}/umzugsfirma-bern` },
+    { label: "Basel", url: `${SITE_CONFIG.previewUrl}/umzugsfirma-basel` },
   ];
 
   const addPresetUrl = (url: string) => {
