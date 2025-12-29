@@ -537,6 +537,12 @@ type FlowFilterType = 'all' | 'main' | 'variants';
 type SortOption = 'name' | 'score' | 'issues' | 'date';
 type SortDirection = 'asc' | 'desc';
 
+// Base URL options for analysis
+const BASE_URL_OPTIONS = [
+  { value: 'https://www.umzugscheck.ch', label: 'Production (umzugscheck.ch)' },
+  { value: window.location.origin, label: `Preview (${window.location.host})` },
+];
+
 const AutoFlowDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [runs, setRuns] = useState<AnalysisRun[]>([]);
@@ -550,6 +556,12 @@ const AutoFlowDashboard: React.FC = () => {
   const [selectedFlowNumber, setSelectedFlowNumber] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  
+  // Default to preview URL if on lovableproject.com, otherwise production
+  const defaultBaseUrl = window.location.host.includes('lovableproject.com') 
+    ? window.location.origin 
+    : 'https://www.umzugscheck.ch';
+  const [baseUrl, setBaseUrl] = useState<string>(defaultBaseUrl);
 
   // Get filtered and sorted flows based on filter and sort settings
   const getFilteredFlows = () => {
@@ -653,8 +665,9 @@ const AutoFlowDashboard: React.FC = () => {
   const runAnalysis = async (flowId: string) => {
     setAnalyzing(flowId);
     try {
+      console.log(`Starting analysis for ${flowId} with baseUrl: ${baseUrl}`);
       const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
-        body: { flowId, runType: 'manual' }
+        body: { flowId, runType: 'manual', baseUrl }
       });
 
       if (error) throw error;
@@ -676,7 +689,7 @@ const AutoFlowDashboard: React.FC = () => {
     for (const flowId of flowIds) {
       try {
         await supabase.functions.invoke('auto-analyze-flow', {
-          body: { flowId, runType: 'scheduled' }
+          body: { flowId, runType: 'scheduled', baseUrl }
         });
         toast.success(`${FLOW_CONFIGS[flowId as keyof typeof FLOW_CONFIGS].name} analysiert`);
       } catch (error) {
@@ -756,6 +769,15 @@ const AutoFlowDashboard: React.FC = () => {
         <div>
           <h2 className="text-2xl font-bold">AutoFlow Analyse Dashboard</h2>
           <p className="text-muted-foreground">Automatische UX/Conversion-Analyse aller Flows</p>
+          <div className="mt-1 flex items-center gap-2 text-sm">
+            <span className="text-muted-foreground">Ziel:</span>
+            <code className={`px-2 py-0.5 rounded text-xs ${baseUrl.includes('lovableproject.com') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'}`}>
+              {baseUrl}
+            </code>
+            <Button variant="ghost" size="sm" onClick={() => setActiveTab('settings')} className="h-6 px-2 text-xs">
+              Ändern
+            </Button>
+          </div>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={fetchData}>
@@ -1120,6 +1142,49 @@ const AutoFlowDashboard: React.FC = () => {
         {/* Settings Tab */}
         <TabsContent value="settings">
           <div className="grid gap-4 md:grid-cols-2">
+            {/* Base URL Settings - NEW */}
+            <Card className="md:col-span-2 border-primary/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Monitor className="h-5 w-5" />
+                  Analyse-Ziel URL
+                </CardTitle>
+                <CardDescription>
+                  Wähle welche Umgebung analysiert werden soll. 
+                  <span className="text-destructive font-medium"> WICHTIG: Die Seiten müssen auf der gewählten URL existieren!</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <Label>Base URL für Screenshots & Analyse</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {BASE_URL_OPTIONS.map(option => (
+                      <Button
+                        key={option.value}
+                        variant={baseUrl === option.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setBaseUrl(option.value)}
+                        className="flex-1 min-w-[200px]"
+                      >
+                        {option.label}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <Input 
+                      value={baseUrl} 
+                      onChange={(e) => setBaseUrl(e.target.value)}
+                      placeholder="https://..."
+                      className="flex-1"
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Aktuelle URL: <code className="bg-muted px-2 py-1 rounded text-xs">{baseUrl}</code>
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>Alert-Einstellungen</CardTitle>
