@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, User, Shield, ArrowRight, AlertTriangle, Loader2 } from "lucide-react";
+import { Lock, User, Shield, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -35,9 +35,6 @@ const AdminLogin = () => {
     await safeSignOut();
   };
 
-  const handleContinueAsAdmin = () => {
-    navigate("/admin");
-  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +62,13 @@ const AdminLogin = () => {
     }
   };
 
+  // Auto-redirect if already admin - no manual click needed
+  useEffect(() => {
+    if (!loading && user && isAdmin && adminChecked) {
+      navigate("/admin", { replace: true });
+    }
+  }, [user, isAdmin, adminChecked, loading, navigate]);
+
   // While the session and role are being verified, show a stable loading UI
   if (loading || (user && !adminChecked)) {
     return (
@@ -76,14 +80,6 @@ const AdminLogin = () => {
       </div>
     );
   }
-
-  // Auto-redirect if already admin - no manual click needed
-  useEffect(() => {
-    if (user && isAdmin && adminChecked) {
-      navigate("/admin", { replace: true });
-    }
-  }, [user, isAdmin, adminChecked, navigate]);
-
   // If already admin, show brief loading while redirect happens
   if (user && isAdmin) {
     return (
