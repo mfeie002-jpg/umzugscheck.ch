@@ -470,8 +470,16 @@ serve(async (req) => {
     }> = [];
 
     // Analyze each step
+    // Determine flow param for deterministic rendering (e.g., "v1", "v2", "v3" etc.)
+    const flowParam = flowId.replace('umzugsofferten-', '').replace('umzugsofferten', 'v1');
+    
     for (let step = 1; step <= flowConfig.steps; step++) {
-      const stepUrl = `${baseUrl}${flowConfig.baseUrl}?uc_step=${step}&uc_capture=1`;
+      // Build URL with all required capture parameters:
+      // - uc_capture=1: enables capture mode with demo data
+      // - uc_step: sets the current step
+      // - uc_flow: ensures deterministic flow selection (prevents login page issues)
+      // - uc_cb: cache buster to prevent stale screenshots
+      const stepUrl = `${baseUrl}${flowConfig.baseUrl}?uc_capture=1&uc_step=${step}&uc_flow=${flowParam}&uc_cb=${Date.now()}`;
       const stepName = `Step ${step}`;
 
       console.log(`Analyzing step ${step}: ${stepUrl}`);

@@ -232,26 +232,50 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         )}
       </AnimatePresence>
 
-      {/* Enhanced Selection Counter - larger text, more prominent */}
+      {/* Enhanced Selection Counter - Issue 42: Clearer CTA hierarchy with action button */}
       <div
-        className={`p-3 rounded-xl text-center text-sm font-semibold transition-all ${
+        className={`p-4 rounded-xl transition-all ${
           selectedCompanies.length >= 3
-            ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-            : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800"
+            ? "bg-green-100 dark:bg-green-900/30 border-2 border-green-300 dark:border-green-700"
+            : "bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-300 dark:border-amber-700"
         }`}
       >
-        {selectedCompanies.length < 3 ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="text-lg">👆</span>
-            Noch {3 - selectedCompanies.length} Firma{3 - selectedCompanies.length > 1 ? "en" : ""}{" "}
-            auswählen für optimalen Vergleich
-          </span>
-        ) : (
-          <span className="flex items-center justify-center gap-2">
-            <CheckCircle className="w-5 h-5" />
-            {selectedCompanies.length} Firmen ausgewählt – Vergleich bereit!
-          </span>
-        )}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-center sm:text-left">
+            {selectedCompanies.length < 3 ? (
+              <div>
+                <span className="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center justify-center sm:justify-start gap-2">
+                  <span className="text-xl">👆</span>
+                  Noch {3 - selectedCompanies.length} auswählen
+                </span>
+                <span className="text-xs text-amber-600/80 dark:text-amber-500/80">
+                  Mindestens 3 Firmen für optimalen Vergleich
+                </span>
+              </div>
+            ) : (
+              <div>
+                <span className="text-base font-bold text-green-700 dark:text-green-400 flex items-center justify-center sm:justify-start gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  {selectedCompanies.length} Firmen ausgewählt
+                </span>
+                <span className="text-xs text-green-600/80 dark:text-green-500/80">
+                  ✓ Bereit für Offerten-Anfrage
+                </span>
+              </div>
+            )}
+          </div>
+          
+          {/* Issue 39: Clear CTA button after selection */}
+          {selectedCompanies.length >= 3 && (
+            <Badge 
+              variant="default" 
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-bold cursor-default shadow-md"
+            >
+              <Zap className="w-4 h-4 mr-1" />
+              Weiter mit {selectedCompanies.length} Firmen
+            </Badge>
+          )}
+        </div>
       </div>
 
       {/* Promoted Companies */}

@@ -670,18 +670,19 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Header with Progress */}
+      {/* Header with Progress - Issue 41: Enhanced consistency between numeric and visual indicators */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-medium text-muted-foreground">
+          <span className="text-sm font-bold text-primary">
             Schritt {currentStep} von {totalSteps}
           </span>
           <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium">
-            <Shield className="w-3.5 h-3.5" />
+            <Shield className="w-4 h-4" />
             Kostenlos & unverbindlich
           </div>
         </div>
         
+        {/* Enhanced: Taller progress bar (h-2.5) for better mobile visibility */}
         <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
           {[
             { step: 1, label: "Typ" },
@@ -691,8 +692,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ].map(({ step, label }) => (
             <li
               key={step}
-              className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                step <= currentStep ? 'bg-primary' : 'bg-border'
+              className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
+                step < currentStep 
+                  ? 'bg-green-500' 
+                  : step === currentStep 
+                    ? 'bg-primary' 
+                    : 'bg-muted'
               }`}
               role="listitem"
               aria-current={step === currentStep ? "step" : undefined}
@@ -701,11 +706,28 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ))}
         </ol>
         
-        <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
-          <span className={currentStep >= 1 ? 'text-primary font-medium' : ''}>Typ</span>
-          <span className={currentStep >= 2 ? 'text-primary font-medium' : ''}>Details</span>
-          <span className={currentStep >= 3 ? 'text-primary font-medium' : ''}>Firmen</span>
-          <span className={currentStep >= 4 ? 'text-primary font-medium' : ''}>Kontakt</span>
+        {/* Enhanced: Larger text with icons for better clarity */}
+        <div className="flex justify-between mt-3 text-xs">
+          {[
+            { step: 1, label: "Typ" },
+            { step: 2, label: "Details" },
+            { step: 3, label: "Firmen" },
+            { step: 4, label: "Kontakt" },
+          ].map(({ step, label }) => (
+            <span 
+              key={step}
+              className={`flex items-center gap-1 transition-colors ${
+                step < currentStep 
+                  ? 'text-green-600 font-semibold' 
+                  : step === currentStep 
+                    ? 'text-primary font-bold' 
+                    : 'text-muted-foreground'
+              }`}
+            >
+              {step < currentStep && <CheckCircle className="w-3 h-3" />}
+              {label}
+            </span>
+          ))}
         </div>
       </div>
 
