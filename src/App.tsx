@@ -320,6 +320,7 @@ const SoFunktionierts = lazy(() => import("./pages/SoFunktionierts"));
 const InvisibleMove = lazy(() => import("./pages/InvisibleMove"));
 const InvisibleMoveV2 = lazy(() => import("./pages/InvisibleMoveV2"));
 const Blueprint = lazy(() => import("./pages/Blueprint"));
+const BlueprintV2 = lazy(() => import("./pages/BlueprintV2"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -592,6 +593,7 @@ const AppRouterContent = () => {
           <Route path="/invisible-1" element={<InvisibleMove />} />
           <Route path="/invisible-2" element={<InvisibleMoveV2 />} />
           <Route path="/invisible-3" element={<Blueprint />} />
+          <Route path="/invisible-4" element={<BlueprintV2 />} />
           <Route path="/sitemap" element={<Sitemap />} />
           <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
           <Route path="/:city/umzug" element={<CityOptimized />} />
