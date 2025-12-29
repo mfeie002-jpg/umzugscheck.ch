@@ -127,18 +127,19 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
 
   return (
     <div className="space-y-3">
-      {/* Enhanced Filter Bar - larger touch targets */}
+      {/* Enhanced Filter Bar - larger touch targets with aria-labels */}
       <div className="bg-muted/50 rounded-xl p-3 space-y-3">
         <div className="flex items-center justify-between gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            // Enhanced: h-10 for 44px touch target
-            className="h-10 text-sm gap-2 px-3 touch-manipulation"
+            className="h-11 text-sm gap-2 px-4 touch-manipulation"
+            aria-expanded={showFilters}
+            aria-label="Filter anzeigen oder ausblenden"
           >
             <Filter className="w-4 h-4" />
-            Filter
+            <span>Filter</span>
             {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </Button>
 
@@ -147,16 +148,16 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
               variant={showMap ? "default" : "outline"}
               size="sm"
               onClick={() => setShowMap(!showMap)}
-              // Enhanced: h-10 for 44px touch target
-              className="h-10 text-sm gap-2 px-3 touch-manipulation"
+              className="h-11 text-sm gap-2 px-4 touch-manipulation"
+              aria-pressed={showMap}
+              aria-label="Kartenansicht umschalten"
             >
               <MapIcon className="w-4 h-4" />
               <span className="hidden xs:inline">Karte</span>
             </Button>
             
             <Select value={sortBy} onValueChange={setSortBy}>
-              {/* Enhanced: h-10 for 44px touch target */}
-              <SelectTrigger className="h-10 w-[120px] sm:w-[150px] text-sm">
+              <SelectTrigger className="h-11 w-[130px] sm:w-[160px] text-sm" aria-label="Sortierung wählen">
                 <SelectValue placeholder="Sortieren" />
               </SelectTrigger>
               <SelectContent>
@@ -180,8 +181,7 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
             >
               <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border">
                 <Select value={priceFilter} onValueChange={setPriceFilter}>
-                  {/* Enhanced: h-10 for 44px touch target */}
-                  <SelectTrigger className="h-10 text-sm">
+                  <SelectTrigger className="h-11 text-sm" aria-label="Preisklasse filtern">
                     <SelectValue placeholder="Preisklasse" />
                   </SelectTrigger>
                   <SelectContent>
@@ -194,8 +194,7 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
                 </Select>
 
                 <Select value={ratingFilter} onValueChange={setRatingFilter}>
-                  {/* Enhanced: h-10 for 44px touch target */}
-                  <SelectTrigger className="h-10 text-sm">
+                  <SelectTrigger className="h-11 text-sm" aria-label="Bewertung filtern">
                     <SelectValue placeholder="Bewertung" />
                   </SelectTrigger>
                   <SelectContent>
@@ -370,11 +369,11 @@ function CompanyCard({
           : "border-border hover:border-primary/30"
       }`}
     >
-      {/* Promoted Badge */}
+      {/* Promoted Badge - Issue #5: Enhanced transparency with consistent "Gesponsert" label */}
       {isPromoted && (
-        <div className="bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-center py-1 text-[10px] font-bold flex items-center justify-center gap-1">
-          <Sparkles className="w-3 h-3" />
-          Gesponsert · Premium Partner
+        <div className="bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-center py-1.5 text-[11px] font-bold flex items-center justify-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span className="uppercase tracking-wide">Gesponsert</span> · Premium Partner
         </div>
       )}
       
@@ -521,7 +520,7 @@ function CompanyCard({
           </div>
         </div>
 
-        {/* Expand Button */}
+        {/* Expand Button - Issue #17: Enhanced touch target for mobile */}
         <Button
           variant="ghost"
           size="sm"
@@ -529,10 +528,12 @@ function CompanyCard({
             e.stopPropagation();
             onExpand();
           }}
-          className="w-full h-6 mt-2 text-[10px] text-muted-foreground hover:text-foreground"
+          className="w-full h-10 mt-2 text-xs text-muted-foreground hover:text-foreground touch-manipulation"
+          aria-expanded={isExpanded}
+          aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
         >
           {isExpanded ? "Weniger Details" : "Mehr Details"}
-          {isExpanded ? <ChevronUp className="w-3 h-3 ml-1" /> : <ChevronDown className="w-3 h-3 ml-1" />}
+          {isExpanded ? <ChevronUp className="w-4 h-4 ml-1.5" /> : <ChevronDown className="w-4 h-4 ml-1.5" />}
         </Button>
       </div>
 
@@ -563,29 +564,31 @@ function CompanyCard({
                 </div>
               </div>
 
-              {/* Action Buttons */}
+              {/* Action Buttons - Enhanced touch targets (44px+) */}
               <div className="flex gap-2 pt-1">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 h-8 text-[10px]"
+                  className="flex-1 h-11 text-xs touch-manipulation"
                   onClick={(e) => {
                     e.stopPropagation();
                     window.open(`/firma/${company.slug || company.id}`, "_blank");
                   }}
+                  aria-label={`Profil von ${company.name} ansehen`}
                 >
-                  <ExternalLink className="w-3 h-3 mr-1" />
+                  <ExternalLink className="w-4 h-4 mr-1.5" />
                   Profil ansehen
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 text-[10px] gap-1"
+                  className="h-11 text-xs gap-1.5 touch-manipulation"
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
+                  aria-label={`${company.name} anrufen`}
                 >
-                  <Phone className="w-3 h-3" />
+                  <Phone className="w-4 h-4" />
                   Anrufen
                 </Button>
               </div>

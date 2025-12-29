@@ -183,15 +183,16 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
 
                   {/* Benefits (shown when selected or showDetails) */}
                   {(isSelected || showDetails) && (
+                    /* Issue #25: Enhanced benefits display with larger text */
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
-                      className="mt-2 space-y-1"
+                      className="mt-2.5 space-y-1.5"
                     >
                       {option.benefits.map((benefit, idx) => (
-                        <div key={idx} className="flex items-center gap-1.5 text-[9px] text-muted-foreground">
-                          <CheckCircle className="w-2.5 h-2.5 text-green-500 shrink-0" />
-                          {benefit}
+                        <div key={idx} className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                          <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                          <span>{benefit}</span>
                         </div>
                       ))}
                     </motion.div>
@@ -235,13 +236,15 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
         })}
         </div>
 
-        {/* Info Box */}
-        <div className="p-2.5 rounded-lg bg-muted/50 border border-border">
-          <div className="flex items-start gap-2">
-            <Shield className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-            <div className="text-[9px] text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">Sicher & diskret:</strong> Bei der Ausschreibung sehen Firmen nur 
-              PLZ und Umzugsdatum – keine persönlichen Daten. Erst nach Ihrem OK werden Kontaktdaten geteilt.
+        {/* Info Box - Issue #16 & #47: Enhanced trust with lock icon */}
+        <div className="p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+          <div className="flex items-start gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center shrink-0">
+              <Shield className="w-4 h-4 text-green-600 dark:text-green-400" />
+            </div>
+            <div className="text-xs text-green-700 dark:text-green-400 leading-relaxed">
+              <strong className="text-green-800 dark:text-green-300">Datenschutz garantiert:</strong> Bei der Ausschreibung sehen Firmen nur 
+              PLZ und Umzugsdatum. Ihre Kontaktdaten werden erst nach Ihrer Zustimmung geteilt. Keine Werbeanrufe.
             </div>
           </div>
         </div>

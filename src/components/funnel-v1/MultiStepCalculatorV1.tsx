@@ -829,9 +829,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                           CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}–{getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
                         </p>
                       </div>
-                      <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                        <TrendingDown className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-medium">bis 40% sparen</span>
+                      {/* Issue #20: Enhanced visibility for savings */}
+                      <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded-lg">
+                        <TrendingDown className="w-4 h-4" />
+                        <span className="text-xs font-bold">bis 40% sparen</span>
                       </div>
                     </div>
                   </motion.div>
@@ -1205,12 +1206,13 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
         {/* V1: Ghost variant for secondary Video CTA */}
         {currentStep === 1 && (
           <>
+            {/* Issue #3: Enhanced contrast for 'oder' separator */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-card px-2 text-muted-foreground">oder</span>
+                <span className="bg-card px-3 py-0.5 text-foreground/70 font-medium">oder</span>
               </div>
             </div>
 
