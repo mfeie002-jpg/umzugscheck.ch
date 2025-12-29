@@ -101,7 +101,7 @@ export function BackgroundExportManager() {
       const { error: fnError } = await supabase.functions.invoke('background-export', {
         body: {
           jobId: job.id,
-          baseUrl: 'https://umzugscheck.ch',
+          baseUrl: 'https://preview--umzugscheckv2.lovable.app',
           includeSubVariants,
         },
       });
