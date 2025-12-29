@@ -549,6 +549,16 @@ const BASE_URL_OPTIONS = [
   { value: window.location.origin, label: `Preview (${window.location.host})` },
 ];
 
+// Running analysis tracking
+interface RunningAnalysis {
+  flowId: string;
+  flowName: string;
+  status: 'running' | 'completed' | 'failed';
+  startedAt: Date;
+  stepsCompleted?: number;
+  totalSteps?: number;
+}
+
 const AutoFlowDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [runs, setRuns] = useState<AnalysisRun[]>([]);
@@ -562,12 +572,68 @@ const AutoFlowDashboard: React.FC = () => {
   const [selectedFlowNumber, setSelectedFlowNumber] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [runningAnalyses, setRunningAnalyses] = useState<RunningAnalysis[]>([]);
   
   // Default to preview URL if on lovableproject.com, otherwise production
   const defaultBaseUrl = window.location.host.includes('lovableproject.com') 
     ? window.location.origin 
     : 'https://www.umzugscheck.ch';
   const [baseUrl, setBaseUrl] = useState<string>(defaultBaseUrl);
+
+  // Subscribe to realtime updates for running analyses
+  useEffect(() => {
+    const channel = supabase
+      .channel('analysis-progress')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'flow_analysis_runs'
+        },
+        (payload) => {
+          const record = payload.new as any;
+          if (!record) return;
+          
+          if (payload.eventType === 'INSERT' && record.status === 'running') {
+            // New analysis started
+            setRunningAnalyses(prev => {
+              const exists = prev.some(a => a.flowId === record.flow_id);
+              if (exists) return prev;
+              return [...prev, {
+                flowId: record.flow_id,
+                flowName: record.flow_name || FLOW_CONFIGS[record.flow_id]?.name || record.flow_id,
+                status: 'running',
+                startedAt: new Date(record.created_at),
+                stepsCompleted: record.steps_captured || 0,
+                totalSteps: record.total_steps || FLOW_CONFIGS[record.flow_id]?.steps || 4,
+              }];
+            });
+          } else if (payload.eventType === 'UPDATE') {
+            if (record.status === 'completed' || record.status === 'failed') {
+              // Analysis finished - remove from running after a short delay
+              setTimeout(() => {
+                setRunningAnalyses(prev => prev.filter(a => a.flowId !== record.flow_id));
+              }, 3000);
+              // Refresh data
+              fetchData();
+            } else {
+              // Update progress
+              setRunningAnalyses(prev => prev.map(a => 
+                a.flowId === record.flow_id 
+                  ? { ...a, stepsCompleted: record.steps_captured || 0, status: record.status }
+                  : a
+              ));
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Get filtered and sorted flows based on filter and sort settings
   const getFilteredFlows = () => {
@@ -671,6 +737,22 @@ const AutoFlowDashboard: React.FC = () => {
   // Fire-and-forget analysis - runs in background, you can leave the page
   const runAnalysis = async (flowId: string) => {
     setAnalyzing(flowId);
+    const flowConfig = FLOW_CONFIGS[flowId];
+    
+    // Add to running analyses immediately for UI feedback
+    setRunningAnalyses(prev => {
+      const exists = prev.some(a => a.flowId === flowId);
+      if (exists) return prev;
+      return [...prev, {
+        flowId,
+        flowName: flowConfig?.name || flowId,
+        status: 'running',
+        startedAt: new Date(),
+        stepsCompleted: 0,
+        totalSteps: flowConfig?.steps || 4,
+      }];
+    });
+
     try {
       console.log(`Starting analysis for ${flowId} with baseUrl: ${baseUrl}`);
       
@@ -681,26 +763,30 @@ const AutoFlowDashboard: React.FC = () => {
         if (error) {
           console.error('Analysis error:', error);
           toast.error('Analyse fehlgeschlagen');
+          setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
         } else {
           toast.success(`Analyse abgeschlossen: Score ${data?.overallScore || '-'}/100`);
+          // Remove from running after delay (realtime will also handle this)
+          setTimeout(() => {
+            setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
+          }, 2000);
           fetchData();
         }
       }).catch(error => {
         console.error('Analysis error:', error);
+        setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
       });
 
-      // Immediately show "started" feedback
-      toast.info(`Analyse gestartet für ${FLOW_CONFIGS[flowId]?.name || flowId}. Läuft im Hintergrund - du kannst die Seite verlassen.`, { duration: 5000 });
-      
-      // Clear the analyzing state after a short delay to allow starting multiple
+      // Clear the analyzing button state after a short delay to allow starting multiple
       setTimeout(() => {
         setAnalyzing(null);
-      }, 1000);
+      }, 500);
       
     } catch (error) {
       console.error('Analysis error:', error);
       toast.error('Analyse fehlgeschlagen');
       setAnalyzing(null);
+      setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
     }
   };
 
@@ -709,32 +795,36 @@ const AutoFlowDashboard: React.FC = () => {
     setAnalyzing('all');
     const flowIds = Object.keys(FLOW_CONFIGS);
     
+    // Add all to running analyses immediately for UI feedback
+    const newRunning: RunningAnalysis[] = flowIds.map(flowId => ({
+      flowId,
+      flowName: FLOW_CONFIGS[flowId]?.name || flowId,
+      status: 'running' as const,
+      startedAt: new Date(),
+      stepsCompleted: 0,
+      totalSteps: FLOW_CONFIGS[flowId]?.steps || 4,
+    }));
+    setRunningAnalyses(prev => [...prev.filter(a => !flowIds.includes(a.flowId)), ...newRunning]);
+
     // Fire all analyses in parallel - they run in background on the server
-    const promises = flowIds.map(flowId => 
+    flowIds.forEach(flowId => {
       supabase.functions.invoke('auto-analyze-flow', {
         body: { flowId, runType: 'scheduled', baseUrl }
       }).then(({ error }) => {
         if (error) {
           console.error(`Error analyzing ${flowId}:`, error);
+          setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
         }
       }).catch(error => {
         console.error(`Error analyzing ${flowId}:`, error);
-      })
-    );
+        setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
+      });
+    });
 
-    // Show feedback immediately
-    toast.info(`${flowIds.length} Analysen gestartet. Laufen im Hintergrund - du kannst die Seite verlassen. Ergebnisse erscheinen automatisch nach ~2-3 Min pro Flow.`, { duration: 8000 });
-
-    // Clear analyzing state after a short delay
+    // Clear analyzing button state after a short delay
     setTimeout(() => {
       setAnalyzing(null);
-    }, 2000);
-
-    // Optional: Refresh data after all complete (if user is still on page)
-    Promise.all(promises).then(() => {
-      fetchData();
-      toast.success('Alle Analysen abgeschlossen!');
-    });
+    }, 1000);
   };
 
   const acknowledgeAlert = async (alertId: string) => {
@@ -829,6 +919,41 @@ const AutoFlowDashboard: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {/* Running Analyses Progress Banner */}
+      {runningAnalyses.length > 0 && (
+        <Card className="border-primary bg-primary/5">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Loader2 className="h-5 w-5 text-primary animate-spin" />
+              <span className="font-medium">{runningAnalyses.length} Analyse{runningAnalyses.length > 1 ? 'n' : ''} laufen im Hintergrund</span>
+              <Badge variant="outline" className="ml-auto">Du kannst die Seite verlassen</Badge>
+            </div>
+            <div className="space-y-3">
+              {runningAnalyses.map(analysis => {
+                const progress = analysis.totalSteps 
+                  ? Math.round((analysis.stepsCompleted || 0) / analysis.totalSteps * 100)
+                  : 0;
+                const elapsed = Math.round((Date.now() - analysis.startedAt.getTime()) / 1000);
+                
+                return (
+                  <div key={analysis.flowId} className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-medium">{analysis.flowName}</span>
+                      <span className="text-muted-foreground">
+                        Step {analysis.stepsCompleted || 0}/{analysis.totalSteps || '?'} • {elapsed}s
+                      </span>
+                    </div>
+                    <div className="w-full">
+                      <Progress value={progress} className="h-2" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Alerts Banner */}
       {alerts.length > 0 && (
