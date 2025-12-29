@@ -318,6 +318,7 @@ const SoFunktionierts = lazy(() => import("./pages/SoFunktionierts"));
 
 // Vision 2026 - Invisible Move Landing Page
 const InvisibleMove = lazy(() => import("./pages/InvisibleMove"));
+const InvisibleMoveV2 = lazy(() => import("./pages/InvisibleMoveV2"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -588,8 +589,11 @@ const AppRouterContent = () => {
           <Route path="/mein-bereich" element={<UserDashboard />} />
           {/* Vision 2026 - Invisible Move */}
           <Route path="/invisible-move" element={<InvisibleMove />} />
+          <Route path="/invisible-move-v2" element={<InvisibleMoveV2 />} />
           <Route path="/vision-2026" element={<InvisibleMove />} />
+          <Route path="/vision-2026-v2" element={<InvisibleMoveV2 />} />
           <Route path="/archetyp" element={<InvisibleMove />} />
+          <Route path="/archetyp-v2" element={<InvisibleMoveV2 />} />
           <Route path="/sitemap" element={<Sitemap />} />
           <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
           <Route path="/:city/umzug" element={<CityOptimized />} />
