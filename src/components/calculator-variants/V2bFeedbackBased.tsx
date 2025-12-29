@@ -342,19 +342,19 @@ export const V2bFeedbackBased = memo(function V2bFeedbackBased() {
   return (
     <TooltipProvider>
       <div className="w-full max-w-2xl mx-auto">
-        {/* Trust Badges - Top */}
-        <div className="flex items-center justify-center gap-4 mb-6 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Shield className="w-4 h-4 text-primary" />
-            <span>100% kostenlos</span>
+        {/* Trust Badges - Top (Enhanced Contrast & Touch Targets) */}
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mb-6 text-sm">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 border border-primary/20 min-h-[44px]">
+            <Shield className="w-5 h-5 text-primary" />
+            <span className="font-medium text-foreground">100% kostenlos</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-            <span>4.9/5 Sterne</span>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 min-h-[44px]">
+            <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+            <span className="font-medium text-foreground">4.9/5 Sterne</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Users className="w-4 h-4 text-primary" />
-            <span>15'000+ Umzüge</span>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 border border-primary/20 min-h-[44px]">
+            <Users className="w-5 h-5 text-primary" />
+            <span className="font-medium text-foreground">15'000+ Umzüge</span>
           </div>
         </div>
 
@@ -959,11 +959,15 @@ export const V2bFeedbackBased = memo(function V2bFeedbackBased() {
             )}
           </AnimatePresence>
 
-          {/* Navigation */}
-          <div className="p-4 border-t border-border bg-muted/30 flex items-center justify-between gap-4">
+          {/* Navigation - Enhanced CTAs with larger touch targets */}
+          <div className="p-4 sm:p-6 border-t border-border bg-muted/30 flex items-center justify-between gap-4">
             {currentStep > 1 ? (
-              <Button variant="outline" onClick={handleBack} className="gap-2">
-                <ArrowLeft className="w-4 h-4" />
+              <Button 
+                variant="outline" 
+                onClick={handleBack} 
+                className="gap-2 min-h-[48px] px-5 text-base font-medium"
+              >
+                <ArrowLeft className="w-5 h-5" />
                 Zurück
               </Button>
             ) : (
@@ -973,28 +977,63 @@ export const V2bFeedbackBased = memo(function V2bFeedbackBased() {
             <Button
               onClick={handleNext}
               disabled={!canProceed()}
-              className="gap-2 min-w-[160px]"
+              className="gap-2 min-w-[180px] min-h-[52px] text-base font-semibold shadow-lg hover:shadow-xl transition-shadow"
               size="lg"
             >
-              {currentStep === 6 ? "Offerten anfordern" : "Weiter"}
-              <ArrowRight className="w-4 h-4" />
+              {currentStep === 6 ? (
+                <>
+                  Jetzt Offerten erhalten
+                  <Sparkles className="w-5 h-5" />
+                </>
+              ) : (
+                <>
+                  Weiter
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
             </Button>
           </div>
+
+          {/* What happens next - Trust reinforcement */}
+          {currentStep === 6 && (
+            <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-2">
+                <h4 className="font-semibold text-sm text-foreground flex items-center gap-2">
+                  <Info className="w-4 h-4 text-primary" />
+                  Was passiert als Nächstes?
+                </h4>
+                <ul className="text-sm text-muted-foreground space-y-1.5">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                    Sie erhalten 2-3 Offerten innert 24 Stunden
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                    Nur geprüfte Schweizer Umzugsfirmen
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                    100% kostenlos & unverbindlich
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Trust Footer */}
-        <div className="flex items-center justify-center gap-4 mt-6">
-          <Badge variant="outline" className="text-xs gap-1">
-            <Shield className="w-3 h-3" />
-            SSL verschlüsselt
+        {/* Trust Footer - Enhanced visibility */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+          <Badge variant="outline" className="text-sm gap-1.5 px-3 py-1.5 border-border bg-card">
+            <Shield className="w-4 h-4 text-primary" />
+            <span className="text-foreground font-medium">SSL verschlüsselt</span>
           </Badge>
-          <Badge variant="outline" className="text-xs gap-1">
-            <Award className="w-3 h-3" />
-            ASTAG geprüft
+          <Badge variant="outline" className="text-sm gap-1.5 px-3 py-1.5 border-border bg-card">
+            <Award className="w-4 h-4 text-primary" />
+            <span className="text-foreground font-medium">ASTAG geprüft</span>
           </Badge>
-          <Badge variant="outline" className="text-xs gap-1">
-            <CheckCircle className="w-3 h-3" />
-            Schweizer Datenschutz
+          <Badge variant="outline" className="text-sm gap-1.5 px-3 py-1.5 border-border bg-card">
+            <CheckCircle className="w-4 h-4 text-primary" />
+            <span className="text-foreground font-medium">CH-Datenschutz</span>
           </Badge>
         </div>
       </div>
