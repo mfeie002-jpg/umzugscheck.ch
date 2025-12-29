@@ -30,44 +30,48 @@ interface SubmitOption {
   recommended?: boolean;
 }
 
-// Issue #25: Konkretere Vorteile für jede Option
+// Issue #1, #10, #21, #48: Kürzere Texte, konsistente Empfehlungen, klare Vorteile
 const submitOptions: SubmitOption[] = [
   {
     id: "direct",
     label: "Direkt anfragen",
-    description: "Ihre ausgewählten Firmen werden direkt kontaktiert und melden sich mit Offerten.",
+    // Issue #1: Kürzerer, prägnanter Text
+    description: "Schnell: Ausgewählte Firmen melden sich direkt.",
     tooltip: "Schnellster Weg: Wir senden Ihre Anfrage direkt an die ausgewählten Firmen. Sie erhalten in 24-48h persönliche Offerten per E-Mail.",
     icon: <Send className="w-5 h-5" />,
     benefits: [
-      "⚡ Antwort in Ø 24 Stunden",
-      "✓ Nur geprüfte Top-Firmen",
-      "📞 Persönliche Betreuung garantiert",
+      "⚡ Antwort in Ø 24h",
+      "✓ Nur geprüfte Firmen",
+      "📞 Persönliche Betreuung",
     ],
   },
   {
     id: "publish",
-    label: "Ausschreibung publizieren",
-    description: "Ihr Umzug wird im Portal veröffentlicht – Firmen bieten um Ihren Auftrag.",
+    label: "Ausschreibung",
+    // Issue #1: Kürzerer, prägnanter Text
+    description: "Günstig: Firmen bieten um Ihren Auftrag.",
     tooltip: "Wie eine Auktion: Ihr Umzug wird anonym publiziert. Firmen sehen nur PLZ & Datum und bieten um den Auftrag – oft günstigere Preise durch Wettbewerb.",
     icon: <Gavel className="w-5 h-5" />,
     benefits: [
-      "📊 Ø 5-8 Offerten pro Anfrage",
-      "💰 Bis zu 35% günstiger durch Wettbewerb",
-      "🔒 Ihre Daten bleiben anonym",
+      "📊 Ø 5-8 Offerten",
+      "💰 Bis 35% günstiger",
+      "🔒 Anonym bis Sie zustimmen",
     ],
     badge: "💰 Spar-Tipp",
   },
   {
     id: "both",
-    label: "Beides kombinieren",
-    description: "Direktkontakt + Ausschreibung = maximale Auswahl zum besten Preis.",
+    label: "Beides",
+    // Issue #10, #48: Klarer Mehrwert, warum empfohlen
+    description: "Beste Wahl: Schnelle + günstige Offerten.",
     tooltip: "Die beste Wahl: Sie erhalten sowohl schnelle Offerten von Top-Firmen als auch günstige Angebote durch die öffentliche Ausschreibung. Maximale Auswahl, volle Kontrolle.",
     icon: <Crown className="w-5 h-5" />,
     benefits: [
-      "🎯 Ø 8-12 Offerten (3x mehr Auswahl)",
-      "⏱ Schnelle Antworten + günstige Gebote",
-      "✨ 93% unserer Nutzer wählen diese Option",
+      "🎯 Ø 8-12 Offerten (3× mehr)",
+      "⏱ Schnell + günstig kombiniert",
+      "✨ 93% wählen diese Option",
     ],
+    // Issue #21: Konsistent "Empfohlen" auf allen Geräten
     badge: "⭐ Empfohlen",
     recommended: true,
   },
@@ -249,28 +253,25 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
         })}
         </div>
 
-        {/* Issue #16 & #47: Klare Datenschutz-Kommunikation mit spezifischen Details */}
-        <div className="p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center shrink-0">
-              <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
+        {/* Issue #7, #45: Konsistente Links, harmonisierte Datenschutz-Kommunikation */}
+        <div className="p-3 sm:p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+          <div className="flex items-start gap-2.5 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center shrink-0">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
             </div>
-            <div className="text-sm text-green-700 dark:text-green-400 leading-relaxed space-y-1.5">
-              <p className="font-bold text-green-800 dark:text-green-300 flex items-center gap-1.5">
-                🔒 Ihre Daten sind sicher
+            <div className="text-sm text-green-700 dark:text-green-400 leading-relaxed space-y-1">
+              <p className="font-bold text-green-800 dark:text-green-300 text-sm">
+                🔒 Sicher & diskret
               </p>
-              <ul className="text-xs space-y-1">
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
-                  <span><strong>Direkt anfragen:</strong> Nur gewählte Firmen erhalten Ihre Kontaktdaten</span>
+              {/* Issue #7: Konsistente Link-Formatierung mit gleicher Farbe */}
+              <ul className="text-xs space-y-0.5">
+                <li className="flex items-center gap-1.5">
+                  <CheckCircle className="w-3 h-3 text-green-500 shrink-0" />
+                  <span><strong>Firmen sehen nur PLZ</strong> – Kontakt erst nach Ihrem OK</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
-                  <span><strong>Ausschreibung:</strong> Anonym – nur PLZ & Datum sichtbar, Kontakt erst nach Ihrem OK</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
-                  <span>Keine Werbeanrufe · 100% unverbindlich · Jederzeit widerrufbar</span>
+                <li className="flex items-center gap-1.5">
+                  <CheckCircle className="w-3 h-3 text-green-500 shrink-0" />
+                  <span><strong>Keine Werbeanrufe</strong> · 100% unverbindlich</span>
                 </li>
               </ul>
             </div>

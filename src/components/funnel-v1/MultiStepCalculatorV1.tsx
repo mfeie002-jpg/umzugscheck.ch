@@ -772,9 +772,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               transition={{ duration: 0.2 }}
               className="space-y-4"
             >
+              {/* Issue #38: Klare visuelle Hierarchie - Haupttitel grösser */}
               <div className="text-center mb-4">
-                <h3 className="text-lg font-bold">Ihr Umzug im Detail</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground">Ihr Umzug im Detail</h3>
+                <p className="text-sm text-muted-foreground mt-1">
                   Von wo nach wo? Was brauchen Sie?
                 </p>
               </div>
@@ -878,33 +879,34 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 )}
               </div>
 
-                {/* Issue #2, #37: KI Video-Analyzer mit klarer Nutzenargumentation, Badge nicht überdeckend */}
+                {/* Issue #26, #37: KI Video-Analyzer mit klarer Nutzenargumentation */}
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   onClick={() => updateFormData("useVideoAI", !formData.useVideoAI)}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all min-h-[72px] touch-manipulation active:scale-[0.99] ${
+                  className={`p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all min-h-[72px] touch-manipulation active:scale-[0.99] ${
                     formData.useVideoAI
                       ? "border-secondary bg-secondary/10"
-                      : "border-primary/30 bg-gradient-to-r from-primary/5 to-secondary/5 hover:border-primary/50"
+                      : "border-dashed border-muted-foreground/30 hover:border-primary/50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-                      formData.useVideoAI ? "bg-secondary text-secondary-foreground" : "bg-primary/20"
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 ${
+                      formData.useVideoAI ? "bg-secondary text-secondary-foreground" : "bg-muted"
                     }`}>
-                      <Video className="w-6 h-6" />
+                      <Video className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-sm font-bold">🤖 KI Video-Analyse</p>
-                        <span className="text-[9px] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full font-bold shrink-0">
-                          NEU
+                        <p className="text-sm font-bold">KI Video-Analyse</p>
+                        <span className="text-[9px] bg-secondary/80 text-secondary-foreground px-1.5 py-0.5 rounded font-medium shrink-0">
+                          Optional
                         </span>
                       </div>
+                      {/* Issue #26: Klarer Nutzen für den Umzugs-Kontext */}
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        Wohnung filmen → KI erstellt Inventar → Genauere Offerten
+                        📱 Wohnung filmen → Genauere Preise, weniger Rückfragen
                       </p>
                     </div>
                     <div
@@ -919,13 +921,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </div>
                 </motion.div>
 
-                {/* Services */}
+                {/* Issue #25: Services mit klarer visueller Hierarchie */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">Welche Leistungen brauchen Sie?</label>
-                    <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <Plus className="w-2.5 h-2.5" />
-                      Details
+                    <label className="text-sm font-semibold">Welche Leistungen brauchen Sie?</label>
+                    <span className="text-[10px] text-muted-foreground">
+                      + Details anzeigen
                     </span>
                   </div>
                   
@@ -1098,40 +1099,46 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   type="email"
                 />
 
-                <ValidatedInput
-                  schema={phoneSchema}
-                  value={formData.phone}
-                  onValueChange={(v) => updateFormData("phone", v)}
-                  label="Telefon (optional)"
-                  icon={<Phone className="w-4 h-4 text-muted-foreground" />}
-                  placeholder="+41 79 123 45 67"
-                  type="tel"
-                  inputMode="tel"
-                  showSuccessIcon={false}
-                />
+                {/* Issue #9: Telefon-Feld mit klarem Icon und Präfix-Hinweis */}
+                <div className="space-y-1.5">
+                  <ValidatedInput
+                    schema={phoneSchema}
+                    value={formData.phone}
+                    onValueChange={(v) => updateFormData("phone", v)}
+                    label="📱 Telefon (optional)"
+                    icon={<Phone className="w-4 h-4 text-primary" />}
+                    placeholder="+41 79 123 45 67"
+                    type="tel"
+                    inputMode="tel"
+                    showSuccessIcon={false}
+                  />
+                  <p className="text-[10px] text-muted-foreground ml-1">
+                    Für schnellere Rückfragen – Mobilnummer bevorzugt
+                  </p>
+                </div>
 
-                {/* Enhanced: Larger checkbox for touch targets (24px) */}
-                <div className="flex items-start gap-3">
+                {/* Issue #23, #34: Grössere Checkbox mit klarerer Pflichtfeld-Kennzeichnung */}
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/30 border border-border/50">
                   <Checkbox
                     id="privacy-v1"
                     checked={formData.privacyAccepted}
                     onCheckedChange={(checked) => updateFormData("privacyAccepted", !!checked)}
-                    className="mt-0.5 h-6 w-6"
+                    className="mt-0.5 h-6 w-6 shrink-0"
                   />
                   <label htmlFor="privacy-v1" className="text-xs text-muted-foreground cursor-pointer leading-relaxed">
+                    {/* Issue #7: Konsistente Link-Formatierung */}
                     Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline font-medium">Datenschutzerklärung</a> und 
                     bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden.
+                    <span className="text-red-500 font-bold ml-1">*</span>
                   </label>
                 </div>
                 
-                <div className="uc-success-box flex items-start gap-2 mt-2">
-                  <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-green-600 dark:text-green-400" />
-                  <div className="text-xs">
-                    <span className="font-medium text-green-700 dark:text-green-300">Ihre Daten sind sicher:</span>{" "}
-                    <span className="text-green-600 dark:text-green-400">
-                      Keine Werbeanrufe · Nur an ausgewählte Firmen · 100% unverbindlich
-                    </span>
-                  </div>
+                {/* Issue #45: Harmonisierte Datenschutz-Info ohne Widerspruch */}
+                <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg">
+                  <Shield className="w-4 h-4 flex-shrink-0" />
+                  <span>
+                    <strong>Sicher:</strong> Keine Werbeanrufe · Nur an gewählte Firmen · Jederzeit widerrufbar
+                  </span>
                 </div>
               </div>
             </motion.div>

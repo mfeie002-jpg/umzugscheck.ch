@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Star, CheckCircle, Award, MapPin, Calendar, Phone, Clock,
   Filter, ChevronDown, ChevronUp, Sparkles, TrendingDown, Shield,
-  Map as MapIcon, ExternalLink, Users, Zap, Crown
+  Map as MapIcon, ExternalLink, Users, Zap, Crown, Info
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Company {
   id: string;
@@ -456,27 +462,47 @@ function CompanyCard({
               </div>
             </div>
 
-            {/* Stats Row - Enhanced */}
+            {/* Stats Row - Enhanced with tooltips for Issue #8, #41 */}
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              {/* Match - Enhanced */}
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold">
-                <Zap className="w-3 h-3" />
-                {matchPercent}% Match
-              </span>
+              {/* Issue #41: Match mit Tooltip-Erklärung */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold cursor-help">
+                      <Zap className="w-3 h-3" />
+                      {matchPercent}% Match
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[200px] text-xs p-2">
+                    <p><strong>Match zu Ihren Kriterien:</strong></p>
+                    <p className="text-muted-foreground">Basiert auf Bewertung, Services, Region & Verfügbarkeit.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-              {/* Price Level - Enhanced */}
+              {/* Price Level */}
               <span className="text-xs font-medium text-muted-foreground">
                 {company.price_level === "günstig" && "💰 Günstig"}
                 {company.price_level === "fair" && "⚖️ Fair"}
                 {company.price_level === "premium" && "⭐ Premium"}
               </span>
 
-              {/* Price Estimate - Enhanced */}
-              <span className="text-xs font-bold text-primary">
-                CHF {priceEstimate.min.toLocaleString()}–{priceEstimate.max.toLocaleString()}
-              </span>
+              {/* Issue #8: Preisspanne mit Tooltip-Erklärung */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-xs font-bold text-primary cursor-help underline-offset-2 decoration-dotted underline">
+                      CHF {priceEstimate.min.toLocaleString()}–{priceEstimate.max.toLocaleString()}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[220px] text-xs p-2">
+                    <p><strong>Geschätzte Preisspanne</strong></p>
+                    <p className="text-muted-foreground">Basiert auf Ihrer Wohnungsgrösse und ähnlichen Umzügen. Die finale Offerte kann abweichen.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-              {/* Response Time - Enhanced */}
+              {/* Response Time */}
               {company.response_time_avg_hours && company.response_time_avg_hours <= 4 && (
                 <span className="inline-flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
                   <Clock className="w-3 h-3" />
