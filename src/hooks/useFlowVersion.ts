@@ -49,8 +49,9 @@ export function parseVersionCode(versionParam: string | null): {
     return { flowNumber: null, variantLetter: null, adjustmentNumber: null, isUltimate: true, flowCode: 'ultimate' };
   }
   
-  // Parse patterns like "2", "2a", "2a1"
-  const match = versionParam.match(/^(\d)([a-e])?(\d)?$/);
+  // Parse patterns like "2", "2a", "2a1" or "v1", "v2" (with optional v prefix)
+  const normalizedParam = versionParam.toLowerCase().replace(/^v/, '');
+  const match = normalizedParam.match(/^(\d)([a-e])?(\d)?$/);
   
   if (!match) {
     return { flowNumber: 1, variantLetter: null, adjustmentNumber: null, isUltimate: false, flowCode: '1' };
