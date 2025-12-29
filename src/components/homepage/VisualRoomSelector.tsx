@@ -64,26 +64,29 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                "flex flex-col items-center justify-center p-2 sm:p-3 rounded-xl border-2 transition-all min-h-[70px] sm:min-h-[80px] touch-manipulation",
+                // Enhanced: min-h-[80px] for better touch targets on mobile
+                "flex flex-col items-center justify-center p-3 sm:p-3 rounded-xl border-2 transition-all min-h-[80px] sm:min-h-[88px] touch-manipulation active:scale-[0.98]",
                 isSelected
-                  ? "border-primary bg-primary/10 shadow-soft"
+                  ? "border-primary bg-primary/10 shadow-soft ring-1 ring-primary/30"
                   : "border-border bg-card hover:border-primary/40 hover:bg-muted/50"
               )}
               aria-pressed={isSelected}
             >
               <Icon 
                 className={cn(
-                  "w-5 h-5 sm:w-6 sm:h-6 mb-1 transition-colors",
+                  // Enhanced: Larger icons for better visibility
+                  "w-6 h-6 sm:w-7 sm:h-7 mb-1.5 transition-colors",
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )} 
               />
               <span className={cn(
-                "text-[11px] sm:text-xs font-medium transition-colors leading-tight text-center",
+                // Enhanced: Larger text (13px min) for better readability
+                "text-[13px] sm:text-sm font-semibold transition-colors leading-tight text-center",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {option.label}
               </span>
-              <span className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5">
+              <span className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">
                 {option.sublabel}
               </span>
             </motion.button>
