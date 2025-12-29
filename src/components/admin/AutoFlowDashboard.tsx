@@ -399,7 +399,9 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                   <div className={`text-2xl font-bold ${getScoreColor(run.performance_score)}`}>
                     {run.performance_score || 0}/100
                   </div>
-                  <Progress value={run.performance_score || 0} className="h-2 mt-2" />
+                  <div className="w-full mt-2">
+                    <Progress value={run.performance_score || 0} className="h-2 w-full" />
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-1">
@@ -408,7 +410,9 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                   <div className={`text-2xl font-bold ${getScoreColor(run.conversion_score)}`}>
                     {run.conversion_score || 0}/100
                   </div>
-                  <Progress value={run.conversion_score || 0} className="h-2 mt-2" />
+                  <div className="w-full mt-2">
+                    <Progress value={run.conversion_score || 0} className="h-2 w-full" />
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-1">
@@ -417,7 +421,9 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                   <div className={`text-2xl font-bold ${getScoreColor(run.ux_score)}`}>
                     {run.ux_score || 0}/100
                   </div>
-                  <Progress value={run.ux_score || 0} className="h-2 mt-2" />
+                  <div className="w-full mt-2">
+                    <Progress value={run.ux_score || 0} className="h-2 w-full" />
+                  </div>
                 </div>
               </div>
             )}
@@ -445,8 +451,8 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                   </Button>
                 </div>
                 
-                <ScrollArea className="max-h-[400px]">
-                  <div className="space-y-2">
+                <ScrollArea className="h-[400px] pr-4">
+                  <div className="space-y-2 pb-4">
                     {flowIssues.map(issue => (
                       <IssueCard 
                         key={issue.id} 
