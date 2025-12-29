@@ -576,9 +576,11 @@ const AutoFlowDashboard: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [runningAnalyses, setRunningAnalyses] = useState<RunningAnalysis[]>([]);
   
-  // Default to production URL
-  const defaultBaseUrl = 'https://umzugscheck.ch';
-  const [baseUrl, setBaseUrl] = useState<string>(defaultBaseUrl);
+  // URL configuration - Preview vs Production
+  const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
+  const PRODUCTION_URL = 'https://umzugscheck.ch';
+  const [usePreview, setUsePreview] = useState<boolean>(true); // Default to Preview for instant testing
+  const baseUrl = usePreview ? PREVIEW_URL : PRODUCTION_URL;
 
   // Subscribe to realtime updates for running analyses
   useEffect(() => {
@@ -894,14 +896,29 @@ const AutoFlowDashboard: React.FC = () => {
         <div>
           <h2 className="text-2xl font-bold">AutoFlow Analyse Dashboard</h2>
           <p className="text-muted-foreground">Automatische UX/Conversion-Analyse aller Flows</p>
-          <div className="mt-1 flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Ziel:</span>
-            <code className={`px-2 py-0.5 rounded text-xs ${baseUrl.includes('lovableproject.com') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'}`}>
+          <div className="mt-2 flex items-center gap-3">
+            {/* Quick Preview/Production Toggle */}
+            <div className="flex items-center gap-2 p-1 bg-muted rounded-lg">
+              <Button
+                variant={usePreview ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setUsePreview(true)}
+                className="h-7 px-3 text-xs"
+              >
+                🔵 Preview
+              </Button>
+              <Button
+                variant={!usePreview ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setUsePreview(false)}
+                className="h-7 px-3 text-xs"
+              >
+                🟢 Production
+              </Button>
+            </div>
+            <code className={`px-2 py-0.5 rounded text-xs ${usePreview ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'}`}>
               {baseUrl}
             </code>
-            <Button variant="ghost" size="sm" onClick={() => setActiveTab('settings')} className="h-6 px-2 text-xs">
-              Ändern
-            </Button>
           </div>
         </div>
         <div className="flex gap-2">
@@ -1317,30 +1334,31 @@ const AutoFlowDashboard: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  <Label>Base URL für Screenshots & Analyse</Label>
+                  <Label>Umgebung wählen</Label>
                   <div className="flex flex-wrap gap-2">
-                    {BASE_URL_OPTIONS.map(option => (
-                      <Button
-                        key={option.value}
-                        variant={baseUrl === option.value ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setBaseUrl(option.value)}
-                        className="flex-1 min-w-[200px]"
-                      >
-                        {option.label}
-                      </Button>
-                    ))}
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <Input 
-                      value={baseUrl} 
-                      onChange={(e) => setBaseUrl(e.target.value)}
-                      placeholder="https://..."
-                      className="flex-1"
-                    />
+                    <Button
+                      variant={usePreview ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setUsePreview(true)}
+                      className="flex-1 min-w-[200px]"
+                    >
+                      🔵 Preview (Lovable)
+                    </Button>
+                    <Button
+                      variant={!usePreview ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setUsePreview(false)}
+                      className="flex-1 min-w-[200px]"
+                    >
+                      🟢 Production (Live)
+                    </Button>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Aktuelle URL: <code className="bg-muted px-2 py-1 rounded text-xs">{baseUrl}</code>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    <strong>Preview:</strong> Änderungen sind sofort sichtbar ohne Publish<br/>
+                    <strong>Production:</strong> Nur publizierte Änderungen werden analysiert
                   </p>
                 </div>
               </CardContent>
