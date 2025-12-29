@@ -129,6 +129,117 @@ interface Synthesis {
   }>;
 }
 
+const DEFAULT_ELEMENT_SCORES: ElementAnalysis["scores"] = {
+  visibility: 0,
+  usability: 0,
+  conversion: 0,
+  mobile: 0,
+  accessibility: 0,
+};
+
+const normalizeElementAnalysis = (e: any): ElementAnalysis => ({
+  elementType: String(e?.elementType ?? ''),
+  elementName: String(e?.elementName ?? ''),
+  scores:
+    e?.scores && typeof e.scores === 'object'
+      ? { ...DEFAULT_ELEMENT_SCORES, ...e.scores }
+      : DEFAULT_ELEMENT_SCORES,
+  issues: Array.isArray(e?.issues) ? e.issues : [],
+  bestPractices: Array.isArray(e?.bestPractices) ? e.bestPractices : [],
+  improvements: Array.isArray(e?.improvements) ? e.improvements : [],
+});
+
+const DEFAULT_CATEGORY_SCORES: FlowAnalysis["categoryScores"] = {
+  ux: 0,
+  conversion: 0,
+  mobile: 0,
+  accessibility: 0,
+  performance: 0,
+  trust: 0,
+  clarity: 0,
+};
+
+const normalizeFlowAnalysis = (a: any): FlowAnalysis => ({
+  flowId: String(a?.flowId ?? ''),
+  flowName: String(a?.flowName ?? ''),
+  overallScore: Number(a?.overallScore ?? 0),
+  categoryScores:
+    a?.categoryScores && typeof a.categoryScores === 'object'
+      ? { ...DEFAULT_CATEGORY_SCORES, ...a.categoryScores }
+      : DEFAULT_CATEGORY_SCORES,
+  elements: Array.isArray(a?.elements) ? a.elements.map(normalizeElementAnalysis) : [],
+  strengths: Array.isArray(a?.strengths) ? a.strengths : [],
+  weaknesses: Array.isArray(a?.weaknesses) ? a.weaknesses : [],
+  keyInsights: Array.isArray(a?.keyInsights) ? a.keyInsights : [],
+  conversionKillers: Array.isArray(a?.conversionKillers) ? a.conversionKillers : [],
+  quickWins: Array.isArray(a?.quickWins) ? a.quickWins : [],
+  stepByStepAnalysis: Array.isArray(a?.stepByStepAnalysis) ? a.stepByStepAnalysis : [],
+});
+
+const normalizeSynthesis = (s: any): Synthesis | null => {
+  const winner = s?.winner;
+  const hasWinner = typeof winner?.flowId === 'string' && winner.flowId.trim().length > 0;
+  if (!hasWinner) return null;
+
+  return {
+    winner: {
+      flowId: String(winner.flowId ?? ''),
+      flowName: String(winner.flowName ?? ''),
+      totalScore: Number(winner.totalScore ?? 0),
+      reasoning: String(winner.reasoning ?? ''),
+    },
+    ranking: Array.isArray(s?.ranking)
+      ? s.ranking.map((r: any) => ({
+          position: Number(r?.position ?? 0),
+          flowId: String(r?.flowId ?? ''),
+          score: Number(r?.score ?? 0),
+          keyStrength: String(r?.keyStrength ?? ''),
+          keyWeakness: String(r?.keyWeakness ?? ''),
+        }))
+      : [],
+    bestElements: Array.isArray(s?.bestElements)
+      ? s.bestElements.map((b: any) => ({
+          element: String(b?.element ?? ''),
+          sourceFlow: String(b?.sourceFlow ?? ''),
+          reason: String(b?.reason ?? ''),
+          implementation: String(b?.implementation ?? ''),
+        }))
+      : [],
+    ultimateFlow: {
+      name: String(s?.ultimateFlow?.name ?? ''),
+      description: String(s?.ultimateFlow?.description ?? ''),
+      steps: Array.isArray(s?.ultimateFlow?.steps)
+        ? s.ultimateFlow.steps.map((st: any) => ({
+            number: Number(st?.number ?? 0),
+            name: String(st?.name ?? ''),
+            sourceFlow: String(st?.sourceFlow ?? ''),
+            elements: Array.isArray(st?.elements) ? st.elements : [],
+            improvements: Array.isArray(st?.improvements) ? st.improvements : [],
+          }))
+        : [],
+      expectedConversionLift: String(s?.ultimateFlow?.expectedConversionLift ?? ''),
+      implementationPriority: Array.isArray(s?.ultimateFlow?.implementationPriority)
+        ? s.ultimateFlow.implementationPriority.map((p: any) => ({
+            priority: Number(p?.priority ?? 0),
+            change: String(p?.change ?? ''),
+            effort: String(p?.effort ?? ''),
+            impact: String(p?.impact ?? ''),
+            sourceFlow: String(p?.sourceFlow ?? ''),
+          }))
+        : [],
+    },
+    codeChanges: Array.isArray(s?.codeChanges)
+      ? s.codeChanges.map((c: any) => ({
+          file: String(c?.file ?? ''),
+          component: String(c?.component ?? ''),
+          currentState: String(c?.currentState ?? ''),
+          proposedChange: String(c?.proposedChange ?? ''),
+          implementation: String(c?.implementation ?? ''),
+        }))
+      : [],
+  };
+};
+
 // All available flow versions
 const ALL_FLOWS = [
   { id: 'v1', label: 'V1', flowId: 'umzugsofferten-v1' },
@@ -403,23 +514,14 @@ export default function FlowDeepAnalysis() {
             // Load previous results
             const metadata = data.metadata as any;
             if (metadata?.analyses && Array.isArray(metadata.analyses)) {
-              setAnalyses(metadata.analyses.map((a: any) => ({
-                flowId: a.flowId || '',
-                flowName: a.flowName || '',
-                overallScore: a.overallScore || 0,
-                categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
-                elements: a.elements || [],
-                strengths: a.strengths || [],
-                weaknesses: a.weaknesses || [],
-                keyInsights: a.keyInsights || [],
-                conversionKillers: a.conversionKillers || [],
-                quickWins: a.quickWins || [],
-                stepByStepAnalysis: a.stepByStepAnalysis || []
-              })));
+              setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
             }
+
             const aiRecs = data.ai_recommendations as any;
             if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
-              setSynthesis(aiRecs[0] as any);
+              setSynthesis(normalizeSynthesis(aiRecs[0]));
+            } else {
+              setSynthesis(null);
             }
           } else {
             // Failed or other status
@@ -485,23 +587,14 @@ export default function FlowDeepAnalysis() {
               setBackgroundJob(null);
               const metadata = runData.metadata as any;
               if (metadata?.analyses && Array.isArray(metadata.analyses)) {
-                setAnalyses(metadata.analyses.map((a: any) => ({
-                  flowId: a.flowId || '',
-                  flowName: a.flowName || '',
-                  overallScore: a.overallScore || 0,
-                  categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
-                  elements: a.elements || [],
-                  strengths: a.strengths || [],
-                  weaknesses: a.weaknesses || [],
-                  keyInsights: a.keyInsights || [],
-                  conversionKillers: a.conversionKillers || [],
-                  quickWins: a.quickWins || [],
-                  stepByStepAnalysis: a.stepByStepAnalysis || []
-                })));
+                setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
               }
+
               const aiRecs = runData.ai_recommendations as any;
               if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
-                setSynthesis(aiRecs[0] as any);
+                setSynthesis(normalizeSynthesis(aiRecs[0]));
+              } else {
+                setSynthesis(null);
               }
               toast({ title: 'Analyse abgeschlossen', description: 'Ergebnisse wurden geladen.' });
               return;
@@ -543,27 +636,14 @@ export default function FlowDeepAnalysis() {
           setBackgroundJob(null);
           const metadata = latestDeepRun.metadata as any;
           if (metadata?.analyses && Array.isArray(metadata.analyses)) {
-            setAnalyses(
-              metadata.analyses.map((a: any) => ({
-                flowId: a.flowId || '',
-                flowName: a.flowName || '',
-                overallScore: a.overallScore || 0,
-                categoryScores:
-                  a.categoryScores ||
-                  ({ ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 } as any),
-                elements: a.elements || [],
-                strengths: a.strengths || [],
-                weaknesses: a.weaknesses || [],
-                keyInsights: a.keyInsights || [],
-                conversionKillers: a.conversionKillers || [],
-                quickWins: a.quickWins || [],
-                stepByStepAnalysis: a.stepByStepAnalysis || [],
-              }))
-            );
+            setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
           }
+
           const aiRecs = latestDeepRun.ai_recommendations as any;
           if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
-            setSynthesis(aiRecs[0] as any);
+            setSynthesis(normalizeSynthesis(aiRecs[0]));
+          } else {
+            setSynthesis(null);
           }
           toast({ title: 'Analyse abgeschlossen', description: 'Ergebnisse wurden geladen.' });
           return;
@@ -619,29 +699,20 @@ export default function FlowDeepAnalysis() {
         return false;
       }
 
-      if (data && data.status === 'completed') {
-        const metadata = data.metadata as any;
-        if (metadata?.analyses && Array.isArray(metadata.analyses)) {
-          setAnalyses(metadata.analyses.map((a: any) => ({
-            flowId: a.flowId || '',
-            flowName: a.flowName || '',
-            overallScore: a.overallScore || 0,
-            categoryScores: a.categoryScores || { ux: 0, conversion: 0, mobile: 0, accessibility: 0, performance: 0, trust: 0, clarity: 0 },
-            elements: a.elements || [],
-            strengths: a.strengths || [],
-            weaknesses: a.weaknesses || [],
-            keyInsights: a.keyInsights || [],
-            conversionKillers: a.conversionKillers || [],
-            quickWins: a.quickWins || [],
-            stepByStepAnalysis: a.stepByStepAnalysis || []
-          })));
+        if (data && data.status === 'completed') {
+          const metadata = data.metadata as any;
+          if (metadata?.analyses && Array.isArray(metadata.analyses)) {
+            setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
+          }
+
+          const aiRecs = data.ai_recommendations as any;
+          if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
+            setSynthesis(normalizeSynthesis(aiRecs[0]));
+          } else {
+            setSynthesis(null);
+          }
+          return true;
         }
-        const aiRecs = data.ai_recommendations as any;
-        if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
-          setSynthesis(aiRecs[0] as any);
-        }
-        return true;
-      }
       return false;
     } catch (err) {
       console.error('Error in loadAnalysisResults:', err);
@@ -710,17 +781,22 @@ export default function FlowDeepAnalysis() {
       }
 
       // Set results directly from response
-      setAnalyses(data.analyses || []);
-      setSynthesis(data.synthesis || null);
-      
+      const normalizedAnalyses = Array.isArray(data?.analyses)
+        ? data.analyses.map(normalizeFlowAnalysis)
+        : [];
+      const normalizedSynthesis = normalizeSynthesis(data?.synthesis);
+
+      setAnalyses(normalizedAnalyses);
+      setSynthesis(normalizedSynthesis);
+
       // Also set selectedFlow to first analyzed flow for immediate display
-      if (data.analyses?.length > 0) {
-        setSelectedFlow(data.analyses[0].flowId);
+      if (normalizedAnalyses.length > 0) {
+        setSelectedFlow(normalizedAnalyses[0].flowId);
       }
-      
+
       toast({
         title: 'Analyse abgeschlossen',
-        description: `${data.analyses?.length || 0} Flows analysiert. Gewinner: ${data.synthesis?.winner?.flowId || 'N/A'}`,
+        description: `${normalizedAnalyses.length} Flows analysiert. Gewinner: ${normalizedSynthesis?.winner?.flowId || 'N/A'}`,
       });
     } catch (error) {
       console.error('Analysis error:', error);
