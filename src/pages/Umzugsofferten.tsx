@@ -30,6 +30,7 @@ import {
   PageEnhancements,
 } from "@/components/offerten-v2";
 import { MultiStepCalculator } from "@/components/homepage/MultiStepCalculator";
+import { MultiStepCalculatorV1 } from "@/components/funnel-v1";
 import { MultiStepCalculatorVariantA } from "@/components/homepage/MultiStepCalculatorVariantA";
 import { MultiStepCalculatorVariantB } from "@/components/homepage/MultiStepCalculatorVariantB";
 import { MultiStepCalculatorVariantC } from "@/components/homepage/MultiStepCalculatorVariantC";
@@ -155,8 +156,11 @@ const Umzugsofferten = () => {
         return <MultiStepCalculatorVariantC />;
       case 'MultiStepCalculatorUltimate':
         return <MultiStepCalculatorUltimate />;
+      case 'MultiStepCalculatorV1':
+        return <MultiStepCalculatorV1 />;
       default:
-        return <MultiStepCalculator />;
+        // V1 Control now uses the improved MultiStepCalculatorV1
+        return <MultiStepCalculatorV1 />;
     }
   };
 
