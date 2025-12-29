@@ -79,8 +79,8 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         </p>
       </div>
       
-      {/* ChatGPT #3: 3-spaltig zentriert für bessere Balance (mit 4 Optionen jetzt 2x2) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-md mx-auto">
+      {/* Enhanced: Larger touch targets (min 48px), better contrast, trust elements */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-lg mx-auto">
         {moveTypeOptions.map((option, index) => {
           const isSelected = value === option.value;
           const Icon = option.icon;
@@ -96,43 +96,45 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                "relative flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all min-h-[100px] touch-manipulation",
+                // Enhanced: min-h-[120px] for better touch targets, improved padding
+                "relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl border-2 transition-all min-h-[120px] touch-manipulation",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-medium ring-2 ring-primary/20"
-                  : "border-border bg-card hover:border-primary/40 hover:bg-muted/30 hover:shadow-soft"
+                  : "border-border bg-card hover:border-primary/40 hover:bg-muted/30 hover:shadow-soft active:scale-[0.98]"
               )}
               aria-pressed={isSelected}
             >
-              {/* V1: Checkmark for selected state */}
+              {/* V1: Checkmark for selected state - enhanced size */}
               {isSelected && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="absolute top-2 right-2"
                 >
-                  <CheckCircle className="w-5 h-5 text-primary fill-primary/20" />
+                  <CheckCircle className="w-6 h-6 text-primary fill-primary/20" />
                 </motion.div>
               )}
               
+              {/* Enhanced: Larger icon container for better visibility */}
               <div className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors",
+                "w-14 h-14 rounded-full flex items-center justify-center mb-3 transition-colors",
                 isSelected ? "bg-primary/20" : "bg-muted"
               )}>
                 <Icon 
                   className={cn(
-                    "w-6 h-6 transition-colors",
+                    "w-7 h-7 transition-colors",
                     isSelected ? "text-primary" : option.color
                   )} 
                 />
               </div>
               <span className={cn(
-                "text-sm font-semibold transition-colors",
+                "text-sm font-semibold transition-colors text-center",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {option.label}
               </span>
-              {/* ChatGPT #5: Mindestschriftgröße 12px für bessere Lesbarkeit */}
-              <span className="text-[12px] text-muted-foreground mt-0.5">
+              {/* Enhanced: min font-size 13px for better readability */}
+              <span className="text-[13px] text-muted-foreground mt-1 text-center">
                 {option.description}
               </span>
             </motion.button>
@@ -140,10 +142,21 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         })}
       </div>
       
-      {/* Trust micro-signal */}
-      <p className="text-center text-xs text-muted-foreground pt-2">
-        ✓ Kostenlos & unverbindlich • ✓ In 2 Minuten erledigt
-      </p>
+      {/* Enhanced Trust micro-signals with icons */}
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pt-4 text-xs">
+        <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium">
+          <CheckCircle className="w-4 h-4" />
+          Kostenlos
+        </span>
+        <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium">
+          <CheckCircle className="w-4 h-4" />
+          Unverbindlich
+        </span>
+        <span className="flex items-center gap-1.5 text-muted-foreground">
+          <Home className="w-4 h-4 text-primary" />
+          2 Min. erledigt
+        </span>
+      </div>
     </div>
   );
 });

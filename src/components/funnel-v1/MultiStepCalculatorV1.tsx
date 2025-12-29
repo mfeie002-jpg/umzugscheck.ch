@@ -246,7 +246,7 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
     <div
       className={`rounded-xl border-2 transition-all ${
         isSelected
-          ? "border-primary bg-primary/5"
+          ? "border-primary bg-primary/5 shadow-md"
           : "border-border hover:border-primary/30"
       }`}
     >
@@ -260,22 +260,24 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
             onToggle();
           }
         }}
-        className={`w-full flex items-center gap-2.5 p-2.5 text-left cursor-pointer ${
+        // Enhanced: min-h-[60px] for better touch targets, improved padding
+        className={`w-full flex items-center gap-3 p-3 sm:p-3.5 text-left cursor-pointer min-h-[60px] touch-manipulation active:bg-muted/30 ${
           service.id === "umzug" ? "cursor-default" : ""
         }`}
         aria-disabled={service.id === "umzug"}
       >
-        {/* ChatGPT #4: Deutlicherer Selektionsindikator mit größerem Häkchen */}
+        {/* Enhanced: Larger checkbox for touch targets (24px) */}
         <div
-          className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 ${
-            isSelected ? "bg-primary border-primary" : "border-border"
+          className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 transition-all ${
+            isSelected ? "bg-primary border-primary scale-105" : "border-border"
           }`}
         >
           {isSelected && <CheckCircle className="w-4 h-4 text-primary-foreground" />}
         </div>
 
+        {/* Enhanced: Larger icon container (36px) */}
         <div
-          className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+          className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
             isSelected ? "bg-primary/20" : "bg-muted"
           }`}
         >
@@ -283,43 +285,44 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {/* ChatGPT #5: Mindestschriftgröße 12px */}
-            <p className="text-[12px] font-semibold truncate">{service.label}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Enhanced: Larger font (14px) for better readability */}
+            <p className="text-sm font-semibold truncate">{service.label}</p>
             {(service as any).highlight && (
-              <span className="text-[9px] bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold shrink-0 animate-pulse">
+              <span className="text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-2 py-0.5 rounded-full font-bold shrink-0 animate-pulse">
                 💡 Tipp
               </span>
             )}
             {service.popular && !(service as any).highlight && (
-              <span className="text-[9px] bg-secondary text-secondary-foreground px-1 py-0.5 rounded-full font-medium shrink-0">
+              <span className="text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-full font-medium shrink-0">
                 Beliebt
               </span>
             )}
           </div>
-          {/* ChatGPT #5: Mindestschriftgröße 12px für Beschreibung */}
-          <p className="text-[11px] text-muted-foreground truncate">
+          {/* Enhanced: Larger description (12px) for better readability */}
+          <p className="text-xs text-muted-foreground truncate">
             {service.description}
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className={`text-[10px] font-medium ${(service as any).highlight ? 'text-secondary' : 'text-primary'}`}>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`text-xs font-medium ${(service as any).highlight ? 'text-secondary' : 'text-primary'}`}>
             {service.priceRange}
           </span>
+          {/* Enhanced: Larger expand button for touch targets (32px) */}
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               onExpand();
             }}
-            className={`p-0.5 rounded-full transition-colors ${isExpanded ? 'bg-primary/20' : 'hover:bg-muted'}`}
+            className={`p-1.5 rounded-full transition-colors touch-manipulation ${isExpanded ? 'bg-primary/20' : 'hover:bg-muted active:bg-muted'}`}
             aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
           >
             {isExpanded ? (
-              <Minus className="w-3.5 h-3.5 text-primary" />
+              <Minus className="w-4 h-4 text-primary" />
             ) : (
-              <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+              <Plus className="w-4 h-4 text-muted-foreground" />
             )}
           </button>
         </div>
@@ -1074,15 +1077,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   showSuccessIcon={false}
                 />
 
-                <div className="flex items-start gap-2.5">
+                {/* Enhanced: Larger checkbox for touch targets (24px) */}
+                <div className="flex items-start gap-3">
                   <Checkbox
                     id="privacy-v1"
                     checked={formData.privacyAccepted}
                     onCheckedChange={(checked) => updateFormData("privacyAccepted", !!checked)}
-                    className="mt-0.5 h-5 w-5"
+                    className="mt-0.5 h-6 w-6"
                   />
-                  <label htmlFor="privacy-v1" className="text-[11px] text-muted-foreground cursor-pointer leading-relaxed">
-                    Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline">Datenschutzerklärung</a> und 
+                  <label htmlFor="privacy-v1" className="text-xs text-muted-foreground cursor-pointer leading-relaxed">
+                    Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline font-medium">Datenschutzerklärung</a> und 
                     bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden.
                   </label>
                 </div>
@@ -1113,9 +1117,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               type="button"
               variant="outline"
               onClick={handleBack}
-              className="h-12 md:h-11 rounded-xl px-4 min-w-[90px]"
+              // Enhanced: h-14 on mobile for better touch targets (56px)
+              className="h-14 md:h-12 rounded-xl px-5 min-w-[100px] text-base font-medium"
             >
-              <ArrowLeft className="w-4 h-4 mr-1" />
+              <ArrowLeft className="w-5 h-5 mr-2" />
               Zurück
             </Button>
           )}
@@ -1125,13 +1130,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               type="button"
               onClick={handleNext}
               disabled={!canProceed()}
-              className="flex-1 h-12 md:h-11 rounded-xl bg-primary hover:bg-primary-hover text-base font-semibold"
+              // Enhanced: h-14 on mobile for better touch targets, higher contrast
+              className="flex-1 h-14 md:h-12 rounded-xl bg-primary hover:bg-primary/90 text-base font-bold shadow-lg disabled:opacity-50"
             >
               {currentStep === 3 
                 ? `Mit ${formData.selectedCompanies.length || "0"} Firmen weiter` 
                 : "Weiter"
               }
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           ) : (
             <div className="flex-1 flex flex-col items-center">
@@ -1139,32 +1145,38 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={!canProceed()}
-                className="w-full h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-cta"
+                // Enhanced: h-14 on mobile for better touch targets, high contrast secondary color
+                className="w-full h-14 md:h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-xl disabled:opacity-50"
               >
                 <CheckCircle className="w-5 h-5 mr-2" />
                 {getSubmitButtonText()}
               </Button>
-              {/* ChatGPT #8: Kostenlos & unverbindlich beim Submit-Button */}
-              <p className="text-[11px] text-muted-foreground mt-2 text-center">
-                ✓ 100% kostenlos & unverbindlich · Keine versteckten Kosten
-              </p>
+              {/* Enhanced: Trust reminder at submit with icon */}
+              <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
+                <Shield className="w-4 h-4 text-green-500" />
+                <span>100% kostenlos & unverbindlich · Keine versteckten Kosten</span>
+              </div>
             </div>
           )}
         </div>
         
-        {/* Trust reassurance */}
-        <div className="hidden md:flex items-center justify-center gap-4 pt-2 text-[10px] text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Shield className="w-3 h-3 text-green-500" />
+        {/* Enhanced Trust reassurance with better visibility */}
+        <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <Shield className="w-4 h-4 text-green-500" />
             Kein Spam
           </span>
-          <span className="flex items-center gap-1">
-            <CheckCircle className="w-3 h-3 text-green-500" />
+          <span className="flex items-center gap-1.5">
+            <CheckCircle className="w-4 h-4 text-green-500" />
             100% unverbindlich
           </span>
-          <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3 text-primary" />
+          <span className="flex items-center gap-1.5">
+            <Clock className="w-4 h-4 text-primary" />
             Antwort in 24h
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Award className="w-4 h-4 text-amber-500" />
+            200+ geprüfte Firmen
           </span>
         </div>
 
@@ -1193,20 +1205,32 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
         )}
       </div>
 
-      {/* Trust Footer */}
-      <div className="bg-muted/30 px-6 py-2.5 border-t border-border">
-        <div className="flex flex-wrap justify-center gap-4">
-          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-            <TrendingDown className="w-3 h-3 text-green-500" />
+      {/* Enhanced Trust Footer with better visibility */}
+      <div className="bg-muted/40 px-6 py-3 border-t border-border">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+            <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
+              <TrendingDown className="w-3 h-3 text-green-600 dark:text-green-400" />
+            </div>
             Bis 40% sparen
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-            <CheckCircle className="w-3 h-3 text-green-500" />
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+            <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
+              <CheckCircle className="w-3 h-3 text-green-600 dark:text-green-400" />
+            </div>
             100% kostenlos
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-            <Shield className="w-3 h-3 text-primary" />
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+            <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
+              <Shield className="w-3 h-3 text-primary" />
+            </div>
             SSL verschlüsselt
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+            <div className="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+              <Star className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+            </div>
+            4.8/5 Bewertung
           </div>
         </div>
       </div>

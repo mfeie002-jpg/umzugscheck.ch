@@ -112,9 +112,10 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => onChange(option.id)}
-              className={`relative w-full p-3 rounded-xl border-2 text-left transition-all ${
+              // Enhanced: min-h-[80px] for better touch targets, improved padding
+              className={`relative w-full p-4 rounded-xl border-2 text-left transition-all min-h-[80px] touch-manipulation active:scale-[0.99] ${
                 isSelected
-                  ? "border-secondary bg-secondary/10 ring-2 ring-secondary/20"
+                  ? "border-secondary bg-secondary/10 ring-2 ring-secondary/20 shadow-md"
                   : option.recommended
                   ? "border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/20 hover:border-amber-400"
                   : "border-border hover:border-primary/30 bg-card"
@@ -136,20 +137,20 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
               )}
 
               <div className="flex items-start gap-3">
-                {/* Checkbox */}
+                {/* Enhanced: Larger checkbox for touch targets (24px) */}
                 <div
-                  className={`w-5 h-5 rounded-full flex items-center justify-center border-2 shrink-0 mt-0.5 ${
-                    isSelected ? "bg-secondary border-secondary" : "border-border"
+                  className={`w-6 h-6 rounded-full flex items-center justify-center border-2 shrink-0 mt-0.5 transition-all ${
+                    isSelected ? "bg-secondary border-secondary scale-110" : "border-border"
                   }`}
                 >
-                  {isSelected && <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />}
+                  {isSelected && <CheckCircle className="w-4 h-4 text-secondary-foreground" />}
                 </div>
 
-                {/* Icon */}
+                {/* Enhanced: Larger icon container (48px) */}
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                     isSelected 
-                      ? "bg-secondary text-secondary-foreground" 
+                      ? "bg-secondary text-secondary-foreground scale-105" 
                       : option.recommended
                       ? "bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400"
                       : "bg-muted text-muted-foreground"
@@ -158,23 +159,25 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                   {option.icon}
                 </div>
 
-                {/* Content */}
+                {/* Content - Enhanced typography */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <p className="text-sm font-bold mb-0.5">{option.label}</p>
-                    {/* V1: Info tooltip */}
+                    {/* Enhanced: Larger font for better readability */}
+                    <p className="text-base font-bold mb-0.5">{option.label}</p>
+                    {/* V1: Info tooltip with larger touch target */}
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button type="button" className="text-muted-foreground hover:text-foreground">
-                          <Info className="w-3.5 h-3.5" />
+                        <button type="button" className="text-muted-foreground hover:text-foreground p-1 -m-1 touch-manipulation">
+                          <Info className="w-4 h-4" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent className="max-w-[250px] text-xs">
+                      <TooltipContent className="max-w-[280px] text-sm p-3">
                         {option.tooltip}
                       </TooltipContent>
                     </Tooltip>
                   </div>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  {/* Enhanced: Larger description text */}
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     {option.description}
                   </p>
 
