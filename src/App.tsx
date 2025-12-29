@@ -588,14 +588,10 @@ const AppRouterContent = () => {
           <Route path="/offerten" element={<OffertenOptimized />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/mein-bereich" element={<UserDashboard />} />
-          {/* Vision 2026 - Invisible Move */}
-          <Route path="/invisible-move" element={<InvisibleMove />} />
-          <Route path="/invisible-move-v2" element={<InvisibleMoveV2 />} />
-          <Route path="/vision-2026" element={<InvisibleMove />} />
-          <Route path="/vision-2026-v2" element={<InvisibleMoveV2 />} />
-          <Route path="/archetyp" element={<InvisibleMove />} />
-          <Route path="/archetyp-v2" element={<InvisibleMoveV2 />} />
-          <Route path="/blueprint" element={<Blueprint />} />
+          {/* Vision 2026 - Invisible Move Landing Pages */}
+          <Route path="/invisible-1" element={<InvisibleMove />} />
+          <Route path="/invisible-2" element={<InvisibleMoveV2 />} />
+          <Route path="/invisible-3" element={<Blueprint />} />
           <Route path="/sitemap" element={<Sitemap />} />
           <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
           <Route path="/:city/umzug" element={<CityOptimized />} />
