@@ -127,18 +127,19 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
 
   return (
     <div className="space-y-3">
-      {/* Filter Bar */}
+      {/* Enhanced Filter Bar - larger touch targets */}
       <div className="bg-muted/50 rounded-xl p-3 space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className="h-8 text-xs gap-1.5"
+            // Enhanced: h-10 for 44px touch target
+            className="h-10 text-sm gap-2 px-3 touch-manipulation"
           >
-            <Filter className="w-3.5 h-3.5" />
+            <Filter className="w-4 h-4" />
             Filter
-            {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </Button>
 
           <div className="flex items-center gap-2">
@@ -146,19 +147,21 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
               variant={showMap ? "default" : "outline"}
               size="sm"
               onClick={() => setShowMap(!showMap)}
-              className="h-8 text-xs gap-1.5"
+              // Enhanced: h-10 for 44px touch target
+              className="h-10 text-sm gap-2 px-3 touch-manipulation"
             >
-              <MapIcon className="w-3.5 h-3.5" />
-              Karte
+              <MapIcon className="w-4 h-4" />
+              <span className="hidden xs:inline">Karte</span>
             </Button>
             
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-8 w-[140px] text-xs">
+              {/* Enhanced: h-10 for 44px touch target */}
+              <SelectTrigger className="h-10 w-[120px] sm:w-[150px] text-sm">
                 <SelectValue placeholder="Sortieren" />
               </SelectTrigger>
               <SelectContent>
                 {sortOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                  <SelectItem key={opt.value} value={opt.value} className="text-sm py-2">
                     {opt.label}
                   </SelectItem>
                 ))}
@@ -175,14 +178,15 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border">
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border">
                 <Select value={priceFilter} onValueChange={setPriceFilter}>
-                  <SelectTrigger className="h-8 text-xs">
+                  {/* Enhanced: h-10 for 44px touch target */}
+                  <SelectTrigger className="h-10 text-sm">
                     <SelectValue placeholder="Preisklasse" />
                   </SelectTrigger>
                   <SelectContent>
                     {priceLevelOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                      <SelectItem key={opt.value} value={opt.value} className="text-sm py-2">
                         {opt.label}
                       </SelectItem>
                     ))}
@@ -190,12 +194,13 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
                 </Select>
 
                 <Select value={ratingFilter} onValueChange={setRatingFilter}>
-                  <SelectTrigger className="h-8 text-xs">
+                  {/* Enhanced: h-10 for 44px touch target */}
+                  <SelectTrigger className="h-10 text-sm">
                     <SelectValue placeholder="Bewertung" />
                   </SelectTrigger>
                   <SelectContent>
                     {ratingOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                      <SelectItem key={opt.value} value={opt.value} className="text-sm py-2">
                         {opt.label}
                       </SelectItem>
                     ))}
@@ -227,21 +232,25 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         )}
       </AnimatePresence>
 
-      {/* Selection Counter - ChatGPT #5: improved text size */}
+      {/* Enhanced Selection Counter - larger text, more prominent */}
       <div
-        className={`p-2.5 rounded-lg text-center text-[12px] font-medium transition-all ${
+        className={`p-3 rounded-xl text-center text-sm font-semibold transition-all ${
           selectedCompanies.length >= 3
-            ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-            : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+            ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
+            : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800"
         }`}
       >
         {selectedCompanies.length < 3 ? (
-          <>
-            👆 Noch {3 - selectedCompanies.length} Firma{3 - selectedCompanies.length > 1 ? "en" : ""}{" "}
+          <span className="flex items-center justify-center gap-2">
+            <span className="text-lg">👆</span>
+            Noch {3 - selectedCompanies.length} Firma{3 - selectedCompanies.length > 1 ? "en" : ""}{" "}
             auswählen für optimalen Vergleich
-          </>
+          </span>
         ) : (
-          <>✓ {selectedCompanies.length} Firmen ausgewählt – Vergleich bereit!</>
+          <span className="flex items-center justify-center gap-2">
+            <CheckCircle className="w-5 h-5" />
+            {selectedCompanies.length} Firmen ausgewählt – Vergleich bereit!
+          </span>
         )}
       </div>
 
@@ -354,19 +363,21 @@ function CompanyCard({
       )}
 
       <div className="p-3" onClick={onToggle}>
-        {/* Main Row */}
-        <div className="flex items-start gap-3 cursor-pointer">
-          {/* Checkbox + Rank */}
-          <div className="flex flex-col items-center gap-1.5 shrink-0">
+        {/* Main Row - Enhanced touch targets */}
+        <div className="flex items-start gap-3 cursor-pointer min-h-[60px] touch-manipulation">
+          {/* Checkbox + Rank - Enhanced sizes */}
+          <div className="flex flex-col items-center gap-2 shrink-0">
+            {/* Enhanced: Larger checkbox (24px) */}
             <div
-              className={`w-5 h-5 rounded flex items-center justify-center border-2 ${
-                isSelected ? "bg-secondary border-secondary" : "border-border"
+              className={`w-6 h-6 rounded flex items-center justify-center border-2 transition-all ${
+                isSelected ? "bg-secondary border-secondary scale-105" : "border-border"
               }`}
             >
-              {isSelected && <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />}
+              {isSelected && <CheckCircle className="w-4 h-4 text-secondary-foreground" />}
             </div>
+            {/* Enhanced: Larger rank badge */}
             <div
-              className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm ${
+              className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
                 rank === 1
                   ? "bg-amber-400 text-amber-900"
                   : rank === 2
@@ -376,16 +387,17 @@ function CompanyCard({
                   : "bg-muted text-muted-foreground"
               }`}
             >
-              {rank === 1 ? <Award className="w-4 h-4" /> : rank}
+              {rank === 1 ? <Award className="w-5 h-5" /> : rank}
             </div>
           </div>
 
-          {/* Company Info */}
+          {/* Company Info - Enhanced typography */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2 mb-1">
+            <div className="flex items-start justify-between gap-2 mb-1.5">
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-bold text-sm shrink-0">
+                <div className="flex items-center gap-2.5">
+                  {/* Enhanced: Larger logo (44px) */}
+                  <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-bold text-base shrink-0">
                     {company.logo_url ? (
                       <img src={company.logo_url} alt={company.name} className="w-full h-full object-cover rounded-lg" />
                     ) : (
@@ -393,49 +405,50 @@ function CompanyCard({
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-bold text-sm truncate">{company.name}</p>
-                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                      <MapPin className="w-2.5 h-2.5" />
+                    {/* Enhanced: Larger company name */}
+                    <p className="font-bold text-base truncate">{company.name}</p>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <MapPin className="w-3 h-3" />
                       {company.service_areas?.[0] || "Schweizweit"}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Rating */}
+              {/* Rating - Enhanced size */}
               <div className="text-right shrink-0">
-                <div className="flex items-center gap-0.5">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold text-sm">{company.rating}</span>
+                <div className="flex items-center gap-1">
+                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <span className="font-bold text-base">{company.rating}</span>
                 </div>
-                <p className="text-[10px] text-muted-foreground">({company.review_count} Bew.)</p>
+                <p className="text-xs text-muted-foreground">({company.review_count} Bew.)</p>
               </div>
             </div>
 
-            {/* Stats Row */}
+            {/* Stats Row - Enhanced */}
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              {/* Match - ChatGPT #5: improved text size */}
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[11px] font-semibold">
-                <Zap className="w-2.5 h-2.5" />
+              {/* Match - Enhanced */}
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold">
+                <Zap className="w-3 h-3" />
                 {matchPercent}% Match
               </span>
 
-              {/* Price Level */}
-              <span className="text-[10px] font-medium text-muted-foreground">
+              {/* Price Level - Enhanced */}
+              <span className="text-xs font-medium text-muted-foreground">
                 {company.price_level === "günstig" && "💰 Günstig"}
                 {company.price_level === "fair" && "⚖️ Fair"}
                 {company.price_level === "premium" && "⭐ Premium"}
               </span>
 
-              {/* Price Estimate */}
-              <span className="text-[10px] font-bold text-primary">
+              {/* Price Estimate - Enhanced */}
+              <span className="text-xs font-bold text-primary">
                 CHF {priceEstimate.min.toLocaleString()}–{priceEstimate.max.toLocaleString()}
               </span>
 
-              {/* Response Time */}
+              {/* Response Time - Enhanced */}
               {company.response_time_avg_hours && company.response_time_avg_hours <= 4 && (
-                <span className="inline-flex items-center gap-0.5 text-[9px] text-blue-600 dark:text-blue-400">
-                  <Clock className="w-2.5 h-2.5" />
+                <span className="inline-flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
+                  <Clock className="w-3 h-3" />
                   Antwortet schnell
                 </span>
               )}

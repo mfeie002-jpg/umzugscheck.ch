@@ -86,6 +86,11 @@ interface AnalysisResult {
   summary?: string;
   error?: string;
   runId?: string;
+  currentStep?: number;
+  totalSteps?: number;
+  stepName?: string;
+  startedAt?: string;
+  elapsedSeconds?: number;
 }
 
 interface FeedbackEntry {
@@ -135,20 +140,37 @@ function ExpandableFlowResult({
             type="button"
             className="w-full text-left p-4 flex items-center justify-between cursor-pointer hover:bg-accent/50 transition-colors rounded-t-lg"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               {result.status === "completed" && (
-                <CheckCircle className="h-5 w-5 text-green-600" />
+                <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
               )}
               {result.status === "running" && (
-                <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+                <Loader2 className="h-5 w-5 text-blue-600 animate-spin shrink-0" />
               )}
               {result.status === "error" && (
-                <AlertCircle className="h-5 w-5 text-red-600" />
+                <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />
               )}
               {result.status === "pending" && (
-                <div className="h-5 w-5 rounded-full bg-muted" />
+                <div className="h-5 w-5 rounded-full bg-muted shrink-0" />
               )}
-              <span className="font-semibold">{result.flowName}</span>
+              <div className="min-w-0">
+                <span className="font-semibold block truncate">{result.flowName}</span>
+                {/* Enhanced: Show step progress while running */}
+                {result.status === "running" && result.currentStep !== undefined && result.totalSteps !== undefined && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden max-w-[120px]">
+                      <div 
+                        className="h-full bg-blue-500 transition-all duration-300 rounded-full"
+                        style={{ width: `${(result.currentStep / result.totalSteps) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-blue-600 whitespace-nowrap">
+                      Step {result.currentStep}/{result.totalSteps}
+                      {result.stepName && <span className="hidden sm:inline"> • {result.stepName}</span>}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-3">
               {result.score !== undefined && (
@@ -1187,13 +1209,40 @@ ${entry.prompt}
                 </Button>
               </div>
 
+              {/* Enhanced: Detailed progress view with step info */}
               {isAnalyzing && (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Fortschritt</span>
-                    <span>{Math.round(analysisProgress)}%</span>
+                <div className="p-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+                      <span className="font-medium text-blue-700 dark:text-blue-300">
+                        Analyse läuft im Hintergrund...
+                      </span>
+                    </div>
+                    <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900/50 border-blue-300">
+                      {Math.round(analysisProgress)}% abgeschlossen
+                    </Badge>
                   </div>
-                  <Progress value={analysisProgress} />
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Gesamtfortschritt</span>
+                      <span>{analysisResults.filter(r => r.status === 'completed').length} von {FLOW_OPTIONS.length} Flows</span>
+                    </div>
+                    <Progress value={analysisProgress} className="h-2" />
+                  </div>
+
+                  {currentFlowAnalyzing && (
+                    <div className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                      <Camera className="h-4 w-4" />
+                      <span>Aktuell: <strong>{analysisResults.find(r => r.flowId === currentFlowAnalyzing)?.flowName || currentFlowAnalyzing}</strong></span>
+                    </div>
+                  )}
+
+                  <p className="text-xs text-muted-foreground">
+                    💡 Sie können diese Seite verlassen - die Analyse wird im Hintergrund fortgesetzt. 
+                    Ergebnisse werden automatisch gespeichert.
+                  </p>
                 </div>
               )}
 
