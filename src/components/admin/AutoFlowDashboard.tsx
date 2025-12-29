@@ -283,6 +283,7 @@ interface FlowResultCardProps {
   criticalCount: number;
   warningCount: number;
   analyzing: string | null;
+  baseUrl: string;
   onAnalyze: () => void;
   onResolveIssue: (issueId: string) => Promise<void>;
   getScoreColor: (score: number | null) => string;
@@ -297,6 +298,7 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
   criticalCount,
   warningCount,
   analyzing,
+  baseUrl,
   onAnalyze,
   onResolveIssue,
   getScoreColor,
@@ -492,7 +494,7 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
               </Button>
               {run && (
                 <Button variant="outline" size="sm" asChild>
-                  <a href={`/umzugsofferten?v=${flowId.replace('umzugsofferten-', '')}`} target="_blank" rel="noopener noreferrer">
+                  <a href={`${baseUrl}/umzugsofferten?v=${flowId.replace('umzugsofferten-', '')}`} target="_blank" rel="noopener noreferrer">
                     <Eye className="h-4 w-4 mr-2" />
                     Live ansehen
                   </a>
@@ -1160,6 +1162,7 @@ const AutoFlowDashboard: React.FC = () => {
                     criticalCount={criticalCount}
                     warningCount={warningCount}
                     analyzing={analyzing}
+                    baseUrl={baseUrl}
                     onAnalyze={() => runAnalysis(flowId)}
                     onResolveIssue={resolveIssue}
                     getScoreColor={getScoreColor}
