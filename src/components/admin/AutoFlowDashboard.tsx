@@ -668,44 +668,73 @@ const AutoFlowDashboard: React.FC = () => {
     }
   };
 
+  // Fire-and-forget analysis - runs in background, you can leave the page
   const runAnalysis = async (flowId: string) => {
     setAnalyzing(flowId);
     try {
       console.log(`Starting analysis for ${flowId} with baseUrl: ${baseUrl}`);
-      const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
+      
+      // Fire-and-forget: Don't await the result - it runs in background on the server
+      supabase.functions.invoke('auto-analyze-flow', {
         body: { flowId, runType: 'manual', baseUrl }
+      }).then(({ data, error }) => {
+        if (error) {
+          console.error('Analysis error:', error);
+          toast.error('Analyse fehlgeschlagen');
+        } else {
+          toast.success(`Analyse abgeschlossen: Score ${data?.overallScore || '-'}/100`);
+          fetchData();
+        }
+      }).catch(error => {
+        console.error('Analysis error:', error);
       });
 
-      if (error) throw error;
-
-      toast.success(`Analyse abgeschlossen: Score ${data.overallScore}/100`);
-      fetchData();
+      // Immediately show "started" feedback
+      toast.info(`Analyse gestartet für ${FLOW_CONFIGS[flowId]?.name || flowId}. Läuft im Hintergrund - du kannst die Seite verlassen.`, { duration: 5000 });
+      
+      // Clear the analyzing state after a short delay to allow starting multiple
+      setTimeout(() => {
+        setAnalyzing(null);
+      }, 1000);
+      
     } catch (error) {
       console.error('Analysis error:', error);
       toast.error('Analyse fehlgeschlagen');
-    } finally {
       setAnalyzing(null);
     }
   };
 
+  // Fire-and-forget all analyses - runs in background, you can leave the page
   const runAllAnalyses = async () => {
     setAnalyzing('all');
     const flowIds = Object.keys(FLOW_CONFIGS);
     
-    for (const flowId of flowIds) {
-      try {
-        await supabase.functions.invoke('auto-analyze-flow', {
-          body: { flowId, runType: 'scheduled', baseUrl }
-        });
-        toast.success(`${FLOW_CONFIGS[flowId as keyof typeof FLOW_CONFIGS].name} analysiert`);
-      } catch (error) {
+    // Fire all analyses in parallel - they run in background on the server
+    const promises = flowIds.map(flowId => 
+      supabase.functions.invoke('auto-analyze-flow', {
+        body: { flowId, runType: 'scheduled', baseUrl }
+      }).then(({ error }) => {
+        if (error) {
+          console.error(`Error analyzing ${flowId}:`, error);
+        }
+      }).catch(error => {
         console.error(`Error analyzing ${flowId}:`, error);
-        toast.error(`Fehler bei ${flowId}`);
-      }
-    }
+      })
+    );
 
-    setAnalyzing(null);
-    fetchData();
+    // Show feedback immediately
+    toast.info(`${flowIds.length} Analysen gestartet. Laufen im Hintergrund - du kannst die Seite verlassen. Ergebnisse erscheinen automatisch nach ~2-3 Min pro Flow.`, { duration: 8000 });
+
+    // Clear analyzing state after a short delay
+    setTimeout(() => {
+      setAnalyzing(null);
+    }, 2000);
+
+    // Optional: Refresh data after all complete (if user is still on page)
+    Promise.all(promises).then(() => {
+      fetchData();
+      toast.success('Alle Analysen abgeschlossen!');
+    });
   };
 
   const acknowledgeAlert = async (alertId: string) => {
