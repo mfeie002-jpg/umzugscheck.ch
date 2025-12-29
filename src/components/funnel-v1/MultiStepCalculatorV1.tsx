@@ -845,72 +845,75 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </motion.div>
                 )}
 
-              {/* Move Date - ChatGPT #2: Option "Datum noch nicht fix" */}
+              {/* Issue #14: Move Date mit Schweizer Format TT.MM.JJJJ Hinweis */}
               <div className="space-y-1.5">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
                   Umzugsdatum
                 </label>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-3 mb-2">
                   <Checkbox
                     id="date-flexible-v1"
                     checked={formData.moveDate === "flexible"}
                     onCheckedChange={(checked) => {
                       updateFormData("moveDate", checked ? "flexible" : "");
                     }}
-                    className="h-4 w-4"
+                    className="h-5 w-5"
                   />
-                  <label htmlFor="date-flexible-v1" className="text-[12px] text-muted-foreground cursor-pointer">
+                  <label htmlFor="date-flexible-v1" className="text-[13px] text-muted-foreground cursor-pointer">
                     Termin noch offen / flexibel
                   </label>
                 </div>
                 {formData.moveDate !== "flexible" && (
-                  <Input
-                    type="date"
-                    value={formData.moveDate === "flexible" ? "" : formData.moveDate}
-                    onChange={(e) => updateFormData("moveDate", e.target.value)}
-                    className={`h-10 rounded-xl ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
-                    min={new Date().toISOString().split('T')[0]}
-                  />
+                  <div className="space-y-1">
+                    <Input
+                      type="date"
+                      value={formData.moveDate === "flexible" ? "" : formData.moveDate}
+                      onChange={(e) => updateFormData("moveDate", e.target.value)}
+                      className={`h-12 rounded-xl text-base ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                    <p className="text-[10px] text-muted-foreground">Format: TT.MM.JJJJ</p>
+                  </div>
                 )}
               </div>
 
-                {/* KI Video-Analyzer */}
+                {/* Issue #2, #37: KI Video-Analyzer mit klarer Nutzenargumentation, Badge nicht überdeckend */}
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   onClick={() => updateFormData("useVideoAI", !formData.useVideoAI)}
-                  className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all min-h-[72px] touch-manipulation active:scale-[0.99] ${
                     formData.useVideoAI
                       ? "border-secondary bg-secondary/10"
                       : "border-primary/30 bg-gradient-to-r from-primary/5 to-secondary/5 hover:border-primary/50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
                       formData.useVideoAI ? "bg-secondary text-secondary-foreground" : "bg-primary/20"
                     }`}>
-                      <Video className="w-5 h-5" />
+                      <Video className="w-6 h-6" />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="text-xs font-bold">🤖 KI Video-Analyse</p>
-                        <span className="text-[8px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-full font-medium">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="text-sm font-bold">🤖 KI Video-Analyse</p>
+                        <span className="text-[9px] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full font-bold shrink-0">
                           NEU
                         </span>
                       </div>
-                      <p className="text-[10px] text-muted-foreground">
-                        Filmen Sie Ihre Wohnung – unsere KI erstellt ein exaktes Inventar
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Wohnung filmen → KI erstellt Inventar → Genauere Offerten
                       </p>
                     </div>
                     <div
-                      className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 ${
+                      className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
                         formData.useVideoAI ? "bg-secondary border-secondary" : "border-border"
                       }`}
                     >
                       {formData.useVideoAI && (
-                        <CheckCircle className="w-3.5 h-3.5 text-secondary-foreground" />
+                        <CheckCircle className="w-4 h-4 text-secondary-foreground" />
                       )}
                     </div>
                   </div>
@@ -1160,17 +1163,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               type="button"
               onClick={handleNext}
               disabled={!canProceed()}
-              // Issue #10, #14: Klarer, prominenter CTA mit spezifischem Text
+              // Issue #16, #35: Klarer, prominenter CTA mit spezifischem Text je nach Schritt
               className="flex-1 h-14 md:h-12 rounded-xl bg-primary hover:bg-primary/90 text-base font-bold shadow-lg disabled:opacity-50"
               aria-label={currentStep === 3 
-                ? `Mit ${formData.selectedCompanies.length || "0"} Firmen zum Kontaktformular weiter` 
+                ? `Mit ${formData.selectedCompanies.length || "0"} Firmen Offerten anfordern` 
                 : "Zum nächsten Schritt weiter"
               }
             >
-              {currentStep === 3 
-                ? `Mit ${formData.selectedCompanies.length || "0"} Firmen weiter` 
-                : "Weiter"
-              }
+              {currentStep === 1 && "Weiter zu Details"}
+              {currentStep === 2 && "Firmen auswählen"}
+              {currentStep === 3 && `Offerten von ${formData.selectedCompanies.length} Firmen`}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           ) : (

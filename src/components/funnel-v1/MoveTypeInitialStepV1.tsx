@@ -79,8 +79,12 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         </p>
       </div>
       
-      {/* Enhanced: Larger touch targets (min 48px), better contrast, trust elements */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-lg mx-auto">
+      {/* Issue #8, #38: Grid-basiertes Layout (2x2) statt horizontal scroll */}
+      <div 
+        className="grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto"
+        role="radiogroup"
+        aria-label="Umzugstyp auswählen"
+      >
         {moveTypeOptions.map((option, index) => {
           const isSelected = value === option.value;
           const Icon = option.icon;
@@ -89,6 +93,8 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
             <motion.button
               key={option.value}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => onChange(option.value)}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -96,7 +102,7 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                // Enhanced: min-h-[120px] for better touch targets, improved padding
+                // Issue #5: Min 44x44px Touch-Targets (jetzt 120px Höhe für bessere Bedienbarkeit)
                 "relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl border-2 transition-all min-h-[120px] touch-manipulation",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-medium ring-2 ring-primary/20"
@@ -142,19 +148,15 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         })}
       </div>
       
-      {/* Enhanced Trust micro-signals with icons */}
+      {/* Issue #11: Einmalige Trust-Signals (nicht redundant mit Header) */}
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pt-4 text-xs">
         <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium">
           <CheckCircle className="w-4 h-4" />
-          Kostenlos
-        </span>
-        <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium">
-          <CheckCircle className="w-4 h-4" />
-          Unverbindlich
+          100% kostenlos
         </span>
         <span className="flex items-center gap-1.5 text-muted-foreground">
           <Home className="w-4 h-4 text-primary" />
-          2 Min. erledigt
+          In 2 Min. erledigt
         </span>
       </div>
     </div>
