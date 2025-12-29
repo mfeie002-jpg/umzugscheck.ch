@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encode as encodeBase64 } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -206,17 +207,14 @@ async function uploadScreenshotToStorage(
   }
 }
 
-// Convert Uint8Array to base64 data URL for AI analysis (chunk-based to avoid stack overflow)
+// Convert Uint8Array to base64 data URL for AI analysis
 function toBase64DataUrl(data: Uint8Array): string {
-  // Process in chunks to avoid "Maximum call stack size exceeded" error
-  const chunkSize = 8192;
-  let base64 = '';
-  for (let i = 0; i < data.length; i += chunkSize) {
-    const chunk = data.slice(i, Math.min(i + chunkSize, data.length));
-    base64 += String.fromCharCode(...chunk);
-  }
-  return `data:image/png;base64,${btoa(base64)}`;
+  // Ensure we pass a plain ArrayBuffer (not SharedArrayBuffer) to std/encoding/base64
+  const copy = new Uint8Array(data);
+  return `data:image/png;base64,${encodeBase64(copy.buffer)}`;
 }
+
+
 
 async function analyzeStepWithAI(
   stepNumber: number,
