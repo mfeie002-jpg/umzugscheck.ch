@@ -106,27 +106,63 @@ async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile'
   }
 
   const dimension = device === 'desktop' ? '1920x1080' : '430x932';
-  const params = new URLSearchParams({
-    key: SCREENSHOTMACHINE_KEY,
-    url: url,
-    dimension: dimension,
-    format: 'png',
-    cacheLimit: '0',
-    delay: '5000',
-    js: 'true',
-    scroll: 'true',
-  });
-
+  
+  // Use the capture-screenshot edge function for better control
+  const SUPABASE_URL_ENV = Deno.env.get('SUPABASE_URL')!;
+  const SUPABASE_SERVICE_ROLE_KEY_ENV = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  
   try {
-    const response = await fetch(`https://api.screenshotmachine.com?${params}`);
+    // Call our own capture-screenshot function which has better settings
+    console.log(`Calling capture-screenshot for ${url} (${device})...`);
+    const response = await fetch(`${SUPABASE_URL_ENV}/functions/v1/capture-screenshot`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY_ENV}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        url: url,
+        dimension: dimension,
+        device: device,
+        delay: 10000, // 10 seconds for SPA to fully render
+        format: 'png',
+        fullPage: false
+      }),
+    });
+
     if (!response.ok) {
-      console.error(`Screenshot failed for ${url}: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`Screenshot API call failed for ${url}: ${response.status} - ${errorText}`);
+      return null;
+    }
+
+    const result = await response.json();
+    
+    // The capture-screenshot function returns image as "image" field with data URL
+    if (!result.success || !result.image) {
+      console.error(`Screenshot failed - no image data for ${url}:`, JSON.stringify(result).substring(0, 200));
       return null;
     }
     
-    const blob = await response.blob();
-    const arrayBuffer = await blob.arrayBuffer();
-    return new Uint8Array(arrayBuffer);
+    // Extract base64 from data URL (format: "data:image/png;base64,...")
+    const dataUrl = result.image;
+    const base64Match = dataUrl.match(/^data:image\/\w+;base64,(.+)$/);
+    if (!base64Match) {
+      console.error(`Invalid image data URL format for ${url}`);
+      return null;
+    }
+    
+    const base64 = base64Match[1];
+    
+    // Convert base64 back to Uint8Array
+    const binaryString = atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    
+    console.log(`Screenshot captured for ${url} (${device}): ${bytes.length} bytes`);
+    return bytes;
   } catch (error) {
     console.error('Screenshot error:', error);
     return null;
