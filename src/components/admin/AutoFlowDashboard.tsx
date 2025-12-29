@@ -574,10 +574,8 @@ const AutoFlowDashboard: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [runningAnalyses, setRunningAnalyses] = useState<RunningAnalysis[]>([]);
   
-  // Default to preview URL if on lovableproject.com, otherwise production
-  const defaultBaseUrl = window.location.host.includes('lovableproject.com') 
-    ? window.location.origin 
-    : 'https://www.umzugscheck.ch';
+  // Default to production URL
+  const defaultBaseUrl = 'https://umzugscheck.ch';
   const [baseUrl, setBaseUrl] = useState<string>(defaultBaseUrl);
 
   // Subscribe to realtime updates for running analyses
