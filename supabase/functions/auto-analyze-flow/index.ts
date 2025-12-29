@@ -206,10 +206,16 @@ async function uploadScreenshotToStorage(
   }
 }
 
-// Convert Uint8Array to base64 data URL for AI analysis
+// Convert Uint8Array to base64 data URL for AI analysis (chunk-based to avoid stack overflow)
 function toBase64DataUrl(data: Uint8Array): string {
-  const base64 = btoa(String.fromCharCode(...data));
-  return `data:image/png;base64,${base64}`;
+  // Process in chunks to avoid "Maximum call stack size exceeded" error
+  const chunkSize = 8192;
+  let base64 = '';
+  for (let i = 0; i < data.length; i += chunkSize) {
+    const chunk = data.slice(i, Math.min(i + chunkSize, data.length));
+    base64 += String.fromCharCode(...chunk);
+  }
+  return `data:image/png;base64,${btoa(base64)}`;
 }
 
 async function analyzeStepWithAI(
