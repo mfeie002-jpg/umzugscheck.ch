@@ -107,8 +107,8 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
           </button>
         </div>
 
-        {/* Issue #19: Radio-Group mit besseren Touch-Targets */}
-        <div className="grid gap-2" role="radiogroup" aria-label="Offerten-Methode auswählen">
+        {/* Issue #24, #49: Radio-Group mit min 88px Touch-Targets, klickbarer Gesamtbereich */}
+        <div className="grid gap-3" role="radiogroup" aria-label="Offerten-Methode auswählen">
         {submitOptions.map((option) => {
           const isSelected = value === option.id;
           
@@ -121,8 +121,8 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => onChange(option.id)}
-              // Issue #19: Min-h-[88px] für 44px+ Touch-Targets, klickbarer Gesamtbereich
-              className={`relative w-full p-4 rounded-xl border-2 text-left transition-all min-h-[88px] touch-manipulation active:scale-[0.99] ${
+              // Issue #10, #24, #49: Min-h-[96px] für 44px+ Touch-Targets, klickbarer Gesamtbereich
+              className={`relative w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all min-h-[96px] touch-manipulation active:scale-[0.99] ${
                 isSelected
                   ? "border-secondary bg-secondary/10 ring-2 ring-secondary/20 shadow-md"
                   : option.recommended
@@ -168,25 +168,29 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                   {option.icon}
                 </div>
 
-                {/* Content - Enhanced typography */}
+                {/* Content - Enhanced typography with larger text */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    {/* Enhanced: Larger font for better readability */}
-                    <p className="text-base font-bold mb-0.5">{option.label}</p>
-                    {/* V1: Info tooltip with larger touch target */}
+                  <div className="flex items-center gap-2">
+                    {/* Issue #10: Larger font (base) for better readability */}
+                    <p className="text-base sm:text-lg font-bold mb-0.5">{option.label}</p>
+                    {/* V1: Info tooltip with larger touch target (44px) */}
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button type="button" className="text-muted-foreground hover:text-foreground p-1 -m-1 touch-manipulation">
-                          <Info className="w-4 h-4" />
+                        <button 
+                          type="button" 
+                          className="text-muted-foreground hover:text-foreground p-2 -m-2 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
+                          aria-label={`Mehr Info zu ${option.label}`}
+                        >
+                          <Info className="w-5 h-5" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent className="max-w-[280px] text-sm p-3">
+                      <TooltipContent className="max-w-[300px] text-sm p-4">
                         {option.tooltip}
                       </TooltipContent>
                     </Tooltip>
                   </div>
-                  {/* Enhanced: Larger description text */}
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  {/* Issue #10: Enhanced description text (13px) */}
+                  <p className="text-[13px] text-muted-foreground leading-relaxed">
                     {option.description}
                   </p>
 

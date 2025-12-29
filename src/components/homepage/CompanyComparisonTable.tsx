@@ -277,13 +277,19 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </div>
       </div>
 
-      {/* Promoted Companies */}
+      {/* Issue #4, #39: Promoted Companies mit klarer Nutzenargumentation */}
       {promotedCompanies.length > 0 && (
         <div className="space-y-2">
-          <div className="flex items-center gap-2 px-1">
-            <Crown className="w-3.5 h-3.5 text-amber-500" />
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
-              Premium Partner
+          <div className="flex items-center justify-between px-1">
+            <div className="flex items-center gap-2">
+              <Crown className="w-4 h-4 text-amber-500" />
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">
+                Premium Partner
+              </span>
+            </div>
+            {/* Issue #4: Klare Nutzenargumentation für Premium Partner */}
+            <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-full font-medium">
+              ⚡ Antwort in &lt;4h · Geprüfte Qualität
             </span>
           </div>
           {promotedCompanies.map((company, index) => (
@@ -369,11 +375,13 @@ function CompanyCard({
           : "border-border hover:border-primary/30"
       }`}
     >
-      {/* Promoted Badge - Issue #5: Enhanced transparency with consistent "Gesponsert" label */}
+      {/* Issue #5, #39: Enhanced transparency with prominent "Gesponsert" label and benefit */}
       {isPromoted && (
-        <div className="bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-center py-1.5 text-[11px] font-bold flex items-center justify-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-wide">Gesponsert</span> · Premium Partner
+        <div className="bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-center py-2 text-[12px] font-bold flex items-center justify-center gap-2">
+          <Sparkles className="w-4 h-4" />
+          <span className="uppercase tracking-wider">Gesponsert</span>
+          <span className="text-amber-800">·</span>
+          <span className="font-semibold normal-case">Schnelle Antwort garantiert</span>
         </div>
       )}
       
@@ -520,7 +528,7 @@ function CompanyCard({
           </div>
         </div>
 
-        {/* Expand Button - Issue #17: Enhanced touch target for mobile */}
+        {/* Issue #13, #27: Expand Button - Enhanced touch target (44px+) for mobile */}
         <Button
           variant="ghost"
           size="sm"
@@ -528,11 +536,11 @@ function CompanyCard({
             e.stopPropagation();
             onExpand();
           }}
-          className="w-full h-10 mt-2 text-xs text-muted-foreground hover:text-foreground touch-manipulation"
+          className="w-full h-11 mt-2 text-sm text-muted-foreground hover:text-foreground touch-manipulation active:scale-[0.98]"
           aria-expanded={isExpanded}
           aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
         >
-          {isExpanded ? "Weniger Details" : "Mehr Details"}
+          {isExpanded ? "Weniger" : "Mehr Details"}
           {isExpanded ? <ChevronUp className="w-4 h-4 ml-1.5" /> : <ChevronDown className="w-4 h-4 ml-1.5" />}
         </Button>
       </div>

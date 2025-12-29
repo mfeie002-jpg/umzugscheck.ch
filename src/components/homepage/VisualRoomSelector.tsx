@@ -45,10 +45,10 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
         )}
       </div>
       
-      {/* Issue #7, #11, #23: Grid-basiertes Layout statt horizontal scroll, min 44x44 Touch-Targets */}
+      {/* Issue #6, #48, #50: Grid-basiertes Layout mit min 88px Touch-Targets */}
       <div 
         className={cn(
-          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 p-2 rounded-xl transition-all",
+          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 p-3 rounded-xl transition-all",
           !hasSelection && "ring-2 ring-amber-400/50 bg-amber-50/50 dark:bg-amber-900/10"
         )}
         role="radiogroup"
@@ -71,8 +71,8 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                // Issue #11: Min 44x44px Touch-Targets (jetzt 88px Höhe für bessere Bedienbarkeit)
-                "flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border-2 transition-all min-h-[88px] sm:min-h-[96px] touch-manipulation active:scale-[0.98]",
+                // Issue #6, #48: Min 88px Touch-Targets für bessere Bedienbarkeit auf Mobile
+                "flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all min-h-[100px] touch-manipulation active:scale-[0.98]",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-soft ring-2 ring-primary/30"
                   : "border-border bg-card hover:border-primary/40 hover:bg-muted/50"
@@ -81,19 +81,19 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
             >
               <Icon 
                 className={cn(
-                  // Enhanced: Larger icons for better visibility
-                  "w-6 h-6 sm:w-7 sm:h-7 mb-1.5 transition-colors",
+                  // Issue #17: Larger icons for better visibility
+                  "w-7 h-7 mb-2 transition-colors",
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )} 
               />
               <span className={cn(
-                // Enhanced: Larger text (13px min) for better readability
-                "text-[13px] sm:text-sm font-semibold transition-colors leading-tight text-center",
+                // Issue #17: Larger text (14px) for better readability
+                "text-sm font-bold transition-colors leading-tight text-center",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {option.label}
               </span>
-              <span className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">
+              <span className="text-xs text-muted-foreground mt-1">
                 {option.sublabel}
               </span>
             </motion.button>
