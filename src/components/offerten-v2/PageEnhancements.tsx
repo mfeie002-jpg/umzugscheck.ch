@@ -117,74 +117,87 @@ export function TableOfContents() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden xl:block"
-    >
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="mb-2 w-10 h-10 rounded-full bg-card border border-border/50 shadow-lg flex items-center justify-center"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+    <>
+      {/* Issue #4, #9: Scroll-Indikator nur auf Desktop ab XL, dezenter und mit Tooltip */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden xl:block"
       >
-        <List className="w-5 h-5 text-primary" />
-      </motion.button>
+        <motion.button
+          onClick={() => setIsOpen(!isOpen)}
+          className="mb-2 w-10 h-10 rounded-full bg-card/80 border border-border/50 shadow-lg flex items-center justify-center hover:bg-card transition-colors"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Inhaltsverzeichnis öffnen"
+          aria-expanded={isOpen}
+        >
+          <List className="w-5 h-5 text-primary" />
+        </motion.button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: -20, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -20, scale: 0.95 }}
-            className="bg-card/95 backdrop-blur-sm border border-border/50 rounded-xl shadow-xl p-2 min-w-[180px]"
-          >
-            <div className="text-xs font-semibold text-muted-foreground px-3 py-2">
-              Inhaltsverzeichnis
-            </div>
-            {sections.map((section, i) => (
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: -20, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -20, scale: 0.95 }}
+              className="bg-card/95 backdrop-blur-sm border border-border/50 rounded-xl shadow-xl p-2 min-w-[180px]"
+              role="navigation"
+              aria-label="Seiteninhalt"
+            >
+              <div className="text-xs font-semibold text-muted-foreground px-3 py-2">
+                Inhaltsverzeichnis
+              </div>
+              {sections.map((section, i) => (
+                <motion.button
+                  key={section.id}
+                  onClick={() => scrollToSection(section.id)}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors min-h-[44px] ${
+                    activeSection === section.id
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                  aria-current={activeSection === section.id ? "location" : undefined}
+                >
+                  <span>{section.icon}</span>
+                  <span className="truncate">{section.label}</span>
+                  {activeSection === section.id && (
+                    <ChevronRight className="w-3 h-3 ml-auto" />
+                  )}
+                </motion.button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Issue #9: Dezentere Punkt-Navigation mit Tooltip statt nur Punkte */}
+        {!isOpen && (
+          <div className="flex flex-col gap-2 items-center mt-2 opacity-60 hover:opacity-100 transition-opacity">
+            {sections.map((section) => (
               <motion.button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
+                className={`w-3 h-3 rounded-full transition-all relative group ${
                   activeSection === section.id
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "bg-primary scale-125"
+                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
                 }`}
+                whileHover={{ scale: 1.4 }}
+                aria-label={`Zu ${section.label} springen`}
               >
-                <span>{section.icon}</span>
-                <span className="truncate">{section.label}</span>
-                {activeSection === section.id && (
-                  <ChevronRight className="w-3 h-3 ml-auto" />
-                )}
+                {/* Tooltip */}
+                <span className="absolute left-full ml-3 px-2 py-1 bg-foreground text-background text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  {section.label}
+                </span>
               </motion.button>
             ))}
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
-
-      {/* Mini progress dots */}
-      {!isOpen && (
-        <div className="flex flex-col gap-1.5 items-center mt-2">
-          {sections.map((section) => (
-            <motion.button
-              key={section.id}
-              onClick={() => scrollToSection(section.id)}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                activeSection === section.id
-                  ? "bg-primary scale-125"
-                  : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
-              whileHover={{ scale: 1.3 }}
-              title={section.label}
-            />
-          ))}
-        </div>
-      )}
-    </motion.div>
+      </motion.div>
+    </>
   );
 }
 

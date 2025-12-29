@@ -15,7 +15,7 @@ const roomOptions: RoomOption[] = [
   { value: "2-2.5", label: "2–2.5 Zi.", sublabel: "50-65m²", icon: Home },
   { value: "3-3.5", label: "3–3.5 Zi.", sublabel: "65-85m²", icon: Building2 },
   { value: "4-4.5", label: "4–4.5 Zi.", sublabel: "85-110m²", icon: Building },
-  { value: "5+", label: "5+ Zi.", sublabel: "Haus", icon: Warehouse },
+  { value: "5+", label: "5+ Zi.", sublabel: "110m²+", icon: Warehouse },
 ];
 
 interface VisualRoomSelectorProps {
@@ -45,10 +45,15 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
         )}
       </div>
       
-      <div className={cn(
-        "grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 p-2 rounded-xl transition-all",
-        !hasSelection && "ring-2 ring-amber-400/50 bg-amber-50/50 dark:bg-amber-900/10"
-      )}>
+      {/* Issue #7, #11, #23: Grid-basiertes Layout statt horizontal scroll, min 44x44 Touch-Targets */}
+      <div 
+        className={cn(
+          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 p-2 rounded-xl transition-all",
+          !hasSelection && "ring-2 ring-amber-400/50 bg-amber-50/50 dark:bg-amber-900/10"
+        )}
+        role="radiogroup"
+        aria-label="Wohnungsgröße auswählen"
+      >
         {roomOptions.map((option, index) => {
           const isSelected = value === option.value;
           const Icon = option.icon;
@@ -57,6 +62,8 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
             <motion.button
               key={option.value}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => onChange(option.value)}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -64,10 +71,10 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                // Enhanced: min-h-[80px] for better touch targets on mobile
-                "flex flex-col items-center justify-center p-3 sm:p-3 rounded-xl border-2 transition-all min-h-[80px] sm:min-h-[88px] touch-manipulation active:scale-[0.98]",
+                // Issue #11: Min 44x44px Touch-Targets (jetzt 88px Höhe für bessere Bedienbarkeit)
+                "flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border-2 transition-all min-h-[88px] sm:min-h-[96px] touch-manipulation active:scale-[0.98]",
                 isSelected
-                  ? "border-primary bg-primary/10 shadow-soft ring-1 ring-primary/30"
+                  ? "border-primary bg-primary/10 shadow-soft ring-2 ring-primary/30"
                   : "border-border bg-card hover:border-primary/40 hover:bg-muted/50"
               )}
               aria-pressed={isSelected}

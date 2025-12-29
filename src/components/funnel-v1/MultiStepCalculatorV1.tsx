@@ -670,44 +670,50 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Header with Progress - Issue 41: Enhanced consistency between numeric and visual indicators */}
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-6 py-4 border-b border-border">
+      {/* Issue #24, #41: Einheitlicher Fortschrittsindikator ohne redundante Labels */}
+      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-bold text-primary">
-            Schritt {currentStep} von {totalSteps}
+          <span className="text-sm font-bold text-primary flex items-center gap-2">
+            <span className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold">
+              {currentStep}
+            </span>
+            von {totalSteps}
           </span>
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium">
-            <Shield className="w-4 h-4" />
-            Kostenlos & unverbindlich
+          {/* Issue #13: Trust-Signal einmal prominent statt redundant */}
+          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-2.5 py-1 rounded-full">
+            <Shield className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline">Kostenlos</span> & unverbindlich
           </div>
         </div>
         
-        {/* Enhanced: Taller progress bar (h-2.5) for better mobile visibility */}
-        <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
-          {[
-            { step: 1, label: "Typ" },
-            { step: 2, label: "Details" },
-            { step: 3, label: "Firmen" },
-            { step: 4, label: "Kontakt" },
-          ].map(({ step, label }) => (
-            <li
-              key={step}
-              className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
-                step < currentStep 
-                  ? 'bg-green-500' 
-                  : step === currentStep 
-                    ? 'bg-primary' 
-                    : 'bg-muted'
-              }`}
-              role="listitem"
-              aria-current={step === currentStep ? "step" : undefined}
-              aria-label={`Schritt ${step}: ${label}${step < currentStep ? " (abgeschlossen)" : step === currentStep ? " (aktuell)" : ""}`}
-            />
-          ))}
-        </ol>
+        {/* Issue #24: Vereinheitlichter Fortschrittsbalken (visuell, nicht redundant) */}
+        <div className="relative">
+          <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
+            {[
+              { step: 1, label: "Typ" },
+              { step: 2, label: "Details" },
+              { step: 3, label: "Firmen" },
+              { step: 4, label: "Kontakt" },
+            ].map(({ step, label }) => (
+              <li
+                key={step}
+                className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
+                  step < currentStep 
+                    ? 'bg-green-500' 
+                    : step === currentStep 
+                      ? 'bg-primary' 
+                      : 'bg-muted'
+                }`}
+                role="listitem"
+                aria-current={step === currentStep ? "step" : undefined}
+                aria-label={`Schritt ${step}: ${label}${step < currentStep ? " (abgeschlossen)" : step === currentStep ? " (aktuell)" : ""}`}
+              />
+            ))}
+          </ol>
+        </div>
         
-        {/* Enhanced: Larger text with icons for better clarity */}
-        <div className="flex justify-between mt-3 text-xs">
+        {/* Labels nur einmal unter dem Balken, nicht doppelt */}
+        <div className="flex justify-between mt-2.5 text-xs">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -725,7 +731,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               }`}
             >
               {step < currentStep && <CheckCircle className="w-3 h-3" />}
-              {label}
+              <span className="hidden xs:inline">{label}</span>
+              <span className="xs:hidden">{step}</span>
             </span>
           ))}
         </div>
@@ -1128,9 +1135,9 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Navigation Buttons */}
+        {/* Issue #14, #21: Sticky Navigation ohne untere Nav-Bar, klarer Weiter-Button */}
         <div className="flex gap-3 mt-6 md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        sticky bottom-0 left-0 right-0 -mx-6 px-6 py-4 
+                        sticky bottom-0 left-0 right-0 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 
                         bg-card/98 backdrop-blur-lg border-t border-border/50 
                         shadow-[0_-4px_20px_rgba(0,0,0,0.08)]
                         pb-[calc(1rem+env(safe-area-inset-bottom))]
@@ -1140,11 +1147,11 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               type="button"
               variant="outline"
               onClick={handleBack}
-              // Enhanced: h-14 on mobile for better touch targets (56px)
-              className="h-14 md:h-12 rounded-xl px-5 min-w-[100px] text-base font-medium"
+              className="h-14 md:h-12 rounded-xl px-5 min-w-[100px] text-base font-medium shrink-0"
+              aria-label="Zurück zum vorherigen Schritt"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Zurück
+              <span className="hidden xs:inline">Zurück</span>
             </Button>
           )}
           
@@ -1153,8 +1160,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               type="button"
               onClick={handleNext}
               disabled={!canProceed()}
-              // Enhanced: h-14 on mobile for better touch targets, higher contrast
+              // Issue #10, #14: Klarer, prominenter CTA mit spezifischem Text
               className="flex-1 h-14 md:h-12 rounded-xl bg-primary hover:bg-primary/90 text-base font-bold shadow-lg disabled:opacity-50"
+              aria-label={currentStep === 3 
+                ? `Mit ${formData.selectedCompanies.length || "0"} Firmen zum Kontaktformular weiter` 
+                : "Zum nächsten Schritt weiter"
+              }
             >
               {currentStep === 3 
                 ? `Mit ${formData.selectedCompanies.length || "0"} Firmen weiter` 
@@ -1168,22 +1179,18 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={!canProceed()}
-                // Enhanced: h-14 on mobile for better touch targets, high contrast secondary color
                 className="w-full h-14 md:h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-xl disabled:opacity-50"
+                aria-label="Offerten-Anfrage jetzt absenden"
               >
                 <CheckCircle className="w-5 h-5 mr-2" />
                 {getSubmitButtonText()}
               </Button>
-              {/* Enhanced: Trust reminder at submit with icon */}
-              <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
-                <Shield className="w-4 h-4 text-green-500" />
-                <span>100% kostenlos & unverbindlich · Keine versteckten Kosten</span>
-              </div>
+              {/* Issue #13: Einmalige Trust-Info statt redundant */}
             </div>
           )}
         </div>
         
-        {/* Enhanced Trust reassurance with better visibility */}
+        {/* Desktop: Trust-Footer (nicht redundant, nur einmal) */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Shield className="w-4 h-4 text-green-500" />
@@ -1203,28 +1210,33 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </span>
         </div>
 
-        {/* V1: Ghost variant for secondary Video CTA */}
+        {/* Issue #12, #45: Ghost-Variante für sekundäre Video-Option, weniger prominent */}
         {currentStep === 1 && (
           <>
-            {/* Issue #3: Enhanced contrast for 'oder' separator */}
+            {/* Issue #3: Kontrast-optimierter Trenner */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-card px-3 py-0.5 text-foreground/70 font-medium">oder</span>
+                <span className="bg-card px-3 py-1 text-muted-foreground font-medium uppercase tracking-wider text-[10px]">
+                  oder
+                </span>
               </div>
             </div>
 
-            <Button
+            {/* Issue #12: Sekundäre Option weniger prominent als Link-Style */}
+            <button
               type="button"
-              variant="ghost"
-              className="w-full h-10 rounded-xl border border-muted hover:bg-muted/50 font-medium text-sm text-muted-foreground hover:text-foreground"
+              className="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
               onClick={() => navigate('/umzugsrechner?tab=ai')}
             >
-              <Video className="w-4 h-4 mr-2" />
-              Video hochladen & KI berechnet
-            </Button>
+              <Video className="w-4 h-4 group-hover:text-primary transition-colors" />
+              <span className="underline-offset-2 group-hover:underline">Video hochladen & KI berechnet</span>
+              <span className="text-[10px] bg-secondary/20 text-secondary px-1.5 py-0.5 rounded font-medium">
+                NEU
+              </span>
+            </button>
           </>
         )}
       </div>
