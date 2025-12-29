@@ -698,17 +698,17 @@ export const PremiumCalculator = memo(function PremiumCalculator() {
 
   return (
     <div className="theme-premium-v2 min-h-[80vh] rounded-3xl bg-background border border-border p-6 md:p-10">
-      {/* Progress bar */}
+      {/* Progress bar - Enhanced visibility */}
       <div className="max-w-4xl mx-auto mb-8">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm font-medium text-foreground">
             Schritt {currentStepIndex + 1} von {steps.length}
           </span>
-          <span className="text-xs text-primary font-medium">
+          <span className="text-sm text-primary font-semibold">
             {Math.round(progress)}% abgeschlossen
           </span>
         </div>
-        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+        <div className="h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-gradient-to-r from-primary to-primary/80"
             initial={{ width: 0 }}
@@ -725,15 +725,15 @@ export const PremiumCalculator = memo(function PremiumCalculator() {
         </AnimatePresence>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation - Enhanced CTAs with larger touch targets */}
       <div className="max-w-4xl mx-auto mt-10 flex items-center justify-between">
         <Button
           variant="ghost"
           onClick={handleBack}
           disabled={currentStepIndex === 0}
-          className="gap-2"
+          className="gap-2 min-h-[48px] px-5 text-base font-medium"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-5 h-5" />
           Zurück
         </Button>
 
@@ -742,23 +742,49 @@ export const PremiumCalculator = memo(function PremiumCalculator() {
             onClick={handleSubmit}
             disabled={!canProceed()}
             size="lg"
-            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground gap-2 shadow-cta"
+            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground gap-2 shadow-cta min-h-[52px] min-w-[200px] text-base font-semibold"
           >
-            Offerten anfordern
-            <Zap className="w-4 h-4" />
+            Jetzt Offerten erhalten
+            <Zap className="w-5 h-5" />
           </Button>
         ) : (
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
             size="lg"
-            className="bg-primary hover:bg-primary/90 gap-2"
+            className="bg-primary hover:bg-primary/90 gap-2 min-h-[52px] min-w-[160px] text-base font-semibold"
           >
             Weiter
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </Button>
         )}
       </div>
+
+      {/* What happens next - Trust reinforcement (on contact step) */}
+      {currentStep === "contact" && (
+        <div className="max-w-4xl mx-auto mt-6">
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-2">
+            <h4 className="font-semibold text-sm text-foreground flex items-center gap-2">
+              <Clock className="w-4 h-4 text-primary" />
+              Was passiert als Nächstes?
+            </h4>
+            <ul className="text-sm text-muted-foreground space-y-1.5">
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                Sie erhalten 2-3 Offerten innert 24 Stunden
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                Nur geprüfte Schweizer Umzugsfirmen
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                100% kostenlos & unverbindlich
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 });
