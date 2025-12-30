@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Send, Bot, User, Home, Building2, Briefcase, MapPin, Calendar,
   Package, Brush, Trash2, Warehouse, Sparkles, ArrowRight, Check,
-  Phone, Mail, Shield, Star, Clock, ChevronDown, Loader2, Users
+  Phone, Mail, Shield, Star, Clock, ChevronDown, Loader2, Users, Video
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,11 +27,12 @@ import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
 import { getCantonFromZip } from "@/lib/zip-to-canton";
 import { getCantonConfig } from "@/lib/cantonConfigMap";
 import { cn } from "@/lib/utils";
+import { ChatVideoAnalyzer } from "./ChatVideoAnalyzer";
 
 // Types
 interface Message {
   id: string;
-  type: "bot" | "user" | "options" | "price" | "companies" | "contact" | "success";
+  type: "bot" | "user" | "options" | "price" | "companies" | "contact" | "success" | "video";
   content: string;
   options?: ChatOption[];
   priceData?: PriceData;
@@ -80,6 +81,12 @@ interface FormState {
   name: string;
   email: string;
   phone: string;
+  videoAnalysis?: {
+    itemCount: number;
+    volumeEstimate: string;
+    suggestedServices: string[];
+    priceAdjustment: number;
+  };
 }
 
 // Price calculation
@@ -183,6 +190,7 @@ type FlowStep =
   | "fromLocation"
   | "toLocation"
   | "apartmentSize"
+  | "videoOffer"
   | "moveDate"
   | "services"
   | "priceReveal"
@@ -316,20 +324,16 @@ export function ChatFunnelV2e() {
         updateAndProceed("apartmentSize", optionId);
         setTimeout(() => {
           addBotMessage(
-            "Wann soll der Umzug stattfinden?",
-            {
-              type: "options",
-              options: [
-                { id: "soon", label: "In den nächsten 2 Wochen", sublabel: "Dringend" },
-                { id: "month", label: "In 1-2 Monaten", sublabel: "Geplant" },
-                { id: "later", label: "In 3+ Monaten", sublabel: "Flexibel" },
-                { id: "flexible", label: "Noch nicht sicher", sublabel: "Datum offen" },
-              ],
-            },
+            "Möchten Sie ein Video Ihrer Wohnung hochladen? Unsere KI kann den Umfang genauer einschätzen.",
+            { type: "video" },
             600
           );
-          setCurrentStep("moveDate");
+          setCurrentStep("videoOffer");
         }, 400);
+        break;
+
+      case "videoOffer":
+        // This case handles if user somehow selects an option here (shouldn't happen)
         break;
 
       case "moveDate": {
@@ -419,6 +423,48 @@ export function ChatFunnelV2e() {
     }, 600);
 
     setCurrentStep("priceReveal");
+  };
+
+  // Handle video analysis completion
+  const handleVideoAnalysis = (result: { itemCount: number; volumeEstimate: string; suggestedServices: string[]; priceAdjustment: number }) => {
+    setFormState(prev => ({ ...prev, videoAnalysis: result }));
+    addUserMessage(`Video analysiert: ${result.itemCount} Gegenstände, ${result.volumeEstimate}`);
+    
+    // Add suggested services from AI
+    if (result.suggestedServices.length > 0) {
+      setFormState(prev => ({
+        ...prev,
+        selectedServices: [...new Set([...prev.selectedServices, ...result.suggestedServices])],
+      }));
+    }
+
+    proceedToMoveDate();
+  };
+
+  // Handle video skip
+  const handleVideoSkip = () => {
+    addUserMessage("Übersprungen");
+    proceedToMoveDate();
+  };
+
+  // Proceed to move date step
+  const proceedToMoveDate = () => {
+    setTimeout(() => {
+      addBotMessage(
+        "Wann soll der Umzug stattfinden?",
+        {
+          type: "options",
+          options: [
+            { id: "soon", label: "In den nächsten 2 Wochen", sublabel: "Dringend" },
+            { id: "month", label: "In 1-2 Monaten", sublabel: "Geplant" },
+            { id: "later", label: "In 3+ Monaten", sublabel: "Flexibel" },
+            { id: "flexible", label: "Noch nicht sicher", sublabel: "Datum offen" },
+          ],
+        },
+        600
+      );
+      setCurrentStep("moveDate");
+    }, 400);
   };
 
   // Handle company selection confirmation
@@ -599,6 +645,26 @@ export function ChatFunnelV2e() {
           </div>
         );
 
+      case "video":
+        return (
+          <div className="flex gap-3 max-w-full">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 text-primary" />
+            </div>
+            <div className="flex-1">
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 mb-3">
+                <p className="text-sm">{message.content}</p>
+              </div>
+              {currentStep === "videoOffer" && (
+                <ChatVideoAnalyzer 
+                  onAnalysisComplete={handleVideoAnalysis}
+                  onSkip={handleVideoSkip}
+                />
+              )}
+            </div>
+          </div>
+        );
+
       case "price":
         return (
           <div className="flex gap-3 max-w-full">
@@ -660,7 +726,8 @@ export function ChatFunnelV2e() {
       moveType: 10,
       fromLocation: 20,
       toLocation: 30,
-      apartmentSize: 45,
+      apartmentSize: 40,
+      videoOffer: 50,
       moveDate: 55,
       services: 65,
       priceReveal: 75,
