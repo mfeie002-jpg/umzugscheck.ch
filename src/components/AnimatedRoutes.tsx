@@ -30,10 +30,10 @@ const pageTransition = {
 export const AnimatedRoutes = ({ children }: AnimatedRoutesProps) => {
   const location = useLocation();
 
-  // ✅ Key darf search enthalten (für Animationen), aber pathname MUSS sauber bleiben
+  // ✅ Key NUR auf pathname basieren - search-Änderungen sollten KEINE Neurendering auslösen
   const routeKey = useMemo(
-    () => `${location.pathname}${location.search}`,
-    [location.pathname, location.search]
+    () => location.pathname,
+    [location.pathname]
   );
 
   // DEV-Tripwire: wenn das jemals feuert, mutiert irgendwer Location
