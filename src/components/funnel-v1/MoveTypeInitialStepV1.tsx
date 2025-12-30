@@ -21,33 +21,33 @@ interface MoveTypeOption {
   color: string;
 }
 
+// Issue #25: Vereinheitlichte, kurze Beschreibungen - gleiche Länge
 const moveTypeOptions: MoveTypeOption[] = [
   { 
     value: "wohnung", 
     label: "Wohnung", 
-    description: "Privatumzug",
+    description: "Mietwohnung / Eigentum",
     icon: Home,
     color: "text-primary"
   },
   { 
     value: "haus", 
     label: "Haus", 
-    description: "Einfamilienhaus",
+    description: "Einfamilienhaus / Villa",
     icon: Building2,
     color: "text-secondary"
   },
   { 
     value: "buero", 
     label: "Büro", 
-    description: "Firmenumzug",
+    description: "Firma / Praxis / Laden",
     icon: Briefcase,
     color: "text-amber-600 dark:text-amber-400"
   },
   { 
-    // Issue #32: Präzisere Beschreibung für "Einzelteile"
     value: "einzeln", 
     label: "Einzelteile", 
-    description: "Sperrige Möbel/Geräte",
+    description: "Klavier / Tresor / Kunst",
     icon: Package,
     color: "text-green-600 dark:text-green-400"
   },

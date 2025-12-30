@@ -10,11 +10,11 @@
  * - Issue #27: No hidden interactions - all benefits visible
  */
 
-import { memo, useState } from "react";
+import { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Send, Globe, Sparkles, CheckCircle, Users, Clock, 
-  TrendingDown, Shield, Zap, Crown, Gavel, Info, BarChart3
+  TrendingDown, Shield, Zap, Crown, Gavel, Info
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -96,81 +96,23 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
   selectedCompaniesCount,
   estimatedPrice,
 }: SubmitOptionsCardV1Props) {
-  const [showComparison, setShowComparison] = useState(false);
 
   return (
     <TooltipProvider>
-      <div className="space-y-4">
-        {/* Issue #12, #15, #24, #65: Clear label - NO confusing "Vergleichen" button */}
+      <div className="space-y-3">
+        {/* Issue #10, #16: Default "Beides" vorausgewählt - keine extra Optionen-Schaltfläche nötig */}
         <div className="flex items-center justify-between flex-wrap gap-2">
           <label className="text-base sm:text-lg font-bold">
             Wie möchten Sie Offerten erhalten?
           </label>
-          {/* Issue #12, #64: Comparison toggle - clear function label */}
-          <button
-            type="button"
-            onClick={() => setShowComparison(!showComparison)}
-            className={`text-xs flex items-center gap-2 px-3 py-2 rounded-xl transition-all touch-manipulation min-h-[44px] font-medium border ${
-              showComparison 
-                ? "bg-primary text-primary-foreground border-primary" 
-                : "bg-card text-muted-foreground border-border hover:border-primary hover:text-primary"
-            }`}
-            aria-expanded={showComparison}
-          >
-            <BarChart3 className="w-4 h-4" />
-            <span className="hidden sm:inline">{showComparison ? "Tabelle schliessen" : "Optionen vergleichen"}</span>
-            <span className="sm:hidden">{showComparison ? "×" : "?"}</span>
-          </button>
         </div>
 
-        {/* Issue #2: Comparison table when toggled */}
-        <AnimatePresence>
-          {showComparison && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="p-4 rounded-xl bg-muted/50 border border-border mb-3">
-                <table className="w-full text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-2 font-medium">Merkmal</th>
-                      <th className="text-center py-2 font-medium">Direkt</th>
-                      <th className="text-center py-2 font-medium">Ausschreibung</th>
-                      <th className="text-center py-2 font-medium text-green-600">Beides</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-border/50">
-                      <td className="py-2">Offerten</td>
-                      <td className="text-center">3-5</td>
-                      <td className="text-center">5-8</td>
-                      <td className="text-center font-bold text-green-600">8-12</td>
-                    </tr>
-                    <tr className="border-b border-border/50">
-                      <td className="py-2">Geschwindigkeit</td>
-                      <td className="text-center">⚡⚡⚡</td>
-                      <td className="text-center">⚡</td>
-                      <td className="text-center font-bold text-green-600">⚡⚡⚡</td>
-                    </tr>
-                    <tr>
-                      <td className="py-2">Preisersparnis</td>
-                      <td className="text-center">Ø 15%</td>
-                      <td className="text-center">Ø 35%</td>
-                      <td className="text-center font-bold text-green-600">Ø 40%</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Issue #10: "Beides" ist bereits vorausgewählt - Vergleichstabelle entfernt für weniger Friction */}
 
-        {/* Issue #21, #28, #52, #66: Radio-Group with 48px+ touch targets - entire card clickable, kompaktere Beste-Wahl */}
-        <div className="grid gap-3" role="radiogroup" aria-label="Offerten-Methode auswählen">
-          {submitOptions.map((option) => {
+        {/* Issue #21, #28, #52: Kompaktere Radio-Group mit 48px+ touch targets - "Beides" prominent */}
+        <div className="grid gap-2" role="radiogroup" aria-label="Offerten-Methode auswählen">
+          {/* Issue #10: "Beides" zuerst und prominenter anzeigen als beste Wahl */}
+          {submitOptions.slice().sort((a, b) => (a.recommended ? -1 : b.recommended ? 1 : 0)).map((option) => {
             const isSelected = value === option.id;
             
             return (
@@ -182,8 +124,8 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                 whileHover={{ scale: 1.005 }}
                 whileTap={{ scale: 0.995 }}
                 onClick={() => onChange(option.id)}
-                // Issue #21, #28: Kompaktere Darstellung für Beste Wahl, min-h angepasst
-                className={`relative w-full p-4 rounded-xl border-2 text-left transition-all min-h-[72px] touch-manipulation active:scale-[0.99] ${
+                // Issue #21, #28, #32: Kompaktere Darstellung, min-h reduziert
+                className={`relative w-full p-3 sm:p-4 rounded-xl border-2 text-left transition-all min-h-[64px] touch-manipulation active:scale-[0.99] ${
                   isSelected
                     ? "border-secondary bg-secondary/10 ring-2 ring-secondary/30 shadow-md"
                     : option.recommended
