@@ -797,13 +797,19 @@ export type Database = {
           flow_name: string
           id: string
           metadata: Json | null
+          mobile_score: number | null
+          movu_comparison: Json | null
           overall_score: number | null
           performance_score: number | null
+          quick_wins: Json | null
           run_type: string
+          score_badge: string | null
           started_at: string | null
           status: string
           steps_captured: number | null
+          strengths: Json | null
           total_steps: number | null
+          trust_score: number | null
           ux_score: number | null
         }
         Insert: {
@@ -817,13 +823,19 @@ export type Database = {
           flow_name: string
           id?: string
           metadata?: Json | null
+          mobile_score?: number | null
+          movu_comparison?: Json | null
           overall_score?: number | null
           performance_score?: number | null
+          quick_wins?: Json | null
           run_type?: string
+          score_badge?: string | null
           started_at?: string | null
           status?: string
           steps_captured?: number | null
+          strengths?: Json | null
           total_steps?: number | null
+          trust_score?: number | null
           ux_score?: number | null
         }
         Update: {
@@ -837,16 +849,69 @@ export type Database = {
           flow_name?: string
           id?: string
           metadata?: Json | null
+          mobile_score?: number | null
+          movu_comparison?: Json | null
           overall_score?: number | null
           performance_score?: number | null
+          quick_wins?: Json | null
           run_type?: string
+          score_badge?: string | null
           started_at?: string | null
           status?: string
           steps_captured?: number | null
+          strengths?: Json | null
           total_steps?: number | null
+          trust_score?: number | null
           ux_score?: number | null
         }
         Relationships: []
+      }
+      flow_archetype_scores: {
+        Row: {
+          archetype: string
+          archetype_name: string
+          created_at: string
+          flow_id: string
+          id: string
+          improvements: Json | null
+          missing_elements: Json | null
+          reasoning: string | null
+          run_id: string | null
+          score: number
+        }
+        Insert: {
+          archetype: string
+          archetype_name: string
+          created_at?: string
+          flow_id: string
+          id?: string
+          improvements?: Json | null
+          missing_elements?: Json | null
+          reasoning?: string | null
+          run_id?: string | null
+          score: number
+        }
+        Update: {
+          archetype?: string
+          archetype_name?: string
+          created_at?: string
+          flow_id?: string
+          id?: string
+          improvements?: Json | null
+          missing_elements?: Json | null
+          reasoning?: string | null
+          run_id?: string | null
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_archetype_scores_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "flow_analysis_runs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       flow_feedback_variants: {
         Row: {
@@ -1024,11 +1089,14 @@ export type Database = {
       flow_ux_issues: {
         Row: {
           affected_element: string | null
+          affected_elements: Json | null
           category: string
           created_at: string
           description: string | null
+          effort: string | null
           flow_id: string
           id: string
+          impact: string | null
           is_resolved: boolean | null
           issue_type: string
           recommendation: string | null
@@ -1041,11 +1109,14 @@ export type Database = {
         }
         Insert: {
           affected_element?: string | null
+          affected_elements?: Json | null
           category: string
           created_at?: string
           description?: string | null
+          effort?: string | null
           flow_id: string
           id?: string
+          impact?: string | null
           is_resolved?: boolean | null
           issue_type: string
           recommendation?: string | null
@@ -1058,11 +1129,14 @@ export type Database = {
         }
         Update: {
           affected_element?: string | null
+          affected_elements?: Json | null
           category?: string
           created_at?: string
           description?: string | null
+          effort?: string | null
           flow_id?: string
           id?: string
+          impact?: string | null
           is_resolved?: boolean | null
           issue_type?: string
           recommendation?: string | null
