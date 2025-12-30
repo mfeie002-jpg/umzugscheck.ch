@@ -28,7 +28,8 @@ import { getCantonFromZip } from "@/lib/zip-to-canton";
 import { getCantonConfig } from "@/lib/cantonConfigMap";
 import { cn } from "@/lib/utils";
 import { ChatVideoAnalyzer } from "./ChatVideoAnalyzer";
-
+import { useCaptureMode } from "@/hooks/use-capture-mode";
+import { CaptureReadySentinel } from "@/components/CaptureReadySentinel";
 // Types
 interface Message {
   id: string;
@@ -203,23 +204,44 @@ export function ChatFunnelV2e() {
   const navigate = useNavigate();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Capture mode for screenshot automation
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentStep, setCurrentStep] = useState<FlowStep>("welcome");
   const [isTyping, setIsTyping] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [formState, setFormState] = useState<FormState>({
-    moveType: "",
-    fromLocation: "",
-    toLocation: "",
-    apartmentSize: "",
-    moveDate: "",
-    moveDateFlexible: false,
-    selectedServices: ["umzug"],
-    selectedCompanies: [],
-    name: "",
-    email: "",
-    phone: "",
+  const [formState, setFormState] = useState<FormState>(() => {
+    // Pre-fill with demo data in capture mode
+    if (isCaptureMode) {
+      return {
+        moveType: "wohnung",
+        fromLocation: demoData.fromLocation,
+        toLocation: demoData.toLocation,
+        apartmentSize: demoData.apartmentSize,
+        moveDate: "month",
+        moveDateFlexible: false,
+        selectedServices: demoData.selectedServices,
+        selectedCompanies: demoData.selectedCompanies,
+        name: demoData.name,
+        email: demoData.email,
+        phone: demoData.phone,
+      };
+    }
+    return {
+      moveType: "",
+      fromLocation: "",
+      toLocation: "",
+      apartmentSize: "",
+      moveDate: "",
+      moveDateFlexible: false,
+      selectedServices: ["umzug"],
+      selectedCompanies: [],
+      name: "",
+      email: "",
+      phone: "",
+    };
   });
 
   // Scroll to bottom on new messages
@@ -259,10 +281,58 @@ export function ChatFunnelV2e() {
     }]);
   }, []);
 
-  // Initialize chat
+  // Map capture step number to FlowStep
+  const getFlowStepFromNumber = (stepNum: number): FlowStep => {
+    const stepMap: Record<number, FlowStep> = {
+      1: "moveType",
+      2: "fromLocation", 
+      3: "toLocation",
+      4: "apartmentSize",
+      5: "videoOffer",
+      6: "moveDate",
+      7: "services",
+      8: "priceReveal",
+      9: "companies",
+      10: "contact",
+    };
+    return stepMap[stepNum] || "moveType";
+  };
+
+  // Get step number for CaptureReadySentinel
+  const getStepNumber = (): number => {
+    const stepMap: Record<FlowStep, number> = {
+      welcome: 0,
+      moveType: 1,
+      fromLocation: 2,
+      toLocation: 3,
+      apartmentSize: 4,
+      videoOffer: 5,
+      moveDate: 6,
+      services: 7,
+      priceReveal: 8,
+      companies: 9,
+      contact: 10,
+      submitting: 11,
+      success: 12,
+    };
+    return stepMap[currentStep] || 1;
+  };
+
+  // Initialize chat - with capture mode support
   useEffect(() => {
     if (messages.length === 0) {
-      // First message
+      // In capture mode, skip to the target step immediately
+      if (isCaptureMode && captureStep !== null) {
+        const targetStep = getFlowStepFromNumber(captureStep);
+        setCurrentStep(targetStep);
+        
+        // Create minimal messages for the target step
+        const stepMessages = generateMessagesForStep(targetStep);
+        setMessages(stepMessages);
+        return;
+      }
+
+      // Normal flow - First message
       setIsTyping(true);
       setTimeout(() => {
         setIsTyping(false);
@@ -294,7 +364,112 @@ export function ChatFunnelV2e() {
         }, 800);
       }, 500);
     }
-  }, []);
+  }, [isCaptureMode, captureStep]);
+
+  // Generate messages for a specific step (for capture mode)
+  const generateMessagesForStep = (step: FlowStep): Message[] => {
+    const baseMessages: Message[] = [
+      {
+        id: "msg-intro",
+        type: "bot",
+        content: "Hallo! 👋 Ich bin Ihr persönlicher Umzugsberater.",
+        timestamp: new Date(),
+      },
+    ];
+
+    const stepConfigs: Partial<Record<FlowStep, Message>> = {
+      moveType: {
+        id: "msg-movetype",
+        type: "options",
+        content: "Was möchten Sie umziehen?",
+        options: [
+          { id: "wohnung", label: "Wohnung", icon: <Home className="w-5 h-5" /> },
+          { id: "haus", label: "Haus", icon: <Building2 className="w-5 h-5" /> },
+          { id: "buero", label: "Büro/Firma", icon: <Briefcase className="w-5 h-5" /> },
+        ],
+        timestamp: new Date(),
+      },
+      fromLocation: {
+        id: "msg-from",
+        type: "bot",
+        content: "Von welcher PLZ/Stadt ziehen Sie um?",
+        timestamp: new Date(),
+      },
+      toLocation: {
+        id: "msg-to",
+        type: "bot",
+        content: "Und wohin geht der Umzug?",
+        timestamp: new Date(),
+      },
+      apartmentSize: {
+        id: "msg-size",
+        type: "options",
+        content: "Wie gross ist Ihre Wohnung?",
+        options: [
+          { id: "studio", label: "Studio", sublabel: "1 Zimmer" },
+          { id: "2-2.5", label: "2-2.5 Zi.", sublabel: "Mittel" },
+          { id: "3-3.5", label: "3-3.5 Zi.", sublabel: "Standard" },
+          { id: "4-4.5", label: "4-4.5 Zi.", sublabel: "Gross" },
+        ],
+        timestamp: new Date(),
+      },
+      videoOffer: {
+        id: "msg-video",
+        type: "video",
+        content: "Möchten Sie ein Video Ihrer Wohnung hochladen?",
+        timestamp: new Date(),
+      },
+      moveDate: {
+        id: "msg-date",
+        type: "options",
+        content: "Wann soll der Umzug stattfinden?",
+        options: [
+          { id: "soon", label: "In den nächsten 2 Wochen" },
+          { id: "month", label: "In 1-2 Monaten" },
+          { id: "later", label: "In 3+ Monaten" },
+        ],
+        timestamp: new Date(),
+      },
+      services: {
+        id: "msg-services",
+        type: "options",
+        content: "Welche Leistungen benötigen Sie?",
+        options: [
+          { id: "umzug", label: "Umzug (Basis)", selected: true },
+          { id: "einpacken", label: "Einpack-Service" },
+          { id: "reinigung", label: "Endreinigung" },
+        ],
+        timestamp: new Date(),
+      },
+      priceReveal: {
+        id: "msg-price",
+        type: "price",
+        content: "Basierend auf Ihren Angaben:",
+        priceData: { min: 980, max: 1600, services: ["umzug", "einpacken"] },
+        timestamp: new Date(),
+      },
+      companies: {
+        id: "msg-companies",
+        type: "companies",
+        content: "Passende Firmen in Ihrer Region:",
+        companies: getMatchingCompanies("8048", "3-3.5"),
+        timestamp: new Date(),
+      },
+      contact: {
+        id: "msg-contact",
+        type: "contact",
+        content: "Wohin sollen wir die Offerten senden?",
+        timestamp: new Date(),
+      },
+    };
+
+    const stepMsg = stepConfigs[step];
+    if (stepMsg) {
+      return [...baseMessages, stepMsg];
+    }
+    return baseMessages;
+  };
+
 
   // Handle option selection
   const handleOptionSelect = (optionId: string, label: string) => {
@@ -855,6 +1030,13 @@ export function ChatFunnelV2e() {
           <span>~2 Min.</span>
         </div>
       </div>
+
+      {/* Capture-ready sentinel for screenshot automation */}
+      <CaptureReadySentinel 
+        step={getStepNumber()} 
+        flow="v2e" 
+        isReady={!isTyping && messages.length > 0}
+      />
     </div>
   );
 }
