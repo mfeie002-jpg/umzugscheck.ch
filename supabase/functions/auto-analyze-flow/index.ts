@@ -20,6 +20,8 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'umzugsofferten-v7': { name: 'V7 - SwissMove (90s)', steps: 3, baseUrl: '/umzugsofferten-v7' },
   'umzugsofferten-v8': { name: 'V8 - Decision-Free', steps: 5, baseUrl: '/umzugsofferten-v8' },
   'umzugsofferten-v9': { name: 'V9 - Zero Friction', steps: 5, baseUrl: '/umzugsofferten-v9' },
+  // V2.e Chat-based Funnel (standalone route)
+  'umzugsofferten-v2e': { name: 'V2.e - Chat Funnel', steps: 10, baseUrl: '/umzugsofferten-v2e' },
   // Sub-variants (v1a, v1b, v1c, etc.)
   'v1a': { name: 'V1a Control (Feedback)', steps: 2, baseUrl: '/umzugsofferten?variant=v1a' },
   'v1b': { name: 'V1b ChatGPT Agent', steps: 4, baseUrl: '/umzugsofferten?variant=v1b' },
@@ -31,7 +33,8 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v2b': { name: 'V2b Simplified Labels', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2b' },
   'v2c': { name: 'V2c Trust Focused', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2c' },
   'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2d' },
-  'v2e': { name: 'V2e Experimental', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2e' },
+  // Keep alias for legacy tooling, but point to the standalone route
+  'v2e': { name: 'V2.e - Chat Funnel', steps: 10, baseUrl: '/umzugsofferten-v2e' },
   'v2f': { name: 'V2f Premium (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v2?variant=v2f' },
   // V3 sub-variants
   'v3a': { name: 'V3a Mobile First', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3a' },
