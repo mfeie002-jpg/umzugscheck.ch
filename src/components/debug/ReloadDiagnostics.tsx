@@ -17,14 +17,12 @@ export function ReloadDiagnostics() {
     if (!isLovablePreview) return;
 
     const safeWrap = <T extends (...args: any[]) => any>(
-      name: string,
+      _name: string,
       fn: T,
       wrapper: (orig: T) => T
-    ) => {
+    ): T => {
       try {
-        // @ts-expect-error - runtime patch
-        fn = wrapper(fn);
-        return fn;
+        return wrapper(fn);
       } catch {
         return fn;
       }
@@ -44,8 +42,7 @@ export function ReloadDiagnostics() {
       const origAssign = loc.assign?.bind(window.location);
 
       if (origReload) {
-        // @ts-expect-error - runtime patch
-        loc.reload = safeWrap("location.reload", origReload, (orig) => {
+        (loc as any).reload = safeWrap("location.reload", origReload, (orig) => {
           return (() => {
             // eslint-disable-next-line no-console
             console.warn("[ReloadDiagnostics] location.reload() called", {
@@ -61,8 +58,7 @@ export function ReloadDiagnostics() {
       }
 
       if (origReplace) {
-        // @ts-expect-error - runtime patch
-        loc.replace = safeWrap("location.replace", origReplace, (orig) => {
+        (loc as any).replace = safeWrap("location.replace", origReplace, (orig) => {
           return ((url: string) => {
             // eslint-disable-next-line no-console
             console.warn("[ReloadDiagnostics] location.replace() called", {
@@ -77,8 +73,7 @@ export function ReloadDiagnostics() {
       }
 
       if (origAssign) {
-        // @ts-expect-error - runtime patch
-        loc.assign = safeWrap("location.assign", origAssign, (orig) => {
+        (loc as any).assign = safeWrap("location.assign", origAssign, (orig) => {
           return ((url: string) => {
             // eslint-disable-next-line no-console
             console.warn("[ReloadDiagnostics] location.assign() called", {
@@ -115,11 +110,63 @@ export function ReloadDiagnostics() {
       });
     };
 
+    const onPageShow = (e: PageTransitionEvent) => {
+      // eslint-disable-next-line no-console
+      console.warn("[ReloadDiagnostics] pageshow", {
+        persisted: e.persisted,
+        href: window.location.href,
+      });
+    };
+
+    const onPageHide = (e: PageTransitionEvent) => {
+      // eslint-disable-next-line no-console
+      console.warn("[ReloadDiagnostics] pagehide", {
+        persisted: e.persisted,
+        href: window.location.href,
+      });
+    };
+
+    const onFocus = () => {
+      // eslint-disable-next-line no-console
+      console.debug("[ReloadDiagnostics] window.focus", {
+        href: window.location.href,
+      });
+    };
+
+    const onBlur = () => {
+      // eslint-disable-next-line no-console
+      console.debug("[ReloadDiagnostics] window.blur", {
+        href: window.location.href,
+      });
+    };
+
+    try {
+      const nav = performance.getEntriesByType("navigation")[0] as
+        | PerformanceNavigationTiming
+        | undefined;
+      // eslint-disable-next-line no-console
+      console.debug("[ReloadDiagnostics] navigation", {
+        type: nav?.type,
+        redirectCount: nav?.redirectCount,
+        href: window.location.href,
+      });
+    } catch {
+      // ignore
+    }
+
     window.addEventListener("beforeunload", onBeforeUnload);
+    window.addEventListener("pageshow", onPageShow);
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("blur", onBlur);
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       window.removeEventListener("beforeunload", onBeforeUnload);
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("blur", onBlur);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
