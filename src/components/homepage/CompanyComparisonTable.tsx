@@ -133,42 +133,44 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
 
   return (
     <div className="space-y-3">
-      {/* Enhanced Filter Bar - larger touch targets with aria-labels */}
-      <div className="bg-muted/50 rounded-xl p-3 space-y-3">
-        <div className="flex items-center justify-between gap-2">
+      {/* Issue #15, #33, #44, #65: Enhanced Filter Bar - 48px touch targets, clearer labeling */}
+      <div className="bg-muted/50 rounded-xl p-3 sm:p-4 space-y-3">
+        <div className="flex items-center justify-between gap-3">
           <Button
-            variant="ghost"
-            size="sm"
+            variant="outline"
+            size="default"
             onClick={() => setShowFilters(!showFilters)}
-            className="h-11 text-sm gap-2 px-4 touch-manipulation"
+            className="h-12 text-sm gap-2 px-5 touch-manipulation min-w-[100px] font-medium"
             aria-expanded={showFilters}
             aria-label="Filter anzeigen oder ausblenden"
           >
-            <Filter className="w-4 h-4" />
-            <span>Filter</span>
-            {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <Filter className="w-5 h-5" />
+            <span>Filtern</span>
+            {showFilters ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Button
               variant={showMap ? "default" : "outline"}
-              size="sm"
+              size="default"
               onClick={() => setShowMap(!showMap)}
-              className="h-11 text-sm gap-2 px-4 touch-manipulation"
+              className="h-12 text-sm gap-2 px-4 touch-manipulation min-w-[48px]"
               aria-pressed={showMap}
               aria-label="Kartenansicht umschalten"
             >
-              <MapIcon className="w-4 h-4" />
-              <span className="hidden xs:inline">Karte</span>
+              <MapIcon className="w-5 h-5" />
+              <span className="hidden sm:inline">Karte</span>
             </Button>
             
+            {/* Issue #33, #65: Clearer sorting label */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-11 w-[130px] sm:w-[160px] text-sm" aria-label="Sortierung wählen">
-                <SelectValue placeholder="Sortieren" />
+              <SelectTrigger className="h-12 w-[140px] sm:w-[180px] text-sm font-medium" aria-label="Sortieren nach">
+                <span className="text-muted-foreground text-xs mr-1 hidden sm:inline">Sortieren:</span>
+                <SelectValue placeholder="Empfohlen" />
               </SelectTrigger>
               <SelectContent>
                 {sortOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value} className="text-sm py-2">
+                  <SelectItem key={opt.value} value={opt.value} className="text-sm py-3 min-h-[44px]">
                     {opt.label}
                   </SelectItem>
                 ))}
@@ -295,19 +297,19 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </div>
       </div>
 
-      {/* Issue #4, #39: Promoted Companies mit klarer Nutzenargumentation */}
+      {/* Issue #35: Promoted Companies mit PROMINENTEREM Badge */}
       {promotedCompanies.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between px-1">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
-              <Crown className="w-4 h-4 text-amber-500" />
-              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">
+              <Crown className="w-5 h-5 text-amber-500" />
+              <span className="text-sm font-bold text-foreground uppercase tracking-wide">
                 Premium Partner
               </span>
             </div>
-            {/* Issue #4: Klare Nutzenargumentation für Premium Partner */}
-            <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-full font-medium">
-              ⚡ Antwort in &lt;4h · Geprüfte Qualität
+            {/* Issue #35: Stärkere visuelle Betonung */}
+            <span className="text-xs text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 px-3 py-1.5 rounded-lg font-bold border border-amber-300 dark:border-amber-700">
+              ⚡ Antwort in &lt;4h
             </span>
           </div>
           {promotedCompanies.map((company, index) => (

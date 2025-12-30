@@ -101,15 +101,15 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
           <button
             type="button"
             onClick={() => setShowDetails(!showDetails)}
-            className={`text-sm flex items-center gap-2 px-4 py-2 rounded-xl transition-all touch-manipulation min-h-[44px] font-medium border ${
+            className={`text-sm flex items-center gap-2 px-5 py-3 rounded-xl transition-all touch-manipulation min-h-[48px] min-w-[48px] font-semibold border-2 ${
               showDetails 
-                ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                : "bg-card text-foreground border-border hover:border-primary hover:bg-primary/5"
+                ? "bg-primary text-primary-foreground border-primary shadow-md" 
+                : "bg-card text-primary border-primary/50 hover:border-primary hover:bg-primary/10"
             }`}
             aria-expanded={showDetails}
             aria-label={showDetails ? "Weniger Details anzeigen" : "Optionen vergleichen"}
           >
-            <Info className="w-4 h-4" />
+            <Info className="w-5 h-5" />
             {showDetails ? "Weniger" : "Vergleichen"}
           </button>
         </div>
@@ -128,12 +128,12 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => onChange(option.id)}
-              className={`relative w-full p-5 sm:p-6 rounded-xl border-2 text-left transition-all min-h-[100px] touch-manipulation active:scale-[0.99] ${
+              className={`relative w-full p-5 sm:p-6 rounded-xl border-2 text-left transition-all min-h-[110px] touch-manipulation active:scale-[0.99] ${
                 isSelected
-                  ? "border-secondary bg-secondary/10 ring-2 ring-secondary/20 shadow-lg"
+                  ? "border-secondary bg-secondary/10 ring-2 ring-secondary/30 shadow-xl"
                   : option.recommended
-                  ? "border-green-400 dark:border-green-600 bg-green-50/50 dark:bg-green-950/20 hover:border-green-500 shadow-md"
-                  : "border-border hover:border-primary/30 bg-card hover:shadow-sm"
+                  ? "border-green-500 dark:border-green-500 bg-green-50/70 dark:bg-green-950/30 hover:border-green-600 shadow-lg ring-1 ring-green-300 dark:ring-green-700"
+                  : "border-border hover:border-primary/50 bg-card hover:shadow-md"
               }`}
             >
               {/* Badge - Issue #43: GRÜN für empfohlen, nicht amber (keine Fehler-Assoziation) */}
@@ -207,12 +207,12 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
-                      className="mt-2.5 space-y-1.5"
+                      className="mt-3 space-y-2"
                     >
                       {option.benefits.map((benefit, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                          <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
-                          <span>{benefit}</span>
+                        <div key={idx} className="flex items-center gap-2 text-xs text-foreground/80">
+                          <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                          <span className="font-medium">{benefit}</span>
                         </div>
                       ))}
                     </motion.div>
