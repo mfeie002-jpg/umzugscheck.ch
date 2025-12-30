@@ -226,6 +226,7 @@ const UmzugsoffertenV1b = lazy(() => import("./pages/UmzugsoffertenV1b"));
 const UmzugsoffertenV1c = lazy(() => import("./pages/UmzugsoffertenV1c"));
 const UmzugsoffertenV1d = lazy(() => import("./pages/UmzugsoffertenV1d"));
 const UmzugsoffertenV1e = lazy(() => import("./pages/UmzugsoffertenV1e"));
+const UmzugsoffertenV2e = lazy(() => import("./pages/UmzugsoffertenV2e"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 import FlowTester from "./pages/FlowTester";
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
@@ -577,6 +578,7 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1c" element={<UmzugsoffertenV1c />} />
           <Route path="/umzugsofferten-v1d" element={<UmzugsoffertenV1d />} />
           <Route path="/umzugsofferten-v1e" element={<UmzugsoffertenV1e />} />
+          <Route path="/umzugsofferten-v2e" element={<UmzugsoffertenV2e />} />
           {/* Dynamic route for all V2+ variants - handles v2a, v3b, v9d, etc. automatically */}
           <Route path="/umzugsofferten-:variant" element={<UmzugsoffertenDynamic />} />
           {/* Flow tester already defined at top, only redirects here */}
