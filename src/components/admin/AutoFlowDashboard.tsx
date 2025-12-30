@@ -671,7 +671,7 @@ const AutoFlowDashboard: React.FC = () => {
                 setRunningAnalyses(prev => prev.filter(a => a.flowId !== record.flow_id));
               }, 3000);
               // Refresh data
-              fetchData();
+              fetchData(false); // Silent refresh - no loading state
             } else {
               // Update progress
               setRunningAnalyses(prev => prev.map(a => 
@@ -767,8 +767,9 @@ const AutoFlowDashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = async (showLoading = true) => {
+    // Only show loading on initial load, not on background refreshes
+    if (showLoading) setLoading(true);
     try {
       const [runsRes, issuesRes, alertsRes, settingsRes] = await Promise.all([
         supabase.from('flow_analysis_runs').select('*').order('created_at', { ascending: false }).limit(50),
@@ -783,9 +784,10 @@ const AutoFlowDashboard: React.FC = () => {
       if (settingsRes.data) setAlertSettings(settingsRes.data as AlertSetting[]);
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error('Fehler beim Laden der Daten');
+      // Only show error on initial load
+      if (showLoading) toast.error('Fehler beim Laden der Daten');
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
@@ -825,7 +827,7 @@ const AutoFlowDashboard: React.FC = () => {
           setTimeout(() => {
             setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
           }, 2000);
-          fetchData();
+          fetchData(false); // Silent refresh
         }
       }).catch(error => {
         console.error('Analysis error:', error);
@@ -1026,7 +1028,7 @@ const AutoFlowDashboard: React.FC = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchData}>
+          <Button variant="outline" onClick={() => fetchData(true)}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Aktualisieren
           </Button>
