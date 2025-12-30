@@ -71,8 +71,8 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                // Issue #45: Min 80px Touch-Targets auf Mobile, grössere Touch-Flächen
-                "flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border-2 transition-all min-h-[88px] touch-manipulation active:scale-[0.98]",
+                // Issue #6, #45: Min 88px Touch-Targets auf Mobile, grössere Touch-Flächen für bessere Bedienbarkeit
+                "flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl border-2 transition-all min-h-[100px] touch-manipulation active:scale-[0.97]",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-soft ring-2 ring-primary/30"
                   : "border-border bg-card hover:border-primary/40 hover:bg-muted/50"
@@ -81,19 +81,19 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
             >
               <Icon 
                 className={cn(
-                  // Issue #17: Kompaktere Icons auf Mobile
-                  "w-5 h-5 sm:w-7 sm:h-7 mb-1.5 sm:mb-2 transition-colors",
+                  // Issue #6: Larger icons for better visibility
+                  "w-6 h-6 sm:w-8 sm:h-8 mb-2 sm:mb-2.5 transition-colors",
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )} 
               />
               <span className={cn(
-                // Issue #17: Kompaktere Text auf Mobile
-                "text-xs sm:text-sm font-bold transition-colors leading-tight text-center",
+                // Issue #6: Larger text for better readability
+                "text-sm sm:text-base font-bold transition-colors leading-tight text-center",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {option.label}
               </span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
+              <span className="text-[11px] sm:text-xs text-muted-foreground mt-1 sm:mt-1.5">
                 {option.sublabel}
               </span>
             </motion.button>

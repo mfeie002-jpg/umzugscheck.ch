@@ -671,39 +671,40 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Issue #24, #41: Einheitlicher Fortschrittsindikator ohne redundante Labels */}
+      {/* Issue #19, #23, #50: Unified progress indicator - no redundant elements, better contrast */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
+          {/* Issue #19, #60: Single clear progress indicator */}
           <span className="text-sm font-bold text-primary flex items-center gap-2">
-            <span className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold">
+            <span className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-sm">
               {currentStep}
             </span>
-            von {totalSteps}
+            <span className="text-muted-foreground font-normal">von {totalSteps}</span>
           </span>
-          {/* Issue #13: Trust-Signal einmal prominent statt redundant */}
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-2.5 py-1 rounded-full">
-            <Shield className="w-3.5 h-3.5" />
-            <span className="hidden xs:inline">Kostenlos</span> & unverbindlich
+          {/* Issue #16: Trust-Signal clearly visible */}
+          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full shadow-sm">
+            <Shield className="w-4 h-4" />
+            <span>Kostenlos & unverbindlich</span>
           </div>
         </div>
         
-      {/* Issue #1, #40: Progress bar ohne horizontal scroll - nur Balken, Labels kompakt */}
+        {/* Issue #1, #23, #40, #50: Progress bar without horizontal scroll - simplified */}
         <div className="relative">
-          <ol className="flex gap-1" role="list" aria-label="Fortschritt">
+          <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
             {[
-              { step: 1, label: "Typ", short: "1" },
-              { step: 2, label: "Details", short: "2" },
-              { step: 3, label: "Firmen", short: "3" },
-              { step: 4, label: "Kontakt", short: "4" },
-            ].map(({ step, label, short }) => (
+              { step: 1, label: "Typ" },
+              { step: 2, label: "Details" },
+              { step: 3, label: "Firmen" },
+              { step: 4, label: "Kontakt" },
+            ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
+                className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
                   step < currentStep 
                     ? 'bg-green-500' 
                     : step === currentStep 
                       ? 'bg-primary' 
-                      : 'bg-muted'
+                      : 'bg-muted/60'
                 }`}
                 role="listitem"
                 aria-current={step === currentStep ? "step" : undefined}
@@ -713,8 +714,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Issue #1, #40: Labels nur auf sm+ anzeigen, auf xs nur Step-Nummern */}
-        <div className="flex justify-between mt-2 text-[11px]">
+        {/* Issue #1, #40, #50: Labels - visible on all sizes, no horizontal scroll */}
+        <div className="flex justify-between mt-2.5 text-xs">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -723,18 +724,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ].map(({ step, label }) => (
             <span 
               key={step}
-              className={`flex items-center gap-0.5 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-1 transition-colors whitespace-nowrap ${
                 step < currentStep 
                   ? 'text-green-600 font-medium' 
                   : step === currentStep 
                     ? 'text-primary font-bold' 
-                    : 'text-muted-foreground'
+                    : 'text-muted-foreground/70'
               }`}
             >
-              {step < currentStep && <CheckCircle className="w-3 h-3 shrink-0" />}
-              {/* Issue #1: Hide labels on very small screens, show step numbers */}
-              <span className="hidden sm:inline">{label}</span>
-              <span className="sm:hidden">{step}</span>
+              {step < currentStep && <CheckCircle className="w-3.5 h-3.5 shrink-0" />}
+              <span className="text-[11px] sm:text-xs">{label}</span>
             </span>
           ))}
         </div>
@@ -823,60 +822,66 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   onChange={(v) => updateFormData("apartmentSize", v)}
                 />
 
-                {/* Price Estimate */}
+                {/* Issue #11: Price Estimate with enhanced visibility on all screens */}
                 {formData.apartmentSize && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-3 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800"
+                    className="p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-4">
                       <div>
-                        <p className="text-[10px] text-green-700 dark:text-green-400 font-medium">
-                          Geschätzt
+                        <p className="text-[11px] text-green-700 dark:text-green-400 font-medium uppercase tracking-wide">
+                          Geschätzte Kosten
                         </p>
-                        <p className="text-lg font-bold text-green-800 dark:text-green-300">
+                        {/* Issue #11: Larger, more prominent price display */}
+                        <p className="text-xl sm:text-2xl font-bold text-green-800 dark:text-green-300">
                           CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}–{getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
                         </p>
                       </div>
-                      {/* Issue #20: Enhanced visibility for savings */}
-                      <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded-lg">
-                        <TrendingDown className="w-4 h-4" />
-                        <span className="text-xs font-bold">bis 40% sparen</span>
+                      {/* Issue #18, #20: Enhanced savings badge with tooltip */}
+                      <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-3 py-2 rounded-lg shrink-0">
+                        <TrendingDown className="w-5 h-5" />
+                        <span className="text-sm font-bold">bis 40% sparen</span>
                       </div>
                     </div>
                   </motion.div>
                 )}
 
-              {/* Issue #14: Move Date mit Schweizer Format TT.MM.JJJJ Hinweis */}
-              <div className="space-y-1.5">
+              {/* Issue #14, #25, #40: Move Date with better date picker UX and Swiss format */}
+              <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
                   Umzugsdatum
                 </label>
-                <div className="flex items-center gap-3 mb-2">
+                {/* Issue #25: Größere Checkbox (min 44px touch target) */}
+                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 -mx-2 cursor-pointer min-h-[44px]"
+                     onClick={() => updateFormData("moveDate", formData.moveDate === "flexible" ? "" : "flexible")}>
                   <Checkbox
                     id="date-flexible-v1"
                     checked={formData.moveDate === "flexible"}
                     onCheckedChange={(checked) => {
                       updateFormData("moveDate", checked ? "flexible" : "");
                     }}
-                    className="h-5 w-5"
+                    className="h-6 w-6"
                   />
-                  <label htmlFor="date-flexible-v1" className="text-[13px] text-muted-foreground cursor-pointer">
+                  <label htmlFor="date-flexible-v1" className="text-sm text-muted-foreground cursor-pointer flex-1">
                     Termin noch offen / flexibel
                   </label>
                 </div>
                 {formData.moveDate !== "flexible" && (
                   <div className="space-y-1">
-                    <Input
-                      type="date"
-                      value={formData.moveDate === "flexible" ? "" : formData.moveDate}
-                      onChange={(e) => updateFormData("moveDate", e.target.value)}
-                      className={`h-12 rounded-xl text-base ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
-                      min={new Date().toISOString().split('T')[0]}
-                    />
-                    <p className="text-[10px] text-muted-foreground">Format: TT.MM.JJJJ</p>
+                    {/* Issue #25: Entire date field clickable, larger touch target */}
+                    <div className="relative">
+                      <Input
+                        type="date"
+                        value={formData.moveDate === "flexible" ? "" : formData.moveDate}
+                        onChange={(e) => updateFormData("moveDate", e.target.value)}
+                        className={`h-14 rounded-xl text-base cursor-pointer ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">Gewünschtes Umzugsdatum (kann später geändert werden)</p>
                   </div>
                 )}
               </div>
@@ -923,13 +928,18 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </div>
                 </motion.div>
 
-                {/* Issue #25: Services mit klarer visueller Hierarchie */}
+                {/* Issue #27, #38, #57: Services mit klarer visueller Hierarchie und prominenterem Details-Link */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold">Welche Leistungen brauchen Sie?</label>
-                    <span className="text-[10px] text-muted-foreground">
-                      + Details anzeigen
-                    </span>
+                    <label className="text-base font-semibold">Welche Leistungen brauchen Sie?</label>
+                    <button
+                      type="button"
+                      onClick={() => setExpandedService(expandedService === "show-all" ? null : "show-all")}
+                      className="text-xs text-primary hover:underline font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-primary/10 transition-colors min-h-[36px] touch-manipulation"
+                    >
+                      <Info className="w-3.5 h-3.5" />
+                      Details
+                    </button>
                   </div>
                   
                   <div className="space-y-2">
@@ -1101,21 +1111,22 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   type="email"
                 />
 
-                {/* Issue #9: Telefon-Feld mit klarem Icon und Präfix-Hinweis */}
+                {/* Issue #3, #9, #49: Telefon-Feld mit klarem Schweizer Format-Hinweis und Validierung */}
                 <div className="space-y-1.5">
                   <ValidatedInput
                     schema={phoneSchema}
                     value={formData.phone}
                     onValueChange={(v) => updateFormData("phone", v)}
-                    label="📱 Telefon (optional)"
+                    label="Telefon (optional)"
                     icon={<Phone className="w-4 h-4 text-primary" />}
-                    placeholder="+41 79 123 45 67"
+                    placeholder="079 123 45 67"
                     type="tel"
                     inputMode="tel"
                     showSuccessIcon={false}
+                    autoComplete="tel"
                   />
                   <p className="text-[10px] text-muted-foreground ml-1">
-                    Für schnellere Rückfragen – Mobilnummer bevorzugt
+                    Format: 079 123 45 67 · Für schnellere Rückfragen
                   </p>
                 </div>
 
@@ -1147,14 +1158,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #15, #21, #27: Sticky Navigation with safe-area padding - z-index 60 to be above bottom nav */}
+        {/* Issue #8, #10, #15, #21, #27, #30, #35, #48: Sticky Navigation - larger z-index, better safe-area padding, no overlap */}
         <div className="flex gap-2 sm:gap-3 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-3 sm:py-3.5
+                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-3 sm:py-4
                         bg-card/98 backdrop-blur-xl border-t border-border/50 
                         shadow-[0_-4px_24px_rgba(0,0,0,0.15)]
-                        pb-[max(0.75rem,calc(env(safe-area-inset-bottom)+0.75rem))]
-                        md:pb-0 md:shadow-none z-[60]">
+                        pb-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))]
+                        md:pb-0 md:shadow-none z-[70]">
           {currentStep > 1 && (
             <Button
               type="button"
@@ -1226,8 +1237,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </div>
         
-        {/* Issue #15, #27: Larger spacer for fixed footer on Mobile - prevents content overlap */}
-        <div className="h-[100px] sm:h-[88px] md:hidden" aria-hidden="true" />
+        {/* Issue #10, #15, #27, #30, #35: Larger spacer for fixed footer on Mobile - prevents content overlap */}
+        <div className="h-[120px] sm:h-[100px] md:hidden" aria-hidden="true" />
         
         {/* Desktop: Trust-Footer */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
