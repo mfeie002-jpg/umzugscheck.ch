@@ -451,7 +451,7 @@ export const MultiStepCalculatorV1d = memo(function MultiStepCalculatorV1d() {
   const priceEstimate = getPriceEstimate(formData.apartmentSize, formData.selectedPackage, formData.selectedAddOns);
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
+    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden">
       {/* Distraction-Free Header (Audit #9) */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
