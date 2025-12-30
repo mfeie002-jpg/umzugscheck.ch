@@ -367,18 +367,22 @@ export function ChatFunnelV2e() {
   }, [isCaptureMode, captureStep]);
 
   // Generate messages for a specific step (for capture mode)
+  // This creates a realistic conversation history leading up to the target step
   const generateMessagesForStep = (step: FlowStep): Message[] => {
-    const baseMessages: Message[] = [
-      {
-        id: "msg-intro",
-        type: "bot",
-        content: "Hallo! 👋 Ich bin Ihr persönlicher Umzugsberater.",
-        timestamp: new Date(),
-      },
-    ];
+    const messages: Message[] = [];
+    const now = new Date();
+    
+    // Step 1: Always start with intro
+    messages.push({
+      id: "msg-intro",
+      type: "bot",
+      content: "Hallo! 👋 Ich bin Ihr persönlicher Umzugsberater. In nur 2 Minuten finde ich die besten Angebote für Sie.",
+      timestamp: now,
+    });
 
-    const stepConfigs: Partial<Record<FlowStep, Message>> = {
-      moveType: {
+    // For moveType step, just show the options
+    if (step === "moveType") {
+      messages.push({
         id: "msg-movetype",
         type: "options",
         content: "Was möchten Sie umziehen?",
@@ -387,39 +391,134 @@ export function ChatFunnelV2e() {
           { id: "haus", label: "Haus", icon: <Building2 className="w-5 h-5" /> },
           { id: "buero", label: "Büro/Firma", icon: <Briefcase className="w-5 h-5" /> },
         ],
-        timestamp: new Date(),
-      },
-      fromLocation: {
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 2+: Add moveType selection and response
+    messages.push({
+      id: "msg-movetype",
+      type: "options",
+      content: "Was möchten Sie umziehen?",
+      options: [
+        { id: "wohnung", label: "Wohnung", icon: <Home className="w-5 h-5" />, selected: true },
+        { id: "haus", label: "Haus", icon: <Building2 className="w-5 h-5" /> },
+        { id: "buero", label: "Büro/Firma", icon: <Briefcase className="w-5 h-5" /> },
+      ],
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-type",
+      type: "user",
+      content: "Wohnung",
+      timestamp: now,
+    });
+
+    if (step === "fromLocation") {
+      messages.push({
         id: "msg-from",
         type: "bot",
-        content: "Von welcher PLZ/Stadt ziehen Sie um?",
-        timestamp: new Date(),
-      },
-      toLocation: {
+        content: "Super, ein Wohnungs-Umzug. Von welcher PLZ/Stadt ziehen Sie um?",
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 3+: Add from location
+    messages.push({
+      id: "msg-from",
+      type: "bot",
+      content: "Super, ein Wohnungs-Umzug. Von welcher PLZ/Stadt ziehen Sie um?",
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-from",
+      type: "user",
+      content: demoData.fromLocation,
+      timestamp: now,
+    });
+
+    if (step === "toLocation") {
+      messages.push({
         id: "msg-to",
         type: "bot",
-        content: "Und wohin geht der Umzug?",
-        timestamp: new Date(),
-      },
-      apartmentSize: {
+        content: `Perfekt, ${demoData.fromCity}! Und wohin geht der Umzug?`,
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 4+: Add to location
+    messages.push({
+      id: "msg-to",
+      type: "bot",
+      content: `Perfekt, ${demoData.fromCity}! Und wohin geht der Umzug?`,
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-to",
+      type: "user",
+      content: demoData.toLocation,
+      timestamp: now,
+    });
+
+    if (step === "apartmentSize") {
+      messages.push({
         id: "msg-size",
         type: "options",
-        content: "Wie gross ist Ihre Wohnung?",
+        content: `${demoData.fromCity} nach ${demoData.toCity} – wie gross ist Ihre Wohnung?`,
         options: [
           { id: "studio", label: "Studio", sublabel: "1 Zimmer" },
           { id: "2-2.5", label: "2-2.5 Zi.", sublabel: "Mittel" },
           { id: "3-3.5", label: "3-3.5 Zi.", sublabel: "Standard" },
           { id: "4-4.5", label: "4-4.5 Zi.", sublabel: "Gross" },
         ],
-        timestamp: new Date(),
-      },
-      videoOffer: {
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 5+: Add apartment size
+    messages.push({
+      id: "msg-size",
+      type: "options",
+      content: `${demoData.fromCity} nach ${demoData.toCity} – wie gross ist Ihre Wohnung?`,
+      options: [
+        { id: "studio", label: "Studio", sublabel: "1 Zimmer" },
+        { id: "2-2.5", label: "2-2.5 Zi.", sublabel: "Mittel" },
+        { id: "3-3.5", label: "3-3.5 Zi.", sublabel: "Standard", selected: true },
+        { id: "4-4.5", label: "4-4.5 Zi.", sublabel: "Gross" },
+      ],
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-size",
+      type: "user",
+      content: "3-3.5 Zimmer",
+      timestamp: now,
+    });
+
+    if (step === "videoOffer") {
+      messages.push({
         id: "msg-video",
         type: "video",
-        content: "Möchten Sie ein Video Ihrer Wohnung hochladen?",
-        timestamp: new Date(),
-      },
-      moveDate: {
+        content: "Möchten Sie ein Video Ihrer Wohnung hochladen? So kann ich noch genauere Angebote ermitteln.",
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 6+: Skip video (common path)
+    messages.push({
+      id: "msg-video-skip",
+      type: "bot",
+      content: "Kein Problem, wir machen weiter ohne Video.",
+      timestamp: now,
+    });
+
+    if (step === "moveDate") {
+      messages.push({
         id: "msg-date",
         type: "options",
         content: "Wann soll der Umzug stattfinden?",
@@ -427,47 +526,131 @@ export function ChatFunnelV2e() {
           { id: "soon", label: "In den nächsten 2 Wochen" },
           { id: "month", label: "In 1-2 Monaten" },
           { id: "later", label: "In 3+ Monaten" },
+          { id: "flexible", label: "Bin flexibel" },
         ],
-        timestamp: new Date(),
-      },
-      services: {
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 7+: Add move date
+    messages.push({
+      id: "msg-date",
+      type: "options",
+      content: "Wann soll der Umzug stattfinden?",
+      options: [
+        { id: "soon", label: "In den nächsten 2 Wochen" },
+        { id: "month", label: "In 1-2 Monaten", selected: true },
+        { id: "later", label: "In 3+ Monaten" },
+        { id: "flexible", label: "Bin flexibel" },
+      ],
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-date",
+      type: "user",
+      content: "In 1-2 Monaten",
+      timestamp: now,
+    });
+
+    if (step === "services") {
+      messages.push({
         id: "msg-services",
         type: "options",
-        content: "Welche Leistungen benötigen Sie?",
+        content: "Welche Zusatzleistungen benötigen Sie? (Mehrfachauswahl möglich)",
         options: [
-          { id: "umzug", label: "Umzug (Basis)", selected: true },
-          { id: "einpacken", label: "Einpack-Service" },
-          { id: "reinigung", label: "Endreinigung" },
+          { id: "umzug", label: "Umzug (Basis)", description: "Transport & Möbelaufbau", selected: true },
+          { id: "einpacken", label: "Einpack-Service", description: "Wir packen alles ein" },
+          { id: "reinigung", label: "Endreinigung", description: "Abgabegarantie" },
+          { id: "entsorgung", label: "Entsorgung", description: "Möbel & Sperrgut" },
         ],
-        timestamp: new Date(),
-      },
-      priceReveal: {
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 8+: Add services
+    messages.push({
+      id: "msg-services",
+      type: "options",
+      content: "Welche Zusatzleistungen benötigen Sie?",
+      options: [
+        { id: "umzug", label: "Umzug (Basis)", selected: true },
+        { id: "einpacken", label: "Einpack-Service", selected: true },
+        { id: "reinigung", label: "Endreinigung", selected: true },
+      ],
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-services",
+      type: "user",
+      content: "Umzug, Einpacken, Reinigung",
+      timestamp: now,
+    });
+
+    if (step === "priceReveal") {
+      messages.push({
         id: "msg-price",
         type: "price",
-        content: "Basierend auf Ihren Angaben:",
-        priceData: { min: 980, max: 1600, services: ["umzug", "einpacken"] },
-        timestamp: new Date(),
-      },
-      companies: {
+        content: "Basierend auf Ihren Angaben habe ich die besten Angebote gefunden:",
+        priceData: { min: 1280, max: 1950, services: ["umzug", "einpacken", "reinigung"], savings: 320 },
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 9+: Add price reveal
+    messages.push({
+      id: "msg-price",
+      type: "price",
+      content: "Basierend auf Ihren Angaben:",
+      priceData: { min: 1280, max: 1950, services: ["umzug", "einpacken", "reinigung"], savings: 320 },
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-price",
+      type: "user",
+      content: "Zeig mir die Firmen",
+      timestamp: now,
+    });
+
+    if (step === "companies") {
+      messages.push({
         id: "msg-companies",
         type: "companies",
-        content: "Passende Firmen in Ihrer Region:",
-        companies: getMatchingCompanies("8048", "3-3.5"),
-        timestamp: new Date(),
-      },
-      contact: {
+        content: "Hier sind die 5 besten Umzugsfirmen für Ihre Route:",
+        companies: getMatchingCompanies(demoData.fromPostal, demoData.apartmentSize),
+        timestamp: now,
+      });
+      return messages;
+    }
+
+    // Step 10: Contact
+    messages.push({
+      id: "msg-companies",
+      type: "companies",
+      content: "Hier sind die 5 besten Umzugsfirmen für Ihre Route:",
+      companies: getMatchingCompanies(demoData.fromPostal, demoData.apartmentSize),
+      timestamp: now,
+    });
+    messages.push({
+      id: "msg-user-companies",
+      type: "user",
+      content: "3 Firmen ausgewählt",
+      timestamp: now,
+    });
+
+    if (step === "contact") {
+      messages.push({
         id: "msg-contact",
         type: "contact",
-        content: "Wohin sollen wir die Offerten senden?",
-        timestamp: new Date(),
-      },
-    };
-
-    const stepMsg = stepConfigs[step];
-    if (stepMsg) {
-      return [...baseMessages, stepMsg];
+        content: "Ausgezeichnete Wahl! Wohin sollen wir die kostenlosen Offerten senden?",
+        timestamp: now,
+      });
+      return messages;
     }
-    return baseMessages;
+
+    return messages;
   };
 
 
