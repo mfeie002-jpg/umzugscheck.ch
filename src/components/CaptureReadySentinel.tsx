@@ -486,32 +486,33 @@ export function CaptureReadySentinel({
         aria-hidden="true"
       />
       
-      {/* Debug watermark - visible in screenshot */}
+      {/* Debug watermark - ONLY visible in screenshot capture mode, positioned to NOT obscure CTAs */}
+      {/* Issue #1: Moved to top-right corner and made smaller so it doesn't cover bottom CTAs */}
       <div
         id="uc-capture-watermark"
         style={{
           position: "fixed",
-          bottom: 4,
+          top: 4,
           right: 4,
-          padding: "2px 6px",
+          padding: "2px 5px",
           background: state.status === "ready" 
-            ? "rgba(22,163,74,0.9)" 
+            ? "rgba(22,163,74,0.8)" 
             : state.status === "error" 
-              ? "rgba(220,38,38,0.9)" 
-              : "rgba(245,158,11,0.9)",
+              ? "rgba(220,38,38,0.8)" 
+              : "rgba(245,158,11,0.8)",
           color: "white",
           borderRadius: 4,
-          fontSize: 9,
+          fontSize: 8,
           fontFamily: "monospace",
           zIndex: 99999,
-          lineHeight: 1.3,
-          maxWidth: 200,
+          lineHeight: 1.2,
+          maxWidth: 150,
           wordBreak: "break-all",
+          pointerEvents: "none",
         }}
       >
         <div><strong>{state.status.toUpperCase()}</strong> s{state.step}</div>
-        <div>net:{state.pendingRequests} cnt:{state.contentVisible ? "✓" : "✗"}</div>
-        {state.reason && <div style={{ fontSize: 7 }}>{state.reason.slice(0, 50)}</div>}
+        <div style={{ fontSize: 7 }}>net:{state.pendingRequests} {state.contentVisible ? "✓" : "✗"}</div>
       </div>
     </>
   );
