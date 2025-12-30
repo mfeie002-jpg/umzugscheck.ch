@@ -1098,6 +1098,68 @@ const AutoFlowDashboard: React.FC = () => {
             <RefreshCw className="h-4 w-4 mr-2" />
             Aktualisieren
           </Button>
+          {/* Global Fix All Button */}
+          {issues.length > 0 && (
+            <Button 
+              variant="secondary"
+              onClick={async () => {
+                // Group issues by flow
+                const issuesByFlow: Record<string, UxIssue[]> = {};
+                issues.forEach(issue => {
+                  if (!issuesByFlow[issue.flow_id]) {
+                    issuesByFlow[issue.flow_id] = [];
+                  }
+                  issuesByFlow[issue.flow_id].push(issue);
+                });
+
+                // Build combined prompt
+                let prompt = `# Globaler UX/Conversion Fix für alle Flows
+
+Insgesamt ${issues.length} offene Issues gefunden.
+
+`;
+                Object.entries(issuesByFlow).forEach(([flowId, flowIssues]) => {
+                  const run = latestRuns[flowId];
+                  const config = FLOW_CONFIGS[flowId];
+                  const criticalCount = flowIssues.filter(i => i.severity === 'critical').length;
+                  const warningCount = flowIssues.filter(i => i.severity === 'warning').length;
+
+                  prompt += `---
+## Flow: ${config?.name || flowId}
+Score: ${run?.overall_score ?? 'N/A'}/100 | Issues: ${flowIssues.length} (${criticalCount} kritisch, ${warningCount} Warnungen)
+
+`;
+                  flowIssues.forEach((issue, idx) => {
+                    prompt += `### ${idx + 1}. [${issue.severity.toUpperCase()}] ${issue.title}
+- Kategorie: ${issue.category}
+- Step: ${issue.step_number || 'Gesamter Flow'}
+- Beschreibung: ${issue.description || 'Keine'}
+- Empfehlung: ${issue.recommendation || 'Keine'}
+
+`;
+                  });
+                });
+
+                prompt += `---
+
+## Aufgabe:
+Gib mir konkrete Code-Fixes für alle oben genannten Issues. Priorisiere:
+1. Kritische Issues zuerst
+2. Mobile Touch-Targets (min 44x44px)
+3. CTA-Klarheit und Conversion-Optimierung
+4. Trust-Elemente
+5. Form-UX und Fehlerbehandlung
+
+Zeige mir die Code-Diffs für jedes Problem.`;
+
+                await navigator.clipboard.writeText(prompt);
+                toast.success(`Fix-All Prompt mit ${issues.length} Issues kopiert!`);
+              }}
+            >
+              <Wand2 className="h-4 w-4 mr-2" />
+              Fix All ({issues.length})
+            </Button>
+          )}
           <Button onClick={runAllAnalyses} disabled={!!analyzing}>
             {analyzing === 'all' ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
