@@ -226,7 +226,7 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </AnimatePresence>
       </div>
 
-      {/* Map Placeholder */}
+      {/* Issue #56: Map Placeholder - nur einmal, mit klarer Beschreibung */}
       <AnimatePresence>
         {showMap && (
           <motion.div
@@ -238,35 +238,15 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
             <div className="bg-muted/30 rounded-xl h-48 flex items-center justify-center border border-border">
               <div className="text-center text-muted-foreground">
                 <MapIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Interaktive Karte</p>
-                <p className="text-xs">Zeigt Standorte der Firmen</p>
+                <p className="text-sm font-medium">Interaktive Karte</p>
+                <p className="text-xs">Zeigt Standorte der Firmen in Ihrer Region</p>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Map Placeholder */}
-      <AnimatePresence>
-        {showMap && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="bg-muted/30 rounded-xl h-48 flex items-center justify-center border border-border">
-              <div className="text-center text-muted-foreground">
-                <MapIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p className="text-xs">Interaktive Karte</p>
-                <p className="text-[10px]">Zeigt Standorte der Firmen</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Issue #3: EINZIGE Anzeige der Firmenauswahl - keine Redundanz */}
+      {/* Issue #3, #4, #11, #52, #82: EINZIGE Anzeige der Firmenauswahl - keine Redundanz, klarer CTA */}
       <div
         className={`p-4 rounded-xl transition-all ${
           selectedCompanies.length >= 3
@@ -274,30 +254,19 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
             : "bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-300 dark:border-amber-700"
         }`}
       >
-        <div className="flex flex-col gap-3">
-          {/* Status-Text - Issue #3: Nur EINE prominente Anzeige */}
+        <div className="flex flex-col gap-2">
+          {/* Issue #3, #4: Nur EINE prominente Status-Anzeige */}
           <div className="text-center">
             {selectedCompanies.length < 3 ? (
-              <div>
-                <span className="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center justify-center gap-2">
-                  <span className="text-xl">👆</span>
-                  Noch {3 - selectedCompanies.length} auswählen
-                </span>
-                <span className="text-xs text-amber-600/80 dark:text-amber-500/80 block mt-1">
-                  Mind. 3 Firmen für optimalen Vergleich
-                </span>
-              </div>
+              <span className="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center justify-center gap-2">
+                <span className="text-xl">👆</span>
+                Noch {3 - selectedCompanies.length} Firma{3 - selectedCompanies.length !== 1 ? "en" : ""} auswählen
+              </span>
             ) : (
-              <div>
-                <span className="text-base font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  {selectedCompanies.length} Firmen ausgewählt
-                </span>
-                {/* Issue #12: Klarerer CTA-Text - was passiert als nächstes */}
-                <span className="text-xs text-green-600/80 dark:text-green-500/80 block mt-1">
-                  Weiter → Offerten von diesen Firmen anfordern
-                </span>
-              </div>
+              <span className="text-base font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                {selectedCompanies.length} Firmen ausgewählt ✓
+              </span>
             )}
           </div>
           
@@ -311,7 +280,7 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
                     key={company.id}
                     type="button"
                     onClick={() => onToggleCompany(company.id)}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 text-sm font-medium text-green-700 dark:text-green-400 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors touch-manipulation min-h-[40px]"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 text-sm font-medium text-green-700 dark:text-green-400 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors touch-manipulation min-h-[44px]"
                     aria-label={`${company.name} aus Auswahl entfernen`}
                   >
                     {company.name}

@@ -40,7 +40,7 @@ const submitOptions: SubmitOption[] = [
   {
     id: "direct",
     label: "Direkt anfragen",
-    description: "Schnell: Ausgewählte Firmen melden sich.",
+    description: "Schnellster Weg: Firmen melden sich in 24h",
     tooltip: "Schnellster Weg: Wir senden Ihre Anfrage direkt an die ausgewählten Firmen. Sie erhalten in 24-48h persönliche Offerten per E-Mail.",
     icon: <Send className="w-5 h-5" />,
     benefits: [
@@ -52,32 +52,34 @@ const submitOptions: SubmitOption[] = [
   {
     id: "publish",
     label: "Ausschreibung",
-    description: "Günstig: Firmen bieten um Ihren Auftrag.",
+    // Issue #71, #73: Klarerer Vorteil direkt im Text
+    description: "Günstiger: Firmen bieten um Ihren Auftrag",
     tooltip: "Wie eine Auktion: Ihr Umzug wird anonym publiziert. Firmen sehen nur PLZ & Datum und bieten um den Auftrag – oft günstigere Preise durch Wettbewerb.",
     icon: <Gavel className="w-5 h-5" />,
     benefits: [
       "📊 Ø 5-8 Offerten",
-      "💰 Bis 35% günstiger",
+      "💰 Oft 20-35% günstiger",
       "🔒 Anonym bis Sie zustimmen",
     ],
-    // Issue #10: Konsistentes blaues Badge für Spar-Tipp
-    badge: "💰 Spar-Tipp",
+    // Issue #10, #73: Konsistentes blaues Badge für Spar-Tipp mit direktem Vorteil
+    badge: "💰 Bis 35% günstiger",
     badgeColor: "bg-blue-500",
   },
   {
     id: "both",
     label: "Beides",
-    description: "Beste Wahl: 3× mehr Offerten, schnell + günstig.",
+    // Issue #76: Klarerer Vorteil, keine '93%'-Behauptung ohne Quelle
+    description: "Maximum: Schnell + günstig kombiniert",
     tooltip: "Die beste Wahl: Sie erhalten sowohl schnelle Offerten von Top-Firmen als auch günstige Angebote durch die öffentliche Ausschreibung. Maximale Auswahl, volle Kontrolle.",
     icon: <Crown className="w-5 h-5" />,
-    // Issue #27: Alle Vorteile direkt sichtbar - KEINE versteckten Slider
+    // Issue #27, #76: Alle Vorteile direkt sichtbar - keine unbelegten Prozente
     benefits: [
       "🎯 Ø 8-12 Offerten",
       "⏱ Schnell + günstig",
-      "✨ 93% wählen diese Option",
+      "✨ Maximale Auswahl",
     ],
-    // Issue #10, #18: Grünes Badge für "Beste Wahl" - konsistent
-    badge: "✨ Beste Wahl",
+    // Issue #10, #18, #76: Grünes Badge für "Beste Wahl" - konsistent
+    badge: "✨ Empfohlen",
     badgeColor: "bg-green-500",
     recommended: true,
   },
@@ -109,9 +111,9 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
 
         {/* Issue #10: "Beides" ist bereits vorausgewählt - Vergleichstabelle entfernt für weniger Friction */}
 
-        {/* Issue #21, #28, #52: Kompaktere Radio-Group mit 48px+ touch targets - "Beides" prominent */}
-        <div className="grid gap-2" role="radiogroup" aria-label="Offerten-Methode auswählen">
-          {/* Issue #10: "Beides" zuerst und prominenter anzeigen als beste Wahl */}
+        {/* Issue #42: Konsistente Reihenfolge - "Beides" immer zuerst als empfohlene Option */}
+        <div className="grid gap-2.5" role="radiogroup" aria-label="Offerten-Methode auswählen">
+          {/* Issue #42: "Beides" zuerst und prominenter anzeigen als beste Wahl */}
           {submitOptions.slice().sort((a, b) => (a.recommended ? -1 : b.recommended ? 1 : 0)).map((option) => {
             const isSelected = value === option.id;
             
@@ -124,12 +126,12 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                 whileHover={{ scale: 1.005 }}
                 whileTap={{ scale: 0.995 }}
                 onClick={() => onChange(option.id)}
-                // Issue #21, #28, #32: Kompaktere Darstellung, min-h reduziert
-                className={`relative w-full p-3 sm:p-4 rounded-xl border-2 text-left transition-all min-h-[64px] touch-manipulation active:scale-[0.99] ${
+                // Issue #9, #44, #48, #80: Visuelles Feedback bei Auswahl, min 64px touch target
+                className={`relative w-full p-3.5 sm:p-4 rounded-xl border-2 text-left transition-all min-h-[72px] touch-manipulation active:scale-[0.99] ${
                   isSelected
-                    ? "border-secondary bg-secondary/10 ring-2 ring-secondary/30 shadow-md"
+                    ? "border-secondary bg-secondary/10 ring-2 ring-secondary/30 shadow-lg"
                     : option.recommended
-                    ? "border-green-400 dark:border-green-600 bg-green-50/50 dark:bg-green-950/30 hover:border-green-500 shadow-sm"
+                    ? "border-green-400 dark:border-green-600 bg-green-50/50 dark:bg-green-950/30 hover:border-green-500 shadow-sm hover:shadow-md"
                     : "border-border hover:border-primary/50 bg-card hover:shadow-sm"
                 }`}
               >
