@@ -13,8 +13,8 @@
 import { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Send, Globe, Sparkles, CheckCircle, Users, Clock, 
-  TrendingDown, Shield, Zap, Crown, Gavel, Info
+  Sparkles, CheckCircle, 
+  TrendingDown, Shield, Zap, Info
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -36,13 +36,14 @@ interface SubmitOption {
   recommended?: boolean;
 }
 
+// Issue #6, #18: Better icons that are more self-explanatory
 const submitOptions: SubmitOption[] = [
   {
     id: "direct",
     label: "Direkt anfragen",
     description: "Schnellster Weg: Firmen melden sich in 24h",
     tooltip: "Schnellster Weg: Wir senden Ihre Anfrage direkt an die ausgewählten Firmen. Sie erhalten in 24-48h persönliche Offerten per E-Mail.",
-    icon: <Send className="w-5 h-5" />,
+    icon: <Zap className="w-5 h-5" />,  // Issue #18: Lightning bolt = speed (more intuitive)
     benefits: [
       "⚡ Antwort in Ø 24h",
       "✓ Nur geprüfte Firmen",
@@ -55,7 +56,7 @@ const submitOptions: SubmitOption[] = [
     // Issue #71, #73: Klarerer Vorteil direkt im Text
     description: "Günstiger: Firmen bieten um Ihren Auftrag",
     tooltip: "Wie eine Auktion: Ihr Umzug wird anonym publiziert. Firmen sehen nur PLZ & Datum und bieten um den Auftrag – oft günstigere Preise durch Wettbewerb.",
-    icon: <Gavel className="w-5 h-5" />,
+    icon: <TrendingDown className="w-5 h-5" />,  // Issue #18: Trend down = savings (more intuitive than gavel)
     benefits: [
       "📊 Ø 5-8 Offerten",
       "💰 Oft 20-35% günstiger",
@@ -71,14 +72,14 @@ const submitOptions: SubmitOption[] = [
     // Issue #76: Klarerer Vorteil, keine '93%'-Behauptung ohne Quelle
     description: "Maximum: Schnell + günstig kombiniert",
     tooltip: "Die beste Wahl: Sie erhalten sowohl schnelle Offerten von Top-Firmen als auch günstige Angebote durch die öffentliche Ausschreibung. Maximale Auswahl, volle Kontrolle.",
-    icon: <Crown className="w-5 h-5" />,
+    icon: <Sparkles className="w-5 h-5" />,  // Issue #18: Sparkles = best of both (more intuitive than crown)
     // Issue #27, #76: Alle Vorteile direkt sichtbar - keine unbelegten Prozente
     benefits: [
       "🎯 Ø 8-12 Offerten",
       "⏱ Schnell + günstig",
       "✨ Maximale Auswahl",
     ],
-    // Issue #10, #18, #76: Grünes Badge für "Beste Wahl" - konsistent
+    // Issue #6, #10, #18, #76: Grünes Badge - externe Platzierung außerhalb des Buttons
     badge: "✨ Empfohlen",
     badgeColor: "bg-green-500",
     recommended: true,
