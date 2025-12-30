@@ -1035,8 +1035,11 @@ export default function FlowDeepAnalysis() {
                       variant={selectedFlowVersion === flow.id ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedFlowVersion(flow.id)}
+                      className={flow.id === 'v1' ? 'ring-2 ring-yellow-400 ring-offset-2' : ''}
                     >
+                      {flow.id === 'v1' && <Star className="h-3 w-3 mr-1 text-yellow-500" />}
                       {flow.label}
+                      {flow.id === 'v1' && <span className="ml-1 text-[10px] opacity-70">ARCHETYP</span>}
                     </Button>
                   ))}
                 </div>
@@ -1204,11 +1207,26 @@ export default function FlowDeepAnalysis() {
                             {synthesis?.winner?.flowId === analysis.flowId && (
                               <Trophy className="h-5 w-5 text-yellow-500" />
                             )}
+                            {analysis.flowName.includes('ARCHETYP') && (
+                              <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                            )}
                             <CardTitle className="text-lg">{analysis.flowId}</CardTitle>
+                            {analysis.overallScore >= 90 && (
+                              <Badge className="bg-gradient-to-r from-yellow-400 to-amber-500 text-white text-[10px]">
+                                GOLD
+                              </Badge>
+                            )}
                           </div>
                           <ScoreRing score={analysis.overallScore} size="sm" />
                         </div>
-                        <CardDescription>{analysis.flowName}</CardDescription>
+                        <CardDescription className="flex items-center gap-2">
+                          {analysis.flowName}
+                          {analysis.flowName.includes('ARCHETYP') && (
+                            <Badge variant="outline" className="text-[10px] border-yellow-400 text-yellow-600">
+                              ★ Vorzeigemodell
+                            </Badge>
+                          )}
+                        </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Category Scores */}
