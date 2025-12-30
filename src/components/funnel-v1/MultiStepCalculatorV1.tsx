@@ -671,10 +671,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Issue #4, #5, #7, #11, #37, #49, #62: Unified progress indicator - NO redundancy, better contrast */}
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border">
+      {/* Issue #4, #7: Sticky Progress Header - bleibt beim Scrollen sichtbar */}
+      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border sticky top-0 z-20">
         <div className="flex items-center justify-between mb-3">
-          {/* Issue #7: Single trust signal - NO redundancy with footer */}
+          {/* Trust signal - nur EINMAL hier */}
           <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-full shadow-sm min-h-[36px]">
             <Shield className="w-4 h-4" />
             <span>100% kostenlos</span>
@@ -685,7 +685,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </span>
         </div>
         
-        {/* Issue #1, #37: Progress bar - NO horizontal scroll, responsive */}
+        {/* Issue #10: Verbesserte Progress-Leiste mit klarerem aktiven Schritt */}
         <div className="relative">
           <ol className="flex gap-2" role="list" aria-label="Fortschritt">
             {[
@@ -701,7 +701,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     ? 'bg-green-500' 
                     : step === currentStep 
                       ? 'bg-primary shadow-md ring-2 ring-primary/30' 
-                      : 'bg-muted-foreground/30'
+                      : 'bg-muted-foreground/20'
                 }`}
                 role="listitem"
                 aria-current={step === currentStep ? "step" : undefined}
@@ -711,7 +711,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Issue #45, #62: Labels - always visible, higher contrast for inactive */}
+        {/* Issue #10: Labels mit höherem Kontrast für aktiven Schritt */}
         <div className="flex justify-between mt-3">
           {[
             { step: 1, label: "Typ" },
@@ -725,8 +725,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 step < currentStep 
                   ? 'text-green-600 dark:text-green-400 font-bold' 
                   : step === currentStep 
-                    ? 'text-primary font-bold' 
-                    : 'text-foreground/60 font-medium'
+                    ? 'text-primary font-bold text-sm' 
+                    : 'text-muted-foreground/60 font-medium'
               }`}
             >
               {step < currentStep && <CheckCircle className="w-3.5 h-3.5 shrink-0" />}
@@ -835,10 +835,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                           CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}–{getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
                         </p>
                       </div>
-                      {/* Issue #18, #53: Clear text - NOT a clickable CTA, just info */}
-                      <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-3 py-2 rounded-lg shrink-0">
-                        <TrendingDown className="w-4 h-4" />
-                        <span className="font-semibold">Bis 40% sparen möglich</span>
+                      {/* Issue #20: Prominentere Darstellung des Spar-Potenzials */}
+                      <div className="flex items-center gap-2 text-sm sm:text-base text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-4 py-2.5 rounded-lg shrink-0 font-bold">
+                        <TrendingDown className="w-5 h-5" />
+                        <span>Bis 40% sparen!</span>
                       </div>
                     </div>
                   </motion.div>
@@ -1092,15 +1092,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 estimatedPrice={getPriceEstimate(formData.apartmentSize, formData.selectedServices)}
               />
 
-              {/* Issue #1: Klarere Überschrift für Kontaktfelder - verbindet mit Offertenanfrage */}
+              {/* Issue #8: Entfernt - redundanter Pflichtfeld-Text */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 mb-1">
                   <User className="w-5 h-5 text-primary" />
-                  <h4 className="text-base font-bold text-foreground">Ihre Kontaktdaten für die Offerten</h4>
+                  <h4 className="text-base font-bold text-foreground">Ihre Kontaktdaten</h4>
                 </div>
-                <p className="text-xs text-muted-foreground -mt-2 mb-3">
-                  * Pflichtfeld – Wir senden Ihnen die Offerten an diese Adresse
-                </p>
                 
                 <ValidatedInput
                   schema={nameSchema}
@@ -1207,16 +1204,21 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               }
             >
               {currentStep === 1 && "Weiter"}
-              {currentStep === 2 && (canProceed() ? "Weiter" : "Felder ausfüllen")}
+              {/* Issue #12: Kontextbezogenerer CTA-Text */}
+              {currentStep === 2 && (canProceed() ? "Firmen suchen" : "Felder ausfüllen")}
               {currentStep === 3 && (
                 formData.selectedCompanies.length >= 3 
-                  ? <><span className="hidden xs:inline">Weiter mit </span>{formData.selectedCompanies.length} Firmen</>
+                  ? <><span className="hidden xs:inline">Weiter zu </span>Kontakt</>
                   : `Noch ${3 - formData.selectedCompanies.length} wählen`
               )}
               {canProceed() && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5" />}
             </Button>
           ) : (
-            <div className="flex-1 flex flex-col items-center">
+            <div className="flex-1 flex flex-col items-center gap-2">
+              {/* Issue #9: Bestätigungstext vor Submit */}
+              <p className="text-xs text-muted-foreground text-center hidden xs:block">
+                Mit Klick senden Sie Ihre Anfrage · 100% kostenlos & unverbindlich
+              </p>
               {/* Issue #21: Klarer Submit-Button sichtbar und prominent */}
               <Button
                 type="button"
@@ -1286,20 +1288,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
         )}
       </div>
 
-      {/* Issue #10, #16: Consolidated trust footer - NO redundancy with header */}
+      {/* Issue #2, #4: Reduzierter Trust-Footer - nur essenzielle, nicht-redundante Infos */}
       <div className="bg-muted/40 px-4 py-3 border-t border-border">
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-5">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
             <TrendingDown className="w-4 h-4 text-green-600 dark:text-green-400" />
             Bis 40% sparen
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-            <Shield className="w-4 h-4 text-primary" />
-            SSL verschlüsselt
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-            <Clock className="w-4 h-4 text-amber-500" />
-            2 Min.
           </span>
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
             <Users className="w-4 h-4 text-secondary" />

@@ -324,18 +324,16 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </div>
       </div>
 
-      {/* Issue #42, #57: Promoted Companies - klarere Unterscheidung von GESPONSERT vs PREMIUM */}
+      {/* Issue #17, #42, #57: Premium Partner - reduzierte Redundanz bei Antwortzeit */}
       {promotedCompanies.length > 0 && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between px-2">
-            <div className="flex items-center gap-2">
-              <Crown className="w-5 h-5 text-amber-500" />
-              <span className="text-sm font-bold text-foreground uppercase tracking-wide">
-                Premium Partner
-              </span>
-            </div>
-            <span className="text-xs text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 px-3 py-1.5 rounded-lg font-bold border border-amber-300 dark:border-amber-700">
-              ⚡ Antwort in &lt;4h
+          <div className="flex items-center gap-2 px-2">
+            <Crown className="w-5 h-5 text-amber-500" />
+            <span className="text-sm font-bold text-foreground uppercase tracking-wide">
+              Premium Partner
+            </span>
+            <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+              · Schnelle Antwort
             </span>
           </div>
           {promotedCompanies.map((company, index) => (
@@ -442,13 +440,11 @@ function CompanyCard({
           : "border-border hover:border-primary/30"
       }`}
     >
-      {/* Issue #5, #8, #37, #39: Enhanced transparency - dezenteres "Gesponsert" Label, klarerer Nutzen */}
+      {/* Issue #5, #8, #11, #17, #37, #39: Gesponsert-Label mit besserem Kontrast */}
       {isPromoted && (
-        <div className="bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-950/20 text-amber-800 dark:text-amber-300 text-center py-1.5 text-[11px] font-medium flex items-center justify-center gap-2 border-b border-amber-200 dark:border-amber-800">
+        <div className="bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-950/30 text-amber-900 dark:text-amber-200 text-center py-1.5 text-xs font-medium flex items-center justify-center gap-2 border-b border-amber-200 dark:border-amber-700">
           <Sparkles className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-wide text-[10px]">Gesponsert</span>
-          <span className="text-amber-600 dark:text-amber-400">·</span>
-          <span className="font-normal">⚡ Antwortet in &lt;4h</span>
+          <span className="uppercase tracking-wide font-semibold">Gesponsert</span>
         </div>
       )}
       
@@ -563,8 +559,8 @@ function CompanyCard({
                 </Tooltip>
               </TooltipProvider>
 
-              {/* Response Time */}
-              {company.response_time_avg_hours && company.response_time_avg_hours <= 4 && (
+              {/* Issue #17: Response Time nur EINMAL anzeigen, nicht redundant */}
+              {company.response_time_avg_hours && company.response_time_avg_hours <= 4 && !isPromoted && (
                 <span className="inline-flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
                   <Clock className="w-3 h-3" />
                   Antwortet schnell
@@ -615,7 +611,7 @@ function CompanyCard({
           </div>
         </div>
 
-        {/* Issue #13, #27: Expand Button - Enhanced touch target (44px+) for mobile */}
+        {/* Issue #19: Prominenterer "Mehr Details" Button */}
         <Button
           variant="ghost"
           size="sm"
@@ -623,11 +619,11 @@ function CompanyCard({
             e.stopPropagation();
             onExpand();
           }}
-          className="w-full h-11 mt-2 text-sm text-muted-foreground hover:text-foreground touch-manipulation active:scale-[0.98]"
+          className="w-full h-11 mt-2 text-sm text-primary hover:text-primary hover:bg-primary/10 font-medium touch-manipulation active:scale-[0.98]"
           aria-expanded={isExpanded}
           aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
         >
-          {isExpanded ? "Weniger" : "Mehr Details"}
+          {isExpanded ? "Weniger" : "→ Mehr Details"}
           {isExpanded ? <ChevronUp className="w-4 h-4 ml-1.5" /> : <ChevronDown className="w-4 h-4 ml-1.5" />}
         </Button>
       </div>
