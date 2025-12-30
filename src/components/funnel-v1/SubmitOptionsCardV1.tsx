@@ -93,19 +93,23 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
   return (
     <TooltipProvider>
       <div className="space-y-3">
-        {/* Issue #15: Klarer Titel mit Vergleichs-Link */}
-        <div className="flex items-center justify-between">
+        {/* Issue #2: Klarer Button-Stil für "Optionen vergleichen" */}
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <label className="text-sm font-semibold flex items-center gap-2">
             Wie möchten Sie Offerten erhalten?
           </label>
           <button
             type="button"
             onClick={() => setShowDetails(!showDetails)}
-            className="text-xs text-primary hover:underline flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-primary/5 transition-colors"
+            className={`text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all touch-manipulation min-h-[36px] ${
+              showDetails 
+                ? "bg-primary/10 text-primary font-medium" 
+                : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
             aria-expanded={showDetails}
           >
             <Info className="w-3.5 h-3.5" />
-            {showDetails ? "Weniger Details" : "Optionen vergleichen"}
+            {showDetails ? "Weniger" : "Vergleichen"}
           </button>
         </div>
 
@@ -253,29 +257,12 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
         })}
         </div>
 
-        {/* Issue #7, #45: Konsistente Links, harmonisierte Datenschutz-Kommunikation */}
-        <div className="p-3 sm:p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-          <div className="flex items-start gap-2.5 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center shrink-0">
-              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
-            </div>
-            <div className="text-sm text-green-700 dark:text-green-400 leading-relaxed space-y-1">
-              <p className="font-bold text-green-800 dark:text-green-300 text-sm">
-                🔒 Sicher & diskret
-              </p>
-              {/* Issue #7: Konsistente Link-Formatierung mit gleicher Farbe */}
-              <ul className="text-xs space-y-0.5">
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle className="w-3 h-3 text-green-500 shrink-0" />
-                  <span><strong>Firmen sehen nur PLZ</strong> – Kontakt erst nach Ihrem OK</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle className="w-3 h-3 text-green-500 shrink-0" />
-                  <span><strong>Keine Werbeanrufe</strong> · 100% unverbindlich</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+        {/* Issue #14: Kompakte Sicherheitsinfo ohne Redundanz */}
+        <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+          <Shield className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0" />
+          <p className="text-xs text-green-700 dark:text-green-400">
+            <strong>Sicher:</strong> Firmen sehen nur PLZ – Ihre Kontaktdaten erst nach Ihrem OK
+          </p>
         </div>
       </div>
     </TooltipProvider>

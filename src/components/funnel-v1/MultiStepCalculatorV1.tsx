@@ -448,6 +448,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
       useVideoAI: false,
       privacyAccepted: false,
       selectedCompanies: [],
+      // Issue #6: "Beides" als Default vorausgewählt (beste Wahl)
       submitOption: "both" as const,
     };
   });
@@ -686,18 +687,18 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </div>
         </div>
         
-        {/* Issue #24: Vereinheitlichter Fortschrittsbalken (visuell, nicht redundant) */}
+      {/* Issue #1, #40: Progress bar ohne horizontal scroll - nur Balken, Labels kompakt */}
         <div className="relative">
-          <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
+          <ol className="flex gap-1" role="list" aria-label="Fortschritt">
             {[
-              { step: 1, label: "Typ" },
-              { step: 2, label: "Details" },
-              { step: 3, label: "Firmen" },
-              { step: 4, label: "Kontakt" },
-            ].map(({ step, label }) => (
+              { step: 1, label: "Typ", short: "1" },
+              { step: 2, label: "Details", short: "2" },
+              { step: 3, label: "Firmen", short: "3" },
+              { step: 4, label: "Kontakt", short: "4" },
+            ].map(({ step, label, short }) => (
               <li
                 key={step}
-                className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
+                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
                   step < currentStep 
                     ? 'bg-green-500' 
                     : step === currentStep 
@@ -712,8 +713,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Labels nur einmal unter dem Balken, nicht doppelt */}
-        <div className="flex justify-between mt-2.5 text-xs">
+        {/* Issue #1, #40: Labels nur auf sm+ anzeigen, auf xs nur Step-Nummern */}
+        <div className="flex justify-between mt-2 text-[11px]">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -722,17 +723,18 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ].map(({ step, label }) => (
             <span 
               key={step}
-              className={`flex items-center gap-1 transition-colors ${
+              className={`flex items-center gap-0.5 transition-colors whitespace-nowrap ${
                 step < currentStep 
-                  ? 'text-green-600 font-semibold' 
+                  ? 'text-green-600 font-medium' 
                   : step === currentStep 
                     ? 'text-primary font-bold' 
                     : 'text-muted-foreground'
               }`}
             >
-              {step < currentStep && <CheckCircle className="w-3 h-3" />}
-              <span className="hidden xs:inline">{label}</span>
-              <span className="xs:hidden">{step}</span>
+              {step < currentStep && <CheckCircle className="w-3 h-3 shrink-0" />}
+              {/* Issue #1: Hide labels on very small screens, show step numbers */}
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{step}</span>
             </span>
           ))}
         </div>
@@ -1145,24 +1147,24 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #14, #21, #33: Sticky Navigation OHNE Überlappungen - padding-bottom für safe-area */}
-        <div className="flex gap-3 mt-6 
+        {/* Issue #15, #21: Sticky Navigation OHNE Überlappungen - padding-bottom für safe-area */}
+        <div className="flex gap-2 sm:gap-3 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-3
+                        fixed bottom-0 left-0 right-0 px-3 sm:px-6 py-2.5 sm:py-3
                         bg-card/98 backdrop-blur-xl border-t border-border/50 
                         shadow-[0_-4px_24px_rgba(0,0,0,0.12)]
-                        pb-[max(0.75rem,env(safe-area-inset-bottom))]
+                        pb-[max(0.625rem,calc(env(safe-area-inset-bottom)+0.5rem))]
                         md:pb-0 md:shadow-none z-50">
           {currentStep > 1 && (
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
-              // Issue #33: Min 48px Touch-Target
-              className="h-[52px] md:h-12 rounded-xl px-4 sm:px-5 min-w-[90px] text-base font-semibold shrink-0 touch-manipulation active:scale-[0.97]"
+              // Issue #8, #17, #24: Min 48px Touch-Target
+              className="h-12 sm:h-[52px] md:h-12 rounded-xl px-3 sm:px-5 min-w-[70px] sm:min-w-[90px] text-sm sm:text-base font-semibold shrink-0 touch-manipulation active:scale-[0.97]"
               aria-label="Zurück zum vorherigen Schritt"
             >
-              <ArrowLeft className="w-5 h-5 mr-1.5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
               <span className="hidden xs:inline">Zurück</span>
             </Button>
           )}
@@ -1172,8 +1174,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               type="button"
               onClick={handleNext}
               disabled={!canProceed()}
-              // Issue #16, #35, #41: Klarer CTA mit dynamischem Text, disabled state klar
-              className={`flex-1 h-[52px] md:h-12 rounded-xl text-base font-bold shadow-lg touch-manipulation active:scale-[0.97] transition-all ${
+              // Issue #16, #21, #35: Klarer CTA mit dynamischem Text, min 48px touch target
+              className={`flex-1 h-12 sm:h-[52px] md:h-12 rounded-xl text-sm sm:text-base font-bold shadow-lg touch-manipulation active:scale-[0.97] transition-all ${
                 canProceed() 
                   ? 'bg-primary hover:bg-primary/90' 
                   : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
@@ -1183,23 +1185,23 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 : "Zum nächsten Schritt weiter"
               }
             >
-              {currentStep === 1 && "Weiter zu Details"}
-              {currentStep === 2 && (canProceed() ? "Firmen auswählen" : "Bitte alle Felder ausfüllen")}
+              {currentStep === 1 && "Weiter"}
+              {currentStep === 2 && (canProceed() ? "Weiter" : "Felder ausfüllen")}
               {currentStep === 3 && (
                 formData.selectedCompanies.length >= 3 
-                  ? `Weiter mit ${formData.selectedCompanies.length} Firmen`
-                  : `Noch ${3 - formData.selectedCompanies.length} Firma(en) wählen`
+                  ? <><span className="hidden xs:inline">Weiter mit </span>{formData.selectedCompanies.length} Firmen</>
+                  : `Noch ${3 - formData.selectedCompanies.length} wählen`
               )}
-              {canProceed() && <ArrowRight className="w-5 h-5 ml-2" />}
+              {canProceed() && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5" />}
             </Button>
           ) : (
             <div className="flex-1 flex flex-col items-center">
+              {/* Issue #21: Klarer Submit-Button sichtbar und prominent */}
               <Button
                 type="button"
                 onClick={handleSubmit}
                 disabled={!canProceed()}
-                // Issue #41: CTA deaktiviert wenn Fehler, klarer disabled-Text
-                className={`w-full h-[52px] md:h-12 rounded-xl font-bold text-base shadow-xl touch-manipulation active:scale-[0.97] transition-all ${
+                className={`w-full h-12 sm:h-[52px] md:h-12 rounded-xl font-bold text-sm sm:text-base shadow-xl touch-manipulation active:scale-[0.97] transition-all ${
                   canProceed()
                     ? 'bg-secondary hover:bg-secondary/90'
                     : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
@@ -1208,13 +1210,15 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               >
                 {canProceed() ? (
                   <>
-                    <CheckCircle className="w-5 h-5 mr-2" />
-                    {getSubmitButtonText()}
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+                    <span className="hidden xs:inline">{getSubmitButtonText()}</span>
+                    <span className="xs:hidden">Offerten anfordern</span>
                   </>
                 ) : (
                   <>
-                    <AlertCircle className="w-5 h-5 mr-2" />
-                    Pflichtfelder ausfüllen
+                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+                    <span className="hidden xs:inline">Pflichtfelder ausfüllen</span>
+                    <span className="xs:hidden">Felder ausfüllen</span>
                   </>
                 )}
               </Button>
@@ -1222,8 +1226,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </div>
         
-        {/* Spacer für fixed footer auf Mobile - Issue #14: Kein Inhalt wird verdeckt */}
-        <div className="h-[70px] md:hidden" aria-hidden="true" />
+        {/* Issue #15: Spacer für fixed footer auf Mobile - größer für sicheren Abstand */}
+        <div className="h-[80px] sm:h-[72px] md:hidden" aria-hidden="true" />
         
         {/* Desktop: Trust-Footer */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
