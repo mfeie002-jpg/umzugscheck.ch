@@ -17,6 +17,7 @@ const FUNNEL_ROUTES = [
   '/umzugsofferten-baseline',
   '/umzugsofferten-v1',
   '/umzugsofferten-v1a',
+  '/umzugsofferten-v2e',
   '/rechner',
   '/umzugsrechner',
   '/offerten',
