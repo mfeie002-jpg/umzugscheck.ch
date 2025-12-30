@@ -93,27 +93,28 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
   return (
     <TooltipProvider>
       <div className="space-y-3">
-        {/* Issue #2: Klarer Button-Stil für "Optionen vergleichen" */}
+        {/* Issue #2, #7, #29: Klarer interaktiver Button-Stil für "Optionen vergleichen" mit korrekter Funktion */}
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <label className="text-sm font-semibold flex items-center gap-2">
+          <label className="text-base font-semibold flex items-center gap-2">
             Wie möchten Sie Offerten erhalten?
           </label>
           <button
             type="button"
             onClick={() => setShowDetails(!showDetails)}
-            className={`text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all touch-manipulation min-h-[36px] ${
+            className={`text-sm flex items-center gap-2 px-4 py-2 rounded-xl transition-all touch-manipulation min-h-[44px] font-medium border ${
               showDetails 
-                ? "bg-primary/10 text-primary font-medium" 
-                : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
+                ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                : "bg-card text-foreground border-border hover:border-primary hover:bg-primary/5"
             }`}
             aria-expanded={showDetails}
+            aria-label={showDetails ? "Weniger Details anzeigen" : "Optionen vergleichen"}
           >
-            <Info className="w-3.5 h-3.5" />
+            <Info className="w-4 h-4" />
             {showDetails ? "Weniger" : "Vergleichen"}
           </button>
         </div>
 
-        {/* Issue #24, #43, #49: Radio-Group mit min 88px Touch-Targets, KEINE Fehler-Farben für empfohlene Option */}
+        {/* Issue #22, #24, #31, #43, #45, #55, #57: Radio-Group mit min 96px Touch-Targets, clear visual hierarchy */}
         <div className="grid gap-3" role="radiogroup" aria-label="Offerten-Methode auswählen">
         {submitOptions.map((option) => {
           const isSelected = value === option.id;
@@ -127,14 +128,12 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => onChange(option.id)}
-              // Issue #10, #24, #43, #49: Min-h-[96px], GRÜN für empfohlen (nicht rot!)
-              className={`relative w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all min-h-[96px] touch-manipulation active:scale-[0.99] ${
+              className={`relative w-full p-5 sm:p-6 rounded-xl border-2 text-left transition-all min-h-[100px] touch-manipulation active:scale-[0.99] ${
                 isSelected
-                  ? "border-secondary bg-secondary/10 ring-2 ring-secondary/20 shadow-md"
+                  ? "border-secondary bg-secondary/10 ring-2 ring-secondary/20 shadow-lg"
                   : option.recommended
-                  // Issue #43: GRÜN statt AMBER für empfohlene Option - keine Fehler-Assoziation
-                  ? "border-green-400 dark:border-green-600 bg-green-50/50 dark:bg-green-950/20 hover:border-green-500"
-                  : "border-border hover:border-primary/30 bg-card"
+                  ? "border-green-400 dark:border-green-600 bg-green-50/50 dark:bg-green-950/20 hover:border-green-500 shadow-md"
+                  : "border-border hover:border-primary/30 bg-card hover:shadow-sm"
               }`}
             >
               {/* Badge - Issue #43: GRÜN für empfohlen, nicht amber (keine Fehler-Assoziation) */}
