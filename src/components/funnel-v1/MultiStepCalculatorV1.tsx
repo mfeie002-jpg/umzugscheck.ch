@@ -674,20 +674,20 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
       {/* Issue #4, #7: Sticky Progress Header - bleibt beim Scrollen sichtbar */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border sticky top-0 z-20">
         <div className="flex items-center justify-between mb-3">
-          {/* Trust signal - nur EINMAL hier */}
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-full shadow-sm min-h-[36px]">
+          {/* Issue #69: Trust signal - nur EINMAL hier, NICHT redundant */}
+          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-full shadow-sm min-h-[44px] touch-manipulation">
             <Shield className="w-4 h-4" />
             <span>100% kostenlos</span>
           </div>
-          {/* Issue #62: Clearer inactive step visibility */}
-          <span className="text-sm font-bold text-foreground">
-            Schritt {currentStep} von {totalSteps}
+          {/* Issue #2, #62, #74: Clearer step indicator - works on mobile too */}
+          <span className="text-sm sm:text-base font-bold text-foreground whitespace-nowrap">
+            {currentStep}/{totalSteps}
           </span>
         </div>
         
-        {/* Issue #10: Verbesserte Progress-Leiste mit klarerem aktiven Schritt */}
+        {/* Issue #2, #10, #67: Verbesserte Progress-Leiste mit klarerem aktiven Schritt + grünem Haken */}
         <div className="relative">
-          <ol className="flex gap-2" role="list" aria-label="Fortschritt">
+          <ol className="flex gap-1.5 sm:gap-2" role="list" aria-label="Fortschritt">
             {[
               { step: 1, label: "Typ" },
               { step: 2, label: "Details" },
@@ -696,7 +696,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
             ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-3 flex-1 rounded-full transition-all duration-300 ${
+                className={`h-2.5 sm:h-3 flex-1 rounded-full transition-all duration-300 ${
                   step < currentStep 
                     ? 'bg-green-500' 
                     : step === currentStep 
@@ -711,8 +711,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Issue #10: Labels mit höherem Kontrast für aktiven Schritt */}
-        <div className="flex justify-between mt-3">
+        {/* Issue #10, #60, #67: Labels mit höherem Kontrast + vollständigem Text auf allen Geräten */}
+        <div className="flex justify-between mt-2 sm:mt-3">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -721,16 +721,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ].map(({ step, label }) => (
             <span 
               key={step}
-              className={`flex items-center gap-1 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-0.5 sm:gap-1 transition-colors ${
                 step < currentStep 
                   ? 'text-green-600 dark:text-green-400 font-bold' 
                   : step === currentStep 
-                    ? 'text-primary font-bold text-sm' 
-                    : 'text-muted-foreground/60 font-medium'
+                    ? 'text-primary font-bold' 
+                    : 'text-muted-foreground/50 font-medium'
               }`}
             >
-              {step < currentStep && <CheckCircle className="w-3.5 h-3.5 shrink-0" />}
-              <span className="text-xs sm:text-sm">{label}</span>
+              {step < currentStep && <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />}
+              <span className="text-[10px] sm:text-xs">{label}</span>
             </span>
           ))}
         </div>
@@ -819,7 +819,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   onChange={(v) => updateFormData("apartmentSize", v)}
                 />
 
-                {/* Issue #13, #18, #25, #53: Enhanced price estimate - clearer CTA, NO overlap issues */}
+                {/* Issue #13, #18, #22, #25, #32, #53: Enhanced price estimate with info tooltip */}
                 {formData.apartmentSize && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -828,14 +828,25 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
-                        <p className="text-xs text-green-700 dark:text-green-400 font-medium uppercase tracking-wide mb-1">
-                          Geschätzte Kosten
-                        </p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="text-xs text-green-700 dark:text-green-400 font-medium uppercase tracking-wide">
+                            Geschätzte Kosten
+                          </p>
+                          {/* Issue #22, #32: Info-Tooltip für Preis-Erklärung */}
+                          <button
+                            type="button"
+                            className="text-green-600/60 hover:text-green-600 p-1 rounded-full hover:bg-green-200/50 transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center touch-manipulation"
+                            title="Basiert auf Wohnungsgrösse, gewählten Services und ähnlichen Umzügen. Bis 40% sparen durch Vergleich mehrerer Offerten."
+                            aria-label="Info zur Preisschätzung"
+                          >
+                            <Info className="w-4 h-4" />
+                          </button>
+                        </div>
                         <p className="text-2xl font-bold text-green-800 dark:text-green-300">
                           CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}–{getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
                         </p>
                       </div>
-                      {/* Issue #20: Prominentere Darstellung des Spar-Potenzials */}
+                      {/* Issue #20, #32: Prominentere Darstellung des Spar-Potenzials */}
                       <div className="flex items-center gap-2 text-sm sm:text-base text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-4 py-2.5 rounded-lg shrink-0 font-bold">
                         <TrendingDown className="w-5 h-5" />
                         <span>Bis 40% sparen!</span>
@@ -844,46 +855,50 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </motion.div>
                 )}
 
-              {/* Issue #8, #17, #33, #57: Move Date - Swiss format, clear flexible option */}
+              {/* Issue #8, #17, #33, #36, #57: Move Date - Swiss format, clear flexible option with explanation */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
                   Umzugsdatum
                 </label>
                 
-                {/* Issue #17, #30: Flexible option - clearer visual when selected */}
+                {/* Issue #8, #17, #30, #36: Flexible option - clearer visual + benefit explanation */}
                 <button
                   type="button"
                   onClick={() => updateFormData("moveDate", formData.moveDate === "flexible" ? "" : "flexible")}
-                  className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all min-h-[60px] touch-manipulation ${
+                  className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all min-h-[64px] touch-manipulation active:scale-[0.99] ${
                     formData.moveDate === "flexible"
-                      ? "border-green-500 bg-green-50 dark:bg-green-950/30"
+                      ? "border-green-500 bg-green-50 dark:bg-green-950/30 shadow-sm"
                       : "border-border hover:border-primary/50 bg-card"
                   }`}
                 >
-                  <div className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center border-2 shrink-0 ${
                     formData.moveDate === "flexible" ? "bg-green-500 border-green-500" : "border-muted-foreground/40"
                   }`}>
-                    {formData.moveDate === "flexible" && <CheckCircle className="w-4 h-4 text-white" />}
+                    {formData.moveDate === "flexible" && <CheckCircle className="w-5 h-5 text-white" />}
                   </div>
                   <div className="flex-1 text-left">
-                    <span className="text-sm font-medium block">Termin noch offen / flexibel</span>
-                    <span className="text-xs text-muted-foreground">💡 Erhöht Chance auf mehr Angebote</span>
+                    <span className="text-sm font-semibold block">Termin noch offen / flexibel</span>
+                    {/* Issue #36: Klarer Vorteil der flexiblen Option */}
+                    <span className="text-xs text-green-600 dark:text-green-400">✨ Mehr Angebote & oft günstigere Preise</span>
                   </div>
                 </button>
 
-                {/* Issue #17: Date field HIDDEN when flexible is selected */}
+                {/* Issue #17, #33: Date field HIDDEN when flexible is selected, Swiss date hint */}
                 {formData.moveDate !== "flexible" && (
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     <Input
                       type="date"
                       value={formData.moveDate}
                       onChange={(e) => updateFormData("moveDate", e.target.value)}
-                      className={`h-14 rounded-xl text-base cursor-pointer ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
+                      className={`h-14 rounded-xl text-base cursor-pointer touch-manipulation ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
                       min={new Date().toISOString().split('T')[0]}
                       placeholder="Datum wählen"
                     />
-                    <p className="text-xs text-muted-foreground">Gewünschtes Datum (kann später geändert werden)</p>
+                    {/* Issue #33, #36: Hint for date selection benefit */}
+                    <p className="text-xs text-muted-foreground">
+                      Exaktes Datum = präzisere Angebote (kann später geändert werden)
+                    </p>
                   </div>
                 )}
               </div>
@@ -1173,25 +1188,25 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #9, #12: Enhanced Sticky Navigation - IMMER sichtbar, höherer z-index */}
+        {/* Issue #9, #12, #27, #29, #40: Enhanced Sticky Navigation - ALWAYS visible on mobile, no overlap, higher z-index */}
         <div className="flex gap-3 sm:gap-4 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-5 sm:py-6
-                        bg-card/98 backdrop-blur-xl border-t-2 border-primary/30
-                        shadow-[0_-12px_40px_rgba(0,0,0,0.25)]
-                        pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+1.5rem))]
+                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-4
+                        bg-card/98 backdrop-blur-xl border-t-2 border-primary/20
+                        shadow-[0_-8px_30px_rgba(0,0,0,0.2)]
+                        pb-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))]
                         md:pb-0 md:shadow-none z-[100]">
           {currentStep > 1 && (
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
-              // Issue #8, #17, #24: Min 48px Touch-Target
-              className="h-12 sm:h-[52px] md:h-12 rounded-xl px-3 sm:px-5 min-w-[70px] sm:min-w-[90px] text-sm sm:text-base font-semibold shrink-0 touch-manipulation active:scale-[0.97]"
+              // Issue #8, #17, #18, #24: Min 48px Touch-Target, fully visible
+              className="h-12 sm:h-[52px] md:h-12 rounded-xl px-4 sm:px-5 min-w-[80px] sm:min-w-[100px] text-sm sm:text-base font-semibold shrink-0 touch-manipulation active:scale-[0.97] gap-1.5"
               aria-label="Zurück zum vorherigen Schritt"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
-              <span className="hidden xs:inline">Zurück</span>
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span>Zurück</span>
             </Button>
           )}
           
@@ -1272,8 +1287,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </div>
         
-        {/* Issue #40, #43, #57: Much larger spacer for fixed footer on Mobile - prevents ALL content overlap */}
-        <div className="h-[160px] sm:h-[140px] md:hidden" aria-hidden="true" />
+        {/* Issue #29, #31, #40, #43: Optimized spacer for fixed footer on Mobile - prevents ALL content overlap */}
+        <div className="h-[100px] sm:h-[80px] md:hidden" aria-hidden="true" />
         
         {/* Desktop: Trust-Footer */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
@@ -1311,9 +1326,9 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
         )}
       </div>
 
-      {/* Issue #2, #4: Reduzierter Trust-Footer - nur essenzielle, nicht-redundante Infos */}
-      <div className="bg-muted/40 px-4 py-3 border-t border-border">
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+      {/* Issue #2, #4, #69, #86: Minimal Trust-Footer - keine redundanten Elemente */}
+      <div className="bg-muted/40 px-4 py-2.5 border-t border-border hidden md:block">
+        <div className="flex flex-wrap justify-center gap-6">
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
             <TrendingDown className="w-4 h-4 text-green-600 dark:text-green-400" />
             Bis 40% sparen
@@ -1321,6 +1336,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
             <Users className="w-4 h-4 text-secondary" />
             200+ Firmen
+          </span>
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <Clock className="w-4 h-4 text-primary" />
+            Antwort in 24h
           </span>
         </div>
       </div>
