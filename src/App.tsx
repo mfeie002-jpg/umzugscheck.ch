@@ -296,6 +296,7 @@ const FlowDeepAnalysis = lazy(() =>
     throw err;
   })
 );
+const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 
 
 // Customer pages
@@ -404,6 +405,7 @@ const AdminRoutes = () => (
       <Route path="/admin/varianten-testen" element={<VariantTestHub />} />
       <Route path="/admin/flow-comparison/:flowNumber" element={<FlowComparison />} />
       <Route path="/admin/flow-deep-analysis" element={<FlowDeepAnalysis />} />
+      <Route path="/admin/analysis-framework" element={<AnalysisFramework />} />
       <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
       <Route path="/admin/v3-varianten" element={<Navigate to="/v3-varianten" replace />} />
       <Route path="/admin/funnel" element={<FunnelAnalytics />} />
