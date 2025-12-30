@@ -108,7 +108,7 @@ const FLOW_CONFIGS: Record<string, { id: string; label: string; path: string; st
       { step: 5, name: 'Kontakt', description: 'Absenden' },
     ],
   },
-  'umzugsofferten-v9': {
+'umzugsofferten-v9': {
     id: 'umzugsofferten-v9',
     label: 'V9 - Zero Friction',
     path: '/umzugsofferten-v9',
@@ -120,6 +120,24 @@ const FLOW_CONFIGS: Record<string, { id: string; label: string; path: string; st
       { step: 5, name: 'Kontakt', description: 'Absenden' },
     ],
   },
+  // V2.e Chat-based Funnel (Experimental)
+  'umzugsofferten-v2e': {
+    id: 'umzugsofferten-v2e',
+    label: 'V2.e - Chat Funnel ⭐',
+    path: '/umzugsofferten-v2e',
+    steps: [
+      { step: 1, name: 'Umzugstyp', description: 'Wohnung/Haus/Büro wählen' },
+      { step: 2, name: 'Von wo', description: 'Startadresse eingeben' },
+      { step: 3, name: 'Nach wo', description: 'Zieladresse eingeben' },
+      { step: 4, name: 'Grösse', description: 'Wohnungsgrösse wählen' },
+      { step: 5, name: 'Video', description: 'Optional: Video-Analyse' },
+      { step: 6, name: 'Datum', description: 'Umzugstermin festlegen' },
+      { step: 7, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 8, name: 'Preis', description: 'Preis-Reveal mit Animation' },
+      { step: 9, name: 'Firmen', description: 'Firmenauswahl treffen' },
+      { step: 10, name: 'Kontakt', description: 'Daten absenden' },
+    ],
+  },
 };
 
 // Sub-variant configurations
@@ -128,7 +146,8 @@ const SUB_VARIANT_CONFIGS: Record<string, { id: string; label: string; path: str
   'v2b': { id: 'v2b', label: 'V2b - Simplified Labels', path: '/flow-tester?variant=v2b', steps: [{ step: 1, name: 'Was', description: 'Typ' }, { step: 2, name: 'Wohin', description: 'Adressen' }, { step: 3, name: 'Extras', description: 'Services' }, { step: 4, name: 'Kontakt', description: 'Daten' }] },
   'v2c': { id: 'v2c', label: 'V2c - Trust Focused', path: '/flow-tester?variant=v2c', steps: [{ step: 1, name: 'Umzugsart', description: 'Mit Trust' }, { step: 2, name: 'Details', description: 'Adressen' }, { step: 3, name: 'Services', description: 'Optionen' }, { step: 4, name: 'Kontakt', description: 'Absenden' }] },
   'v2d': { id: 'v2d', label: 'V2d - Speed Optimized', path: '/flow-tester?variant=v2d', steps: [{ step: 1, name: 'Quick', description: 'Schnellauswahl' }, { step: 2, name: 'Details', description: 'Alles' }, { step: 3, name: 'Kontakt', description: 'Absenden' }] },
-  'v2e': { id: 'v2e', label: 'V2e - Experimental', path: '/flow-tester?variant=v2e', steps: [{ step: 1, name: 'Start', description: 'Experimentell' }, { step: 2, name: 'Mitte', description: 'Features' }, { step: 3, name: 'Ende', description: 'Absenden' }] },
+  // Alias: some tools reference v2e as a sub-variant
+  'v2e': { id: 'v2e', label: 'V2.e - Chat Funnel ⭐', path: '/umzugsofferten-v2e', steps: [{ step: 1, name: 'Umzugstyp', description: 'Wohnung/Haus/Büro wählen' }, { step: 2, name: 'Von wo', description: 'Startadresse eingeben' }, { step: 3, name: 'Nach wo', description: 'Zieladresse eingeben' }, { step: 4, name: 'Grösse', description: 'Wohnungsgrösse wählen' }, { step: 5, name: 'Video', description: 'Optional: Video-Analyse' }, { step: 6, name: 'Datum', description: 'Umzugstermin festlegen' }, { step: 7, name: 'Services', description: 'Zusatzleistungen wählen' }, { step: 8, name: 'Preis', description: 'Preis-Reveal mit Animation' }, { step: 9, name: 'Firmen', description: 'Firmenauswahl treffen' }, { step: 10, name: 'Kontakt', description: 'Daten absenden' }] },
   'v3a': { id: 'v3a', label: 'V3a - Mobile First', path: '/flow-tester?variant=v3a', steps: [{ step: 1, name: 'Umzugsart', description: 'Touch' }, { step: 2, name: 'Details', description: 'Adressen' }, { step: 3, name: 'Services', description: 'Extras' }, { step: 4, name: 'Kontakt', description: 'Absenden' }] },
   'v3g': { id: 'v3g', label: 'V3g - Feedback Based', path: '/flow-tester?variant=v3g', steps: [{ step: 1, name: 'Service', description: 'Slider' }, { step: 2, name: 'Details', description: 'Adressen' }, { step: 3, name: 'Ablauf', description: 'Trust' }, { step: 4, name: 'Kontakt', description: 'Offerten' }] },
   'v3b': { id: 'v3b', label: 'V3b - Swipe Navigation', path: '/flow-tester?variant=v3b', steps: [{ step: 1, name: 'Umzugsart', description: 'Swipe' }, { step: 2, name: 'Adressen', description: 'Wischen' }, { step: 3, name: 'Services', description: 'Extras' }, { step: 4, name: 'Kontakt', description: 'Absenden' }] },
