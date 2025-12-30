@@ -21,7 +21,7 @@ export const MobileBottomNav = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-xl border-t border-border/80 shadow-lg pb-safe" aria-label="Mobile Navigation">
+    <nav className="site-bottom-nav fixed bottom-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-xl border-t border-border/80 shadow-lg pb-safe" aria-label="Mobile Navigation">
       <div className="flex items-center justify-around h-[52px] xs:h-14">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href || 
