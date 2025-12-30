@@ -101,23 +101,25 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
   return (
     <TooltipProvider>
       <div className="space-y-4">
-        {/* Issue #2: Clear "Vergleichen" button with proper functionality */}
+        {/* Issue #12, #15, #24, #65: Clear label - NO confusing "Vergleichen" button */}
         <div className="flex items-center justify-between flex-wrap gap-2">
           <label className="text-base sm:text-lg font-bold">
             Wie möchten Sie Offerten erhalten?
           </label>
+          {/* Issue #12, #64: Comparison toggle - clear function label */}
           <button
             type="button"
             onClick={() => setShowComparison(!showComparison)}
-            className={`text-sm flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all touch-manipulation min-h-[44px] font-semibold border-2 ${
+            className={`text-xs flex items-center gap-2 px-3 py-2 rounded-xl transition-all touch-manipulation min-h-[44px] font-medium border ${
               showComparison 
-                ? "bg-primary text-primary-foreground border-primary shadow-md" 
-                : "bg-card text-primary border-primary/40 hover:border-primary hover:bg-primary/5"
+                ? "bg-primary text-primary-foreground border-primary" 
+                : "bg-card text-muted-foreground border-border hover:border-primary hover:text-primary"
             }`}
             aria-expanded={showComparison}
           >
             <BarChart3 className="w-4 h-4" />
-            {showComparison ? "Weniger" : "Vergleichen"}
+            <span className="hidden sm:inline">{showComparison ? "Tabelle schliessen" : "Optionen vergleichen"}</span>
+            <span className="sm:hidden">{showComparison ? "×" : "?"}</span>
           </button>
         </div>
 
@@ -166,7 +168,7 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
           )}
         </AnimatePresence>
 
-        {/* Issue #23, #25: Radio-Group mit grösseren Touch-Targets (min 48px) */}
+        {/* Issue #28, #52, #66: Radio-Group with 48px+ touch targets - entire card clickable */}
         <div className="grid gap-3" role="radiogroup" aria-label="Offerten-Methode auswählen">
           {submitOptions.map((option) => {
             const isSelected = value === option.id;
@@ -177,44 +179,44 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                 type="button"
                 role="radio"
                 aria-checked={isSelected}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
+                whileHover={{ scale: 1.005 }}
+                whileTap={{ scale: 0.995 }}
                 onClick={() => onChange(option.id)}
-                // Issue #23: Gesamte Karte klickbar, min-h für Touch-Targets
-                className={`relative w-full p-5 sm:p-6 rounded-xl border-2 text-left transition-all min-h-[100px] touch-manipulation active:scale-[0.99] ${
+                // Issue #28, #52: Full card clickable, min-h for 48px touch targets
+                className={`relative w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all min-h-[80px] touch-manipulation active:scale-[0.99] ${
                   isSelected
-                    ? "border-secondary bg-secondary/10 ring-2 ring-secondary/30 shadow-lg"
+                    ? "border-secondary bg-secondary/10 ring-2 ring-secondary/30 shadow-md"
                     : option.recommended
-                    ? "border-green-400 dark:border-green-600 bg-green-50/80 dark:bg-green-950/40 hover:border-green-500 shadow-md ring-1 ring-green-200 dark:ring-green-800"
-                    : "border-border hover:border-primary/50 bg-card hover:shadow-md"
+                    ? "border-green-400 dark:border-green-600 bg-green-50/80 dark:bg-green-950/40 hover:border-green-500 shadow-sm ring-1 ring-green-200 dark:ring-green-800"
+                    : "border-border hover:border-primary/50 bg-card hover:shadow-sm"
                 }`}
               >
-                {/* Issue #10, #18: Konsistente Badge-Farben */}
+                {/* Issue #10, #63: Consistent badge styling */}
                 {option.badge && (
-                  <div className="absolute -top-2.5 right-3">
+                  <div className="absolute -top-2 right-3">
                     <Badge 
-                      className={`text-xs px-2.5 py-1 border-0 shadow-sm text-white font-bold ${option.badgeColor || "bg-green-500"}`}
+                      className={`text-[10px] px-2 py-0.5 border-0 shadow-sm text-white font-bold ${option.badgeColor || "bg-green-500"}`}
                     >
                       {option.badge}
                     </Badge>
                   </div>
                 )}
 
-                <div className="flex items-start gap-3 sm:gap-4">
-                  {/* Issue #23: Grösserer Radio-Button (28px) */}
+                <div className="flex items-start gap-3">
+                  {/* Issue #28, #66: Larger radio indicator (24px) */}
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center border-2 shrink-0 mt-0.5 transition-all ${
-                      isSelected ? "bg-secondary border-secondary scale-110" : "border-muted-foreground/40"
+                    className={`w-6 h-6 rounded-full flex items-center justify-center border-2 shrink-0 mt-0.5 transition-all ${
+                      isSelected ? "bg-secondary border-secondary" : "border-muted-foreground/40"
                     }`}
                   >
-                    {isSelected && <CheckCircle className="w-5 h-5 text-secondary-foreground" />}
+                    {isSelected && <CheckCircle className="w-4 h-4 text-secondary-foreground" />}
                   </div>
 
-                  {/* Icon - grösserer Container */}
+                  {/* Icon container */}
                   <div
-                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                       isSelected 
-                        ? "bg-secondary text-secondary-foreground scale-105" 
+                        ? "bg-secondary text-secondary-foreground" 
                         : option.recommended
                         ? "bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400"
                         : "bg-muted text-muted-foreground"
@@ -247,18 +249,17 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                       {option.description}
                     </p>
 
-                    {/* Issue #27: Benefits IMMER sichtbar bei Auswahl oder "Beides" */}
+                    {/* Issue #35, #50: Benefits always visible for recommended - simpler layout */}
                     {(isSelected || option.recommended) && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
-                        className="mt-3 space-y-1.5"
+                        className="mt-2 flex flex-wrap gap-x-3 gap-y-1"
                       >
                         {option.benefits.map((benefit, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-sm text-foreground/80">
-                            <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-                            <span className="font-medium">{benefit}</span>
-                          </div>
+                          <span key={idx} className="text-xs text-foreground/70 font-medium">
+                            {benefit}
+                          </span>
                         ))}
                       </motion.div>
                     )}

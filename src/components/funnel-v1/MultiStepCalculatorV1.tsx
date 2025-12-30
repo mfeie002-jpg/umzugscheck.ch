@@ -671,26 +671,23 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Issue #19, #23, #50: Unified progress indicator - no redundant elements, better contrast */}
+      {/* Issue #4, #5, #7, #11, #37, #49, #62: Unified progress indicator - NO redundancy, better contrast */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
-          {/* Issue #19, #60: Single clear progress indicator */}
-          <span className="text-sm font-bold text-primary flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-sm">
-              {currentStep}
-            </span>
-            <span className="text-muted-foreground font-normal">von {totalSteps}</span>
-          </span>
-          {/* Issue #16: Trust-Signal clearly visible */}
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full shadow-sm">
+          {/* Issue #7: Single trust signal - NO redundancy with footer */}
+          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-full shadow-sm min-h-[36px]">
             <Shield className="w-4 h-4" />
-            <span>Kostenlos & unverbindlich</span>
+            <span>100% kostenlos</span>
           </div>
+          {/* Issue #62: Clearer inactive step visibility */}
+          <span className="text-sm font-bold text-foreground">
+            Schritt {currentStep} von {totalSteps}
+          </span>
         </div>
         
-        {/* Issue #1, #23, #40, #50: Progress bar without horizontal scroll - simplified */}
+        {/* Issue #1, #37: Progress bar - NO horizontal scroll, responsive */}
         <div className="relative">
-          <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
+          <ol className="flex gap-2" role="list" aria-label="Fortschritt">
             {[
               { step: 1, label: "Typ" },
               { step: 2, label: "Details" },
@@ -699,12 +696,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
             ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-3 sm:h-3.5 flex-1 rounded-full transition-colors duration-300 ${
+                className={`h-3 flex-1 rounded-full transition-all duration-300 ${
                   step < currentStep 
                     ? 'bg-green-500' 
                     : step === currentStep 
-                      ? 'bg-primary shadow-sm' 
-                      : 'bg-muted-foreground/20'
+                      ? 'bg-primary shadow-md ring-2 ring-primary/30' 
+                      : 'bg-muted-foreground/30'
                 }`}
                 role="listitem"
                 aria-current={step === currentStep ? "step" : undefined}
@@ -714,8 +711,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Issue #1, #17, #25, #51: Labels - visible, larger, better contrast */}
-        <div className="flex justify-between mt-3 text-xs">
+        {/* Issue #45, #62: Labels - always visible, higher contrast for inactive */}
+        <div className="flex justify-between mt-3">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -724,16 +721,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ].map(({ step, label }) => (
             <span 
               key={step}
-              className={`flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-1 transition-colors whitespace-nowrap ${
                 step < currentStep 
-                  ? 'text-green-600 font-bold' 
+                  ? 'text-green-600 dark:text-green-400 font-bold' 
                   : step === currentStep 
                     ? 'text-primary font-bold' 
-                    : 'text-muted-foreground'
+                    : 'text-foreground/60 font-medium'
               }`}
             >
-              {step < currentStep && <CheckCircle className="w-4 h-4 shrink-0" />}
-              <span className="text-xs sm:text-sm font-medium">{label}</span>
+              {step < currentStep && <CheckCircle className="w-3.5 h-3.5 shrink-0" />}
+              <span className="text-xs sm:text-sm">{label}</span>
             </span>
           ))}
         </div>
@@ -822,75 +819,71 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   onChange={(v) => updateFormData("apartmentSize", v)}
                 />
 
-                {/* Issue #5: Enhanced price estimate - "bis 40% sparen" noch prominenter */}
+                {/* Issue #13, #18, #25, #53: Enhanced price estimate - clearer CTA, NO overlap issues */}
                 {formData.apartmentSize && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-2 border-green-300 dark:border-green-700 shadow-sm"
+                    className="p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-700"
                   >
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
-                        <p className="text-[11px] text-green-700 dark:text-green-400 font-medium uppercase tracking-wide">
+                        <p className="text-xs text-green-700 dark:text-green-400 font-medium uppercase tracking-wide mb-1">
                           Geschätzte Kosten
                         </p>
-                        {/* Issue #5: Larger, more prominent price display */}
-                        <p className="text-2xl sm:text-3xl font-bold text-green-800 dark:text-green-300">
+                        <p className="text-2xl font-bold text-green-800 dark:text-green-300">
                           CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}–{getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
                         </p>
                       </div>
-                      {/* Issue #5: Enhanced savings badge - grössere Schrift, animiert */}
-                      <motion.div 
-                        animate={{ scale: [1, 1.03, 1] }}
-                        transition={{ repeat: Infinity, duration: 2 }}
-                        className="flex items-center gap-2 text-white bg-green-600 dark:bg-green-500 px-4 py-2.5 rounded-xl shrink-0 shadow-lg"
-                      >
-                        <TrendingDown className="w-5 h-5" />
-                        <span className="text-base font-bold">bis 40% sparen</span>
-                      </motion.div>
+                      {/* Issue #18, #53: Clear text - NOT a clickable CTA, just info */}
+                      <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-3 py-2 rounded-lg shrink-0">
+                        <TrendingDown className="w-4 h-4" />
+                        <span className="font-semibold">Bis 40% sparen möglich</span>
+                      </div>
                     </div>
                   </motion.div>
                 )}
 
-              {/* Issue #14, #25, #40: Move Date with better date picker UX and Swiss format */}
+              {/* Issue #8, #17, #33, #57: Move Date - Swiss format, clear flexible option */}
               <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
+                <label className="text-sm font-semibold flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
                   Umzugsdatum
                 </label>
-                {/* Issue #11: Tooltip/Info für "Termin noch offen / flexibel" - erklärt Auswirkung */}
-                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 -mx-2 cursor-pointer min-h-[52px] touch-manipulation active:bg-muted/70"
-                     onClick={() => updateFormData("moveDate", formData.moveDate === "flexible" ? "" : "flexible")}>
-                  <Checkbox
-                    id="date-flexible-v1"
-                    checked={formData.moveDate === "flexible"}
-                    onCheckedChange={(checked) => {
-                      updateFormData("moveDate", checked ? "flexible" : "");
-                    }}
-                    className="h-6 w-6"
-                  />
-                  <div className="flex-1">
-                    <label htmlFor="date-flexible-v1" className="text-sm text-foreground cursor-pointer font-medium">
-                      Termin noch offen / flexibel
-                    </label>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      💡 Erhöht die Chance auf mehr Angebote
-                    </p>
+                
+                {/* Issue #17, #30: Flexible option - clearer visual when selected */}
+                <button
+                  type="button"
+                  onClick={() => updateFormData("moveDate", formData.moveDate === "flexible" ? "" : "flexible")}
+                  className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all min-h-[60px] touch-manipulation ${
+                    formData.moveDate === "flexible"
+                      ? "border-green-500 bg-green-50 dark:bg-green-950/30"
+                      : "border-border hover:border-primary/50 bg-card"
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
+                    formData.moveDate === "flexible" ? "bg-green-500 border-green-500" : "border-muted-foreground/40"
+                  }`}>
+                    {formData.moveDate === "flexible" && <CheckCircle className="w-4 h-4 text-white" />}
                   </div>
-                </div>
+                  <div className="flex-1 text-left">
+                    <span className="text-sm font-medium block">Termin noch offen / flexibel</span>
+                    <span className="text-xs text-muted-foreground">💡 Erhöht Chance auf mehr Angebote</span>
+                  </div>
+                </button>
+
+                {/* Issue #17: Date field HIDDEN when flexible is selected */}
                 {formData.moveDate !== "flexible" && (
                   <div className="space-y-1">
-                    {/* Issue #25: Entire date field clickable, larger touch target */}
-                    <div className="relative">
-                      <Input
-                        type="date"
-                        value={formData.moveDate === "flexible" ? "" : formData.moveDate}
-                        onChange={(e) => updateFormData("moveDate", e.target.value)}
-                        className={`h-14 rounded-xl text-base cursor-pointer ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
-                        min={new Date().toISOString().split('T')[0]}
-                      />
-                    </div>
-                    <p className="text-[10px] text-muted-foreground">Gewünschtes Umzugsdatum (kann später geändert werden)</p>
+                    <Input
+                      type="date"
+                      value={formData.moveDate}
+                      onChange={(e) => updateFormData("moveDate", e.target.value)}
+                      className={`h-14 rounded-xl text-base cursor-pointer ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
+                      min={new Date().toISOString().split('T')[0]}
+                      placeholder="Datum wählen"
+                    />
+                    <p className="text-xs text-muted-foreground">Gewünschtes Datum (kann später geändert werden)</p>
                   </div>
                 )}
               </div>
@@ -1044,43 +1037,24 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               transition={{ duration: 0.2 }}
               className="space-y-3"
             >
-              {/* Issue #4: Klarerer Zusammenhang zwischen Fortschritt und Firmenauswahl */}
+              {/* Issue #7: NO redundant step indicators - just clear header */}
               <div className="text-center">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-2">
-                  <Sparkles className="w-3 h-3" />
-                  Schritt 3: Firmen wählen
-                </span>
-                <h3 className="text-lg font-bold">
+                <h3 className="text-xl font-bold mb-1">
                   {formData.selectedCompanies.length >= 3 ? (
-                    <><span className="text-green-600 dark:text-green-400">{formData.selectedCompanies.length} Firmen</span> ausgewählt ✓</>
+                    <span className="flex items-center justify-center gap-2">
+                      <CheckCircle className="w-6 h-6 text-green-500" />
+                      {formData.selectedCompanies.length} Firmen ausgewählt
+                    </span>
                   ) : (
                     <>Wählen Sie <span className="text-secondary">mind. 3 Firmen</span></>
                   )}
                 </h3>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {formData.selectedCompanies.length > 0 
                     ? "Empfohlen vorausgewählt – jederzeit änderbar"
                     : "Mehr Offerten = bessere Vergleichsmöglichkeit"
                   }
                 </p>
-                {/* Issue #4: Fortschrittsbalken zeigt Firmenauswahl-Status */}
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <div className="flex gap-1">
-                    {[1, 2, 3].map((i) => (
-                      <div 
-                        key={i} 
-                        className={`w-6 h-2 rounded-full transition-colors ${
-                          formData.selectedCompanies.length >= i 
-                            ? 'bg-green-500' 
-                            : 'bg-muted-foreground/30'
-                        }`} 
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {formData.selectedCompanies.length}/3 Min.
-                  </span>
-                </div>
               </div>
 
               <CompanyComparisonTable
@@ -1106,11 +1080,9 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               transition={{ duration: 0.2 }}
               className="space-y-4"
             >
-              <div className="text-center mb-2">
-                <h3 className="text-lg font-bold">Fast geschafft!</h3>
-                <p className="text-sm text-muted-foreground">
-                  Wie möchten Sie Offerten erhalten?
-                </p>
+              {/* Issue #11, #21: Single header - NO duplicate headlines */}
+              <div className="text-center mb-4">
+                <h3 className="text-xl font-bold">Fast geschafft!</h3>
               </div>
 
               <SubmitOptionsCardV1
@@ -1298,65 +1270,41 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </span>
         </div>
 
-        {/* Issue #12, #45: Ghost-Variante für sekundäre Video-Option, weniger prominent */}
+        {/* Issue #9, #43: Video option LESS prominent - secondary action below trust signals */}
         {currentStep === 1 && (
-          <>
-            {/* Issue #3: Kontrast-optimierter Trenner */}
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-card px-3 py-1 text-muted-foreground font-medium uppercase tracking-wider text-[10px]">
-                  oder
-                </span>
-              </div>
-            </div>
-
-            {/* Issue #9, #12: Clearer secondary option - removed confusing "NO" status, better styling */}
+          <div className="mt-4 pt-3 border-t border-border/50">
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-foreground transition-colors group min-h-[44px] touch-manipulation"
+              className="w-full flex items-center justify-center gap-2 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors group min-h-[44px] touch-manipulation"
               onClick={() => navigate('/umzugsrechner?tab=ai')}
               aria-label="Alternativ: Video hochladen für KI-Berechnung"
             >
-              <Video className="w-5 h-5 group-hover:text-primary transition-colors" />
-              <span className="underline-offset-2 group-hover:underline">Video hochladen für KI-Berechnung</span>
-              <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
-                NEU
-              </span>
+              <Video className="w-4 h-4 group-hover:text-primary transition-colors" />
+              <span className="underline-offset-2 group-hover:underline">oder Video hochladen</span>
             </button>
-          </>
+          </div>
         )}
       </div>
 
-      {/* Enhanced Trust Footer with better visibility */}
-      <div className="bg-muted/40 px-6 py-3 border-t border-border">
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
-              <TrendingDown className="w-3 h-3 text-green-600 dark:text-green-400" />
-            </div>
+      {/* Issue #10, #16: Consolidated trust footer - NO redundancy with header */}
+      <div className="bg-muted/40 px-4 py-3 border-t border-border">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-5">
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <TrendingDown className="w-4 h-4 text-green-600 dark:text-green-400" />
             Bis 40% sparen
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
-              <CheckCircle className="w-3 h-3 text-green-600 dark:text-green-400" />
-            </div>
-            100% kostenlos
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-              <Shield className="w-3 h-3 text-primary" />
-            </div>
+          </span>
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <Shield className="w-4 h-4 text-primary" />
             SSL verschlüsselt
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-              <Star className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-            </div>
-            4.8/5 Bewertung
-          </div>
+          </span>
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <Clock className="w-4 h-4 text-amber-500" />
+            2 Min.
+          </span>
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <Users className="w-4 h-4 text-secondary" />
+            200+ Firmen
+          </span>
         </div>
       </div>
       
