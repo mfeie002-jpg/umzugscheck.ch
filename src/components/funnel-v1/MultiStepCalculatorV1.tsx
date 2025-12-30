@@ -1080,9 +1080,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               transition={{ duration: 0.2 }}
               className="space-y-4"
             >
-              {/* Issue #11, #21: Single header - NO duplicate headlines */}
-              <div className="text-center mb-4">
+              {/* Issue #11, #20, #31: Single header - NO duplicate headlines, klarer Abschluss */}
+              <div className="text-center mb-3">
                 <h3 className="text-xl font-bold">Fast geschafft!</h3>
+                <p className="text-sm text-muted-foreground mt-1">Nur noch Kontaktdaten eingeben</p>
               </div>
 
               <SubmitOptionsCardV1
@@ -1092,7 +1093,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 estimatedPrice={getPriceEstimate(formData.apartmentSize, formData.selectedServices)}
               />
 
-              {/* Issue #8: Entfernt - redundanter Pflichtfeld-Text */}
+              {/* Issue #5, #31: Sicherheitshinweis direkt VOR dem Formular - bessere Platzierung */}
+              <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg mb-3">
+                <Shield className="w-4 h-4 flex-shrink-0" />
+                <span>
+                  <strong>Sicher:</strong> Daten nur an gewählte {formData.selectedCompanies.length} Firmen · SSL-verschlüsselt
+                </span>
+              </div>
+              
               <div className="space-y-3">
                 <div className="flex items-center gap-2 mb-1">
                   <User className="w-5 h-5 text-primary" />
@@ -1153,11 +1161,11 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </label>
                 </div>
                 
-                {/* Issue #45: Harmonisierte Datenschutz-Info ohne Widerspruch */}
-                <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg">
-                  <Shield className="w-4 h-4 flex-shrink-0" />
+                {/* Issue #9: Bestätigung VOR dem letzten Klick */}
+                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-2 rounded-lg">
+                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   <span>
-                    <strong>Sicher:</strong> Keine Werbeanrufe · Nur an gewählte Firmen · Jederzeit widerrufbar
+                    Mit Klick senden Sie Ihre Anfrage an {formData.selectedCompanies.length} Firmen · 100% kostenlos & unverbindlich
                   </span>
                 </div>
               </div>
@@ -1193,7 +1201,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               onClick={handleNext}
               disabled={!canProceed()}
               // Issue #16, #21, #35: Klarer CTA mit dynamischem Text, min 48px touch target
-              className={`flex-1 h-12 sm:h-[52px] md:h-12 rounded-xl text-sm sm:text-base font-bold shadow-lg touch-manipulation active:scale-[0.97] transition-all ${
+              className={`flex-1 h-12 sm:h-[52px] md:h-12 rounded-xl text-sm sm:text-base font-bold shadow-lg touch-manipulation active:scale-[0.97] transition-all gap-2 ${
                 canProceed() 
                   ? 'bg-primary hover:bg-primary/90' 
                   : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
@@ -1203,15 +1211,30 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 : "Zum nächsten Schritt weiter"
               }
             >
-              {currentStep === 1 && "Weiter"}
-              {/* Issue #12: Kontextbezogenerer CTA-Text */}
-              {currentStep === 2 && (canProceed() ? "Firmen suchen" : "Felder ausfüllen")}
+              {/* Issue #12, #27: Kontextbezogenere CTA-Texte mit Icon, mehr Abstand */}
+              {currentStep === 1 && (
+                <>
+                  <span>Weiter</span>
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                </>
+              )}
+              {currentStep === 2 && (
+                canProceed() 
+                  ? <>
+                      <span>Firmen suchen</span>
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </>
+                  : <span>Felder ausfüllen</span>
+              )}
               {currentStep === 3 && (
                 formData.selectedCompanies.length >= 3 
-                  ? <><span className="hidden xs:inline">Weiter zu </span>Kontakt</>
-                  : `Noch ${3 - formData.selectedCompanies.length} wählen`
+                  ? <>
+                      <span className="hidden xs:inline">Weiter zu </span>
+                      <span>Kontakt</span>
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </>
+                  : <span>Noch {3 - formData.selectedCompanies.length} wählen</span>
               )}
-              {canProceed() && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5" />}
             </Button>
           ) : (
             <div className="flex-1 flex flex-col items-center gap-2">
