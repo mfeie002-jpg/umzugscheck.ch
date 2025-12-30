@@ -71,18 +71,18 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                // Issue #6, #45: Min 88px Touch-Targets auf Mobile, grössere Touch-Flächen für bessere Bedienbarkeit
-                "flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl border-2 transition-all min-h-[100px] touch-manipulation active:scale-[0.97]",
+                // Issue #2, #6, #53, #54: Min 110px Touch-Targets auf Mobile, grössere Touch-Flächen für bessere Bedienbarkeit
+                "flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl border-2 transition-all min-h-[110px] touch-manipulation active:scale-[0.97]",
                 isSelected
-                  ? "border-primary bg-primary/10 shadow-soft ring-2 ring-primary/30"
-                  : "border-border bg-card hover:border-primary/40 hover:bg-muted/50"
+                  ? "border-primary bg-primary/15 shadow-lg ring-2 ring-primary/40"
+                  : "border-border bg-card hover:border-primary/50 hover:bg-muted/60 hover:shadow-md"
               )}
               aria-pressed={isSelected}
             >
               <Icon 
                 className={cn(
-                  // Issue #6: Larger icons for better visibility
-                  "w-6 h-6 sm:w-8 sm:h-8 mb-2 sm:mb-2.5 transition-colors",
+                  // Issue #54: Even larger icons for better visibility and touch
+                  "w-7 h-7 sm:w-9 sm:h-9 mb-2 sm:mb-3 transition-colors",
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )} 
               />

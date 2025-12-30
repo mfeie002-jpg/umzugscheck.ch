@@ -699,12 +699,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
             ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
+                className={`h-3 sm:h-3.5 flex-1 rounded-full transition-colors duration-300 ${
                   step < currentStep 
                     ? 'bg-green-500' 
                     : step === currentStep 
-                      ? 'bg-primary' 
-                      : 'bg-muted/60'
+                      ? 'bg-primary shadow-sm' 
+                      : 'bg-muted-foreground/20'
                 }`}
                 role="listitem"
                 aria-current={step === currentStep ? "step" : undefined}
@@ -714,8 +714,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Issue #1, #40, #50: Labels - visible on all sizes, no horizontal scroll */}
-        <div className="flex justify-between mt-2.5 text-xs">
+        {/* Issue #1, #17, #25, #51: Labels - visible, larger, better contrast */}
+        <div className="flex justify-between mt-3 text-xs">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -724,16 +724,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ].map(({ step, label }) => (
             <span 
               key={step}
-              className={`flex items-center gap-1 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-1.5 transition-colors whitespace-nowrap ${
                 step < currentStep 
-                  ? 'text-green-600 font-medium' 
+                  ? 'text-green-600 font-bold' 
                   : step === currentStep 
                     ? 'text-primary font-bold' 
-                    : 'text-muted-foreground/70'
+                    : 'text-muted-foreground'
               }`}
             >
-              {step < currentStep && <CheckCircle className="w-3.5 h-3.5 shrink-0" />}
-              <span className="text-[11px] sm:text-xs">{label}</span>
+              {step < currentStep && <CheckCircle className="w-4 h-4 shrink-0" />}
+              <span className="text-xs sm:text-sm font-medium">{label}</span>
             </span>
           ))}
         </div>
@@ -1111,7 +1111,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   type="email"
                 />
 
-                {/* Issue #3, #9, #49: Telefon-Feld mit klarem Schweizer Format-Hinweis und Validierung */}
+                {/* Issue #3, #31, #56: Telefon-Feld mit internationalem Schweizer Format +41 */}
                 <div className="space-y-1.5">
                   <ValidatedInput
                     schema={phoneSchema}
@@ -1119,14 +1119,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     onValueChange={(v) => updateFormData("phone", v)}
                     label="Telefon (optional)"
                     icon={<Phone className="w-4 h-4 text-primary" />}
-                    placeholder="079 123 45 67"
+                    placeholder="+41 79 123 45 67"
                     type="tel"
                     inputMode="tel"
                     showSuccessIcon={false}
                     autoComplete="tel"
                   />
                   <p className="text-[10px] text-muted-foreground ml-1">
-                    Format: 079 123 45 67 · Für schnellere Rückfragen
+                    Format: +41 79 123 45 67 oder 079 123 45 67 · Für schnellere Rückfragen
                   </p>
                 </div>
 
@@ -1158,14 +1158,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #8, #10, #15, #21, #27, #30, #35, #48: Sticky Navigation - larger z-index, better safe-area padding, no overlap */}
-        <div className="flex gap-2 sm:gap-3 mt-6 
+        {/* Issue #8, #24, #40, #43: Enhanced Sticky Navigation - higher z-index, more safe-area padding, NO overlap */}
+        <div className="flex gap-3 sm:gap-4 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-3 sm:py-4
-                        bg-card/98 backdrop-blur-xl border-t border-border/50 
-                        shadow-[0_-4px_24px_rgba(0,0,0,0.15)]
-                        pb-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))]
-                        md:pb-0 md:shadow-none z-[70]">
+                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-4 sm:py-5
+                        bg-card/98 backdrop-blur-xl border-t-2 border-border
+                        shadow-[0_-8px_32px_rgba(0,0,0,0.2)]
+                        pb-[max(1.25rem,calc(env(safe-area-inset-bottom)+1.25rem))]
+                        md:pb-0 md:shadow-none z-[80]">
           {currentStep > 1 && (
             <Button
               type="button"
@@ -1237,8 +1237,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </div>
         
-        {/* Issue #10, #15, #27, #30, #35: Larger spacer for fixed footer on Mobile - prevents content overlap */}
-        <div className="h-[120px] sm:h-[100px] md:hidden" aria-hidden="true" />
+        {/* Issue #40, #43, #57: Much larger spacer for fixed footer on Mobile - prevents ALL content overlap */}
+        <div className="h-[160px] sm:h-[140px] md:hidden" aria-hidden="true" />
         
         {/* Desktop: Trust-Footer */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
