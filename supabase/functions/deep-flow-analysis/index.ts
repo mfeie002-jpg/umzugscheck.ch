@@ -670,12 +670,12 @@ Antworte im JSON-Format:
 }
 
 // ============================================================================
-// SCORING CALIBRATION
+// UNIVERSAL SCORING SYSTEM
+// Applies to ALL flows equally - no special treatment!
 // Score Calculation:
 // - Start with 100 points
 // - Deduct: critical issue = -10, warning = -3, info = -1
-// - Bonus for Swiss-Market compliance: +5 per category met
-// - V1 is the ARCHETYP - optimized baseline that can reach 95+
+// - 95+ is achievable by ANY flow with 0 critical, ≤2 warnings
 // ============================================================================
 const ISSUE_WEIGHTS = {
   critical: 10,
@@ -683,113 +683,148 @@ const ISSUE_WEIGHTS = {
   info: 1,
 } as const;
 
-function calculateRealisticScore(issues: Array<{ severity: string }>): number {
-  let score = 100;
-  for (const issue of issues) {
-    const weight = ISSUE_WEIGHTS[issue.severity as keyof typeof ISSUE_WEIGHTS] || 1;
-    score -= weight;
-  }
-  return Math.max(0, Math.min(100, score));
+interface ScoringResult {
+  score: number;
+  criticalCount: number;
+  warningCount: number;
+  infoCount: number;
+  badge: 'GOLD' | 'EXCELLENT' | 'GOOD' | 'NEEDS_WORK' | 'CRITICAL';
+  badgeColor: string;
+  achievable95: boolean;
+  pathTo95: string[];
 }
 
-// V1 is the ARCHETYP - already optimized, should score 90+
-const V1_ARCHETYP_CONFIG = {
-  isArchetyp: true,
-  baseScore: 92,
-  strengths: [
-    'Touch-Targets alle ≥44px',
-    'Keine horizontales Scrollen auf Mobile',
-    'Konsolidierte Trust-Signale',
-    'Sticky CTA implementiert',
-    'Swiss-Datumsformat (TT.MM.JJJJ)',
-    'Visuelle Vergleichstabelle vorhanden',
-    'Progress-Indikator optimiert',
-    'Radio-Buttons mit erweiterten Touch-Targets'
-  ],
-  remainingIssues: [
-    { severity: 'info', description: 'Optional: KI-Video-Inventar Integration', category: 'future' },
-    { severity: 'info', description: 'Optional: Zügeltag-Ampel-System', category: 'future' },
-    { severity: 'info', description: 'Optional: ASTAG Plus Badge hinzufügen', category: 'trust' }
-  ]
-};
-
-// ============================================================================
-// MOCK DATA GENERATORS
-// ============================================================================
-function createMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
-  // V1 is the archetyp - already optimized
-  const isV1 = flowId.toLowerCase().includes('v1') && !flowId.toLowerCase().includes('v10');
+function calculateUniversalScore(issues: Array<{ severity: string }>): ScoringResult {
+  let score = 100;
+  let criticalCount = 0;
+  let warningCount = 0;
+  let infoCount = 0;
   
-  if (isV1) {
-    return createV1ArchetypAnalysis(flowId, flowName);
+  for (const issue of issues) {
+    const severity = issue.severity as keyof typeof ISSUE_WEIGHTS;
+    const weight = ISSUE_WEIGHTS[severity] || 1;
+    score -= weight;
+    
+    if (severity === 'critical') criticalCount++;
+    else if (severity === 'warning') warningCount++;
+    else infoCount++;
   }
   
-  // Other flows get standard mock analysis
+  score = Math.max(0, Math.min(100, score));
+  
+  // Determine badge
+  let badge: ScoringResult['badge'];
+  let badgeColor: string;
+  if (score >= 95) {
+    badge = 'GOLD';
+    badgeColor = 'yellow';
+  } else if (score >= 85) {
+    badge = 'EXCELLENT';
+    badgeColor = 'green';
+  } else if (score >= 70) {
+    badge = 'GOOD';
+    badgeColor = 'blue';
+  } else if (score >= 50) {
+    badge = 'NEEDS_WORK';
+    badgeColor = 'orange';
+  } else {
+    badge = 'CRITICAL';
+    badgeColor = 'red';
+  }
+  
+  // Path to 95+
+  const achievable95 = criticalCount === 0 && warningCount <= 2;
+  const pathTo95: string[] = [];
+  
+  if (criticalCount > 0) {
+    pathTo95.push(`Fix ${criticalCount} critical issue(s) (-${criticalCount * 10} points)`);
+  }
+  if (warningCount > 2) {
+    pathTo95.push(`Fix ${warningCount - 2} warning(s) to reach ≤2 (-${(warningCount - 2) * 3} points)`);
+  }
+  if (pathTo95.length === 0 && score < 95) {
+    pathTo95.push('Already on track! Info-level issues are optional.');
+  }
+  
+  return { score, criticalCount, warningCount, infoCount, badge, badgeColor, achievable95, pathTo95 };
+}
+
+// ============================================================================
+// MOCK DATA GENERATORS - EQUAL TREATMENT FOR ALL FLOWS
+// ============================================================================
+function createMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
+  // ALL flows use the same analysis logic - no special treatment!
   return createStandardMockAnalysis(flowId, flowName);
 }
 
-function createV1ArchetypAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
-  // V1 is the GOLD STANDARD - optimized archetyp
-  const score = V1_ARCHETYP_CONFIG.baseScore + Math.floor(Math.random() * 6); // 92-97
+// REMOVED: createV1ArchetypAnalysis - all flows now use universal scoring
+
+function createStandardMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
+  // Define mock issues - DEDUPLICATED, one per issue type
+  const mockIssues = [
+    { severity: 'warning', description: 'CTA nicht sticky auf Mobile', category: 'mobile' },
+    { severity: 'warning', description: 'Trust-Badges nicht prominent genug', category: 'trust' },
+    { severity: 'info', description: 'Optional: KI-Video-Inventar Integration', category: 'future' },
+    { severity: 'info', description: 'Optional: Zügeltag-Ampel-System', category: 'future' },
+    { severity: 'info', description: 'Optional: ASTAG Plus Badge hinzufügen', category: 'trust' }
+  ];
+  
+  // Calculate score using UNIVERSAL scoring system
+  const scoringResult = calculateUniversalScore(mockIssues);
   
   return {
     flowId,
-    flowName: flowName + ' ★ ARCHETYP',
-    overallScore: score,
+    flowName,
+    overallScore: scoringResult.score, // Calculated from issues: 100 - (2*3) - (3*1) = 91
     categoryScores: {
-      ux: 94, 
-      conversion: 91, 
-      mobile: 95, // All touch targets fixed
-      accessibility: 88,
-      performance: 90, 
-      trust: 89, 
-      clarity: 93
+      ux: 88, conversion: 85, mobile: 82, accessibility: 80,
+      performance: 90, trust: 78, clarity: 87
     },
     archetypeScores: [
       {
         archetype: 'Sicherheits-Sucher',
-        score: 88,
-        reasoning: 'Trust-Signale konsolidiert, SSL-Badge prominent, Vergleichstabelle vorhanden',
-        missingElements: ['Optional: ASTAG Plus Badge'],
-        improvements: ['Bereits optimiert']
+        score: 75,
+        reasoning: 'Trust-Badges vorhanden aber nicht optimal platziert',
+        missingElements: ['Optional: ASTAG-Badge'],
+        improvements: ['Trust-Badges prominenter platzieren']
       },
       {
         archetype: 'Effizienz-Maximierer',
-        score: 92,
-        reasoning: 'Touch-Targets optimiert, kein horizontales Scrollen, Sticky CTA',
-        missingElements: [],
-        improvements: ['Bereits optimiert']
+        score: 85,
+        reasoning: 'Guter Mobile-Flow, schnelle Navigation',
+        missingElements: ['Optional: KI-Video-Inventar'],
+        improvements: ['Video-Upload als optionales Feature']
       },
       {
         archetype: 'Preis-Jäger',
-        score: 90,
-        reasoning: 'Vergleichstabelle implementiert, transparente Kostenaufstellung',
-        missingElements: ['Optional: Flex-Date Rabatt-Anzeige'],
-        improvements: ['Bereits optimiert']
+        score: 82,
+        reasoning: 'Transparente Preisanzeige vorhanden',
+        missingElements: ['Optional: Flex-Date Rabatte'],
+        improvements: ['Spar-Tipps ergänzen']
       },
       {
         archetype: 'Chaos-Manager',
-        score: 91,
-        reasoning: 'Klare Struktur, konsolidierte Fortschrittsanzeige, keine Überlappungen',
+        score: 88,
+        reasoning: 'Klare Struktur, gute Fortschrittsanzeige',
         missingElements: [],
-        improvements: ['Bereits optimiert']
+        improvements: ['Bereits gut umgesetzt']
       }
     ],
     swissMarketScores: [
       {
         category: 'Mobile UX',
-        score: 95,
+        score: 82,
         elements: [
-          { name: 'Touch-Targets ≥44px', present: true, quality: 'excellent' },
-          { name: 'Keine horizontale Scroll', present: true, quality: 'excellent' },
-          { name: 'Sticky CTA', present: true, quality: 'excellent' }
+          { name: 'Touch-Targets ≥44px', present: true, quality: 'good' },
+          { name: 'Keine horizontale Scroll', present: true, quality: 'good' },
+          { name: 'Sticky CTA', present: false, quality: 'needs-improvement', recommendation: 'Sticky CTA implementieren' }
         ]
       },
       {
         category: 'Swiss Trust Signals',
-        score: 89,
+        score: 78,
         elements: [
-          { name: 'SSL Badge', present: true, quality: 'excellent' },
+          { name: 'SSL Badge', present: true, quality: 'good' },
           { name: 'Swiss Hosting', present: true, quality: 'good' },
           { name: 'ASTAG Badge', present: false, quality: 'needs-improvement', recommendation: 'Optional für Premium' }
         ]
@@ -798,209 +833,100 @@ function createV1ArchetypAnalysis(flowId: string, flowName: string): FlowDeepAna
     sixStepAnalysis: SWISS_6_STEP_FRAMEWORK.map((step) => ({
       step: step.step,
       name: step.name,
-      score: 85 + Math.floor(Math.random() * 12), // 85-96
-      implemented: step.criticalElements,
-      missing: [],
-      swissSpecificScore: 88 + Math.floor(Math.random() * 10)
+      score: 80 + Math.floor(Math.random() * 15), // 80-94
+      implemented: step.criticalElements.slice(0, 2),
+      missing: step.criticalElements.slice(2),
+      swissSpecificScore: 75 + Math.floor(Math.random() * 20)
     })),
     elements: [
       {
         elementType: 'button',
         elementName: 'Primary CTA',
-        scores: { visibility: 95, usability: 93, conversion: 91, mobile: 96, accessibility: 88 },
-        issues: [],
-        bestPractices: ['Sticky am unteren Rand', 'Klarer Text', 'Optimale Größe', 'Safe-Area Padding'],
-        improvements: ['Bereits optimiert']
-      },
-      {
-        elementType: 'trust',
-        elementName: 'Trust Badges',
-        scores: { visibility: 90, usability: 92, conversion: 88, mobile: 91, accessibility: 90 },
-        issues: [
-          {
-            severity: 'info',
-            description: 'ASTAG Plus Badge optional hinzufügbar',
-            recommendation: 'Für Premium-Kunden: ASTAG Plus Zertifizierung',
-            effort: 'low',
-            impactOnArchetype: 'Sicherheits-Sucher'
-          }
-        ],
-        bestPractices: ['Konsolidiert im Footer', 'Nicht redundant', 'SSL prominent'],
-        improvements: ['Bereits optimiert']
-      },
-      {
-        elementType: 'navigation',
-        elementName: 'Touch Targets',
-        scores: { visibility: 95, usability: 96, conversion: 90, mobile: 97, accessibility: 92 },
-        issues: [],
-        bestPractices: ['Alle ≥44px', 'Keine Überlappungen', 'Klare Hierarchie'],
-        improvements: ['Bereits optimiert']
-      }
-    ],
-    strengths: V1_ARCHETYP_CONFIG.strengths,
-    weaknesses: ['Keine kritischen Schwächen - bereits optimiert'],
-    keyInsights: ['V1 ist der ARCHETYP-Flow: Gold Standard für alle anderen Versionen'],
-    conversionKillers: [], // None - optimized
-    quickWins: ['Bereits alle Quick Wins implementiert'],
-    movuComparison: {
-      betterThan: ['Moderneres Design', 'Bessere Mobile UX', 'Keine Formular-Überlappungen', 'Schnellere Touch-Response'],
-      worseThan: ['Keine Move Captains (Feature-Parity ausstehend)'],
-      differentiators: ['Archetypzentriertes Design', 'Swiss-Market-optimiert', 'Alle UX-Issues gefixt']
-    },
-    stepByStepAnalysis: [
-      {
-        step: 1,
-        name: 'Umzugstyp',
-        score: 94,
-        dropOffRisk: 'low',
-        friction: [],
-        positives: ['2x2 Grid statt horizontal scroll', 'Touch-Targets optimiert', 'Klare Auswahl']
-      },
-      {
-        step: 2,
-        name: 'Details',
-        score: 93,
-        dropOffRisk: 'low',
-        friction: [],
-        positives: ['Swiss Datumsformat', 'Flexibel-Option klar', 'Keine Überlappungen']
-      },
-      {
-        step: 3,
-        name: 'Firmenauswahl',
-        score: 91,
-        dropOffRisk: 'low',
-        friction: [],
-        positives: ['Vertikale Liste', 'Konsolidierte Status-Anzeige', 'Klare CTAs']
-      },
-      {
-        step: 4,
-        name: 'Kontakt',
-        score: 95,
-        dropOffRisk: 'low',
-        friction: [],
-        positives: ['Vergleichstabelle', 'Große Radio-Buttons', 'Sticky Submit']
-      }
-    ]
-  };
-}
-
-function createStandardMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
-  return {
-    flowId,
-    flowName,
-    overallScore: 72,
-    categoryScores: {
-      ux: 75, conversion: 70, mobile: 68, accessibility: 65,
-      performance: 78, trust: 72, clarity: 74
-    },
-    archetypeScores: [
-      {
-        archetype: 'Sicherheits-Sucher',
-        score: 65,
-        reasoning: 'Fehlende Garantie-Badges und Versicherungsinfos',
-        missingElements: ['ASTAG-Badge', 'Fixpreis-Garantie', 'Abnahmegarantie'],
-        improvements: ['Trust-Badges hinzufügen', 'Garantie prominent platzieren']
-      },
-      {
-        archetype: 'Effizienz-Maximierer',
-        score: 78,
-        reasoning: 'Guter Mobile-Flow, aber kein AI-Video-Inventar',
-        missingElements: ['KI-Video-Inventar', 'One-Click-Buchung'],
-        improvements: ['Video-Upload integrieren', 'Schritte reduzieren']
-      },
-      {
-        archetype: 'Preis-Jäger',
-        score: 60,
-        reasoning: 'Keine Spar-Tipps oder dynamische Preisanzeige',
-        missingElements: ['Flex-Date Rabatte', 'Eigenleistungs-Rechner'],
-        improvements: ['Spar-Rechner einbauen', 'Preisaufschlüsselung']
-      },
-      {
-        archetype: 'Chaos-Manager',
-        score: 70,
-        reasoning: 'Struktur vorhanden, aber keine Save-Funktion',
-        missingElements: ['Save & Continue', 'Checklisten', 'Erinnerungen'],
-        improvements: ['Magic-Link zum Fortsetzen', 'Proaktive Tipps']
-      }
-    ],
-    swissMarketScores: [
-      {
-        category: 'Zügeltag-Awareness',
-        score: 40,
-        elements: [
-          { name: 'Flex-Date Option', present: false, quality: 'missing', recommendation: 'Flex-Date +/- 3 Tage integrieren' },
-          { name: 'Ampel-System', present: false, quality: 'missing', recommendation: 'Farbcodierung für Auslastung' }
-        ]
-      },
-      {
-        category: 'Swiss Trust Signals',
-        score: 55,
-        elements: [
-          { name: 'ASTAG Badge', present: false, quality: 'missing', recommendation: 'ASTAG Plus Logo im Footer' },
-          { name: 'Swiss Hosting', present: true, quality: 'good' }
-        ]
-      }
-    ],
-    sixStepAnalysis: SWISS_6_STEP_FRAMEWORK.map((step, i) => ({
-      step: step.step,
-      name: step.name,
-      score: 60 + Math.floor(Math.random() * 30),
-      implemented: step.criticalElements.slice(0, 1),
-      missing: step.criticalElements.slice(1),
-      swissSpecificScore: 50 + Math.floor(Math.random() * 40)
-    })),
-    elements: [
-      {
-        elementType: 'button',
-        elementName: 'Primary CTA',
-        scores: { visibility: 80, usability: 75, conversion: 70, mobile: 72, accessibility: 65 },
+        scores: { visibility: 88, usability: 85, conversion: 82, mobile: 80, accessibility: 78 },
         issues: [
           {
             severity: 'warning',
             description: 'CTA nicht sticky auf Mobile',
-            recommendation: 'Sticky CTA am unteren Bildschirmrand',
+            recommendation: 'Sticky CTA am unteren Bildschirmrand implementieren',
             effort: 'low',
             impactOnArchetype: 'Effizienz-Maximierer'
           }
         ],
-        bestPractices: ['Klarer Text', 'Gute Farbe'],
-        improvements: ['Sticky CTA', 'Hover-Animation', 'Loading State']
+        bestPractices: ['Klarer Text', 'Gute Farbe', 'Ausreichend Kontrast'],
+        improvements: ['Sticky CTA implementieren']
       },
       {
         elementType: 'trust',
         elementName: 'Trust Badges',
-        scores: { visibility: 40, usability: 60, conversion: 50, mobile: 45, accessibility: 70 },
+        scores: { visibility: 75, usability: 80, conversion: 72, mobile: 78, accessibility: 82 },
         issues: [
           {
-            severity: 'critical',
-            description: 'Keine Trust-Badges sichtbar',
-            recommendation: 'ASTAG, SSL, Datenschutz Badges hinzufügen',
+            severity: 'warning',
+            description: 'Trust-Badges nicht prominent genug platziert',
+            recommendation: 'Badges im Header oder prominent im Footer',
             effort: 'low',
             impactOnArchetype: 'Sicherheits-Sucher'
           }
         ],
-        bestPractices: [],
-        improvements: ['ASTAG Badge', 'Swiss Made', 'SSL-Siegel', 'nDSG-Konform']
+        bestPractices: ['SSL Badge vorhanden', 'Swiss Hosting kommuniziert'],
+        improvements: ['Prominentere Platzierung', 'Optional: ASTAG Badge']
       }
     ],
-    strengths: ['Klare Struktur', 'Gute Mobile-Responsiveness', 'Sauberes Design'],
-    weaknesses: ['Fehlende Trust-Signale', 'Kein Swiss-Market-Fokus', 'Keine Flex-Date Option'],
-    keyInsights: ['Flow könnte mit Swiss-Fokus um 30% verbessert werden'],
-    conversionKillers: ['Keine Abnahmegarantie', 'Kein Fixpreis', 'Zu abstrakte Inventar-Fragen'],
-    quickWins: ['Trust Badges', 'Sticky CTA', 'Flex-Date Option', 'ASTAG Logo'],
+    strengths: [
+      'Klare Struktur und Navigation',
+      'Gute Mobile-Responsiveness',
+      'Sauberes, modernes Design',
+      'Transparente Preiskommunikation',
+      'Touch-Targets ausreichend gross'
+    ],
+    weaknesses: [
+      'CTA könnte sticky sein',
+      'Trust-Badges prominenter platzierbar'
+    ],
+    keyInsights: [
+      `Score: ${scoringResult.score} (${scoringResult.badge})`,
+      `${scoringResult.criticalCount} kritische, ${scoringResult.warningCount} Warnings, ${scoringResult.infoCount} Info-Issues`,
+      scoringResult.achievable95 ? '✅ 95+ Score erreichbar!' : `Path to 95+: ${scoringResult.pathTo95.join(', ')}`
+    ],
+    conversionKillers: [], // No critical issues
+    quickWins: ['Sticky CTA implementieren', 'Trust-Badges prominenter platzieren'],
     movuComparison: {
-      betterThan: ['Moderneres Design'],
-      worseThan: ['Keine Move Captains', 'Kein Ökosystem', 'Weniger Trust'],
-      differentiators: ['Potential für KI-Video-Inventar']
+      betterThan: ['Moderneres Design', 'Bessere Touch-Targets'],
+      worseThan: ['Weniger etablierte Marke'],
+      differentiators: ['Swiss-fokussiertes Design']
     },
     stepByStepAnalysis: [
       {
         step: 1,
         name: 'Umzugsdetails',
-        score: 75,
-        dropOffRisk: 'medium',
-        friction: ['Zu viele Felder', 'Keine Smart-Location'],
-        positives: ['Klare Beschriftung']
+        score: 88,
+        dropOffRisk: 'low',
+        friction: [],
+        positives: ['Klare Beschriftung', 'Gute Struktur']
+      },
+      {
+        step: 2,
+        name: 'Details',
+        score: 85,
+        dropOffRisk: 'low',
+        friction: ['CTA nicht sticky'],
+        positives: ['Übersichtliches Layout']
+      },
+      {
+        step: 3,
+        name: 'Firmenauswahl',
+        score: 90,
+        dropOffRisk: 'low',
+        friction: [],
+        positives: ['Gute Vergleichsmöglichkeit']
+      },
+      {
+        step: 4,
+        name: 'Kontakt',
+        score: 92,
+        dropOffRisk: 'low',
+        friction: [],
+        positives: ['Einfaches Formular', 'Klarer CTA']
       }
     ]
   };

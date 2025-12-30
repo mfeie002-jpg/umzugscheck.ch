@@ -1035,11 +1035,8 @@ export default function FlowDeepAnalysis() {
                       variant={selectedFlowVersion === flow.id ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedFlowVersion(flow.id)}
-                      className={flow.id === 'v1' ? 'ring-2 ring-yellow-400 ring-offset-2' : ''}
                     >
-                      {flow.id === 'v1' && <Star className="h-3 w-3 mr-1 text-yellow-500" />}
                       {flow.label}
-                      {flow.id === 'v1' && <span className="ml-1 text-[10px] opacity-70">ARCHETYP</span>}
                     </Button>
                   ))}
                 </div>
@@ -1207,13 +1204,29 @@ export default function FlowDeepAnalysis() {
                             {synthesis?.winner?.flowId === analysis.flowId && (
                               <Trophy className="h-5 w-5 text-yellow-500" />
                             )}
-                            {analysis.flowName.includes('ARCHETYP') && (
+                            {analysis.overallScore >= 95 && (
                               <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
                             )}
                             <CardTitle className="text-lg">{analysis.flowId}</CardTitle>
-                            {analysis.overallScore >= 90 && (
+                            {analysis.overallScore >= 95 ? (
                               <Badge className="bg-gradient-to-r from-yellow-400 to-amber-500 text-white text-[10px]">
                                 GOLD
+                              </Badge>
+                            ) : analysis.overallScore >= 85 ? (
+                              <Badge className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-[10px]">
+                                EXCELLENT
+                              </Badge>
+                            ) : analysis.overallScore >= 70 ? (
+                              <Badge variant="outline" className="text-[10px] border-blue-400 text-blue-600">
+                                GOOD
+                              </Badge>
+                            ) : analysis.overallScore >= 50 ? (
+                              <Badge variant="outline" className="text-[10px] border-orange-400 text-orange-600">
+                                NEEDS WORK
+                              </Badge>
+                            ) : (
+                              <Badge variant="destructive" className="text-[10px]">
+                                CRITICAL
                               </Badge>
                             )}
                           </div>
@@ -1221,9 +1234,9 @@ export default function FlowDeepAnalysis() {
                         </div>
                         <CardDescription className="flex items-center gap-2">
                           {analysis.flowName}
-                          {analysis.flowName.includes('ARCHETYP') && (
+                          {analysis.overallScore >= 95 && (
                             <Badge variant="outline" className="text-[10px] border-yellow-400 text-yellow-600">
-                              ★ Vorzeigemodell
+                              ★ Gold Standard
                             </Badge>
                           )}
                         </CardDescription>
