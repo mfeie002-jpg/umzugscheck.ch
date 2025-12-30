@@ -17,7 +17,7 @@ import {
   ArrowLeft, Play, Trophy, Target, Zap, CheckCircle, AlertTriangle,
   AlertCircle, ChevronRight, Star, TrendingUp, Eye, Code, Download,
   RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered,
-  Wand2, Loader2
+  Wand2, Loader2, Users, Shield
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -28,6 +28,16 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { 
+  ArchetypeRadar, 
+  QuickWinsPanel, 
+  IssuesList, 
+  MovuComparisonCard, 
+  ScoreBadge,
+  SwissnessPanel,
+  ArchetypeNeedsMatrix,
+  SixStepFrameworkPanel
+} from '@/components/admin/analysis';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
@@ -1125,10 +1135,14 @@ export default function FlowDeepAnalysis() {
         {/* Analysis Results */}
         {analyses.length > 0 && !isAnalyzing && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4">
+            <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5">
               <TabsTrigger value="overview" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
                 Übersicht
+              </TabsTrigger>
+              <TabsTrigger value="archetypes" className="gap-2">
+                <Users className="h-4 w-4" />
+                Archetypen
               </TabsTrigger>
               <TabsTrigger value="comparison" className="gap-2">
                 <Layers className="h-4 w-4" />
@@ -1304,6 +1318,66 @@ export default function FlowDeepAnalysis() {
                   </motion.div>
                 ))}
               </div>
+            </TabsContent>
+
+            {/* Archetypes Tab - NEW from Gemini Analysis */}
+            <TabsContent value="archetypes" className="space-y-6">
+              {selectedAnalysis ? (
+                <div className="grid lg:grid-cols-2 gap-6">
+                  {/* Archetype Radar Chart */}
+                  <ArchetypeRadar 
+                    scores={(selectedAnalysis as any).archetypeScores || []}
+                    flowName={selectedAnalysis.flowName}
+                  />
+                  
+                  {/* Swissness Panel */}
+                  <SwissnessPanel 
+                    swissMarketScores={(selectedAnalysis as any).swissMarketScores || []}
+                  />
+                  
+                  {/* 6-Step Framework */}
+                  <div className="lg:col-span-2">
+                    <SixStepFrameworkPanel 
+                      sixStepAnalysis={(selectedAnalysis as any).sixStepAnalysis || []}
+                    />
+                  </div>
+                  
+                  {/* Archetype Needs Matrix */}
+                  <div className="lg:col-span-2">
+                    <ArchetypeNeedsMatrix 
+                      archetypeScores={(selectedAnalysis as any).archetypeScores || []}
+                    />
+                  </div>
+                  
+                  {/* Movu Comparison */}
+                  <MovuComparisonCard 
+                    comparison={(selectedAnalysis as any).movuComparison || { betterThan: [], worseThan: [] }}
+                    flowName={selectedAnalysis.flowName}
+                  />
+                  
+                  {/* Quick Wins */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Zap className="h-5 w-5 text-amber-500" />
+                        Quick Wins
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <QuickWinsPanel 
+                        quickWins={selectedAnalysis.quickWins || []}
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <Card className="text-center py-12">
+                  <CardContent>
+                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Wähle einen Flow aus der Übersicht</p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             {/* Comparison Tab */}
