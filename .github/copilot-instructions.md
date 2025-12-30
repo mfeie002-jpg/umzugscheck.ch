@@ -87,3 +87,6 @@ npm run dev
 
 
 src/main.tsx
+chatgpt-export.txt
+chatgpt-export.txt
+npm run dev
