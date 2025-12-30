@@ -135,7 +135,7 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, flowConfig, getSeverityBad
       // Generate a prompt based on the issue and send it to AI for auto-fix
       const fixPrompt = generateFixPrompt(issue);
       
-      // Call Lovable AI to generate a fix
+      // Call edge function to auto-fix the issue
       const response = await supabase.functions.invoke('auto-fix-issue', {
         body: {
           issueId: issue.id,
@@ -151,20 +151,26 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, flowConfig, getSeverityBad
       });
 
       if (response.error) {
-        // If edge function doesn't exist yet, show the prompt for manual fix
-        toast.info(
-          `Auto-Fix Prompt generiert! Kopiere diesen Prompt zu ChatGPT:\n\n${fixPrompt}`,
-          { duration: 10000 }
-        );
-        // For now, mark as resolved since we've generated guidance
+        console.error('Auto-fix edge function error:', response.error);
+        // Fallback: copy prompt to clipboard
+        await navigator.clipboard.writeText(fixPrompt);
+        toast.info('Fix-Prompt in Zwischenablage kopiert! Füge ihn in Lovable Chat ein.', { duration: 5000 });
+        onResolve();
+      } else if (response.data?.fixSuggestion) {
+        // Show the AI-generated fix suggestion
+        await navigator.clipboard.writeText(response.data.fixSuggestion);
+        toast.success('AI Fix-Vorschlag generiert und kopiert!', { duration: 5000 });
         onResolve();
       } else {
-        toast.success('Issue wurde automatisch gefixt!');
+        toast.success('Issue als gelöst markiert');
         onResolve();
       }
     } catch (err) {
       console.error('Auto-fix failed:', err);
-      toast.error('Auto-Fix fehlgeschlagen - manueller Fix erforderlich');
+      // Fallback: copy prompt to clipboard
+      const fixPrompt = generateFixPrompt(issue);
+      await navigator.clipboard.writeText(fixPrompt);
+      toast.info('Fix-Prompt kopiert (manueller Fix erforderlich)', { duration: 5000 });
     } finally {
       setFixing(false);
     }
