@@ -257,12 +257,12 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
         })}
         </div>
 
-        {/* Issue #14: Kompakte Sicherheitsinfo ohne Redundanz */}
-        <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-          <Shield className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0" />
-          <p className="text-xs text-green-700 dark:text-green-400">
-            <strong>Sicher:</strong> Firmen sehen nur PLZ – Ihre Kontaktdaten erst nach Ihrem OK
-          </p>
+        {/* Issue #25, #47: Simplified security info - compact design, better contrast */}
+        <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-muted/30 border border-border/50 text-xs">
+          <Shield className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
+          <span className="text-muted-foreground">
+            Firmen sehen nur PLZ – Kontaktdaten erst nach Ihrer Zusage
+          </span>
         </div>
       </div>
     </TooltipProvider>

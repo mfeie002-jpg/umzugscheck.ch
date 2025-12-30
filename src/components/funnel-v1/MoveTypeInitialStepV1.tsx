@@ -68,14 +68,11 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
 }: MoveTypeInitialStepV1Props) {
   return (
     <div className={`space-y-4 ${className}`}>
+      {/* Issue #10: Removed "Nur eine Option wählbar" - radio button behavior is self-evident */}
       <div className="text-center">
         <h3 className="text-lg font-bold mb-1">Was möchten Sie zügeln?</h3>
         <p className="text-sm text-muted-foreground">
           Wählen Sie einfach aus – wir finden die passenden Firmen
-        </p>
-        {/* V1: Hint for single selection */}
-        <p className="text-xs text-muted-foreground/70 mt-1">
-          (Nur eine Option wählbar)
         </p>
       </div>
       

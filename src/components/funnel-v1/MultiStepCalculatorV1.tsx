@@ -1147,14 +1147,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #15, #21: Sticky Navigation OHNE Überlappungen - padding-bottom für safe-area */}
+        {/* Issue #15, #21, #27: Sticky Navigation with safe-area padding - z-index 60 to be above bottom nav */}
         <div className="flex gap-2 sm:gap-3 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-3 sm:px-6 py-2.5 sm:py-3
+                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-3 sm:py-3.5
                         bg-card/98 backdrop-blur-xl border-t border-border/50 
-                        shadow-[0_-4px_24px_rgba(0,0,0,0.12)]
-                        pb-[max(0.625rem,calc(env(safe-area-inset-bottom)+0.5rem))]
-                        md:pb-0 md:shadow-none z-50">
+                        shadow-[0_-4px_24px_rgba(0,0,0,0.15)]
+                        pb-[max(0.75rem,calc(env(safe-area-inset-bottom)+0.75rem))]
+                        md:pb-0 md:shadow-none z-[60]">
           {currentStep > 1 && (
             <Button
               type="button"
@@ -1226,8 +1226,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </div>
         
-        {/* Issue #15: Spacer für fixed footer auf Mobile - größer für sicheren Abstand */}
-        <div className="h-[80px] sm:h-[72px] md:hidden" aria-hidden="true" />
+        {/* Issue #15, #27: Larger spacer for fixed footer on Mobile - prevents content overlap */}
+        <div className="h-[100px] sm:h-[88px] md:hidden" aria-hidden="true" />
         
         {/* Desktop: Trust-Footer */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
@@ -1264,15 +1264,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               </div>
             </div>
 
-            {/* Issue #12: Sekundäre Option weniger prominent als Link-Style */}
+            {/* Issue #9, #12: Clearer secondary option - removed confusing "NO" status, better styling */}
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+              className="w-full flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-foreground transition-colors group min-h-[44px] touch-manipulation"
               onClick={() => navigate('/umzugsrechner?tab=ai')}
+              aria-label="Alternativ: Video hochladen für KI-Berechnung"
             >
-              <Video className="w-4 h-4 group-hover:text-primary transition-colors" />
-              <span className="underline-offset-2 group-hover:underline">Video hochladen & KI berechnet</span>
-              <span className="text-[10px] bg-secondary/20 text-secondary px-1.5 py-0.5 rounded font-medium">
+              <Video className="w-5 h-5 group-hover:text-primary transition-colors" />
+              <span className="underline-offset-2 group-hover:underline">Video hochladen für KI-Berechnung</span>
+              <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
                 NEU
               </span>
             </button>
