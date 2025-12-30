@@ -1145,22 +1145,24 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #14, #21: Sticky Navigation ohne untere Nav-Bar, klarer Weiter-Button */}
-        <div className="flex gap-3 mt-6 md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        sticky bottom-0 left-0 right-0 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 
-                        bg-card/98 backdrop-blur-lg border-t border-border/50 
-                        shadow-[0_-4px_20px_rgba(0,0,0,0.08)]
-                        pb-[calc(1rem+env(safe-area-inset-bottom))]
-                        md:pb-0 md:shadow-none z-30">
+        {/* Issue #14, #21, #33: Sticky Navigation OHNE Überlappungen - padding-bottom für safe-area */}
+        <div className="flex gap-3 mt-6 
+                        md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
+                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-3
+                        bg-card/98 backdrop-blur-xl border-t border-border/50 
+                        shadow-[0_-4px_24px_rgba(0,0,0,0.12)]
+                        pb-[max(0.75rem,env(safe-area-inset-bottom))]
+                        md:pb-0 md:shadow-none z-50">
           {currentStep > 1 && (
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
-              className="h-14 md:h-12 rounded-xl px-5 min-w-[100px] text-base font-medium shrink-0"
+              // Issue #33: Min 48px Touch-Target
+              className="h-[52px] md:h-12 rounded-xl px-4 sm:px-5 min-w-[90px] text-base font-semibold shrink-0 touch-manipulation active:scale-[0.97]"
               aria-label="Zurück zum vorherigen Schritt"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
+              <ArrowLeft className="w-5 h-5 mr-1.5" />
               <span className="hidden xs:inline">Zurück</span>
             </Button>
           )}
@@ -1170,17 +1172,25 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               type="button"
               onClick={handleNext}
               disabled={!canProceed()}
-              // Issue #16, #35: Klarer, prominenter CTA mit spezifischem Text je nach Schritt
-              className="flex-1 h-14 md:h-12 rounded-xl bg-primary hover:bg-primary/90 text-base font-bold shadow-lg disabled:opacity-50"
+              // Issue #16, #35, #41: Klarer CTA mit dynamischem Text, disabled state klar
+              className={`flex-1 h-[52px] md:h-12 rounded-xl text-base font-bold shadow-lg touch-manipulation active:scale-[0.97] transition-all ${
+                canProceed() 
+                  ? 'bg-primary hover:bg-primary/90' 
+                  : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
+              }`}
               aria-label={currentStep === 3 
                 ? `Mit ${formData.selectedCompanies.length || "0"} Firmen Offerten anfordern` 
                 : "Zum nächsten Schritt weiter"
               }
             >
               {currentStep === 1 && "Weiter zu Details"}
-              {currentStep === 2 && "Firmen auswählen"}
-              {currentStep === 3 && `Offerten von ${formData.selectedCompanies.length} Firmen`}
-              <ArrowRight className="w-5 h-5 ml-2" />
+              {currentStep === 2 && (canProceed() ? "Firmen auswählen" : "Bitte alle Felder ausfüllen")}
+              {currentStep === 3 && (
+                formData.selectedCompanies.length >= 3 
+                  ? `Weiter mit ${formData.selectedCompanies.length} Firmen`
+                  : `Noch ${3 - formData.selectedCompanies.length} Firma(en) wählen`
+              )}
+              {canProceed() && <ArrowRight className="w-5 h-5 ml-2" />}
             </Button>
           ) : (
             <div className="flex-1 flex flex-col items-center">
@@ -1188,18 +1198,34 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={!canProceed()}
-                className="w-full h-14 md:h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-xl disabled:opacity-50"
-                aria-label="Offerten-Anfrage jetzt absenden"
+                // Issue #41: CTA deaktiviert wenn Fehler, klarer disabled-Text
+                className={`w-full h-[52px] md:h-12 rounded-xl font-bold text-base shadow-xl touch-manipulation active:scale-[0.97] transition-all ${
+                  canProceed()
+                    ? 'bg-secondary hover:bg-secondary/90'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
+                }`}
+                aria-label={canProceed() ? "Offerten-Anfrage jetzt absenden" : "Bitte alle Pflichtfelder ausfüllen"}
               >
-                <CheckCircle className="w-5 h-5 mr-2" />
-                {getSubmitButtonText()}
+                {canProceed() ? (
+                  <>
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    {getSubmitButtonText()}
+                  </>
+                ) : (
+                  <>
+                    <AlertCircle className="w-5 h-5 mr-2" />
+                    Pflichtfelder ausfüllen
+                  </>
+                )}
               </Button>
-              {/* Issue #13: Einmalige Trust-Info statt redundant */}
             </div>
           )}
         </div>
         
-        {/* Desktop: Trust-Footer (nicht redundant, nur einmal) */}
+        {/* Spacer für fixed footer auf Mobile - Issue #14: Kein Inhalt wird verdeckt */}
+        <div className="h-[70px] md:hidden" aria-hidden="true" />
+        
+        {/* Desktop: Trust-Footer */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Shield className="w-4 h-4 text-green-500" />

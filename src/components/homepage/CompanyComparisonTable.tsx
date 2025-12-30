@@ -237,7 +237,7 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         )}
       </AnimatePresence>
 
-      {/* Enhanced Selection Counter - Issue 42: Clearer CTA hierarchy with action button */}
+      {/* Issue #42, #44, #46: Enhanced Selection Counter - klarer Status, NICHT "Endstatus" suggerieren */}
       <div
         className={`p-4 rounded-xl transition-all ${
           selectedCompanies.length >= 3
@@ -245,11 +245,12 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
             : "bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-300 dark:border-amber-700"
         }`}
       >
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-center sm:text-left">
+        <div className="flex flex-col gap-3">
+          {/* Status-Text */}
+          <div className="text-center">
             {selectedCompanies.length < 3 ? (
               <div>
-                <span className="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center justify-center sm:justify-start gap-2">
+                <span className="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center justify-center gap-2">
                   <span className="text-xl">👆</span>
                   Noch {3 - selectedCompanies.length} auswählen
                 </span>
@@ -259,26 +260,37 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
               </div>
             ) : (
               <div>
-                <span className="text-base font-bold text-green-700 dark:text-green-400 flex items-center justify-center sm:justify-start gap-2">
+                {/* Issue #44: "ausgewählt" statt "bereit" - kein Endstatus suggerieren */}
+                <span className="text-base font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
                   <CheckCircle className="w-5 h-5" />
                   {selectedCompanies.length} Firmen ausgewählt
                 </span>
                 <span className="text-xs text-green-600/80 dark:text-green-500/80">
-                  ✓ Bereit für Offerten-Anfrage
+                  Klicken Sie unten auf "Weiter" um fortzufahren
                 </span>
               </div>
             )}
           </div>
           
-          {/* Issue 39: Clear CTA button after selection */}
-          {selectedCompanies.length >= 3 && (
-            <Badge 
-              variant="default" 
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-bold cursor-default shadow-md"
-            >
-              <Zap className="w-4 h-4 mr-1" />
-              Weiter mit {selectedCompanies.length} Firmen
-            </Badge>
+          {/* Issue #46: Ausgewählte Firmen mit Entfernen-Button */}
+          {selectedCompanies.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-center">
+              {companies
+                .filter(c => selectedCompanies.includes(c.id))
+                .map(company => (
+                  <button
+                    key={company.id}
+                    type="button"
+                    onClick={() => onToggleCompany(company.id)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 text-sm font-medium text-green-700 dark:text-green-400 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors touch-manipulation"
+                    aria-label={`${company.name} aus Auswahl entfernen`}
+                  >
+                    {company.name}
+                    <span className="text-xs opacity-60 hover:opacity-100">✕</span>
+                  </button>
+                ))
+              }
+            </div>
           )}
         </div>
       </div>
@@ -317,8 +329,8 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </div>
       )}
 
-      {/* Organic Companies */}
-      <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+      {/* Issue #3, #4: Organic Companies - VERTIKAL statt horizontal, kein Slider */}
+      <div className="space-y-2 max-h-[450px] overflow-y-auto pr-1 scroll-smooth" role="list" aria-label="Verfügbare Umzugsfirmen">
         {organicCompanies.map((company, index) => (
           <CompanyCard
             key={company.id}
@@ -381,21 +393,21 @@ function CompanyCard({
           : "border-border hover:border-primary/30"
       }`}
     >
-      {/* Issue #5, #39: Enhanced transparency with prominent "Gesponsert" label and benefit */}
+      {/* Issue #5, #8, #37, #39: Enhanced transparency - dezenteres "Gesponsert" Label, klarerer Nutzen */}
       {isPromoted && (
-        <div className="bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-center py-2 text-[12px] font-bold flex items-center justify-center gap-2">
-          <Sparkles className="w-4 h-4" />
-          <span className="uppercase tracking-wider">Gesponsert</span>
-          <span className="text-amber-800">·</span>
-          <span className="font-semibold normal-case">Schnelle Antwort garantiert</span>
+        <div className="bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-950/20 text-amber-800 dark:text-amber-300 text-center py-1.5 text-[11px] font-medium flex items-center justify-center gap-2 border-b border-amber-200 dark:border-amber-800">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span className="uppercase tracking-wide text-[10px]">Gesponsert</span>
+          <span className="text-amber-600 dark:text-amber-400">·</span>
+          <span className="font-normal">⚡ Antwortet in &lt;4h</span>
         </div>
       )}
       
-      {/* ChatGPT #9: "Empfohlen"-Badge for recommended companies */}
+      {/* Issue #8: "Empfohlen"-Badge NUR wenn nicht gesponsert UND ausgewählt */}
       {!isPromoted && isSelected && (
-        <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-center py-1 text-[10px] font-bold flex items-center justify-center gap-1">
+        <div className="bg-gradient-to-r from-green-100 to-emerald-50 dark:from-green-900/30 dark:to-emerald-950/20 text-green-700 dark:text-green-400 text-center py-1 text-[10px] font-medium flex items-center justify-center gap-1 border-b border-green-200 dark:border-green-800">
           <Award className="w-3 h-3" />
-          Empfohlen
+          Ausgewählt
         </div>
       )}
 
