@@ -532,22 +532,15 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
                     ))}
                   </div>
                 </ScrollArea>
-              </div>
-            )}
 
-            {flowIssues.length === 0 && run && (
-              <div className="space-y-3">
-                <div className="text-center py-4 text-green-600 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                  <CheckCircle className="h-6 w-6 mx-auto mb-1" />
-                  <p className="font-medium text-sm">Keine offenen Issues!</p>
-                </div>
-                {/* Still show Fix Prompt button for improvements */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full"
-                  onClick={async () => {
-                    const prompt = `# UX/Conversion Optimierung für Flow: ${config.name}
+                {/* Verbesserungs-Prompt Button - nur sichtbar wenn Score < 95 */}
+                {run && (run.overall_score || 0) < 95 && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={async () => {
+                      const prompt = `# UX/Conversion Optimierung für Flow: ${config.name}
 
 Aktueller Score: ${run.overall_score}/100
 - Mobile: ${run.performance_score || 0}/100  
@@ -556,22 +549,38 @@ Aktueller Score: ${run.overall_score}/100
 
 ${run.ai_summary ? `## AI-Zusammenfassung:\n${run.ai_summary}\n` : ''}
 
-## Aufgabe:
-Analysiere den Flow und gib mir 3-5 konkrete Code-Verbesserungen um die Scores zu erhöhen.
+## Gefundene Issues (${flowIssues.length}):
+${flowIssues.map(i => `- [${i.severity.toUpperCase()}] ${i.title}: ${i.description || ''}`).join('\n')}
 
-Fokussiere auf:
-1. Mobile Touch-Targets (min 44x44px)
-2. CTA-Klarheit und Conversion-Optimierung
-3. Trust-Elemente und Social Proof
-4. Form-UX und Fehlerbehandlung
-5. Progress-Indikatoren und Feedback`;
-                    await navigator.clipboard.writeText(prompt);
-                    toast.success('Fix-Prompt kopiert!');
-                  }}
-                >
-                  <Wand2 className="h-4 w-4 mr-2" />
-                  Verbesserungs-Prompt kopieren
-                </Button>
+## Aufgabe:
+Gib mir konkrete Code-Fixes für die oben genannten Issues. Fokussiere auf:
+1. Kritische Issues zuerst
+2. Mobile Touch-Targets (min 44x44px)
+3. CTA-Klarheit und Conversion-Optimierung
+4. Trust-Elemente und Social Proof
+5. Form-UX und Fehlerbehandlung`;
+                      await navigator.clipboard.writeText(prompt);
+                      toast.success('Verbesserungs-Prompt kopiert!');
+                    }}
+                  >
+                    <Wand2 className="h-4 w-4 mr-2" />
+                    Verbesserungs-Prompt kopieren
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {flowIssues.length === 0 && run && (
+              <div className="text-center py-6 text-green-600 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                <CheckCircle className="h-8 w-8 mx-auto mb-2" />
+                <p className="font-medium">
+                  {(run.overall_score || 0) >= 95 ? 'GOLD Level erreicht! 🏆' : 'Keine offenen Issues!'}
+                </p>
+                {(run.overall_score || 0) < 95 && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Score: {run.overall_score}/100 - Noch {95 - (run.overall_score || 0)} Punkte bis GOLD
+                  </p>
+                )}
               </div>
             )}
 
