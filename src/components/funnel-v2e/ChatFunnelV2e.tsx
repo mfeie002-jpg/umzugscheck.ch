@@ -578,7 +578,7 @@ export function ChatFunnelV2e() {
                     <button
                       key={opt.id}
                       onClick={() => handleOptionSelect(opt.id, opt.label)}
-                      className="flex items-center gap-2 px-4 py-2.5 bg-card border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all group"
+                      className="flex items-center gap-2 px-4 py-3 min-h-[48px] bg-card border border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.98] transition-all group touch-manipulation"
                     >
                       {opt.icon && (
                         <span className="text-muted-foreground group-hover:text-primary transition-colors">
@@ -653,25 +653,59 @@ export function ChatFunnelV2e() {
     }
   };
 
+  // Progress calculation based on step
+  const getProgress = (): number => {
+    const steps: Record<FlowStep, number> = {
+      welcome: 0,
+      moveType: 10,
+      fromLocation: 20,
+      toLocation: 30,
+      apartmentSize: 45,
+      moveDate: 55,
+      services: 65,
+      priceReveal: 75,
+      companies: 85,
+      contact: 95,
+      submitting: 98,
+      success: 100,
+    };
+    return steps[currentStep] || 0;
+  };
+
+  const progress = getProgress();
+
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] md:h-[600px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 px-4 py-3 border-b border-border flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-            <Bot className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm">Umzugs-Assistent</h3>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span>Online</span>
+      {/* Header with Progress */}
+      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
+        {/* Progress bar */}
+        <div className="h-1 bg-muted">
+          <motion.div 
+            className="h-full bg-primary"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          />
+        </div>
+        <div className="px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <Bot className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm">Umzugs-Assistent</h3>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span>Online</span>
+                <span className="text-muted-foreground/50">·</span>
+                <span>{progress}% abgeschlossen</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Shield className="w-3.5 h-3.5 text-green-600" />
-          <span className="hidden sm:inline">100% kostenlos</span>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Shield className="w-3.5 h-3.5 text-green-600" />
+            <span className="hidden sm:inline">100% kostenlos</span>
+          </div>
         </div>
       </div>
 
@@ -783,7 +817,7 @@ function ServicesSelector({
             key={opt.id}
             onClick={() => toggle(opt.id)}
             className={cn(
-              "flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left",
+              "flex items-center justify-between px-4 py-3.5 min-h-[52px] rounded-xl border transition-all text-left touch-manipulation active:scale-[0.98]",
               selected.includes(opt.id)
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary/50"
@@ -810,7 +844,8 @@ function ServicesSelector({
       </div>
       <Button 
         onClick={() => onConfirm(selected)} 
-        className="w-full"
+        className="w-full min-h-[48px] touch-manipulation"
+        size="lg"
       >
         Weiter mit {selected.length} Leistung{selected.length !== 1 ? "en" : ""}
         <ArrowRight className="w-4 h-4 ml-2" />
@@ -876,7 +911,7 @@ function CompanySelector({
             key={company.id}
             onClick={() => toggle(company.id)}
             className={cn(
-              "flex items-center gap-3 p-3 rounded-xl border transition-all text-left",
+              "flex items-center gap-3 p-3.5 min-h-[56px] rounded-xl border transition-all text-left touch-manipulation active:scale-[0.98]",
               selected.includes(company.id)
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary/50"
@@ -930,7 +965,8 @@ function CompanySelector({
       <Button
         onClick={() => onConfirm(selected)}
         disabled={selected.length < 3}
-        className="w-full"
+        className="w-full min-h-[48px] touch-manipulation"
+        size="lg"
       >
         {selected.length < 3 
           ? `Noch ${3 - selected.length} Firma(en) wählen`
@@ -1000,32 +1036,33 @@ function ContactForm({
         </div>
       </div>
 
-      <label className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
+      <label className="flex items-start gap-3 text-xs text-muted-foreground cursor-pointer p-2 -m-2 rounded-lg hover:bg-muted/50 transition-colors touch-manipulation">
         <input
           type="checkbox"
           checked={privacy}
           onChange={(e) => setPrivacy(e.target.checked)}
-          className="mt-0.5"
+          className="mt-0.5 w-5 h-5 rounded border-2 border-muted-foreground/30 checked:bg-primary checked:border-primary"
         />
-        <span>
+        <span className="leading-relaxed">
           Ich akzeptiere die Datenschutzerklärung und möchte kostenlose Offerten erhalten.
         </span>
       </label>
 
       <Button 
         type="submit" 
-        className="w-full" 
+        className="w-full min-h-[52px] touch-manipulation text-base font-semibold" 
+        size="lg"
         disabled={!isValid || isSubmitting}
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
             Wird gesendet...
           </>
         ) : (
           <>
             Offerten kostenlos erhalten
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <ArrowRight className="w-5 h-5 ml-2" />
           </>
         )}
       </Button>
