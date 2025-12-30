@@ -1,10 +1,20 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Home, RefreshCw, Route as RouteIcon } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Home, RefreshCw, HelpCircle, AlertTriangle } from "lucide-react";
 
+/**
+ * Improved 404 Page
+ * 
+ * Fixes:
+ * - No step indicators on error pages (confusing)
+ * - Clear, user-friendly messaging
+ * - Single primary CTA (restart flow or go home)
+ * - Removed confusing "Zurück" button
+ * - Proper touch targets (min 48px)
+ * - Context-aware messaging
+ */
 const NotFound = () => {
   const { pathname, search, hash } = useLocation();
   const navigate = useNavigate();
@@ -14,90 +24,114 @@ const NotFound = () => {
   }, [pathname]);
 
   const ctx = useMemo(() => {
-    const params = new URLSearchParams(search);
-    const step = params.get("uc_step") ?? params.get("step");
     const isOffertenFlow =
-      pathname.startsWith("/umzugsofferten") || pathname.startsWith("/umzugsofferten-v2e");
+      pathname.startsWith("/umzugsofferten") || 
+      pathname.startsWith("/rechner") ||
+      pathname.includes("offerte");
 
-    const flowHome = pathname.startsWith("/umzugsofferten-v2e") ? "/umzugsofferten-v2e" : "/umzugsofferten";
+    // Determine best flow home based on path
+    let flowHome = "/umzugsofferten";
+    if (pathname.startsWith("/umzugsofferten-v2e")) {
+      flowHome = "/umzugsofferten-v2e";
+    } else if (pathname.startsWith("/rechner")) {
+      flowHome = "/rechner";
+    }
 
     return {
       isOffertenFlow,
-      step,
       flowHome,
     };
-  }, [pathname, search]);
+  }, [pathname]);
 
   return (
-    <main className="min-h-screen bg-muted/40">
-      <section className="container mx-auto px-4 py-10">
-        <Card className="mx-auto max-w-2xl">
-          <CardHeader className="space-y-2">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="inline-flex items-center gap-1">
-                  <RouteIcon className="h-3.5 w-3.5" />
-                  404
-                </Badge>
-                {ctx.step && (
-                  <Badge variant="outline">Schritt {ctx.step}</Badge>
-                )}
-              </div>
-              {import.meta.env.DEV && (
-                <Badge variant="outline" className="font-mono text-[10px]">
-                  DEV
-                </Badge>
+    <main className="min-h-screen bg-gradient-to-b from-muted/40 to-background flex items-center justify-center p-4">
+      <Card className="mx-auto max-w-md w-full shadow-lg border-border/50">
+        <CardContent className="pt-8 pb-6 px-6 text-center space-y-6">
+          {/* Icon */}
+          <div className="mx-auto w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+            <AlertTriangle className="w-8 h-8 text-muted-foreground" />
+          </div>
+
+          {/* Title - No step indicators! */}
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-foreground">
+              Seite nicht gefunden
+            </h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {ctx.isOffertenFlow ? (
+                <>
+                  Der Prozess wurde unterbrochen oder der Link ist nicht mehr gültig. 
+                  Starten Sie einfach neu – Ihre Daten werden nicht gespeichert.
+                </>
+              ) : (
+                <>
+                  Diese Seite existiert nicht oder wurde verschoben. 
+                  Kehren Sie zur Startseite zurück.
+                </>
               )}
-            </div>
-
-            <CardTitle className="text-2xl">Diese Seite wurde nicht gefunden</CardTitle>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
-            <p className="text-muted-foreground">
-              Der Link scheint nicht (mehr) zu stimmen. Wenn Sie gerade im Offerten‑Flow waren, können Sie den Prozess
-              direkt wieder starten – ohne Umwege.
             </p>
+          </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+          {/* Primary CTA - Single, clear action */}
+          <div className="space-y-3">
+            <Button
+              type="button"
+              variant="default"
+              size="lg"
+              className="w-full min-h-[52px] text-base font-semibold"
+              onClick={() => navigate(ctx.isOffertenFlow ? ctx.flowHome : "/")}
+            >
+              <RefreshCw className="w-5 h-5 mr-2" />
+              {ctx.isOffertenFlow ? "Prozess neu starten" : "Zur Startseite"}
+            </Button>
+
+            {/* Secondary - Only home link, no confusing "back" button */}
+            {ctx.isOffertenFlow && (
               <Button
-                type="button"
-                variant="default"
+                asChild
+                variant="ghost"
                 size="lg"
-                className="min-h-[48px] flex-1"
-                onClick={() => (ctx.isOffertenFlow ? navigate(ctx.flowHome) : navigate("/"))}
+                className="w-full min-h-[48px] text-muted-foreground hover:text-foreground"
               >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                {ctx.isOffertenFlow ? "Flow neu starten" : "Zur Startseite"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                className="min-h-[48px] flex-1"
-                onClick={() => navigate(-1)}
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Zurück
-              </Button>
-
-              <Button asChild variant="ghost" size="lg" className="min-h-[48px] sm:flex-none">
                 <Link to="/">
-                  <Home className="h-4 w-4 mr-2" />
-                  Home
+                  <Home className="w-4 h-4 mr-2" />
+                  Zur Startseite
                 </Link>
               </Button>
-            </div>
-
-            {import.meta.env.DEV && (
-              <pre className="rounded-lg bg-card p-4 text-left text-xs opacity-80 overflow-auto">
-{`Debug Location:\npathname: ${pathname}\nsearch:   ${search}\nhash:     ${hash}`}
-              </pre>
             )}
-          </CardContent>
-        </Card>
-      </section>
+          </div>
+
+          {/* Help option - subtle */}
+          <div className="pt-2 border-t border-border/50">
+            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>Probleme?</span>
+              <Link 
+                to="/kontakt" 
+                className="text-primary hover:underline font-medium"
+              >
+                Kontaktieren Sie uns
+              </Link>
+            </p>
+          </div>
+
+          {/* Debug info - dev only */}
+          {import.meta.env.DEV && (
+            <details className="text-left">
+              <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+                Debug Info
+              </summary>
+              <pre className="mt-2 rounded-lg bg-muted p-3 text-[10px] font-mono overflow-auto">
+{`pathname: ${pathname}
+search:   ${search}
+hash:     ${hash}
+flow:     ${ctx.isOffertenFlow ? "yes" : "no"}
+flowHome: ${ctx.flowHome}`}
+              </pre>
+            </details>
+          )}
+        </CardContent>
+      </Card>
     </main>
   );
 };
