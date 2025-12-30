@@ -3,8 +3,20 @@ import { useParams, Navigate } from 'react-router-dom';
 import { PageLoadingFallback } from '@/components/ui/loading-fallback';
 import { VARIANT_REGISTRY } from '@/components/calculator-variants';
 
-// Dynamic component loader map
-const componentLoaders: Record<string, () => Promise<{ default: React.ComponentType }>> = {
+// Main flow loaders - these are the REAL production flows
+const mainFlowLoaders: Record<string, () => Promise<{ default: React.ComponentType }>> = {
+  'v2': () => import('@/components/premium-v2/PremiumCalculator').then(m => ({ default: m.PremiumCalculator })),
+  'v3': () => import('@/components/god-mode-v3/GodModeCalculator').then(m => ({ default: m.GodModeCalculator })),
+  'v4': () => import('@/components/video-first-v4/VideoFirstCalculator').then(m => ({ default: m.VideoFirstCalculator })),
+  'v5': () => import('@/components/marketplace-v5/MarketplaceWizard').then(m => ({ default: m.MarketplaceWizard })),
+  'v6': () => import('@/components/ultimate-v6/UltimateWizard').then(m => ({ default: m.UltimateWizard })),
+  'v7': () => import('@/components/swissmove-v7/SwissMoveWizard').then(m => ({ default: m.SwissMoveWizard })),
+  'v8': () => import('@/components/decisionfree-v8/DecisionFreeWizard').then(m => ({ default: m.DecisionFreeWizard })),
+  'v9': () => import('@/components/zerofriction-v9/ZeroFrictionWizard').then(m => ({ default: m.ZeroFrictionWizard })),
+};
+
+// Sub-variant component loaders (feedback-based variants like v1a, v2f, v3g, etc.)
+const subVariantLoaders: Record<string, () => Promise<{ default: React.ComponentType }>> = {
   // V1 Variants
   'V1aFeedbackBased': () => import('@/components/calculator-variants/V1aFeedbackBased').then(m => ({ default: m.V1aFeedbackBased })),
   'V1bFeedbackBased': () => import('@/components/calculator-variants/V1bFeedbackBased').then(m => ({ default: m.V1bFeedbackBased })),
@@ -15,7 +27,6 @@ const componentLoaders: Record<string, () => Promise<{ default: React.ComponentT
   'V2cArchetypCalculator': () => import('@/components/calculator-variants/V2cArchetypCalculator').then(m => ({ default: m.V2cArchetypCalculator })),
   'V2cTrustFocused': () => import('@/components/calculator-variants/V2cTrustFocused').then(m => ({ default: m.V2cTrustFocused })),
   'V2dFeedbackBased': () => import('@/components/calculator-variants/V2dFeedbackBased').then(m => ({ default: m.V2dFeedbackBased })),
-  
   'V2eExperimental': () => import('@/components/calculator-variants/V2eExperimental').then(m => ({ default: m.V2eExperimental })),
   'V2fFeedbackBased': () => import('@/components/calculator-variants/V2fFeedbackBased').then(m => ({ default: m.V2fFeedbackBased })),
   // V3 Variants
@@ -59,10 +70,17 @@ const componentLoaders: Record<string, () => Promise<{ default: React.ComponentT
 /**
  * Dynamic Umzugsofferten Route Handler
  * 
- * Automatically loads the correct calculator variant based on URL parameter.
- * Falls back to /umzugsofferten if variant not found.
+ * Handles both main flows (v2, v3, v4...) and sub-variants (v2a, v3b, v9d...)
  * 
- * Usage: /umzugsofferten-:variant (e.g., /umzugsofferten-v3a, /umzugsofferten-v9d)
+ * Main flows (v2, v3, etc.) load the production calculators:
+ * - v2 → PremiumCalculator
+ * - v3 → GodModeCalculator
+ * - v4 → VideoFirstCalculator
+ * - etc.
+ * 
+ * Sub-variants (v2a, v3b, etc.) load feedback-based variants from VARIANT_REGISTRY
+ * 
+ * Usage: /umzugsofferten-:variant (e.g., /umzugsofferten-v3, /umzugsofferten-v3a)
  */
 const UmzugsoffertenDynamic: React.FC = () => {
   const { variant } = useParams<{ variant: string }>();
@@ -70,31 +88,43 @@ const UmzugsoffertenDynamic: React.FC = () => {
   // Normalize variant ID (lowercase, handle different formats)
   const normalizedVariant = useMemo(() => {
     if (!variant) return null;
-    const lower = variant.toLowerCase();
-    // Handle formats: v3a, v3a-pro, multi-a
-    return lower;
+    return variant.toLowerCase();
   }, [variant]);
   
-  // Look up the component in registry
-  const registryEntry = useMemo(() => {
-    if (!normalizedVariant) return null;
-    return VARIANT_REGISTRY[normalizedVariant];
+  // Check if this is a main flow (v2, v3, v4, etc.) vs sub-variant (v2a, v3b, etc.)
+  const isMainFlow = useMemo(() => {
+    if (!normalizedVariant) return false;
+    // Main flows are: v2, v3, v4, v5, v6, v7, v8, v9 (single digit after 'v')
+    return /^v[2-9]$/.test(normalizedVariant);
   }, [normalizedVariant]);
   
   // Get the lazy-loaded component
   const Component = useMemo(() => {
-    if (!registryEntry) return null;
-    const loader = componentLoaders[registryEntry.component];
-    if (!loader) {
-      console.warn(`No loader found for component: ${registryEntry.component}`);
-      return null;
+    if (!normalizedVariant) return null;
+    
+    // For main flows, use the main flow loaders
+    if (isMainFlow && mainFlowLoaders[normalizedVariant]) {
+      console.log(`[UmzugsoffertenDynamic] Loading main flow: ${normalizedVariant}`);
+      return lazy(mainFlowLoaders[normalizedVariant]);
     }
-    return lazy(loader);
-  }, [registryEntry]);
+    
+    // For sub-variants, use VARIANT_REGISTRY
+    const registryEntry = VARIANT_REGISTRY[normalizedVariant];
+    if (registryEntry) {
+      const loader = subVariantLoaders[registryEntry.component];
+      if (loader) {
+        console.log(`[UmzugsoffertenDynamic] Loading sub-variant: ${normalizedVariant} → ${registryEntry.component}`);
+        return lazy(loader);
+      }
+      console.warn(`No loader found for component: ${registryEntry.component}`);
+    }
+    
+    return null;
+  }, [normalizedVariant, isMainFlow]);
   
   // If variant not found, redirect to main umzugsofferten
   if (!Component) {
-    console.warn(`Variant not found: ${variant}, redirecting to /umzugsofferten`);
+    console.warn(`[UmzugsoffertenDynamic] Variant not found: ${variant}, redirecting to /umzugsofferten`);
     return <Navigate to="/umzugsofferten" replace />;
   }
   
