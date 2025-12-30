@@ -381,7 +381,31 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                   </Badge>
                 )}
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); }}>
+                  {/* Copy Analyse-Prompt Button */}
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8" 
+                    title="Analyse-Prompt kopieren"
+                    onClick={async (e) => { 
+                      e.stopPropagation(); 
+                      const prompt = `Analysiere den Flow "${config.name}" (${flowId}) auf UX/Conversion-Probleme.
+                      
+Aktueller Score: ${run?.overall_score ?? 'Nicht analysiert'}/100
+- Mobile: ${run?.performance_score ?? '-'}/100
+- Conversion: ${run?.conversion_score ?? '-'}/100  
+- UX: ${run?.ux_score ?? '-'}/100
+
+${run?.ai_summary ? `Zusammenfassung: ${run.ai_summary}` : ''}
+
+Gefundene Issues: ${flowIssues.length} (${criticalCount} kritisch)
+${flowIssues.slice(0, 5).map(i => `- [${i.severity}] ${i.title}`).join('\n')}
+
+Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
+                      await navigator.clipboard.writeText(prompt);
+                      toast.success('Analyse-Prompt kopiert!');
+                    }}
+                  >
                     <Copy className="h-4 w-4" />
                   </Button>
                   {isExpanded ? (
@@ -512,9 +536,42 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
             )}
 
             {flowIssues.length === 0 && run && (
-              <div className="text-center py-6 text-green-600 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                <CheckCircle className="h-8 w-8 mx-auto mb-2" />
-                <p className="font-medium">Keine offenen Issues!</p>
+              <div className="space-y-3">
+                <div className="text-center py-4 text-green-600 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                  <CheckCircle className="h-6 w-6 mx-auto mb-1" />
+                  <p className="font-medium text-sm">Keine offenen Issues!</p>
+                </div>
+                {/* Still show Fix Prompt button for improvements */}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={async () => {
+                    const prompt = `# UX/Conversion Optimierung für Flow: ${config.name}
+
+Aktueller Score: ${run.overall_score}/100
+- Mobile: ${run.performance_score || 0}/100  
+- Conversion: ${run.conversion_score || 0}/100
+- UX: ${run.ux_score || 0}/100
+
+${run.ai_summary ? `## AI-Zusammenfassung:\n${run.ai_summary}\n` : ''}
+
+## Aufgabe:
+Analysiere den Flow und gib mir 3-5 konkrete Code-Verbesserungen um die Scores zu erhöhen.
+
+Fokussiere auf:
+1. Mobile Touch-Targets (min 44x44px)
+2. CTA-Klarheit und Conversion-Optimierung
+3. Trust-Elemente und Social Proof
+4. Form-UX und Fehlerbehandlung
+5. Progress-Indikatoren und Feedback`;
+                    await navigator.clipboard.writeText(prompt);
+                    toast.success('Fix-Prompt kopiert!');
+                  }}
+                >
+                  <Wand2 className="h-4 w-4 mr-2" />
+                  Verbesserungs-Prompt kopieren
+                </Button>
               </div>
             )}
 
