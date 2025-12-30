@@ -30,12 +30,11 @@ interface SubmitOption {
   recommended?: boolean;
 }
 
-// Issue #1, #10, #21, #48: Kürzere Texte, konsistente Empfehlungen, klare Vorteile
+// Issue #1, #10, #21, #43, #48: Kürzere Texte, konsistente Empfehlungen, klare Vorteile, keine Fehler-Verwirrung
 const submitOptions: SubmitOption[] = [
   {
     id: "direct",
     label: "Direkt anfragen",
-    // Issue #1: Kürzerer, prägnanter Text
     description: "Schnell: Ausgewählte Firmen melden sich direkt.",
     tooltip: "Schnellster Weg: Wir senden Ihre Anfrage direkt an die ausgewählten Firmen. Sie erhalten in 24-48h persönliche Offerten per E-Mail.",
     icon: <Send className="w-5 h-5" />,
@@ -48,7 +47,6 @@ const submitOptions: SubmitOption[] = [
   {
     id: "publish",
     label: "Ausschreibung",
-    // Issue #1: Kürzerer, prägnanter Text
     description: "Günstig: Firmen bieten um Ihren Auftrag.",
     tooltip: "Wie eine Auktion: Ihr Umzug wird anonym publiziert. Firmen sehen nur PLZ & Datum und bieten um den Auftrag – oft günstigere Preise durch Wettbewerb.",
     icon: <Gavel className="w-5 h-5" />,
@@ -62,7 +60,7 @@ const submitOptions: SubmitOption[] = [
   {
     id: "both",
     label: "Beides",
-    // Issue #10, #48: Klarer Mehrwert, warum empfohlen
+    // Issue #43: Klartext ohne Verwirrung - "Beides" ist POSITIV empfohlen, nicht fehlerhaft
     description: "Beste Wahl: Schnelle + günstige Offerten.",
     tooltip: "Die beste Wahl: Sie erhalten sowohl schnelle Offerten von Top-Firmen als auch günstige Angebote durch die öffentliche Ausschreibung. Maximale Auswahl, volle Kontrolle.",
     icon: <Crown className="w-5 h-5" />,
@@ -71,8 +69,8 @@ const submitOptions: SubmitOption[] = [
       "⏱ Schnell + günstig kombiniert",
       "✨ 93% wählen diese Option",
     ],
-    // Issue #21: Konsistent "Empfohlen" auf allen Geräten
-    badge: "⭐ Empfohlen",
+    // Issue #21, #43: Konsistent "Empfohlen" - GRÜN nicht ROT, keine Fehler-Assoziation
+    badge: "✨ Beste Wahl",
     recommended: true,
   },
 ];
@@ -111,7 +109,7 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
           </button>
         </div>
 
-        {/* Issue #24, #49: Radio-Group mit min 88px Touch-Targets, klickbarer Gesamtbereich */}
+        {/* Issue #24, #43, #49: Radio-Group mit min 88px Touch-Targets, KEINE Fehler-Farben für empfohlene Option */}
         <div className="grid gap-3" role="radiogroup" aria-label="Offerten-Methode auswählen">
         {submitOptions.map((option) => {
           const isSelected = value === option.id;
@@ -125,23 +123,24 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => onChange(option.id)}
-              // Issue #10, #24, #49: Min-h-[96px] für 44px+ Touch-Targets, klickbarer Gesamtbereich
+              // Issue #10, #24, #43, #49: Min-h-[96px], GRÜN für empfohlen (nicht rot!)
               className={`relative w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all min-h-[96px] touch-manipulation active:scale-[0.99] ${
                 isSelected
                   ? "border-secondary bg-secondary/10 ring-2 ring-secondary/20 shadow-md"
                   : option.recommended
-                  ? "border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/20 hover:border-amber-400"
+                  // Issue #43: GRÜN statt AMBER für empfohlene Option - keine Fehler-Assoziation
+                  ? "border-green-400 dark:border-green-600 bg-green-50/50 dark:bg-green-950/20 hover:border-green-500"
                   : "border-border hover:border-primary/30 bg-card"
               }`}
             >
-              {/* Badge */}
+              {/* Badge - Issue #43: GRÜN für empfohlen, nicht amber (keine Fehler-Assoziation) */}
               {option.badge && (
-                <div className="absolute -top-2 right-3">
+                <div className="absolute -top-2.5 right-3">
                   <Badge 
-                    className={`text-[8px] px-1.5 py-0.5 border-0 ${
+                    className={`text-[9px] px-2 py-1 border-0 shadow-sm ${
                       option.recommended 
-                        ? "bg-amber-500 text-white" 
-                        : "bg-green-500 text-white"
+                        ? "bg-green-500 text-white font-bold" 
+                        : "bg-blue-500 text-white"
                     }`}
                   >
                     {option.badge}
@@ -159,13 +158,14 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                   {isSelected && <CheckCircle className="w-4 h-4 text-secondary-foreground" />}
                 </div>
 
-                {/* Enhanced: Larger icon container (48px) */}
+                {/* Enhanced: Larger icon container (48px) - Issue #43: GRÜN für empfohlen */}
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                     isSelected 
                       ? "bg-secondary text-secondary-foreground scale-105" 
                       : option.recommended
-                      ? "bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400"
+                      // Issue #43: GRÜN statt AMBER
+                      ? "bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400"
                       : "bg-muted text-muted-foreground"
                   }`}
                 >
