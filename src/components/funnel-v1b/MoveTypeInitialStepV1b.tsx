@@ -22,12 +22,8 @@ export const MoveTypeInitialStepV1b = memo(function MoveTypeInitialStepV1b({ val
     <div className="space-y-4">
       <div className="text-center">
         <h3 className="text-lg font-bold">Was möchten Sie zügeln?</h3>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mt-1">
           Wählen Sie einfach aus – wir finden die passenden Firmen
-        </p>
-        {/* ChatGPT Rec #10: Hint about single selection */}
-        <p className="text-xs text-muted-foreground/70 mt-1">
-          (Nur eine Option wählbar)
         </p>
       </div>
 

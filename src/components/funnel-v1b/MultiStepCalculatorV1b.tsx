@@ -697,20 +697,22 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
 
   return (
     <TooltipProvider>
-      <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-        {/* Header with Progress */}
-        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-6 py-4 border-b border-border">
+      {/* Prevent horizontal overflow on mobile */}
+      <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full">
+        {/* Header with Progress - Enhanced contrast for active step */}
+        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-muted-foreground">
               Schritt {currentStep} von {totalSteps}
             </span>
             <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium">
               <Shield className="w-3.5 h-3.5" />
-              Kostenlos & unverbindlich
+              <span className="hidden sm:inline">Kostenlos & unverbindlich</span>
+              <span className="sm:hidden">100% kostenlos</span>
             </div>
           </div>
           
-          {/* Progress bar */}
+          {/* Progress bar - Enhanced active step contrast */}
           <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
             {[
               { step: 1, label: "Typ" },
@@ -720,8 +722,12 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
             ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
-                  step <= currentStep ? 'bg-primary' : 'bg-border'
+                className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
+                  step === currentStep 
+                    ? 'bg-primary ring-2 ring-primary/30 ring-offset-1'
+                    : step < currentStep 
+                      ? 'bg-primary/70' 
+                      : 'bg-border'
                 }`}
                 role="listitem"
                 aria-current={step === currentStep ? "step" : undefined}
@@ -730,16 +736,33 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
             ))}
           </ol>
           
-          <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-            <span className={currentStep >= 1 ? 'text-primary font-medium' : ''}>Typ</span>
-            <span className={currentStep >= 2 ? 'text-primary font-medium' : ''}>Details</span>
-            <span className={currentStep >= 3 ? 'text-primary font-medium' : ''}>Firmen</span>
-            <span className={currentStep >= 4 ? 'text-primary font-medium' : ''}>Kontakt</span>
+          {/* Step labels with enhanced active state */}
+          <div className="flex justify-between mt-2 text-xs">
+            {[
+              { step: 1, label: "Typ" },
+              { step: 2, label: "Details" },
+              { step: 3, label: "Firmen" },
+              { step: 4, label: "Kontakt" },
+            ].map(({ step, label }) => (
+              <span 
+                key={step}
+                className={`transition-colors ${
+                  step === currentStep 
+                    ? 'text-primary font-bold' 
+                    : step < currentStep 
+                      ? 'text-primary/70 font-medium'
+                      : 'text-muted-foreground'
+                }`}
+              >
+                {label}
+              </span>
+            ))}
           </div>
         </div>
 
         {/* Form Content */}
-        <div className="p-6">
+        {/* Form Content - Prevent horizontal overflow */}
+        <div className="p-4 sm:p-6 overflow-x-hidden">
           <AnimatePresence mode="wait">
             {/* Step 1: Move Type - ChatGPT Rec #10: Visual confirmation */}
             {currentStep === 1 && (
@@ -1233,19 +1256,23 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
             )}
           </div>
           
-          {/* ChatGPT Rec #8: Trust reassurance below CTA */}
-          <div className="flex items-center justify-center gap-4 pt-3 text-xs text-muted-foreground">
+          {/* Trust badges - Consistent across desktop and mobile */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
-              <Shield className="w-3 h-3 text-green-500" />
+              <Shield className="w-3.5 h-3.5 text-green-500" />
               Kein Spam
             </span>
             <span className="flex items-center gap-1">
-              <CheckCircle className="w-3 h-3 text-green-500" />
+              <CheckCircle className="w-3.5 h-3.5 text-green-500" />
               100% kostenlos
             </span>
             <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3 text-primary" />
+              <Clock className="w-3.5 h-3.5 text-primary" />
               Antwort in 24h
+            </span>
+            <span className="hidden sm:flex items-center gap-1">
+              <Shield className="w-3.5 h-3.5 text-primary" />
+              SSL verschlüsselt
             </span>
           </div>
 
