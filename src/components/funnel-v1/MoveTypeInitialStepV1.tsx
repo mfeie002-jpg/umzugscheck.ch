@@ -152,11 +152,11 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         })}
       </div>
       
-      {/* Issue #9: Trust-Signals - clear and prominent, no pagination confusion */}
-      <p className="text-center text-xs text-muted-foreground pt-2">
-        <span className="inline-flex items-center gap-1.5 flex-wrap justify-center">
+      {/* Issue #9: Reduzierte Trust-Signals - nur einmal, nicht redundant */}
+      <p className="text-center text-xs text-muted-foreground pt-2 leading-relaxed">
+        <span className="inline-flex items-center gap-1.5">
           <Shield className="w-3.5 h-3.5 text-green-600 shrink-0" />
-          <span>100% kostenlos · Nur 2 Min. · SSL verschlüsselt</span>
+          <span>100% kostenlos · Nur 2 Min.</span>
         </span>
       </p>
     </div>

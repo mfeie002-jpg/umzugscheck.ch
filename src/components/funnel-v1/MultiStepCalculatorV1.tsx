@@ -1253,43 +1253,37 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               )}
             </Button>
           ) : (
-            <div className="flex-1 flex flex-col items-center gap-2">
-              {/* Issue #9: Bestätigungstext vor Submit */}
-              <p className="text-xs text-muted-foreground text-center hidden xs:block">
-                Mit Klick senden Sie Ihre Anfrage · 100% kostenlos & unverbindlich
-              </p>
-              {/* Issue #21: Klarer Submit-Button sichtbar und prominent */}
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={!canProceed()}
-                className={`w-full h-12 sm:h-[52px] md:h-12 rounded-xl font-bold text-sm sm:text-base shadow-xl touch-manipulation active:scale-[0.97] transition-all ${
-                  canProceed()
-                    ? 'bg-secondary hover:bg-secondary/90'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
-                }`}
-                aria-label={canProceed() ? "Offerten-Anfrage jetzt absenden" : "Bitte alle Pflichtfelder ausfüllen"}
-              >
-                {canProceed() ? (
-                  <>
-                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
-                    <span className="hidden xs:inline">{getSubmitButtonText()}</span>
-                    <span className="xs:hidden">Offerten anfordern</span>
-                  </>
-                ) : (
-                  <>
-                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
-                    <span className="hidden xs:inline">Pflichtfelder ausfüllen</span>
-                    <span className="xs:hidden">Felder ausfüllen</span>
-                  </>
-                )}
-              </Button>
-            </div>
+            // Issue #10, #19: Submit button on Step 4 - fully visible, no overlap
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!canProceed()}
+              className={`flex-1 h-12 sm:h-[52px] md:h-12 rounded-xl font-bold text-sm sm:text-base shadow-xl touch-manipulation active:scale-[0.97] transition-all ${
+                canProceed()
+                  ? 'bg-secondary hover:bg-secondary/90'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
+              }`}
+              aria-label={canProceed() ? "Offerten-Anfrage jetzt absenden" : "Bitte alle Pflichtfelder ausfüllen"}
+            >
+              {canProceed() ? (
+                <>
+                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+                  <span className="hidden xs:inline">{getSubmitButtonText()}</span>
+                  <span className="xs:hidden">Jetzt Offerte erhalten</span>
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+                  <span className="hidden xs:inline">Pflichtfelder ausfüllen</span>
+                  <span className="xs:hidden">Felder ausfüllen</span>
+                </>
+              )}
+            </Button>
           )}
         </div>
         
-        {/* Issue #1, #29, #31, #40, #43: Increased spacer to prevent CTA overlap on Mobile - NO content hidden */}
-        <div className="h-[120px] sm:h-[100px] md:hidden" aria-hidden="true" />
+        {/* Issue #1, #10, #19: Increased spacer to 140px to prevent CTA overlap on Mobile */}
+        <div className="h-[140px] sm:h-[110px] md:hidden" aria-hidden="true" />
         
         {/* Desktop: Trust-Footer - Issue #5, #10: Better icons, prominent "200+ Firmen" */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
