@@ -45,7 +45,7 @@ const CodeExport = () => {
       setGeneratedAt(new Date(timestampMatch[1]).toLocaleString("de-CH"));
     }
 
-    const sectionRegex = /={80}\n([A-Z\s]+)\n={80}/g;
+    const sectionRegex = /={80}\n([A-Z\s\-]+)\n={80}/g;
     const fileRegex = /-{80}\nFILE: (.+)\n-{80}/g;
     
     const parsedSections: FileSection[] = [];
