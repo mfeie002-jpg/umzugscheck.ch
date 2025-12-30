@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.ai-fix-flow]
 verify_jwt = false
+
+[functions.auto-fix-issue]
+verify_jwt = false
