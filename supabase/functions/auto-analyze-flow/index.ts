@@ -442,53 +442,17 @@ Antworte im JSON-Format:
   }
 }
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
+// Background analysis function - runs after response is sent
+async function runAnalysisInBackground(
+  supabase: any,
+  flowId: string,
+  flowConfig: { name: string; steps: number; baseUrl: string },
+  runType: string,
+  baseUrl: string,
+  runId: string
+): Promise<void> {
   try {
-    const { flowId, runType = 'manual', baseUrl = 'https://www.umzugscheck.ch' }: AnalysisRequest = await req.json();
-
-    console.log(`Starting analysis for flow: ${flowId}`);
-
-    // Validate flow - check if flow exists
-    const flowConfig = FLOW_CONFIGS[flowId];
-    if (!flowConfig) {
-      console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
-      return new Response(
-        JSON.stringify({ 
-          error: `Unknown flow: ${flowId}`,
-          available: Object.keys(FLOW_CONFIGS)
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    console.log(`Flow config found: ${flowConfig.name} with ${flowConfig.steps} steps`);
-
-    // Create analysis run
-    const { data: run, error: runError } = await supabase
-      .from('flow_analysis_runs')
-      .insert({
-        flow_id: flowId,
-        flow_name: flowConfig.name,
-        run_type: runType,
-        status: 'running',
-        started_at: new Date().toISOString(),
-        total_steps: flowConfig.steps,
-      })
-      .select()
-      .single();
-
-    if (runError) {
-      console.error('Error creating run:', runError);
-      throw new Error('Failed to create analysis run');
-    }
-
-    console.log(`Created run: ${run.id}`);
+    console.log(`[Background] Starting analysis for flow: ${flowId}, run: ${runId}`);
 
     const stepAnalyses: StepAnalysis[] = [];
     let allIssues: Array<{
@@ -501,20 +465,14 @@ serve(async (req) => {
       step_number: number;
     }> = [];
 
-    // Analyze each step
-    // Determine flow param for deterministic rendering (e.g., "v1", "v2", "v3" etc.)
+    // Determine flow param for deterministic rendering
     const flowParam = flowId.replace('umzugsofferten-', '').replace('umzugsofferten', 'v1');
     
     for (let step = 1; step <= flowConfig.steps; step++) {
-      // Build URL with all required capture parameters:
-      // - uc_capture=1: enables capture mode with demo data
-      // - uc_step: sets the current step
-      // - uc_flow: ensures deterministic flow selection (prevents login page issues)
-      // - uc_cb: cache buster to prevent stale screenshots
       const stepUrl = `${baseUrl}${flowConfig.baseUrl}?uc_capture=1&uc_step=${step}&uc_flow=${flowParam}&uc_cb=${Date.now()}`;
       const stepName = `Step ${step}`;
 
-      console.log(`Analyzing step ${step}: ${stepUrl}`);
+      console.log(`[Background] Analyzing step ${step}: ${stepUrl}`);
 
       // Capture screenshots as binary data
       const [desktopData, mobileData] = await Promise.all([
@@ -522,13 +480,13 @@ serve(async (req) => {
         captureScreenshotBase64(stepUrl, 'mobile')
       ]);
 
-      console.log(`Screenshots captured - Desktop: ${desktopData ? 'yes' : 'no'}, Mobile: ${mobileData ? 'yes' : 'no'}`);
+      console.log(`[Background] Screenshots captured - Desktop: ${desktopData ? 'yes' : 'no'}, Mobile: ${mobileData ? 'yes' : 'no'}`);
 
       // Convert to base64 for AI analysis
       const desktopBase64 = desktopData ? toBase64DataUrl(desktopData) : null;
       const mobileBase64 = mobileData ? toBase64DataUrl(mobileData) : null;
 
-      // Analyze with AI (using base64 for vision)
+      // Analyze with AI
       const analysis = await analyzeStepWithAI(
         step,
         stepName,
@@ -539,17 +497,17 @@ serve(async (req) => {
 
       stepAnalyses.push(analysis);
 
-      // Upload screenshots to Storage and get public URLs
+      // Upload screenshots to Storage
       const [desktopUrl, mobileUrl] = await Promise.all([
-        desktopData ? uploadScreenshotToStorage(supabase, desktopData, flowId, run.id, step, 'desktop') : null,
-        mobileData ? uploadScreenshotToStorage(supabase, mobileData, flowId, run.id, step, 'mobile') : null
+        desktopData ? uploadScreenshotToStorage(supabase, desktopData, flowId, runId, step, 'desktop') : null,
+        mobileData ? uploadScreenshotToStorage(supabase, mobileData, flowId, runId, step, 'mobile') : null
       ]);
 
-      console.log(`Screenshots uploaded - Desktop: ${desktopUrl ? 'yes' : 'no'}, Mobile: ${mobileUrl ? 'yes' : 'no'}`);
+      console.log(`[Background] Screenshots uploaded - Desktop: ${desktopUrl ? 'yes' : 'no'}, Mobile: ${mobileUrl ? 'yes' : 'no'}`);
 
-      // Store step metrics with Storage URLs (not base64!)
+      // Store step metrics
       await supabase.from('flow_step_metrics').insert({
-        run_id: run.id,
+        run_id: runId,
         flow_id: flowId,
         step_number: step,
         step_name: stepName,
@@ -575,14 +533,14 @@ serve(async (req) => {
       await supabase
         .from('flow_analysis_runs')
         .update({ steps_captured: step })
-        .eq('id', run.id);
+        .eq('id', runId);
     }
 
     // Store all issues
     if (allIssues.length > 0) {
       await supabase.from('flow_ux_issues').insert(
         allIssues.map(issue => ({
-          run_id: run.id,
+          run_id: runId,
           flow_id: flowId,
           step_number: issue.step_number,
           severity: issue.severity,
@@ -617,7 +575,7 @@ serve(async (req) => {
         ai_summary: summary,
         ai_recommendations: recommendations,
       })
-      .eq('id', run.id);
+      .eq('id', runId);
 
     // Check for alerts
     const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
@@ -642,24 +600,92 @@ serve(async (req) => {
       }
     }
 
-    console.log(`Analysis completed for ${flowId}: Score ${overallScore}/100, ${allIssues.length} issues`);
+    console.log(`[Background] Analysis completed for ${flowId}: Score ${overallScore}/100, ${allIssues.length} issues`);
 
+  } catch (error) {
+    console.error(`[Background] Analysis failed for ${flowId}:`, error);
+    
+    // Update run with error status
+    await supabase
+      .from('flow_analysis_runs')
+      .update({
+        status: 'failed',
+        completed_at: new Date().toISOString(),
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
+      })
+      .eq('id', runId);
+  }
+}
+
+// Handle graceful shutdown
+addEventListener('beforeunload', (ev: any) => {
+  console.log(`[auto-analyze-flow] Shutdown due to: ${ev.detail?.reason || 'unknown'}`);
+});
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { flowId, runType = 'manual', baseUrl = 'https://preview--umzugscheckv2.lovable.app' }: AnalysisRequest = await req.json();
+
+    console.log(`Starting analysis for flow: ${flowId}`);
+
+    // Validate flow
+    const flowConfig = FLOW_CONFIGS[flowId];
+    if (!flowConfig) {
+      console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
+      return new Response(
+        JSON.stringify({ 
+          error: `Unknown flow: ${flowId}`,
+          available: Object.keys(FLOW_CONFIGS)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Flow config found: ${flowConfig.name} with ${flowConfig.steps} steps`);
+
+    // Create analysis run BEFORE starting background task
+    const { data: run, error: runError } = await supabase
+      .from('flow_analysis_runs')
+      .insert({
+        flow_id: flowId,
+        flow_name: flowConfig.name,
+        run_type: runType,
+        status: 'running',
+        started_at: new Date().toISOString(),
+        total_steps: flowConfig.steps,
+      })
+      .select()
+      .single();
+
+    if (runError) {
+      console.error('Error creating run:', runError);
+      throw new Error('Failed to create analysis run');
+    }
+
+    console.log(`Created run: ${run.id} - starting background analysis`);
+
+    // Start background analysis using EdgeRuntime.waitUntil
+    // This allows us to return immediately while the analysis continues
+    (globalThis as any).EdgeRuntime?.waitUntil?.(
+      runAnalysisInBackground(supabase, flowId, flowConfig, runType, baseUrl, run.id)
+    );
+
+    // Return immediately with the run ID - client can poll for status
     return new Response(
       JSON.stringify({
         success: true,
+        message: 'Analysis started in background',
         runId: run.id,
         flowId,
         flowName: flowConfig.name,
-        overallScore,
-        scores: {
-          mobile: avgMobile,
-          conversion: avgConversion,
-          ux: avgUx,
-        },
-        issuesCount: allIssues.length,
-        criticalCount: criticalIssues,
-        summary,
-        recommendations,
+        status: 'running',
+        totalSteps: flowConfig.steps,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
