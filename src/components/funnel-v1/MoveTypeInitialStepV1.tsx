@@ -76,9 +76,9 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         </p>
       </div>
       
-      {/* Issue #8, #38: Grid-basiertes Layout (2x2) statt horizontal scroll */}
+      {/* Issue #6: Grid-basiertes Layout (2x2) - alle 4 Optionen sichtbar, kein horizontal scroll */}
       <div 
-        className="grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto"
+        className="grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto px-2"
         role="radiogroup"
         aria-label="Umzugstyp auswählen"
       >
@@ -145,13 +145,17 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         })}
       </div>
       
-      {/* Issue #11: Einmalige Trust-Signals (nicht redundant mit Header) */}
-      <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pt-4 text-xs">
-        <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium">
+      {/* Issue #7: Trust-Signals direkt unter/neben CTA sichtbar - wichtigste zuerst */}
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-5 pt-4 text-xs">
+        <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-semibold">
           <CheckCircle className="w-4 h-4" />
           100% kostenlos
         </span>
-        <span className="flex items-center gap-1.5 text-muted-foreground">
+        <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium">
+          <CheckCircle className="w-4 h-4" />
+          SSL verschlüsselt
+        </span>
+        <span className="flex items-center gap-1.5 text-muted-foreground font-medium">
           <Home className="w-4 h-4 text-primary" />
           In 2 Min. erledigt
         </span>

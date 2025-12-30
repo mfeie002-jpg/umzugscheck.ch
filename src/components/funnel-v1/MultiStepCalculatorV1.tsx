@@ -822,28 +822,32 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   onChange={(v) => updateFormData("apartmentSize", v)}
                 />
 
-                {/* Issue #11: Price Estimate with enhanced visibility on all screens */}
+                {/* Issue #5: Enhanced price estimate - "bis 40% sparen" noch prominenter */}
                 {formData.apartmentSize && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800"
+                    className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-2 border-green-300 dark:border-green-700 shadow-sm"
                   >
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
                       <div>
                         <p className="text-[11px] text-green-700 dark:text-green-400 font-medium uppercase tracking-wide">
                           Geschätzte Kosten
                         </p>
-                        {/* Issue #11: Larger, more prominent price display */}
-                        <p className="text-xl sm:text-2xl font-bold text-green-800 dark:text-green-300">
+                        {/* Issue #5: Larger, more prominent price display */}
+                        <p className="text-2xl sm:text-3xl font-bold text-green-800 dark:text-green-300">
                           CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}–{getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
                         </p>
                       </div>
-                      {/* Issue #18, #20: Enhanced savings badge with tooltip */}
-                      <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-3 py-2 rounded-lg shrink-0">
+                      {/* Issue #5: Enhanced savings badge - grössere Schrift, animiert */}
+                      <motion.div 
+                        animate={{ scale: [1, 1.03, 1] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                        className="flex items-center gap-2 text-white bg-green-600 dark:bg-green-500 px-4 py-2.5 rounded-xl shrink-0 shadow-lg"
+                      >
                         <TrendingDown className="w-5 h-5" />
-                        <span className="text-sm font-bold">bis 40% sparen</span>
-                      </div>
+                        <span className="text-base font-bold">bis 40% sparen</span>
+                      </motion.div>
                     </div>
                   </motion.div>
                 )}
@@ -854,8 +858,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   <Calendar className="w-4 h-4 text-primary" />
                   Umzugsdatum
                 </label>
-                {/* Issue #25: Größere Checkbox (min 44px touch target) */}
-                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 -mx-2 cursor-pointer min-h-[44px]"
+                {/* Issue #11: Tooltip/Info für "Termin noch offen / flexibel" - erklärt Auswirkung */}
+                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 -mx-2 cursor-pointer min-h-[52px] touch-manipulation active:bg-muted/70"
                      onClick={() => updateFormData("moveDate", formData.moveDate === "flexible" ? "" : "flexible")}>
                   <Checkbox
                     id="date-flexible-v1"
@@ -865,9 +869,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     }}
                     className="h-6 w-6"
                   />
-                  <label htmlFor="date-flexible-v1" className="text-sm text-muted-foreground cursor-pointer flex-1">
-                    Termin noch offen / flexibel
-                  </label>
+                  <div className="flex-1">
+                    <label htmlFor="date-flexible-v1" className="text-sm text-foreground cursor-pointer font-medium">
+                      Termin noch offen / flexibel
+                    </label>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      💡 Erhöht die Chance auf mehr Angebote
+                    </p>
+                  </div>
                 </div>
                 {formData.moveDate !== "flexible" && (
                   <div className="space-y-1">
@@ -911,10 +920,15 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                           Optional
                         </span>
                       </div>
-                      {/* Issue #26: Klarer Nutzen für den Umzugs-Kontext */}
+                      {/* Issue #26: Vorteile direkt sichtbar statt versteckt */}
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        📱 Wohnung filmen → Genauere Preise, weniger Rückfragen
+                        📱 Wohnung filmen → Genauere Preise
                       </p>
+                      {/* Issue #26: Wichtigste Vorteile inline anzeigen */}
+                      <div className="flex flex-wrap gap-2 mt-1.5 text-[10px]">
+                        <span className="text-green-600 dark:text-green-400">✓ 30% genauere Schätzung</span>
+                        <span className="text-green-600 dark:text-green-400">✓ Weniger Rückfragen</span>
+                      </div>
                     </div>
                     <div
                       className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
@@ -1030,14 +1044,15 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               transition={{ duration: 0.2 }}
               className="space-y-3"
             >
+              {/* Issue #4: Klarerer Zusammenhang zwischen Fortschritt und Firmenauswahl */}
               <div className="text-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-2">
                   <Sparkles className="w-3 h-3" />
-                  Firmen vergleichen
+                  Schritt 3: Firmen wählen
                 </span>
                 <h3 className="text-lg font-bold">
                   {formData.selectedCompanies.length >= 3 ? (
-                    <><span className="text-secondary">{formData.selectedCompanies.length} Firmen</span> ausgewählt</>
+                    <><span className="text-green-600 dark:text-green-400">{formData.selectedCompanies.length} Firmen</span> ausgewählt ✓</>
                   ) : (
                     <>Wählen Sie <span className="text-secondary">mind. 3 Firmen</span></>
                   )}
@@ -1048,10 +1063,24 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     : "Mehr Offerten = bessere Vergleichsmöglichkeit"
                   }
                 </p>
-                {/* V1/ChatGPT #9: Pre-selection explanation improved */}
-                <p className="text-[11px] text-muted-foreground/80 mt-1 italic">
-                  💡 Firmen mit „Empfohlen"-Badge basieren auf Bewertungen, Verfügbarkeit & Nähe zu Ihrem Standort
-                </p>
+                {/* Issue #4: Fortschrittsbalken zeigt Firmenauswahl-Status */}
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <div className="flex gap-1">
+                    {[1, 2, 3].map((i) => (
+                      <div 
+                        key={i} 
+                        className={`w-6 h-2 rounded-full transition-colors ${
+                          formData.selectedCompanies.length >= i 
+                            ? 'bg-green-500' 
+                            : 'bg-muted-foreground/30'
+                        }`} 
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {formData.selectedCompanies.length}/3 Min.
+                  </span>
+                </div>
               </div>
 
               <CompanyComparisonTable
@@ -1091,7 +1120,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 estimatedPrice={getPriceEstimate(formData.apartmentSize, formData.selectedServices)}
               />
 
+              {/* Issue #1: Klarere Überschrift für Kontaktfelder - verbindet mit Offertenanfrage */}
               <div className="space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <User className="w-5 h-5 text-primary" />
+                  <h4 className="text-base font-bold text-foreground">Ihre Kontaktdaten für die Offerten</h4>
+                </div>
+                <p className="text-xs text-muted-foreground -mt-2 mb-3">
+                  * Pflichtfeld – Wir senden Ihnen die Offerten an diese Adresse
+                </p>
+                
                 <ValidatedInput
                   schema={nameSchema}
                   value={formData.name}
@@ -1111,7 +1149,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   type="email"
                 />
 
-                {/* Issue #3, #31, #56: Telefon-Feld mit internationalem Schweizer Format +41 */}
+                {/* Issue #8: Telefon-Feld mit klarem "(optional)"-Hinweis */}
                 <div className="space-y-1.5">
                   <ValidatedInput
                     schema={phoneSchema}
@@ -1125,8 +1163,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     showSuccessIcon={false}
                     autoComplete="tel"
                   />
-                  <p className="text-[10px] text-muted-foreground ml-1">
-                    Format: +41 79 123 45 67 oder 079 123 45 67 · Für schnellere Rückfragen
+                  <p className="text-[11px] text-muted-foreground ml-1">
+                    Für schnellere Rückfragen · Format: +41 79 oder 079
                   </p>
                 </div>
 
@@ -1158,14 +1196,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #8, #24, #40, #43: Enhanced Sticky Navigation - higher z-index, more safe-area padding, NO overlap */}
+        {/* Issue #9, #12: Enhanced Sticky Navigation - IMMER sichtbar, höherer z-index */}
         <div className="flex gap-3 sm:gap-4 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-4 sm:py-5
-                        bg-card/98 backdrop-blur-xl border-t-2 border-border
-                        shadow-[0_-8px_32px_rgba(0,0,0,0.2)]
-                        pb-[max(1.25rem,calc(env(safe-area-inset-bottom)+1.25rem))]
-                        md:pb-0 md:shadow-none z-[80]">
+                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-5 sm:py-6
+                        bg-card/98 backdrop-blur-xl border-t-2 border-primary/30
+                        shadow-[0_-12px_40px_rgba(0,0,0,0.25)]
+                        pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+1.5rem))]
+                        md:pb-0 md:shadow-none z-[100]">
           {currentStep > 1 && (
             <Button
               type="button"

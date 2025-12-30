@@ -60,16 +60,17 @@ const submitOptions: SubmitOption[] = [
   {
     id: "both",
     label: "Beides",
-    // Issue #43: Klartext ohne Verwirrung - "Beides" ist POSITIV empfohlen, nicht fehlerhaft
-    description: "Beste Wahl: Schnelle + günstige Offerten.",
+    // Issue #13: Begründung für "Beste Wahl" direkt in description integriert
+    description: "Beste Wahl: 3× mehr Offerten, schnell + günstig kombiniert.",
     tooltip: "Die beste Wahl: Sie erhalten sowohl schnelle Offerten von Top-Firmen als auch günstige Angebote durch die öffentliche Ausschreibung. Maximale Auswahl, volle Kontrolle.",
     icon: <Crown className="w-5 h-5" />,
+    // Issue #27: KEINE versteckte Interaktion (Slider) - alle Vorteile direkt sichtbar
     benefits: [
       "🎯 Ø 8-12 Offerten (3× mehr)",
       "⏱ Schnell + günstig kombiniert",
       "✨ 93% wählen diese Option",
     ],
-    // Issue #21, #43: Konsistent "Empfohlen" - GRÜN nicht ROT, keine Fehler-Assoziation
+    // Issue #13: "Beste Wahl" Badge mit klarer Verknüpfung zur Begründung
     badge: "✨ Beste Wahl",
     recommended: true,
   },
@@ -114,7 +115,7 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
           </button>
         </div>
 
-        {/* Issue #22, #24, #31, #43, #45, #55, #57: Radio-Group mit min 96px Touch-Targets, clear visual hierarchy */}
+        {/* Issue #25, #27: Radio-Group ohne versteckte Slider - ALLE Vorteile sichtbar bei "Beides" */}
         <div className="grid gap-3" role="radiogroup" aria-label="Offerten-Methode auswählen">
         {submitOptions.map((option) => {
           const isSelected = value === option.id;
@@ -201,16 +202,15 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                     {option.description}
                   </p>
 
-                  {/* Benefits (shown when selected or showDetails) */}
-                  {(isSelected || showDetails) && (
-                    /* Issue #25: Enhanced benefits display with larger text */
+                  {/* Issue #27: Benefits IMMER sichtbar bei "Beides" (recommended), keine versteckte Interaktion */}
+                  {(isSelected || showDetails || option.recommended) && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       className="mt-3 space-y-2"
                     >
                       {option.benefits.map((benefit, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-xs text-foreground/80">
+                        <div key={idx} className="flex items-center gap-2 text-xs sm:text-sm text-foreground/80">
                           <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
                           <span className="font-medium">{benefit}</span>
                         </div>
@@ -256,11 +256,11 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
         })}
         </div>
 
-        {/* Issue #25, #47: Simplified security info - compact design, better contrast */}
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-muted/30 border border-border/50 text-xs">
-          <Shield className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
-          <span className="text-muted-foreground">
-            Firmen sehen nur PLZ – Kontaktdaten erst nach Ihrer Zusage
+        {/* Issue #1, #18: Korrigierte Datenschutz-Info ohne Widerspruch */}
+        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 text-xs">
+          <Shield className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0" />
+          <span className="text-green-700 dark:text-green-300 font-medium">
+            Sicher: Daten nur an gewählte Firmen · SSL-verschlüsselt · Jederzeit widerrufbar
           </span>
         </div>
       </div>
