@@ -1,3 +1,5 @@
+✅ Local GitHub sync test – works like a boss
+
 # Umzugscheck.ch
 
 > **Das Vorzeigemodell der Schweizer Umzugsbranche.**  
