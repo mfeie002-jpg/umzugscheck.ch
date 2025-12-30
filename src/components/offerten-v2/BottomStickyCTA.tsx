@@ -54,6 +54,10 @@ export default function BottomStickyCTA() {
   const [showFAB, setShowFAB] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   
+  // Hide completely in capture mode to prevent false AI analysis issues
+  // Issues like "Horizontaler Scroll für 'Rechner'" are caused by this component appearing in screenshots
+  const isCaptureMode = typeof window !== 'undefined' && window.location.search.includes('uc-capture');
+  
   // 186. Swipe gesture handling
   const y = useMotionValue(0);
   const opacity = useTransform(y, [-100, 0], [0, 1]);
@@ -145,6 +149,11 @@ export default function BottomStickyCTA() {
     { progress: 75, label: "Fast da", achieved: scrollProgress >= 75 },
     { progress: 100, label: "Ende", achieved: scrollProgress >= 100 },
   ], [scrollProgress]);
+  
+  // Don't render anything in capture mode - this prevents false positives in AI flow analysis
+  if (isCaptureMode) {
+    return null;
+  }
   
   return (
     <>

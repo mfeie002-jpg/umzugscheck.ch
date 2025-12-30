@@ -25,6 +25,12 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Prevent horizontal scroll on mobile - fixes AI analysis issues */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
 @tailwind components;
 @tailwind utilities;
 
