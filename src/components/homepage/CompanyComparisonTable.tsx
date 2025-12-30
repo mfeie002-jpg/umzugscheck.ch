@@ -132,16 +132,16 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
   const organicCompanies = processedCompanies.filter(c => !promotedCompanies.includes(c));
 
   return (
-    <div className="space-y-3">
-      {/* Issue #19, #63: Enhanced Filter Bar - min 48px touch targets, clearer dropdown indicators */}
-      <div className="bg-muted/50 rounded-xl p-3 sm:p-4 space-y-3">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          {/* Issue #19: 48px min height for filter button */}
+    <div className="space-y-3 overflow-x-hidden max-w-full">
+      {/* Issue #2, #12, #19, #63: Enhanced Filter Bar - min 48px touch targets, NO horizontal scroll, fully visible */}
+      <div className="bg-muted/50 rounded-xl p-3 sm:p-4 space-y-3 overflow-hidden">
+        <div className="flex items-center justify-between gap-2 sm:gap-3 flex-wrap">
+          {/* Issue #12, #19: 48px min height for filter button, visible text */}
           <Button
             variant="outline"
             size="default"
             onClick={() => setShowFilters(!showFilters)}
-            className="h-12 min-w-[120px] text-sm gap-2 px-5 touch-manipulation font-semibold"
+            className="h-11 sm:h-12 min-w-[100px] sm:min-w-[120px] text-xs sm:text-sm gap-1.5 sm:gap-2 px-3 sm:px-5 touch-manipulation font-semibold"
             aria-expanded={showFilters}
             aria-label="Filter anzeigen oder ausblenden"
           >
@@ -151,27 +151,27 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
             {showFilters ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </Button>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Issue #19: 48px touch target for map */}
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            {/* Issue #12, #19: 44px+ touch target for map - hidden on smallest screens */}
             <Button
               variant={showMap ? "default" : "outline"}
               size="default"
               onClick={() => setShowMap(!showMap)}
-              className="h-12 min-w-[48px] text-sm gap-2 px-3 sm:px-4 touch-manipulation"
+              className="h-11 sm:h-12 min-w-[44px] text-xs sm:text-sm gap-1 sm:gap-2 px-2 sm:px-4 touch-manipulation hidden xs:flex"
               aria-pressed={showMap}
               aria-label="Kartenansicht umschalten"
             >
-              <MapIcon className="w-5 h-5" />
+              <MapIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="hidden sm:inline">Karte</span>
             </Button>
             
-            {/* Issue #63: Klarer Sort-Dropdown mit Pfeil-Indikator */}
+            {/* Issue #12, #63: Compact Sort-Dropdown, responsive width */}
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger 
-                className="h-12 w-[150px] sm:w-[190px] text-sm font-medium" 
+                className="h-11 sm:h-12 w-[120px] sm:w-[180px] text-xs sm:text-sm font-medium" 
                 aria-label="Sortieren nach"
               >
-                <span className="text-muted-foreground text-xs mr-1 hidden sm:inline">Sortieren:</span>
+                <span className="text-muted-foreground text-[10px] sm:text-xs mr-0.5 sm:mr-1 hidden sm:inline">Sortieren:</span>
                 <SelectValue placeholder="Empfohlen" />
               </SelectTrigger>
               <SelectContent>

@@ -101,7 +101,8 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
 
   return (
     <TooltipProvider>
-      <div className="space-y-3">
+      {/* Issue #15: Prevent horizontal scroll - overflow-x-hidden */}
+      <div className="space-y-3 overflow-x-hidden max-w-full">
         {/* Issue #10, #16: Default "Beides" vorausgewählt - keine extra Optionen-Schaltfläche nötig */}
         <div className="flex items-center justify-between flex-wrap gap-2">
           <label className="text-base sm:text-lg font-bold">
@@ -111,8 +112,8 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
 
         {/* Issue #10: "Beides" ist bereits vorausgewählt - Vergleichstabelle entfernt für weniger Friction */}
 
-        {/* Issue #42: Konsistente Reihenfolge - "Beides" immer zuerst als empfohlene Option */}
-        <div className="grid gap-2.5" role="radiogroup" aria-label="Offerten-Methode auswählen">
+        {/* Issue #15, #42: Vertical layout on mobile (NO horizontal scroll), consistent order */}
+        <div className="flex flex-col gap-2.5" role="radiogroup" aria-label="Offerten-Methode auswählen">
           {/* Issue #42: "Beides" zuerst und prominenter anzeigen als beste Wahl */}
           {submitOptions.slice().sort((a, b) => (a.recommended ? -1 : b.recommended ? 1 : 0)).map((option) => {
             const isSelected = value === option.id;

@@ -670,7 +670,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
   const matchingCompanies = getMatchingCompanies();
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
+    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden overflow-x-hidden max-w-full">
       {/* Issue #4, #7: Sticky Progress Header - bleibt beim Scrollen sichtbar */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border sticky top-0 z-20">
         <div className="flex items-center justify-between mb-3">
@@ -679,9 +679,9 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
             <Shield className="w-4 h-4" />
             <span>100% kostenlos</span>
           </div>
-          {/* Issue #2, #62, #74: Clearer step indicator - works on mobile too */}
+          {/* Issue #2, #7, #62, #74: Consistent step indicator "X von Y" on all devices */}
           <span className="text-sm sm:text-base font-bold text-foreground whitespace-nowrap">
-            {currentStep}/{totalSteps}
+            Schritt {currentStep} von {totalSteps}
           </span>
         </div>
         
@@ -736,8 +736,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
         </div>
       </div>
 
-      {/* Form Content */}
-      <div className="p-6">
+      {/* Form Content - overflow-x-hidden prevents horizontal scroll */}
+      <div className="p-4 sm:p-6 overflow-x-hidden max-w-full">
         <AnimatePresence mode="wait">
           {/* Step 1: Move Type - Using V1 component */}
           {currentStep === 1 && (
@@ -768,12 +768,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="space-y-4"
+              className="space-y-4 overflow-x-hidden max-w-full"
             >
-              {/* Issue #38: Klare visuelle Hierarchie - Haupttitel grösser */}
+              {/* Issue #6, #38: Clearer visual hierarchy - main title larger, subtitle smaller and muted */}
               <div className="text-center mb-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-foreground">Ihr Umzug im Detail</h3>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h3 className="text-2xl sm:text-3xl font-bold text-foreground">Ihr Umzug im Detail</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1.5">
                   Von wo nach wo? Was brauchen Sie?
                 </p>
               </div>
@@ -1050,21 +1050,22 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="space-y-3"
+              className="space-y-3 overflow-x-hidden max-w-full"
             >
-              {/* Issue #7: NO redundant step indicators - just clear header */}
-              <div className="text-center">
-                <h3 className="text-xl font-bold mb-1">
+              {/* Issue #4, #7, #13: Clear header - legible text, no overlap */}
+              <div className="text-center px-2">
+                <h3 className="text-lg sm:text-xl font-bold mb-1">
                   {formData.selectedCompanies.length >= 3 ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <CheckCircle className="w-6 h-6 text-green-500" />
-                      {formData.selectedCompanies.length} Firmen ausgewählt
+                    <span className="flex items-center justify-center gap-2 flex-wrap">
+                      <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 shrink-0" />
+                      <span>{formData.selectedCompanies.length} Firmen ausgewählt</span>
                     </span>
                   ) : (
                     <>Wählen Sie <span className="text-secondary">mind. 3 Firmen</span></>
                   )}
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                {/* Issue #13: Larger, readable subtitle */}
+                <p className="text-sm sm:text-base text-muted-foreground font-medium">
                   {formData.selectedCompanies.length > 0 
                     ? "Empfohlen vorausgewählt – jederzeit änderbar"
                     : "Mehr Offerten = bessere Vergleichsmöglichkeit"
@@ -1093,7 +1094,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="space-y-4"
+              className="space-y-4 overflow-x-hidden max-w-full"
             >
               {/* Issue #11, #20, #31: Single header - NO duplicate headlines, klarer Abschluss */}
               <div className="text-center mb-3">
@@ -1188,14 +1189,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #9, #12, #27, #29, #40: Enhanced Sticky Navigation - ALWAYS visible on mobile, no overlap, higher z-index */}
+        {/* Issue #1, #9, #12, #27, #29, #40: Enhanced Sticky Navigation - ALWAYS visible on mobile, NO overlay obscures CTA, higher z-index */}
         <div className="flex gap-3 sm:gap-4 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
                         fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-4
                         bg-card/98 backdrop-blur-xl border-t-2 border-primary/20
                         shadow-[0_-8px_30px_rgba(0,0,0,0.2)]
-                        pb-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))]
-                        md:pb-0 md:shadow-none z-[100]">
+                        pb-[max(1.25rem,calc(env(safe-area-inset-bottom)+1.25rem))]
+                        md:pb-0 md:shadow-none z-[9999]">
           {currentStep > 1 && (
             <Button
               type="button"
@@ -1287,25 +1288,26 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </div>
         
-        {/* Issue #29, #31, #40, #43: Optimized spacer for fixed footer on Mobile - prevents ALL content overlap */}
-        <div className="h-[100px] sm:h-[80px] md:hidden" aria-hidden="true" />
+        {/* Issue #1, #29, #31, #40, #43: Increased spacer to prevent CTA overlap on Mobile - NO content hidden */}
+        <div className="h-[120px] sm:h-[100px] md:hidden" aria-hidden="true" />
         
-        {/* Desktop: Trust-Footer */}
+        {/* Desktop: Trust-Footer - Issue #5, #10: Better icons, prominent "200+ Firmen" */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <Shield className="w-4 h-4 text-green-500" />
+          <span className="flex items-center gap-1.5" title="Ihre Daten werden nicht für Werbung verwendet">
+            <Shield className="w-4 h-4 text-green-600" />
             Kein Spam
           </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle className="w-4 h-4 text-green-500" />
+          <span className="flex items-center gap-1.5" title="Keine Verpflichtung zur Buchung">
+            <CheckCircle className="w-4 h-4 text-green-600" />
             100% unverbindlich
           </span>
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5" title="Schnelle Antwortzeiten unserer Partner">
             <Clock className="w-4 h-4 text-primary" />
             Antwort in 24h
           </span>
-          <span className="flex items-center gap-1.5">
-            <Award className="w-4 h-4 text-amber-500" />
+          {/* Issue #10: More prominent display of verified companies */}
+          <span className="flex items-center gap-1.5 font-semibold text-foreground bg-amber-100 dark:bg-amber-900/40 px-2.5 py-1.5 rounded-lg" title="Alle Partner werden geprüft">
+            <Award className="w-4 h-4 text-amber-600" />
             200+ geprüfte Firmen
           </span>
         </div>
