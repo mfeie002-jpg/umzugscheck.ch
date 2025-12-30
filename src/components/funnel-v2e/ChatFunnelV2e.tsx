@@ -1317,7 +1317,7 @@ function PriceRevealCard({ priceData }: { priceData: PriceData }) {
   );
 }
 
-// Company selector
+// Company selector - Mobile optimized with call CTA
 function CompanySelector({
   companies,
   initialSelected,
@@ -1335,15 +1335,35 @@ function CompanySelector({
     );
   };
 
+  const handleCall = () => {
+    window.location.href = "tel:+41445057070";
+  };
+
   return (
-    <div className="space-y-3">
-      <div className="grid gap-2 max-h-[280px] overflow-y-auto pr-1">
-        {companies.map(company => (
+    <div className="space-y-2">
+      {/* Prominent Call CTA - Fastest conversion */}
+      <motion.button
+        onClick={handleCall}
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold text-sm transition-colors touch-manipulation active:scale-[0.98] min-h-[48px]"
+      >
+        <Phone className="w-4 h-4" />
+        <span>Jetzt anrufen: 044 505 70 70</span>
+      </motion.button>
+      
+      <div className="text-center text-xs text-muted-foreground">
+        oder online Offerten erhalten
+      </div>
+
+      {/* Compact company list - fits on mobile without scroll */}
+      <div className="grid gap-1.5 max-h-[180px] sm:max-h-[220px] overflow-y-auto pr-1">
+        {companies.slice(0, 5).map(company => (
           <button
             key={company.id}
             onClick={() => toggle(company.id)}
             className={cn(
-              "flex items-center gap-3 p-3.5 min-h-[56px] rounded-xl border transition-all text-left touch-manipulation active:scale-[0.98]",
+              "flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg border transition-all text-left touch-manipulation active:scale-[0.98]",
               selected.includes(company.id)
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary/50"
@@ -1351,43 +1371,38 @@ function CompanySelector({
           >
             {/* Checkbox */}
             <div className={cn(
-              "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors",
+              "w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors",
               selected.includes(company.id)
                 ? "border-primary bg-primary"
                 : "border-muted-foreground/30"
             )}>
               {selected.includes(company.id) && (
-                <Check className="w-3 h-3 text-primary-foreground" />
+                <Check className="w-2.5 h-2.5 text-primary-foreground" />
               )}
             </div>
 
-            {/* Company info */}
+            {/* Company info - compact */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-sm truncate">{company.name}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-medium text-xs truncate">{company.name}</span>
                 {company.featured && (
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                  <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">
                     Premium
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <div className="flex items-center gap-0.5">
-                  <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                  <span>{company.rating}</span>
-                </div>
+              <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                <Star className="w-2.5 h-2.5 text-yellow-500 fill-yellow-500" />
+                <span>{company.rating}</span>
                 <span>·</span>
-                <span>{company.reviewCount} Bewertungen</span>
+                <span>{company.reviewCount} Bew.</span>
               </div>
             </div>
 
-            {/* Price */}
+            {/* Price - compact */}
             <div className="text-right flex-shrink-0">
-              <div className="text-sm font-semibold text-primary">
+              <div className="text-xs font-semibold text-primary">
                 CHF {company.priceMin}–{company.priceMax}
-              </div>
-              <div className="text-[10px] text-muted-foreground capitalize">
-                {company.priceLevel}
               </div>
             </div>
           </button>
@@ -1397,8 +1412,8 @@ function CompanySelector({
       <Button
         onClick={() => onConfirm(selected)}
         disabled={selected.length < 3}
-        className="w-full min-h-[48px] touch-manipulation"
-        size="lg"
+        className="w-full min-h-[44px] touch-manipulation"
+        size="default"
       >
         {selected.length < 3 
           ? `Noch ${3 - selected.length} Firma(en) wählen`
