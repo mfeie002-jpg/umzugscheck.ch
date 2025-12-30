@@ -82,6 +82,7 @@ import { CaptureReadySentinel } from "@/components/CaptureReadySentinel";
 import { RedirectWithQuery } from "@/components/RedirectWithQuery";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { FunnelModeProvider } from "@/components/funnel/FunnelModeProvider";
+import { ReloadDiagnostics } from "@/components/debug/ReloadDiagnostics";
 
 // Lazy load non-critical UI components
 const AIMovingAssistant = lazy(() => import("./components/AIMovingAssistant").then(m => ({ default: m.AIMovingAssistant })));
@@ -581,6 +582,8 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1d" element={<UmzugsoffertenV1d />} />
           <Route path="/umzugsofferten-v1e" element={<UmzugsoffertenV1e />} />
           <Route path="/umzugsofferten-v2e" element={<UmzugsoffertenV2e />} />
+          {/* Accept deep links like /umzugsofferten-v2e/step/3 for screenshot tools */}
+          <Route path="/umzugsofferten-v2e/*" element={<UmzugsoffertenV2e />} />
           {/* Dynamic route for all V2+ variants - handles v2a, v3b, v9d, etc. automatically */}
           <Route path="/umzugsofferten-:variant" element={<UmzugsoffertenDynamic />} />
           {/* Flow tester already defined at top, only redirects here */}
@@ -673,6 +676,7 @@ const App = () => (
                 <CaptureReadySentinel />
                 <CaptureDebugOverlay />
                 <FunnelModeProvider />
+                <ReloadDiagnostics />
                 <CriticalCSS />
                 <CriticalCSSLoader />
                 <ResourceHints />
