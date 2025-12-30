@@ -392,6 +392,37 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                 </div>
               </div>
             </div>
+            
+            {/* Detail Scores - Always Visible */}
+            {run && (
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t">
+                <div className="flex items-center gap-2">
+                  <Smartphone className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Mobile:</span>
+                  <span className={`font-bold ${getScoreColor(run.performance_score)}`}>
+                    {run.performance_score || 0}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Conversion:</span>
+                  <span className={`font-bold ${getScoreColor(run.conversion_score)}`}>
+                    {run.conversion_score || 0}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">UX:</span>
+                  <span className={`font-bold ${getScoreColor(run.ux_score)}`}>
+                    {run.ux_score || 0}
+                  </span>
+                </div>
+                <div className="ml-auto text-xs text-muted-foreground">
+                  {new Date(run.created_at).toLocaleString('de-CH', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            )}
+            
             {run?.ai_summary && (
               <CardDescription className="mt-2 line-clamp-2">
                 {run.ai_summary}
