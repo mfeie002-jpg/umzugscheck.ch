@@ -168,7 +168,7 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
           )}
         </AnimatePresence>
 
-        {/* Issue #28, #52, #66: Radio-Group with 48px+ touch targets - entire card clickable */}
+        {/* Issue #21, #28, #52, #66: Radio-Group with 48px+ touch targets - entire card clickable, kompaktere Beste-Wahl */}
         <div className="grid gap-3" role="radiogroup" aria-label="Offerten-Methode auswählen">
           {submitOptions.map((option) => {
             const isSelected = value === option.id;
@@ -182,12 +182,12 @@ export const SubmitOptionsCardV1 = memo(function SubmitOptionsCardV1({
                 whileHover={{ scale: 1.005 }}
                 whileTap={{ scale: 0.995 }}
                 onClick={() => onChange(option.id)}
-                // Issue #28, #52: Full card clickable, min-h for 48px touch targets
-                className={`relative w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all min-h-[80px] touch-manipulation active:scale-[0.99] ${
+                // Issue #21, #28: Kompaktere Darstellung für Beste Wahl, min-h angepasst
+                className={`relative w-full p-4 rounded-xl border-2 text-left transition-all min-h-[72px] touch-manipulation active:scale-[0.99] ${
                   isSelected
                     ? "border-secondary bg-secondary/10 ring-2 ring-secondary/30 shadow-md"
                     : option.recommended
-                    ? "border-green-400 dark:border-green-600 bg-green-50/80 dark:bg-green-950/40 hover:border-green-500 shadow-sm ring-1 ring-green-200 dark:ring-green-800"
+                    ? "border-green-400 dark:border-green-600 bg-green-50/50 dark:bg-green-950/30 hover:border-green-500 shadow-sm"
                     : "border-border hover:border-primary/50 bg-card hover:shadow-sm"
                 }`}
               >

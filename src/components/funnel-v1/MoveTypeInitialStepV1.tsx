@@ -10,7 +10,7 @@
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Home, Building2, Briefcase, Package, LucideIcon, CheckCircle, Shield, Clock, Users } from "lucide-react";
+import { Home, Building2, Briefcase, Package, LucideIcon, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MoveTypeOption {
@@ -112,14 +112,16 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
               )}
               aria-pressed={isSelected}
             >
-              {/* Checkmark for selected state */}
+              {/* Issue #1: Radio-Button-ähnliches Symbol für Einzelauswahl statt Checkbox */}
               {isSelected && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="absolute top-2.5 right-2.5"
                 >
-                  <CheckCircle className="w-6 h-6 text-primary fill-primary/20" />
+                  <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-md">
+                    <div className="w-2.5 h-2.5 rounded-full bg-white" />
+                  </div>
                 </motion.div>
               )}
               
@@ -150,27 +152,13 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
         })}
       </div>
       
-      {/* Issue #7, #16, #64: Trust-Signals direkt bei Auswahl - konsolidiert, nicht redundant */}
-      <div className="flex flex-wrap justify-center gap-4 sm:gap-6 pt-3 px-2">
-        <span className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 font-semibold">
-          <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
-            <CheckCircle className="w-4 h-4" />
-          </div>
-          100% kostenlos
+      {/* Issue #2: Trust-Signals nur einmal prominent - reduziert auf Minimum */}
+      <p className="text-center text-xs text-muted-foreground pt-2">
+        <span className="inline-flex items-center gap-1.5">
+          <Shield className="w-3.5 h-3.5 text-green-600" />
+          100% kostenlos · Nur 2 Min. · SSL verschlüsselt
         </span>
-        <span className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-            <Shield className="w-4 h-4 text-primary" />
-          </div>
-          SSL verschlüsselt
-        </span>
-        <span className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-            <Clock className="w-4 h-4 text-foreground/70" />
-          </div>
-          2 Min.
-        </span>
-      </div>
+      </p>
     </div>
   );
 });
