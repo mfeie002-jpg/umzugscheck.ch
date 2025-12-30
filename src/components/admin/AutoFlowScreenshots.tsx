@@ -157,6 +157,24 @@ const CALCULATOR_FLOWS = [
       { step: 9, name: "Step 9 - Kontakt" },
     ],
   },
+  // V2.e Chat-Funnel - conversational flow
+  {
+    id: "umzugsofferten-v2e",
+    name: "V2.e Chat-Funnel ⭐",
+    path: "/umzugsofferten-v2e",
+    steps: [
+      { step: 1, name: "Step 1 - Umzugstyp" },
+      { step: 2, name: "Step 2 - Von wo" },
+      { step: 3, name: "Step 3 - Nach wo" },
+      { step: 4, name: "Step 4 - Grösse" },
+      { step: 5, name: "Step 5 - Video (Optional)" },
+      { step: 6, name: "Step 6 - Datum" },
+      { step: 7, name: "Step 7 - Services" },
+      { step: 8, name: "Step 8 - Preis-Reveal" },
+      { step: 9, name: "Step 9 - Firmen" },
+      { step: 10, name: "Step 10 - Kontakt" },
+    ],
+  },
 ];
 
 // Viewport presets for automated step captures

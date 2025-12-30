@@ -144,6 +144,26 @@ export const FLOW_CONFIGS: Record<string, FlowConfig> = {
       { step: 5, name: 'Kontakt', description: 'Absenden' },
     ],
   },
+  // V2.e Chat-based Funnel (Experimental)
+  'umzugsofferten-v2e': {
+    id: 'umzugsofferten-v2e',
+    label: 'V2.e - Chat Funnel ⭐',
+    path: '/umzugsofferten-v2e',
+    color: 'bg-violet-500',
+    description: 'Chat-basierter Conversational Flow',
+    steps: [
+      { step: 1, name: 'Umzugstyp', description: 'Wohnung/Haus/Büro wählen' },
+      { step: 2, name: 'Von wo', description: 'Startadresse eingeben' },
+      { step: 3, name: 'Nach wo', description: 'Zieladresse eingeben' },
+      { step: 4, name: 'Grösse', description: 'Wohnungsgrösse wählen' },
+      { step: 5, name: 'Video', description: 'Optional: Video-Analyse' },
+      { step: 6, name: 'Datum', description: 'Umzugstermin festlegen' },
+      { step: 7, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 8, name: 'Preis', description: 'Preis-Reveal mit Animation' },
+      { step: 9, name: 'Firmen', description: 'Firmenauswahl treffen' },
+      { step: 10, name: 'Kontakt', description: 'Daten absenden' },
+    ],
+  },
 };
 
 // Sub-Variant Configurations for V9 feedback-based variants
