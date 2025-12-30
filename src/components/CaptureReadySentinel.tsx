@@ -486,34 +486,37 @@ export function CaptureReadySentinel({
         aria-hidden="true"
       />
       
-      {/* Debug watermark - ONLY visible in screenshot capture mode, positioned to NOT obscure CTAs */}
-      {/* Issue #1: Moved to top-right corner and made smaller so it doesn't cover bottom CTAs */}
-      <div
-        id="uc-capture-watermark"
-        style={{
-          position: "fixed",
-          top: 4,
-          right: 4,
-          padding: "2px 5px",
-          background: state.status === "ready" 
-            ? "rgba(22,163,74,0.8)" 
-            : state.status === "error" 
-              ? "rgba(220,38,38,0.8)" 
-              : "rgba(245,158,11,0.8)",
-          color: "white",
-          borderRadius: 4,
-          fontSize: 8,
-          fontFamily: "monospace",
-          zIndex: 99999,
-          lineHeight: 1.2,
-          maxWidth: 150,
-          wordBreak: "break-all",
-          pointerEvents: "none",
-        }}
-      >
-        <div><strong>{state.status.toUpperCase()}</strong> s{state.step}</div>
-        <div style={{ fontSize: 7 }}>net:{state.pendingRequests} {state.contentVisible ? "✓" : "✗"}</div>
-      </div>
+      {/* Debug watermark - COMPLETELY HIDDEN in screenshot capture mode to prevent AI from flagging it as "overlay" */}
+      {/* The watermark was causing false positives in AI analysis ("CTA verdeckt durch Overlay") */}
+      {/* Only show during development when NOT in capture mode - check for uc-capture param */}
+      {typeof window !== 'undefined' && !window.location.search.includes('uc-capture') && (
+        <div
+          id="uc-capture-watermark"
+          style={{
+            position: "fixed",
+            top: 4,
+            right: 4,
+            padding: "2px 5px",
+            background: state.status === "ready" 
+              ? "rgba(22,163,74,0.8)" 
+              : state.status === "error" 
+                ? "rgba(220,38,38,0.8)" 
+                : "rgba(245,158,11,0.8)",
+            color: "white",
+            borderRadius: 4,
+            fontSize: 8,
+            fontFamily: "monospace",
+            zIndex: 99999,
+            lineHeight: 1.2,
+            maxWidth: 150,
+            wordBreak: "break-all",
+            pointerEvents: "none",
+          }}
+        >
+          <div><strong>{state.status.toUpperCase()}</strong> s{state.step}</div>
+          <div style={{ fontSize: 7 }}>net:{state.pendingRequests} {state.contentVisible ? "✓" : "✗"}</div>
+        </div>
+      )}
     </>
   );
 }
