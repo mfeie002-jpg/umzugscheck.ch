@@ -41,6 +41,7 @@ import { Json } from "@/integrations/supabase/types";
 const FLOW_DEFINITIONS: Record<string, { path: string; maxSteps: number; name: string }> = {
   "umzugsofferten": { path: "/umzugsofferten", maxSteps: 4, name: "V1 - Control" },
   "umzugsofferten-v2": { path: "/umzugsofferten-v2", maxSteps: 6, name: "V2" },
+  "umzugsofferten-v2e": { path: "/umzugsofferten-v2e", maxSteps: 10, name: "V2.e Chat-Funnel" },
   "umzugsofferten-v3": { path: "/umzugsofferten-v3", maxSteps: 4, name: "V3" },
   "umzugsofferten-v4": { path: "/umzugsofferten-v4", maxSteps: 6, name: "V4" },
   "umzugsofferten-v5": { path: "/umzugsofferten-v5", maxSteps: 6, name: "V5" },
