@@ -281,41 +281,35 @@ export function ChatFunnelV2e() {
     }]);
   }, []);
 
+  // Unified step mapping - single source of truth
+  const STEP_MAP: Record<FlowStep, number> = {
+    welcome: 0,
+    moveType: 1,
+    fromLocation: 2,
+    toLocation: 3,
+    apartmentSize: 4,
+    videoOffer: 5,
+    moveDate: 6,
+    services: 7,
+    priceReveal: 8,
+    companies: 9,
+    contact: 10,
+    submitting: 11,
+    success: 12,
+  };
+
+  const REVERSE_STEP_MAP: Record<number, FlowStep> = Object.fromEntries(
+    Object.entries(STEP_MAP).map(([k, v]) => [v, k as FlowStep])
+  ) as Record<number, FlowStep>;
+
   // Map capture step number to FlowStep
   const getFlowStepFromNumber = (stepNum: number): FlowStep => {
-    const stepMap: Record<number, FlowStep> = {
-      1: "moveType",
-      2: "fromLocation", 
-      3: "toLocation",
-      4: "apartmentSize",
-      5: "videoOffer",
-      6: "moveDate",
-      7: "services",
-      8: "priceReveal",
-      9: "companies",
-      10: "contact",
-    };
-    return stepMap[stepNum] || "moveType";
+    return REVERSE_STEP_MAP[stepNum] || "moveType";
   };
 
   // Get step number for CaptureReadySentinel
   const getStepNumber = (): number => {
-    const stepMap: Record<FlowStep, number> = {
-      welcome: 0,
-      moveType: 1,
-      fromLocation: 2,
-      toLocation: 3,
-      apartmentSize: 4,
-      videoOffer: 5,
-      moveDate: 6,
-      services: 7,
-      priceReveal: 8,
-      companies: 9,
-      contact: 10,
-      submitting: 11,
-      success: 12,
-    };
-    return stepMap[currentStep] || 1;
+    return STEP_MAP[currentStep] || 1;
   };
 
   // Initialize chat - with capture mode support
