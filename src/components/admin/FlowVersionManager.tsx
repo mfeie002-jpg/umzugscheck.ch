@@ -276,6 +276,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
 
   // Build alternative flow_id patterns to query
   // E.g., for "umzugsofferten-v9" also include "v9a", "v9b", "V9.a", etc.
+  // IMPORTANT: Some coded variants use full flow ids like "umzugsofferten-v2e".
   const getFlowIdPatterns = useCallback((baseFlowId: string): string[] => {
     const patterns: string[] = [baseFlowId];
 
@@ -286,12 +287,16 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
       // Add patterns for sub-variants
       const letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
       letters.forEach((letter) => {
+        // Historical formats
         patterns.push(`v${majorVersion}${letter}`);
         patterns.push(`V${majorVersion}.${letter}`);
+        // Full flow_id formats (e.g. "umzugsofferten-v2e")
+        patterns.push(`${baseFlowId}${letter}`);
       });
     }
 
-    return patterns;
+    // Deduplicate
+    return Array.from(new Set(patterns));
   }, []);
 
   async function fetchVersions() {
