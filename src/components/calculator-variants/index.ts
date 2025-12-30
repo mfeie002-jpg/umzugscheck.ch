@@ -91,7 +91,7 @@ export const VARIANT_REGISTRY: Record<string, {
   'v2b': { component: 'V2bFeedbackBased', stepCount: 6, label: 'V2b ChatGPT Agent' },
   'v2c': { component: 'V2cArchetypCalculator', stepCount: 6, label: 'V2c Archetyp (Strategic)' },
   'v2d': { component: 'V2dFeedbackBased', stepCount: 6, label: 'V2d ChatGPT Pro' },
-  'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
+  'v2e': { component: 'V2eExperimental', stepCount: 6, label: 'V2e Chat Funnel ⭐' },
   'v2f': { component: 'V2fFeedbackBased', stepCount: 3, label: 'V2f Premium (Feedback)' },
   // V3 - Mobile-First
   'v3': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3 Mobile-First' },

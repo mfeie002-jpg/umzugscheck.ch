@@ -254,29 +254,39 @@ export function ChatFunnelV2e() {
   // Initialize chat
   useEffect(() => {
     if (messages.length === 0) {
-      addBotMessage(
-        "Hallo! 👋 Ich bin Ihr persönlicher Umzugsberater. In nur 2 Minuten finde ich die besten Angebote für Sie.",
-        {},
-        500
-      );
-
+      // First message
+      setIsTyping(true);
       setTimeout(() => {
-        addBotMessage(
-          "Was möchten Sie umziehen?",
-          {
-            type: "options",
-            options: [
-              { id: "wohnung", label: "Wohnung", icon: <Home className="w-5 h-5" /> },
-              { id: "haus", label: "Haus", icon: <Building2 className="w-5 h-5" /> },
-              { id: "buero", label: "Büro/Firma", icon: <Briefcase className="w-5 h-5" /> },
-            ],
-          },
-          1500
-        );
-        setCurrentStep("moveType");
-      }, 1200);
+        setIsTyping(false);
+        setMessages([{
+          id: `msg-${Date.now()}`,
+          type: "bot",
+          content: "Hallo! 👋 Ich bin Ihr persönlicher Umzugsberater. In nur 2 Minuten finde ich die besten Angebote für Sie.",
+          timestamp: new Date(),
+        }]);
+        
+        // Second message with options
+        setTimeout(() => {
+          setIsTyping(true);
+          setTimeout(() => {
+            setIsTyping(false);
+            setMessages(prev => [...prev, {
+              id: `msg-${Date.now()}`,
+              type: "options" as const,
+              content: "Was möchten Sie umziehen?",
+              options: [
+                { id: "wohnung", label: "Wohnung", icon: <Home className="w-5 h-5" /> },
+                { id: "haus", label: "Haus", icon: <Building2 className="w-5 h-5" /> },
+                { id: "buero", label: "Büro/Firma", icon: <Briefcase className="w-5 h-5" /> },
+              ],
+              timestamp: new Date(),
+            }]);
+            setCurrentStep("moveType");
+          }, 800);
+        }, 800);
+      }, 500);
     }
-  }, [messages.length, addBotMessage]);
+  }, []);
 
   // Handle option selection
   const handleOptionSelect = (optionId: string, label: string) => {
