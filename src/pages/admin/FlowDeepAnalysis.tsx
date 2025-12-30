@@ -17,7 +17,7 @@ import {
   ArrowLeft, Play, Trophy, Target, Zap, CheckCircle, AlertTriangle,
   AlertCircle, ChevronRight, Star, TrendingUp, Eye, Code, Download,
   RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered,
-  Wand2, Loader2, Users, Shield
+  Wand2, Loader2, Users, Shield, Banknote, Calculator
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -36,7 +36,11 @@ import {
   ScoreBadge,
   SwissnessPanel,
   ArchetypeNeedsMatrix,
-  SixStepFrameworkPanel
+  SixStepFrameworkPanel,
+  ComplexityScorePanel,
+  PricingBreakdownPanel,
+  SeasonalDemandPanel,
+  ComplianceChecksPanel
 } from '@/components/admin/analysis';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -1135,26 +1139,30 @@ export default function FlowDeepAnalysis() {
         {/* Analysis Results */}
         {analyses.length > 0 && !isAnalyzing && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5">
+            <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-6">
               <TabsTrigger value="overview" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
-                Übersicht
+                <span className="hidden sm:inline">Übersicht</span>
               </TabsTrigger>
               <TabsTrigger value="archetypes" className="gap-2">
                 <Users className="h-4 w-4" />
-                Archetypen
+                <span className="hidden sm:inline">Archetypen</span>
+              </TabsTrigger>
+              <TabsTrigger value="pricing" className="gap-2">
+                <Banknote className="h-4 w-4" />
+                <span className="hidden sm:inline">Pricing</span>
               </TabsTrigger>
               <TabsTrigger value="comparison" className="gap-2">
                 <Layers className="h-4 w-4" />
-                Vergleich
+                <span className="hidden sm:inline">Vergleich</span>
               </TabsTrigger>
               <TabsTrigger value="winner" className="gap-2">
                 <Trophy className="h-4 w-4" />
-                Gewinner
+                <span className="hidden sm:inline">Gewinner</span>
               </TabsTrigger>
               <TabsTrigger value="ultimate" className="gap-2">
                 <Crown className="h-4 w-4" />
-                Ultimate
+                <span className="hidden sm:inline">Ultimate</span>
               </TabsTrigger>
             </TabsList>
 
@@ -1378,6 +1386,23 @@ export default function FlowDeepAnalysis() {
                   </CardContent>
                 </Card>
               )}
+            </TabsContent>
+
+            {/* Pricing & Compliance Tab - NEW from Gemini Strategic Analysis */}
+            <TabsContent value="pricing" className="space-y-6">
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Complexity Score Panel */}
+                <ComplexityScorePanel />
+                
+                {/* Pricing Breakdown Panel */}
+                <PricingBreakdownPanel />
+                
+                {/* Seasonal Demand Panel */}
+                <SeasonalDemandPanel />
+                
+                {/* Compliance Checks Panel */}
+                <ComplianceChecksPanel />
+              </div>
             </TabsContent>
 
             {/* Comparison Tab */}
