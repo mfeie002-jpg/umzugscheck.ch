@@ -332,119 +332,57 @@ async function analyzeFlowDeep(flowId: string, flowName: string): Promise<FlowDe
   // ============================================================================
   // DER MAGISCHE ZAUBERSPRUCH - Optimierter AI Prompt für Flow-Analyse
   // ============================================================================
-  const prompt = `Du bist ein Schweizer UX- und Conversion-Analyseprofi für eine Umzugs-Vergleichsplattform (umzugscheck.ch). 
-Analysiere den Flow "${flowName}" (ID: ${flowId}) objektiv anhand klar messbarer Kriterien, vergleiche ihn mit dem Marktführer Movu und bewerte ihn anhand definierter Archetypen für den Schweizer Markt. Verwende keine subjektiven Meinungen.
+  const prompt = `Du bist ein Schweizer UX- und Conversion-Analyseprofi für umzugscheck.ch.
+Analysiere Flow "${flowName}" (ID: ${flowId}) REALISTISCH und FAIR.
 
-## 1. KRITERIEN
-Prüfe die folgenden Anforderungen und notiere alle Verstöße als Issues. Ordne jedes Issue einer Kategorie (\`mobile\`, \`conversion\`, \`ux\`, \`accessibility\`, \`trust\`) und einer Severity (\`critical\`, \`warning\`, \`info\`) zu. 
-**WICHTIG: Fasse identische Probleme zusammen und liste alle betroffenen Elemente in \`affectedElements\`!**
+## KRITISCHE REGELN - BEFOLGE DIESE STRIKT:
+1. **NUR ECHTE PROBLEME** - Keine theoretischen oder hypothetischen Issues
+2. **KEINE DUPLIKATE** - Fasse zusammen wenn mehrere Elemente betroffen sind
+3. **REALISTISCHE SCORES** - Gute Flows bekommen 80-95 Punkte, perfekt existiert nicht
+4. **QUALITÄT VOR QUANTITÄT** - Lieber 5 echte Issues als 50 erfundene
 
-- **Mobile**: Touch-Targets mindestens 44 px; keine horizontale Scroll; sticky CTA erforderlich.
-- **Conversion**: Fortschrittsanzeige erforderlich; mindestens zwei Trust-Badges; klare Call-to-Action (CTA) vorhanden.
-- **Accessibility**: Kontrastverhältnis mindestens 4.5:1; alle Formfelder haben Labels.
-- **Performance**: Ladezeit höchstens 3000 ms.
-- **Trust**: ASTAG/Zertifikate sichtbar; Serverstandort CH kommuniziert; nDSG-konform.
+## SCORING-FORMEL (VERBINDLICH):
+- **Basis: 90 Punkte** (ein ordentlicher Flow startet hier)
+- **Abzüge**: critical = -12, warning = -4, info = -1
+- **Minimum: 45 | Maximum: 98**
+- **0 kritische Issues + max 2 warnings = 85-95 Punkte möglich**
 
-## 2. SCORING
-Berechne die Scores nach folgendem Schema:
-- **Basis: 100 Punkte**
-- **Abzüge**: \`critical\` = −10, \`warning\` = −3, \`info\` = −1
-- **Grenzen**: Minimum 0, Maximum 100
-- Liefere Gesamtscore sowie Unterkategorien für \`ux\`, \`conversion\`, \`mobile\`, \`accessibility\` und \`trust\`.
+## ISSUE-KATEGORIEN:
+- **critical**: Verhindert Conversion (broken CTA, fehlende Formfelder, komplett unlesbarer Text)
+- **warning**: Erschwert Conversion (suboptimale Touch-Targets, unklare Labels, fehlender Progress)  
+- **info**: Nice-to-have Verbesserungen (Styling, optionale Features)
 
-**Erreichbare 95+ Scores**: Ein Flow kann 95+ erreichen wenn:
-- 0 kritische Issues
-- Max 1-2 Warnings
-- Beliebig viele Info-Level Issues (optionale Verbesserungen)
+## ARCHETYPEN-BEWERTUNG:
+Bewerte 0-100 wie gut der Flow diese Nutzer bedient:
+- Sicherheits-Sucher: Braucht Garantien, Zertifikate, Versicherung
+- Effizienz-Maximierer: Will schnell fertig sein, hasst lange Formulare
+- Preis-Jäger: Sucht Transparenz und Sparmöglichkeiten
+- Chaos-Manager: Braucht Struktur und Checklisten
 
-## 3. ARCHETYPEN
-Bewerte, wie gut der Flow diese vier Archetypen bedient. Vergib einen Score (0–100) je Archetyp, beschreibe deine Begründung, nenne fehlende Elemente und Verbesserungen:
-
-- **Sicherheits-Sucher**: Familien 45+, risikoavers. Trigger: Garantie, Zertifikate, ASTAG, Fixpreis, Versicherung. Pain Points: versteckte Kosten, unseriöse Anbieter, Schäden. Conversion-Trigger: „Fixpreis-Garantie & Abnahmegarantie".
-- **Effizienz-Maximierer**: Expats/Professionals 25–45. Trigger: One-Click, KI-Video, Full-Service, English. Pain Points: lange Formulare, telefonische Rückfragen. Conversion-Trigger: „Fertig in 2 Minuten".
-- **Preis-Jäger**: Studenten/Junge Paare, misstrauisch gegenüber Abzocke. Trigger: Preisvergleich, Sparen, Rabatt, Transparenz. Pain Points: intransparente Angebote, versteckte Kosten. Conversion-Trigger: „Sparen Sie 20 %".
-- **Chaos-Manager**: Familien im Umbruch, kognitiv am Limit. Trigger: Checkliste, Speichern, Erinnerung, Struktur. Pain Points: zu viele Entscheidungen, Überforderung. Conversion-Trigger: „Wir denken an alles".
-
-## 4. SWISS 6-STEP FRAMEWORK
-Ordne den Flow in die sechs Schritte ein und prüfe, ob die empfohlenen Elemente vorhanden sind:
-
-1. **Hook**: Smart Location, Intent-Segmentierung.
-2. **Wann**: Zügeltag-Ampel, Flex-Date, Surge-Transparenz.
-3. **Inventar**: KI-Video, Raum-Presets, Keller/Estrich.
-4. **Upselling**: Kontext-Upselling, Abnahmegarantie, Endreinigung.
-5. **Trust**: OTP-Auth, ASTAG-Badge, Social Proof.
-6. **Dashboard**: Interaktives Dashboard, Checkliste, Nurturing.
-
-Notiere, wo der Flow Movu übertrifft (\`betterThan\`) oder hinterherhinkt (\`worseThan\`).
-
-## 5. AUSGABEFORMAT
-Liefere **ausschließlich** ein JSON-Objekt mit folgenden Feldern:
-
+## OUTPUT (NUR JSON):
 {
-  "overallScore": number,
+  "overallScore": 45-98,
   "categoryScores": {
-    "ux": number,
-    "conversion": number,
-    "mobile": number,
-    "accessibility": number,
-    "trust": number
+    "ux": 45-98,
+    "conversion": 45-98,
+    "mobile": 45-98,
+    "accessibility": 45-98,
+    "trust": 45-98
   },
   "archetypeScores": [
-    {
-      "archetype": "Sicherheits-Sucher",
-      "score": number,
-      "reasoning": "string",
-      "missingElements": ["string"],
-      "improvements": ["string"]
-    }
+    {"archetype": "Sicherheits-Sucher", "score": 0-100, "reasoning": "...", "missingElements": [], "improvements": []}
   ],
-  "sixStepAnalysis": [
-    {
-      "step": number,
-      "name": "string",
-      "score": number,
-      "implemented": ["string"],
-      "missing": ["string"],
-      "swissSpecificScore": number
-    }
-  ],
+  "sixStepAnalysis": [{"step": 1, "name": "Hook", "score": 0-100, "implemented": [], "missing": [], "swissSpecificScore": 0-100}],
   "issues": [
-    {
-      "id": "string",
-      "severity": "critical" | "warning" | "info",
-      "category": "mobile" | "conversion" | "ux" | "accessibility" | "trust",
-      "title": "string",
-      "description": "string",
-      "affectedElements": ["string"],
-      "recommendation": "string",
-      "effort": "low" | "medium" | "high",
-      "impact": "low" | "medium" | "high"
-    }
+    {"id": "unique_id", "severity": "critical|warning|info", "category": "mobile|conversion|ux|accessibility|trust", "title": "Kurz", "description": "Was genau ist das Problem?", "affectedElements": ["element1"], "recommendation": "Lösung", "effort": "low|medium|high", "impact": "low|medium|high"}
   ],
-  "strengths": ["string"],
-  "quickWins": ["string"],
-  "movuComparison": {
-    "betterThan": ["string"],
-    "worseThan": ["string"]
-  },
-  "stepByStepAnalysis": [
-    {
-      "step": number,
-      "name": "string",
-      "score": number,
-      "dropOffRisk": "low" | "medium" | "high",
-      "friction": ["string"],
-      "positives": ["string"]
-    }
-  ]
+  "strengths": ["Was funktioniert gut"],
+  "quickWins": ["Einfache Verbesserungen"],
+  "movuComparison": {"betterThan": [], "worseThan": []},
+  "stepByStepAnalysis": [{"step": 1, "name": "...", "score": 0-100, "dropOffRisk": "low|medium|high", "friction": [], "positives": []}]
 }
 
-**REGELN:**
-- Keine duplizierten Issues - fasse gleiche Probleme zusammen mit affectedElements Array
-- Keine subjektiven Meinungen - nur objektiv messbare Kriterien
-- Berücksichtige CH-spezifische Elemente (Zügeltage, ASTAG, nDSG)
-- Optimiere für erreichbare Scores (95+ sind möglich bei guten Flows)
-- Gib NUR das JSON-Resultat zurück, ohne zusätzliche Kommentare`;
+**WICHTIG**: Wenn ein Flow solide ist, gib hohe Scores! Nicht alles ist schlecht.`;
 
   try {
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
