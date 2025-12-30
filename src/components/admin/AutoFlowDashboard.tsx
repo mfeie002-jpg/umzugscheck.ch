@@ -837,15 +837,41 @@ const AutoFlowDashboard: React.FC = () => {
     // Only show loading on initial load, not on background refreshes
     if (showLoading) setLoading(true);
     try {
-      const [runsRes, issuesRes, alertsRes, settingsRes] = await Promise.all([
+      const [runsRes, alertsRes, settingsRes] = await Promise.all([
         supabase.from('flow_analysis_runs').select('*').order('created_at', { ascending: false }).limit(50),
-        supabase.from('flow_ux_issues').select('*').eq('is_resolved', false).order('created_at', { ascending: false }).limit(100),
         supabase.from('flow_alerts').select('*').eq('is_acknowledged', false).order('created_at', { ascending: false }).limit(20),
         supabase.from('flow_alert_settings').select('*'),
       ]);
 
-      if (runsRes.data) setRuns(runsRes.data as AnalysisRun[]);
-      if (issuesRes.data) setIssues(issuesRes.data as UxIssue[]);
+      if (runsRes.data) {
+        setRuns(runsRes.data as AnalysisRun[]);
+        
+        // Get latest run IDs per flow to only show issues from most recent analysis
+        const latestRunIds = new Set<string>();
+        const seenFlows = new Set<string>();
+        for (const run of runsRes.data) {
+          if (!seenFlows.has(run.flow_id)) {
+            seenFlows.add(run.flow_id);
+            latestRunIds.add(run.id);
+          }
+        }
+        
+        // Fetch issues only from latest runs (prevents stacking of old issues)
+        if (latestRunIds.size > 0) {
+          const { data: issuesData } = await supabase
+            .from('flow_ux_issues')
+            .select('*')
+            .in('run_id', Array.from(latestRunIds))
+            .eq('is_resolved', false)
+            .order('severity', { ascending: true }) // critical first
+            .order('created_at', { ascending: false });
+          
+          if (issuesData) setIssues(issuesData as UxIssue[]);
+        } else {
+          setIssues([]);
+        }
+      }
+      
       if (alertsRes.data) setAlerts(alertsRes.data as Alert[]);
       if (settingsRes.data) setAlertSettings(settingsRes.data as AlertSetting[]);
     } catch (error) {
@@ -1098,7 +1124,28 @@ const AutoFlowDashboard: React.FC = () => {
             <RefreshCw className="h-4 w-4 mr-2" />
             Aktualisieren
           </Button>
-          {/* Global Fix All Button */}
+          {/* Reset & Fresh Start Button */}
+          <Button 
+            variant="outline" 
+            className="text-destructive hover:bg-destructive/10"
+            onClick={async () => {
+              if (!confirm('Alle Analyse-Daten löschen und neu starten? Dies löscht alle Issues und Runs.')) return;
+              try {
+                await supabase.from('flow_ux_issues').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('flow_step_metrics').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('flow_archetype_scores').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('flow_analysis_runs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                setRuns([]);
+                setIssues([]);
+                toast.success('Alle Daten gelöscht - bereit für frische Analyse!');
+              } catch (error) {
+                toast.error('Fehler beim Löschen');
+              }
+            }}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Reset
+          </Button>
           {issues.length > 0 && (
             <Button 
               variant="secondary"

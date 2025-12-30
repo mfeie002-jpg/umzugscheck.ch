@@ -242,36 +242,51 @@ async function analyzeStepWithAI(
     };
   }
 
-  const prompt = `Du bist ein UX/Conversion-Experte. Analysiere Step ${stepNumber} "${stepName}" des Flow "${flowName}".
+  // IMPROVED PROMPT: Focus on VISIBLE, VERIFIABLE issues only
+  const prompt = `Du bist ein UX/Conversion-Experte. Analysiere Step ${stepNumber} "${stepName}" des Schweizer Umzugs-Flows "${flowName}".
 
-Bewerte folgende Aspekte und gib konkrete Verbesserungsvorschläge:
+**KRITISCHE REGELN - BEFOLGE DIESE STRIKT:**
+1. Identifiziere NUR Issues die DIREKT IM SCREENSHOT SICHTBAR sind
+2. KEINE VERMUTUNGEN oder theoretische Probleme - nur was du SEHEN kannst
+3. KEINE DUPLIKATE - wenn ein Problem mehrere Elemente betrifft, fasse es zusammen
+4. Sei REALISTISCH mit Scores - ein guter Flow hat 80-95, perfekt gibt es nicht
 
-1. **Mobile-Friendliness**: Touch-Targets (min 44px), Lesbarkeit, Scrollverhalten
-2. **Conversion-Optimierung**: CTA-Klarheit, Formularfelder, Friction Points, Progress-Indikator
-3. **UX-Qualität**: Visuelle Hierarchie, Konsistenz, Feedback, Ladezeiten
+**BEWERTUNGSKRITERIEN (nur wenn im Screenshot erkennbar):**
+- Mobile: Touch-Targets sichtbar zu klein (<44px geschätzt), horizontaler Scroll, unlesbarer Text
+- Conversion: Fehlender Progress-Indikator, unklarer CTA, versteckter Button, zu viele Formularfelder
+- UX: Schlechte visuelle Hierarchie, inkonsistentes Design, fehlende Feedback-Elemente
 
-Antworte im folgenden JSON-Format:
+**SCORING-LOGIK:**
+- Starte bei 90 Punkten pro Kategorie
+- Kritisch: -15 Punkte | Warnung: -5 Punkte | Info: -2 Punkte
+- Minimum: 40 | Maximum: 98
+- Ein Flow OHNE sichtbare Probleme = 90-95 Punkte
+
+**AUSGABE (NUR JSON):**
 {
   "issues": [
     {
       "severity": "critical|warning|info",
-      "category": "mobile|conversion|ux|accessibility|performance",
-      "title": "Kurzer Titel",
-      "description": "Beschreibung des Problems",
-      "recommendation": "Konkrete Lösung"
+      "category": "mobile|conversion|ux",
+      "title": "Kurzer, spezifischer Titel",
+      "description": "Was GENAU siehst du im Screenshot?",
+      "recommendation": "Konkrete technische Lösung"
     }
   ],
-  "suggestions": ["Verbesserungsvorschlag 1", "Verbesserungsvorschlag 2"],
+  "suggestions": ["Max 3 Verbesserungsvorschläge"],
   "scores": {
-    "mobile": 0-100,
-    "conversion": 0-100,
-    "ux": 0-100
+    "mobile": 40-98,
+    "conversion": 40-98,
+    "ux": 40-98
   }
-}`;
+}
+
+**WICHTIG:** Wenn du KEIN Problem siehst, gib eine leere issues-Liste zurück und hohe Scores (85-95).
+Finde NICHT Probleme um des Findens willen. Qualität vor Quantität!`;
 
   try {
     const messages: Array<{ role: string; content: string | Array<{ type: string; text?: string; image_url?: { url: string } }> }> = [
-      { role: 'system', content: 'Du bist ein UX/Conversion-Experte für Schweizer Websites. Antworte immer im angegebenen JSON-Format.' }
+      { role: 'system', content: 'Du bist ein pragmatischer UX-Experte. Identifiziere NUR REALE, SICHTBARE Probleme. Antworte im JSON-Format. Sei kritisch aber fair.' }
     ];
 
     // Build content with images if available
@@ -316,31 +331,45 @@ Antworte im folgenden JSON-Format:
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '{}';
-    const parsed = JSON.parse(content);
+    
+    // Robust JSON parsing
+    let jsonContent = content;
+    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) {
+      jsonContent = jsonMatch[1].trim();
+    }
+    if (!jsonContent.startsWith('{')) {
+      const firstBrace = jsonContent.indexOf('{');
+      const lastBrace = jsonContent.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        jsonContent = jsonContent.substring(firstBrace, lastBrace + 1);
+      }
+    }
+    
+    const parsed = JSON.parse(jsonContent);
+
+    // Ensure scores are within valid range
+    const clampScore = (score: number) => Math.max(40, Math.min(98, score || 75));
 
     return {
       stepNumber,
       stepName,
       issues: parsed.issues || [],
       suggestions: parsed.suggestions || [],
-      scores: parsed.scores || { mobile: 70, conversion: 70, ux: 70 }
+      scores: {
+        mobile: clampScore(parsed.scores?.mobile),
+        conversion: clampScore(parsed.scores?.conversion),
+        ux: clampScore(parsed.scores?.ux)
+      }
     };
   } catch (error) {
     console.error('AI analysis error:', error);
     return {
       stepNumber,
       stepName,
-      issues: [
-        {
-          severity: 'warning',
-          category: 'ux',
-          title: 'AI-Analyse fehlgeschlagen',
-          description: String(error),
-          recommendation: 'Manuell überprüfen'
-        }
-      ],
+      issues: [],
       suggestions: ['AI-Analyse fehlgeschlagen - manuell prüfen'],
-      scores: { mobile: 60, conversion: 60, ux: 60 }
+      scores: { mobile: 70, conversion: 70, ux: 70 }
     };
   }
 }
