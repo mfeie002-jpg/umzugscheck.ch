@@ -10,6 +10,10 @@
  * - SwissnessPanel: Swiss trust signals & compliance
  * - ArchetypeNeedsMatrix: UX focus, must-haves, triggers per archetype
  * - SixStepFrameworkPanel: Swiss 6-Step Framework analysis
+ * - ComplexityScorePanel: Lead complexity scoring formula
+ * - PricingBreakdownPanel: ASTAG-konforme pricing table
+ * - SeasonalDemandPanel: Surge pricing and red days
+ * - ComplianceChecksPanel: Legal requirements and validation
  */
 
 export { ArchetypeRadar } from './ArchetypeRadar';
@@ -20,3 +24,7 @@ export { ScoreBadge, ScoreBadgeCompact, PathTo95 } from './ScoreBadge';
 export { SwissnessPanel } from './SwissnessPanel';
 export { ArchetypeNeedsMatrix } from './ArchetypeNeedsMatrix';
 export { SixStepFrameworkPanel } from './SixStepFrameworkPanel';
+export { ComplexityScorePanel } from './ComplexityScorePanel';
+export { PricingBreakdownPanel } from './PricingBreakdownPanel';
+export { SeasonalDemandPanel } from './SeasonalDemandPanel';
+export { ComplianceChecksPanel } from './ComplianceChecksPanel';
