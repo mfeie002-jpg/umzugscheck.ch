@@ -45,10 +45,10 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
         )}
       </div>
       
-      {/* Issue #42, #45: Vertikales Grid auf Mobile (2 Spalten), keine horizontale Scroll */}
+      {/* Issue #6, #14, #29: Vertikales 2-Spalten-Grid auf Mobile für alle sichtbar, KEINE horizontale Scroll */}
       <div 
         className={cn(
-          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl transition-all",
+          "grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5 p-2.5 sm:p-3 rounded-xl transition-all",
           !hasSelection && "ring-2 ring-amber-400/50 bg-amber-50/50 dark:bg-amber-900/10"
         )}
         role="radiogroup"
@@ -71,8 +71,8 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                // Issue #2, #6, #53, #54: Min 110px Touch-Targets auf Mobile, grössere Touch-Flächen für bessere Bedienbarkeit
-                "flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl border-2 transition-all min-h-[110px] touch-manipulation active:scale-[0.97]",
+                // Issue #29: Min 120px Touch-Targets auf Mobile für bessere Bedienbarkeit - mindestens 44x44px empfohlen
+                "flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl border-2 transition-all min-h-[120px] min-w-[44px] touch-manipulation active:scale-[0.97]",
                 isSelected
                   ? "border-primary bg-primary/15 shadow-lg ring-2 ring-primary/40"
                   : "border-border bg-card hover:border-primary/50 hover:bg-muted/60 hover:shadow-md"
