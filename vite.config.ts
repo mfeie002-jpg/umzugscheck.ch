@@ -5,9 +5,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true,           // wichtig für Tunnel/Netzwerk
-    port: 8081,           // dein aktueller Port
+    host: true,          // wichtig für LAN/Tunnel
+    port: 8081,          // MUSS zu deinem "npm run dev" Port passen
     strictPort: true,
-    allowedHosts: "all",  // DEV ONLY: erlaubt trycloudflare host header
+    allowedHosts: "all", // Quick-Fix für trycloudflare/ngrok
   },
 });
