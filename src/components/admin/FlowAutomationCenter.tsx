@@ -607,7 +607,9 @@ Antworte auf Deutsch.`;
         if (!latestByFlow.has(row.flow_id)) latestByFlow.set(row.flow_id, row);
       });
 
-      const runIds = Array.from(latestByFlow.values()).map((r: any) => r.id).filter(Boolean);
+      const runIds = Array.from(latestByFlow.values())
+        .map((r: any) => r.id)
+        .filter(Boolean);
       const countsByRun = new Map<string, { total: number; critical: number }>();
 
       // Backfill counts for older runs that didn't store metadata
@@ -628,10 +630,22 @@ Antworte auf Deutsch.`;
         }
       }
 
-      setAnalysisResults(
-        FLOW_OPTIONS.map((flow) => {
+      // IMPORTANT: do NOT rebuild the whole list from scratch.
+      // That felt like a "refresh" to users (all cards visually update at once).
+      // Instead, merge newest completed results into the existing list and keep running states.
+      setAnalysisResults((prev) => {
+        const prevByFlow = new Map(prev.map((r) => [r.flowId, r] as const));
+
+        return FLOW_OPTIONS.map((flow) => {
+          const existing = prevByFlow.get(flow.id);
+
+          // Keep running entries untouched (polling will update them).
+          if (existing?.status === "running") return existing;
+
           const row = latestByFlow.get(flow.id);
           if (!row) {
+            // Keep whatever we already had (completed/pending/error) to avoid a visual reset.
+            if (existing) return existing;
             return { flowId: flow.id, flowName: flow.label, status: "pending" as const };
           }
 
@@ -644,20 +658,12 @@ Antworte auf Deutsch.`;
             status: "completed" as const,
             score: row.overall_score ?? undefined,
             summary: row.ai_summary ?? undefined,
-            issuesCount:
-              meta.issuesCount ??
-              meta.issues_count ??
-              counts?.total ??
-              undefined,
-            criticalCount:
-              meta.criticalCount ??
-              meta.critical_count ??
-              counts?.critical ??
-              undefined,
+            issuesCount: meta.issuesCount ?? meta.issues_count ?? counts?.total ?? undefined,
+            criticalCount: meta.criticalCount ?? meta.critical_count ?? counts?.critical ?? undefined,
             runId: row.id,
           };
-        })
-      );
+        });
+      });
 
       toast.success("Letzte Analyse-Ergebnisse geladen");
     } catch (e) {
