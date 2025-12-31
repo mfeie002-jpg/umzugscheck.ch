@@ -219,6 +219,7 @@ const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 
 // Other pages
 const Umzugsofferten = lazy(() => import("./pages/Umzugsofferten"));
+const UmzugsoffertenUltimate = lazy(() => import("./pages/UmzugsoffertenUltimate"));
 const UmzugsoffertenBaseline = lazy(() => import("./pages/UmzugsoffertenBaseline"));
 const UmzugsoffertenDynamic = lazy(() => import("./pages/UmzugsoffertenDynamic"));
 const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
@@ -598,6 +599,8 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v2e" element={<UmzugsoffertenV2e />} />
           {/* Accept deep links like /umzugsofferten-v2e/step/3 for screenshot tools */}
           <Route path="/umzugsofferten-v2e/*" element={<UmzugsoffertenV2e />} />
+          {/* Ultimate Flow Pages - dynamic from database */}
+          <Route path="/umzugsofferten-ultimate-:flowId" element={<UmzugsoffertenUltimate />} />
           {/* Dynamic route for sub-variants (v2a, v3b, v9d, etc.) */}
           <Route path="/umzugsofferten-:variant" element={<UmzugsoffertenDynamic />} />
 
