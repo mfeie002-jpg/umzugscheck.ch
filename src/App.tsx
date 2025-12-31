@@ -221,6 +221,7 @@ const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 const Umzugsofferten = lazy(() => import("./pages/Umzugsofferten"));
 const UmzugsoffertenBaseline = lazy(() => import("./pages/UmzugsoffertenBaseline"));
 const UmzugsoffertenDynamic = lazy(() => import("./pages/UmzugsoffertenDynamic"));
+const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
 const UmzugsoffertenV1 = lazy(() => import("./pages/UmzugsoffertenV1"));
 const UmzugsoffertenV1a = lazy(() => import("./pages/UmzugsoffertenV1a"));
 const UmzugsoffertenV1b = lazy(() => import("./pages/UmzugsoffertenV1b"));
@@ -581,11 +582,23 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1c" element={<UmzugsoffertenV1c />} />
           <Route path="/umzugsofferten-v1d" element={<UmzugsoffertenV1d />} />
           <Route path="/umzugsofferten-v1e" element={<UmzugsoffertenV1e />} />
+
+          {/* Main V2+ flows (public URLs used by screenshot tooling) */}
+          <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v3" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v4" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v5" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v6" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v7" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
+
           <Route path="/umzugsofferten-v2e" element={<UmzugsoffertenV2e />} />
           {/* Accept deep links like /umzugsofferten-v2e/step/3 for screenshot tools */}
           <Route path="/umzugsofferten-v2e/*" element={<UmzugsoffertenV2e />} />
-          {/* Dynamic route for all V2+ variants - handles v2a, v3b, v9d, etc. automatically */}
+          {/* Dynamic route for sub-variants (v2a, v3b, v9d, etc.) */}
           <Route path="/umzugsofferten-:variant" element={<UmzugsoffertenDynamic />} />
+
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
           <Route path="/flow-test" element={<RedirectWithQuery to="/flow-tester" />} />
