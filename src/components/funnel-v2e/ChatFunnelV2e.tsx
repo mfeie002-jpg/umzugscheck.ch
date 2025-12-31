@@ -1527,16 +1527,19 @@ function ServicesSelector({
                   )}
                 </div>
                 {details ? (
-                  /* Info button with text */
+                  /* Floating gold Info badge */
                   <button
                     onClick={(e) => toggleExpand(e, opt.id)}
-                    className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-muted transition-colors touch-manipulation text-xs text-muted-foreground hover:text-foreground self-center"
+                    className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 font-semibold shadow-lg hover:shadow-xl transition-all touch-manipulation text-xs self-center animate-[float_3s_ease-in-out_infinite]"
                     aria-label="Details anzeigen"
+                    style={{
+                      animation: isExpanded ? 'none' : 'float 3s ease-in-out infinite',
+                    }}
                   >
-                    <Info className="w-4 h-4" />
-                    <span className="hidden sm:inline">{isExpanded ? "Weniger" : "Info"}</span>
+                    <Info className="w-3.5 h-3.5" />
+                    <span>{isExpanded ? "Weniger" : "Info"}</span>
                     <ChevronDown className={cn(
-                      "w-4 h-4 transition-transform",
+                      "w-3.5 h-3.5 transition-transform",
                       isExpanded && "rotate-180"
                     )} />
                   </button>
@@ -1570,6 +1573,17 @@ function ServicesSelector({
                       "px-4 sm:px-5 py-4 border-2 border-t-0 rounded-b-xl bg-muted/50",
                       isSelected ? "border-primary" : "border-border"
                     )}>
+                      {/* Social proof stats */}
+                      <div className="flex flex-wrap gap-2 mb-3 pb-3 border-b border-border/50">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                          <Users className="w-3 h-3" />
+                          {opt.id === 'fullService' ? '73%' : opt.id === 'transport' ? '45%' : opt.id === 'packing' ? '62%' : '38%'} wählen dies
+                        </span>
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">
+                          <Star className="w-3 h-3 fill-amber-500" />
+                          Beliebt
+                        </span>
+                      </div>
                       <ul className="space-y-2.5">
                         {details.bullets.map((bullet, i) => (
                           <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/90">
