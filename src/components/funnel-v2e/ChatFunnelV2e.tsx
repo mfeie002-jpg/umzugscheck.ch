@@ -418,7 +418,7 @@ export function ChatFunnelV2e() {
       messages.push({
         id: "msg-from",
         type: "bot",
-        content: "Super, ein Wohnungs-Umzug. Von wo ziehen Sie um? (PLZ/Ort oder Kanton wählen)",
+        content: "Super, ein Wohnungs-Umzug. Von wo ziehen Sie um?",
         timestamp: now,
       });
       return messages;
@@ -428,7 +428,7 @@ export function ChatFunnelV2e() {
     messages.push({
       id: "msg-from",
       type: "bot",
-      content: "Super, ein Wohnungs-Umzug. Von wo ziehen Sie um? (PLZ/Ort oder Kanton wählen)",
+      content: "Super, ein Wohnungs-Umzug. Von wo ziehen Sie um?",
       timestamp: now,
     });
     messages.push({
@@ -667,8 +667,8 @@ export function ChatFunnelV2e() {
         setTimeout(() => {
           addBotMessage(
             optionId === "buero" 
-              ? "Perfekt, ein Firmenumzug. Von wo ziehen Sie um? (PLZ oder Kanton)"
-              : `Super, ein ${label}-Umzug. Von wo ziehen Sie um? (PLZ oder Kanton)`,
+              ? "Perfekt, ein Firmenumzug. Von wo ziehen Sie um?"
+              : `Super, ein ${label}-Umzug. Von wo ziehen Sie um?`,
             {},
             600
           );
@@ -874,7 +874,7 @@ export function ChatFunnelV2e() {
           const location = value.startsWith("Kanton ") 
             ? value.replace("Kanton ", "") 
             : (value.split(" ").slice(1).join(" ") || value);
-          addBotMessage(`Alles klar, Start: ${location}. Und wohin? (PLZ oder Kanton)`, {}, 600);
+          addBotMessage(`Alles klar, Start: ${location}. Und wohin?`, {}, 600);
           setCurrentStep("toLocation");
           setLocationInputMode("canton"); // Keep canton as default for next step
           setSelectedCanton("");
@@ -1212,9 +1212,9 @@ export function ChatFunnelV2e() {
               <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 border-2 border-background" />
             </div>
             <div className="min-w-0">
-              {/* Issue #17, #31 - Consistent title across devices */}
+              {/* Cleaner name for the assistant */}
               <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
-                Umzugs-Assistent
+                Offerten-Berater
               </h3>
               {/* Issue #26 - Clean status line without redundant info */}
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -1343,7 +1343,7 @@ export function ChatFunnelV2e() {
               </div>
               <p className="text-xs sm:text-sm text-muted-foreground mt-2 text-center">
                 {!inputValue.trim() 
-                  ? "PLZ + Ort eingeben" 
+                  ? "z.B. 8048 Zürich" 
                   : inputValue.length < 4 
                     ? "Vollständig eingeben" 
                     : "↵ Absenden"
