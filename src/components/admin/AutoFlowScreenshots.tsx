@@ -248,12 +248,19 @@ export function AutoFlowScreenshots() {
     const u = new URL(flowPath, baseUrl);
     u.searchParams.set("uc_capture", "1");
     
-    // Extract uc_flow from flowId: "umzugsofferten" → "v1", "umzugsofferten-v3" → "v3", "umzugsofferten-v3a" → "v3a"
+    // Extract uc_flow from flowId:
+    // - "umzugsofferten" → "v1"
+    // - "umzugsofferten-v3" → "v3"
+    // - "umzugsofferten-v3a" → "v3a"
+    // - "v9a" → "v9a" (some entries use short IDs)
     const extractUcFlowId = (id: string): string => {
       if (id === "umzugsofferten") return "v1";
-      // Match -v followed by digits and optional letter (e.g., -v3, -v9a)
-      const match = id.match(/-v(\d+)([a-z])?/i);
-      return match ? `v${match[1]}${match[2] || ""}` : "v1";
+
+      const short = id.match(/^v(\d+)([a-z])?$/i);
+      if (short) return `v${short[1]}${short[2] || ""}`;
+
+      const long = id.match(/-v(\d+)([a-z])?$/i);
+      return long ? `v${long[1]}${long[2] || ""}` : "v1";
     };
     u.searchParams.set("uc_flow", extractUcFlowId(flowId));
     u.searchParams.set("uc_step", String(step));
