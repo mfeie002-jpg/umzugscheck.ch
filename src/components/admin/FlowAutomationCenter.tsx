@@ -812,9 +812,8 @@ Antworte auf Deutsch.`;
 
     const baseUrl = (() => {
       if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-      const { origin, hostname } = window.location;
-      const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-      return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+      // For automation we want the currently running deployment (preview/admin).
+      return window.location.origin.replace(/\/$/, "");
     })();
 
     for (let i = 0; i < FLOW_OPTIONS.length; i++) {
@@ -980,9 +979,8 @@ Antworte auf Deutsch.`;
 
     const baseUrl = (() => {
       if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-      const { origin, hostname } = window.location;
-      const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-      return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+      // For automation we want the currently running deployment (preview/admin).
+      return window.location.origin.replace(/\/$/, "");
     })();
 
     for (let i = 0; i < variants.length; i++) {

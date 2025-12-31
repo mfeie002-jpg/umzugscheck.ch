@@ -214,9 +214,10 @@ export function AutoFlowScreenshots() {
   // Default to a publicly reachable base URL when we detect a Lovable host.
   const defaultPublicBaseUrl = useMemo(() => {
     if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-    const { origin, hostname } = window.location;
-    const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-    return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+    const { origin } = window.location;
+    // In Admin/Preview we want to capture *this* deployment (routes exist here).
+    // Users can still switch to the live domain manually for production captures.
+    return origin.replace(/\/$/, "");
   }, []);
 
   const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPublicBaseUrl);
