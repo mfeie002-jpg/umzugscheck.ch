@@ -28,18 +28,12 @@ export { V2dFeedbackBased } from './V2dFeedbackBased';
 export { V2eExperimental } from './V2eExperimental';
 export { V2fFeedbackBased } from './V2fFeedbackBased';
 
-// V3 Variants (Mobile-First)
+// V3 Variants (Mobile-First) - Only Base Versions
 export { V3aMobileFirst } from './V3aMobileFirst';
-export { V3aFeedbackBased } from './V3aFeedbackBased';
-export { V3bFeedbackBased } from './V3bFeedbackBased';
 export { V3bSwipeNavigation } from './V3bSwipeNavigation';
-export { V3gFeedbackBased } from './V3gFeedbackBased';
 export { V3cBottomSheet } from './V3cBottomSheet';
-export { V3cFeedbackBased } from './V3cFeedbackBased';
 export { V3dThumbZone } from './V3dThumbZone';
-export { V3dFeedbackBased } from './V3dFeedbackBased';
 export { V3eFullscreen } from './V3eFullscreen';
-export { V3fGeminiPro } from './V3fGeminiPro';
 
 // V4 Variants (Conversion-Focused)
 export { V4aUrgencyBased } from './V4aUrgencyBased';
@@ -96,19 +90,13 @@ export const VARIANT_REGISTRY: Record<string, {
   'v2d': { component: 'V2dFeedbackBased', stepCount: 6, label: 'V2d ChatGPT Pro' },
   'v2e': { component: 'V2eExperimental', stepCount: 6, label: 'V2e Chat Funnel ⭐' },
   'v2f': { component: 'V2fFeedbackBased', stepCount: 3, label: 'V2f Premium (Feedback)' },
-  // V3 - Mobile-First
+  // V3 - Mobile-First (Base Versions Only)
   'v3': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3 Mobile-First' },
   'v3a': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3a Mobile First' },
-  'v3a-pro': { component: 'V3aFeedbackBased', stepCount: 4, label: 'V3a Pro (Feedback)' },
-  'v3b-feedback': { component: 'V3bFeedbackBased', stepCount: 4, label: 'V3b Feedback Based' },
   'v3b': { component: 'V3bSwipeNavigation', stepCount: 4, label: 'V3b Swipe Navigation' },
-  'v3g': { component: 'V3gFeedbackBased', stepCount: 4, label: 'V3g Feedback Based' },
   'v3c': { component: 'V3cBottomSheet', stepCount: 4, label: 'V3c Bottom Sheet' },
-  'v3c-feedback': { component: 'V3cFeedbackBased', stepCount: 4, label: 'V3c ChatGPT Agent 1' },
   'v3d': { component: 'V3dThumbZone', stepCount: 3, label: 'V3d Thumb Zone' },
-  'v3d-feedback': { component: 'V3dFeedbackBased', stepCount: 4, label: 'V3d ChatGPT Agent 2' },
   'v3e': { component: 'V3eFullscreen', stepCount: 3, label: 'V3e Fullscreen' },
-  'v3f': { component: 'V3fGeminiPro', stepCount: 4, label: 'V3f Gemini Pro' },
   // V4 - Conversion-Focused
   'v4': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4 Conversion' },
   'v4a': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4a Urgency Based' },

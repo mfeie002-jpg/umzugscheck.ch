@@ -29,12 +29,9 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V2dFeedbackBased': () => import('@/components/calculator-variants/V2dFeedbackBased').then(m => ({ default: m.V2dFeedbackBased })),
   'V2eExperimental': () => import('@/components/calculator-variants/V2eExperimental').then(m => ({ default: m.V2eExperimental })),
   'V2fFeedbackBased': () => import('@/components/calculator-variants/V2fFeedbackBased').then(m => ({ default: m.V2fFeedbackBased })),
-  // V3 Variants
+  // V3 Variants - Base Versions Only
   'V3aMobileFirst': () => import('@/components/calculator-variants/V3aMobileFirst').then(m => ({ default: m.V3aMobileFirst })),
-  'V3aFeedbackBased': () => import('@/components/calculator-variants/V3aFeedbackBased').then(m => ({ default: m.V3aFeedbackBased })),
-  'V3bFeedbackBased': () => import('@/components/calculator-variants/V3bFeedbackBased').then(m => ({ default: m.V3bFeedbackBased })),
   'V3bSwipeNavigation': () => import('@/components/calculator-variants/V3bSwipeNavigation').then(m => ({ default: m.V3bSwipeNavigation })),
-  'V3gFeedbackBased': () => import('@/components/calculator-variants/V3gFeedbackBased').then(m => ({ default: m.V3gFeedbackBased })),
   'V3cBottomSheet': () => import('@/components/calculator-variants/V3cBottomSheet').then(m => ({ default: m.V3cBottomSheet })),
   'V3dThumbZone': () => import('@/components/calculator-variants/V3dThumbZone').then(m => ({ default: m.V3dThumbZone })),
   'V3eFullscreen': () => import('@/components/calculator-variants/V3eFullscreen').then(m => ({ default: m.V3eFullscreen })),
