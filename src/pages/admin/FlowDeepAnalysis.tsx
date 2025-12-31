@@ -249,6 +249,7 @@ const normalizeSynthesis = (s: any): Synthesis | null => {
 
 // All available flow versions
 const ALL_FLOWS = [
+  { id: 'all', label: 'Alle', flowId: 'all' },
   { id: 'v1', label: 'V1', flowId: 'umzugsofferten-v1' },
   { id: 'v2', label: 'V2', flowId: 'umzugsofferten-v2' },
   { id: 'v3', label: 'V3', flowId: 'umzugsofferten-v3' },
@@ -424,6 +425,28 @@ export default function FlowDeepAnalysis() {
     const fetchVariants = async () => {
       setLoadingVariants(true);
       try {
+        // Handle "all" case - fetch all active variants from all flows
+        if (selectedFlowVersion === 'all') {
+          const { data, error } = await supabase
+            .from('flow_versions')
+            .select('version_number, flow_code, version_name, flow_id')
+            .eq('is_active', true)
+            .order('flow_id')
+            .order('version_number');
+          
+          if (error) {
+            console.error('Error fetching all variants:', error);
+            setAvailableVariants([]);
+            return;
+          }
+          
+          const variantIds = (data || []).map(v => 
+            v.flow_code?.toLowerCase() || `${v.flow_id}.${v.version_number}`
+          );
+          setAvailableVariants(variantIds);
+          return;
+        }
+
         const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
         if (!flowConfig) {
           setAvailableVariants([]);
