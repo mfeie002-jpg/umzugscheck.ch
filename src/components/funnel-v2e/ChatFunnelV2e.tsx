@@ -931,17 +931,19 @@ export function ChatFunnelV2e() {
     }, 400);
   };
 
-  // Render different message types
+  // Render different message types - Issues #7, #8, #11, #20 fixes
   const renderMessage = (message: Message) => {
     switch (message.type) {
       case "bot":
         return (
-          <div className="flex gap-2 sm:gap-3 max-w-[92%] sm:max-w-[85%]">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+          <div className="flex gap-2.5 sm:gap-3 max-w-[92%] sm:max-w-[85%]">
+            {/* Issue #4 - Consistent bot avatar */}
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
             </div>
-            <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3">
-              <p className="text-sm">{message.content}</p>
+            {/* Issue #20 - Consistent bg color for bot messages */}
+            <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-sm">
+              <p className="text-sm leading-relaxed">{message.content}</p>
             </div>
           </div>
         );
@@ -949,21 +951,22 @@ export function ChatFunnelV2e() {
       case "user":
         return (
           <div className="flex justify-end">
-            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3 sm:px-4 py-2 sm:py-3 max-w-[85%] sm:max-w-[80%]">
-              <p className="text-sm">{message.content}</p>
+            {/* Issue #8, #11 - Clear visual distinction for user messages */}
+            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-md px-3.5 sm:px-4 py-2.5 sm:py-3 max-w-[85%] sm:max-w-[80%] shadow-sm">
+              <p className="text-sm leading-relaxed">{message.content}</p>
             </div>
           </div>
         );
 
       case "options":
         return (
-          <div className="flex gap-2 sm:gap-3 max-w-full">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+          <div className="flex gap-2.5 sm:gap-3 max-w-full">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
             </div>
-            <div className="flex-1 min-w-0 space-y-2">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3">
-                <p className="text-sm">{message.content}</p>
+            <div className="flex-1 min-w-0 space-y-3">
+              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-sm">
+                <p className="text-sm leading-relaxed">{message.content}</p>
               </div>
               {currentStep === "services" ? (
                 <ServicesSelector
@@ -971,22 +974,23 @@ export function ChatFunnelV2e() {
                   onConfirm={handleServicesConfirm}
                 />
               ) : (
-                <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mt-2 w-full">
+                /* Issue #5, #14, #15, #16, #17 - Better button spacing and consistency */
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mt-2.5 w-full">
                   {message.options?.map(opt => (
                     <button
                       key={opt.id}
                       onClick={() => handleOptionSelect(opt.id, opt.label)}
-                      className="flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-3 min-h-[52px] bg-card border border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.98] transition-all group touch-manipulation"
+                      className="flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-3.5 min-h-[56px] bg-card border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.98] transition-all group touch-manipulation shadow-sm"
                     >
                       {opt.icon && (
-                        <span className="text-muted-foreground group-hover:text-primary transition-colors">
+                        <span className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0">
                           {opt.icon}
                         </span>
                       )}
-                      <div className="text-left">
-                        <div className="text-sm font-medium truncate">{opt.label}</div>
+                      <div className="text-center sm:text-left min-w-0">
+                        <div className="text-sm font-semibold leading-tight">{opt.label}</div>
                         {opt.sublabel && (
-                          <div className="text-xs text-muted-foreground truncate">{opt.sublabel}</div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5 leading-tight">{opt.sublabel}</div>
                         )}
                       </div>
                     </button>
@@ -999,13 +1003,13 @@ export function ChatFunnelV2e() {
 
       case "video":
         return (
-          <div className="flex gap-2 sm:gap-3 max-w-full">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+          <div className="flex gap-2.5 sm:gap-3 max-w-full">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
-                <p className="text-sm">{message.content}</p>
+              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm leading-relaxed">{message.content}</p>
               </div>
               {currentStep === "videoOffer" && (
                 <ChatVideoAnalyzer 
@@ -1019,13 +1023,13 @@ export function ChatFunnelV2e() {
 
       case "price":
         return (
-          <div className="flex gap-2 sm:gap-3 max-w-full">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+          <div className="flex gap-2.5 sm:gap-3 max-w-full">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
-                <p className="text-sm">{message.content}</p>
+              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm leading-relaxed">{message.content}</p>
               </div>
               <PriceRevealCard priceData={message.priceData!} />
             </div>
@@ -1034,13 +1038,13 @@ export function ChatFunnelV2e() {
 
       case "companies":
         return (
-          <div className="flex gap-2 sm:gap-3 max-w-full">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+          <div className="flex gap-2.5 sm:gap-3 max-w-full">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
-                <p className="text-sm">{message.content}</p>
+              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm leading-relaxed">{message.content}</p>
               </div>
               <CompanySelector
                 companies={message.companies || []}
@@ -1053,13 +1057,13 @@ export function ChatFunnelV2e() {
 
       case "contact":
         return (
-          <div className="flex gap-2 sm:gap-3 max-w-full">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+          <div className="flex gap-2.5 sm:gap-3 max-w-full">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
-                <p className="text-sm">{message.content}</p>
+              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm leading-relaxed">{message.content}</p>
               </div>
               <ContactForm onSubmit={handleContactSubmit} />
             </div>
@@ -1115,10 +1119,10 @@ export function ChatFunnelV2e() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Header with Progress */}
-      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
-        {/* Progress bar */}
-        <div className="h-1 bg-muted">
+      {/* Header with Progress - Issues #2, #6, #19, #27, #28, #30 fixes */}
+      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border flex-shrink-0">
+        {/* Progress bar - more visible */}
+        <div className="h-1.5 bg-muted/50">
           <motion.div 
             className="h-full bg-primary"
             initial={{ width: 0 }}
@@ -1126,34 +1130,39 @@ export function ChatFunnelV2e() {
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
-        <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+        <div className="px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {/* Issue #4, #28 - Consistent Bot icon with green dot */}
+            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
               <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              {/* Consistent online indicator - Issue #28 */}
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 border-2 border-background animate-pulse" />
             </div>
-            <div>
-              <h3 className="font-semibold text-xs sm:text-sm">Umzugs-Assistent</h3>
-              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse" />
-                <span>Online</span>
-                <span className="text-muted-foreground/50">·</span>
-                <span>{progress}%</span>
+            <div className="min-w-0">
+              <h3 className="font-semibold text-sm sm:text-base truncate">Umzugs-Assistent</h3>
+              {/* Issue #6, #19, #23 - Better progress visibility with step info */}
+              <div className="flex items-center gap-1.5 text-xs sm:text-sm">
+                <span className="text-green-600 font-medium">Online</span>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-foreground font-semibold">{progress}%</span>
+                <span className="text-muted-foreground hidden sm:inline">abgeschlossen</span>
               </div>
             </div>
           </div>
+          {/* Issue #2 - Better CTA contrast */}
           <a 
             href="tel:+41445057070" 
-            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-full text-xs font-medium transition-colors touch-manipulation active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-green-600 hover:bg-green-700 text-white rounded-full text-xs sm:text-sm font-semibold transition-colors touch-manipulation active:scale-95 shadow-sm flex-shrink-0"
           >
-            <Phone className="w-3.5 h-3.5" />
+            <Phone className="w-4 h-4" />
             <span className="hidden sm:inline">044 505 70 70</span>
             <span className="sm:hidden">Anrufen</span>
           </a>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
+      {/* Messages - Issue #7 fix: consistent spacing */}
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-5">
         <AnimatePresence mode="popLayout">
           {messages.map((msg) => (
             <motion.div
@@ -1168,21 +1177,21 @@ export function ChatFunnelV2e() {
           ))}
         </AnimatePresence>
 
-        {/* Typing indicator */}
+        {/* Typing indicator - Issue #29 fix: better contrast */}
         {isTyping && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex gap-2 sm:gap-3"
+            className="flex gap-2.5 sm:gap-3"
           >
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
             </div>
-            <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3">
-              <div className="flex gap-1">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            <div className="bg-muted/80 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
+              <div className="flex gap-1.5">
+                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </motion.div>
@@ -1191,45 +1200,52 @@ export function ChatFunnelV2e() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Input - Issues #21, #24 fixes: better error feedback and clearer format */}
       {(currentStep === "fromLocation" || currentStep === "toLocation") && (
-        <form onSubmit={handleTextSubmit} className="p-3 sm:p-4 border-t border-border bg-background/50 flex-shrink-0">
-          <div className="flex gap-2">
+        <form onSubmit={handleTextSubmit} className="p-3 sm:p-4 border-t border-border bg-card flex-shrink-0">
+          <div className="flex gap-2.5">
             <div className="flex-1 relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 ref={inputRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={currentStep === "fromLocation" ? "z.B. 8001 Zürich" : "z.B. 3011 Bern"}
-                className="pl-10 min-h-[44px]"
+                placeholder={currentStep === "fromLocation" ? "PLZ und Ort (z.B. 8001 Zürich)" : "PLZ und Ort (z.B. 3011 Bern)"}
+                className="pl-10 min-h-[48px] text-base"
                 autoFocus
               />
             </div>
-            <Button type="submit" size="icon" disabled={!inputValue.trim()} className="min-w-[44px] min-h-[44px]">
-              <Send className="w-4 h-4" />
+            <Button 
+              type="submit" 
+              size="icon" 
+              disabled={!inputValue.trim()} 
+              className="min-w-[48px] min-h-[48px]"
+            >
+              <Send className="w-5 h-5" />
             </Button>
           </div>
-          <p className="text-[11px] sm:text-xs text-muted-foreground mt-1.5 sm:mt-2 text-center">
-            PLZ oder Stadtname eingeben
-          </p>
+          {/* Issue #21 - Clearer instruction when empty */}
+          {!inputValue.trim() && (
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              Geben Sie PLZ und/oder Ortsnamen ein
+            </p>
+          )}
         </form>
       )}
 
-      {/* Footer trust elements */}
-      <div className="px-2 sm:px-4 py-2 border-t border-border bg-muted/30 flex items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground flex-shrink-0">
-        <div className="flex items-center gap-1">
-          <Users className="w-3 h-3" />
-          <span className="hidden sm:inline">12'547 Umzüge</span>
-          <span className="sm:hidden">12k+ Umzüge</span>
+      {/* Footer trust elements - Issue #12 fix: no overlap, proper spacing */}
+      <div className="px-3 sm:px-4 py-2.5 border-t border-border bg-muted/40 flex items-center justify-center gap-3 sm:gap-5 text-xs sm:text-sm text-foreground/80 flex-shrink-0">
+        <div className="flex items-center gap-1.5">
+          <Users className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="font-medium">12k+ Umzüge</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Star className="w-3 h-3 text-yellow-500" />
-          <span>4.8/5</span>
+        <div className="flex items-center gap-1.5">
+          <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+          <span className="font-medium">4.8/5</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Clock className="w-3 h-3" />
-          <span>~2 Min.</span>
+        <div className="flex items-center gap-1.5">
+          <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="font-medium">~2 Min.</span>
         </div>
       </div>
 
@@ -1295,35 +1311,41 @@ function ServicesSelector({
   };
 
   return (
-    <div className="space-y-2">
-      <div className="grid gap-2">
+    <div className="space-y-3">
+      {/* Issue #9 - Scroll indicator for many options */}
+      <div className="grid gap-2.5 max-h-[280px] overflow-y-auto pr-1 relative">
         {options.map(opt => {
           const details = SERVICE_DETAILS[opt.id];
           const isExpanded = expanded === opt.id;
+          const isSelected = selected.includes(opt.id);
           
           return (
             <div key={opt.id} className="relative">
+              {/* Issue #13, #25 - Clear selection state */}
               <button
                 onClick={() => toggle(opt.id)}
                 className={cn(
-                  "w-full flex items-center justify-between px-3 sm:px-4 py-3 min-h-[52px] rounded-xl border transition-all text-left touch-manipulation active:scale-[0.98]",
-                  selected.includes(opt.id)
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50",
+                  "w-full flex items-center justify-between px-3.5 sm:px-4 py-3.5 min-h-[56px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
+                  isSelected
+                    ? "border-primary bg-primary/10 shadow-primary/10"
+                    : "border-border bg-card hover:border-primary/50",
                   isExpanded && "rounded-b-none"
                 )}
               >
                 <div className="flex-1 min-w-0 pr-2">
-                  <div className="text-sm font-medium">{opt.label}</div>
+                  <div className={cn(
+                    "text-sm font-semibold",
+                    isSelected && "text-primary"
+                  )}>{opt.label}</div>
                   {opt.description && (
-                    <div className="text-xs text-muted-foreground">{opt.description}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{opt.description}</div>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   {details && (
                     <button
                       onClick={(e) => toggleExpand(e, opt.id)}
-                      className="p-1.5 rounded-full hover:bg-muted transition-colors touch-manipulation"
+                      className="p-2 rounded-full hover:bg-muted transition-colors touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
                       aria-label="Details anzeigen"
                     >
                       <ChevronDown className={cn(
@@ -1332,14 +1354,15 @@ function ServicesSelector({
                       )} />
                     </button>
                   )}
+                  {/* Issue #13 - Prominent checkbox */}
                   <div className={cn(
-                    "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0",
-                    selected.includes(opt.id)
-                      ? "border-primary bg-primary"
-                      : "border-muted-foreground/30"
+                    "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
+                    isSelected
+                      ? "border-primary bg-primary scale-110"
+                      : "border-muted-foreground/40 bg-background"
                   )}>
-                    {selected.includes(opt.id) && (
-                      <Check className="w-3 h-3 text-primary-foreground" />
+                    {isSelected && (
+                      <Check className="w-3.5 h-3.5 text-primary-foreground" />
                     )}
                   </div>
                 </div>
@@ -1356,20 +1379,20 @@ function ServicesSelector({
                     className="overflow-hidden"
                   >
                     <div className={cn(
-                      "px-3 sm:px-4 py-3 border border-t-0 rounded-b-xl bg-muted/30",
-                      selected.includes(opt.id) ? "border-primary" : "border-border"
+                      "px-3.5 sm:px-4 py-3 border-2 border-t-0 rounded-b-xl bg-muted/40",
+                      isSelected ? "border-primary" : "border-border"
                     )}>
-                      <ul className="space-y-1.5">
+                      <ul className="space-y-2">
                         {details.bullets.map((bullet, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                            <Check className="w-3 h-3 text-green-600 mt-0.5 flex-shrink-0" />
+                          <li key={i} className="flex items-start gap-2 text-xs text-foreground/80">
+                            <Check className="w-3.5 h-3.5 text-green-600 mt-0.5 flex-shrink-0" />
                             <span>{bullet}</span>
                           </li>
                         ))}
                       </ul>
                       {details.duration && (
-                        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
-                          <Clock className="w-3 h-3" />
+                        <div className="flex items-center gap-1.5 mt-2.5 pt-2 border-t border-border/50 text-xs text-muted-foreground">
+                          <Clock className="w-3.5 h-3.5" />
                           <span>{details.duration}</span>
                         </div>
                       )}
@@ -1383,11 +1406,11 @@ function ServicesSelector({
       </div>
       <Button 
         onClick={() => onConfirm(selected)} 
-        className="w-full min-h-[48px] touch-manipulation"
+        className="w-full min-h-[52px] touch-manipulation text-base font-semibold"
         size="lg"
       >
         Weiter mit {selected.length} Leistung{selected.length !== 1 ? "en" : ""}
-        <ArrowRight className="w-4 h-4 ml-2" />
+        <ArrowRight className="w-5 h-5 ml-2" />
       </Button>
     </div>
   );
