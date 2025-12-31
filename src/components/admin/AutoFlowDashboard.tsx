@@ -603,7 +603,7 @@ Gib mir konkrete Code-Fixes für die oben genannten Issues. Fokussiere auf:
               {run && (
                 <>
                   <Button variant="outline" size="sm" asChild>
-                    <a href={`${baseUrl}/umzugsofferten?v=${flowId.replace('umzugsofferten-', '')}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`${baseUrl}/${flowId}`} target="_blank" rel="noopener noreferrer">
                       <Eye className="h-4 w-4 mr-2" />
                       Live ansehen
                     </a>
