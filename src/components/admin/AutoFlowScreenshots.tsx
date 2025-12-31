@@ -243,10 +243,14 @@ export function AutoFlowScreenshots() {
 
   const buildCaptureUrl = (flowId: string, flowPath: string, step: number) => {
     const baseUrl = getBaseUrl();
-    // uc_cb busts caches for screenshot tooling.
-    // uc_flow makes the flow selection deterministic (prevents default-flow mismatch)
-    // uc_capture enables capture mode with prefilled demo data
-    return `${baseUrl}${flowPath}?uc_capture=1&uc_flow=${flowId}&uc_step=${step}&uc_cb=${Date.now()}`;
+
+    // Build robust URL (flowPath may already include query params like ?variant=v1d)
+    const u = new URL(flowPath, baseUrl);
+    u.searchParams.set("uc_capture", "1");
+    u.searchParams.set("uc_flow", flowId);
+    u.searchParams.set("uc_step", String(step));
+    u.searchParams.set("uc_cb", String(Date.now()));
+    return u.toString();
   };
 
   const toggleFlow = (flowId: string) => {
