@@ -1270,19 +1270,6 @@ export function ChatFunnelV2e() {
           <div className="flex gap-1 p-1 bg-muted rounded-lg">
             <button
               type="button"
-              onClick={() => setLocationInputMode("plz")}
-              className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all touch-manipulation",
-                locationInputMode === "plz"
-                  ? "bg-card text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <MapPin className="w-4 h-4" />
-              PLZ / Ort
-            </button>
-            <button
-              type="button"
               onClick={() => setLocationInputMode("canton")}
               className={cn(
                 "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all touch-manipulation",
@@ -1293,6 +1280,19 @@ export function ChatFunnelV2e() {
             >
               <Map className="w-4 h-4" />
               Kanton
+            </button>
+            <button
+              type="button"
+              onClick={() => setLocationInputMode("plz")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all touch-manipulation",
+                locationInputMode === "plz"
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <MapPin className="w-4 h-4" />
+              PLZ / Ort
             </button>
           </div>
 
