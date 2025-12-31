@@ -936,11 +936,11 @@ export function ChatFunnelV2e() {
     switch (message.type) {
       case "bot":
         return (
-          <div className="flex gap-3 max-w-[85%]">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-primary" />
+          <div className="flex gap-2 sm:gap-3 max-w-[92%] sm:max-w-[85%]">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             </div>
-            <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3">
+            <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3">
               <p className="text-sm">{message.content}</p>
             </div>
           </div>
@@ -949,7 +949,7 @@ export function ChatFunnelV2e() {
       case "user":
         return (
           <div className="flex justify-end">
-            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%]">
+            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3 sm:px-4 py-2 sm:py-3 max-w-[85%] sm:max-w-[80%]">
               <p className="text-sm">{message.content}</p>
             </div>
           </div>
@@ -957,12 +957,12 @@ export function ChatFunnelV2e() {
 
       case "options":
         return (
-          <div className="flex gap-3 max-w-full">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-primary" />
+          <div className="flex gap-2 sm:gap-3 max-w-full">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             </div>
-            <div className="flex-1 space-y-2">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3">
+            <div className="flex-1 min-w-0 space-y-2">
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3">
                 <p className="text-sm">{message.content}</p>
               </div>
               {currentStep === "services" ? (
@@ -971,12 +971,12 @@ export function ChatFunnelV2e() {
                   onConfirm={handleServicesConfirm}
                 />
               ) : (
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mt-2 w-full">
                   {message.options?.map(opt => (
                     <button
                       key={opt.id}
                       onClick={() => handleOptionSelect(opt.id, opt.label)}
-                      className="flex items-center gap-2 px-4 py-3 min-h-[48px] bg-card border border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.98] transition-all group touch-manipulation"
+                      className="flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-3 min-h-[52px] bg-card border border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.98] transition-all group touch-manipulation"
                     >
                       {opt.icon && (
                         <span className="text-muted-foreground group-hover:text-primary transition-colors">
@@ -984,9 +984,9 @@ export function ChatFunnelV2e() {
                         </span>
                       )}
                       <div className="text-left">
-                        <div className="text-sm font-medium">{opt.label}</div>
+                        <div className="text-sm font-medium truncate">{opt.label}</div>
                         {opt.sublabel && (
-                          <div className="text-xs text-muted-foreground">{opt.sublabel}</div>
+                          <div className="text-xs text-muted-foreground truncate">{opt.sublabel}</div>
                         )}
                       </div>
                     </button>
@@ -999,12 +999,12 @@ export function ChatFunnelV2e() {
 
       case "video":
         return (
-          <div className="flex gap-3 max-w-full">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-primary" />
+          <div className="flex gap-2 sm:gap-3 max-w-full">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             </div>
-            <div className="flex-1">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
                 <p className="text-sm">{message.content}</p>
               </div>
               {currentStep === "videoOffer" && (
@@ -1019,12 +1019,12 @@ export function ChatFunnelV2e() {
 
       case "price":
         return (
-          <div className="flex gap-3 max-w-full">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-primary" />
+          <div className="flex gap-2 sm:gap-3 max-w-full">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             </div>
-            <div className="flex-1">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
                 <p className="text-sm">{message.content}</p>
               </div>
               <PriceRevealCard priceData={message.priceData!} />
@@ -1034,12 +1034,12 @@ export function ChatFunnelV2e() {
 
       case "companies":
         return (
-          <div className="flex gap-3 max-w-full">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-primary" />
+          <div className="flex gap-2 sm:gap-3 max-w-full">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             </div>
-            <div className="flex-1">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
                 <p className="text-sm">{message.content}</p>
               </div>
               <CompanySelector
@@ -1053,12 +1053,12 @@ export function ChatFunnelV2e() {
 
       case "contact":
         return (
-          <div className="flex gap-3 max-w-full">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-primary" />
+          <div className="flex gap-2 sm:gap-3 max-w-full">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             </div>
-            <div className="flex-1">
-              <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3">
                 <p className="text-sm">{message.content}</p>
               </div>
               <ContactForm onSubmit={handleContactSubmit} />
@@ -1094,7 +1094,7 @@ export function ChatFunnelV2e() {
   const progress = getProgress();
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] md:h-[600px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-10rem)] sm:h-[calc(100vh-12rem)] md:h-[600px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden">
       {/* Header with Progress */}
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
         {/* Progress bar */}
@@ -1106,18 +1106,18 @@ export function ChatFunnelV2e() {
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
-        <div className="px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-              <Bot className="w-5 h-5 text-primary" />
+        <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold text-sm">Umzugs-Assistent</h3>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <h3 className="font-semibold text-xs sm:text-sm">Umzugs-Assistent</h3>
+              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse" />
                 <span>Online</span>
                 <span className="text-muted-foreground/50">·</span>
-                <span>{progress}% abgeschlossen</span>
+                <span>{progress}%</span>
               </div>
             </div>
           </div>
@@ -1129,7 +1129,7 @@ export function ChatFunnelV2e() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
         <AnimatePresence mode="popLayout">
           {messages.map((msg) => (
             <motion.div
@@ -1149,16 +1149,16 @@ export function ChatFunnelV2e() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex gap-3"
+            className="flex gap-2 sm:gap-3"
           >
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-primary" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             </div>
-            <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3">
+            <div className="bg-muted rounded-2xl rounded-tl-sm px-3 sm:px-4 py-2 sm:py-3">
               <div className="flex gap-1">
-                <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </motion.div>
@@ -1169,7 +1169,7 @@ export function ChatFunnelV2e() {
 
       {/* Input */}
       {(currentStep === "fromLocation" || currentStep === "toLocation") && (
-        <form onSubmit={handleTextSubmit} className="p-4 border-t border-border bg-background/50">
+        <form onSubmit={handleTextSubmit} className="p-3 sm:p-4 border-t border-border bg-background/50 flex-shrink-0">
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -1178,29 +1178,30 @@ export function ChatFunnelV2e() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={currentStep === "fromLocation" ? "z.B. 8001 Zürich" : "z.B. 3011 Bern"}
-                className="pl-10"
+                className="pl-10 min-h-[44px]"
                 autoFocus
               />
             </div>
-            <Button type="submit" size="icon" disabled={!inputValue.trim()}>
+            <Button type="submit" size="icon" disabled={!inputValue.trim()} className="min-w-[44px] min-h-[44px]">
               <Send className="w-4 h-4" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
+          <p className="text-[11px] sm:text-xs text-muted-foreground mt-1.5 sm:mt-2 text-center">
             PLZ oder Stadtname eingeben
           </p>
         </form>
       )}
 
       {/* Footer trust elements */}
-      <div className="px-4 py-2 border-t border-border bg-muted/30 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+      <div className="px-2 sm:px-4 py-2 border-t border-border bg-muted/30 flex items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground flex-shrink-0">
         <div className="flex items-center gap-1">
           <Users className="w-3 h-3" />
-          <span>12'547 Umzüge</span>
+          <span className="hidden sm:inline">12'547 Umzüge</span>
+          <span className="sm:hidden">12k+ Umzüge</span>
         </div>
         <div className="flex items-center gap-1">
           <Star className="w-3 h-3 text-yellow-500" />
-          <span>4.8/5 Bewertung</span>
+          <span>4.8/5</span>
         </div>
         <div className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
