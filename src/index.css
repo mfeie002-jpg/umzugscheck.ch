@@ -13,10 +13,12 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
 }
 
 /* Safe area insets for mobile devices */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
+@supports (padding: env(safe-area-inset-top)) {
   .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
   .pb-safe { padding-bottom: max(0.625rem, env(safe-area-inset-bottom)); }
+  .pt-safe { padding-top: max(0.5rem, env(safe-area-inset-top)); }
   .mb-safe { margin-bottom: env(safe-area-inset-bottom, 0px); }
+  .mt-safe { margin-top: env(safe-area-inset-top, 0px); }
 }
 
 /* Touch optimization */
