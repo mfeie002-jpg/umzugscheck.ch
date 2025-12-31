@@ -78,11 +78,10 @@ interface CaptureResult {
 }
 
 export function AutoVersionScreenshots() {
-  // IMPORTANT: Default to the CURRENT origin so captures match the running build.
-  // You can still override this to a public domain if needed.
+  // IMPORTANT: Screenshot providers must be able to access the URL publicly.
+  // Our Preview domain is public and contains all routes.
   const defaultPublicBaseUrl = useMemo(() => {
-    if (typeof window === "undefined") return "https://www.umzugscheck.ch";
-    return window.location.origin.replace(/\/$/, "");
+    return SITE_CONFIG.previewUrl.replace(/\/$/, "");
   }, []);
 
   const [baseUrl, setBaseUrl] = useState(defaultPublicBaseUrl);
