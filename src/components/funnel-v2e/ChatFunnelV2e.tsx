@@ -1604,19 +1604,19 @@ function ServicesSelector({
                   </div>
                 )}
                 
-                {/* Description + Expand button */}
-                <div className="flex items-center justify-between gap-2">
+                {/* Description + Expand button - improved alignment */}
+                <div className="flex items-center justify-between gap-3 min-h-[36px]">
                   {details ? (
-                    <p className="text-sm text-muted-foreground">{details.teaser}</p>
+                    <p className="text-sm text-muted-foreground flex-1 min-w-0">{details.teaser}</p>
                   ) : opt.description ? (
-                    <p className="text-sm text-muted-foreground">{opt.description}</p>
+                    <p className="text-sm text-muted-foreground flex-1 min-w-0">{opt.description}</p>
                   ) : null}
                   
                   {details && (
                     /* Floating gold action button */
                     <button
                       onClick={(e) => toggleExpand(e, opt.id)}
-                      className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 font-semibold shadow-lg hover:shadow-xl transition-all touch-manipulation text-xs flex-shrink-0"
+                      className="relative flex items-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 font-semibold shadow-lg hover:shadow-xl transition-all touch-manipulation text-xs flex-shrink-0 whitespace-nowrap"
                       aria-label="Details anzeigen"
                       style={{
                         animation: isExpanded ? 'none' : 'float 3s ease-in-out infinite',
