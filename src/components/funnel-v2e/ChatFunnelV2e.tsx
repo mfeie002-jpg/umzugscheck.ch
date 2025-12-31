@@ -1134,7 +1134,28 @@ export function ChatFunnelV2e() {
     return steps[currentStep] || 0;
   };
 
+  // Step counter - user-facing steps (excluding welcome, submitting, success)
+  const USER_STEPS: FlowStep[] = [
+    "moveType", "fromLocation", "toLocation", "apartmentSize", 
+    "moveDate", "services", "companies", "contact"
+  ];
+  const TOTAL_STEPS = USER_STEPS.length;
+  
+  const getCurrentStepNumber = (): number => {
+    const idx = USER_STEPS.indexOf(currentStep);
+    if (idx === -1) {
+      // For steps not in user steps (welcome, videoOffer, priceReveal, submitting, success)
+      if (currentStep === "welcome") return 0;
+      if (currentStep === "videoOffer") return 5; // Between apartmentSize and moveDate
+      if (currentStep === "priceReveal") return 7; // Between services and companies
+      if (currentStep === "submitting" || currentStep === "success") return TOTAL_STEPS;
+      return 0;
+    }
+    return idx + 1;
+  };
+
   const progress = getProgress();
+  const currentStepNum = getCurrentStepNumber();
 
   // Show loading overlay between steps (when typing animation is happening)
   const showLoadingOverlay = isTyping;
@@ -1173,10 +1194,10 @@ export function ChatFunnelV2e() {
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           />
-          {/* Issue #2 - Progress percentage ALWAYS visible, including mobile */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[10px] sm:text-xs font-black text-white drop-shadow-md px-1.5 sm:px-2 py-0.5 bg-primary/90 rounded-full">
-              {progress}%
+          {/* Step counter and progress */}
+          <div className="absolute inset-0 flex items-center justify-center gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-white drop-shadow-md px-1.5 sm:px-2 py-0.5 bg-primary/90 rounded-full">
+              Schritt {currentStepNum}/{TOTAL_STEPS}
             </span>
           </div>
         </div>
