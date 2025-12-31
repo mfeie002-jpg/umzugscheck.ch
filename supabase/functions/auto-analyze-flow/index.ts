@@ -469,7 +469,13 @@ async function runAnalysisInBackground(
     const flowParam = flowId.replace('umzugsofferten-', '').replace('umzugsofferten', 'v1');
     
     for (let step = 1; step <= flowConfig.steps; step++) {
-      const stepUrl = `${baseUrl}${flowConfig.baseUrl}?uc_capture=1&uc_step=${step}&uc_flow=${flowParam}&uc_cb=${Date.now()}`;
+      // Robust URL building (flowConfig.baseUrl may already contain query params like ?variant=v1d)
+      const u = new URL(flowConfig.baseUrl, baseUrl);
+      u.searchParams.set('uc_capture', '1');
+      u.searchParams.set('uc_step', String(step));
+      u.searchParams.set('uc_flow', flowParam);
+      u.searchParams.set('uc_cb', String(Date.now()));
+      const stepUrl = u.toString();
       const stepName = `Step ${step}`;
 
       console.log(`[Background] Analyzing step ${step}: ${stepUrl}`);

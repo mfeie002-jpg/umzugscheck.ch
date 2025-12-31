@@ -115,7 +115,16 @@ const AICommandCenter = () => {
 
           setStatus(`${flow.label} - Step ${stepConfig.step}/${flow.steps.length}...`);
 
-          const captureUrl = `${baseUrl}${flow.path}?uc_capture=1&uc_step=${stepConfig.step}&uc_flow=${flow.id.replace('umzugsofferten-', 'v').replace('umzugsofferten', 'v1')}`;
+          const flowParam = flow.id
+            .replace('umzugsofferten-', 'v')
+            .replace('umzugsofferten', 'v1');
+
+          const u = new URL(flow.path, baseUrl);
+          u.searchParams.set('uc_capture', '1');
+          u.searchParams.set('uc_step', String(stepConfig.step));
+          u.searchParams.set('uc_flow', flowParam);
+          u.searchParams.set('uc_cb', String(Date.now()));
+          const captureUrl = u.toString();
 
           // Desktop Screenshot
           currentOp++;
