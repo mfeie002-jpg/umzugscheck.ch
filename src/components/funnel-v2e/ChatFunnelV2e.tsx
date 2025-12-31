@@ -1417,20 +1417,39 @@ export function ChatFunnelV2e() {
         </div>
       )}
 
-      {/* Issue #8, #12, #28, #34 - COMPACT footer, minimal height on mobile */}
-      <div className="px-3 sm:px-6 py-2 sm:py-3 border-t border-border bg-muted/40 flex items-center justify-center gap-4 sm:gap-8 text-sm sm:text-base text-foreground flex-shrink-0">
-        <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
-          <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          <span className="font-bold">12k+</span>
+      {/* Issue #8, #12, #28, #34 - COMPACT footer with back button */}
+      <div className="px-3 sm:px-6 py-2 sm:py-3 border-t border-border bg-muted/40 flex items-center justify-between text-sm sm:text-base text-foreground flex-shrink-0">
+        {/* Back button - left side */}
+        {canGoBack ? (
+          <button
+            onClick={goBack}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors touch-manipulation min-h-[36px] sm:min-h-[44px]"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Zurück</span>
+          </button>
+        ) : (
+          <div className="w-20" />
+        )}
+        
+        {/* Stats - center */}
+        <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
+            <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <span className="font-bold">12k+</span>
+          </div>
+          <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
+            <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 fill-yellow-500" />
+            <span className="font-bold">4.8</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <span className="font-bold">~2 Min</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
-          <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 fill-yellow-500" />
-          <span className="font-bold">4.8</span>
-        </div>
-        <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
-          <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          <span className="font-bold">~2 Min</span>
-        </div>
+        
+        {/* Spacer - right side */}
+        <div className="w-20" />
       </div>
 
       {/* Capture-ready sentinel for screenshot automation */}
