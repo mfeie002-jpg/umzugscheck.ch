@@ -1360,7 +1360,7 @@ Zeige mir die Code-Diffs für jedes Problem.`;
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">
             <BarChart3 className="h-4 w-4 mr-2" />
             Übersicht
