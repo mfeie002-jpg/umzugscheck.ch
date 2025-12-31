@@ -285,7 +285,7 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
   const secretPhrase = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") || "";
   
   if (!apiKey) {
-    console.log("No screenshot API key configured");
+    console.error("SCREENSHOTMACHINE_API_KEY not configured!");
     return null;
   }
 
@@ -300,7 +300,7 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
       device: device,
       format: 'png',
       cacheLimit: '0',
-      delay: '3000',
+      delay: '5000', // Increased delay for better rendering
     });
     
     // Use pure JS MD5 instead of SubtleCrypto (Deno doesn't support MD5)
@@ -310,15 +310,50 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
     }
 
     const screenshotUrl = `https://api.screenshotmachine.com?${params.toString()}`;
+    console.log(`Fetching screenshot for ${url} (${dimension})...`);
+    
     const response = await fetch(screenshotUrl);
     
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.error(`Screenshot API returned ${response.status} ${response.statusText} for ${url}`);
+      const errorText = await response.text();
+      console.error(`Error response: ${errorText}`);
+      return null;
+    }
+    
+    const contentType = response.headers.get('content-type');
+    console.log(`Response content-type: ${contentType}`);
+    
+    // Check if response is actually an image
+    if (!contentType?.includes('image')) {
+      console.error(`Expected image but got ${contentType} for ${url}`);
+      const text = await response.text();
+      console.error(`Non-image response: ${text.substring(0, 200)}`);
+      return null;
+    }
     
     const arrayBuffer = await response.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    console.log(`Got ${arrayBuffer.byteLength} bytes for ${url}`);
+    
+    if (arrayBuffer.byteLength < 1000) {
+      console.error(`Screenshot too small (${arrayBuffer.byteLength} bytes) - likely an error`);
+      return null;
+    }
+    
+    // Convert to base64 safely for large images
+    const uint8Array = new Uint8Array(arrayBuffer);
+    let binary = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < uint8Array.length; i += chunkSize) {
+      const chunk = uint8Array.subarray(i, i + chunkSize);
+      binary += String.fromCharCode.apply(null, Array.from(chunk));
+    }
+    const base64 = btoa(binary);
+    
+    console.log(`Successfully captured screenshot for ${url} (${base64.length} chars base64)`);
     return `data:image/png;base64,${base64}`;
   } catch (error) {
-    console.error("Screenshot capture failed:", error);
+    console.error(`Screenshot capture failed for ${url}:`, error);
     return null;
   }
 }
