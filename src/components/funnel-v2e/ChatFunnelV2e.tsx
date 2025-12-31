@@ -1121,10 +1121,14 @@ export function ChatFunnelV2e() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Shield className="w-3.5 h-3.5 text-green-600" />
-            <span className="hidden sm:inline">100% kostenlos</span>
-          </div>
+          <a 
+            href="tel:+41445057070" 
+            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-full text-xs font-medium transition-colors touch-manipulation active:scale-95"
+          >
+            <Phone className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">044 505 70 70</span>
+            <span className="sm:hidden">Anrufen</span>
+          </a>
         </div>
       </div>
 
