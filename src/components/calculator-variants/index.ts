@@ -35,7 +35,9 @@ export { V3bFeedbackBased } from './V3bFeedbackBased';
 export { V3bSwipeNavigation } from './V3bSwipeNavigation';
 export { V3gFeedbackBased } from './V3gFeedbackBased';
 export { V3cBottomSheet } from './V3cBottomSheet';
+export { V3cFeedbackBased } from './V3cFeedbackBased';
 export { V3dThumbZone } from './V3dThumbZone';
+export { V3dFeedbackBased } from './V3dFeedbackBased';
 export { V3eFullscreen } from './V3eFullscreen';
 
 // V4 Variants (Conversion-Focused)
@@ -101,7 +103,9 @@ export const VARIANT_REGISTRY: Record<string, {
   'v3b': { component: 'V3bSwipeNavigation', stepCount: 4, label: 'V3b Swipe Navigation' },
   'v3g': { component: 'V3gFeedbackBased', stepCount: 4, label: 'V3g Feedback Based' },
   'v3c': { component: 'V3cBottomSheet', stepCount: 4, label: 'V3c Bottom Sheet' },
+  'v3c-feedback': { component: 'V3cFeedbackBased', stepCount: 4, label: 'V3c ChatGPT Agent 1' },
   'v3d': { component: 'V3dThumbZone', stepCount: 3, label: 'V3d Thumb Zone' },
+  'v3d-feedback': { component: 'V3dFeedbackBased', stepCount: 4, label: 'V3d ChatGPT Agent 2' },
   'v3e': { component: 'V3eFullscreen', stepCount: 3, label: 'V3e Fullscreen' },
   // V4 - Conversion-Focused
   'v4': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4 Conversion' },
