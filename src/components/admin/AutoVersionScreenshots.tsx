@@ -78,10 +78,11 @@ interface CaptureResult {
 }
 
 export function AutoVersionScreenshots() {
-  // Always default to preview URL for analysis
-  const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
+  // IMPORTANT: Default to the CURRENT origin so captures match the running build.
+  // You can still override this to a public domain if needed.
   const defaultPublicBaseUrl = useMemo(() => {
-    return PREVIEW_URL.replace(/\/$/, "");
+    if (typeof window === "undefined") return "https://www.umzugscheck.ch";
+    return window.location.origin.replace(/\/$/, "");
   }, []);
 
   const [baseUrl, setBaseUrl] = useState(defaultPublicBaseUrl);

@@ -210,12 +210,13 @@ interface CaptureResult {
 }
 
 export function AutoFlowScreenshots() {
-  // IMPORTANT: Default to the preview URL for analysis (routes exist here).
-  // Users can still switch to the live domain manually for production captures.
-  const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
+  // IMPORTANT: Default to the CURRENT origin so captures match the running build.
+  // You can still override this to a public domain if needed.
   const defaultPublicBaseUrl = useMemo(() => {
-    return PREVIEW_URL.replace(/\/$/, "");
+    if (typeof window === "undefined") return "https://www.umzugscheck.ch";
+    return window.location.origin.replace(/\/$/, "");
   }, []);
+
 
   const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPublicBaseUrl);
   const [selectedFlows, setSelectedFlows] = useState<string[]>(
