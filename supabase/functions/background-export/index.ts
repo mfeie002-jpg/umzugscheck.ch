@@ -283,16 +283,16 @@ function md5(string: string): string {
 async function captureScreenshot(url: string, dimension: string): Promise<string | null> {
   const apiKey = Deno.env.get("SCREENSHOTMACHINE_API_KEY");
   const secretPhrase = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") || "";
-  
+
   if (!apiKey) {
     console.error("SCREENSHOTMACHINE_API_KEY not configured!");
     return null;
   }
 
   try {
-    const [width, height] = dimension.split('x');
+    const [width] = dimension.split('x');
     const device = parseInt(width) < 500 ? 'phone' : 'desktop';
-    
+
     const params = new URLSearchParams({
       key: apiKey,
       url: url,
@@ -302,7 +302,7 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
       cacheLimit: '0',
       delay: '5000', // Increased delay for better rendering
     });
-    
+
     // Use pure JS MD5 instead of SubtleCrypto (Deno doesn't support MD5)
     if (secretPhrase) {
       const hash = md5(url + secretPhrase);
@@ -311,19 +311,30 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
 
     const screenshotUrl = `https://api.screenshotmachine.com?${params.toString()}`;
     console.log(`Fetching screenshot for ${url} (${dimension})...`);
-    
-    const response = await fetch(screenshotUrl);
-    
+
+    // IMPORTANT: Add a hard timeout so the job can't hang forever.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60_000);
+
+    let response: Response;
+    try {
+      response = await fetch(screenshotUrl, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeout);
+    }
+
     if (!response.ok) {
-      console.error(`Screenshot API returned ${response.status} ${response.statusText} for ${url}`);
+      console.error(
+        `Screenshot API returned ${response.status} ${response.statusText} for ${url}`
+      );
       const errorText = await response.text();
       console.error(`Error response: ${errorText}`);
       return null;
     }
-    
+
     const contentType = response.headers.get('content-type');
     console.log(`Response content-type: ${contentType}`);
-    
+
     // Check if response is actually an image
     if (!contentType?.includes('image')) {
       console.error(`Expected image but got ${contentType} for ${url}`);
@@ -331,15 +342,15 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
       console.error(`Non-image response: ${text.substring(0, 200)}`);
       return null;
     }
-    
+
     const arrayBuffer = await response.arrayBuffer();
     console.log(`Got ${arrayBuffer.byteLength} bytes for ${url}`);
-    
+
     if (arrayBuffer.byteLength < 1000) {
       console.error(`Screenshot too small (${arrayBuffer.byteLength} bytes) - likely an error`);
       return null;
     }
-    
+
     // Convert to base64 safely for large images
     const uint8Array = new Uint8Array(arrayBuffer);
     let binary = '';
@@ -349,10 +360,16 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
       binary += String.fromCharCode.apply(null, Array.from(chunk));
     }
     const base64 = btoa(binary);
-    
+
     console.log(`Successfully captured screenshot for ${url} (${base64.length} chars base64)`);
     return `data:image/png;base64,${base64}`;
   } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.toLowerCase().includes('abort')) {
+      console.error(`Screenshot capture timed out for ${url}`);
+      return null;
+    }
+
     console.error(`Screenshot capture failed for ${url}:`, error);
     return null;
   }
@@ -360,12 +377,28 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
 
 async function captureHtml(url: string): Promise<string | null> {
   try {
-    const response = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; FlowExport/1.0)' }
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
+
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; FlowExport/1.0)' },
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+
     if (!response.ok) return null;
     return await response.text();
   } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.toLowerCase().includes('abort')) {
+      console.error(`HTML capture timed out for ${url}`);
+      return null;
+    }
+
     console.error("HTML capture failed:", error);
     return null;
   }
