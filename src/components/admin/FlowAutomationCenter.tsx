@@ -11,7 +11,7 @@
  */
 
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -561,6 +561,27 @@ Antworte auf Deutsch.`;
         if (!latestByFlow.has(row.flow_id)) latestByFlow.set(row.flow_id, row);
       });
 
+      const runIds = Array.from(latestByFlow.values()).map((r: any) => r.id).filter(Boolean);
+      const countsByRun = new Map<string, { total: number; critical: number }>();
+
+      // Backfill counts for older runs that didn't store metadata
+      if (runIds.length > 0) {
+        const { data: issues, error: issuesErr } = await supabase
+          .from("flow_ux_issues")
+          .select("run_id, severity")
+          .in("run_id", runIds);
+
+        if (!issuesErr) {
+          (issues ?? []).forEach((i: any) => {
+            const runId = i.run_id as string;
+            const current = countsByRun.get(runId) ?? { total: 0, critical: 0 };
+            current.total += 1;
+            if (i.severity === "critical") current.critical += 1;
+            countsByRun.set(runId, current);
+          });
+        }
+      }
+
       setAnalysisResults(
         FLOW_OPTIONS.map((flow) => {
           const row = latestByFlow.get(flow.id);
@@ -569,14 +590,24 @@ Antworte auf Deutsch.`;
           }
 
           const meta = (row.metadata ?? {}) as any;
+          const counts = countsByRun.get(row.id);
+
           return {
             flowId: flow.id,
             flowName: flow.label,
             status: "completed" as const,
             score: row.overall_score ?? undefined,
             summary: row.ai_summary ?? undefined,
-            issuesCount: meta.issuesCount ?? meta.issues_count ?? undefined,
-            criticalCount: meta.criticalCount ?? meta.critical_count ?? undefined,
+            issuesCount:
+              meta.issuesCount ??
+              meta.issues_count ??
+              counts?.total ??
+              undefined,
+            criticalCount:
+              meta.criticalCount ??
+              meta.critical_count ??
+              counts?.critical ??
+              undefined,
             runId: row.id,
           };
         })
@@ -591,15 +622,191 @@ Antworte auf Deutsch.`;
     }
   };
 
+  // Poll running analysis runs (main + variants) so the UI updates automatically.
+  const mainRunningRunIdsKey = useMemo(() => {
+    return analysisResults
+      .filter((r) => r.status === "running" && !!r.runId)
+      .map((r) => r.runId as string)
+      .sort()
+      .join(",");
+  }, [analysisResults]);
+
+  useEffect(() => {
+    if (!mainRunningRunIdsKey) return;
+
+    let cancelled = false;
+    const runIds = mainRunningRunIdsKey.split(",").filter(Boolean);
+
+    const tick = async () => {
+      if (cancelled || runIds.length === 0) return;
+
+      const [{ data: runs, error: runsErr }, { data: issues, error: issuesErr }] = await Promise.all([
+        supabase
+          .from("flow_analysis_runs")
+          .select("id, status, overall_score, ai_summary, metadata, steps_captured, total_steps")
+          .in("id", runIds),
+        supabase
+          .from("flow_ux_issues")
+          .select("run_id, severity")
+          .in("run_id", runIds),
+      ]);
+
+      if (cancelled) return;
+      if (runsErr) {
+        console.warn("Polling flow_analysis_runs failed:", runsErr);
+        return;
+      }
+
+      const runById = new Map<string, any>();
+      (runs ?? []).forEach((r: any) => runById.set(r.id, r));
+
+      const countsByRun = new Map<string, { total: number; critical: number }>();
+      if (!issuesErr) {
+        (issues ?? []).forEach((i: any) => {
+          const rid = i.run_id as string;
+          const current = countsByRun.get(rid) ?? { total: 0, critical: 0 };
+          current.total += 1;
+          if (i.severity === "critical") current.critical += 1;
+          countsByRun.set(rid, current);
+        });
+      }
+
+      setAnalysisResults((prev) =>
+        prev.map((item) => {
+          if (!item.runId) return item;
+          const run = runById.get(item.runId);
+          if (!run) return item;
+
+          const meta = (run.metadata ?? {}) as any;
+          const counts = countsByRun.get(item.runId);
+
+          const status: AnalysisResult["status"] =
+            run.status === "completed"
+              ? "completed"
+              : run.status === "failed"
+              ? "error"
+              : "running";
+
+          return {
+            ...item,
+            status,
+            score: run.overall_score ?? item.score,
+            summary: run.ai_summary ?? item.summary,
+            issuesCount: meta.issuesCount ?? counts?.total ?? item.issuesCount,
+            criticalCount: meta.criticalCount ?? counts?.critical ?? item.criticalCount,
+            currentStep: run.steps_captured ?? item.currentStep,
+            totalSteps: run.total_steps ?? item.totalSteps,
+            error: status === "error" ? meta?.error ?? item.error : undefined,
+          };
+        })
+      );
+    };
+
+    // Immediate tick + interval
+    tick();
+    const id = window.setInterval(tick, 4000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [mainRunningRunIdsKey]);
+
+  const variantRunningRunIdsKey = useMemo(() => {
+    return variantAnalysisResults
+      .filter((r) => r.status === "running" && !!r.runId)
+      .map((r) => r.runId as string)
+      .sort()
+      .join(",");
+  }, [variantAnalysisResults]);
+
+  useEffect(() => {
+    if (!variantRunningRunIdsKey) return;
+
+    let cancelled = false;
+    const runIds = variantRunningRunIdsKey.split(",").filter(Boolean);
+
+    const tick = async () => {
+      if (cancelled || runIds.length === 0) return;
+
+      const [{ data: runs, error: runsErr }, { data: issues, error: issuesErr }] = await Promise.all([
+        supabase
+          .from("flow_analysis_runs")
+          .select("id, status, overall_score, ai_summary, metadata, steps_captured, total_steps")
+          .in("id", runIds),
+        supabase
+          .from("flow_ux_issues")
+          .select("run_id, severity")
+          .in("run_id", runIds),
+      ]);
+
+      if (cancelled) return;
+      if (runsErr) {
+        console.warn("Polling variant flow_analysis_runs failed:", runsErr);
+        return;
+      }
+
+      const runById = new Map<string, any>();
+      (runs ?? []).forEach((r: any) => runById.set(r.id, r));
+
+      const countsByRun = new Map<string, { total: number; critical: number }>();
+      if (!issuesErr) {
+        (issues ?? []).forEach((i: any) => {
+          const rid = i.run_id as string;
+          const current = countsByRun.get(rid) ?? { total: 0, critical: 0 };
+          current.total += 1;
+          if (i.severity === "critical") current.critical += 1;
+          countsByRun.set(rid, current);
+        });
+      }
+
+      setVariantAnalysisResults((prev) =>
+        prev.map((item) => {
+          if (!item.runId) return item;
+          const run = runById.get(item.runId);
+          if (!run) return item;
+
+          const meta = (run.metadata ?? {}) as any;
+          const counts = countsByRun.get(item.runId);
+
+          const status: AnalysisResult["status"] =
+            run.status === "completed"
+              ? "completed"
+              : run.status === "failed"
+              ? "error"
+              : "running";
+
+          return {
+            ...item,
+            status,
+            score: run.overall_score ?? item.score,
+            summary: run.ai_summary ?? item.summary,
+            issuesCount: meta.issuesCount ?? counts?.total ?? item.issuesCount,
+            criticalCount: meta.criticalCount ?? counts?.critical ?? item.criticalCount,
+            currentStep: run.steps_captured ?? item.currentStep,
+            totalSteps: run.total_steps ?? item.totalSteps,
+            error: status === "error" ? meta?.error ?? item.error : undefined,
+          };
+        })
+      );
+    };
+
+    tick();
+    const id = window.setInterval(tick, 4000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [variantRunningRunIdsKey]);
+
   // Analyze all 9 flows
   const analyzeAllFlows = async () => {
     setIsAnalyzing(true);
     setAnalysisProgress(0);
-    
-    const results: AnalysisResult[] = FLOW_OPTIONS.map(flow => ({
+
+    const results: AnalysisResult[] = FLOW_OPTIONS.map((flow) => ({
       flowId: flow.id,
       flowName: flow.label,
-      status: 'pending' as const
+      status: "pending" as const,
     }));
     setAnalysisResults(results);
 
@@ -613,52 +820,62 @@ Antworte auf Deutsch.`;
     for (let i = 0; i < FLOW_OPTIONS.length; i++) {
       const flow = FLOW_OPTIONS[i];
       setCurrentFlowAnalyzing(flow.id);
-      
+
       // Update status to running
-      setAnalysisResults(prev => prev.map(r => 
-        r.flowId === flow.id ? { ...r, status: 'running' as const } : r
-      ));
+      setAnalysisResults((prev) =>
+        prev.map((r) => (r.flowId === flow.id ? { ...r, status: "running" as const } : r))
+      );
 
       try {
-        const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
-          body: { 
-            flowId: flow.id, 
-            runType: 'manual',
-            baseUrl 
-          }
+        const { data, error } = await supabase.functions.invoke("auto-analyze-flow", {
+          body: {
+            flowId: flow.id,
+            runType: "manual",
+            baseUrl,
+          },
         });
 
         if (error) throw error;
 
-        setAnalysisResults(prev => prev.map(r => 
-          r.flowId === flow.id ? {
-            ...r,
-            status: 'completed' as const,
-            score: data.overallScore,
-            issuesCount: data.issuesCount,
-            criticalCount: data.criticalCount,
-            summary: data.summary
-          } : r
-        ));
+        // IMPORTANT: auto-analyze-flow runs in the background and returns runId.
+        // We keep the card in "running" state and poll the DB until it becomes completed.
+        setAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === flow.id
+              ? {
+                  ...r,
+                  status: "running" as const,
+                  runId: data?.runId ?? r.runId,
+                  currentStep: 0,
+                  totalSteps: data?.totalSteps ?? r.totalSteps,
+                }
+              : r
+          )
+        );
 
-        toast.success(`${flow.label} analysiert: Score ${data.overallScore}/100`);
+        toast.info(`${flow.label}: Analyse gestartet`);
       } catch (error) {
         console.error(`Error analyzing ${flow.id}:`, error);
-        setAnalysisResults(prev => prev.map(r => 
-          r.flowId === flow.id ? {
-            ...r,
-            status: 'error' as const,
-            error: error instanceof Error ? error.message : 'Unbekannter Fehler'
-          } : r
-        ));
+        setAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === flow.id
+              ? {
+                  ...r,
+                  status: "error" as const,
+                  error: error instanceof Error ? error.message : "Unbekannter Fehler",
+                }
+              : r
+          )
+        );
       }
 
+      // Progress here means "started" (actual completion is tracked via polling)
       setAnalysisProgress(((i + 1) / FLOW_OPTIONS.length) * 100);
     }
 
     setIsAnalyzing(false);
     setCurrentFlowAnalyzing(null);
-    toast.success("Alle 9 Flows analysiert!");
+    toast.success("Analysen gestartet – Ergebnisse werden automatisch aktualisiert.");
   };
 
   // Load variants from database for a specific flow number
@@ -753,11 +970,13 @@ Antworte auf Deutsch.`;
 
     setIsAnalyzingVariants(true);
     setVariantAnalysisProgress(0);
-    setVariantAnalysisResults(variants.map(v => ({
-      flowId: v.id,
-      flowName: v.label,
-      status: 'pending' as const
-    })));
+    setVariantAnalysisResults(
+      variants.map((v) => ({
+        flowId: v.id,
+        flowName: v.label,
+        status: "pending" as const,
+      }))
+    );
 
     const baseUrl = (() => {
       if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
@@ -769,43 +988,50 @@ Antworte auf Deutsch.`;
     for (let i = 0; i < variants.length; i++) {
       const variant = variants[i];
       setCurrentFlowAnalyzing(variant.id);
-      
-      setVariantAnalysisResults(prev => prev.map(r => 
-        r.flowId === variant.id ? { ...r, status: 'running' as const } : r
-      ));
+
+      setVariantAnalysisResults((prev) =>
+        prev.map((r) => (r.flowId === variant.id ? { ...r, status: "running" as const } : r))
+      );
 
       try {
-        const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
-          body: { 
-            flowId: variant.id, 
-            runType: 'manual',
-            baseUrl 
-          }
+        const { data, error } = await supabase.functions.invoke("auto-analyze-flow", {
+          body: {
+            flowId: variant.id,
+            runType: "manual",
+            baseUrl,
+          },
         });
 
         if (error) throw error;
 
-        setVariantAnalysisResults(prev => prev.map(r => 
-          r.flowId === variant.id ? {
-            ...r,
-            status: 'completed' as const,
-            score: data.overallScore,
-            issuesCount: data.issuesCount,
-            criticalCount: data.criticalCount,
-            summary: data.summary
-          } : r
-        ));
+        setVariantAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === variant.id
+              ? {
+                  ...r,
+                  status: "running" as const,
+                  runId: data?.runId ?? r.runId,
+                  currentStep: 0,
+                  totalSteps: data?.totalSteps ?? r.totalSteps,
+                }
+              : r
+          )
+        );
 
-        toast.success(`${variant.label} analysiert: Score ${data.overallScore}/100`);
+        toast.info(`${variant.label}: Analyse gestartet`);
       } catch (error) {
         console.error(`Error analyzing ${variant.id}:`, error);
-        setVariantAnalysisResults(prev => prev.map(r => 
-          r.flowId === variant.id ? {
-            ...r,
-            status: 'error' as const,
-            error: error instanceof Error ? error.message : 'Unbekannter Fehler'
-          } : r
-        ));
+        setVariantAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === variant.id
+              ? {
+                  ...r,
+                  status: "error" as const,
+                  error: error instanceof Error ? error.message : "Unbekannter Fehler",
+                }
+              : r
+          )
+        );
       }
 
       setVariantAnalysisProgress(((i + 1) / variants.length) * 100);
@@ -813,7 +1039,7 @@ Antworte auf Deutsch.`;
 
     setIsAnalyzingVariants(false);
     setCurrentFlowAnalyzing(null);
-    toast.success(`Alle ${variants.length} V${flowNum} Varianten analysiert!`);
+    toast.success(`Varianten-Analysen gestartet – Ergebnisse werden automatisch aktualisiert.`);
   };
 
   // Generate Lovable implementation prompt
