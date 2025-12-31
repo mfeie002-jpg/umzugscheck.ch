@@ -247,9 +247,15 @@ export function AutoFlowScreenshots() {
     // Build robust URL (flowPath may already include query params like ?variant=v1d)
     const u = new URL(flowPath, baseUrl);
     u.searchParams.set("uc_capture", "1");
-    // Convert flowId to uc_flow format: "umzugsofferten-v3" → "v3", "umzugsofferten" → "v1"
-    const ucFlowId = flowId === "umzugsofferten" ? "v1" : flowId.replace("umzugsofferten-", "");
-    u.searchParams.set("uc_flow", ucFlowId);
+    
+    // Extract uc_flow from flowId: "umzugsofferten" → "v1", "umzugsofferten-v3" → "v3", "umzugsofferten-v3a" → "v3a"
+    const extractUcFlowId = (id: string): string => {
+      if (id === "umzugsofferten") return "v1";
+      // Match -v followed by digits and optional letter (e.g., -v3, -v9a)
+      const match = id.match(/-v(\d+)([a-z])?/i);
+      return match ? `v${match[1]}${match[2] || ""}` : "v1";
+    };
+    u.searchParams.set("uc_flow", extractUcFlowId(flowId));
     u.searchParams.set("uc_step", String(step));
     u.searchParams.set("uc_cb", String(Date.now()));
     return u.toString();
