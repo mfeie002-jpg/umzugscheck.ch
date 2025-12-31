@@ -1539,7 +1539,7 @@ function CompanySelector({
             key={company.id}
             onClick={() => toggle(company.id)}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 min-h-[56px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98]",
+              "grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 min-h-[56px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98]",
               selected.includes(company.id)
                 ? "border-primary bg-primary/10 shadow-md"
                 : "border-border hover:border-primary/50 hover:bg-primary/5"
@@ -1547,26 +1547,26 @@ function CompanySelector({
           >
             {/* Issue #17 - Larger, consistent checkbox */}
             <div className={cn(
-              "w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
+              "w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors self-center",
               selected.includes(company.id)
                 ? "border-primary bg-primary"
                 : "border-muted-foreground/40"
             )}>
               {selected.includes(company.id) && (
-                <Check className="w-3.5 h-3.5 text-primary-foreground" />
+                <Check className="w-4 h-4 text-primary-foreground" />
               )}
             </div>
 
             {/* Company info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm truncate">{company.name}</span>
+            <div className="min-w-0 self-center">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-semibold text-sm truncate max-w-[120px]">{company.name}</span>
                 {company.featured && (
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">Premium</Badge>
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 flex-shrink-0">Premium</Badge>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 flex-shrink-0" />
                 <span>{company.rating}</span>
                 <span>·</span>
                 <span>{company.reviewCount} Bew.</span>
@@ -1574,9 +1574,12 @@ function CompanySelector({
             </div>
 
             {/* Price */}
-            <div className="text-right flex-shrink-0">
-              <div className="text-sm font-bold text-primary">
-                CHF {company.priceMin}–{company.priceMax}
+            <div className="text-right flex-shrink-0 self-center">
+              <div className="text-sm font-bold text-primary whitespace-nowrap">
+                CHF {company.priceMin}–
+              </div>
+              <div className="text-sm font-bold text-primary whitespace-nowrap">
+                {company.priceMax}
               </div>
             </div>
           </button>
