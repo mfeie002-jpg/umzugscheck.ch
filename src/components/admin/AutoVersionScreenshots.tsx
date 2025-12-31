@@ -177,19 +177,29 @@ export function AutoVersionScreenshots() {
     return () => clearTimeout(timeout);
   }, [pendingQueue, autoSync]);
 
-  const getFlowPath = (version: FlowVersion): { path: string; steps: number } | null => {
+  const getFlowPath = (version: FlowVersion): { path: string; steps: number; ucFlowId: string } | null => {
     const config = version.config as {
       variantId?: unknown;
       variantPath?: unknown;
       variantSteps?: unknown;
     } | null;
 
+    // Helper to extract uc_flow ID from flow_id
+    const extractUcFlowId = (flowId: string): string => {
+      if (flowId === "umzugsofferten") return "v1";
+      const match = flowId.match(/-v(\d+)/);
+      return match ? `v${match[1]}` : "v1";
+    };
+
     // Prefer explicit variantPath stored in version config (e.g. v1a-v1e, v2f, ...)
     const variantPath = typeof config?.variantPath === "string" ? config.variantPath : null;
     const variantSteps = Array.isArray(config?.variantSteps) ? (config?.variantSteps as unknown[]) : null;
     if (variantPath) {
       const fallbackSteps = FLOW_DEFINITIONS[version.flow_id]?.maxSteps ?? 4;
-      return { path: variantPath, steps: variantSteps?.length ?? fallbackSteps };
+      // Extract variant from path (e.g., /umzugsofferten-v3a -> v3a)
+      const pathMatch = variantPath.match(/umzugsofferten-v(\d+)([a-z])?/i);
+      const ucFlowId = pathMatch ? `v${pathMatch[1]}${pathMatch[2] || ""}` : extractUcFlowId(version.flow_id);
+      return { path: variantPath, steps: variantSteps?.length ?? fallbackSteps, ucFlowId };
     }
 
     // Check for V9 variants
@@ -199,7 +209,8 @@ export function AutoVersionScreenshots() {
       if (variantConfig) {
         return { 
           path: `/umzugsofferten-v9?uc_variant=${variantLetter}`,
-          steps: variantConfig.steps 
+          steps: variantConfig.steps,
+          ucFlowId: `v9${variantLetter.toLowerCase()}`
         };
       }
     }
@@ -207,7 +218,7 @@ export function AutoVersionScreenshots() {
     // Fallback to standard flow definitions
     const flowDef = FLOW_DEFINITIONS[version.flow_id];
     if (flowDef) {
-      return { path: flowDef.path, steps: flowDef.maxSteps };
+      return { path: flowDef.path, steps: flowDef.maxSteps, ucFlowId: extractUcFlowId(version.flow_id) };
     }
 
     // Try to extract from version number (e.g., "9.4" -> V9)
@@ -216,7 +227,7 @@ export function AutoVersionScreenshots() {
       const majorVersion = parseInt(match[1], 10);
       const flowId = majorVersion === 1 ? "umzugsofferten" : `umzugsofferten-v${majorVersion}`;
       const def = FLOW_DEFINITIONS[flowId];
-      if (def) return { path: def.path, steps: def.maxSteps };
+      if (def) return { path: def.path, steps: def.maxSteps, ucFlowId: `v${majorVersion}` };
     }
 
     return null;
@@ -239,10 +250,10 @@ export function AutoVersionScreenshots() {
     setSelectedVersions(ids);
   };
 
-  const buildCaptureUrl = (path: string, step: number) => {
+  const buildCaptureUrl = (path: string, step: number, ucFlowId: string) => {
     const base = (baseUrl || defaultPublicBaseUrl).replace(/\/$/, "");
     const separator = path.includes("?") ? "&" : "?";
-    return `${base}${path}${separator}uc_capture=1&uc_step=${step}&uc_cb=${Date.now()}`;
+    return `${base}${path}${separator}uc_capture=1&uc_flow=${ucFlowId}&uc_step=${step}&uc_cb=${Date.now()}`;
   };
 
   // Upload screenshot to Supabase Storage
@@ -325,7 +336,7 @@ export function AutoVersionScreenshots() {
           message: `${version.version_number} - Step ${step}: ${dimLabel}...`,
         });
 
-        const url = buildCaptureUrl(flowInfo.path, step);
+        const url = buildCaptureUrl(flowInfo.path, step, flowInfo.ucFlowId);
 
         try {
           const result = await captureScreenshot({
