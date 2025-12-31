@@ -374,7 +374,7 @@ Antworte IMMER im JSON-Format.`
 
     // Store the optimization result
     log.info('Storing optimization result...');
-    
+
     const { data: variant, error: insertError } = await supabase
       .from('flow_feedback_variants')
       .insert({
@@ -382,18 +382,27 @@ Antworte IMMER im JSON-Format.`
         variant_name: `${flowName} - AI Archetyp Optimiert`,
         variant_label: `${flowId}-fix-${Date.now()}`,
         prompt: `Auto-Fix: Score ${analysis.overallScore} → ${targetScore}+ | ${new Date().toISOString()}`,
-        status: 'completed',
+        // NOTE: DB constraint allows only: pending | processing | done | error
+        status: 'done',
         executed_at: new Date().toISOString(),
-        result_json: optimizationResult
+        result_json: optimizationResult,
       })
       .select()
       .single();
 
     if (insertError) {
       log.error('Error storing variant', insertError);
-    } else {
-      log.success('Variant stored', { id: variant?.id });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Optimierung erstellt, aber konnte nicht gespeichert werden.',
+          details: insertError,
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
+
+    log.success('Variant stored', { id: variant?.id });
 
     const duration = Date.now() - startTime;
     log.success(`Completed in ${duration}ms`);
@@ -408,7 +417,7 @@ Antworte IMMER im JSON-Format.`
         targetScore,
         optimization: optimizationResult,
         duration,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
