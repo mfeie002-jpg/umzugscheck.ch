@@ -295,37 +295,83 @@ function ExpandableFlowResult({
   );
 }
 
+// SessionStorage key for state persistence (survives Lovable preview reloads)
+const STORAGE_KEY = "uc:flow-automation-state";
+
+function loadPersistedState(): Partial<{
+  analysisResults: AnalysisResult[];
+  selectedFlow: string;
+  feedbackText: string;
+  variantLetter: string;
+  variantName: string;
+  selectedVariantFlowNumber: number;
+}> {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {
+    // ignore
+  }
+  return {};
+}
+
+function persistState(state: Record<string, unknown>) {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // ignore
+  }
+}
+
 export function FlowAutomationCenter() {
-  // Analysis state
-  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>(() =>
-    FLOW_OPTIONS.map((flow) => ({
+  // Load persisted state once on mount
+  const persisted = loadPersistedState();
+
+  // Analysis state - restore from sessionStorage if available
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>(() => {
+    if (persisted.analysisResults?.length) {
+      return persisted.analysisResults;
+    }
+    return FLOW_OPTIONS.map((flow) => ({
       flowId: flow.id,
       flowName: flow.label,
       status: "pending" as const,
-    }))
-  );
+    }));
+  });
   const [isLoadingResults, setIsLoadingResults] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [currentFlowAnalyzing, setCurrentFlowAnalyzing] = useState<string | null>(null);
 
-  // Feedback state
-  const [selectedFlow, setSelectedFlow] = useState("umzugsofferten-v9");
-  const [feedbackText, setFeedbackText] = useState("");
-  const [variantLetter, setVariantLetter] = useState("a");
-  const [variantName, setVariantName] = useState("");
+  // Feedback state - restore from sessionStorage
+  const [selectedFlow, setSelectedFlow] = useState(persisted.selectedFlow ?? "umzugsofferten-v9");
+  const [feedbackText, setFeedbackText] = useState(persisted.feedbackText ?? "");
+  const [variantLetter, setVariantLetter] = useState(persisted.variantLetter ?? "a");
+  const [variantName, setVariantName] = useState(persisted.variantName ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [recentEntries, setRecentEntries] = useState<FeedbackEntry[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [exportingFlowId, setExportingFlowId] = useState<string | null>(null);
   const [bulkMode, setBulkMode] = useState(true); // Default to bulk mode for full AI responses
-  const [selectedVariantFlowNumber, setSelectedVariantFlowNumber] = useState<number>(1);
+  const [selectedVariantFlowNumber, setSelectedVariantFlowNumber] = useState<number>(persisted.selectedVariantFlowNumber ?? 1);
   const [isAnalyzingVariants, setIsAnalyzingVariants] = useState(false);
   const [variantAnalysisProgress, setVariantAnalysisProgress] = useState(0);
   const [variantAnalysisResults, setVariantAnalysisResults] = useState<AnalysisResult[]>([]);
   const [dbVariantsCache, setDbVariantsCache] = useState<Record<number, Array<{ id: string; label: string; path: string }>>>({});
   const [isLoadingVariants, setIsLoadingVariants] = useState(false);
+
+  // Persist important state changes to sessionStorage
+  useEffect(() => {
+    persistState({
+      analysisResults,
+      selectedFlow,
+      feedbackText,
+      variantLetter,
+      variantName,
+      selectedVariantFlowNumber,
+    });
+  }, [analysisResults, selectedFlow, feedbackText, variantLetter, variantName, selectedVariantFlowNumber]);
 
   // Get flow number from ID - handles special "all-flows" case
   const getFlowNumber = (flowId: string) => {
