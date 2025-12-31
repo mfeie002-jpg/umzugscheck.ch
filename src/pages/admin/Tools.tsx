@@ -3128,6 +3128,33 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
 
           {/* Screenshot Machine Tab */}
           <TabsContent value="screenshots">
+            {/* Quick Access to Version Screenshots */}
+            <Card className="mb-6 border-2 border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950">
+              <CardContent className="py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-full">
+                      <Database className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-orange-800 dark:text-orange-200">
+                        Versions-Screenshots verwalten
+                      </div>
+                      <div className="text-sm text-orange-600 dark:text-orange-400">
+                        Übersicht aller Flows ohne Screenshots • Auto-Sync für neue Versionen
+                      </div>
+                    </div>
+                  </div>
+                  <Link to="/admin/screenshots">
+                    <Button variant="default" className="bg-orange-600 hover:bg-orange-700">
+                      <Camera className="h-4 w-4 mr-2" />
+                      Zur Übersicht
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid gap-6 lg:grid-cols-2">
               <Card>
                 <CardHeader>
