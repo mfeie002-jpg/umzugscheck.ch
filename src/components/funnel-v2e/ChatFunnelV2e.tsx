@@ -1462,29 +1462,53 @@ export function ChatFunnelV2e() {
   );
 }
 
-// Service details data
-const SERVICE_DETAILS: Record<string, { bullets: string[]; duration?: string }> = {
+// Service details data with teasers and social proof
+const SERVICE_DETAILS: Record<string, { 
+  teaser: string; 
+  benefit: string;
+  popularity: string;
+  bullets: string[]; 
+  duration?: string;
+}> = {
   umzug: {
+    teaser: "Stressfrei umziehen",
+    benefit: "Spart 6+ Stunden Arbeit",
+    popularity: "92%",
     bullets: ["Möbel tragen & transportieren", "Professionelles Team", "Versicherungsschutz inkl."],
     duration: "Je nach Grösse 3-8 Std."
   },
   einpacken: {
+    teaser: "Alles sicher verpackt",
+    benefit: "Keine Schäden an Möbeln",
+    popularity: "62%",
     bullets: ["Kartons & Verpackungsmaterial inkl.", "Sichere Polsterung für Zerbrechliches", "Systematische Beschriftung"],
     duration: "1-2 Tage vor Umzug"
   },
   auspacken: {
+    teaser: "Sofort eingerichtet",
+    benefit: "Am gleichen Tag fertig",
+    popularity: "38%",
     bullets: ["Auspacken aller Kartons", "Entsorgung Verpackungsmaterial", "Möbel an Wunschplatz"],
     duration: "Am Umzugstag oder danach"
   },
   reinigung: {
+    teaser: "Garantierte Abnahme",
+    benefit: "Depot zurück bekommen",
+    popularity: "71%",
     bullets: ["Abgabe-Reinigung inkl. Küche & Bad", "Fenster innen & aussen", "Abnahme-Garantie"],
     duration: "1 Tag nach Auszug"
   },
   entsorgung: {
+    teaser: "Altes loswerden",
+    benefit: "Kein Stress mit Sperrmüll",
+    popularity: "45%",
     bullets: ["Möbel & Sperrmüll mitnehmen", "Fachgerechte Entsorgung", "Auf Wunsch Elektrogeräte"],
     duration: "Am Umzugstag"
   },
   lagerung: {
+    teaser: "Flexibel zwischenlagern",
+    benefit: "Überbrückt jeden Zeitraum",
+    popularity: "28%",
     bullets: ["Sichere Lagerboxen", "Klimatisiert & versichert", "Flexible Laufzeit"],
     duration: "Ab 1 Monat buchbar"
   },
@@ -1528,52 +1552,72 @@ function ServicesSelector({
               <button
                 onClick={() => toggle(opt.id)}
                 className={cn(
-                  "w-full grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 sm:px-5 py-4 min-h-[60px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
+                  "w-full flex flex-col gap-2 px-4 sm:px-5 py-4 rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
                   isSelected
                     ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
                     : "border-border bg-card hover:border-primary/50 hover:bg-primary/5",
                   isExpanded && "rounded-b-none"
                 )}
               >
-                <div className="min-w-0">
-                  {/* Issue #5 - Consistent text sizing */}
+                {/* Top row: Title + Checkbox */}
+                <div className="flex items-center justify-between gap-2">
                   <div className={cn(
                     "text-base font-semibold leading-tight",
                     isSelected && "text-primary"
                   )}>{opt.label}</div>
-                  {opt.description && (
-                    <div className="text-sm text-muted-foreground mt-1">{opt.description}</div>
-                  )}
+                  
+                  {/* Issue #13, #17 - Larger, more prominent checkbox */}
+                  <div className={cn(
+                    "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
+                    isSelected
+                      ? "border-primary bg-primary scale-105 shadow-md"
+                      : "border-muted-foreground/40 bg-background"
+                  )}>
+                    {isSelected && (
+                      <Check className="w-4 h-4 text-primary-foreground" />
+                    )}
+                  </div>
                 </div>
-                {details ? (
-                  /* Floating gold Info badge */
-                  <button
-                    onClick={(e) => toggleExpand(e, opt.id)}
-                    className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 font-semibold shadow-lg hover:shadow-xl transition-all touch-manipulation text-xs self-center animate-[float_3s_ease-in-out_infinite]"
-                    aria-label="Details anzeigen"
-                    style={{
-                      animation: isExpanded ? 'none' : 'float 3s ease-in-out infinite',
-                    }}
-                  >
-                    <Info className="w-3.5 h-3.5" />
-                    <span>{isExpanded ? "Weniger" : "Info"}</span>
-                    <ChevronDown className={cn(
-                      "w-3.5 h-3.5 transition-transform",
-                      isExpanded && "rotate-180"
-                    )} />
-                  </button>
-                ) : (
-                  <div className="w-10" />
+                
+                {/* Benefit teaser - always visible */}
+                {details && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                      <Check className="w-3 h-3" />
+                      {details.benefit}
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                      <Users className="w-3 h-3" />
+                      {details.popularity} buchen dies
+                    </span>
+                  </div>
                 )}
-                {/* Issue #13, #17 - Larger, more prominent checkbox */}
-                <div className={cn(
-                  "w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 self-center",
-                  isSelected
-                    ? "border-primary bg-primary scale-105 shadow-md"
-                    : "border-muted-foreground/40 bg-background"
-                )}>
-                  {isSelected && (
-                    <Check className="w-5 h-5 text-primary-foreground" />
+                
+                {/* Description + Expand button */}
+                <div className="flex items-center justify-between gap-2">
+                  {details ? (
+                    <p className="text-sm text-muted-foreground">{details.teaser}</p>
+                  ) : opt.description ? (
+                    <p className="text-sm text-muted-foreground">{opt.description}</p>
+                  ) : null}
+                  
+                  {details && (
+                    /* Floating gold action button */
+                    <button
+                      onClick={(e) => toggleExpand(e, opt.id)}
+                      className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 font-semibold shadow-lg hover:shadow-xl transition-all touch-manipulation text-xs flex-shrink-0"
+                      aria-label="Details anzeigen"
+                      style={{
+                        animation: isExpanded ? 'none' : 'float 3s ease-in-out infinite',
+                      }}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{isExpanded ? "Weniger" : "Mehr erfahren"}</span>
+                      <ChevronDown className={cn(
+                        "w-3.5 h-3.5 transition-transform",
+                        isExpanded && "rotate-180"
+                      )} />
+                    </button>
                   )}
                 </div>
               </button>
@@ -1592,17 +1636,8 @@ function ServicesSelector({
                       "px-4 sm:px-5 py-4 border-2 border-t-0 rounded-b-xl bg-muted/50",
                       isSelected ? "border-primary" : "border-border"
                     )}>
-                      {/* Social proof stats */}
-                      <div className="flex flex-wrap gap-2 mb-3 pb-3 border-b border-border/50">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                          <Users className="w-3 h-3" />
-                          {opt.id === 'fullService' ? '73%' : opt.id === 'transport' ? '45%' : opt.id === 'packing' ? '62%' : '38%'} wählen dies
-                        </span>
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">
-                          <Star className="w-3 h-3 fill-amber-500" />
-                          Beliebt
-                        </span>
-                      </div>
+                      {/* Detailed benefits */}
+                      <p className="text-sm font-medium text-foreground mb-3">Was ist enthalten:</p>
                       <ul className="space-y-2.5">
                         {details.bullets.map((bullet, i) => (
                           <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/90">
