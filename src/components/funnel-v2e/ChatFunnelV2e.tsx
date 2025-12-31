@@ -667,8 +667,8 @@ export function ChatFunnelV2e() {
         setTimeout(() => {
           addBotMessage(
             optionId === "buero" 
-              ? "Perfekt, ein Firmenumzug. Von wo ziehen Sie um?"
-              : `Super, ein ${label}-Umzug. Von wo ziehen Sie um?`,
+              ? "Perfekt, ein Firmenumzug. Von wo ziehen Sie um? (PLZ oder Kanton)"
+              : `Super, ein ${label}-Umzug. Von wo ziehen Sie um? (PLZ oder Kanton)`,
             {},
             600
           );
@@ -874,7 +874,7 @@ export function ChatFunnelV2e() {
           const location = value.startsWith("Kanton ") 
             ? value.replace("Kanton ", "") 
             : (value.split(" ").slice(1).join(" ") || value);
-          addBotMessage(`Alles klar, Start: ${location}. Und wohin geht der Umzug?`, {}, 600);
+          addBotMessage(`Alles klar, Start: ${location}. Und wohin? (PLZ oder Kanton)`, {}, 600);
           setCurrentStep("toLocation");
           setLocationInputMode("plz"); // Reset mode for next step
           setSelectedCanton("");
