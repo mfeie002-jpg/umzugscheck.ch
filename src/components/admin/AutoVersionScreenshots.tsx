@@ -480,6 +480,60 @@ export function AutoVersionScreenshots() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Missing Screenshots Alert - Most Important! */}
+          {(() => {
+            const versionsWithoutScreenshots = versions.filter(v => {
+              const screenshots = v.screenshots as Record<string, string> | null;
+              return !screenshots || Object.keys(screenshots).length === 0;
+            });
+            const missingCount = versionsWithoutScreenshots.length;
+            
+            if (missingCount > 0) {
+              return (
+                <div className="p-4 bg-orange-50 dark:bg-orange-950 border-2 border-orange-300 dark:border-orange-700 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-full">
+                        <Camera className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-orange-800 dark:text-orange-200">
+                          {missingCount} {missingCount === 1 ? 'Version' : 'Versionen'} ohne Screenshots
+                        </div>
+                        <div className="text-sm text-orange-600 dark:text-orange-400">
+                          {versions.length - missingCount} von {versions.length} Versionen haben Screenshots
+                        </div>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="default" 
+                      className="bg-orange-600 hover:bg-orange-700"
+                      onClick={() => {
+                        selectWithoutScreenshots();
+                        toast.info(`${missingCount} Versionen ausgewählt - klicke auf "Screenshots erfassen"`);
+                      }}
+                      disabled={isRunning}
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Alle {missingCount} auswählen
+                    </Button>
+                  </div>
+                </div>
+              );
+            }
+            
+            return (
+              <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <span className="text-green-700 dark:text-green-300 font-medium">
+                    Alle {versions.length} Versionen haben Screenshots
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Auto-Sync Status */}
           {autoSync && (
             <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
