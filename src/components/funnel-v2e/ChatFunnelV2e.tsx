@@ -1223,7 +1223,35 @@ export function ChatFunnelV2e() {
   );
 }
 
-// Services selector with multi-select
+// Service details data
+const SERVICE_DETAILS: Record<string, { bullets: string[]; duration?: string }> = {
+  umzug: {
+    bullets: ["Möbel tragen & transportieren", "Professionelles Team", "Versicherungsschutz inkl."],
+    duration: "Je nach Grösse 3-8 Std."
+  },
+  einpacken: {
+    bullets: ["Kartons & Verpackungsmaterial inkl.", "Sichere Polsterung für Zerbrechliches", "Systematische Beschriftung"],
+    duration: "1-2 Tage vor Umzug"
+  },
+  auspacken: {
+    bullets: ["Auspacken aller Kartons", "Entsorgung Verpackungsmaterial", "Möbel an Wunschplatz"],
+    duration: "Am Umzugstag oder danach"
+  },
+  reinigung: {
+    bullets: ["Abgabe-Reinigung inkl. Küche & Bad", "Fenster innen & aussen", "Abnahme-Garantie"],
+    duration: "1 Tag nach Auszug"
+  },
+  entsorgung: {
+    bullets: ["Möbel & Sperrmüll mitnehmen", "Fachgerechte Entsorgung", "Auf Wunsch Elektrogeräte"],
+    duration: "Am Umzugstag"
+  },
+  lagerung: {
+    bullets: ["Sichere Lagerboxen", "Klimatisiert & versichert", "Flexible Laufzeit"],
+    duration: "Ab 1 Monat buchbar"
+  },
+};
+
+// Services selector with multi-select and expandable details
 function ServicesSelector({ 
   options, 
   onConfirm 
@@ -1232,6 +1260,7 @@ function ServicesSelector({
   onConfirm: (ids: string[]) => void;
 }) {
   const [selected, setSelected] = useState<string[]>(["umzug"]);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   const toggle = (id: string) => {
     if (id === "umzug") return; // Base service always selected
@@ -1240,38 +1269,97 @@ function ServicesSelector({
     );
   };
 
+  const toggleExpand = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    setExpanded(prev => prev === id ? null : id);
+  };
+
   return (
     <div className="space-y-2">
       <div className="grid gap-2">
-        {options.map(opt => (
-          <button
-            key={opt.id}
-            onClick={() => toggle(opt.id)}
-            className={cn(
-              "flex items-center justify-between px-4 py-3.5 min-h-[52px] rounded-xl border transition-all text-left touch-manipulation active:scale-[0.98]",
-              selected.includes(opt.id)
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/50"
-            )}
-          >
-            <div>
-              <div className="text-sm font-medium">{opt.label}</div>
-              {opt.description && (
-                <div className="text-xs text-muted-foreground">{opt.description}</div>
-              )}
+        {options.map(opt => {
+          const details = SERVICE_DETAILS[opt.id];
+          const isExpanded = expanded === opt.id;
+          
+          return (
+            <div key={opt.id} className="relative">
+              <button
+                onClick={() => toggle(opt.id)}
+                className={cn(
+                  "w-full flex items-center justify-between px-3 sm:px-4 py-3 min-h-[52px] rounded-xl border transition-all text-left touch-manipulation active:scale-[0.98]",
+                  selected.includes(opt.id)
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50",
+                  isExpanded && "rounded-b-none"
+                )}
+              >
+                <div className="flex-1 min-w-0 pr-2">
+                  <div className="text-sm font-medium">{opt.label}</div>
+                  {opt.description && (
+                    <div className="text-xs text-muted-foreground">{opt.description}</div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {details && (
+                    <button
+                      onClick={(e) => toggleExpand(e, opt.id)}
+                      className="p-1.5 rounded-full hover:bg-muted transition-colors touch-manipulation"
+                      aria-label="Details anzeigen"
+                    >
+                      <ChevronDown className={cn(
+                        "w-4 h-4 text-muted-foreground transition-transform",
+                        isExpanded && "rotate-180"
+                      )} />
+                    </button>
+                  )}
+                  <div className={cn(
+                    "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0",
+                    selected.includes(opt.id)
+                      ? "border-primary bg-primary"
+                      : "border-muted-foreground/30"
+                  )}>
+                    {selected.includes(opt.id) && (
+                      <Check className="w-3 h-3 text-primary-foreground" />
+                    )}
+                  </div>
+                </div>
+              </button>
+              
+              {/* Expandable details */}
+              <AnimatePresence>
+                {isExpanded && details && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className={cn(
+                      "px-3 sm:px-4 py-3 border border-t-0 rounded-b-xl bg-muted/30",
+                      selected.includes(opt.id) ? "border-primary" : "border-border"
+                    )}>
+                      <ul className="space-y-1.5">
+                        {details.bullets.map((bullet, i) => (
+                          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                            <Check className="w-3 h-3 text-green-600 mt-0.5 flex-shrink-0" />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      {details.duration && (
+                        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
+                          <Clock className="w-3 h-3" />
+                          <span>{details.duration}</span>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <div className={cn(
-              "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-              selected.includes(opt.id)
-                ? "border-primary bg-primary"
-                : "border-muted-foreground/30"
-            )}>
-              {selected.includes(opt.id) && (
-                <Check className="w-3 h-3 text-primary-foreground" />
-              )}
-            </div>
-          </button>
-        ))}
+          );
+        })}
       </div>
       <Button 
         onClick={() => onConfirm(selected)} 
