@@ -32,6 +32,7 @@ import { ErrorTracking } from "@/components/admin/analytics/ErrorTracking";
 import { UserSegments } from "@/components/admin/analytics/UserSegments";
 import { UltimateZipPackage } from "@/components/admin/analytics/UltimateZipPackage";
 import { UltimateFeedbackSuite } from "@/components/admin/UltimateFeedbackSuite";
+import { UltimateFlowExporter } from "@/components/admin/UltimateFlowExporter";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Admin() {
@@ -180,7 +181,10 @@ export default function Admin() {
 
           {/* ULTIMATE FEEDBACK SUITE - Primary Tool */}
           <TabsContent value="ultimate">
-            <UltimateFeedbackSuite />
+            <div className="space-y-6">
+              <UltimateFlowExporter />
+              <UltimateFeedbackSuite />
+            </div>
           </TabsContent>
 
           <TabsContent value="dashboard">
