@@ -12,6 +12,7 @@
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -827,8 +828,16 @@ function Step4Contact({
           className="mt-0.5"
         />
         <Label htmlFor="privacy" className="text-sm text-muted-foreground cursor-pointer">
-          Ich akzeptiere die <a href="#" className="underline text-primary">Datenschutzerklärung</a> und 
-          erlaube die Weitergabe meiner Anfrage an ausgewählte Umzugsfirmen zur Offertstellung.
+          Ich akzeptiere die{" "}
+          <Link
+            to="/datenschutz"
+            className="underline text-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Datenschutzerklärung
+          </Link>{" "}
+          und erlaube die Weitergabe meiner Anfrage an ausgewählte Umzugsfirmen zur Offertstellung.
         </Label>
       </div>
       {errors.privacy && <p className="text-sm text-destructive">{errors.privacy}</p>}
