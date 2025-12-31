@@ -36,6 +36,12 @@ html, body {
 @tailwind components;
 @tailwind utilities;
 
+/* Floating animation for info badges */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
 /* Dark mode support */
 .dark { color-scheme: dark; }
 
