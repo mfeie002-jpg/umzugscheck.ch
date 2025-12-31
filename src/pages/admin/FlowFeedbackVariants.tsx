@@ -6,14 +6,14 @@
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Code, FileJson } from 'lucide-react';
+import { ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Code, FileJson, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Json } from '@/integrations/supabase/types';
+import { PerformanceErrorBoundary } from '@/components/performance/PerformanceErrorBoundary';
 
 interface UltimateFlowStep {
   number: number;
@@ -53,13 +53,16 @@ interface UltimateFlowResult {
   raw?: string;
 }
 
-export default function FlowFeedbackVariants() {
+function FlowFeedbackVariantsContent() {
   const [searchParams] = useSearchParams();
   const variantId = searchParams.get('variant');
+
+  console.log('[FlowFeedbackVariants] Rendering with variantId:', variantId);
 
   const { data: variant, isLoading, error } = useQuery({
     queryKey: ['flow-feedback-variant', variantId],
     queryFn: async () => {
+      console.log('[FlowFeedbackVariants] Fetching variant:', variantId);
       if (!variantId) return null;
       
       const { data, error } = await supabase
@@ -68,6 +71,7 @@ export default function FlowFeedbackVariants() {
         .eq('id', variantId)
         .maybeSingle();
       
+      console.log('[FlowFeedbackVariants] Query result:', { data, error });
       if (error) throw error;
       return data;
     },
@@ -78,6 +82,8 @@ export default function FlowFeedbackVariants() {
   const resultJson = variant?.result_json as UltimateFlowResult | null;
   const hasError = resultJson?.error;
   const ultimateFlow = resultJson?.ultimateFlow;
+  
+  console.log('[FlowFeedbackVariants] State:', { isLoading, error, hasVariant: !!variant, hasResult: !!resultJson });
 
   if (!variantId) {
     return (
@@ -391,5 +397,14 @@ export default function FlowFeedbackVariants() {
         )}
       </div>
     </div>
+  );
+}
+
+// Wrapper with Error Boundary
+export default function FlowFeedbackVariants() {
+  return (
+    <PerformanceErrorBoundary>
+      <FlowFeedbackVariantsContent />
+    </PerformanceErrorBoundary>
   );
 }
