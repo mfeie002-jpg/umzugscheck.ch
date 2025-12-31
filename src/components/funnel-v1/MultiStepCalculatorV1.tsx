@@ -1274,8 +1274,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               ) : (
                 <>
                   <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
-                  <span className="hidden xs:inline">Pflichtfelder ausfüllen</span>
-                  <span className="xs:hidden">Felder ausfüllen</span>
+                  <span className="hidden xs:inline">Weiter</span>
+                  <span className="xs:hidden">Weiter</span>
                 </>
               )}
             </Button>
