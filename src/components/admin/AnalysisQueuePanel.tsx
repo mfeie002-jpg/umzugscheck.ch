@@ -63,6 +63,14 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
   // Add to queue
   const addToQueue = async (flowVersion: string, flowId: string, priority = 0) => {
     try {
+      if (flowVersion === 'all' || flowId === 'all') {
+        toast({
+          title: 'Bitte V1–V9 wählen',
+          description: '"Alle" kann nicht als einzelner Queue-Job analysiert werden. Nutze den Button "Alle" oben.',
+        });
+        return;
+      }
+
       // Check if already in queue
       const existing = queue.find(q => q.flow_version === flowVersion && q.status !== 'completed');
       if (existing) {
@@ -89,10 +97,11 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
     }
   };
 
-  // Add all flows to queue
+  // Add all flows to queue (excludes the synthetic "all" entry)
   const addAllToQueue = async () => {
-    for (const flow of availableFlows) {
-      await addToQueue(flow.id, flow.flowId, availableFlows.length - availableFlows.indexOf(flow));
+    const flows = availableFlows.filter(f => f.id !== 'all' && f.flowId !== 'all');
+    for (const [idx, flow] of flows.entries()) {
+      await addToQueue(flow.id, flow.flowId, flows.length - idx);
     }
   };
 
@@ -212,22 +221,24 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
               </Button>
             </div>
             <div className="flex flex-wrap gap-1">
-              {availableFlows.map(flow => {
-                const isQueued = queue.some(q => q.flow_version === flow.id && q.status !== 'completed');
-                return (
-                  <Button
-                    key={flow.id}
-                    variant={isQueued ? 'secondary' : 'outline'}
-                    size="sm"
-                    onClick={() => addToQueue(flow.id, flow.flowId)}
-                    disabled={isQueued}
-                    className="h-7 text-xs"
-                  >
-                    {flow.label}
-                    {isQueued && <CheckCircle className="h-3 w-3 ml-1" />}
-                  </Button>
-                );
-              })}
+              {availableFlows
+                .filter(flow => flow.id !== 'all' && flow.flowId !== 'all')
+                .map(flow => {
+                  const isQueued = queue.some(q => q.flow_version === flow.id && q.status !== 'completed');
+                  return (
+                    <Button
+                      key={flow.id}
+                      variant={isQueued ? 'secondary' : 'outline'}
+                      size="sm"
+                      onClick={() => addToQueue(flow.id, flow.flowId)}
+                      disabled={isQueued}
+                      className="h-7 text-xs"
+                    >
+                      {flow.label}
+                      {isQueued && <CheckCircle className="h-3 w-3 ml-1" />}
+                    </Button>
+                  );
+                })}
             </div>
           </div>
         )}

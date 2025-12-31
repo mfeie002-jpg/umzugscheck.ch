@@ -487,28 +487,30 @@ export default function FlowDeepAnalysis() {
         const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
         if (!flowConfig) return;
         
-        // First check for running queue items
-        const { data: queueData } = await supabase
-          .from('flow_analysis_queue')
-          .select('*')
-          .eq('flow_id', flowConfig.flowId)
-          .in('status', ['queued', 'processing'])
-          .order('queued_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        
-        if (queueData) {
-          // There's an active queue item
-          setBackgroundJob({
-            id: queueData.id,
-            status: queueData.status === 'processing' ? 'running' : 'queued',
-            stepsCaptured: 0,
-            totalSteps: 0,
-            startedAt: queueData.started_at
-          });
-          setAnalyses([]);
-          setSynthesis(null);
-          return;
+        // First check for running queue items (skip "all" because that's a synthetic selector)
+        if (selectedFlowVersion !== 'all') {
+          const { data: queueData } = await supabase
+            .from('flow_analysis_queue')
+            .select('*')
+            .eq('flow_id', flowConfig.flowId)
+            .in('status', ['queued', 'processing'])
+            .order('queued_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (queueData) {
+            // There's an active queue item
+            setBackgroundJob({
+              id: queueData.id,
+              status: queueData.status === 'processing' ? 'running' : 'queued',
+              stepsCaptured: 0,
+              totalSteps: 0,
+              startedAt: queueData.started_at
+            });
+            setAnalyses([]);
+            setSynthesis(null);
+            return;
+          }
         }
         
         // Then check flow_analysis_runs
