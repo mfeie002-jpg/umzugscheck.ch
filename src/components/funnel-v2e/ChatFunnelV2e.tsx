@@ -17,15 +17,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Send, Bot, User, Home, Building2, Briefcase, MapPin, Calendar,
   Package, Brush, Trash2, Warehouse, Sparkles, ArrowRight, Check,
-  Phone, Mail, Shield, Star, Clock, ChevronDown, Loader2, Users, Video
+  Phone, Mail, Shield, Star, Clock, ChevronDown, Loader2, Users, Video,
+  Map
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { DEMO_COMPANIES, getCompaniesByRegion } from "@/data/companies";
 import { getCantonFromZip } from "@/lib/zip-to-canton";
 import { getCantonConfig } from "@/lib/cantonConfigMap";
+import { SWISS_CANTONS, CANTON_DISPLAY_NAMES, CantonSlug } from "@/lib/canton-utils";
 import { cn } from "@/lib/utils";
 import { ChatVideoAnalyzer } from "./ChatVideoAnalyzer";
 import { useCaptureMode } from "@/hooks/use-capture-mode";
@@ -212,6 +215,8 @@ export function ChatFunnelV2e() {
   const [currentStep, setCurrentStep] = useState<FlowStep>("welcome");
   const [isTyping, setIsTyping] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [locationInputMode, setLocationInputMode] = useState<"plz" | "canton">("plz");
+  const [selectedCanton, setSelectedCanton] = useState<string>("");
   const [formState, setFormState] = useState<FormState>(() => {
     // Pre-fill with demo data in capture mode
     if (isCaptureMode) {
@@ -413,7 +418,7 @@ export function ChatFunnelV2e() {
       messages.push({
         id: "msg-from",
         type: "bot",
-        content: "Super, ein Wohnungs-Umzug. Von welcher PLZ/Stadt ziehen Sie um?",
+        content: "Super, ein Wohnungs-Umzug. Von wo ziehen Sie um? (PLZ/Ort oder Kanton wählen)",
         timestamp: now,
       });
       return messages;
@@ -423,7 +428,7 @@ export function ChatFunnelV2e() {
     messages.push({
       id: "msg-from",
       type: "bot",
-      content: "Super, ein Wohnungs-Umzug. Von welcher PLZ/Stadt ziehen Sie um?",
+      content: "Super, ein Wohnungs-Umzug. Von wo ziehen Sie um? (PLZ/Ort oder Kanton wählen)",
       timestamp: now,
     });
     messages.push({
@@ -662,8 +667,8 @@ export function ChatFunnelV2e() {
         setTimeout(() => {
           addBotMessage(
             optionId === "buero" 
-              ? "Perfekt, ein Firmenumzug. Von welcher PLZ/Stadt ziehen Sie um?"
-              : `Super, ein ${label}-Umzug. Von welcher PLZ/Stadt ziehen Sie um?`,
+              ? "Perfekt, ein Firmenumzug. Von wo ziehen Sie um?"
+              : `Super, ein ${label}-Umzug. Von wo ziehen Sie um?`,
             {},
             600
           );
@@ -847,15 +852,32 @@ export function ChatFunnelV2e() {
     const value = inputValue.trim();
     setInputValue("");
     addUserMessage(value);
+    handleLocationSubmit(value);
+  };
 
+  // Handle canton selection
+  const handleCantonSubmit = (canton: string) => {
+    if (!canton) return;
+    const displayName = CANTON_DISPLAY_NAMES[canton as CantonSlug] || canton;
+    addUserMessage(`Kanton ${displayName}`);
+    setSelectedCanton("");
+    handleLocationSubmit(`Kanton ${displayName}`);
+  };
+
+  // Unified location handling for both PLZ and Canton
+  const handleLocationSubmit = (value: string) => {
     switch (currentStep) {
       case "fromLocation":
         setFormState(prev => ({ ...prev, fromLocation: value }));
         setTimeout(() => {
-          // Issue #7 - Add confirmation before next question
-          const city = value.split(" ").slice(1).join(" ") || value;
-          addBotMessage(`Alles klar, Start: ${city}. Und wohin geht der Umzug?`, {}, 600);
+          // Parse display name from canton or city from PLZ
+          const location = value.startsWith("Kanton ") 
+            ? value.replace("Kanton ", "") 
+            : (value.split(" ").slice(1).join(" ") || value);
+          addBotMessage(`Alles klar, Start: ${location}. Und wohin geht der Umzug?`, {}, 600);
           setCurrentStep("toLocation");
+          setLocationInputMode("plz"); // Reset mode for next step
+          setSelectedCanton("");
           setTimeout(() => inputRef.current?.focus(), 800);
         }, 400);
         break;
@@ -863,9 +885,13 @@ export function ChatFunnelV2e() {
       case "toLocation":
         setFormState(prev => ({ ...prev, toLocation: value }));
         setTimeout(() => {
-          // Issue #7 - Add confirmation with both locations
-          const fromCity = formState.fromLocation.split(" ").slice(1).join(" ") || formState.fromLocation;
-          const toCity = value.split(" ").slice(1).join(" ") || value;
+          // Parse display names
+          const fromLocation = formState.fromLocation.startsWith("Kanton ")
+            ? formState.fromLocation.replace("Kanton ", "")
+            : (formState.fromLocation.split(" ").slice(1).join(" ") || formState.fromLocation);
+          const toLocation = value.startsWith("Kanton ")
+            ? value.replace("Kanton ", "")
+            : (value.split(" ").slice(1).join(" ") || value);
           
           const sizeOptions = formState.moveType === "buero"
             ? [
@@ -883,7 +909,7 @@ export function ChatFunnelV2e() {
               ];
 
           addBotMessage(
-            `${fromCity} → ${toCity} – wie gross ist Ihre Wohnung?`,
+            `${fromLocation} → ${toLocation} – wie gross ist Ihre Wohnung?`,
             {
               type: "options",
               options: sizeOptions,
@@ -1237,41 +1263,104 @@ export function ChatFunnelV2e() {
         <div ref={messagesEndRef} className="h-4" />
       </div>
 
-      {/* Issue #4, #14, #16, #24, #25 - Input area with NO overlap, always visible */}
+      {/* Location input area with PLZ/Canton toggle */}
       {(currentStep === "fromLocation" || currentStep === "toLocation") && (
-        <form onSubmit={handleTextSubmit} className="p-3 sm:p-4 border-t border-border bg-card flex-shrink-0">
-          <div className="flex gap-2 sm:gap-3">
-            <div className="flex-1 relative">
-              <MapPin className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-              <Input
-                ref={inputRef}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={currentStep === "fromLocation" ? "8048 Zürich" : "3011 Bern"}
-                className="pl-10 sm:pl-12 min-h-[48px] sm:min-h-[52px] text-base border-2 focus:border-primary rounded-xl"
-                autoFocus
-              />
-            </div>
-            {/* Issue #14 - Always visible send button with proper touch target */}
-            <Button 
-              type="submit" 
-              size="icon" 
-              disabled={!inputValue.trim()} 
-              className="min-w-[48px] min-h-[48px] sm:min-w-[52px] sm:min-h-[52px] bg-primary hover:bg-primary/90 rounded-xl shadow-md"
+        <div className="p-3 sm:p-4 border-t border-border bg-card flex-shrink-0 space-y-3">
+          {/* Toggle between PLZ and Canton */}
+          <div className="flex gap-1 p-1 bg-muted rounded-lg">
+            <button
+              type="button"
+              onClick={() => setLocationInputMode("plz")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all touch-manipulation",
+                locationInputMode === "plz"
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
+              <MapPin className="w-4 h-4" />
+              PLZ / Ort
+            </button>
+            <button
+              type="button"
+              onClick={() => setLocationInputMode("canton")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all touch-manipulation",
+                locationInputMode === "canton"
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Map className="w-4 h-4" />
+              Kanton
+            </button>
           </div>
-          {/* Compact hint text */}
-          <p className="text-xs sm:text-sm text-muted-foreground mt-2 text-center">
-            {!inputValue.trim() 
-              ? "PLZ + Ort eingeben" 
-              : inputValue.length < 4 
-                ? "Vollständig eingeben" 
-                : "↵ Absenden"
-            }
-          </p>
-        </form>
+
+          {/* PLZ Input */}
+          {locationInputMode === "plz" && (
+            <form onSubmit={handleTextSubmit}>
+              <div className="flex gap-2 sm:gap-3">
+                <div className="flex-1 relative">
+                  <MapPin className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                  <Input
+                    ref={inputRef}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder={currentStep === "fromLocation" ? "8048 Zürich" : "3011 Bern"}
+                    className="pl-10 sm:pl-12 min-h-[48px] sm:min-h-[52px] text-base border-2 focus:border-primary rounded-xl"
+                    autoFocus
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  disabled={!inputValue.trim()} 
+                  className="min-w-[48px] min-h-[48px] sm:min-w-[52px] sm:min-h-[52px] bg-primary hover:bg-primary/90 rounded-xl shadow-md"
+                >
+                  <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Button>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-2 text-center">
+                {!inputValue.trim() 
+                  ? "PLZ + Ort eingeben" 
+                  : inputValue.length < 4 
+                    ? "Vollständig eingeben" 
+                    : "↵ Absenden"
+                }
+              </p>
+            </form>
+          )}
+
+          {/* Canton Dropdown */}
+          {locationInputMode === "canton" && (
+            <div className="flex gap-2 sm:gap-3">
+              <Select value={selectedCanton} onValueChange={setSelectedCanton}>
+                <SelectTrigger className="flex-1 min-h-[48px] sm:min-h-[52px] text-base border-2 focus:border-primary rounded-xl">
+                  <SelectValue placeholder="Kanton auswählen..." />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px] bg-card border border-border shadow-lg z-50">
+                  {SWISS_CANTONS.map((canton) => (
+                    <SelectItem 
+                      key={canton} 
+                      value={canton}
+                      className="text-sm py-2.5 cursor-pointer"
+                    >
+                      {CANTON_DISPLAY_NAMES[canton]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button 
+                type="button"
+                onClick={() => handleCantonSubmit(selectedCanton)}
+                disabled={!selectedCanton}
+                className="min-w-[48px] min-h-[48px] sm:min-w-[52px] sm:min-h-[52px] bg-primary hover:bg-primary/90 rounded-xl shadow-md"
+              >
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Button>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Issue #8, #12, #28, #34 - COMPACT footer, minimal height on mobile */}
