@@ -78,14 +78,10 @@ interface CaptureResult {
 }
 
 export function AutoVersionScreenshots() {
+  // Always default to preview URL for analysis
+  const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
   const defaultPublicBaseUrl = useMemo(() => {
-    if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-
-    // In admin tools (usually used in preview/testing), default to the CURRENT origin
-    // so test routes like /umzugsofferten-v3 are available.
-    // Users can still paste the live domain manually if they want production captures.
-    const { origin } = window.location;
-    return origin.replace(/\/$/, "");
+    return PREVIEW_URL.replace(/\/$/, "");
   }, []);
 
   const [baseUrl, setBaseUrl] = useState(defaultPublicBaseUrl);

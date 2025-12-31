@@ -210,14 +210,11 @@ interface CaptureResult {
 }
 
 export function AutoFlowScreenshots() {
-  // IMPORTANT: Screenshot providers usually cannot access preview/sandbox domains (login-wall / auth-gate).
-  // Default to a publicly reachable base URL when we detect a Lovable host.
+  // IMPORTANT: Default to the preview URL for analysis (routes exist here).
+  // Users can still switch to the live domain manually for production captures.
+  const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
   const defaultPublicBaseUrl = useMemo(() => {
-    if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-    const { origin } = window.location;
-    // In Admin/Preview we want to capture *this* deployment (routes exist here).
-    // Users can still switch to the live domain manually for production captures.
-    return origin.replace(/\/$/, "");
+    return PREVIEW_URL.replace(/\/$/, "");
   }, []);
 
   const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPublicBaseUrl);
