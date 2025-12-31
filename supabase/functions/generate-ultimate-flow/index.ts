@@ -275,10 +275,32 @@ Antworte IMMER im JSON-Format.`
     if (!response.ok) {
       const errorText = await response.text();
       log.error('AI API error', { status: response.status, error: errorText });
+
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Zu viele Requests (Rate Limit). Bitte 30–60 Sekunden warten und erneut versuchen.',
+          }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'AI Credits sind aufgebraucht (Payment Required). Bitte in Lovable Cloud Credits nachladen.',
+          }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: `AI-Generierung fehlgeschlagen: ${response.status}`,
+        JSON.stringify({
+          success: false,
+          error: `AI-Generierung fehlgeschlagen (${response.status})`,
+          details: errorText?.slice?.(0, 1200) ?? String(errorText).slice(0, 1200),
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
