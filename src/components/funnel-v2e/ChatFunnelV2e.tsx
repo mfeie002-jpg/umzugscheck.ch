@@ -1368,14 +1368,14 @@ function ServicesSelector({
               <button
                 onClick={() => toggle(opt.id)}
                 className={cn(
-                  "w-full flex items-start px-4 sm:px-5 py-4 min-h-[60px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
+                  "w-full grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 sm:px-5 py-4 min-h-[60px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
                   isSelected
                     ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
                     : "border-border bg-card hover:border-primary/50 hover:bg-primary/5",
                   isExpanded && "rounded-b-none"
                 )}
               >
-                <div className="flex-1 min-w-0 pr-3 pt-0.5">
+                <div className="min-w-0">
                   {/* Issue #5 - Consistent text sizing */}
                   <div className={cn(
                     "text-base font-semibold leading-tight",
@@ -1385,31 +1385,31 @@ function ServicesSelector({
                     <div className="text-sm text-muted-foreground mt-1">{opt.description}</div>
                   )}
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {details && (
-                    /* Issue #2 - 44px+ touch target for expand button */
-                    <button
-                      onClick={(e) => toggleExpand(e, opt.id)}
-                      className="p-2 rounded-full hover:bg-muted transition-colors touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
-                      aria-label="Details anzeigen"
-                    >
-                      <ChevronDown className={cn(
-                        "w-5 h-5 text-muted-foreground transition-transform",
-                        isExpanded && "rotate-180"
-                      )} />
-                    </button>
+                {details ? (
+                  /* Issue #2 - 44px+ touch target for expand button */
+                  <button
+                    onClick={(e) => toggleExpand(e, opt.id)}
+                    className="p-2 rounded-full hover:bg-muted transition-colors touch-manipulation w-10 h-10 flex items-center justify-center self-center"
+                    aria-label="Details anzeigen"
+                  >
+                    <ChevronDown className={cn(
+                      "w-5 h-5 text-muted-foreground transition-transform",
+                      isExpanded && "rotate-180"
+                    )} />
+                  </button>
+                ) : (
+                  <div className="w-10" />
+                )}
+                {/* Issue #13, #17 - Larger, more prominent checkbox */}
+                <div className={cn(
+                  "w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 self-center",
+                  isSelected
+                    ? "border-primary bg-primary scale-105 shadow-md"
+                    : "border-muted-foreground/40 bg-background"
+                )}>
+                  {isSelected && (
+                    <Check className="w-5 h-5 text-primary-foreground" />
                   )}
-                  {/* Issue #13, #17 - Larger, more prominent checkbox */}
-                  <div className={cn(
-                    "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
-                    isSelected
-                      ? "border-primary bg-primary scale-105 shadow-md"
-                      : "border-muted-foreground/40 bg-background"
-                  )}>
-                    {isSelected && (
-                      <Check className="w-4.5 h-4.5 text-primary-foreground" />
-                    )}
-                  </div>
                 </div>
               </button>
               
