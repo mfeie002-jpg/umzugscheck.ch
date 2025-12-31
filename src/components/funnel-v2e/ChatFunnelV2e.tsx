@@ -942,10 +942,10 @@ export function ChatFunnelV2e() {
     switch (message.type) {
       case "bot":
         return (
-          /* Issue #7, #18, #22 - Clear left-aligned bot messages */
-          <div className="flex gap-2.5 sm:gap-3.5 max-w-[90%] sm:max-w-[85%]">
+          /* Issue #7, #15, #18, #22, #30 - Clear left-aligned bot messages with consistent bubble style */
+          <div className="flex gap-2.5 sm:gap-3 max-w-[92%] sm:max-w-[85%]">
             {/* Issue #11, #15, #30 - Consistent bot avatar sizing */}
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
               <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             {/* Issue #15, #30 - Consistent rounded corners (ALL bubbles same style) */}
@@ -960,8 +960,8 @@ export function ChatFunnelV2e() {
         return (
           /* Issue #7, #23 - RIGHT-ALIGNED user messages (critical for chat UX) */
           <div className="flex justify-end">
-            {/* Issue #15, #30 - Consistent rounded corners matching bot */}
-            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3.5 sm:px-4 py-2.5 sm:py-3 max-w-[80%] sm:max-w-[75%] shadow-md ml-auto">
+            {/* Issue #15, #30 - Consistent rounded corners matching bot style (mirrored) */}
+            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3.5 sm:px-4 py-2.5 sm:py-3 max-w-[80%] sm:max-w-[75%] shadow-md">
               <p className="text-sm sm:text-base leading-relaxed break-words">{message.content}</p>
             </div>
           </div>
@@ -969,9 +969,9 @@ export function ChatFunnelV2e() {
 
       case "options":
         return (
-          <div className="flex gap-2.5 sm:gap-3.5 max-w-full">
-            {/* Consistent bot avatar */}
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+          <div className="flex gap-2.5 sm:gap-3 max-w-full">
+            {/* Consistent bot avatar - Issue #15 */}
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
               <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
@@ -985,14 +985,14 @@ export function ChatFunnelV2e() {
                   onConfirm={handleServicesConfirm}
                 />
               ) : (
-                /* Issue #10, #11, #19, #29 - Selection feedback with touch targets */
-                <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
+                /* Issue #10, #11, #19, #29 - Selection feedback with 48px+ touch targets */
+                <div className="grid grid-cols-2 gap-3 w-full">
                   {message.options?.map(opt => (
                     <button
                       key={opt.id}
                       onClick={() => handleOptionSelect(opt.id, opt.label)}
                       /* Issue #29 - Min 48x48 touch targets on mobile */
-                      className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 min-h-[52px] sm:min-h-[56px] bg-card border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.97] active:bg-primary/10 transition-all group touch-manipulation shadow-sm"
+                      className="flex items-center justify-center sm:justify-start gap-2.5 px-3.5 sm:px-4 py-3.5 sm:py-4 min-h-[56px] bg-card border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.97] active:bg-primary/10 transition-all group touch-manipulation shadow-sm"
                     >
                       {opt.icon && (
                         <span className="text-primary group-hover:text-primary transition-colors flex-shrink-0">
@@ -1017,12 +1017,12 @@ export function ChatFunnelV2e() {
       case "video":
         return (
           <div className="flex gap-2.5 sm:gap-3 max-w-full">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
-                <p className="text-sm leading-relaxed">{message.content}</p>
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm sm:text-base leading-relaxed">{message.content}</p>
               </div>
               {currentStep === "videoOffer" && (
                 <ChatVideoAnalyzer 
@@ -1037,12 +1037,12 @@ export function ChatFunnelV2e() {
       case "price":
         return (
           <div className="flex gap-2.5 sm:gap-3 max-w-full">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
-                <p className="text-sm leading-relaxed">{message.content}</p>
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm sm:text-base leading-relaxed">{message.content}</p>
               </div>
               <PriceRevealCard priceData={message.priceData!} />
             </div>
@@ -1052,12 +1052,12 @@ export function ChatFunnelV2e() {
       case "companies":
         return (
           <div className="flex gap-2.5 sm:gap-3 max-w-full">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
-                <p className="text-sm leading-relaxed">{message.content}</p>
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm sm:text-base leading-relaxed">{message.content}</p>
               </div>
               <CompanySelector
                 companies={message.companies || []}
@@ -1071,12 +1071,12 @@ export function ChatFunnelV2e() {
       case "contact":
         return (
           <div className="flex gap-2.5 sm:gap-3 max-w-full">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
-                <p className="text-sm leading-relaxed">{message.content}</p>
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 sm:px-4 py-2.5 sm:py-3 mb-3 shadow-sm">
+                <p className="text-sm sm:text-base leading-relaxed">{message.content}</p>
               </div>
               <ContactForm onSubmit={handleContactSubmit} />
             </div>
@@ -1137,71 +1137,69 @@ export function ChatFunnelV2e() {
         )}
       </AnimatePresence>
       
-      {/* Issue #2, #13 - MORE PROMINENT progress bar - always visible on ALL devices */}
-      <div className="bg-gradient-to-r from-primary/10 via-background to-primary/5 border-b border-border flex-shrink-0">
-        {/* Issue #2, #13 - Much taller progress bar (4px) with high contrast */}
-        <div className="h-4 bg-muted/80 relative overflow-hidden shadow-inner">
+      {/* Issue #2, #13 - PROMINENT progress bar - always visible on ALL devices */}
+      <div className="bg-gradient-to-r from-primary/5 via-background to-primary/5 border-b border-border flex-shrink-0">
+        {/* Issue #2, #13 - High contrast progress bar visible on all devices */}
+        <div className="h-3 sm:h-4 bg-muted relative overflow-hidden">
           <motion.div 
-            className="h-full bg-gradient-to-r from-primary via-primary to-green-500 shadow-lg"
+            className="h-full bg-gradient-to-r from-primary to-green-500"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           />
           {/* Issue #2 - Progress percentage ALWAYS visible, including mobile */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs font-black text-white drop-shadow-md px-2 py-0.5 bg-primary/80 rounded-full">
+            <span className="text-[10px] sm:text-xs font-black text-white drop-shadow-md px-1.5 sm:px-2 py-0.5 bg-primary/90 rounded-full">
               {progress}%
             </span>
           </div>
         </div>
         
-        {/* Issue #17 - Compact header on mobile, full on desktop */}
-        <div className="px-3 sm:px-5 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
-          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
-            {/* Issue #26 - Simplified header on mobile */}
-            <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Bot className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
-              {/* Online indicator */}
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-500 border-2 border-background shadow-sm" />
+        {/* Issue #6, #17, #31 - Consistent compact header on both mobile and desktop */}
+        <div className="px-3 sm:px-5 py-2 sm:py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {/* Issue #17, #26 - Compact avatar */}
+            <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              {/* Online indicator - subtle */}
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 border-2 border-background" />
             </div>
             <div className="min-w-0">
-              {/* Issue #17 - Shorter title on mobile */}
-              <h3 className="font-bold text-sm sm:text-lg text-foreground truncate">
-                <span className="sm:hidden">Assistent</span>
-                <span className="hidden sm:inline">Umzugs-Assistent</span>
+              {/* Issue #17, #31 - Consistent title across devices */}
+              <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
+                Umzugs-Assistent
               </h3>
-              {/* Issue #26 - Hide redundant "Online" text on mobile, show only status dot */}
-              <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base">
-                <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="hidden sm:inline text-green-700 dark:text-green-400 font-semibold">Online</span>
-                <span className="text-primary font-bold">{progress}%</span>
+              {/* Issue #26 - Clean status line without redundant info */}
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+                <span className="text-green-600 dark:text-green-400 font-medium">Aktiv</span>
               </div>
             </div>
           </div>
           
-          {/* Issue #5, #27, #32 - Compact CTA section that doesn't wrap */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-            {/* Issue #5 - Badge hidden on very small screens, compact on mobile */}
-            <Badge className="bg-green-600 text-white border-0 text-[10px] sm:text-sm font-bold px-1.5 sm:px-2.5 py-1 sm:py-1.5 shadow-md hidden xs:flex whitespace-nowrap">
-              <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1" />
-              Gratis
+          {/* Issue #5, #27, #32, #33 - Clean CTA without wrapping */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Issue #5 - Badge only on larger screens */}
+            <Badge className="bg-green-600 text-white border-0 text-xs font-bold px-2 py-1 hidden sm:flex whitespace-nowrap">
+              <Shield className="w-3 h-3 mr-1" />
+              100% Gratis
             </Badge>
-            {/* Issue #27, #32 - Icon-only call button on mobile, with text on desktop */}
+            {/* Issue #21, #27, #32, #33 - Proper 44px touch target for call button */}
             <a 
               href="tel:+41445057070" 
-              className="flex items-center justify-center gap-1.5 px-3 sm:px-4 min-w-[44px] min-h-[44px] sm:min-h-[48px] bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-sm font-bold transition-all touch-manipulation active:scale-95 shadow-lg"
+              className="flex items-center justify-center w-11 h-11 sm:w-auto sm:h-auto sm:gap-1.5 sm:px-4 sm:py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-sm font-bold transition-all touch-manipulation active:scale-95 shadow-md"
               aria-label="Jetzt anrufen für persönliche Beratung"
               title="Rufen Sie uns an für persönliche Beratung"
             >
-              <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Phone className="w-5 h-5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Anrufen</span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* Issue #3, #7, #18, #22, #23 - Larger gaps between messages for clarity */}
-      <div className="flex-1 overflow-y-auto px-3 sm:px-5 py-3 sm:py-5 space-y-4 sm:space-y-6">
+      {/* Issue #3, #4, #7, #16, #18, #22, #23, #24, #25 - Proper gaps between messages */}
+      <div className="flex-1 overflow-y-auto px-3 sm:px-5 py-4 sm:py-6 space-y-5 sm:space-y-7">
         <AnimatePresence mode="popLayout">
           {messages.map((msg) => (
             <motion.div
@@ -1221,22 +1219,22 @@ export function ChatFunnelV2e() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex gap-3 sm:gap-3.5"
+            className="flex gap-2.5 sm:gap-3"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Bot className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-primary" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
-            <div className="bg-muted/90 rounded-2xl rounded-tl-lg px-4 py-3.5 shadow-sm">
-              <div className="flex gap-2">
-                <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 py-2.5 shadow-sm">
+              <div className="flex gap-1.5">
+                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </motion.div>
         )}
 
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-4" />
       </div>
 
       {/* Issue #4, #14, #16, #24, #25 - Input area with NO overlap, always visible */}
