@@ -215,7 +215,7 @@ export function ChatFunnelV2e() {
   const [currentStep, setCurrentStep] = useState<FlowStep>("welcome");
   const [isTyping, setIsTyping] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [locationInputMode, setLocationInputMode] = useState<"plz" | "canton">("plz");
+  const [locationInputMode, setLocationInputMode] = useState<"plz" | "canton">("canton");
   const [selectedCanton, setSelectedCanton] = useState<string>("");
   const [formState, setFormState] = useState<FormState>(() => {
     // Pre-fill with demo data in capture mode
@@ -876,7 +876,7 @@ export function ChatFunnelV2e() {
             : (value.split(" ").slice(1).join(" ") || value);
           addBotMessage(`Alles klar, Start: ${location}. Und wohin? (PLZ oder Kanton)`, {}, 600);
           setCurrentStep("toLocation");
-          setLocationInputMode("plz"); // Reset mode for next step
+          setLocationInputMode("canton"); // Keep canton as default for next step
           setSelectedCanton("");
           setTimeout(() => inputRef.current?.focus(), 800);
         }, 400);
