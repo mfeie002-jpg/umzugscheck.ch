@@ -18,7 +18,7 @@ import {
   Send, Bot, User, Home, Building2, Briefcase, MapPin, Calendar,
   Package, Brush, Trash2, Warehouse, Sparkles, ArrowRight, Check,
   Phone, Mail, Shield, Star, Clock, ChevronDown, Loader2, Users, Video,
-  Map
+  Map, ArrowLeft, Info
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -316,6 +316,30 @@ export function ChatFunnelV2e() {
   const getStepNumber = (): number => {
     return STEP_MAP[currentStep] || 1;
   };
+
+  // Go back to previous step
+  const canGoBack = currentStep !== "welcome" && currentStep !== "moveType" && currentStep !== "submitting" && currentStep !== "success";
+  
+  const goBack = useCallback(() => {
+    const stepOrder: FlowStep[] = [
+      "welcome", "moveType", "fromLocation", "toLocation", "apartmentSize", 
+      "videoOffer", "moveDate", "services", "priceReveal", "companies", "contact"
+    ];
+    const currentIndex = stepOrder.indexOf(currentStep);
+    if (currentIndex > 1) {
+      // Remove the last user message and last bot message
+      setMessages(prev => {
+        const filtered = [...prev];
+        // Remove last 2 messages (user response + next bot question)
+        if (filtered.length >= 2) {
+          filtered.pop();
+          filtered.pop();
+        }
+        return filtered;
+      });
+      setCurrentStep(stepOrder[currentIndex - 1]);
+    }
+  }, [currentStep]);
 
   // Initialize chat - with capture mode support
   useEffect(() => {
@@ -1202,21 +1226,30 @@ export function ChatFunnelV2e() {
           </div>
         </div>
         
-        {/* Issue #6, #17, #31 - Consistent compact header on both mobile and desktop */}
+        {/* Header with back button */}
         <div className="px-3 sm:px-5 py-2 sm:py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            {/* Issue #17, #26 - Compact avatar */}
-            <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-              {/* Online indicator - subtle */}
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 border-2 border-background" />
-            </div>
+            {/* Back button */}
+            {canGoBack && (
+              <button
+                onClick={goBack}
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center flex-shrink-0 transition-colors touch-manipulation active:scale-95"
+                aria-label="Zurück"
+              >
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
+              </button>
+            )}
+            {/* Avatar - only show when no back button */}
+            {!canGoBack && (
+              <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 border-2 border-background" />
+              </div>
+            )}
             <div className="min-w-0">
-              {/* Cleaner name for the assistant */}
               <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
                 Offerten-Berater
               </h3>
-              {/* Issue #26 - Clean status line without redundant info */}
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
                 <span className="text-green-600 dark:text-green-400 font-medium">Aktiv</span>
@@ -1494,14 +1527,16 @@ function ServicesSelector({
                   )}
                 </div>
                 {details ? (
-                  /* Issue #2 - 44px+ touch target for expand button */
+                  /* Info button with text */
                   <button
                     onClick={(e) => toggleExpand(e, opt.id)}
-                    className="p-2 rounded-full hover:bg-muted transition-colors touch-manipulation w-10 h-10 flex items-center justify-center self-center"
+                    className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-muted transition-colors touch-manipulation text-xs text-muted-foreground hover:text-foreground self-center"
                     aria-label="Details anzeigen"
                   >
+                    <Info className="w-4 h-4" />
+                    <span className="hidden sm:inline">{isExpanded ? "Weniger" : "Info"}</span>
                     <ChevronDown className={cn(
-                      "w-5 h-5 text-muted-foreground transition-transform",
+                      "w-4 h-4 transition-transform",
                       isExpanded && "rotate-180"
                     )} />
                   </button>
