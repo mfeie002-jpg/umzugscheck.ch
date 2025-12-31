@@ -413,17 +413,20 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
             {/* The Slider */}
             <div className="max-w-3xl mx-auto space-y-6">
               {/* Tier Quick-Select Buttons (Mobile-friendly) - consistent visual indicators */}
-              <div className="flex justify-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
+              {/* Issue #2, #13: Fix horizontal scroll + consistent active state across devices */}
+              <div className="flex justify-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 max-w-full scrollbar-hide">
                 {serviceTiers.map((tier) => (
                   <button
                     key={tier.id}
                     onClick={() => selectTier(tier.id)}
                     className={cn(
-                      "flex-shrink-0 px-4 py-3 rounded-xl text-sm font-medium transition-all min-h-[52px] touch-manipulation border-2",
+                      "flex-shrink-0 px-3 sm:px-4 py-3 rounded-xl text-sm font-medium transition-all min-h-[52px] min-w-[52px] touch-manipulation border-2",
                       currentTier.id === tier.id
-                        ? `bg-gradient-to-br ${tier.color} text-white shadow-lg scale-105 border-transparent`
+                        ? `bg-gradient-to-br ${tier.color} text-white shadow-lg scale-105 border-transparent ring-2 ring-offset-2 ring-offset-background ring-white/50`
                         : "bg-muted/50 text-muted-foreground hover:bg-muted active:scale-95 border-border hover:border-primary/30"
                     )}
+                    aria-pressed={currentTier.id === tier.id}
+                    aria-label={`${tier.name} Paket auswählen`}
                   >
                     <span className="text-lg mr-1">{tier.shortName}</span>
                     <span className="hidden sm:inline">{tier.name}</span>
@@ -515,18 +518,20 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                 />
               </div>
 
-              {/* Quick size selector */}
+              {/* Issue #3: Quick size selector - larger touch targets (min 44x44px) */}
               <div className="flex justify-center gap-2 flex-wrap">
                 {apartmentSizes.map((size) => (
                   <button
                     key={size.id}
                     onClick={() => updateFormData("apartmentSize", size.id)}
                     className={cn(
-                      "px-4 py-2.5 rounded-full text-sm transition-all touch-manipulation min-h-[44px]",
+                      "px-5 py-3 rounded-full text-sm font-medium transition-all touch-manipulation min-h-[48px] min-w-[48px]",
                       formData.apartmentSize === size.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted/50 text-muted-foreground hover:bg-muted active:scale-95"
+                        ? "bg-primary text-primary-foreground shadow-md ring-2 ring-primary/30"
+                        : "bg-muted/50 text-muted-foreground hover:bg-muted active:scale-95 border border-border"
                     )}
+                    aria-pressed={formData.apartmentSize === size.id}
+                    aria-label={`Wohnungsgrösse ${size.label} auswählen`}
                   >
                     {size.label}
                   </button>
@@ -888,7 +893,8 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
   };
 
   return (
-    <div className="min-h-[85vh] rounded-3xl bg-gradient-to-b from-background via-background to-muted/20 border border-border p-4 md:p-10 relative overflow-x-hidden pb-28 md:pb-10">
+    // Issue #2: Prevent horizontal scroll with overflow-hidden + max-w-full
+    <div className="min-h-[85vh] rounded-3xl bg-gradient-to-b from-background via-background to-muted/20 border border-border p-4 md:p-10 relative overflow-hidden pb-28 md:pb-10 max-w-full">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-amber-500/5 pointer-events-none" />
       
@@ -922,7 +928,7 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
         </AnimatePresence>
       </div>
 
-      {/* Desktop Navigation - Back button always visible */}
+      {/* Issue #8, #12: Desktop Navigation - consistent arrow icons, specific CTA text */}
       <div className="hidden md:flex max-w-4xl mx-auto mt-10 items-center justify-between relative">
         <Button
           variant="ghost"
@@ -930,7 +936,7 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
           disabled={currentStepIndex === 0}
           className="gap-2 min-h-[44px] min-w-[100px]"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-5 h-5" />
           Zurück
         </Button>
 
@@ -939,17 +945,17 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
             onClick={handleSubmit}
             disabled={!canProceed() || isSubmitting}
             size="lg"
-            className="bg-gradient-to-r from-violet-500 to-amber-500 hover:from-violet-600 hover:to-amber-600 text-white gap-2 shadow-lg min-w-[180px]"
+            className="bg-gradient-to-r from-violet-500 to-amber-500 hover:from-violet-600 hover:to-amber-600 text-white gap-2 shadow-lg min-w-[200px] font-semibold"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
                 Wird gesendet...
               </>
             ) : (
               <>
                 Jetzt buchen
-                <Zap className="w-4 h-4" />
+                <Zap className="w-5 h-5" />
               </>
             )}
           </Button>
@@ -958,25 +964,30 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
             onClick={handleNext}
             disabled={!canProceed()}
             size="lg"
-            className="bg-primary hover:bg-primary/90 gap-2"
+            className="bg-primary hover:bg-primary/90 gap-2 font-semibold min-w-[200px]"
           >
-            Weiter
-            <ArrowRight className="w-4 h-4" />
+            {/* Issue #12: Specific CTA text per step for better conversion */}
+            {currentStep === "slider" && "Offerten vergleichen"}
+            {currentStep === "details" && "Zusammenfassung anzeigen"}
+            {currentStep === "confirm" && "Kontaktdaten eingeben"}
+            <ArrowRight className="w-5 h-5" />
           </Button>
         )}
       </div>
 
-      {/* Mobile Sticky Bottom Navigation - 44px min touch targets */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4 safe-area-inset-bottom z-50">
-        <div className="flex gap-3">
+      {/* Issue #7, #8, #10, #12: Mobile Sticky Bottom Navigation - consistent icons, larger touch targets, better CTA text */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4 safe-area-inset-bottom z-40">
+        <div className="flex gap-3 items-center">
+          {/* Issue #7, #10: Consistent back button with icon on all breakpoints, min 48px touch target */}
           {currentStepIndex > 0 && (
             <Button
               variant="outline"
               onClick={handleBack}
-              className="flex-shrink-0 h-12 w-12 min-w-[48px] min-h-[48px] p-0 flex items-center justify-center"
-              aria-label="Zurück"
+              className="flex-shrink-0 h-12 min-w-[48px] min-h-[48px] px-3 flex items-center justify-center gap-1.5"
+              aria-label="Zurück zum vorherigen Schritt"
             >
               <ArrowLeft className="w-5 h-5" />
+              <span className="sr-only sm:not-sr-only text-sm">Zurück</span>
             </Button>
           )}
           
@@ -984,17 +995,17 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
             <Button
               onClick={handleSubmit}
               disabled={!canProceed() || isSubmitting}
-              className="flex-1 h-12 bg-gradient-to-r from-violet-500 to-amber-500 hover:from-violet-600 hover:to-amber-600 text-white gap-2"
+              className="flex-1 h-12 min-h-[48px] bg-gradient-to-r from-violet-500 to-amber-500 hover:from-violet-600 hover:to-amber-600 text-white gap-2 font-semibold"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                   Wird gesendet...
                 </>
               ) : (
                 <>
                   Jetzt buchen
-                  <Zap className="w-4 h-4" />
+                  <Zap className="w-5 h-5" />
                 </>
               )}
             </Button>
@@ -1002,10 +1013,13 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
             <Button
               onClick={handleNext}
               disabled={!canProceed()}
-              className="flex-1 h-12 bg-primary hover:bg-primary/90 gap-2"
+              className="flex-1 h-12 min-h-[48px] bg-primary hover:bg-primary/90 gap-2 font-semibold"
             >
-              Weiter
-              <ArrowRight className="w-4 h-4" />
+              {/* Issue #12: Specific CTA text per step */}
+              {currentStep === "slider" && "Offerten vergleichen"}
+              {currentStep === "details" && "Zusammenfassung anzeigen"}
+              {currentStep === "confirm" && "Kontaktdaten eingeben"}
+              <ArrowRight className="w-5 h-5" />
             </Button>
           )}
         </div>
