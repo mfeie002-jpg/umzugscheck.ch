@@ -937,49 +937,47 @@ export function ChatFunnelV2e() {
     }, 400);
   };
 
-  // Render different message types - All 30 UX issues fixed
+  // Render different message types - All 34 UX issues fixed
   const renderMessage = (message: Message) => {
     switch (message.type) {
       case "bot":
         return (
-          /* Issue #18 - More vertical spacing between messages */
-          <div className="flex gap-3 sm:gap-3.5 max-w-[95%] sm:max-w-[88%]">
-            {/* Issue #12 - Larger, more distinct bot avatar */}
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Bot className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-primary" />
+          /* Issue #7, #18, #22 - Clear left-aligned bot messages */
+          <div className="flex gap-2.5 sm:gap-3.5 max-w-[90%] sm:max-w-[85%]">
+            {/* Issue #11, #15, #30 - Consistent bot avatar sizing */}
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
-            {/* Issue #14 - Consistent rounded corners for all chat bubbles */}
-            <div className="bg-muted/90 rounded-2xl rounded-tl-lg px-4 sm:px-5 py-3 sm:py-3.5 shadow-sm">
-              {/* Issue #1, #3 - Better text wrapping and readable font size */}
-              <p className="text-base sm:text-base leading-relaxed break-words overflow-wrap-anywhere hyphens-auto">{message.content}</p>
+            {/* Issue #15, #30 - Consistent rounded corners (ALL bubbles same style) */}
+            <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-sm">
+              {/* Issue #3, #18 - Readable text with proper line height */}
+              <p className="text-sm sm:text-base leading-relaxed break-words">{message.content}</p>
             </div>
           </div>
         );
 
       case "user":
         return (
-          /* Issue #18 - Consistent spacing for user messages */
-          <div className="flex justify-end pl-4 sm:pl-8">
-            {/* Issue #8, #14, #17, #19 - Consistent rounded corners matching bot messages */}
-            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-lg px-4 sm:px-5 py-3 sm:py-3.5 max-w-[85%] sm:max-w-[80%] shadow-md">
-              {/* Issue #1, #3 - Readable font size (min 16px on mobile) */}
-              <p className="text-base sm:text-base leading-relaxed break-words overflow-wrap-anywhere">{message.content}</p>
+          /* Issue #7, #23 - RIGHT-ALIGNED user messages (critical for chat UX) */
+          <div className="flex justify-end">
+            {/* Issue #15, #30 - Consistent rounded corners matching bot */}
+            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3.5 sm:px-4 py-2.5 sm:py-3 max-w-[80%] sm:max-w-[75%] shadow-md ml-auto">
+              <p className="text-sm sm:text-base leading-relaxed break-words">{message.content}</p>
             </div>
           </div>
         );
 
       case "options":
         return (
-          <div className="flex gap-3 sm:gap-3.5 max-w-full">
-            {/* Issue #12 - Larger bot avatar for better distinction */}
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Bot className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-primary" />
+          <div className="flex gap-2.5 sm:gap-3.5 max-w-full">
+            {/* Consistent bot avatar */}
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
-            <div className="flex-1 min-w-0 space-y-4">
-              {/* Issue #14 - Consistent chat bubble styling */}
-              <div className="bg-muted/90 rounded-2xl rounded-tl-lg px-4 sm:px-5 py-3 sm:py-3.5 shadow-sm">
-                {/* Issue #1, #3, #25 - Readable text with proper wrapping */}
-                <p className="text-base sm:text-base leading-relaxed break-words overflow-wrap-anywhere hyphens-auto">{message.content}</p>
+            <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
+              {/* Issue #15, #18, #30 - Consistent chat bubble styling */}
+              <div className="bg-muted rounded-2xl rounded-tl-sm px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-sm">
+                <p className="text-sm sm:text-base leading-relaxed break-words">{message.content}</p>
               </div>
               {currentStep === "services" ? (
                 <ServicesSelector
@@ -987,14 +985,14 @@ export function ChatFunnelV2e() {
                   onConfirm={handleServicesConfirm}
                 />
               ) : (
-                /* Issue #2, #5, #10, #17, #24 - Consistent button grid with 44px+ touch targets */
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-3 w-full">
+                /* Issue #10, #11, #19, #29 - Selection feedback with touch targets */
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
                   {message.options?.map(opt => (
                     <button
                       key={opt.id}
                       onClick={() => handleOptionSelect(opt.id, opt.label)}
-                      /* Issue #2 - Min 44x44px touch targets, better spacing */
-                      className="flex items-center justify-center sm:justify-start gap-3 px-4 sm:px-5 py-4 min-h-[56px] sm:min-h-[60px] bg-card border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.98] transition-all group touch-manipulation shadow-sm"
+                      /* Issue #29 - Min 48x48 touch targets on mobile */
+                      className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 min-h-[52px] sm:min-h-[56px] bg-card border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.97] active:bg-primary/10 transition-all group touch-manipulation shadow-sm"
                     >
                       {opt.icon && (
                         <span className="text-primary group-hover:text-primary transition-colors flex-shrink-0">
@@ -1002,10 +1000,10 @@ export function ChatFunnelV2e() {
                         </span>
                       )}
                       <div className="text-center sm:text-left min-w-0">
-                        {/* Issue #5 - Consistent button text styling */}
-                        <div className="text-base font-semibold leading-tight text-foreground">{opt.label}</div>
+                        {/* Issue #11 - Readable font on all sizes */}
+                        <div className="text-sm sm:text-base font-semibold leading-tight text-foreground">{opt.label}</div>
                         {opt.sublabel && (
-                          <div className="text-sm text-muted-foreground mt-0.5 leading-tight">{opt.sublabel}</div>
+                          <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 leading-tight">{opt.sublabel}</div>
                         )}
                       </div>
                     </button>
@@ -1116,8 +1114,11 @@ export function ChatFunnelV2e() {
   const showLoadingOverlay = isTyping;
 
   return (
-    /* Issue #22 - Proper height calculation to avoid mobile nav overlap */
-    <div className="flex flex-col h-[calc(100dvh-5rem)] sm:h-[calc(100vh-8rem)] md:h-[650px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden relative">
+    /* Issue #4, #22 - Full height minus only breadcrumb, NO external nav overlap */
+    <div 
+      className="flex flex-col h-[calc(100dvh-3.5rem)] sm:h-[calc(100vh-6rem)] md:h-[700px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden relative"
+      data-uc-capture-root="1"
+    >
       {/* Loading overlay between steps */}
       <AnimatePresence>
         {showLoadingOverlay && (
@@ -1136,64 +1137,71 @@ export function ChatFunnelV2e() {
         )}
       </AnimatePresence>
       
-      {/* Issue #28 - More prominent progress bar at top */}
-      <div className="bg-gradient-to-r from-primary/5 via-background to-secondary/5 border-b border-border flex-shrink-0">
-        {/* Issue #28 - Taller, more visible progress bar */}
-        <div className="h-3 bg-muted relative overflow-hidden">
+      {/* Issue #2, #13 - MORE PROMINENT progress bar - always visible on ALL devices */}
+      <div className="bg-gradient-to-r from-primary/10 via-background to-primary/5 border-b border-border flex-shrink-0">
+        {/* Issue #2, #13 - Much taller progress bar (4px) with high contrast */}
+        <div className="h-4 bg-muted/80 relative overflow-hidden shadow-inner">
           <motion.div 
-            className="h-full bg-gradient-to-r from-primary via-primary to-primary/80 shadow-lg"
+            className="h-full bg-gradient-to-r from-primary via-primary to-green-500 shadow-lg"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           />
-          {/* Progress percentage overlay */}
+          {/* Issue #2 - Progress percentage ALWAYS visible, including mobile */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[10px] font-bold text-primary-foreground drop-shadow-sm">{progress > 10 ? `${progress}%` : ''}</span>
+            <span className="text-xs font-black text-white drop-shadow-md px-2 py-0.5 bg-primary/80 rounded-full">
+              {progress}%
+            </span>
           </div>
         </div>
-        <div className="px-4 sm:px-5 py-3 sm:py-3.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-            {/* Issue #12 - Larger, more visible bot avatar */}
-            <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              {/* Issue #8 - Consistent online indicator */}
-              <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-green-500 border-2 border-background shadow-sm" />
+        
+        {/* Issue #17 - Compact header on mobile, full on desktop */}
+        <div className="px-3 sm:px-5 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+            {/* Issue #26 - Simplified header on mobile */}
+            <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Bot className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
+              {/* Online indicator */}
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-500 border-2 border-background shadow-sm" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-bold text-base sm:text-lg text-foreground">Umzugs-Assistent</h3>
-              {/* Issue #28 - Prominent progress display */}
-              <div className="flex items-center gap-2 text-sm sm:text-base">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-green-700 dark:text-green-400 font-semibold">Online</span>
-                </span>
-                <span className="text-muted-foreground">·</span>
+              {/* Issue #17 - Shorter title on mobile */}
+              <h3 className="font-bold text-sm sm:text-lg text-foreground truncate">
+                <span className="sm:hidden">Assistent</span>
+                <span className="hidden sm:inline">Umzugs-Assistent</span>
+              </h3>
+              {/* Issue #26 - Hide redundant "Online" text on mobile, show only status dot */}
+              <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base">
+                <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="hidden sm:inline text-green-700 dark:text-green-400 font-semibold">Online</span>
                 <span className="text-primary font-bold">{progress}%</span>
               </div>
             </div>
           </div>
-          {/* Issue #4, #7, #15, #16, #20 - Prominent, always-visible call CTA */}
-          <div className="flex items-center gap-2.5 flex-shrink-0">
-            {/* Issue #8 - Consistent badge on all screen sizes */}
-            <Badge className="bg-green-600 text-white border-0 text-xs sm:text-sm font-bold px-2.5 py-1.5 shadow-md">
-              <Shield className="w-3.5 h-3.5 mr-1" />
-              <span className="hidden xs:inline">100% </span>Gratis
+          
+          {/* Issue #5, #27, #32 - Compact CTA section that doesn't wrap */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+            {/* Issue #5 - Badge hidden on very small screens, compact on mobile */}
+            <Badge className="bg-green-600 text-white border-0 text-[10px] sm:text-sm font-bold px-1.5 sm:px-2.5 py-1 sm:py-1.5 shadow-md hidden xs:flex whitespace-nowrap">
+              <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1" />
+              Gratis
             </Badge>
-            {/* Issue #4, #16 - Prominent call button with min 44x44 touch target */}
+            {/* Issue #27, #32 - Icon-only call button on mobile, with text on desktop */}
             <a 
               href="tel:+41445057070" 
-              className="flex items-center gap-2 px-4 py-2.5 min-w-[48px] min-h-[48px] bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-sm sm:text-base font-bold transition-all touch-manipulation active:scale-95 shadow-lg"
-              aria-label="Jetzt anrufen"
+              className="flex items-center justify-center gap-1.5 px-3 sm:px-4 min-w-[44px] min-h-[44px] sm:min-h-[48px] bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-sm font-bold transition-all touch-manipulation active:scale-95 shadow-lg"
+              aria-label="Jetzt anrufen für persönliche Beratung"
+              title="Rufen Sie uns an für persönliche Beratung"
             >
-              <Phone className="w-5 h-5" />
+              <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="hidden sm:inline">Anrufen</span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* Issue #18, #26 - More padding and spacing between messages */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 sm:py-5 space-y-5 sm:space-y-6">
+      {/* Issue #3, #7, #18, #22, #23 - Larger gaps between messages for clarity */}
+      <div className="flex-1 overflow-y-auto px-3 sm:px-5 py-3 sm:py-5 space-y-4 sm:space-y-6">
         <AnimatePresence mode="popLayout">
           {messages.map((msg) => (
             <motion.div
@@ -1231,58 +1239,56 @@ export function ChatFunnelV2e() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Issue #11, #23, #29, #30 - Better input with always-visible send button */}
+      {/* Issue #4, #14, #16, #24, #25 - Input area with NO overlap, always visible */}
       {(currentStep === "fromLocation" || currentStep === "toLocation") && (
-        <form onSubmit={handleTextSubmit} className="p-4 sm:p-5 border-t border-border bg-card flex-shrink-0 safe-area-pb">
-          <div className="flex gap-3">
+        <form onSubmit={handleTextSubmit} className="p-3 sm:p-4 border-t border-border bg-card flex-shrink-0">
+          <div className="flex gap-2 sm:gap-3">
             <div className="flex-1 relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+              <MapPin className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               <Input
                 ref={inputRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                /* Issue #11 - Different placeholder examples for from/to */
-                placeholder={currentStep === "fromLocation" ? "z.B. 8048 Zürich" : "z.B. 3011 Bern"}
-                className="pl-12 min-h-[56px] text-base border-2 focus:border-primary rounded-xl"
+                placeholder={currentStep === "fromLocation" ? "8048 Zürich" : "3011 Bern"}
+                className="pl-10 sm:pl-12 min-h-[48px] sm:min-h-[52px] text-base border-2 focus:border-primary rounded-xl"
                 autoFocus
               />
             </div>
-            {/* Issue #29 - Always visible send button */}
+            {/* Issue #14 - Always visible send button with proper touch target */}
             <Button 
               type="submit" 
               size="icon" 
               disabled={!inputValue.trim()} 
-              className="min-w-[56px] min-h-[56px] bg-primary hover:bg-primary/90 rounded-xl shadow-md"
+              className="min-w-[48px] min-h-[48px] sm:min-w-[52px] sm:min-h-[52px] bg-primary hover:bg-primary/90 rounded-xl shadow-md"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
-          {/* Issue #23 - Clear input feedback */}
-          <p className="text-sm text-muted-foreground mt-2.5 text-center">
+          {/* Compact hint text */}
+          <p className="text-xs sm:text-sm text-muted-foreground mt-2 text-center">
             {!inputValue.trim() 
-              ? `Geben Sie ${currentStep === "fromLocation" ? "Ihren aktuellen" : "den neuen"} Standort ein` 
+              ? "PLZ + Ort eingeben" 
               : inputValue.length < 4 
-                ? "Bitte vollständige PLZ oder Ortsname eingeben" 
-                : "↵ Enter zum Absenden"
+                ? "Vollständig eingeben" 
+                : "↵ Absenden"
             }
           </p>
         </form>
       )}
 
-      {/* Issue #2, #21 - Footer with proper touch targets (min 44px) */}
-      <div className="px-4 sm:px-6 py-4 border-t border-border bg-muted/50 flex items-center justify-center gap-6 sm:gap-10 text-base text-foreground flex-shrink-0 safe-area-pb">
-        <div className="flex items-center gap-2 min-h-[44px]">
-          <Users className="w-5 h-5 text-primary" />
-          <span className="font-bold text-foreground">12k+</span>
-          <span className="text-muted-foreground hidden sm:inline">Umzüge</span>
+      {/* Issue #8, #12, #28, #34 - COMPACT footer, minimal height on mobile */}
+      <div className="px-3 sm:px-6 py-2 sm:py-3 border-t border-border bg-muted/40 flex items-center justify-center gap-4 sm:gap-8 text-sm sm:text-base text-foreground flex-shrink-0">
+        <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
+          <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+          <span className="font-bold">12k+</span>
         </div>
-        <div className="flex items-center gap-2 min-h-[44px]">
-          <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-          <span className="font-bold text-foreground">4.8/5</span>
+        <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
+          <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 fill-yellow-500" />
+          <span className="font-bold">4.8</span>
         </div>
-        <div className="flex items-center gap-2 min-h-[44px]">
-          <Clock className="w-5 h-5 text-primary" />
-          <span className="font-bold text-foreground">~2 Min.</span>
+        <div className="flex items-center gap-1.5 min-h-[36px] sm:min-h-[44px]">
+          <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+          <span className="font-bold">~2 Min</span>
         </div>
       </div>
 
