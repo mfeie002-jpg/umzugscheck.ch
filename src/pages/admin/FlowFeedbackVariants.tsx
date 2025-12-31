@@ -6,7 +6,7 @@
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Code, FileJson, Loader2 } from 'lucide-react';
+import { ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Code, FileJson, Loader2, Copy, Check, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { PerformanceErrorBoundary } from '@/components/performance/PerformanceErrorBoundary';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface UltimateFlowStep {
   number: number;
@@ -53,9 +55,127 @@ interface UltimateFlowResult {
   raw?: string;
 }
 
+// Generate complete Lovable prompt from Ultimate Flow data
+function generateLovablePrompt(resultJson: UltimateFlowResult | null, variantName?: string): string {
+  if (!resultJson?.ultimateFlow) {
+    return '// Keine Ultimate Flow Daten verfügbar';
+  }
+
+  const flow = resultJson.ultimateFlow;
+  const metrics = resultJson.successMetrics;
+  const plan = resultJson.implementationPlan;
+
+  let prompt = `# Lovable Prompt: ${flow.name || variantName || 'Ultimate Flow'}
+
+## Projektübersicht
+${flow.description || 'Ein optimierter Umzugs-Offerten-Funnel für die Schweiz.'}
+
+**Ziel-Score:** ${flow.expectedScore || 95}/100
+**Erwartete Conversion-Steigerung:** ${flow.expectedConversionLift || '+30%'}
+
+---
+
+## Technische Anforderungen
+
+Erstelle einen mehrstufigen Umzugs-Offerten-Funnel mit folgenden Eigenschaften:
+- React + TypeScript + Tailwind CSS
+- Mobile-First Design
+- Touch-Targets mindestens 48x48px
+- Schweizer Lokalisierung (de-CH)
+- Responsive für alle Bildschirmgrössen
+
+---
+
+## Flow-Struktur (${flow.steps?.length || 0} Steps)
+
+`;
+
+  if (flow.steps && flow.steps.length > 0) {
+    flow.steps.forEach((step, idx) => {
+      prompt += `### Step ${step.number || idx + 1}: ${step.name}\n`;
+      if (step.features && step.features.length > 0) {
+        prompt += `**Features:**\n`;
+        step.features.forEach(f => { prompt += `- ${f}\n`; });
+      }
+      if (step.archetypeValue) {
+        prompt += `\n**Archetypen-Wert:**\n`;
+        Object.entries(step.archetypeValue).forEach(([archetype, value]) => {
+          prompt += `- ${archetype}: ${value}\n`;
+        });
+      }
+      if (step.sourceElements && step.sourceElements.length > 0) {
+        prompt += `\n*Inspiriert von: ${step.sourceElements.join(', ')}*\n`;
+      }
+      prompt += `\n`;
+    });
+  }
+
+  if (flow.keyFeatures && flow.keyFeatures.length > 0) {
+    prompt += `---\n\n## Key Features\n\n`;
+    flow.keyFeatures.forEach((feature, idx) => {
+      prompt += `### ${idx + 1}. ${feature.feature}\n- **Quelle:** ${feature.sourceFlow}\n- **Implementation:** ${feature.implementation}\n- **Impact:** ${feature.impact}\n\n`;
+    });
+  }
+
+  if (metrics) {
+    prompt += `---\n\n## Erfolgs-Metriken\n\n**Ziel-Score:** ${metrics.targetScore || flow.expectedScore}/100\n**Conversion-Ziel:** ${metrics.conversionGoal || flow.expectedConversionLift}\n\n`;
+    if (metrics.archetypeCoverage) {
+      prompt += `**Archetypen-Abdeckung:**\n`;
+      Object.entries(metrics.archetypeCoverage).forEach(([archetype, score]) => {
+        prompt += `- ${archetype}: ${score}%\n`;
+      });
+    }
+    const kpis = (metrics as any).kpis;
+    if (kpis && Array.isArray(kpis)) {
+      prompt += `\n**KPIs:**\n`;
+      kpis.forEach((kpi: any) => { prompt += `- ${kpi.metric}: ${kpi.current} → ${kpi.target}\n`; });
+    }
+  }
+
+  if (plan) {
+    prompt += `\n---\n\n## Implementation Plan\n\n`;
+    Object.entries(plan).forEach(([key, phase]) => {
+      if (phase) {
+        prompt += `### ${phase.name} (${phase.duration})\n`;
+        if (phase.tasks && phase.tasks.length > 0) {
+          phase.tasks.forEach(task => { prompt += `- [ ] ${task}\n`; });
+        }
+        prompt += `\n`;
+      }
+    });
+  }
+
+  prompt += `---
+
+## Design-Richtlinien
+
+1. **Farben:** Schweizer Corporate-Blau als Primärfarbe, Trust-Grün für Erfolg
+2. **Typography:** Klare, lesbare Schriften (min. 16px auf Mobile)
+3. **Spacing:** Grosszügige Abstände für Touch-Bedienung
+4. **Trust-Elemente:** ASTAG-Siegel, TÜV, Google Reviews an strategischen Punkten
+5. **Progress:** Klare Fortschrittsanzeige "Schritt X von Y"
+6. **CTA:** Auffällige, kontrastreiche Call-to-Action Buttons
+
+## Spezielle Anforderungen
+
+- Swiss Post PLZ-API für Adress-Autovervollständigung
+- Echtzeit-Preisschätzung basierend auf Eingaben
+- Bundle-Pricing mit 3 Optionen (Basis, Komfort, Premium)
+- Firmen-Matching basierend auf Region und Services
+- Mobile-optimierte Formularfelder
+
+---
+
+**Hinweis:** Dieser Flow ist eine Synthese der besten Elemente aus allen analysierten Varianten, optimiert für maximale Conversion bei allen 4 Nutzer-Archetypen.
+`;
+
+  return prompt;
+}
+
 function FlowFeedbackVariantsContent() {
   const [searchParams] = useSearchParams();
   const variantId = searchParams.get('variant');
+  const [copied, setCopied] = useState(false);
 
   console.log('[FlowFeedbackVariants] Rendering with variantId:', variantId);
 
@@ -78,10 +198,21 @@ function FlowFeedbackVariantsContent() {
     enabled: !!variantId,
   });
 
-  // Parse result_json safely
   const resultJson = variant?.result_json as UltimateFlowResult | null;
   const hasError = resultJson?.error;
   const ultimateFlow = resultJson?.ultimateFlow;
+  const lovablePrompt = generateLovablePrompt(resultJson, variant?.variant_name);
+  
+  const handleCopyPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(lovablePrompt);
+      setCopied(true);
+      toast.success('Prompt in Zwischenablage kopiert!');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error('Kopieren fehlgeschlagen');
+    }
+  };
   
   console.log('[FlowFeedbackVariants] State:', { isLoading, error, hasVariant: !!variant, hasResult: !!resultJson });
 
@@ -244,13 +375,56 @@ function FlowFeedbackVariantsContent() {
         )}
 
         {/* Tabs for detailed content */}
-        <Tabs defaultValue="steps" className="space-y-4">
-          <TabsList>
+        <Tabs defaultValue="prompt" className="space-y-4">
+          <TabsList className="flex-wrap h-auto gap-1">
+            <TabsTrigger value="prompt" className="gap-2">
+              <Wand2 className="h-4 w-4" />
+              Lovable Prompt
+            </TabsTrigger>
             <TabsTrigger value="steps">Steps</TabsTrigger>
             <TabsTrigger value="features">Key Features</TabsTrigger>
             <TabsTrigger value="code">Component Code</TabsTrigger>
             <TabsTrigger value="json">Raw JSON</TabsTrigger>
           </TabsList>
+
+          {/* Lovable Prompt Tab - Primary */}
+          <TabsContent value="prompt">
+            <Card className="border-primary/20">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Wand2 className="h-5 w-5 text-primary" />
+                      Kompletter Lovable Prompt
+                    </CardTitle>
+                    <CardDescription>
+                      Kopiere diesen Prompt und füge ihn in Lovable ein, um den Ultimate Flow zu erstellen
+                    </CardDescription>
+                  </div>
+                  <Button onClick={handleCopyPrompt} variant="default" className="gap-2">
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Kopiert!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        Prompt kopieren
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[600px]">
+                  <pre className="text-sm bg-muted p-4 rounded-lg whitespace-pre-wrap font-mono">
+                    {lovablePrompt}
+                  </pre>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="steps">
             <Card>
