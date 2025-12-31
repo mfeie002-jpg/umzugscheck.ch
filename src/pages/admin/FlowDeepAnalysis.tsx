@@ -852,6 +852,77 @@ export default function FlowDeepAnalysis() {
     }
   };
 
+  // State for generating ultimate flow
+  const [isGeneratingUltimate, setIsGeneratingUltimate] = useState(false);
+
+  // Generate Ultimate Flow from synthesis
+  const handleGenerateUltimateFlow = async () => {
+    if (!synthesis) {
+      toast({
+        title: 'Keine Synthese vorhanden',
+        description: 'Bitte führen Sie zuerst eine Tiefenanalyse durch.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setIsGeneratingUltimate(true);
+
+    toast({
+      title: 'Ultimate Flow wird generiert',
+      description: 'Kombiniere die besten Elemente aller Flows...',
+    });
+
+    try {
+      // Create ultimate flow variant based on synthesis
+      const ultimateFlowData = synthesis.ultimateFlow;
+      
+      const { data, error } = await supabase.functions.invoke('generate-ultimate-flow', {
+        body: {
+          synthesis: {
+            winner: synthesis.winner,
+            ranking: synthesis.ranking,
+            bestElements: synthesis.bestElements,
+            ultimateFlow: ultimateFlowData,
+            implementationPriority: ultimateFlowData.implementationPriority,
+          },
+          analyses: analyses.map(a => ({
+            flowId: a.flowId,
+            flowName: a.flowName,
+            overallScore: a.overallScore,
+            categoryScores: a.categoryScores,
+            strengths: a.strengths,
+            quickWins: a.quickWins,
+          })),
+          flowVersion: selectedFlowVersion,
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Ultimate Flow generiert!',
+        description: `${ultimateFlowData.name || 'Ultimate Flow'} wurde erstellt. Erwartete Conversion-Steigerung: ${ultimateFlowData.expectedConversionLift || '+15-25%'}`,
+      });
+
+      // Open the generated variant
+      if (data?.variantId) {
+        window.open(`/admin/flow-feedback-variants?variant=${data.variantId}`, '_blank');
+      } else if (data?.flowCode) {
+        window.open(`/umzugsofferten-${data.flowCode}`, '_blank');
+      }
+    } catch (error) {
+      console.error('Generate ultimate flow error:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Ultimate Flow konnte nicht generiert werden. Versuchen Sie es erneut.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsGeneratingUltimate(false);
+    }
+  };
+
   // AI Fix Flow function
   const handleFixFlow = async (analysis: FlowAnalysis) => {
     setFixingFlowId(analysis.flowId);
@@ -1717,9 +1788,23 @@ export default function FlowDeepAnalysis() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-4 justify-center">
-                    <Button size="lg" className="gap-2">
-                      <Zap className="h-5 w-5" />
-                      Ultimate Flow generieren
+                    <Button 
+                      size="lg" 
+                      className="gap-2"
+                      onClick={handleGenerateUltimateFlow}
+                      disabled={isGeneratingUltimate || !synthesis}
+                    >
+                      {isGeneratingUltimate ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Wird generiert...
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="h-5 w-5" />
+                          Ultimate Flow generieren
+                        </>
+                      )}
                     </Button>
                     <Button size="lg" variant="outline" className="gap-2">
                       <Download className="h-5 w-5" />
