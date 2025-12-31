@@ -1,20 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 /**
- * Logs unexpected hard reloads (e.g. after screenshot / focus changes).
- * Only active on Lovable preview domains to avoid noisy production logs.
+ * Enhanced diagnostics for unexpected hard reloads / scroll jumps.
+ * Active on Lovable preview domains to trace what causes refresh.
  */
 export function ReloadDiagnostics() {
+  const mountTime = useRef(Date.now());
+
   useEffect(() => {
     const isLovablePreview = (() => {
       try {
-        return window.location.hostname.endsWith("lovableproject.com");
+        return (
+          window.location.hostname.endsWith("lovableproject.com") ||
+          window.location.hostname.endsWith("lovable.app")
+        );
       } catch {
         return false;
       }
     })();
 
     if (!isLovablePreview) return;
+
+    // eslint-disable-next-line no-console
+    console.info(
+      "%c[ReloadDiagnostics] Active",
+      "color: cyan; font-weight: bold",
+      {
+        mountedAt: new Date().toISOString(),
+        href: window.location.href,
+      }
+    );
 
     const safeWrap = <T extends (...args: any[]) => any>(
       _name: string,
@@ -28,8 +43,7 @@ export function ReloadDiagnostics() {
       }
     };
 
-    // Patch reload/replace/assign to log stack traces when they're invoked.
-    // NOTE: This does not block reloads; it only helps us identify the source.
+    // ---------- Patch navigation methods to log stack traces ----------
     try {
       const loc = window.location as unknown as {
         reload: () => void;
@@ -45,11 +59,15 @@ export function ReloadDiagnostics() {
         (loc as any).reload = safeWrap("location.reload", origReload, (orig) => {
           return (() => {
             // eslint-disable-next-line no-console
-            console.warn("[ReloadDiagnostics] location.reload() called", {
-              href: window.location.href,
-              hidden: document.hidden,
-              visibilityState: document.visibilityState,
-            });
+            console.warn(
+              "%c[ReloadDiagnostics] location.reload() called",
+              "color: red; font-weight: bold",
+              {
+                href: window.location.href,
+                hidden: document.hidden,
+                visibilityState: document.visibilityState,
+              }
+            );
             // eslint-disable-next-line no-console
             console.warn(new Error("location.reload stack").stack);
             return orig();
@@ -61,10 +79,14 @@ export function ReloadDiagnostics() {
         (loc as any).replace = safeWrap("location.replace", origReplace, (orig) => {
           return ((url: string) => {
             // eslint-disable-next-line no-console
-            console.warn("[ReloadDiagnostics] location.replace() called", {
-              to: url,
-              from: window.location.href,
-            });
+            console.warn(
+              "%c[ReloadDiagnostics] location.replace() called",
+              "color: red; font-weight: bold",
+              {
+                to: url,
+                from: window.location.href,
+              }
+            );
             // eslint-disable-next-line no-console
             console.warn(new Error("location.replace stack").stack);
             return orig(url);
@@ -76,10 +98,14 @@ export function ReloadDiagnostics() {
         (loc as any).assign = safeWrap("location.assign", origAssign, (orig) => {
           return ((url: string) => {
             // eslint-disable-next-line no-console
-            console.warn("[ReloadDiagnostics] location.assign() called", {
-              to: url,
-              from: window.location.href,
-            });
+            console.warn(
+              "%c[ReloadDiagnostics] location.assign() called",
+              "color: red; font-weight: bold",
+              {
+                to: url,
+                from: window.location.href,
+              }
+            );
             // eslint-disable-next-line no-console
             console.warn(new Error("location.assign stack").stack);
             return orig(url);
@@ -90,13 +116,41 @@ export function ReloadDiagnostics() {
       // ignore
     }
 
+    // ---------- Patch scrollTo to catch programmatic scrolls ----------
+    try {
+      const origScrollTo = window.scrollTo.bind(window);
+      (window as any).scrollTo = (...args: any[]) => {
+        const scrollY = typeof args[0] === "number" ? args[0] : (args[0] as ScrollToOptions)?.top;
+        // Only log scroll-to-top (likely culprit for unwanted jumps)
+        if (scrollY === 0 || scrollY === undefined) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            "%c[ReloadDiagnostics] window.scrollTo(0) detected",
+            "color: orange; font-weight: bold",
+            { args, href: window.location.href }
+          );
+          // eslint-disable-next-line no-console
+          console.warn(new Error("scrollTo stack").stack);
+        }
+        return origScrollTo(...(args as [any]));
+      };
+    } catch {
+      // ignore
+    }
+
+    // ---------- Event listeners ----------
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       // eslint-disable-next-line no-console
-      console.warn("[ReloadDiagnostics] beforeunload", {
-        href: window.location.href,
-        hidden: document.hidden,
-        visibilityState: document.visibilityState,
-      });
+      console.warn(
+        "%c[ReloadDiagnostics] beforeunload",
+        "color: red; font-weight: bold",
+        {
+          href: window.location.href,
+          hidden: document.hidden,
+          visibilityState: document.visibilityState,
+          uptime: Date.now() - mountTime.current,
+        }
+      );
       // eslint-disable-next-line no-console
       console.warn(new Error("beforeunload stack").stack);
       return e;
@@ -140,12 +194,31 @@ export function ReloadDiagnostics() {
       });
     };
 
+    const onPopState = (e: PopStateEvent) => {
+      // eslint-disable-next-line no-console
+      console.warn(
+        "%c[ReloadDiagnostics] popstate (history navigation)",
+        "color: purple; font-weight: bold",
+        { state: e.state, href: window.location.href }
+      );
+    };
+
+    const onHashChange = () => {
+      // eslint-disable-next-line no-console
+      console.warn(
+        "%c[ReloadDiagnostics] hashchange",
+        "color: purple; font-weight: bold",
+        { href: window.location.href }
+      );
+    };
+
+    // Log initial navigation type
     try {
       const nav = performance.getEntriesByType("navigation")[0] as
         | PerformanceNavigationTiming
         | undefined;
       // eslint-disable-next-line no-console
-      console.debug("[ReloadDiagnostics] navigation", {
+      console.info("[ReloadDiagnostics] navigation", {
         type: nav?.type,
         redirectCount: nav?.redirectCount,
         href: window.location.href,
@@ -159,6 +232,8 @@ export function ReloadDiagnostics() {
     window.addEventListener("pagehide", onPageHide);
     window.addEventListener("focus", onFocus);
     window.addEventListener("blur", onBlur);
+    window.addEventListener("popstate", onPopState);
+    window.addEventListener("hashchange", onHashChange);
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
@@ -167,6 +242,8 @@ export function ReloadDiagnostics() {
       window.removeEventListener("pagehide", onPageHide);
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("blur", onBlur);
+      window.removeEventListener("popstate", onPopState);
+      window.removeEventListener("hashchange", onHashChange);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
