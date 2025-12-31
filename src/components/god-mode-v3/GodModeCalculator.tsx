@@ -412,17 +412,17 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
 
             {/* The Slider */}
             <div className="max-w-3xl mx-auto space-y-6">
-              {/* Tier Quick-Select Buttons (Mobile-friendly) */}
+              {/* Tier Quick-Select Buttons (Mobile-friendly) - consistent visual indicators */}
               <div className="flex justify-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
                 {serviceTiers.map((tier) => (
                   <button
                     key={tier.id}
                     onClick={() => selectTier(tier.id)}
                     className={cn(
-                      "flex-shrink-0 px-4 py-3 rounded-xl text-sm font-medium transition-all min-h-[52px] touch-manipulation",
+                      "flex-shrink-0 px-4 py-3 rounded-xl text-sm font-medium transition-all min-h-[52px] touch-manipulation border-2",
                       currentTier.id === tier.id
-                        ? `bg-gradient-to-br ${tier.color} text-white shadow-lg scale-105`
-                        : "bg-muted/50 text-muted-foreground hover:bg-muted active:scale-95"
+                        ? `bg-gradient-to-br ${tier.color} text-white shadow-lg scale-105 border-transparent`
+                        : "bg-muted/50 text-muted-foreground hover:bg-muted active:scale-95 border-border hover:border-primary/30"
                     )}
                   >
                     <span className="text-lg mr-1">{tier.shortName}</span>
@@ -454,10 +454,10 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl md:text-3xl font-bold text-white">
+                    <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                       ab CHF {calculatedPrice.from.toLocaleString('de-CH')}
                     </div>
-                    <p className="text-white/60 text-xs md:text-sm">3-Zimmer Wohnung</p>
+                    <p className="text-white/60 text-sm md:text-sm">{apartmentSizes.find(s => s.id === formData.apartmentSize)?.label || '3-3.5 Zi.'} Wohnung</p>
                   </div>
                 </div>
 
@@ -466,15 +466,15 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                   <div>
                     <p className="text-white/60 text-xs uppercase tracking-wider mb-2">Inklusive</p>
                     <ul className="space-y-1.5">
-                      {currentTier.included.slice(0, 4).map((item, idx) => (
+                      {currentTier.included.slice(0, 5).map((item, idx) => (
                         <li key={idx} className="flex items-center gap-2 text-white text-sm">
                           <CheckCircle className="w-4 h-4 text-white/80 shrink-0" />
                           {item}
                         </li>
                       ))}
-                      {currentTier.included.length > 4 && (
-                        <li className="text-white/60 text-sm">
-                          + {currentTier.included.length - 4} weitere
+                      {currentTier.included.length > 5 && (
+                        <li className="text-white/60 text-sm cursor-pointer hover:text-white/80 transition-colors">
+                          + {currentTier.included.length - 5} weitere anzeigen
                         </li>
                       )}
                     </ul>
@@ -492,13 +492,19 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                 </div>
               </motion.div>
 
-              {/* Slider Control - Larger touch target */}
+              {/* Slider Control - Larger touch target with tooltip explanation */}
               <div className="space-y-4 px-2 md:px-4">
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between text-sm text-muted-foreground items-center">
                   <span>💰 Günstiger</span>
-                  <span className="font-mono text-lg text-foreground">{formData.controlLevel}%</span>
+                  <div className="flex flex-col items-center">
+                    <span className="font-mono text-lg text-foreground">{formData.controlLevel}%</span>
+                    <span className="text-xs text-muted-foreground/70">Delegation</span>
+                  </div>
                   <span>🛋️ Sorgloser</span>
                 </div>
+                <p className="text-xs text-muted-foreground text-center -mt-2 mb-2">
+                  Je höher der Wert, desto mehr übernehmen wir für Sie
+                </p>
                 <Slider
                   value={[formData.controlLevel]}
                   onValueChange={(v) => updateFormData("controlLevel", v[0])}
@@ -637,13 +643,13 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
             </div>
 
             <div className="max-w-2xl mx-auto space-y-6">
-              {/* Editable Summary */}
+              {/* Editable Summary - consistent edit button position */}
               <div className="p-6 rounded-2xl bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold">Ihre Angaben</h3>
-                  <Button variant="ghost" size="sm" onClick={() => goToStep("slider")} className="gap-1.5 text-primary">
+                  <Button variant="ghost" size="sm" onClick={() => goToStep("slider")} className="gap-1.5 text-primary min-h-[44px] min-w-[44px]">
                     <Edit3 className="w-4 h-4" />
-                    Bearbeiten
+                    <span className="hidden sm:inline">Bearbeiten</span>
                   </Button>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -748,8 +754,8 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
               <p className="text-muted-foreground">Wohin dürfen wir die Bestätigung senden?</p>
             </div>
 
-            <div className="max-w-lg mx-auto space-y-5">
-              <div className="space-y-2">
+            <div className="max-w-lg mx-auto space-y-6">
+              <div className="space-y-3">
                 <label className="text-sm font-medium">Name</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -762,7 +768,7 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label className="text-sm font-medium">E-Mail</label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -778,7 +784,9 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                     )}
                   />
                   {validation.email === 'valid' && (
-                    <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white" />
+                    </div>
                   )}
                   {validation.email === 'invalid' && (
                     <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-destructive" />
@@ -789,7 +797,7 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label className="text-sm font-medium">Telefon</label>
                 <div className="relative">
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -810,7 +818,9 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
                     )}
                   />
                   {validation.phone === 'valid' && (
-                    <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white" />
+                    </div>
                   )}
                   {validation.phone === 'invalid' && (
                     <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-destructive" />
@@ -878,7 +888,7 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
   };
 
   return (
-    <div className="min-h-[85vh] rounded-3xl bg-gradient-to-b from-background via-background to-muted/20 border border-border p-4 md:p-10 relative overflow-hidden pb-28 md:pb-10">
+    <div className="min-h-[85vh] rounded-3xl bg-gradient-to-b from-background via-background to-muted/20 border border-border p-4 md:p-10 relative overflow-x-hidden pb-28 md:pb-10">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-amber-500/5 pointer-events-none" />
       
@@ -912,13 +922,13 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
         </AnimatePresence>
       </div>
 
-      {/* Desktop Navigation */}
+      {/* Desktop Navigation - Back button always visible */}
       <div className="hidden md:flex max-w-4xl mx-auto mt-10 items-center justify-between relative">
         <Button
           variant="ghost"
           onClick={handleBack}
           disabled={currentStepIndex === 0}
-          className="gap-2"
+          className="gap-2 min-h-[44px] min-w-[100px]"
         >
           <ArrowLeft className="w-4 h-4" />
           Zurück
@@ -956,16 +966,17 @@ export const GodModeCalculator = memo(function GodModeCalculator() {
         )}
       </div>
 
-      {/* Mobile Sticky Bottom Navigation */}
+      {/* Mobile Sticky Bottom Navigation - 44px min touch targets */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4 safe-area-inset-bottom z-50">
         <div className="flex gap-3">
           {currentStepIndex > 0 && (
             <Button
               variant="outline"
               onClick={handleBack}
-              className="flex-shrink-0 h-12 px-4"
+              className="flex-shrink-0 h-12 w-12 min-w-[48px] min-h-[48px] p-0 flex items-center justify-center"
+              aria-label="Zurück"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-5 h-5" />
             </Button>
           )}
           
