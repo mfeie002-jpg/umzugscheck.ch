@@ -562,6 +562,9 @@ async function runAnalysisInBackground(
     const avgUx = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.ux, 0) / stepAnalyses.length);
     const overallScore = Math.round((avgMobile + avgConversion + avgUx) / 3);
 
+    // Calculate critical issues count before using it
+    const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
+
     // Update run with results
     await supabase
       .from('flow_analysis_runs')
@@ -574,7 +577,6 @@ async function runAnalysisInBackground(
         ux_score: avgUx,
         ai_summary: summary,
         ai_recommendations: recommendations,
-        // Store counts for dashboards (so UIs don't need to compute from flow_ux_issues)
         metadata: {
           issuesCount: allIssues.length,
           criticalCount: criticalIssues,
@@ -583,7 +585,6 @@ async function runAnalysisInBackground(
       .eq('id', runId);
 
     // Check for alerts
-    const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
     if (criticalIssues > 0) {
       const { data: alertSettings } = await supabase
         .from('flow_alert_settings')
