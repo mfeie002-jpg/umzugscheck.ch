@@ -366,6 +366,7 @@ interface CalculatorFlowReviewProps {
 export function CalculatorFlowReview({ initialFlow }: CalculatorFlowReviewProps = {}) {
   const [isCapturing, setIsCapturing] = useState(false);
   const [isExportingAll, setIsExportingAll] = useState(false);
+  const [isStartingBackgroundExport, setIsStartingBackgroundExport] = useState(false);
   const [capturedSteps, setCapturedSteps] = useState<FlowStep[]>([]);
   const [selectedCalculator, setSelectedCalculator] = useState(initialFlow || "umzugsofferten");
   const [customPrompt, setCustomPrompt] = useLocalStorage("uc-project-instructions", DEFAULT_PROJECT_INSTRUCTIONS);
@@ -1687,6 +1688,52 @@ Siehe: \`all-html/step-${step.step}.html\`
     }
   };
 
+  // Start background export - runs server-side, can close browser
+  const startBackgroundExport = async () => {
+    setIsStartingBackgroundExport(true);
+    
+    try {
+      const baseUrl = (baseUrlOverride.trim() || getDefaultPublicBaseUrl()).replace(/\/$/, "");
+      
+      // Create job in database
+      const { data: job, error: insertError } = await supabase
+        .from('export_jobs')
+        .insert({
+          job_type: 'all_flows',
+          status: 'pending',
+          include_sub_variants: true,
+          config: { 
+            baseUrl,
+            desktopDim: selectedDesktopDim.value,
+            mobileDim: selectedMobileDim.value,
+          },
+        })
+        .select()
+        .single();
+
+      if (insertError || !job) throw insertError;
+
+      // Trigger background function (fire and forget)
+      const { error: fnError } = await supabase.functions.invoke('background-export', {
+        body: {
+          jobId: job.id,
+          baseUrl,
+          includeSubVariants: true,
+        },
+      });
+
+      if (fnError) throw fnError;
+
+      toast.success('Background-Export gestartet! Du kannst die Seite jetzt schliessen. Später unter "Background Export" Tab den Download-Link holen.');
+      
+    } catch (error) {
+      console.error('Failed to start background export:', error);
+      toast.error('Export konnte nicht gestartet werden');
+    } finally {
+      setIsStartingBackgroundExport(false);
+    }
+  };
+
   // Export ALL flow variants at once with source code - COMPLETE with ALL STEPS
   const exportAllFlows = async () => {
     setIsExportingAll(true);
@@ -2749,9 +2796,9 @@ ${JSON.stringify(step.meta || {}, null, 2)}
             </div>
           )}
 
-          {/* Export All Flows Button */}
+          {/* Export All Flows Section */}
           <div className="border-t pt-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4">
               <div>
                 <h4 className="font-medium flex items-center gap-2">
                   <Package className="w-4 h-4 text-primary" />
@@ -2761,18 +2808,41 @@ ${JSON.stringify(step.meta || {}, null, 2)}
                   Exportiert Screenshots, HTML & JSON aller V1-V9 Flows für ChatGPT-Analyse
                 </p>
               </div>
-              <Button 
-                onClick={exportAllFlows}
-                disabled={isCapturing || isExportingAll}
-                className="bg-gradient-to-r from-primary to-blue-600"
-              >
-                {isExportingAll ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Download className="w-4 h-4 mr-2" />
-                )}
-                {isExportingAll ? 'Exportiere...' : 'Alle Flows exportieren'}
-              </Button>
+              
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Client-side export (must keep browser open) */}
+                <Button 
+                  onClick={exportAllFlows}
+                  disabled={isCapturing || isExportingAll || isStartingBackgroundExport}
+                  variant="outline"
+                >
+                  {isExportingAll ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4 mr-2" />
+                  )}
+                  {isExportingAll ? 'Exportiere...' : 'Client Export (Fenster offen lassen)'}
+                </Button>
+
+                {/* Background export (can close browser) */}
+                <Button 
+                  onClick={startBackgroundExport}
+                  disabled={isCapturing || isExportingAll || isStartingBackgroundExport}
+                  className="bg-gradient-to-r from-primary to-blue-600"
+                >
+                  {isStartingBackgroundExport ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Zap className="w-4 h-4 mr-2" />
+                  )}
+                  {isStartingBackgroundExport ? 'Wird gestartet...' : 'Background Export (Fenster schliessbar)'}
+                </Button>
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                <strong>Background Export:</strong> Läuft auf dem Server weiter, auch wenn du das Fenster schliesst. 
+                Download-Link später im <strong>"Background Export"</strong> Tab abholen.
+              </p>
             </div>
           </div>
         </CardContent>
