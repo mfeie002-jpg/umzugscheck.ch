@@ -486,10 +486,11 @@ export function CaptureReadySentinel({
         aria-hidden="true"
       />
       
-      {/* Debug watermark - COMPLETELY HIDDEN in screenshot capture mode to prevent AI from flagging it as "overlay" */}
-      {/* The watermark was causing false positives in AI analysis ("CTA verdeckt durch Overlay") */}
-      {/* Only show during development when NOT in capture mode - check for uc-capture param */}
-      {typeof window !== 'undefined' && !window.location.search.includes('uc-capture') && (
+      {/* Issue #1 FIX: Debug watermark COMPLETELY HIDDEN in production AND capture mode */}
+      {/* Only show in localhost development for debugging - never in production */}
+      {typeof window !== 'undefined' && 
+       window.location.hostname === 'localhost' && 
+       !window.location.search.includes('uc-capture') && (
         <div
           id="uc-capture-watermark"
           style={{
