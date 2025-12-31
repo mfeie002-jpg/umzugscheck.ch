@@ -901,6 +901,9 @@ export default function FlowDeepAnalysis() {
       });
 
       if (error) throw error;
+      if (!data?.success) {
+        throw new Error(data?.error || 'Ultimate Flow konnte nicht generiert werden.');
+      }
 
       toast({
         title: 'Ultimate Flow generiert!',
@@ -915,13 +918,12 @@ export default function FlowDeepAnalysis() {
       }
     } catch (error) {
       console.error('Generate ultimate flow error:', error);
+      const msg = error instanceof Error ? error.message : 'Unbekannter Fehler';
       toast({
         title: 'Fehler',
-        description: 'Ultimate Flow konnte nicht generiert werden. Versuchen Sie es erneut.',
+        description: msg,
         variant: 'destructive'
       });
-    } finally {
-      setIsGeneratingUltimate(false);
     }
   };
 
