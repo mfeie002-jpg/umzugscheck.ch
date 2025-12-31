@@ -1462,11 +1462,12 @@ export function ChatFunnelV2e() {
   );
 }
 
-// Service details data with teasers and social proof
+// Service details data with teasers, social proof and pricing
 const SERVICE_DETAILS: Record<string, { 
   teaser: string; 
   benefit: string;
   popularity: string;
+  price: string;
   bullets: string[]; 
   duration?: string;
 }> = {
@@ -1474,6 +1475,7 @@ const SERVICE_DETAILS: Record<string, {
     teaser: "Stressfrei umziehen",
     benefit: "Spart 6+ Stunden Arbeit",
     popularity: "92%",
+    price: "Basis inkl.",
     bullets: ["Möbel tragen & transportieren", "Professionelles Team", "Versicherungsschutz inkl."],
     duration: "Je nach Grösse 3-8 Std."
   },
@@ -1481,6 +1483,7 @@ const SERVICE_DETAILS: Record<string, {
     teaser: "Alles sicher verpackt",
     benefit: "Keine Schäden an Möbeln",
     popularity: "62%",
+    price: "+CHF 300-500",
     bullets: ["Kartons & Verpackungsmaterial inkl.", "Sichere Polsterung für Zerbrechliches", "Systematische Beschriftung"],
     duration: "1-2 Tage vor Umzug"
   },
@@ -1488,6 +1491,7 @@ const SERVICE_DETAILS: Record<string, {
     teaser: "Sofort eingerichtet",
     benefit: "Am gleichen Tag fertig",
     popularity: "38%",
+    price: "+CHF 200-400",
     bullets: ["Auspacken aller Kartons", "Entsorgung Verpackungsmaterial", "Möbel an Wunschplatz"],
     duration: "Am Umzugstag oder danach"
   },
@@ -1495,6 +1499,7 @@ const SERVICE_DETAILS: Record<string, {
     teaser: "Garantierte Abnahme",
     benefit: "Depot zurück bekommen",
     popularity: "71%",
+    price: "+CHF 250-450",
     bullets: ["Abgabe-Reinigung inkl. Küche & Bad", "Fenster innen & aussen", "Abnahme-Garantie"],
     duration: "1 Tag nach Auszug"
   },
@@ -1502,6 +1507,7 @@ const SERVICE_DETAILS: Record<string, {
     teaser: "Altes loswerden",
     benefit: "Kein Stress mit Sperrmüll",
     popularity: "45%",
+    price: "+CHF 150-300",
     bullets: ["Möbel & Sperrmüll mitnehmen", "Fachgerechte Entsorgung", "Auf Wunsch Elektrogeräte"],
     duration: "Am Umzugstag"
   },
@@ -1509,6 +1515,7 @@ const SERVICE_DETAILS: Record<string, {
     teaser: "Flexibel zwischenlagern",
     benefit: "Überbrückt jeden Zeitraum",
     popularity: "28%",
+    price: "+CHF 100-200/Mt",
     bullets: ["Sichere Lagerboxen", "Klimatisiert & versichert", "Flexible Laufzeit"],
     duration: "Ab 1 Monat buchbar"
   },
@@ -1582,6 +1589,10 @@ function ServicesSelector({
                 {/* Benefit teaser - always visible */}
                 {details && (
                   <div className="flex flex-wrap items-center gap-2">
+                    {/* Price badge - prominent */}
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold">
+                      {details.price}
+                    </span>
                     <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
                       <Check className="w-3 h-3" />
                       {details.benefit}
