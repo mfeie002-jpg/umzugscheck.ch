@@ -810,11 +810,8 @@ Antworte auf Deutsch.`;
     }));
     setAnalysisResults(results);
 
-    const baseUrl = (() => {
-      if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-      // For automation we want the currently running deployment (preview/admin).
-      return window.location.origin.replace(/\/$/, "");
-    })();
+    // Always use preview URL for flow analysis
+    const baseUrl = 'https://preview--umzugscheckv2.lovable.app';
 
     for (let i = 0; i < FLOW_OPTIONS.length; i++) {
       const flow = FLOW_OPTIONS[i];
@@ -977,11 +974,8 @@ Antworte auf Deutsch.`;
       }))
     );
 
-    const baseUrl = (() => {
-      if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-      // For automation we want the currently running deployment (preview/admin).
-      return window.location.origin.replace(/\/$/, "");
-    })();
+    // Always use preview URL for flow analysis
+    const baseUrl = 'https://preview--umzugscheckv2.lovable.app';
 
     for (let i = 0; i < variants.length; i++) {
       const variant = variants[i];

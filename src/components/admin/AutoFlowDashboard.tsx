@@ -700,7 +700,7 @@ const AutoFlowDashboard: React.FC = () => {
   const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
   const PRODUCTION_URL = 'https://umzugscheck.ch';
   const [usePreview, setUsePreview] = useState<boolean>(true); // Default to Preview for instant testing
-  const baseUrl = usePreview ? PREVIEW_URL : PRODUCTION_URL;
+  const baseUrl = (usePreview ? PREVIEW_URL : PRODUCTION_URL).replace(/\/$/, '');
 
   // Subscribe to realtime updates for running analyses
   useEffect(() => {
