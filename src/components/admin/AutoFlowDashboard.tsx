@@ -694,6 +694,7 @@ const AutoFlowDashboard: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [runningAnalyses, setRunningAnalyses] = useState<RunningAnalysis[]>([]);
+  const [screenshotStats, setScreenshotStats] = useState<{flowId: string; desktopMissing: number; mobileMissing: number; total: number}[]>([]);
   
   // URL configuration - Preview vs Production
   const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
@@ -874,6 +875,32 @@ const AutoFlowDashboard: React.FC = () => {
       
       if (alertsRes.data) setAlerts(alertsRes.data as Alert[]);
       if (settingsRes.data) setAlertSettings(settingsRes.data as AlertSetting[]);
+      
+      // Fetch screenshot stats directly from flow_step_metrics
+      const { data: metricsData } = await supabase
+        .from('flow_step_metrics')
+        .select('flow_id, desktop_screenshot_url, mobile_screenshot_url')
+        .gt('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+      
+      if (metricsData) {
+        const stats: Record<string, { desktop: number; mobile: number; total: number }> = {};
+        metricsData.forEach(m => {
+          if (!stats[m.flow_id]) stats[m.flow_id] = { desktop: 0, mobile: 0, total: 0 };
+          stats[m.flow_id].total++;
+          if (m.desktop_screenshot_url) stats[m.flow_id].desktop++;
+          if (m.mobile_screenshot_url) stats[m.flow_id].mobile++;
+        });
+        
+        const result = Object.entries(stats).map(([flowId, s]) => ({
+          flowId,
+          desktopMissing: s.total - s.desktop,
+          mobileMissing: s.total - s.mobile,
+          total: s.total
+        })).filter(s => s.desktopMissing > 0 || s.mobileMissing > 0)
+          .sort((a, b) => (b.desktopMissing + b.mobileMissing) - (a.desktopMissing + a.mobileMissing));
+        
+        setScreenshotStats(result);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
       // Only show error on initial load
@@ -1342,6 +1369,10 @@ Zeige mir die Code-Diffs für jedes Problem.`;
             <AlertCircle className="h-4 w-4 mr-2" />
             Issues ({issues.length})
           </TabsTrigger>
+          <TabsTrigger value="screenshots">
+            <Monitor className="h-4 w-4 mr-2" />
+            Screenshots
+          </TabsTrigger>
           <TabsTrigger value="alerts">
             <Bell className="h-4 w-4 mr-2" />
             Alerts ({alerts.length})
@@ -1527,6 +1558,143 @@ Zeige mir die Code-Diffs für jedes Problem.`;
                   )}
                 </div>
               </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Screenshots Status Tab */}
+        <TabsContent value="screenshots">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Monitor className="h-5 w-5" />
+                  Screenshot-Status
+                </CardTitle>
+                <CardDescription>
+                  Flows mit fehlenden Screenshots können nicht korrekt analysiert werden
+                </CardDescription>
+              </div>
+              {screenshotStats.length > 0 && (
+                <Button
+                  onClick={() => {
+                    const flowsToAnalyze = screenshotStats.slice(0, 5).map(s => s.flowId);
+                    flowsToAnalyze.forEach(flowId => runAnalysis(flowId));
+                    toast.info(`${flowsToAnalyze.length} Flows werden neu analysiert...`);
+                  }}
+                  disabled={!!analyzing}
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Top 5 neu analysieren
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Summary */}
+                <div className="grid grid-cols-3 gap-4">
+                  <Card className="border-red-500/50 bg-red-50 dark:bg-red-950/20">
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-3xl font-bold text-red-600">{screenshotStats.length}</div>
+                      <div className="text-sm text-muted-foreground">Flows mit Fehlern</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20">
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-3xl font-bold text-yellow-600">
+                        {screenshotStats.reduce((sum, s) => sum + s.desktopMissing, 0)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Desktop fehlt</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20">
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-3xl font-bold text-yellow-600">
+                        {screenshotStats.reduce((sum, s) => sum + s.mobileMissing, 0)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Mobile fehlt</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Explanation */}
+                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-medium text-blue-700 dark:text-blue-300">Warum wird der Score nicht besser?</p>
+                      <p className="text-blue-600 dark:text-blue-400 mt-1">
+                        Die Analyse läuft auf <strong>alte Screenshots</strong> – nicht auf dem aktuellen Code! 
+                        Nach Code-Änderungen müssen neue Screenshots erstellt werden (= neue Analyse starten).
+                        Erst dann wird der Score basierend auf den Fixes neu berechnet.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Flow List */}
+                <ScrollArea className="h-[400px]">
+                  <div className="space-y-2">
+                    {screenshotStats.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <CheckCircle className="h-12 w-12 mx-auto mb-2 text-green-500" />
+                        <p>Alle Screenshots vollständig!</p>
+                      </div>
+                    ) : (
+                      screenshotStats.map(stat => {
+                        const config = FLOW_CONFIGS[stat.flowId];
+                        const totalMissing = stat.desktopMissing + stat.mobileMissing;
+                        const severity = totalMissing >= stat.total ? 'critical' : totalMissing > 2 ? 'high' : 'medium';
+                        
+                        return (
+                          <div 
+                            key={stat.flowId} 
+                            className={`flex items-center justify-between p-3 border rounded-lg ${
+                              severity === 'critical' ? 'border-red-500 bg-red-50 dark:bg-red-950/20' :
+                              severity === 'high' ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/20' :
+                              'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-3 h-3 rounded-full ${config?.color || 'bg-gray-500'}`} />
+                              <div>
+                                <div className="font-medium">{config?.name || stat.flowId}</div>
+                                <div className="text-sm text-muted-foreground flex items-center gap-3">
+                                  <span className="flex items-center gap-1">
+                                    <Monitor className="h-3 w-3" />
+                                    {stat.desktopMissing}/{stat.total} fehlt
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Smartphone className="h-3 w-3" />
+                                    {stat.mobileMissing}/{stat.total} fehlt
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant={severity === 'critical' ? 'destructive' : 'secondary'}>
+                                {severity === 'critical' ? '100% fehlt' : `${totalMissing} fehlen`}
+                              </Badge>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => runAnalysis(stat.flowId)}
+                                disabled={analyzing === stat.flowId}
+                              >
+                                {analyzing === stat.flowId ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <RefreshCw className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
