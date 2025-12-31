@@ -39,6 +39,7 @@ export { V3cFeedbackBased } from './V3cFeedbackBased';
 export { V3dThumbZone } from './V3dThumbZone';
 export { V3dFeedbackBased } from './V3dFeedbackBased';
 export { V3eFullscreen } from './V3eFullscreen';
+export { V3fGeminiPro } from './V3fGeminiPro';
 
 // V4 Variants (Conversion-Focused)
 export { V4aUrgencyBased } from './V4aUrgencyBased';
@@ -107,6 +108,7 @@ export const VARIANT_REGISTRY: Record<string, {
   'v3d': { component: 'V3dThumbZone', stepCount: 3, label: 'V3d Thumb Zone' },
   'v3d-feedback': { component: 'V3dFeedbackBased', stepCount: 4, label: 'V3d ChatGPT Agent 2' },
   'v3e': { component: 'V3eFullscreen', stepCount: 3, label: 'V3e Fullscreen' },
+  'v3f': { component: 'V3fGeminiPro', stepCount: 4, label: 'V3f Gemini Pro' },
   // V4 - Conversion-Focused
   'v4': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4 Conversion' },
   'v4a': { component: 'V4aUrgencyBased', stepCount: 4, label: 'V4a Urgency Based' },
