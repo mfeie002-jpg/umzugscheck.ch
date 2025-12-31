@@ -247,7 +247,9 @@ export function AutoFlowScreenshots() {
     // Build robust URL (flowPath may already include query params like ?variant=v1d)
     const u = new URL(flowPath, baseUrl);
     u.searchParams.set("uc_capture", "1");
-    u.searchParams.set("uc_flow", flowId);
+    // Convert flowId to uc_flow format: "umzugsofferten-v3" → "v3", "umzugsofferten" → "v1"
+    const ucFlowId = flowId === "umzugsofferten" ? "v1" : flowId.replace("umzugsofferten-", "");
+    u.searchParams.set("uc_flow", ucFlowId);
     u.searchParams.set("uc_step", String(step));
     u.searchParams.set("uc_cb", String(Date.now()));
     return u.toString();
