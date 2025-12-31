@@ -937,42 +937,49 @@ export function ChatFunnelV2e() {
     }, 400);
   };
 
-  // Render different message types - Issues #7, #8, #11, #20 fixes
+  // Render different message types - All 30 UX issues fixed
   const renderMessage = (message: Message) => {
     switch (message.type) {
       case "bot":
         return (
-          <div className="flex gap-2.5 sm:gap-3 max-w-[92%] sm:max-w-[85%]">
-            {/* Issue #4 - Consistent bot avatar */}
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
+          /* Issue #18 - More vertical spacing between messages */
+          <div className="flex gap-3 sm:gap-3.5 max-w-[95%] sm:max-w-[88%]">
+            {/* Issue #12 - Larger, more distinct bot avatar */}
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Bot className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-primary" />
             </div>
-            {/* Issue #20 - Consistent bg color for bot messages */}
-            <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-sm">
-              <p className="text-sm leading-relaxed">{message.content}</p>
+            {/* Issue #14 - Consistent rounded corners for all chat bubbles */}
+            <div className="bg-muted/90 rounded-2xl rounded-tl-lg px-4 sm:px-5 py-3 sm:py-3.5 shadow-sm">
+              {/* Issue #1, #3 - Better text wrapping and readable font size */}
+              <p className="text-base sm:text-base leading-relaxed break-words overflow-wrap-anywhere hyphens-auto">{message.content}</p>
             </div>
           </div>
         );
 
       case "user":
         return (
-          <div className="flex justify-end">
-            {/* Issue #8, #11 - Clear visual distinction for user messages */}
-            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-md px-3.5 sm:px-4 py-2.5 sm:py-3 max-w-[85%] sm:max-w-[80%] shadow-sm">
-              <p className="text-sm leading-relaxed">{message.content}</p>
+          /* Issue #18 - Consistent spacing for user messages */
+          <div className="flex justify-end pl-4 sm:pl-8">
+            {/* Issue #8, #14, #17, #19 - Consistent rounded corners matching bot messages */}
+            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-lg px-4 sm:px-5 py-3 sm:py-3.5 max-w-[85%] sm:max-w-[80%] shadow-md">
+              {/* Issue #1, #3 - Readable font size (min 16px on mobile) */}
+              <p className="text-base sm:text-base leading-relaxed break-words overflow-wrap-anywhere">{message.content}</p>
             </div>
           </div>
         );
 
       case "options":
         return (
-          <div className="flex gap-2.5 sm:gap-3 max-w-full">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
+          <div className="flex gap-3 sm:gap-3.5 max-w-full">
+            {/* Issue #12 - Larger bot avatar for better distinction */}
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Bot className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-primary" />
             </div>
-            <div className="flex-1 min-w-0 space-y-3">
-              <div className="bg-muted/80 rounded-2xl rounded-tl-md px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-sm">
-                <p className="text-sm leading-relaxed">{message.content}</p>
+            <div className="flex-1 min-w-0 space-y-4">
+              {/* Issue #14 - Consistent chat bubble styling */}
+              <div className="bg-muted/90 rounded-2xl rounded-tl-lg px-4 sm:px-5 py-3 sm:py-3.5 shadow-sm">
+                {/* Issue #1, #3, #25 - Readable text with proper wrapping */}
+                <p className="text-base sm:text-base leading-relaxed break-words overflow-wrap-anywhere hyphens-auto">{message.content}</p>
               </div>
               {currentStep === "services" ? (
                 <ServicesSelector
@@ -980,23 +987,25 @@ export function ChatFunnelV2e() {
                   onConfirm={handleServicesConfirm}
                 />
               ) : (
-                /* Issue #5, #14, #17, #18, #24 - Better button spacing, consistent sizing */
+                /* Issue #2, #5, #10, #17, #24 - Consistent button grid with 44px+ touch targets */
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-3 w-full">
                   {message.options?.map(opt => (
                     <button
                       key={opt.id}
                       onClick={() => handleOptionSelect(opt.id, opt.label)}
-                      className="flex items-center justify-center sm:justify-start gap-2.5 px-4 sm:px-5 py-4 min-h-[60px] bg-card border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.97] transition-all group touch-manipulation shadow-sm"
+                      /* Issue #2 - Min 44x44px touch targets, better spacing */
+                      className="flex items-center justify-center sm:justify-start gap-3 px-4 sm:px-5 py-4 min-h-[56px] sm:min-h-[60px] bg-card border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 active:scale-[0.98] transition-all group touch-manipulation shadow-sm"
                     >
                       {opt.icon && (
-                        <span className="text-primary/70 group-hover:text-primary transition-colors flex-shrink-0">
+                        <span className="text-primary group-hover:text-primary transition-colors flex-shrink-0">
                           {opt.icon}
                         </span>
                       )}
                       <div className="text-center sm:text-left min-w-0">
-                        <div className="text-sm sm:text-base font-semibold leading-tight">{opt.label}</div>
+                        {/* Issue #5 - Consistent button text styling */}
+                        <div className="text-base font-semibold leading-tight text-foreground">{opt.label}</div>
                         {opt.sublabel && (
-                          <div className="text-xs text-muted-foreground mt-0.5 leading-tight">{opt.sublabel}</div>
+                          <div className="text-sm text-muted-foreground mt-0.5 leading-tight">{opt.sublabel}</div>
                         )}
                       </div>
                     </button>
@@ -1107,7 +1116,8 @@ export function ChatFunnelV2e() {
   const showLoadingOverlay = isTyping;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-6rem)] sm:h-[calc(100vh-10rem)] md:h-[600px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden relative">
+    /* Issue #22 - Proper height calculation to avoid mobile nav overlap */
+    <div className="flex flex-col h-[calc(100dvh-5rem)] sm:h-[calc(100vh-8rem)] md:h-[650px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden relative">
       {/* Loading overlay between steps */}
       <AnimatePresence>
         {showLoadingOverlay && (
@@ -1125,58 +1135,65 @@ export function ChatFunnelV2e() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Header with Progress - All contrast/visibility issues fixed */}
+      
+      {/* Issue #28 - More prominent progress bar at top */}
       <div className="bg-gradient-to-r from-primary/5 via-background to-secondary/5 border-b border-border flex-shrink-0">
-        {/* Issue #1, #12, #15 - More visible progress bar */}
-        <div className="h-2.5 bg-muted">
+        {/* Issue #28 - Taller, more visible progress bar */}
+        <div className="h-3 bg-muted relative overflow-hidden">
           <motion.div 
-            className="h-full bg-gradient-to-r from-primary via-primary to-primary/80 shadow-sm"
+            className="h-full bg-gradient-to-r from-primary via-primary to-primary/80 shadow-lg"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
+          {/* Progress percentage overlay */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[10px] font-bold text-primary-foreground drop-shadow-sm">{progress > 10 ? `${progress}%` : ''}</span>
+          </div>
         </div>
-        <div className="px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            {/* Issue #10, #27 - Consistent Bot icon with green dot */}
-            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-              {/* Issue #27 - Consistent online indicator with dot */}
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-green-500 border-2 border-background" />
+        <div className="px-4 sm:px-5 py-3 sm:py-3.5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            {/* Issue #12 - Larger, more visible bot avatar */}
+            <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              {/* Issue #8 - Consistent online indicator */}
+              <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-green-500 border-2 border-background shadow-sm" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-sm sm:text-base text-foreground">Umzugs-Assistent</h3>
-              {/* Issue #6, #12, #15, #20 - Better progress visibility with high contrast */}
-              <div className="flex items-center gap-1.5 text-xs sm:text-sm">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <h3 className="font-bold text-base sm:text-lg text-foreground">Umzugs-Assistent</h3>
+              {/* Issue #28 - Prominent progress display */}
+              <div className="flex items-center gap-2 text-sm sm:text-base">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
                   <span className="text-green-700 dark:text-green-400 font-semibold">Online</span>
                 </span>
-                <span className="text-muted-foreground font-medium">·</span>
-                <span className="text-foreground font-bold">{progress}%</span>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-primary font-bold">{progress}%</span>
               </div>
             </div>
           </div>
-          {/* Issue #1, #20 - Better CTA contrast + "100% kostenlos" visible on all sizes */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Issue #1 - High contrast badge */}
-            <Badge className="bg-green-600 text-white border-0 text-[10px] sm:text-xs font-bold px-2 py-1 shadow-sm hidden xs:flex">
-              <Shield className="w-3 h-3 mr-1" />
-              100% gratis
+          {/* Issue #4, #7, #15, #16, #20 - Prominent, always-visible call CTA */}
+          <div className="flex items-center gap-2.5 flex-shrink-0">
+            {/* Issue #8 - Consistent badge on all screen sizes */}
+            <Badge className="bg-green-600 text-white border-0 text-xs sm:text-sm font-bold px-2.5 py-1.5 shadow-md">
+              <Shield className="w-3.5 h-3.5 mr-1" />
+              <span className="hidden xs:inline">100% </span>Gratis
             </Badge>
+            {/* Issue #4, #16 - Prominent call button with min 44x44 touch target */}
             <a 
               href="tel:+41445057070" 
-              className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-xs sm:text-sm font-semibold transition-colors touch-manipulation active:scale-95 shadow-md flex-shrink-0"
+              className="flex items-center gap-2 px-4 py-2.5 min-w-[48px] min-h-[48px] bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-sm sm:text-base font-bold transition-all touch-manipulation active:scale-95 shadow-lg"
+              aria-label="Jetzt anrufen"
             >
-              <Phone className="w-4 h-4" />
+              <Phone className="w-5 h-5" />
               <span className="hidden sm:inline">Anrufen</span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* Messages - Issue #7 fix: consistent spacing */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-5">
+      {/* Issue #18, #26 - More padding and spacing between messages */}
+      <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 sm:py-5 space-y-5 sm:space-y-6">
         <AnimatePresence mode="popLayout">
           {messages.map((msg) => (
             <motion.div
@@ -1191,21 +1208,21 @@ export function ChatFunnelV2e() {
           ))}
         </AnimatePresence>
 
-        {/* Typing indicator - Issue #29 fix: better contrast */}
+        {/* Typing indicator with consistent styling */}
         {isTyping && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex gap-2.5 sm:gap-3"
+            className="flex gap-3 sm:gap-3.5"
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary" />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Bot className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-primary" />
             </div>
-            <div className="bg-muted/80 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
-              <div className="flex gap-1.5">
-                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            <div className="bg-muted/90 rounded-2xl rounded-tl-lg px-4 py-3.5 shadow-sm">
+              <div className="flex gap-2">
+                <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </motion.div>
@@ -1214,61 +1231,58 @@ export function ChatFunnelV2e() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input - Issues #13, #26 fixes: better error feedback and clearer format */}
+      {/* Issue #11, #23, #29, #30 - Better input with always-visible send button */}
       {(currentStep === "fromLocation" || currentStep === "toLocation") && (
-        <form onSubmit={handleTextSubmit} className="p-3 sm:p-4 border-t border-border bg-card flex-shrink-0">
+        <form onSubmit={handleTextSubmit} className="p-4 sm:p-5 border-t border-border bg-card flex-shrink-0 safe-area-pb">
           <div className="flex gap-3">
             <div className="flex-1 relative">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
               <Input
                 ref={inputRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={currentStep === "fromLocation" ? "z.B. 8001 Zürich" : "z.B. 3011 Bern"}
-                className="pl-11 min-h-[52px] text-base border-2 focus:border-primary"
+                /* Issue #11 - Different placeholder examples for from/to */
+                placeholder={currentStep === "fromLocation" ? "z.B. 8048 Zürich" : "z.B. 3011 Bern"}
+                className="pl-12 min-h-[56px] text-base border-2 focus:border-primary rounded-xl"
                 autoFocus
               />
             </div>
+            {/* Issue #29 - Always visible send button */}
             <Button 
               type="submit" 
               size="icon" 
               disabled={!inputValue.trim()} 
-              className="min-w-[52px] min-h-[52px] bg-primary hover:bg-primary/90"
+              className="min-w-[56px] min-h-[56px] bg-primary hover:bg-primary/90 rounded-xl shadow-md"
             >
               <Send className="w-5 h-5" />
             </Button>
           </div>
-          {/* Issue #13, #26 - Clearer instruction with example format */}
-          <p className="text-xs text-muted-foreground mt-2 text-center">
+          {/* Issue #23 - Clear input feedback */}
+          <p className="text-sm text-muted-foreground mt-2.5 text-center">
             {!inputValue.trim() 
-              ? "PLZ und Ort eingeben (z.B. 8001 Zürich)" 
+              ? `Geben Sie ${currentStep === "fromLocation" ? "Ihren aktuellen" : "den neuen"} Standort ein` 
               : inputValue.length < 4 
                 ? "Bitte vollständige PLZ oder Ortsname eingeben" 
-                : "↵ Enter zum Bestätigen"
+                : "↵ Enter zum Absenden"
             }
           </p>
         </form>
       )}
 
-      {/* Footer trust elements - Issue #19, #22, #23 fix: better spacing, not covered by mobile nav */}
-      <div className="px-4 sm:px-6 py-3.5 border-t border-border bg-muted/40 flex items-center justify-center gap-5 sm:gap-8 text-sm text-foreground flex-shrink-0 safe-area-pb">
-        <div className="flex items-center gap-1.5">
-          <Users className="w-4 h-4 text-primary" />
+      {/* Issue #2, #21 - Footer with proper touch targets (min 44px) */}
+      <div className="px-4 sm:px-6 py-4 border-t border-border bg-muted/50 flex items-center justify-center gap-6 sm:gap-10 text-base text-foreground flex-shrink-0 safe-area-pb">
+        <div className="flex items-center gap-2 min-h-[44px]">
+          <Users className="w-5 h-5 text-primary" />
           <span className="font-bold text-foreground">12k+</span>
           <span className="text-muted-foreground hidden sm:inline">Umzüge</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+        <div className="flex items-center gap-2 min-h-[44px]">
+          <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
           <span className="font-bold text-foreground">4.8/5</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <Clock className="w-4 h-4 text-primary" />
+        <div className="flex items-center gap-2 min-h-[44px]">
+          <Clock className="w-5 h-5 text-primary" />
           <span className="font-bold text-foreground">~2 Min.</span>
-        </div>
-        {/* Mobile "100% gratis" - always visible on mobile */}
-        <div className="flex items-center gap-1 xs:hidden">
-          <Shield className="w-4 h-4 text-green-600" />
-          <span className="font-bold text-green-700 text-xs">Gratis</span>
         </div>
       </div>
 
@@ -1334,9 +1348,9 @@ function ServicesSelector({
   };
 
   return (
-    <div className="space-y-3">
-      {/* Issue #9 - Scroll indicator for many options */}
-      <div className="grid gap-2.5 max-h-[280px] overflow-y-auto pr-1 relative">
+    <div className="space-y-4">
+      {/* Issue #9 - Better scroll container with more gap */}
+      <div className="grid gap-3 max-h-[300px] overflow-y-auto pr-1 relative">
         {options.map(opt => {
           const details = SERVICE_DETAILS[opt.id];
           const isExpanded = expanded === opt.id;
@@ -1344,48 +1358,50 @@ function ServicesSelector({
           
           return (
             <div key={opt.id} className="relative">
-              {/* Issue #13, #25 - Clear selection state */}
+              {/* Issue #5, #13, #17, #24 - Consistent button styling with 44px+ touch targets */}
               <button
                 onClick={() => toggle(opt.id)}
                 className={cn(
-                  "w-full flex items-center justify-between px-3.5 sm:px-4 py-3.5 min-h-[56px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
+                  "w-full flex items-center justify-between px-4 sm:px-5 py-4 min-h-[60px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
                   isSelected
-                    ? "border-primary bg-primary/10 shadow-primary/10"
-                    : "border-border bg-card hover:border-primary/50",
+                    ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
+                    : "border-border bg-card hover:border-primary/50 hover:bg-primary/5",
                   isExpanded && "rounded-b-none"
                 )}
               >
-                <div className="flex-1 min-w-0 pr-2">
+                <div className="flex-1 min-w-0 pr-3">
+                  {/* Issue #5 - Consistent text sizing */}
                   <div className={cn(
-                    "text-sm font-semibold",
+                    "text-base font-semibold",
                     isSelected && "text-primary"
                   )}>{opt.label}</div>
                   {opt.description && (
-                    <div className="text-xs text-muted-foreground mt-0.5">{opt.description}</div>
+                    <div className="text-sm text-muted-foreground mt-0.5">{opt.description}</div>
                   )}
                 </div>
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-3">
                   {details && (
+                    /* Issue #2 - 44px+ touch target for expand button */
                     <button
                       onClick={(e) => toggleExpand(e, opt.id)}
-                      className="p-2 rounded-full hover:bg-muted transition-colors touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
+                      className="p-2.5 rounded-full hover:bg-muted transition-colors touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
                       aria-label="Details anzeigen"
                     >
                       <ChevronDown className={cn(
-                        "w-4 h-4 text-muted-foreground transition-transform",
+                        "w-5 h-5 text-muted-foreground transition-transform",
                         isExpanded && "rotate-180"
                       )} />
                     </button>
                   )}
-                  {/* Issue #13 - Prominent checkbox */}
+                  {/* Issue #13, #17 - Larger, more prominent checkbox */}
                   <div className={cn(
-                    "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
+                    "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
                     isSelected
-                      ? "border-primary bg-primary scale-110"
+                      ? "border-primary bg-primary scale-110 shadow-md"
                       : "border-muted-foreground/40 bg-background"
                   )}>
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 text-primary-foreground" />
+                      <Check className="w-4 h-4 text-primary-foreground" />
                     )}
                   </div>
                 </div>
@@ -1402,20 +1418,20 @@ function ServicesSelector({
                     className="overflow-hidden"
                   >
                     <div className={cn(
-                      "px-3.5 sm:px-4 py-3 border-2 border-t-0 rounded-b-xl bg-muted/40",
+                      "px-4 sm:px-5 py-4 border-2 border-t-0 rounded-b-xl bg-muted/50",
                       isSelected ? "border-primary" : "border-border"
                     )}>
-                      <ul className="space-y-2">
+                      <ul className="space-y-2.5">
                         {details.bullets.map((bullet, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-foreground/80">
-                            <Check className="w-3.5 h-3.5 text-green-600 mt-0.5 flex-shrink-0" />
+                          <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/90">
+                            <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
                             <span>{bullet}</span>
                           </li>
                         ))}
                       </ul>
                       {details.duration && (
-                        <div className="flex items-center gap-1.5 mt-2.5 pt-2 border-t border-border/50 text-xs text-muted-foreground">
-                          <Clock className="w-3.5 h-3.5" />
+                        <div className="flex items-center gap-2 mt-3 pt-2.5 border-t border-border/50 text-sm text-muted-foreground">
+                          <Clock className="w-4 h-4" />
                           <span>{details.duration}</span>
                         </div>
                       )}
@@ -1427,9 +1443,10 @@ function ServicesSelector({
           );
         })}
       </div>
+      {/* Issue #13, #27 - Prominent, always-visible continue button */}
       <Button 
         onClick={() => onConfirm(selected)} 
-        className="w-full min-h-[52px] touch-manipulation text-base font-semibold"
+        className="w-full min-h-[56px] touch-manipulation text-base font-bold shadow-lg"
         size="lg"
       >
         Weiter mit {selected.length} Leistung{selected.length !== 1 ? "en" : ""}
@@ -1493,68 +1510,66 @@ function CompanySelector({
   };
 
   return (
-    <div className="space-y-2">
-      {/* Prominent Call CTA - Fastest conversion */}
+    <div className="space-y-3">
+      {/* Issue #4 - Prominent Call CTA with proper touch target */}
       <motion.button
         onClick={handleCall}
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold text-sm transition-colors touch-manipulation active:scale-[0.98] min-h-[48px]"
+        className="w-full flex items-center justify-center gap-3 px-5 py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-base transition-colors touch-manipulation active:scale-[0.98] min-h-[56px] shadow-lg"
       >
-        <Phone className="w-4 h-4" />
+        <Phone className="w-5 h-5" />
         <span>Jetzt anrufen: 044 505 70 70</span>
       </motion.button>
       
-      <div className="text-center text-xs text-muted-foreground">
+      <div className="text-center text-sm text-muted-foreground font-medium">
         oder online Offerten erhalten
       </div>
 
-      {/* Compact company list - fits on mobile without scroll */}
-      <div className="grid gap-1.5 max-h-[180px] sm:max-h-[220px] overflow-y-auto pr-1">
+      {/* Issue #2, #6, #17 - Consistent company cards with 44px+ touch targets */}
+      <div className="grid gap-2.5 max-h-[200px] sm:max-h-[240px] overflow-y-auto pr-1">
         {companies.slice(0, 5).map(company => (
           <button
             key={company.id}
             onClick={() => toggle(company.id)}
             className={cn(
-              "flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg border transition-all text-left touch-manipulation active:scale-[0.98]",
+              "flex items-center gap-3 px-4 py-3 min-h-[56px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98]",
               selected.includes(company.id)
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/50"
+                ? "border-primary bg-primary/10 shadow-md"
+                : "border-border hover:border-primary/50 hover:bg-primary/5"
             )}
           >
-            {/* Checkbox */}
+            {/* Issue #17 - Larger, consistent checkbox */}
             <div className={cn(
-              "w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors",
+              "w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
               selected.includes(company.id)
                 ? "border-primary bg-primary"
-                : "border-muted-foreground/30"
+                : "border-muted-foreground/40"
             )}>
               {selected.includes(company.id) && (
-                <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                <Check className="w-3.5 h-3.5 text-primary-foreground" />
               )}
             </div>
 
-            {/* Company info - compact */}
+            {/* Company info */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-medium text-xs truncate">{company.name}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-sm truncate">{company.name}</span>
                 {company.featured && (
-                  <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">
-                    Premium
-                  </Badge>
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">Premium</Badge>
                 )}
               </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                <Star className="w-2.5 h-2.5 text-yellow-500 fill-yellow-500" />
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
                 <span>{company.rating}</span>
                 <span>·</span>
                 <span>{company.reviewCount} Bew.</span>
               </div>
             </div>
 
-            {/* Price - compact */}
+            {/* Price */}
             <div className="text-right flex-shrink-0">
-              <div className="text-xs font-semibold text-primary">
+              <div className="text-sm font-bold text-primary">
                 CHF {company.priceMin}–{company.priceMax}
               </div>
             </div>
@@ -1562,17 +1577,18 @@ function CompanySelector({
         ))}
       </div>
 
+      {/* Issue #13 - Always visible continue button */}
       <Button
         onClick={() => onConfirm(selected)}
         disabled={selected.length < 3}
-        className="w-full min-h-[44px] touch-manipulation"
-        size="default"
+        className="w-full min-h-[56px] touch-manipulation text-base font-bold shadow-lg"
+        size="lg"
       >
         {selected.length < 3 
           ? `Noch ${3 - selected.length} Firma(en) wählen`
           : `Mit ${selected.length} Firmen weiter`
         }
-        <ArrowRight className="w-4 h-4 ml-2" />
+        <ArrowRight className="w-5 h-5 ml-2" />
       </Button>
     </div>
   );
