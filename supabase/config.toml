@@ -59,3 +59,6 @@ verify_jwt = false
 
 [functions.auto-fix-issue]
 verify_jwt = false
+
+[functions.export-ultimate-flows-background]
+verify_jwt = false
