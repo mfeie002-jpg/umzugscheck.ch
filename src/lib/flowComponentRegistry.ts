@@ -27,15 +27,12 @@ import {
   V2dFeedbackBased,
   V2eExperimental,
   V2fFeedbackBased,
-  // V3 variants
+  // V3 variants - Base Versions Only
   V3aMobileFirst,
   V3bSwipeNavigation,
   V3cBottomSheet,
   V3dThumbZone,
   V3eFullscreen,
-  V3aFeedbackBased,
-  V3bFeedbackBased,
-  V3gFeedbackBased,
   // V4 variants
   V4aUrgencyBased,
   V4bSocialProof,
@@ -96,17 +93,14 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v2e': V2eExperimental,
   'v2f': V2fFeedbackBased,
   
-  // ========== V3 - God Mode ==========
+  // ========== V3 - Mobile-First (Base Versions Only) ==========
   'umzugsofferten-v3': V3aMobileFirst,
   'v3': V3aMobileFirst,
   'v3a': V3aMobileFirst,
-  'v3a-pro': V3aFeedbackBased,
   'v3b': V3bSwipeNavigation,
-  'v3b-feedback': V3bFeedbackBased,
   'v3c': V3cBottomSheet,
   'v3d': V3dThumbZone,
   'v3e': V3eFullscreen,
-  'v3g': V3gFeedbackBased,
   
   // ========== V4 - Video-First AI ==========
   'umzugsofferten-v4': V4aUrgencyBased,
