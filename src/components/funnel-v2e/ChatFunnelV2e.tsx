@@ -1368,29 +1368,29 @@ function ServicesSelector({
               <button
                 onClick={() => toggle(opt.id)}
                 className={cn(
-                  "w-full flex items-center justify-between px-4 sm:px-5 py-4 min-h-[60px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
+                  "w-full flex items-start px-4 sm:px-5 py-4 min-h-[60px] rounded-xl border-2 transition-all text-left touch-manipulation active:scale-[0.98] shadow-sm",
                   isSelected
                     ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
                     : "border-border bg-card hover:border-primary/50 hover:bg-primary/5",
                   isExpanded && "rounded-b-none"
                 )}
               >
-                <div className="flex-1 min-w-0 pr-3">
+                <div className="flex-1 min-w-0 pr-3 pt-0.5">
                   {/* Issue #5 - Consistent text sizing */}
                   <div className={cn(
-                    "text-base font-semibold",
+                    "text-base font-semibold leading-tight",
                     isSelected && "text-primary"
                   )}>{opt.label}</div>
                   {opt.description && (
-                    <div className="text-sm text-muted-foreground mt-0.5">{opt.description}</div>
+                    <div className="text-sm text-muted-foreground mt-1">{opt.description}</div>
                   )}
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   {details && (
                     /* Issue #2 - 44px+ touch target for expand button */
                     <button
                       onClick={(e) => toggleExpand(e, opt.id)}
-                      className="p-2.5 rounded-full hover:bg-muted transition-colors touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
+                      className="p-2 rounded-full hover:bg-muted transition-colors touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
                       aria-label="Details anzeigen"
                     >
                       <ChevronDown className={cn(
@@ -1401,13 +1401,13 @@ function ServicesSelector({
                   )}
                   {/* Issue #13, #17 - Larger, more prominent checkbox */}
                   <div className={cn(
-                    "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
+                    "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
                     isSelected
-                      ? "border-primary bg-primary scale-110 shadow-md"
+                      ? "border-primary bg-primary scale-105 shadow-md"
                       : "border-muted-foreground/40 bg-background"
                   )}>
                     {isSelected && (
-                      <Check className="w-4 h-4 text-primary-foreground" />
+                      <Check className="w-4.5 h-4.5 text-primary-foreground" />
                     )}
                   </div>
                 </div>
