@@ -574,6 +574,11 @@ async function runAnalysisInBackground(
         ux_score: avgUx,
         ai_summary: summary,
         ai_recommendations: recommendations,
+        // Store counts for dashboards (so UIs don't need to compute from flow_ux_issues)
+        metadata: {
+          issuesCount: allIssues.length,
+          criticalCount: criticalIssues,
+        },
       })
       .eq('id', runId);
 
