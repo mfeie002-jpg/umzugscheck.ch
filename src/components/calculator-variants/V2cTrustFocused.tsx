@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { useInitialStep } from "@/hooks/use-initial-step";
 
@@ -300,7 +300,15 @@ export const V2cTrustFocused = memo(function V2cTrustFocused() {
                     className="mt-1"
                   />
                   <span className="text-xs text-muted-foreground">
-                    Ich akzeptiere die <a href="#" className="underline">Datenschutzbestimmungen</a>
+                    Ich akzeptiere die{" "}
+                    <Link
+                      to="/datenschutz"
+                      className="underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Datenschutzbestimmungen
+                    </Link>
                   </span>
                 </label>
               </div>

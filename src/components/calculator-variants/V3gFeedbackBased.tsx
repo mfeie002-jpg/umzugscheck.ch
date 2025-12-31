@@ -15,6 +15,7 @@
  */
 
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -493,8 +494,24 @@ export const V3gFeedbackBased: React.FC = () => {
                   className="mt-0.5"
                 />
                 <Label htmlFor="consent" className="text-sm text-muted-foreground cursor-pointer leading-relaxed">
-                  Ich akzeptiere die <a href="#" className="text-primary underline">AGB</a> und{' '}
-                  <a href="#" className="text-primary underline">Datenschutzbestimmungen</a>.
+                  Ich akzeptiere die{" "}
+                  <Link
+                    to="/agb"
+                    className="text-primary underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    AGB
+                  </Link>{" "}
+                  und{" "}
+                  <Link
+                    to="/datenschutz"
+                    className="text-primary underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Datenschutzbestimmungen
+                  </Link>.
                 </Label>
               </div>
             </div>

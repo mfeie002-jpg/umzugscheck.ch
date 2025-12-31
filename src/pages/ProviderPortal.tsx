@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, Mail, Lock, Phone, MapPin, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ProviderPortal() {
@@ -105,7 +105,19 @@ export default function ProviderPortal() {
                       </Button>
 
                       <div className="text-center text-sm text-muted-foreground">
-                        <a href="#" className="hover:underline">Passwort vergessen?</a>
+                        <button
+                          type="button"
+                          className="hover:underline"
+                          onClick={() =>
+                            toast({
+                              title: "Passwort-Reset kommt bald",
+                              description:
+                                "Bitte kontaktieren Sie uns vorerst via E-Mail (info@umzugscheck.ch).",
+                            })
+                          }
+                        >
+                          Passwort vergessen?
+                        </button>
                       </div>
                     </form>
                   </TabsContent>
@@ -199,8 +211,23 @@ export default function ProviderPortal() {
 
                       <p className="text-xs text-muted-foreground text-center">
                         Mit der Registrierung akzeptieren Sie unsere{" "}
-                        <a href="#" className="underline">AGB</a> und{" "}
-                        <a href="#" className="underline">Datenschutzbestimmungen</a>.
+                        <Link
+                          to="/agb"
+                          className="underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          AGB
+                        </Link>{" "}
+                        und{" "}
+                        <Link
+                          to="/datenschutz"
+                          className="underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Datenschutzbestimmungen
+                        </Link>.
                       </p>
                     </form>
                   </TabsContent>

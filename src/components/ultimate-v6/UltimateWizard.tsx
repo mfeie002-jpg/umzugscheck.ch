@@ -52,6 +52,7 @@ import {
   Sparkle
 } from "lucide-react";
 import { useCaptureMode } from "@/hooks/use-capture-mode";
+import { Link } from "react-router-dom";
 
 // Types
 type WizardStep = "intro" | "scan" | "service" | "price" | "booking" | "dashboard";
@@ -940,8 +941,24 @@ export const UltimateWizard = () => {
                     className="mt-0.5"
                   />
                   <span className="text-sm">
-                    Ich akzeptiere die <a href="#" className="text-primary underline">AGB</a> und 
-                    {" "}<a href="#" className="text-primary underline">Datenschutzerklärung</a>.
+                    Ich akzeptiere die{" "}
+                    <Link
+                      to="/agb"
+                      className="text-primary underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      AGB
+                    </Link>{" "}
+                    und{" "}
+                    <Link
+                      to="/datenschutz"
+                      className="text-primary underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Datenschutzerklärung
+                    </Link>.
                     Die Buchung ist 24h kostenlos stornierbar.
                   </span>
                 </label>

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { CountUp } from '@/components/ui/animated-counter';
 import { useCaptureMode } from "@/hooks/use-capture-mode";
+import { Link } from "react-router-dom";
 
 type Step = 'landing' | 'configure' | 'checkout' | 'dashboard' | 'tracking';
 
@@ -654,7 +655,25 @@ export const SwissMoveWizard = () => {
         <div className="flex items-start gap-2 text-sm">
           <Checkbox id="terms" />
           <label htmlFor="terms" className="text-muted-foreground">
-            Ich akzeptiere die <a href="#" className="text-primary underline">AGB</a> und habe die <a href="#" className="text-primary underline">Datenschutzerklärung</a> gelesen.
+            Ich akzeptiere die{" "}
+            <Link
+              to="/agb"
+              className="text-primary underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              AGB
+            </Link>{" "}
+            und habe die{" "}
+            <Link
+              to="/datenschutz"
+              className="text-primary underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Datenschutzerklärung
+            </Link>{" "}
+            gelesen.
           </label>
         </div>
 

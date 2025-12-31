@@ -1,5 +1,6 @@
 import { ClipboardList, Mail, BarChart3, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const steps = [
   {
@@ -80,11 +81,11 @@ export const RedesignHowItWorks = () => {
           viewport={{ once: true }}
           className="text-center mt-8 md:mt-10"
         >
-          <a href="/umzugsrechner">
+          <Link to="/umzugsrechner">
             <button className="px-6 md:px-8 py-2.5 md:py-3 bg-primary text-white rounded-xl font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl">
               Jetzt starten
             </button>
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>
