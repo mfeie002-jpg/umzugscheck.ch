@@ -1093,8 +1093,28 @@ export function ChatFunnelV2e() {
 
   const progress = getProgress();
 
+  // Show loading overlay between steps (when typing animation is happening)
+  const showLoadingOverlay = isTyping;
+
   return (
-    <div className="flex flex-col h-[calc(100dvh-10rem)] sm:h-[calc(100vh-12rem)] md:h-[600px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden">
+    <div className="flex flex-col h-[calc(100dvh-6rem)] sm:h-[calc(100vh-10rem)] md:h-[600px] bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full overflow-x-hidden relative">
+      {/* Loading overlay between steps */}
+      <AnimatePresence>
+        {showLoadingOverlay && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 z-40 bg-background/60 backdrop-blur-[2px] flex flex-col items-center justify-center pointer-events-auto"
+          >
+            <div className="bg-card rounded-2xl shadow-lg border border-border px-6 py-4 flex flex-col items-center gap-3">
+              <Loader2 className="w-6 h-6 text-primary animate-spin" />
+              <span className="text-sm text-muted-foreground font-medium">Bitte warten...</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Header with Progress */}
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
         {/* Progress bar */}

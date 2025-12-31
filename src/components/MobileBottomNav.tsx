@@ -13,12 +13,21 @@ const navItems = [
   { href: "/umzugsofferten", label: "Offerten", icon: FileText },
 ];
 
+// Paths where we hide the mobile bottom navigation to avoid overlap with funnels
+const HIDDEN_PATHS = [
+  '/umzugsofferten-v2e',
+  '/umzugsofferten-v1a',
+  '/umzugsofferten',
+];
+
 export const MobileBottomNav = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const { lightTap } = useHapticFeedback();
 
-  if (!isMobile) return null;
+  // Hide on funnel pages or when not mobile
+  const shouldHide = !isMobile || HIDDEN_PATHS.some(path => location.pathname.startsWith(path));
+  if (shouldHide) return null;
 
   return (
     <nav className="site-bottom-nav fixed bottom-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-xl border-t border-border/80 shadow-lg pb-safe" aria-label="Mobile Navigation">
