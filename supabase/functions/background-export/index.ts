@@ -140,6 +140,24 @@ const FLOW_CONFIGS: Record<string, { id: string; label: string; path: string; st
   },
 };
 
+// Ultimate Swiss Flow - Best of 36
+const ULTIMATE_BEST36_CONFIG = {
+  'umzugsofferten-ultimate-best36': {
+    id: 'umzugsofferten-ultimate-best36',
+    label: 'Ultimate Best36 ⭐⭐',
+    path: '/umzugsofferten-ultimate-best36',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'Von-Nach PLZ eingeben' },
+      { step: 2, name: 'Umfang', description: 'Zimmer, Stockwerk, Inventar' },
+      { step: 3, name: 'Services', description: 'Datum und Zusatzleistungen' },
+      { step: 4, name: 'Kontakt', description: 'Kontaktdaten und Absenden' },
+    ],
+  },
+};
+
+// Merge all configs
+const ALL_FLOW_CONFIGS = { ...FLOW_CONFIGS, ...ULTIMATE_BEST36_CONFIG };
+
 // Sub-variant configurations
 const SUB_VARIANT_CONFIGS: Record<string, { id: string; label: string; path: string; steps: { step: number; name: string; description: string }[] }> = {
   'v2a': { id: 'v2a', label: 'V2a - Progress Enhanced', path: '/flow-tester?variant=v2a', steps: [{ step: 1, name: 'Typ', description: 'Umzugstyp wählen' }, { step: 2, name: 'Ort', description: 'Adressen' }, { step: 3, name: 'Services', description: 'Zusatzleistungen' }, { step: 4, name: 'Kontakt', description: 'Angaben' }] },

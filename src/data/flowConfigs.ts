@@ -164,6 +164,20 @@ export const FLOW_CONFIGS: Record<string, FlowConfig> = {
       { step: 10, name: 'Kontakt', description: 'Daten absenden' },
     ],
   },
+  // Ultimate Swiss Flow - Best of 36
+  'umzugsofferten-ultimate-best36': {
+    id: 'umzugsofferten-ultimate-best36',
+    label: 'Ultimate Best36 ⭐⭐',
+    path: '/umzugsofferten-ultimate-best36',
+    color: 'bg-gradient-to-r from-green-500 to-emerald-600',
+    description: 'Ultimate Flow: Best of 36 Varianten kombiniert. Ziel-Score: 98/100',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'Von-Nach PLZ eingeben' },
+      { step: 2, name: 'Umfang', description: 'Zimmer, Stockwerk, Inventar' },
+      { step: 3, name: 'Services', description: 'Datum und Zusatzleistungen' },
+      { step: 4, name: 'Kontakt', description: 'Kontaktdaten und Absenden' },
+    ],
+  },
 };
 
 // Sub-Variant Configurations for V9 feedback-based variants
