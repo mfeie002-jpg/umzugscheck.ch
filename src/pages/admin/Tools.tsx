@@ -37,6 +37,7 @@ import { BackgroundExportManager } from "@/components/admin/BackgroundExportMana
 import { JobsDownloadsCenter } from "@/components/admin/JobsDownloadsCenter";
 import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
 import ABTestToggle from "@/components/admin/ABTestToggle";
+import FocusedABTestPanel from "@/components/admin/FocusedABTestPanel";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -3352,6 +3353,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               </TabsContent>
               
               <TabsContent value="autoflow" className="space-y-6">
+                <FocusedABTestPanel />
                 <ABTestToggle />
                 <AutoFlowDashboard />
               </TabsContent>
