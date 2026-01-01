@@ -18,10 +18,12 @@ import {
   Trash2, Zap, FileDown, Shield,
   Wrench, ExternalLink, BookOpen, Terminal, FileCode,
   Database, Search, Eye, GitCompare, Sparkles, Bot, Play,
-  Globe, RefreshCw
+  Globe, RefreshCw, Wand2
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FlowAutomationCenter } from "@/components/admin/FlowAutomationCenter";
+import { UltimateFlowExporter } from "@/components/admin/UltimateFlowExporter";
+import { UltimateFeedbackSuite } from "@/components/admin/UltimateFeedbackSuite";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
@@ -2458,7 +2460,11 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
         {/* Tools Tabs */}
         <div id="tools-tabs-section">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
+            <TabsTrigger value="ultimate-export" className="flex items-center gap-2">
+              <Wand2 className="h-4 w-4" />
+              Ultimate Export
+            </TabsTrigger>
             <TabsTrigger value="flow-automation" className="flex items-center gap-2">
               <Zap className="h-4 w-4" />
               Flow Automation
@@ -2489,7 +2495,15 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
             </TabsTrigger>
           </TabsList>
 
-          {/* Flow Automation Tab - NEW */}
+          {/* Ultimate Export Tab - PRIMARY TOOL */}
+          <TabsContent value="ultimate-export">
+            <div className="space-y-6">
+              <UltimateFlowExporter />
+              <UltimateFeedbackSuite />
+            </div>
+          </TabsContent>
+
+          {/* Flow Automation Tab */}
           <TabsContent value="flow-automation">
             <FlowAutomationCenter />
           </TabsContent>
