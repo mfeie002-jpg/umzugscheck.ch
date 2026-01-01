@@ -71,7 +71,12 @@ import {
   Search,
   Keyboard,
   Loader2,
-  RotateCcw
+  RotateCcw,
+  Wand2,
+  DownloadCloud,
+  ImagePlus,
+  Trash2,
+  Bot
 } from 'lucide-react';
 import { getAllFlows, FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
 import { captureScreenshot } from '@/lib/screenshot-service';
@@ -408,7 +413,7 @@ const FlowComparison = () => {
       });
     }
 
-    // Add screenshots if available
+    // Add screenshots if available - fix: deduplicate by URL to avoid repeating same screenshots
     if (screenshotsData && screenshotsData.length > 0) {
       const screenshotsByFlow = new Map<string, ScreenshotData[]>();
       
@@ -425,17 +430,31 @@ const FlowComparison = () => {
                          || screenshotsByFlow.get(flow.id)
                          || [];
         
+        // Deduplicate by URL and sort by step_number
+        const sortedScreenshots = [...screenshots].sort((a, b) => a.step_number - b.step_number);
+        
+        const desktopUrls = new Set<string>();
+        const mobileUrls = new Set<string>();
+        
+        const uniqueDesktop: string[] = [];
+        const uniqueMobile: string[] = [];
+        
+        for (const s of sortedScreenshots) {
+          if (s.desktop_screenshot_url && !desktopUrls.has(s.desktop_screenshot_url)) {
+            desktopUrls.add(s.desktop_screenshot_url);
+            uniqueDesktop.push(s.desktop_screenshot_url);
+          }
+          if (s.mobile_screenshot_url && !mobileUrls.has(s.mobile_screenshot_url)) {
+            mobileUrls.add(s.mobile_screenshot_url);
+            uniqueMobile.push(s.mobile_screenshot_url);
+          }
+        }
+        
         return {
           ...flow,
           screenshots: {
-            desktop: screenshots
-              .filter(s => s.desktop_screenshot_url)
-              .map(s => s.desktop_screenshot_url!)
-              .slice(0, 10),
-            mobile: screenshots
-              .filter(s => s.mobile_screenshot_url)
-              .map(s => s.mobile_screenshot_url!)
-              .slice(0, 10),
+            desktop: uniqueDesktop.slice(0, 15),
+            mobile: uniqueMobile.slice(0, 15),
           },
         };
       });
@@ -581,6 +600,11 @@ const FlowComparison = () => {
     setVisibleCount(prev => Math.min(prev + 10, sortedFlows.length));
   };
 
+  const handleLoadAll = () => {
+    setVisibleCount(sortedFlows.length);
+    toast.success(`Alle ${sortedFlows.length} Flows geladen`);
+  };
+
   const handleCopyUrl = (path: string) => {
     const fullUrl = `${window.location.origin}${path}`;
     navigator.clipboard.writeText(fullUrl);
@@ -593,6 +617,44 @@ const FlowComparison = () => {
 
   const handleRunAnalysis = (flowId: string) => {
     navigate(`/admin/tools?tab=flow-automation&analyze=${flowId}`);
+  };
+
+  // Run analysis on all visible flows (batch)
+  const [isBatchAnalyzing, setIsBatchAnalyzing] = useState(false);
+  const handleBatchAnalysis = async () => {
+    setIsBatchAnalyzing(true);
+    toast.info(`Starte Batch-Analyse für ${visibleFlows.length} Flows...`);
+    navigate(`/admin/tools?tab=flow-automation&batch=true`);
+    setIsBatchAnalyzing(false);
+  };
+
+  // Capture screenshots for flows missing them
+  const [isBatchCapturing, setIsBatchCapturing] = useState(false);
+  const handleCaptureAllMissing = async () => {
+    const flowsWithoutScreenshots = visibleFlows.filter(f => 
+      f.screenshots.desktop.length === 0 && f.screenshots.mobile.length === 0
+    );
+    
+    if (flowsWithoutScreenshots.length === 0) {
+      toast.info('Alle Flows haben bereits Screenshots');
+      return;
+    }
+    
+    setIsBatchCapturing(true);
+    toast.info(`Starte Screenshot-Capture für ${flowsWithoutScreenshots.length} Flows...`);
+    
+    try {
+      for (const flow of flowsWithoutScreenshots) {
+        await handleCaptureScreenshot(flow.id, flow.path);
+        // Small delay between captures
+        await new Promise(r => setTimeout(r, 1500));
+      }
+      toast.success(`${flowsWithoutScreenshots.length} Screenshots erstellt`);
+    } catch {
+      toast.error('Fehler beim Batch-Screenshot');
+    } finally {
+      setIsBatchCapturing(false);
+    }
   };
 
   const handleExportData = () => {
@@ -608,6 +670,7 @@ const FlowComparison = () => {
       lastAnalyzed: f.lastAnalyzed,
       isFavorite: favorites.has(f.id),
       note: notes[f.id] || null,
+      screenshotCount: f.screenshots.desktop.length + f.screenshots.mobile.length,
     }));
     
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -941,15 +1004,26 @@ const FlowComparison = () => {
               </div>
             )}
 
-            {/* Load More */}
-            {hasMore && (
-              <div className="text-center mt-6">
-                <Button variant="outline" onClick={handleLoadMore} className="gap-2">
-                  <ChevronDown className="h-4 w-4" />
-                  Mehr laden ({sortedFlows.length - visibleCount} weitere)
-                </Button>
-              </div>
-            )}
+            {/* Load More / Load All */}
+            <div className="flex justify-center items-center gap-4 mt-6">
+              {hasMore && (
+                <>
+                  <Button variant="outline" onClick={handleLoadMore} className="gap-2">
+                    <ChevronDown className="h-4 w-4" />
+                    Mehr laden ({sortedFlows.length - visibleCount} weitere)
+                  </Button>
+                  <Button variant="secondary" onClick={handleLoadAll} className="gap-2">
+                    <DownloadCloud className="h-4 w-4" />
+                    Alle laden
+                  </Button>
+                </>
+              )}
+              {!hasMore && sortedFlows.length > 10 && (
+                <p className="text-sm text-muted-foreground">
+                  Alle {sortedFlows.length} Flows geladen ✓
+                </p>
+              )}
+            </div>
           </TabsContent>
 
           {/* Desktop Screenshots View */}
@@ -1006,15 +1080,24 @@ const FlowComparison = () => {
           </CardContent>
         </Card>
 
-        {/* Admin Actions */}
+        {/* Admin Actions - Enhanced */}
         <Card className="mt-4">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Settings2 className="h-5 w-5" />
-              Admin-Aktionen
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Settings2 className="h-5 w-5" />
+                Admin-Aktionen
+              </CardTitle>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleLoadAll} className="gap-1.5">
+                  <DownloadCloud className="h-4 w-4" />
+                  Alle laden ({sortedFlows.length})
+                </Button>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {/* Quick Actions Row */}
             <div className="flex flex-wrap gap-2">
               <Link to="/admin/tools?tab=flow-automation">
                 <Button variant="outline" size="sm" className="gap-1.5">
@@ -1032,10 +1115,79 @@ const FlowComparison = () => {
                 <FileJson className="h-4 w-4" />
                 JSON Export
               </Button>
-              <Button variant="outline" size="sm" className="gap-1.5" onClick={handleRefresh}>
-                <RefreshCw className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={handleRefresh} disabled={isRefreshing}>
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 Sync All
               </Button>
+            </div>
+            
+            {/* AI & Batch Actions */}
+            <div className="flex flex-wrap gap-2 pt-2 border-t">
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={handleBatchAnalysis}
+                disabled={isBatchAnalyzing}
+              >
+                <Bot className={`h-4 w-4 ${isBatchAnalyzing ? 'animate-pulse' : ''}`} />
+                AI Analyse - Alle Flows
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={handleCaptureAllMissing}
+                disabled={isBatchCapturing}
+              >
+                <ImagePlus className={`h-4 w-4 ${isBatchCapturing ? 'animate-spin' : ''}`} />
+                {isBatchCapturing ? 'Capturing...' : 'Screenshots nachholen'}
+              </Button>
+              <Link to="/admin/tools?tab=flow-automation&mode=ai-fix">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Wand2 className="h-4 w-4" />
+                  AI Auto-Fix Issues
+                </Button>
+              </Link>
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
+                const flowsWithoutAnalysis = visibleFlows.filter(f => !f.lastAnalyzed);
+                if (flowsWithoutAnalysis.length > 0) {
+                  toast.info(`${flowsWithoutAnalysis.length} Flows ohne Analyse gefunden`);
+                } else {
+                  toast.success('Alle sichtbaren Flows wurden analysiert');
+                }
+              }}>
+                <AlertTriangle className="h-4 w-4" />
+                Analyse-Status prüfen
+              </Button>
+            </div>
+            
+            {/* Stats Summary */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t">
+              <div className="bg-muted/50 rounded p-2 text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {visibleFlows.filter(f => f.score >= 80).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Score ≥ 80</div>
+              </div>
+              <div className="bg-muted/50 rounded p-2 text-center">
+                <div className="text-2xl font-bold text-yellow-600">
+                  {visibleFlows.filter(f => f.criticalIssues > 0).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Mit Issues</div>
+              </div>
+              <div className="bg-muted/50 rounded p-2 text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {visibleFlows.filter(f => f.screenshots.desktop.length > 0).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Mit Screenshots</div>
+              </div>
+              <div className="bg-muted/50 rounded p-2 text-center">
+                <div className="text-2xl font-bold text-purple-600">
+                  {visibleFlows.filter(f => f.lastAnalyzed).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Analysiert</div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -1356,6 +1508,7 @@ const FlowCard = ({
         </div>
 
         {/* Action Buttons */}
+        {/* Action Buttons */}
         <div className="flex gap-1 flex-wrap">
           <Link to={flow.path} className="flex-1">
             <Button size="sm" className="w-full gap-1">
@@ -1376,9 +1529,6 @@ const FlowCard = ({
             <StickyNote className="h-3.5 w-3.5" />
           </Button>
           <Button size="sm" variant="outline" onClick={onToggleExpand}>
-            <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? 'rotate-180' : ''}`} />
-          </Button>
-        </div>
             <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? 'rotate-180' : ''}`} />
           </Button>
         </div>
@@ -1610,7 +1760,7 @@ const ScreenshotGallery = ({ flows, device, onOpenFlow }: ScreenshotGalleryProps
   );
 };
 
-// ========== ScreenshotSlider Component ==========
+// ========== ScreenshotSlider Component - Enhanced ==========
 interface ScreenshotSliderProps {
   flows: FlowData[];
   onOpenFlow: (path: string) => void;
@@ -1619,67 +1769,125 @@ interface ScreenshotSliderProps {
 const ScreenshotSlider = ({ flows, onOpenFlow }: ScreenshotSliderProps) => {
   const [selectedFlow, setSelectedFlow] = useState(flows[0]?.id || '');
   const [viewDevice, setViewDevice] = useState<'desktop' | 'mobile' | 'both'>('both');
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [isCapturing, setIsCapturing] = useState(false);
   
   const currentFlow = flows.find(f => f.id === selectedFlow) || flows[0];
+  
+  const handleQuickCapture = async () => {
+    if (!currentFlow) return;
+    setIsCapturing(true);
+    try {
+      const fullUrl = `${window.location.origin}${currentFlow.path}?uc_capture=1`;
+      const result = await captureScreenshot({
+        url: fullUrl,
+        dimension: '1920x1080',
+        delay: 5000,
+        format: 'png',
+      });
+      
+      if (result.success && result.image) {
+        const link = document.createElement('a');
+        link.href = result.image;
+        link.download = `flow-${currentFlow.id}-${Date.now()}.png`;
+        link.click();
+        toast.success('Screenshot erstellt');
+      } else {
+        toast.error(result.error || 'Screenshot fehlgeschlagen');
+      }
+    } catch {
+      toast.error('Screenshot-Fehler');
+    } finally {
+      setIsCapturing(false);
+    }
+  };
   
   if (!currentFlow) {
     return null;
   }
 
+  const totalScreenshots = currentFlow.screenshots.desktop.length + currentFlow.screenshots.mobile.length;
+  const hasNoScreenshots = totalScreenshots === 0;
+
   return (
     <div className="space-y-4">
-      {/* Flow Selector */}
+      {/* Flow Selector with Stats */}
       <div className="flex flex-wrap gap-2 items-center">
         <span className="text-sm font-medium">Flow:</span>
         <ScrollArea className="max-w-full">
           <div className="flex gap-2 pb-2">
-            {flows.map((flow, index) => (
-              <Button
-                key={flow.id}
-                variant={selectedFlow === flow.id ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedFlow(flow.id)}
-                className="flex-shrink-0 gap-1.5"
-              >
-                <span className="w-5 h-5 rounded-full bg-muted text-muted-foreground text-xs flex items-center justify-center">
-                  {index + 1}
-                </span>
-                {flow.label}
-                <span className="text-muted-foreground text-xs">({flow.score})</span>
-              </Button>
-            ))}
+            {flows.map((flow, index) => {
+              const hasScreenshots = flow.screenshots.desktop.length > 0 || flow.screenshots.mobile.length > 0;
+              return (
+                <Button
+                  key={flow.id}
+                  variant={selectedFlow === flow.id ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedFlow(flow.id)}
+                  className={`flex-shrink-0 gap-1.5 ${!hasScreenshots ? 'opacity-60' : ''}`}
+                >
+                  <span className={`w-5 h-5 rounded-full text-xs flex items-center justify-center ${
+                    hasScreenshots ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {index + 1}
+                  </span>
+                  {flow.label}
+                  <span className="text-muted-foreground text-xs">({flow.score})</span>
+                  {!hasScreenshots && <AlertTriangle className="h-3 w-3 text-yellow-500" />}
+                </Button>
+              );
+            })}
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
 
-      {/* Device Toggle */}
-      <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit">
-        <Button
-          variant={viewDevice === 'both' ? 'secondary' : 'ghost'}
-          size="sm"
-          onClick={() => setViewDevice('both')}
-        >
-          Beide
-        </Button>
-        <Button
-          variant={viewDevice === 'desktop' ? 'secondary' : 'ghost'}
-          size="sm"
-          onClick={() => setViewDevice('desktop')}
-          className="gap-1"
-        >
-          <Monitor className="h-4 w-4" />
-          Desktop
-        </Button>
-        <Button
-          variant={viewDevice === 'mobile' ? 'secondary' : 'ghost'}
-          size="sm"
-          onClick={() => setViewDevice('mobile')}
-          className="gap-1"
-        >
-          <Smartphone className="h-4 w-4" />
-          Mobile
-        </Button>
+      {/* Device Toggle + Actions */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-1 bg-muted rounded-lg p-1">
+          <Button
+            variant={viewDevice === 'both' ? 'secondary' : 'ghost'}
+            size="sm"
+            onClick={() => setViewDevice('both')}
+          >
+            Beide
+          </Button>
+          <Button
+            variant={viewDevice === 'desktop' ? 'secondary' : 'ghost'}
+            size="sm"
+            onClick={() => setViewDevice('desktop')}
+            className="gap-1"
+          >
+            <Monitor className="h-4 w-4" />
+            Desktop
+          </Button>
+          <Button
+            variant={viewDevice === 'mobile' ? 'secondary' : 'ghost'}
+            size="sm"
+            onClick={() => setViewDevice('mobile')}
+            className="gap-1"
+          >
+            <Smartphone className="h-4 w-4" />
+            Mobile
+          </Button>
+        </div>
+        
+        <div className="flex gap-2">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={handleQuickCapture}
+            disabled={isCapturing}
+            className="gap-1.5"
+          >
+            {isCapturing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Camera className="h-4 w-4" />
+            )}
+            Screenshot erstellen
+          </Button>
+        </div>
       </div>
 
       {/* Screenshots Display */}
@@ -1689,16 +1897,41 @@ const ScreenshotSlider = ({ flows, onOpenFlow }: ScreenshotSliderProps) => {
             <h3 className="font-semibold">{currentFlow.label}</h3>
             <p className="text-sm text-muted-foreground">
               Score: {currentFlow.score} • {currentFlow.stepsCount} Steps • 
-              {currentFlow.screenshots.desktop.length + currentFlow.screenshots.mobile.length} Screenshots
+              {totalScreenshots} Screenshots
+              {currentFlow.lastAnalyzed && (
+                <> • Analysiert: {new Date(currentFlow.lastAnalyzed).toLocaleDateString('de-CH')}</>
+              )}
             </p>
           </div>
-          <Button size="sm" onClick={() => onOpenFlow(currentFlow.path)} className="gap-1.5">
-            <ExternalLink className="h-4 w-4" />
-            Öffnen
-          </Button>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={() => onOpenFlow(currentFlow.path)} className="gap-1.5">
+              <Eye className="h-4 w-4" />
+              Preview
+            </Button>
+            <Button size="sm" onClick={() => onOpenFlow(currentFlow.path)} className="gap-1.5">
+              <ExternalLink className="h-4 w-4" />
+              Öffnen
+            </Button>
+          </div>
         </div>
 
-        {viewDevice === 'both' ? (
+        {hasNoScreenshots ? (
+          <div className="border-2 border-dashed rounded-lg p-8 text-center">
+            <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
+            <h4 className="font-medium mb-1">Keine Screenshots vorhanden</h4>
+            <p className="text-sm text-muted-foreground mb-4">
+              Erstelle Screenshots für diesen Flow
+            </p>
+            <Button onClick={handleQuickCapture} disabled={isCapturing} className="gap-2">
+              {isCapturing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Camera className="h-4 w-4" />
+              )}
+              Jetzt Screenshot erstellen
+            </Button>
+          </div>
+        ) : viewDevice === 'both' ? (
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Desktop Screenshots */}
             <div>
