@@ -277,7 +277,7 @@ const FlowComparison = () => {
   const [sortBy, setSortBy] = useState<SortBy>('score');
   const [showOnlyNew, setShowOnlyNew] = useState(false);
   const [activeTab, setActiveTab] = useState<DeviceTab>('all');
-  const [visibleCount, setVisibleCount] = useState(10);
+  const [visibleCount, setVisibleCount] = useState(999); // Show all flows by default
   const [expandedFlow, setExpandedFlow] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => {
