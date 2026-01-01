@@ -238,6 +238,32 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
+  // V1f - Sticky CTA + Trust Pills (NEW)
+  'v1f': {
+    id: 'v1f',
+    label: 'V1f Sticky CTA + Trust ⭐',
+    path: '/umzugsofferten-v1f',
+    color: 'bg-emerald-500',
+    description: 'V1f: Enhanced Sticky CTA mit Micro-Feedback + Step Trust Pills',
+    parentFlow: 'umzugsofferten-v1',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ Von-Nach, Datum' },
+      { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V1g - Input UX + Validation (NEW)
+  'v1g': {
+    id: 'v1g',
+    label: 'V1g Input UX + Validation ⭐',
+    path: '/umzugsofferten-v1g',
+    color: 'bg-emerald-400',
+    description: 'V1g: Enhanced FormFields mit Inline Validation + Mobile inputMode',
+    parentFlow: 'umzugsofferten-v1',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ Von-Nach, Datum' },
+      { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
   // V2 - Premium Sub-Variants
   'v2a': {
     id: 'v2a',
