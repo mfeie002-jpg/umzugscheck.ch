@@ -529,6 +529,8 @@ export default function FlowDeepAnalysis() {
         }
 
         if (data) {
+          console.log('[checkForResults] Found run:', data.id, 'status:', data.status);
+          
           // Check if it's a running job
           if (data.status === 'running' || data.status === 'pending') {
             setBackgroundJob({
@@ -545,13 +547,22 @@ export default function FlowDeepAnalysis() {
             setBackgroundJob(null);
             // Load previous results
             const metadata = data.metadata as any;
+            console.log('[checkForResults] metadata.analyses count:', metadata?.analyses?.length);
+            
             if (metadata?.analyses && Array.isArray(metadata.analyses)) {
-              setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
+              const normalizedAnalyses = metadata.analyses.map(normalizeFlowAnalysis);
+              console.log('[checkForResults] First analysis score:', normalizedAnalyses[0]?.overallScore);
+              setAnalyses(normalizedAnalyses);
             }
 
             const aiRecs = data.ai_recommendations as any;
+            console.log('[checkForResults] ai_recommendations exists:', !!aiRecs, 'length:', aiRecs?.length);
+            
             if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
-              setSynthesis(normalizeSynthesis(aiRecs[0]));
+              const normalizedSynth = normalizeSynthesis(aiRecs[0]);
+              console.log('[checkForResults] Winner:', normalizedSynth?.winner?.flowId, 'score:', normalizedSynth?.winner?.totalScore);
+              console.log('[checkForResults] Ranking length:', normalizedSynth?.ranking?.length, 'first score:', normalizedSynth?.ranking?.[0]?.score);
+              setSynthesis(normalizedSynth);
             } else {
               setSynthesis(null);
             }
