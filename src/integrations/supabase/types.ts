@@ -913,6 +913,147 @@ export type Database = {
           },
         ]
       }
+      flow_feature_scores: {
+        Row: {
+          accessibility_score: number
+          conversion_score: number
+          created_at: string
+          cta_score: number
+          fixed_issues_count: number
+          flow_id: string
+          has_animations: boolean | null
+          has_aria_labels: boolean | null
+          has_astag: boolean | null
+          has_auto_advance: boolean | null
+          has_bottom_sheet: boolean | null
+          has_canonical_url: boolean | null
+          has_clear_cta_label: boolean | null
+          has_code_splitting: boolean | null
+          has_contrast_compliance: boolean | null
+          has_free_label: boolean | null
+          has_image_optimization: boolean | null
+          has_keyboard_navigation: boolean | null
+          has_lazy_loading: boolean | null
+          has_meta_tags: boolean | null
+          has_micro_feedback: boolean | null
+          has_price_preview: boolean | null
+          has_progress_bar: boolean | null
+          has_progress_indicator: boolean | null
+          has_rating_badge: boolean | null
+          has_responsive_layout: boolean | null
+          has_safe_area: boolean | null
+          has_semantic_html: boolean | null
+          has_sticky_cta: boolean | null
+          has_structured_data: boolean | null
+          has_swiss_quality: boolean | null
+          has_touch_targets: boolean | null
+          has_trust_pills: boolean | null
+          has_validation: boolean | null
+          id: string
+          issues_count: number
+          mobile_score: number
+          overall_score: number
+          performance_score: number
+          run_number: number
+          seo_score: number
+          trust_score: number
+          updated_at: string
+          ux_score: number
+        }
+        Insert: {
+          accessibility_score?: number
+          conversion_score?: number
+          created_at?: string
+          cta_score?: number
+          fixed_issues_count?: number
+          flow_id: string
+          has_animations?: boolean | null
+          has_aria_labels?: boolean | null
+          has_astag?: boolean | null
+          has_auto_advance?: boolean | null
+          has_bottom_sheet?: boolean | null
+          has_canonical_url?: boolean | null
+          has_clear_cta_label?: boolean | null
+          has_code_splitting?: boolean | null
+          has_contrast_compliance?: boolean | null
+          has_free_label?: boolean | null
+          has_image_optimization?: boolean | null
+          has_keyboard_navigation?: boolean | null
+          has_lazy_loading?: boolean | null
+          has_meta_tags?: boolean | null
+          has_micro_feedback?: boolean | null
+          has_price_preview?: boolean | null
+          has_progress_bar?: boolean | null
+          has_progress_indicator?: boolean | null
+          has_rating_badge?: boolean | null
+          has_responsive_layout?: boolean | null
+          has_safe_area?: boolean | null
+          has_semantic_html?: boolean | null
+          has_sticky_cta?: boolean | null
+          has_structured_data?: boolean | null
+          has_swiss_quality?: boolean | null
+          has_touch_targets?: boolean | null
+          has_trust_pills?: boolean | null
+          has_validation?: boolean | null
+          id?: string
+          issues_count?: number
+          mobile_score?: number
+          overall_score?: number
+          performance_score?: number
+          run_number?: number
+          seo_score?: number
+          trust_score?: number
+          updated_at?: string
+          ux_score?: number
+        }
+        Update: {
+          accessibility_score?: number
+          conversion_score?: number
+          created_at?: string
+          cta_score?: number
+          fixed_issues_count?: number
+          flow_id?: string
+          has_animations?: boolean | null
+          has_aria_labels?: boolean | null
+          has_astag?: boolean | null
+          has_auto_advance?: boolean | null
+          has_bottom_sheet?: boolean | null
+          has_canonical_url?: boolean | null
+          has_clear_cta_label?: boolean | null
+          has_code_splitting?: boolean | null
+          has_contrast_compliance?: boolean | null
+          has_free_label?: boolean | null
+          has_image_optimization?: boolean | null
+          has_keyboard_navigation?: boolean | null
+          has_lazy_loading?: boolean | null
+          has_meta_tags?: boolean | null
+          has_micro_feedback?: boolean | null
+          has_price_preview?: boolean | null
+          has_progress_bar?: boolean | null
+          has_progress_indicator?: boolean | null
+          has_rating_badge?: boolean | null
+          has_responsive_layout?: boolean | null
+          has_safe_area?: boolean | null
+          has_semantic_html?: boolean | null
+          has_sticky_cta?: boolean | null
+          has_structured_data?: boolean | null
+          has_swiss_quality?: boolean | null
+          has_touch_targets?: boolean | null
+          has_trust_pills?: boolean | null
+          has_validation?: boolean | null
+          id?: string
+          issues_count?: number
+          mobile_score?: number
+          overall_score?: number
+          performance_score?: number
+          run_number?: number
+          seo_score?: number
+          trust_score?: number
+          updated_at?: string
+          ux_score?: number
+        }
+        Relationships: []
+      }
       flow_feedback_variants: {
         Row: {
           created_at: string
@@ -958,6 +1099,45 @@ export type Database = {
           variant_label?: string
           variant_name?: string
           zip_url?: string | null
+        }
+        Relationships: []
+      }
+      flow_improvement_history: {
+        Row: {
+          category_changes: Json | null
+          created_at: string
+          current_score: number
+          fixed_issues: Json | null
+          flow_id: string
+          id: string
+          new_issues: Json | null
+          previous_score: number | null
+          run_number: number
+          score_delta: number
+        }
+        Insert: {
+          category_changes?: Json | null
+          created_at?: string
+          current_score: number
+          fixed_issues?: Json | null
+          flow_id: string
+          id?: string
+          new_issues?: Json | null
+          previous_score?: number | null
+          run_number: number
+          score_delta?: number
+        }
+        Update: {
+          category_changes?: Json | null
+          created_at?: string
+          current_score?: number
+          fixed_issues?: Json | null
+          flow_id?: string
+          id?: string
+          new_issues?: Json | null
+          previous_score?: number | null
+          run_number?: number
+          score_delta?: number
         }
         Relationships: []
       }
