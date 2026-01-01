@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { useToast } from '@/hooks/use-toast';
 import { 
   CheckCircle2, 
   ArrowRight, 
@@ -21,7 +22,10 @@ import {
   TrendingUp,
   Users,
   Clock,
-  Award
+  Award,
+  Copy,
+  Download,
+  Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -84,6 +88,8 @@ const archetypeLabels: Record<string, string> = {
 export const UltimateFlowRenderer = ({ flow, metrics, flowId }: UltimateFlowRendererProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [viewMode, setViewMode] = useState<'preview' | 'details'>('preview');
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
 
   const totalSteps = flow.steps?.length || 7;
   const progress = ((currentStep + 1) / totalSteps) * 100;
@@ -101,6 +107,94 @@ export const UltimateFlowRenderer = ({ flow, metrics, flowId }: UltimateFlowRend
   };
 
   const currentStepData = flow.steps?.[currentStep];
+
+  // Generate Lovable Prompt from the flow
+  const generateLovablePrompt = () => {
+    const stepsText = flow.steps?.map((step, idx) => 
+      `### Step ${idx + 1}: ${step.name}\n**Features:**\n${step.features?.map(f => `- ${f}`).join('\n') || 'N/A'}`
+    ).join('\n\n') || '';
+
+    const keyFeaturesText = flow.keyFeatures?.map(kf => 
+      `- **${kf.feature}**: ${kf.implementation} (Quelle: ${kf.sourceFlow})`
+    ).join('\n') || '';
+
+    return `# Lovable Prompt: ${flow.name}
+
+## Projektübersicht
+${flow.description}
+
+**Ziel-Score:** ${flow.expectedScore}/100
+**Erwartete Conversion-Steigerung:** ${flow.expectedConversionLift}
+
+---
+
+## Technische Anforderungen
+
+Erstelle einen mehrstufigen Umzugs-Offerten-Funnel mit folgenden Eigenschaften:
+- React + TypeScript + Tailwind CSS
+- Mobile-First Design
+- Touch-Targets mindestens 48x48px
+- Schweizer Lokalisierung (de-CH)
+- Responsive für alle Bildschirmgrössen
+
+---
+
+## Flow-Struktur (${totalSteps} Steps)
+
+${stepsText}
+
+---
+
+## Key Features
+
+${keyFeaturesText}
+
+---
+
+## Implementation Notes
+
+- Flow Code: ${flow.flowCode}
+- Flow ID: ${flowId}
+- Alle Schritte müssen validation haben bevor man zum nächsten geht
+- Progress-Bar zeigen
+- Sanfte Animationen zwischen Steps
+`;
+  };
+
+  const handleCopyPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(generateLovablePrompt());
+      setCopied(true);
+      toast({
+        title: 'Prompt kopiert!',
+        description: 'Der Lovable-Prompt wurde in die Zwischenablage kopiert.',
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: 'Fehler',
+        description: 'Prompt konnte nicht kopiert werden.',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleDownloadMarkdown = () => {
+    const markdown = generateLovablePrompt();
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${flow.flowCode || 'ultimate-flow'}-prompt.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast({
+      title: 'Download gestartet',
+      description: 'Die Markdown-Datei wird heruntergeladen.',
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -135,6 +229,18 @@ export const UltimateFlowRenderer = ({ flow, metrics, flowId }: UltimateFlowRend
             <Clock className="h-3 w-3" />
             ~2 Min.
           </Badge>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap justify-center gap-3 pt-2">
+          <Button variant="outline" size="sm" onClick={handleDownloadMarkdown} className="gap-2">
+            <Download className="h-4 w-4" />
+            Download .md
+          </Button>
+          <Button size="sm" onClick={handleCopyPrompt} className="gap-2">
+            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            {copied ? 'Kopiert!' : 'Prompt kopieren'}
+          </Button>
         </div>
       </div>
 
