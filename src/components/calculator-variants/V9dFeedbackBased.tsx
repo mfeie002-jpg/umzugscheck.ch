@@ -303,20 +303,22 @@ export const V9dFeedbackBased: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
-      {/* Minimal Header */}
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 overflow-x-hidden max-w-full">
+      {/* Minimal Header - Fixed Progress Indicator */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             {currentStep > 1 ? (
-              <Button variant="ghost" size="sm" onClick={handleBack} className="h-8 w-8 p-0">
+              <Button variant="ghost" size="sm" onClick={handleBack} className="h-8 w-8 p-0 min-h-[44px] min-w-[44px]">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             ) : (
-              <div className="w-8" />
+              <div className="w-11" />
             )}
-            <Badge variant="secondary" className="text-xs">V9.d Gemini</Badge>
-            <div className="w-8" />
+            <span className="text-sm font-medium text-muted-foreground">
+              Schritt {Math.min(currentStep, STEPS.length)} von {STEPS.length}
+            </span>
+            <Badge variant="secondary" className="text-xs">V9.d</Badge>
           </div>
           <Progress value={progress} className="h-1.5" />
         </div>
@@ -912,12 +914,12 @@ export const V9dFeedbackBased: React.FC = () => {
         )}
       </div>
 
-      {/* Sticky CTA */}
+      {/* Sticky CTA - Always visible, clear action text */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border p-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-lg mx-auto space-y-2">
           <Button
             size="lg"
-            className="w-full h-14 text-base font-semibold rounded-xl"
+            className="w-full h-14 text-base font-semibold rounded-xl min-h-[56px]"
             onClick={currentStep === 9 ? handleSubmit : handleNext}
             disabled={!canProceed() || isSubmitting || (currentStep === 8 && isAnalyzing)}
           >
@@ -928,7 +930,7 @@ export const V9dFeedbackBased: React.FC = () => {
               </>
             ) : currentStep === 9 ? (
               <>
-                Offerten anfordern
+                Jetzt unverbindlich anfragen
                 <ChevronRight className="h-5 w-5 ml-1" />
               </>
             ) : currentStep === 8 ? (
@@ -938,11 +940,15 @@ export const V9dFeedbackBased: React.FC = () => {
               </>
             ) : (
               <>
-                Weiter
+                Weiter zu {STEPS[currentStep]?.label || 'nächster Schritt'}
                 <ChevronRight className="h-5 w-5 ml-1" />
               </>
             )}
           </Button>
+          {/* Trust Microcopy below CTA */}
+          <p className="text-xs text-center text-muted-foreground">
+            100% kostenlos & unverbindlich • Keine Registrierung
+          </p>
         </div>
       </div>
     </div>
