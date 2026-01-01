@@ -372,7 +372,7 @@ Antworte IMMER im JSON-Format.`
       };
     }
 
-    // Store the optimization result
+    // Store the optimization result in flow_feedback_variants
     log.info('Storing optimization result...');
 
     const { data: variant, error: insertError } = await supabase
@@ -382,7 +382,6 @@ Antworte IMMER im JSON-Format.`
         variant_name: `${flowName} - AI Archetyp Optimiert`,
         variant_label: `${flowId}-fix-${Date.now()}`,
         prompt: `Auto-Fix: Score ${analysis.overallScore} → ${targetScore}+ | ${new Date().toISOString()}`,
-        // NOTE: DB constraint allows only: pending | processing | done | error
         status: 'done',
         executed_at: new Date().toISOString(),
         result_json: optimizationResult,
@@ -404,6 +403,76 @@ Antworte IMMER im JSON-Format.`
 
     log.success('Variant stored', { id: variant?.id });
 
+    // AUTO-APPLY: Update the flow_versions table directly
+    log.info('Auto-applying optimization to flow_versions...');
+    
+    const aiFeedbackSummary = `## AI Auto-Fix (${new Date().toLocaleDateString('de-CH')})
+Score: ${analysis.overallScore} → ${optimizationResult?.optimizedFlow?.expectedScore || targetScore}+
+
+### Änderungen: ${optimizationResult?.summary?.totalChanges || 0}
+${optimizationResult?.summary?.keyImprovements?.map((i: string) => `- ${i}`).join('\n') || 'Keine Details'}
+
+### Archetypen-Impact:
+${Object.entries(optimizationResult?.archetypeImpact || {}).map(([k, v]: [string, any]) => 
+  `- ${k}: ${v.before || 0} → ${v.after || 0}`
+).join('\n')}`;
+
+    // Update the flow_versions table with the AI feedback
+    const { error: updateError } = await supabase
+      .from('flow_versions')
+      .update({
+        ai_feedback: aiFeedbackSummary,
+        ai_feedback_date: new Date().toISOString(),
+        ai_feedback_source: 'ai-fix-flow-auto',
+        // Store the full optimization in config for later access
+        config: {
+          lastOptimization: optimizationResult,
+          optimizedAt: new Date().toISOString(),
+          originalScore: analysis.overallScore,
+          targetScore: targetScore,
+          expectedScore: optimizationResult?.optimizedFlow?.expectedScore || targetScore
+        }
+      })
+      .eq('flow_id', flowId)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (updateError) {
+      log.warn('Could not update flow_versions (non-critical)', updateError);
+    } else {
+      log.success('flow_versions updated with AI feedback');
+    }
+
+    // Also update/create UX issues from the optimization
+    if (optimizationResult?.optimizedFlow?.changes) {
+      log.info('Creating resolved UX issues from optimizations...');
+      
+      const issues = optimizationResult.optimizedFlow.changes.map((change: any, idx: number) => ({
+        flow_id: flowId,
+        title: `[AI-FIX] ${change.description || change.component}`,
+        description: `${change.before || ''} → ${change.after || ''}`,
+        recommendation: change.implementation || 'Siehe AI-Optimierung',
+        category: 'ai-optimization',
+        issue_type: change.changeType || 'modify',
+        severity: change.priority <= 2 ? 'critical' : change.priority <= 3 ? 'warning' : 'info',
+        step_number: idx + 1,
+        is_resolved: true,
+        resolved_at: new Date().toISOString(),
+        impact: change.impact,
+        effort: change.effort
+      }));
+
+      const { error: issuesError } = await supabase
+        .from('flow_ux_issues')
+        .insert(issues);
+
+      if (issuesError) {
+        log.warn('Could not store optimization issues', issuesError);
+      } else {
+        log.success(`Stored ${issues.length} optimization issues`);
+      }
+    }
+
     const duration = Date.now() - startTime;
     log.success(`Completed in ${duration}ms`);
 
@@ -415,7 +484,10 @@ Antworte IMMER im JSON-Format.`
         flowName,
         originalScore: analysis.overallScore,
         targetScore,
+        expectedScore: optimizationResult?.optimizedFlow?.expectedScore || targetScore,
         optimization: optimizationResult,
+        autoApplied: true,
+        changesApplied: optimizationResult?.summary?.totalChanges || 0,
         duration,
         timestamp: new Date().toISOString(),
       }),
