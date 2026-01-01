@@ -343,7 +343,7 @@ const FullscreenViewer = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 overflow-hidden">
+      <DialogContent className="w-[100vw] h-[100svh] max-w-[100vw] max-h-[100svh] p-0 overflow-visible rounded-none sm:max-w-[95vw] sm:max-h-[95vh] sm:rounded-lg">
         <div className="relative w-full h-full flex flex-col bg-background">
           {/* Header */}
           <div className="flex items-center justify-between p-3 border-b bg-background z-10">
