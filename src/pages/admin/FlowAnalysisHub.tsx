@@ -46,9 +46,10 @@ import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
 import AiFixResultPanel from '@/components/admin/AiFixResultPanel';
 import FlowRankingCard from '@/components/admin/FlowRankingCard';
 import WinnerShowcase from '@/components/admin/WinnerShowcase';
-import ImprovementReportPanel from '@/components/admin/ImprovementReportPanel';
+import PersistentScorePanel from '@/components/admin/PersistentScorePanel';
 import { cn } from '@/lib/utils';
 import { useLiveFlowAnalysis, type LiveFlowScore } from '@/hooks/use-live-flow-analysis';
+import { usePersistentFlowScores } from '@/hooks/use-persistent-flow-scores';
 
 // ─────────────────────────────────────────────────────────────
 // Types & Interfaces
@@ -392,8 +393,25 @@ export default function FlowAnalysisHub() {
     runNumber,
   } = useLiveFlowAnalysis();
   
+  // Persistent DB-backed scores
+  const {
+    scores: persistentScores,
+    isLoading: isPersistentLoading,
+    isOptimizing,
+    globalStats,
+    improvementReports,
+    loadScores: reloadPersistentScores,
+    optimizeAllFlows,
+    getWinner: getPersistentWinner,
+    getRanking: getPersistentRanking,
+    getImprovementPotential,
+  } = usePersistentFlowScores();
+  
   const [showImprovementReport, setShowImprovementReport] = useState(false);
-  const [latestReports, setLatestReports] = useState<typeof improvementHistory>([]);
+  const [latestReports, setLatestReports] = useState(improvementReports);
+  
+  // Use persistent scores for actual tracking
+  const improvementPotential = getImprovementPotential();
   
   // Toggle between live and cached scores
   const [useLiveScores, setUseLiveScores] = useState(true);
