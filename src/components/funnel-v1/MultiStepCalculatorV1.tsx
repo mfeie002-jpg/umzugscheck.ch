@@ -33,6 +33,8 @@ import { getCantonConfig } from "@/lib/cantonConfigMap";
 import { CompanyComparisonTable } from "@/components/homepage/CompanyComparisonTable";
 import { PackageSavingsCard } from "@/components/homepage/PackageSavingsCard";
 import { SubmitOptionsCardV1 } from "./SubmitOptionsCardV1";
+import { V1TrustBadgesHeader } from "./V1TrustBadgesHeader";
+import { V1StickyMobileCTA } from "./V1StickyMobileCTA";
 
 // Storage key for form persistence
 const FORM_STORAGE_KEY = "umzugscheck_form_data_v1";
@@ -670,7 +672,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
   const matchingCompanies = getMatchingCompanies();
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden overflow-x-hidden max-w-full">
+    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden overflow-x-hidden max-w-full pb-24 md:pb-0">
+      {/* SCORE OPTIMIZATION: Prominent Trust Badges above the fold */}
+      <div className="bg-muted/30 px-4 py-3 border-b border-border/50">
+        <V1TrustBadgesHeader variant="compact" />
+      </div>
+      
       {/* Issue #4, #7: Sticky Progress Header - bleibt beim Scrollen sichtbar */}
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border sticky top-0 z-20">
         <div className="flex items-center justify-between mb-3">
@@ -1346,6 +1353,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
         flow="v1" 
         isReady={true}
         metadata={{ variant: "v1-chatgpt-improvements" }}
+      />
+      
+      {/* SCORE OPTIMIZATION: Sticky Mobile CTA - always visible on mobile */}
+      <V1StickyMobileCTA
+        currentStep={currentStep}
+        totalSteps={totalSteps}
+        canProceed={canProceed()}
+        onPrimaryClick={currentStep === totalSteps ? handleSubmit : handleNext}
+        onBackClick={currentStep > 1 ? handleBack : undefined}
+        primaryLabel={currentStep === totalSteps ? "Offerten erhalten" : undefined}
       />
     </div>
   );
