@@ -75,7 +75,7 @@ Antworte auf Deutsch und halte dich kurz und prägnant.`;
             'Authorization': `Bearer ${openaiApiKey}`,
           },
           body: JSON.stringify({
-            model: 'gpt-4o-mini',
+            model: 'gpt-4o',
             messages: [
               {
                 role: 'user',
