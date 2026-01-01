@@ -38,6 +38,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
+import AiFixResultPanel from '@/components/admin/AiFixResultPanel';
 
 interface ElementAnalysis {
   elementType: string;
@@ -1519,6 +1520,13 @@ export default function FlowDeepAnalysis() {
                             Fix it
                           </Button>
                         </div>
+                        
+                        {/* AI Fix Result Mini Preview */}
+                        <AiFixResultPanel 
+                          flowId={analysis.flowId} 
+                          currentScore={analysis.overallScore}
+                          onReanalyze={() => runDeepAnalysis(true)}
+                        />
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -1590,6 +1598,15 @@ export default function FlowDeepAnalysis() {
                         )}
                         AI Auto-Fix generieren
                       </Button>
+                      
+                      {/* AI Fix Result Panel */}
+                      <div className="mt-4">
+                        <AiFixResultPanel 
+                          flowId={selectedAnalysis.flowId} 
+                          currentScore={selectedAnalysis.overallScore}
+                          onReanalyze={() => runDeepAnalysis(true)}
+                        />
+                      </div>
                     </CardContent>
                   </Card>
 
