@@ -45,6 +45,7 @@ import { supabase } from '@/integrations/supabase/client';
 import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
 import AiFixResultPanel from '@/components/admin/AiFixResultPanel';
 import FlowRankingCard from '@/components/admin/FlowRankingCard';
+import WinnerShowcase from '@/components/admin/WinnerShowcase';
 import { cn } from '@/lib/utils';
 import { useLiveFlowAnalysis, type LiveFlowScore } from '@/hooks/use-live-flow-analysis';
 
@@ -1130,85 +1131,22 @@ ${issues.map((issue, idx) => `${idx + 1}. **${issue.category}**: ${issue.descrip
         )}
 
         {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* WINNER VIEW */}
+        {/* WINNER VIEW - New Ultimate Showcase */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         {activeView === 'winner' && synthesis && (
-          <div className="space-y-6">
-            {/* Winner Card */}
-            <Card className="border-2 border-yellow-500/50 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20">
-              <CardContent className="py-8">
-                <div className="flex items-center justify-center gap-6 flex-wrap">
-                  <div className="w-24 h-24 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                    <Trophy className="h-12 w-12 text-yellow-500" />
-                  </div>
-                  <div className="text-center">
-                    <div className="text-sm text-yellow-600 font-medium">GEWINNER</div>
-                    <h2 className="text-4xl font-bold">{synthesis.winner.flowId}</h2>
-                    <p className="text-muted-foreground">{synthesis.winner.flowName}</p>
-                  </div>
-                  <ScoreRing score={synthesis.winner.totalScore} size="lg" label="Score" />
-                </div>
-                <Separator className="my-6" />
-                <p className="text-center max-w-2xl mx-auto text-muted-foreground">{synthesis.winner.reasoning}</p>
-              </CardContent>
-            </Card>
-
-            {/* Ranking */}
-            <Card>
-              <CardHeader><CardTitle className="flex items-center gap-2"><Medal className="h-5 w-5" />Ranking</CardTitle></CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {synthesis.ranking.map((item, i) => (
-                    <div key={item.flowId} className={cn('flex items-center gap-4 p-4 rounded-lg',
-                      i === 0 ? 'bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200' :
-                      i === 1 ? 'bg-gray-50 dark:bg-gray-950/20 border border-gray-200' :
-                      i === 2 ? 'bg-orange-50 dark:bg-orange-950/20 border border-orange-200' :
-                      'bg-muted/30'
-                    )}>
-                      <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold',
-                        i === 0 ? 'bg-yellow-500 text-white' :
-                        i === 1 ? 'bg-gray-400 text-white' :
-                        i === 2 ? 'bg-orange-500 text-white' :
-                        'bg-muted text-muted-foreground'
-                      )}>{item.position}</div>
-                      <div className="flex-1">
-                        <div className="font-bold">{item.flowId}</div>
-                        <div className="text-sm text-muted-foreground">
-                          <span className="text-green-600">✓ {item.keyStrength}</span>
-                          <span className="mx-2">•</span>
-                          <span className="text-yellow-600">⚠ {item.keyWeakness}</span>
-                        </div>
-                      </div>
-                      <ScoreRing score={item.score} size="sm" />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Best Elements */}
-            <Card>
-              <CardHeader><CardTitle className="flex items-center gap-2"><Star className="h-5 w-5" />Beste Elemente</CardTitle></CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {synthesis.bestElements.map((el, i) => (
-                    <Card key={i} className="border-primary/20">
-                      <CardContent className="pt-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <Badge>{el.element}</Badge>
-                          <Badge variant="outline">von {el.sourceFlow}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">{el.reason}</p>
-                        <div className="text-sm text-primary flex items-start gap-2">
-                          <Code className="h-4 w-4 mt-0.5 shrink-0" />{el.implementation}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <WinnerShowcase
+            synthesis={synthesis}
+            analyses={analyses}
+            onCloneWinner={(flowId) => {
+              toast({ title: 'Flow geklont', description: `${flowId} als Template erstellt.` });
+            }}
+            onNavigateToFlow={(flowId) => {
+              const config = FLOW_CONFIGS[flowId] || SUB_VARIANT_CONFIGS[flowId];
+              if (config) {
+                window.open(config.path, '_blank');
+              }
+            }}
+          />
         )}
 
         {/* ═══════════════════════════════════════════════════════════════ */}
