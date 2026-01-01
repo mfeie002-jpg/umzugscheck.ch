@@ -564,8 +564,13 @@ const FlowComparison = () => {
     setZoomDialogOpen(true);
   };
 
-  // Capture screenshot for a flow
-  const handleCaptureScreenshot = async (flowId: string, path: string) => {
+  // Capture screenshot for a flow (only if no screenshots exist)
+  const handleCaptureScreenshot = async (flowId: string, path: string, hasExisting: boolean) => {
+    if (hasExisting) {
+      toast.info('Screenshots vorhanden - nutze Download-Button');
+      return;
+    }
+    
     setCapturingFlow(flowId);
     setIsCapturing(true);
     
@@ -594,6 +599,16 @@ const FlowComparison = () => {
       setIsCapturing(false);
       setCapturingFlow(null);
     }
+  };
+
+  // Download existing screenshot
+  const handleDownloadScreenshot = (url: string, flowId: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `flow-${flowId}-screenshot.png`;
+    link.target = '_blank';
+    link.click();
+    toast.success('Screenshot wird heruntergeladen');
   };
 
   const handleLoadMore = () => {
@@ -628,33 +643,94 @@ const FlowComparison = () => {
     setIsBatchAnalyzing(false);
   };
 
-  // Capture screenshots for flows missing them
+  // Batch capture screenshots for flows missing them
   const [isBatchCapturing, setIsBatchCapturing] = useState(false);
-  const handleCaptureAllMissing = async () => {
+  const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
+  
+  const handleBatchCaptureAll = async () => {
     const flowsWithoutScreenshots = visibleFlows.filter(f => 
       f.screenshots.desktop.length === 0 && f.screenshots.mobile.length === 0
     );
     
     if (flowsWithoutScreenshots.length === 0) {
-      toast.info('Alle Flows haben bereits Screenshots');
+      toast.info('Alle sichtbaren Flows haben bereits Screenshots');
       return;
     }
     
     setIsBatchCapturing(true);
-    toast.info(`Starte Screenshot-Capture für ${flowsWithoutScreenshots.length} Flows...`);
+    setBatchProgress({ current: 0, total: flowsWithoutScreenshots.length });
     
-    try {
-      for (const flow of flowsWithoutScreenshots) {
-        await handleCaptureScreenshot(flow.id, flow.path);
-        // Small delay between captures
-        await new Promise(r => setTimeout(r, 1500));
+    let successCount = 0;
+    let failCount = 0;
+    
+    for (let i = 0; i < flowsWithoutScreenshots.length; i++) {
+      const flow = flowsWithoutScreenshots[i];
+      setBatchProgress({ current: i + 1, total: flowsWithoutScreenshots.length });
+      
+      try {
+        const fullUrl = `${window.location.origin}${flow.path}?uc_capture=1`;
+        const result = await captureScreenshot({
+          url: fullUrl,
+          dimension: '1920x1080',
+          delay: 5000,
+          format: 'png',
+        });
+        
+        if (result.success && result.image) {
+          const link = document.createElement('a');
+          link.href = result.image;
+          link.download = `flow-${flow.id}-${Date.now()}.png`;
+          link.click();
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch {
+        failCount++;
       }
-      toast.success(`${flowsWithoutScreenshots.length} Screenshots erstellt`);
-    } catch {
-      toast.error('Fehler beim Batch-Screenshot');
-    } finally {
-      setIsBatchCapturing(false);
+      
+      // Delay between captures
+      if (i < flowsWithoutScreenshots.length - 1) {
+        await new Promise(r => setTimeout(r, 2000));
+      }
     }
+    
+    setIsBatchCapturing(false);
+    setBatchProgress({ current: 0, total: 0 });
+    
+    if (failCount === 0) {
+      toast.success(`${successCount} Screenshots erfolgreich erstellt`);
+    } else {
+      toast.warning(`${successCount} erstellt, ${failCount} fehlgeschlagen`);
+    }
+  };
+  
+  // Download all existing screenshots as batch
+  const handleBatchDownload = () => {
+    const flowsWithScreenshots = visibleFlows.filter(f => 
+      f.screenshots.desktop.length > 0 || f.screenshots.mobile.length > 0
+    );
+    
+    if (flowsWithScreenshots.length === 0) {
+      toast.info('Keine Screenshots zum Herunterladen vorhanden');
+      return;
+    }
+    
+    let downloadCount = 0;
+    flowsWithScreenshots.forEach((flow, index) => {
+      setTimeout(() => {
+        if (flow.screenshots.desktop[0]) {
+          const link = document.createElement('a');
+          link.href = flow.screenshots.desktop[0];
+          link.download = `flow-${flow.id}-desktop.png`;
+          link.target = '_blank';
+          link.click();
+          downloadCount++;
+        }
+      }, index * 300);
+    });
+    
+    toast.success(`${flowsWithScreenshots.length} Screenshots werden heruntergeladen`);
   };
 
   const handleExportData = () => {
@@ -977,7 +1053,8 @@ const FlowComparison = () => {
                     onToggleCompare={() => toggleCompare(flow.id)}
                     onOpenNote={() => openNoteDialog(flow.id)}
                     onZoomImage={openZoom}
-                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path)}
+                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path, flow.screenshots.desktop.length > 0)}
+                    onDownloadScreenshot={(url) => handleDownloadScreenshot(url, flow.id)}
                     isCapturing={capturingFlow === flow.id}
                     hasNote={!!notes[flow.id]}
                   />
@@ -997,7 +1074,8 @@ const FlowComparison = () => {
                     isFavorite={favorites.has(flow.id)}
                     onToggleFavorite={() => toggleFavorite(flow.id)}
                     onZoomImage={openZoom}
-                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path)}
+                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path, flow.screenshots.desktop.length > 0)}
+                    onDownloadScreenshot={(url) => handleDownloadScreenshot(url, flow.id)}
                     isCapturing={capturingFlow === flow.id}
                   />
                 ))}
@@ -1137,11 +1215,23 @@ const FlowComparison = () => {
                 variant="secondary" 
                 size="sm" 
                 className="gap-1.5" 
-                onClick={handleCaptureAllMissing}
+                onClick={handleBatchCaptureAll}
                 disabled={isBatchCapturing}
               >
                 <ImagePlus className={`h-4 w-4 ${isBatchCapturing ? 'animate-spin' : ''}`} />
-                {isBatchCapturing ? 'Capturing...' : 'Screenshots nachholen'}
+                {isBatchCapturing 
+                  ? `Capture ${batchProgress.current}/${batchProgress.total}...` 
+                  : `Screenshots erstellen (${visibleFlows.filter(f => f.screenshots.desktop.length === 0).length} fehlen)`}
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={handleBatchDownload}
+                disabled={visibleFlows.filter(f => f.screenshots.desktop.length > 0).length === 0}
+              >
+                <Download className="h-4 w-4" />
+                Alle downloaden ({visibleFlows.filter(f => f.screenshots.desktop.length > 0).length})
               </Button>
               <Link to="/admin/tools?tab=flow-automation&mode=ai-fix">
                 <Button variant="outline" size="sm" className="gap-1.5">
@@ -1352,6 +1442,7 @@ interface FlowCardProps {
   onOpenNote: () => void;
   onZoomImage: (url: string) => void;
   onCaptureScreenshot: () => void;
+  onDownloadScreenshot: (url: string) => void;
   isCapturing: boolean;
   hasNote: boolean;
 }
@@ -1374,6 +1465,7 @@ const FlowCard = ({
   onOpenNote,
   onZoomImage,
   onCaptureScreenshot,
+  onDownloadScreenshot,
   isCapturing,
   hasNote,
 }: FlowCardProps) => {
@@ -1519,9 +1611,15 @@ const FlowCard = ({
           <Button size="sm" variant="outline" onClick={onCopyUrl} title="URL kopieren">
             <Copy className="h-3.5 w-3.5" />
           </Button>
-          <Button size="sm" variant="outline" onClick={onCaptureScreenshot} disabled={isCapturing} title="Screenshot erstellen">
-            {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
-          </Button>
+          {hasScreenshots ? (
+            <Button size="sm" variant="outline" onClick={() => onDownloadScreenshot(screenshots[currentScreenshot])} title="Screenshot downloaden">
+              <Download className="h-3.5 w-3.5" />
+            </Button>
+          ) : (
+            <Button size="sm" variant="outline" onClick={onCaptureScreenshot} disabled={isCapturing} title="Screenshot erstellen">
+              {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
+            </Button>
+          )}
           <Button size="sm" variant="outline" onClick={() => hasScreenshots && onZoomImage(screenshots[currentScreenshot])} disabled={!hasScreenshots} title="Zoom">
             <ZoomIn className="h-3.5 w-3.5" />
           </Button>
@@ -1590,6 +1688,7 @@ interface FlowListItemProps {
   onToggleFavorite: () => void;
   onZoomImage: (url: string) => void;
   onCaptureScreenshot: () => void;
+  onDownloadScreenshot: (url: string) => void;
   isCapturing: boolean;
 }
 
@@ -1604,8 +1703,10 @@ const FlowListItem = ({
   onToggleFavorite,
   onZoomImage,
   onCaptureScreenshot,
+  onDownloadScreenshot,
   isCapturing,
 }: FlowListItemProps) => {
+  const hasScreenshots = flow.screenshots.desktop.length > 0;
   return (
     <Card className="p-3">
       <div className="flex items-center gap-3">
@@ -1661,10 +1762,20 @@ const FlowListItem = ({
         </div>
         
         {/* Actions */}
+        {/* Actions */}
         <div className="flex items-center gap-1 flex-shrink-0">
           <Button size="sm" variant="ghost" onClick={onCopyUrl} title="URL kopieren">
             <Copy className="h-3.5 w-3.5" />
           </Button>
+          {hasScreenshots ? (
+            <Button size="sm" variant="ghost" onClick={() => onDownloadScreenshot(flow.screenshots.desktop[0])} title="Screenshot downloaden">
+              <Download className="h-3.5 w-3.5" />
+            </Button>
+          ) : (
+            <Button size="sm" variant="ghost" onClick={onCaptureScreenshot} disabled={isCapturing} title="Screenshot erstellen">
+              {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
+            </Button>
+          )}
           <Button size="sm" variant="ghost" onClick={onRunAnalysis} title="Analysieren">
             <Play className="h-3.5 w-3.5" />
           </Button>
