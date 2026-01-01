@@ -4,12 +4,18 @@ on:
   push:
     branches:
       - main
-      - loop/**    # alle deine Loop-Branches
+      - loop/**   # alle deine Loop-Branches
   pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: development
+      # Falls beim Build ENV-Variablen erwartet werden:
+      SUPABASE_URL: ""
+      SUPABASE_KEY: ""
 
     steps:
       - name: Checkout repo
@@ -19,10 +25,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
-      - name: Install deps
-        run: npm ci
+      - name: Install dependencies
+        run: npm install --force
 
       - name: Build
         run: npm run build
+
+
+
+
+        
+        
