@@ -336,25 +336,61 @@ Antworte IMMER im JSON-Format.`
       };
     }
 
-    // Store the ultimate flow variant
+    // Store the ultimate flow variant (upsert to handle duplicates)
     const flowCode = ultimateFlowResult.ultimateFlow?.flowCode || `ultimate-${flowVersion}-${Date.now()}`;
+    const variantName = ultimateFlowResult.ultimateFlow?.name || `Ultimate Flow ${flowVersion.toUpperCase()}`;
+    const flowIdKey = `ultimate-${flowVersion}`;
     
-    const { data: variant, error: insertError } = await supabase
+    // First check if variant exists
+    const { data: existingVariant } = await supabase
       .from('flow_feedback_variants')
-      .insert({
-        flow_id: `ultimate-${flowVersion}`,
-        variant_name: ultimateFlowResult.ultimateFlow?.name || `Ultimate Flow ${flowVersion.toUpperCase()}`,
-        variant_label: flowCode,
-        prompt: `Ultimate Flow: Kombination der besten Elemente aus ${analyses.length} Flows`,
-        status: 'done',
-        executed_at: new Date().toISOString(),
-        result_json: ultimateFlowResult,
-      })
-      .select()
-      .single();
+      .select('id')
+      .eq('flow_id', flowIdKey)
+      .eq('variant_name', variantName)
+      .maybeSingle();
+    
+    let variant;
+    let variantError;
+    
+    if (existingVariant) {
+      // Update existing
+      const { data, error } = await supabase
+        .from('flow_feedback_variants')
+        .update({
+          variant_label: flowCode,
+          prompt: `Ultimate Flow: Kombination der besten Elemente aus ${analyses.length} Flows`,
+          status: 'done',
+          executed_at: new Date().toISOString(),
+          result_json: ultimateFlowResult,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existingVariant.id)
+        .select()
+        .single();
+      variant = data;
+      variantError = error;
+      log.info('Updating existing variant', { id: existingVariant.id });
+    } else {
+      // Insert new
+      const { data, error } = await supabase
+        .from('flow_feedback_variants')
+        .insert({
+          flow_id: flowIdKey,
+          variant_name: variantName,
+          variant_label: flowCode,
+          prompt: `Ultimate Flow: Kombination der besten Elemente aus ${analyses.length} Flows`,
+          status: 'done',
+          executed_at: new Date().toISOString(),
+          result_json: ultimateFlowResult,
+        })
+        .select()
+        .single();
+      variant = data;
+      variantError = error;
+    }
 
-    if (insertError) {
-      log.error('Error storing variant', insertError);
+    if (variantError) {
+      log.error('Error storing variant', variantError);
     } else {
       log.success('Ultimate Flow variant stored', { id: variant?.id });
     }
