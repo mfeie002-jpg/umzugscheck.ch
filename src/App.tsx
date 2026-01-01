@@ -229,6 +229,8 @@ const UmzugsoffertenV1b = lazy(() => import("./pages/UmzugsoffertenV1b"));
 const UmzugsoffertenV1c = lazy(() => import("./pages/UmzugsoffertenV1c"));
 const UmzugsoffertenV1d = lazy(() => import("./pages/UmzugsoffertenV1d"));
 const UmzugsoffertenV1e = lazy(() => import("./pages/UmzugsoffertenV1e"));
+const UmzugsoffertenV1f = lazy(() => import("./pages/UmzugsoffertenV1f"));
+const UmzugsoffertenV1g = lazy(() => import("./pages/UmzugsoffertenV1g"));
 const UmzugsoffertenV2e = lazy(() => import("./pages/UmzugsoffertenV2e"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 import FlowTester from "./pages/FlowTester";
@@ -585,6 +587,8 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1c" element={<UmzugsoffertenV1c />} />
           <Route path="/umzugsofferten-v1d" element={<UmzugsoffertenV1d />} />
           <Route path="/umzugsofferten-v1e" element={<UmzugsoffertenV1e />} />
+          <Route path="/umzugsofferten-v1f" element={<UmzugsoffertenV1f />} />
+          <Route path="/umzugsofferten-v1g" element={<UmzugsoffertenV1g />} />
 
           {/* Main V2+ flows (public URLs used by screenshot tooling) */}
           <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
