@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const body: IssueFixRequest = await req.json();
@@ -63,19 +63,19 @@ Antworte auf Deutsch und halte dich kurz und prägnant.`;
 
     let fixSuggestion = '';
     
-    // Try Lovable AI Gateway first (correct endpoint)
-    if (lovableApiKey) {
-      console.log('Calling Lovable AI Gateway for fix suggestion...');
+    // Use OpenAI API
+    if (openaiApiKey) {
+      console.log('Calling OpenAI API for fix suggestion...');
       
       try {
-        const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${lovableApiKey}`,
+            'Authorization': `Bearer ${openaiApiKey}`,
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
+            model: 'gpt-4o-mini',
             messages: [
               {
                 role: 'user',
@@ -90,30 +90,23 @@ Antworte auf Deutsch und halte dich kurz und prägnant.`;
         if (aiResponse.ok) {
           const aiResult = await aiResponse.json();
           fixSuggestion = aiResult.choices?.[0]?.message?.content || '';
-          console.log('AI generated fix suggestion:', fixSuggestion.substring(0, 200) + '...');
+          console.log('OpenAI generated fix suggestion:', fixSuggestion.substring(0, 200) + '...');
         } else {
           const errorText = await aiResponse.text();
-          console.warn('Lovable AI call failed:', aiResponse.status, errorText);
+          console.warn('OpenAI API call failed:', aiResponse.status, errorText);
           
-          // Handle rate limits
           if (aiResponse.status === 429) {
             return new Response(
               JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
               { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
             );
           }
-          if (aiResponse.status === 402) {
-            return new Response(
-              JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }),
-              { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            );
-          }
         }
       } catch (aiError) {
-        console.error('AI call error:', aiError);
+        console.error('OpenAI API call error:', aiError);
       }
     } else {
-      console.warn('LOVABLE_API_KEY not configured');
+      console.warn('OPENAI_API_KEY not configured');
     }
     
     // Fallback if AI didn't return a response
