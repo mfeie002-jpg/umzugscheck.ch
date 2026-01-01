@@ -46,6 +46,7 @@ import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
 import AiFixResultPanel from '@/components/admin/AiFixResultPanel';
 import FlowRankingCard from '@/components/admin/FlowRankingCard';
 import WinnerShowcase from '@/components/admin/WinnerShowcase';
+import ImprovementReportPanel from '@/components/admin/ImprovementReportPanel';
 import { cn } from '@/lib/utils';
 import { useLiveFlowAnalysis, type LiveFlowScore } from '@/hooks/use-live-flow-analysis';
 
@@ -386,8 +387,13 @@ export default function FlowAnalysisHub() {
     scores: liveScores, 
     isAnalyzing: isLiveAnalyzing, 
     lastUpdate: liveLastUpdate,
-    analyzeAllFlows: refreshLiveAnalysis 
+    analyzeAllFlows: refreshLiveAnalysis,
+    improvementHistory,
+    runNumber,
   } = useLiveFlowAnalysis();
+  
+  const [showImprovementReport, setShowImprovementReport] = useState(false);
+  const [latestReports, setLatestReports] = useState<typeof improvementHistory>([]);
   
   // Toggle between live and cached scores
   const [useLiveScores, setUseLiveScores] = useState(true);

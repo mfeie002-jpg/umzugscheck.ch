@@ -922,14 +922,17 @@ export default function FlowRankingCard({
     staleTime: 5 * 60 * 1000,
   });
   
-  // ─── Auto-advance (GIF-like animation) ─────────────────────
+  // Slideshow speed control - slower default, pausable
+  const [slideSpeed, setSlideSpeed] = useState(4000); // 4 seconds default (was 2.5)
+  
+  // ─── Auto-advance (GIF-like animation) - with pause control ─────────────────────
   useEffect(() => {
-    if (!isPlaying || steps.length === 0) return;
+    if (!isPlaying || steps.length === 0 || showFullscreen) return; // Pause when fullscreen
     const interval = setInterval(() => {
       setActiveStep(prev => prev >= steps.length ? 1 : prev + 1);
-    }, 2500);
+    }, slideSpeed);
     return () => clearInterval(interval);
-  }, [isPlaying, steps.length]);
+  }, [isPlaying, steps.length, slideSpeed, showFullscreen]);
   
   // ─── Screenshot Actions ────────────────────────────────────
   const handleScreenshotAction = useCallback(async (action: string, stepNumber: number) => {
