@@ -57,7 +57,7 @@ export function StickyFooterCTA({
           <Button
             variant="ghost"
             onClick={onSecondary}
-            className="w-full h-11"
+            className="w-full h-12 min-h-[48px] text-base"
             disabled={loading}
           >
             {secondaryLabel}

@@ -14,10 +14,12 @@ const navItems = [
 ];
 
 // Paths where we hide the mobile bottom navigation to avoid overlap with funnels
+// All calculator/funnel flows have their own sticky footer CTAs
 const HIDDEN_PATHS = [
-  '/umzugsofferten-v2e',
-  '/umzugsofferten-v1a',
-  '/umzugsofferten',
+  '/umzugsofferten',  // All /umzugsofferten variants
+  '/umzugsrechner',   // Calculator page
+  '/god-mode',        // God mode calculator
+  '/flow-tester',     // Flow testing
 ];
 
 export const MobileBottomNav = () => {
