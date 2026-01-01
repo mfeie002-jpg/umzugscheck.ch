@@ -440,9 +440,23 @@ async function runExport(
       const mobileFolder = screenshotsFolder?.folder('mobile');
       const desktopFolder = screenshotsFolder?.folder('desktop');
 
-      for (let i = 0; i < Math.min(stepUrls.length, 8); i++) {
+      const maxSteps = Math.min(stepUrls.length, 8);
+      for (let i = 0; i < maxSteps; i++) {
         const stepUrl = stepUrls[i];
         console.log(`Capturing screenshots for step ${stepUrl.number}`);
+
+        // Calculate granular progress: flow progress + step progress within flow
+        const flowBaseProgress = (processedFlows / totalFlows) * 100;
+        const stepProgress = ((i + 1) / maxSteps) * (100 / totalFlows) * 0.8; // 80% for screenshots
+        const currentProgress = Math.round(flowBaseProgress + stepProgress);
+        
+        await supabase
+          .from('export_jobs')
+          .update({
+            progress: currentProgress,
+            progress_message: `${flow.variant_name}: Screenshot Step ${stepUrl.number}/${maxSteps}...`,
+          })
+          .eq('id', jobId);
 
         if (captureMobile) {
           const mobileImg = await captureScreenshot(supabase, stepUrl.url, '375x812');
