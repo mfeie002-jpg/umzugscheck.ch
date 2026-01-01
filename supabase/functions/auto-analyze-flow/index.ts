@@ -646,8 +646,30 @@ serve(async (req) => {
 
     console.log(`Starting analysis for flow: ${flowId}`);
 
-    // Validate flow
-    const flowConfig = FLOW_CONFIGS[flowId];
+    // Validate flow - check FLOW_CONFIGS first
+    let flowConfig = FLOW_CONFIGS[flowId];
+    let resolvedFlowId = flowId;
+    
+    // If not found, check if it's a flow_feedback_variant (Ultimate Flow)
+    if (!flowConfig) {
+      console.log(`Flow "${flowId}" not in FLOW_CONFIGS, checking flow_feedback_variants...`);
+      
+      // Check if this is a generated Ultimate Flow variant
+      const { data: variant } = await supabase
+        .from('flow_feedback_variants')
+        .select('flow_id, variant_name')
+        .eq('variant_label', flowId)
+        .single();
+      
+      if (variant && variant.flow_id) {
+        // Map to the base flow (e.g., "v1" from "ultimate-v1-swiss-archetype")
+        const baseFlowId = variant.flow_id;
+        flowConfig = FLOW_CONFIGS[baseFlowId];
+        resolvedFlowId = baseFlowId;
+        console.log(`Resolved Ultimate variant "${flowId}" to base flow "${baseFlowId}"`);
+      }
+    }
+    
     if (!flowConfig) {
       console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
       return new Response(
@@ -662,10 +684,11 @@ serve(async (req) => {
     console.log(`Flow config found: ${flowConfig.name} with ${flowConfig.steps} steps`);
 
     // Create analysis run BEFORE starting background task
+    // Store both the original flowId (for display) and resolvedFlowId (for analysis)
     const { data: run, error: runError } = await supabase
       .from('flow_analysis_runs')
       .insert({
-        flow_id: flowId,
+        flow_id: flowId, // Keep original ID for tracking
         flow_name: flowConfig.name,
         run_type: runType,
         status: 'running',
@@ -680,12 +703,12 @@ serve(async (req) => {
       throw new Error('Failed to create analysis run');
     }
 
-    console.log(`Created run: ${run.id} - starting background analysis`);
+    console.log(`Created run: ${run.id} - starting background analysis for resolved flow: ${resolvedFlowId}`);
 
     // Start background analysis using EdgeRuntime.waitUntil
-    // This allows us to return immediately while the analysis continues
+    // Use resolvedFlowId for the actual analysis (correct URLs)
     (globalThis as any).EdgeRuntime?.waitUntil?.(
-      runAnalysisInBackground(supabase, flowId, flowConfig, runType, baseUrl, run.id)
+      runAnalysisInBackground(supabase, resolvedFlowId, flowConfig, runType, baseUrl, run.id)
     );
 
     // Return immediately with the run ID - client can poll for status
@@ -695,6 +718,7 @@ serve(async (req) => {
         message: 'Analysis started in background',
         runId: run.id,
         flowId,
+        resolvedFlowId,
         flowName: flowConfig.name,
         status: 'running',
         totalSteps: flowConfig.steps,
