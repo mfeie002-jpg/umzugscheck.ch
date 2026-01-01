@@ -48,6 +48,7 @@ export { V5aHighContrast } from './V5aHighContrast';
 export { V5bScreenReader } from './V5bScreenReader';
 export { V5cKeyboardNav } from './V5cKeyboardNav';
 export { V5dLargeText } from './V5dLargeText';
+export { V5dFeedbackBased } from './V5dFeedbackBased';
 export { V5eReducedMotion } from './V5eReducedMotion';
 export { V5fFeedbackBased } from './V5fFeedbackBased';
 
@@ -110,7 +111,8 @@ export const VARIANT_REGISTRY: Record<string, {
   'v5a': { component: 'V5aHighContrast', stepCount: 4, label: 'V5a High Contrast' },
   'v5b': { component: 'V5bScreenReader', stepCount: 3, label: 'V5b Screen Reader' },
   'v5c': { component: 'V5cKeyboardNav', stepCount: 3, label: 'V5c Keyboard Nav' },
-  'v5d': { component: 'V5dLargeText', stepCount: 3, label: 'V5d Large Text' },
+  'v5d-legacy': { component: 'V5dLargeText', stepCount: 3, label: 'V5d Large Text' },
+  'v5d': { component: 'V5dFeedbackBased', stepCount: 5, label: 'V5d ChatGPT Feedback' },
   'v5e': { component: 'V5eReducedMotion', stepCount: 3, label: 'V5e Reduced Motion' },
   'v5f': { component: 'V5fFeedbackBased', stepCount: 3, label: 'V5f Marketplace (Feedback)' },
   // V6 - Ultimate 6-Tier
