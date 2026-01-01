@@ -313,7 +313,17 @@ async function captureScreenshot(
       return null;
     }
 
-    return data.image;
+    // Extract base64 from data URL if present (format: "data:image/png;base64,...")
+    const imageData = data.image;
+    if (imageData.startsWith('data:')) {
+      const base64Match = imageData.match(/^data:image\/\w+;base64,(.+)$/);
+      if (base64Match) {
+        return base64Match[1];
+      }
+    }
+    
+    // Already pure base64
+    return imageData;
   } catch (e) {
     console.error('Screenshot capture failed:', e);
     return null;
