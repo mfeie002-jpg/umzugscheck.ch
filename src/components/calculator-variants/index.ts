@@ -18,6 +18,8 @@ export { V1bFeedbackBased } from './V1bFeedbackBased';
 export { V1cFeedbackBased } from './V1cFeedbackBased';
 export { V1dFeedbackBased } from './V1dFeedbackBased';
 export { V1eFeedbackBased } from './V1eFeedbackBased';
+export { V1fStickyCTATrust } from './V1fStickyCTATrust';
+export { V1gInputUX } from './V1gInputUX';
 
 // V2 Variants (UX-Optimized)
 export { V2aProgressEnhanced } from './V2aProgressEnhanced';
@@ -80,12 +82,14 @@ export const VARIANT_REGISTRY: Record<string, {
   label: string;
 }> = {
   // V1 - Control Flow
-  'v1': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1 Control' },
+  'v1': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1 Control (Baseline)' },
   'v1a': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1a Control (Feedback)' },
   'v1b': { component: 'V1bFeedbackBased', stepCount: 4, label: 'V1b ChatGPT Agent' },
   'v1c': { component: 'V1cFeedbackBased', stepCount: 4, label: 'V1c Archetyp (Strategic)' },
   'v1d': { component: 'V1dFeedbackBased', stepCount: 4, label: 'V1d Optimized Funnel' },
   'v1e': { component: 'V1eFeedbackBased', stepCount: 4, label: 'V1e Trust Enhanced' },
+  'v1f': { component: 'V1fStickyCTATrust', stepCount: 2, label: 'V1f Sticky CTA + Trust Pills ⭐' },
+  'v1g': { component: 'V1gInputUX', stepCount: 2, label: 'V1g Input UX + Validation ⭐' },
   // V2 - UX Optimized (Gemini/ChatGPT Feedback Series)
   'v2': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2 Baseline' },
   'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Gemini Feedback' },
