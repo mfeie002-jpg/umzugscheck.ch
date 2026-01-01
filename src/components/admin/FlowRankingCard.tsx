@@ -29,7 +29,8 @@ import {
   Trash2, Edit3, Save, X, Download, Maximize2, ZoomIn, ZoomOut, Copy,
   MessageSquare, History, Tag, Layers, Sparkles, FileText, Archive,
   Settings, MoreHorizontal, Check, Pencil, Plus, RotateCcw, Image,
-  Clock, TrendingUp, Lightbulb, Wand2, Loader2, Send, ThumbsUp, ThumbsDown
+  Clock, TrendingUp, Lightbulb, Wand2, Loader2, Send, ThumbsUp, ThumbsDown,
+  Monitor
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -269,33 +270,55 @@ const ScreenshotMenu = ({
   </DropdownMenu>
 );
 
-// Fullscreen Image Viewer
+// Fullscreen Image Viewer with Slider
 const FullscreenViewer = ({ 
-  screenshot, 
+  screenshots,
   isOpen, 
   onClose,
   onNext,
   onPrev,
   currentStep,
+  setCurrentStep,
   totalSteps,
   annotations,
-  onAddAnnotation
+  onAddAnnotation,
+  viewMode,
+  setViewMode
 }: {
-  screenshot: ScreenshotData | null;
+  screenshots: ScreenshotData[];
   isOpen: boolean;
   onClose: () => void;
   onNext: () => void;
   onPrev: () => void;
   currentStep: number;
+  setCurrentStep: (step: number) => void;
   totalSteps: number;
   annotations: Annotation[];
   onAddAnnotation: (annotation: Omit<Annotation, 'id' | 'createdAt'>) => void;
+  viewMode: 'desktop' | 'mobile';
+  setViewMode: (mode: 'desktop' | 'mobile') => void;
 }) => {
   const [zoom, setZoom] = useState(1);
   const [isAddingAnnotation, setIsAddingAnnotation] = useState(false);
   const [annotationType, setAnnotationType] = useState<'issue' | 'idea' | 'note'>('note');
   const [annotationText, setAnnotationText] = useState('');
   const imageRef = useRef<HTMLDivElement>(null);
+
+  const currentScreenshot = screenshots.find(s => s.stepNumber === currentStep) || screenshots[currentStep - 1];
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'ArrowRight') onNext();
+      if (e.key === 'Escape') onClose();
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onPrev, onNext, onClose]);
 
   const handleImageClick = (e: React.MouseEvent) => {
     if (!isAddingAnnotation || !imageRef.current) return;
@@ -316,20 +339,48 @@ const FullscreenViewer = ({
     }
   };
 
-  if (!isOpen || !screenshot) return null;
+  if (!isOpen) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full p-0">
-        <div className="relative w-full h-full flex flex-col">
+      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 overflow-hidden">
+        <div className="relative w-full h-full flex flex-col bg-background">
           {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b bg-background">
+          <div className="flex items-center justify-between p-3 border-b bg-background z-10">
             <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="h-5 w-5" />
+              </Button>
               <span className="font-semibold">Step {currentStep} / {totalSteps}</span>
-              <Badge variant="outline" className="text-xs">
-                Qualität: {screenshot.quality || 'N/A'}%
-              </Badge>
+              {currentScreenshot && (
+                <Badge variant="outline" className="text-xs">
+                  Qualität: {currentScreenshot.quality || 'N/A'}%
+                </Badge>
+              )}
             </div>
+            
+            {/* Desktop / Mobile Toggle */}
+            <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
+              <Button
+                variant={viewMode === 'desktop' ? 'default' : 'ghost'}
+                size="sm"
+                className="h-7 text-xs px-3"
+                onClick={() => setViewMode('desktop')}
+              >
+                <Monitor className="h-3.5 w-3.5 mr-1" />
+                Desktop
+              </Button>
+              <Button
+                variant={viewMode === 'mobile' ? 'default' : 'ghost'}
+                size="sm"
+                className="h-7 text-xs px-3"
+                onClick={() => setViewMode('mobile')}
+              >
+                <Smartphone className="h-3.5 w-3.5 mr-1" />
+                Mobile
+              </Button>
+            </div>
+            
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))}>
                 <ZoomOut className="h-4 w-4" />
@@ -356,7 +407,7 @@ const FullscreenViewer = ({
               <select 
                 value={annotationType}
                 onChange={(e) => setAnnotationType(e.target.value as any)}
-                className="text-xs border rounded px-2 py-1"
+                className="text-xs border rounded px-2 py-1 bg-background"
               >
                 <option value="note">📝 Notiz</option>
                 <option value="issue">⚠️ Issue</option>
@@ -371,56 +422,116 @@ const FullscreenViewer = ({
             </div>
           )}
           
-          {/* Image */}
-          <div className="flex-1 relative overflow-auto bg-muted/50 flex items-center justify-center">
-            <div 
-              ref={imageRef}
-              className={cn("relative", isAddingAnnotation && "cursor-crosshair")}
-              style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
-              onClick={handleImageClick}
-            >
-              <img 
-                src={screenshot.url} 
-                alt={`Step ${currentStep}`}
-                className="max-w-full max-h-[80vh] object-contain"
-              />
-              {/* Annotations */}
-              {annotations.filter(a => a.stepNumber === currentStep).map(a => (
-                <div
-                  key={a.id}
+          {/* Main Image Area with Slider */}
+          <div className="flex-1 relative overflow-hidden bg-muted/30 flex items-center justify-center">
+            {currentScreenshot ? (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${currentStep}-${viewMode}`}
+                  ref={imageRef}
                   className={cn(
-                    "absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer",
-                    a.type === 'issue' ? 'bg-red-500' :
-                    a.type === 'idea' ? 'bg-yellow-500' :
-                    'bg-blue-500'
+                    "relative flex items-center justify-center",
+                    isAddingAnnotation && "cursor-crosshair"
                   )}
-                  style={{ left: `${a.x}%`, top: `${a.y}%` }}
-                  title={a.text}
+                  style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
+                  onClick={handleImageClick}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  {a.type === 'issue' ? '!' : a.type === 'idea' ? '💡' : '📝'}
-                </div>
-              ))}
-            </div>
+                  <img 
+                    src={currentScreenshot.url} 
+                    alt={`Step ${currentStep}`}
+                    className={cn(
+                      "object-contain shadow-2xl rounded-lg",
+                      viewMode === 'mobile' 
+                        ? "max-h-[75vh] max-w-[40vw]" 
+                        : "max-h-[75vh] max-w-[85vw]"
+                    )}
+                  />
+                  {/* Annotations */}
+                  {annotations.filter(a => a.stepNumber === currentStep).map(a => (
+                    <div
+                      key={a.id}
+                      className={cn(
+                        "absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer shadow-lg",
+                        a.type === 'issue' ? 'bg-red-500' :
+                        a.type === 'idea' ? 'bg-yellow-500' :
+                        'bg-blue-500'
+                      )}
+                      style={{ left: `${a.x}%`, top: `${a.y}%` }}
+                      title={a.text}
+                    >
+                      {a.type === 'issue' ? '!' : a.type === 'idea' ? '💡' : '📝'}
+                    </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            ) : (
+              <div className="flex flex-col items-center gap-4 text-muted-foreground">
+                <ImageOff className="h-16 w-16" />
+                <span>Kein Screenshot für Step {currentStep} verfügbar</span>
+              </div>
+            )}
             
-            {/* Navigation */}
+            {/* Navigation Arrows */}
             <Button 
-              variant="ghost" 
+              variant="secondary" 
               size="icon"
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white h-12 w-12"
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full shadow-lg"
               onClick={onPrev}
               disabled={currentStep === 1}
             >
               <ChevronLeft className="h-8 w-8" />
             </Button>
             <Button 
-              variant="ghost" 
+              variant="secondary" 
               size="icon"
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white h-12 w-12"
+              className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full shadow-lg"
               onClick={onNext}
               disabled={currentStep === totalSteps}
             >
               <ChevronRight className="h-8 w-8" />
             </Button>
+          </div>
+          
+          {/* Thumbnail Strip at Bottom */}
+          <div className="p-3 border-t bg-background">
+            <ScrollArea className="w-full">
+              <div className="flex gap-2 justify-center">
+                {Array.from({ length: totalSteps }, (_, i) => {
+                  const stepNum = i + 1;
+                  const stepScreenshot = screenshots.find(s => s.stepNumber === stepNum) || screenshots[i];
+                  const isActive = currentStep === stepNum;
+                  
+                  return (
+                    <button
+                      key={stepNum}
+                      onClick={() => setCurrentStep(stepNum)}
+                      className={cn(
+                        "flex-shrink-0 rounded-lg overflow-hidden transition-all border-2",
+                        isActive 
+                          ? "border-primary ring-2 ring-primary/30" 
+                          : "border-transparent hover:border-muted-foreground/30"
+                      )}
+                    >
+                      {stepScreenshot ? (
+                        <img 
+                          src={stepScreenshot.url}
+                          alt={`Step ${stepNum}`}
+                          className="w-16 h-10 object-cover object-top"
+                        />
+                      ) : (
+                        <div className="w-16 h-10 bg-muted flex items-center justify-center">
+                          <span className="text-xs text-muted-foreground">{stepNum}</span>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </DialogContent>
@@ -603,7 +714,9 @@ const AnimatedPreview = ({
   isPlaying,
   onScreenshotAction,
   isLoading,
-  annotations
+  annotations,
+  onImageClick,
+  viewMode
 }: { 
   screenshots: ScreenshotData[];
   steps: FlowStepConfig[];
@@ -614,31 +727,55 @@ const AnimatedPreview = ({
   onScreenshotAction: (action: 'reload' | 'replace' | 'delete' | 'note' | 'tag' | 'history', stepNumber: number) => void;
   isLoading: boolean;
   annotations: Annotation[];
+  onImageClick: () => void;
+  viewMode: 'desktop' | 'mobile';
 }) => {
   const hasScreenshots = screenshots.length > 0;
   const currentScreenshot = screenshots.find(s => s.stepNumber === activeStep) || screenshots[activeStep - 1];
   
+  // Get the right screenshot URL based on view mode
+  const getScreenshotUrl = (screenshot: ScreenshotData) => {
+    // In real implementation, we'd have separate desktop/mobile URLs
+    // For now, simulate by using the available URL
+    return screenshot.url;
+  };
+  
   if (hasScreenshots && currentScreenshot) {
     return (
-      <div className="relative w-full aspect-[16/10] bg-muted rounded-lg overflow-hidden group">
+      <div className={cn(
+        "relative bg-muted rounded-lg overflow-hidden group cursor-pointer transition-all",
+        viewMode === 'mobile' ? "w-32 aspect-[9/16] mx-auto" : "w-full aspect-[16/10]"
+      )}>
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeStep}
+            key={`${activeStep}-${viewMode}`}
             className="relative w-full h-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            onClick={onImageClick}
           >
             <img
-              src={currentScreenshot.url}
+              src={getScreenshotUrl(currentScreenshot)}
               alt={`Step ${activeStep}`}
-              className="w-full h-full object-cover object-top"
+              className={cn(
+                "w-full h-full object-top",
+                viewMode === 'mobile' ? "object-contain" : "object-cover"
+              )}
             />
             <QualityBadge quality={currentScreenshot.quality} />
             
+            {/* Click hint overlay */}
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+              <div className="bg-black/60 text-white px-2 py-1 rounded text-xs flex items-center gap-1">
+                <Maximize2 className="h-3 w-3" />
+                Öffnen
+              </div>
+            </div>
+            
             {/* Screenshot menu (visible on hover) */}
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
               <ScreenshotMenu
                 screenshot={currentScreenshot}
                 onReload={() => onScreenshotAction('reload', activeStep)}
@@ -656,7 +793,7 @@ const AnimatedPreview = ({
               <div
                 key={a.id}
                 className={cn(
-                  "absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-[8px] font-bold",
+                  "absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-[8px] font-bold pointer-events-none",
                   a.type === 'issue' ? 'bg-red-500' :
                   a.type === 'idea' ? 'bg-yellow-500' :
                   'bg-blue-500'
@@ -671,7 +808,7 @@ const AnimatedPreview = ({
         </AnimatePresence>
         
         {/* Step indicator dots */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1" onClick={e => e.stopPropagation()}>
           {steps.map((_, idx) => (
             <button
               key={idx}
@@ -700,10 +837,16 @@ const AnimatedPreview = ({
     );
   }
   
-  // Fallback: iframe preview
+  // Fallback: iframe preview with click to open
   const stepUrl = activeStep === 1 ? basePath : `${basePath}?step=${activeStep}`;
   return (
-    <div className="relative w-full aspect-[16/10] bg-muted rounded-lg overflow-hidden border">
+    <div 
+      className={cn(
+        "relative bg-muted rounded-lg overflow-hidden border cursor-pointer",
+        viewMode === 'mobile' ? "w-32 aspect-[9/16] mx-auto" : "w-full aspect-[16/10]"
+      )}
+      onClick={onImageClick}
+    >
       <iframe
         src={stepUrl}
         className="w-[300%] h-[300%] origin-top-left scale-[0.333] pointer-events-none"
@@ -764,6 +907,7 @@ export default function FlowRankingCard({
   const [showCompare, setShowCompare] = useState(false);
   const [compareStep, setCompareStep] = useState<number | null>(null);
   const [replacingStep, setReplacingStep] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
   
   const steps = useMemo(() => getFlowSteps(flowId), [flowId]);
   const keyStrength = getKeyStrength(score, liveScore?.features);
@@ -1016,15 +1160,18 @@ export default function FlowRankingCard({
       
       {/* Fullscreen Viewer */}
       <FullscreenViewer
-        screenshot={screenshots.find(s => s.stepNumber === activeStep) || screenshots[activeStep - 1] || null}
+        screenshots={screenshots}
         isOpen={showFullscreen}
         onClose={() => setShowFullscreen(false)}
         onNext={() => setActiveStep(prev => Math.min(steps.length, prev + 1))}
         onPrev={() => setActiveStep(prev => Math.max(1, prev - 1))}
         currentStep={activeStep}
+        setCurrentStep={setActiveStep}
         totalSteps={steps.length}
         annotations={annotations}
         onAddAnnotation={handleAddAnnotation}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
       />
       
       <Card className={cn(
@@ -1048,7 +1195,31 @@ export default function FlowRankingCard({
                 onScreenshotAction={handleScreenshotAction}
                 isLoading={isLoadingScreenshot}
                 annotations={annotations}
+                onImageClick={() => setShowFullscreen(true)}
+                viewMode={viewMode}
               />
+              
+              {/* Desktop / Mobile Toggle */}
+              <div className="flex items-center justify-center gap-1 mt-2 p-1 bg-muted rounded-lg">
+                <Button
+                  variant={viewMode === 'desktop' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="h-6 text-[10px] px-2"
+                  onClick={() => setViewMode('desktop')}
+                >
+                  <Monitor className="h-3 w-3 mr-1" />
+                  Desktop
+                </Button>
+                <Button
+                  variant={viewMode === 'mobile' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="h-6 text-[10px] px-2"
+                  onClick={() => setViewMode('mobile')}
+                >
+                  <Smartphone className="h-3 w-3 mr-1" />
+                  Mobile
+                </Button>
+              </div>
               
               {/* Playback & Action Controls */}
               <div className="flex items-center justify-between mt-2">
