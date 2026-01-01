@@ -20,7 +20,7 @@ import {
   AlertCircle, ChevronRight, Star, TrendingUp, Eye, Code, Download,
   RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered,
   Wand2, Loader2, Users, BookOpen, Camera, ExternalLink, Settings,
-  ChevronDown, Filter, ArrowUpDown, Wifi, WifiOff
+  ChevronDown, Filter, ArrowUpDown, Wifi, WifiOff, Wrench
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -436,6 +436,8 @@ export default function FlowAnalysisHub() {
   // Fix-it state
   const [fixingFlowId, setFixingFlowId] = useState<string | null>(null);
   const [isGeneratingUltimate, setIsGeneratingUltimate] = useState(false);
+  const [isFixingAll, setIsFixingAll] = useState(false);
+  const [fixProgress, setFixProgress] = useState({ current: 0, total: 0 });
   
   const ANALYSIS_STALL_TIMEOUT_MS = 15 * 60 * 1000;
   const autoTimeoutAppliedForJobIdRef = useRef<string | null>(null);
@@ -689,6 +691,88 @@ export default function FlowAnalysisHub() {
     }
   };
 
+  // Fix All Flows - Global fix button
+  const handleFixAllFlows = async () => {
+    const flowsWithIssues = variants.filter(v => {
+      const ls = liveScores[v.id];
+      return ls?.issues && ls.issues.length > 0;
+    });
+    
+    if (flowsWithIssues.length === 0) {
+      toast({ title: 'Keine Issues', description: 'Alle Flows sind bereits optimiert!' });
+      return;
+    }
+    
+    setIsFixingAll(true);
+    setFixProgress({ current: 0, total: flowsWithIssues.length });
+    
+    toast({ 
+      title: `Fix All gestartet`, 
+      description: `${flowsWithIssues.length} Flows mit Issues werden optimiert...` 
+    });
+    
+    try {
+      for (let i = 0; i < flowsWithIssues.length; i++) {
+        const variant = flowsWithIssues[i];
+        const liveFlowScore = liveScores[variant.id];
+        
+        setFixProgress({ current: i + 1, total: flowsWithIssues.length });
+        
+        // Generate AI optimization prompt for this flow
+        const issues = liveFlowScore?.issues || [];
+        const prompt = `
+# AI-Optimierung für ${variant.id}
+
+## Ziel
+Erhöhe den Score von **${liveFlowScore?.overallScore || 0}** auf **${Math.min(100, (liveFlowScore?.overallScore || 0) + 10)}+**
+
+## Issues zu beheben
+${issues.map((issue, idx) => `${idx + 1}. **${issue.category}**: ${issue.description}\n   - Empfehlung: ${issue.recommendation}`).join('\n\n')}
+
+## Wichtige Hinweise
+- Mobile-First: Alle Änderungen müssen auf Mobilgeräten funktionieren
+- Trust-Signale: ASTAG-Badge, Schweizer Qualität prominent platzieren
+- CTA immer sichtbar: Sticky Footer auf Mobile
+- Swissness: "Zügeln", "Offerte", keine ß-Schreibweise
+`;
+        
+        // Call AI fix edge function
+        await supabase.functions.invoke('ai-flow-optimizer', {
+          body: {
+            flowId: variant.id,
+            prompt,
+            issues,
+            autoApply: true // Automatically apply fixes
+          }
+        });
+        
+        // Small delay between requests
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      
+      toast({ 
+        title: '✅ Fix All abgeschlossen!', 
+        description: `${flowsWithIssues.length} Flows wurden optimiert. Live-Analyse wird aktualisiert...` 
+      });
+      
+      // Refresh live analysis after all fixes
+      setTimeout(() => {
+        refreshLiveAnalysis();
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Fix All error:', error);
+      toast({ 
+        title: 'Fehler', 
+        description: 'Einige Flows konnten nicht optimiert werden', 
+        variant: 'destructive' 
+      });
+    } finally {
+      setIsFixingAll(false);
+      setFixProgress({ current: 0, total: 0 });
+    }
+  };
+
   // Generate Ultimate Flow
   const handleGenerateUltimateFlow = async () => {
     if (!synthesis) {
@@ -782,6 +866,27 @@ export default function FlowAnalysisHub() {
                   Aktualisieren
                 </Button>
               )}
+              
+              {/* Fix All Flows Button */}
+              <Button 
+                onClick={handleFixAllFlows} 
+                disabled={isFixingAll || isAnalyzing} 
+                variant="default"
+                size="sm" 
+                className="gap-2 bg-amber-600 hover:bg-amber-700"
+              >
+                {isFixingAll ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {fixProgress.current}/{fixProgress.total}
+                  </>
+                ) : (
+                  <>
+                    <Wrench className="h-4 w-4" />
+                    Fix All Flows
+                  </>
+                )}
+              </Button>
               
               {/* Analysis Actions */}
               <Button onClick={() => runDeepAnalysis(true)} disabled={isAnalyzing || loadingVariants || availableVariants.length === 0} variant="outline" size="sm" className="gap-2">
@@ -900,13 +1005,6 @@ export default function FlowAnalysisHub() {
                     onSelectForAnalysis={() => {
                       setSelectedFlow(variant.id);
                       setActiveView('analysis');
-                    }}
-                    onFixAll={() => {
-                      toast({ 
-                        title: `Fix All für ${variant.label}`,
-                        description: `${liveFlowScore?.issues?.length || 0} Issues werden automatisch behoben...`
-                      });
-                      // TODO: Integrate with AI fix system
                     }}
                   />
                 );
