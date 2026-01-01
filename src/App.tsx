@@ -396,8 +396,12 @@ const AdminRoutes = () => (
       <Route path="/admin/ai-command" element={<AICommandCenter />} />
       <Route path="/admin/capabilities" element={<AdminCapabilities />} />
       <Route path="/admin/varianten-testen" element={<VariantTestHub />} />
+      {/* Flow Analysis Hub - Main entry point for all flow analysis */}
+      <Route path="/admin/flow-analysis" element={<FlowAnalysisHub />} />
+      {/* Legacy routes redirect to new hub */}
+      <Route path="/admin/flow-comparison" element={<Navigate to="/admin/flow-analysis?view=ranking" replace />} />
       <Route path="/admin/flow-comparison/:flowNumber" element={<FlowComparison />} />
-      <Route path="/admin/flow-deep-analysis" element={<FlowDeepAnalysis />} />
+      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/admin/flow-analysis?view=analysis" replace />} />
       <Route path="/admin/analysis-framework" element={<AnalysisFramework />} />
       <Route path="/admin/flow-feedback-variants" element={<FlowFeedbackVariants />} />
       <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />

@@ -375,7 +375,7 @@ export default function FlowComparison() {
                             Screenshot
                           </Button>
                         </Link>
-                        <Link to={`/admin/flow-deep-analysis?flow=${variant.id}`}>
+                        <Link to={`/admin/flow-analysis?flow=${variant.id}&view=analysis`}>
                           <Button variant="secondary" size="sm">
                             <BarChart3 className="h-4 w-4 mr-2" />
                             Analyse

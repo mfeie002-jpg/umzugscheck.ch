@@ -376,8 +376,9 @@ export default function FlowAnalysisHub() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   
-  // View mode
-  const [activeView, setActiveView] = useState<'ranking' | 'analysis' | 'winner' | 'ultimate'>('ranking');
+  // View mode - read from URL param if present
+  const viewParam = searchParams.get('view') as 'ranking' | 'analysis' | 'winner' | 'ultimate' | null;
+  const [activeView, setActiveView] = useState<'ranking' | 'analysis' | 'winner' | 'ultimate'>(viewParam || 'ranking');
   const [selectedFlowVersion, setSelectedFlowVersion] = useState(() => searchParams.get('flow') || 'all');
   const [sortBy, setSortBy] = useState<'score' | 'name'>('score');
   
@@ -409,10 +410,14 @@ export default function FlowAnalysisHub() {
   const ANALYSIS_STALL_TIMEOUT_MS = 15 * 60 * 1000;
   const autoTimeoutAppliedForJobIdRef = useRef<string | null>(null);
 
-  // Update URL
+  // Update URL with flow and view
   useEffect(() => {
-    setSearchParams(prev => { prev.set('flow', selectedFlowVersion); return prev; });
-  }, [selectedFlowVersion, setSearchParams]);
+    setSearchParams(prev => { 
+      prev.set('flow', selectedFlowVersion); 
+      prev.set('view', activeView);
+      return prev; 
+    });
+  }, [selectedFlowVersion, activeView, setSearchParams]);
 
   // Fetch scores for ranking
   useEffect(() => {
@@ -694,7 +699,7 @@ export default function FlowAnalysisHub() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <Link to="/admin/tools?tab=flow-automation">
-                <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4 mr-2" />Zurück</Button>
+                <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4 mr-2" />Tools</Button>
               </Link>
               <div>
                 <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -702,7 +707,7 @@ export default function FlowAnalysisHub() {
                   Flow Analysis Hub
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Ranking • Tiefenanalyse • Gewinner • Ultimate Flow • AI-Fix
+                  {variants.length} Flows • Ranking • Tiefenanalyse • Gewinner • Ultimate Flow • AI Auto-Fix
                 </p>
               </div>
             </div>

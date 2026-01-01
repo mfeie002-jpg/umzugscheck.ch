@@ -242,7 +242,7 @@ function FlowFeedbackVariantsContent() {
                 Bitte wähle eine Flow-Variante aus der Tiefenanalyse.
               </p>
               <Button asChild>
-                <Link to="/admin/flow-deep-analysis">
+                <Link to="/admin/flow-analysis">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Zur Tiefenanalyse
                 </Link>
@@ -278,7 +278,7 @@ function FlowFeedbackVariantsContent() {
                 Die Variante konnte nicht gefunden werden.
               </p>
               <Button asChild variant="outline">
-                <Link to="/admin/flow-deep-analysis">
+                <Link to="/admin/flow-analysis">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Zurück
                 </Link>
@@ -297,7 +297,7 @@ function FlowFeedbackVariantsContent() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <Button asChild variant="ghost" size="sm">
-              <Link to="/admin/flow-deep-analysis">
+              <Link to="/admin/flow-analysis">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Zurück
               </Link>

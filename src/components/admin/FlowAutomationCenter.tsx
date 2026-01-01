@@ -1291,24 +1291,24 @@ ${entry.prompt}
                 </AlertDescription>
               </Alert>
 
-              {/* Strategic Deep Analysis CTA */}
+              {/* Strategic Deep Analysis CTA - Flow Analysis Hub */}
               <div className="p-4 border-2 border-primary/30 rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                       <Sparkles className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">V1 Archetypen-Tiefenanalyse</h3>
+                      <h3 className="font-bold text-lg">Flow Analysis Hub</h3>
                       <p className="text-sm text-muted-foreground">
-                        Element-Level Analyse • Swiss Market Insights • Winner Synthesis • Ultimate Blueprint
+                        Ranking • Tiefenanalyse • Gewinner • Ultimate Flow • AI-Fix - alles an einem Ort
                       </p>
                     </div>
                   </div>
-                  <Link to="/admin/flow-deep-analysis">
+                  <Link to="/admin/flow-analysis">
                     <Button className="gap-2" size="lg">
                       <Sparkles className="h-5 w-5" />
-                      Strategische Analyse starten
+                      Flow Analysis Hub öffnen
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>

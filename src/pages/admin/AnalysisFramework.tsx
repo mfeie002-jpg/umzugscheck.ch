@@ -30,7 +30,7 @@ export default function AnalysisFramework() {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" asChild>
-            <Link to="/admin/flow-deep-analysis">
+            <Link to="/admin/flow-analysis">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
@@ -112,7 +112,7 @@ export default function AnalysisFramework() {
         {/* Back to Analysis Link */}
         <div className="mt-12 text-center">
           <Button asChild variant="outline" size="lg">
-            <Link to="/admin/flow-deep-analysis" className="gap-2">
+            <Link to="/admin/flow-analysis" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Zurück zur Flow-Analyse
             </Link>
