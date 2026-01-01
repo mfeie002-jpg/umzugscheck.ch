@@ -67,6 +67,9 @@ export { V9bFeedbackBased } from './V9bFeedbackBased';
 export { V9cFeedbackBased } from './V9cFeedbackBased';
 export { V9dFeedbackBased } from './V9dFeedbackBased';
 
+// Ultimate Variants (Combined Best Practices)
+export { UltimateV7Flow } from './UltimateV7Flow';
+
 // Multi Variants (ChatGPT Pro)
 export { MultiAFeedbackBased } from './MultiAFeedbackBased';
 
@@ -132,6 +135,8 @@ export const VARIANT_REGISTRY: Record<string, {
   'v9d': { component: 'V9dFeedbackBased', stepCount: 9, label: 'V9d Main Gemini' },
   // Multi - ChatGPT Pro
   'multi-a': { component: 'MultiAFeedbackBased', stepCount: 3, label: 'Multi.a ChatGPT Pro' },
+  // Ultimate - Combined Best Practices
+  'ultimate-v7': { component: 'UltimateV7Flow', stepCount: 5, label: 'Ultimate V7 (95/100)' },
 };
 
 // Get step count for a variant
