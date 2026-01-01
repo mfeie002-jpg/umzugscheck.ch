@@ -1,12 +1,13 @@
 /**
  * Live Flow Analyzer Hook
  * 
- * Analyzes flows in real-time without relying on cached screenshots.
- * Uses component introspection and rule-based scoring.
+ * Analyzes flows in real-time using the Feature Registry.
+ * No DOM inspection needed - scores based on registered features.
  */
 
 import { useState, useCallback, useEffect } from 'react';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
+import { getFlowFeatures, calculateScoreFromFeatures, type FlowFeatures } from '@/data/flowFeatureRegistry';
 
 export interface LiveFlowScore {
   flowId: string;
@@ -26,132 +27,57 @@ export interface LiveFlowScore {
     description: string;
     recommendation: string;
   }>;
+  features: FlowFeatures;
   lastAnalyzed: Date;
   isLive: boolean;
 }
 
-// Rule-based scoring system
-const SCORING_RULES = {
-  // Trust Badge Rules
-  trustBadges: {
-    hasASTAG: { points: 15, check: (path: string) => path.includes('ultimate') || path.includes('v1a') },
-    hasSwissQuality: { points: 10, check: (path: string) => path.includes('ultimate') || path.includes('v1') },
-    hasRating: { points: 10, check: (path: string) => path.includes('ultimate') || path.includes('v1') },
-    hasFreeLabel: { points: 5, check: () => true }, // Most flows have this
-  },
-  // CTA Rules
-  cta: {
-    hasStickyCTA: { points: 20, check: (path: string) => path.includes('ultimate') || path.includes('v1') },
-    hasClearLabel: { points: 10, check: () => true },
-    hasProgressIndicator: { points: 5, check: (path: string) => !path.includes('baseline') },
-  },
-  // Mobile Rules  
-  mobile: {
-    hasSafeArea: { points: 10, check: (path: string) => path.includes('ultimate') || path.includes('v1') },
-    hasTouchTargets: { points: 10, check: (path: string) => !path.includes('v0') },
-    hasResponsiveLayout: { points: 10, check: () => true },
-  },
-  // UX Rules
-  ux: {
-    hasProgressBar: { points: 10, check: (path: string) => !path.includes('baseline') },
-    hasValidation: { points: 10, check: () => true },
-    hasAnimations: { points: 5, check: (path: string) => path.includes('ultimate') || path.includes('v1') },
-  },
+// Feature to issue mapping
+const FEATURE_ISSUES: Record<keyof FlowFeatures, { category: string; severity: 'critical' | 'warning' | 'info'; recommendation: string }> = {
+  hasASTAG: { category: 'Trust', severity: 'critical', recommendation: 'Add ASTAG certification badge' },
+  hasSwissQuality: { category: 'Trust', severity: 'critical', recommendation: 'Add Swiss Quality badge' },
+  hasRatingBadge: { category: 'Trust', severity: 'warning', recommendation: 'Show customer rating badge' },
+  hasFreeLabel: { category: 'Trust', severity: 'info', recommendation: 'Add "Kostenlos & unverbindlich" label' },
+  hasTrustPills: { category: 'Trust', severity: 'warning', recommendation: 'Add trust pills below header' },
+  hasStickyCTA: { category: 'CTA', severity: 'critical', recommendation: 'Implement sticky CTA on mobile' },
+  hasClearCTALabel: { category: 'CTA', severity: 'warning', recommendation: 'Use clear CTA text like "Offerten erhalten"' },
+  hasProgressIndicator: { category: 'CTA', severity: 'warning', recommendation: 'Show step progress indicator' },
+  hasMicroFeedback: { category: 'CTA', severity: 'info', recommendation: 'Add micro-feedback on interactions' },
+  hasSafeArea: { category: 'Mobile', severity: 'warning', recommendation: 'Add safe area padding for notch devices' },
+  hasTouchTargets: { category: 'Mobile', severity: 'warning', recommendation: 'Ensure 44px minimum touch targets' },
+  hasResponsiveLayout: { category: 'Mobile', severity: 'critical', recommendation: 'Make layout fully responsive' },
+  hasBottomSheet: { category: 'Mobile', severity: 'info', recommendation: 'Use bottom sheet for modals on mobile' },
+  hasProgressBar: { category: 'UX', severity: 'warning', recommendation: 'Add visual progress bar' },
+  hasValidation: { category: 'UX', severity: 'warning', recommendation: 'Add inline form validation' },
+  hasAnimations: { category: 'UX', severity: 'info', recommendation: 'Add subtle animations for feedback' },
+  hasAutoAdvance: { category: 'UX', severity: 'info', recommendation: 'Auto-advance after selection' },
+  hasPricePreview: { category: 'UX', severity: 'warning', recommendation: 'Show live price preview' },
 };
 
 function calculateFlowScore(flowId: string, path: string): LiveFlowScore {
+  const features = getFlowFeatures(flowId);
+  const scores = calculateScoreFromFeatures(features);
+  
+  // Generate issues from missing features
   const issues: LiveFlowScore['issues'] = [];
-  const categoryScores = {
-    trust: 0,
-    cta: 0,
-    mobile: 0,
-    ux: 0,
-    conversion: 0,
-  };
-
-  // Trust Score
-  let trustTotal = 0;
-  let trustMax = 0;
-  Object.entries(SCORING_RULES.trustBadges).forEach(([key, rule]) => {
-    trustMax += rule.points;
-    if (rule.check(path)) {
-      trustTotal += rule.points;
-    } else {
+  
+  (Object.entries(features) as [keyof FlowFeatures, boolean][]).forEach(([key, hasFeature]) => {
+    if (!hasFeature && FEATURE_ISSUES[key]) {
+      const issue = FEATURE_ISSUES[key];
       issues.push({
-        severity: rule.points >= 15 ? 'critical' : 'warning',
-        category: 'Trust Badges',
-        description: `Missing: ${key.replace(/([A-Z])/g, ' $1').trim()}`,
-        recommendation: `Add ${key.replace(/([A-Z])/g, ' $1').trim()} for better trust signals`,
+        severity: issue.severity,
+        category: issue.category,
+        description: `Missing: ${key.replace(/^has/, '').replace(/([A-Z])/g, ' $1').trim()}`,
+        recommendation: issue.recommendation,
       });
     }
   });
-  categoryScores.trust = Math.round((trustTotal / trustMax) * 100);
 
-  // CTA Score
-  let ctaTotal = 0;
-  let ctaMax = 0;
-  Object.entries(SCORING_RULES.cta).forEach(([key, rule]) => {
-    ctaMax += rule.points;
-    if (rule.check(path)) {
-      ctaTotal += rule.points;
-    } else {
-      issues.push({
-        severity: rule.points >= 15 ? 'critical' : 'warning',
-        category: 'Primary CTA',
-        description: `Missing: ${key.replace(/([A-Z])/g, ' $1').trim()}`,
-        recommendation: `Implement ${key.replace(/([A-Z])/g, ' $1').trim()} for better conversion`,
-      });
-    }
-  });
-  categoryScores.cta = Math.round((ctaTotal / ctaMax) * 100);
-
-  // Mobile Score
-  let mobileTotal = 0;
-  let mobileMax = 0;
-  Object.entries(SCORING_RULES.mobile).forEach(([key, rule]) => {
-    mobileMax += rule.points;
-    if (rule.check(path)) {
-      mobileTotal += rule.points;
-    } else {
-      issues.push({
-        severity: 'warning',
-        category: 'Mobile',
-        description: `Missing: ${key.replace(/([A-Z])/g, ' $1').trim()}`,
-        recommendation: `Add ${key.replace(/([A-Z])/g, ' $1').trim()} for mobile optimization`,
-      });
-    }
-  });
-  categoryScores.mobile = Math.round((mobileTotal / mobileMax) * 100);
-
-  // UX Score
-  let uxTotal = 0;
-  let uxMax = 0;
-  Object.entries(SCORING_RULES.ux).forEach(([key, rule]) => {
-    uxMax += rule.points;
-    if (rule.check(path)) {
-      uxTotal += rule.points;
-    } else {
-      issues.push({
-        severity: 'info',
-        category: 'UX',
-        description: `Missing: ${key.replace(/([A-Z])/g, ' $1').trim()}`,
-        recommendation: `Consider adding ${key.replace(/([A-Z])/g, ' $1').trim()}`,
-      });
-    }
-  });
-  categoryScores.ux = Math.round((uxTotal / uxMax) * 100);
-
-  // Conversion is average of trust + cta + mobile
-  categoryScores.conversion = Math.round((categoryScores.trust + categoryScores.cta + categoryScores.mobile) / 3);
-
-  // Overall score is weighted average
-  const overallScore = Math.round(
-    categoryScores.trust * 0.25 +
-    categoryScores.cta * 0.30 +
-    categoryScores.mobile * 0.20 +
-    categoryScores.ux * 0.15 +
-    categoryScores.conversion * 0.10
-  );
+  // Sort by severity and take top 5
+  const severityOrder = { critical: 0, warning: 1, info: 2 };
+  const sortedIssues = issues
+    .sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity])
+    .slice(0, 5);
 
   const config = FLOW_CONFIGS[flowId] || SUB_VARIANT_CONFIGS[flowId.replace('umzugsofferten-', '')];
   
@@ -159,9 +85,16 @@ function calculateFlowScore(flowId: string, path: string): LiveFlowScore {
     flowId,
     flowName: config?.label || flowId,
     path,
-    overallScore,
-    categoryScores,
-    issues: issues.filter(i => i.severity !== 'info').slice(0, 5), // Top 5 issues
+    overallScore: scores.overall,
+    categoryScores: {
+      trust: scores.trust,
+      cta: scores.cta,
+      mobile: scores.mobile,
+      ux: scores.ux,
+      conversion: scores.conversion,
+    },
+    issues: sortedIssues,
+    features,
     lastAnalyzed: new Date(),
     isLive: true,
   };
