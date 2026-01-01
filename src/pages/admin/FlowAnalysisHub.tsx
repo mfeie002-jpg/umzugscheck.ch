@@ -871,7 +871,7 @@ export default function FlowAnalysisHub() {
             {variants.length === 0 ? (
               <Card><CardContent className="py-12 text-center text-muted-foreground">Keine Varianten gefunden.</CardContent></Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+              <div className="space-y-4">
               {variants.map((variant, index) => {
                 const flowScore = scores[variant.id];
                 const liveFlowScore = liveScores[variant.id];
@@ -900,6 +900,13 @@ export default function FlowAnalysisHub() {
                     onSelectForAnalysis={() => {
                       setSelectedFlow(variant.id);
                       setActiveView('analysis');
+                    }}
+                    onFixAll={() => {
+                      toast({ 
+                        title: `Fix All für ${variant.label}`,
+                        description: `${liveFlowScore?.issues?.length || 0} Issues werden automatisch behoben...`
+                      });
+                      // TODO: Integrate with AI fix system
                     }}
                   />
                 );
