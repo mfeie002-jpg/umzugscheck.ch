@@ -46,7 +46,7 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V5aHighContrast': () => import('@/components/calculator-variants/V5aHighContrast').then(m => ({ default: m.V5aHighContrast })),
   'V5bScreenReader': () => import('@/components/calculator-variants/V5bScreenReader').then(m => ({ default: m.V5bScreenReader })),
   'V5cKeyboardNav': () => import('@/components/calculator-variants/V5cKeyboardNav').then(m => ({ default: m.V5cKeyboardNav })),
-  'V5dLargeText': () => import('@/components/calculator-variants/V5dLargeText').then(m => ({ default: m.V5dLargeText })),
+  'V5dFeedbackBased': () => import('@/components/calculator-variants/V5dFeedbackBased').then(m => ({ default: m.V5dFeedbackBased })),
   'V5eReducedMotion': () => import('@/components/calculator-variants/V5eReducedMotion').then(m => ({ default: m.V5eReducedMotion })),
   'V5fFeedbackBased': () => import('@/components/calculator-variants/V5fFeedbackBased').then(m => ({ default: m.V5fFeedbackBased })),
   // V6 Variants

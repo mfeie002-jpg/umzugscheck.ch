@@ -44,7 +44,7 @@ import {
   V5aHighContrast,
   V5bScreenReader,
   V5cKeyboardNav,
-  V5dLargeText,
+  V5dFeedbackBased,
   V5eReducedMotion,
   V5fFeedbackBased,
   // V6 variants
@@ -118,7 +118,7 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v5a': V5aHighContrast,
   'v5b': V5bScreenReader,
   'v5c': V5cKeyboardNav,
-  'v5d': V5dLargeText,
+  'v5d': V5dFeedbackBased,
   'v5e': V5eReducedMotion,
   'v5f': V5fFeedbackBased,
   

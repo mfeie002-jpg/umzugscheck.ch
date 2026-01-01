@@ -34,6 +34,7 @@ import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import { BackgroundExportManager } from "@/components/admin/BackgroundExportManager";
+import { JobsDownloadsCenter } from "@/components/admin/JobsDownloadsCenter";
 import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
 import ABTestToggle from "@/components/admin/ABTestToggle";
 import JSZip from "jszip";
@@ -2460,7 +2461,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
         {/* Tools Tabs */}
         <div id="tools-tabs-section">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="ultimate-export" className="flex items-center gap-2">
               <Wand2 className="h-4 w-4" />
               Ultimate Export
@@ -2476,6 +2477,10 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
             <TabsTrigger value="calculator-review" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               Calculator Review
+            </TabsTrigger>
+            <TabsTrigger value="jobs-downloads" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Jobs & Downloads
             </TabsTrigger>
             <TabsTrigger value="screenshots" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
@@ -3353,7 +3358,12 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               
               <TabsContent value="screenshots">
                 <AutoFlowScreenshots />
-              </TabsContent>
+          </TabsContent>
+
+          {/* Jobs & Downloads Tab */}
+          <TabsContent value="jobs-downloads">
+            <JobsDownloadsCenter />
+          </TabsContent>
               
               <TabsContent value="background-export">
                 <BackgroundExportManager />

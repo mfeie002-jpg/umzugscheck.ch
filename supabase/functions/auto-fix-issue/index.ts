@@ -27,6 +27,7 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const body: IssueFixRequest = await req.json();
@@ -60,37 +61,77 @@ Deno.serve(async (req) => {
 
 Antworte auf Deutsch und halte dich kurz und prägnant.`;
 
-    // Call Lovable AI (Gemini Flash)
-    console.log('Calling Lovable AI for fix suggestion...');
-    
-    const aiResponse = await fetch('https://api.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseKey}`,
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'user',
-            content: aiPrompt,
-          }
-        ],
-        max_tokens: 800,
-        temperature: 0.3,
-      }),
-    });
-
     let fixSuggestion = '';
     
-    if (aiResponse.ok) {
-      const aiResult = await aiResponse.json();
-      fixSuggestion = aiResult.choices?.[0]?.message?.content || '';
-      console.log('AI generated fix suggestion:', fixSuggestion);
+    // Try Lovable AI Gateway first (correct endpoint)
+    if (lovableApiKey) {
+      console.log('Calling Lovable AI Gateway for fix suggestion...');
+      
+      try {
+        const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${lovableApiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              {
+                role: 'user',
+                content: aiPrompt,
+              }
+            ],
+            max_tokens: 800,
+            temperature: 0.3,
+          }),
+        });
+
+        if (aiResponse.ok) {
+          const aiResult = await aiResponse.json();
+          fixSuggestion = aiResult.choices?.[0]?.message?.content || '';
+          console.log('AI generated fix suggestion:', fixSuggestion.substring(0, 200) + '...');
+        } else {
+          const errorText = await aiResponse.text();
+          console.warn('Lovable AI call failed:', aiResponse.status, errorText);
+          
+          // Handle rate limits
+          if (aiResponse.status === 429) {
+            return new Response(
+              JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+              { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+          }
+          if (aiResponse.status === 402) {
+            return new Response(
+              JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }),
+              { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+          }
+        }
+      } catch (aiError) {
+        console.error('AI call error:', aiError);
+      }
     } else {
-      console.log('AI call failed, using fallback prompt');
-      fixSuggestion = `Manueller Fix erforderlich für: ${issueTitle}\n\n${prompt}`;
+      console.warn('LOVABLE_API_KEY not configured');
+    }
+    
+    // Fallback if AI didn't return a response
+    if (!fixSuggestion) {
+      console.log('Using fallback fix suggestion');
+      fixSuggestion = `## Manueller Fix erforderlich
+
+**Issue**: ${issueTitle}
+**Kategorie**: ${category}
+**Severity**: ${severity}
+
+### Empfohlene Massnahmen:
+${recommendation || prompt}
+
+### Nächste Schritte:
+1. Issue manuell analysieren
+2. Betroffene Komponente identifizieren
+3. Fix implementieren und testen`;
     }
 
     // Mark issue as resolved in database
@@ -99,7 +140,7 @@ Antworte auf Deutsch und halte dich kurz und prägnant.`;
       .update({ 
         is_resolved: true, 
         resolved_at: new Date().toISOString(),
-        recommendation: fixSuggestion || recommendation
+        recommendation: fixSuggestion
       })
       .eq('id', issueId);
 
