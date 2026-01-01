@@ -287,47 +287,72 @@ function slugify(text: string): string {
 }
 
 // ============================================================================
-// SCREENSHOT CAPTURE
+// SCREENSHOT CAPTURE WITH RETRY
 // ============================================================================
 
-async function captureScreenshot(
+async function captureScreenshotWithRetry(
   supabase: any,
   url: string,
-  dimension: string
+  dimension: string,
+  maxRetries: number = 3
 ): Promise<string | null> {
-  try {
-    const { data, error } = await supabase.functions.invoke('capture-screenshot', {
-      body: {
-        url,
-        dimension,
-        format: 'png',
-        delay: 10000,
-        fullPage: false,
-        scroll: false,
-        noCache: true,
-      },
-    });
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Screenshot attempt ${attempt}/${maxRetries}: ${url} @ ${dimension}`);
+      
+      const { data, error } = await supabase.functions.invoke('capture-screenshot', {
+        body: {
+          url,
+          dimension,
+          format: 'png',
+          delay: 12000, // Slightly longer delay
+          fullPage: false,
+          scroll: false,
+          noCache: true,
+        },
+      });
 
-    if (error || !data?.image) {
-      console.error('Screenshot error:', error || 'No image data');
-      return null;
-    }
+      if (error) {
+        console.error(`Screenshot error (attempt ${attempt}):`, error);
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 3000 * attempt)); // Exponential backoff
+          continue;
+        }
+        return null;
+      }
+      
+      if (!data?.image) {
+        console.error(`No image data (attempt ${attempt})`);
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 3000 * attempt));
+          continue;
+        }
+        return null;
+      }
 
-    // Extract base64 from data URL if present (format: "data:image/png;base64,...")
-    const imageData = data.image;
-    if (imageData.startsWith('data:')) {
-      const base64Match = imageData.match(/^data:image\/\w+;base64,(.+)$/);
-      if (base64Match) {
-        return base64Match[1];
+      // Extract base64 from data URL if present (format: "data:image/png;base64,...")
+      const imageData = data.image;
+      if (imageData.startsWith('data:')) {
+        const base64Match = imageData.match(/^data:image\/\w+;base64,(.+)$/);
+        if (base64Match) {
+          console.log(`Screenshot captured successfully on attempt ${attempt}`);
+          return base64Match[1];
+        }
+      }
+      
+      // Already pure base64
+      console.log(`Screenshot captured successfully on attempt ${attempt}`);
+      return imageData;
+    } catch (e) {
+      console.error(`Screenshot capture failed (attempt ${attempt}):`, e);
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 3000 * attempt));
       }
     }
-    
-    // Already pure base64
-    return imageData;
-  } catch (e) {
-    console.error('Screenshot capture failed:', e);
-    return null;
   }
+  
+  console.error(`Screenshot failed after ${maxRetries} attempts: ${url}`);
+  return null;
 }
 
 async function captureHtml(supabase: any, url: string): Promise<string | null> {
@@ -426,12 +451,25 @@ async function runExport(
         exportedAt: new Date().toISOString(),
       }, null, 2));
 
-      // 3. Generate step URLs
+      // 3. Generate step URLs - use baseUrl correctly
+      // baseUrl may already contain the full path (e.g., https://example.com/umzugsofferten-v5)
+      // or just the domain (e.g., https://example.com)
       const steps = flow.result_json?.ultimateFlow?.steps || [];
+      const flowCode = flow.result_json?.ultimateFlow?.flowCode || 'ultimate-v7';
+      
+      // Determine the correct base for step URLs
+      let stepBaseUrl = baseUrl;
+      // If baseUrl doesn't contain '/umzugsofferten', add a default path
+      if (!baseUrl.includes('/umzugsofferten')) {
+        stepBaseUrl = `${baseUrl}/umzugsofferten?variant=${flowCode}`;
+      }
+      // Determine separator (? or &) based on whether URL already has query params
+      const separator = stepBaseUrl.includes('?') ? '&' : '?';
+      
       const stepUrls = steps.map((step, idx) => ({
         name: step.name,
         number: step.number || idx + 1,
-        url: `${baseUrl}/umzugsofferten?uc_capture=1&uc_step=${idx + 1}`,
+        url: `${stepBaseUrl}${separator}uc_capture=1&uc_step=${idx + 1}&uc_cb=${Date.now()}`,
       }));
       jsonFolder?.file('step-urls.json', JSON.stringify(stepUrls, null, 2));
 
@@ -459,7 +497,7 @@ async function runExport(
           .eq('id', jobId);
 
         if (captureMobile) {
-          const mobileImg = await captureScreenshot(supabase, stepUrl.url, '375x812');
+          const mobileImg = await captureScreenshotWithRetry(supabase, stepUrl.url, '375x812');
           if (mobileImg) {
             const mobileBytes = Uint8Array.from(atob(mobileImg), c => c.charCodeAt(0));
             mobileFolder?.file(`step-${stepUrl.number}-${slugify(stepUrl.name)}.png`, mobileBytes);
@@ -467,7 +505,7 @@ async function runExport(
         }
 
         if (captureDesktop) {
-          const desktopImg = await captureScreenshot(supabase, stepUrl.url, '1920x1080');
+          const desktopImg = await captureScreenshotWithRetry(supabase, stepUrl.url, '1920x1080');
           if (desktopImg) {
             const desktopBytes = Uint8Array.from(atob(desktopImg), c => c.charCodeAt(0));
             desktopFolder?.file(`step-${stepUrl.number}-${slugify(stepUrl.name)}.png`, desktopBytes);
