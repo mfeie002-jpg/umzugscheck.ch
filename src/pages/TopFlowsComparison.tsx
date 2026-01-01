@@ -1606,15 +1606,14 @@ const FlowCard = ({
           <Button size="sm" variant="outline" onClick={onCopyUrl} title="URL kopieren">
             <Copy className="h-3.5 w-3.5" />
           </Button>
-          {hasScreenshots ? (
+          {hasScreenshots && (
             <Button size="sm" variant="outline" onClick={() => onDownloadScreenshot(screenshots[currentScreenshot])} title="Screenshot downloaden">
               <Download className="h-3.5 w-3.5" />
             </Button>
-          ) : (
-            <Button size="sm" variant="outline" onClick={onCaptureScreenshot} disabled={isCapturing} title="Screenshot erstellen">
-              {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
-            </Button>
           )}
+          <Button size="sm" variant="outline" onClick={onCaptureScreenshot} disabled={isCapturing} title={hasScreenshots ? "Screenshot neu erstellen" : "Screenshot erstellen"}>
+            {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+          </Button>
           <Button size="sm" variant="outline" onClick={() => hasScreenshots && onZoomImage(screenshots[currentScreenshot])} disabled={!hasScreenshots} title="Zoom">
             <ZoomIn className="h-3.5 w-3.5" />
           </Button>
@@ -1762,15 +1761,14 @@ const FlowListItem = ({
           <Button size="sm" variant="ghost" onClick={onCopyUrl} title="URL kopieren">
             <Copy className="h-3.5 w-3.5" />
           </Button>
-          {hasScreenshots ? (
+          {hasScreenshots && (
             <Button size="sm" variant="ghost" onClick={() => onDownloadScreenshot(flow.screenshots.desktop[0])} title="Screenshot downloaden">
               <Download className="h-3.5 w-3.5" />
             </Button>
-          ) : (
-            <Button size="sm" variant="ghost" onClick={onCaptureScreenshot} disabled={isCapturing} title="Screenshot erstellen">
-              {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
-            </Button>
           )}
+          <Button size="sm" variant="ghost" onClick={onCaptureScreenshot} disabled={isCapturing} title={hasScreenshots ? "Screenshot neu erstellen" : "Screenshot erstellen"}>
+            {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+          </Button>
           <Button size="sm" variant="ghost" onClick={onRunAnalysis} title="Analysieren">
             <Play className="h-3.5 w-3.5" />
           </Button>
