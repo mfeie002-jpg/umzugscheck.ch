@@ -423,63 +423,12 @@ const FullscreenViewer = ({
           )}
           
           {/* Main Image Area with Slider */}
-          <div className="flex-1 relative overflow-hidden bg-muted/30 flex items-center justify-center">
-            {currentScreenshot ? (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${currentStep}-${viewMode}`}
-                  ref={imageRef}
-                  className={cn(
-                    "relative flex items-center justify-center",
-                    isAddingAnnotation && "cursor-crosshair"
-                  )}
-                  style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
-                  onClick={handleImageClick}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <img 
-                    src={currentScreenshot.url} 
-                    alt={`Step ${currentStep}`}
-                    className={cn(
-                      "object-contain shadow-2xl rounded-lg",
-                      viewMode === 'mobile' 
-                        ? "max-h-[75vh] max-w-[40vw]" 
-                        : "max-h-[75vh] max-w-[85vw]"
-                    )}
-                  />
-                  {/* Annotations */}
-                  {annotations.filter(a => a.stepNumber === currentStep).map(a => (
-                    <div
-                      key={a.id}
-                      className={cn(
-                        "absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer shadow-lg",
-                        a.type === 'issue' ? 'bg-red-500' :
-                        a.type === 'idea' ? 'bg-yellow-500' :
-                        'bg-blue-500'
-                      )}
-                      style={{ left: `${a.x}%`, top: `${a.y}%` }}
-                      title={a.text}
-                    >
-                      {a.type === 'issue' ? '!' : a.type === 'idea' ? '💡' : '📝'}
-                    </div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-            ) : (
-              <div className="flex flex-col items-center gap-4 text-muted-foreground">
-                <ImageOff className="h-16 w-16" />
-                <span>Kein Screenshot für Step {currentStep} verfügbar</span>
-              </div>
-            )}
-            
-            {/* Navigation Arrows */}
+          <div className="flex-1 relative bg-muted/30 flex items-center justify-center px-14 sm:px-16">
+            {/* Navigation Arrows - Outside overflow container */}
             <Button 
               variant="secondary" 
               size="icon"
-              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-10"
+              className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-20"
               onClick={onPrev}
               disabled={currentStep === 1}
             >
@@ -488,12 +437,66 @@ const FullscreenViewer = ({
             <Button 
               variant="secondary" 
               size="icon"
-              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-10"
+              className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-20"
               onClick={onNext}
               disabled={currentStep === totalSteps}
             >
               <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
             </Button>
+            
+            {/* Image container */}
+            <div className="w-full h-full overflow-hidden flex items-center justify-center">
+              {currentScreenshot ? (
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`${currentStep}-${viewMode}`}
+                    ref={imageRef}
+                    className={cn(
+                      "relative flex items-center justify-center",
+                      isAddingAnnotation && "cursor-crosshair"
+                    )}
+                    style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
+                    onClick={handleImageClick}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <img 
+                      src={currentScreenshot.url} 
+                      alt={`Step ${currentStep}`}
+                      className={cn(
+                        "object-contain shadow-2xl rounded-lg",
+                        viewMode === 'mobile' 
+                          ? "max-h-[75vh] max-w-[40vw]" 
+                          : "max-h-[75vh] max-w-[85vw]"
+                      )}
+                    />
+                    {/* Annotations */}
+                    {annotations.filter(a => a.stepNumber === currentStep).map(a => (
+                      <div
+                        key={a.id}
+                        className={cn(
+                          "absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer shadow-lg",
+                          a.type === 'issue' ? 'bg-red-500' :
+                          a.type === 'idea' ? 'bg-yellow-500' :
+                          'bg-blue-500'
+                        )}
+                        style={{ left: `${a.x}%`, top: `${a.y}%` }}
+                        title={a.text}
+                      >
+                        {a.type === 'issue' ? '!' : a.type === 'idea' ? '💡' : '📝'}
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              ) : (
+                <div className="flex flex-col items-center gap-4 text-muted-foreground">
+                  <ImageOff className="h-16 w-16" />
+                  <span>Kein Screenshot für Step {currentStep} verfügbar</span>
+                </div>
+              )}
+            </div>
           </div>
           
           {/* Thumbnail Strip at Bottom */}
