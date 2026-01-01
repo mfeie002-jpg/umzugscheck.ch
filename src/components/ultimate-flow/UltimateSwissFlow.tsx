@@ -1,6 +1,11 @@
 /**
  * Ultimate Swiss Flow - Best of 31 Variants
  * 
+ * SCORE OPTIMIZED VERSION:
+ * - Enhanced Trust Badge placement (above fold + near CTA)
+ * - Sticky CTA on mobile with progress indicator
+ * - ASTAG + Swiss Quality prominent
+ * 
  * Kombiniert die besten Elemente:
  * - Klare 5-Step Struktur (v1)
  * - Trust Badge Placement (v2e)
@@ -14,7 +19,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UltimateProgressIndicator } from "./UltimateProgressIndicator";
-import { UltimateTrustBadges } from "./UltimateTrustBadges";
+import { UltimateTrustBadges, UltimateTrustBanner } from "./UltimateTrustBadges";
 import { UltimateStickyFooter } from "./UltimateStickyFooter";
 import { StepAddresses } from "./steps/StepAddresses";
 import { StepInventory } from "./steps/StepInventory";
@@ -155,9 +160,12 @@ export function UltimateSwissFlow() {
     exit: { opacity: 0, x: -20 },
   };
 
+  // Calculate progress percentage for sticky CTA
+  const progressPercent = Math.round((step / 5) * 100);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex flex-col">
-      {/* Header with Trust Badges */}
+      {/* Header with Trust Badges - SCORE OPTIMIZATION */}
       <header className="bg-background/95 backdrop-blur-sm border-b sticky top-0 z-40">
         <div className="container mx-auto px-4 py-3 max-w-2xl">
           <UltimateTrustBadges />
@@ -174,8 +182,8 @@ export function UltimateSwissFlow() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 py-6 max-w-2xl pb-32">
+      {/* Main Content - extra padding for sticky footer */}
+      <main className="flex-1 container mx-auto px-4 py-6 max-w-2xl pb-40 md:pb-32">
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
