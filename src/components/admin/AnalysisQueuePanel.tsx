@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ListOrdered, Play, Trash2, RefreshCw, Clock, CheckCircle, 
@@ -30,13 +31,42 @@ interface AnalysisQueuePanelProps {
 
 export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueuePanelProps) {
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const requireAuth = async () => {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error) console.error('Auth check failed:', error);
+
+    if (!session) {
+      setIsAuthed(false);
+      toast({
+        title: 'Bitte einloggen',
+        description: 'Für die Analyse-Queue musst du im Admin-Login eingeloggt sein.',
+      });
+      navigate('/admin/login');
+      return false;
+    }
+
+    setIsAuthed(true);
+    return true;
+  };
+
   // Fetch queue
   const fetchQueue = async () => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setIsAuthed(false);
+        setQueue([]);
+        return;
+      }
+      setIsAuthed(true);
+
       const { data, error } = await supabase
         .from('flow_analysis_queue')
         .select('*')
@@ -54,10 +84,30 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
   };
 
   useEffect(() => {
-    fetchQueue();
-    // Poll every 5 seconds
-    const interval = setInterval(fetchQueue, 5000);
-    return () => clearInterval(interval);
+    let mounted = true;
+    let intervalId: number | undefined;
+
+    (async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (!mounted) return;
+
+      if (error) console.error('getSession error:', error);
+
+      if (!session) {
+        setIsAuthed(false);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsAuthed(true);
+      await fetchQueue();
+      intervalId = window.setInterval(fetchQueue, 5000);
+    })();
+
+    return () => {
+      mounted = false;
+      if (intervalId) window.clearInterval(intervalId);
+    };
   }, []);
 
   // Add to queue
