@@ -960,9 +960,14 @@ function createStandardMockAnalysis(flowId: string, flowName: string): FlowDeepA
   };
 }
 
-function createMockSynthesis(analyses: FlowDeepAnalysis[]): WinnerSynthesis {
+function createMockSynthesis(analyses: FlowDeepAnalysis[], flowVersionContext?: string): WinnerSynthesis {
   const sorted = [...analyses].sort((a, b) => b.overallScore - a.overallScore);
   const winner = sorted[0] || { flowId: 'v1a', flowName: 'V1a', overallScore: 75 };
+  
+  // Determine the context for naming based on analyzed flows
+  const analyzeContext = flowVersionContext || detectVersionContext(analyses);
+  const ultimateName = getUltimateName(analyzeContext, sorted.length);
+  const ultimateDescription = getUltimateDescription(analyzeContext, sorted.length);
 
   return {
     winner: {
@@ -986,46 +991,37 @@ function createMockSynthesis(analyses: FlowDeepAnalysis[]): WinnerSynthesis {
       bestForArchetype: ['Sicherheits-Sucher', 'Effizienz-Maximierer', 'Preis-Jäger', 'Chaos-Manager'][i % 4]
     })),
     archetypeWinners: {
-      securitySeeker: { flowId: sorted[0]?.flowId || 'v1a', score: 75 },
-      efficiencyMaximizer: { flowId: sorted[1]?.flowId || 'v1b', score: 80 },
-      valueHunter: { flowId: sorted[2]?.flowId || 'v1c', score: 70 },
-      overwhelmedParent: { flowId: sorted[0]?.flowId || 'v1a', score: 72 }
+      securitySeeker: { flowId: sorted[0]?.flowId || winner.flowId, score: 75 },
+      efficiencyMaximizer: { flowId: sorted[1]?.flowId || winner.flowId, score: 80 },
+      valueHunter: { flowId: sorted[2]?.flowId || winner.flowId, score: 70 },
+      overwhelmedParent: { flowId: sorted[0]?.flowId || winner.flowId, score: 72 }
     },
-    bestElements: [
-      {
-        element: 'Primary CTA Design',
-        sourceFlow: winner.flowId,
-        reason: 'Höchste Conversion durch optimale Platzierung',
-        implementation: 'Sticky CTA mit Hover-Animation',
-        archetypeValue: ['Effizienz-Maximierer', 'Chaos-Manager']
-      },
-      {
-        element: 'Trust Badge Placement',
-        sourceFlow: 'v1a',
-        reason: 'Baut Vertrauen bei Sicherheits-Suchern',
-        implementation: 'ASTAG + SSL + Abnahmegarantie sichtbar',
-        archetypeValue: ['Sicherheits-Sucher']
-      }
-    ],
+    bestElements: sorted.slice(0, Math.min(5, sorted.length)).map((analysis, i) => ({
+      element: ['Primary CTA Design', 'Trust Badge Placement', 'Progress Indicator', 'Mobile Optimization', 'Form UX'][i] || `Element von ${analysis.flowId}`,
+      sourceFlow: analysis.flowId, // Use actual analyzed flow
+      reason: analysis.strengths?.[0] || 'Beste Implementation in dieser Kategorie',
+      implementation: analysis.quickWins?.[0] || 'Direkt übernehmen',
+      archetypeValue: [['Effizienz-Maximierer', 'Chaos-Manager'], ['Sicherheits-Sucher'], ['Alle'], ['Effizienz-Maximierer'], ['Preis-Jäger']][i] || ['Alle']
+    })),
     ultimateFlow: {
-      name: 'Ultimate V1 - Swiss Archetyp Edition',
-      description: 'Der perfekte Flow für den Schweizer Markt: Archetypzentriert, vertrauensbildend, effizient.',
+      name: ultimateName,
+      description: ultimateDescription,
       philosophy: 'Swissness + AI + Archetypes = Marktführerschaft',
       targetArchetypes: ['Alle 4 Archetypen gleichzeitig bedienen'],
       steps: SWISS_6_STEP_FRAMEWORK.map((step, i) => ({
         number: step.step,
         name: step.germanName,
-        sourceFlow: sorted[i % sorted.length]?.flowId || 'v1a',
+        sourceFlow: sorted[i % sorted.length]?.flowId || winner.flowId, // Rotate through actual analyzed flows
         elements: step.criticalElements,
         improvements: ['KI-Integration', 'Swiss-Fokus'],
         swissMarketFeatures: step.swissSpecific
       })),
       expectedConversionLift: '+25-40%',
       implementationPriority: [
-        { priority: 1, change: 'Trust Badges (ASTAG, Abnahmegarantie)', effort: 'low', impact: 'high', sourceFlow: 'v1a', affectedArchetypes: ['Sicherheits-Sucher'] },
+        { priority: 1, change: 'Trust Badges (ASTAG, Abnahmegarantie)', effort: 'low', impact: 'high', sourceFlow: sorted[0]?.flowId || winner.flowId, affectedArchetypes: ['Sicherheits-Sucher'] },
         { priority: 2, change: 'Sticky CTA auf Mobile', effort: 'low', impact: 'high', sourceFlow: winner.flowId, affectedArchetypes: ['Effizienz-Maximierer', 'Chaos-Manager'] },
-        { priority: 3, change: 'Flex-Date mit Spar-Anzeige', effort: 'medium', impact: 'high', sourceFlow: 'v1c', affectedArchetypes: ['Preis-Jäger'] },
-        { priority: 4, change: 'KI-Video-Inventar', effort: 'high', impact: 'high', sourceFlow: 'v1b', affectedArchetypes: ['Effizienz-Maximierer'] }
+        { priority: 3, change: 'Flex-Date mit Spar-Anzeige', effort: 'medium', impact: 'high', sourceFlow: sorted[2]?.flowId || winner.flowId, affectedArchetypes: ['Preis-Jäger'] },
+        { priority: 4, change: 'KI-Video-Inventar', effort: 'high', impact: 'high', sourceFlow: sorted[1]?.flowId || winner.flowId, affectedArchetypes: ['Effizienz-Maximierer'] }
       ],
       swissMarketDifferentiators: ['Zügeltag-Ampel', 'Abnahmegarantie-Prominent', 'ASTAG-Zertifizierung', 'nDSG-Konform'],
       movuCompetitiveAdvantage: ['KI-Video statt Listen', 'Fixpreis statt Schätzung', 'Flex-Date mit Yield Management', 'Interaktives Dashboard statt Danke-Seite']
@@ -1058,6 +1054,54 @@ function createMockSynthesis(analyses: FlowDeepAnalysis[]): WinnerSynthesis {
       }
     ]
   };
+}
+
+// Helper: Detect version context from analyzed flows
+function detectVersionContext(analyses: FlowDeepAnalysis[]): string {
+  if (analyses.length === 0) return 'all';
+  
+  const flowIds = analyses.map(a => a.flowId.toLowerCase());
+  
+  // Check if all flows are from the same version family
+  const v1Count = flowIds.filter(id => id.startsWith('v1')).length;
+  const v2Count = flowIds.filter(id => id.startsWith('v2')).length;
+  const v3Count = flowIds.filter(id => id.startsWith('v3')).length;
+  
+  if (v1Count === flowIds.length) return 'v1';
+  if (v2Count === flowIds.length) return 'v2';
+  if (v3Count === flowIds.length) return 'v3';
+  
+  return 'all';
+}
+
+// Helper: Generate context-specific Ultimate name
+function getUltimateName(context: string, flowCount: number): string {
+  switch (context.toLowerCase()) {
+    case 'v1':
+      return 'Ultimate V1 - Swiss Archetyp Edition';
+    case 'v2':
+      return 'Ultimate V2 - Optimierte Conversion Edition';
+    case 'v3':
+      return 'Ultimate V3 - Next-Gen Flow Edition';
+    case 'all':
+    default:
+      return `Ultimate Swiss Flow - Best of ${flowCount} Flows`;
+  }
+}
+
+// Helper: Generate context-specific Ultimate description
+function getUltimateDescription(context: string, flowCount: number): string {
+  switch (context.toLowerCase()) {
+    case 'v1':
+      return 'Der ultimative V1-basierte Flow für den Schweizer Markt: Archetypzentriert, vertrauensbildend, effizient.';
+    case 'v2':
+      return 'Der ultimative V2-basierte Flow mit optimierter Conversion: Modern, schnell, benutzerfreundlich.';
+    case 'v3':
+      return 'Der ultimative V3-basierte Flow der nächsten Generation: Innovativ, KI-gestützt, marktführend.';
+    case 'all':
+    default:
+      return `Der ultimative Umzugs-Flow für den Schweizer Markt: Kombiniert die Stärken aller ${flowCount} analysierten Flows.`;
+  }
 }
 
 // ============================================================================
