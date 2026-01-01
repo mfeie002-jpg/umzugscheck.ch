@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ListOrdered, Play, Trash2, RefreshCw, Clock, CheckCircle, 
-  AlertCircle, Loader2, Plus, ArrowUp, ArrowDown 
+  AlertCircle, Loader2, Plus, ArrowUp, ArrowDown, History
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { formatDistanceToNow } from 'date-fns';
+import { de } from 'date-fns/locale';
 
 interface QueueItem {
   id: string;
@@ -35,8 +37,10 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
 
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
+  const [recentItems, setRecentItems] = useState<QueueItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showRecent, setShowRecent] = useState(true);
 
   const requireAuth = async () => {
     const { data: { session }, error } = await supabase.auth.getSession();
@@ -56,32 +60,47 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
     return true;
   };
 
-  // Fetch queue
-  const fetchQueue = async () => {
+  // Fetch queue including recent completions
+  const fetchQueue = useCallback(async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         setIsAuthed(false);
         setQueue([]);
+        setRecentItems([]);
         return;
       }
       setIsAuthed(true);
 
-      const { data, error } = await supabase
+      // Fetch active queue items
+      const { data: activeData, error: activeError } = await supabase
         .from('flow_analysis_queue')
         .select('*')
         .in('status', ['queued', 'processing'])
         .order('priority', { ascending: false })
         .order('queued_at', { ascending: true });
 
-      if (error) throw error;
-      setQueue(data || []);
+      if (activeError) throw activeError;
+      setQueue(activeData || []);
+
+      // Fetch recently completed/failed items (last 15 minutes)
+      const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      const { data: recentData, error: recentError } = await supabase
+        .from('flow_analysis_queue')
+        .select('*')
+        .in('status', ['completed', 'failed'])
+        .gte('completed_at', fifteenMinutesAgo)
+        .order('completed_at', { ascending: false })
+        .limit(10);
+
+      if (recentError) throw recentError;
+      setRecentItems(recentData || []);
     } catch (err) {
       console.error('Error fetching queue:', err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -101,14 +120,14 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
 
       setIsAuthed(true);
       await fetchQueue();
-      intervalId = window.setInterval(fetchQueue, 5000);
+      intervalId = window.setInterval(fetchQueue, 3000); // Faster polling
     })();
 
     return () => {
       mounted = false;
       if (intervalId) window.clearInterval(intervalId);
     };
-  }, []);
+  }, [fetchQueue]);
 
   // Add to queue
   const addToQueue = async (flowVersion: string, flowId: string, priority = 0) => {
@@ -121,7 +140,7 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
         return;
       }
 
-      // Check if already in queue
+      // Check if already in active queue
       const existing = queue.find(q => q.flow_version === flowVersion && q.status !== 'completed');
       if (existing) {
         toast({ title: 'Bereits in Queue', description: `${flowVersion.toUpperCase()} ist bereits in der Warteschlange.` });
@@ -140,7 +159,7 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
       if (error) throw error;
 
       toast({ title: 'Zur Queue hinzugefügt', description: `${flowVersion.toUpperCase()} wurde zur Warteschlange hinzugefügt.` });
-      fetchQueue();
+      await fetchQueue();
     } catch (err) {
       console.error('Error adding to queue:', err);
       toast({ title: 'Fehler', description: 'Konnte nicht zur Queue hinzufügen.', variant: 'destructive' });
@@ -153,6 +172,10 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
     for (const [idx, flow] of flows.entries()) {
       await addToQueue(flow.id, flow.flowId, flows.length - idx);
     }
+    toast({ 
+      title: 'Alle Flows hinzugefügt', 
+      description: `${flows.length} Flows wurden zur Queue hinzugefügt.` 
+    });
   };
 
   // Remove from queue
@@ -183,7 +206,14 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
 
       if (error) throw error;
 
-      toast({ title: 'Queue gestartet', description: 'Die Verarbeitung wurde gestartet und läuft im Hintergrund.' });
+      toast({ 
+        title: 'Queue gestartet', 
+        description: 'Die Verarbeitung wurde gestartet und läuft im Hintergrund. Items werden sofort verarbeitet.' 
+      });
+      
+      // Immediate refresh to catch fast completions
+      setTimeout(fetchQueue, 500);
+      setTimeout(fetchQueue, 2000);
     } catch (err) {
       console.error('Error starting queue:', err);
       toast({ title: 'Fehler', description: 'Konnte Queue nicht starten.', variant: 'destructive' });
@@ -227,6 +257,7 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
 
   const queuedItems = queue.filter(q => q.status === 'queued');
   const processingItem = queue.find(q => q.status === 'processing');
+  const totalActive = queuedItems.length + (processingItem ? 1 : 0);
 
   return (
     <Card className="border-dashed">
@@ -235,8 +266,11 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
           <CardTitle className="text-lg flex items-center gap-2">
             <ListOrdered className="h-5 w-5" />
             Analyse-Queue
-            {queue.length > 0 && (
-              <Badge variant="secondary">{queue.length}</Badge>
+            {totalActive > 0 && (
+              <Badge variant="secondary">{totalActive} aktiv</Badge>
+            )}
+            {recentItems.length > 0 && totalActive === 0 && (
+              <Badge variant="outline" className="text-green-600">{recentItems.length} fertig</Badge>
             )}
           </CardTitle>
           <div className="flex gap-2">
@@ -275,17 +309,19 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
                 .filter(flow => flow.id !== 'all' && flow.flowId !== 'all')
                 .map(flow => {
                   const isQueued = queue.some(q => q.flow_version === flow.id && q.status !== 'completed');
+                  const recentlyCompleted = recentItems.some(r => r.flow_version === flow.id);
                   return (
                     <Button
                       key={flow.id}
-                      variant={isQueued ? 'secondary' : 'outline'}
+                      variant={isQueued ? 'secondary' : recentlyCompleted ? 'outline' : 'outline'}
                       size="sm"
                       onClick={() => addToQueue(flow.id, flow.flowId)}
                       disabled={isQueued}
-                      className="h-7 text-xs"
+                      className={`h-7 text-xs ${recentlyCompleted && !isQueued ? 'border-green-300 text-green-700 dark:border-green-700 dark:text-green-400' : ''}`}
                     >
                       {flow.label}
-                      {isQueued && <CheckCircle className="h-3 w-3 ml-1" />}
+                      {isQueued && <Loader2 className="h-3 w-3 ml-1 animate-spin" />}
+                      {recentlyCompleted && !isQueued && <CheckCircle className="h-3 w-3 ml-1" />}
                     </Button>
                   );
                 })}
@@ -311,7 +347,7 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
 
         {/* Queue list */}
         {queuedItems.length > 0 ? (
-          <ScrollArea className="h-[200px]">
+          <ScrollArea className="h-[150px]">
             <div className="space-y-2">
               <AnimatePresence>
                 {queuedItems.map((item, index) => (
@@ -360,12 +396,56 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
               </AnimatePresence>
             </div>
           </ScrollArea>
-        ) : !processingItem ? (
+        ) : !processingItem && queuedItems.length === 0 && recentItems.length === 0 ? (
           <div className="text-center py-6 text-muted-foreground text-sm">
             <ListOrdered className="h-8 w-8 mx-auto mb-2 opacity-50" />
             Queue ist leer
           </div>
         ) : null}
+
+        {/* Recent completions */}
+        {recentItems.length > 0 && (
+          <div className="space-y-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-muted-foreground gap-2"
+              onClick={() => setShowRecent(!showRecent)}
+            >
+              <History className="h-4 w-4" />
+              Kürzlich verarbeitet ({recentItems.length})
+              <span className="ml-auto text-xs">{showRecent ? '▼' : '▶'}</span>
+            </Button>
+            
+            {showRecent && (
+              <ScrollArea className="h-[100px]">
+                <div className="space-y-1">
+                  {recentItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between p-2 rounded bg-green-50/50 dark:bg-green-950/20 text-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        {item.status === 'completed' ? (
+                          <CheckCircle className="h-3 w-3 text-green-600" />
+                        ) : (
+                          <AlertCircle className="h-3 w-3 text-red-600" />
+                        )}
+                        <span className="font-medium">{item.flow_version.toUpperCase()}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {item.completed_at && formatDistanceToNow(new Date(item.completed_at), { 
+                          addSuffix: true, 
+                          locale: de 
+                        })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
