@@ -234,6 +234,7 @@ const UmzugsoffertenV1g = lazy(() => import("./pages/UmzugsoffertenV1g"));
 const UmzugsoffertenV2e = lazy(() => import("./pages/UmzugsoffertenV2e"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 import FlowTester from "./pages/FlowTester";
+const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
@@ -610,6 +611,8 @@ const AppRouterContent = () => {
 
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
+          <Route path="/flow-comparison" element={<TopFlowsComparison />} />
+          <Route path="/flow-vergleich" element={<TopFlowsComparison />} />
           <Route path="/flow-test" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/flowtester" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/flow-tester/" element={<RedirectWithQuery to="/flow-tester" />} />
