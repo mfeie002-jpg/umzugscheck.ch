@@ -10,6 +10,8 @@
 
 import React, { useState, FC } from 'react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -242,44 +244,66 @@ const Step2Details: FC<{
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium mb-2 block">Stockwerk (Von)</Label>
-            <select
-              value={formData.floorFrom}
-              onChange={(e) => setFormData({ ...formData, floorFrom: Number(e.target.value) })}
-              className="w-full px-3 py-2.5 rounded-md border bg-background"
-            >
-              {[-1, 0, 1, 2, 3, 4, 5, 6, 7, 8].map(f => (
-                <option key={f} value={f}>{f === -1 ? 'UG' : f === 0 ? 'EG' : `${f}. OG`}</option>
+            <div className="grid grid-cols-4 gap-2">
+              {[0, 1, 2, 3, 4, 5].map(f => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, floorFrom: f })}
+                  className={cn(
+                    "py-3 rounded-lg border text-sm font-medium transition-all",
+                    formData.floorFrom === f
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "hover:bg-muted/50"
+                  )}
+                >
+                  {f === 0 ? 'EG' : `${f}.`}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
           <div>
             <Label className="text-sm font-medium mb-2 block">Stockwerk (Nach)</Label>
-            <select
-              value={formData.floorTo}
-              onChange={(e) => setFormData({ ...formData, floorTo: Number(e.target.value) })}
-              className="w-full px-3 py-2.5 rounded-md border bg-background"
-            >
-              {[-1, 0, 1, 2, 3, 4, 5, 6, 7, 8].map(f => (
-                <option key={f} value={f}>{f === -1 ? 'UG' : f === 0 ? 'EG' : `${f}. OG`}</option>
+            <div className="grid grid-cols-4 gap-2">
+              {[0, 1, 2, 3, 4, 5].map(f => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, floorTo: f })}
+                  className={cn(
+                    "py-3 rounded-lg border text-sm font-medium transition-all",
+                    formData.floorTo === f
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "hover:bg-muted/50"
+                  )}
+                >
+                  {f === 0 ? 'EG' : `${f}.`}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
         </div>
 
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <label className={cn(
+            "flex items-center justify-center gap-2 p-3 rounded-lg border cursor-pointer transition-all",
+            formData.liftFrom ? "bg-primary/10 border-primary" : "hover:bg-muted/50"
+          )}>
             <Checkbox
               checked={formData.liftFrom}
               onCheckedChange={(checked) => setFormData({ ...formData, liftFrom: !!checked })}
             />
-            <span className="text-sm">Lift vorhanden (Von)</span>
+            <span className="text-sm">🛗 Lift (Von)</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className={cn(
+            "flex items-center justify-center gap-2 p-3 rounded-lg border cursor-pointer transition-all",
+            formData.liftTo ? "bg-primary/10 border-primary" : "hover:bg-muted/50"
+          )}>
             <Checkbox
               checked={formData.liftTo}
               onCheckedChange={(checked) => setFormData({ ...formData, liftTo: !!checked })}
             />
-            <span className="text-sm">Lift vorhanden (Nach)</span>
+            <span className="text-sm">🛗 Lift (Nach)</span>
           </label>
         </div>
       </div>
@@ -462,39 +486,53 @@ const Step4Contact: FC<{
 // Confirmation Screen
 const ConfirmationScreen: FC = () => (
   <div className="text-center py-8 animate-in fade-in duration-500">
-    <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6">
-      <CheckCircle2 className="h-10 w-10 text-green-600" />
+    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-100 to-emerald-200 dark:from-green-900/40 dark:to-emerald-900/30 flex items-center justify-center mx-auto mb-6 shadow-lg">
+      <CheckCircle2 className="h-12 w-12 text-green-600" />
     </div>
     
-    <h2 className="text-2xl font-bold mb-2">Vielen Dank!</h2>
-    <p className="text-muted-foreground mb-8">
+    <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+      Vielen Dank!
+    </h2>
+    <p className="text-muted-foreground mb-8 text-lg">
       Ihre Anfrage wurde erfolgreich übermittelt.
     </p>
 
-    <div className="bg-muted/50 rounded-lg p-6 text-left max-w-md mx-auto">
-      <h3 className="font-semibold mb-4 flex items-center gap-2">
-        <Clock className="h-4 w-4 text-primary" />
+    <div className="bg-gradient-to-br from-muted/50 to-muted/80 rounded-xl p-6 text-left max-w-md mx-auto border shadow-sm">
+      <h3 className="font-semibold mb-4 flex items-center gap-2 text-lg">
+        <Clock className="h-5 w-5 text-primary" />
         Was passiert als Nächstes?
       </h3>
-      <ol className="space-y-3 text-sm text-muted-foreground">
+      <ol className="space-y-4 text-sm">
         <li className="flex gap-3">
-          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">1</span>
-          <span>Wir leiten Ihre Anfrage an bis zu 5 geprüfte Umzugsfirmen weiter.</span>
+          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow">1</span>
+          <div>
+            <p className="font-medium">Weiterleitung an Profis</p>
+            <p className="text-muted-foreground text-xs">Wir leiten Ihre Anfrage an bis zu 5 geprüfte Umzugsfirmen weiter.</p>
+          </div>
         </li>
         <li className="flex gap-3">
-          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">2</span>
-          <span>Die Firmen melden sich mit massgeschneiderten Offerten.</span>
+          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow">2</span>
+          <div>
+            <p className="font-medium">Offerten erhalten</p>
+            <p className="text-muted-foreground text-xs">Die Firmen melden sich mit massgeschneiderten Offerten.</p>
+          </div>
         </li>
         <li className="flex gap-3">
-          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">3</span>
-          <span>Sie vergleichen und wählen das beste Angebot. 100% kostenlos!</span>
+          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow">3</span>
+          <div>
+            <p className="font-medium">Vergleichen & Sparen</p>
+            <p className="text-muted-foreground text-xs">Sie vergleichen und wählen das beste Angebot. 100% kostenlos!</p>
+          </div>
         </li>
       </ol>
     </div>
 
-    <p className="text-xs text-muted-foreground mt-6">
-      Sie erhalten in wenigen Minuten eine Bestätigung per E-Mail.
-    </p>
+    <div className="mt-8 flex flex-col items-center gap-3">
+      <p className="text-sm text-muted-foreground">
+        📧 Bestätigung wurde an Ihre E-Mail gesendet.
+      </p>
+      <TrustBadges />
+    </div>
   </div>
 );
 
@@ -544,12 +582,56 @@ export const UltimateSwissFlow: FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    console.log('Ultimate Swiss Flow Submission:', formData);
-    setIsSubmitting(false);
-    nextStep();
+    try {
+      // Prepare data for leads table
+      const leadData = {
+        name: formData.contact.name,
+        email: formData.contact.email,
+        phone: formData.contact.phone || null,
+        from_postal: formData.postalFrom,
+        from_city: formData.addressFrom || formData.postalFrom,
+        to_postal: formData.postalTo,
+        to_city: formData.addressTo || formData.postalTo,
+        move_date: formData.moveDate || null,
+        calculator_type: 'ultimate-best36',
+        lead_source: 'ultimate-swiss-flow',
+        calculator_input: {
+          postalFrom: formData.postalFrom,
+          postalTo: formData.postalTo,
+          addressFrom: formData.addressFrom,
+          addressTo: formData.addressTo,
+          roomCount: formData.roomCount,
+          floorFrom: formData.floorFrom,
+          floorTo: formData.floorTo,
+          liftFrom: formData.liftFrom,
+          liftTo: formData.liftTo,
+          services: formData.services,
+          dateIsFlexible: formData.dateIsFlexible,
+          estimateMethod: formData.estimateMethod,
+        },
+        calculator_output: {
+          flowVersion: 'ultimate-best36',
+          submittedAt: new Date().toISOString(),
+        },
+      };
+
+      const { error } = await supabase.from('leads').insert(leadData);
+
+      if (error) {
+        console.error('Lead submission error:', error);
+        toast.error('Fehler beim Absenden. Bitte versuchen Sie es erneut.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      toast.success('Anfrage erfolgreich gesendet!');
+      nextStep();
+    } catch (err) {
+      console.error('Submission error:', err);
+      toast.error('Ein Fehler ist aufgetreten.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

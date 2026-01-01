@@ -259,6 +259,7 @@ const ALL_FLOWS = [
   { id: 'v7', label: 'V7', flowId: 'umzugsofferten-v7' },
   { id: 'v8', label: 'V8', flowId: 'umzugsofferten-v8' },
   { id: 'v9', label: 'V9', flowId: 'umzugsofferten-v9' },
+  { id: 'ultimate-best36', label: 'Ultimate Best36 ⭐⭐', flowId: 'umzugsofferten-ultimate-best36' },
 ];
 
 const ScoreRing = ({ score, size = 'md', label }: { score: number; size?: 'sm' | 'md' | 'lg'; label?: string }) => {
