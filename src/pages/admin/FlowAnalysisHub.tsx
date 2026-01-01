@@ -20,7 +20,7 @@ import {
   AlertCircle, ChevronRight, Star, TrendingUp, Eye, Code, Download,
   RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered,
   Wand2, Loader2, Users, BookOpen, Camera, ExternalLink, Settings,
-  ChevronDown, Filter, ArrowUpDown
+  ChevronDown, Filter, ArrowUpDown, Wifi, WifiOff
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -45,6 +45,7 @@ import { supabase } from '@/integrations/supabase/client';
 import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
 import AiFixResultPanel from '@/components/admin/AiFixResultPanel';
 import { cn } from '@/lib/utils';
+import { useLiveFlowAnalysis, type LiveFlowScore } from '@/hooks/use-live-flow-analysis';
 
 // ─────────────────────────────────────────────────────────────
 // Types & Interfaces
@@ -376,14 +377,42 @@ export default function FlowAnalysisHub() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   
+  // ═══════════════════════════════════════════════════════════════
+  // LIVE ANALYSIS - Always reflects current code state
+  // ═══════════════════════════════════════════════════════════════
+  const { 
+    scores: liveScores, 
+    isAnalyzing: isLiveAnalyzing, 
+    lastUpdate: liveLastUpdate,
+    analyzeAllFlows: refreshLiveAnalysis 
+  } = useLiveFlowAnalysis();
+  
+  // Toggle between live and cached scores
+  const [useLiveScores, setUseLiveScores] = useState(true);
+  
   // View mode - read from URL param if present
   const viewParam = searchParams.get('view') as 'ranking' | 'analysis' | 'winner' | 'ultimate' | null;
   const [activeView, setActiveView] = useState<'ranking' | 'analysis' | 'winner' | 'ultimate'>(viewParam || 'ranking');
   const [selectedFlowVersion, setSelectedFlowVersion] = useState(() => searchParams.get('flow') || 'all');
   const [sortBy, setSortBy] = useState<'score' | 'name'>('score');
   
-  // Scores from DB for ranking
-  const [scores, setScores] = useState<Record<string, FlowScore>>({});
+  // Scores from DB for ranking (cached)
+  const [cachedScores, setCachedScores] = useState<Record<string, FlowScore>>({});
+  
+  // Use live or cached scores based on toggle
+  const scores = useLiveScores 
+    ? Object.fromEntries(
+        Object.entries(liveScores).map(([id, s]) => [id, {
+          flowId: s.flowId,
+          overallScore: s.overallScore,
+          conversionScore: s.categoryScores.conversion,
+          uxScore: s.categoryScores.ux,
+          mobileScore: s.categoryScores.mobile,
+          trustScore: s.categoryScores.trust,
+          lastAnalyzed: s.lastAnalyzed.toISOString(),
+        }])
+      )
+    : cachedScores;
   
   // Deep analysis state
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -442,7 +471,7 @@ export default function FlowAnalysisHub() {
             };
           }
         });
-        setScores(scoreMap);
+        setCachedScores(scoreMap);
       } catch (err) {
         console.error('Failed to fetch scores:', err);
       }
@@ -725,11 +754,33 @@ export default function FlowAnalysisHub() {
                 </SelectContent>
               </Select>
 
+              {/* Live/Cached Toggle - NEW */}
+              <Button 
+                variant={useLiveScores ? "default" : "outline"} 
+                size="sm" 
+                onClick={() => {
+                  setUseLiveScores(prev => !prev);
+                  if (!useLiveScores) refreshLiveAnalysis();
+                }} 
+                className="gap-2"
+              >
+                {useLiveScores ? <Wifi className="h-4 w-4" /> : <WifiOff className="h-4 w-4" />}
+                {useLiveScores ? 'Live' : 'Cached'}
+              </Button>
+
               {/* Sort Toggle */}
               <Button variant="outline" size="sm" onClick={() => setSortBy(s => s === 'score' ? 'name' : 'score')} className="gap-2">
                 <ArrowUpDown className="h-4 w-4" />
                 {sortBy === 'score' ? 'Nach Score' : 'Nach Name'}
               </Button>
+              
+              {/* Refresh Live */}
+              {useLiveScores && (
+                <Button variant="outline" size="sm" onClick={refreshLiveAnalysis} disabled={isLiveAnalyzing} className="gap-2">
+                  <RefreshCw className={cn("h-4 w-4", isLiveAnalyzing && "animate-spin")} />
+                  Aktualisieren
+                </Button>
+              )}
               
               {/* Analysis Actions */}
               <Button onClick={() => runDeepAnalysis(true)} disabled={isAnalyzing || loadingVariants || availableVariants.length === 0} variant="outline" size="sm" className="gap-2">
@@ -740,6 +791,17 @@ export default function FlowAnalysisHub() {
               </Button>
             </div>
           </div>
+          
+          {/* Live Status Banner */}
+          {useLiveScores && liveLastUpdate && (
+            <div className="flex items-center justify-center gap-2 py-2 px-4 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-sm rounded-lg">
+              <Wifi className="h-4 w-4" />
+              <span>Live-Analyse aktiv • Letzte Aktualisierung: {liveLastUpdate.toLocaleTimeString('de-CH')}</span>
+              <Badge variant="outline" className="ml-2 bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200">
+                {Object.keys(liveScores).length} Flows
+              </Badge>
+            </div>
+          )}
 
           {/* View Tabs */}
           <div className="flex items-center gap-2 mt-4">
