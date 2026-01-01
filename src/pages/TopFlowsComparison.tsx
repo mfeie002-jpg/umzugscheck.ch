@@ -8,9 +8,16 @@
  * - Load More functionality
  * - Sync Status für alle Flows
  * - Expanded detail views
+ * - Screenshot Capture direkt
+ * - Zoom/Lupe für Screenshots
+ * - Keyboard Navigation
+ * - Favoriten System
+ * - Vergleichs-Modus (Side-by-Side)
+ * - Quick Notes pro Flow
+ * - Performance Trends
  */
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -21,6 +28,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { 
   ExternalLink, 
@@ -50,9 +60,21 @@ import {
   Settings2,
   FileJson,
   Share2,
-  Maximize2
+  Maximize2,
+  Camera,
+  ZoomIn,
+  ZoomOut,
+  X,
+  Heart,
+  StickyNote,
+  GitCompare,
+  Search,
+  Keyboard,
+  Loader2,
+  RotateCcw
 } from 'lucide-react';
 import { getAllFlows, FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
+import { captureScreenshot } from '@/lib/screenshot-service';
 
 // Types
 interface FlowData {
@@ -253,6 +275,53 @@ const FlowComparison = () => {
   const [visibleCount, setVisibleCount] = useState(10);
   const [expandedFlow, setExpandedFlow] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
+    const stored = localStorage.getItem('flow-favorites');
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  });
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareSelection, setCompareSelection] = useState<string[]>([]);
+  const [notes, setNotes] = useState<Record<string, string>>(() => {
+    const stored = localStorage.getItem('flow-notes');
+    return stored ? JSON.parse(stored) : {};
+  });
+  const [noteDialogOpen, setNoteDialogOpen] = useState(false);
+  const [editingNoteFlow, setEditingNoteFlow] = useState<string | null>(null);
+  const [noteText, setNoteText] = useState('');
+  const [zoomDialogOpen, setZoomDialogOpen] = useState(false);
+  const [zoomImage, setZoomImage] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [captureDialogOpen, setCaptureDialogOpen] = useState(false);
+  const [capturingFlow, setCapturingFlow] = useState<string | null>(null);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Persist favorites
+  useEffect(() => {
+    localStorage.setItem('flow-favorites', JSON.stringify([...favorites]));
+  }, [favorites]);
+
+  // Persist notes
+  useEffect(() => {
+    localStorage.setItem('flow-notes', JSON.stringify(notes));
+  }, [notes]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setZoomDialogOpen(false);
+        setCaptureDialogOpen(false);
+        setNoteDialogOpen(false);
+      }
+      if (e.key === 'r' && e.ctrlKey) {
+        e.preventDefault();
+        handleRefresh();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Fetch analysis data from DB
   const { data: analysisData, isLoading: analysisLoading, refetch: refetchAnalysis } = useQuery({
@@ -421,6 +490,93 @@ const FlowComparison = () => {
     }
   };
 
+  // Toggle favorite
+  const toggleFavorite = (flowId: string) => {
+    setFavorites(prev => {
+      const next = new Set(prev);
+      if (next.has(flowId)) {
+        next.delete(flowId);
+        toast.success('Favorit entfernt');
+      } else {
+        next.add(flowId);
+        toast.success('Als Favorit gespeichert');
+      }
+      return next;
+    });
+  };
+
+  // Toggle compare selection
+  const toggleCompare = (flowId: string) => {
+    setCompareSelection(prev => {
+      if (prev.includes(flowId)) {
+        return prev.filter(id => id !== flowId);
+      }
+      if (prev.length >= 3) {
+        toast.error('Maximal 3 Flows vergleichbar');
+        return prev;
+      }
+      return [...prev, flowId];
+    });
+  };
+
+  // Open note dialog
+  const openNoteDialog = (flowId: string) => {
+    setEditingNoteFlow(flowId);
+    setNoteText(notes[flowId] || '');
+    setNoteDialogOpen(true);
+  };
+
+  // Save note
+  const saveNote = () => {
+    if (editingNoteFlow) {
+      setNotes(prev => ({
+        ...prev,
+        [editingNoteFlow]: noteText,
+      }));
+      toast.success('Notiz gespeichert');
+      setNoteDialogOpen(false);
+    }
+  };
+
+  // Zoom image
+  const openZoom = (imageUrl: string) => {
+    setZoomImage(imageUrl);
+    setZoomLevel(1);
+    setZoomDialogOpen(true);
+  };
+
+  // Capture screenshot for a flow
+  const handleCaptureScreenshot = async (flowId: string, path: string) => {
+    setCapturingFlow(flowId);
+    setIsCapturing(true);
+    
+    try {
+      const fullUrl = `${window.location.origin}${path}?uc_capture=1`;
+      const result = await captureScreenshot({
+        url: fullUrl,
+        dimension: '1920x1080',
+        delay: 5000,
+        format: 'png',
+      });
+      
+      if (result.success && result.image) {
+        // Download the screenshot
+        const link = document.createElement('a');
+        link.href = result.image;
+        link.download = `flow-${flowId}-${Date.now()}.png`;
+        link.click();
+        toast.success('Screenshot erstellt und heruntergeladen');
+      } else {
+        toast.error(result.error || 'Screenshot fehlgeschlagen');
+      }
+    } catch (error) {
+      toast.error('Screenshot-Fehler');
+    } finally {
+      setIsCapturing(false);
+      setCapturingFlow(null);
+    }
+  };
+
   const handleLoadMore = () => {
     setVisibleCount(prev => Math.min(prev + 10, sortedFlows.length));
   };
@@ -450,6 +606,8 @@ const FlowComparison = () => {
       issues: f.issues,
       criticalIssues: f.criticalIssues,
       lastAnalyzed: f.lastAnalyzed,
+      isFavorite: favorites.has(f.id),
+      note: notes[f.id] || null,
     }));
     
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -460,6 +618,13 @@ const FlowComparison = () => {
     a.click();
     URL.revokeObjectURL(url);
     toast.success('Exportiert');
+  };
+
+  // Share comparison
+  const handleShareComparison = () => {
+    const url = `${window.location.origin}/flow-comparison?flows=${compareSelection.join(',')}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Vergleichs-Link kopiert');
   };
 
   const getScoreColor = (score: number) => {
@@ -492,11 +657,30 @@ const FlowComparison = () => {
             </h1>
             <p className="text-muted-foreground text-sm">
               {analyzedFlowsCount}/{allConfiguredFlows} Flows analysiert • 
-              Top {sortedFlows.length} nach Score
+              Top {sortedFlows.length} nach Score •
+              {favorites.size > 0 && ` ${favorites.size} Favoriten`}
             </p>
           </div>
           
           <div className="flex gap-2 flex-wrap">
+            {compareMode && compareSelection.length >= 2 && (
+              <Button size="sm" onClick={handleShareComparison} className="gap-1.5">
+                <Share2 className="h-4 w-4" />
+                Link teilen
+              </Button>
+            )}
+            <Button
+              variant={compareMode ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => {
+                setCompareMode(!compareMode);
+                if (!compareMode) setCompareSelection([]);
+              }}
+              className="gap-1.5"
+            >
+              <GitCompare className="h-4 w-4" />
+              {compareMode ? `Vergleichen (${compareSelection.length})` : 'Vergleichen'}
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -525,6 +709,27 @@ const FlowComparison = () => {
           </div>
         </div>
 
+        {/* Search Bar */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Flow suchen... (Name, Badge, Highlights)"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+          {searchQuery && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+            >
+              <X className="h-3.5 w-3.5" />
+            </Button>
+          )}
+        </div>
+
         {/* Sync Status Banner */}
         <Card className="mb-6 bg-muted/50">
           <CardContent className="py-3">
@@ -542,10 +747,20 @@ const FlowComparison = () => {
                   <ImageIcon className="h-4 w-4 text-blue-500" />
                   <span><strong>{screenshotsData?.length || 0}</strong> Screenshots</span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <Heart className="h-4 w-4 text-red-500" />
+                  <span><strong>{favorites.size}</strong> Favoriten</span>
+                </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
-                Sync prüfen
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="ghost" size="sm" onClick={() => setShowOnlyNew(false)} className="gap-1">
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Reset Filter
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
+                  Sync prüfen
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -614,6 +829,34 @@ const FlowComparison = () => {
             <Star className="h-4 w-4" />
             Nur Neue
           </Button>
+
+          <Button
+            variant={favorites.size > 0 && sortBy === 'score' ? 'outline' : 'ghost'}
+            size="sm"
+            onClick={() => {
+              // Filter to show only favorites
+              const onlyFavs = sortedFlows.filter(f => favorites.has(f.id));
+              if (onlyFavs.length > 0) {
+                setShowOnlyNew(false);
+                toast.info(`${favorites.size} Favoriten`);
+              }
+            }}
+            className="gap-1"
+            disabled={favorites.size === 0}
+          >
+            <Heart className="h-4 w-4" />
+            Favoriten
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1 text-muted-foreground"
+            title="Tastenkürzel: Ctrl+R = Refresh, Esc = Dialoge schließen"
+          >
+            <Keyboard className="h-4 w-4" />
+            <span className="hidden lg:inline">Shortcuts</span>
+          </Button>
         </div>
 
         {/* Tabs with Screenshots Integration */}
@@ -664,6 +907,16 @@ const FlowComparison = () => {
                     onRunAnalysis={() => handleRunAnalysis(flow.id)}
                     getScoreColor={getScoreColor}
                     getBadgeVariant={getBadgeVariant}
+                    isFavorite={favorites.has(flow.id)}
+                    onToggleFavorite={() => toggleFavorite(flow.id)}
+                    compareMode={compareMode}
+                    isCompareSelected={compareSelection.includes(flow.id)}
+                    onToggleCompare={() => toggleCompare(flow.id)}
+                    onOpenNote={() => openNoteDialog(flow.id)}
+                    onZoomImage={openZoom}
+                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path)}
+                    isCapturing={capturingFlow === flow.id}
+                    hasNote={!!notes[flow.id]}
                   />
                 ))}
               </div>
@@ -678,6 +931,11 @@ const FlowComparison = () => {
                     onOpenNew={() => handleOpenInNewTab(flow.path)}
                     onRunAnalysis={() => handleRunAnalysis(flow.id)}
                     getScoreColor={getScoreColor}
+                    isFavorite={favorites.has(flow.id)}
+                    onToggleFavorite={() => toggleFavorite(flow.id)}
+                    onZoomImage={openZoom}
+                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path)}
+                    isCapturing={capturingFlow === flow.id}
                   />
                 ))}
               </div>
@@ -781,7 +1039,144 @@ const FlowComparison = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Compare Mode Panel */}
+        {compareMode && compareSelection.length >= 2 && (
+          <Card className="mt-4 border-primary/50">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <GitCompare className="h-5 w-5" />
+                Side-by-Side Vergleich ({compareSelection.length} Flows)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {compareSelection.map(flowId => {
+                  const flow = sortedFlows.find(f => f.id === flowId);
+                  if (!flow) return null;
+                  return (
+                    <Card key={flow.id} className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold">{flow.label}</h4>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleCompare(flow.id)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="bg-muted rounded p-2">
+                          <div className="text-muted-foreground text-xs">Score</div>
+                          <div className="font-bold text-lg">{flow.score}</div>
+                        </div>
+                        <div className="bg-muted rounded p-2">
+                          <div className="text-muted-foreground text-xs">Mobile</div>
+                          <div className="font-bold">{flow.mobileScore ?? '-'}</div>
+                        </div>
+                        <div className="bg-muted rounded p-2">
+                          <div className="text-muted-foreground text-xs">Conversion</div>
+                          <div className="font-bold">{flow.conversionScore ?? '-'}</div>
+                        </div>
+                        <div className="bg-muted rounded p-2">
+                          <div className="text-muted-foreground text-xs">Issues</div>
+                          <div className="font-bold">{flow.criticalIssues} kritisch</div>
+                        </div>
+                      </div>
+                      {flow.screenshots.desktop[0] && (
+                        <div className="mt-3">
+                          <img 
+                            src={flow.screenshots.desktop[0]}
+                            alt={flow.label}
+                            className="w-full h-24 object-cover object-top rounded cursor-pointer"
+                            onClick={() => openZoom(flow.screenshots.desktop[0])}
+                          />
+                        </div>
+                      )}
+                    </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
+
+      {/* Zoom Dialog */}
+      <Dialog open={zoomDialogOpen} onOpenChange={setZoomDialogOpen}>
+        <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+          <DialogHeader className="p-4 border-b">
+            <DialogTitle className="flex items-center justify-between">
+              <span>Screenshot Zoom</span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setZoomLevel(z => Math.max(0.5, z - 0.25))}
+                  disabled={zoomLevel <= 0.5}
+                >
+                  <ZoomOut className="h-4 w-4" />
+                </Button>
+                <span className="text-sm text-muted-foreground w-16 text-center">
+                  {Math.round(zoomLevel * 100)}%
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setZoomLevel(z => Math.min(3, z + 0.25))}
+                  disabled={zoomLevel >= 3}
+                >
+                  <ZoomIn className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setZoomLevel(1)}
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="overflow-auto max-h-[calc(90vh-80px)] p-4">
+            {zoomImage && (
+              <img 
+                src={zoomImage}
+                alt="Zoomed screenshot"
+                style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top left' }}
+                className="transition-transform duration-200"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Note Dialog */}
+      <Dialog open={noteDialogOpen} onOpenChange={setNoteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <StickyNote className="h-5 w-5" />
+              Notiz für {editingNoteFlow}
+            </DialogTitle>
+          </DialogHeader>
+          <Textarea
+            placeholder="Notizen zum Flow..."
+            value={noteText}
+            onChange={(e) => setNoteText(e.target.value)}
+            className="min-h-[120px]"
+          />
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setNoteDialogOpen(false)}>
+              Abbrechen
+            </Button>
+            <Button onClick={saveNote}>
+              Speichern
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -797,6 +1192,16 @@ interface FlowCardProps {
   onRunAnalysis: () => void;
   getScoreColor: (score: number) => string;
   getBadgeVariant: (badge: string) => 'default' | 'secondary' | 'outline' | 'destructive';
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  compareMode: boolean;
+  isCompareSelected: boolean;
+  onToggleCompare: () => void;
+  onOpenNote: () => void;
+  onZoomImage: (url: string) => void;
+  onCaptureScreenshot: () => void;
+  isCapturing: boolean;
+  hasNote: boolean;
 }
 
 const FlowCard = ({ 
@@ -809,16 +1214,44 @@ const FlowCard = ({
   onRunAnalysis,
   getScoreColor,
   getBadgeVariant,
+  isFavorite,
+  onToggleFavorite,
+  compareMode,
+  isCompareSelected,
+  onToggleCompare,
+  onOpenNote,
+  onZoomImage,
+  onCaptureScreenshot,
+  isCapturing,
+  hasNote,
 }: FlowCardProps) => {
   const [currentScreenshot, setCurrentScreenshot] = useState(0);
   const screenshots = flow.screenshots.desktop;
   const hasScreenshots = screenshots.length > 0;
 
   return (
-    <Card className="relative overflow-hidden hover:shadow-md transition-all">
+    <Card className={`relative overflow-hidden hover:shadow-md transition-all ${isCompareSelected ? 'ring-2 ring-primary' : ''}`}>
       {/* Rank Badge */}
       <div className="absolute top-2 left-2 z-10 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
         {rank}
+      </div>
+
+      {/* Top Right Actions */}
+      <div className="absolute top-2 right-2 z-10 flex gap-1">
+        {compareMode && (
+          <button
+            onClick={onToggleCompare}
+            className={`w-6 h-6 rounded flex items-center justify-center transition-colors ${isCompareSelected ? 'bg-primary text-primary-foreground' : 'bg-black/50 text-white'}`}
+          >
+            <GitCompare className="h-3.5 w-3.5" />
+          </button>
+        )}
+        <button
+          onClick={onToggleFavorite}
+          className={`w-6 h-6 rounded flex items-center justify-center transition-colors ${isFavorite ? 'bg-red-500 text-white' : 'bg-black/50 text-white opacity-0 group-hover:opacity-100'}`}
+        >
+          <Heart className={`h-3.5 w-3.5 ${isFavorite ? 'fill-current' : ''}`} />
+        </button>
       </div>
 
       {/* Screenshot Preview Area */}
@@ -827,7 +1260,8 @@ const FlowCard = ({
           <img 
             src={screenshots[currentScreenshot]} 
             alt={`${flow.label} Step ${currentScreenshot + 1}`}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-top cursor-pointer"
+            onClick={() => onZoomImage(screenshots[currentScreenshot])}
           />
           
           {/* Screenshot Navigation */}
@@ -860,12 +1294,12 @@ const FlowCard = ({
             </>
           )}
           
-          {/* Fullscreen Button */}
+          {/* Zoom Button */}
           <button
-            onClick={onOpenNew}
-            className="absolute top-2 right-2 w-6 h-6 bg-black/50 text-white rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => onZoomImage(screenshots[currentScreenshot])}
+            className="absolute bottom-2 right-2 w-6 h-6 bg-black/50 text-white rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <Maximize2 className="h-3.5 w-3.5" />
+            <ZoomIn className="h-3.5 w-3.5" />
           </button>
         </div>
       ) : (
@@ -922,17 +1356,29 @@ const FlowCard = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-1 flex-wrap">
           <Link to={flow.path} className="flex-1">
             <Button size="sm" className="w-full gap-1">
               Öffnen
               <ExternalLink className="h-3 w-3" />
             </Button>
           </Link>
-          <Button size="sm" variant="outline" onClick={onCopyUrl}>
+          <Button size="sm" variant="outline" onClick={onCopyUrl} title="URL kopieren">
             <Copy className="h-3.5 w-3.5" />
           </Button>
+          <Button size="sm" variant="outline" onClick={onCaptureScreenshot} disabled={isCapturing} title="Screenshot erstellen">
+            {isCapturing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => hasScreenshots && onZoomImage(screenshots[currentScreenshot])} disabled={!hasScreenshots} title="Zoom">
+            <ZoomIn className="h-3.5 w-3.5" />
+          </Button>
+          <Button size="sm" variant={hasNote ? 'default' : 'outline'} onClick={onOpenNote} title="Notiz">
+            <StickyNote className="h-3.5 w-3.5" />
+          </Button>
           <Button size="sm" variant="outline" onClick={onToggleExpand}>
+            <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+          </Button>
+        </div>
             <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? 'rotate-180' : ''}`} />
           </Button>
         </div>
@@ -990,6 +1436,11 @@ interface FlowListItemProps {
   onOpenNew: () => void;
   onRunAnalysis: () => void;
   getScoreColor: (score: number) => string;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  onZoomImage: (url: string) => void;
+  onCaptureScreenshot: () => void;
+  isCapturing: boolean;
 }
 
 const FlowListItem = ({ 
@@ -999,6 +1450,11 @@ const FlowListItem = ({
   onOpenNew,
   onRunAnalysis,
   getScoreColor,
+  isFavorite,
+  onToggleFavorite,
+  onZoomImage,
+  onCaptureScreenshot,
+  isCapturing,
 }: FlowListItemProps) => {
   return (
     <Card className="p-3">
