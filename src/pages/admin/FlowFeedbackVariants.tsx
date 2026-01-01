@@ -6,7 +6,7 @@
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Code, FileJson, Loader2, Copy, Check, Wand2 } from 'lucide-react';
+import { ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Code, FileJson, Loader2, Copy, Check, Wand2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -213,6 +213,20 @@ function FlowFeedbackVariantsContent() {
       toast.error('Kopieren fehlgeschlagen');
     }
   };
+
+  const handleDownloadPrompt = () => {
+    const filename = `${variant?.variant_label || 'ultimate-flow'}-prompt.md`;
+    const blob = new Blob([lovablePrompt], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success(`${filename} heruntergeladen!`);
+  };
   
   console.log('[FlowFeedbackVariants] State:', { isLoading, error, hasVariant: !!variant, hasResult: !!resultJson });
 
@@ -401,19 +415,25 @@ function FlowFeedbackVariantsContent() {
                       Kopiere diesen Prompt und füge ihn in Lovable ein, um den Ultimate Flow zu erstellen
                     </CardDescription>
                   </div>
-                  <Button onClick={handleCopyPrompt} variant="default" className="gap-2">
-                    {copied ? (
-                      <>
-                        <Check className="h-4 w-4" />
-                        Kopiert!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4" />
-                        Prompt kopieren
-                      </>
-                    )}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button onClick={handleDownloadPrompt} variant="outline" className="gap-2">
+                      <Download className="h-4 w-4" />
+                      Download .md
+                    </Button>
+                    <Button onClick={handleCopyPrompt} variant="default" className="gap-2">
+                      {copied ? (
+                        <>
+                          <Check className="h-4 w-4" />
+                          Kopiert!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          Prompt kopieren
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
