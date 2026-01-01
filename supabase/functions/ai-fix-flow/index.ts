@@ -144,12 +144,14 @@ Archetypen: ${Object.values(ARCHETYPES).map(a => a.name).join(', ')}.`
       optimizationResult = { error: 'Parse failed', raw: content.substring(0, 500) };
     }
 
-    // Store variant
-    const { data: variant } = await supabase
+    // Store variant (make variant_name unique per run to avoid duplicate-key errors)
+    const variantName = `${flowName} - AI Auto-Fix #${queueId.slice(0, 8)}`;
+
+    const { data: variant, error: variantError } = await supabase
       .from('flow_feedback_variants')
       .insert({
         flow_id: flowId,
-        variant_name: `${flowName} - AI Auto-Fix`,
+        variant_name: variantName,
         variant_label: `${flowId}-fix-${Date.now()}`,
         prompt: `Auto-Fix: ${analysis.overallScore} → ${targetScore}+`,
         status: 'done',
@@ -159,13 +161,18 @@ Archetypen: ${Object.values(ARCHETYPES).map(a => a.name).join(', ')}.`
       .select()
       .single();
 
+    if (variantError) {
+      throw variantError;
+    }
+
     // Update flow_versions
     const aiFeedback = `## AI Auto-Fix (${new Date().toLocaleDateString('de-CH')})
 Score: ${analysis.overallScore} → ${optimizationResult?.optimizedFlow?.expectedScore || targetScore}+
 Änderungen: ${optimizationResult?.summary?.totalChanges || 0}
 ${optimizationResult?.summary?.keyImprovements?.map((i: string) => `- ${i}`).join('\n') || ''}`;
 
-    await supabase.from('flow_versions')
+    await supabase
+      .from('flow_versions')
       .update({
         ai_feedback: aiFeedback,
         ai_feedback_date: new Date().toISOString(),
@@ -177,7 +184,8 @@ ${optimizationResult?.summary?.keyImprovements?.map((i: string) => `- ${i}`).joi
           expectedScore: optimizationResult?.optimizedFlow?.expectedScore || targetScore
         }
       })
-      .eq('flow_id', flowId);
+      .eq('flow_id', flowId)
+      .eq('is_active', true);
 
     // Create resolved issues
     if (optimizationResult?.optimizedFlow?.changes) {
@@ -242,13 +250,13 @@ serve(async (req) => {
     // Create queue entry immediately
     const { data: queueEntry, error: queueError } = await supabase
       .from('flow_analysis_queue')
-      .insert({
-        flow_id: flowId,
-        flow_version: 'ai-fix',
-        status: 'pending',
-        priority: 1,
-        queued_at: new Date().toISOString()
-      })
+       .insert({
+         flow_id: flowId,
+         flow_version: 'ai-fix',
+         status: 'queued',
+         priority: 1,
+         queued_at: new Date().toISOString()
+       })
       .select()
       .single();
 
