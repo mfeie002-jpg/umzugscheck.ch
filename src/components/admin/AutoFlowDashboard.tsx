@@ -876,19 +876,32 @@ const AutoFlowDashboard: React.FC = () => {
       if (alertsRes.data) setAlerts(alertsRes.data as Alert[]);
       if (settingsRes.data) setAlertSettings(settingsRes.data as AlertSetting[]);
       
-      // Fetch screenshot stats directly from flow_step_metrics
+      // Fetch screenshot stats from flow_step_metrics for LATEST run only per flow
+      // This prevents old failed runs from skewing the "missing" counts
       const { data: metricsData } = await supabase
         .from('flow_step_metrics')
-        .select('flow_id, desktop_screenshot_url, mobile_screenshot_url')
-        .gt('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+        .select('flow_id, run_id, desktop_screenshot_url, mobile_screenshot_url, created_at')
+        .gt('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        .order('created_at', { ascending: false });
       
       if (metricsData) {
+        // Group by flow_id and only keep metrics from the latest run
+        const latestRunPerFlow: Record<string, string | null> = {};
         const stats: Record<string, { desktop: number; mobile: number; total: number }> = {};
+        
         metricsData.forEach(m => {
-          if (!stats[m.flow_id]) stats[m.flow_id] = { desktop: 0, mobile: 0, total: 0 };
-          stats[m.flow_id].total++;
-          if (m.desktop_screenshot_url) stats[m.flow_id].desktop++;
-          if (m.mobile_screenshot_url) stats[m.flow_id].mobile++;
+          // Track the latest run_id per flow
+          if (!latestRunPerFlow[m.flow_id]) {
+            latestRunPerFlow[m.flow_id] = m.run_id;
+          }
+          
+          // Only count metrics from the latest run
+          if (m.run_id === latestRunPerFlow[m.flow_id]) {
+            if (!stats[m.flow_id]) stats[m.flow_id] = { desktop: 0, mobile: 0, total: 0 };
+            stats[m.flow_id].total++;
+            if (m.desktop_screenshot_url) stats[m.flow_id].desktop++;
+            if (m.mobile_screenshot_url) stats[m.flow_id].mobile++;
+          }
         });
         
         const result = Object.entries(stats).map(([flowId, s]) => ({
