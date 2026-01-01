@@ -4,7 +4,7 @@
  * Displays a flow with:
  * - Animated step screenshots (GIF-like slideshow)
  * - Horizontal scrollable thumbnails
- * - Score breakdown & Fix All button
+ * - Score breakdown
  */
 
 import { useState, useEffect, useMemo } from 'react';
@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Trophy, Eye, Camera, BarChart3, ExternalLink, ChevronDown, ChevronUp,
   AlertTriangle, AlertCircle, CheckCircle, Zap, Star, Shield, Smartphone,
-  Play, Pause, ChevronLeft, ChevronRight, Wrench, ImageOff
+  Play, Pause, ChevronLeft, ChevronRight, ImageOff
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +44,6 @@ interface FlowRankingCardProps {
   liveScore?: LiveFlowScore;
   isWinner?: boolean;
   onSelectForAnalysis?: () => void;
-  onFixAll?: () => void;
 }
 
 // Get steps for a flow
@@ -225,7 +224,6 @@ export default function FlowRankingCard({
   liveScore,
   isWinner,
   onSelectForAnalysis,
-  onFixAll,
 }: FlowRankingCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -372,21 +370,16 @@ export default function FlowRankingCard({
                 <ScoreBar label="UX" score={score?.uxScore ?? null} icon={Star} />
               </div>
               
-              {/* Issues */}
+              {/* Issues - Compact display without individual fix button */}
               {issueCount > 0 && (
                 <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
-                  <div className="flex items-center gap-2">
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" className="flex-1 h-8 text-xs gap-1 justify-start">
-                        <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
-                        {issueCount} Issues
-                        {isExpanded ? <ChevronUp className="h-3 w-3 ml-auto" /> : <ChevronDown className="h-3 w-3 ml-auto" />}
-                      </Button>
-                    </CollapsibleTrigger>
-                    <Button size="sm" className="h-8 text-xs gap-1" onClick={onFixAll}>
-                      <Wrench className="h-3.5 w-3.5" />Fix All
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-full h-8 text-xs gap-1 justify-start">
+                      <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
+                      {issueCount} Issues
+                      {isExpanded ? <ChevronUp className="h-3 w-3 ml-auto" /> : <ChevronDown className="h-3 w-3 ml-auto" />}
                     </Button>
-                  </div>
+                  </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2 space-y-1">
                     {liveScore?.issues?.slice(0, 3).map((issue, idx) => (
                       <div key={idx} className={cn(
@@ -403,6 +396,9 @@ export default function FlowRankingCard({
                         <span className="line-clamp-1">{issue.description}</span>
                       </div>
                     ))}
+                    {issueCount > 3 && (
+                      <p className="text-[9px] text-muted-foreground text-center">+{issueCount - 3} weitere</p>
+                    )}
                   </CollapsibleContent>
                 </Collapsible>
               )}
