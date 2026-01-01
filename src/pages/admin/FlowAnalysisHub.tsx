@@ -44,6 +44,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
 import AiFixResultPanel from '@/components/admin/AiFixResultPanel';
+import FlowRankingCard from '@/components/admin/FlowRankingCard';
 import { cn } from '@/lib/utils';
 import { useLiveFlowAnalysis, type LiveFlowScore } from '@/hooks/use-live-flow-analysis';
 
@@ -871,55 +872,35 @@ export default function FlowAnalysisHub() {
               <Card><CardContent className="py-12 text-center text-muted-foreground">Keine Varianten gefunden.</CardContent></Card>
             ) : (
               variants.map((variant, index) => {
-                const score = scores[variant.id];
+                const flowScore = scores[variant.id];
+                const liveFlowScore = liveScores[variant.id];
                 const rank = sortBy === 'score' ? index + 1 : null;
                 const isWinner = synthesis?.winner?.flowId === variant.id;
                 
                 return (
-                  <Card key={variant.id} className={cn('overflow-hidden border-2 transition-all hover:shadow-lg', isWinner && 'ring-2 ring-yellow-500')}>
-                    <CardHeader className={`${variant.color} text-white`}>
-                      <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                          <div className="flex items-center gap-3 flex-wrap">
-                            {rank && (
-                              <Badge variant="secondary" className={cn('text-lg px-3 py-1 font-bold',
-                                rank === 1 ? 'bg-yellow-400 text-yellow-900' :
-                                rank === 2 ? 'bg-gray-300 text-gray-800' :
-                                rank === 3 ? 'bg-amber-600 text-white' :
-                                'bg-white/20 text-white'
-                              )}>#{rank}</Badge>
-                            )}
-                            <Badge variant="secondary" className="bg-white/10 text-white font-mono">{variant.id}</Badge>
-                            {isWinner && <Badge className="bg-yellow-500 text-yellow-900"><Trophy className="h-3 w-3 mr-1" />Gewinner</Badge>}
-                          </div>
-                          <CardTitle className="text-xl mt-2">{variant.label}</CardTitle>
-                          <CardDescription className="text-white/80">{variant.description} • {variant.stepCount} Steps</CardDescription>
-                          
-                          {/* Score Badges */}
-                          {score && (
-                            <div className="flex items-center gap-2 mt-3 flex-wrap">
-                              <ScoreBadgeSimple score={score.overallScore} label="Gesamt" />
-                              <ScoreBadgeSimple score={score.conversionScore} label="Conv" />
-                              <ScoreBadgeSimple score={score.uxScore} label="UX" />
-                              <ScoreBadgeSimple score={score.mobileScore} label="Mobile" />
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Link to={variant.path} target="_blank">
-                            <Button variant="secondary" size="sm"><Eye className="h-4 w-4 mr-2" />Live</Button>
-                          </Link>
-                          <Link to={`/admin/tools?tab=calculator-review&flow=${variant.id}`}>
-                            <Button variant="secondary" size="sm"><Camera className="h-4 w-4 mr-2" />Screenshot</Button>
-                          </Link>
-                          <Button variant="secondary" size="sm" onClick={() => { setSelectedFlow(variant.id); setActiveView('analysis'); }}>
-                            <BarChart3 className="h-4 w-4 mr-2" />Details
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
+                  <FlowRankingCard
+                    key={variant.id}
+                    flowId={variant.id}
+                    label={variant.label}
+                    description={variant.description}
+                    color={variant.color}
+                    path={variant.path}
+                    stepCount={variant.stepCount}
+                    rank={rank}
+                    score={flowScore ? {
+                      overallScore: flowScore.overallScore,
+                      conversionScore: flowScore.conversionScore,
+                      uxScore: flowScore.uxScore,
+                      mobileScore: flowScore.mobileScore,
+                      trustScore: flowScore.trustScore,
+                    } : null}
+                    liveScore={liveFlowScore}
+                    isWinner={isWinner}
+                    onSelectForAnalysis={() => {
+                      setSelectedFlow(variant.id);
+                      setActiveView('analysis');
+                    }}
+                  />
                 );
               })
             )}
