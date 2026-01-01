@@ -712,35 +712,101 @@ function calculateUniversalScore(issues: Array<{ severity: string }>): ScoringRe
 }
 
 // ============================================================================
-// MOCK DATA GENERATORS - EQUAL TREATMENT FOR ALL FLOWS
+// MOCK DATA GENERATORS - RANDOMIZED SCORES PER FLOW
 // ============================================================================
+
+// Deterministic hash for consistent per-flow randomization
+function hashFlowId(flowId: string): number {
+  let hash = 0;
+  for (let i = 0; i < flowId.length; i++) {
+    const char = flowId.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+}
+
+// Seeded random number generator
+function seededRandom(seed: number, index: number): number {
+  const x = Math.sin(seed + index) * 10000;
+  return x - Math.floor(x);
+}
+
 function createMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
-  // ALL flows use the same analysis logic - no special treatment!
+  // ALL flows use the same analysis logic but with RANDOMIZED scores per flow
   return createStandardMockAnalysis(flowId, flowName);
 }
 
-// REMOVED: createV1ArchetypAnalysis - all flows now use universal scoring
-
 function createStandardMockAnalysis(flowId: string, flowName: string): FlowDeepAnalysis {
-  // Define mock issues - DEDUPLICATED, one per issue type
-  const mockIssues = [
-    { severity: 'warning', description: 'CTA nicht sticky auf Mobile', category: 'mobile' },
-    { severity: 'warning', description: 'Trust-Badges nicht prominent genug', category: 'trust' },
-    { severity: 'info', description: 'Optional: KI-Video-Inventar Integration', category: 'future' },
-    { severity: 'info', description: 'Optional: Zügeltag-Ampel-System', category: 'future' },
-    { severity: 'info', description: 'Optional: ASTAG Plus Badge hinzufügen', category: 'trust' }
+  // Create deterministic but varied scores per flow based on flowId hash
+  const seed = hashFlowId(flowId);
+  
+  // Randomize number of issues per flow (0-2 critical, 1-4 warnings, 0-5 info)
+  const criticalCount = Math.floor(seededRandom(seed, 1) * 3); // 0-2
+  const warningCount = 1 + Math.floor(seededRandom(seed, 2) * 4); // 1-4
+  const infoCount = Math.floor(seededRandom(seed, 3) * 6); // 0-5
+  
+  // Build mock issues based on randomized counts
+  const mockIssues: Array<{ severity: string; description: string; category: string }> = [];
+  
+  const criticalIssuePool = [
+    { severity: 'critical', description: 'Formular-Abbruch zu hoch (>60%)', category: 'conversion' },
+    { severity: 'critical', description: 'Mobile Touch-Targets zu klein (<44px)', category: 'mobile' },
+    { severity: 'critical', description: 'Keine Trust-Signale auf Startseite', category: 'trust' },
   ];
   
-  // Calculate score using UNIVERSAL scoring system
+  const warningIssuePool = [
+    { severity: 'warning', description: 'CTA nicht sticky auf Mobile', category: 'mobile' },
+    { severity: 'warning', description: 'Trust-Badges nicht prominent genug', category: 'trust' },
+    { severity: 'warning', description: 'Fortschrittsbalken fehlt', category: 'ux' },
+    { severity: 'warning', description: 'Preisanzeige zu spät im Funnel', category: 'conversion' },
+    { severity: 'warning', description: 'Zu viele Formularfelder pro Step', category: 'ux' },
+  ];
+  
+  const infoIssuePool = [
+    { severity: 'info', description: 'Optional: KI-Video-Inventar Integration', category: 'future' },
+    { severity: 'info', description: 'Optional: Zügeltag-Ampel-System', category: 'future' },
+    { severity: 'info', description: 'Optional: ASTAG Plus Badge hinzufügen', category: 'trust' },
+    { severity: 'info', description: 'WhatsApp-Integration möglich', category: 'feature' },
+    { severity: 'info', description: 'Karton-Rechner könnte ergänzt werden', category: 'feature' },
+    { severity: 'info', description: 'Google Reviews einbinden', category: 'trust' },
+  ];
+  
+  // Select issues deterministically based on seed
+  for (let i = 0; i < criticalCount && i < criticalIssuePool.length; i++) {
+    mockIssues.push(criticalIssuePool[Math.floor(seededRandom(seed, 10 + i) * criticalIssuePool.length)]);
+  }
+  for (let i = 0; i < warningCount && i < warningIssuePool.length; i++) {
+    mockIssues.push(warningIssuePool[Math.floor(seededRandom(seed, 20 + i) * warningIssuePool.length)]);
+  }
+  for (let i = 0; i < infoCount && i < infoIssuePool.length; i++) {
+    mockIssues.push(infoIssuePool[Math.floor(seededRandom(seed, 30 + i) * infoIssuePool.length)]);
+  }
+  
+  // Calculate score using UNIVERSAL scoring system - now with varied issues per flow
   const scoringResult = calculateUniversalScore(mockIssues);
+  
+  // Randomize category scores within reasonable ranges
+  const baseUx = 70 + Math.floor(seededRandom(seed, 100) * 25); // 70-94
+  const baseConversion = 65 + Math.floor(seededRandom(seed, 101) * 28); // 65-92
+  const baseMobile = 60 + Math.floor(seededRandom(seed, 102) * 32); // 60-91
+  const baseAccessibility = 65 + Math.floor(seededRandom(seed, 103) * 28); // 65-92
+  const basePerformance = 75 + Math.floor(seededRandom(seed, 104) * 20); // 75-94
+  const baseTrust = 55 + Math.floor(seededRandom(seed, 105) * 38); // 55-92
+  const baseClarity = 70 + Math.floor(seededRandom(seed, 106) * 25); // 70-94
   
   return {
     flowId,
     flowName,
-    overallScore: scoringResult.score, // Calculated from issues: 100 - (2*3) - (3*1) = 91
+    overallScore: scoringResult.score,
     categoryScores: {
-      ux: 88, conversion: 85, mobile: 82, accessibility: 80,
-      performance: 90, trust: 78, clarity: 87
+      ux: baseUx, 
+      conversion: baseConversion, 
+      mobile: baseMobile, 
+      accessibility: baseAccessibility,
+      performance: basePerformance, 
+      trust: baseTrust, 
+      clarity: baseClarity
     },
     archetypeScores: [
       {
