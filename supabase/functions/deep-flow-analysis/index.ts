@@ -336,7 +336,13 @@ async function fetchWithTimeout(input: string, init: RequestInit, timeoutMs: num
 }
 
 async function analyzeFlowDeep(flowId: string, flowName: string): Promise<FlowDeepAnalysis> {
-  if (!LOVABLE_API_KEY) {
+  // FAST MODE: Use mock data to avoid long AI delays for bulk analysis
+  // AI calls with 30+ flows × complex prompts = very slow
+  // Enable AI calls only for single-flow analysis or when explicitly requested
+  const ENABLE_AI_CALLS = false; // Set to true to enable slow AI analysis
+  
+  if (!LOVABLE_API_KEY || !ENABLE_AI_CALLS) {
+    console.log(`[Deep Analysis] Using mock data for ${flowId} (AI calls disabled for speed)`);
     return createMockAnalysis(flowId, flowName);
   }
 
@@ -474,7 +480,11 @@ Antworte immer im JSON-Format.`,
 }
 
 async function synthesizeWinner(analyses: FlowDeepAnalysis[]): Promise<WinnerSynthesis> {
-  if (!LOVABLE_API_KEY || analyses.length === 0) {
+  // FAST MODE: Skip AI synthesis to avoid long delays
+  const ENABLE_AI_SYNTHESIS = false; // Set to true for slow AI-powered synthesis
+  
+  if (!LOVABLE_API_KEY || !ENABLE_AI_SYNTHESIS || analyses.length === 0) {
+    console.log(`[Synthesis] Using mock synthesis (AI disabled for speed), ${analyses.length} flows analyzed`);
     return createMockSynthesis(analyses);
   }
 
