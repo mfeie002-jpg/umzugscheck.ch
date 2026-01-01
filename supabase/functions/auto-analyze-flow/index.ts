@@ -705,11 +705,36 @@ serve(async (req) => {
 
     console.log(`Created run: ${run.id} - starting background analysis for resolved flow: ${resolvedFlowId}`);
 
-    // Start background analysis using EdgeRuntime.waitUntil
-    // Use resolvedFlowId for the actual analysis (correct URLs)
-    (globalThis as any).EdgeRuntime?.waitUntil?.(
-      runAnalysisInBackground(supabase, resolvedFlowId, flowConfig, runType, baseUrl, run.id)
+    // Start background analysis.
+    // IMPORTANT: Some runtimes expose EdgeRuntime as a global (not necessarily on globalThis).
+    // If EdgeRuntime.waitUntil is unavailable, we fall back to running the analysis in-request
+    // to avoid "stuck forever" runs.
+    const bgPromise = runAnalysisInBackground(
+      supabase,
+      resolvedFlowId,
+      flowConfig,
+      runType,
+      baseUrl,
+      run.id
     );
+
+    let scheduledInBackground = false;
+    try {
+      // @ts-ignore
+      if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime?.waitUntil) {
+        // @ts-ignore
+        EdgeRuntime.waitUntil(bgPromise);
+        scheduledInBackground = true;
+        console.log('Background task scheduled via EdgeRuntime.waitUntil');
+      }
+    } catch (e) {
+      console.error('EdgeRuntime.waitUntil scheduling failed:', e);
+    }
+
+    if (!scheduledInBackground) {
+      console.warn('EdgeRuntime.waitUntil not available; running analysis synchronously.');
+      await bgPromise;
+    }
 
     // Return immediately with the run ID - client can poll for status
     return new Response(
