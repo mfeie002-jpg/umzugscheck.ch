@@ -871,7 +871,8 @@ export default function FlowAnalysisHub() {
             {variants.length === 0 ? (
               <Card><CardContent className="py-12 text-center text-muted-foreground">Keine Varianten gefunden.</CardContent></Card>
             ) : (
-              variants.map((variant, index) => {
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+              {variants.map((variant, index) => {
                 const flowScore = scores[variant.id];
                 const liveFlowScore = liveScores[variant.id];
                 const rank = sortBy === 'score' ? index + 1 : null;
@@ -902,7 +903,8 @@ export default function FlowAnalysisHub() {
                     }}
                   />
                 );
-              })
+              })}
+              </div>
             )}
           </div>
         )}
