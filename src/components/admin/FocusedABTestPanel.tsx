@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +19,8 @@ import {
   Target,
   Zap,
   Crown,
-  RotateCcw
+  RotateCcw,
+  ExternalLink
 } from 'lucide-react';
 
 const VARIANT_CONFIG = {
@@ -28,6 +30,7 @@ const VARIANT_CONFIG = {
     color: 'text-blue-500',
     bg: 'bg-blue-50 dark:bg-blue-950/20',
     description: 'Baseline Flow',
+    path: '/umzugsofferten-v1',
   },
   'umzugsofferten-v2e': {
     name: 'V2e Enhanced',
@@ -35,6 +38,7 @@ const VARIANT_CONFIG = {
     color: 'text-purple-500',
     bg: 'bg-purple-50 dark:bg-purple-950/20',
     description: 'Premium Design',
+    path: '/umzugsofferten-v2e',
   },
   'umzugsofferten-ultimate-best36': {
     name: 'Ultimate Best36',
@@ -42,6 +46,7 @@ const VARIANT_CONFIG = {
     color: 'text-amber-500',
     bg: 'bg-amber-50 dark:bg-amber-950/20',
     description: 'Synthese aller 36 Flows',
+    path: '/umzugsofferten-ultimate-best36',
   },
 };
 
@@ -204,6 +209,12 @@ const FocusedABTestPanel: React.FC = () => {
                             Führend
                           </Badge>
                         )}
+                        <Link to={config.path} target="_blank">
+                          <Button variant="ghost" size="sm" className="h-6 px-2 text-xs">
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            Ansehen
+                          </Button>
+                        </Link>
                       </div>
                       <div className="text-xs text-muted-foreground">{config.description}</div>
                     </div>
