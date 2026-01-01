@@ -35,6 +35,7 @@ import {
   Eye,
   ExternalLink,
   CloudOff,
+  Trash2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Json } from "@/integrations/supabase/types";
@@ -462,6 +463,26 @@ export function UltimateFlowExporter() {
     setActiveJob(null);
   };
 
+  // Delete Ultimate Flow
+  const deleteFlow = async (flowId: string, flowName: string) => {
+    if (!confirm(`"${flowName}" wirklich löschen?`)) return;
+    
+    try {
+      const { error } = await supabase
+        .from('flow_feedback_variants')
+        .delete()
+        .eq('id', flowId);
+      
+      if (error) throw error;
+      
+      setFlows(prev => prev.filter(f => f.id !== flowId));
+      toast.success(`"${flowName}" gelöscht`);
+    } catch (err) {
+      console.error('Delete flow error:', err);
+      toast.error('Löschen fehlgeschlagen');
+    }
+  };
+
   const copyPrompt = async (prompt: string, type: string) => {
     await navigator.clipboard.writeText(prompt);
     setCopiedPrompt(type);
@@ -597,6 +618,14 @@ export function UltimateFlowExporter() {
                         >
                           <Download className="h-4 w-4 mr-1" />
                           Export
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => deleteFlow(flow.id, flow.variant_name)}
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
