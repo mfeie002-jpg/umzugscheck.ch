@@ -646,6 +646,58 @@ export default function FlowDeepAnalysis() {
           }
         }
         
+        // Prefer tracking the exact run by ID (prevents mixing up runs and false "failed" toasts)
+        const { data: runById } = await supabase
+          .from('flow_analysis_runs')
+          .select('*')
+          .eq('id', backgroundJob.id)
+          .maybeSingle();
+
+        if (runById) {
+          if (runById.status === 'completed') {
+            setBackgroundJob(null);
+            const metadata = runById.metadata as any;
+            if (metadata?.analyses && Array.isArray(metadata.analyses)) {
+              setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
+            }
+
+            const aiRecs = runById.ai_recommendations as any;
+            if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
+              setSynthesis(normalizeSynthesis(aiRecs[0]));
+            } else {
+              setSynthesis(null);
+            }
+
+            toast({ title: 'Analyse abgeschlossen', description: 'Ergebnisse wurden geladen.' });
+            return;
+          }
+
+          if (runById.status === 'failed') {
+            setBackgroundJob(null);
+            const meta = (runById.metadata as any) ?? {};
+            toast({
+              title: 'Analyse fehlgeschlagen',
+              description:
+                String(meta?.error || runById.ai_summary || 'Die Hintergrund-Analyse ist fehlgeschlagen.'),
+              variant: 'destructive',
+            });
+            return;
+          }
+
+          setBackgroundJob(prev =>
+            prev
+              ? {
+                  ...prev,
+                  status: runById.status,
+                  stepsCaptured: runById.steps_captured || 0,
+                  totalSteps: runById.total_steps || 0,
+                  startedAt: runById.started_at,
+                }
+              : null
+          );
+          return;
+        }
+
         // Fallback: check latest deep-analysis run for this flow (more robust than tracking by id)
         if (!flowConfig) return;
 
@@ -683,9 +735,11 @@ export default function FlowDeepAnalysis() {
 
         if (latestDeepRun.status === 'failed') {
           setBackgroundJob(null);
+          const meta = (latestDeepRun.metadata as any) ?? {};
           toast({
             title: 'Analyse fehlgeschlagen',
-            description: 'Die Hintergrund-Analyse ist fehlgeschlagen.',
+            description:
+              String(meta?.error || latestDeepRun.ai_summary || 'Die Hintergrund-Analyse ist fehlgeschlagen.'),
             variant: 'destructive',
           });
           return;

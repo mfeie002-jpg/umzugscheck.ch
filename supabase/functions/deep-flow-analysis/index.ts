@@ -1010,17 +1010,34 @@ async function runAnalysisInBackground(params: {
 
   const bgSupabase = createClient(supabaseUrl, supabaseKey);
 
-  const withRetry = async <T>(label: string, fn: () => Promise<T>, retries = 3): Promise<T> => {
+  const withRetry = async <T>(
+    label: string,
+    fn: () => Promise<T>,
+    retries = 3
+  ): Promise<T> => {
     let lastErr: unknown;
+
+    const hasSupabaseError = (v: any): v is { error?: unknown } =>
+      !!v && typeof v === 'object' && 'error' in v;
+
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        return await fn();
+        const res = await fn();
+
+        // Supabase client calls don't throw on failure; they return { error }.
+        // Treat those as retryable failures.
+        if (hasSupabaseError(res) && (res as any).error) {
+          throw (res as any).error;
+        }
+
+        return res;
       } catch (e) {
         lastErr = e;
         console.error(`[Background] ${label} failed (attempt ${attempt}/${retries})`, e);
         await new Promise((r) => setTimeout(r, 400 * attempt));
       }
     }
+
     throw lastErr;
   };
 
@@ -1216,22 +1233,37 @@ serve(async (req) => {
       }
 
       // @ts-ignore
-      const startBg = () => runAnalysisInBackground({
-        runId: runRow.id,
-        parentFlowId: parentId,
-        flowVersion,
-        flowIds,
-        analysisType,
-        supabaseUrl: SUPABASE_URL,
-        supabaseKey: SUPABASE_SERVICE_ROLE_KEY,
-      });
+      const startBg = () =>
+        runAnalysisInBackground({
+          runId: runRow.id,
+          parentFlowId: parentId,
+          flowVersion,
+          flowIds,
+          analysisType,
+          supabaseUrl: SUPABASE_URL,
+          supabaseKey: SUPABASE_SERVICE_ROLE_KEY,
+        });
 
-      // @ts-ignore - EdgeRuntime is available in Deno Deploy
-      if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
+      const bgPromise = startBg();
+
+      let scheduled = false;
+      try {
+        // Prefer EdgeRuntime.waitUntil when available; otherwise run synchronously
+        // to avoid "stuck" runs that never progress.
         // @ts-ignore
-        EdgeRuntime.waitUntil(startBg());
-      } else {
-        startBg();
+        if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime?.waitUntil) {
+          // @ts-ignore
+          EdgeRuntime.waitUntil(bgPromise);
+          scheduled = true;
+          console.log('[Background Mode] Scheduled via EdgeRuntime.waitUntil');
+        }
+      } catch (e) {
+        console.error('[Background Mode] waitUntil scheduling failed:', e);
+      }
+
+      if (!scheduled) {
+        console.warn('[Background Mode] EdgeRuntime.waitUntil not available; running synchronously.');
+        await bgPromise;
       }
 
       return new Response(
