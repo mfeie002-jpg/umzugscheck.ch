@@ -3335,7 +3335,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
           {/* Calculator Flow Review Tab */}
           <TabsContent value="calculator-review">
             <Tabs defaultValue="manual" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3 max-w-lg">
+              <TabsList className="grid w-full grid-cols-4 max-w-2xl">
                 <TabsTrigger value="manual">Manuell + Export</TabsTrigger>
                 <TabsTrigger value="autoflow">
                   <Zap className="h-4 w-4 mr-1" />
@@ -3358,17 +3358,17 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               
               <TabsContent value="screenshots">
                 <AutoFlowScreenshots />
-          </TabsContent>
-
-          {/* Jobs & Downloads Tab */}
-          <TabsContent value="jobs-downloads">
-            <JobsDownloadsCenter />
-          </TabsContent>
+              </TabsContent>
               
               <TabsContent value="background-export">
                 <BackgroundExportManager />
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          {/* Jobs & Downloads Tab */}
+          <TabsContent value="jobs-downloads">
+            <JobsDownloadsCenter />
           </TabsContent>
 
           {/* SEO HTML Analyzer Tab */}
