@@ -479,20 +479,20 @@ const FullscreenViewer = ({
             <Button 
               variant="secondary" 
               size="icon"
-              className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full shadow-lg"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-10"
               onClick={onPrev}
               disabled={currentStep === 1}
             >
-              <ChevronLeft className="h-8 w-8" />
+              <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
             </Button>
             <Button 
               variant="secondary" 
               size="icon"
-              className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full shadow-lg"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-10"
               onClick={onNext}
               disabled={currentStep === totalSteps}
             >
-              <ChevronRight className="h-8 w-8" />
+              <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
             </Button>
           </div>
           
