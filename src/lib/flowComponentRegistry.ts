@@ -58,6 +58,8 @@ import {
   V9bFeedbackBased,
   V9cFeedbackBased,
   V9dFeedbackBased,
+  // Ultimate variants
+  UltimateV7Flow,
   // Multi variants
   MultiAFeedbackBased,
 } from '@/components/calculator-variants';
@@ -144,6 +146,9 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v9b': V9bFeedbackBased,
   'v9c': V9cFeedbackBased,
   'v9d': V9dFeedbackBased,
+  
+  // ========== Ultimate - Combined Best Practices ==========
+  'ultimate-v7': UltimateV7Flow,
   
   // ========== Multi - Combined ==========
   'multi-a': MultiAFeedbackBased,
