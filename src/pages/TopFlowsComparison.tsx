@@ -564,13 +564,8 @@ const FlowComparison = () => {
     setZoomDialogOpen(true);
   };
 
-  // Capture screenshot for a flow (only if no screenshots exist)
-  const handleCaptureScreenshot = async (flowId: string, path: string, hasExisting: boolean) => {
-    if (hasExisting) {
-      toast.info('Screenshots vorhanden - nutze Download-Button');
-      return;
-    }
-    
+  // Capture/Recapture screenshot for a flow
+  const handleCaptureScreenshot = async (flowId: string, path: string) => {
     setCapturingFlow(flowId);
     setIsCapturing(true);
     
@@ -643,29 +638,29 @@ const FlowComparison = () => {
     setIsBatchAnalyzing(false);
   };
 
-  // Batch capture screenshots for flows missing them
+  // Batch recapture screenshots for flows WITH existing screenshots (to replace wrong ones)
   const [isBatchCapturing, setIsBatchCapturing] = useState(false);
   const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
   
-  const handleBatchCaptureAll = async () => {
-    const flowsWithoutScreenshots = visibleFlows.filter(f => 
-      f.screenshots.desktop.length === 0 && f.screenshots.mobile.length === 0
+  const handleBatchRecaptureAll = async () => {
+    const flowsWithScreenshots = visibleFlows.filter(f => 
+      f.screenshots.desktop.length > 0 || f.screenshots.mobile.length > 0
     );
     
-    if (flowsWithoutScreenshots.length === 0) {
-      toast.info('Alle sichtbaren Flows haben bereits Screenshots');
+    if (flowsWithScreenshots.length === 0) {
+      toast.info('Keine Flows mit Screenshots zum Recapturen');
       return;
     }
     
     setIsBatchCapturing(true);
-    setBatchProgress({ current: 0, total: flowsWithoutScreenshots.length });
+    setBatchProgress({ current: 0, total: flowsWithScreenshots.length });
     
     let successCount = 0;
     let failCount = 0;
     
-    for (let i = 0; i < flowsWithoutScreenshots.length; i++) {
-      const flow = flowsWithoutScreenshots[i];
-      setBatchProgress({ current: i + 1, total: flowsWithoutScreenshots.length });
+    for (let i = 0; i < flowsWithScreenshots.length; i++) {
+      const flow = flowsWithScreenshots[i];
+      setBatchProgress({ current: i + 1, total: flowsWithScreenshots.length });
       
       try {
         const fullUrl = `${window.location.origin}${flow.path}?uc_capture=1`;
@@ -679,7 +674,7 @@ const FlowComparison = () => {
         if (result.success && result.image) {
           const link = document.createElement('a');
           link.href = result.image;
-          link.download = `flow-${flow.id}-${Date.now()}.png`;
+          link.download = `flow-${flow.id}-recaptured-${Date.now()}.png`;
           link.click();
           successCount++;
         } else {
@@ -690,7 +685,7 @@ const FlowComparison = () => {
       }
       
       // Delay between captures
-      if (i < flowsWithoutScreenshots.length - 1) {
+      if (i < flowsWithScreenshots.length - 1) {
         await new Promise(r => setTimeout(r, 2000));
       }
     }
@@ -699,7 +694,7 @@ const FlowComparison = () => {
     setBatchProgress({ current: 0, total: 0 });
     
     if (failCount === 0) {
-      toast.success(`${successCount} Screenshots erfolgreich erstellt`);
+      toast.success(`${successCount} Screenshots neu erstellt`);
     } else {
       toast.warning(`${successCount} erstellt, ${failCount} fehlgeschlagen`);
     }
@@ -1053,7 +1048,7 @@ const FlowComparison = () => {
                     onToggleCompare={() => toggleCompare(flow.id)}
                     onOpenNote={() => openNoteDialog(flow.id)}
                     onZoomImage={openZoom}
-                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path, flow.screenshots.desktop.length > 0)}
+                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path)}
                     onDownloadScreenshot={(url) => handleDownloadScreenshot(url, flow.id)}
                     isCapturing={capturingFlow === flow.id}
                     hasNote={!!notes[flow.id]}
@@ -1074,7 +1069,7 @@ const FlowComparison = () => {
                     isFavorite={favorites.has(flow.id)}
                     onToggleFavorite={() => toggleFavorite(flow.id)}
                     onZoomImage={openZoom}
-                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path, flow.screenshots.desktop.length > 0)}
+                    onCaptureScreenshot={() => handleCaptureScreenshot(flow.id, flow.path)}
                     onDownloadScreenshot={(url) => handleDownloadScreenshot(url, flow.id)}
                     isCapturing={capturingFlow === flow.id}
                   />
@@ -1215,13 +1210,13 @@ const FlowComparison = () => {
                 variant="secondary" 
                 size="sm" 
                 className="gap-1.5" 
-                onClick={handleBatchCaptureAll}
+                onClick={handleBatchRecaptureAll}
                 disabled={isBatchCapturing}
               >
-                <ImagePlus className={`h-4 w-4 ${isBatchCapturing ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ${isBatchCapturing ? 'animate-spin' : ''}`} />
                 {isBatchCapturing 
-                  ? `Capture ${batchProgress.current}/${batchProgress.total}...` 
-                  : `Screenshots erstellen (${visibleFlows.filter(f => f.screenshots.desktop.length === 0).length} fehlen)`}
+                  ? `Recapture ${batchProgress.current}/${batchProgress.total}...` 
+                  : `Screenshots neu erstellen (${visibleFlows.filter(f => f.screenshots.desktop.length > 0).length})`}
               </Button>
               <Button 
                 variant="outline" 
