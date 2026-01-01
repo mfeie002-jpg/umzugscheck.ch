@@ -320,7 +320,21 @@ interface WinnerSynthesis {
 
 // ============================================================================
 // AI ANALYSIS FUNCTIONS
-// ============================================================================
+// ==========================================================================
+
+const AI_GATEWAY_URL = 'https://ai.gateway.lovable.dev/v1/chat/completions';
+const AI_REQUEST_TIMEOUT_MS = 90_000; // 90s: prevents stuck background runs
+
+async function fetchWithTimeout(input: string, init: RequestInit, timeoutMs: number) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 async function analyzeFlowDeep(flowId: string, flowName: string): Promise<FlowDeepAnalysis> {
   if (!LOVABLE_API_KEY) {
     return createMockAnalysis(flowId, flowName);
@@ -385,45 +399,50 @@ Bewerte 0-100 wie gut der Flow diese Nutzer bedient:
 **WICHTIG**: Wenn ein Flow solide ist, gib hohe Scores! Nicht alles ist schlecht.`;
 
   try {
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-pro',
-        messages: [
-          { 
-            role: 'system', 
-            content: `Du bist ein Elite UX/Conversion-Experte mit 15+ Jahren Erfahrung im SCHWEIZER UMZUGSMARKT.
+    const response = await fetchWithTimeout(
+      AI_GATEWAY_URL,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-pro',
+          messages: [
+            {
+              role: 'system',
+              content: `Du bist ein Elite UX/Conversion-Experte mit 15+ Jahren Erfahrung im SCHWEIZER UMZUGSMARKT.
 Du kennst die Besonderheiten: Zügeltage, Wohnungsabgabe-Ängste, ASTAG-Zertifizierung, "Swissness" als Trust-Signal.
 Du analysierst Flows mit archetypzentrierter Methodik und gibst konkrete, umsetzbare Empfehlungen.
-Antworte immer im JSON-Format.` 
-          },
-          { role: 'user', content: prompt }
-        ],
-        response_format: { type: 'json_object' }
-      }),
-    });
+Antworte immer im JSON-Format.`,
+            },
+            { role: 'user', content: prompt },
+          ],
+          response_format: { type: 'json_object' },
+        }),
+      },
+      AI_REQUEST_TIMEOUT_MS
+    );
 
     if (!response.ok) {
-      console.error('AI analysis failed:', await response.text());
+      const t = await response.text().catch(() => '');
+      console.error('AI analysis failed:', response.status, t.slice(0, 500));
       return createMockAnalysis(flowId, flowName);
     }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '{}';
-    
+
     // Robust JSON extraction - handle markdown code blocks and text around JSON
     let jsonContent = content;
-    
+
     // Remove markdown code blocks if present
     const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (jsonMatch) {
       jsonContent = jsonMatch[1].trim();
     }
-    
+
     // Try to find JSON object if there's text around it
     if (!jsonContent.startsWith('{')) {
       const firstBrace = jsonContent.indexOf('{');
@@ -432,7 +451,7 @@ Antworte immer im JSON-Format.`
         jsonContent = jsonContent.substring(firstBrace, lastBrace + 1);
       }
     }
-    
+
     let parsed;
     try {
       parsed = JSON.parse(jsonContent);
@@ -445,9 +464,10 @@ Antworte immer im JSON-Format.`
     return {
       flowId,
       flowName,
-      ...parsed
+      ...parsed,
     };
   } catch (error) {
+    // Critical: ensure we never hang the background runner
     console.error('Deep analysis error:', error);
     return createMockAnalysis(flowId, flowName);
   }
@@ -458,7 +478,7 @@ async function synthesizeWinner(analyses: FlowDeepAnalysis[]): Promise<WinnerSyn
     return createMockSynthesis(analyses);
   }
 
-  const analysisData = analyses.map(a => ({
+  const analysisData = analyses.map((a) => ({
     flowId: a.flowId,
     flowName: a.flowName,
     overallScore: a.overallScore,
@@ -469,7 +489,7 @@ async function synthesizeWinner(analyses: FlowDeepAnalysis[]): Promise<WinnerSyn
     weaknesses: a.weaknesses,
     quickWins: a.quickWins,
     conversionKillers: a.conversionKillers,
-    movuComparison: a.movuComparison
+    movuComparison: a.movuComparison,
   }));
 
   const prompt = `Du bist der ultimative UX-Stratege für den SCHWEIZER UMZUGSMARKT.
@@ -542,33 +562,39 @@ Antworte im JSON-Format:
 }`;
 
   try {
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
+    const response = await fetchWithTimeout(
+      AI_GATEWAY_URL,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-pro',
+          messages: [
+            {
+              role: 'system',
+              content:
+                'Du bist ein Elite UX-Stratege für den Schweizer Umzugsmarkt. Du findest die beste Lösung durch archetypzentrierte Analyse und Swiss-Market-Synthese. Antworte im JSON-Format.',
+            },
+            { role: 'user', content: prompt },
+          ],
+          response_format: { type: 'json_object' },
+        }),
       },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-pro',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'Du bist ein Elite UX-Stratege für den Schweizer Umzugsmarkt. Du findest die beste Lösung durch archetypzentrierte Analyse und Swiss-Market-Synthese. Antworte im JSON-Format.' 
-          },
-          { role: 'user', content: prompt }
-        ],
-        response_format: { type: 'json_object' }
-      }),
-    });
+      AI_REQUEST_TIMEOUT_MS
+    );
 
     if (!response.ok) {
-      console.error('Synthesis failed:', await response.text());
+      const t = await response.text().catch(() => '');
+      console.error('Synthesis failed:', response.status, t.slice(0, 500));
       return createMockSynthesis(analyses);
     }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '{}';
-    
+
     // Robust JSON extraction
     let jsonContent = content;
     const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -582,7 +608,7 @@ Antworte im JSON-Format:
         jsonContent = jsonContent.substring(firstBrace, lastBrace + 1);
       }
     }
-    
+
     try {
       return JSON.parse(jsonContent);
     } catch (parseError) {
