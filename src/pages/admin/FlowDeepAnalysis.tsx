@@ -1022,14 +1022,12 @@ export default function FlowDeepAnalysis() {
       if (error) throw error;
 
       toast({
-        title: 'Optimierung abgeschlossen!',
-        description: `${data.optimization?.summary?.totalChanges || 0} Änderungen generiert. Score: ${analysis.overallScore} → ${data.optimization?.optimizedFlow?.expectedScore || 95}+`,
+        title: '✅ Auto-Fix angewendet!',
+        description: `${data.changesApplied || 0} Änderungen automatisch umgesetzt. Score: ${analysis.overallScore} → ${data.expectedScore || 95}+`,
       });
 
-      // Open the generated variant for viewing
-      if (data.variantId) {
-        window.open(`/admin/flow-feedback-variants?variant=${data.variantId}`, '_blank');
-      }
+      // Refresh the analysis to show updated data
+      await refreshResults();
     } catch (error) {
       console.error('Fix flow error:', error);
       toast({
