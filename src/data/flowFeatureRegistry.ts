@@ -106,8 +106,10 @@ const SPEED_FEATURES: FlowFeatures = {
  * Key: flow ID (e.g., 'umzugsofferten-v1', 'v1a', 'ultimate-all-xxx')
  */
 export const FLOW_FEATURE_REGISTRY: Record<string, Partial<FlowFeatures>> = {
-  // Main Flows
-  'umzugsofferten-v1': V1_FEATURES,
+  // Main Flows - V1 is fully optimized now
+  'umzugsofferten-v1': {
+    ...ULTIMATE_FEATURES, // V1 has all features implemented
+  },
   'umzugsofferten-v2': PREMIUM_FEATURES,
   'umzugsofferten-v3': { ...V1_FEATURES, hasBottomSheet: true },
   'umzugsofferten-v4': { ...PREMIUM_FEATURES, hasAnimations: true },
@@ -117,7 +119,7 @@ export const FLOW_FEATURE_REGISTRY: Record<string, Partial<FlowFeatures>> = {
   'umzugsofferten-v8': SPEED_FEATURES,
   'umzugsofferten-v9': { ...PREMIUM_FEATURES, hasStickyCTA: true, hasTrustPills: true },
   'umzugsofferten-v2e': { ...PREMIUM_FEATURES, hasAnimations: true, hasMicroFeedback: true },
-  'umzugsofferten-ultimate-best36': ULTIMATE_FEATURES,
+  'umzugsofferten-ultimate-best36': ULTIMATE_FEATURES, // All features
   
   // V1 Sub-variants
   'v1a': { ...V1_FEATURES, hasStickyCTA: true, hasTrustPills: true },
