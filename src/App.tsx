@@ -232,6 +232,7 @@ const UmzugsoffertenV1e = lazy(() => import("./pages/UmzugsoffertenV1e"));
 const UmzugsoffertenV1f = lazy(() => import("./pages/UmzugsoffertenV1f"));
 const UmzugsoffertenV1g = lazy(() => import("./pages/UmzugsoffertenV1g"));
 const UmzugsoffertenUltimateCH = lazy(() => import("./pages/UmzugsoffertenUltimateCH"));
+const UltimateSwissFlow = lazy(() => import("./components/flows/UltimateSwissFlow"));
 const UmzugsoffertenV2e = lazy(() => import("./pages/UmzugsoffertenV2e"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 import FlowTester from "./pages/FlowTester";
@@ -592,6 +593,7 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1f" element={<UmzugsoffertenV1f />} />
           <Route path="/umzugsofferten-v1g" element={<UmzugsoffertenV1g />} />
           <Route path="/umzugsofferten-ultimate-ch" element={<UmzugsoffertenUltimateCH />} />
+          <Route path="/umzugsofferten-ultimate-best36" element={<UltimateSwissFlow />} />
 
           {/* Main V2+ flows (public URLs used by screenshot tooling) */}
           <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />

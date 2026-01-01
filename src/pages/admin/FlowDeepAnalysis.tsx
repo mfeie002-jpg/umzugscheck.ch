@@ -992,13 +992,13 @@ export default function FlowDeepAnalysis() {
     }
   };
 
-  // AI Fix Flow function
+  // AI Fix Flow function with background processing
   const handleFixFlow = async (analysis: FlowAnalysis) => {
     setFixingFlowId(analysis.flowId);
     
     toast({
-      title: 'AI-Optimierung gestartet',
-      description: `Generiere Award-Level Optimierungen für ${analysis.flowName}...`,
+      title: '⏳ AI-Fix gestartet',
+      description: `Optimierung läuft im Hintergrund für ${analysis.flowName}...`,
     });
 
     try {
@@ -1021,21 +1021,62 @@ export default function FlowDeepAnalysis() {
 
       if (error) throw error;
 
-      toast({
-        title: '✅ Auto-Fix angewendet!',
-        description: `${data.changesApplied || 0} Änderungen automatisch umgesetzt. Score: ${analysis.overallScore} → ${data.expectedScore || 95}+`,
-      });
+      if (data.queued && data.queueId) {
+        toast({
+          title: '🔄 Verarbeitung läuft',
+          description: `Geschätzte Zeit: ${data.estimatedTime}. Du kannst weiterarbeiten.`,
+        });
 
-      // Refresh the analysis to show updated data
-      await refreshResults();
+        // Poll for completion
+        const pollInterval = setInterval(async () => {
+          const { data: queueStatus } = await supabase
+            .from('flow_analysis_queue')
+            .select('status, result_run_id, error_message')
+            .eq('id', data.queueId)
+            .single();
+
+          if (queueStatus?.status === 'completed') {
+            clearInterval(pollInterval);
+            toast({
+              title: '✅ Auto-Fix abgeschlossen!',
+              description: 'Änderungen wurden automatisch angewendet.',
+            });
+            await refreshResults();
+            setFixingFlowId(null);
+          } else if (queueStatus?.status === 'failed') {
+            clearInterval(pollInterval);
+            toast({
+              title: 'Fehler',
+              description: queueStatus.error_message || 'Verarbeitung fehlgeschlagen',
+              variant: 'destructive'
+            });
+            setFixingFlowId(null);
+          }
+        }, 3000);
+
+        // Timeout after 2 minutes
+        setTimeout(() => {
+          clearInterval(pollInterval);
+          if (fixingFlowId === analysis.flowId) {
+            setFixingFlowId(null);
+          }
+        }, 120000);
+      } else {
+        // Fallback for sync response
+        toast({
+          title: '✅ Auto-Fix angewendet!',
+          description: `${data.changesApplied || 0} Änderungen umgesetzt.`,
+        });
+        await refreshResults();
+        setFixingFlowId(null);
+      }
     } catch (error) {
       console.error('Fix flow error:', error);
       toast({
         title: 'Fehler',
-        description: 'AI-Optimierung konnte nicht durchgeführt werden',
+        description: 'AI-Optimierung konnte nicht gestartet werden',
         variant: 'destructive'
       });
-    } finally {
       setFixingFlowId(null);
     }
   };
