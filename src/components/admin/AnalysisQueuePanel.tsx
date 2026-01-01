@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ListOrdered, Play, Trash2, RefreshCw, Clock, CheckCircle, 
-  AlertCircle, Loader2, Plus, ArrowUp, ArrowDown, History
+  AlertCircle, Loader2, Plus, ArrowUp, ArrowDown, History, ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,6 +27,16 @@ interface QueueItem {
   error_message: string | null;
 }
 
+interface AnalysisRun {
+  id: string;
+  flow_id: string;
+  flow_name: string;
+  status: string;
+  overall_score: number | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
 interface AnalysisQueuePanelProps {
   onAddToQueue?: (flowVersion: string, flowId: string) => void;
   availableFlows?: Array<{ id: string; label: string; flowId: string }>;
@@ -34,13 +45,16 @@ interface AnalysisQueuePanelProps {
 export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueuePanelProps) {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [recentItems, setRecentItems] = useState<QueueItem[]>([]);
+  const [analysisRuns, setAnalysisRuns] = useState<AnalysisRun[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showRecent, setShowRecent] = useState(true);
+  const [activeTab, setActiveTab] = useState('queue');
 
   const requireAuth = async () => {
     const { data: { session }, error } = await supabase.auth.getSession();
@@ -95,6 +109,16 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
 
       if (recentError) throw recentError;
       setRecentItems(recentData || []);
+
+      // Fetch analysis runs history
+      const { data: runsData, error: runsError } = await supabase
+        .from('flow_analysis_runs')
+        .select('id, flow_id, flow_name, status, overall_score, created_at, completed_at')
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+      if (runsError) throw runsError;
+      setAnalysisRuns(runsData || []);
     } catch (err) {
       console.error('Error fetching queue:', err);
     } finally {
@@ -295,157 +319,194 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Quick add buttons */}
-        {availableFlows.length > 0 && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Zur Queue hinzufügen:</span>
-              <Button variant="ghost" size="sm" onClick={addAllToQueue} className="gap-1">
-                <Plus className="h-3 w-3" /> Alle
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {availableFlows
-                .filter(flow => flow.id !== 'all' && flow.flowId !== 'all')
-                .map(flow => {
-                  const isQueued = queue.some(q => q.flow_version === flow.id && q.status !== 'completed');
-                  const recentlyCompleted = recentItems.some(r => r.flow_version === flow.id);
-                  return (
-                    <Button
-                      key={flow.id}
-                      variant={isQueued ? 'secondary' : recentlyCompleted ? 'outline' : 'outline'}
-                      size="sm"
-                      onClick={() => addToQueue(flow.id, flow.flowId)}
-                      disabled={isQueued}
-                      className={`h-7 text-xs ${recentlyCompleted && !isQueued ? 'border-green-300 text-green-700 dark:border-green-700 dark:text-green-400' : ''}`}
-                    >
-                      {flow.label}
-                      {isQueued && <Loader2 className="h-3 w-3 ml-1 animate-spin" />}
-                      {recentlyCompleted && !isQueued && <CheckCircle className="h-3 w-3 ml-1" />}
-                    </Button>
-                  );
-                })}
-            </div>
-          </div>
-        )}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="w-full grid grid-cols-2">
+            <TabsTrigger value="queue" className="gap-1">
+              <ListOrdered className="h-3 w-3" />
+              Queue {totalActive > 0 && `(${totalActive})`}
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-1">
+              <History className="h-3 w-3" />
+              History ({analysisRuns.length})
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Processing item */}
-        {processingItem && (
-          <div className="p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-yellow-600" />
-                <span className="font-medium">{processingItem.flow_version.toUpperCase()}</span>
+          <TabsContent value="queue" className="space-y-4 mt-4">
+            {/* Quick add buttons */}
+            {availableFlows.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Zur Queue hinzufügen:</span>
+                  <Button variant="ghost" size="sm" onClick={addAllToQueue} className="gap-1">
+                    <Plus className="h-3 w-3" /> Alle
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {availableFlows
+                    .filter(flow => flow.id !== 'all' && flow.flowId !== 'all')
+                    .map(flow => {
+                      const isQueued = queue.some(q => q.flow_version === flow.id && q.status !== 'completed');
+                      const recentlyCompleted = recentItems.some(r => r.flow_version === flow.id);
+                      return (
+                        <Button
+                          key={flow.id}
+                          variant={isQueued ? 'secondary' : recentlyCompleted ? 'outline' : 'outline'}
+                          size="sm"
+                          onClick={() => addToQueue(flow.id, flow.flowId)}
+                          disabled={isQueued}
+                          className={`h-7 text-xs ${recentlyCompleted && !isQueued ? 'border-green-300 text-green-700 dark:border-green-700 dark:text-green-400' : ''}`}
+                        >
+                          {flow.label}
+                          {isQueued && <Loader2 className="h-3 w-3 ml-1 animate-spin" />}
+                          {recentlyCompleted && !isQueued && <CheckCircle className="h-3 w-3 ml-1" />}
+                        </Button>
+                      );
+                    })}
+                </div>
               </div>
-              {getStatusBadge(processingItem.status)}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Gestartet: {processingItem.started_at ? new Date(processingItem.started_at).toLocaleTimeString('de-CH') : '-'}
-            </p>
-          </div>
-        )}
+            )}
 
-        {/* Queue list */}
-        {queuedItems.length > 0 ? (
-          <ScrollArea className="h-[150px]">
-            <div className="space-y-2">
-              <AnimatePresence>
-                {queuedItems.map((item, index) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="flex items-center justify-between p-2 rounded bg-muted/50 text-sm"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground w-5 text-center">{index + 1}.</span>
-                      <span className="font-medium">{item.flow_version.toUpperCase()}</span>
-                      {item.priority > 0 && (
-                        <Badge variant="outline" className="text-xs">P{item.priority}</Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => updatePriority(item.id, 1)}
-                      >
-                        <ArrowUp className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => updatePriority(item.id, -1)}
-                      >
-                        <ArrowDown className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 text-destructive hover:text-destructive"
-                        onClick={() => removeFromQueue(item.id)}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </ScrollArea>
-        ) : !processingItem && queuedItems.length === 0 && recentItems.length === 0 ? (
-          <div className="text-center py-6 text-muted-foreground text-sm">
-            <ListOrdered className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            Queue ist leer
-          </div>
-        ) : null}
+            {/* Processing item */}
+            {processingItem && (
+              <div className="p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-yellow-600" />
+                    <span className="font-medium">{processingItem.flow_version.toUpperCase()}</span>
+                  </div>
+                  {getStatusBadge(processingItem.status)}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Gestartet: {processingItem.started_at ? new Date(processingItem.started_at).toLocaleTimeString('de-CH') : '-'}
+                </p>
+              </div>
+            )}
 
-        {/* Recent completions */}
-        {recentItems.length > 0 && (
-          <div className="space-y-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start text-muted-foreground gap-2"
-              onClick={() => setShowRecent(!showRecent)}
-            >
-              <History className="h-4 w-4" />
-              Kürzlich verarbeitet ({recentItems.length})
-              <span className="ml-auto text-xs">{showRecent ? '▼' : '▶'}</span>
-            </Button>
-            
-            {showRecent && (
-              <ScrollArea className="h-[100px]">
-                <div className="space-y-1">
-                  {recentItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between p-2 rounded bg-green-50/50 dark:bg-green-950/20 text-sm"
-                    >
-                      <div className="flex items-center gap-2">
-                        {item.status === 'completed' ? (
-                          <CheckCircle className="h-3 w-3 text-green-600" />
-                        ) : (
-                          <AlertCircle className="h-3 w-3 text-red-600" />
-                        )}
-                        <span className="font-medium">{item.flow_version.toUpperCase()}</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {item.completed_at && formatDistanceToNow(new Date(item.completed_at), { 
-                          addSuffix: true, 
-                          locale: de 
-                        })}
-                      </span>
-                    </div>
-                  ))}
+            {/* Queue list */}
+            {queuedItems.length > 0 ? (
+              <ScrollArea className="h-[150px]">
+                <div className="space-y-2">
+                  <AnimatePresence>
+                    {queuedItems.map((item, index) => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="flex items-center justify-between p-2 rounded bg-muted/50 text-sm"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground w-5 text-center">{index + 1}.</span>
+                          <span className="font-medium">{item.flow_version.toUpperCase()}</span>
+                          {item.priority > 0 && (
+                            <Badge variant="outline" className="text-xs">P{item.priority}</Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updatePriority(item.id, 1)}>
+                            <ArrowUp className="h-3 w-3" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updatePriority(item.id, -1)}>
+                            <ArrowDown className="h-3 w-3" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive" onClick={() => removeFromQueue(item.id)}>
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               </ScrollArea>
+            ) : !processingItem && queuedItems.length === 0 && recentItems.length === 0 ? (
+              <div className="text-center py-6 text-muted-foreground text-sm">
+                <ListOrdered className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                Queue ist leer
+              </div>
+            ) : null}
+
+            {/* Recent completions */}
+            {recentItems.length > 0 && (
+              <div className="space-y-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-muted-foreground gap-2"
+                  onClick={() => setShowRecent(!showRecent)}
+                >
+                  <History className="h-4 w-4" />
+                  Kürzlich verarbeitet ({recentItems.length})
+                  <span className="ml-auto text-xs">{showRecent ? '▼' : '▶'}</span>
+                </Button>
+                
+                {showRecent && (
+                  <ScrollArea className="h-[100px]">
+                    <div className="space-y-1">
+                      {recentItems.map((item) => (
+                        <div key={item.id} className="flex items-center justify-between p-2 rounded bg-green-50/50 dark:bg-green-950/20 text-sm">
+                          <div className="flex items-center gap-2">
+                            {item.status === 'completed' ? <CheckCircle className="h-3 w-3 text-green-600" /> : <AlertCircle className="h-3 w-3 text-red-600" />}
+                            <span className="font-medium">{item.flow_version.toUpperCase()}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {item.completed_at && formatDistanceToNow(new Date(item.completed_at), { addSuffix: true, locale: de })}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                )}
+              </div>
             )}
-          </div>
-        )}
+          </TabsContent>
+
+          <TabsContent value="history" className="mt-4">
+            <ScrollArea className="h-[300px]">
+              <div className="space-y-2">
+                {analysisRuns.length === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground text-sm">
+                    <History className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    Keine Analyse-Runs gefunden
+                  </div>
+                ) : (
+                  analysisRuns.map((run) => {
+                    const version = run.flow_id.replace('umzugsofferten-', '');
+                    return (
+                      <div
+                        key={run.id}
+                        className="flex items-center justify-between p-3 rounded bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                        onClick={() => window.location.href = `/admin/flow-deep-analysis?flow=${version}`}
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">{run.flow_name || run.flow_id}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(run.created_at), { addSuffix: true, locale: de })}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {run.overall_score !== null && (
+                            <Badge 
+                              variant="outline" 
+                              className={`
+                                ${run.overall_score >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300' : ''}
+                                ${run.overall_score >= 60 && run.overall_score < 80 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300' : ''}
+                                ${run.overall_score < 60 ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300' : ''}
+                              `}
+                            >
+                              {run.overall_score}%
+                            </Badge>
+                          )}
+                          {getStatusBadge(run.status)}
+                          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </ScrollArea>
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
