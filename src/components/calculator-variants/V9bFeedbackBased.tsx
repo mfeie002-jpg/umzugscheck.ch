@@ -332,7 +332,7 @@ export const V9bFeedbackBased: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-36 md:pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-36 md:pb-24 overflow-x-hidden max-w-full">
       {/* Minimaler Funnel Header (Feedback #2: Navigation minimieren) */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-xl mx-auto px-4 py-3">
