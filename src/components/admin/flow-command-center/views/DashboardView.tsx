@@ -56,6 +56,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     fetchScores();
   }, []);
 
+  // Normalize flow IDs to match DB format (remove 'umzugsofferten-' prefix)
+  const normalizeFlowId = (flowId: string): string => {
+    return flowId.replace('umzugsofferten-', '');
+  };
+
   const fetchScores = async () => {
     setLoading(true);
     try {
@@ -66,27 +71,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       
       if (error) throw error;
       
-      // Group by flow_id and get latest 3 for delta calculation (need enough for completed runs)
+      // Group by NORMALIZED flow_id and get latest 5 for delta calculation
       const flowRuns: Record<string, typeof data> = {};
       data?.forEach(row => {
-        if (!flowRuns[row.flow_id]) {
-          flowRuns[row.flow_id] = [];
+        const normalized = normalizeFlowId(row.flow_id);
+        if (!flowRuns[normalized]) {
+          flowRuns[normalized] = [];
         }
-        if (flowRuns[row.flow_id].length < 3) {
-          flowRuns[row.flow_id].push(row);
+        if (flowRuns[normalized].length < 5) {
+          flowRuns[normalized].push(row);
         }
       });
       
       // Build score map with deltas - USE COMPLETED RUNS ONLY FOR SCORES
+      // Key by NORMALIZED ID so lookup with variant.id works after normalization
       const scoreMap: Record<string, FlowScore> = {};
-      Object.entries(flowRuns).forEach(([flowId, runs]) => {
+      Object.entries(flowRuns).forEach(([normalizedId, runs]) => {
         // Filter to completed runs only for scores
         const completedRuns = runs?.filter(r => r.status === 'completed') || [];
         const latest = completedRuns[0] || runs?.[0]; // fallback to any if no completed
         const previous = completedRuns[1];
         
-        scoreMap[flowId] = {
-          flowId,
+        scoreMap[normalizedId] = {
+          flowId: normalizedId,
           overallScore: latest?.overall_score,
           conversionScore: latest?.conversion_score,
           uxScore: latest?.ux_score,
@@ -116,26 +123,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const allVariants = getVariantsForFlow(filterFlowNum);
   const flowNumbers = getAllFlowNumbers();
 
+  // Helper to get score for a variant (using normalized ID)
+  const getScoreForVariant = (variantId: string): FlowScore | undefined => {
+    const normalizedId = normalizeFlowId(variantId);
+    return scores[normalizedId] || scores[variantId];
+  };
+
   // Sort variants
   const sortedVariants = [...allVariants].sort((a, b) => {
     if (sortBy === 'score') {
-      const scoreA = scores[a.id]?.overallScore ?? -1;
-      const scoreB = scores[b.id]?.overallScore ?? -1;
+      const scoreA = getScoreForVariant(a.id)?.overallScore ?? -1;
+      const scoreB = getScoreForVariant(b.id)?.overallScore ?? -1;
       return scoreB - scoreA;
     }
     if (sortBy === 'date') {
-      const dateA = scores[a.id]?.lastAnalyzed || '';
-      const dateB = scores[b.id]?.lastAnalyzed || '';
+      const dateA = getScoreForVariant(a.id)?.lastAnalyzed || '';
+      const dateB = getScoreForVariant(b.id)?.lastAnalyzed || '';
       return dateB.localeCompare(dateA);
     }
     return a.label.localeCompare(b.label);
   });
 
-  // Calculate stats - only count flows that exist in our config
-  const configFlowIds = new Set(allVariants.map(v => v.id));
-  const analyzedCount = Object.keys(scores).filter(flowId => configFlowIds.has(flowId)).length;
+  // Calculate stats - count flows that have scores (using normalized IDs)
+  const analyzedCount = allVariants.filter(v => getScoreForVariant(v.id)?.overallScore !== undefined).length;
   const totalFlows = allVariants.length;
-  const relevantScores = Object.entries(scores).filter(([flowId]) => configFlowIds.has(flowId)).map(([, s]) => s);
+  const relevantScores = allVariants.map(v => getScoreForVariant(v.id)).filter((s): s is FlowScore => s?.overallScore !== undefined);
   const avgScore = relevantScores.length > 0
     ? Math.round(relevantScores.reduce((sum, s) => sum + (s.overallScore || 0), 0) / relevantScores.length)
     : 0;
@@ -269,7 +281,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <FlowCard
               key={variant.id}
               variant={variant}
-              score={scores[variant.id]}
+              score={getScoreForVariant(variant.id)}
               rank={sortBy === 'score' && filterFlowNum === 'all' ? index + 1 : null}
               isAnalyzing={isAnalyzing === variant.id}
               onAnalyze={() => onAnalyzeFlow(variant.id)}
