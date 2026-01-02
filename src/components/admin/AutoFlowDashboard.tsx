@@ -1314,6 +1314,35 @@ Zeige mir die Code-Diffs für jedes Problem.`;
         </Card>
       )}
 
+      {/* Unanalyzed Flows Banner */}
+      {overallStats.analyzedFlows < overallStats.totalFlows && runningAnalyses.length === 0 && (
+        <Card className="border-blue-500 bg-blue-50 dark:bg-blue-950/20">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-5 w-5 text-blue-500" />
+                <div>
+                  <span className="font-medium">
+                    {overallStats.totalFlows - overallStats.analyzedFlows} neue Flows noch nicht analysiert
+                  </span>
+                  <p className="text-sm text-muted-foreground">
+                    Klicke "Alle analysieren" um alle {overallStats.totalFlows} Flows zu analysieren
+                  </p>
+                </div>
+              </div>
+              <Button onClick={runAllAnalyses} disabled={!!analyzing} size="sm">
+                {analyzing === 'all' ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Play className="h-4 w-4 mr-2" />
+                )}
+                Alle analysieren ({overallStats.totalFlows})
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Alerts Banner */}
       {alerts.length > 0 && (
         <Card className="border-red-500 bg-red-50 dark:bg-red-950/20">
