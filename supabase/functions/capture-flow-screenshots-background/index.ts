@@ -29,44 +29,69 @@ interface ScreenshotError {
 async function captureViaBackend(
   supabase: any,
   url: string,
-  dimension: string
+  dimension: string,
+  maxRetries = 2
 ): Promise<{ data: string | null; error: ScreenshotError | null }> {
-  try {
-    const { data, error } = await supabase.functions.invoke('capture-screenshot', {
-      body: {
-        url,
-        dimension,
-        format: 'png',
-        delay: 10000,
-        fullPage: false,
-        scroll: false,
-        noCache: true,
-        // capture-mode URLs rely on the in-app sentinel
-        waitForReadySentinel: true,
-      },
-    });
+  let lastError: ScreenshotError | null = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      if (attempt > 0) {
+        console.log(`Retry attempt ${attempt} for ${dimension}`);
+        // Wait before retry with exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 3000 * attempt));
+      }
+      
+      const { data, error } = await supabase.functions.invoke('capture-screenshot', {
+        body: {
+          url,
+          dimension,
+          format: 'png',
+          delay: 10000,
+          fullPage: false,
+          scroll: false,
+          noCache: true,
+          // capture-mode URLs rely on the in-app sentinel
+          waitForReadySentinel: true,
+        },
+      });
 
-    if (error) {
-      return { data: null, error: { type: 'api_error', message: error.message } };
+      if (error) {
+        const msg = error.message || 'Unknown error';
+        // Check if it's a transient error that might succeed on retry
+        if (msg.includes('Relay Error') || msg.includes('connection closed') || msg.includes('FunctionsFetchError')) {
+          lastError = { type: 'network_error', message: msg };
+          console.warn(`Transient error on attempt ${attempt}: ${msg}`);
+          continue; // Retry
+        }
+        return { data: null, error: { type: 'api_error', message: msg } };
+      }
+
+      if (!data || (data as any)?.error) {
+        const msg = (data as any)?.error || 'Unbekannter Screenshot-Fehler';
+        const lower = String(msg).toLowerCase();
+        
+        // Check for quota exceeded - don't retry
+        if (lower.includes('quota') || lower.includes('credit') || lower.includes('limit') || lower.includes('402')) {
+          return { data: null, error: { type: 'quota_exceeded', message: String(msg) } };
+        }
+        
+        lastError = { type: 'api_error', message: String(msg) };
+        continue; // Retry on other errors
+      }
+
+      return { data: (data as any).image ?? null, error: null };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Netzwerkfehler';
+      console.warn(`Exception on attempt ${attempt}: ${msg}`);
+      lastError = { type: 'network_error', message: msg };
+      // Continue to next retry
     }
-
-    if (!data || (data as any)?.error) {
-      const msg = (data as any)?.error || 'Unbekannter Screenshot-Fehler';
-      const lower = String(msg).toLowerCase();
-      const type: ScreenshotError['type'] =
-        lower.includes('quota') || lower.includes('credit') || lower.includes('limit') || lower.includes('402')
-          ? 'quota_exceeded'
-          : 'api_error';
-      return { data: null, error: { type, message: String(msg) } };
-    }
-
-    return { data: (data as any).image ?? null, error: null };
-  } catch (e) {
-    return {
-      data: null,
-      error: { type: 'network_error', message: e instanceof Error ? e.message : 'Netzwerkfehler' },
-    };
   }
+  
+  // All retries exhausted
+  console.error(`All ${maxRetries + 1} attempts failed for ${dimension}`);
+  return { data: null, error: lastError };
 }
 
 Deno.serve(async (req) => {
