@@ -936,23 +936,25 @@ ${issues.map((issue, idx) => `${idx + 1}. **${issue.category}**: ${issue.descrip
           
           {/* Unanalyzed Flows Banner */}
           {(() => {
-            const analyzedCount = Object.keys(scores).filter(k => scores[k]?.overallScore != null).length;
-            const totalCount = variants.length;
+            if (loadingVariants || availableVariants.length === 0) return null;
+
+            const totalCount = availableVariants.length;
+            const analyzedCount = availableVariants.filter(flowId => scores[flowId]?.overallScore != null).length;
             const unanalyzedCount = totalCount - analyzedCount;
-            
+
             if (unanalyzedCount > 0 && !isAnalyzing && !backgroundJob) {
               return (
-                <div className="flex items-center justify-between gap-2 py-2 px-4 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm rounded-lg mt-2">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4" />
-                    <span>
+                <div className="flex items-center justify-between gap-3 py-2 px-4 border border-primary/20 bg-primary/10 text-primary text-sm rounded-lg mt-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <span className="truncate">
                       <strong>{unanalyzedCount} von {totalCount} Flows</strong> noch nicht analysiert
                     </span>
                   </div>
-                  <Button 
-                    onClick={() => runDeepAnalysis(false)} 
-                    disabled={isAnalyzing || loadingVariants} 
-                    size="sm" 
+                  <Button
+                    onClick={() => runDeepAnalysis(false)}
+                    disabled={isAnalyzing || loadingVariants}
+                    size="sm"
                     variant="default"
                     className="gap-2"
                   >
@@ -962,6 +964,7 @@ ${issues.map((issue, idx) => `${idx + 1}. **${issue.category}**: ${issue.descrip
                 </div>
               );
             }
+
             return null;
           })()}
 
