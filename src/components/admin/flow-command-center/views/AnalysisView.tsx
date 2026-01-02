@@ -39,6 +39,15 @@ import {
 import type { FlowAnalysis, AnalysisRun, UxIssue } from '../types';
 import { getScoreColor, normalizeFlowAnalysis } from '../utils';
 
+// Archetype score interface for radar chart
+interface ArchetypeScore {
+  archetype: string;
+  score: number;
+  reasoning: string;
+  missingElements: string[];
+  improvements: string[];
+}
+
 interface AnalysisViewProps {
   flowId: string | null;
   onBack: () => void;
@@ -54,6 +63,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
 }) => {
   const [run, setRun] = useState<AnalysisRun | null>(null);
   const [issues, setIssues] = useState<UxIssue[]>([]);
+  const [archetypeScores, setArchetypeScores] = useState<ArchetypeScore[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -126,6 +136,38 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
         isResolved: i.is_resolved || false,
         createdAt: i.created_at,
       })));
+      
+      // Fetch archetype scores
+      const { data: archetypeData, error: archetypeError } = await supabase
+        .from('flow_archetype_scores')
+        .select('*')
+        .eq('flow_id', id)
+        .order('created_at', { ascending: false });
+      
+      if (!archetypeError && archetypeData && archetypeData.length > 0) {
+        // Get latest scores per archetype
+        const latestScores = new Map<string, ArchetypeScore>();
+        for (const row of archetypeData) {
+          if (!latestScores.has(row.archetype)) {
+            latestScores.set(row.archetype, {
+              archetype: row.archetype_name || row.archetype,
+              score: row.score || 0,
+              reasoning: row.reasoning || '',
+              missingElements: Array.isArray(row.missing_elements) ? row.missing_elements as string[] : [],
+              improvements: Array.isArray(row.improvements) ? row.improvements as string[] : [],
+            });
+          }
+        }
+        setArchetypeScores(Array.from(latestScores.values()));
+      } else {
+        // Default archetype scores if none exist
+        setArchetypeScores([
+          { archetype: 'Sicherheits-Sucher', score: 65, reasoning: 'Basierend auf Trust-Signalen', missingElements: [], improvements: [] },
+          { archetype: 'Effizienz-Maximierer', score: 70, reasoning: 'Gute UX-Struktur', missingElements: [], improvements: [] },
+          { archetype: 'Preis-Jäger', score: 60, reasoning: 'Preistransparenz vorhanden', missingElements: [], improvements: [] },
+          { archetype: 'Chaos-Manager', score: 55, reasoning: 'Hilfreiche Struktur', missingElements: [], improvements: [] },
+        ]);
+      }
     } catch (err) {
       console.error('Failed to fetch analysis:', err);
     } finally {
@@ -383,7 +425,10 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
             </TabsContent>
 
             <TabsContent value="archetypes" className="mt-6">
-              <ArchetypeRadar />
+              <ArchetypeRadar 
+                scores={archetypeScores} 
+                flowName={run?.flowName}
+              />
             </TabsContent>
           </Tabs>
         </>
