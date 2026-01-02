@@ -61,44 +61,46 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     try {
       const { data, error } = await supabase
         .from('flow_analysis_runs')
-        .select('flow_id, overall_score, conversion_score, ux_score, mobile_score, trust_score, accessibility_score, performance_score, created_at')
+        .select('flow_id, overall_score, conversion_score, ux_score, mobile_score, trust_score, accessibility_score, performance_score, created_at, status')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
       
-      // Group by flow_id and get latest 2 for delta calculation
+      // Group by flow_id and get latest 3 for delta calculation (need enough for completed runs)
       const flowRuns: Record<string, typeof data> = {};
       data?.forEach(row => {
         if (!flowRuns[row.flow_id]) {
           flowRuns[row.flow_id] = [];
         }
-        if (flowRuns[row.flow_id].length < 2) {
+        if (flowRuns[row.flow_id].length < 3) {
           flowRuns[row.flow_id].push(row);
         }
       });
       
-      // Build score map with deltas
+      // Build score map with deltas - USE COMPLETED RUNS ONLY FOR SCORES
       const scoreMap: Record<string, FlowScore> = {};
       Object.entries(flowRuns).forEach(([flowId, runs]) => {
-        const latest = runs[0];
-        const previous = runs[1];
+        // Filter to completed runs only for scores
+        const completedRuns = runs?.filter(r => r.status === 'completed') || [];
+        const latest = completedRuns[0] || runs?.[0]; // fallback to any if no completed
+        const previous = completedRuns[1];
         
         scoreMap[flowId] = {
           flowId,
-          overallScore: latest.overall_score,
-          conversionScore: latest.conversion_score,
-          uxScore: latest.ux_score,
-          mobileScore: latest.mobile_score,
-          trustScore: latest.trust_score,
-          accessibilityScore: latest.accessibility_score,
-          performanceScore: latest.performance_score,
-          lastAnalyzed: latest.created_at,
-          // Delta fields
+          overallScore: latest?.overall_score,
+          conversionScore: latest?.conversion_score,
+          uxScore: latest?.ux_score,
+          mobileScore: latest?.mobile_score,
+          trustScore: latest?.trust_score,
+          accessibilityScore: latest?.accessibility_score,
+          performanceScore: latest?.performance_score,
+          lastAnalyzed: latest?.created_at,
+          // Delta fields - only between completed runs
           previousOverallScore: previous?.overall_score ?? null,
-          delta: previous ? (latest.overall_score || 0) - (previous.overall_score || 0) : null,
-          deltaConversion: previous ? (latest.conversion_score || 0) - (previous.conversion_score || 0) : null,
-          deltaUx: previous ? (latest.ux_score || 0) - (previous.ux_score || 0) : null,
-          deltaMobile: previous ? (latest.mobile_score || 0) - (previous.mobile_score || 0) : null,
+          delta: previous ? (latest?.overall_score || 0) - (previous.overall_score || 0) : null,
+          deltaConversion: previous ? (latest?.conversion_score || 0) - (previous.conversion_score || 0) : null,
+          deltaUx: previous ? (latest?.ux_score || 0) - (previous.ux_score || 0) : null,
+          deltaMobile: previous ? (latest?.mobile_score || 0) - (previous.mobile_score || 0) : null,
         };
       });
       

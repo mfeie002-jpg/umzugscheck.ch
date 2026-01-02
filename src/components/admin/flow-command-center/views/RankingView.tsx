@@ -143,34 +143,42 @@ export const RankingView: React.FC<RankingViewProps> = ({
       
       Object.entries(flowRuns).forEach(([normalizedId, runs]) => {
         const latest = runs[0];
-        const previous = runs[1];
         
-        // Calculate deltas
-        const delta = previous 
-          ? (latest.overall_score || 0) - (previous.overall_score || 0) 
+        // IMPORTANT: For scores, use the last COMPLETED run (not processing/failed)
+        const lastCompleted = runs?.find(r => r.status === 'completed');
+        // For delta, use the second completed run
+        const completedRuns = runs?.filter(r => r.status === 'completed') || [];
+        const previousCompleted = completedRuns[1];
+        
+        // Source for scores: prefer completed run
+        const scoreSource = lastCompleted || latest;
+        
+        // Calculate deltas between completed runs only
+        const delta = previousCompleted 
+          ? (lastCompleted?.overall_score || 0) - (previousCompleted.overall_score || 0) 
           : null;
-        const deltaConversion = previous 
-          ? (latest.conversion_score || 0) - (previous.conversion_score || 0) 
+        const deltaConversion = previousCompleted 
+          ? (lastCompleted?.conversion_score || 0) - (previousCompleted.conversion_score || 0) 
           : null;
-        const deltaUx = previous 
-          ? (latest.ux_score || 0) - (previous.ux_score || 0) 
+        const deltaUx = previousCompleted 
+          ? (lastCompleted?.ux_score || 0) - (previousCompleted.ux_score || 0) 
           : null;
-        const deltaMobile = previous 
-          ? (latest.mobile_score || 0) - (previous.mobile_score || 0) 
+        const deltaMobile = previousCompleted 
+          ? (lastCompleted?.mobile_score || 0) - (previousCompleted.mobile_score || 0) 
           : null;
         
         scoreMap[normalizedId] = {
           flowId: normalizedId,
-          overallScore: latest.overall_score,
-          conversionScore: latest.conversion_score,
-          uxScore: latest.ux_score,
-          mobileScore: latest.mobile_score,
-          trustScore: latest.trust_score,
-          accessibilityScore: latest.accessibility_score,
-          performanceScore: latest.performance_score,
-          lastAnalyzed: latest.created_at,
+          overallScore: scoreSource.overall_score,
+          conversionScore: scoreSource.conversion_score,
+          uxScore: scoreSource.ux_score,
+          mobileScore: scoreSource.mobile_score,
+          trustScore: scoreSource.trust_score,
+          accessibilityScore: scoreSource.accessibility_score,
+          performanceScore: scoreSource.performance_score,
+          lastAnalyzed: scoreSource.created_at,
           // Delta tracking
-          previousOverallScore: previous?.overall_score ?? null,
+          previousOverallScore: previousCompleted?.overall_score ?? null,
           delta,
           deltaConversion,
           deltaUx,
@@ -187,9 +195,9 @@ export const RankingView: React.FC<RankingViewProps> = ({
         const metadata = latest.metadata as { error?: string } | null;
         
         // For screenshot count, use last COMPLETED run if current is running
-        const lastCompleted = runs?.find(r => r.status === 'completed');
-        const runIdForScreenshots = isRunning && lastCompleted ? lastCompleted.id : latest.id;
-        const totalStepsForScreenshots = isRunning && lastCompleted ? (lastCompleted.total_steps || 1) : (latest.total_steps || 1);
+        const completedForScreenshots = lastCompleted; // reuse from above
+        const runIdForScreenshots = isRunning && completedForScreenshots ? completedForScreenshots.id : latest.id;
+        const totalStepsForScreenshots = isRunning && completedForScreenshots ? (completedForScreenshots.total_steps || 1) : (latest.total_steps || 1);
         
         statusMap[normalizedId] = {
           status: latest.status === 'completed' ? 'completed' 

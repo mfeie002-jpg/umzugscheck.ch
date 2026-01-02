@@ -77,11 +77,12 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
   const fetchAnalysis = async (id: string) => {
     setLoading(true);
     try {
-      // Fetch latest 2 runs for delta comparison
+      // Fetch latest 2 COMPLETED runs for delta comparison (ignore processing/failed)
       const { data: runData, error: runError } = await supabase
         .from('flow_analysis_runs')
         .select('*')
         .or(`flow_id.eq.${id},flow_id.eq.umzugsofferten-${id}`)
+        .eq('status', 'completed')
         .order('created_at', { ascending: false })
         .limit(2);
       
