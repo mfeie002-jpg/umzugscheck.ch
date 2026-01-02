@@ -115,75 +115,100 @@ interface StepAnalysis {
   };
 }
 
-// Capture screenshot and return base64 for AI analysis
-async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile'): Promise<Uint8Array | null> {
+// Capture screenshot with retry logic - returns base64 for AI analysis
+async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile', maxRetries = 3): Promise<Uint8Array | null> {
   if (!SCREENSHOTMACHINE_KEY) {
     console.log('No SCREENSHOTMACHINE_API_KEY, skipping screenshot');
     return null;
   }
 
   const dimension = device === 'desktop' ? '1920x1080' : '430x932';
-  
-  // Use the capture-screenshot edge function for better control
   const SUPABASE_URL_ENV = Deno.env.get('SUPABASE_URL')!;
   const SUPABASE_SERVICE_ROLE_KEY_ENV = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   
-  try {
-    // Call our own capture-screenshot function which has better settings
-    console.log(`Calling capture-screenshot for ${url} (${device})...`);
-    const response = await fetch(`${SUPABASE_URL_ENV}/functions/v1/capture-screenshot`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY_ENV}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: url,
-        dimension: dimension,
-        device: device,
-        delay: 10000, // 10 seconds for SPA to fully render
-        format: 'png',
-        fullPage: false
-      }),
-    });
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`[Screenshot] Attempt ${attempt}/${maxRetries} for ${device}: ${url}`);
+      
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+      
+      const response = await fetch(`${SUPABASE_URL_ENV}/functions/v1/capture-screenshot`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY_ENV}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: url,
+          dimension: dimension,
+          device: device,
+          delay: 12000, // 12 seconds for SPA to fully render
+          format: 'png',
+          fullPage: false
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Screenshot API call failed for ${url}: ${response.status} - ${errorText}`);
-      return null;
-    }
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`[Screenshot] API call failed (attempt ${attempt}): ${response.status} - ${errorText}`);
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 2000 * attempt)); // Exponential backoff
+          continue;
+        }
+        return null;
+      }
 
-    const result = await response.json();
-    
-    // The capture-screenshot function returns image as "image" field with data URL
-    if (!result.success || !result.image) {
-      console.error(`Screenshot failed - no image data for ${url}:`, JSON.stringify(result).substring(0, 200));
+      const result = await response.json();
+      
+      if (!result.success || !result.image) {
+        console.error(`[Screenshot] No image data (attempt ${attempt}):`, JSON.stringify(result).substring(0, 200));
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+          continue;
+        }
+        return null;
+      }
+      
+      // Extract base64 from data URL
+      const dataUrl = result.image;
+      const base64Match = dataUrl.match(/^data:image\/\w+;base64,(.+)$/);
+      if (!base64Match) {
+        console.error(`[Screenshot] Invalid data URL format (attempt ${attempt})`);
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+          continue;
+        }
+        return null;
+      }
+      
+      const base64 = base64Match[1];
+      const binaryString = atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      
+      console.log(`[Screenshot] SUCCESS ${device}: ${bytes.length} bytes`);
+      return bytes;
+      
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      console.error(`[Screenshot] Error (attempt ${attempt}): ${errorMsg}`);
+      
+      if (attempt < maxRetries) {
+        await new Promise(r => setTimeout(r, 2000 * attempt));
+        continue;
+      }
       return null;
     }
-    
-    // Extract base64 from data URL (format: "data:image/png;base64,...")
-    const dataUrl = result.image;
-    const base64Match = dataUrl.match(/^data:image\/\w+;base64,(.+)$/);
-    if (!base64Match) {
-      console.error(`Invalid image data URL format for ${url}`);
-      return null;
-    }
-    
-    const base64 = base64Match[1];
-    
-    // Convert base64 back to Uint8Array
-    const binaryString = atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    
-    console.log(`Screenshot captured for ${url} (${device}): ${bytes.length} bytes`);
-    return bytes;
-  } catch (error) {
-    console.error('Screenshot error:', error);
-    return null;
   }
+  
+  return null;
 }
 
 // Upload screenshot to Supabase Storage and return public URL
