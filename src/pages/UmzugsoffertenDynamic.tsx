@@ -114,10 +114,13 @@ const UmzugsoffertenDynamic: React.FC = () => {
   }, [paramVariant, location.pathname]);
   
   // Check if this is a main flow (v2, v3, v4, etc.) vs sub-variant (v2a, v3b, etc.)
+  // IMPORTANT: v7, v8, v9 are routed through VARIANT_REGISTRY, not mainFlowLoaders
+  // Only v2-v6 use the dedicated main flow loaders
   const isMainFlow = useMemo(() => {
     if (!normalizedVariant) return false;
-    // Main flows are: v2, v3, v4, v5, v6, v7, v8, v9 (single digit after 'v')
-    return /^v[2-9]$/.test(normalizedVariant);
+    // Main flows are: v2, v3, v4, v5, v6 (single digit after 'v')
+    // v7, v8, v9 use VARIANT_REGISTRY because they load V7aFeedbackBased etc.
+    return /^v[2-6]$/.test(normalizedVariant);
   }, [normalizedVariant]);
   
   // Get the lazy-loaded component
@@ -127,13 +130,13 @@ const UmzugsoffertenDynamic: React.FC = () => {
       return null;
     }
     
-    // For main flows, use the main flow loaders
+    // For main flows v2-v6, use the main flow loaders
     if (isMainFlow && mainFlowLoaders[normalizedVariant]) {
       console.log(`[UmzugsoffertenDynamic] Loading main flow: ${normalizedVariant}`);
       return lazy(mainFlowLoaders[normalizedVariant]);
     }
     
-    // For sub-variants, use VARIANT_REGISTRY
+    // For v7, v8, v9 and all sub-variants, use VARIANT_REGISTRY
     const registryEntry = VARIANT_REGISTRY[normalizedVariant];
     console.log(`[UmzugsoffertenDynamic] Looking up variant: "${normalizedVariant}"`, {
       found: !!registryEntry,
