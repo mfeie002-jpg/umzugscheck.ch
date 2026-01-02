@@ -140,10 +140,14 @@ export function UltimateSwissFlow() {
     }
 
     setStep(prev => Math.min(prev + 1, 5));
+    // Scroll to top on step change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step, canProceed]);
 
   const handleBack = useCallback(() => {
     setStep(prev => Math.max(prev - 1, 1));
+    // Scroll to top on step change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleEditSection = useCallback((targetStep: number) => {

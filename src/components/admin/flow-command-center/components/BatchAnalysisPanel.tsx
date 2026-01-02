@@ -99,7 +99,16 @@ export const BatchAnalysisPanel: React.FC<BatchAnalysisPanelProps> = ({
     setIsRunning(false);
     setCurrentFlow(null);
 
-    const successCount = Array.from(results.values()).filter(r => r === 'success').length;
+    // Count results from the final state - use the local tracking
+    const finalResults = new Map(results);
+    flowsArray.forEach((flowId, index) => {
+      if (!finalResults.has(flowId)) {
+        // If somehow not set, count as error
+        finalResults.set(flowId, 'error');
+      }
+    });
+    
+    const successCount = Array.from(finalResults.values()).filter(r => r === 'success').length;
     const errorCount = total - successCount;
 
     if (errorCount === 0) {
