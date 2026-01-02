@@ -56,6 +56,7 @@ export { V5fFeedbackBased } from './V5fFeedbackBased';
 
 // V6 Variants (Ultimate 6-Tier)
 export { V6aFeedbackBased } from './V6aFeedbackBased';
+export { V6aOptimized } from './V6aOptimized';
 
 // V7 Variants (SwissMove 90s)
 export { V7aFeedbackBased } from './V7aFeedbackBased';
