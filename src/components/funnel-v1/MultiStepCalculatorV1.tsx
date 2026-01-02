@@ -268,9 +268,9 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
         }`}
         aria-disabled={service.id === "umzug"}
       >
-        {/* Issue #2: Consistent checkbox design - matching the contact form (24px, rounded-md) */}
+        {/* Issue #2, #6, #9, #25, #32, #49, #63, #82: Consistent checkbox design - 24px, rounded-md, matching all other checkboxes */}
         <div
-          className={`w-6 h-6 rounded-md flex items-center justify-center border-2 shrink-0 transition-all ${
+          className={`w-6 h-6 min-w-6 min-h-6 rounded-md flex items-center justify-center border-2 shrink-0 transition-all ${
             isSelected ? "bg-primary border-primary scale-105" : "border-muted-foreground/40"
           }`}
         >
@@ -881,10 +881,11 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                       : "border-border hover:border-primary/50 bg-card"
                   }`}
                 >
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center border-2 shrink-0 ${
+                  {/* Issue #6, #9, #25, #32: Consistent checkbox - 24px, rounded-md */}
+                  <div className={`w-6 h-6 min-w-6 min-h-6 rounded-md flex items-center justify-center border-2 shrink-0 ${
                     formData.moveDate === "flexible" ? "bg-green-500 border-green-500" : "border-muted-foreground/40"
                   }`}>
-                    {formData.moveDate === "flexible" && <CheckCircle className="w-5 h-5 text-white" />}
+                    {formData.moveDate === "flexible" && <CheckCircle className="w-4 h-4 text-white" />}
                   </div>
                   <div className="flex-1 text-left">
                     <span className="text-sm font-semibold block">Termin noch offen / flexibel</span>
@@ -947,9 +948,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                         <span className="text-green-600 dark:text-green-400">✓ Weniger Rückfragen</span>
                       </div>
                     </div>
+                    {/* Issue #6, #9, #25, #32, #49, #63, #82: Consistent checkbox - 24px, rounded-md */}
                     <div
-                      className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
-                        formData.useVideoAI ? "bg-secondary border-secondary" : "border-border"
+                      className={`w-6 h-6 min-w-6 min-h-6 rounded-md flex items-center justify-center border-2 shrink-0 ${
+                        formData.useVideoAI ? "bg-secondary border-secondary" : "border-muted-foreground/40"
                       }`}
                     >
                       {formData.useVideoAI && (
@@ -1170,20 +1172,27 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </p>
                 </div>
 
-                {/* Issue #23, #34: Grössere Checkbox mit klarerer Pflichtfeld-Kennzeichnung */}
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/30 border border-border/50">
+                {/* Issue #5, #23, #34, #70: Grössere Checkbox mit klarerer Pflichtfeld-Kennzeichnung + Trust-Element */}
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/30 border-2 border-border/50 hover:border-primary/30 transition-colors">
                   <Checkbox
                     id="privacy-v1"
                     checked={formData.privacyAccepted}
                     onCheckedChange={(checked) => updateFormData("privacyAccepted", !!checked)}
-                    className="mt-0.5 h-6 w-6 shrink-0"
+                    className="mt-0.5 h-6 w-6 shrink-0 rounded-md"
                   />
-                  <label htmlFor="privacy-v1" className="text-xs text-muted-foreground cursor-pointer leading-relaxed">
-                    {/* Issue #7: Konsistente Link-Formatierung */}
-                    Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline font-medium">Datenschutzerklärung</a> und 
-                    bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden.
-                    <span className="text-red-500 font-bold ml-1">*</span>
-                  </label>
+                  <div className="space-y-2">
+                    <label htmlFor="privacy-v1" className="text-sm text-foreground cursor-pointer leading-relaxed font-medium">
+                      {/* Issue #5: Konsistente Beschriftung - "Datenschutzbestimmungen" statt nur "AGB" */}
+                      Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline font-semibold">Datenschutzbestimmungen</a> und 
+                      bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden.
+                      <span className="text-red-500 font-bold ml-1">*</span>
+                    </label>
+                    {/* Issue #70: Trust-Element für Datenschutz direkt sichtbar */}
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5 text-green-600 shrink-0" />
+                      Ihre Daten werden SSL-verschlüsselt übertragen und nicht für Werbung verwendet
+                    </p>
+                  </div>
                 </div>
                 
                 {/* Issue #9: Bestätigung VOR dem letzten Klick */}

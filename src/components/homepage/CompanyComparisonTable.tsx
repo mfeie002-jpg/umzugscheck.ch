@@ -430,10 +430,10 @@ function CompanyCard({
         <div className="flex items-start gap-3 cursor-pointer min-h-[60px] touch-manipulation">
           {/* Checkbox + Rank - Enhanced sizes */}
           <div className="flex flex-col items-center gap-2 shrink-0">
-            {/* Enhanced: Larger checkbox (24px) */}
+            {/* Issue #6, #9, #25, #32, #49, #63, #82: Consistent checkbox (24px, rounded-md) matching other checkboxes */}
             <div
-              className={`w-6 h-6 rounded flex items-center justify-center border-2 transition-all ${
-                isSelected ? "bg-secondary border-secondary scale-105" : "border-border"
+              className={`w-6 h-6 rounded-md flex items-center justify-center border-2 transition-all ${
+                isSelected ? "bg-secondary border-secondary scale-105" : "border-muted-foreground/40"
               }`}
             >
               {isSelected && <CheckCircle className="w-4 h-4 text-secondary-foreground" />}

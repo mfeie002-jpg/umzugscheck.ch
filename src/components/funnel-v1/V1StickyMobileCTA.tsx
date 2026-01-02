@@ -84,12 +84,12 @@ export const V1StickyMobileCTA = memo(function V1StickyMobileCTA({
               </Button>
             )}
             
-            {/* Primary CTA - Issue #8: Clearly dominant with larger size and stronger styling */}
+            {/* Primary CTA - Issue #8, #15: Clearly dominant with larger size, stronger styling and high contrast */}
             <Button
               type="button"
               onClick={onPrimaryClick}
               disabled={!canProceed || isLoading}
-              className="flex-1 h-14 rounded-xl font-bold text-base shadow-lg disabled:opacity-60 touch-manipulation active:scale-[0.97]"
+              className="flex-1 h-14 rounded-xl font-bold text-base shadow-lg disabled:opacity-60 touch-manipulation active:scale-[0.97] bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isLoading ? (
                 <>
