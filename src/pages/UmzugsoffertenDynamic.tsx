@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useMemo } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useLocation } from 'react-router-dom';
 import { PageLoadingFallback } from '@/components/ui/loading-fallback';
 import { VARIANT_REGISTRY } from '@/components/calculator-variants';
 
@@ -21,6 +21,10 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V1aFeedbackBased': () => import('@/components/calculator-variants/V1aFeedbackBased').then(m => ({ default: m.V1aFeedbackBased })),
   'V1bFeedbackBased': () => import('@/components/calculator-variants/V1bFeedbackBased').then(m => ({ default: m.V1bFeedbackBased })),
   'V1cFeedbackBased': () => import('@/components/calculator-variants/V1cFeedbackBased').then(m => ({ default: m.V1cFeedbackBased })),
+  'V1dFeedbackBased': () => import('@/components/calculator-variants/V1dFeedbackBased').then(m => ({ default: m.V1dFeedbackBased })),
+  'V1eFeedbackBased': () => import('@/components/calculator-variants/V1eFeedbackBased').then(m => ({ default: m.V1eFeedbackBased })),
+  'V1fStickyCTATrust': () => import('@/components/calculator-variants/V1fStickyCTATrust').then(m => ({ default: m.V1fStickyCTATrust })),
+  'V1gInputUX': () => import('@/components/calculator-variants/V1gInputUX').then(m => ({ default: m.V1gInputUX })),
   // V2 Variants
   'V2aProgressEnhanced': () => import('@/components/calculator-variants/V2aProgressEnhanced').then(m => ({ default: m.V2aProgressEnhanced })),
   'V2bFeedbackBased': () => import('@/components/calculator-variants/V2bFeedbackBased').then(m => ({ default: m.V2bFeedbackBased })),
@@ -46,6 +50,7 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V5aHighContrast': () => import('@/components/calculator-variants/V5aHighContrast').then(m => ({ default: m.V5aHighContrast })),
   'V5bScreenReader': () => import('@/components/calculator-variants/V5bScreenReader').then(m => ({ default: m.V5bScreenReader })),
   'V5cKeyboardNav': () => import('@/components/calculator-variants/V5cKeyboardNav').then(m => ({ default: m.V5cKeyboardNav })),
+  'V5dLargeText': () => import('@/components/calculator-variants/V5dLargeText').then(m => ({ default: m.V5dLargeText })),
   'V5dFeedbackBased': () => import('@/components/calculator-variants/V5dFeedbackBased').then(m => ({ default: m.V5dFeedbackBased })),
   'V5eReducedMotion': () => import('@/components/calculator-variants/V5eReducedMotion').then(m => ({ default: m.V5eReducedMotion })),
   'V5fFeedbackBased': () => import('@/components/calculator-variants/V5fFeedbackBased').then(m => ({ default: m.V5fFeedbackBased })),
@@ -67,6 +72,8 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V9dFeedbackBased': () => import('@/components/calculator-variants/V9dFeedbackBased').then(m => ({ default: m.V9dFeedbackBased })),
   // Multi Variants
   'MultiAFeedbackBased': () => import('@/components/calculator-variants/MultiAFeedbackBased').then(m => ({ default: m.MultiAFeedbackBased })),
+  // Ultimate
+  'UltimateV7Flow': () => import('@/components/calculator-variants/UltimateV7Flow').then(m => ({ default: m.UltimateV7Flow })),
 };
 
 /**
@@ -85,13 +92,26 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
  * Usage: /umzugsofferten-:variant (e.g., /umzugsofferten-v3, /umzugsofferten-v3a)
  */
 const UmzugsoffertenDynamic: React.FC = () => {
-  const { variant } = useParams<{ variant: string }>();
+  const { variant: paramVariant } = useParams<{ variant: string }>();
+  const location = useLocation();
   
-  // Normalize variant ID (lowercase, handle different formats)
+  // Extract variant from either:
+  // 1. URL param (/umzugsofferten-:variant) 
+  // 2. Path itself (/umzugsofferten-v6a → "v6a")
   const normalizedVariant = useMemo(() => {
-    if (!variant) return null;
-    return variant.toLowerCase();
-  }, [variant]);
+    // First check URL param
+    if (paramVariant) {
+      return paramVariant.toLowerCase();
+    }
+    
+    // Extract from path: /umzugsofferten-v6a → v6a
+    const pathMatch = location.pathname.match(/\/umzugsofferten-([a-z0-9-]+)/i);
+    if (pathMatch) {
+      return pathMatch[1].toLowerCase();
+    }
+    
+    return null;
+  }, [paramVariant, location.pathname]);
   
   // Check if this is a main flow (v2, v3, v4, etc.) vs sub-variant (v2a, v3b, etc.)
   const isMainFlow = useMemo(() => {
@@ -137,7 +157,7 @@ const UmzugsoffertenDynamic: React.FC = () => {
   
   // Debug: show what variant we're trying to load
   console.log('[UmzugsoffertenDynamic] Rendering', {
-    variant,
+    paramVariant,
     normalizedVariant,
     isMainFlow,
     hasComponent: !!Component
@@ -145,7 +165,7 @@ const UmzugsoffertenDynamic: React.FC = () => {
   
   // If variant not found, redirect to main umzugsofferten
   if (!Component) {
-    console.warn(`[UmzugsoffertenDynamic] Variant not found: ${variant}, redirecting to /umzugsofferten`);
+    console.warn(`[UmzugsoffertenDynamic] Variant not found: ${normalizedVariant}, redirecting to /umzugsofferten`);
     return <Navigate to="/umzugsofferten" replace />;
   }
   
