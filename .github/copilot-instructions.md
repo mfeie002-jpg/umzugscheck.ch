@@ -80,4 +80,22 @@ node scripts/generate-chatgpt-export.js
 - Do not remove the `componentTagger` usage without checking Lovable integration — it tags components used in the design system workflow.
 - When editing routes, respect the comment hints in `src/App.tsx` (e.g., admin login must come before other admin routes).
 
+## Using with ChatGPT
+
+### Personalizing with ChatGPT
+- **Custom GPTs**: You can upload the `public/chatgpt-export.txt` file to your ChatGPT account to train a custom GPT tailored to this project.
+- **Export Usage**: The `chatgpt-export.txt` file contains design system details and component documentation. Regenerate it with:
+
+```bash
+node scripts/generate-chatgpt-export.js
+```
+
+- **Templates**: Use the examples in `.github/copilot-instructions.md` to create prompt templates for ChatGPT. For instance:
+  - "How do I add a new route in `src/pages`?"
+  - "Explain the caching strategy in `src/App.tsx`."
+
+### Automation Options
+- **GitHub Actions**: Automate export generation and upload by extending `.github/workflows/ci.yml`.
+- **API Integration**: Use OpenAI's API to query project-specific details dynamically.
+
 If any area is unclear or you'd like more examples (e.g., typical PR contents, CI/CD details, or example component structure), tell me which part to expand.
