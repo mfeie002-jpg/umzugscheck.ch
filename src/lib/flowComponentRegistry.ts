@@ -132,6 +132,8 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v6a': V6aFeedbackBased,
   'v6b': V6bChatGPT,
   'v6c': V6cGemini,
+  'v6d': V6dDeepResearch,
+  'v6e': V6eThinkingMode,
   
   // ========== V7 - SwissMove (90s) ==========
   'umzugsofferten-v7': V7aFeedbackBased,
