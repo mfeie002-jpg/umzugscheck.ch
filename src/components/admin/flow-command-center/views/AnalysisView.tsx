@@ -30,7 +30,7 @@ import {
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { ScoreRing, ScoreBadgeCompact, IssuesPanel } from '../components';
+import { ScoreRing, ScoreBadgeCompact, IssuesPanel, ScoreDelta } from '../components';
 import { 
   ArchetypeRadar, 
   QuickWinsPanel, 
@@ -62,6 +62,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
   isAnalyzing,
 }) => {
   const [run, setRun] = useState<AnalysisRun | null>(null);
+  const [previousRun, setPreviousRun] = useState<AnalysisRun | null>(null);
   const [issues, setIssues] = useState<UxIssue[]>([]);
   const [archetypeScores, setArchetypeScores] = useState<ArchetypeScore[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,42 +77,71 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
   const fetchAnalysis = async (id: string) => {
     setLoading(true);
     try {
-      // Fetch latest run
+      // Fetch latest 2 runs for delta comparison
       const { data: runData, error: runError } = await supabase
         .from('flow_analysis_runs')
         .select('*')
-        .eq('flow_id', id)
+        .or(`flow_id.eq.${id},flow_id.eq.umzugsofferten-${id}`)
         .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(2);
       
       if (runError && runError.code !== 'PGRST116') throw runError;
       
-      if (runData) {
+      const latestRun = runData?.[0];
+      const prevRun = runData?.[1];
+      
+      if (latestRun) {
         setRun({
-          id: runData.id,
-          flowId: runData.flow_id,
-          flowName: runData.flow_name,
-          runType: runData.run_type,
-          status: runData.status as any,
-          overallScore: runData.overall_score,
-          conversionScore: runData.conversion_score,
-          performanceScore: runData.performance_score,
-          uxScore: runData.ux_score,
-          mobileScore: runData.mobile_score,
-          trustScore: runData.trust_score,
-          accessibilityScore: runData.accessibility_score,
-          aiSummary: runData.ai_summary,
-          aiRecommendations: Array.isArray(runData.ai_recommendations) 
-            ? runData.ai_recommendations as string[] 
+          id: latestRun.id,
+          flowId: latestRun.flow_id,
+          flowName: latestRun.flow_name,
+          runType: latestRun.run_type,
+          status: latestRun.status as any,
+          overallScore: latestRun.overall_score,
+          conversionScore: latestRun.conversion_score,
+          performanceScore: latestRun.performance_score,
+          uxScore: latestRun.ux_score,
+          mobileScore: latestRun.mobile_score,
+          trustScore: latestRun.trust_score,
+          accessibilityScore: latestRun.accessibility_score,
+          aiSummary: latestRun.ai_summary,
+          aiRecommendations: Array.isArray(latestRun.ai_recommendations) 
+            ? latestRun.ai_recommendations as string[] 
             : [],
-          quickWins: Array.isArray(runData.quick_wins) ? runData.quick_wins as string[] : [],
-          strengths: Array.isArray(runData.strengths) ? runData.strengths as string[] : [],
-          createdAt: runData.created_at,
-          completedAt: runData.completed_at,
-          stepsCaptured: runData.steps_captured || 0,
-          totalSteps: runData.total_steps || 0,
+          quickWins: Array.isArray(latestRun.quick_wins) ? latestRun.quick_wins as string[] : [],
+          strengths: Array.isArray(latestRun.strengths) ? latestRun.strengths as string[] : [],
+          createdAt: latestRun.created_at,
+          completedAt: latestRun.completed_at,
+          stepsCaptured: latestRun.steps_captured || 0,
+          totalSteps: latestRun.total_steps || 0,
         });
+      }
+      
+      if (prevRun) {
+        setPreviousRun({
+          id: prevRun.id,
+          flowId: prevRun.flow_id,
+          flowName: prevRun.flow_name,
+          runType: prevRun.run_type,
+          status: prevRun.status as any,
+          overallScore: prevRun.overall_score,
+          conversionScore: prevRun.conversion_score,
+          performanceScore: prevRun.performance_score,
+          uxScore: prevRun.ux_score,
+          mobileScore: prevRun.mobile_score,
+          trustScore: prevRun.trust_score,
+          accessibilityScore: prevRun.accessibility_score,
+          aiSummary: prevRun.ai_summary,
+          aiRecommendations: [],
+          quickWins: [],
+          strengths: [],
+          createdAt: prevRun.created_at,
+          completedAt: prevRun.completed_at,
+          stepsCaptured: prevRun.steps_captured || 0,
+          totalSteps: prevRun.total_steps || 0,
+        });
+      } else {
+        setPreviousRun(null);
       }
       
       // Fetch issues
@@ -298,15 +328,51 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
           {/* Score Overview */}
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
             <Card className="md:col-span-2">
-              <CardContent className="pt-4 flex items-center justify-center">
+              <CardContent className="pt-4 flex flex-col items-center justify-center">
                 <ScoreRing score={run.overallScore || 0} size="lg" label="Gesamt" />
+                {/* Show delta if previous run exists */}
+                {previousRun && previousRun.overallScore !== null && run.overallScore !== null && (
+                  <div className="mt-2">
+                    <ScoreDelta 
+                      delta={(run.overallScore || 0) - (previousRun.overallScore || 0)}
+                      previousScore={previousRun.overallScore}
+                      currentScore={run.overallScore}
+                      categories={[
+                        { label: 'Conv', delta: (run.conversionScore || 0) - (previousRun.conversionScore || 0) },
+                        { label: 'UX', delta: (run.uxScore || 0) - (previousRun.uxScore || 0) },
+                        { label: 'Mobile', delta: (run.mobileScore || 0) - (previousRun.mobileScore || 0) },
+                      ]}
+                      size="sm"
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
             
-            <ScoreCard label="Conversion" score={run.conversionScore} icon={<TrendingUp className="h-4 w-4" />} />
-            <ScoreCard label="UX" score={run.uxScore} icon={<Zap className="h-4 w-4" />} />
-            <ScoreCard label="Mobile" score={run.mobileScore} icon={<Smartphone className="h-4 w-4" />} />
-            <ScoreCard label="Trust" score={run.trustScore} icon={<Shield className="h-4 w-4" />} />
+            <ScoreCard 
+              label="Conversion" 
+              score={run.conversionScore} 
+              icon={<TrendingUp className="h-4 w-4" />}
+              delta={previousRun ? (run.conversionScore || 0) - (previousRun.conversionScore || 0) : null}
+            />
+            <ScoreCard 
+              label="UX" 
+              score={run.uxScore} 
+              icon={<Zap className="h-4 w-4" />}
+              delta={previousRun ? (run.uxScore || 0) - (previousRun.uxScore || 0) : null}
+            />
+            <ScoreCard 
+              label="Mobile" 
+              score={run.mobileScore} 
+              icon={<Smartphone className="h-4 w-4" />}
+              delta={previousRun ? (run.mobileScore || 0) - (previousRun.mobileScore || 0) : null}
+            />
+            <ScoreCard 
+              label="Trust" 
+              score={run.trustScore} 
+              icon={<Shield className="h-4 w-4" />}
+              delta={previousRun ? (run.trustScore || 0) - (previousRun.trustScore || 0) : null}
+            />
           </div>
 
           {/* Tabs */}
@@ -437,20 +503,31 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
   );
 };
 
-// Helper component
+// Helper component with delta support
 const ScoreCard: React.FC<{
   label: string;
   score: number | null;
   icon: React.ReactNode;
-}> = ({ label, score, icon }) => (
+  delta?: number | null;
+}> = ({ label, score, icon, delta }) => (
   <Card>
     <CardContent className="pt-4 text-center">
       <div className="flex items-center justify-center gap-1 text-muted-foreground mb-2">
         {icon}
         <span className="text-sm">{label}</span>
       </div>
-      <div className={cn('text-2xl font-bold', getScoreColor(score))}>
-        {score ?? '-'}
+      <div className="flex items-center justify-center gap-1">
+        <span className={cn('text-2xl font-bold', getScoreColor(score))}>
+          {score ?? '-'}
+        </span>
+        {delta !== undefined && delta !== null && delta !== 0 && (
+          <span className={cn(
+            'text-xs font-medium',
+            delta > 0 ? 'text-green-600' : 'text-red-600'
+          )}>
+            {delta > 0 ? `+${delta}` : delta}
+          </span>
+        )}
       </div>
       <Progress value={score || 0} className="h-1.5 mt-2" />
     </CardContent>

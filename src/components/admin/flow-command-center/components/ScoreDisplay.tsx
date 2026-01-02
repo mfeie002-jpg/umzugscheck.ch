@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
+export { ScoreDelta, ScoreDeltaCompact } from './ScoreDelta';
 import { cn } from '@/lib/utils';
 import { AlertCircle, AlertTriangle, CheckCircle } from 'lucide-react';
 
