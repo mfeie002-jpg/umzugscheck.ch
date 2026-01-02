@@ -1,15 +1,19 @@
 /**
  * Ranking View - All flows ranked by score with detailed comparison
  * Priority 1: Overview & Ranking
+ * 
+ * Enhanced with:
+ * - Real-time analysis status (running/completed/failed)
+ * - Screenshot status indicators
+ * - Auto-polling for running analyses
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
   Trophy, 
@@ -22,7 +26,13 @@ import {
   Medal,
   Award,
   Loader2,
-  ExternalLink
+  ExternalLink,
+  ImageOff,
+  Image,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  RefreshCw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,6 +43,15 @@ import {
   getScoreColor,
   formatRelativeTime 
 } from '../utils';
+
+interface AnalysisStatus {
+  status: 'running' | 'completed' | 'failed' | 'none';
+  stepsCaptures: number;
+  totalSteps: number;
+  screenshotsCount: number;
+  hasErrors: boolean;
+  lastError?: string;
+}
 
 interface RankingViewProps {
   onAnalyzeFlow: (flowId: string) => void;
@@ -46,51 +65,118 @@ export const RankingView: React.FC<RankingViewProps> = ({
   isAnalyzing,
 }) => {
   const [scores, setScores] = useState<Record<string, FlowScore>>({});
+  const [analysisStatus, setAnalysisStatus] = useState<Record<string, AnalysisStatus>>({});
   const [loading, setLoading] = useState(true);
+  const [runningCount, setRunningCount] = useState(0);
 
-  useEffect(() => {
-    fetchScores();
-  }, []);
-
-  const fetchScores = async () => {
-    setLoading(true);
+  const fetchScores = useCallback(async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch scores from analysis runs
+      const { data: runsData, error: runsError } = await supabase
         .from('flow_analysis_runs')
-        .select('flow_id, overall_score, conversion_score, ux_score, mobile_score, trust_score, created_at')
+        .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (runsError) throw runsError;
       
       const scoreMap: Record<string, FlowScore> = {};
-      data?.forEach(row => {
-        if (!scoreMap[row.flow_id]) {
-          scoreMap[row.flow_id] = {
-            flowId: row.flow_id,
-            overallScore: row.overall_score,
-            conversionScore: row.conversion_score,
-            uxScore: row.ux_score,
-            mobileScore: row.mobile_score,
-            trustScore: row.trust_score,
-            accessibilityScore: null,
-            performanceScore: null,
-            lastAnalyzed: row.created_at,
-          };
+      const statusMap: Record<string, AnalysisStatus> = {};
+      let runningTotal = 0;
+      
+      // Get latest run per flow
+      const latestRuns = new Map<string, typeof runsData[0]>();
+      runsData?.forEach(row => {
+        if (!latestRuns.has(row.flow_id)) {
+          latestRuns.set(row.flow_id, row);
         }
       });
       
+      // Fetch step metrics for screenshot counts
+      const { data: stepMetrics } = await supabase
+        .from('flow_step_metrics')
+        .select('run_id, mobile_screenshot_url, desktop_screenshot_url');
+      
+      const screenshotCounts = new Map<string, number>();
+      stepMetrics?.forEach(m => {
+        const runId = m.run_id;
+        if (runId) {
+          const count = screenshotCounts.get(runId) || 0;
+          const hasScreenshot = m.mobile_screenshot_url || m.desktop_screenshot_url;
+          screenshotCounts.set(runId, count + (hasScreenshot ? 1 : 0));
+        }
+      });
+      
+      latestRuns.forEach((row, flowId) => {
+        // Score mapping
+        scoreMap[flowId] = {
+          flowId: flowId,
+          overallScore: row.overall_score,
+          conversionScore: row.conversion_score,
+          uxScore: row.ux_score,
+          mobileScore: row.mobile_score,
+          trustScore: row.trust_score,
+          accessibilityScore: row.accessibility_score,
+          performanceScore: row.performance_score,
+          lastAnalyzed: row.created_at,
+        };
+        
+        // Status mapping
+        const isRunning = row.status === 'running' || row.status === 'processing';
+        if (isRunning) runningTotal++;
+        
+        const metadata = row.metadata as { error?: string } | null;
+        
+        statusMap[flowId] = {
+          status: row.status === 'completed' ? 'completed' 
+                : row.status === 'failed' ? 'failed'
+                : isRunning ? 'running' : 'none',
+          stepsCaptures: row.steps_captured || 0,
+          totalSteps: row.total_steps || 1,
+          screenshotsCount: screenshotCounts.get(row.id) || 0,
+          hasErrors: row.status === 'failed',
+          lastError: metadata?.error,
+        };
+      });
+      
       setScores(scoreMap);
+      setAnalysisStatus(statusMap);
+      setRunningCount(runningTotal);
     } catch (err) {
       console.error('Failed to fetch scores:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchScores();
+  }, [fetchScores]);
+
+  // Auto-poll while analyses are running
+  useEffect(() => {
+    if (runningCount === 0) return;
+    
+    const interval = setInterval(() => {
+      fetchScores();
+    }, 5000); // Poll every 5 seconds
+    
+    return () => clearInterval(interval);
+  }, [runningCount, fetchScores]);
 
   // Get all variants and sort by score
   const allVariants = getVariantsForFlow('all');
   const rankedVariants = [...allVariants]
-    .map(v => ({ ...v, score: scores[v.id] }))
+    .map(v => ({ 
+      ...v, 
+      score: scores[v.id],
+      status: analysisStatus[v.id] || { 
+        status: 'none' as const, 
+        stepsCaptures: 0, 
+        totalSteps: 1, 
+        screenshotsCount: 0, 
+        hasErrors: false 
+      }
+    }))
     .sort((a, b) => {
       const scoreA = a.score?.overallScore ?? -1;
       const scoreB = b.score?.overallScore ?? -1;
@@ -99,6 +185,85 @@ export const RankingView: React.FC<RankingViewProps> = ({
 
   // Top 3 podium
   const [first, second, third] = rankedVariants.slice(0, 3);
+
+  // Stats
+  const completedCount = rankedVariants.filter(v => v.status.status === 'completed').length;
+  const failedCount = rankedVariants.filter(v => v.status.status === 'failed').length;
+  const noAnalysisCount = rankedVariants.filter(v => v.status.status === 'none').length;
+  const totalScreenshots = rankedVariants.reduce((sum, v) => sum + v.status.screenshotsCount, 0);
+
+  const getStatusIcon = (status: AnalysisStatus) => {
+    switch (status.status) {
+      case 'running':
+        return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />;
+      case 'completed':
+        return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+      case 'failed':
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
+    }
+  };
+
+  const getStatusBadge = (status: AnalysisStatus) => {
+    switch (status.status) {
+      case 'running':
+        return (
+          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+            {status.stepsCaptures}/{status.totalSteps}
+          </Badge>
+        );
+      case 'completed':
+        return (
+          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <CheckCircle2 className="h-3 w-3 mr-1" />
+            OK
+          </Badge>
+        );
+      case 'failed':
+        return (
+          <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            Fehler
+          </Badge>
+        );
+      default:
+        return (
+          <Badge variant="outline" className="text-muted-foreground">
+            <Clock className="h-3 w-3 mr-1" />
+            Pending
+          </Badge>
+        );
+    }
+  };
+
+  const getScreenshotBadge = (status: AnalysisStatus) => {
+    if (status.status === 'none') {
+      return (
+        <Badge variant="outline" className="text-muted-foreground">
+          <ImageOff className="h-3 w-3 mr-1" />
+          0
+        </Badge>
+      );
+    }
+    
+    const expected = status.totalSteps * 2; // desktop + mobile per step
+    const actual = status.screenshotsCount;
+    const isComplete = actual >= expected;
+    
+    return (
+      <Badge 
+        variant="outline" 
+        className={cn(
+          isComplete ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"
+        )}
+      >
+        <Image className="h-3 w-3 mr-1" />
+        {actual}/{expected}
+      </Badge>
+    );
+  };
 
   if (loading) {
     return (
@@ -110,6 +275,79 @@ export const RankingView: React.FC<RankingViewProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Status Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+          <CardContent className="pt-4 text-center">
+            <CheckCircle2 className="h-6 w-6 text-green-600 mx-auto mb-1" />
+            <div className="text-2xl font-bold text-green-700">{completedCount}</div>
+            <div className="text-xs text-green-600">Analysiert</div>
+          </CardContent>
+        </Card>
+        
+        <Card className={cn(
+          "bg-gradient-to-br",
+          runningCount > 0 
+            ? "from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900" 
+            : "from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
+        )}>
+          <CardContent className="pt-4 text-center">
+            {runningCount > 0 ? (
+              <Loader2 className="h-6 w-6 text-blue-600 mx-auto mb-1 animate-spin" />
+            ) : (
+              <Clock className="h-6 w-6 text-gray-500 mx-auto mb-1" />
+            )}
+            <div className={cn("text-2xl font-bold", runningCount > 0 ? "text-blue-700" : "text-gray-600")}>
+              {runningCount}
+            </div>
+            <div className={cn("text-xs", runningCount > 0 ? "text-blue-600" : "text-gray-500")}>
+              Laufend
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className={cn(
+          "bg-gradient-to-br",
+          failedCount > 0 
+            ? "from-red-50 to-red-100 dark:from-red-950 dark:to-red-900"
+            : "from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
+        )}>
+          <CardContent className="pt-4 text-center">
+            <AlertCircle className={cn("h-6 w-6 mx-auto mb-1", failedCount > 0 ? "text-red-600" : "text-gray-500")} />
+            <div className={cn("text-2xl font-bold", failedCount > 0 ? "text-red-700" : "text-gray-600")}>
+              {failedCount}
+            </div>
+            <div className={cn("text-xs", failedCount > 0 ? "text-red-600" : "text-gray-500")}>
+              Fehler
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900">
+          <CardContent className="pt-4 text-center">
+            <Clock className="h-6 w-6 text-yellow-600 mx-auto mb-1" />
+            <div className="text-2xl font-bold text-yellow-700">{noAnalysisCount}</div>
+            <div className="text-xs text-yellow-600">Nicht analysiert</div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+          <CardContent className="pt-4 text-center">
+            <Image className="h-6 w-6 text-purple-600 mx-auto mb-1" />
+            <div className="text-2xl font-bold text-purple-700">{totalScreenshots}</div>
+            <div className="text-xs text-purple-600">Screenshots</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Refresh indicator when polling */}
+      {runningCount > 0 && (
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <RefreshCw className="h-4 w-4 animate-spin" />
+          <span>Auto-Update aktiv ({runningCount} Analysen laufen)</span>
+        </div>
+      )}
+
       {/* Podium - Top 3 */}
       <div className="grid grid-cols-3 gap-4">
         {/* Second Place */}
@@ -206,18 +444,26 @@ export const RankingView: React.FC<RankingViewProps> = ({
               <TableRow>
                 <TableHead className="w-16">Rang</TableHead>
                 <TableHead>Flow</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Screenshots</TableHead>
                 <TableHead className="text-center">Gesamt</TableHead>
                 <TableHead className="text-center">Conv.</TableHead>
                 <TableHead className="text-center">UX</TableHead>
                 <TableHead className="text-center">Mobile</TableHead>
-                <TableHead className="text-center">Trust</TableHead>
                 <TableHead className="text-right">Analysiert</TableHead>
                 <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rankedVariants.map((variant, index) => (
-                <TableRow key={variant.id} className="hover:bg-muted/50">
+                <TableRow 
+                  key={variant.id} 
+                  className={cn(
+                    "hover:bg-muted/50",
+                    variant.status.status === 'running' && "bg-blue-50/50 dark:bg-blue-950/20",
+                    variant.status.status === 'failed' && "bg-red-50/50 dark:bg-red-950/20"
+                  )}
+                >
                   <TableCell>
                     <RankBadge rank={index + 1} size="sm" />
                   </TableCell>
@@ -225,12 +471,31 @@ export const RankingView: React.FC<RankingViewProps> = ({
                     <div className="flex items-center gap-2">
                       <div className={cn('w-2 h-2 rounded-full', variant.color)} />
                       <div>
-                        <div className="font-medium">{variant.label}</div>
+                        <div className="font-medium flex items-center gap-2">
+                          {variant.label}
+                          {variant.status.status === 'running' && (
+                            <Progress 
+                              value={(variant.status.stepsCaptures / variant.status.totalSteps) * 100} 
+                              className="w-16 h-1"
+                            />
+                          )}
+                        </div>
                         <div className="text-xs text-muted-foreground">
                           {variant.stepCount} Steps
+                          {variant.status.lastError && (
+                            <span className="text-red-500 ml-2" title={variant.status.lastError}>
+                              • {variant.status.lastError.substring(0, 30)}...
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {getStatusBadge(variant.status)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {getScreenshotBadge(variant.status)}
                   </TableCell>
                   <TableCell className="text-center">
                     <span className={cn('font-bold', getScoreColor(variant.score?.overallScore ?? null))}>
@@ -252,11 +517,6 @@ export const RankingView: React.FC<RankingViewProps> = ({
                       {variant.score?.mobileScore ?? '-'}
                     </span>
                   </TableCell>
-                  <TableCell className="text-center">
-                    <span className={cn('text-sm', getScoreColor(variant.score?.trustScore ?? null))}>
-                      {variant.score?.trustScore ?? '-'}
-                    </span>
-                  </TableCell>
                   <TableCell className="text-right text-sm text-muted-foreground">
                     {formatRelativeTime(variant.score?.lastAnalyzed ?? null)}
                   </TableCell>
@@ -267,9 +527,9 @@ export const RankingView: React.FC<RankingViewProps> = ({
                         size="icon"
                         className="h-7 w-7"
                         onClick={() => onAnalyzeFlow(variant.id)}
-                        disabled={isAnalyzing === variant.id}
+                        disabled={isAnalyzing === variant.id || variant.status.status === 'running'}
                       >
-                        {isAnalyzing === variant.id ? (
+                        {isAnalyzing === variant.id || variant.status.status === 'running' ? (
                           <Loader2 className="h-3 w-3 animate-spin" />
                         ) : (
                           <Play className="h-3 w-3" />
