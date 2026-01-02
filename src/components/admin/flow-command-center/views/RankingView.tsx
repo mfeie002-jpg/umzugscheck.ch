@@ -69,9 +69,15 @@ export const RankingView: React.FC<RankingViewProps> = ({
   const [loading, setLoading] = useState(true);
   const [runningCount, setRunningCount] = useState(0);
 
+  // Helper to normalize flow IDs for matching
+  const normalizeFlowId = (flowId: string): string => {
+    // Remove 'umzugsofferten-' prefix if present
+    return flowId.replace('umzugsofferten-', '');
+  };
+
   const fetchScores = useCallback(async () => {
     try {
-      // Fetch scores from analysis runs
+      // Fetch scores from analysis runs (completed ones only for scores)
       const { data: runsData, error: runsError } = await supabase
         .from('flow_analysis_runs')
         .select('*')
@@ -83,11 +89,12 @@ export const RankingView: React.FC<RankingViewProps> = ({
       const statusMap: Record<string, AnalysisStatus> = {};
       let runningTotal = 0;
       
-      // Get latest run per flow
+      // Get latest run per normalized flow ID
       const latestRuns = new Map<string, typeof runsData[0]>();
       runsData?.forEach(row => {
-        if (!latestRuns.has(row.flow_id)) {
-          latestRuns.set(row.flow_id, row);
+        const normalized = normalizeFlowId(row.flow_id);
+        if (!latestRuns.has(normalized)) {
+          latestRuns.set(normalized, row);
         }
       });
       
@@ -109,10 +116,10 @@ export const RankingView: React.FC<RankingViewProps> = ({
         }
       });
       
-      latestRuns.forEach((row, flowId) => {
-        // Score mapping
-        scoreMap[flowId] = {
-          flowId: flowId,
+      latestRuns.forEach((row, normalizedId) => {
+        // Use normalized ID consistently
+        scoreMap[normalizedId] = {
+          flowId: normalizedId,
           overallScore: row.overall_score,
           conversionScore: row.conversion_score,
           uxScore: row.ux_score,
@@ -123,21 +130,24 @@ export const RankingView: React.FC<RankingViewProps> = ({
           lastAnalyzed: row.created_at,
         };
         
-        // Status mapping
+        // Status mapping - mark old running analyses as stalled
         const isRunning = row.status === 'running' || row.status === 'processing';
-        if (isRunning) runningTotal++;
+        const runningTime = new Date().getTime() - new Date(row.created_at).getTime();
+        const isStalled = isRunning && runningTime > 30 * 60 * 1000; // 30 min timeout
+        
+        if (isRunning && !isStalled) runningTotal++;
         
         const metadata = row.metadata as { error?: string } | null;
         
-        statusMap[flowId] = {
+        statusMap[normalizedId] = {
           status: row.status === 'completed' ? 'completed' 
-                : row.status === 'failed' ? 'failed'
+                : row.status === 'failed' || isStalled ? 'failed'
                 : isRunning ? 'running' : 'none',
           stepsCaptures: row.steps_captured || 0,
           totalSteps: row.total_steps || 1,
           screenshotsCount: screenshotCounts.get(row.id) || 0,
-          hasErrors: row.status === 'failed',
-          lastError: metadata?.error,
+          hasErrors: row.status === 'failed' || isStalled,
+          lastError: isStalled ? 'Analysis stalled - screenshot service error' : metadata?.error,
         };
       });
       
@@ -169,17 +179,21 @@ export const RankingView: React.FC<RankingViewProps> = ({
   // Get all variants and sort by score
   const allVariants = getVariantsForFlow('all');
   const rankedVariants = [...allVariants]
-    .map(v => ({ 
-      ...v, 
-      score: scores[v.id],
-      status: analysisStatus[v.id] || { 
-        status: 'none' as const, 
-        stepsCaptures: 0, 
-        totalSteps: 1, 
-        screenshotsCount: 0, 
-        hasErrors: false 
-      }
-    }))
+    .map(v => {
+      // Match using normalized ID
+      const normalizedId = normalizeFlowId(v.id);
+      return { 
+        ...v, 
+        score: scores[normalizedId] || scores[v.id],
+        status: analysisStatus[normalizedId] || analysisStatus[v.id] || { 
+          status: 'none' as const, 
+          stepsCaptures: 0, 
+          totalSteps: 1, 
+          screenshotsCount: 0, 
+          hasErrors: false 
+        }
+      };
+    })
     .sort((a, b) => {
       const scoreA = a.score?.overallScore ?? -1;
       const scoreB = b.score?.overallScore ?? -1;
