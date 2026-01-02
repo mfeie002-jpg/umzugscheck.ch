@@ -1,0 +1,130 @@
+# Copilot / AI Agent Quick Instructions
+
+Short, actionable guidance to help an AI coding agent be productive in this repo.
+
+## Big picture (what this repo is)
+- **Frontend SPA** built with Vite + React (TypeScript) and Tailwind. See the project intro: [README.md](README.md#L1-L40).
+- **Design / deployment hooks**: the repo integrates with Lovable (automatic commits) and includes a build-time ChatGPT export generator. See Vite plugin usage: [vite.config.ts](vite.config.ts#L1-L120).
+
+## Major components & boundaries
+- `src/pages` — route-level pages (many are lazy-loaded for code-splitting). Example lazy-loading pattern: [src/App.tsx](src/App.tsx#L1-L50).
+- `src/components` — UI & layout building blocks; `Navigation`/`Footer` are intentionally synchronous for fast FCP (see `MainLayout` in [src/App.tsx](src/App.tsx#L1-L50)).
+- `src/contexts` — global contexts (Auth, Performance, ProviderAuth).
+- `src/components/performance` — performance-specific helpers (CriticalCSS, PrefetchManager, etc.).
+
+## Important integration points
+- Lovable: `lovable-tagger` is enabled in dev to tag components (see import and usage in [vite.config.ts](vite.config.ts#L1-L120)). Changes may be auto-synced via Lovable.
+- ChatGPT export: a custom plugin writes `public/chatgpt-export.txt` at build time. Admin UI fetches it (see [scripts/generate-chatgpt-export.js](scripts/generate-chatgpt-export.js#L1-L40) and [src/pages/admin/CodeExport.tsx](src/pages/admin/CodeExport.tsx#L1-L40)).
+- PWA + runtime caching is configured in `vite.config.ts` (fonts, Supabase caching). Adjust cache rules there.
+- Supabase SDK is a runtime dependency (`@supabase/supabase-js` in [package.json](package.json#L1-L40)).
+
+## Developer workflows (commands)
+- Install: `npm i` — see [README.md](README.md#L20-L40).
+- Dev server: `npm run dev` (Vite server listens on `::` port `8080` per [vite.config.ts](vite.config.ts#L1-L120)).
+- Build: `npm run build` (triggers ChatGPT export and PWA generation via Vite plugins).
+- Preview: `npm run preview`.
+- Lint: `npm run lint` (ESLint).
+
+## Project-specific conventions & patterns
+- Code-splitting by route: the app keeps a small critical bundle (navigation, footer, IndexPremium) and lazy-loads other pages. See route imports in [src/App.tsx](src/App.tsx#L1-L50).
+- React Query defaults: global `QueryClient` is configured for longer stale times and disabled refetch-on-window-focus to keep snapshot stability for screenshots and performance testing — see [src/App.tsx](src/App.tsx#L317-L322).
+- Tailwind + shadcn-ui style system is used; `src/index.css` + `tailwind.config.ts` form the design system.
+- Plugins run during buildStart: the repository auto-generates a ChatGPT export and includes a dev-only `componentTagger` (lovable). Be careful when changing plugin behaviour — it affects both local builds and the exported artifacts.
+
+## Quick examples (copy-paste patterns)
+- Start dev server (local):
+
+```bash
+npm i
+npm run dev
+```
+
+- Build (generate export + PWA):
+
+```bash
+npm run build
+```
+
+- Inspect React Query defaults (use this when changing caches): [src/App.tsx](src/App.tsx#L317-L322).
+
+## CI, Build & Exports
+- CI workflow: see `.github/workflows/ci.yml`. Key points:
+  - Runs on pushes to `main` and `loop/**`, and on pull requests.
+  - Uses **Node 20**, then runs `npm install --force` and `npm run build`.
+  - If your changes affect build-time artifacts (PWA, chatgpt export), ensure the build completes locally before opening a PR.
+- Local build & preview:
+  - Build: `npm run build`
+  - Preview the production build locally: `npm run preview`
+- Regenerate ChatGPT export manually (no full build required):
+
+```bash
+node scripts/generate-chatgpt-export.js
+```
+
+  - This writes `public/chatgpt-export.txt`. Note: the file is generated and typically listed in `.gitignore`.
+  - The admin UI reads this file (see `src/pages/admin/CodeExport.tsx`) — when changing how exports are generated, update that admin tooling as needed.
+- Environment variables: the CI job sets placeholder `SUPABASE_URL` / `SUPABASE_KEY` envs; if your change requires real keys, add them to GitHub Secrets and/or set them locally for testing.
+- Lint: `npm run lint` (run before PR).
+- Commit & PR guidance:
+  - Use branch names like `feat/<area>` or `chore/<area>` and commit prefixes such as `feat:`, `fix:`, `chore:` (repo uses these conventions).
+  - CI runs the build — ensure `npm run build` succeeds before opening a PR.
+
+## Where to look first for common tasks
+- Add a new route or page: `src/pages` + update routing in [src/App.tsx](src/App.tsx#L1-L50).
+- Update global styles / design tokens: `src/index.css`, `tailwind.config.ts`.
+- Change build behavior or caching: `vite.config.ts`.
+- Troubleshoot exports used by admin tools: `public/chatgpt-export.txt` (generated) and `scripts/generate-chatgpt-export.js`.
+
+## Notes for AI agents
+- Preserve lazy-loading and QueryClient defaults unless you understand performance implications (screenshots, A/B flows rely on consistent caching).
+- Do not remove the `componentTagger` usage without checking Lovable integration — it tags components used in the design system workflow.
+- When editing routes, respect the comment hints in `src/App.tsx` (e.g., admin login must come before other admin routes).
+
+## Using with ChatGPT
+
+### Personalizing with ChatGPT
+- **Custom GPTs**: You can upload the `public/chatgpt-export.txt` file to your ChatGPT account to train a custom GPT tailored to this project.
+- **Export Usage**: The `chatgpt-export.txt` file contains design system details and component documentation. Regenerate it with:
+
+```bash
+node scripts/generate-chatgpt-export.js
+```
+
+- **Templates**: Use the examples in `.github/copilot-instructions.md` to create prompt templates for ChatGPT. For instance:
+  - "How do I add a new route in `src/pages`?"
+  - "Explain the caching strategy in `src/App.tsx`."
+
+### Automation Options
+- **GitHub Actions**: Automate export generation and upload by extending `.github/workflows/ci.yml`.
+- **API Integration**: Use OpenAI's API to query project-specific details dynamically.
+
+If any area is unclear or you'd like more examples (e.g., typical PR contents, CI/CD details, or example component structure), tell me which part to expand.
+
+## Testing Strategies
+- **Unit Tests**: Run `npm test` to execute unit tests. Ensure all tests pass before committing changes.
+- **Integration Tests**: Integration tests for Supabase functions are located in `supabase/functions/tests`. Use `npm run test:integration` to run these.
+- **Debugging Tests**: Use the `--inspect` flag with Node.js to debug tests. Example: `node --inspect ./node_modules/.bin/jest`.
+
+## Debugging Tips
+- **Supabase Debugging**: Use the Supabase CLI to inspect logs and test functions locally. Example: `supabase start` to run a local Supabase instance.
+- **Runtime Caching**: Check `vite.config.ts` for caching rules. Use browser dev tools to verify cache behavior.
+- **Component Debugging**: Use React DevTools to inspect component state and props.
+
+## External Dependencies
+- **Supabase**: Ensure `SUPABASE_URL` and `SUPABASE_KEY` are set in your environment. Refer to `supabase/config.toml` for local configurations.
+- **Lovable**: The `lovable-tagger` plugin auto-tags components. Verify its integration in `vite.config.ts`.
+
+## Code Quality
+- **Linting**: Run `npm run lint` to check for linting errors. Fix issues using `npm run lint --fix`.
+- **Formatting**: The project uses Prettier for consistent formatting. Ensure code is formatted before committing.
+
+## Additional Examples
+- **Adding a Supabase Function**:
+  1. Create a new function in `supabase/functions`.
+  2. Deploy the function using `supabase functions deploy <function-name>`.
+  3. Test the function locally with `supabase functions serve`.
+
+- **Modifying ChatGPT Export**:
+  1. Update `scripts/generate-chatgpt-export.js`.
+  2. Run `node scripts/generate-chatgpt-export.js` to regenerate the export.
+  3. Verify the output in `public/chatgpt-export.txt`.
