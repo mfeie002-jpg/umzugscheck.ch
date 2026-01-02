@@ -55,6 +55,7 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V6cGemini': () => import('@/components/calculator-variants/V6cGemini').then(m => ({ default: m.V6cGemini })),
   'V6dDeepResearch': () => import('@/components/calculator-variants/V6dDeepResearch'),
   'V6eThinkingMode': () => import('@/components/calculator-variants/V6eThinkingMode'),
+  'V6fUltimate': () => import('@/components/calculator-variants/V6fUltimate'),
   // V7 Variants
   'V7aFeedbackBased': () => import('@/components/calculator-variants/V7aFeedbackBased').then(m => ({ default: m.V7aFeedbackBased })),
   // V8 Variants
