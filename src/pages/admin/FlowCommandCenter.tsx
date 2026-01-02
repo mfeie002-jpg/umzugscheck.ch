@@ -123,7 +123,41 @@ const INTERFACE_MODES: { value: InterfaceMode; label: string; description: strin
 // Helper Functions
 // ─────────────────────────────────────────────────────────────
 
+// Map frontend flow IDs to edge function flow IDs
+// Edge function expects: v1, v1a, v2, v2a, etc.
+// Frontend has: umzugsofferten-v1, v1a, umzugsofferten-v2, v2a, etc.
+function mapToEdgeFunctionFlowId(flowId: string): string {
+  // If it starts with umzugsofferten-, extract just the version part
+  if (flowId.startsWith('umzugsofferten-')) {
+    const versionPart = flowId.replace('umzugsofferten-', '');
+    // Check if it's a simple version like v1, v2, etc.
+    return versionPart;
+  }
+  // Sub-variants like v1a, v2b are already in correct format
+  return flowId;
+}
+
+// Valid flow IDs that the edge function supports
+const VALID_EDGE_FUNCTION_FLOWS = [
+  'v1', 'v1a', 'v1b', 'v1c', 'v1d', 'v1e', 'v1f', 'v1g',
+  'v2', 'v2a', 'v2b', 'v2c', 'v2d', 'v2e', 'v2f',
+  'v3', 'v3a', 'v3b', 'v3c', 'v3d', 'v3e',
+  'v4', 'v4a', 'v4b', 'v4c', 'v4d', 'v4e', 'v4f',
+  'v5', 'v5a', 'v5b', 'v5c', 'v5d', 'v5e', 'v5f',
+  'v6', 'v6a', 'v6b', 'v6c', 'v6d', 'v6e', 'v6f',
+  'v7', 'v7a',
+  'v8', 'v8a',
+  'v9', 'v9a', 'v9b', 'v9c', 'v9d',
+  'multi-a',
+  'ultimate-v7'
+];
+
 function getAllFlowIds(): string[] {
+  // Return only the valid edge function flow IDs
+  return [...VALID_EDGE_FUNCTION_FLOWS];
+}
+
+function getAllFrontendFlowIds(): string[] {
   const ids: string[] = [];
   Object.keys(FLOW_CONFIGS).forEach(key => {
     if (key.startsWith('umzugsofferten-')) {
