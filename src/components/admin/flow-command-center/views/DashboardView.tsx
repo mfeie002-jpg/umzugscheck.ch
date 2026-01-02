@@ -51,7 +51,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [sortBy, setSortBy] = useState<'score' | 'name' | 'date'>('score');
   const [filterFlowNum, setFilterFlowNum] = useState<number | 'all'>('all');
 
-  // Fetch scores from database
+  // Fetch scores from database with delta tracking
   useEffect(() => {
     fetchScores();
   }, []);
@@ -66,22 +66,40 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       
       if (error) throw error;
       
-      // Get latest score per flow
-      const scoreMap: Record<string, FlowScore> = {};
+      // Group by flow_id and get latest 2 for delta calculation
+      const flowRuns: Record<string, typeof data> = {};
       data?.forEach(row => {
-        if (!scoreMap[row.flow_id]) {
-          scoreMap[row.flow_id] = {
-            flowId: row.flow_id,
-            overallScore: row.overall_score,
-            conversionScore: row.conversion_score,
-            uxScore: row.ux_score,
-            mobileScore: row.mobile_score,
-            trustScore: row.trust_score,
-            accessibilityScore: row.accessibility_score,
-            performanceScore: row.performance_score,
-            lastAnalyzed: row.created_at,
-          };
+        if (!flowRuns[row.flow_id]) {
+          flowRuns[row.flow_id] = [];
         }
+        if (flowRuns[row.flow_id].length < 2) {
+          flowRuns[row.flow_id].push(row);
+        }
+      });
+      
+      // Build score map with deltas
+      const scoreMap: Record<string, FlowScore> = {};
+      Object.entries(flowRuns).forEach(([flowId, runs]) => {
+        const latest = runs[0];
+        const previous = runs[1];
+        
+        scoreMap[flowId] = {
+          flowId,
+          overallScore: latest.overall_score,
+          conversionScore: latest.conversion_score,
+          uxScore: latest.ux_score,
+          mobileScore: latest.mobile_score,
+          trustScore: latest.trust_score,
+          accessibilityScore: latest.accessibility_score,
+          performanceScore: latest.performance_score,
+          lastAnalyzed: latest.created_at,
+          // Delta fields
+          previousOverallScore: previous?.overall_score ?? null,
+          delta: previous ? (latest.overall_score || 0) - (previous.overall_score || 0) : null,
+          deltaConversion: previous ? (latest.conversion_score || 0) - (previous.conversion_score || 0) : null,
+          deltaUx: previous ? (latest.ux_score || 0) - (previous.ux_score || 0) : null,
+          deltaMobile: previous ? (latest.mobile_score || 0) - (previous.mobile_score || 0) : null,
+        };
       });
       
       setScores(scoreMap);

@@ -28,6 +28,12 @@ export interface FlowScore {
   accessibilityScore: number | null;
   performanceScore: number | null;
   lastAnalyzed: string | null;
+  // Delta tracking (vs previous analysis)
+  previousOverallScore?: number | null;
+  delta?: number | null;
+  deltaConversion?: number | null;
+  deltaUx?: number | null;
+  deltaMobile?: number | null;
 }
 
 // ─────────────────────────────────────────────────────────────

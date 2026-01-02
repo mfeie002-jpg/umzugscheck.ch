@@ -21,7 +21,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ScoreBadgeCompact, RankBadge } from './ScoreDisplay';
+import { ScoreBadgeCompact, RankBadge, ScoreDeltaCompact } from './ScoreDisplay';
 import type { FlowScore, FlowVariant } from '../types';
 import { getScoreColor, formatRelativeTime } from '../utils';
 
@@ -68,8 +68,11 @@ export const FlowCard: React.FC<FlowCardProps> = ({
             
             <div className="flex items-center gap-2">
               {hasScore ? (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <ScoreBadgeCompact score={score.overallScore} size="sm" />
+                  {score.delta !== undefined && score.delta !== null && score.delta !== 0 && (
+                    <ScoreDeltaCompact delta={score.delta} />
+                  )}
                 </div>
               ) : (
                 <Badge variant="outline" className="text-xs opacity-50">
@@ -121,6 +124,9 @@ export const FlowCard: React.FC<FlowCardProps> = ({
             {hasScore && (
               <div className="flex items-center gap-2 mt-3 flex-wrap">
                 <ScoreBadgeCompact score={score.overallScore} label="Gesamt" />
+                {score.delta !== undefined && score.delta !== null && score.delta !== 0 && (
+                  <ScoreDeltaCompact delta={score.delta} className="ml-1" />
+                )}
                 <ScoreBadgeCompact score={score.conversionScore} label="Conv" />
                 <ScoreBadgeCompact score={score.uxScore} label="UX" />
                 <ScoreBadgeCompact score={score.mobileScore} label="Mobile" />

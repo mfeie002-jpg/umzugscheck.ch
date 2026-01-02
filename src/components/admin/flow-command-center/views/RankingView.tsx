@@ -36,7 +36,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { ScoreBadgeCompact, RankBadge, ScoreRing } from '../components';
+import { ScoreBadgeCompact, RankBadge, ScoreRing, ScoreDeltaCompact } from '../components';
 import type { FlowScore, FlowVariant } from '../types';
 import { 
   getVariantsForFlow, 
@@ -89,12 +89,15 @@ export const RankingView: React.FC<RankingViewProps> = ({
       const statusMap: Record<string, AnalysisStatus> = {};
       let runningTotal = 0;
       
-      // Get latest run per normalized flow ID
-      const latestRuns = new Map<string, typeof runsData[0]>();
+      // Group runs by normalized flow ID (keep latest 2 for delta)
+      const flowRuns: Record<string, typeof runsData> = {};
       runsData?.forEach(row => {
         const normalized = normalizeFlowId(row.flow_id);
-        if (!latestRuns.has(normalized)) {
-          latestRuns.set(normalized, row);
+        if (!flowRuns[normalized]) {
+          flowRuns[normalized] = [];
+        }
+        if (flowRuns[normalized].length < 2) {
+          flowRuns[normalized].push(row);
         }
       });
       
@@ -116,37 +119,59 @@ export const RankingView: React.FC<RankingViewProps> = ({
         }
       });
       
-      latestRuns.forEach((row, normalizedId) => {
-        // Use normalized ID consistently
+      Object.entries(flowRuns).forEach(([normalizedId, runs]) => {
+        const latest = runs[0];
+        const previous = runs[1];
+        
+        // Calculate deltas
+        const delta = previous 
+          ? (latest.overall_score || 0) - (previous.overall_score || 0) 
+          : null;
+        const deltaConversion = previous 
+          ? (latest.conversion_score || 0) - (previous.conversion_score || 0) 
+          : null;
+        const deltaUx = previous 
+          ? (latest.ux_score || 0) - (previous.ux_score || 0) 
+          : null;
+        const deltaMobile = previous 
+          ? (latest.mobile_score || 0) - (previous.mobile_score || 0) 
+          : null;
+        
         scoreMap[normalizedId] = {
           flowId: normalizedId,
-          overallScore: row.overall_score,
-          conversionScore: row.conversion_score,
-          uxScore: row.ux_score,
-          mobileScore: row.mobile_score,
-          trustScore: row.trust_score,
-          accessibilityScore: row.accessibility_score,
-          performanceScore: row.performance_score,
-          lastAnalyzed: row.created_at,
+          overallScore: latest.overall_score,
+          conversionScore: latest.conversion_score,
+          uxScore: latest.ux_score,
+          mobileScore: latest.mobile_score,
+          trustScore: latest.trust_score,
+          accessibilityScore: latest.accessibility_score,
+          performanceScore: latest.performance_score,
+          lastAnalyzed: latest.created_at,
+          // Delta tracking
+          previousOverallScore: previous?.overall_score ?? null,
+          delta,
+          deltaConversion,
+          deltaUx,
+          deltaMobile,
         };
         
         // Status mapping - mark old running analyses as stalled
-        const isRunning = row.status === 'running' || row.status === 'processing';
-        const runningTime = new Date().getTime() - new Date(row.created_at).getTime();
+        const isRunning = latest.status === 'running' || latest.status === 'processing';
+        const runningTime = new Date().getTime() - new Date(latest.created_at).getTime();
         const isStalled = isRunning && runningTime > 30 * 60 * 1000; // 30 min timeout
         
         if (isRunning && !isStalled) runningTotal++;
         
-        const metadata = row.metadata as { error?: string } | null;
+        const metadata = latest.metadata as { error?: string } | null;
         
         statusMap[normalizedId] = {
-          status: row.status === 'completed' ? 'completed' 
-                : row.status === 'failed' || isStalled ? 'failed'
+          status: latest.status === 'completed' ? 'completed' 
+                : latest.status === 'failed' || isStalled ? 'failed'
                 : isRunning ? 'running' : 'none',
-          stepsCaptures: row.steps_captured || 0,
-          totalSteps: row.total_steps || 1,
-          screenshotsCount: screenshotCounts.get(row.id) || 0,
-          hasErrors: row.status === 'failed' || isStalled,
+          stepsCaptures: latest.steps_captured || 0,
+          totalSteps: latest.total_steps || 1,
+          screenshotsCount: screenshotCounts.get(latest.id) || 0,
+          hasErrors: latest.status === 'failed' || isStalled,
           lastError: isStalled ? 'Analysis stalled - screenshot service error' : metadata?.error,
         };
       });
@@ -515,9 +540,14 @@ export const RankingView: React.FC<RankingViewProps> = ({
                     {getScreenshotBadge(variant.status)}
                   </TableCell>
                   <TableCell className="text-center">
-                    <span className={cn('font-bold', getScoreColor(variant.score?.overallScore ?? null))}>
-                      {variant.score?.overallScore ?? '-'}
-                    </span>
+                    <div className="flex items-center justify-center gap-1">
+                      <span className={cn('font-bold', getScoreColor(variant.score?.overallScore ?? null))}>
+                        {variant.score?.overallScore ?? '-'}
+                      </span>
+                      {variant.score?.delta !== undefined && variant.score?.delta !== null && variant.score?.delta !== 0 && (
+                        <ScoreDeltaCompact delta={variant.score.delta} />
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="text-center">
                     <span className={cn('text-sm', getScoreColor(variant.score?.conversionScore ?? null))}>
