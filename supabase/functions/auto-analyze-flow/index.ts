@@ -579,12 +579,20 @@ async function runAnalysisInBackground(
     const avgMobile = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.mobile, 0) / stepAnalyses.length);
     const avgConversion = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.conversion, 0) / stepAnalyses.length);
     const avgUx = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.ux, 0) / stepAnalyses.length);
-    const overallScore = Math.round((avgMobile + avgConversion + avgUx) / 3);
+    
+    // Trust score is derived from conversion signals (trust elements, social proof)
+    // For now approximate as average of conversion and ux
+    const avgTrust = Math.round((avgConversion * 0.6 + avgUx * 0.4));
+    
+    // Performance score - approximate based on mobile responsiveness
+    const avgPerformance = Math.round((avgMobile * 0.7 + avgUx * 0.3));
+    
+    const overallScore = Math.round((avgMobile + avgConversion + avgUx + avgTrust) / 4);
 
     // Calculate critical issues count before using it
     const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
 
-    // Update run with results
+    // Update run with results - NOW INCLUDING mobile_score and trust_score
     await supabase
       .from('flow_analysis_runs')
       .update({
@@ -592,7 +600,9 @@ async function runAnalysisInBackground(
         completed_at: new Date().toISOString(),
         overall_score: overallScore,
         conversion_score: avgConversion,
-        performance_score: avgMobile,
+        mobile_score: avgMobile,           // FIXED: Now setting mobile_score
+        trust_score: avgTrust,             // FIXED: Now setting trust_score
+        performance_score: avgPerformance,
         ux_score: avgUx,
         ai_summary: summary,
         ai_recommendations: recommendations,
