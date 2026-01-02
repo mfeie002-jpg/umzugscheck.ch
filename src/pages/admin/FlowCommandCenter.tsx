@@ -192,8 +192,10 @@ export default function FlowCommandCenter() {
   // UI State
   const [activeView, setActiveView] = useState<ViewMode>(viewParam || 'dashboard');
   const [interfaceMode, setInterfaceMode] = useState<InterfaceMode>(modeParam || 'tabs');
-  const [selectedFlowId, setSelectedFlowId] = useState<string | null>(flowParam);
-  
+  // Normalize legacy URLs (older runs used "umzugsofferten-vX" as flow_id)
+  const [selectedFlowId, setSelectedFlowId] = useState<string | null>(
+    flowParam ? mapToEdgeFunctionFlowId(flowParam) : null
+  );
   // Data State
   const [scores, setScores] = useState<Map<string, FlowScore>>(new Map());
   const [stats, setStats] = useState<CommandCenterStats>({
@@ -359,12 +361,13 @@ export default function FlowCommandCenter() {
   const handleAnalyzeFlow = async (flowId: string) => {
     setIsAnalyzing(true);
     try {
-      toast.info(`Analyse für ${flowId} wird gestartet...`);
+      const edgeFlowId = mapToEdgeFunctionFlowId(flowId);
+      toast.info(`Analyse für ${edgeFlowId} wird gestartet...`);
       
       // Call the auto-analyze-flow edge function
       const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
         body: {
-          flowId: flowId,
+          flowId: edgeFlowId,
           runType: 'manual',
           baseUrl: 'https://www.umzugscheck.ch'
         }
@@ -376,7 +379,7 @@ export default function FlowCommandCenter() {
       }
 
       console.log('Analysis response:', data);
-      toast.success(`Analyse für ${flowId} abgeschlossen`);
+      toast.success(`Analyse für ${edgeFlowId} abgeschlossen`);
       
       // Reload data to show new results
       await loadData();
@@ -399,9 +402,10 @@ export default function FlowCommandCenter() {
     
     for (const id of flowIds) {
       try {
+        const edgeFlowId = mapToEdgeFunctionFlowId(id);
         const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
           body: {
-            flowId: id,
+            flowId: edgeFlowId,
             runType: 'manual',
             baseUrl: 'https://www.umzugscheck.ch'
           }

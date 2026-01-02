@@ -77,15 +77,23 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
   const fetchAnalysis = async (id: string) => {
     setLoading(true);
     try {
+      // Support both current IDs (v9) and legacy IDs (umzugsofferten-v9)
+      const normalizedId = id.startsWith('umzugsofferten-')
+        ? id.replace('umzugsofferten-', '')
+        : id;
+      const flowIds = Array.from(
+        new Set([id, normalizedId, `umzugsofferten-${normalizedId}`])
+      );
+
       // Fetch latest 2 COMPLETED runs for delta comparison (ignore processing/failed)
       const { data: runData, error: runError } = await supabase
         .from('flow_analysis_runs')
         .select('*')
-        .or(`flow_id.eq.${id},flow_id.eq.umzugsofferten-${id}`)
+        .in('flow_id', flowIds)
         .eq('status', 'completed')
         .order('created_at', { ascending: false })
         .limit(2);
-      
+
       if (runError && runError.code !== 'PGRST116') throw runError;
       
       const latestRun = runData?.[0];
@@ -149,10 +157,10 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
       const { data: issuesData, error: issuesError } = await supabase
         .from('flow_ux_issues')
         .select('*')
-        .eq('flow_id', id)
+        .in('flow_id', flowIds)
         .eq('is_resolved', false)
         .order('severity', { ascending: true });
-      
+
       if (issuesError) throw issuesError;
       
       setIssues((issuesData || []).map(i => ({
@@ -172,9 +180,9 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
       const { data: archetypeData, error: archetypeError } = await supabase
         .from('flow_archetype_scores')
         .select('*')
-        .eq('flow_id', id)
+        .in('flow_id', flowIds)
         .order('created_at', { ascending: false });
-      
+
       if (!archetypeError && archetypeData && archetypeData.length > 0) {
         // Get latest scores per archetype
         const latestScores = new Map<string, ArchetypeScore>();
