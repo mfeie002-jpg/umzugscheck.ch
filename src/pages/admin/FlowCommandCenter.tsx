@@ -23,7 +23,7 @@ import {
   LayoutDashboard,
   Trophy,
   BarChart3,
-  History,
+  History as HistoryIcon,
   Settings,
   ArrowLeft,
   RefreshCw,
@@ -66,13 +66,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { 
   DashboardView, 
   RankingView, 
-  AnalysisView 
+  AnalysisView,
+  HistoryView,
+  ComparisonView
 } from '@/components/admin/flow-command-center/views';
 import { 
   ScoreRing, 
   FlowCard, 
   IssuesPanel 
 } from '@/components/admin/flow-command-center/components';
+import { useKeyboardShortcuts, useExport } from '@/components/admin/flow-command-center/hooks';
 import type { 
   ViewMode, 
   InterfaceMode, 
@@ -106,7 +109,7 @@ const VIEW_CONFIG: Record<ViewMode, { label: string; icon: React.ElementType; de
   ranking: { label: 'Ranking', icon: Trophy, description: 'Sortierte Liste & Winner' },
   analysis: { label: 'Analyse', icon: BarChart3, description: 'Deep Analysis pro Flow' },
   comparison: { label: 'Vergleich', icon: Layers, description: 'Flow-Vergleich Side-by-Side' },
-  history: { label: 'Historie', icon: History, description: 'Trend-Tracking' },
+  history: { label: 'Historie', icon: HistoryIcon, description: 'Trend-Tracking' },
   settings: { label: 'Einstellungen', icon: Settings, description: 'Konfiguration' },
 };
 
@@ -170,6 +173,18 @@ export default function FlowCommandCenter() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onNavigateDashboard: () => setActiveView('dashboard'),
+    onNavigateRanking: () => setActiveView('ranking'),
+    onNavigateAnalysis: () => setActiveView('analysis'),
+    onNavigateHistory: () => setActiveView('history'),
+    onNavigateComparison: () => setActiveView('comparison'),
+    onRefresh: () => loadData(),
+    onAnalyzeAll: () => handleAnalyzeAll(),
+    onExport: () => toast.info('Export öffnen...'),
+  });
 
   // Update URL when state changes
   useEffect(() => {
@@ -353,7 +368,7 @@ export default function FlowCommandCenter() {
     <Tabs value={activeView} onValueChange={(v) => handleViewChange(v as ViewMode)}>
       <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
         <TabsList className="h-auto flex-wrap">
-          {(['dashboard', 'ranking', 'analysis', 'history'] as ViewMode[]).map((view) => {
+          {(['dashboard', 'ranking', 'analysis', 'history', 'comparison'] as ViewMode[]).map((view) => {
             const config = VIEW_CONFIG[view];
             const Icon = config.icon;
             return (
@@ -431,7 +446,17 @@ export default function FlowCommandCenter() {
       </TabsContent>
 
       <TabsContent value="history" className="mt-0">
-        <HistoryView />
+        <HistoryView 
+          selectedFlowId={selectedFlowId || undefined}
+          onSelectFlow={handleSelectFlow}
+        />
+      </TabsContent>
+
+      <TabsContent value="comparison" className="mt-0">
+        <ComparisonView
+          initialFlowA={selectedFlowId}
+          onSelectFlow={handleSelectFlow}
+        />
       </TabsContent>
     </Tabs>
   );
@@ -649,7 +674,7 @@ export default function FlowCommandCenter() {
           onClick={() => { setActiveView('analysis'); setInterfaceMode('tabs'); }}
         />
         <QuickActionCard
-          icon={<History className="h-6 w-6" />}
+          icon={<HistoryIcon className="h-6 w-6" />}
           label="Historie"
           description="Trend-Tracking"
           onClick={() => { setActiveView('history'); setInterfaceMode('tabs'); }}
@@ -749,23 +774,4 @@ const QuickActionCard: React.FC<{
   </Card>
 );
 
-const HistoryView: React.FC = () => (
-  <Card>
-    <CardHeader>
-      <CardTitle className="flex items-center gap-2">
-        <History className="h-5 w-5" />
-        Score-Entwicklung
-      </CardTitle>
-      <CardDescription>
-        Historische Analyse der Flow-Scores über Zeit
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="py-12 text-center text-muted-foreground">
-      <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
-      <p>Historie-Tracking wird geladen...</p>
-      <p className="text-sm mt-2">
-        Hier werden Trend-Daten und Score-Entwicklungen angezeigt.
-      </p>
-    </CardContent>
-  </Card>
-);
+// Legacy placeholder removed - now using imported HistoryView from flow-command-center/views
