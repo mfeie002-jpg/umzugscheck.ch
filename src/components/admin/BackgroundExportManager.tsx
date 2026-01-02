@@ -199,9 +199,27 @@ export function BackgroundExportManager() {
   const runningJobs = jobs.filter((j) => j.status === "running" || j.status === "pending");
   const hasRunningJob = runningJobs.length > 0;
 
-  const openDownload = (url: string) => {
-    // IMPORTANT: open in a new tab to avoid full-page navigation (which feels like an F5 reload)
-    window.open(url, "_blank", "noopener,noreferrer");
+  // Safe download via blob fetch - prevents page refresh
+  const openDownload = async (url: string, filename?: string) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename || url.split('/').pop() || 'download.zip';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const copyLink = async (url: string) => {
