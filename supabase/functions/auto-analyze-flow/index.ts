@@ -59,7 +59,8 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v5e': { name: 'V5e Reduced Motion', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5e' },
   'v5f': { name: 'V5f Feedback', steps: 3, baseUrl: '/umzugsofferten-v5?variant=v5f' },
   // V6 sub-variants
-  'v6a': { name: 'V6a Ultimate (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v6?variant=v6a' },
+  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 5, baseUrl: '/umzugsofferten-v6?variant=v6a' },
+  'v6b': { name: 'V6b Ultimate Extended', steps: 5, baseUrl: '/umzugsofferten-v6?variant=v6b' },
   // V7 sub-variants
   'v7a': { name: 'V7a SwissMove (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v7?variant=v7a' },
   // V8 sub-variants
