@@ -270,7 +270,7 @@ const ScreenshotMenu = ({
   </DropdownMenu>
 );
 
-// Fullscreen Image Viewer with Slider
+// Fullscreen Image Viewer with Slider and Touch Gestures
 const FullscreenViewer = ({ 
   screenshots,
   isOpen, 
@@ -303,6 +303,8 @@ const FullscreenViewer = ({
   const [annotationType, setAnnotationType] = useState<'issue' | 'idea' | 'note'>('note');
   const [annotationText, setAnnotationText] = useState('');
   const imageRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   const currentScreenshot = screenshots.find(s => s.stepNumber === currentStep) || screenshots[currentStep - 1];
 
@@ -319,6 +321,32 @@ const FullscreenViewer = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onPrev, onNext, onClose]);
+
+  // Touch swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0 && currentStep < totalSteps) {
+        // Swipe left -> next
+        onNext();
+      } else if (diff < 0 && currentStep > 1) {
+        // Swipe right -> prev
+        onPrev();
+      }
+    }
+    touchStartX.current = 0;
+    touchEndX.current = 0;
+  };
 
   const handleImageClick = (e: React.MouseEvent) => {
     if (!isAddingAnnotation || !imageRef.current) return;
@@ -342,203 +370,238 @@ const FullscreenViewer = ({
   if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[100vw] h-[100svh] max-w-[100vw] max-h-[100svh] p-0 overflow-visible rounded-none sm:max-w-[95vw] sm:max-h-[95vh] sm:rounded-lg">
-        <div className="relative w-full h-full flex flex-col bg-background">
-          {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b bg-background z-10">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="h-5 w-5" />
-              </Button>
-              <span className="font-semibold">Step {currentStep} / {totalSteps}</span>
-              {currentScreenshot && (
-                <Badge variant="outline" className="text-xs">
-                  Qualität: {currentScreenshot.quality || 'N/A'}%
-                </Badge>
-              )}
-            </div>
-            
-            {/* Desktop / Mobile Toggle */}
-            <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
-              <Button
-                variant={viewMode === 'desktop' ? 'default' : 'ghost'}
-                size="sm"
-                className="h-7 text-xs px-3"
-                onClick={() => setViewMode('desktop')}
+    <div 
+      className="fixed inset-0 z-50 bg-black/95 flex flex-col"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 sm:p-4 bg-black/80 border-b border-white/10">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose}
+            className="h-9 w-9 text-white hover:bg-white/20"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+          <span className="text-white font-semibold text-sm sm:text-base">
+            Step {currentStep} / {totalSteps}
+          </span>
+        </div>
+        
+        {/* Desktop / Mobile Toggle - Prominent in header */}
+        <div className="flex items-center gap-0.5 p-0.5 bg-white/10 rounded-lg">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              "h-8 text-xs px-2 sm:px-3 rounded-md transition-all",
+              viewMode === 'desktop' 
+                ? "bg-white text-black hover:bg-white" 
+                : "text-white/70 hover:text-white hover:bg-white/10"
+            )}
+            onClick={() => setViewMode('desktop')}
+          >
+            <Monitor className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Desktop</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              "h-8 text-xs px-2 sm:px-3 rounded-md transition-all",
+              viewMode === 'mobile' 
+                ? "bg-white text-black hover:bg-white" 
+                : "text-white/70 hover:text-white hover:bg-white/10"
+            )}
+            onClick={() => setViewMode('mobile')}
+          >
+            <Smartphone className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Mobile</span>
+          </Button>
+        </div>
+        
+        {/* Zoom controls - desktop only */}
+        <div className="hidden sm:flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setZoom(z => Math.max(0.5, z - 0.25))}
+            className="h-8 w-8 text-white hover:bg-white/20"
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+          <span className="text-white/70 text-sm w-12 text-center">{Math.round(zoom * 100)}%</span>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setZoom(z => Math.min(3, z + 0.25))}
+            className="h-8 w-8 text-white hover:bg-white/20"
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+      
+      {/* Annotation input - desktop only */}
+      {isAddingAnnotation && (
+        <div className="hidden sm:flex items-center gap-2 p-2 bg-black/60 border-b border-white/10">
+          <select 
+            value={annotationType}
+            onChange={(e) => setAnnotationType(e.target.value as any)}
+            className="text-xs border rounded px-2 py-1 bg-white/10 text-white border-white/20"
+          >
+            <option value="note">📝 Notiz</option>
+            <option value="issue">⚠️ Issue</option>
+            <option value="idea">💡 Idee</option>
+          </select>
+          <Input 
+            value={annotationText}
+            onChange={(e) => setAnnotationText(e.target.value)}
+            placeholder="Text eingeben und auf Bild klicken..."
+            className="flex-1 h-8 text-sm bg-white/10 border-white/20 text-white placeholder:text-white/50"
+          />
+        </div>
+      )}
+      
+      {/* Main Image Area with Navigation */}
+      <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+        {/* Navigation Arrows - always visible */}
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className={cn(
+            "absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20",
+            "h-12 w-12 sm:h-14 sm:w-14 rounded-full",
+            "bg-white/20 hover:bg-white/30 text-white",
+            "disabled:opacity-30 disabled:hover:bg-white/20",
+            "transition-all shadow-lg"
+          )}
+          onClick={onPrev}
+          disabled={currentStep === 1}
+        >
+          <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className={cn(
+            "absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20",
+            "h-12 w-12 sm:h-14 sm:w-14 rounded-full",
+            "bg-white/20 hover:bg-white/30 text-white",
+            "disabled:opacity-30 disabled:hover:bg-white/20",
+            "transition-all shadow-lg"
+          )}
+          onClick={onNext}
+          disabled={currentStep === totalSteps}
+        >
+          <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
+        </Button>
+        
+        {/* Image container */}
+        <div className="w-full h-full flex items-center justify-center px-16 sm:px-20">
+          {currentScreenshot ? (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${currentStep}-${viewMode}`}
+                ref={imageRef}
+                className={cn(
+                  "relative flex items-center justify-center",
+                  isAddingAnnotation && "cursor-crosshair"
+                )}
+                style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
+                onClick={handleImageClick}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.2 }}
               >
-                <Monitor className="h-3.5 w-3.5 mr-1" />
-                Desktop
-              </Button>
-              <Button
-                variant={viewMode === 'mobile' ? 'default' : 'ghost'}
-                size="sm"
-                className="h-7 text-xs px-3"
-                onClick={() => setViewMode('mobile')}
-              >
-                <Smartphone className="h-3.5 w-3.5 mr-1" />
-                Mobile
-              </Button>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))}>
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-              <span className="text-sm w-12 text-center">{Math.round(zoom * 100)}%</span>
-              <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(3, z + 0.25))}>
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <Button 
-                variant={isAddingAnnotation ? "default" : "ghost"} 
-                size="sm"
-                onClick={() => setIsAddingAnnotation(!isAddingAnnotation)}
-              >
-                <MessageSquare className="h-4 w-4 mr-1" />
-                Annotieren
-              </Button>
-            </div>
-          </div>
-          
-          {/* Annotation input */}
-          {isAddingAnnotation && (
-            <div className="flex items-center gap-2 p-2 bg-muted border-b">
-              <select 
-                value={annotationType}
-                onChange={(e) => setAnnotationType(e.target.value as any)}
-                className="text-xs border rounded px-2 py-1 bg-background"
-              >
-                <option value="note">📝 Notiz</option>
-                <option value="issue">⚠️ Issue</option>
-                <option value="idea">💡 Idee</option>
-              </select>
-              <Input 
-                value={annotationText}
-                onChange={(e) => setAnnotationText(e.target.value)}
-                placeholder="Text eingeben und auf Bild klicken..."
-                className="flex-1 h-8 text-sm"
-              />
+                <img 
+                  src={currentScreenshot.url} 
+                  alt={`Step ${currentStep}`}
+                  className={cn(
+                    "object-contain shadow-2xl rounded-lg max-h-[70vh]",
+                    viewMode === 'mobile' 
+                      ? "max-w-[280px] sm:max-w-[320px] border-4 border-gray-800 rounded-3xl" 
+                      : "max-w-[90vw] sm:max-w-[80vw]"
+                  )}
+                  style={viewMode === 'mobile' ? {
+                    boxShadow: '0 0 0 2px #1a1a1a, 0 0 0 6px #0a0a0a, 0 20px 60px rgba(0,0,0,0.5)'
+                  } : undefined}
+                />
+                {/* Annotations */}
+                {annotations.filter(a => a.stepNumber === currentStep).map(a => (
+                  <div
+                    key={a.id}
+                    className={cn(
+                      "absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer shadow-lg",
+                      a.type === 'issue' ? 'bg-red-500' :
+                      a.type === 'idea' ? 'bg-yellow-500' :
+                      'bg-blue-500'
+                    )}
+                    style={{ left: `${a.x}%`, top: `${a.y}%` }}
+                    title={a.text}
+                  >
+                    {a.type === 'issue' ? '!' : a.type === 'idea' ? '💡' : '📝'}
+                  </div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          ) : (
+            <div className="flex flex-col items-center gap-4 text-white/50">
+              <ImageOff className="h-16 w-16" />
+              <span>Kein Screenshot für Step {currentStep} verfügbar</span>
             </div>
           )}
-          
-          {/* Main Image Area with Slider */}
-          <div className="flex-1 relative bg-muted/30 flex items-center justify-center px-14 sm:px-16">
-            {/* Navigation Arrows - Outside overflow container */}
-            <Button 
-              variant="secondary" 
-              size="icon"
-              className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-20"
-              onClick={onPrev}
-              disabled={currentStep === 1}
-            >
-              <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
-            </Button>
-            <Button 
-              variant="secondary" 
-              size="icon"
-              className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg z-20"
-              onClick={onNext}
-              disabled={currentStep === totalSteps}
-            >
-              <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
-            </Button>
-            
-            {/* Image container */}
-            <div className="w-full h-full overflow-hidden flex items-center justify-center">
-              {currentScreenshot ? (
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`${currentStep}-${viewMode}`}
-                    ref={imageRef}
-                    className={cn(
-                      "relative flex items-center justify-center",
-                      isAddingAnnotation && "cursor-crosshair"
-                    )}
-                    style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
-                    onClick={handleImageClick}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <img 
-                      src={currentScreenshot.url} 
-                      alt={`Step ${currentStep}`}
-                      className={cn(
-                        "object-contain shadow-2xl rounded-lg",
-                        viewMode === 'mobile' 
-                          ? "max-h-[75vh] max-w-[40vw]" 
-                          : "max-h-[75vh] max-w-[85vw]"
-                      )}
-                    />
-                    {/* Annotations */}
-                    {annotations.filter(a => a.stepNumber === currentStep).map(a => (
-                      <div
-                        key={a.id}
-                        className={cn(
-                          "absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer shadow-lg",
-                          a.type === 'issue' ? 'bg-red-500' :
-                          a.type === 'idea' ? 'bg-yellow-500' :
-                          'bg-blue-500'
-                        )}
-                        style={{ left: `${a.x}%`, top: `${a.y}%` }}
-                        title={a.text}
-                      >
-                        {a.type === 'issue' ? '!' : a.type === 'idea' ? '💡' : '📝'}
-                      </div>
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-              ) : (
-                <div className="flex flex-col items-center gap-4 text-muted-foreground">
-                  <ImageOff className="h-16 w-16" />
-                  <span>Kein Screenshot für Step {currentStep} verfügbar</span>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Thumbnail Strip at Bottom */}
-          <div className="p-3 border-t bg-background">
-            <ScrollArea className="w-full">
-              <div className="flex gap-2 justify-center">
-                {Array.from({ length: totalSteps }, (_, i) => {
-                  const stepNum = i + 1;
-                  const stepScreenshot = screenshots.find(s => s.stepNumber === stepNum) || screenshots[i];
-                  const isActive = currentStep === stepNum;
-                  
-                  return (
-                    <button
-                      key={stepNum}
-                      onClick={() => setCurrentStep(stepNum)}
-                      className={cn(
-                        "flex-shrink-0 rounded-lg overflow-hidden transition-all border-2",
-                        isActive 
-                          ? "border-primary ring-2 ring-primary/30" 
-                          : "border-transparent hover:border-muted-foreground/30"
-                      )}
-                    >
-                      {stepScreenshot ? (
-                        <img 
-                          src={stepScreenshot.url}
-                          alt={`Step ${stepNum}`}
-                          className="w-16 h-10 object-cover object-top"
-                        />
-                      ) : (
-                        <div className="w-16 h-10 bg-muted flex items-center justify-center">
-                          <span className="text-xs text-muted-foreground">{stepNum}</span>
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </ScrollArea>
-          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+      
+      {/* Swipe hint for mobile */}
+      <div className="sm:hidden text-center text-white/40 text-xs py-1">
+        ← Wischen zum Navigieren →
+      </div>
+      
+      {/* Thumbnail Strip at Bottom */}
+      <div className="p-2 sm:p-3 bg-black/80 border-t border-white/10">
+        <ScrollArea className="w-full">
+          <div className="flex gap-1.5 sm:gap-2 justify-center">
+            {Array.from({ length: totalSteps }, (_, i) => {
+              const stepNum = i + 1;
+              const stepScreenshot = screenshots.find(s => s.stepNumber === stepNum) || screenshots[i];
+              const isActive = currentStep === stepNum;
+              
+              return (
+                <button
+                  key={stepNum}
+                  onClick={() => setCurrentStep(stepNum)}
+                  className={cn(
+                    "flex-shrink-0 rounded-md sm:rounded-lg overflow-hidden transition-all border-2",
+                    isActive 
+                      ? "border-white ring-2 ring-white/30 scale-105" 
+                      : "border-transparent opacity-60 hover:opacity-100"
+                  )}
+                >
+                  {stepScreenshot ? (
+                    <img 
+                      src={stepScreenshot.url}
+                      alt={`Step ${stepNum}`}
+                      className="w-12 h-8 sm:w-16 sm:h-10 object-cover object-top"
+                    />
+                  ) : (
+                    <div className="w-12 h-8 sm:w-16 sm:h-10 bg-white/10 flex items-center justify-center">
+                      <span className="text-xs text-white/50">{stepNum}</span>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
   );
 };
 
