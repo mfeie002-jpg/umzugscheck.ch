@@ -99,3 +99,32 @@ node scripts/generate-chatgpt-export.js
 - **API Integration**: Use OpenAI's API to query project-specific details dynamically.
 
 If any area is unclear or you'd like more examples (e.g., typical PR contents, CI/CD details, or example component structure), tell me which part to expand.
+
+## Testing Strategies
+- **Unit Tests**: Run `npm test` to execute unit tests. Ensure all tests pass before committing changes.
+- **Integration Tests**: Integration tests for Supabase functions are located in `supabase/functions/tests`. Use `npm run test:integration` to run these.
+- **Debugging Tests**: Use the `--inspect` flag with Node.js to debug tests. Example: `node --inspect ./node_modules/.bin/jest`.
+
+## Debugging Tips
+- **Supabase Debugging**: Use the Supabase CLI to inspect logs and test functions locally. Example: `supabase start` to run a local Supabase instance.
+- **Runtime Caching**: Check `vite.config.ts` for caching rules. Use browser dev tools to verify cache behavior.
+- **Component Debugging**: Use React DevTools to inspect component state and props.
+
+## External Dependencies
+- **Supabase**: Ensure `SUPABASE_URL` and `SUPABASE_KEY` are set in your environment. Refer to `supabase/config.toml` for local configurations.
+- **Lovable**: The `lovable-tagger` plugin auto-tags components. Verify its integration in `vite.config.ts`.
+
+## Code Quality
+- **Linting**: Run `npm run lint` to check for linting errors. Fix issues using `npm run lint --fix`.
+- **Formatting**: The project uses Prettier for consistent formatting. Ensure code is formatted before committing.
+
+## Additional Examples
+- **Adding a Supabase Function**:
+  1. Create a new function in `supabase/functions`.
+  2. Deploy the function using `supabase functions deploy <function-name>`.
+  3. Test the function locally with `supabase functions serve`.
+
+- **Modifying ChatGPT Export**:
+  1. Update `scripts/generate-chatgpt-export.js`.
+  2. Run `node scripts/generate-chatgpt-export.js` to regenerate the export.
+  3. Verify the output in `public/chatgpt-export.txt`.
