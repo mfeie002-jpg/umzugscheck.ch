@@ -933,6 +933,37 @@ ${issues.map((issue, idx) => `${idx + 1}. **${issue.category}**: ${issue.descrip
               </Badge>
             </div>
           )}
+          
+          {/* Unanalyzed Flows Banner */}
+          {(() => {
+            const analyzedCount = Object.keys(scores).filter(k => scores[k]?.overallScore != null).length;
+            const totalCount = variants.length;
+            const unanalyzedCount = totalCount - analyzedCount;
+            
+            if (unanalyzedCount > 0 && !isAnalyzing && !backgroundJob) {
+              return (
+                <div className="flex items-center justify-between gap-2 py-2 px-4 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm rounded-lg mt-2">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4" />
+                    <span>
+                      <strong>{unanalyzedCount} von {totalCount} Flows</strong> noch nicht analysiert
+                    </span>
+                  </div>
+                  <Button 
+                    onClick={() => runDeepAnalysis(false)} 
+                    disabled={isAnalyzing || loadingVariants} 
+                    size="sm" 
+                    variant="default"
+                    className="gap-2"
+                  >
+                    <Play className="h-4 w-4" />
+                    Alle analysieren
+                  </Button>
+                </div>
+              );
+            }
+            return null;
+          })()}
 
           {/* View Tabs */}
           <div className="flex items-center gap-2 mt-4">
