@@ -91,7 +91,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
         }
       });
       
-      // Fetch step metrics for screenshot counts
+      // Fetch step metrics for screenshot counts - count mobile + desktop separately
       const { data: stepMetrics } = await supabase
         .from('flow_step_metrics')
         .select('run_id, mobile_screenshot_url, desktop_screenshot_url');
@@ -101,8 +101,11 @@ export const RankingView: React.FC<RankingViewProps> = ({
         const runId = m.run_id;
         if (runId) {
           const count = screenshotCounts.get(runId) || 0;
-          const hasScreenshot = m.mobile_screenshot_url || m.desktop_screenshot_url;
-          screenshotCounts.set(runId, count + (hasScreenshot ? 1 : 0));
+          // Count mobile and desktop separately
+          let screenshotCount = 0;
+          if (m.mobile_screenshot_url) screenshotCount++;
+          if (m.desktop_screenshot_url) screenshotCount++;
+          screenshotCounts.set(runId, count + screenshotCount);
         }
       });
       
