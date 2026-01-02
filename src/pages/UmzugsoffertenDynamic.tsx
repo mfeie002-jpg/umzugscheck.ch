@@ -102,7 +102,10 @@ const UmzugsoffertenDynamic: React.FC = () => {
   
   // Get the lazy-loaded component
   const Component = useMemo(() => {
-    if (!normalizedVariant) return null;
+    if (!normalizedVariant) {
+      console.warn('[UmzugsoffertenDynamic] No variant parameter found');
+      return null;
+    }
     
     // For main flows, use the main flow loaders
     if (isMainFlow && mainFlowLoaders[normalizedVariant]) {
@@ -112,17 +115,33 @@ const UmzugsoffertenDynamic: React.FC = () => {
     
     // For sub-variants, use VARIANT_REGISTRY
     const registryEntry = VARIANT_REGISTRY[normalizedVariant];
+    console.log(`[UmzugsoffertenDynamic] Looking up variant: "${normalizedVariant}"`, {
+      found: !!registryEntry,
+      component: registryEntry?.component,
+      availableKeys: Object.keys(VARIANT_REGISTRY).slice(0, 10).join(', ') + '...'
+    });
+    
     if (registryEntry) {
       const loader = subVariantLoaders[registryEntry.component];
       if (loader) {
         console.log(`[UmzugsoffertenDynamic] Loading sub-variant: ${normalizedVariant} → ${registryEntry.component}`);
         return lazy(loader);
       }
-      console.warn(`No loader found for component: ${registryEntry.component}`);
+      console.warn(`[UmzugsoffertenDynamic] No loader found for component: ${registryEntry.component}. Available loaders:`, Object.keys(subVariantLoaders).join(', '));
+    } else {
+      console.warn(`[UmzugsoffertenDynamic] Variant "${normalizedVariant}" not found in VARIANT_REGISTRY`);
     }
     
     return null;
   }, [normalizedVariant, isMainFlow]);
+  
+  // Debug: show what variant we're trying to load
+  console.log('[UmzugsoffertenDynamic] Rendering', {
+    variant,
+    normalizedVariant,
+    isMainFlow,
+    hasComponent: !!Component
+  });
   
   // If variant not found, redirect to main umzugsofferten
   if (!Component) {

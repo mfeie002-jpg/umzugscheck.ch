@@ -580,6 +580,44 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-ultimate-ch" element={<UmzugsoffertenUltimateCH />} />
           <Route path="/umzugsofferten-ultimate-best36" element={<UltimateSwissFlow />} />
 
+          {/* Dynamic route for sub-variants FIRST (v2a, v3b, v6a, v9d, etc.) - before main flows */}
+          <Route path="/umzugsofferten-v2a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v7a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v8a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-multi-a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-ultimate-v7" element={<UmzugsoffertenDynamic />} />
+
           {/* Main V2+ flows (public URLs used by screenshot tooling) */}
           <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
           <Route path="/umzugsofferten-v3" element={<UmzugsoffertenVariant />} />
@@ -595,7 +633,7 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v2e/*" element={<UmzugsoffertenV2e />} />
           {/* Ultimate Flow Pages - dynamic from database */}
           <Route path="/umzugsofferten-ultimate-:flowId" element={<UmzugsoffertenUltimate />} />
-          {/* Dynamic route for sub-variants (v2a, v3b, v9d, etc.) */}
+          {/* Fallback dynamic route for any other sub-variants */}
           <Route path="/umzugsofferten-:variant" element={<UmzugsoffertenDynamic />} />
 
           {/* Flow tester already defined at top, only redirects here */}
