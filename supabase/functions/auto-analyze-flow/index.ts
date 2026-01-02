@@ -655,23 +655,30 @@ serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    const { flowId, runType = 'manual', baseUrl = 'https://preview--umzugscheckv2.lovable.app' }: AnalysisRequest = await req.json();
+    const { flowId: rawFlowId, runType = 'manual', baseUrl = 'https://preview--umzugscheckv2.lovable.app' }: AnalysisRequest = await req.json();
 
-    console.log(`Starting analysis for flow: ${flowId}`);
+    console.log(`Starting analysis for flow: ${rawFlowId}`);
+
+    // Normalize flow ID: strip "umzugsofferten-" prefix if present
+    const normalizedFlowId = rawFlowId
+      .replace(/^umzugsofferten-/, '')
+      .replace(/^umzugsofferten$/, 'v1');
+    
+    console.log(`Normalized flow ID: ${rawFlowId} -> ${normalizedFlowId}`);
 
     // Validate flow - check FLOW_CONFIGS first
-    let flowConfig = FLOW_CONFIGS[flowId];
-    let resolvedFlowId = flowId;
+    let flowConfig = FLOW_CONFIGS[normalizedFlowId];
+    let resolvedFlowId = normalizedFlowId;
     
     // If not found, check if it's a flow_feedback_variant (Ultimate Flow)
     if (!flowConfig) {
-      console.log(`Flow "${flowId}" not in FLOW_CONFIGS, checking flow_feedback_variants...`);
+      console.log(`Flow "${normalizedFlowId}" not in FLOW_CONFIGS, checking flow_feedback_variants...`);
       
       // Check if this is a generated Ultimate Flow variant
       const { data: variant } = await supabase
         .from('flow_feedback_variants')
         .select('flow_id, variant_name')
-        .eq('variant_label', flowId)
+        .eq('variant_label', normalizedFlowId)
         .single();
       
       if (variant && variant.flow_id) {
@@ -679,15 +686,15 @@ serve(async (req) => {
         const baseFlowId = variant.flow_id;
         flowConfig = FLOW_CONFIGS[baseFlowId];
         resolvedFlowId = baseFlowId;
-        console.log(`Resolved Ultimate variant "${flowId}" to base flow "${baseFlowId}"`);
+        console.log(`Resolved Ultimate variant "${normalizedFlowId}" to base flow "${baseFlowId}"`);
       }
     }
     
     if (!flowConfig) {
-      console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
+      console.error(`Unknown flow ID: ${normalizedFlowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
       return new Response(
         JSON.stringify({ 
-          error: `Unknown flow: ${flowId}`,
+          error: `Unknown flow: ${rawFlowId}`,
           available: Object.keys(FLOW_CONFIGS)
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -701,7 +708,7 @@ serve(async (req) => {
     const { data: run, error: runError } = await supabase
       .from('flow_analysis_runs')
       .insert({
-        flow_id: flowId, // Keep original ID for tracking
+        flow_id: normalizedFlowId, // Use normalized ID for tracking
         flow_name: flowConfig.name,
         run_type: runType,
         status: 'running',
@@ -755,7 +762,8 @@ serve(async (req) => {
         success: true,
         message: 'Analysis started in background',
         runId: run.id,
-        flowId,
+        flowId: normalizedFlowId,
+        originalFlowId: rawFlowId,
         resolvedFlowId,
         flowName: flowConfig.name,
         status: 'running',
