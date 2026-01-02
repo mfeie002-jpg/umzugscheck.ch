@@ -63,12 +63,14 @@ export const V4dGamified: React.FC = () => {
     setTimeout(() => {
       setShowReward(false);
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 1500);
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

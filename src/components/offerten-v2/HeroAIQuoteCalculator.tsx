@@ -470,6 +470,7 @@ export default function HeroAIQuoteCalculator() {
       }
       
       setShowCelebration(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 400);
   };
 

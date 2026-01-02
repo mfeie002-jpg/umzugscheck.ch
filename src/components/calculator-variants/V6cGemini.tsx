@@ -646,12 +646,15 @@ export const V6cGemini: React.FC = () => {
   const handleNext = () => {
     if (currentStep === 1 && validateStep1()) {
       setCurrentStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentStep === 2) {
       setCurrentStep(3);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentStep === 3) {
       setIsComputing(true);
     } else if (currentStep === 4) {
       setCurrentStep(5);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentStep === 5 && validateStep5()) {
       setIsSubmitting(true);
       setTimeout(() => {
@@ -663,7 +666,10 @@ export const V6cGemini: React.FC = () => {
   };
   
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
   
   const handleComputingComplete = () => {

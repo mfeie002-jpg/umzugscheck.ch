@@ -338,12 +338,14 @@ export const V2cArchetypCalculator: React.FC = () => {
   const nextStep = () => {
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

@@ -246,6 +246,7 @@ export const OnboardingWizard = () => {
     await saveCurrentStep();
     if (currentStep < wizardSteps.length - 1) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       handleComplete();
     }
@@ -254,6 +255,7 @@ export const OnboardingWizard = () => {
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

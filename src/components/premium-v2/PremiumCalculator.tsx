@@ -212,6 +212,7 @@ export const PremiumCalculator = memo(function PremiumCalculator() {
     const idx = currentStepIndex;
     if (idx < steps.length - 1) {
       setCurrentStep(steps[idx + 1]);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -219,6 +220,7 @@ export const PremiumCalculator = memo(function PremiumCalculator() {
     const idx = currentStepIndex;
     if (idx > 0) {
       setCurrentStep(steps[idx - 1]);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

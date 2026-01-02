@@ -941,12 +941,16 @@ export const V1bFeedbackBased: React.FC = () => {
         setIsSubmitted(true);
       } else {
         setCurrentStep(currentStep + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const canProceed = (): boolean => {
