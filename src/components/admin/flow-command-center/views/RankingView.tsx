@@ -8,7 +8,7 @@
  * - Auto-polling for running analyses
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,10 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  RefreshCw
+  RefreshCw,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -68,6 +71,8 @@ export const RankingView: React.FC<RankingViewProps> = ({
   const [analysisStatus, setAnalysisStatus] = useState<Record<string, AnalysisStatus>>({});
   const [loading, setLoading] = useState(true);
   const [runningCount, setRunningCount] = useState(0);
+  const [sortField, setSortField] = useState<'overall' | 'conversion' | 'ux' | 'mobile' | 'rank'>('overall');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   // Helper to normalize flow IDs for matching
   const normalizeFlowId = (flowId: string): string => {
@@ -238,9 +243,9 @@ export const RankingView: React.FC<RankingViewProps> = ({
     return () => clearInterval(interval);
   }, [runningCount, fetchScores]);
 
-  // Get all variants and sort by score
+  // Get all variants and map scores
   const allVariants = getVariantsForFlow('all');
-  const rankedVariants = [...allVariants]
+  const mappedVariants = [...allVariants]
     .map(v => {
       // Match using normalized ID (handles both 'umzugsofferten-v1' -> 'v1' and 'v1a' -> 'v1a')
       const normalizedId = normalizeFlowId(v.id);
@@ -255,12 +260,66 @@ export const RankingView: React.FC<RankingViewProps> = ({
           hasErrors: false 
         }
       };
-    })
-    .sort((a, b) => {
+    });
+
+  // Sort helper function
+  const handleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDirection(prev => prev === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+
+  const getSortIcon = (field: typeof sortField) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 ml-1 opacity-50" />;
+    return sortDirection === 'desc' 
+      ? <ArrowDown className="h-3 w-3 ml-1" />
+      : <ArrowUp className="h-3 w-3 ml-1" />;
+  };
+
+  // Apply sorting for table
+  const sortedVariants = useMemo(() => {
+    const sorted = [...mappedVariants].sort((a, b) => {
+      let valueA: number;
+      let valueB: number;
+      
+      switch (sortField) {
+        case 'overall':
+          valueA = a.score?.overallScore ?? -1;
+          valueB = b.score?.overallScore ?? -1;
+          break;
+        case 'conversion':
+          valueA = a.score?.conversionScore ?? -1;
+          valueB = b.score?.conversionScore ?? -1;
+          break;
+        case 'ux':
+          valueA = a.score?.uxScore ?? -1;
+          valueB = b.score?.uxScore ?? -1;
+          break;
+        case 'mobile':
+          valueA = a.score?.mobileScore ?? -1;
+          valueB = b.score?.mobileScore ?? -1;
+          break;
+        default:
+          valueA = a.score?.overallScore ?? -1;
+          valueB = b.score?.overallScore ?? -1;
+      }
+      
+      return sortDirection === 'desc' ? valueB - valueA : valueA - valueB;
+    });
+    return sorted;
+  }, [mappedVariants, sortField, sortDirection]);
+
+  // For podium always use overall score descending
+  const rankedVariants = useMemo(() => {
+    return [...mappedVariants].sort((a, b) => {
       const scoreA = a.score?.overallScore ?? -1;
       const scoreB = b.score?.overallScore ?? -1;
       return scoreB - scoreA;
     });
+  }, [mappedVariants]);
 
   // Top 3 podium
   const [first, second, third] = rankedVariants.slice(0, 3);
@@ -548,7 +607,12 @@ export const RankingView: React.FC<RankingViewProps> = ({
             Vollständiges Ranking
           </CardTitle>
           <CardDescription>
-            Alle {rankedVariants.length} Flows sortiert nach Gesamtscore
+            Alle {sortedVariants.length} Flows sortiert nach {
+              sortField === 'overall' ? 'Gesamtscore' :
+              sortField === 'conversion' ? 'Conversion Score' :
+              sortField === 'ux' ? 'UX Score' :
+              'Mobile Score'
+            } ({sortDirection === 'desc' ? 'absteigend' : 'aufsteigend'})
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -559,16 +623,48 @@ export const RankingView: React.FC<RankingViewProps> = ({
                 <TableHead>Flow</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-center">Screenshots</TableHead>
-                <TableHead className="text-center">Gesamt</TableHead>
-                <TableHead className="text-center">Conv.</TableHead>
-                <TableHead className="text-center">UX</TableHead>
-                <TableHead className="text-center">Mobile</TableHead>
+                <TableHead 
+                  className="text-center cursor-pointer hover:bg-muted/50 select-none"
+                  onClick={() => handleSort('overall')}
+                >
+                  <div className="flex items-center justify-center">
+                    Gesamt
+                    {getSortIcon('overall')}
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-center cursor-pointer hover:bg-muted/50 select-none"
+                  onClick={() => handleSort('conversion')}
+                >
+                  <div className="flex items-center justify-center">
+                    Conv.
+                    {getSortIcon('conversion')}
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-center cursor-pointer hover:bg-muted/50 select-none"
+                  onClick={() => handleSort('ux')}
+                >
+                  <div className="flex items-center justify-center">
+                    UX
+                    {getSortIcon('ux')}
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-center cursor-pointer hover:bg-muted/50 select-none"
+                  onClick={() => handleSort('mobile')}
+                >
+                  <div className="flex items-center justify-center">
+                    Mobile
+                    {getSortIcon('mobile')}
+                  </div>
+                </TableHead>
                 <TableHead className="text-right">Analysiert</TableHead>
                 <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rankedVariants.map((variant, index) => (
+              {sortedVariants.map((variant, index) => (
                 <TableRow 
                   key={variant.id} 
                   className={cn(
