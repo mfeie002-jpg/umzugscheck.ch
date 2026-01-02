@@ -507,6 +507,46 @@ Antworte im JSON-Format:
   }
 }
 
+// Helper: Normalize issue title for deduplication
+function normalizeIssueKey(issue: { title: string; category: string; severity: string }): string {
+  return `${issue.category}::${issue.severity}::${issue.title.toLowerCase().trim().replace(/\s+/g, ' ')}`;
+}
+
+// Helper: Deduplicate issues and mark already-resolved ones
+function deduplicateAndFilterIssues(
+  newIssues: Array<{ severity: string; category: string; title: string; description: string; recommendation: string; step_number: number }>,
+  resolvedIssues: Array<{ title: string; category: string; severity: string }>
+): Array<{ severity: string; category: string; title: string; description: string; recommendation: string; step_number: number; issue_type: string }> {
+  const seenKeys = new Set<string>();
+  const resolvedKeys = new Set(resolvedIssues.map(i => normalizeIssueKey(i)));
+  const deduplicated: Array<{ severity: string; category: string; title: string; description: string; recommendation: string; step_number: number; issue_type: string }> = [];
+  
+  for (const issue of newIssues) {
+    const key = normalizeIssueKey(issue);
+    
+    // Skip if already seen (duplicate)
+    if (seenKeys.has(key)) {
+      console.log(`[Dedup] Skipping duplicate issue: ${issue.title}`);
+      continue;
+    }
+    
+    // Skip if already resolved in previous runs
+    if (resolvedKeys.has(key)) {
+      console.log(`[Dedup] Skipping resolved issue: ${issue.title}`);
+      continue;
+    }
+    
+    seenKeys.add(key);
+    deduplicated.push({
+      ...issue,
+      issue_type: issue.category,
+    });
+  }
+  
+  console.log(`[Dedup] Filtered ${newIssues.length} issues to ${deduplicated.length} unique new issues`);
+  return deduplicated;
+}
+
 // Background analysis function - runs after response is sent
 async function runAnalysisInBackground(
   supabase: any,
@@ -519,11 +559,34 @@ async function runAnalysisInBackground(
   try {
     console.log(`[Background] Starting analysis for flow: ${flowId}, run: ${runId}`);
 
+    // STEP 1: Fetch previously resolved issues for this flow
+    const { data: resolvedIssuesData } = await supabase
+      .from('flow_ux_issues')
+      .select('title, category, severity')
+      .eq('flow_id', flowId)
+      .eq('is_resolved', true);
+    
+    const resolvedIssues = resolvedIssuesData || [];
+    console.log(`[Background] Found ${resolvedIssues.length} previously resolved issues`);
+
+    // STEP 2: Fetch previous analysis scores for context (score stability)
+    const { data: previousRuns } = await supabase
+      .from('flow_analysis_runs')
+      .select('overall_score, mobile_score, conversion_score, ux_score, trust_score')
+      .eq('flow_id', flowId)
+      .eq('status', 'completed')
+      .order('completed_at', { ascending: false })
+      .limit(3);
+    
+    const previousScores = previousRuns?.[0] || null;
+    if (previousScores) {
+      console.log(`[Background] Previous scores - Overall: ${previousScores.overall_score}, Mobile: ${previousScores.mobile_score}`);
+    }
+
     const stepAnalyses: StepAnalysis[] = [];
-    let allIssues: Array<{
+    let allIssuesRaw: Array<{
       severity: string;
       category: string;
-      issue_type: string;
       title: string;
       description: string;
       recommendation: string;
@@ -566,7 +629,7 @@ async function runAnalysisInBackground(
       const desktopBase64 = desktopData ? toBase64DataUrl(desktopData) : null;
       const mobileBase64 = mobileData ? toBase64DataUrl(mobileData) : null;
 
-      // Analyze with AI
+      // Analyze with AI (pass previous scores for context)
       const analysis = await analyzeStepWithAI(
         step,
         stepName,
@@ -600,11 +663,10 @@ async function runAnalysisInBackground(
         ai_suggestions: analysis.suggestions,
       });
 
-      // Collect issues
+      // Collect raw issues (will be deduplicated later)
       for (const issue of analysis.issues) {
-        allIssues.push({
+        allIssuesRaw.push({
           ...issue,
-          issue_type: issue.category,
           step_number: step,
         });
       }
@@ -615,6 +677,9 @@ async function runAnalysisInBackground(
         .update({ steps_captured: step })
         .eq('id', runId);
     }
+    
+    // STEP 3: Deduplicate and filter out resolved issues
+    const allIssues = deduplicateAndFilterIssues(allIssuesRaw, resolvedIssues);
 
     // Store all issues
     if (allIssues.length > 0) {
