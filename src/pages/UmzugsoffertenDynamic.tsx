@@ -51,6 +51,7 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V5fFeedbackBased': () => import('@/components/calculator-variants/V5fFeedbackBased').then(m => ({ default: m.V5fFeedbackBased })),
   // V6 Variants
   'V6aFeedbackBased': () => import('@/components/calculator-variants/V6aFeedbackBased').then(m => ({ default: m.V6aFeedbackBased })),
+  'V6aOptimized': () => import('@/components/calculator-variants/V6aOptimized').then(m => ({ default: m.V6aOptimized })),
   // V7 Variants
   'V7aFeedbackBased': () => import('@/components/calculator-variants/V7aFeedbackBased').then(m => ({ default: m.V7aFeedbackBased })),
   // V8 Variants
