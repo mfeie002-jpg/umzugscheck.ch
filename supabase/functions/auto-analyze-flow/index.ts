@@ -7,29 +7,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Flow configurations matching the central FLOW_CONFIGS - use the same IDs!
+// Flow configurations - CLEAN LIST of actually existing flows
+// Only includes flows that have real components in src/components/calculator-variants
 const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: string }> = {
-  // Main flows (matching src/data/flowConfigs.ts)
-  'umzugsofferten': { name: 'V1 - Control Flow', steps: 4, baseUrl: '/umzugsofferten' },
-  'umzugsofferten-v1': { name: 'V1 - Control Flow', steps: 4, baseUrl: '/umzugsofferten' },
-  'umzugsofferten-v2': { name: 'V2 - Premium Full-Journey', steps: 6, baseUrl: '/umzugsofferten-v2' },
-  'umzugsofferten-v3': { name: 'V3 - God Mode', steps: 4, baseUrl: '/umzugsofferten-v3' },
-  'umzugsofferten-v4': { name: 'V4 - Video-First AI', steps: 5, baseUrl: '/umzugsofferten-v4' },
-  'umzugsofferten-v5': { name: 'V5 - Marketplace Wizard', steps: 5, baseUrl: '/umzugsofferten-v5' },
-  'umzugsofferten-v6': { name: 'V6 - Ultimate (6-Tier)', steps: 6, baseUrl: '/umzugsofferten-v6' },
-  'umzugsofferten-v7': { name: 'V7 - SwissMove (90s)', steps: 3, baseUrl: '/umzugsofferten-v7' },
-  'umzugsofferten-v8': { name: 'V8 - Decision-Free', steps: 5, baseUrl: '/umzugsofferten-v8' },
-  'umzugsofferten-v9': { name: 'V9 - Zero Friction', steps: 5, baseUrl: '/umzugsofferten-v9' },
-  // V2.e Chat-based Funnel (standalone route)
-  'umzugsofferten-v2e': { name: 'V2.e - Chat Funnel', steps: 10, baseUrl: '/umzugsofferten-v2e' },
-  // Standalone V6 flows
-  'umzugsofferten-v6a': { name: 'V6a - Ultimate Optimized', steps: 3, baseUrl: '/umzugsofferten-v6a' },
-  'umzugsofferten-v6b': { name: 'V6b - ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten-v6b' },
-  'umzugsofferten-v6c': { name: 'V6c - Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten-v6c' },
-  'umzugsofferten-v6d': { name: 'V6d - Deep Research', steps: 5, baseUrl: '/umzugsofferten-v6d' },
-  'umzugsofferten-v6e': { name: 'V6e - Thinking Mode', steps: 5, baseUrl: '/umzugsofferten-v6e' },
-  'umzugsofferten-v6f': { name: 'V6f - Ultimate (Best of All)', steps: 5, baseUrl: '/umzugsofferten-v6f' },
-  // V1 sub-variants (ALL)
+  // === V1 - Control Flow (8 variants) ===
+  'v1': { name: 'V1 Control (Baseline)', steps: 2, baseUrl: '/umzugsofferten?variant=v1' },
   'v1a': { name: 'V1a Control (Feedback)', steps: 2, baseUrl: '/umzugsofferten?variant=v1a' },
   'v1b': { name: 'V1b ChatGPT Agent', steps: 4, baseUrl: '/umzugsofferten?variant=v1b' },
   'v1c': { name: 'V1c Archetyp Strategic', steps: 4, baseUrl: '/umzugsofferten?variant=v1c' },
@@ -37,63 +19,71 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v1e': { name: 'V1e Trust Enhanced', steps: 4, baseUrl: '/umzugsofferten?variant=v1e' },
   'v1f': { name: 'V1f Sticky CTA + Trust', steps: 2, baseUrl: '/umzugsofferten?variant=v1f' },
   'v1g': { name: 'V1g Input UX + Validation', steps: 2, baseUrl: '/umzugsofferten?variant=v1g' },
-  // V2 sub-variants
-  'v2a': { name: 'V2a Progress Enhanced', steps: 4, baseUrl: '/umzugsofferten-v2?variant=v2a' },
-  'v2b': { name: 'V2b Simplified Labels', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2b' },
-  'v2c': { name: 'V2c Trust Focused', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2c' },
-  'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2d' },
-  'v2e': { name: 'V2.e - Chat Funnel', steps: 10, baseUrl: '/umzugsofferten-v2e' },
-  'v2f': { name: 'V2f Premium (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v2?variant=v2f' },
-  // V3 sub-variants
-  'v3a': { name: 'V3a Mobile First', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3a' },
-  'v3b': { name: 'V3b Swipe Navigation', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3b' },
-  'v3c': { name: 'V3c Bottom Sheet', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3c' },
-  'v3d': { name: 'V3d Thumb Zone', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3d' },
-  'v3e': { name: 'V3e Fullscreen', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3e' },
-  'v3f': { name: 'V3f Feedback', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3f' },
-  'v3g': { name: 'V3g Feedback', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3g' },
-  // V4 sub-variants
-  'v4a': { name: 'V4a Urgency Based', steps: 4, baseUrl: '/umzugsofferten-v4?variant=v4a' },
-  'v4b': { name: 'V4b Social Proof', steps: 3, baseUrl: '/umzugsofferten-v4?variant=v4b' },
-  'v4c': { name: 'V4c Value First', steps: 3, baseUrl: '/umzugsofferten-v4?variant=v4c' },
-  'v4d': { name: 'V4d Gamified', steps: 4, baseUrl: '/umzugsofferten-v4?variant=v4d' },
-  'v4e': { name: 'V4e Minimal Friction', steps: 2, baseUrl: '/umzugsofferten-v4?variant=v4e' },
-  'v4f': { name: 'V4f Video-First Feedback', steps: 3, baseUrl: '/umzugsofferten-v4?variant=v4f' },
-  // V5 sub-variants
-  'v5a': { name: 'V5a High Contrast', steps: 4, baseUrl: '/umzugsofferten-v5?variant=v5a' },
-  'v5b': { name: 'V5b Screen Reader', steps: 3, baseUrl: '/umzugsofferten-v5?variant=v5b' },
-  'v5c': { name: 'V5c Keyboard Nav', steps: 3, baseUrl: '/umzugsofferten-v5?variant=v5c' },
-  'v5d': { name: 'V5d ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5d' },
-  'v5e': { name: 'V5e Reduced Motion', steps: 3, baseUrl: '/umzugsofferten-v5?variant=v5e' },
-  'v5f': { name: 'V5f Marketplace Feedback', steps: 3, baseUrl: '/umzugsofferten-v5?variant=v5f' },
-  // V6 sub-variants
-  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 3, baseUrl: '/umzugsofferten-v6?variant=v6a' },
-  'v6b': { name: 'V6b ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten-v6?variant=v6b' },
-  'v6c': { name: 'V6c Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten-v6?variant=v6c' },
-  'v6d': { name: 'V6d Deep Research', steps: 5, baseUrl: '/umzugsofferten-v6?variant=v6d' },
-  'v6e': { name: 'V6e Thinking Mode', steps: 5, baseUrl: '/umzugsofferten-v6?variant=v6e' },
-  'v6f': { name: 'V6f Ultimate (Best of All)', steps: 5, baseUrl: '/umzugsofferten-v6?variant=v6f' },
-  // V7 sub-variants
-  'v7a': { name: 'V7a SwissMove (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v7?variant=v7a' },
-  'v7b': { name: 'V7b SwissMove Extended', steps: 3, baseUrl: '/umzugsofferten-v7?variant=v7b' },
-  'v7c': { name: 'V7c SwissMove Compact', steps: 2, baseUrl: '/umzugsofferten-v7?variant=v7c' },
-  'v7d': { name: 'V7d SwissMove Premium', steps: 4, baseUrl: '/umzugsofferten-v7?variant=v7d' },
-  // V8 sub-variants
-  'v8a': { name: 'V8a Decision-Free (Feedback)', steps: 2, baseUrl: '/umzugsofferten-v8?variant=v8a' },
-  'v8b': { name: 'V8b Decision-Free Extended', steps: 3, baseUrl: '/umzugsofferten-v8?variant=v8b' },
-  'v8c': { name: 'V8c Decision-Free Compact', steps: 2, baseUrl: '/umzugsofferten-v8?variant=v8c' },
-  'v8d': { name: 'V8d Decision-Free Premium', steps: 4, baseUrl: '/umzugsofferten-v8?variant=v8d' },
-  // V9 sub-variants
-  'v9a': { name: 'V9.a Gemini Archetyp', steps: 6, baseUrl: '/umzugsofferten?variant=v9a' },
-  'v9b': { name: 'V9.b Gemini Variant', steps: 5, baseUrl: '/umzugsofferten?variant=v9b' },
-  'v9c': { name: 'V9.c Gemini Variant', steps: 5, baseUrl: '/umzugsofferten?variant=v9c' },
-  'v9d': { name: 'V9.d Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9d' },
-  // Multi-variants
-  'multi-a': { name: 'Multi.A Feedback Based', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
-  // Ultimate Swiss Flow - Best of 36
-  'umzugsofferten-ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 6, baseUrl: '/umzugsofferten-ultimate-best36' },
-  // Ultimate CH
-  'umzugsofferten-ultimate-ch': { name: 'Ultimate Swiss CH', steps: 5, baseUrl: '/umzugsofferten-ultimate-ch' },
+  
+  // === V2 - Premium Full-Journey (7 variants) ===
+  'v2': { name: 'V2 Premium (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v2' },
+  'v2a': { name: 'V2a Progress Enhanced', steps: 4, baseUrl: '/umzugsofferten?variant=v2a' },
+  'v2b': { name: 'V2b Simplified Labels', steps: 6, baseUrl: '/umzugsofferten?variant=v2b' },
+  'v2c': { name: 'V2c Archetyp Calculator', steps: 6, baseUrl: '/umzugsofferten?variant=v2c' },
+  'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten?variant=v2d' },
+  'v2e': { name: 'V2e Chat Funnel', steps: 6, baseUrl: '/umzugsofferten-v2e' },
+  'v2f': { name: 'V2f Premium (Feedback)', steps: 3, baseUrl: '/umzugsofferten?variant=v2f' },
+  
+  // === V3 - God Mode Mobile-First (6 variants) ===
+  'v3': { name: 'V3 God Mode (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v3' },
+  'v3a': { name: 'V3a Mobile First', steps: 4, baseUrl: '/umzugsofferten?variant=v3a' },
+  'v3b': { name: 'V3b Swipe Navigation', steps: 4, baseUrl: '/umzugsofferten?variant=v3b' },
+  'v3c': { name: 'V3c Bottom Sheet', steps: 4, baseUrl: '/umzugsofferten?variant=v3c' },
+  'v3d': { name: 'V3d Thumb Zone', steps: 3, baseUrl: '/umzugsofferten?variant=v3d' },
+  'v3e': { name: 'V3e Fullscreen', steps: 3, baseUrl: '/umzugsofferten?variant=v3e' },
+  
+  // === V4 - Video-First Conversion (7 variants) ===
+  'v4': { name: 'V4 Video-First (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v4' },
+  'v4a': { name: 'V4a Urgency Based', steps: 4, baseUrl: '/umzugsofferten?variant=v4a' },
+  'v4b': { name: 'V4b Social Proof', steps: 3, baseUrl: '/umzugsofferten?variant=v4b' },
+  'v4c': { name: 'V4c Value First', steps: 3, baseUrl: '/umzugsofferten?variant=v4c' },
+  'v4d': { name: 'V4d Gamified', steps: 4, baseUrl: '/umzugsofferten?variant=v4d' },
+  'v4e': { name: 'V4e Minimal Friction', steps: 2, baseUrl: '/umzugsofferten?variant=v4e' },
+  'v4f': { name: 'V4f Video-First Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v4f' },
+  
+  // === V5 - Marketplace Accessibility (7 variants) ===
+  'v5': { name: 'V5 Marketplace (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v5' },
+  'v5a': { name: 'V5a High Contrast', steps: 4, baseUrl: '/umzugsofferten?variant=v5a' },
+  'v5b': { name: 'V5b Screen Reader', steps: 3, baseUrl: '/umzugsofferten?variant=v5b' },
+  'v5c': { name: 'V5c Keyboard Nav', steps: 3, baseUrl: '/umzugsofferten?variant=v5c' },
+  'v5d': { name: 'V5d ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten?variant=v5d' },
+  'v5e': { name: 'V5e Reduced Motion', steps: 3, baseUrl: '/umzugsofferten?variant=v5e' },
+  'v5f': { name: 'V5f Marketplace Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v5f' },
+  
+  // === V6 - Ultimate 6-Tier (7 variants) ===
+  'v6': { name: 'V6 Ultimate (Baseline)', steps: 3, baseUrl: '/umzugsofferten-v6' },
+  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 3, baseUrl: '/umzugsofferten?variant=v6a' },
+  'v6b': { name: 'V6b ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten?variant=v6b' },
+  'v6c': { name: 'V6c Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten?variant=v6c' },
+  'v6d': { name: 'V6d Deep Research', steps: 5, baseUrl: '/umzugsofferten?variant=v6d' },
+  'v6e': { name: 'V6e Thinking Mode', steps: 5, baseUrl: '/umzugsofferten?variant=v6e' },
+  'v6f': { name: 'V6f Ultimate (Best of All)', steps: 5, baseUrl: '/umzugsofferten?variant=v6f' },
+  
+  // === V7 - SwissMove 90s (2 variants) ===
+  'v7': { name: 'V7 SwissMove (Baseline)', steps: 3, baseUrl: '/umzugsofferten-v7' },
+  'v7a': { name: 'V7a SwissMove Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v7a' },
+  
+  // === V8 - Decision-Free (2 variants) ===
+  'v8': { name: 'V8 Decision-Free (Baseline)', steps: 2, baseUrl: '/umzugsofferten-v8' },
+  'v8a': { name: 'V8a Decision-Free Feedback', steps: 2, baseUrl: '/umzugsofferten?variant=v8a' },
+  
+  // === V9 - Zero Friction Extended (5 variants) ===
+  'v9': { name: 'V9 Zero Friction (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v9' },
+  'v9a': { name: 'V9a Gemini Archetyp', steps: 6, baseUrl: '/umzugsofferten?variant=v9a' },
+  'v9b': { name: 'V9b Gemini Agent', steps: 5, baseUrl: '/umzugsofferten?variant=v9b' },
+  'v9c': { name: 'V9c Zero Friction Optimized', steps: 5, baseUrl: '/umzugsofferten?variant=v9c' },
+  'v9d': { name: 'V9d Gemini Extended', steps: 9, baseUrl: '/umzugsofferten?variant=v9d' },
+  
+  // === Multi Variants (1 variant) ===
+  'multi-a': { name: 'Multi.A ChatGPT Pro', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
+  
+  // === Ultimate (1 variant) ===
+  'ultimate-v7': { name: 'Ultimate V7 (95/100)', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v7' },
 };
 
 const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY');
