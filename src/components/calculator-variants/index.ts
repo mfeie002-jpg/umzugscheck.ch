@@ -58,6 +58,7 @@ export { V5fFeedbackBased } from './V5fFeedbackBased';
 export { V6aFeedbackBased } from './V6aFeedbackBased';
 export { V6bChatGPT } from './V6bChatGPT';
 export { V6cGemini } from './V6cGemini';
+export { default as V6fUltimate } from './V6fUltimate';
 export { default as V6dDeepResearch } from './V6dDeepResearch';
 export { default as V6eThinkingMode } from './V6eThinkingMode';
 
@@ -133,6 +134,7 @@ export const VARIANT_REGISTRY: Record<string, {
   'v6c': { component: 'V6cGemini', stepCount: 6, label: 'V6c Gemini "God Mode"' },
   'v6d': { component: 'V6dDeepResearch', stepCount: 5, label: 'V6d Deep Research' },
   'v6e': { component: 'V6eThinkingMode', stepCount: 5, label: 'V6e Thinking Mode' },
+  'v6f': { component: 'V6fUltimate', stepCount: 5, label: 'V6f Ultimate (Best of All)' },
   // V7 - SwissMove 90s
   'v7': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7 SwissMove' },
   'v7a': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7a SwissMove (Feedback)' },

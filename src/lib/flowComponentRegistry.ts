@@ -51,6 +51,7 @@ import {
   V6aFeedbackBased,
   V6bChatGPT,
   V6cGemini,
+  V6fUltimate,
   V6dDeepResearch,
   V6eThinkingMode,
   // V7 variants
@@ -136,6 +137,7 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v6c': V6cGemini,
   'v6d': V6dDeepResearch,
   'v6e': V6eThinkingMode,
+  'v6f': V6fUltimate,
   
   // ========== V7 - SwissMove (90s) ==========
   'umzugsofferten-v7': V7aFeedbackBased,
