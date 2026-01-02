@@ -101,23 +101,40 @@ export const RankingView: React.FC<RankingViewProps> = ({
         }
       });
       
-      // Fetch step metrics for screenshot counts - count mobile + desktop separately
-      const { data: stepMetrics } = await supabase
-        .from('flow_step_metrics')
-        .select('run_id, mobile_screenshot_url, desktop_screenshot_url');
-      
+      // Fetch step metrics for screenshot counts ONLY for the latest runs we display.
+      // This avoids PostgREST default limits (1000 rows) causing missing run_ids -> 0/8.
+      const latestRunIds = Object.values(flowRuns)
+        .map(runs => runs?.[0]?.id)
+        .filter((id): id is string => Boolean(id));
+
+      let stepMetrics: Array<{
+        run_id: string | null;
+        mobile_screenshot_url: string | null;
+        desktop_screenshot_url: string | null;
+      }> = [];
+
+      if (latestRunIds.length > 0) {
+        const { data: stepMetricsData, error: stepMetricsError } = await supabase
+          .from('flow_step_metrics')
+          .select('run_id, mobile_screenshot_url, desktop_screenshot_url')
+          .in('run_id', latestRunIds);
+
+        if (stepMetricsError) throw stepMetricsError;
+        stepMetrics = stepMetricsData || [];
+      }
+
       const screenshotCounts = new Map<string, number>();
-      stepMetrics?.forEach(m => {
+      stepMetrics.forEach(m => {
         const runId = m.run_id;
-        if (runId) {
-          const count = screenshotCounts.get(runId) || 0;
-          // Count mobile and desktop separately
-          let screenshotCount = 0;
-          if (m.mobile_screenshot_url) screenshotCount++;
-          if (m.desktop_screenshot_url) screenshotCount++;
-          screenshotCounts.set(runId, count + screenshotCount);
-        }
+        if (!runId) return;
+
+        const count = screenshotCounts.get(runId) || 0;
+        let screenshotCount = 0;
+        if (m.mobile_screenshot_url) screenshotCount++;
+        if (m.desktop_screenshot_url) screenshotCount++;
+        screenshotCounts.set(runId, count + screenshotCount);
       });
+
       
       Object.entries(flowRuns).forEach(([normalizedId, runs]) => {
         const latest = runs[0];
