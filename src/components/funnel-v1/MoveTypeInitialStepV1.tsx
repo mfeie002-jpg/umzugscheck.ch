@@ -72,18 +72,18 @@ export const MoveTypeInitialStepV1 = memo(function MoveTypeInitialStepV1({
   className = ""
 }: MoveTypeInitialStepV1Props) {
   return (
-    <div className={`space-y-5 ${className}`}>
-      {/* Header - centered */}
-      <div className="text-center">
-        <h3 className="text-xl sm:text-2xl font-bold mb-2">Was möchten Sie zügeln?</h3>
+    <div className={`space-y-5 overflow-x-hidden max-w-full box-border ${className}`}>
+      {/* Issue #1, #25: Header - centered, no clipping, proper sizing */}
+      <div className="text-center px-2">
+        <h3 className="text-xl sm:text-2xl font-bold mb-2 break-words">Was möchten Sie zügeln?</h3>
         <p className="text-sm text-muted-foreground">
           Wählen Sie aus – wir finden passende Firmen
         </p>
       </div>
       
-      {/* Issue #6, #35, #48: Grid-basiertes 2x2 Layout - alle 4 Optionen sichtbar, KEIN horizontal scroll */}
+      {/* Issue #2, #6, #7: Grid-basiertes 2x2 Layout - alle 4 Optionen sichtbar, KEIN horizontal scroll */}
       <div 
-        className="grid grid-cols-2 gap-3 sm:gap-4 max-w-lg mx-auto"
+        className="grid grid-cols-2 gap-2.5 sm:gap-4 max-w-lg mx-auto px-1"
         role="radiogroup"
         aria-label="Umzugstyp auswählen"
       >
