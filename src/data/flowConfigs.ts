@@ -278,6 +278,73 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
+  // V3 - Mobile-First Sub-Variants
+  'v3a': {
+    id: 'v3a',
+    label: 'V3a Mobile First',
+    path: '/umzugsofferten-v3a',
+    color: 'bg-green-500',
+    description: 'V3a: Mobile-First Design mit Touch-optimiertem Slider',
+    parentFlow: 'umzugsofferten-v3',
+    steps: [
+      { step: 1, name: 'Slider-Eingabe', description: 'Touch-optimierter Volumen-Slider' },
+      { step: 2, name: 'Details', description: 'Adressen und Datum' },
+      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  'v3b': {
+    id: 'v3b',
+    label: 'V3b Swipe Navigation',
+    path: '/umzugsofferten-v3b',
+    color: 'bg-green-600',
+    description: 'V3b: Swipe-basierte Navigation zwischen Steps',
+    parentFlow: 'umzugsofferten-v3',
+    steps: [
+      { step: 1, name: 'Swipe Intro', description: 'Swipe-Anleitung + Start' },
+      { step: 2, name: 'Details', description: 'Swipe durch Felder' },
+      { step: 3, name: 'Services', description: 'Swipe-Auswahl' },
+      { step: 4, name: 'Kontakt', description: 'Swipe zum Absenden' },
+    ],
+  },
+  'v3c': {
+    id: 'v3c',
+    label: 'V3c Bottom Sheet',
+    path: '/umzugsofferten-v3c',
+    color: 'bg-green-700',
+    description: 'V3c: Bottom-Sheet Pattern für mobile UX',
+    parentFlow: 'umzugsofferten-v3',
+    steps: [
+      { step: 1, name: 'Übersicht', description: 'Haupt-Screen mit Sheet-Trigger' },
+      { step: 2, name: 'Details Sheet', description: 'Bottom-Sheet für Eingaben' },
+      { step: 3, name: 'Kontakt Sheet', description: 'Kontakt im Sheet' },
+    ],
+  },
+  'v3d': {
+    id: 'v3d',
+    label: 'V3d Thumb Zone',
+    path: '/umzugsofferten-v3d',
+    color: 'bg-green-800',
+    description: 'V3d: Thumb-Zone optimiert - alle CTAs im unteren Drittel',
+    parentFlow: 'umzugsofferten-v3',
+    steps: [
+      { step: 1, name: 'Thumb-Optimiert', description: 'Alle Buttons unten' },
+      { step: 2, name: 'Details', description: 'One-Hand-Operation' },
+      { step: 3, name: 'Kontakt', description: 'Daumen-freundlich' },
+    ],
+  },
+  'v3e': {
+    id: 'v3e',
+    label: 'V3e Fullscreen',
+    path: '/umzugsofferten-v3e',
+    color: 'bg-green-900',
+    description: 'V3e: Fullscreen-Mode ohne Ablenkung',
+    parentFlow: 'umzugsofferten-v3',
+    steps: [
+      { step: 1, name: 'Fullscreen Start', description: 'Immersiver Einstieg' },
+      { step: 2, name: 'Fokus-Eingabe', description: 'Ein Feld pro Screen' },
+      { step: 3, name: 'Abschluss', description: 'Fullscreen Confirmation' },
+    ],
+  },
   // V2 - Premium Sub-Variants
   'v2a': {
     id: 'v2a',
@@ -690,6 +757,23 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 7, name: 'Services', description: 'Zusatzservices' },
       { step: 8, name: 'Ergebnis', description: 'Result Teasing' },
       { step: 9, name: 'Kontakt', description: 'Kontaktdaten' },
+    ],
+  },
+  // Ultimate - Combined Best Practices
+  'ultimate-v7': {
+    id: 'ultimate-v7',
+    label: 'Ultimate V7 ⭐⭐',
+    path: '/umzugsofferten-ultimate-v7',
+    color: 'bg-gradient-to-r from-purple-600 to-pink-600',
+    description: 'Ultimate V7: Kombiniert alle Best Practices aus 50+ Flow-Analysen',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Smart Start', description: 'Typ + Trust-Signale' },
+      { step: 2, name: 'Adressen', description: 'Von-Nach mit Autocomplete' },
+      { step: 3, name: 'Details', description: 'Zimmer, Datum, Video-Option' },
+      { step: 4, name: 'Services', description: 'Paket-Auswahl mit Preisvorschau' },
+      { step: 5, name: 'Firmen', description: 'Top-3 mit Filter/Sort' },
+      { step: 6, name: 'Kontakt', description: 'Review + Absenden' },
     ],
   },
   // Multi - ChatGPT Pro
