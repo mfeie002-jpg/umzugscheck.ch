@@ -32,6 +32,34 @@ interface IssuesPanelProps {
   showFlowId?: boolean;
 }
 
+// Helper to deduplicate issues by title similarity
+const deduplicateIssues = (issues: UxIssue[]): (UxIssue & { duplicateCount: number })[] => {
+  const normalizeTitle = (title: string) => 
+    title.toLowerCase()
+      .replace(/[^a-zäöü\s]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  
+  const grouped = new Map<string, UxIssue[]>();
+  
+  issues.forEach(issue => {
+    const normalized = normalizeTitle(issue.title);
+    // Create a key from normalized title and category
+    const key = `${normalized}::${issue.category}::${issue.severity}`;
+    
+    if (!grouped.has(key)) {
+      grouped.set(key, []);
+    }
+    grouped.get(key)!.push(issue);
+  });
+  
+  // Return one representative issue per group with count
+  return Array.from(grouped.values()).map(group => ({
+    ...group[0],
+    duplicateCount: group.length
+  }));
+};
+
 export const IssuesPanel: React.FC<IssuesPanelProps> = ({
   issues,
   flowId,
@@ -43,12 +71,17 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
   const [sortBy, setSortBy] = useState<'severity' | 'category'>('severity');
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [fixingAll, setFixingAll] = useState(false);
+  const [showDeduplicated, setShowDeduplicated] = useState(true);
+
+  // Deduplicate issues
+  const deduplicatedIssues = deduplicateIssues(issues);
+  const displayIssues = showDeduplicated ? deduplicatedIssues : issues.map(i => ({ ...i, duplicateCount: 1 }));
 
   // Get unique categories
-  const categories = [...new Set(issues.map(i => i.category))];
+  const categories = [...new Set(displayIssues.map(i => i.category))];
 
   // Filter and sort issues
-  const filteredIssues = issues
+  const filteredIssues = displayIssues
     .filter(i => !filterCategory || i.category === filterCategory)
     .sort((a, b) => {
       if (sortBy === 'severity') {
@@ -58,8 +91,9 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
       return a.category.localeCompare(b.category);
     });
 
-  const criticalCount = issues.filter(i => i.severity === 'critical').length;
-  const warningCount = issues.filter(i => i.severity === 'warning').length;
+  // Count based on deduplicated view
+  const criticalCount = deduplicatedIssues.filter(i => i.severity === 'critical').length;
+  const warningCount = deduplicatedIssues.filter(i => i.severity === 'warning').length;
 
   const handleFixAll = async () => {
     if (issues.length === 0) return;
@@ -97,13 +131,21 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
     );
   }
 
+  const uniqueCount = deduplicatedIssues.length;
+  const totalCount = issues.length;
+
   return (
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-yellow-500" />
-            Issues ({issues.length})
+            Issues ({showDeduplicated ? `${uniqueCount} unique` : totalCount})
+            {showDeduplicated && totalCount !== uniqueCount && (
+              <span className="text-xs font-normal text-muted-foreground">
+                ({totalCount} total)
+              </span>
+            )}
           </CardTitle>
           
           <div className="flex items-center gap-2">
@@ -115,6 +157,15 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
         {/* Controls */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <Button
+            variant={showDeduplicated ? 'secondary' : 'outline'}
+            size="sm"
+            onClick={() => setShowDeduplicated(!showDeduplicated)}
+          >
+            <Filter className="h-3 w-3 mr-1" />
+            {showDeduplicated ? 'Dedupliziert' : 'Alle zeigen'}
+          </Button>
+          
+          <Button
             variant="outline"
             size="sm"
             onClick={() => setSortBy(sortBy === 'severity' ? 'category' : 'severity')}
@@ -123,7 +174,7 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
             {sortBy === 'severity' ? 'Nach Severity' : 'Nach Kategorie'}
           </Button>
           
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-wrap">
             <Button
               variant={filterCategory === null ? 'secondary' : 'ghost'}
               size="sm"
@@ -181,7 +232,7 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
 
 // Individual issue card
 interface IssueCardProps {
-  issue: UxIssue;
+  issue: UxIssue & { duplicateCount?: number };
   showFlowId?: boolean;
   onResolve: () => void;
   onAutoFix?: () => void;
@@ -227,6 +278,11 @@ const IssueCard: React.FC<IssueCardProps> = ({
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <SeverityBadge severity={issue.severity} />
             <Badge variant="secondary">{issue.category}</Badge>
+            {issue.duplicateCount && issue.duplicateCount > 1 && (
+              <Badge variant="outline" className="text-xs">
+                ×{issue.duplicateCount}
+              </Badge>
+            )}
             {showFlowId && (
               <span className="text-sm text-muted-foreground">
                 {issue.flowId}

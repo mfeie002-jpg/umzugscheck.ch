@@ -3,7 +3,7 @@
  * Priority 2: 1-Click Deep Analysis
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +25,11 @@ import {
   ArrowLeft,
   ExternalLink,
   RefreshCw,
-  Copy
+  Copy,
+  Monitor,
+  Image as ImageIcon,
+  Settings,
+  FileCode
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -48,6 +52,15 @@ interface ArchetypeScore {
   improvements: string[];
 }
 
+interface FlowVersionData {
+  id: string;
+  flowId: string;
+  versionName: string;
+  screenshots: Record<string, string>;
+  stepConfigs: any[];
+  createdAt: string;
+}
+
 interface AnalysisViewProps {
   flowId: string | null;
   onBack: () => void;
@@ -65,14 +78,48 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
   const [previousRun, setPreviousRun] = useState<AnalysisRun | null>(null);
   const [issues, setIssues] = useState<UxIssue[]>([]);
   const [archetypeScores, setArchetypeScores] = useState<ArchetypeScore[]>([]);
+  const [flowVersion, setFlowVersion] = useState<FlowVersionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     if (flowId) {
       fetchAnalysis(flowId);
+      fetchFlowVersion(flowId);
     }
   }, [flowId]);
+  
+  const fetchFlowVersion = async (id: string) => {
+    try {
+      const normalizedId = id.startsWith('umzugsofferten-')
+        ? id.replace('umzugsofferten-', '')
+        : id;
+      const flowIds = Array.from(
+        new Set([id, normalizedId, `umzugsofferten-${normalizedId}`])
+      );
+      
+      const { data, error } = await supabase
+        .from('flow_versions')
+        .select('id, flow_id, version_name, screenshots, step_configs, created_at')
+        .in('flow_id', flowIds)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (data && !error) {
+        setFlowVersion({
+          id: data.id,
+          flowId: data.flow_id,
+          versionName: data.version_name || id,
+          screenshots: (data.screenshots as Record<string, string>) || {},
+          stepConfigs: Array.isArray(data.step_configs) ? data.step_configs : [],
+          createdAt: data.created_at,
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch flow version:', err);
+    }
+  };
 
   const fetchAnalysis = async (id: string) => {
     setLoading(true);
@@ -386,8 +433,12 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
+            <TabsList className="flex-wrap h-auto gap-1">
               <TabsTrigger value="overview">Übersicht</TabsTrigger>
+              <TabsTrigger value="screenshots" className="gap-2">
+                <ImageIcon className="h-3 w-3" />
+                Screenshots
+              </TabsTrigger>
               <TabsTrigger value="issues" className="gap-2">
                 Issues
                 {issues.length > 0 && (
@@ -398,6 +449,10 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
               </TabsTrigger>
               <TabsTrigger value="recommendations">Empfehlungen</TabsTrigger>
               <TabsTrigger value="archetypes">Archetypen</TabsTrigger>
+              <TabsTrigger value="config" className="gap-2">
+                <Settings className="h-3 w-3" />
+                Konfiguration
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6 mt-6">
@@ -505,6 +560,16 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
                 flowName={run?.flowName}
               />
             </TabsContent>
+
+            {/* Screenshots Tab */}
+            <TabsContent value="screenshots" className="mt-6">
+              <ScreenshotsPanel flowVersion={flowVersion} flowId={flowId} />
+            </TabsContent>
+
+            {/* Configuration Tab */}
+            <TabsContent value="config" className="mt-6">
+              <ConfigPanel flowVersion={flowVersion} flowId={flowId} />
+            </TabsContent>
           </Tabs>
         </>
       )}
@@ -542,5 +607,140 @@ const ScoreCard: React.FC<{
     </CardContent>
   </Card>
 );
+
+// Screenshots Panel Component
+const ScreenshotsPanel: React.FC<{ flowVersion: FlowVersionData | null; flowId: string | null }> = ({ flowVersion, flowId }) => {
+  const screenshots = flowVersion?.screenshots || {};
+  const screenshotEntries = Object.entries(screenshots);
+  
+  if (screenshotEntries.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center">
+          <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+          <p className="text-muted-foreground">Keine Screenshots vorhanden</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Starte eine neue Analyse um Screenshots zu erfassen.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold">Flow Screenshots</h3>
+        <Badge variant="secondary">{screenshotEntries.length} Schritte</Badge>
+      </div>
+      
+      <div className="grid gap-6">
+        {screenshotEntries.map(([stepKey, url]) => (
+          <Card key={stepKey}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                {stepKey.includes('mobile') ? (
+                  <Smartphone className="h-4 w-4" />
+                ) : (
+                  <Monitor className="h-4 w-4" />
+                )}
+                {stepKey.replace(/_/g, ' ').replace(/step/i, 'Schritt ')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="border rounded-lg overflow-hidden bg-muted/30">
+                <img 
+                  src={url as string} 
+                  alt={stepKey}
+                  className="w-full h-auto max-h-[500px] object-contain"
+                  loading="lazy"
+                />
+              </div>
+              <div className="mt-2 flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.open(url as string, '_blank')}
+                >
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Vollbild
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Configuration Panel Component  
+const ConfigPanel: React.FC<{ flowVersion: FlowVersionData | null; flowId: string | null }> = ({ flowVersion, flowId }) => {
+  const stepConfigs = flowVersion?.stepConfigs || [];
+
+  if (stepConfigs.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center">
+          <Settings className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+          <p className="text-muted-foreground">Keine Konfiguration vorhanden</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold">Flow Konfiguration</h3>
+        <Badge variant="secondary">{stepConfigs.length} Schritte</Badge>
+      </div>
+
+      <div className="grid gap-4">
+        {stepConfigs.map((step: any, index: number) => (
+          <Card key={index}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Badge variant="outline">{step.number || index + 1}</Badge>
+                {step.name || `Schritt ${index + 1}`}
+              </CardTitle>
+              {step.description && (
+                <CardDescription>{step.description}</CardDescription>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {step.features && step.features.length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Features:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {step.features.map((feature: string, i: number) => (
+                      <Badge key={i} variant="secondary" className="text-xs">
+                        {feature}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {step.archetypeValue && Object.keys(step.archetypeValue).length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Archetypen-Werte:</p>
+                  <div className="space-y-1 text-xs">
+                    {Object.entries(step.archetypeValue).map(([key, value]) => (
+                      <div key={key} className="flex gap-2">
+                        <span className="font-medium capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+                        <span className="text-muted-foreground">{value as string}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default AnalysisView;
