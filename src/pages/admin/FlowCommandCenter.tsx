@@ -299,46 +299,80 @@ export default function FlowCommandCenter() {
   const handleAnalyzeFlow = async (flowId: string) => {
     setIsAnalyzing(true);
     try {
-      // Create analysis run
-      const { data: run, error } = await supabase
-        .from('flow_analysis_runs')
-        .insert({
-          flow_id: flowId,
-          flow_name: flowId,
-          run_type: 'manual',
-          status: 'processing',
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      toast.success(`Analyse für ${flowId} gestartet`);
+      toast.info(`Analyse für ${flowId} wird gestartet...`);
       
-      // In production, this would trigger an edge function
-      // For now, just reload data after a delay
-      setTimeout(() => {
-        loadData();
-        setIsAnalyzing(false);
-      }, 2000);
+      // Call the auto-analyze-flow edge function
+      const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
+        body: {
+          flowId: flowId,
+          runType: 'manual',
+          baseUrl: 'https://www.umzugscheck.ch'
+        }
+      });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Edge function failed');
+      }
+
+      console.log('Analysis response:', data);
+      toast.success(`Analyse für ${flowId} abgeschlossen`);
+      
+      // Reload data to show new results
+      await loadData();
     } catch (err) {
       console.error('Analysis failed:', err);
-      toast.error('Analyse fehlgeschlagen');
+      toast.error(`Analyse fehlgeschlagen: ${err instanceof Error ? err.message : 'Unbekannter Fehler'}`);
+    } finally {
       setIsAnalyzing(false);
     }
   };
 
   const handleAnalyzeAll = async () => {
     setIsAnalyzing(true);
-    toast.info('Analyse aller Flows gestartet...');
-    
     const flowIds = getAllFlowIds();
-    for (const id of flowIds.slice(0, 5)) { // Limit to 5 for demo
-      await handleAnalyzeFlow(id);
+    const total = flowIds.length;
+    let completed = 0;
+    let failed = 0;
+    
+    toast.info(`Analyse von ${total} Flows gestartet...`);
+    
+    for (const id of flowIds) {
+      try {
+        const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
+          body: {
+            flowId: id,
+            runType: 'manual',
+            baseUrl: 'https://www.umzugscheck.ch'
+          }
+        });
+
+        if (error) {
+          console.error(`Analysis failed for ${id}:`, error);
+          failed++;
+        } else {
+          completed++;
+          console.log(`Analyzed ${id}:`, data);
+        }
+        
+        // Update progress toast
+        if ((completed + failed) % 5 === 0 || (completed + failed) === total) {
+          toast.info(`Fortschritt: ${completed + failed}/${total} (${failed} fehlgeschlagen)`);
+        }
+      } catch (err) {
+        console.error(`Analysis error for ${id}:`, err);
+        failed++;
+      }
     }
     
     setIsAnalyzing(false);
-    loadData();
+    await loadData();
+    
+    if (failed === 0) {
+      toast.success(`Alle ${total} Flows erfolgreich analysiert!`);
+    } else {
+      toast.warning(`${completed} analysiert, ${failed} fehlgeschlagen`);
+    }
   };
 
   const handleViewChange = (view: ViewMode) => {
