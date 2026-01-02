@@ -373,18 +373,35 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
-  // V6 - Ultimate Feedback
+  // V6 - Ultimate Feedback Variants
   'v6a': {
     id: 'v6a',
-    label: 'V6a Ultimate (Feedback)',
+    label: 'V6a Ultimate Optimized ⭐',
     path: '/umzugsofferten-v6?variant=v6a',
     color: 'bg-orange-600',
-    description: 'V6 Feedback: 3 Pakete statt 6 Tiers, Card-Snap, Gratis-Option',
+    description: 'V6a: ChatGPT Deep Feedback - Trust-Signale, Video-Scan erklärt, Sticky CTA, Preisaufschlüsselung',
+    parentFlow: 'umzugsofferten-v6',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer mit Inline-Validierung' },
+      { step: 2, name: 'Video-Scan', description: 'Mit Erklär-Video + prominente Skip-Option' },
+      { step: 3, name: 'Paket wählen', description: '6 Pakete mit Tooltips und Preisvergleich' },
+      { step: 4, name: 'Fixpreis', description: 'Direkte Preisaufschlüsselung + Garantien' },
+      { step: 5, name: 'Buchung', description: 'Kontakt + Cross-Sell + After-Sales Timeline' },
+    ],
+  },
+  'v6b': {
+    id: 'v6b',
+    label: 'V6b Ultimate Extended',
+    path: '/umzugsofferten-v6?variant=v6b',
+    color: 'bg-orange-700',
+    description: 'V6b: Weitere Optimierungen basierend auf V6a Feedback',
     parentFlow: 'umzugsofferten-v6',
     steps: [
       { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer' },
-      { step: 2, name: 'Paket wählen', description: '3 Pakete mit Snap-Scroll' },
-      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+      { step: 2, name: 'Inventar', description: 'Video oder manuell' },
+      { step: 3, name: 'Paket', description: 'Service-Level wählen' },
+      { step: 4, name: 'Preis', description: 'Fixpreis-Übersicht' },
+      { step: 5, name: 'Buchung', description: 'Kontakt + Absenden' },
     ],
   },
   // V7 - SwissMove Feedback

@@ -50,6 +50,7 @@ import {
   // V6 variants
   V6aFeedbackBased,
   V6aOptimized,
+  V6bOptimized,
   // V7 variants
   V7aFeedbackBased,
   // V8 variants
@@ -129,6 +130,7 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'umzugsofferten-v6': V6aFeedbackBased,
   'v6': V6aFeedbackBased,
   'v6a': V6aOptimized,
+  'v6b': V6bOptimized,
   
   // ========== V7 - SwissMove (90s) ==========
   'umzugsofferten-v7': V7aFeedbackBased,
