@@ -53,9 +53,9 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V6aFeedbackBased': () => import('@/components/calculator-variants/V6aFeedbackBased').then(m => ({ default: m.V6aFeedbackBased })),
   'V6bChatGPT': () => import('@/components/calculator-variants/V6bChatGPT').then(m => ({ default: m.V6bChatGPT })),
   'V6cGemini': () => import('@/components/calculator-variants/V6cGemini').then(m => ({ default: m.V6cGemini })),
-  'V6dDeepResearch': () => import('@/components/calculator-variants/V6dDeepResearch'),
-  'V6eThinkingMode': () => import('@/components/calculator-variants/V6eThinkingMode'),
-  'V6fUltimate': () => import('@/components/calculator-variants/V6fUltimate'),
+  'V6dDeepResearch': () => import('@/components/calculator-variants/V6dDeepResearch').then(m => ({ default: m.default })),
+  'V6eThinkingMode': () => import('@/components/calculator-variants/V6eThinkingMode').then(m => ({ default: m.default })),
+  'V6fUltimate': () => import('@/components/calculator-variants/V6fUltimate').then(m => ({ default: m.default })),
   // V7 Variants
   'V7aFeedbackBased': () => import('@/components/calculator-variants/V7aFeedbackBased').then(m => ({ default: m.V7aFeedbackBased })),
   // V8 Variants
