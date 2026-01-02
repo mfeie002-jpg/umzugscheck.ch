@@ -111,13 +111,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return a.label.localeCompare(b.label);
   });
 
-  // Calculate stats
-  const analyzedCount = Object.keys(scores).length;
+  // Calculate stats - only count flows that exist in our config
+  const configFlowIds = new Set(allVariants.map(v => v.id));
+  const analyzedCount = Object.keys(scores).filter(flowId => configFlowIds.has(flowId)).length;
   const totalFlows = allVariants.length;
-  const avgScore = analyzedCount > 0
-    ? Math.round(Object.values(scores).reduce((sum, s) => sum + (s.overallScore || 0), 0) / analyzedCount)
+  const relevantScores = Object.entries(scores).filter(([flowId]) => configFlowIds.has(flowId)).map(([, s]) => s);
+  const avgScore = relevantScores.length > 0
+    ? Math.round(relevantScores.reduce((sum, s) => sum + (s.overallScore || 0), 0) / relevantScores.length)
     : 0;
-  const criticalFlows = Object.values(scores).filter(s => s.overallScore !== null && s.overallScore < 50).length;
+  const criticalFlows = relevantScores.filter(s => s.overallScore !== null && s.overallScore < 50).length;
 
   // Get winner
   const winner = sortedVariants[0];
