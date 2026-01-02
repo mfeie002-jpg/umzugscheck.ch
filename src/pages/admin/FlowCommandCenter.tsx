@@ -245,6 +245,16 @@ export default function FlowCommandCenter() {
 
       if (featureError) throw featureError;
 
+      // Also fetch from flow_analysis_runs for completed analyses
+      const { data: analysisData, error: analysisError } = await supabase
+        .from('flow_analysis_runs')
+        .select('*')
+        .eq('status', 'completed')
+        .not('overall_score', 'is', null)
+        .order('created_at', { ascending: false });
+
+      if (analysisError) throw analysisError;
+
       const scoreMap = new Map<string, FlowScore>();
       let totalScore = 0;
       let topScore = 0;
@@ -252,20 +262,36 @@ export default function FlowCommandCenter() {
 
       const flowIds = getAllFlowIds();
       
+      // First, try to match by exact ID or with umzugsofferten- prefix
       for (const id of flowIds) {
-        const featureScore = featureData?.find(f => f.flow_id === id);
+        // Try multiple matching patterns
+        const featureScore = featureData?.find(f => 
+          f.flow_id === id || 
+          f.flow_id === `umzugsofferten-${id}` ||
+          f.flow_id.replace('umzugsofferten-', '') === id
+        );
         
-        if (featureScore) {
+        // Also check analysis runs
+        const analysisRun = analysisData?.find(a => 
+          a.flow_id === id || 
+          a.flow_id === `umzugsofferten-${id}` ||
+          a.flow_id.replace('umzugsofferten-', '') === id
+        );
+        
+        // Use feature score if available, otherwise use analysis run
+        const sourceData = featureScore || analysisRun;
+        
+        if (sourceData) {
           const score: FlowScore = {
             flowId: id,
-            overallScore: featureScore.overall_score,
-            conversionScore: featureScore.conversion_score,
-            uxScore: featureScore.ux_score,
-            mobileScore: featureScore.mobile_score,
-            trustScore: featureScore.trust_score,
-            accessibilityScore: featureScore.accessibility_score,
-            performanceScore: featureScore.performance_score,
-            lastAnalyzed: featureScore.updated_at,
+            overallScore: sourceData.overall_score,
+            conversionScore: sourceData.conversion_score,
+            uxScore: sourceData.ux_score,
+            mobileScore: sourceData.mobile_score,
+            trustScore: sourceData.trust_score,
+            accessibilityScore: sourceData.accessibility_score,
+            performanceScore: sourceData.performance_score,
+            lastAnalyzed: 'updated_at' in sourceData ? sourceData.updated_at : sourceData.created_at,
           };
           scoreMap.set(id, score);
           
