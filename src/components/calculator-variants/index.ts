@@ -56,8 +56,8 @@ export { V5fFeedbackBased } from './V5fFeedbackBased';
 
 // V6 Variants (Ultimate 6-Tier)
 export { V6aFeedbackBased } from './V6aFeedbackBased';
-export { V6aOptimized } from './V6aOptimized';
-export { V6bOptimized } from './V6bOptimized';
+export { V6bChatGPT } from './V6bChatGPT';
+export { V6cGemini } from './V6cGemini';
 
 // V7 Variants (SwissMove 90s)
 export { V7aFeedbackBased } from './V7aFeedbackBased';
@@ -126,7 +126,9 @@ export const VARIANT_REGISTRY: Record<string, {
   'v5f': { component: 'V5fFeedbackBased', stepCount: 3, label: 'V5f Marketplace (Feedback)' },
   // V6 - Ultimate 6-Tier
   'v6': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6 Ultimate' },
-  'v6a': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6a Ultimate (Feedback)' },
+  'v6a': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6a Ultimate (Baseline)' },
+  'v6b': { component: 'V6bChatGPT', stepCount: 5, label: 'V6b ChatGPT Feedback' },
+  'v6c': { component: 'V6cGemini', stepCount: 6, label: 'V6c Gemini "God Mode"' },
   // V7 - SwissMove 90s
   'v7': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7 SwissMove' },
   'v7a': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7a SwissMove (Feedback)' },

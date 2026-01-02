@@ -1,5 +1,5 @@
 /**
- * V6.a Optimized - Ultimate (6-Tier) with Full ChatGPT Feedback
+ * V6.b ChatGPT - Ultimate (6-Tier) with Full ChatGPT Feedback
  * 
  * ChatGPT Pro Deep Feedback implementiert:
  * 1. ✅ Trust-Signale: TÜV, Swiss Made, Testimonials, Medienlogos
@@ -685,7 +685,7 @@ function SuccessStep({
 }
 
 // ============= MAIN COMPONENT =============
-export const V6aOptimized: React.FC = () => {
+export const V6bChatGPT: React.FC = () => {
   const { isCaptureMode, captureStep, demoData } = useCaptureMode();
   
   const [currentStep, setCurrentStep] = useState(() => {
@@ -1043,4 +1043,4 @@ export const V6aOptimized: React.FC = () => {
   );
 };
 
-export default V6aOptimized;
+export default V6bChatGPT;
