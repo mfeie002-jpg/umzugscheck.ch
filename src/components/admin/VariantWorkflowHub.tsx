@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -67,10 +67,34 @@ interface VariantEntry {
   output_flow_id?: string;
 }
 
-export function VariantWorkflowHub() {
+interface VariantWorkflowHubProps {
+  initialFlow?: string;
+}
+
+export function VariantWorkflowHub({ initialFlow }: VariantWorkflowHubProps) {
   // State
   const navigate = useNavigate();
-  const [selectedFlow, setSelectedFlow] = useState("umzugsofferten-v9");
+  const [searchParams] = useSearchParams();
+  
+  // Sync with URL param or prop - priority: prop > URL > default
+  const urlFlow = searchParams.get('flow');
+  const defaultFlow = initialFlow || urlFlow || "umzugsofferten-v9";
+  const [selectedFlow, setSelectedFlow] = useState(defaultFlow);
+  
+  // Update when URL changes
+  useEffect(() => {
+    if (initialFlow) {
+      setSelectedFlow(initialFlow);
+    } else if (urlFlow) {
+      // Normalize: add umzugsofferten- prefix if missing
+      const normalized = urlFlow.startsWith('umzugsofferten-') 
+        ? urlFlow 
+        : `umzugsofferten-${urlFlow}`;
+      if (FLOW_OPTIONS.some(f => f.id === normalized)) {
+        setSelectedFlow(normalized);
+      }
+    }
+  }, [initialFlow, urlFlow]);
   const [feedbackText, setFeedbackText] = useState("");
   const [targetVariant, setTargetVariant] = useState("");
   const [variantName, setVariantName] = useState("");

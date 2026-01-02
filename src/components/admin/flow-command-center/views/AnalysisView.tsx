@@ -34,7 +34,18 @@ import {
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { ScoreRing, ScoreBadgeCompact, IssuesPanel, ScoreDelta } from '../components';
+import { 
+  ScoreRing, 
+  ScoreBadgeCompact, 
+  IssuesPanel, 
+  ScoreDelta,
+  ScoreHistoryChart,
+  IssueResolutionTracker,
+  QuickActionsPanel,
+  FlowComparisonMini,
+  AIFixSuggestions,
+  PerformanceBenchmarks
+} from '../components';
 import { 
   ArchetypeRadar, 
   QuickWinsPanel, 
@@ -449,6 +460,7 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
               </TabsTrigger>
               <TabsTrigger value="recommendations">Empfehlungen</TabsTrigger>
               <TabsTrigger value="archetypes">Archetypen</TabsTrigger>
+              <TabsTrigger value="insights">Insights</TabsTrigger>
               <TabsTrigger value="config" className="gap-2">
                 <Settings className="h-3 w-3" />
                 Konfiguration
@@ -563,7 +575,49 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
 
             {/* Screenshots Tab */}
             <TabsContent value="screenshots" className="mt-6">
-              <ScreenshotsPanel flowVersion={flowVersion} flowId={flowId} />
+              <ScreenshotsPanel 
+                flowVersion={flowVersion} 
+                flowId={flowId}
+                onCaptureScreenshots={() => onAnalyze(flowId)}
+                isCapturing={isAnalyzing}
+              />
+            </TabsContent>
+
+            {/* Insights Tab - Premium Features */}
+            <TabsContent value="insights" className="mt-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Score History */}
+                <ScoreHistoryChart flowId={flowId} />
+                
+                {/* Issue Resolution Tracker */}
+                <IssueResolutionTracker flowId={flowId} />
+                
+                {/* Quick Actions */}
+                <QuickActionsPanel 
+                  flowId={flowId}
+                  flowName={run?.flowName}
+                  onAnalyze={() => onAnalyze(flowId)}
+                  isAnalyzing={isAnalyzing}
+                />
+                
+                {/* Performance Benchmarks */}
+                <PerformanceBenchmarks
+                  overallScore={run?.overallScore ?? null}
+                  conversionScore={run?.conversionScore ?? null}
+                  uxScore={run?.uxScore ?? null}
+                  mobileScore={run?.mobileScore ?? null}
+                  trustScore={run?.trustScore ?? null}
+                />
+                
+                {/* Flow Comparison */}
+                <FlowComparisonMini 
+                  currentFlowId={flowId}
+                  availableFlows={['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9']}
+                />
+                
+                {/* AI Fix Suggestions */}
+                <AIFixSuggestions flowId={flowId} />
+              </div>
             </TabsContent>
 
             {/* Configuration Tab */}
@@ -608,22 +662,70 @@ const ScoreCard: React.FC<{
   </Card>
 );
 
-// Screenshots Panel Component
-const ScreenshotsPanel: React.FC<{ flowVersion: FlowVersionData | null; flowId: string | null }> = ({ flowVersion, flowId }) => {
-  const screenshots = flowVersion?.screenshots || {};
-  const screenshotEntries = Object.entries(screenshots);
+// Screenshots Panel Component with Capture functionality
+const ScreenshotsPanel: React.FC<{ 
+  flowVersion: FlowVersionData | null; 
+  flowId: string | null;
+  onCaptureScreenshots?: () => void;
+  isCapturing?: boolean;
+}> = ({ flowVersion, flowId, onCaptureScreenshots, isCapturing }) => {
+  const [stepMetrics, setStepMetrics] = useState<Array<{
+    step_number: number;
+    desktop_screenshot_url: string | null;
+    mobile_screenshot_url: string | null;
+    step_name: string | null;
+  }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (flowId) {
+      fetchStepMetrics();
+    }
+  }, [flowId]);
+
+  const fetchStepMetrics = async () => {
+    if (!flowId) return;
+    setLoading(true);
+    try {
+      const normalizedId = flowId.startsWith('umzugsofferten-')
+        ? flowId.replace('umzugsofferten-', '')
+        : flowId;
+      const flowIds = [flowId, normalizedId, `umzugsofferten-${normalizedId}`];
+
+      const { data } = await supabase
+        .from('flow_step_metrics')
+        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, step_name')
+        .in('flow_id', flowIds)
+        .order('step_number', { ascending: true });
+
+      if (data && data.length > 0) {
+        // Get latest screenshots per step
+        const latestByStep = new Map<number, typeof data[0]>();
+        for (const row of data) {
+          if (!latestByStep.has(row.step_number) || 
+              (row.desktop_screenshot_url || row.mobile_screenshot_url)) {
+            latestByStep.set(row.step_number, row);
+          }
+        }
+        setStepMetrics(Array.from(latestByStep.values()));
+      }
+    } catch (err) {
+      console.error('Failed to fetch step metrics:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Combine flowVersion screenshots with step metrics
+  const versionScreenshots = flowVersion?.screenshots || {};
+  const hasScreenshots = stepMetrics.some(s => s.desktop_screenshot_url || s.mobile_screenshot_url) || 
+                         Object.keys(versionScreenshots).length > 0;
   
-  if (screenshotEntries.length === 0) {
+  if (loading) {
     return (
-      <Card>
-        <CardContent className="py-8 text-center">
-          <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground">Keine Screenshots vorhanden</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Starte eine neue Analyse um Screenshots zu erfassen.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
     );
   }
 
@@ -631,45 +733,116 @@ const ScreenshotsPanel: React.FC<{ flowVersion: FlowVersionData | null; flowId: 
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">Flow Screenshots</h3>
-        <Badge variant="secondary">{screenshotEntries.length} Schritte</Badge>
+        <div className="flex items-center gap-2">
+          {stepMetrics.length > 0 && (
+            <Badge variant="secondary">{stepMetrics.length} Schritte</Badge>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onCaptureScreenshots}
+            disabled={isCapturing}
+          >
+            {isCapturing ? (
+              <>
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                Erfasse...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-3 w-3 mr-1" />
+                Neu erfassen
+              </>
+            )}
+          </Button>
+        </div>
       </div>
-      
-      <div className="grid gap-6">
-        {screenshotEntries.map(([stepKey, url]) => (
-          <Card key={stepKey}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                {stepKey.includes('mobile') ? (
-                  <Smartphone className="h-4 w-4" />
-                ) : (
-                  <Monitor className="h-4 w-4" />
-                )}
-                {stepKey.replace(/_/g, ' ').replace(/step/i, 'Schritt ')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="border rounded-lg overflow-hidden bg-muted/30">
-                <img 
-                  src={url as string} 
-                  alt={stepKey}
-                  className="w-full h-auto max-h-[500px] object-contain"
-                  loading="lazy"
-                />
-              </div>
-              <div className="mt-2 flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => window.open(url as string, '_blank')}
-                >
-                  <ExternalLink className="h-3 w-3 mr-1" />
-                  Vollbild
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+
+      {!hasScreenshots ? (
+        <Card>
+          <CardContent className="py-8 text-center">
+            <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+            <p className="text-muted-foreground">Keine Screenshots vorhanden</p>
+            <p className="text-sm text-muted-foreground mt-1 mb-4">
+              Starte eine Analyse um Screenshots zu erfassen.
+            </p>
+            <Button onClick={onCaptureScreenshots} disabled={isCapturing}>
+              {isCapturing ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Play className="h-4 w-4 mr-2" />
+              )}
+              Screenshots erfassen
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-6">
+          {stepMetrics.map((step) => (
+            <Card key={step.step_number}>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">
+                  Schritt {step.step_number}: {step.step_name || `Step ${step.step_number}`}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {step.desktop_screenshot_url && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2 text-sm text-muted-foreground">
+                        <Monitor className="h-4 w-4" />
+                        Desktop
+                      </div>
+                      <div className="border rounded-lg overflow-hidden bg-muted/30">
+                        <img 
+                          src={step.desktop_screenshot_url} 
+                          alt={`Step ${step.step_number} Desktop`}
+                          className="w-full h-auto max-h-[400px] object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="mt-2"
+                        onClick={() => window.open(step.desktop_screenshot_url!, '_blank')}
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        Vollbild
+                      </Button>
+                    </div>
+                  )}
+                  {step.mobile_screenshot_url && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2 text-sm text-muted-foreground">
+                        <Smartphone className="h-4 w-4" />
+                        Mobile
+                      </div>
+                      <div className="border rounded-lg overflow-hidden bg-muted/30">
+                        <img 
+                          src={step.mobile_screenshot_url} 
+                          alt={`Step ${step.step_number} Mobile`}
+                          className="w-full h-auto max-h-[400px] object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="mt-2"
+                        onClick={() => window.open(step.mobile_screenshot_url!, '_blank')}
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        Vollbild
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
