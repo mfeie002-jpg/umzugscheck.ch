@@ -89,23 +89,28 @@ export const RankingView: React.FC<RankingViewProps> = ({
       const statusMap: Record<string, AnalysisStatus> = {};
       let runningTotal = 0;
       
-      // Group runs by normalized flow ID (keep latest 2 for delta)
+      // Group runs by normalized flow ID (keep latest 3 for delta + completed screenshot fallback)
       const flowRuns: Record<string, typeof runsData> = {};
       runsData?.forEach(row => {
         const normalized = normalizeFlowId(row.flow_id);
         if (!flowRuns[normalized]) {
           flowRuns[normalized] = [];
         }
-        if (flowRuns[normalized].length < 2) {
+        if (flowRuns[normalized].length < 3) {
           flowRuns[normalized].push(row);
         }
       });
       
-      // Fetch step metrics for screenshot counts ONLY for the latest runs we display.
-      // This avoids PostgREST default limits (1000 rows) causing missing run_ids -> 0/8.
-      const latestRunIds = Object.values(flowRuns)
-        .map(runs => runs?.[0]?.id)
-        .filter((id): id is string => Boolean(id));
+      // Fetch step metrics for screenshot counts
+      // Include latest run AND last completed run for each flow (for accurate screenshot counts)
+      const runIdsForMetrics = new Set<string>();
+      Object.values(flowRuns).forEach(runs => {
+        // Add latest run (for running status)
+        if (runs?.[0]?.id) runIdsForMetrics.add(runs[0].id);
+        // Add last completed run (for accurate screenshot count)
+        const lastCompleted = runs?.find(r => r.status === 'completed');
+        if (lastCompleted?.id) runIdsForMetrics.add(lastCompleted.id);
+      });
 
       let stepMetrics: Array<{
         run_id: string | null;
@@ -113,11 +118,11 @@ export const RankingView: React.FC<RankingViewProps> = ({
         desktop_screenshot_url: string | null;
       }> = [];
 
-      if (latestRunIds.length > 0) {
+      if (runIdsForMetrics.size > 0) {
         const { data: stepMetricsData, error: stepMetricsError } = await supabase
           .from('flow_step_metrics')
           .select('run_id, mobile_screenshot_url, desktop_screenshot_url')
-          .in('run_id', latestRunIds);
+          .in('run_id', Array.from(runIdsForMetrics));
 
         if (stepMetricsError) throw stepMetricsError;
         stepMetrics = stepMetricsData || [];
@@ -181,13 +186,18 @@ export const RankingView: React.FC<RankingViewProps> = ({
         
         const metadata = latest.metadata as { error?: string } | null;
         
+        // For screenshot count, use last COMPLETED run if current is running
+        const lastCompleted = runs?.find(r => r.status === 'completed');
+        const runIdForScreenshots = isRunning && lastCompleted ? lastCompleted.id : latest.id;
+        const totalStepsForScreenshots = isRunning && lastCompleted ? (lastCompleted.total_steps || 1) : (latest.total_steps || 1);
+        
         statusMap[normalizedId] = {
           status: latest.status === 'completed' ? 'completed' 
                 : latest.status === 'failed' || isStalled ? 'failed'
                 : isRunning ? 'running' : 'none',
           stepsCaptures: latest.steps_captured || 0,
-          totalSteps: latest.total_steps || 1,
-          screenshotsCount: screenshotCounts.get(latest.id) || 0,
+          totalSteps: totalStepsForScreenshots,
+          screenshotsCount: screenshotCounts.get(runIdForScreenshots) || 0,
           hasErrors: latest.status === 'failed' || isStalled,
           lastError: isStalled ? 'Analysis stalled - screenshot service error' : metadata?.error,
         };
@@ -399,13 +409,47 @@ export const RankingView: React.FC<RankingViewProps> = ({
         </Card>
       </div>
 
-      {/* Refresh indicator when polling */}
-      {runningCount > 0 && (
-        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <RefreshCw className="h-4 w-4 animate-spin" />
-          <span>Auto-Update aktiv ({runningCount} Analysen laufen)</span>
+      {/* Action buttons for batch operations */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-2">
+          {noAnalysisCount > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // Analyze all flows without analysis, one by one
+                const unanalyzed = rankedVariants.filter(v => v.status.status === 'none');
+                if (unanalyzed.length > 0) {
+                  // Start first one - subsequent ones will be triggered manually
+                  onAnalyzeFlow(unanalyzed[0].id);
+                }
+              }}
+              disabled={runningCount > 0}
+            >
+              <Play className="h-4 w-4 mr-1" />
+              {noAnalysisCount} nicht-analysierte starten
+            </Button>
+          )}
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={fetchScores}
+            disabled={loading}
+          >
+            <RefreshCw className={cn('h-4 w-4 mr-1', loading && 'animate-spin')} />
+            Aktualisieren
+          </Button>
         </div>
-      )}
+        
+        {/* Refresh indicator when polling */}
+        {runningCount > 0 && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <RefreshCw className="h-4 w-4 animate-spin" />
+            <span>Auto-Update aktiv ({runningCount} Analysen laufen)</span>
+          </div>
+        )}
+      </div>
 
       {/* Podium - Top 3 */}
       <div className="grid grid-cols-3 gap-4">
