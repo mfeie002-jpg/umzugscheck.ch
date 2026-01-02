@@ -132,10 +132,16 @@ const navStructure: NavItem[] = [
   // ========== FUNNELS & UX ==========
   { type: "divider", title: "🎯 Funnels & UX" },
   { 
+    title: "Flow Command Center", 
+    href: "/admin/flow-command-center", 
+    icon: Target,
+    highlight: true,
+    badge: "⭐"
+  },
+  { 
     title: "Varianten Testen", 
     href: "/admin/varianten-testen", 
     icon: Layers,
-    highlight: true,
     badge: "HUB"
   },
   { 

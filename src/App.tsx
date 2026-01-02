@@ -283,9 +283,6 @@ const ChatGPTOverview = lazy(() => import("./pages/admin/ChatGPTOverview"));
 const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
-const FlowComparison = lazy(() => import("./pages/admin/FlowComparison"));
-const FlowDeepAnalysis = lazy(() => import("./pages/admin/FlowDeepAnalysis"));
-const FlowAnalysisHub = lazy(() => import("./pages/admin/FlowAnalysisHub"));
 const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
@@ -401,9 +398,9 @@ const AdminRoutes = () => (
       <Route path="/admin/flow-command-center" element={<FlowCommandCenter />} />
       {/* Flow Analysis Hub - Legacy, redirects to new Command Center */}
       <Route path="/admin/flow-analysis" element={<FlowCommandCenter />} />
-      <Route path="/admin/flow-comparison" element={<Navigate to="/admin/flow-analysis?view=ranking" replace />} />
-      <Route path="/admin/flow-comparison/:flowNumber" element={<FlowComparison />} />
-      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/admin/flow-analysis?view=analysis" replace />} />
+      <Route path="/admin/flow-comparison" element={<Navigate to="/admin/flow-command-center?view=comparison" replace />} />
+      <Route path="/admin/flow-comparison/:flowNumber" element={<Navigate to="/admin/flow-command-center?view=comparison" replace />} />
+      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/admin/flow-command-center?view=analysis" replace />} />
       <Route path="/admin/analysis-framework" element={<AnalysisFramework />} />
       <Route path="/admin/flow-feedback-variants" element={<FlowFeedbackVariants />} />
       <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
