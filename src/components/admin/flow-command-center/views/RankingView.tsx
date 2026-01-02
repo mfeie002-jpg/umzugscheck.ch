@@ -89,14 +89,16 @@ export const RankingView: React.FC<RankingViewProps> = ({
       const statusMap: Record<string, AnalysisStatus> = {};
       let runningTotal = 0;
       
-      // Group runs by normalized flow ID (keep latest 3 for delta + completed screenshot fallback)
+      // Group runs by normalized flow ID (keep latest 5 for delta + completed screenshot fallback)
+      // Increased from 3 to 5 to handle cases where multiple running/failed runs exist
       const flowRuns: Record<string, typeof runsData> = {};
       runsData?.forEach(row => {
         const normalized = normalizeFlowId(row.flow_id);
         if (!flowRuns[normalized]) {
           flowRuns[normalized] = [];
         }
-        if (flowRuns[normalized].length < 3) {
+        // Keep up to 5 runs to ensure we find a completed one for scores
+        if (flowRuns[normalized].length < 5) {
           flowRuns[normalized].push(row);
         }
       });
@@ -240,7 +242,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
   const allVariants = getVariantsForFlow('all');
   const rankedVariants = [...allVariants]
     .map(v => {
-      // Match using normalized ID
+      // Match using normalized ID (handles both 'umzugsofferten-v1' -> 'v1' and 'v1a' -> 'v1a')
       const normalizedId = normalizeFlowId(v.id);
       return { 
         ...v, 
