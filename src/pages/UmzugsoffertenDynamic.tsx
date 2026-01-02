@@ -57,9 +57,9 @@ const subVariantLoaders: Record<string, () => Promise<{ default: React.Component
   'V6eThinkingMode': () => import('@/components/calculator-variants/V6eThinkingMode').then(m => ({ default: m.default })),
   'V6fUltimate': () => import('@/components/calculator-variants/V6fUltimate').then(m => ({ default: m.default })),
   // V7 Variants
-  'V7aFeedbackBased': () => import('@/components/calculator-variants/V7aFeedbackBased').then(m => ({ default: m.V7aFeedbackBased })),
+  'V7aFeedbackBased': () => import('@/components/calculator-variants/V7aFeedbackBased').then(m => ({ default: m.V7aFeedbackBased || m.default })),
   // V8 Variants
-  'V8aFeedbackBased': () => import('@/components/calculator-variants/V8aFeedbackBased').then(m => ({ default: m.V8aFeedbackBased })),
+  'V8aFeedbackBased': () => import('@/components/calculator-variants/V8aFeedbackBased').then(m => ({ default: m.V8aFeedbackBased || m.default })),
   // V9 Variants
   'V9aFeedbackBased': () => import('@/components/calculator-variants/V9aFeedbackBased').then(m => ({ default: m.V9aFeedbackBased })),
   'V9bFeedbackBased': () => import('@/components/calculator-variants/V9bFeedbackBased').then(m => ({ default: m.V9bFeedbackBased })),
