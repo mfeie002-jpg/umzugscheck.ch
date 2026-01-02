@@ -132,6 +132,7 @@ export default function V6dDeepResearch() {
   const handleNext = () => {
     if (currentStep < STEPS.length) {
       setCurrentStep(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       handleSubmit();
     }
@@ -140,6 +141,7 @@ export default function V6dDeepResearch() {
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

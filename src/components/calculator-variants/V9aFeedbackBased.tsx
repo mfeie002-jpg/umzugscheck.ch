@@ -331,11 +331,13 @@ export const V9aFeedbackBased: React.FC = () => {
       if (currentStep === 5) {
         setIsAnalyzing(true);
         setCurrentStep(6);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         // Simulierte Analyse mit Fortschritt
         setTimeout(() => setAnalysisComplete(true), 2500);
         setTimeout(() => setIsAnalyzing(false), 3000);
       } else {
         setCurrentStep(currentStep + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   };
@@ -343,6 +345,7 @@ export const V9aFeedbackBased: React.FC = () => {
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if (currentStep === 6) {
         setAnalysisComplete(false);
       }

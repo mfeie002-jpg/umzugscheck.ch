@@ -227,8 +227,10 @@ export const V9dFeedbackBased: React.FC = () => {
       setCurrentStep(8);
       setIsAnalyzing(true);
       setAnalysisStep(0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentStep < STEPS.length && canProceed()) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -239,6 +241,7 @@ export const V9dFeedbackBased: React.FC = () => {
         setIsAnalyzing(false);
       }
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
