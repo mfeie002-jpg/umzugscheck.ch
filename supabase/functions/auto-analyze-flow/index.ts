@@ -407,8 +407,17 @@ Finde NICHT Probleme um des Findens willen. Qualität vor Quantität!`;
     
     const parsed = JSON.parse(jsonContent);
 
-    // Ensure scores are within valid range
-    const clampScore = (score: number) => Math.max(40, Math.min(98, score || 75));
+    // Ensure scores are within valid range (robust parsing: handle strings like "85/100")
+    const clampScore = (raw: unknown) => {
+      const num = typeof raw === 'number'
+        ? raw
+        : typeof raw === 'string'
+          ? parseFloat(raw.replace(',', '.'))
+          : Number(raw);
+
+      const safe = Number.isFinite(num) ? num : 75;
+      return Math.max(40, Math.min(98, safe));
+    };
 
     return {
       stepNumber,
