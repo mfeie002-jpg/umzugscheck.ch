@@ -83,7 +83,7 @@ const TESTIMONIALS = [
 ];
 
 export default function V6dDeepResearch() {
-  const { isCaptureMode, stepOverride } = useCaptureMode();
+  const { isCaptureMode, captureStep } = useCaptureMode();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -111,10 +111,10 @@ export default function V6dDeepResearch() {
 
   // Capture mode step sync
   useEffect(() => {
-    if (isCaptureMode && stepOverride) {
-      setCurrentStep(Math.min(stepOverride, STEPS.length));
+    if (isCaptureMode && captureStep) {
+      setCurrentStep(Math.min(captureStep, STEPS.length));
     }
-  }, [isCaptureMode, stepOverride]);
+  }, [isCaptureMode, captureStep]);
 
   const updateField = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));

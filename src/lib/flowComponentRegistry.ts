@@ -51,6 +51,8 @@ import {
   V6aFeedbackBased,
   V6bChatGPT,
   V6cGemini,
+  V6dDeepResearch,
+  V6eThinkingMode,
   // V7 variants
   V7aFeedbackBased,
   // V8 variants
