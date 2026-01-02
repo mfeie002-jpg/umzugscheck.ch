@@ -71,6 +71,10 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v9d': { name: 'V9.d Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9d' },
   // Multi-variants
   'multi-a': { name: 'Multi.A Feedback Based', steps: 4, baseUrl: '/umzugsofferten?variant=multi-a' },
+  // Ultimate Swiss Flow - Best of 36
+  'umzugsofferten-ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 6, baseUrl: '/umzugsofferten-ultimate-best36' },
+  // Ultimate CH
+  'umzugsofferten-ultimate-ch': { name: 'Ultimate Swiss CH', steps: 5, baseUrl: '/umzugsofferten-ultimate-ch' },
 };
 
 const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY');
