@@ -81,11 +81,12 @@ export const ValidatedInput = memo(function ValidatedInput({
   const showSuccess = touched && isValid && showSuccessIcon && value.length > 0;
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
+      {/* Issue #4, #22, #41, #42, #45: Enhanced label with better visual hierarchy */}
       {label && (
-        <label className="text-sm font-medium flex items-center gap-2">
+        <label className="text-sm font-semibold flex items-center gap-2 text-foreground">
           {icon}
-          {label}
+          <span>{label}</span>
         </label>
       )}
       <div className="relative">
@@ -94,7 +95,7 @@ export const ValidatedInput = memo(function ValidatedInput({
           onChange={handleChange}
           onBlur={handleBlur}
           className={cn(
-            "h-12 rounded-xl pr-10 transition-colors",
+            "h-14 rounded-xl pr-10 transition-colors text-base",
             showError && "border-destructive focus-visible:ring-destructive/30",
             showSuccess && "border-green-500 focus-visible:ring-green-500/30",
             className
