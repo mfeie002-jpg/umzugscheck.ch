@@ -38,87 +38,92 @@ export function getMainFlowKey(flowNumber: number): string {
 
 export function getAllFlowNumbers(): number[] {
   const numbers = new Set<number>();
+  
+  // Extract from main flows
   Object.keys(FLOW_CONFIGS).forEach(key => {
-    const match = key.match(/umzugsofferten-v(\d+)/);
+    const match = key.match(/umzugsofferten-v(\d+)/i);
     if (match) numbers.add(parseInt(match[1], 10));
   });
+  
+  // Extract from sub-variants (v1a, v2b, etc.)
   Object.keys(SUB_VARIANT_CONFIGS).forEach(key => {
     const match = key.match(/^v(\d+)/i);
     if (match) numbers.add(parseInt(match[1], 10));
+    // Also handle multi-* as V9
+    if (key.startsWith('multi')) numbers.add(9);
   });
+  
   return Array.from(numbers).sort((a, b) => a - b);
+}
+
+// Get total count of all configured flows
+export function getTotalFlowCount(): number {
+  return Object.keys(FLOW_CONFIGS).length + Object.keys(SUB_VARIANT_CONFIGS).length;
 }
 
 export function getVariantsForFlow(flowNumber: number | 'all'): FlowVariant[] {
   const variants: FlowVariant[] = [];
   
-  if (flowNumber === 'all') {
-    Object.entries(FLOW_CONFIGS).forEach(([id, config]) => {
-      const match = id.match(/umzugsofferten-v(\d+)/);
+  // Helper to extract flow number from various ID formats
+  const extractFlowNumber = (id: string): number | null => {
+    // Match patterns: umzugsofferten-v1, v1, v1a, v1b, V1.a, etc.
+    const patterns = [
+      /umzugsofferten-v(\d+)/i,
+      /^v(\d+)/i,
+      /^multi/i, // multi-a is based on v9
+    ];
+    for (const pattern of patterns) {
+      const match = id.match(pattern);
       if (match) {
-        variants.push({
-          id,
-          label: config.label,
-          description: config.description,
-          color: config.color,
-          path: config.path,
-          stepCount: config.steps.length,
-          isMain: true,
-          flowNumber: parseInt(match[1], 10),
-        });
+        if (pattern.source === '^multi') return 9; // multi-* are V9 variants
+        return parseInt(match[1], 10);
       }
-    });
-    
-    Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
-      const match = id.match(/^v(\d+)([a-z])$/i);
-      if (match) {
-        variants.push({
-          id,
-          label: config.label,
-          description: config.description,
-          color: config.color,
-          path: config.path,
-          stepCount: config.steps.length,
-          isMain: false,
-          flowNumber: parseInt(match[1], 10),
-        });
-      }
-    });
-  } else {
-    const mainFlowKey = getMainFlowKey(flowNumber);
-    const mainFlow = FLOW_CONFIGS[mainFlowKey];
-    
-    if (mainFlow) {
+    }
+    return null;
+  };
+
+  // Get all main flows from FLOW_CONFIGS
+  Object.entries(FLOW_CONFIGS).forEach(([id, config]) => {
+    const flowNum = extractFlowNumber(id);
+    if (flowNumber === 'all' || flowNum === flowNumber) {
       variants.push({
-        id: mainFlowKey,
-        label: mainFlow.label,
-        description: mainFlow.description,
-        color: mainFlow.color,
-        path: mainFlow.path,
-        stepCount: mainFlow.steps.length,
-        isMain: true,
-        flowNumber,
+        id,
+        label: config.label,
+        description: config.description,
+        color: config.color,
+        path: config.path,
+        stepCount: config.steps.length,
+        isMain: !config.parentFlow, // Main if no parent
+        flowNumber: flowNum || 0,
       });
     }
-    
-    Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
-      const match = id.match(/^v(\d+)([a-z])$/i);
-      if (match && parseInt(match[1], 10) === flowNumber) {
-        variants.push({
-          id,
-          label: config.label,
-          description: config.description,
-          color: config.color,
-          path: config.path,
-          stepCount: config.steps.length,
-          isMain: false,
-          flowNumber,
-        });
-      }
-    });
-  }
+  });
   
-  return variants;
+  // Get all sub-variants from SUB_VARIANT_CONFIGS
+  Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
+    const flowNum = extractFlowNumber(id);
+    if (flowNumber === 'all' || flowNum === flowNumber) {
+      variants.push({
+        id,
+        label: config.label,
+        description: config.description,
+        color: config.color,
+        path: config.path,
+        stepCount: config.steps.length,
+        isMain: false,
+        flowNumber: flowNum || 0,
+      });
+    }
+  });
+  
+  // Sort by flowNumber then by label
+  return variants.sort((a, b) => {
+    if (a.flowNumber !== b.flowNumber) return a.flowNumber - b.flowNumber;
+    // Main flows first within same number
+    if (a.isMain && !b.isMain) return -1;
+    if (!a.isMain && b.isMain) return 1;
+    return a.label.localeCompare(b.label);
+  });
 }
 
 export function getTotalConfiguredFlows(): number {
