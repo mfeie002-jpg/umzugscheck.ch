@@ -91,6 +91,9 @@ const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
 interface AnalysisRequest {
   flowId: string;
   runType?: 'manual' | 'scheduled' | 'triggered';
@@ -116,7 +119,7 @@ interface StepAnalysis {
 }
 
 // Capture screenshot with retry logic - returns base64 for AI analysis
-async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile', maxRetries = 3): Promise<Uint8Array | null> {
+async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile', maxRetries = 4): Promise<Uint8Array | null> {
   if (!SCREENSHOTMACHINE_KEY) {
     console.log('No SCREENSHOTMACHINE_API_KEY, skipping screenshot');
     return null;
@@ -144,9 +147,12 @@ async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile'
           url: url,
           dimension: dimension,
           device: device,
-          delay: 12000, // 12 seconds for SPA to fully render
+          delay: 12000, // 12 seconds requested (provider will cap at 10s)
           format: 'png',
-          fullPage: false
+          fullPage: false,
+          scroll: false,
+          noCache: true,
+          waitForReadySentinel: true,
         }),
         signal: controller.signal
       });
@@ -221,31 +227,43 @@ async function uploadScreenshotToStorage(
   device: 'desktop' | 'mobile'
 ): Promise<string | null> {
   const fileName = `${flowId}/${runId}/step-${stepNumber}-${device}.png`;
-  
-  try {
-    const { error: uploadError } = await supabase.storage
-      .from('flow-screenshots')
-      .upload(fileName, imageData, {
-        contentType: 'image/png',
-        upsert: true
-      });
 
-    if (uploadError) {
-      console.error(`Storage upload failed for ${fileName}:`, uploadError);
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('flow-screenshots')
+        .upload(fileName, imageData, {
+          contentType: 'image/png',
+          upsert: true,
+        });
+
+      if (uploadError) {
+        console.error(`Storage upload failed (attempt ${attempt}) for ${fileName}:`, uploadError);
+        if (attempt < 3) {
+          await sleep(800 * attempt);
+          continue;
+        }
+        return null;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('flow-screenshots')
+        .getPublicUrl(fileName);
+
+      console.log(`Screenshot uploaded: ${publicUrl}`);
+      return publicUrl;
+    } catch (error) {
+      console.error(`Storage upload error (attempt ${attempt}) for ${fileName}:`, error);
+      if (attempt < 3) {
+        await sleep(800 * attempt);
+        continue;
+      }
       return null;
     }
-
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('flow-screenshots')
-      .getPublicUrl(fileName);
-
-    console.log(`Screenshot uploaded: ${publicUrl}`);
-    return publicUrl;
-  } catch (error) {
-    console.error('Storage upload error:', error);
-    return null;
   }
+
+  return null;
 }
 
 // Convert Uint8Array to base64 data URL for AI analysis
@@ -518,11 +536,20 @@ async function runAnalysisInBackground(
 
       console.log(`[Background] Analyzing step ${step}: ${stepUrl}`);
 
-      // Capture screenshots as binary data
-      const [desktopData, mobileData] = await Promise.all([
-        captureScreenshotBase64(stepUrl, 'desktop'),
-        captureScreenshotBase64(stepUrl, 'mobile')
-      ]);
+      // Capture screenshots as binary data (SEQUENTIAL to avoid provider rate-limits)
+      let desktopData = await captureScreenshotBase64(stepUrl, 'desktop');
+      await sleep(650);
+      let mobileData = await captureScreenshotBase64(stepUrl, 'mobile');
+
+      // If one device failed, do a short cooldown + one more attempt for that device
+      if (!desktopData) {
+        await sleep(1200);
+        desktopData = await captureScreenshotBase64(stepUrl, 'desktop', 2);
+      }
+      if (!mobileData) {
+        await sleep(1200);
+        mobileData = await captureScreenshotBase64(stepUrl, 'mobile', 2);
+      }
 
       console.log(`[Background] Screenshots captured - Desktop: ${desktopData ? 'yes' : 'no'}, Mobile: ${mobileData ? 'yes' : 'no'}`);
 
