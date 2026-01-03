@@ -712,53 +712,82 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       <Dialog open={!!zoomComparison} onOpenChange={() => setZoomComparison(null)}>
         <DialogContent className="max-w-4xl p-4">
           <DialogTitle className="text-center text-sm mb-3">
-            Schritt {zoomComparison?.stepNum} - {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
+            Schritt {zoomComparison?.stepNum} / {maxSteps} - {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
           </DialogTitle>
           
           {zoomComparison && (
-            <div className="grid grid-cols-2 gap-3 max-h-[70vh]">
-              {/* Flow A (Left) */}
-              <div className="flex flex-col">
-                <div className="p-1.5 bg-blue-600 text-white text-xs rounded-t text-center font-medium">
-                  {flowA} (Alt)
+            <>
+              <div className="grid grid-cols-2 gap-3 max-h-[60vh]">
+                {/* Flow A (Left) */}
+                <div className="flex flex-col">
+                  <div className="p-1.5 bg-blue-600 text-white text-xs rounded-t text-center font-medium">
+                    {flowA} (Alt)
+                  </div>
+                  <div className="flex-1 bg-muted rounded-b overflow-auto flex items-start justify-center p-2">
+                    {zoomComparison.urlA ? (
+                      <img
+                        src={zoomComparison.urlA}
+                        alt={zoomComparison.labelA}
+                        className="max-w-full h-auto max-h-[55vh] object-contain"
+                      />
+                    ) : (
+                      <div className="text-center text-muted-foreground py-8">
+                        <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                        <p className="text-sm">Kein Screenshot</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1 bg-muted rounded-b overflow-auto flex items-start justify-center p-2">
-                  {zoomComparison.urlA ? (
-                    <img
-                      src={zoomComparison.urlA}
-                      alt={zoomComparison.labelA}
-                      className="max-w-full h-auto max-h-[60vh] object-contain"
-                    />
-                  ) : (
-                    <div className="text-center text-muted-foreground py-8">
-                      <ImageOff className="h-8 w-8 mx-auto mb-2" />
-                      <p className="text-sm">Kein Screenshot</p>
-                    </div>
-                  )}
+                
+                {/* Flow B (Right) */}
+                <div className="flex flex-col">
+                  <div className="p-1.5 bg-green-600 text-white text-xs rounded-t text-center font-medium">
+                    {flowB} (Neu)
+                  </div>
+                  <div className="flex-1 bg-muted rounded-b overflow-auto flex items-start justify-center p-2">
+                    {zoomComparison.urlB ? (
+                      <img
+                        src={zoomComparison.urlB}
+                        alt={zoomComparison.labelB}
+                        className="max-w-full h-auto max-h-[55vh] object-contain"
+                      />
+                    ) : (
+                      <div className="text-center text-muted-foreground py-8">
+                        <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                        <p className="text-sm">Kein Screenshot</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               
-              {/* Flow B (Right) */}
-              <div className="flex flex-col">
-                <div className="p-1.5 bg-green-600 text-white text-xs rounded-t text-center font-medium">
-                  {flowB} (Neu)
-                </div>
-                <div className="flex-1 bg-muted rounded-b overflow-auto flex items-start justify-center p-2">
-                  {zoomComparison.urlB ? (
-                    <img
-                      src={zoomComparison.urlB}
-                      alt={zoomComparison.labelB}
-                      className="max-w-full h-auto max-h-[60vh] object-contain"
-                    />
-                  ) : (
-                    <div className="text-center text-muted-foreground py-8">
-                      <ImageOff className="h-8 w-8 mx-auto mb-2" />
-                      <p className="text-sm">Kein Screenshot</p>
-                    </div>
-                  )}
-                </div>
+              {/* Navigation */}
+              <div className="flex items-center justify-between mt-4 pt-3 border-t">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openComparisonZoom(zoomComparison.stepNum - 1, zoomComparison.type)}
+                  disabled={zoomComparison.stepNum <= 1}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Zurück
+                </Button>
+                
+                <span className="text-sm text-muted-foreground">
+                  {zoomComparison.stepNum} von {maxSteps}
+                </span>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openComparisonZoom(zoomComparison.stepNum + 1, zoomComparison.type)}
+                  disabled={zoomComparison.stepNum >= maxSteps}
+                >
+                  Weiter
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
               </div>
-            </div>
+            </>
           )}
         </DialogContent>
       </Dialog>
