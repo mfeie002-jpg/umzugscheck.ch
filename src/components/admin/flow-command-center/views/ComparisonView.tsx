@@ -3,13 +3,14 @@
  * The Archetype Reference for A/B comparison
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { 
   Layers, 
   ArrowLeftRight,
@@ -26,7 +27,12 @@ import {
   Zap,
   Smartphone,
   Shield,
-  BarChart3
+  BarChart3,
+  Monitor,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ImageOff
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -48,6 +54,17 @@ interface ComparisonData {
   weaknesses: string[];
 }
 
+interface StepScreenshot {
+  stepNumber: number;
+  desktopUrl: string | null;
+  mobileUrl: string | null;
+}
+
+interface FlowScreenshots {
+  flowId: string;
+  steps: StepScreenshot[];
+}
+
 export const ComparisonView: React.FC<ComparisonViewProps> = ({
   initialFlowA,
   initialFlowB,
@@ -58,13 +75,68 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const [dataA, setDataA] = useState<ComparisonData | null>(null);
   const [dataB, setDataB] = useState<ComparisonData | null>(null);
   const [loading, setLoading] = useState(false);
+  
+  // Screenshot state
+  const [screenshotsA, setScreenshotsA] = useState<FlowScreenshots | null>(null);
+  const [screenshotsB, setScreenshotsB] = useState<FlowScreenshots | null>(null);
+  const [loadingScreenshots, setLoadingScreenshots] = useState(false);
+  
+  // Zoom modal state
+  const [zoomImage, setZoomImage] = useState<{ url: string; label: string } | null>(null);
 
   const allVariants = getVariantsForFlow('all');
 
   useEffect(() => {
-    if (flowA) fetchFlowData(flowA, 'A');
-    if (flowB) fetchFlowData(flowB, 'B');
+    if (flowA) {
+      fetchFlowData(flowA, 'A');
+      fetchScreenshots(flowA, 'A');
+    }
+    if (flowB) {
+      fetchFlowData(flowB, 'B');
+      fetchScreenshots(flowB, 'B');
+    }
   }, [flowA, flowB]);
+
+  const fetchScreenshots = async (flowId: string, side: 'A' | 'B') => {
+    setLoadingScreenshots(true);
+    try {
+      const { data: stepMetrics } = await supabase
+        .from('flow_step_metrics')
+        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+        .eq('flow_id', flowId)
+        .order('step_number', { ascending: true })
+        .order('created_at', { ascending: false });
+
+      if (stepMetrics && stepMetrics.length > 0) {
+        // Deduplicate by step_number, keeping newest
+        const newestByStep = new Map<number, typeof stepMetrics[0]>();
+        for (const s of stepMetrics) {
+          if (!newestByStep.has(s.step_number)) {
+            newestByStep.set(s.step_number, s);
+          }
+        }
+
+        const steps: StepScreenshot[] = Array.from(newestByStep.values())
+          .sort((a, b) => a.step_number - b.step_number)
+          .map(s => ({
+            stepNumber: s.step_number,
+            desktopUrl: s.desktop_screenshot_url,
+            mobileUrl: s.mobile_screenshot_url,
+          }));
+
+        const screenshots: FlowScreenshots = { flowId, steps };
+        if (side === 'A') setScreenshotsA(screenshots);
+        else setScreenshotsB(screenshots);
+      } else {
+        if (side === 'A') setScreenshotsA({ flowId, steps: [] });
+        else setScreenshotsB({ flowId, steps: [] });
+      }
+    } catch (err) {
+      console.error(`Failed to fetch screenshots for ${side}:`, err);
+    } finally {
+      setLoadingScreenshots(false);
+    }
+  };
 
   const fetchFlowData = async (flowId: string, side: 'A' | 'B') => {
     setLoading(true);
@@ -150,6 +222,16 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   ];
 
   const overallWinner = getWinner('overallScore');
+
+  // Get max steps between both flows
+  const maxSteps = Math.max(
+    screenshotsA?.steps.length || 0,
+    screenshotsB?.steps.length || 0
+  );
+
+  const openZoom = (url: string, label: string) => {
+    setZoomImage({ url, label });
+  };
 
   return (
     <div className="space-y-6">
@@ -437,6 +519,175 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         </Card>
       )}
 
+      {/* Screenshot Comparison Section */}
+      {flowA && flowB && maxSteps > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Smartphone className="h-5 w-5" />
+              Screenshot-Vergleich
+            </CardTitle>
+            <CardDescription>
+              Mobile Screenshots nebeneinander, Desktop darunter. Tippen zum Vergrößern.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loadingScreenshots ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            ) : (
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-8">
+                  {Array.from({ length: maxSteps }, (_, i) => i + 1).map(stepNum => {
+                    const stepA = screenshotsA?.steps.find(s => s.stepNumber === stepNum);
+                    const stepB = screenshotsB?.steps.find(s => s.stepNumber === stepNum);
+                    
+                    return (
+                      <div key={stepNum} className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">Schritt {stepNum}</Badge>
+                        </div>
+                        
+                        {/* Mobile Screenshots Side-by-Side */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Smartphone className="h-4 w-4" />
+                              <span>{flowA} - Mobile</span>
+                            </div>
+                            {stepA?.mobileUrl ? (
+                              <button
+                                onClick={() => openZoom(stepA.mobileUrl!, `${flowA} - Schritt ${stepNum} Mobile`)}
+                                className="relative group w-full aspect-[9/16] bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                              >
+                                <img
+                                  src={stepA.mobileUrl}
+                                  alt={`${flowA} Step ${stepNum} Mobile`}
+                                  className="w-full h-full object-cover object-top"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
+                                    Vergrößern
+                                  </span>
+                                </div>
+                              </button>
+                            ) : (
+                              <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center">
+                                <div className="text-center text-muted-foreground">
+                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                                  <span className="text-xs">Kein Screenshot</span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Smartphone className="h-4 w-4" />
+                              <span>{flowB} - Mobile</span>
+                            </div>
+                            {stepB?.mobileUrl ? (
+                              <button
+                                onClick={() => openZoom(stepB.mobileUrl!, `${flowB} - Schritt ${stepNum} Mobile`)}
+                                className="relative group w-full aspect-[9/16] bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                              >
+                                <img
+                                  src={stepB.mobileUrl}
+                                  alt={`${flowB} Step ${stepNum} Mobile`}
+                                  className="w-full h-full object-cover object-top"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
+                                    Vergrößern
+                                  </span>
+                                </div>
+                              </button>
+                            ) : (
+                              <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center">
+                                <div className="text-center text-muted-foreground">
+                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                                  <span className="text-xs">Kein Screenshot</span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Desktop Screenshots Side-by-Side */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Monitor className="h-4 w-4" />
+                              <span>{flowA} - Desktop</span>
+                            </div>
+                            {stepA?.desktopUrl ? (
+                              <button
+                                onClick={() => openZoom(stepA.desktopUrl!, `${flowA} - Schritt ${stepNum} Desktop`)}
+                                className="relative group w-full aspect-video bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                              >
+                                <img
+                                  src={stepA.desktopUrl}
+                                  alt={`${flowA} Step ${stepNum} Desktop`}
+                                  className="w-full h-full object-cover object-top"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
+                                    Vergrößern
+                                  </span>
+                                </div>
+                              </button>
+                            ) : (
+                              <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center">
+                                <div className="text-center text-muted-foreground">
+                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                                  <span className="text-xs">Kein Screenshot</span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Monitor className="h-4 w-4" />
+                              <span>{flowB} - Desktop</span>
+                            </div>
+                            {stepB?.desktopUrl ? (
+                              <button
+                                onClick={() => openZoom(stepB.desktopUrl!, `${flowB} - Schritt ${stepNum} Desktop`)}
+                                className="relative group w-full aspect-video bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                              >
+                                <img
+                                  src={stepB.desktopUrl}
+                                  alt={`${flowB} Step ${stepNum} Desktop`}
+                                  className="w-full h-full object-cover object-top"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
+                                    Vergrößern
+                                  </span>
+                                </div>
+                              </button>
+                            ) : (
+                              <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center">
+                                <div className="text-center text-muted-foreground">
+                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                                  <span className="text-xs">Kein Screenshot</span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* No selection state */}
       {(!flowA || !flowB) && (
         <Card>
@@ -449,6 +700,33 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           </CardContent>
         </Card>
       )}
+
+      {/* Zoom Modal */}
+      <Dialog open={!!zoomImage} onOpenChange={() => setZoomImage(null)}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
+          <DialogTitle className="sr-only">{zoomImage?.label}</DialogTitle>
+          <div className="relative w-full h-full">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setZoomImage(null)}
+              className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            <div className="p-2 bg-black/80 text-white text-sm absolute top-2 left-2 rounded z-10">
+              {zoomImage?.label}
+            </div>
+            {zoomImage?.url && (
+              <img
+                src={zoomImage.url}
+                alt={zoomImage.label}
+                className="w-full h-full object-contain max-h-[90vh]"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
