@@ -120,14 +120,26 @@ function getFlowSteps(flowId: string): FlowStepConfig[] {
 }
 
 async function fetchFlowScreenshots(flowId: string): Promise<ScreenshotData[]> {
+  // Fetch step metrics, ordered by step_number and created_at DESC to get newest first
   const { data: stepMetrics } = await supabase
     .from('flow_step_metrics')
     .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
     .eq('flow_id', flowId)
-    .order('step_number', { ascending: true });
+    .not('desktop_screenshot_url', 'is', null) // Only get entries with actual screenshots
+    .order('step_number', { ascending: true })
+    .order('created_at', { ascending: false });
   
   if (stepMetrics && stepMetrics.length > 0) {
-    return stepMetrics
+    // Deduplicate: keep only the newest screenshot per step_number
+    const newestByStep = new Map<number, typeof stepMetrics[0]>();
+    for (const s of stepMetrics) {
+      if (!newestByStep.has(s.step_number)) {
+        newestByStep.set(s.step_number, s);
+      }
+    }
+    
+    return Array.from(newestByStep.values())
+      .sort((a, b) => a.step_number - b.step_number)
       .map(s => ({
         url: s.desktop_screenshot_url || s.mobile_screenshot_url || '',
         stepNumber: s.step_number,
