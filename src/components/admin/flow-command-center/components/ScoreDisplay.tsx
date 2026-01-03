@@ -142,7 +142,7 @@ export const SeverityBadge: React.FC<SeverityBadgeProps> = ({
     }
   };
   
-  const { bg, text, icon: Icon, label } = config[severity];
+  const { bg, text, icon: Icon, label } = config[severity] || config.info;
   
   return (
     <Badge variant="outline" className={cn(bg, text, 'gap-1')}>
