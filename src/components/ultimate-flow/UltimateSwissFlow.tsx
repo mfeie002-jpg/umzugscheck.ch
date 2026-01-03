@@ -186,8 +186,8 @@ export function UltimateSwissFlow() {
         </div>
       </div>
 
-      {/* Main Content - CRITICAL FIX: More bottom padding for sticky footer visibility on mobile */}
-      <main className="flex-1 container mx-auto px-4 py-6 max-w-2xl pb-52 sm:pb-40 md:pb-32">
+      {/* Main Content - CRITICAL FIX: Ample bottom padding ensures sticky footer never overlaps content */}
+      <main className="flex-1 container mx-auto px-4 py-4 sm:py-6 max-w-2xl pb-56 sm:pb-48 md:pb-40">
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
