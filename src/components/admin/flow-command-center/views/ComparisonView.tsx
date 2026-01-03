@@ -81,8 +81,18 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const [screenshotsB, setScreenshotsB] = useState<FlowScreenshots | null>(null);
   const [loadingScreenshots, setLoadingScreenshots] = useState(false);
   
-  // Zoom modal state
-  const [zoomImage, setZoomImage] = useState<{ url: string; label: string } | null>(null);
+  // Zoom modal state - now supports side-by-side comparison
+  const [zoomComparison, setZoomComparison] = useState<{
+    urlA: string | null;
+    urlB: string | null;
+    labelA: string;
+    labelB: string;
+    stepNum: number;
+    type: 'mobile' | 'desktop';
+  } | null>(null);
+  
+  // Slider position for comparison (0-100, 50 = middle)
+  const [sliderPosition, setSliderPosition] = useState(50);
 
   const allVariants = getVariantsForFlow('all');
 
@@ -229,8 +239,22 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     screenshotsB?.steps.length || 0
   );
 
-  const openZoom = (url: string, label: string) => {
-    setZoomImage({ url, label });
+  const openComparisonZoom = (stepNum: number, type: 'mobile' | 'desktop') => {
+    const stepA = screenshotsA?.steps.find(s => s.stepNumber === stepNum);
+    const stepB = screenshotsB?.steps.find(s => s.stepNumber === stepNum);
+    
+    const urlA = type === 'mobile' ? stepA?.mobileUrl : stepA?.desktopUrl;
+    const urlB = type === 'mobile' ? stepB?.mobileUrl : stepB?.desktopUrl;
+    
+    setZoomComparison({
+      urlA: urlA || null,
+      urlB: urlB || null,
+      labelA: `${flowA} - Schritt ${stepNum} ${type === 'mobile' ? 'Mobile' : 'Desktop'}`,
+      labelB: `${flowB} - Schritt ${stepNum} ${type === 'mobile' ? 'Mobile' : 'Desktop'}`,
+      stepNum,
+      type,
+    });
+    setSliderPosition(50);
   };
 
   return (
@@ -549,13 +573,13 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                         <div key={stepNum} className="inline-block w-[220px] space-y-2 p-2 bg-muted/30 rounded-lg border align-top" style={{ whiteSpace: 'normal' }}>
                           <Badge variant="outline" className="text-xs">Schritt {stepNum}</Badge>
                           
-                          {/* Mobile Screenshots Side-by-Side */}
+                          {/* Mobile Screenshots Side-by-Side - Click opens slider comparison */}
                           <div className="grid grid-cols-2 gap-2">
                             <div className="space-y-1">
                               <p className="text-[10px] text-muted-foreground truncate">{flowA}</p>
                               {stepA?.mobileUrl ? (
                                 <button
-                                  onClick={() => openZoom(stepA.mobileUrl!, `${flowA} - Schritt ${stepNum} Mobile`)}
+                                  onClick={() => openComparisonZoom(stepNum, 'mobile')}
                                   className="relative group w-full aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                                 >
                                   <img
@@ -575,7 +599,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                               <p className="text-[10px] text-muted-foreground truncate">{flowB}</p>
                               {stepB?.mobileUrl ? (
                                 <button
-                                  onClick={() => openZoom(stepB.mobileUrl!, `${flowB} - Schritt ${stepNum} Mobile`)}
+                                  onClick={() => openComparisonZoom(stepNum, 'mobile')}
                                   className="relative group w-full aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                                 >
                                   <img
@@ -597,7 +621,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                             <div>
                               {stepA?.desktopUrl ? (
                                 <button
-                                  onClick={() => openZoom(stepA.desktopUrl!, `${flowA} - Schritt ${stepNum} Desktop`)}
+                                  onClick={() => openComparisonZoom(stepNum, 'desktop')}
                                   className="relative group w-full aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                                 >
                                   <img
@@ -616,7 +640,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                             <div>
                               {stepB?.desktopUrl ? (
                                 <button
-                                  onClick={() => openZoom(stepB.desktopUrl!, `${flowB} - Schritt ${stepNum} Desktop`)}
+                                  onClick={() => openComparisonZoom(stepNum, 'desktop')}
                                   className="relative group w-full aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                                 >
                                   <img
@@ -659,29 +683,104 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         </Card>
       )}
 
-      {/* Zoom Modal */}
-      <Dialog open={!!zoomImage} onOpenChange={() => setZoomImage(null)}>
+      {/* Slider Comparison Modal */}
+      <Dialog open={!!zoomComparison} onOpenChange={() => setZoomComparison(null)}>
         <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
-          <DialogTitle className="sr-only">{zoomImage?.label}</DialogTitle>
-          <div className="relative w-full h-full">
+          <DialogTitle className="sr-only">
+            Schritt {zoomComparison?.stepNum} - {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
+          </DialogTitle>
+          <div className="relative w-full h-[90vh] bg-black">
+            {/* Close button */}
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setZoomImage(null)}
-              className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white"
+              onClick={() => setZoomComparison(null)}
+              className="absolute top-2 right-2 z-20 bg-black/50 hover:bg-black/70 text-white"
             >
               <X className="h-5 w-5" />
             </Button>
-            <div className="p-2 bg-black/80 text-white text-sm absolute top-2 left-2 rounded z-10">
-              {zoomImage?.label}
+            
+            {/* Labels */}
+            <div className="absolute top-2 left-2 z-20 flex gap-4">
+              <div className="p-2 bg-blue-600 text-white text-sm rounded">
+                {zoomComparison?.labelA} (Alt)
+              </div>
+              <div className="p-2 bg-green-600 text-white text-sm rounded">
+                {zoomComparison?.labelB} (Neu)
+              </div>
             </div>
-            {zoomImage?.url && (
-              <img
-                src={zoomImage.url}
-                alt={zoomImage.label}
-                className="w-full h-full object-contain max-h-[90vh]"
-              />
+            
+            {/* Side-by-side slider comparison */}
+            {zoomComparison && (
+              <div className="relative w-full h-full overflow-hidden">
+                {/* Right image (Flow B - new) - full width, underneath */}
+                {zoomComparison.urlB ? (
+                  <img
+                    src={zoomComparison.urlB}
+                    alt={zoomComparison.labelB}
+                    className="absolute inset-0 w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                    <div className="text-center text-muted-foreground">
+                      <ImageOff className="h-12 w-12 mx-auto mb-2" />
+                      <p>Kein Screenshot für {flowB}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Left image (Flow A - old) - clipped by slider */}
+                <div 
+                  className="absolute inset-0 overflow-hidden"
+                  style={{ width: `${sliderPosition}%` }}
+                >
+                  {zoomComparison.urlA ? (
+                    <img
+                      src={zoomComparison.urlA}
+                      alt={zoomComparison.labelA}
+                      className="absolute inset-0 w-full h-full object-contain"
+                      style={{ 
+                        width: `${100 / (sliderPosition / 100)}%`,
+                        maxWidth: 'none'
+                      }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                      <div className="text-center text-muted-foreground">
+                        <ImageOff className="h-12 w-12 mx-auto mb-2" />
+                        <p>Kein Screenshot für {flowA}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Slider handle */}
+                <div 
+                  className="absolute top-0 bottom-0 w-1 bg-white shadow-lg cursor-ew-resize z-10"
+                  style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
+                >
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center">
+                    <ChevronLeft className="h-4 w-4 text-gray-600 -mr-1" />
+                    <ChevronRight className="h-4 w-4 text-gray-600 -ml-1" />
+                  </div>
+                </div>
+                
+                {/* Slider input (invisible, covers entire area) */}
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={sliderPosition}
+                  onChange={(e) => setSliderPosition(Number(e.target.value))}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10"
+                />
+              </div>
             )}
+            
+            {/* Instructions */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-black/70 text-white px-4 py-2 rounded-full text-sm">
+              ← Slider ziehen um zu vergleichen →
+            </div>
           </div>
         </DialogContent>
       </Dialog>
