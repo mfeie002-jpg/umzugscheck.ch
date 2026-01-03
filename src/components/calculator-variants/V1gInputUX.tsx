@@ -7,18 +7,22 @@
  * 3. Debounced autocomplete triggers
  * 4. Clear validation feedback with dot indicators
  * 5. Better loading states
+ * 6. Clear progress indicator (Schritt X von Y)
+ * 7. Consistent button hierarchy (Back = ghost, Next = primary)
+ * 8. Safe area support for mobile
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Calendar, User, Mail, Phone, CheckCircle2 } from 'lucide-react';
+import { MapPin, Calendar, User, Mail, Phone, CheckCircle2, Home, Send } from 'lucide-react';
 import { useCaptureMode } from '@/hooks/use-capture-mode';
-import { ProgressHeader, TrustBar, StickyFooterCTA, SuccessState } from './shared';
+import { ProgressHeader, TrustBar, SuccessState } from './shared';
 import { EnhancedFormField } from './shared/EnhancedFormField';
+import { Button } from '@/components/ui/button';
 
 const STEPS = [
-  { id: 1, title: 'Umzugsdetails' },
-  { id: 2, title: 'Kontakt' },
+  { id: 1, label: 'Umzugsdetails', icon: Home },
+  { id: 2, label: 'Kontakt', icon: Send },
 ];
 
 // Validation functions
@@ -112,18 +116,21 @@ export const V1gInputUX: React.FC = () => {
     return fields;
   };
 
+  const isCurrentStepValid = currentStep === 1 ? isStep1Valid : isStep2Valid;
+
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-40 md:pb-32">
+      {/* Progress Header with step labels */}
       <ProgressHeader 
         step={currentStep} 
         total={STEPS.length} 
-        title={STEPS[currentStep - 1].title} 
+        stepLabels={STEPS}
       />
 
       <div className="max-w-md mx-auto p-4 pt-6">
         <TrustBar compact />
 
-        <Card>
+        <Card className="overflow-hidden">
           <CardContent className="pt-6 space-y-5">
             {currentStep === 1 && (
               <>
@@ -163,7 +170,7 @@ export const V1gInputUX: React.FC = () => {
                 />
 
                 <EnhancedFormField
-                  label="Umzugsdatum (optional)"
+                  label="Umzugsdatum"
                   name="moveDate"
                   type="date"
                   value={formData.moveDate}
@@ -171,6 +178,7 @@ export const V1gInputUX: React.FC = () => {
                   enterKeyHint="done"
                   icon={Calendar}
                 />
+                <p className="text-xs text-muted-foreground -mt-3">(optional – flexibel = mehr Angebote)</p>
 
                 {/* Completion indicator */}
                 {getCompletedFields().length > 0 && (
@@ -268,15 +276,53 @@ export const V1gInputUX: React.FC = () => {
         </Card>
       </div>
 
-      <StickyFooterCTA
-        primaryLabel={currentStep === 2 ? 'Offerten erhalten' : 'Weiter'}
-        onPrimary={handleNext}
-        disabled={currentStep === 1 ? !isStep1Valid : !isStep2Valid}
-        hint="Unverbindlich • Kostenlos • Geprüfte Partner"
-        secondaryLabel={currentStep > 1 ? 'Zurück' : undefined}
-        onSecondary={currentStep > 1 ? handleBack : undefined}
-        loading={loading}
-      />
+      {/* Enhanced Sticky Footer with proper hierarchy */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border">
+        <div className="max-w-md mx-auto p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-2">
+          {/* Trust hint */}
+          <p className="text-center text-xs text-muted-foreground">
+            100% kostenlos • Unverbindlich • Geprüfte Partner
+          </p>
+          
+          {/* Primary CTA - Always prominent */}
+          <Button
+            onClick={handleNext}
+            disabled={!isCurrentStepValid || loading}
+            className={`w-full h-14 text-lg font-semibold transition-all ${
+              isCurrentStepValid 
+                ? 'shadow-lg hover:shadow-xl' 
+                : 'opacity-60'
+            }`}
+            size="lg"
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" />
+                Wird gesendet...
+              </span>
+            ) : currentStep === 2 ? (
+              <span className="flex items-center gap-2">
+                <Send className="h-5 w-5" />
+                Offerten erhalten
+              </span>
+            ) : (
+              'Weiter'
+            )}
+          </Button>
+          
+          {/* Secondary - Back button (ghost, less prominent) */}
+          {currentStep > 1 && (
+            <Button
+              variant="ghost"
+              onClick={handleBack}
+              className="w-full h-11 text-sm text-muted-foreground hover:text-foreground"
+              disabled={loading}
+            >
+              ← Zurück zu Schritt {currentStep - 1}
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
