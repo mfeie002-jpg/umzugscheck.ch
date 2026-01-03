@@ -62,3 +62,6 @@ verify_jwt = false
 
 [functions.export-ultimate-flows-background]
 verify_jwt = false
+
+[functions.ai-batch-fix]
+verify_jwt = false

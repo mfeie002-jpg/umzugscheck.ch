@@ -15,11 +15,13 @@ import {
   Copy,
   AlertTriangle,
   Filter,
-  ArrowUpDown
+  ArrowUpDown,
+  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { SeverityBadge, EffortBadge } from './ScoreDisplay';
+import { AIBatchFixDialog } from './AIBatchFixDialog';
 import type { UxIssue } from '../types';
 import { generateFixPrompt, generateCombinedFixPrompt } from '../utils';
 
@@ -72,6 +74,7 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [fixingAll, setFixingAll] = useState(false);
   const [showDeduplicated, setShowDeduplicated] = useState(true);
+  const [showAIFixDialog, setShowAIFixDialog] = useState(false);
 
   // Deduplicate issues
   const deduplicatedIssues = deduplicateIssues(issues);
@@ -194,20 +197,31 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
             ))}
           </div>
           
-          <Button
-            variant="default"
-            size="sm"
-            onClick={handleFixAll}
-            disabled={fixingAll}
-            className="ml-auto"
-          >
-            {fixingAll ? (
-              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-            ) : (
-              <Wand2 className="h-4 w-4 mr-1" />
-            )}
-            Alle fixen
-          </Button>
+          <div className="flex items-center gap-2 ml-auto">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => setShowAIFixDialog(true)}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              <Sparkles className="h-4 w-4 mr-1" />
+              Mit KI fixen
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleFixAll}
+              disabled={fixingAll}
+            >
+              {fixingAll ? (
+                <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+              ) : (
+                <Copy className="h-4 w-4 mr-1" />
+              )}
+              Prompt kopieren
+            </Button>
+          </div>
         </div>
       </CardHeader>
       
@@ -226,6 +240,18 @@ export const IssuesPanel: React.FC<IssuesPanelProps> = ({
           </div>
         </ScrollArea>
       </CardContent>
+      
+      {/* AI Batch Fix Dialog */}
+      <AIBatchFixDialog
+        open={showAIFixDialog}
+        onOpenChange={setShowAIFixDialog}
+        flowId={flowId || 'unknown'}
+        issues={issues}
+        onFixesApplied={(fixedIds) => {
+          // Optionally trigger reload
+          toast.success(`${fixedIds.length} Issues wurden bearbeitet`);
+        }}
+      />
     </Card>
   );
 };
