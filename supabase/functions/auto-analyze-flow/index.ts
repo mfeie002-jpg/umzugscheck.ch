@@ -56,8 +56,8 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v5f': { name: 'V5f Marketplace Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v5f' },
   
   // === V6 - Ultimate 6-Tier (7 variants) ===
-  'v6': { name: 'V6 Ultimate (Baseline)', steps: 3, baseUrl: '/umzugsofferten-v6' },
-  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 3, baseUrl: '/umzugsofferten?variant=v6a' },
+  'v6': { name: 'V6 Ultimate (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v6' },
+  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 6, baseUrl: '/umzugsofferten?variant=v6a' },
   'v6b': { name: 'V6b ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten?variant=v6b' },
   'v6c': { name: 'V6c Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten?variant=v6c' },
   'v6d': { name: 'V6d Deep Research', steps: 5, baseUrl: '/umzugsofferten?variant=v6d' },
