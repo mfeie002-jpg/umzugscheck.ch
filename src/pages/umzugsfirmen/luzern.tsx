@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { Header } from "@/components/homepage/Header";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -134,7 +132,7 @@ const LuzernLandingPage = () => {
   const schemaOrg = { "@context": "https://schema.org", "@graph": [{ "@type": "LocalBusiness", "name": "Umzugscheck.ch - Kanton Luzern", "description": "Vergleiche 35+ geprüfte Umzugsfirmen im Kanton Luzern.", "areaServed": { "@type": "Place", "name": "Kanton Luzern, Schweiz" }, "priceRange": "CHF 520 - CHF 3000", "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "2134" } }, { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }] };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet><html lang="de-CH" /><title>Umzug Luzern – Jetzt gratis Umzugsfirma finden | Bis 40% sparen</title><meta name="description" content="Vergleiche 35+ geprüfte Umzugsfirmen im Kanton Luzern ✓ Kostenlose Offerten ✓ Luzern, Kriens, Emmenbrücke ✓ Bis zu 40% sparen!" /><link rel="canonical" href="https://umzugscheck.ch/umzugsfirmen/luzern" /><script type="application/ld+json">{JSON.stringify(schemaOrg)}</script></Helmet>
       <main>
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">

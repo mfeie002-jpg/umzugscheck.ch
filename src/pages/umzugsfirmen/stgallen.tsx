@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { Header } from "@/components/homepage/Header";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -179,7 +177,7 @@ export default function StGallenLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet>
         <html lang="de-CH" />
         <title>Umzug {CANTON_NAME} – Jetzt gratis Umzugsfirma finden | Bis 40% sparen</title>
@@ -187,8 +185,6 @@ export default function StGallenLandingPage() {
         <link rel="canonical" href={`https://umzugscheck.ch/umzugsfirmen/${CANTON_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
-
-      <Header />
 
       <main>
         {/* 1. HERO */}
@@ -274,7 +270,6 @@ export default function StGallenLandingPage() {
         <section className="py-16 md:py-20 bg-gradient-to-br from-primary to-primary/80 text-white"><div className="container px-4 text-center"><h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit für Ihren Umzug in {CANTON_NAME}?</h2><p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">Vergleichen Sie jetzt kostenlos 35+ geprüfte Umzugsfirmen und sparen Sie bis zu 40%.</p><div className="flex flex-col sm:flex-row gap-4 justify-center"><Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6"><Link to="/umzugsofferten">Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link></Button><Button asChild size="lg" variant="outline" className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10"><Link to="/rechner/video"><Video className="mr-2 w-5 h-5" />Video-Analyse nutzen</Link></Button></div><p className="mt-6 text-sm text-white/60 flex items-center justify-center gap-2"><Shield className="w-4 h-4" />100% kostenlos & unverbindlich</p></div></section>
       </main>
 
-      <SimplifiedFooter />
       <WhatsAppButton />
       {showStickyBar && (<motion.div initial={{ y: 100 }} animate={{ y: 0 }} className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t shadow-lg p-3 lg:hidden"><Button asChild size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold"><Link to="/umzugsofferten">Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-4 h-4" /></Link></Button></motion.div>)}
     </div>

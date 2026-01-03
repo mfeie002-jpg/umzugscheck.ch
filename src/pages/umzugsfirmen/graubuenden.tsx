@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { Header } from "@/components/homepage/Header";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,9 +54,8 @@ export default function GraubuendenLandingPage() {
   const handleFormSubmit = (e: React.FormEvent) => { e.preventDefault(); localStorage.setItem("uc_prefill", JSON.stringify({ from: fromLocation, to: toLocation, size: apartmentSize, source: `${CANTON_SLUG}-landing`, timestamp: Date.now() })); navigate("/umzugsofferten"); };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet><title>Umzug {CANTON_NAME} – Gratis Umzugsfirma finden | Bis 40% sparen</title><meta name="description" content={`Vergleiche 15+ geprüfte Umzugsfirmen im Kanton ${CANTON_NAME} ✓ Kostenlose Offerten ✓ Chur, Davos, St. Moritz ✓ Bis zu 40% sparen!`} /><link rel="canonical" href={`https://umzugscheck.ch/umzugsfirmen/${CANTON_SLUG}`} /></Helmet>
-      <Header />
       <main>
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${HERO_BG})` }}><div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-primary/40" /></div>
@@ -96,7 +93,6 @@ export default function GraubuendenLandingPage() {
 
         <section className="py-16 bg-gradient-to-br from-primary to-primary/80 text-white"><div className="container px-4 text-center"><h2 className="text-3xl font-bold mb-4">Bereit für Ihren Umzug in {CANTON_NAME}?</h2><p className="text-white/80 mb-8">Vergleichen Sie jetzt kostenlos 15+ geprüfte Umzugsfirmen.</p><Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6"><Link to="/umzugsofferten">Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link></Button></div></section>
       </main>
-      <SimplifiedFooter />
       {showStickyBar && (<motion.div initial={{ y: 100 }} animate={{ y: 0 }} className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t shadow-lg p-3 lg:hidden"><Button asChild size="lg" className="w-full bg-secondary font-bold"><Link to="/umzugsofferten">Kostenlos Offerten erhalten</Link></Button></motion.div>)}
     </div>
   );
