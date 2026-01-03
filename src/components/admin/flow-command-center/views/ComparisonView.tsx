@@ -118,11 +118,30 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         .order('created_at', { ascending: false });
 
       if (stepMetrics && stepMetrics.length > 0) {
-        // Deduplicate by step_number, keeping newest
-        const newestByStep = new Map<number, typeof stepMetrics[0]>();
+        // Deduplicate by step_number, keeping newest entry that HAS screenshots
+        const newestByStep = new Map<number, { 
+          step_number: number; 
+          mobileUrl: string | null; 
+          desktopUrl: string | null;
+        }>();
+        
         for (const s of stepMetrics) {
-          if (!newestByStep.has(s.step_number)) {
-            newestByStep.set(s.step_number, s);
+          const existing = newestByStep.get(s.step_number);
+          
+          if (!existing) {
+            // First entry for this step
+            newestByStep.set(s.step_number, {
+              step_number: s.step_number,
+              mobileUrl: s.mobile_screenshot_url,
+              desktopUrl: s.desktop_screenshot_url,
+            });
+          } else {
+            // Merge: prefer existing URLs but fill in missing ones
+            newestByStep.set(s.step_number, {
+              step_number: s.step_number,
+              mobileUrl: existing.mobileUrl || s.mobile_screenshot_url,
+              desktopUrl: existing.desktopUrl || s.desktop_screenshot_url,
+            });
           }
         }
 
@@ -130,8 +149,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           .sort((a, b) => a.step_number - b.step_number)
           .map(s => ({
             stepNumber: s.step_number,
-            desktopUrl: s.desktop_screenshot_url,
-            mobileUrl: s.mobile_screenshot_url,
+            desktopUrl: s.desktopUrl,
+            mobileUrl: s.mobileUrl,
           }));
 
         const screenshots: FlowScreenshots = { flowId, steps };
