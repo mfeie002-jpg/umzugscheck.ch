@@ -27,6 +27,7 @@ import {
   Copy,
   Check,
   FileDown,
+  Braces,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { saveAs } from "file-saver";
@@ -81,6 +82,24 @@ export function SEOHtmlAnalyzer() {
   const [copiedRaw, setCopiedRaw] = useState(false);
   const [copiedRendered, setCopiedRendered] = useState(false);
   const [copiedMarkdown, setCopiedMarkdown] = useState(false);
+  const [copiedJson, setCopiedJson] = useState(false);
+
+  const buildFullJsonExport = () => {
+    if (!analysis) return null;
+    return {
+      url: analysis.url,
+      capturedAt: analysis.capturedAt,
+      metadata: analysis.metadata,
+      comparison: analysis.comparison,
+      issues: issues,
+      content: {
+        markdown: analysis.markdown,
+        rawHtmlLength: analysis.rawHtml?.length || 0,
+        renderedHtmlLength: analysis.renderedHtml?.length || 0,
+      },
+      prompt: `Analysiere diese Seite für UX, SEO und Conversion-Optimierung:\n\nURL: ${analysis.url}\nTitle: ${analysis.metadata?.title || 'N/A'}\nDescription: ${analysis.metadata?.description || 'N/A'}\n\nIssues gefunden: ${issues.filter(i => i.type !== 'info').length}\n\nInhalt:\n${analysis.markdown?.slice(0, 5000) || 'Kein Inhalt'}`,
+    };
+  };
 
   const copyToClipboard = async (content: string, type: 'raw' | 'rendered' | 'markdown') => {
     try {
@@ -456,6 +475,10 @@ export function SEOHtmlAnalyzer() {
                   <Bot className="h-4 w-4" />
                   LLM-Ready
                 </TabsTrigger>
+                <TabsTrigger value="json" className="flex items-center gap-2">
+                  <Braces className="h-4 w-4" />
+                  JSON Export
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4">
@@ -767,6 +790,71 @@ export function SEOHtmlAnalyzer() {
                         Kein Markdown verfügbar
                       </div>
                     )}
+                  </ScrollArea>
+                </div>
+                </TabsContent>
+
+              <TabsContent value="json">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 p-3 bg-muted rounded-lg flex-1">
+                      <Braces className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium">Vollständiger JSON Export</p>
+                        <p className="text-sm text-muted-foreground">
+                          Alle Daten strukturiert für AI-Tools (ChatGPT, Claude, etc.)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 ml-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          const json = buildFullJsonExport();
+                          if (json) {
+                            navigator.clipboard.writeText(JSON.stringify(json, null, 2));
+                            setCopiedJson(true);
+                            setTimeout(() => setCopiedJson(false), 2000);
+                            toast.success('JSON kopiert!');
+                          }
+                        }}
+                      >
+                        {copiedJson ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                        {copiedJson ? 'Kopiert!' : 'Kopieren'}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          const json = buildFullJsonExport();
+                          if (json) {
+                            const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+                            saveAs(blob, `${new URL(analysis.url).hostname}-full-export.json`);
+                            toast.success('JSON heruntergeladen!');
+                          }
+                        }}
+                      >
+                        <FileDown className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                    <p className="text-sm font-medium mb-2">💡 Tipp für ChatGPT:</p>
+                    <p className="text-sm text-muted-foreground">
+                      Kopiere den JSON und füge ihn in ChatGPT mit diesem Prompt ein:
+                    </p>
+                    <code className="block mt-2 p-2 bg-muted rounded text-xs">
+                      "Analysiere diese Seite für UX, SEO und Conversion. Gib konkrete Verbesserungsvorschläge."
+                    </code>
+                  </div>
+
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    <pre className="text-xs font-mono whitespace-pre-wrap">
+                      {JSON.stringify(buildFullJsonExport(), null, 2)}
+                    </pre>
                   </ScrollArea>
                 </div>
               </TabsContent>
