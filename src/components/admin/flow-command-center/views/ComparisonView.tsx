@@ -708,105 +708,58 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         </Card>
       )}
 
-      {/* Slider Comparison Modal */}
+      {/* Side-by-Side Comparison Modal */}
       <Dialog open={!!zoomComparison} onOpenChange={() => setZoomComparison(null)}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden">
-          <DialogTitle className="sr-only">
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-4 overflow-auto">
+          <DialogTitle className="text-center mb-4">
             Schritt {zoomComparison?.stepNum} - {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
           </DialogTitle>
-          <div className="relative w-full h-[90vh] bg-black">
-            {/* Close button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setZoomComparison(null)}
-              className="absolute top-2 right-2 z-20 bg-black/50 hover:bg-black/70 text-white"
-            >
-              <X className="h-5 w-5" />
-            </Button>
-            
-            {/* Labels */}
-            <div className="absolute top-2 left-2 z-20 flex gap-4">
-              <div className="p-2 bg-blue-600 text-white text-sm rounded">
-                {zoomComparison?.labelA} (Alt)
-              </div>
-              <div className="p-2 bg-green-600 text-white text-sm rounded">
-                {zoomComparison?.labelB} (Neu)
-              </div>
-            </div>
-            
-            {/* Side-by-side slider comparison */}
-            {zoomComparison && (
-              <div className="relative w-full h-full overflow-hidden">
-                {/* Right image (Flow B - new) - full width, underneath */}
-                {zoomComparison.urlB ? (
-                  <img
-                    src={zoomComparison.urlB}
-                    alt={zoomComparison.labelB}
-                    className="absolute inset-0 w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted">
-                    <div className="text-center text-muted-foreground">
-                      <ImageOff className="h-12 w-12 mx-auto mb-2" />
-                      <p>Kein Screenshot für {flowB}</p>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Left image (Flow A - old) - clipped by slider */}
-                <div 
-                  className="absolute inset-0 overflow-hidden"
-                  style={{ width: `${sliderPosition}%` }}
-                >
+          
+          {zoomComparison && (
+            <div className="grid grid-cols-2 gap-4 h-[80vh]">
+              {/* Flow A (Left) */}
+              <div className="flex flex-col h-full">
+                <div className="p-2 bg-blue-600 text-white text-sm rounded-t text-center font-medium">
+                  {flowA} (Alt)
+                </div>
+                <div className="flex-1 bg-muted rounded-b overflow-hidden flex items-center justify-center">
                   {zoomComparison.urlA ? (
                     <img
                       src={zoomComparison.urlA}
                       alt={zoomComparison.labelA}
-                      className="absolute inset-0 w-full h-full object-contain"
-                      style={{ 
-                        width: `${100 / (sliderPosition / 100)}%`,
-                        maxWidth: 'none'
-                      }}
+                      className="max-w-full max-h-full object-contain"
                     />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-muted">
-                      <div className="text-center text-muted-foreground">
-                        <ImageOff className="h-12 w-12 mx-auto mb-2" />
-                        <p>Kein Screenshot für {flowA}</p>
-                      </div>
+                    <div className="text-center text-muted-foreground">
+                      <ImageOff className="h-12 w-12 mx-auto mb-2" />
+                      <p>Kein Screenshot</p>
                     </div>
                   )}
                 </div>
-                
-                {/* Slider handle */}
-                <div 
-                  className="absolute top-0 bottom-0 w-1 bg-white shadow-lg cursor-ew-resize z-10"
-                  style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-                >
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center">
-                    <ChevronLeft className="h-4 w-4 text-gray-600 -mr-1" />
-                    <ChevronRight className="h-4 w-4 text-gray-600 -ml-1" />
-                  </div>
-                </div>
-                
-                {/* Slider input (invisible, covers entire area) */}
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={sliderPosition}
-                  onChange={(e) => setSliderPosition(Number(e.target.value))}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10"
-                />
               </div>
-            )}
-            
-            {/* Instructions */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-black/70 text-white px-4 py-2 rounded-full text-sm">
-              ← Slider ziehen um zu vergleichen →
+              
+              {/* Flow B (Right) */}
+              <div className="flex flex-col h-full">
+                <div className="p-2 bg-green-600 text-white text-sm rounded-t text-center font-medium">
+                  {flowB} (Neu)
+                </div>
+                <div className="flex-1 bg-muted rounded-b overflow-hidden flex items-center justify-center">
+                  {zoomComparison.urlB ? (
+                    <img
+                      src={zoomComparison.urlB}
+                      alt={zoomComparison.labelB}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  ) : (
+                    <div className="text-center text-muted-foreground">
+                      <ImageOff className="h-12 w-12 mx-auto mb-2" />
+                      <p>Kein Screenshot</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
