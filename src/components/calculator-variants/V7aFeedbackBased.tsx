@@ -7,6 +7,8 @@
  * - CTA immer sichtbar
  * - "Eingaben bleiben gespeichert" Hinweis
  * - Schnellpfad (nur PLZ + Datum + Zimmer)
+ * - Loading States für bessere UX
+ * - Klare Zurück/Weiter Navigation
  */
 
 import React, { useState, useEffect } from 'react';
@@ -15,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Shield, CheckCircle2, Lock, MapPin, User, Mail, Phone, Clock, Save } from 'lucide-react';
+import { Shield, CheckCircle2, Lock, MapPin, User, Mail, Phone, Clock, Save, ChevronLeft, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 
 const STEPS = [
   { id: 1, title: 'Adressen' },
@@ -25,13 +27,20 @@ const STEPS = [
 
 const STORAGE_KEY = 'v7a-form-data';
 
-function ProgressHeader({ step, total, title }: { step: number; total: number; title: string }) {
+function ProgressHeader({ step, total, title, onBack }: { step: number; total: number; title: string; onBack?: () => void }) {
   const pct = Math.round((step / total) * 100);
   return (
     <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b pb-4 pt-4 px-4">
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <div className="flex items-center gap-2">
+            {step > 1 && onBack && (
+              <Button variant="ghost" size="icon" onClick={onBack} className="h-8 w-8">
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+            )}
+            <h2 className="text-lg font-semibold">{title}</h2>
+          </div>
           <span className="text-sm text-muted-foreground">Schritt {step}/{total}</span>
         </div>
         <Progress value={pct} className="h-2" />
@@ -80,21 +89,46 @@ function TrustBar() {
 }
 
 function StickyFooterCTA({
-  primaryLabel, onPrimary, disabled, hint, secondaryLabel, onSecondary,
+  primaryLabel, onPrimary, disabled, hint, secondaryLabel, onSecondary, isLoading,
 }: {
   primaryLabel: string; onPrimary: () => void; disabled?: boolean; hint?: string;
-  secondaryLabel?: string; onSecondary?: () => void;
+  secondaryLabel?: string; onSecondary?: () => void; isLoading?: boolean;
 }) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur border-t safe-area-inset-bottom">
       <div className="max-w-md mx-auto p-4 space-y-2">
         {hint && <p className="text-center text-sm text-muted-foreground">{hint}</p>}
-        <Button onClick={onPrimary} disabled={disabled} className="w-full h-14 text-lg font-semibold" size="lg">
-          {primaryLabel}
-        </Button>
-        {secondaryLabel && onSecondary && (
-          <Button variant="ghost" onClick={onSecondary} className="w-full">{secondaryLabel}</Button>
-        )}
+        <div className="flex gap-2">
+          {secondaryLabel && onSecondary && (
+            <Button 
+              variant="outline" 
+              onClick={onSecondary} 
+              className="h-14 px-6"
+              disabled={isLoading}
+            >
+              <ChevronLeft className="h-5 w-5 mr-1" />
+              {secondaryLabel}
+            </Button>
+          )}
+          <Button 
+            onClick={onPrimary} 
+            disabled={disabled || isLoading} 
+            className="flex-1 h-14 text-lg font-semibold gap-2" 
+            size="lg"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Wird geladen...
+              </>
+            ) : (
+              <>
+                {primaryLabel}
+                <ArrowRight className="h-5 w-5" />
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -130,6 +164,7 @@ export const V7aFeedbackBased: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load saved data on mount
   useEffect(() => {
@@ -159,6 +194,7 @@ export const V7aFeedbackBased: React.FC = () => {
     setTimeout(() => {
       if (formData.fromZip.length >= 4 && formData.toZip.length >= 4) {
         setCurrentStep(3);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }, 300);
   };
@@ -181,16 +217,27 @@ export const V7aFeedbackBased: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (currentStep === 1 && validateStep1()) setCurrentStep(2);
-    else if (currentStep === 2) setCurrentStep(3);
-    else if (currentStep === 3 && validateStep3()) {
-      setIsSubmitted(true);
-      localStorage.removeItem(STORAGE_KEY);
+    if (currentStep === 1 && validateStep1()) {
+      setCurrentStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (currentStep === 2) {
+      setCurrentStep(3);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (currentStep === 3 && validateStep3()) {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsSubmitted(true);
+        localStorage.removeItem(STORAGE_KEY);
+      }, 1500);
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   if (isSubmitted) {
@@ -213,7 +260,12 @@ export const V7aFeedbackBased: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <ProgressHeader step={currentStep} total={STEPS.length} title={STEPS[currentStep - 1].title} />
+      <ProgressHeader 
+        step={currentStep} 
+        total={STEPS.length} 
+        title={STEPS[currentStep - 1].title}
+        onBack={currentStep > 1 ? handleBack : undefined}
+      />
 
       <div className="max-w-md mx-auto p-4 pt-6">
         {currentStep === 1 && (
@@ -225,77 +277,86 @@ export const V7aFeedbackBased: React.FC = () => {
 
         <Card>
           <CardContent className="pt-6 space-y-6">
-            {currentStep === 1 && (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                <p className="text-muted-foreground">Deine Anfrage wird gesendet...</p>
+              </div>
+            ) : (
               <>
-                <div className="text-center mb-4">
-                  <h1 className="text-xl font-bold mb-2">Wohin ziehst du?</h1>
-                </div>
+                {currentStep === 1 && (
+                  <>
+                    <div className="text-center mb-4">
+                      <h1 className="text-xl font-bold mb-2">Wohin ziehst du?</h1>
+                    </div>
 
-                <Field label="Von PLZ" name="fromZip" value={formData.fromZip}
-                  onChange={(v) => updateField('fromZip', v)} placeholder="z.B. 8001"
-                  inputMode="numeric" autoComplete="postal-code" error={errors.fromZip} icon={MapPin} />
+                    <Field label="Von PLZ" name="fromZip" value={formData.fromZip}
+                      onChange={(v) => updateField('fromZip', v)} placeholder="z.B. 8001"
+                      inputMode="numeric" autoComplete="postal-code" error={errors.fromZip} icon={MapPin} />
 
-                <Field label="Nach PLZ" name="toZip" value={formData.toZip}
-                  onChange={(v) => updateField('toZip', v)} placeholder="z.B. 3011"
-                  inputMode="numeric" autoComplete="postal-code" error={errors.toZip} icon={MapPin} />
+                    <Field label="Nach PLZ" name="toZip" value={formData.toZip}
+                      onChange={(v) => updateField('toZip', v)} placeholder="z.B. 3011"
+                      inputMode="numeric" autoComplete="postal-code" error={errors.toZip} icon={MapPin} />
 
-                <Field label="Umzugsdatum (optional)" name="moveDate" type="date"
-                  value={formData.moveDate} onChange={(v) => updateField('moveDate', v)} />
-              </>
-            )}
+                    <Field label="Umzugsdatum (optional)" name="moveDate" type="date"
+                      value={formData.moveDate} onChange={(v) => updateField('moveDate', v)} />
+                  </>
+                )}
 
-            {currentStep === 2 && (
-              <>
-                <div className="text-center mb-4">
-                  <h1 className="text-xl font-bold mb-2">Wie gross ist die Wohnung?</h1>
-                  <p className="text-sm text-muted-foreground">Tipp: Wähle und es geht automatisch weiter</p>
-                </div>
+                {currentStep === 2 && (
+                  <>
+                    <div className="text-center mb-4">
+                      <h1 className="text-xl font-bold mb-2">Wie gross ist die Wohnung?</h1>
+                      <p className="text-sm text-muted-foreground">Tipp: Wähle und es geht automatisch weiter</p>
+                    </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { value: '1', label: '1 Zimmer', desc: 'Studio' },
-                    { value: '2', label: '2 Zimmer', desc: 'Klein' },
-                    { value: '3', label: '3 Zimmer', desc: 'Mittel' },
-                    { value: '4', label: '4 Zimmer', desc: 'Gross' },
-                    { value: '5', label: '5 Zimmer', desc: 'Sehr gross' },
-                    { value: '6+', label: '6+ Zimmer', desc: 'Villa/Haus' },
-                  ].map((r) => (
-                    <Button
-                      key={r.value}
-                      variant={formData.rooms === r.value ? 'default' : 'outline'}
-                      onClick={() => handleRoomSelect(r.value)}
-                      className="h-20 flex flex-col"
-                    >
-                      <span className="text-lg font-bold">{r.value}</span>
-                      <span className="text-xs opacity-70">{r.desc}</span>
-                    </Button>
-                  ))}
-                </div>
-              </>
-            )}
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { value: '1', label: '1 Zimmer', desc: 'Studio' },
+                        { value: '2', label: '2 Zimmer', desc: 'Klein' },
+                        { value: '3', label: '3 Zimmer', desc: 'Mittel' },
+                        { value: '4', label: '4 Zimmer', desc: 'Gross' },
+                        { value: '5', label: '5 Zimmer', desc: 'Sehr gross' },
+                        { value: '6+', label: '6+ Zimmer', desc: 'Villa/Haus' },
+                      ].map((r) => (
+                        <Button
+                          key={r.value}
+                          variant={formData.rooms === r.value ? 'default' : 'outline'}
+                          onClick={() => handleRoomSelect(r.value)}
+                          className="h-20 flex flex-col"
+                        >
+                          <span className="text-lg font-bold">{r.value}</span>
+                          <span className="text-xs opacity-70">{r.desc}</span>
+                        </Button>
+                      ))}
+                    </div>
+                  </>
+                )}
 
-            {currentStep === 3 && (
-              <>
-                <div className="text-center mb-4">
-                  <h1 className="text-xl font-bold mb-2">Fast fertig!</h1>
-                  <p className="text-sm text-muted-foreground">Wohin sollen wir die Offerten senden?</p>
-                </div>
+                {currentStep === 3 && (
+                  <>
+                    <div className="text-center mb-4">
+                      <h1 className="text-xl font-bold mb-2">Fast fertig!</h1>
+                      <p className="text-sm text-muted-foreground">Wohin sollen wir die Offerten senden?</p>
+                    </div>
 
-                <Field label="Name" name="name" value={formData.name}
-                  onChange={(v) => updateField('name', v)} placeholder="Vor- und Nachname"
-                  autoComplete="name" error={errors.name} icon={User} />
+                    <Field label="Name" name="name" value={formData.name}
+                      onChange={(v) => updateField('name', v)} placeholder="Vor- und Nachname"
+                      autoComplete="name" error={errors.name} icon={User} />
 
-                <Field label="E-Mail" name="email" type="email" value={formData.email}
-                  onChange={(v) => updateField('email', v)} placeholder="ihre@email.ch"
-                  autoComplete="email" inputMode="email" error={errors.email} icon={Mail} />
+                    <Field label="E-Mail" name="email" type="email" value={formData.email}
+                      onChange={(v) => updateField('email', v)} placeholder="ihre@email.ch"
+                      autoComplete="email" inputMode="email" error={errors.email} icon={Mail} />
 
-                <Field label="Telefon" name="phone" type="tel" value={formData.phone}
-                  onChange={(v) => updateField('phone', v)} placeholder="079 123 45 67"
-                  autoComplete="tel" inputMode="tel" error={errors.phone} icon={Phone} />
+                    <Field label="Telefon" name="phone" type="tel" value={formData.phone}
+                      onChange={(v) => updateField('phone', v)} placeholder="079 123 45 67"
+                      autoComplete="tel" inputMode="tel" error={errors.phone} icon={Phone} />
 
-                <p className="text-xs text-muted-foreground">
-                  Mit Klick auf "Offerten erhalten" erlaubst du uns, deine Anfrage an geprüfte Umzugsfirmen weiterzugeben.
-                </p>
+                    <p className="text-xs text-muted-foreground">
+                      Mit Klick auf "Kostenlos Offerten erhalten" erlaubst du uns, deine Anfrage an geprüfte Umzugsfirmen weiterzugeben.
+                    </p>
+                  </>
+                )}
               </>
             )}
           </CardContent>
@@ -303,12 +364,13 @@ export const V7aFeedbackBased: React.FC = () => {
       </div>
 
       <StickyFooterCTA
-        primaryLabel={currentStep === 3 ? 'Offerten erhalten' : 'Weiter'}
+        primaryLabel={currentStep === 3 ? 'Kostenlos Offerten erhalten' : 'Weiter'}
         onPrimary={handleNext}
         disabled={currentStep === 1 ? formData.fromZip.length < 4 || formData.toZip.length < 4 : false}
         hint="Unverbindlich • Kostenlos • Auto-Speichern aktiv"
-        secondaryLabel="Zurück"
-        onSecondary={handleBack}
+        secondaryLabel={currentStep > 1 ? 'Zurück' : undefined}
+        onSecondary={currentStep > 1 ? handleBack : undefined}
+        isLoading={isLoading}
       />
     </div>
   );
