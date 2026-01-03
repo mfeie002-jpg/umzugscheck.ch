@@ -201,6 +201,7 @@ const About = lazy(() => import("./pages/About"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
+const RoomPlannerDemo = lazy(() => import("./pages/RoomPlannerDemo"));
 
 // Ranking pages
 const BesteFirmen = lazy(() => import("./pages/BesteFirmen"));
@@ -654,6 +655,7 @@ const AppRouterContent = () => {
           <Route path="/invisible-2" element={<InvisibleMoveV2 />} />
           <Route path="/invisible-3" element={<Blueprint />} />
           <Route path="/invisible-4" element={<BlueprintV2 />} />
+          <Route path="/raumplaner" element={<RoomPlannerDemo />} />
           <Route path="/sitemap" element={<Sitemap />} />
           <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
           <Route path="/:city/umzug" element={<CityOptimized />} />
