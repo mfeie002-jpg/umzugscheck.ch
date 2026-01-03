@@ -82,7 +82,8 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   // === Multi Variants (1 variant) ===
   'multi-a': { name: 'Multi.A ChatGPT Pro', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
   
-  // === Ultimate (1 variant) ===
+  // === Ultimate (2 variants) ===
+  'ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-best36' },
   'ultimate-v7': { name: 'Ultimate V7 (95/100)', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v7' },
 };
 
@@ -809,23 +810,25 @@ serve(async (req) => {
     // If not found, check if it's a flow_feedback_variant (Ultimate Flow)
     if (!flowConfig) {
       console.log(`Flow "${normalizedFlowId}" not in FLOW_CONFIGS, checking flow_feedback_variants...`);
-      
-      // Check if this is a generated Ultimate Flow variant
-      const { data: variant } = await supabase
+
+      // Some callers pass a generated variant_label, others pass the base flow_id.
+      // Support both by trying variant_label OR flow_id.
+      const { data: variants } = await supabase
         .from('flow_feedback_variants')
-        .select('flow_id, variant_name')
-        .eq('variant_label', normalizedFlowId)
-        .single();
-      
-      if (variant && variant.flow_id) {
-        // Map to the base flow (e.g., "v1" from "ultimate-v1-swiss-archetype")
+        .select('flow_id, variant_name, variant_label, created_at')
+        .or(`variant_label.eq.${normalizedFlowId},flow_id.eq.${normalizedFlowId}`)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      const variant = variants?.[0] ?? null;
+
+      if (variant?.flow_id) {
         const baseFlowId = variant.flow_id;
         flowConfig = FLOW_CONFIGS[baseFlowId];
         resolvedFlowId = baseFlowId;
-        console.log(`Resolved Ultimate variant "${normalizedFlowId}" to base flow "${baseFlowId}"`);
+        console.log(`Resolved variant "${normalizedFlowId}" to base flow "${baseFlowId}" (${variant.variant_name || variant.variant_label})`);
       }
     }
-    
     if (!flowConfig) {
       console.error(`Unknown flow ID: ${normalizedFlowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
       return new Response(
