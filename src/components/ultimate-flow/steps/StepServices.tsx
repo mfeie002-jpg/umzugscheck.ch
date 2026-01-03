@@ -95,7 +95,7 @@ export function StepServices({ data, updateData }: StepServicesProps) {
         </button>
       </div>
 
-      {/* Services Grid */}
+      {/* Services Grid - CRITICAL FIX: Larger touch targets and text for mobile */}
       <div className="space-y-3">
         {SERVICES.map((service) => {
           const isSelected = data.services?.includes(service.id);
@@ -105,52 +105,52 @@ export function StepServices({ data, updateData }: StepServicesProps) {
               type="button"
               onClick={() => toggleService(service.id)}
               className={cn(
-                "w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
-                "touch-manipulation",
+                "w-full flex items-center gap-4 p-4 sm:p-4 rounded-xl border-2 transition-all text-left",
+                "touch-manipulation active:scale-[0.99] min-h-[72px]",
                 isSelected
                   ? "border-primary bg-primary/5"
                   : "border-border bg-card hover:border-primary/50"
               )}
             >
-              {/* Checkbox */}
+              {/* Checkbox - larger on mobile */}
               <div 
                 className={cn(
-                  "w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0",
+                  "w-7 h-7 sm:w-6 sm:h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0",
                   isSelected
                     ? "bg-primary border-primary"
                     : "border-muted-foreground/30"
                 )}
               >
-                {isSelected && <Check className="h-4 w-4 text-primary-foreground" />}
+                {isSelected && <Check className="h-5 w-5 sm:h-4 sm:w-4 text-primary-foreground" />}
               </div>
 
-              {/* Icon */}
+              {/* Icon - larger on mobile */}
               <div className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
+                "w-12 h-12 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0",
                 isSelected ? "bg-primary/10" : "bg-muted"
               )}>
                 <service.icon className={cn(
-                  "h-5 w-5",
+                  "h-6 w-6 sm:h-5 sm:w-5",
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )} />
               </div>
 
-              {/* Content */}
+              {/* Content - larger text on mobile */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className={cn(
-                    "font-medium",
+                    "font-semibold text-base sm:text-sm",
                     isSelected ? "text-primary" : "text-foreground"
                   )}>
                     {service.label}
                   </span>
                   {service.popular && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700">
+                    <span className="text-[11px] sm:text-[10px] px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
                       Beliebt
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground truncate">
+                <p className="text-sm sm:text-xs text-muted-foreground line-clamp-2">
                   {service.description}
                 </p>
               </div>

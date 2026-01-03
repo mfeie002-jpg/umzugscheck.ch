@@ -60,7 +60,7 @@ export function StepInventory({ data, updateData }: StepInventoryProps) {
         </p>
       </div>
 
-      {/* Room Selection Grid */}
+      {/* Room Selection Grid - CRITICAL FIX: Larger text and touch targets for mobile */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {ROOM_OPTIONS.map((option) => {
           const isSelected = data.roomCount === option.value;
@@ -70,21 +70,21 @@ export function StepInventory({ data, updateData }: StepInventoryProps) {
               type="button"
               onClick={() => handleRoomSelect(option.value)}
               className={cn(
-                "flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all",
-                "min-h-[100px] touch-manipulation",
+                "flex flex-col items-center justify-center p-4 sm:p-4 rounded-xl border-2 transition-all",
+                "min-h-[110px] sm:min-h-[100px] touch-manipulation active:scale-[0.98]",
                 isSelected
                   ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                   : "border-border bg-card hover:border-primary/50"
               )}
             >
-              <span className="text-2xl mb-1">{option.icon}</span>
+              <span className="text-3xl sm:text-2xl mb-1.5">{option.icon}</span>
               <span className={cn(
-                "font-medium text-sm",
+                "font-semibold text-base sm:text-sm",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {option.label}
               </span>
-              <span className="text-xs text-muted-foreground mt-0.5">
+              <span className="text-sm sm:text-xs text-muted-foreground mt-0.5">
                 {option.volume}
               </span>
             </button>
