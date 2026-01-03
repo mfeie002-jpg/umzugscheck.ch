@@ -224,6 +224,7 @@ serve(async (req) => {
       fullPage = false,
       scroll = true,
       noCache = true,
+      failOn404 = false, // NEW: Return error instead of screenshot for 404 pages
     } = body ?? {};
     // Determine capture-mode early (used for delays + safer defaults)
     const isCaptureMode = (() => {
@@ -280,6 +281,7 @@ serve(async (req) => {
       assetsFound?: number;
       assetsChecked?: Array<{ ok: boolean; status: number; url: string; contentType: string; cacheControl: string }>;
       error?: string;
+      is404Page?: boolean;
     } | null = null;
 
     try {
@@ -297,6 +299,18 @@ serve(async (req) => {
       const contentType = preflightResponse.headers.get("content-type") || "";
       const htmlText = contentType.includes("text/html") ? await preflightResponse.text() : "";
 
+      // Detect 404 pages by checking for common error indicators in HTML
+      // SPA 404s often return 200 status but show error content
+      const is404Page = preflightResponse.status === 404 || (
+        preflightResponse.status === 200 && (
+          htmlText.toLowerCase().includes("seite nicht gefunden") ||
+          htmlText.toLowerCase().includes("page not found") ||
+          htmlText.toLowerCase().includes("404") ||
+          htmlText.includes("NotFoundPage") ||
+          htmlText.includes("not-found")
+        )
+      );
+
       const assetUrls = contentType.includes("text/html")
         ? extractAssetUrlsFromHtml(htmlText, preflightResponse.url)
         : [];
@@ -310,14 +324,31 @@ serve(async (req) => {
         hasAssets: assetUrls.length > 0,
         assetsFound: assetUrls.length,
         assetsChecked,
+        is404Page,
       };
 
       console.log(
-        `[${traceId}] Preflight: status=${preflightInfo.status}, contentType=${contentType.slice(0, 50)}, finalUrl=${preflightInfo.finalUrl}, hasAssets=${preflightInfo.hasAssets}, assetsFound=${preflightInfo.assetsFound}`
+        `[${traceId}] Preflight: status=${preflightInfo.status}, contentType=${contentType.slice(0, 50)}, finalUrl=${preflightInfo.finalUrl}, hasAssets=${preflightInfo.hasAssets}, assetsFound=${preflightInfo.assetsFound}, is404Page=${is404Page}`
       );
 
-      if (preflightResponse.status === 404) {
-        console.error(`[${traceId}] Preflight 404 - URL not found: ${url}`);
+      if (preflightResponse.status === 404 || is404Page) {
+        console.error(`[${traceId}] Preflight detected 404 page: ${url}`);
+        
+        // If failOn404 is enabled, return error immediately
+        if (failOn404) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              error: "Page not found (404)",
+              is404: true,
+              url,
+              traceId,
+              preflight: preflightInfo,
+              hint: "The page does not exist or returns a 404 error. This is common for SPA routes that haven't been published.",
+            }),
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
       }
       if (preflightResponse.status >= 500) {
         console.error(`[${traceId}] Preflight ${preflightResponse.status} - Server error`);
