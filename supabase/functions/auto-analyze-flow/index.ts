@@ -82,9 +82,16 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   // === Multi Variants (1 variant) ===
   'multi-a': { name: 'Multi.A ChatGPT Pro', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
   
-  // === Ultimate (2 variants) ===
+  // === Ultimate Variants ===
   'ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-best36' },
   'ultimate-v7': { name: 'Ultimate V7 (95/100)', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v7' },
+  'ultimate-all': { name: 'Ultimate All', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-all' },
+  'ultimate-v1': { name: 'Ultimate V1', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v1' },
+  'ultimate-v2': { name: 'Ultimate V2', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v2' },
+  'ultimate-v5': { name: 'Ultimate V5', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v5' },
+  
+  // === Version 1.1 Variants ===
+  'umzugsofferten-v1.1.a': { name: 'V1.1.A', steps: 5, baseUrl: '/umzugsofferten?variant=v1.1.a' },
 };
 
 const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY');
