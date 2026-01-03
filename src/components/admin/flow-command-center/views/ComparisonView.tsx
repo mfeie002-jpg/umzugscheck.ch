@@ -539,14 +539,14 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             ) : (
               <div className="relative">
                 {/* Horizontal Slider */}
-                <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-                  <div className="flex gap-6" style={{ minWidth: 'max-content' }}>
+                <div className="overflow-x-auto pb-4 -mx-6 px-6" style={{ scrollbarWidth: 'thin' }}>
+                  <div className="inline-flex gap-4" style={{ whiteSpace: 'nowrap' }}>
                     {Array.from({ length: maxSteps }, (_, i) => i + 1).map(stepNum => {
                       const stepA = screenshotsA?.steps.find(s => s.stepNumber === stepNum);
                       const stepB = screenshotsB?.steps.find(s => s.stepNumber === stepNum);
                       
                       return (
-                        <div key={stepNum} className="flex-shrink-0 w-[280px] space-y-3 p-3 bg-muted/30 rounded-lg border">
+                        <div key={stepNum} className="inline-block w-[220px] space-y-2 p-2 bg-muted/30 rounded-lg border align-top" style={{ whiteSpace: 'normal' }}>
                           <Badge variant="outline" className="text-xs">Schritt {stepNum}</Badge>
                           
                           {/* Mobile Screenshots Side-by-Side */}
