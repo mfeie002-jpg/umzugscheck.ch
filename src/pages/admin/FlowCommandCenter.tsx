@@ -358,8 +358,11 @@ export default function FlowCommandCenter() {
     }
   };
 
+  const [analyzingFlowId, setAnalyzingFlowId] = useState<string | null>(null);
+
   const handleAnalyzeFlow = async (flowId: string) => {
     setIsAnalyzing(true);
+    setAnalyzingFlowId(flowId);
     try {
       const edgeFlowId = mapToEdgeFunctionFlowId(flowId);
       toast.info(`Analyse für ${edgeFlowId} wird gestartet...`);
@@ -388,19 +391,26 @@ export default function FlowCommandCenter() {
       toast.error(`Analyse fehlgeschlagen: ${err instanceof Error ? err.message : 'Unbekannter Fehler'}`);
     } finally {
       setIsAnalyzing(false);
+      setAnalyzingFlowId(null);
     }
   };
 
-  const handleAnalyzeAll = async () => {
+  // Analyze only specific flows (for quick re-analysis of changed flows)
+  const handleAnalyzeSelected = async (flowIds: string[]) => {
+    if (flowIds.length === 0) {
+      toast.warning('Keine Flows zum Analysieren ausgewählt');
+      return;
+    }
+    
     setIsAnalyzing(true);
-    const flowIds = getAllFlowIds();
     const total = flowIds.length;
     let completed = 0;
     let failed = 0;
     
-    toast.info(`Analyse von ${total} Flows gestartet...`);
+    toast.info(`Analyse von ${total} Flow(s) gestartet...`);
     
     for (const id of flowIds) {
+      setAnalyzingFlowId(id);
       try {
         const edgeFlowId = mapToEdgeFunctionFlowId(id);
         const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
@@ -419,10 +429,8 @@ export default function FlowCommandCenter() {
           console.log(`Analyzed ${id}:`, data);
         }
         
-        // Update progress toast
-        if ((completed + failed) % 5 === 0 || (completed + failed) === total) {
-          toast.info(`Fortschritt: ${completed + failed}/${total} (${failed} fehlgeschlagen)`);
-        }
+        // Update progress
+        toast.info(`Fortschritt: ${completed + failed}/${total}`);
       } catch (err) {
         console.error(`Analysis error for ${id}:`, err);
         failed++;
@@ -430,13 +438,26 @@ export default function FlowCommandCenter() {
     }
     
     setIsAnalyzing(false);
+    setAnalyzingFlowId(null);
     await loadData();
     
     if (failed === 0) {
-      toast.success(`Alle ${total} Flows erfolgreich analysiert!`);
+      toast.success(`${total} Flow(s) erfolgreich analysiert!`);
     } else {
       toast.warning(`${completed} analysiert, ${failed} fehlgeschlagen`);
     }
+  };
+
+  const handleAnalyzeAll = async () => {
+    const flowIds = getAllFlowIds();
+    await handleAnalyzeSelected(flowIds);
+  };
+  
+  // Quick re-analyze for v1b and other recently changed flows
+  const handleAnalyzeChangedFlows = async () => {
+    // Focus on the main flows that are commonly updated
+    const changedFlows = ['v1b', 'v2e', 'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9'];
+    await handleAnalyzeSelected(changedFlows);
   };
 
   const handleViewChange = (view: ViewMode) => {
@@ -502,6 +523,20 @@ export default function FlowCommandCenter() {
           </Button>
           
           <Button
+            variant="secondary"
+            onClick={handleAnalyzeChangedFlows}
+            disabled={isAnalyzing}
+            title="v1b, v2e, v1-v9 analysieren"
+          >
+            {isAnalyzing ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Zap className="h-4 w-4 mr-2" />
+            )}
+            Schnell-Analyse
+          </Button>
+          
+          <Button
             onClick={handleAnalyzeAll}
             disabled={isAnalyzing}
           >
@@ -514,12 +549,22 @@ export default function FlowCommandCenter() {
           </Button>
         </div>
       </div>
+      
+      {/* Show current analysis progress */}
+      {isAnalyzing && analyzingFlowId && (
+        <div className="mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg flex items-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-sm font-medium">
+            Analysiere: <strong>{analyzingFlowId}</strong>
+          </span>
+        </div>
+      )}
 
       <TabsContent value="dashboard" className="mt-0">
         <DashboardView
           onAnalyzeFlow={handleAnalyzeFlow}
           onViewFlowDetails={handleSelectFlow}
-          isAnalyzing={isAnalyzing ? selectedFlowId : null}
+          isAnalyzing={analyzingFlowId}
         />
       </TabsContent>
 
@@ -527,7 +572,7 @@ export default function FlowCommandCenter() {
         <RankingView
           onAnalyzeFlow={handleAnalyzeFlow}
           onViewFlowDetails={handleSelectFlow}
-          isAnalyzing={isAnalyzing ? selectedFlowId : null}
+          isAnalyzing={analyzingFlowId}
         />
       </TabsContent>
 
