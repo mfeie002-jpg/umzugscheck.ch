@@ -710,7 +710,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
       {/* Side-by-Side Comparison Modal */}
       <Dialog open={!!zoomComparison} onOpenChange={() => setZoomComparison(null)}>
-        <DialogContent className="max-w-3xl p-4">
+        <DialogContent className="max-w-4xl p-4">
           <DialogTitle className="text-center text-sm mb-3">
             Schritt {zoomComparison?.stepNum} - {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
           </DialogTitle>
