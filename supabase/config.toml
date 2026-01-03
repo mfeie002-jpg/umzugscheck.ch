@@ -65,3 +65,9 @@ verify_jwt = false
 
 [functions.ai-batch-fix]
 verify_jwt = false
+
+[functions.capture-landing-page]
+verify_jwt = false
+
+[functions.analyze-landing-page]
+verify_jwt = false
