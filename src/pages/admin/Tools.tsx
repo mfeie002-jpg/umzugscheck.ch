@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FlowAutomationCenter } from "@/components/admin/FlowAutomationCenter";
+import { LandingPageAutomationCenter } from "@/components/admin/LandingPageAutomationCenter";
 import { UltimateFlowExporter } from "@/components/admin/UltimateFlowExporter";
 import { UltimateFeedbackSuite } from "@/components/admin/UltimateFeedbackSuite";
 import { AdminLayout } from "@/components/admin/AdminLayout";
@@ -2474,6 +2475,10 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               <Zap className="h-4 w-4" />
               Flow Automation
             </TabsTrigger>
+            <TabsTrigger value="landing-page-automation" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              LP Automation
+            </TabsTrigger>
             <TabsTrigger value="ai-feedback" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               AI Package
@@ -2515,6 +2520,11 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
           {/* Flow Automation Tab */}
           <TabsContent value="flow-automation">
             <FlowAutomationCenter />
+          </TabsContent>
+
+          {/* Landing Page Automation Tab */}
+          <TabsContent value="landing-page-automation">
+            <LandingPageAutomationCenter />
           </TabsContent>
 
           {/* AI Feedback Package Tab */}
