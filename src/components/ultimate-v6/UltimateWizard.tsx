@@ -366,7 +366,7 @@ export const UltimateWizard = () => {
   );
 
   return (
-    <Card className="overflow-hidden border-primary/10 shadow-lg">
+    <Card className="overflow-hidden border-primary/10 shadow-lg max-w-full">
       {/* Header with progress - Mobile optimized, no horizontal scroll */}
       <CardHeader className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b px-4 sm:px-6">
         <div className="flex items-center justify-between mb-3">

@@ -144,3 +144,17 @@ export { BadgeWithIcon } from './BadgeWithIcon';
 export { SwissTrustBadges, HeroTrustStrip, ASTAGBadge, GuaranteeBadge, MiniTrustIndicator } from './SwissTrustBadges';
 export { StickyCTABar, FloatingCTAButton } from './StickyCTABar';
 export { PriceRangeDisplay, ZuegeltagIndicator, FlexDateBadge } from './PriceRangeDisplay';
+
+// Global UX Fixes - Applied across all flows
+export { 
+  StickyFooterSafeArea,
+  ProgressIndicatorFixed,
+  TouchTarget,
+  NoHorizontalScroll,
+  ValidationHint,
+  StickyFooter,
+  ResponsiveGrid,
+  NavigationButtons,
+  GLOBAL_UX_CLASSES,
+  STICKY_FOOTER_HEIGHTS 
+} from './GlobalUXFixes';

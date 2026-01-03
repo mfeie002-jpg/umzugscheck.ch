@@ -635,8 +635,8 @@ export const UltimateSwissFlow: FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
-      <div className="max-w-xl mx-auto px-4 pb-32">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 overflow-x-hidden">
+      <div className="max-w-xl mx-auto px-4 pb-52 sm:pb-44 md:pb-36">
         {/* Header */}
         <header className="py-6 text-center">
           <TrustBadges compact />
