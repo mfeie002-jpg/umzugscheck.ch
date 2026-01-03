@@ -62,7 +62,8 @@ interface ArchivedScreenshot {
 // Site origin is now configurable - empty for universal use
 const DEFAULT_SITE_ORIGIN = "";
 
-const UC_RENDER_HOSTS: string[] = [];
+// For our own site we want uc_render=1 to force eager rendering during screenshots
+const UC_RENDER_HOSTS: string[] = ["umzugscheck.ch", "lovable.app", "lovableproject.com"];
 
 const PRESET_URLS = [
   { label: "Google", url: "https://www.google.com" },
@@ -210,41 +211,95 @@ export function ScreenshotMachine() {
     setDiscoveringUrls(true);
     toast.info("Entdecke Top-Seiten...");
 
+    const normalizeUrl = (raw: string) => {
+      try {
+        const u = new URL(raw);
+        u.hash = "";
+        // normalize trailing slash (except root)
+        if (u.pathname !== "/") u.pathname = u.pathname.replace(/\/+$/, "");
+        return u.toString();
+      } catch {
+        return raw.trim();
+      }
+    };
+
+    const isAllowedForOurApp = (u: URL) => {
+      // Avoid capturing non-existent deep “subpages” like /umzugsfirmen/zuerich/xyz
+      if (u.pathname.startsWith("/umzugsfirmen/")) {
+        const segments = u.pathname.split("/").filter(Boolean);
+        // /umzugsfirmen, /umzugsfirmen/:canton are ok
+        if (segments.length > 2) return false;
+      }
+      // Avoid admin & tooling pages
+      if (u.pathname.startsWith("/admin")) return false;
+      return true;
+    };
+
     try {
-      const { data, error } = await supabase.functions.invoke('firecrawl-map', {
-        body: { 
-          url: domainUrl, 
-          options: { 
-            limit: 20,
-            includeSubdomains: false
-          } 
+      const base = new URL(domainUrl);
+
+      const { data, error } = await supabase.functions.invoke("firecrawl-map", {
+        body: {
+          url: domainUrl,
+          options: {
+            limit: 80, // fetch a bit more, then filter down to 20
+            includeSubdomains: false,
+          },
         },
       });
 
       if (error) throw error;
 
       if (data?.success && data?.links && Array.isArray(data.links)) {
-        const urls = data.links.slice(0, 20);
-        setDiscoveredUrls(urls);
-        toast.success(`${urls.length} Seiten entdeckt!`);
-      } else {
-        // Fallback: generate common URLs
-        const baseUrl = new URL(domainUrl).origin;
-        const fallbackUrls = [
-          baseUrl,
-          `${baseUrl}/umzugsofferten`,
-          `${baseUrl}/umzugsfirmen`,
-          `${baseUrl}/preisrechner`,
-          `${baseUrl}/rechner`,
-          `${baseUrl}/services`,
-          `${baseUrl}/kontakt`,
-          `${baseUrl}/ueber-uns`,
-          `${baseUrl}/faq`,
-          `${baseUrl}/ratgeber`,
-        ];
-        setDiscoveredUrls(fallbackUrls);
-        toast.info(`Fallback: ${fallbackUrls.length} Standard-URLs generiert`);
+        const rawLinks = (data.links as string[]).filter(Boolean);
+        const unique: string[] = [];
+        let filteredOut = 0;
+
+        for (const raw of rawLinks) {
+          const normalized = normalizeUrl(raw);
+          try {
+            const u = new URL(normalized);
+            if (u.origin !== base.origin) continue;
+
+            const isOurHost = UC_RENDER_HOSTS.some((h) => u.hostname === h || u.hostname.endsWith(`.${h}`));
+            if (isOurHost && !isAllowedForOurApp(u)) {
+              filteredOut++;
+              continue;
+            }
+
+            const s = u.toString();
+            if (!unique.includes(s)) unique.push(s);
+          } catch {
+            // ignore invalid URLs
+          }
+          if (unique.length >= 20) break;
+        }
+
+        if (unique.length > 0) {
+          setDiscoveredUrls(unique);
+          toast.success(`${unique.length} Seiten entdeckt${filteredOut ? ` (${filteredOut} gefiltert)` : ""}`);
+          return;
+        }
+
+        toast.warning("Keine gültigen Seiten gefunden – nutze Fallback-URLs");
       }
+
+      // Fallback: generate common URLs
+      const baseUrl = new URL(domainUrl).origin;
+      const fallbackUrls = [
+        baseUrl,
+        `${baseUrl}/umzugsofferten`,
+        `${baseUrl}/umzugsfirmen`,
+        `${baseUrl}/preisrechner`,
+        `${baseUrl}/rechner`,
+        `${baseUrl}/services`,
+        `${baseUrl}/kontakt`,
+        `${baseUrl}/ueber-uns`,
+        `${baseUrl}/faq`,
+        `${baseUrl}/ratgeber`,
+      ];
+      setDiscoveredUrls(fallbackUrls);
+      toast.info(`Fallback: ${fallbackUrls.length} Standard-URLs generiert`);
     } catch (error) {
       console.error("URL discovery error:", error);
       // Fallback: use domain as single URL
@@ -863,8 +918,17 @@ export function ScreenshotMachine() {
   };
 
   const addAllPresets = () => {
-    const allUrls = PRESET_URLS.map(p => p.url).join("\n");
+    const hasDiscoveredUrls = discoveredUrls.length > 0 && discoveredUrls[0] !== "https://example.com";
+
+    if (hasDiscoveredUrls) {
+      setBulkUrls(discoveredUrls.join("\n"));
+      toast.success(`${discoveredUrls.length} entdeckte URLs hinzugefügt`);
+      return;
+    }
+
+    const allUrls = PRESET_URLS.map((p) => p.url).join("\n");
     setBulkUrls(allUrls);
+    toast.info("Keine entdeckten URLs – Presets hinzugefügt");
   };
 
   return (
