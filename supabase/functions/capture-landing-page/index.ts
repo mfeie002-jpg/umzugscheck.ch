@@ -60,14 +60,8 @@ serve(async (req) => {
         delay: '3000'
       });
       
-      if (secretPhrase) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(url + secretPhrase);
-        const hashBuffer = await crypto.subtle.digest('MD5', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        desktopParams.set('hash', hash);
-      }
+      // Note: Skip hash generation - Deno doesn't support MD5 in crypto.subtle
+      // The secretPhrase/hash is optional for ScreenshotMachine API
 
       const desktopScreenshotApiUrl = `https://api.screenshotmachine.com?${desktopParams.toString()}`;
       const desktopResponse = await fetch(desktopScreenshotApiUrl);
@@ -104,14 +98,7 @@ serve(async (req) => {
         delay: '3000'
       });
 
-      if (secretPhrase) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(url + secretPhrase);
-        const hashBuffer = await crypto.subtle.digest('MD5', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        mobileParams.set('hash', hash);
-      }
+      // Note: Skip hash generation - Deno doesn't support MD5 in crypto.subtle
 
       const mobileScreenshotApiUrl = `https://api.screenshotmachine.com?${mobileParams.toString()}`;
       const mobileResponse = await fetch(mobileScreenshotApiUrl);

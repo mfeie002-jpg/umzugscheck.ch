@@ -33,6 +33,7 @@ import { ToolsDocumentation } from "@/components/admin/ToolsDocumentation";
 import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
+import { AutoLandingPageScreenshots } from "@/components/admin/AutoLandingPageScreenshots";
 import { BackgroundExportManager } from "@/components/admin/BackgroundExportManager";
 import { JobsDownloadsCenter } from "@/components/admin/JobsDownloadsCenter";
 import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
@@ -3342,7 +3343,8 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                   <Zap className="h-4 w-4 mr-1" />
                   AutoFlow AI
                 </TabsTrigger>
-                <TabsTrigger value="screenshots">Screenshots</TabsTrigger>
+                <TabsTrigger value="screenshots">Flow Screenshots</TabsTrigger>
+                <TabsTrigger value="landing-page-screenshots">Landing Pages</TabsTrigger>
                 <TabsTrigger value="background-export" className="flex items-center gap-1">
                   <span>Background Export</span>
                 </TabsTrigger>
@@ -3360,6 +3362,10 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               
               <TabsContent value="screenshots">
                 <AutoFlowScreenshots />
+              </TabsContent>
+              
+              <TabsContent value="landing-page-screenshots">
+                <AutoLandingPageScreenshots />
               </TabsContent>
               
               <TabsContent value="background-export">
