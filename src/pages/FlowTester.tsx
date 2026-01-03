@@ -58,70 +58,71 @@ interface TesterInfo {
   role: string;
 }
 
+// All registered flows from the component registry
 const FLOWS: FlowConfig[] = [
-  // === MAIN FLOWS (V1-V9) ===
+  // === HAUPT-FLOWS (V1-V9) ===
   {
     id: 'v1',
     name: 'Classic Flow',
     version: 'V1',
-    description: 'Der ursprüngliche 5-Schritt Funnel',
+    description: 'Ursprünglicher 5-Schritt Funnel',
     path: '/umzugsofferten',
     color: 'bg-blue-500',
-    features: ['5 klare Schritte', 'Firmenauswahl', 'Standard-Formular']
+    features: ['5 Schritte', 'Firmenauswahl', 'Standard-Formular']
   },
   {
     id: 'v2',
-    name: 'Optimized Flow',
+    name: 'Premium Journey',
     version: 'V2',
-    description: 'Optimierter Funnel mit besserem UX',
+    description: 'Full-Journey mit Progress-Tracking',
     path: '/umzugsofferten-v2',
     color: 'bg-green-500',
-    features: ['Verbesserte UX', 'Schnellere Eingabe', 'Mobile-optimiert']
+    features: ['Progress-Ring', 'Trust-Elemente', 'Mobile-optimiert']
   },
   {
     id: 'v3',
-    name: 'Interactive Flow',
+    name: 'Mobile First',
     version: 'V3',
-    description: 'Interaktiver Wizard mit Animationen',
+    description: 'Touch-optimiert für Smartphones',
     path: '/umzugsofferten-v3',
     color: 'bg-purple-500',
-    features: ['Smooth Animations', 'Progress Tracking', 'Visual Feedback']
+    features: ['Touch-Targets', 'Swipe-Navigation', 'Bottom-Sheet']
   },
   {
     id: 'v4',
-    name: 'Smart Flow',
+    name: 'Video-First AI',
     version: 'V4',
-    description: 'Intelligenter Funnel mit Preisvorschau',
+    description: 'Mit Dringlichkeit & Social Proof',
     path: '/umzugsofferten-v4',
     color: 'bg-orange-500',
-    features: ['Live-Preisberechnung', 'Smart Defaults', 'Upsell-Optionen']
+    features: ['Countdown', 'Live-Activity', 'Urgency']
   },
   {
     id: 'v5',
-    name: 'Premium Flow',
+    name: 'Marketplace',
     version: 'V5',
-    description: 'Premium-Erlebnis mit Service-Levels',
+    description: 'Accessibility & Service-Levels',
     path: '/umzugsofferten-v5',
     color: 'bg-pink-500',
-    features: ['Service-Level Slider', 'Premium Design', 'Crew Preview']
+    features: ['High Contrast', 'Keyboard-Nav', 'Screen-Reader']
   },
   {
     id: 'v6',
-    name: 'Ultimate Wizard',
+    name: 'Ultimate 6-Tier',
     version: 'V6',
     description: 'Das ultimative 0-100 System',
     path: '/umzugsofferten-v6',
     color: 'bg-indigo-500',
-    features: ['6-Tier Architektur', 'Video-Scan Konzept', 'Trust Engine']
+    features: ['6-Tier-Architektur', 'AI-Modus', 'Trust-Engine']
   },
   {
     id: 'v7',
-    name: 'SwissMove',
+    name: 'SwissMove 90s',
     version: 'V7',
     description: '90-Sekunden Buchung',
     path: '/umzugsofferten-v7',
     color: 'bg-cyan-500',
-    features: ['Instant Quote', 'Live Tracking', 'Crew Profiles']
+    features: ['Instant Quote', 'Live Tracking', 'Schnell']
   },
   {
     id: 'v8',
@@ -130,7 +131,7 @@ const FLOWS: FlowConfig[] = [
     description: 'KI-gestütztes Relocation OS',
     path: '/umzugsofferten-v8',
     color: 'bg-emerald-500',
-    features: ['Computer Vision Scan', 'Auto-Proposal', 'Zero Decisions']
+    features: ['Auto-Proposal', 'Zero Decisions', 'Smart']
   },
   {
     id: 'v9',
@@ -139,195 +140,72 @@ const FLOWS: FlowConfig[] = [
     description: 'Minimaler Aufwand, maximale Conversion',
     path: '/umzugsofferten-v9',
     color: 'bg-rose-500',
-    features: ['3-Klick Flow', 'Smart Defaults', 'Instant Quote', 'Zero Friction']
+    features: ['3-Klick', 'Smart Defaults', 'Express']
   },
   
-  // === V2 SUB-VARIANTS (UX-Optimierung) ===
+  // === TOP SUB-VARIANTEN (die wichtigsten) ===
   {
-    id: 'v2a',
-    name: 'V2a Progress Enhanced',
-    version: 'V2.A',
-    description: 'Visueller Fortschritt mit Micro-Animations',
-    path: '/umzugsofferten?v=2a',
-    color: 'bg-green-400',
-    features: ['Progress Ring', 'Micro-Animations', 'Step Tracker']
-  },
-  {
-    id: 'v2b',
-    name: 'V2b Simplified Labels',
-    version: 'V2.B',
-    description: 'Vereinfachte Beschriftungen & Texte',
-    path: '/umzugsofferten?v=2b',
-    color: 'bg-green-600',
-    features: ['Simple Labels', 'Klare Sprache', 'Weniger Text']
+    id: 'v1b',
+    name: 'V1b Feedback-Optimiert',
+    version: 'V1.B',
+    description: 'Basierend auf User-Feedback',
+    path: '/umzugsofferten?v=v1b',
+    color: 'bg-blue-600',
+    features: ['Optimierte UX', 'Klare Labels', 'Schneller']
   },
   {
     id: 'v2c',
-    name: 'V2c Trust Focused',
+    name: 'V2c Trust-Fokus',
     version: 'V2.C',
-    description: 'Vertrauenselemente überall',
-    path: '/umzugsofferten?v=2c',
-    color: 'bg-green-700',
-    features: ['Trust Badges', 'Testimonials', 'Garantien']
+    description: 'Maximales Vertrauen',
+    path: '/umzugsofferten?v=v2c',
+    color: 'bg-green-600',
+    features: ['Trust-Badges', 'Garantien', 'Testimonials']
   },
-  {
-    id: 'v2d',
-    name: 'V2d Speed Optimized',
-    version: 'V2.D',
-    description: 'Auf Geschwindigkeit getrimmt',
-    path: '/umzugsofferten?v=2d',
-    color: 'bg-green-800',
-    features: ['Minimal Fields', 'Auto-Complete', 'Fast Track']
-  },
-  {
-    id: 'v2e',
-    name: 'V2e Experimental',
-    version: 'V2.E',
-    description: 'Experimentelle Features',
-    path: '/umzugsofferten?v=2e',
-    color: 'bg-lime-500',
-    features: ['AI Suggestions', 'Smart Defaults', 'Predictions']
-  },
-
-  // === V3 SUB-VARIANTS (Mobile-First) ===
   {
     id: 'v3a',
-    name: 'V3a Mobile First',
+    name: 'V3a Mobile-First',
     version: 'V3.A',
-    description: 'Touch-optimiert für Mobile',
-    path: '/umzugsofferten?v=3a',
-    color: 'bg-purple-400',
-    features: ['Large Touch Targets', 'Bottom Nav', 'Mobile Hero']
-  },
-  {
-    id: 'v3b',
-    name: 'V3b Swipe Navigation',
-    version: 'V3.B',
-    description: 'Swipe zwischen Steps',
-    path: '/umzugsofferten?v=3b',
+    description: 'Touch-optimiert',
+    path: '/umzugsofferten?v=v3a',
     color: 'bg-purple-600',
-    features: ['Swipe Gestures', 'Carousel Steps', 'Fluid Motion']
-  },
-  {
-    id: 'v3c',
-    name: 'V3c Bottom Sheet',
-    version: 'V3.C',
-    description: 'Native Bottom Sheet UX',
-    path: '/umzugsofferten?v=3c',
-    color: 'bg-purple-700',
-    features: ['Bottom Sheet', 'Pull-to-Dismiss', 'Overlay Inputs']
-  },
-  {
-    id: 'v3d',
-    name: 'V3d Thumb Zone',
-    version: 'V3.D',
-    description: 'Optimiert für Daumen-Erreichbarkeit',
-    path: '/umzugsofferten?v=3d',
-    color: 'bg-purple-800',
-    features: ['Thumb Zone', 'Bottom Actions', 'One-Hand Use']
-  },
-  {
-    id: 'v3e',
-    name: 'V3e Fullscreen',
-    version: 'V3.E',
-    description: 'Immersives Fullscreen-Erlebnis',
-    path: '/umzugsofferten?v=3e',
-    color: 'bg-violet-500',
-    features: ['Fullscreen', 'No Distractions', 'Focus Mode']
-  },
-
-  // === V4 SUB-VARIANTS (Conversion-Focused) ===
-  {
-    id: 'v4a',
-    name: 'V4a Urgency Based',
-    version: 'V4.A',
-    description: 'FOMO & Dringlichkeit',
-    path: '/umzugsofferten?v=4a',
-    color: 'bg-orange-400',
-    features: ['Countdown Timer', 'Limited Slots', 'Urgency Badges']
+    features: ['Large Touch', 'Bottom Nav', 'Mobile Hero']
   },
   {
     id: 'v4b',
     name: 'V4b Social Proof',
     version: 'V4.B',
-    description: 'Social Proof überall',
-    path: '/umzugsofferten?v=4b',
+    description: 'Live-Aktivität & Reviews',
+    path: '/umzugsofferten?v=v4b',
     color: 'bg-orange-600',
     features: ['Live Activity', 'Reviews', 'User Count']
   },
   {
-    id: 'v4c',
-    name: 'V4c Value First',
-    version: 'V4.C',
-    description: 'Wert vor Preis',
-    path: '/umzugsofferten?v=4c',
-    color: 'bg-orange-700',
-    features: ['Value Props', 'Benefits First', 'ROI Calculator']
+    id: 'v6f',
+    name: 'V6f Ultimate',
+    version: 'V6.F',
+    description: 'Die ultimative Version',
+    path: '/umzugsofferten?v=v6f',
+    color: 'bg-indigo-600',
+    features: ['Best of All', 'AI-Enhanced', 'Premium']
   },
   {
-    id: 'v4d',
-    name: 'V4d Gamified',
-    version: 'V4.D',
-    description: 'Gamification-Elemente',
-    path: '/umzugsofferten?v=4d',
-    color: 'bg-orange-800',
-    features: ['Points', 'Achievements', 'Progress Rewards']
+    id: 'v9a',
+    name: 'V9a Zero-Friction',
+    version: 'V9.A',
+    description: 'Minimal & schnell',
+    path: '/umzugsofferten?v=v9a',
+    color: 'bg-rose-600',
+    features: ['Minimal Steps', 'Smart Defaults', 'Express']
   },
   {
-    id: 'v4e',
-    name: 'V4e Minimal Friction',
-    version: 'V4.E',
-    description: 'Minimal Friction Design',
-    path: '/umzugsofferten?v=4e',
-    color: 'bg-amber-500',
-    features: ['Smart Defaults', 'Skip Options', 'Express Lane']
-  },
-
-  // === V5 SUB-VARIANTS (Accessibility-Focused) ===
-  {
-    id: 'v5a',
-    name: 'V5a High Contrast',
-    version: 'V5.A',
-    description: 'Hoher Kontrast für Sichtbarkeit',
-    path: '/umzugsofferten?v=5a',
-    color: 'bg-pink-400',
-    features: ['High Contrast', 'Large Text', 'Clear Borders']
-  },
-  {
-    id: 'v5b',
-    name: 'V5b Screen Reader',
-    version: 'V5.B',
-    description: 'Screen Reader optimiert',
-    path: '/umzugsofferten?v=5b',
-    color: 'bg-pink-600',
-    features: ['ARIA Labels', 'Screen Reader', 'Focus Management']
-  },
-  {
-    id: 'v5c',
-    name: 'V5c Keyboard Nav',
-    version: 'V5.C',
-    description: 'Vollständige Tastatur-Navigation',
-    path: '/umzugsofferten?v=5c',
-    color: 'bg-pink-700',
-    features: ['Tab Navigation', 'Shortcuts', 'No Mouse Required']
-  },
-  {
-    id: 'v5d',
-    name: 'V5d Large Text',
-    version: 'V5.D',
-    description: 'Extra grosse Schrift',
-    path: '/umzugsofferten?v=5d',
-    color: 'bg-pink-800',
-    features: ['Large Text', 'Readable Fonts', 'Generous Spacing']
-  },
-  {
-    id: 'v5e',
-    name: 'V5e Reduced Motion',
-    version: 'V5.E',
-    description: 'Weniger Animationen',
-    path: '/umzugsofferten?v=5e',
-    color: 'bg-rose-400',
-    features: ['No Animations', 'Calm UI', 'Focus on Content']
+    id: 'ultimate-v7',
+    name: 'Ultimate V7',
+    version: 'ULT',
+    description: 'Kombiniert alle Best Practices',
+    path: '/umzugsofferten?v=ultimate-v7',
+    color: 'bg-gradient-to-r from-purple-500 to-pink-500',
+    features: ['Best Practices', 'AI-Optimiert', 'Top Performance']
   }
 ];
 
@@ -491,9 +369,9 @@ export default function FlowTester() {
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
           <Users className="h-8 w-8 text-primary" />
         </div>
-        <CardTitle>Flow Tester Registrierung</CardTitle>
+        <CardTitle>Umzugscheck Flow-Tester</CardTitle>
         <p className="text-muted-foreground text-sm">
-          Testen Sie alle 29 Umzugsofferten-Flows (9 Haupt-Varianten + 20 Sub-Varianten) und helfen Sie uns, den besten zu finden.
+          Testen Sie {FLOWS.length} verschiedene Umzugsofferten-Flows und helfen Sie uns, den besten zu finden. Jeder Flow dauert ca. 1-2 Minuten.
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -1014,7 +892,7 @@ export default function FlowTester() {
     <>
       <SEOHead 
         pageType="main-page"
-        pageName="Flow Tester"
+        pageName="Umzugscheck Flow-Tester"
         url="/flow-tester"
       />
       <div className="min-h-[60vh] bg-gradient-to-b from-background to-muted/30">
@@ -1026,8 +904,8 @@ export default function FlowTester() {
                 <BarChart3 className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <span className="font-bold text-lg">Flow Tester</span>
-                <Badge variant="outline" className="ml-2">Beta</Badge>
+                <span className="font-bold text-lg">Umzugscheck Flow-Tester</span>
+                <Badge variant="outline" className="ml-2">Live</Badge>
               </div>
             </div>
             {isRegistered && (
