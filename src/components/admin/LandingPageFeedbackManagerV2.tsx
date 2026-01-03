@@ -482,7 +482,24 @@ export function LandingPageFeedbackManagerV2() {
   const pageTypes = useMemo(() => [...new Set(pages.map(p => p.page_type))], [pages]);
   
   const getPageAnalyses = (pageId: string) => analyses.filter(a => a.landing_page_id === pageId);
-  const getLatestAnalysis = (pageId: string) => getPageAnalyses(pageId)[0];
+  
+  // Get the best analysis: prioritize completed analyses with actual scores over pending ones with 0 scores
+  const getLatestAnalysis = (pageId: string) => {
+    const pageAnalyses = getPageAnalyses(pageId);
+    if (pageAnalyses.length === 0) return undefined;
+    
+    // First try to find an analysis with actual scores (overall_score > 0 or has ai_summary/chatgpt_feedback)
+    const withData = pageAnalyses.find(a => 
+      (a.overall_score !== null && a.overall_score > 0) || 
+      a.ai_summary || 
+      a.chatgpt_feedback
+    );
+    if (withData) return withData;
+    
+    // Fallback to the most recent one
+    return pageAnalyses[0];
+  };
+  
   const getLatestVersion = (pageId: string) => versions.filter(v => v.landing_page_id === pageId)[0];
 
   const filteredAndSortedPages = useMemo(() => {
