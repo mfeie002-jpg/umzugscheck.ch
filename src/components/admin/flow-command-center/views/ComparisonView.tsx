@@ -170,14 +170,16 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const fetchFlowData = async (flowId: string, side: 'A' | 'B') => {
     setLoading(true);
     try {
-      // Fetch scores
+      // Fetch latest COMPLETED run (avoid picking currently running/incomplete runs)
       const { data: runData } = await supabase
         .from('flow_analysis_runs')
         .select('*')
         .eq('flow_id', flowId)
+        .eq('status', 'completed')
+        .not('completed_at', 'is', null)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       // Fetch issues count
       const { count: issueCount } = await supabase
