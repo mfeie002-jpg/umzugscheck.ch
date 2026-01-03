@@ -246,7 +246,7 @@ interface ServiceCardProps {
 function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: ServiceCardProps) {
   return (
     <div
-      className={`rounded-xl border-2 transition-all ${
+      className={`rounded-xl border-2 transition-all overflow-hidden ${
         isSelected
           ? "border-primary bg-primary/5 shadow-md"
           : "border-border hover:border-primary/30"
@@ -262,16 +262,16 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
             onToggle();
           }
         }}
-        // Enhanced: min-h-[60px] for better touch targets, improved padding
-        className={`w-full flex items-center gap-3 p-3 sm:p-3.5 text-left cursor-pointer min-h-[60px] touch-manipulation active:bg-muted/30 ${
+        // Issue #2: Enhanced touch targets (min 64px height) for better mobile UX
+        className={`w-full flex items-center gap-3 p-3.5 sm:p-4 text-left cursor-pointer min-h-[64px] touch-manipulation active:bg-muted/30 ${
           service.id === "umzug" ? "cursor-default" : ""
         }`}
         aria-disabled={service.id === "umzug"}
       >
-        {/* Enhanced: Larger checkbox for touch targets (24px) */}
+        {/* Issue #2, #6, #9, #25, #32, #49, #63, #82: Consistent checkbox design - 24px, rounded-md, matching all other checkboxes */}
         <div
-          className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 transition-all ${
-            isSelected ? "bg-primary border-primary scale-105" : "border-border"
+          className={`w-6 h-6 min-w-6 min-h-6 rounded-md flex items-center justify-center border-2 shrink-0 transition-all ${
+            isSelected ? "bg-primary border-primary scale-105" : "border-muted-foreground/40"
           }`}
         >
           {isSelected && <CheckCircle className="w-4 h-4 text-primary-foreground" />}
@@ -629,12 +629,14 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
   const handleNext = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -672,27 +674,29 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
   const matchingCompanies = getMatchingCompanies();
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden overflow-x-hidden max-w-full pb-24 md:pb-0">
+    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden overflow-x-hidden max-w-full pb-0 md:pb-0 box-border">
       {/* SCORE OPTIMIZATION: Prominent Trust Badges above the fold */}
       <div className="bg-muted/30 px-4 py-3 border-b border-border/50">
         <V1TrustBadgesHeader variant="compact" />
       </div>
       
-      {/* Issue #4, #7: Sticky Progress Header - bleibt beim Scrollen sichtbar */}
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border sticky top-0 z-20">
-        <div className="flex items-center justify-between mb-3">
-          {/* Issue #69: Trust signal - nur EINMAL hier, NICHT redundant */}
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-full shadow-sm min-h-[44px] touch-manipulation">
-            <Shield className="w-4 h-4" />
-            <span>100% kostenlos</span>
+      {/* Issue #5, #26, #36: Enhanced Sticky Progress Header - more visible on all devices */}
+      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-3 sm:py-4 border-b border-border sticky top-0 z-20">
+        {/* Issue #5: Prominent step counter at top - "Schritt X von Y" */}
+        <div className="flex items-center justify-between mb-2 sm:mb-3">
+          {/* Trust signal */}
+          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-900/30 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full shadow-sm">
+            <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="hidden xs:inline">100% kostenlos</span>
+            <span className="xs:hidden">Gratis</span>
           </div>
-          {/* Issue #2, #7, #62, #74: Consistent step indicator "X von Y" on all devices */}
-          <span className="text-sm sm:text-base font-bold text-foreground whitespace-nowrap">
-            Schritt {currentStep} von {totalSteps}
+          {/* Issue #5, #26: Larger, bolder step indicator */}
+          <span className="text-base sm:text-lg font-bold text-foreground whitespace-nowrap bg-primary/10 px-3 py-1.5 rounded-lg">
+            Schritt {currentStep} / {totalSteps}
           </span>
         </div>
         
-        {/* Issue #2, #10, #67: Verbesserte Progress-Leiste mit klarerem aktiven Schritt + grünem Haken */}
+        {/* Issue #30: Larger, more visible progress bar */}
         <div className="relative">
           <ol className="flex gap-1.5 sm:gap-2" role="list" aria-label="Fortschritt">
             {[
@@ -703,11 +707,11 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
             ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-2.5 sm:h-3 flex-1 rounded-full transition-all duration-300 ${
+                className={`h-3 sm:h-3.5 flex-1 rounded-full transition-all duration-300 ${
                   step < currentStep 
                     ? 'bg-green-500' 
                     : step === currentStep 
-                      ? 'bg-primary shadow-md ring-2 ring-primary/30' 
+                      ? 'bg-primary shadow-md ring-2 ring-primary/30 animate-pulse' 
                       : 'bg-muted-foreground/20'
                 }`}
                 role="listitem"
@@ -718,8 +722,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Issue #10, #60, #67: Labels mit höherem Kontrast + vollständigem Text auf allen Geräten */}
-        <div className="flex justify-between mt-2 sm:mt-3">
+        {/* Issue #10, #22: Step labels with clearer styling */}
+        <div className="flex justify-between mt-2">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -736,15 +740,15 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                     : 'text-muted-foreground/50 font-medium'
               }`}
             >
-              {step < currentStep && <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />}
-              <span className="text-[10px] sm:text-xs">{label}</span>
+              {step < currentStep && <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />}
+              <span className="text-[11px] sm:text-xs">{label}</span>
             </span>
           ))}
         </div>
       </div>
 
-      {/* Form Content - overflow-x-hidden prevents horizontal scroll */}
-      <div className="p-4 sm:p-6 overflow-x-hidden max-w-full">
+      {/* Form Content - overflow-x-hidden prevents horizontal scroll, extra bottom padding for sticky footer */}
+      <div className="p-4 sm:p-6 overflow-x-hidden max-w-full box-border pb-44 md:pb-6">
         <AnimatePresence mode="wait">
           {/* Step 1: Move Type - Using V1 component */}
           {currentStep === 1 && (
@@ -879,10 +883,11 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                       : "border-border hover:border-primary/50 bg-card"
                   }`}
                 >
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center border-2 shrink-0 ${
+                  {/* Issue #6, #9, #25, #32: Consistent checkbox - 24px, rounded-md */}
+                  <div className={`w-6 h-6 min-w-6 min-h-6 rounded-md flex items-center justify-center border-2 shrink-0 ${
                     formData.moveDate === "flexible" ? "bg-green-500 border-green-500" : "border-muted-foreground/40"
                   }`}>
-                    {formData.moveDate === "flexible" && <CheckCircle className="w-5 h-5 text-white" />}
+                    {formData.moveDate === "flexible" && <CheckCircle className="w-4 h-4 text-white" />}
                   </div>
                   <div className="flex-1 text-left">
                     <span className="text-sm font-semibold block">Termin noch offen / flexibel</span>
@@ -945,9 +950,10 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                         <span className="text-green-600 dark:text-green-400">✓ Weniger Rückfragen</span>
                       </div>
                     </div>
+                    {/* Issue #6, #9, #25, #32, #49, #63, #82: Consistent checkbox - 24px, rounded-md */}
                     <div
-                      className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
-                        formData.useVideoAI ? "bg-secondary border-secondary" : "border-border"
+                      className={`w-6 h-6 min-w-6 min-h-6 rounded-md flex items-center justify-center border-2 shrink-0 ${
+                        formData.useVideoAI ? "bg-secondary border-secondary" : "border-muted-foreground/40"
                       }`}
                     >
                       {formData.useVideoAI && (
@@ -1168,20 +1174,27 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </p>
                 </div>
 
-                {/* Issue #23, #34: Grössere Checkbox mit klarerer Pflichtfeld-Kennzeichnung */}
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/30 border border-border/50">
+                {/* Issue #5, #23, #34, #70: Grössere Checkbox mit klarerer Pflichtfeld-Kennzeichnung + Trust-Element */}
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/30 border-2 border-border/50 hover:border-primary/30 transition-colors">
                   <Checkbox
                     id="privacy-v1"
                     checked={formData.privacyAccepted}
                     onCheckedChange={(checked) => updateFormData("privacyAccepted", !!checked)}
-                    className="mt-0.5 h-6 w-6 shrink-0"
+                    className="mt-0.5 h-6 w-6 shrink-0 rounded-md"
                   />
-                  <label htmlFor="privacy-v1" className="text-xs text-muted-foreground cursor-pointer leading-relaxed">
-                    {/* Issue #7: Konsistente Link-Formatierung */}
-                    Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline font-medium">Datenschutzerklärung</a> und 
-                    bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden.
-                    <span className="text-red-500 font-bold ml-1">*</span>
-                  </label>
+                  <div className="space-y-2">
+                    <label htmlFor="privacy-v1" className="text-sm text-foreground cursor-pointer leading-relaxed font-medium">
+                      {/* Issue #5: Konsistente Beschriftung - "Datenschutzbestimmungen" statt nur "AGB" */}
+                      Ich akzeptiere die <a href="/datenschutz" className="text-primary hover:underline font-semibold">Datenschutzbestimmungen</a> und 
+                      bin einverstanden, dass meine Daten zur Offerteneinholung weitergegeben werden.
+                      <span className="text-red-500 font-bold ml-1">*</span>
+                    </label>
+                    {/* Issue #70: Trust-Element für Datenschutz direkt sichtbar */}
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5 text-green-600 shrink-0" />
+                      Ihre Daten werden SSL-verschlüsselt übertragen und nicht für Werbung verwendet
+                    </p>
+                  </div>
                 </div>
                 
                 {/* Issue #9: Bestätigung VOR dem letzten Klick */}
@@ -1196,14 +1209,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #1, #9, #12, #27, #29, #40: Enhanced Sticky Navigation - ALWAYS visible on mobile, NO overlay obscures CTA, higher z-index */}
-        <div className="flex gap-3 sm:gap-4 mt-6 
-                        md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-4
-                        bg-card/98 backdrop-blur-xl border-t-2 border-primary/20
-                        shadow-[0_-8px_30px_rgba(0,0,0,0.2)]
-                        pb-[max(1.25rem,calc(env(safe-area-inset-bottom)+1.25rem))]
-                        md:pb-0 md:shadow-none z-[9999]">
+        {/* Desktop-only navigation buttons - mobile uses V1StickyMobileCTA */}
+        <div className="hidden md:flex gap-3 sm:gap-4 mt-6">
           {currentStep > 1 && (
             <Button
               type="button"
@@ -1289,8 +1296,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </div>
         
-        {/* Issue #1, #10, #19: Increased spacer to 140px to prevent CTA overlap on Mobile */}
-        <div className="h-[140px] sm:h-[110px] md:hidden" aria-hidden="true" />
+        {/* Mobile spacer removed - V1StickyMobileCTA handles spacing */}
         
         {/* Desktop: Trust-Footer - Issue #5, #10: Better icons, prominent "200+ Firmen" */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">

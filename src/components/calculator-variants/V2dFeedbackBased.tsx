@@ -193,11 +193,17 @@ export const V2dFeedbackBased = memo(function V2dFeedbackBased() {
   }, [step, moveType, fromLocation, toLocation, apartmentSize, supportLevel, moveDate, name, email]);
 
   const handleNext = useCallback(() => {
-    if (step < 6) setStep(s => s + 1);
+    if (step < 6) {
+      setStep(s => s + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [step]);
 
   const handleBack = useCallback(() => {
-    if (step > 1) setStep(s => s - 1);
+    if (step > 1) {
+      setStep(s => s - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [step]);
 
   const handleSubmit = useCallback(() => {

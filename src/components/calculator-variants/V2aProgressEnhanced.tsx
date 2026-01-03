@@ -71,6 +71,7 @@ export const V2aProgressEnhanced = memo(function V2aProgressEnhanced() {
   const handleNext = () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       navigate('/umzugsofferten-bestaetigung');
     }
@@ -79,6 +80,7 @@ export const V2aProgressEnhanced = memo(function V2aProgressEnhanced() {
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

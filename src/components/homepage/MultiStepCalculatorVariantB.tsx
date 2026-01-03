@@ -61,6 +61,7 @@ export const MultiStepCalculatorVariantB = memo(function MultiStepCalculatorVari
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       navigate('/umzugsofferten-bestaetigung');
     }
@@ -69,6 +70,7 @@ export const MultiStepCalculatorVariantB = memo(function MultiStepCalculatorVari
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

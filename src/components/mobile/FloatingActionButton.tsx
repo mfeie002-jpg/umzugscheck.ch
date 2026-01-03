@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Calculator, FileText, Phone, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useHaptic } from '@/hooks/use-haptic';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -11,12 +11,24 @@ const actions = [
   { icon: Phone, label: 'Kontakt', href: '/kontakt', color: 'bg-orange-500' },
 ];
 
+// Pages where FAB should be hidden to avoid covering form elements
+const HIDDEN_ON_PATHS = [
+  '/umzugsofferten-v',
+  '/umzugsrechner',
+  '/offerte',
+  '/kontakt',
+];
+
 export const FloatingActionButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { trigger } = useHaptic();
   const isMobile = useIsMobile();
+  const location = useLocation();
 
-  if (!isMobile) return null;
+  // Hide FAB on flow pages to prevent overlapping with form elements
+  const shouldHide = HIDDEN_ON_PATHS.some(path => location.pathname.includes(path));
+  
+  if (!isMobile || shouldHide) return null;
 
   const toggleOpen = () => {
     trigger(isOpen ? 'light' : 'medium');
@@ -24,7 +36,7 @@ export const FloatingActionButton = () => {
   };
 
   return (
-    // Issue #12, #19: Position above bottom nav (64px nav + 16px gap = 80px min)
+    // Position above bottom nav (64px nav + 16px gap = 80px min)
     <div className="fixed right-4 bottom-24 z-40 lg:hidden">
       <AnimatePresence>
         {isOpen && (

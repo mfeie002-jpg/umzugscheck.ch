@@ -240,10 +240,12 @@ const Vergleich: React.FC = () => {
 
     trackEvent(`wizard_step_${currentStep}_complete`, { step: currentStep });
     setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentStep, validateStep, toast, trackEvent]);
 
   const prevStep = useCallback(() => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleSubmit = async () => {

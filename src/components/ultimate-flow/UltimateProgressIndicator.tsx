@@ -1,9 +1,12 @@
 /**
  * Ultimate Progress Indicator
  * 
- * - Klare Fortschrittsanzeige "Schritt X von Y"
- * - Visueller Progress Bar
- * - Responsive: Labels auf Desktop, Icons auf Mobile
+ * UX-OPTIMIZED VERSION:
+ * - Größere Touch-Targets (min 44x44px)
+ * - Klarere aktive Schritt-Anzeige
+ * - Mobile-optimierte Darstellung mit Steps sichtbar
+ * - Konsistente visuelle Hierarchie
+ * - WCAG-konforme Kontraste
  */
 
 import { Check } from "lucide-react";
@@ -28,27 +31,32 @@ export function UltimateProgressIndicator({
 
   return (
     <div className="space-y-3">
-      {/* Step Counter */}
+      {/* Step Counter - ENHANCED: Larger, clearer text */}
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">
+        <span className="text-sm sm:text-base font-semibold text-foreground">
           Schritt {currentStep} von {steps.length}
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-sm font-medium text-primary">
           {steps[currentStep - 1]?.label}
         </span>
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress Bar - ENHANCED: Taller, more visible */}
       <div className="relative">
-        <div className="h-2 bg-muted rounded-full overflow-hidden">
+        <div className="h-2.5 sm:h-2 bg-muted rounded-full overflow-hidden">
           <div 
             className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${Math.max(progress, 5)}%` }}
+            style={{ width: `${Math.max(progress, 8)}%` }}
+            role="progressbar"
+            aria-valuenow={currentStep}
+            aria-valuemin={1}
+            aria-valuemax={steps.length}
+            aria-label={`Schritt ${currentStep} von ${steps.length}`}
           />
         </div>
       </div>
 
-      {/* Step Labels (Desktop) */}
+      {/* Step Labels (Desktop) - ENHANCED: Larger touch targets */}
       <div className="hidden sm:flex justify-between">
         {steps.map((s) => {
           const isCompleted = s.id < currentStep;
@@ -61,19 +69,19 @@ export function UltimateProgressIndicator({
               className={cn(
                 "flex items-center gap-1.5 text-xs",
                 isCompleted && "text-primary",
-                isCurrent && "text-foreground font-medium",
+                isCurrent && "text-foreground font-semibold",
                 isPending && "text-muted-foreground"
               )}
             >
               <div 
                 className={cn(
-                  "w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium",
+                  "w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold transition-all",
                   isCompleted && "bg-primary text-primary-foreground",
-                  isCurrent && "bg-primary/20 text-primary border-2 border-primary",
+                  isCurrent && "bg-primary text-primary-foreground ring-2 ring-primary/30 ring-offset-2 ring-offset-background",
                   isPending && "bg-muted text-muted-foreground"
                 )}
               >
-                {isCompleted ? <Check className="h-3 w-3" /> : s.id}
+                {isCompleted ? <Check className="h-3.5 w-3.5" /> : s.id}
               </div>
               <span className="hidden md:inline">{s.shortLabel}</span>
             </div>
@@ -81,19 +89,37 @@ export function UltimateProgressIndicator({
         })}
       </div>
 
-      {/* Mobile Step Dots */}
-      <div className="flex sm:hidden justify-center gap-2">
-        {steps.map((s) => (
-          <div
-            key={s.id}
-            className={cn(
-              "w-2 h-2 rounded-full transition-all",
-              s.id < currentStep && "bg-primary",
-              s.id === currentStep && "bg-primary w-6",
-              s.id > currentStep && "bg-muted"
-            )}
-          />
-        ))}
+      {/* Mobile Step Indicators - ENHANCED: Larger, numbered for clarity */}
+      <div className="flex sm:hidden justify-between px-2">
+        {steps.map((s) => {
+          const isCompleted = s.id < currentStep;
+          const isCurrent = s.id === currentStep;
+          const isPending = s.id > currentStep;
+
+          return (
+            <div 
+              key={s.id}
+              className="flex flex-col items-center gap-1"
+            >
+              <div 
+                className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all",
+                  isCompleted && "bg-primary text-primary-foreground",
+                  isCurrent && "bg-primary text-primary-foreground ring-2 ring-primary/30 ring-offset-1 ring-offset-background scale-110",
+                  isPending && "bg-muted text-muted-foreground"
+                )}
+                aria-current={isCurrent ? "step" : undefined}
+              >
+                {isCompleted ? <Check className="h-4 w-4" /> : s.id}
+              </div>
+              {isCurrent && (
+                <span className="text-[10px] font-medium text-primary max-w-[60px] text-center truncate">
+                  {s.shortLabel}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -9,7 +9,7 @@
 
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Shield, Loader2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle, Shield, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface V1StickyMobileCTAProps {
@@ -45,68 +45,70 @@ export const V1StickyMobileCTA = memo(function V1StickyMobileCTA({
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="md:hidden fixed inset-x-0 bottom-0 z-50"
+      className="md:hidden fixed inset-x-0 bottom-0 z-[9999]"
     >
       {/* Gradient fade for smooth transition */}
       <div 
-        className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" 
+        className="absolute inset-x-0 -top-10 h-10 bg-gradient-to-t from-background to-transparent pointer-events-none" 
         aria-hidden="true" 
       />
       
-      <div className="bg-background/95 backdrop-blur-md border-t border-border shadow-2xl">
-        <div className="px-4 pt-3 pb-[max(env(safe-area-inset-bottom),12px)]">
-          {/* Trust signal row */}
-          <div className="flex items-center justify-center gap-3 mb-2.5 text-[10px] text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Shield className="w-3 h-3 text-green-600" />
+      <div className="bg-background/98 backdrop-blur-md border-t-2 border-primary/20 shadow-[0_-8px_30px_rgba(0,0,0,0.15)]">
+        {/* Issue #3: Safe area padding with minimum 20px for iOS home bar */}
+        <div className="px-4 pt-3 pb-[max(env(safe-area-inset-bottom,20px),20px)]">
+          {/* Trust signal row - more compact */}
+          <div className="flex items-center justify-center gap-4 mb-3 text-[11px] text-muted-foreground font-medium">
+            <span className="flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-green-600" />
               100% kostenlos
             </span>
-            <span className="flex items-center gap-1">
-              <CheckCircle className="w-3 h-3 text-primary" />
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="w-3.5 h-3.5 text-primary" />
               Unverbindlich
             </span>
           </div>
           
-          {/* Button row */}
+          {/* Button row - Issue #8: Both buttons styled consistently, Zurück as outline, Weiter as primary */}
           <div className="flex gap-3">
-            {/* Back button - only show after step 1 */}
+            {/* Back button - only show after step 1, styled as clear secondary action */}
             {currentStep > 1 && onBackClick && (
               <Button
                 type="button"
                 variant="outline"
                 onClick={onBackClick}
                 disabled={isLoading}
-                className="h-12 px-4 rounded-xl font-medium"
+                className="h-14 px-5 rounded-xl font-semibold text-base border-2 min-w-[90px] touch-manipulation active:scale-[0.97]"
               >
+                <ArrowLeft className="w-4 h-4 mr-1.5" />
                 Zurück
               </Button>
             )}
             
-            {/* Primary CTA */}
+            {/* Primary CTA - Issue #8, #15: Clearly dominant with larger size, stronger styling and high contrast */}
             <Button
               type="button"
               onClick={onPrimaryClick}
               disabled={!canProceed || isLoading}
-              className="flex-1 h-12 rounded-xl font-bold text-base shadow-lg disabled:opacity-70"
+              className="flex-1 h-14 rounded-xl font-bold text-base shadow-lg disabled:opacity-60 touch-manipulation active:scale-[0.97] bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                   Wird verarbeitet...
                 </>
               ) : (
                 <>
                   {label}
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </>
               )}
             </Button>
           </div>
           
-          {/* Hint for disabled state */}
+          {/* Hint for disabled state - Issue #46: Clear inline validation message */}
           {!canProceed && !isLoading && (
-            <p className="text-center text-[10px] text-muted-foreground mt-2">
-              Bitte füllen Sie alle Pflichtfelder aus
+            <p className="text-center text-[11px] text-amber-600 dark:text-amber-400 mt-2.5 font-medium">
+              Bitte alle Pflichtfelder ausfüllen
             </p>
           )}
         </div>

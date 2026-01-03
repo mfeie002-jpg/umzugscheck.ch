@@ -201,6 +201,7 @@ const About = lazy(() => import("./pages/About"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
+const RoomPlannerDemo = lazy(() => import("./pages/RoomPlannerDemo"));
 
 // Ranking pages
 const BesteFirmen = lazy(() => import("./pages/BesteFirmen"));
@@ -283,9 +284,7 @@ const ChatGPTOverview = lazy(() => import("./pages/admin/ChatGPTOverview"));
 const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
-const FlowComparison = lazy(() => import("./pages/admin/FlowComparison"));
-const FlowDeepAnalysis = lazy(() => import("./pages/admin/FlowDeepAnalysis"));
-const FlowAnalysisHub = lazy(() => import("./pages/admin/FlowAnalysisHub"));
+const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
 
@@ -396,12 +395,13 @@ const AdminRoutes = () => (
       <Route path="/admin/ai-command" element={<AICommandCenter />} />
       <Route path="/admin/capabilities" element={<AdminCapabilities />} />
       <Route path="/admin/varianten-testen" element={<VariantTestHub />} />
-      {/* Flow Analysis Hub - Main entry point for all flow analysis */}
-      <Route path="/admin/flow-analysis" element={<FlowAnalysisHub />} />
-      {/* Legacy routes redirect to new hub */}
-      <Route path="/admin/flow-comparison" element={<Navigate to="/admin/flow-analysis?view=ranking" replace />} />
-      <Route path="/admin/flow-comparison/:flowNumber" element={<FlowComparison />} />
-      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/admin/flow-analysis?view=analysis" replace />} />
+      {/* Flow Command Center - NEW Ultimate Hub */}
+      <Route path="/admin/flow-command-center" element={<FlowCommandCenter />} />
+      {/* Flow Analysis Hub - Legacy, redirects to new Command Center */}
+      <Route path="/admin/flow-analysis" element={<FlowCommandCenter />} />
+      <Route path="/admin/flow-comparison" element={<Navigate to="/admin/flow-command-center?view=comparison" replace />} />
+      <Route path="/admin/flow-comparison/:flowNumber" element={<Navigate to="/admin/flow-command-center?view=comparison" replace />} />
+      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/admin/flow-command-center?view=analysis" replace />} />
       <Route path="/admin/analysis-framework" element={<AnalysisFramework />} />
       <Route path="/admin/flow-feedback-variants" element={<FlowFeedbackVariants />} />
       <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
@@ -655,6 +655,7 @@ const AppRouterContent = () => {
           <Route path="/invisible-2" element={<InvisibleMoveV2 />} />
           <Route path="/invisible-3" element={<Blueprint />} />
           <Route path="/invisible-4" element={<BlueprintV2 />} />
+          <Route path="/raumplaner" element={<RoomPlannerDemo />} />
           <Route path="/sitemap" element={<Sitemap />} />
           <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
           <Route path="/:city/umzug" element={<CityOptimized />} />

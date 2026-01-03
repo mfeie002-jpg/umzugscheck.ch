@@ -187,11 +187,13 @@ export const LeadCaptureForm = ({
     
     if (isValid) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const prevStep = () => {
     setCurrentStep(currentStep - 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Success/Confirmation Screen

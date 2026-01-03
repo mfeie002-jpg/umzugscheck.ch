@@ -140,10 +140,14 @@ export function UltimateSwissFlow() {
     }
 
     setStep(prev => Math.min(prev + 1, 5));
+    // Scroll to top on step change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step, canProceed]);
 
   const handleBack = useCallback(() => {
     setStep(prev => Math.max(prev - 1, 1));
+    // Scroll to top on step change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleEditSection = useCallback((targetStep: number) => {
@@ -182,8 +186,8 @@ export function UltimateSwissFlow() {
         </div>
       </div>
 
-      {/* Main Content - extra padding for sticky footer */}
-      <main className="flex-1 container mx-auto px-4 py-6 max-w-2xl pb-40 md:pb-32">
+      {/* Main Content - CRITICAL FIX: Ample bottom padding ensures sticky footer never overlaps content */}
+      <main className="flex-1 container mx-auto px-4 py-4 sm:py-6 max-w-2xl pb-56 sm:pb-48 md:pb-40">
         <AnimatePresence mode="wait">
           <motion.div
             key={step}

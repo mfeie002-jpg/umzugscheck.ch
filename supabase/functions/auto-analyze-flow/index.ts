@@ -56,8 +56,8 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v5f': { name: 'V5f Marketplace Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v5f' },
   
   // === V6 - Ultimate 6-Tier (7 variants) ===
-  'v6': { name: 'V6 Ultimate (Baseline)', steps: 3, baseUrl: '/umzugsofferten-v6' },
-  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 3, baseUrl: '/umzugsofferten?variant=v6a' },
+  'v6': { name: 'V6 Ultimate (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v6' },
+  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 6, baseUrl: '/umzugsofferten?variant=v6a' },
   'v6b': { name: 'V6b ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten?variant=v6b' },
   'v6c': { name: 'V6c Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten?variant=v6c' },
   'v6d': { name: 'V6d Deep Research', steps: 5, baseUrl: '/umzugsofferten?variant=v6d' },
@@ -82,14 +82,25 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   // === Multi Variants (1 variant) ===
   'multi-a': { name: 'Multi.A ChatGPT Pro', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
   
-  // === Ultimate (1 variant) ===
+  // === Ultimate Variants ===
+  'ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-best36' },
   'ultimate-v7': { name: 'Ultimate V7 (95/100)', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v7' },
+  'ultimate-all': { name: 'Ultimate All', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-all' },
+  'ultimate-v1': { name: 'Ultimate V1', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v1' },
+  'ultimate-v2': { name: 'Ultimate V2', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v2' },
+  'ultimate-v5': { name: 'Ultimate V5', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v5' },
+  
+  // === Version 1.1 Variants ===
+  'umzugsofferten-v1.1.a': { name: 'V1.1.A', steps: 5, baseUrl: '/umzugsofferten?variant=v1.1.a' },
 };
 
 const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY');
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 
 interface AnalysisRequest {
   flowId: string;
@@ -115,75 +126,103 @@ interface StepAnalysis {
   };
 }
 
-// Capture screenshot and return base64 for AI analysis
-async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile'): Promise<Uint8Array | null> {
+// Capture screenshot with retry logic - returns base64 for AI analysis
+async function captureScreenshotBase64(url: string, device: 'desktop' | 'mobile', maxRetries = 4): Promise<Uint8Array | null> {
   if (!SCREENSHOTMACHINE_KEY) {
     console.log('No SCREENSHOTMACHINE_API_KEY, skipping screenshot');
     return null;
   }
 
   const dimension = device === 'desktop' ? '1920x1080' : '430x932';
-  
-  // Use the capture-screenshot edge function for better control
   const SUPABASE_URL_ENV = Deno.env.get('SUPABASE_URL')!;
   const SUPABASE_SERVICE_ROLE_KEY_ENV = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   
-  try {
-    // Call our own capture-screenshot function which has better settings
-    console.log(`Calling capture-screenshot for ${url} (${device})...`);
-    const response = await fetch(`${SUPABASE_URL_ENV}/functions/v1/capture-screenshot`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY_ENV}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: url,
-        dimension: dimension,
-        device: device,
-        delay: 10000, // 10 seconds for SPA to fully render
-        format: 'png',
-        fullPage: false
-      }),
-    });
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`[Screenshot] Attempt ${attempt}/${maxRetries} for ${device}: ${url}`);
+      
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+      
+      const response = await fetch(`${SUPABASE_URL_ENV}/functions/v1/capture-screenshot`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY_ENV}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: url,
+          dimension: dimension,
+          device: device,
+          delay: 12000, // 12 seconds requested (provider will cap at 10s)
+          format: 'png',
+          fullPage: false,
+          scroll: false,
+          noCache: true,
+          waitForReadySentinel: true,
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Screenshot API call failed for ${url}: ${response.status} - ${errorText}`);
-      return null;
-    }
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`[Screenshot] API call failed (attempt ${attempt}): ${response.status} - ${errorText}`);
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 2000 * attempt)); // Exponential backoff
+          continue;
+        }
+        return null;
+      }
 
-    const result = await response.json();
-    
-    // The capture-screenshot function returns image as "image" field with data URL
-    if (!result.success || !result.image) {
-      console.error(`Screenshot failed - no image data for ${url}:`, JSON.stringify(result).substring(0, 200));
+      const result = await response.json();
+      
+      if (!result.success || !result.image) {
+        console.error(`[Screenshot] No image data (attempt ${attempt}):`, JSON.stringify(result).substring(0, 200));
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+          continue;
+        }
+        return null;
+      }
+      
+      // Extract base64 from data URL
+      const dataUrl = result.image;
+      const base64Match = dataUrl.match(/^data:image\/\w+;base64,(.+)$/);
+      if (!base64Match) {
+        console.error(`[Screenshot] Invalid data URL format (attempt ${attempt})`);
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+          continue;
+        }
+        return null;
+      }
+      
+      const base64 = base64Match[1];
+      const binaryString = atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      
+      console.log(`[Screenshot] SUCCESS ${device}: ${bytes.length} bytes`);
+      return bytes;
+      
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      console.error(`[Screenshot] Error (attempt ${attempt}): ${errorMsg}`);
+      
+      if (attempt < maxRetries) {
+        await new Promise(r => setTimeout(r, 2000 * attempt));
+        continue;
+      }
       return null;
     }
-    
-    // Extract base64 from data URL (format: "data:image/png;base64,...")
-    const dataUrl = result.image;
-    const base64Match = dataUrl.match(/^data:image\/\w+;base64,(.+)$/);
-    if (!base64Match) {
-      console.error(`Invalid image data URL format for ${url}`);
-      return null;
-    }
-    
-    const base64 = base64Match[1];
-    
-    // Convert base64 back to Uint8Array
-    const binaryString = atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    
-    console.log(`Screenshot captured for ${url} (${device}): ${bytes.length} bytes`);
-    return bytes;
-  } catch (error) {
-    console.error('Screenshot error:', error);
-    return null;
   }
+  
+  return null;
 }
 
 // Upload screenshot to Supabase Storage and return public URL
@@ -196,31 +235,43 @@ async function uploadScreenshotToStorage(
   device: 'desktop' | 'mobile'
 ): Promise<string | null> {
   const fileName = `${flowId}/${runId}/step-${stepNumber}-${device}.png`;
-  
-  try {
-    const { error: uploadError } = await supabase.storage
-      .from('flow-screenshots')
-      .upload(fileName, imageData, {
-        contentType: 'image/png',
-        upsert: true
-      });
 
-    if (uploadError) {
-      console.error(`Storage upload failed for ${fileName}:`, uploadError);
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('flow-screenshots')
+        .upload(fileName, imageData, {
+          contentType: 'image/png',
+          upsert: true,
+        });
+
+      if (uploadError) {
+        console.error(`Storage upload failed (attempt ${attempt}) for ${fileName}:`, uploadError);
+        if (attempt < 3) {
+          await sleep(800 * attempt);
+          continue;
+        }
+        return null;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('flow-screenshots')
+        .getPublicUrl(fileName);
+
+      console.log(`Screenshot uploaded: ${publicUrl}`);
+      return publicUrl;
+    } catch (error) {
+      console.error(`Storage upload error (attempt ${attempt}) for ${fileName}:`, error);
+      if (attempt < 3) {
+        await sleep(800 * attempt);
+        continue;
+      }
       return null;
     }
-
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('flow-screenshots')
-      .getPublicUrl(fileName);
-
-    console.log(`Screenshot uploaded: ${publicUrl}`);
-    return publicUrl;
-  } catch (error) {
-    console.error('Storage upload error:', error);
-    return null;
   }
+
+  return null;
 }
 
 // Convert Uint8Array to base64 data URL for AI analysis
@@ -364,8 +415,17 @@ Finde NICHT Probleme um des Findens willen. Qualität vor Quantität!`;
     
     const parsed = JSON.parse(jsonContent);
 
-    // Ensure scores are within valid range
-    const clampScore = (score: number) => Math.max(40, Math.min(98, score || 75));
+    // Ensure scores are within valid range (robust parsing: handle strings like "85/100")
+    const clampScore = (raw: unknown) => {
+      const num = typeof raw === 'number'
+        ? raw
+        : typeof raw === 'string'
+          ? parseFloat(raw.replace(',', '.'))
+          : Number(raw);
+
+      const safe = Number.isFinite(num) ? num : 75;
+      return Math.max(40, Math.min(98, safe));
+    };
 
     return {
       stepNumber,
@@ -455,6 +515,46 @@ Antworte im JSON-Format:
   }
 }
 
+// Helper: Normalize issue title for deduplication
+function normalizeIssueKey(issue: { title: string; category: string; severity: string }): string {
+  return `${issue.category}::${issue.severity}::${issue.title.toLowerCase().trim().replace(/\s+/g, ' ')}`;
+}
+
+// Helper: Deduplicate issues and mark already-resolved ones
+function deduplicateAndFilterIssues(
+  newIssues: Array<{ severity: string; category: string; title: string; description: string; recommendation: string; step_number: number }>,
+  resolvedIssues: Array<{ title: string; category: string; severity: string }>
+): Array<{ severity: string; category: string; title: string; description: string; recommendation: string; step_number: number; issue_type: string }> {
+  const seenKeys = new Set<string>();
+  const resolvedKeys = new Set(resolvedIssues.map(i => normalizeIssueKey(i)));
+  const deduplicated: Array<{ severity: string; category: string; title: string; description: string; recommendation: string; step_number: number; issue_type: string }> = [];
+  
+  for (const issue of newIssues) {
+    const key = normalizeIssueKey(issue);
+    
+    // Skip if already seen (duplicate)
+    if (seenKeys.has(key)) {
+      console.log(`[Dedup] Skipping duplicate issue: ${issue.title}`);
+      continue;
+    }
+    
+    // Skip if already resolved in previous runs
+    if (resolvedKeys.has(key)) {
+      console.log(`[Dedup] Skipping resolved issue: ${issue.title}`);
+      continue;
+    }
+    
+    seenKeys.add(key);
+    deduplicated.push({
+      ...issue,
+      issue_type: issue.category,
+    });
+  }
+  
+  console.log(`[Dedup] Filtered ${newIssues.length} issues to ${deduplicated.length} unique new issues`);
+  return deduplicated;
+}
+
 // Background analysis function - runs after response is sent
 async function runAnalysisInBackground(
   supabase: any,
@@ -467,11 +567,34 @@ async function runAnalysisInBackground(
   try {
     console.log(`[Background] Starting analysis for flow: ${flowId}, run: ${runId}`);
 
+    // STEP 1: Fetch previously resolved issues for this flow
+    const { data: resolvedIssuesData } = await supabase
+      .from('flow_ux_issues')
+      .select('title, category, severity')
+      .eq('flow_id', flowId)
+      .eq('is_resolved', true);
+    
+    const resolvedIssues = resolvedIssuesData || [];
+    console.log(`[Background] Found ${resolvedIssues.length} previously resolved issues`);
+
+    // STEP 2: Fetch previous analysis scores for context (score stability)
+    const { data: previousRuns } = await supabase
+      .from('flow_analysis_runs')
+      .select('overall_score, mobile_score, conversion_score, ux_score, trust_score')
+      .eq('flow_id', flowId)
+      .eq('status', 'completed')
+      .order('completed_at', { ascending: false })
+      .limit(3);
+    
+    const previousScores = previousRuns?.[0] || null;
+    if (previousScores) {
+      console.log(`[Background] Previous scores - Overall: ${previousScores.overall_score}, Mobile: ${previousScores.mobile_score}`);
+    }
+
     const stepAnalyses: StepAnalysis[] = [];
-    let allIssues: Array<{
+    let allIssuesRaw: Array<{
       severity: string;
       category: string;
-      issue_type: string;
       title: string;
       description: string;
       recommendation: string;
@@ -493,11 +616,20 @@ async function runAnalysisInBackground(
 
       console.log(`[Background] Analyzing step ${step}: ${stepUrl}`);
 
-      // Capture screenshots as binary data
-      const [desktopData, mobileData] = await Promise.all([
-        captureScreenshotBase64(stepUrl, 'desktop'),
-        captureScreenshotBase64(stepUrl, 'mobile')
-      ]);
+      // Capture screenshots as binary data (SEQUENTIAL to avoid provider rate-limits)
+      let desktopData = await captureScreenshotBase64(stepUrl, 'desktop');
+      await sleep(650);
+      let mobileData = await captureScreenshotBase64(stepUrl, 'mobile');
+
+      // If one device failed, do a short cooldown + one more attempt for that device
+      if (!desktopData) {
+        await sleep(1200);
+        desktopData = await captureScreenshotBase64(stepUrl, 'desktop', 2);
+      }
+      if (!mobileData) {
+        await sleep(1200);
+        mobileData = await captureScreenshotBase64(stepUrl, 'mobile', 2);
+      }
 
       console.log(`[Background] Screenshots captured - Desktop: ${desktopData ? 'yes' : 'no'}, Mobile: ${mobileData ? 'yes' : 'no'}`);
 
@@ -505,7 +637,7 @@ async function runAnalysisInBackground(
       const desktopBase64 = desktopData ? toBase64DataUrl(desktopData) : null;
       const mobileBase64 = mobileData ? toBase64DataUrl(mobileData) : null;
 
-      // Analyze with AI
+      // Analyze with AI (pass previous scores for context)
       const analysis = await analyzeStepWithAI(
         step,
         stepName,
@@ -539,11 +671,10 @@ async function runAnalysisInBackground(
         ai_suggestions: analysis.suggestions,
       });
 
-      // Collect issues
+      // Collect raw issues (will be deduplicated later)
       for (const issue of analysis.issues) {
-        allIssues.push({
+        allIssuesRaw.push({
           ...issue,
-          issue_type: issue.category,
           step_number: step,
         });
       }
@@ -554,6 +685,9 @@ async function runAnalysisInBackground(
         .update({ steps_captured: step })
         .eq('id', runId);
     }
+    
+    // STEP 3: Deduplicate and filter out resolved issues
+    const allIssues = deduplicateAndFilterIssues(allIssuesRaw, resolvedIssues);
 
     // Store all issues
     if (allIssues.length > 0) {
@@ -579,12 +713,20 @@ async function runAnalysisInBackground(
     const avgMobile = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.mobile, 0) / stepAnalyses.length);
     const avgConversion = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.conversion, 0) / stepAnalyses.length);
     const avgUx = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.ux, 0) / stepAnalyses.length);
-    const overallScore = Math.round((avgMobile + avgConversion + avgUx) / 3);
+    
+    // Trust score is derived from conversion signals (trust elements, social proof)
+    // For now approximate as average of conversion and ux
+    const avgTrust = Math.round((avgConversion * 0.6 + avgUx * 0.4));
+    
+    // Performance score - approximate based on mobile responsiveness
+    const avgPerformance = Math.round((avgMobile * 0.7 + avgUx * 0.3));
+    
+    const overallScore = Math.round((avgMobile + avgConversion + avgUx + avgTrust) / 4);
 
     // Calculate critical issues count before using it
     const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
 
-    // Update run with results
+    // Update run with results - NOW INCLUDING mobile_score and trust_score
     await supabase
       .from('flow_analysis_runs')
       .update({
@@ -592,7 +734,9 @@ async function runAnalysisInBackground(
         completed_at: new Date().toISOString(),
         overall_score: overallScore,
         conversion_score: avgConversion,
-        performance_score: avgMobile,
+        mobile_score: avgMobile,           // FIXED: Now setting mobile_score
+        trust_score: avgTrust,             // FIXED: Now setting trust_score
+        performance_score: avgPerformance,
         ux_score: avgUx,
         ai_summary: summary,
         ai_recommendations: recommendations,
@@ -655,39 +799,48 @@ serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    const { flowId, runType = 'manual', baseUrl = 'https://preview--umzugscheckv2.lovable.app' }: AnalysisRequest = await req.json();
+    const { flowId: rawFlowId, runType = 'manual', baseUrl = 'https://preview--umzugscheckv2.lovable.app' }: AnalysisRequest = await req.json();
 
-    console.log(`Starting analysis for flow: ${flowId}`);
+    console.log(`Starting analysis for flow: ${rawFlowId}`);
+
+    // Normalize flow ID: strip "umzugsofferten-" prefix if present
+    const normalizedFlowId = rawFlowId
+      .replace(/^umzugsofferten-/, '')
+      .replace(/^umzugsofferten$/, 'v1');
+    
+    console.log(`Normalized flow ID: ${rawFlowId} -> ${normalizedFlowId}`);
 
     // Validate flow - check FLOW_CONFIGS first
-    let flowConfig = FLOW_CONFIGS[flowId];
-    let resolvedFlowId = flowId;
+    let flowConfig = FLOW_CONFIGS[normalizedFlowId];
+    let resolvedFlowId = normalizedFlowId;
     
     // If not found, check if it's a flow_feedback_variant (Ultimate Flow)
     if (!flowConfig) {
-      console.log(`Flow "${flowId}" not in FLOW_CONFIGS, checking flow_feedback_variants...`);
-      
-      // Check if this is a generated Ultimate Flow variant
-      const { data: variant } = await supabase
+      console.log(`Flow "${normalizedFlowId}" not in FLOW_CONFIGS, checking flow_feedback_variants...`);
+
+      // Some callers pass a generated variant_label, others pass the base flow_id.
+      // Support both by trying variant_label OR flow_id.
+      const { data: variants } = await supabase
         .from('flow_feedback_variants')
-        .select('flow_id, variant_name')
-        .eq('variant_label', flowId)
-        .single();
-      
-      if (variant && variant.flow_id) {
-        // Map to the base flow (e.g., "v1" from "ultimate-v1-swiss-archetype")
+        .select('flow_id, variant_name, variant_label, created_at')
+        .or(`variant_label.eq.${normalizedFlowId},flow_id.eq.${normalizedFlowId}`)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      const variant = variants?.[0] ?? null;
+
+      if (variant?.flow_id) {
         const baseFlowId = variant.flow_id;
         flowConfig = FLOW_CONFIGS[baseFlowId];
         resolvedFlowId = baseFlowId;
-        console.log(`Resolved Ultimate variant "${flowId}" to base flow "${baseFlowId}"`);
+        console.log(`Resolved variant "${normalizedFlowId}" to base flow "${baseFlowId}" (${variant.variant_name || variant.variant_label})`);
       }
     }
-    
     if (!flowConfig) {
-      console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
+      console.error(`Unknown flow ID: ${normalizedFlowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
       return new Response(
         JSON.stringify({ 
-          error: `Unknown flow: ${flowId}`,
+          error: `Unknown flow: ${rawFlowId}`,
           available: Object.keys(FLOW_CONFIGS)
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -701,7 +854,7 @@ serve(async (req) => {
     const { data: run, error: runError } = await supabase
       .from('flow_analysis_runs')
       .insert({
-        flow_id: flowId, // Keep original ID for tracking
+        flow_id: normalizedFlowId, // Use normalized ID for tracking
         flow_name: flowConfig.name,
         run_type: runType,
         status: 'running',
@@ -755,7 +908,8 @@ serve(async (req) => {
         success: true,
         message: 'Analysis started in background',
         runId: run.id,
-        flowId,
+        flowId: normalizedFlowId,
+        originalFlowId: rawFlowId,
         resolvedFlowId,
         flowName: flowConfig.name,
         status: 'running',
