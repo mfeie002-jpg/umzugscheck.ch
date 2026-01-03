@@ -420,13 +420,15 @@ serve(async (req) => {
     const safeWidth = Number.isFinite(width) && width > 0 ? width : 1920;
     
     if (isFullPage || isDimensionFull) {
-      // Use fixed tall height instead of xfull - much more reliable
-      const tallHeight = deviceType === "phone" ? 3000 : 2500;
-      effectiveDimension = `${safeWidth}x${tallHeight}`;
-      console.log(`Capture strategy: fixed-tall (avoiding unreliable xfull), effectiveDimension: ${effectiveDimension}`);
+      // CRITICAL FIX 10x: Use ScreenshotMachine's native "xfull" feature instead of fixed height.
+      // Previous approach (1920x2500) was truncating long pages - causing blank/missing content.
+      // The API's xfull feature properly captures the entire page height.
+      effectiveDimension = `${safeWidth}xfull`;
+      console.log(`Capture strategy: using API native xfull (full page capture), effectiveDimension: ${effectiveDimension}`);
     } else {
       console.log(`Capture strategy: viewport, effectiveDimension: ${effectiveDimension}`);
     }
+
 
     if (!SCREENSHOT_API_KEY) {
       console.error("SCREENSHOTMACHINE_API_KEY not configured");
@@ -441,9 +443,10 @@ serve(async (req) => {
     // that is still an early/blank render.
     const effectiveTimeoutMs = Math.min(120000, effectiveDelay + 60000);
 
-    // CRITICAL FIX: Always use selector for capture-mode URLs to wait for readiness
-    // Since we no longer use xfull, selector won't cause cropping issues
-    const useSelector = requestedSelector && !isDimensionFull;
+    // CRITICAL FIX: For full-page captures, NEVER use selector.
+    // Selector causes ScreenshotMachine to crop to the element, breaking full-page stitching.
+    // Only use selector for viewport captures to wait for readiness.
+    const useSelector = requestedSelector && !isFullPage && !isDimensionFull;
     const selector = useSelector ? requestedSelector : null;
 
     const params = new URLSearchParams({
@@ -465,20 +468,25 @@ serve(async (req) => {
       console.log(`Selector DISABLED for fullPage capture (would cause wrong cropping)`);
     }
 
-    // Scroll through the page to trigger lazy-loaded/IntersectionObserver content.
-    // IMPORTANT:
-    // - For capture-mode funnels (uc_capture / uc_step) we default to NO scrolling.
-    //   Provider scrolling often ends at the footer/blank and results in "header + white" screenshots.
-    // - For full-page captures we rely on `xfull` stitching.
+    // CRITICAL FIX 10x: For full-page captures, use proper scroll parameters.
+    // The API needs scroll=true + scrolldelay for xfull to work correctly.
+    // This ensures all lazy-loaded content is triggered before stitching.
     const scrollExplicit = typeof scroll === "boolean";
-    const shouldScroll = scrollExplicit ? Boolean(scroll) : (!isCaptureMode && !isFullPage);
-
-    if (shouldScroll) {
+    
+    if (isFullPage || isDimensionFull) {
+      // Full-page ALWAYS needs scrolling to trigger lazy-loaded content
       params.set("scroll", "true");
-      params.set("scrolldelay", "2500");
-      // Only scroll-to-bottom for NON-capture viewport screenshots.
-      if (!isFullPage && !isCaptureMode) params.set("scrollto", "bottom");
-      console.log(`Scroll enabled (${isFullPage ? "fullPage" : "viewport"})`);
+      params.set("scrolldelay", "2000"); // Give time for content to load during scroll
+      console.log("Full-page scroll enabled (xfull stitching mode)");
+    } else {
+      // Viewport captures: use caller preference or defaults
+      const shouldScroll = scrollExplicit ? Boolean(scroll) : (!isCaptureMode);
+      if (shouldScroll) {
+        params.set("scroll", "true");
+        params.set("scrolldelay", "1500");
+        if (!isCaptureMode) params.set("scrollto", "bottom");
+        console.log(`Scroll enabled (viewport)`);
+      }
     }
 
     // Add hash authentication if secret phrase is configured
@@ -660,53 +668,10 @@ serve(async (req) => {
       console.log(`Output image dimensions: ${pngDims.width}x${pngDims.height}`);
     }
 
-    // Heuristic blank retry DISABLED:
-    // Previously tried to detect "blank" captures by file size and auto-retry as xfull.
-    // This caused false positives (legit small images) and unpredictable behavior.
-    // If the screenshot is actually blank, increasing delay or using xfull manually is more reliable.
+    // CRITICAL FIX 10x: Blank retry DISABLED – no longer needed with native xfull.
+    // When caller requests fullPage, we now use ScreenshotMachine's native xfull feature.
+    // This properly captures the entire page without needing heuristic retries.
     const shouldRetryBlank = false;
-
-    if (shouldRetryBlank) {
-      console.warn(
-        `Heuristic blank screenshot suspected (${bytes.byteLength} bytes). Retrying as full-page (xfull).`
-      );
-
-      const safeWidth = Number.isFinite(width) && width > 0 ? width : 1920;
-      const retryParams = new URLSearchParams(params);
-      retryParams.set("dimension", `${safeWidth}xfull`);
-      retryParams.set("timeout", String(Math.min(120000, effectiveDelay + 60000)));
-      // Avoid scroll-to-bottom behavior on the retry; rely on xfull stitching.
-      retryParams.delete("scroll");
-      retryParams.delete("scrolldelay");
-      retryParams.delete("scrollto");
-
-      const retryApiUrl = `https://api.screenshotmachine.com?${retryParams.toString()}`;
-      const retryResponse = await fetch(retryApiUrl);
-      const retryHeader = retryResponse.headers.get("x-screenshotmachine-response");
-
-      if (retryHeader && retryHeader !== "ok") {
-        console.warn(`Retry (xfull) error header: ${retryHeader}`);
-      } else if (retryResponse.ok) {
-        const retryBuffer = await retryResponse.arrayBuffer();
-        const retryBytes = new Uint8Array(retryBuffer);
-
-        if (retryBytes.byteLength > bytes.byteLength) {
-          imageBuffer = retryBuffer;
-          bytes = retryBytes;
-          pngDims = getPngDimensions(bytes);
-          if (pngDims) {
-            console.log(`Output image dimensions (retry): ${pngDims.width}x${pngDims.height}`);
-          }
-        } else {
-          console.warn(
-            `Retry (xfull) did not improve size (${retryBytes.byteLength} <= ${bytes.byteLength}); keeping original.`
-          );
-        }
-      } else {
-        const errorText = await retryResponse.text();
-        console.warn(`Retry (xfull) HTTP error: ${retryResponse.status}`, errorText);
-      }
-    }
 
     let base64 = "";
     const chunkSize = 8192;

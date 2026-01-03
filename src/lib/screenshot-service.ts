@@ -52,11 +52,10 @@ export async function captureScreenshot(options: ScreenshotOptions): Promise<Scr
       }
     })();
 
-    // In capture mode we default to NO provider-side scrolling (it often ends at footer/blank),
-    // and instead rely on the in-app stabilization + long delay.
-    const effectiveScroll = options.fullPage
-      ? false
-      : (options.scroll ?? (isCaptureLike ? false : true));
+    // CRITICAL FIX 10x: For full-page captures, DO use scrolling.
+    // Provider-side scrolling is necessary for xfull stitching to trigger lazy-loaded content.
+    // Previous "scroll: false" for fullPage was causing blank sections in long pages.
+    const effectiveScroll = options.scroll ?? (isCaptureLike ? false : true);
 
     // In capture mode we default to waiting for the in-app sentinel.
     const waitForReadySentinel = options.waitForReadySentinel ?? isCaptureLike;
@@ -72,9 +71,9 @@ export async function captureScreenshot(options: ScreenshotOptions): Promise<Scr
         delay: Math.min(requestedDelay, 10000), // Cap at API max
         format: options.format || 'png',
         fullPage: options.fullPage || false,
-        // IMPORTANT: many "scroll" based full-page captures create large white gaps.
-        // When fullPage is requested, rely on stitching mode instead of scrolling.
-        scroll: options.fullPage ? false : effectiveScroll,
+        // CRITICAL FIX 10x: Full-page captures NEED scrolling for xfull stitching.
+        // The API scrolls to trigger lazy-loaded content, then stitches the full page.
+        scroll: effectiveScroll,
         noCache: options.noCache !== false,
         // Enables provider-side selector for capture-ready (safe because sentinel is viewport-sized)
         ...(waitForReadySentinel
