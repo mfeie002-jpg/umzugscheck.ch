@@ -537,124 +537,110 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 <Loader2 className="h-6 w-6 animate-spin" />
               </div>
             ) : (
-              <ScrollArea className="h-[600px] pr-4">
-                <div className="space-y-8">
-                  {Array.from({ length: maxSteps }, (_, i) => i + 1).map(stepNum => {
-                    const stepA = screenshotsA?.steps.find(s => s.stepNumber === stepNum);
-                    const stepB = screenshotsB?.steps.find(s => s.stepNumber === stepNum);
-                    
-                    return (
-                      <div key={stepNum} className="space-y-4">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">Schritt {stepNum}</Badge>
-                        </div>
-                        
-                        {/* Mobile Screenshots Side-by-Side - Compact */}
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Smartphone className="h-3 w-3" />
-                              <span className="truncate">{flowA}</span>
+              <div className="relative">
+                {/* Horizontal Slider */}
+                <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                  <div className="flex gap-6" style={{ minWidth: 'max-content' }}>
+                    {Array.from({ length: maxSteps }, (_, i) => i + 1).map(stepNum => {
+                      const stepA = screenshotsA?.steps.find(s => s.stepNumber === stepNum);
+                      const stepB = screenshotsB?.steps.find(s => s.stepNumber === stepNum);
+                      
+                      return (
+                        <div key={stepNum} className="flex-shrink-0 w-[280px] space-y-3 p-3 bg-muted/30 rounded-lg border">
+                          <Badge variant="outline" className="text-xs">Schritt {stepNum}</Badge>
+                          
+                          {/* Mobile Screenshots Side-by-Side */}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1">
+                              <p className="text-[10px] text-muted-foreground truncate">{flowA}</p>
+                              {stepA?.mobileUrl ? (
+                                <button
+                                  onClick={() => openZoom(stepA.mobileUrl!, `${flowA} - Schritt ${stepNum} Mobile`)}
+                                  className="relative group w-full aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
+                                >
+                                  <img
+                                    src={stepA.mobileUrl}
+                                    alt={`${flowA} Step ${stepNum} Mobile`}
+                                    className="w-full h-full object-cover object-top"
+                                  />
+                                </button>
+                              ) : (
+                                <div className="w-full aspect-[9/16] bg-muted rounded flex items-center justify-center">
+                                  <ImageOff className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              )}
                             </div>
-                            {stepA?.mobileUrl ? (
-                              <button
-                                onClick={() => openZoom(stepA.mobileUrl!, `${flowA} - Schritt ${stepNum} Mobile`)}
-                                className="relative group w-full max-w-[100px] aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
-                              >
-                                <img
-                                  src={stepA.mobileUrl}
-                                  alt={`${flowA} Step ${stepNum} Mobile`}
-                                  className="w-full h-full object-cover object-top"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                              </button>
-                            ) : (
-                              <div className="w-full max-w-[100px] aspect-[9/16] bg-muted rounded flex items-center justify-center">
-                                <ImageOff className="h-4 w-4 text-muted-foreground" />
-                              </div>
-                            )}
+                            
+                            <div className="space-y-1">
+                              <p className="text-[10px] text-muted-foreground truncate">{flowB}</p>
+                              {stepB?.mobileUrl ? (
+                                <button
+                                  onClick={() => openZoom(stepB.mobileUrl!, `${flowB} - Schritt ${stepNum} Mobile`)}
+                                  className="relative group w-full aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
+                                >
+                                  <img
+                                    src={stepB.mobileUrl}
+                                    alt={`${flowB} Step ${stepNum} Mobile`}
+                                    className="w-full h-full object-cover object-top"
+                                  />
+                                </button>
+                              ) : (
+                                <div className="w-full aspect-[9/16] bg-muted rounded flex items-center justify-center">
+                                  <ImageOff className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
                           </div>
                           
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Smartphone className="h-3 w-3" />
-                              <span className="truncate">{flowB}</span>
+                          {/* Desktop Screenshots Side-by-Side */}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              {stepA?.desktopUrl ? (
+                                <button
+                                  onClick={() => openZoom(stepA.desktopUrl!, `${flowA} - Schritt ${stepNum} Desktop`)}
+                                  className="relative group w-full aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
+                                >
+                                  <img
+                                    src={stepA.desktopUrl}
+                                    alt={`${flowA} Step ${stepNum} Desktop`}
+                                    className="w-full h-full object-cover object-top"
+                                  />
+                                </button>
+                              ) : (
+                                <div className="w-full aspect-video bg-muted rounded flex items-center justify-center">
+                                  <ImageOff className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              )}
                             </div>
-                            {stepB?.mobileUrl ? (
-                              <button
-                                onClick={() => openZoom(stepB.mobileUrl!, `${flowB} - Schritt ${stepNum} Mobile`)}
-                                className="relative group w-full max-w-[100px] aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
-                              >
-                                <img
-                                  src={stepB.mobileUrl}
-                                  alt={`${flowB} Step ${stepNum} Mobile`}
-                                  className="w-full h-full object-cover object-top"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                              </button>
-                            ) : (
-                              <div className="w-full max-w-[100px] aspect-[9/16] bg-muted rounded flex items-center justify-center">
-                                <ImageOff className="h-4 w-4 text-muted-foreground" />
-                              </div>
-                            )}
+                            
+                            <div>
+                              {stepB?.desktopUrl ? (
+                                <button
+                                  onClick={() => openZoom(stepB.desktopUrl!, `${flowB} - Schritt ${stepNum} Desktop`)}
+                                  className="relative group w-full aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
+                                >
+                                  <img
+                                    src={stepB.desktopUrl}
+                                    alt={`${flowB} Step ${stepNum} Desktop`}
+                                    className="w-full h-full object-cover object-top"
+                                  />
+                                </button>
+                              ) : (
+                                <div className="w-full aspect-video bg-muted rounded flex items-center justify-center">
+                                  <ImageOff className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                        
-                        {/* Desktop Screenshots Side-by-Side - Compact */}
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Monitor className="h-3 w-3" />
-                              <span className="truncate">{flowA}</span>
-                            </div>
-                            {stepA?.desktopUrl ? (
-                              <button
-                                onClick={() => openZoom(stepA.desktopUrl!, `${flowA} - Schritt ${stepNum} Desktop`)}
-                                className="relative group w-full max-w-[180px] aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
-                              >
-                                <img
-                                  src={stepA.desktopUrl}
-                                  alt={`${flowA} Step ${stepNum} Desktop`}
-                                  className="w-full h-full object-cover object-top"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                              </button>
-                            ) : (
-                              <div className="w-full max-w-[180px] aspect-video bg-muted rounded flex items-center justify-center">
-                                <ImageOff className="h-4 w-4 text-muted-foreground" />
-                              </div>
-                            )}
-                          </div>
-                          
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Monitor className="h-3 w-3" />
-                              <span className="truncate">{flowB}</span>
-                            </div>
-                            {stepB?.desktopUrl ? (
-                              <button
-                                onClick={() => openZoom(stepB.desktopUrl!, `${flowB} - Schritt ${stepNum} Desktop`)}
-                                className="relative group w-full max-w-[180px] aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
-                              >
-                                <img
-                                  src={stepB.desktopUrl}
-                                  alt={`${flowB} Step ${stepNum} Desktop`}
-                                  className="w-full h-full object-cover object-top"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                              </button>
-                            ) : (
-                              <div className="w-full max-w-[180px] aspect-video bg-muted rounded flex items-center justify-center">
-                                <ImageOff className="h-4 w-4 text-muted-foreground" />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </ScrollArea>
+                
+                {/* Scroll hint */}
+                <div className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+              </div>
             )}
           </CardContent>
         </Card>
