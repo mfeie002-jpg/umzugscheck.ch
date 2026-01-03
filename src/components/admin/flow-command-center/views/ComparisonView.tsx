@@ -710,50 +710,50 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
       {/* Side-by-Side Comparison Modal */}
       <Dialog open={!!zoomComparison} onOpenChange={() => setZoomComparison(null)}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] p-4 overflow-auto">
-          <DialogTitle className="text-center mb-4">
+        <DialogContent className="max-w-3xl p-4">
+          <DialogTitle className="text-center text-sm mb-3">
             Schritt {zoomComparison?.stepNum} - {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
           </DialogTitle>
           
           {zoomComparison && (
-            <div className="grid grid-cols-2 gap-4 h-[80vh]">
+            <div className="grid grid-cols-2 gap-3 max-h-[70vh]">
               {/* Flow A (Left) */}
-              <div className="flex flex-col h-full">
-                <div className="p-2 bg-blue-600 text-white text-sm rounded-t text-center font-medium">
+              <div className="flex flex-col">
+                <div className="p-1.5 bg-blue-600 text-white text-xs rounded-t text-center font-medium">
                   {flowA} (Alt)
                 </div>
-                <div className="flex-1 bg-muted rounded-b overflow-hidden flex items-center justify-center">
+                <div className="flex-1 bg-muted rounded-b overflow-auto flex items-start justify-center p-2">
                   {zoomComparison.urlA ? (
                     <img
                       src={zoomComparison.urlA}
                       alt={zoomComparison.labelA}
-                      className="max-w-full max-h-full object-contain"
+                      className="max-w-full h-auto max-h-[60vh] object-contain"
                     />
                   ) : (
-                    <div className="text-center text-muted-foreground">
-                      <ImageOff className="h-12 w-12 mx-auto mb-2" />
-                      <p>Kein Screenshot</p>
+                    <div className="text-center text-muted-foreground py-8">
+                      <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                      <p className="text-sm">Kein Screenshot</p>
                     </div>
                   )}
                 </div>
               </div>
               
               {/* Flow B (Right) */}
-              <div className="flex flex-col h-full">
-                <div className="p-2 bg-green-600 text-white text-sm rounded-t text-center font-medium">
+              <div className="flex flex-col">
+                <div className="p-1.5 bg-green-600 text-white text-xs rounded-t text-center font-medium">
                   {flowB} (Neu)
                 </div>
-                <div className="flex-1 bg-muted rounded-b overflow-hidden flex items-center justify-center">
+                <div className="flex-1 bg-muted rounded-b overflow-auto flex items-start justify-center p-2">
                   {zoomComparison.urlB ? (
                     <img
                       src={zoomComparison.urlB}
                       alt={zoomComparison.labelB}
-                      className="max-w-full max-h-full object-contain"
+                      className="max-w-full h-auto max-h-[60vh] object-contain"
                     />
                   ) : (
-                    <div className="text-center text-muted-foreground">
-                      <ImageOff className="h-12 w-12 mx-auto mb-2" />
-                      <p>Kein Screenshot</p>
+                    <div className="text-center text-muted-foreground py-8">
+                      <ImageOff className="h-8 w-8 mx-auto mb-2" />
+                      <p className="text-sm">Kein Screenshot</p>
                     </div>
                   )}
                 </div>
