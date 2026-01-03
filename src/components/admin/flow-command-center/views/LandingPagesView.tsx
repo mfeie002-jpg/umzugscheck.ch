@@ -642,13 +642,26 @@ function PageDetailPanel({
                         <Sparkles className="h-4 w-4 text-yellow-500" />
                         Quick Wins
                       </h4>
-                      <ul className="space-y-1">
-                        {latestAnalysis.quick_wins.map((win: string, i: number) => (
-                          <li key={i} className="text-sm flex items-start gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                            {win}
-                          </li>
-                        ))}
+                      <ul className="space-y-2">
+                        {latestAnalysis.quick_wins.map((win: any, i: number) => {
+                          // Handle both string and object formats
+                          const winText = typeof win === 'string' 
+                            ? win 
+                            : (win?.title || win?.description || JSON.stringify(win));
+                          const winImpact = typeof win === 'object' && win?.impact ? win.impact : null;
+                          
+                          return (
+                            <li key={i} className="text-sm flex items-start gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <span>{winText}</span>
+                                {winImpact && (
+                                  <span className="ml-2 text-xs text-muted-foreground">({winImpact})</span>
+                                )}
+                              </div>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
