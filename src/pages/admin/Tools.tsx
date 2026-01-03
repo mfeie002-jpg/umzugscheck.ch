@@ -34,6 +34,7 @@ import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import { AutoLandingPageScreenshots } from "@/components/admin/AutoLandingPageScreenshots";
+import { LandingPageFeedbackManager } from "@/components/admin/LandingPageFeedbackManager";
 import { BackgroundExportManager } from "@/components/admin/BackgroundExportManager";
 import { JobsDownloadsCenter } from "@/components/admin/JobsDownloadsCenter";
 import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
@@ -3337,7 +3338,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
           {/* Calculator Flow Review Tab */}
           <TabsContent value="calculator-review">
             <Tabs defaultValue="manual" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+              <TabsList className="grid w-full grid-cols-5 max-w-3xl">
                 <TabsTrigger value="manual">Manuell + Export</TabsTrigger>
                 <TabsTrigger value="autoflow">
                   <Zap className="h-4 w-4 mr-1" />
@@ -3345,6 +3346,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                 </TabsTrigger>
                 <TabsTrigger value="screenshots">Flow Screenshots</TabsTrigger>
                 <TabsTrigger value="landing-page-screenshots">Landing Pages</TabsTrigger>
+                <TabsTrigger value="landing-page-feedback">LP Feedback</TabsTrigger>
                 <TabsTrigger value="background-export" className="flex items-center gap-1">
                   <span>Background Export</span>
                 </TabsTrigger>
@@ -3366,6 +3368,10 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               
               <TabsContent value="landing-page-screenshots">
                 <AutoLandingPageScreenshots />
+              </TabsContent>
+              
+              <TabsContent value="landing-page-feedback">
+                <LandingPageFeedbackManager />
               </TabsContent>
               
               <TabsContent value="background-export">

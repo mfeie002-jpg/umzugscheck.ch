@@ -69,6 +69,7 @@ interface CaptureResult {
   pageName: string;
   urlPath: string;
   dimension: string;
+  deviceType: 'desktop' | 'mobile';
   success: boolean;
   imageBase64?: string;
   error?: string;
@@ -215,6 +216,7 @@ export function AutoLandingPageScreenshots() {
             pageName: page.display_name,
             urlPath: page.url_path,
             dimension: dim.value,
+            deviceType: dim.type as 'desktop' | 'mobile',
             success: result.success,
             imageBase64: result.image,
             error: result.error,
@@ -232,6 +234,7 @@ export function AutoLandingPageScreenshots() {
             pageName: page.display_name,
             urlPath: page.url_path,
             dimension: dim.value,
+            deviceType: dim.type as 'desktop' | 'mobile',
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",
           };
@@ -261,9 +264,8 @@ export function AutoLandingPageScreenshots() {
     const zip = new JSZip();
 
     for (const result of successfulResults) {
-      const dimLabel = result.dimension.includes("390") ? "mobile" : "desktop";
       const safeSlug = result.urlPath.replace(/\//g, '_').replace(/^_/, '');
-      const fileName = `landing-pages/${safeSlug}-${dimLabel}.png`;
+      const fileName = `landing-pages/${safeSlug}-${result.deviceType}.png`;
 
       const base64Data = result.imageBase64!.replace(
         /^data:image\/\w+;base64,/,
@@ -300,7 +302,7 @@ export function AutoLandingPageScreenshots() {
           .limit(1);
 
         const nextVersionNumber = (versions?.[0]?.version_number || 0) + 1;
-        const dimLabel = result.dimension.includes("390") ? "mobile" : "desktop";
+        const dimLabel = result.deviceType;
 
         // Upload to storage
         const fileName = `landing-pages/${result.pageId}/v${nextVersionNumber}-${dimLabel}-${Date.now()}.png`;
@@ -684,7 +686,7 @@ export function AutoLandingPageScreenshots() {
             <ScrollArea className="h-[300px]">
               <div className="space-y-2">
                 {results.map((result, idx) => {
-                  const dimLabel = result.dimension.includes("390")
+                  const dimLabel = result.deviceType === "mobile"
                     ? "Mobile"
                     : "Desktop";
                   return (
