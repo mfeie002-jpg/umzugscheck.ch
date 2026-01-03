@@ -117,25 +117,35 @@ export function ReloadDiagnostics() {
     }
 
     // ---------- Patch scrollTo to catch programmatic scrolls ----------
-    try {
-      const origScrollTo = window.scrollTo.bind(window);
-      (window as any).scrollTo = (...args: any[]) => {
-        const scrollY = typeof args[0] === "number" ? args[0] : (args[0] as ScrollToOptions)?.top;
-        // Only log scroll-to-top (likely culprit for unwanted jumps)
-        if (scrollY === 0 || scrollY === undefined) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            "%c[ReloadDiagnostics] window.scrollTo(0) detected",
-            "color: orange; font-weight: bold",
-            { args, href: window.location.href }
-          );
-          // eslint-disable-next-line no-console
-          console.warn(new Error("scrollTo stack").stack);
-        }
-        return origScrollTo(...(args as [any]));
-      };
-    } catch {
-      // ignore
+    // SKIP patching in capture/render mode to avoid breaking screenshot stability
+    const skipScrollPatch = (() => {
+      try {
+        const p = new URLSearchParams(window.location.search);
+        return p.get("uc_capture") === "1" || p.get("uc_render") === "1";
+      } catch { return false; }
+    })();
+    
+    if (!skipScrollPatch) {
+      try {
+        const origScrollTo = window.scrollTo.bind(window);
+        (window as any).scrollTo = (...args: any[]) => {
+          const scrollY = typeof args[0] === "number" ? args[0] : (args[0] as ScrollToOptions)?.top;
+          // Only log scroll-to-top (likely culprit for unwanted jumps)
+          if (scrollY === 0 || scrollY === undefined) {
+            // eslint-disable-next-line no-console
+            console.warn(
+              "%c[ReloadDiagnostics] window.scrollTo(0) detected",
+              "color: orange; font-weight: bold",
+              { args, href: window.location.href }
+            );
+            // eslint-disable-next-line no-console
+            console.warn(new Error("scrollTo stack").stack);
+          }
+          return origScrollTo(...(args as [any]));
+        };
+      } catch {
+        // ignore
+      }
     }
 
     // ---------- Event listeners ----------

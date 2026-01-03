@@ -17,7 +17,7 @@ const ZuerichLandingPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet>
         <title>Umzugsfirmen Zürich vergleichen | Gratis Offerten | Umzugscheck.ch</title>
         <meta

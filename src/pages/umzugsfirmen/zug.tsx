@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { Header } from "@/components/homepage/Header";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -329,7 +327,7 @@ const ZugLandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet>
         <html lang="de-CH" />
         <title>Umzug Zug – Jetzt gratis Umzugsfirma finden | Bis 40% sparen</title>

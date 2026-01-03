@@ -54,7 +54,7 @@ export default function WallisLandingPage() {
   const handleFormSubmit = (e: React.FormEvent) => { e.preventDefault(); localStorage.setItem("uc_prefill", JSON.stringify({ from: fromLocation, to: toLocation, size: apartmentSize, source: `${CANTON_SLUG}-landing`, timestamp: Date.now() })); navigate("/umzugsofferten"); };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet><title>Umzug {CANTON_NAME} – Gratis Umzugsfirma finden | Bis 40% sparen</title><meta name="description" content={`Vergleiche 18+ geprüfte Umzugsfirmen im Kanton ${CANTON_NAME} ✓ Sion, Brig, Zermatt ✓ Bis zu 40% sparen!`} /><link rel="canonical" href={`https://umzugscheck.ch/umzugsfirmen/${CANTON_SLUG}`} /></Helmet>
       <main>
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">

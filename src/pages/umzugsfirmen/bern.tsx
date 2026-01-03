@@ -132,7 +132,7 @@ const BernLandingPage = () => {
   const schemaOrg = { "@context": "https://schema.org", "@graph": [{ "@type": "LocalBusiness", "name": "Umzugscheck.ch - Kanton Bern", "description": "Vergleiche 50+ geprüfte Umzugsfirmen im Kanton Bern.", "areaServed": { "@type": "Place", "name": "Kanton Bern, Schweiz" }, "priceRange": "CHF 580 - CHF 3500", "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "3456" } }, { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }] };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet><html lang="de-CH" /><title>Umzug Bern – Jetzt gratis Umzugsfirma finden | Bis 40% sparen</title><meta name="description" content="Vergleiche 50+ geprüfte Umzugsfirmen im Kanton Bern ✓ Kostenlose Offerten ✓ Bern, Thun, Biel ✓ Bis zu 40% sparen!" /><link rel="canonical" href="https://umzugscheck.ch/umzugsfirmen/bern" /><script type="application/ld+json">{JSON.stringify(schemaOrg)}</script></Helmet>
       <main>
         <section className="relative min-h-[92vh] flex items-center overflow-hidden">

@@ -207,7 +207,7 @@ export default function AargauLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-uc-capture-root="1">
       <Helmet>
         <html lang="de-CH" />
         <title>Umzug {CANTON_NAME} – Jetzt gratis Umzugsfirma finden | Bis 40% sparen</title>
