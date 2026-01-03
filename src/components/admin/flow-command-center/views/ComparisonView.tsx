@@ -549,131 +549,103 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                           <Badge variant="outline">Schritt {stepNum}</Badge>
                         </div>
                         
-                        {/* Mobile Screenshots Side-by-Side */}
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Smartphone className="h-4 w-4" />
-                              <span>{flowA} - Mobile</span>
+                        {/* Mobile Screenshots Side-by-Side - Compact */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Smartphone className="h-3 w-3" />
+                              <span className="truncate">{flowA}</span>
                             </div>
                             {stepA?.mobileUrl ? (
                               <button
                                 onClick={() => openZoom(stepA.mobileUrl!, `${flowA} - Schritt ${stepNum} Mobile`)}
-                                className="relative group w-full aspect-[9/16] bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                                className="relative group w-full max-w-[100px] aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                               >
                                 <img
                                   src={stepA.mobileUrl}
                                   alt={`${flowA} Step ${stepNum} Mobile`}
                                   className="w-full h-full object-cover object-top"
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
-                                    Vergrößern
-                                  </span>
-                                </div>
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                               </button>
                             ) : (
-                              <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">
-                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
-                                  <span className="text-xs">Kein Screenshot</span>
-                                </div>
+                              <div className="w-full max-w-[100px] aspect-[9/16] bg-muted rounded flex items-center justify-center">
+                                <ImageOff className="h-4 w-4 text-muted-foreground" />
                               </div>
                             )}
                           </div>
                           
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Smartphone className="h-4 w-4" />
-                              <span>{flowB} - Mobile</span>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Smartphone className="h-3 w-3" />
+                              <span className="truncate">{flowB}</span>
                             </div>
                             {stepB?.mobileUrl ? (
                               <button
                                 onClick={() => openZoom(stepB.mobileUrl!, `${flowB} - Schritt ${stepNum} Mobile`)}
-                                className="relative group w-full aspect-[9/16] bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                                className="relative group w-full max-w-[100px] aspect-[9/16] bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                               >
                                 <img
                                   src={stepB.mobileUrl}
                                   alt={`${flowB} Step ${stepNum} Mobile`}
                                   className="w-full h-full object-cover object-top"
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
-                                    Vergrößern
-                                  </span>
-                                </div>
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                               </button>
                             ) : (
-                              <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">
-                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
-                                  <span className="text-xs">Kein Screenshot</span>
-                                </div>
+                              <div className="w-full max-w-[100px] aspect-[9/16] bg-muted rounded flex items-center justify-center">
+                                <ImageOff className="h-4 w-4 text-muted-foreground" />
                               </div>
                             )}
                           </div>
                         </div>
                         
-                        {/* Desktop Screenshots Side-by-Side */}
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Monitor className="h-4 w-4" />
-                              <span>{flowA} - Desktop</span>
+                        {/* Desktop Screenshots Side-by-Side - Compact */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Monitor className="h-3 w-3" />
+                              <span className="truncate">{flowA}</span>
                             </div>
                             {stepA?.desktopUrl ? (
                               <button
                                 onClick={() => openZoom(stepA.desktopUrl!, `${flowA} - Schritt ${stepNum} Desktop`)}
-                                className="relative group w-full aspect-video bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                                className="relative group w-full max-w-[180px] aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                               >
                                 <img
                                   src={stepA.desktopUrl}
                                   alt={`${flowA} Step ${stepNum} Desktop`}
                                   className="w-full h-full object-cover object-top"
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
-                                    Vergrößern
-                                  </span>
-                                </div>
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                               </button>
                             ) : (
-                              <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">
-                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
-                                  <span className="text-xs">Kein Screenshot</span>
-                                </div>
+                              <div className="w-full max-w-[180px] aspect-video bg-muted rounded flex items-center justify-center">
+                                <ImageOff className="h-4 w-4 text-muted-foreground" />
                               </div>
                             )}
                           </div>
                           
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Monitor className="h-4 w-4" />
-                              <span>{flowB} - Desktop</span>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Monitor className="h-3 w-3" />
+                              <span className="truncate">{flowB}</span>
                             </div>
                             {stepB?.desktopUrl ? (
                               <button
                                 onClick={() => openZoom(stepB.desktopUrl!, `${flowB} - Schritt ${stepNum} Desktop`)}
-                                className="relative group w-full aspect-video bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                                className="relative group w-full max-w-[180px] aspect-video bg-muted rounded overflow-hidden border hover:border-primary transition-colors"
                               >
                                 <img
                                   src={stepB.desktopUrl}
                                   alt={`${flowB} Step ${stepNum} Desktop`}
                                   className="w-full h-full object-cover object-top"
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                  <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1.5 rounded-full">
-                                    Vergrößern
-                                  </span>
-                                </div>
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                               </button>
                             ) : (
-                              <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">
-                                  <ImageOff className="h-8 w-8 mx-auto mb-2" />
-                                  <span className="text-xs">Kein Screenshot</span>
-                                </div>
+                              <div className="w-full max-w-[180px] aspect-video bg-muted rounded flex items-center justify-center">
+                                <ImageOff className="h-4 w-4 text-muted-foreground" />
                               </div>
                             )}
                           </div>
