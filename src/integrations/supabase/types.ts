@@ -1508,6 +1508,251 @@ export type Database = {
         }
         Relationships: []
       }
+      landing_page_analyses: {
+        Row: {
+          accessibility_score: number | null
+          ai_recommendations: Json | null
+          ai_summary: string | null
+          chatgpt_feedback: string | null
+          chatgpt_feedback_date: string | null
+          competitor_comparison: Json | null
+          completed_at: string | null
+          conversion_score: number | null
+          created_at: string
+          id: string
+          issues: Json | null
+          landing_page_id: string
+          mobile_score: number | null
+          overall_score: number | null
+          performance_score: number | null
+          quick_wins: Json | null
+          run_type: string | null
+          seo_score: number | null
+          started_at: string | null
+          status: string | null
+          strengths: Json | null
+          trust_score: number | null
+          ux_score: number | null
+          version_id: string | null
+        }
+        Insert: {
+          accessibility_score?: number | null
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          chatgpt_feedback?: string | null
+          chatgpt_feedback_date?: string | null
+          competitor_comparison?: Json | null
+          completed_at?: string | null
+          conversion_score?: number | null
+          created_at?: string
+          id?: string
+          issues?: Json | null
+          landing_page_id: string
+          mobile_score?: number | null
+          overall_score?: number | null
+          performance_score?: number | null
+          quick_wins?: Json | null
+          run_type?: string | null
+          seo_score?: number | null
+          started_at?: string | null
+          status?: string | null
+          strengths?: Json | null
+          trust_score?: number | null
+          ux_score?: number | null
+          version_id?: string | null
+        }
+        Update: {
+          accessibility_score?: number | null
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          chatgpt_feedback?: string | null
+          chatgpt_feedback_date?: string | null
+          competitor_comparison?: Json | null
+          completed_at?: string | null
+          conversion_score?: number | null
+          created_at?: string
+          id?: string
+          issues?: Json | null
+          landing_page_id?: string
+          mobile_score?: number | null
+          overall_score?: number | null
+          performance_score?: number | null
+          quick_wins?: Json | null
+          run_type?: string | null
+          seo_score?: number | null
+          started_at?: string | null
+          status?: string | null
+          strengths?: Json | null
+          trust_score?: number | null
+          ux_score?: number | null
+          version_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landing_page_analyses_landing_page_id_fkey"
+            columns: ["landing_page_id"]
+            isOneToOne: false
+            referencedRelation: "landing_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landing_page_analyses_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "landing_page_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      landing_page_comparisons: {
+        Row: {
+          comparison_type: string | null
+          created_at: string
+          diff_data: Json | null
+          id: string
+          notes: string | null
+          version_a_id: string
+          version_b_id: string
+        }
+        Insert: {
+          comparison_type?: string | null
+          created_at?: string
+          diff_data?: Json | null
+          id?: string
+          notes?: string | null
+          version_a_id: string
+          version_b_id: string
+        }
+        Update: {
+          comparison_type?: string | null
+          created_at?: string
+          diff_data?: Json | null
+          id?: string
+          notes?: string | null
+          version_a_id?: string
+          version_b_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landing_page_comparisons_version_a_id_fkey"
+            columns: ["version_a_id"]
+            isOneToOne: false
+            referencedRelation: "landing_page_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landing_page_comparisons_version_b_id_fkey"
+            columns: ["version_b_id"]
+            isOneToOne: false
+            referencedRelation: "landing_page_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      landing_page_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          desktop_screenshot_url: string | null
+          html_snapshot: string | null
+          id: string
+          landing_page_id: string
+          markdown_content: string | null
+          meta_data: Json | null
+          mobile_screenshot_url: string | null
+          rendered_html: string | null
+          seo_issues: Json | null
+          version_name: string | null
+          version_number: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          desktop_screenshot_url?: string | null
+          html_snapshot?: string | null
+          id?: string
+          landing_page_id: string
+          markdown_content?: string | null
+          meta_data?: Json | null
+          mobile_screenshot_url?: string | null
+          rendered_html?: string | null
+          seo_issues?: Json | null
+          version_name?: string | null
+          version_number?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          desktop_screenshot_url?: string | null
+          html_snapshot?: string | null
+          id?: string
+          landing_page_id?: string
+          markdown_content?: string | null
+          meta_data?: Json | null
+          mobile_screenshot_url?: string | null
+          rendered_html?: string | null
+          seo_issues?: Json | null
+          version_name?: string | null
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landing_page_versions_landing_page_id_fkey"
+            columns: ["landing_page_id"]
+            isOneToOne: false
+            referencedRelation: "landing_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      landing_pages: {
+        Row: {
+          canton_code: string | null
+          city_name: string | null
+          created_at: string
+          custom_instructions: string | null
+          display_name: string
+          id: string
+          is_active: boolean | null
+          page_type: string
+          priority: number | null
+          slug: string
+          tags: string[] | null
+          updated_at: string
+          url_path: string
+        }
+        Insert: {
+          canton_code?: string | null
+          city_name?: string | null
+          created_at?: string
+          custom_instructions?: string | null
+          display_name: string
+          id?: string
+          is_active?: boolean | null
+          page_type?: string
+          priority?: number | null
+          slug: string
+          tags?: string[] | null
+          updated_at?: string
+          url_path: string
+        }
+        Update: {
+          canton_code?: string | null
+          city_name?: string | null
+          created_at?: string
+          custom_instructions?: string | null
+          display_name?: string
+          id?: string
+          is_active?: boolean | null
+          page_type?: string
+          priority?: number | null
+          slug?: string
+          tags?: string[] | null
+          updated_at?: string
+          url_path?: string
+        }
+        Relationships: []
+      }
       lead_bids: {
         Row: {
           bid_amount: number
