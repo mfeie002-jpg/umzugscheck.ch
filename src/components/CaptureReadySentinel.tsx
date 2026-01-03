@@ -396,7 +396,7 @@ export function CaptureReadySentinel({
     const graceMs = 500; // Reduced grace period
     const stabilityMs = 200; // Reduced stability requirement
     const networkSettleMs = 300; // Reduced network settle time
-    const maxWaitMs = 15000; // Reduced max wait (was 45s)
+    const maxWaitMs = 20000; // INCREASED to 20s for full-page captures (was 15s)
     startedAtRef.current = Date.now();
     let lastNetworkSettled = 0;
 
@@ -452,8 +452,8 @@ export function CaptureReadySentinel({
         
         scrollToTopSafe();
         
-        // Extra delay for paint to complete after images load
-        await new Promise(r => setTimeout(r, 200));
+        // INCREASED delay for full-page paint (was 200ms, now 500ms for xfull captures)
+        await new Promise(r => setTimeout(r, 500));
         
         scrollToTopSafe();
         
