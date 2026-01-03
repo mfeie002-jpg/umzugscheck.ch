@@ -218,7 +218,7 @@ export interface FlowAlert {
 // Command Center View Modes
 // ─────────────────────────────────────────────────────────────
 
-export type ViewMode = 'dashboard' | 'ranking' | 'analysis' | 'comparison' | 'history' | 'settings';
+export type ViewMode = 'dashboard' | 'ranking' | 'analysis' | 'comparison' | 'history' | 'settings' | 'landing-pages';
 
 export type InterfaceMode = 'tabs' | 'modular' | 'ai-first';
 
