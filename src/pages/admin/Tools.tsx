@@ -35,6 +35,7 @@ import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import { AutoLandingPageScreenshots } from "@/components/admin/AutoLandingPageScreenshots";
 import { LandingPageFeedbackManager } from "@/components/admin/LandingPageFeedbackManager";
+import { LandingPageFeedbackManagerV2 } from "@/components/admin/LandingPageFeedbackManagerV2";
 import { BackgroundExportManager } from "@/components/admin/BackgroundExportManager";
 import { JobsDownloadsCenter } from "@/components/admin/JobsDownloadsCenter";
 import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
@@ -3371,7 +3372,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               </TabsContent>
               
               <TabsContent value="landing-page-feedback">
-                <LandingPageFeedbackManager />
+                <LandingPageFeedbackManagerV2 />
               </TabsContent>
               
               <TabsContent value="background-export">
