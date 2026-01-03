@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { Header } from "@/components/homepage/Header";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
