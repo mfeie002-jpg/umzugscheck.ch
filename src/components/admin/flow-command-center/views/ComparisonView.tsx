@@ -493,8 +493,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             {categories.map(cat => {
               const valueA = dataA.score?.[cat.key];
               const valueB = dataB.score?.[cat.key];
-              const numA = typeof valueA === 'number' ? valueA : 0;
-              const numB = typeof valueB === 'number' ? valueB : 0;
+              const hasA = typeof valueA === 'number' && valueA !== null;
+              const hasB = typeof valueB === 'number' && valueB !== null;
+              const numA = hasA ? valueA : 0;
+              const numB = hasB ? valueB : 0;
               const winner = getWinner(cat.key);
               
               return (
@@ -507,16 +509,18 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                     <div className="flex items-center gap-4">
                       <span className={cn(
                         'font-bold',
-                        winner === 'A' ? 'text-green-600' : ''
+                        winner === 'A' ? 'text-green-600' : '',
+                        !hasA && 'text-muted-foreground'
                       )}>
-                        {numA}
+                        {hasA ? numA : '-'}
                       </span>
                       <span className="text-muted-foreground">vs</span>
                       <span className={cn(
                         'font-bold',
-                        winner === 'B' ? 'text-green-600' : ''
+                        winner === 'B' ? 'text-green-600' : '',
+                        !hasB && 'text-muted-foreground'
                       )}>
-                        {numB}
+                        {hasB ? numB : '-'}
                       </span>
                     </div>
                   </div>
