@@ -42,7 +42,8 @@ import {
   ChevronRight,
   Filter,
   Download,
-  Wand2
+  Wand2,
+  Camera
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -460,6 +461,13 @@ export default function FlowCommandCenter() {
     await handleAnalyzeSelected(changedFlows);
   };
 
+  // Refresh all screenshots for all flows (runs analysis which captures new screenshots)
+  const handleRefreshAllScreenshots = async () => {
+    const flowIds = getAllFlowIds();
+    toast.info(`Screenshots werden für ${flowIds.length} Flow(s) neu erfasst...`);
+    await handleAnalyzeSelected(flowIds);
+  };
+
   const handleViewChange = (view: ViewMode) => {
     setActiveView(view);
   };
@@ -546,6 +554,20 @@ export default function FlowCommandCenter() {
               <Play className="h-4 w-4 mr-2" />
             )}
             Alle analysieren
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={handleRefreshAllScreenshots}
+            disabled={isAnalyzing}
+            title="Alle Screenshots für alle Flows neu erfassen"
+          >
+            {isAnalyzing ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Camera className="h-4 w-4 mr-2" />
+            )}
+            Alle Screenshots
           </Button>
         </div>
       </div>
