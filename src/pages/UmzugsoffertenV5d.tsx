@@ -15,7 +15,7 @@ import {
   BottomStickyCTA,
   PageEnhancements,
 } from "@/components/offerten-v2";
-import { V5dLargeText } from "@/components/calculator-variants";
+import { V5dFeedbackBased } from "@/components/calculator-variants";
 import { Link } from "react-router-dom";
 
 const UmzugsoffertenV5d = () => {
@@ -34,7 +34,7 @@ const UmzugsoffertenV5d = () => {
         </div>
 
         <section className="container mx-auto px-4 sm:px-6 max-w-6xl pt-4 sm:pt-6 pb-8">
-          <V5dLargeText />
+          <V5dFeedbackBased />
         </section>
 
         <AIInsightsBar />

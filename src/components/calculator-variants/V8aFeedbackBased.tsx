@@ -13,29 +13,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
 import { Shield, CheckCircle2, Lock, MapPin, User, Mail, Phone, Edit2, ArrowRight, Info } from 'lucide-react';
+import { ProgressHeader, StickyFooterCTA as SharedStickyFooterCTA, TrustBar } from './shared';
 
 const STEPS = [
-  { id: 1, title: 'Basics' },
-  { id: 2, title: 'Überprüfen' },
-  { id: 3, title: 'Fertig' },
+  { id: 1, label: 'Basics' },
+  { id: 2, label: 'Überprüfen' },
 ];
-
-function ProgressHeader({ step, total, title }: { step: number; total: number; title: string }) {
-  const pct = Math.round((step / total) * 100);
-  return (
-    <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b pb-4 pt-4 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <span className="text-sm text-muted-foreground">Schritt {step}/{total}</span>
-        </div>
-        <Progress value={pct} className="h-2" />
-      </div>
-    </div>
-  );
-}
 
 function TransparencyPanel() {
   return (
@@ -59,45 +43,7 @@ function TransparencyPanel() {
   );
 }
 
-function TrustBar() {
-  return (
-    <div className="flex flex-wrap justify-center gap-4 text-sm mb-6">
-      <div className="flex items-center gap-2">
-        <Shield className="h-4 w-4 text-primary" />
-        <span className="font-medium">Unverbindlich</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <CheckCircle2 className="h-4 w-4 text-primary" />
-        <span className="font-medium">Geprüft</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <Lock className="h-4 w-4 text-primary" />
-        <span className="font-medium">DSG/DSGVO</span>
-      </div>
-    </div>
-  );
-}
-
-function StickyFooterCTA({
-  primaryLabel, onPrimary, disabled, hint, secondaryLabel, onSecondary,
-}: {
-  primaryLabel: string; onPrimary: () => void; disabled?: boolean; hint?: string;
-  secondaryLabel?: string; onSecondary?: () => void;
-}) {
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur border-t safe-area-inset-bottom">
-      <div className="max-w-md mx-auto p-4 space-y-2">
-        {hint && <p className="text-center text-sm text-muted-foreground">{hint}</p>}
-        <Button onClick={onPrimary} disabled={disabled} className="w-full h-14 text-lg font-semibold" size="lg">
-          {primaryLabel}
-        </Button>
-        {secondaryLabel && onSecondary && (
-          <Button variant="ghost" onClick={onSecondary} className="w-full">{secondaryLabel}</Button>
-        )}
-      </div>
-    </div>
-  );
-}
+// Using SharedStickyFooterCTA and TrustBar from shared components
 
 function Field({
   label, name, type = 'text', value, onChange, placeholder, error, autoComplete, inputMode, icon: Icon,
@@ -223,7 +169,7 @@ export const V8aFeedbackBased: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <ProgressHeader step={currentStep} total={STEPS.length - 1} title={STEPS[currentStep - 1].title} />
+      <ProgressHeader step={currentStep} total={STEPS.length} title={STEPS[currentStep - 1]?.label} />
 
       <div className="max-w-md mx-auto p-4 pt-6">
         {currentStep === 1 && (
@@ -301,7 +247,7 @@ export const V8aFeedbackBased: React.FC = () => {
         )}
       </div>
 
-      <StickyFooterCTA
+      <SharedStickyFooterCTA
         primaryLabel={currentStep === 2 ? 'Offerten erhalten' : 'Überprüfen'}
         onPrimary={handleNext}
         disabled={currentStep === 1 ? (

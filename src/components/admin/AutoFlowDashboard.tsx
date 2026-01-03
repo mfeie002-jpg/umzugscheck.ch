@@ -135,7 +135,7 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, flowConfig, getSeverityBad
       // Generate a prompt based on the issue and send it to AI for auto-fix
       const fixPrompt = generateFixPrompt(issue);
       
-      // Call Lovable AI to generate a fix
+      // Call edge function to auto-fix the issue
       const response = await supabase.functions.invoke('auto-fix-issue', {
         body: {
           issueId: issue.id,
@@ -151,20 +151,26 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, flowConfig, getSeverityBad
       });
 
       if (response.error) {
-        // If edge function doesn't exist yet, show the prompt for manual fix
-        toast.info(
-          `Auto-Fix Prompt generiert! Kopiere diesen Prompt zu ChatGPT:\n\n${fixPrompt}`,
-          { duration: 10000 }
-        );
-        // For now, mark as resolved since we've generated guidance
+        console.error('Auto-fix edge function error:', response.error);
+        // Fallback: copy prompt to clipboard
+        await navigator.clipboard.writeText(fixPrompt);
+        toast.info('Fix-Prompt in Zwischenablage kopiert! Füge ihn in Lovable Chat ein.', { duration: 5000 });
+        onResolve();
+      } else if (response.data?.fixSuggestion) {
+        // Show the AI-generated fix suggestion
+        await navigator.clipboard.writeText(response.data.fixSuggestion);
+        toast.success('AI Fix-Vorschlag generiert und kopiert!', { duration: 5000 });
         onResolve();
       } else {
-        toast.success('Issue wurde automatisch gefixt!');
+        toast.success('Issue als gelöst markiert');
         onResolve();
       }
     } catch (err) {
       console.error('Auto-fix failed:', err);
-      toast.error('Auto-Fix fehlgeschlagen - manueller Fix erforderlich');
+      // Fallback: copy prompt to clipboard
+      const fixPrompt = generateFixPrompt(issue);
+      await navigator.clipboard.writeText(fixPrompt);
+      toast.info('Fix-Prompt kopiert (manueller Fix erforderlich)', { duration: 5000 });
     } finally {
       setFixing(false);
     }
@@ -375,7 +381,31 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                   </Badge>
                 )}
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); }}>
+                  {/* Copy Analyse-Prompt Button */}
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8" 
+                    title="Analyse-Prompt kopieren"
+                    onClick={async (e) => { 
+                      e.stopPropagation(); 
+                      const prompt = `Analysiere den Flow "${config.name}" (${flowId}) auf UX/Conversion-Probleme.
+                      
+Aktueller Score: ${run?.overall_score ?? 'Nicht analysiert'}/100
+- Mobile: ${run?.performance_score ?? '-'}/100
+- Conversion: ${run?.conversion_score ?? '-'}/100  
+- UX: ${run?.ux_score ?? '-'}/100
+
+${run?.ai_summary ? `Zusammenfassung: ${run.ai_summary}` : ''}
+
+Gefundene Issues: ${flowIssues.length} (${criticalCount} kritisch)
+${flowIssues.slice(0, 5).map(i => `- [${i.severity}] ${i.title}`).join('\n')}
+
+Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
+                      await navigator.clipboard.writeText(prompt);
+                      toast.success('Analyse-Prompt kopiert!');
+                    }}
+                  >
                     <Copy className="h-4 w-4" />
                   </Button>
                   {isExpanded ? (
@@ -386,6 +416,37 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                 </div>
               </div>
             </div>
+            
+            {/* Detail Scores - Always Visible */}
+            {run && (
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t">
+                <div className="flex items-center gap-2">
+                  <Smartphone className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Mobile:</span>
+                  <span className={`font-bold ${getScoreColor(run.performance_score)}`}>
+                    {run.performance_score || 0}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Conversion:</span>
+                  <span className={`font-bold ${getScoreColor(run.conversion_score)}`}>
+                    {run.conversion_score || 0}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">UX:</span>
+                  <span className={`font-bold ${getScoreColor(run.ux_score)}`}>
+                    {run.ux_score || 0}
+                  </span>
+                </div>
+                <div className="ml-auto text-xs text-muted-foreground">
+                  {new Date(run.created_at).toLocaleString('de-CH', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            )}
+            
             {run?.ai_summary && (
               <CardDescription className="mt-2 line-clamp-2">
                 {run.ai_summary}
@@ -471,13 +532,55 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
                     ))}
                   </div>
                 </ScrollArea>
+
+                {/* Verbesserungs-Prompt Button - nur sichtbar wenn Score < 95 */}
+                {run && (run.overall_score || 0) < 95 && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={async () => {
+                      const prompt = `# UX/Conversion Optimierung für Flow: ${config.name}
+
+Aktueller Score: ${run.overall_score}/100
+- Mobile: ${run.performance_score || 0}/100  
+- Conversion: ${run.conversion_score || 0}/100
+- UX: ${run.ux_score || 0}/100
+
+${run.ai_summary ? `## AI-Zusammenfassung:\n${run.ai_summary}\n` : ''}
+
+## Gefundene Issues (${flowIssues.length}):
+${flowIssues.map(i => `- [${i.severity.toUpperCase()}] ${i.title}: ${i.description || ''}`).join('\n')}
+
+## Aufgabe:
+Gib mir konkrete Code-Fixes für die oben genannten Issues. Fokussiere auf:
+1. Kritische Issues zuerst
+2. Mobile Touch-Targets (min 44x44px)
+3. CTA-Klarheit und Conversion-Optimierung
+4. Trust-Elemente und Social Proof
+5. Form-UX und Fehlerbehandlung`;
+                      await navigator.clipboard.writeText(prompt);
+                      toast.success('Verbesserungs-Prompt kopiert!');
+                    }}
+                  >
+                    <Wand2 className="h-4 w-4 mr-2" />
+                    Verbesserungs-Prompt kopieren
+                  </Button>
+                )}
               </div>
             )}
 
             {flowIssues.length === 0 && run && (
               <div className="text-center py-6 text-green-600 bg-green-50 dark:bg-green-950/20 rounded-lg">
                 <CheckCircle className="h-8 w-8 mx-auto mb-2" />
-                <p className="font-medium">Keine offenen Issues!</p>
+                <p className="font-medium">
+                  {(run.overall_score || 0) >= 95 ? 'GOLD Level erreicht! 🏆' : 'Keine offenen Issues!'}
+                </p>
+                {(run.overall_score || 0) < 95 && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Score: {run.overall_score}/100 - Noch {95 - (run.overall_score || 0)} Punkte bis GOLD
+                  </p>
+                )}
               </div>
             )}
 
@@ -500,7 +603,7 @@ const FlowResultCard: React.FC<FlowResultCardProps> = ({
               {run && (
                 <>
                   <Button variant="outline" size="sm" asChild>
-                    <a href={`${baseUrl}/umzugsofferten?v=${flowId.replace('umzugsofferten-', '')}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`${baseUrl}/${flowId}`} target="_blank" rel="noopener noreferrer">
                       <Eye className="h-4 w-4 mr-2" />
                       Live ansehen
                     </a>
@@ -591,12 +694,13 @@ const AutoFlowDashboard: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [runningAnalyses, setRunningAnalyses] = useState<RunningAnalysis[]>([]);
+  const [screenshotStats, setScreenshotStats] = useState<{flowId: string; desktopMissing: number; mobileMissing: number; total: number}[]>([]);
   
   // URL configuration - Preview vs Production
   const PREVIEW_URL = 'https://preview--umzugscheckv2.lovable.app';
   const PRODUCTION_URL = 'https://umzugscheck.ch';
   const [usePreview, setUsePreview] = useState<boolean>(true); // Default to Preview for instant testing
-  const baseUrl = usePreview ? PREVIEW_URL : PRODUCTION_URL;
+  const baseUrl = (usePreview ? PREVIEW_URL : PRODUCTION_URL).replace(/\/$/, '');
 
   // Subscribe to realtime updates for running analyses
   useEffect(() => {
@@ -634,7 +738,7 @@ const AutoFlowDashboard: React.FC = () => {
                 setRunningAnalyses(prev => prev.filter(a => a.flowId !== record.flow_id));
               }, 3000);
               // Refresh data
-              fetchData();
+              fetchData(false); // Silent refresh - no loading state
             } else {
               // Update progress
               setRunningAnalyses(prev => prev.map(a => 
@@ -730,25 +834,92 @@ const AutoFlowDashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = async (showLoading = true) => {
+    // Only show loading on initial load, not on background refreshes
+    if (showLoading) setLoading(true);
     try {
-      const [runsRes, issuesRes, alertsRes, settingsRes] = await Promise.all([
+      const [runsRes, alertsRes, settingsRes] = await Promise.all([
         supabase.from('flow_analysis_runs').select('*').order('created_at', { ascending: false }).limit(50),
-        supabase.from('flow_ux_issues').select('*').eq('is_resolved', false).order('created_at', { ascending: false }).limit(100),
         supabase.from('flow_alerts').select('*').eq('is_acknowledged', false).order('created_at', { ascending: false }).limit(20),
         supabase.from('flow_alert_settings').select('*'),
       ]);
 
-      if (runsRes.data) setRuns(runsRes.data as AnalysisRun[]);
-      if (issuesRes.data) setIssues(issuesRes.data as UxIssue[]);
+      if (runsRes.data) {
+        setRuns(runsRes.data as AnalysisRun[]);
+        
+        // Get latest run IDs per flow to only show issues from most recent analysis
+        const latestRunIds = new Set<string>();
+        const seenFlows = new Set<string>();
+        for (const run of runsRes.data) {
+          if (!seenFlows.has(run.flow_id)) {
+            seenFlows.add(run.flow_id);
+            latestRunIds.add(run.id);
+          }
+        }
+        
+        // Fetch issues only from latest runs (prevents stacking of old issues)
+        if (latestRunIds.size > 0) {
+          const { data: issuesData } = await supabase
+            .from('flow_ux_issues')
+            .select('*')
+            .in('run_id', Array.from(latestRunIds))
+            .eq('is_resolved', false)
+            .order('severity', { ascending: true }) // critical first
+            .order('created_at', { ascending: false });
+          
+          if (issuesData) setIssues(issuesData as UxIssue[]);
+        } else {
+          setIssues([]);
+        }
+      }
+      
       if (alertsRes.data) setAlerts(alertsRes.data as Alert[]);
       if (settingsRes.data) setAlertSettings(settingsRes.data as AlertSetting[]);
+      
+      // Fetch screenshot stats from flow_step_metrics for LATEST run only per flow
+      // This prevents old failed runs from skewing the "missing" counts
+      const { data: metricsData } = await supabase
+        .from('flow_step_metrics')
+        .select('flow_id, run_id, desktop_screenshot_url, mobile_screenshot_url, created_at')
+        .gt('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        .order('created_at', { ascending: false });
+      
+      if (metricsData) {
+        // Group by flow_id and only keep metrics from the latest run
+        const latestRunPerFlow: Record<string, string | null> = {};
+        const stats: Record<string, { desktop: number; mobile: number; total: number }> = {};
+        
+        metricsData.forEach(m => {
+          // Track the latest run_id per flow
+          if (!latestRunPerFlow[m.flow_id]) {
+            latestRunPerFlow[m.flow_id] = m.run_id;
+          }
+          
+          // Only count metrics from the latest run
+          if (m.run_id === latestRunPerFlow[m.flow_id]) {
+            if (!stats[m.flow_id]) stats[m.flow_id] = { desktop: 0, mobile: 0, total: 0 };
+            stats[m.flow_id].total++;
+            if (m.desktop_screenshot_url) stats[m.flow_id].desktop++;
+            if (m.mobile_screenshot_url) stats[m.flow_id].mobile++;
+          }
+        });
+        
+        const result = Object.entries(stats).map(([flowId, s]) => ({
+          flowId,
+          desktopMissing: s.total - s.desktop,
+          mobileMissing: s.total - s.mobile,
+          total: s.total
+        })).filter(s => s.desktopMissing > 0 || s.mobileMissing > 0)
+          .sort((a, b) => (b.desktopMissing + b.mobileMissing) - (a.desktopMissing + a.mobileMissing));
+        
+        setScreenshotStats(result);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error('Fehler beim Laden der Daten');
+      // Only show error on initial load
+      if (showLoading) toast.error('Fehler beim Laden der Daten');
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
@@ -788,7 +959,7 @@ const AutoFlowDashboard: React.FC = () => {
           setTimeout(() => {
             setRunningAnalyses(prev => prev.filter(a => a.flowId !== flowId));
           }, 2000);
-          fetchData();
+          fetchData(false); // Silent refresh
         }
       }).catch(error => {
         console.error('Analysis error:', error);
@@ -989,10 +1160,93 @@ const AutoFlowDashboard: React.FC = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchData}>
+          <Button variant="outline" onClick={() => fetchData(true)}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Aktualisieren
           </Button>
+          {/* Reset & Fresh Start Button */}
+          <Button 
+            variant="outline" 
+            className="text-destructive hover:bg-destructive/10"
+            onClick={async () => {
+              if (!confirm('Alle Analyse-Daten löschen und neu starten? Dies löscht alle Issues und Runs.')) return;
+              try {
+                await supabase.from('flow_ux_issues').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('flow_step_metrics').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('flow_archetype_scores').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('flow_analysis_runs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                setRuns([]);
+                setIssues([]);
+                toast.success('Alle Daten gelöscht - bereit für frische Analyse!');
+              } catch (error) {
+                toast.error('Fehler beim Löschen');
+              }
+            }}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Reset
+          </Button>
+          {issues.length > 0 && (
+            <Button 
+              variant="secondary"
+              onClick={async () => {
+                // Group issues by flow
+                const issuesByFlow: Record<string, UxIssue[]> = {};
+                issues.forEach(issue => {
+                  if (!issuesByFlow[issue.flow_id]) {
+                    issuesByFlow[issue.flow_id] = [];
+                  }
+                  issuesByFlow[issue.flow_id].push(issue);
+                });
+
+                // Build combined prompt
+                let prompt = `# Globaler UX/Conversion Fix für alle Flows
+
+Insgesamt ${issues.length} offene Issues gefunden.
+
+`;
+                Object.entries(issuesByFlow).forEach(([flowId, flowIssues]) => {
+                  const run = latestRuns[flowId];
+                  const config = FLOW_CONFIGS[flowId];
+                  const criticalCount = flowIssues.filter(i => i.severity === 'critical').length;
+                  const warningCount = flowIssues.filter(i => i.severity === 'warning').length;
+
+                  prompt += `---
+## Flow: ${config?.name || flowId}
+Score: ${run?.overall_score ?? 'N/A'}/100 | Issues: ${flowIssues.length} (${criticalCount} kritisch, ${warningCount} Warnungen)
+
+`;
+                  flowIssues.forEach((issue, idx) => {
+                    prompt += `### ${idx + 1}. [${issue.severity.toUpperCase()}] ${issue.title}
+- Kategorie: ${issue.category}
+- Step: ${issue.step_number || 'Gesamter Flow'}
+- Beschreibung: ${issue.description || 'Keine'}
+- Empfehlung: ${issue.recommendation || 'Keine'}
+
+`;
+                  });
+                });
+
+                prompt += `---
+
+## Aufgabe:
+Gib mir konkrete Code-Fixes für alle oben genannten Issues. Priorisiere:
+1. Kritische Issues zuerst
+2. Mobile Touch-Targets (min 44x44px)
+3. CTA-Klarheit und Conversion-Optimierung
+4. Trust-Elemente
+5. Form-UX und Fehlerbehandlung
+
+Zeige mir die Code-Diffs für jedes Problem.`;
+
+                await navigator.clipboard.writeText(prompt);
+                toast.success(`Fix-All Prompt mit ${issues.length} Issues kopiert!`);
+              }}
+            >
+              <Wand2 className="h-4 w-4 mr-2" />
+              Fix All ({issues.length})
+            </Button>
+          )}
           <Button onClick={runAllAnalyses} disabled={!!analyzing}>
             {analyzing === 'all' ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -1060,6 +1314,35 @@ const AutoFlowDashboard: React.FC = () => {
         </Card>
       )}
 
+      {/* Unanalyzed Flows Banner */}
+      {overallStats.analyzedFlows < overallStats.totalFlows && runningAnalyses.length === 0 && (
+        <Card className="border-blue-500 bg-blue-50 dark:bg-blue-950/20">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-5 w-5 text-blue-500" />
+                <div>
+                  <span className="font-medium">
+                    {overallStats.totalFlows - overallStats.analyzedFlows} neue Flows noch nicht analysiert
+                  </span>
+                  <p className="text-sm text-muted-foreground">
+                    Klicke "Alle analysieren" um alle {overallStats.totalFlows} Flows zu analysieren
+                  </p>
+                </div>
+              </div>
+              <Button onClick={runAllAnalyses} disabled={!!analyzing} size="sm">
+                {analyzing === 'all' ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Play className="h-4 w-4 mr-2" />
+                )}
+                Alle analysieren ({overallStats.totalFlows})
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Alerts Banner */}
       {alerts.length > 0 && (
         <Card className="border-red-500 bg-red-50 dark:bg-red-950/20">
@@ -1119,7 +1402,7 @@ const AutoFlowDashboard: React.FC = () => {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">
             <BarChart3 className="h-4 w-4 mr-2" />
             Übersicht
@@ -1127,6 +1410,10 @@ const AutoFlowDashboard: React.FC = () => {
           <TabsTrigger value="issues">
             <AlertCircle className="h-4 w-4 mr-2" />
             Issues ({issues.length})
+          </TabsTrigger>
+          <TabsTrigger value="screenshots">
+            <Monitor className="h-4 w-4 mr-2" />
+            Screenshots
           </TabsTrigger>
           <TabsTrigger value="alerts">
             <Bell className="h-4 w-4 mr-2" />
@@ -1313,6 +1600,143 @@ const AutoFlowDashboard: React.FC = () => {
                   )}
                 </div>
               </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Screenshots Status Tab */}
+        <TabsContent value="screenshots">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Monitor className="h-5 w-5" />
+                  Screenshot-Status
+                </CardTitle>
+                <CardDescription>
+                  Flows mit fehlenden Screenshots können nicht korrekt analysiert werden
+                </CardDescription>
+              </div>
+              {screenshotStats.length > 0 && (
+                <Button
+                  onClick={() => {
+                    const flowsToAnalyze = screenshotStats.slice(0, 5).map(s => s.flowId);
+                    flowsToAnalyze.forEach(flowId => runAnalysis(flowId));
+                    toast.info(`${flowsToAnalyze.length} Flows werden neu analysiert...`);
+                  }}
+                  disabled={!!analyzing}
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Top 5 neu analysieren
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Summary */}
+                <div className="grid grid-cols-3 gap-4">
+                  <Card className="border-red-500/50 bg-red-50 dark:bg-red-950/20">
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-3xl font-bold text-red-600">{screenshotStats.length}</div>
+                      <div className="text-sm text-muted-foreground">Flows mit Fehlern</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20">
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-3xl font-bold text-yellow-600">
+                        {screenshotStats.reduce((sum, s) => sum + s.desktopMissing, 0)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Desktop fehlt</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20">
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-3xl font-bold text-yellow-600">
+                        {screenshotStats.reduce((sum, s) => sum + s.mobileMissing, 0)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Mobile fehlt</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Explanation */}
+                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-medium text-blue-700 dark:text-blue-300">Warum wird der Score nicht besser?</p>
+                      <p className="text-blue-600 dark:text-blue-400 mt-1">
+                        Die Analyse läuft auf <strong>alte Screenshots</strong> – nicht auf dem aktuellen Code! 
+                        Nach Code-Änderungen müssen neue Screenshots erstellt werden (= neue Analyse starten).
+                        Erst dann wird der Score basierend auf den Fixes neu berechnet.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Flow List */}
+                <ScrollArea className="h-[400px]">
+                  <div className="space-y-2">
+                    {screenshotStats.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <CheckCircle className="h-12 w-12 mx-auto mb-2 text-green-500" />
+                        <p>Alle Screenshots vollständig!</p>
+                      </div>
+                    ) : (
+                      screenshotStats.map(stat => {
+                        const config = FLOW_CONFIGS[stat.flowId];
+                        const totalMissing = stat.desktopMissing + stat.mobileMissing;
+                        const severity = totalMissing >= stat.total ? 'critical' : totalMissing > 2 ? 'high' : 'medium';
+                        
+                        return (
+                          <div 
+                            key={stat.flowId} 
+                            className={`flex items-center justify-between p-3 border rounded-lg ${
+                              severity === 'critical' ? 'border-red-500 bg-red-50 dark:bg-red-950/20' :
+                              severity === 'high' ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/20' :
+                              'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-3 h-3 rounded-full ${config?.color || 'bg-gray-500'}`} />
+                              <div>
+                                <div className="font-medium">{config?.name || stat.flowId}</div>
+                                <div className="text-sm text-muted-foreground flex items-center gap-3">
+                                  <span className="flex items-center gap-1">
+                                    <Monitor className="h-3 w-3" />
+                                    {stat.desktopMissing}/{stat.total} fehlt
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Smartphone className="h-3 w-3" />
+                                    {stat.mobileMissing}/{stat.total} fehlt
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant={severity === 'critical' ? 'destructive' : 'secondary'}>
+                                {severity === 'critical' ? '100% fehlt' : `${totalMissing} fehlen`}
+                              </Badge>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => runAnalysis(stat.flowId)}
+                                disabled={analyzing === stat.flowId}
+                              >
+                                {analyzing === stat.flowId ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <RefreshCw className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

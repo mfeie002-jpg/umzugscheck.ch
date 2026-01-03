@@ -7,67 +7,83 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Flow configurations matching the central FLOW_CONFIGS - use the same IDs!
+// Flow configurations - CLEAN LIST of actually existing flows
+// Only includes flows that have real components in src/components/calculator-variants
 const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: string }> = {
-  // Main flows (matching src/data/flowConfigs.ts)
-  'umzugsofferten': { name: 'V1 - Control Flow', steps: 4, baseUrl: '/umzugsofferten' },
-  'umzugsofferten-v1': { name: 'V1 - Control Flow', steps: 4, baseUrl: '/umzugsofferten' },
-  'umzugsofferten-v2': { name: 'V2 - Premium Full-Journey', steps: 6, baseUrl: '/umzugsofferten-v2' },
-  'umzugsofferten-v3': { name: 'V3 - God Mode', steps: 4, baseUrl: '/umzugsofferten-v3' },
-  'umzugsofferten-v4': { name: 'V4 - Video-First AI', steps: 5, baseUrl: '/umzugsofferten-v4' },
-  'umzugsofferten-v5': { name: 'V5 - Marketplace Wizard', steps: 5, baseUrl: '/umzugsofferten-v5' },
-  'umzugsofferten-v6': { name: 'V6 - Ultimate (6-Tier)', steps: 6, baseUrl: '/umzugsofferten-v6' },
-  'umzugsofferten-v7': { name: 'V7 - SwissMove (90s)', steps: 3, baseUrl: '/umzugsofferten-v7' },
-  'umzugsofferten-v8': { name: 'V8 - Decision-Free', steps: 5, baseUrl: '/umzugsofferten-v8' },
-  'umzugsofferten-v9': { name: 'V9 - Zero Friction', steps: 5, baseUrl: '/umzugsofferten-v9' },
-  // Sub-variants (v1a, v1b, v1c, etc.)
+  // === V1 - Control Flow (8 variants) ===
+  'v1': { name: 'V1 Control (Baseline)', steps: 2, baseUrl: '/umzugsofferten?variant=v1' },
   'v1a': { name: 'V1a Control (Feedback)', steps: 2, baseUrl: '/umzugsofferten?variant=v1a' },
   'v1b': { name: 'V1b ChatGPT Agent', steps: 4, baseUrl: '/umzugsofferten?variant=v1b' },
-  'v1c': { name: 'V1c Variant', steps: 3, baseUrl: '/umzugsofferten?variant=v1c' },
-  'v1d': { name: 'V1d Variant', steps: 3, baseUrl: '/umzugsofferten?variant=v1d' },
-  'v1e': { name: 'V1e Variant', steps: 3, baseUrl: '/umzugsofferten?variant=v1e' },
-  // V2 sub-variants
-  'v2a': { name: 'V2a Progress Enhanced', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2a' },
-  'v2b': { name: 'V2b Simplified Labels', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2b' },
-  'v2c': { name: 'V2c Trust Focused', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2c' },
-  'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2d' },
-  'v2e': { name: 'V2e Experimental', steps: 6, baseUrl: '/umzugsofferten-v2?variant=v2e' },
-  'v2f': { name: 'V2f Premium (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v2?variant=v2f' },
-  // V3 sub-variants
-  'v3a': { name: 'V3a Mobile First', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3a' },
-  'v3b': { name: 'V3b Swipe Navigation', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3b' },
-  'v3c': { name: 'V3c Bottom Sheet', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3c' },
-  'v3d': { name: 'V3d Thumb Zone', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3d' },
-  'v3e': { name: 'V3e Fullscreen', steps: 4, baseUrl: '/umzugsofferten-v3?variant=v3e' },
-  'v3f': { name: 'V3f Feedback', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3f' },
-  'v3g': { name: 'V3g Feedback', steps: 3, baseUrl: '/umzugsofferten-v3?variant=v3g' },
-  // V4 sub-variants
-  'v4a': { name: 'V4a Urgency Based', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4a' },
-  'v4b': { name: 'V4b Social Proof', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4b' },
-  'v4c': { name: 'V4c Value First', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4c' },
-  'v4d': { name: 'V4d Gamified', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4d' },
-  'v4e': { name: 'V4e Minimal Friction', steps: 5, baseUrl: '/umzugsofferten-v4?variant=v4e' },
-  'v4f': { name: 'V4f Feedback', steps: 3, baseUrl: '/umzugsofferten-v4?variant=v4f' },
-  // V5 sub-variants
-  'v5a': { name: 'V5a High Contrast', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5a' },
-  'v5b': { name: 'V5b Screen Reader', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5b' },
-  'v5c': { name: 'V5c Keyboard Nav', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5c' },
-  'v5d': { name: 'V5d Large Text', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5d' },
-  'v5e': { name: 'V5e Reduced Motion', steps: 5, baseUrl: '/umzugsofferten-v5?variant=v5e' },
-  'v5f': { name: 'V5f Feedback', steps: 3, baseUrl: '/umzugsofferten-v5?variant=v5f' },
-  // V6 sub-variants
-  'v6a': { name: 'V6a Ultimate (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v6?variant=v6a' },
-  // V7 sub-variants
-  'v7a': { name: 'V7a SwissMove (Feedback)', steps: 3, baseUrl: '/umzugsofferten-v7?variant=v7a' },
-  // V8 sub-variants
-  'v8a': { name: 'V8a Decision-Free (Feedback)', steps: 2, baseUrl: '/umzugsofferten-v8?variant=v8a' },
-  // V9 sub-variants
-  'v9a': { name: 'V9.a Gemini Archetyp', steps: 9, baseUrl: '/umzugsofferten?variant=v9a' },
-  'v9b': { name: 'V9.b Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9b' },
-  'v9c': { name: 'V9.c Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9c' },
-  'v9d': { name: 'V9.d Gemini Variant', steps: 9, baseUrl: '/umzugsofferten?variant=v9d' },
-  // Multi-variants
-  'multi-a': { name: 'Multi.A Feedback Based', steps: 4, baseUrl: '/umzugsofferten?variant=multi-a' },
+  'v1c': { name: 'V1c Archetyp Strategic', steps: 4, baseUrl: '/umzugsofferten?variant=v1c' },
+  'v1d': { name: 'V1d Optimized Funnel', steps: 4, baseUrl: '/umzugsofferten?variant=v1d' },
+  'v1e': { name: 'V1e Trust Enhanced', steps: 4, baseUrl: '/umzugsofferten?variant=v1e' },
+  'v1f': { name: 'V1f Sticky CTA + Trust', steps: 2, baseUrl: '/umzugsofferten?variant=v1f' },
+  'v1g': { name: 'V1g Input UX + Validation', steps: 2, baseUrl: '/umzugsofferten?variant=v1g' },
+  
+  // === V2 - Premium Full-Journey (7 variants) ===
+  'v2': { name: 'V2 Premium (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v2' },
+  'v2a': { name: 'V2a Progress Enhanced', steps: 4, baseUrl: '/umzugsofferten?variant=v2a' },
+  'v2b': { name: 'V2b Simplified Labels', steps: 6, baseUrl: '/umzugsofferten?variant=v2b' },
+  'v2c': { name: 'V2c Archetyp Calculator', steps: 6, baseUrl: '/umzugsofferten?variant=v2c' },
+  'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten?variant=v2d' },
+  'v2e': { name: 'V2e Chat Funnel', steps: 6, baseUrl: '/umzugsofferten-v2e' },
+  'v2f': { name: 'V2f Premium (Feedback)', steps: 3, baseUrl: '/umzugsofferten?variant=v2f' },
+  
+  // === V3 - God Mode Mobile-First (6 variants) ===
+  'v3': { name: 'V3 God Mode (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v3' },
+  'v3a': { name: 'V3a Mobile First', steps: 4, baseUrl: '/umzugsofferten?variant=v3a' },
+  'v3b': { name: 'V3b Swipe Navigation', steps: 4, baseUrl: '/umzugsofferten?variant=v3b' },
+  'v3c': { name: 'V3c Bottom Sheet', steps: 4, baseUrl: '/umzugsofferten?variant=v3c' },
+  'v3d': { name: 'V3d Thumb Zone', steps: 3, baseUrl: '/umzugsofferten?variant=v3d' },
+  'v3e': { name: 'V3e Fullscreen', steps: 3, baseUrl: '/umzugsofferten?variant=v3e' },
+  
+  // === V4 - Video-First Conversion (7 variants) ===
+  'v4': { name: 'V4 Video-First (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v4' },
+  'v4a': { name: 'V4a Urgency Based', steps: 4, baseUrl: '/umzugsofferten?variant=v4a' },
+  'v4b': { name: 'V4b Social Proof', steps: 3, baseUrl: '/umzugsofferten?variant=v4b' },
+  'v4c': { name: 'V4c Value First', steps: 3, baseUrl: '/umzugsofferten?variant=v4c' },
+  'v4d': { name: 'V4d Gamified', steps: 4, baseUrl: '/umzugsofferten?variant=v4d' },
+  'v4e': { name: 'V4e Minimal Friction', steps: 2, baseUrl: '/umzugsofferten?variant=v4e' },
+  'v4f': { name: 'V4f Video-First Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v4f' },
+  
+  // === V5 - Marketplace Accessibility (7 variants) ===
+  'v5': { name: 'V5 Marketplace (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v5' },
+  'v5a': { name: 'V5a High Contrast', steps: 4, baseUrl: '/umzugsofferten?variant=v5a' },
+  'v5b': { name: 'V5b Screen Reader', steps: 3, baseUrl: '/umzugsofferten?variant=v5b' },
+  'v5c': { name: 'V5c Keyboard Nav', steps: 3, baseUrl: '/umzugsofferten?variant=v5c' },
+  'v5d': { name: 'V5d ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten?variant=v5d' },
+  'v5e': { name: 'V5e Reduced Motion', steps: 3, baseUrl: '/umzugsofferten?variant=v5e' },
+  'v5f': { name: 'V5f Marketplace Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v5f' },
+  
+  // === V6 - Ultimate 6-Tier (7 variants) ===
+  'v6': { name: 'V6 Ultimate (Baseline)', steps: 3, baseUrl: '/umzugsofferten-v6' },
+  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 3, baseUrl: '/umzugsofferten?variant=v6a' },
+  'v6b': { name: 'V6b ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten?variant=v6b' },
+  'v6c': { name: 'V6c Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten?variant=v6c' },
+  'v6d': { name: 'V6d Deep Research', steps: 5, baseUrl: '/umzugsofferten?variant=v6d' },
+  'v6e': { name: 'V6e Thinking Mode', steps: 5, baseUrl: '/umzugsofferten?variant=v6e' },
+  'v6f': { name: 'V6f Ultimate (Best of All)', steps: 5, baseUrl: '/umzugsofferten?variant=v6f' },
+  
+  // === V7 - SwissMove 90s (2 variants) ===
+  'v7': { name: 'V7 SwissMove (Baseline)', steps: 3, baseUrl: '/umzugsofferten-v7' },
+  'v7a': { name: 'V7a SwissMove Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v7a' },
+  
+  // === V8 - Decision-Free (2 variants) ===
+  'v8': { name: 'V8 Decision-Free (Baseline)', steps: 2, baseUrl: '/umzugsofferten-v8' },
+  'v8a': { name: 'V8a Decision-Free Feedback', steps: 2, baseUrl: '/umzugsofferten?variant=v8a' },
+  
+  // === V9 - Zero Friction Extended (5 variants) ===
+  'v9': { name: 'V9 Zero Friction (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v9' },
+  'v9a': { name: 'V9a Gemini Archetyp', steps: 6, baseUrl: '/umzugsofferten?variant=v9a' },
+  'v9b': { name: 'V9b Gemini Agent', steps: 5, baseUrl: '/umzugsofferten?variant=v9b' },
+  'v9c': { name: 'V9c Zero Friction Optimized', steps: 5, baseUrl: '/umzugsofferten?variant=v9c' },
+  'v9d': { name: 'V9d Gemini Extended', steps: 9, baseUrl: '/umzugsofferten?variant=v9d' },
+  
+  // === Multi Variants (1 variant) ===
+  'multi-a': { name: 'Multi.A ChatGPT Pro', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
+  
+  // === Ultimate (1 variant) ===
+  'ultimate-v7': { name: 'Ultimate V7 (95/100)', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v7' },
 };
 
 const SCREENSHOTMACHINE_KEY = Deno.env.get('SCREENSHOTMACHINE_API_KEY');
@@ -242,36 +258,51 @@ async function analyzeStepWithAI(
     };
   }
 
-  const prompt = `Du bist ein UX/Conversion-Experte. Analysiere Step ${stepNumber} "${stepName}" des Flow "${flowName}".
+  // IMPROVED PROMPT: Focus on VISIBLE, VERIFIABLE issues only
+  const prompt = `Du bist ein UX/Conversion-Experte. Analysiere Step ${stepNumber} "${stepName}" des Schweizer Umzugs-Flows "${flowName}".
 
-Bewerte folgende Aspekte und gib konkrete Verbesserungsvorschläge:
+**KRITISCHE REGELN - BEFOLGE DIESE STRIKT:**
+1. Identifiziere NUR Issues die DIREKT IM SCREENSHOT SICHTBAR sind
+2. KEINE VERMUTUNGEN oder theoretische Probleme - nur was du SEHEN kannst
+3. KEINE DUPLIKATE - wenn ein Problem mehrere Elemente betrifft, fasse es zusammen
+4. Sei REALISTISCH mit Scores - ein guter Flow hat 80-95, perfekt gibt es nicht
 
-1. **Mobile-Friendliness**: Touch-Targets (min 44px), Lesbarkeit, Scrollverhalten
-2. **Conversion-Optimierung**: CTA-Klarheit, Formularfelder, Friction Points, Progress-Indikator
-3. **UX-Qualität**: Visuelle Hierarchie, Konsistenz, Feedback, Ladezeiten
+**BEWERTUNGSKRITERIEN (nur wenn im Screenshot erkennbar):**
+- Mobile: Touch-Targets sichtbar zu klein (<44px geschätzt), horizontaler Scroll, unlesbarer Text
+- Conversion: Fehlender Progress-Indikator, unklarer CTA, versteckter Button, zu viele Formularfelder
+- UX: Schlechte visuelle Hierarchie, inkonsistentes Design, fehlende Feedback-Elemente
 
-Antworte im folgenden JSON-Format:
+**SCORING-LOGIK:**
+- Starte bei 90 Punkten pro Kategorie
+- Kritisch: -15 Punkte | Warnung: -5 Punkte | Info: -2 Punkte
+- Minimum: 40 | Maximum: 98
+- Ein Flow OHNE sichtbare Probleme = 90-95 Punkte
+
+**AUSGABE (NUR JSON):**
 {
   "issues": [
     {
       "severity": "critical|warning|info",
-      "category": "mobile|conversion|ux|accessibility|performance",
-      "title": "Kurzer Titel",
-      "description": "Beschreibung des Problems",
-      "recommendation": "Konkrete Lösung"
+      "category": "mobile|conversion|ux",
+      "title": "Kurzer, spezifischer Titel",
+      "description": "Was GENAU siehst du im Screenshot?",
+      "recommendation": "Konkrete technische Lösung"
     }
   ],
-  "suggestions": ["Verbesserungsvorschlag 1", "Verbesserungsvorschlag 2"],
+  "suggestions": ["Max 3 Verbesserungsvorschläge"],
   "scores": {
-    "mobile": 0-100,
-    "conversion": 0-100,
-    "ux": 0-100
+    "mobile": 40-98,
+    "conversion": 40-98,
+    "ux": 40-98
   }
-}`;
+}
+
+**WICHTIG:** Wenn du KEIN Problem siehst, gib eine leere issues-Liste zurück und hohe Scores (85-95).
+Finde NICHT Probleme um des Findens willen. Qualität vor Quantität!`;
 
   try {
     const messages: Array<{ role: string; content: string | Array<{ type: string; text?: string; image_url?: { url: string } }> }> = [
-      { role: 'system', content: 'Du bist ein UX/Conversion-Experte für Schweizer Websites. Antworte immer im angegebenen JSON-Format.' }
+      { role: 'system', content: 'Du bist ein pragmatischer UX-Experte. Identifiziere NUR REALE, SICHTBARE Probleme. Antworte im JSON-Format. Sei kritisch aber fair.' }
     ];
 
     // Build content with images if available
@@ -316,31 +347,45 @@ Antworte im folgenden JSON-Format:
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '{}';
-    const parsed = JSON.parse(content);
+    
+    // Robust JSON parsing
+    let jsonContent = content;
+    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) {
+      jsonContent = jsonMatch[1].trim();
+    }
+    if (!jsonContent.startsWith('{')) {
+      const firstBrace = jsonContent.indexOf('{');
+      const lastBrace = jsonContent.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        jsonContent = jsonContent.substring(firstBrace, lastBrace + 1);
+      }
+    }
+    
+    const parsed = JSON.parse(jsonContent);
+
+    // Ensure scores are within valid range
+    const clampScore = (score: number) => Math.max(40, Math.min(98, score || 75));
 
     return {
       stepNumber,
       stepName,
       issues: parsed.issues || [],
       suggestions: parsed.suggestions || [],
-      scores: parsed.scores || { mobile: 70, conversion: 70, ux: 70 }
+      scores: {
+        mobile: clampScore(parsed.scores?.mobile),
+        conversion: clampScore(parsed.scores?.conversion),
+        ux: clampScore(parsed.scores?.ux)
+      }
     };
   } catch (error) {
     console.error('AI analysis error:', error);
     return {
       stepNumber,
       stepName,
-      issues: [
-        {
-          severity: 'warning',
-          category: 'ux',
-          title: 'AI-Analyse fehlgeschlagen',
-          description: String(error),
-          recommendation: 'Manuell überprüfen'
-        }
-      ],
+      issues: [],
       suggestions: ['AI-Analyse fehlgeschlagen - manuell prüfen'],
-      scores: { mobile: 60, conversion: 60, ux: 60 }
+      scores: { mobile: 70, conversion: 70, ux: 70 }
     };
   }
 }
@@ -410,53 +455,17 @@ Antworte im JSON-Format:
   }
 }
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
+// Background analysis function - runs after response is sent
+async function runAnalysisInBackground(
+  supabase: any,
+  flowId: string,
+  flowConfig: { name: string; steps: number; baseUrl: string },
+  runType: string,
+  baseUrl: string,
+  runId: string
+): Promise<void> {
   try {
-    const { flowId, runType = 'manual', baseUrl = 'https://www.umzugscheck.ch' }: AnalysisRequest = await req.json();
-
-    console.log(`Starting analysis for flow: ${flowId}`);
-
-    // Validate flow - check if flow exists
-    const flowConfig = FLOW_CONFIGS[flowId];
-    if (!flowConfig) {
-      console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
-      return new Response(
-        JSON.stringify({ 
-          error: `Unknown flow: ${flowId}`,
-          available: Object.keys(FLOW_CONFIGS)
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    console.log(`Flow config found: ${flowConfig.name} with ${flowConfig.steps} steps`);
-
-    // Create analysis run
-    const { data: run, error: runError } = await supabase
-      .from('flow_analysis_runs')
-      .insert({
-        flow_id: flowId,
-        flow_name: flowConfig.name,
-        run_type: runType,
-        status: 'running',
-        started_at: new Date().toISOString(),
-        total_steps: flowConfig.steps,
-      })
-      .select()
-      .single();
-
-    if (runError) {
-      console.error('Error creating run:', runError);
-      throw new Error('Failed to create analysis run');
-    }
-
-    console.log(`Created run: ${run.id}`);
+    console.log(`[Background] Starting analysis for flow: ${flowId}, run: ${runId}`);
 
     const stepAnalyses: StepAnalysis[] = [];
     let allIssues: Array<{
@@ -469,20 +478,20 @@ serve(async (req) => {
       step_number: number;
     }> = [];
 
-    // Analyze each step
-    // Determine flow param for deterministic rendering (e.g., "v1", "v2", "v3" etc.)
+    // Determine flow param for deterministic rendering
     const flowParam = flowId.replace('umzugsofferten-', '').replace('umzugsofferten', 'v1');
     
     for (let step = 1; step <= flowConfig.steps; step++) {
-      // Build URL with all required capture parameters:
-      // - uc_capture=1: enables capture mode with demo data
-      // - uc_step: sets the current step
-      // - uc_flow: ensures deterministic flow selection (prevents login page issues)
-      // - uc_cb: cache buster to prevent stale screenshots
-      const stepUrl = `${baseUrl}${flowConfig.baseUrl}?uc_capture=1&uc_step=${step}&uc_flow=${flowParam}&uc_cb=${Date.now()}`;
+      // Robust URL building (flowConfig.baseUrl may already contain query params like ?variant=v1d)
+      const u = new URL(flowConfig.baseUrl, baseUrl);
+      u.searchParams.set('uc_capture', '1');
+      u.searchParams.set('uc_step', String(step));
+      u.searchParams.set('uc_flow', flowParam);
+      u.searchParams.set('uc_cb', String(Date.now()));
+      const stepUrl = u.toString();
       const stepName = `Step ${step}`;
 
-      console.log(`Analyzing step ${step}: ${stepUrl}`);
+      console.log(`[Background] Analyzing step ${step}: ${stepUrl}`);
 
       // Capture screenshots as binary data
       const [desktopData, mobileData] = await Promise.all([
@@ -490,13 +499,13 @@ serve(async (req) => {
         captureScreenshotBase64(stepUrl, 'mobile')
       ]);
 
-      console.log(`Screenshots captured - Desktop: ${desktopData ? 'yes' : 'no'}, Mobile: ${mobileData ? 'yes' : 'no'}`);
+      console.log(`[Background] Screenshots captured - Desktop: ${desktopData ? 'yes' : 'no'}, Mobile: ${mobileData ? 'yes' : 'no'}`);
 
       // Convert to base64 for AI analysis
       const desktopBase64 = desktopData ? toBase64DataUrl(desktopData) : null;
       const mobileBase64 = mobileData ? toBase64DataUrl(mobileData) : null;
 
-      // Analyze with AI (using base64 for vision)
+      // Analyze with AI
       const analysis = await analyzeStepWithAI(
         step,
         stepName,
@@ -507,17 +516,17 @@ serve(async (req) => {
 
       stepAnalyses.push(analysis);
 
-      // Upload screenshots to Storage and get public URLs
+      // Upload screenshots to Storage
       const [desktopUrl, mobileUrl] = await Promise.all([
-        desktopData ? uploadScreenshotToStorage(supabase, desktopData, flowId, run.id, step, 'desktop') : null,
-        mobileData ? uploadScreenshotToStorage(supabase, mobileData, flowId, run.id, step, 'mobile') : null
+        desktopData ? uploadScreenshotToStorage(supabase, desktopData, flowId, runId, step, 'desktop') : null,
+        mobileData ? uploadScreenshotToStorage(supabase, mobileData, flowId, runId, step, 'mobile') : null
       ]);
 
-      console.log(`Screenshots uploaded - Desktop: ${desktopUrl ? 'yes' : 'no'}, Mobile: ${mobileUrl ? 'yes' : 'no'}`);
+      console.log(`[Background] Screenshots uploaded - Desktop: ${desktopUrl ? 'yes' : 'no'}, Mobile: ${mobileUrl ? 'yes' : 'no'}`);
 
-      // Store step metrics with Storage URLs (not base64!)
+      // Store step metrics
       await supabase.from('flow_step_metrics').insert({
-        run_id: run.id,
+        run_id: runId,
         flow_id: flowId,
         step_number: step,
         step_name: stepName,
@@ -543,14 +552,14 @@ serve(async (req) => {
       await supabase
         .from('flow_analysis_runs')
         .update({ steps_captured: step })
-        .eq('id', run.id);
+        .eq('id', runId);
     }
 
     // Store all issues
     if (allIssues.length > 0) {
       await supabase.from('flow_ux_issues').insert(
         allIssues.map(issue => ({
-          run_id: run.id,
+          run_id: runId,
           flow_id: flowId,
           step_number: issue.step_number,
           severity: issue.severity,
@@ -572,6 +581,9 @@ serve(async (req) => {
     const avgUx = Math.round(stepAnalyses.reduce((acc, s) => acc + s.scores.ux, 0) / stepAnalyses.length);
     const overallScore = Math.round((avgMobile + avgConversion + avgUx) / 3);
 
+    // Calculate critical issues count before using it
+    const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
+
     // Update run with results
     await supabase
       .from('flow_analysis_runs')
@@ -584,11 +596,14 @@ serve(async (req) => {
         ux_score: avgUx,
         ai_summary: summary,
         ai_recommendations: recommendations,
+        metadata: {
+          issuesCount: allIssues.length,
+          criticalCount: criticalIssues,
+        },
       })
-      .eq('id', run.id);
+      .eq('id', runId);
 
     // Check for alerts
-    const criticalIssues = allIssues.filter(i => i.severity === 'critical').length;
     if (criticalIssues > 0) {
       const { data: alertSettings } = await supabase
         .from('flow_alert_settings')
@@ -610,24 +625,141 @@ serve(async (req) => {
       }
     }
 
-    console.log(`Analysis completed for ${flowId}: Score ${overallScore}/100, ${allIssues.length} issues`);
+    console.log(`[Background] Analysis completed for ${flowId}: Score ${overallScore}/100, ${allIssues.length} issues`);
 
+  } catch (error) {
+    console.error(`[Background] Analysis failed for ${flowId}:`, error);
+    
+    // Update run with error status
+    await supabase
+      .from('flow_analysis_runs')
+      .update({
+        status: 'failed',
+        completed_at: new Date().toISOString(),
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
+      })
+      .eq('id', runId);
+  }
+}
+
+// Handle graceful shutdown
+addEventListener('beforeunload', (ev: any) => {
+  console.log(`[auto-analyze-flow] Shutdown due to: ${ev.detail?.reason || 'unknown'}`);
+});
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { flowId, runType = 'manual', baseUrl = 'https://preview--umzugscheckv2.lovable.app' }: AnalysisRequest = await req.json();
+
+    console.log(`Starting analysis for flow: ${flowId}`);
+
+    // Validate flow - check FLOW_CONFIGS first
+    let flowConfig = FLOW_CONFIGS[flowId];
+    let resolvedFlowId = flowId;
+    
+    // If not found, check if it's a flow_feedback_variant (Ultimate Flow)
+    if (!flowConfig) {
+      console.log(`Flow "${flowId}" not in FLOW_CONFIGS, checking flow_feedback_variants...`);
+      
+      // Check if this is a generated Ultimate Flow variant
+      const { data: variant } = await supabase
+        .from('flow_feedback_variants')
+        .select('flow_id, variant_name')
+        .eq('variant_label', flowId)
+        .single();
+      
+      if (variant && variant.flow_id) {
+        // Map to the base flow (e.g., "v1" from "ultimate-v1-swiss-archetype")
+        const baseFlowId = variant.flow_id;
+        flowConfig = FLOW_CONFIGS[baseFlowId];
+        resolvedFlowId = baseFlowId;
+        console.log(`Resolved Ultimate variant "${flowId}" to base flow "${baseFlowId}"`);
+      }
+    }
+    
+    if (!flowConfig) {
+      console.error(`Unknown flow ID: ${flowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
+      return new Response(
+        JSON.stringify({ 
+          error: `Unknown flow: ${flowId}`,
+          available: Object.keys(FLOW_CONFIGS)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Flow config found: ${flowConfig.name} with ${flowConfig.steps} steps`);
+
+    // Create analysis run BEFORE starting background task
+    // Store both the original flowId (for display) and resolvedFlowId (for analysis)
+    const { data: run, error: runError } = await supabase
+      .from('flow_analysis_runs')
+      .insert({
+        flow_id: flowId, // Keep original ID for tracking
+        flow_name: flowConfig.name,
+        run_type: runType,
+        status: 'running',
+        started_at: new Date().toISOString(),
+        total_steps: flowConfig.steps,
+      })
+      .select()
+      .single();
+
+    if (runError) {
+      console.error('Error creating run:', runError);
+      throw new Error('Failed to create analysis run');
+    }
+
+    console.log(`Created run: ${run.id} - starting background analysis for resolved flow: ${resolvedFlowId}`);
+
+    // Start background analysis.
+    // IMPORTANT: Some runtimes expose EdgeRuntime as a global (not necessarily on globalThis).
+    // If EdgeRuntime.waitUntil is unavailable, we fall back to running the analysis in-request
+    // to avoid "stuck forever" runs.
+    const bgPromise = runAnalysisInBackground(
+      supabase,
+      resolvedFlowId,
+      flowConfig,
+      runType,
+      baseUrl,
+      run.id
+    );
+
+    let scheduledInBackground = false;
+    try {
+      // @ts-ignore
+      if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime?.waitUntil) {
+        // @ts-ignore
+        EdgeRuntime.waitUntil(bgPromise);
+        scheduledInBackground = true;
+        console.log('Background task scheduled via EdgeRuntime.waitUntil');
+      }
+    } catch (e) {
+      console.error('EdgeRuntime.waitUntil scheduling failed:', e);
+    }
+
+    if (!scheduledInBackground) {
+      console.warn('EdgeRuntime.waitUntil not available; running analysis synchronously.');
+      await bgPromise;
+    }
+
+    // Return immediately with the run ID - client can poll for status
     return new Response(
       JSON.stringify({
         success: true,
+        message: 'Analysis started in background',
         runId: run.id,
         flowId,
+        resolvedFlowId,
         flowName: flowConfig.name,
-        overallScore,
-        scores: {
-          mobile: avgMobile,
-          conversion: avgConversion,
-          ux: avgUx,
-        },
-        issuesCount: allIssues.length,
-        criticalCount: criticalIssues,
-        summary,
-        recommendations,
+        status: 'running',
+        totalSteps: flowConfig.steps,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

@@ -13,10 +13,12 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
 }
 
 /* Safe area insets for mobile devices */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
+@supports (padding: env(safe-area-inset-top)) {
   .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
   .pb-safe { padding-bottom: max(0.625rem, env(safe-area-inset-bottom)); }
+  .pt-safe { padding-top: max(0.5rem, env(safe-area-inset-top)); }
   .mb-safe { margin-bottom: env(safe-area-inset-bottom, 0px); }
+  .mt-safe { margin-top: env(safe-area-inset-top, 0px); }
 }
 
 /* Touch optimization */
@@ -25,8 +27,20 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Prevent horizontal scroll on mobile - fixes AI analysis issues */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
 @tailwind components;
 @tailwind utilities;
+
+/* Floating animation for info badges */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
 
 /* Dark mode support */
 .dark { color-scheme: dark; }

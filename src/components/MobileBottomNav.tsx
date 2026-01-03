@@ -13,16 +13,28 @@ const navItems = [
   { href: "/umzugsofferten", label: "Offerten", icon: FileText },
 ];
 
+// Paths where we hide the mobile bottom navigation to avoid overlap with funnels
+// All calculator/funnel flows have their own sticky footer CTAs
+const HIDDEN_PATHS = [
+  '/umzugsofferten',  // All /umzugsofferten variants
+  '/umzugsrechner',   // Calculator page
+  '/god-mode',        // God mode calculator
+  '/flow-tester',     // Flow testing
+];
+
 export const MobileBottomNav = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const { lightTap } = useHapticFeedback();
 
-  if (!isMobile) return null;
+  // Hide on funnel pages or when not mobile
+  const shouldHide = !isMobile || HIDDEN_PATHS.some(path => location.pathname.startsWith(path));
+  if (shouldHide) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-xl border-t border-border/80 shadow-lg pb-safe" aria-label="Mobile Navigation">
-      <div className="flex items-center justify-around h-[52px] xs:h-14">
+    <nav className="site-bottom-nav fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-lg pb-safe" aria-label="Mobile Navigation">
+      {/* Touch targets min 44px height - Issue #26 fix */}
+      <div className="flex items-center justify-around h-14 min-h-[56px]">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href || 
             (item.href !== "/" && location.pathname.startsWith(item.href));
@@ -33,7 +45,7 @@ export const MobileBottomNav = () => {
               to={item.href}
               onClick={() => lightTap()}
               className={cn(
-                "relative flex flex-col items-center justify-center flex-1 h-full py-1 transition-all duration-200 touch-manipulation",
+                "relative flex flex-col items-center justify-center flex-1 h-full min-h-[48px] min-w-[48px] py-1.5 transition-all duration-200 touch-manipulation",
                 isActive 
                   ? "text-primary" 
                   : "text-muted-foreground active:scale-90 active:opacity-70"
@@ -50,14 +62,15 @@ export const MobileBottomNav = () => {
               <motion.div
                 whileTap={{ scale: 0.85 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center gap-0.5"
               >
                 <item.icon className={cn(
-                  "h-[18px] w-[18px] xs:h-5 xs:w-5 mb-0.5 transition-transform",
+                  "h-5 w-5 transition-transform",
                   isActive && "scale-105"
                 )} />
+                {/* Issue #3 fix - prevent text truncation with smaller font */}
                 <span className={cn(
-                  "text-[9px] xs:text-[10px] font-medium transition-colors leading-none",
+                  "text-[10px] font-medium transition-colors leading-none whitespace-nowrap",
                   isActive ? "text-primary font-semibold" : "text-muted-foreground"
                 )}>
                   {item.label}

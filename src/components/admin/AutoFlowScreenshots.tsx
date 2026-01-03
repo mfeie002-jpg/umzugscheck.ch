@@ -157,6 +157,24 @@ const CALCULATOR_FLOWS = [
       { step: 9, name: "Step 9 - Kontakt" },
     ],
   },
+  // V2.e Chat-Funnel - conversational flow
+  {
+    id: "umzugsofferten-v2e",
+    name: "V2.e Chat-Funnel ⭐",
+    path: "/umzugsofferten-v2e",
+    steps: [
+      { step: 1, name: "Step 1 - Umzugstyp" },
+      { step: 2, name: "Step 2 - Von wo" },
+      { step: 3, name: "Step 3 - Nach wo" },
+      { step: 4, name: "Step 4 - Grösse" },
+      { step: 5, name: "Step 5 - Video (Optional)" },
+      { step: 6, name: "Step 6 - Datum" },
+      { step: 7, name: "Step 7 - Services" },
+      { step: 8, name: "Step 8 - Preis-Reveal" },
+      { step: 9, name: "Step 9 - Firmen" },
+      { step: 10, name: "Step 10 - Kontakt" },
+    ],
+  },
 ];
 
 // Viewport presets for automated step captures
@@ -192,14 +210,12 @@ interface CaptureResult {
 }
 
 export function AutoFlowScreenshots() {
-  // IMPORTANT: Screenshot providers usually cannot access preview/sandbox domains (login-wall / auth-gate).
-  // Default to a publicly reachable base URL when we detect a Lovable host.
+  // IMPORTANT: Screenshot providers must be able to access the URL publicly.
+  // Our Preview domain is public and contains all routes.
   const defaultPublicBaseUrl = useMemo(() => {
-    if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-    const { origin, hostname } = window.location;
-    const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-    return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+    return SITE_CONFIG.previewUrl.replace(/\/$/, "");
   }, []);
+
 
   const [baseUrlOverride, setBaseUrlOverride] = useState<string>(defaultPublicBaseUrl);
   const [selectedFlows, setSelectedFlows] = useState<string[]>(
@@ -227,10 +243,29 @@ export function AutoFlowScreenshots() {
 
   const buildCaptureUrl = (flowId: string, flowPath: string, step: number) => {
     const baseUrl = getBaseUrl();
-    // uc_cb busts caches for screenshot tooling.
-    // uc_flow makes the flow selection deterministic (prevents default-flow mismatch)
-    // uc_capture enables capture mode with prefilled demo data
-    return `${baseUrl}${flowPath}?uc_capture=1&uc_flow=${flowId}&uc_step=${step}&uc_cb=${Date.now()}`;
+
+    // Build robust URL (flowPath may already include query params like ?variant=v1d)
+    const u = new URL(flowPath, baseUrl);
+    u.searchParams.set("uc_capture", "1");
+    
+    // Extract uc_flow from flowId:
+    // - "umzugsofferten" → "v1"
+    // - "umzugsofferten-v3" → "v3"
+    // - "umzugsofferten-v3a" → "v3a"
+    // - "v9a" → "v9a" (some entries use short IDs)
+    const extractUcFlowId = (id: string): string => {
+      if (id === "umzugsofferten") return "v1";
+
+      const short = id.match(/^v(\d+)([a-z])?$/i);
+      if (short) return `v${short[1]}${short[2] || ""}`;
+
+      const long = id.match(/-v(\d+)([a-z])?$/i);
+      return long ? `v${long[1]}${long[2] || ""}` : "v1";
+    };
+    u.searchParams.set("uc_flow", extractUcFlowId(flowId));
+    u.searchParams.set("uc_step", String(step));
+    u.searchParams.set("uc_cb", String(Date.now()));
+    return u.toString();
   };
 
   const toggleFlow = (flowId: string) => {

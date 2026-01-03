@@ -18,10 +18,12 @@ import {
   Trash2, Zap, FileDown, Shield,
   Wrench, ExternalLink, BookOpen, Terminal, FileCode,
   Database, Search, Eye, GitCompare, Sparkles, Bot, Play,
-  Globe, RefreshCw
+  Globe, RefreshCw, Wand2
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FlowAutomationCenter } from "@/components/admin/FlowAutomationCenter";
+import { UltimateFlowExporter } from "@/components/admin/UltimateFlowExporter";
+import { UltimateFeedbackSuite } from "@/components/admin/UltimateFeedbackSuite";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ChatGPTPromptCopier } from "@/components/admin/ChatGPTPromptCopier";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
@@ -32,8 +34,10 @@ import { ToolsWizard } from "@/components/admin/ToolsWizard";
 import { CalculatorFlowReview } from "@/components/admin/CalculatorFlowReview";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import { BackgroundExportManager } from "@/components/admin/BackgroundExportManager";
+import { JobsDownloadsCenter } from "@/components/admin/JobsDownloadsCenter";
 import AutoFlowDashboard from "@/components/admin/AutoFlowDashboard";
 import ABTestToggle from "@/components/admin/ABTestToggle";
+import FocusedABTestPanel from "@/components/admin/FocusedABTestPanel";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -2458,7 +2462,11 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
         {/* Tools Tabs */}
         <div id="tools-tabs-section">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-9">
+            <TabsTrigger value="ultimate-export" className="flex items-center gap-2">
+              <Wand2 className="h-4 w-4" />
+              Ultimate Export
+            </TabsTrigger>
             <TabsTrigger value="flow-automation" className="flex items-center gap-2">
               <Zap className="h-4 w-4" />
               Flow Automation
@@ -2470,6 +2478,10 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
             <TabsTrigger value="calculator-review" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               Calculator Review
+            </TabsTrigger>
+            <TabsTrigger value="jobs-downloads" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Jobs & Downloads
             </TabsTrigger>
             <TabsTrigger value="screenshots" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
@@ -2489,7 +2501,15 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
             </TabsTrigger>
           </TabsList>
 
-          {/* Flow Automation Tab - NEW */}
+          {/* Ultimate Export Tab - PRIMARY TOOL */}
+          <TabsContent value="ultimate-export">
+            <div className="space-y-6">
+              <UltimateFlowExporter />
+              <UltimateFeedbackSuite />
+            </div>
+          </TabsContent>
+
+          {/* Flow Automation Tab */}
           <TabsContent value="flow-automation">
             <FlowAutomationCenter />
           </TabsContent>
@@ -3128,6 +3148,33 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
 
           {/* Screenshot Machine Tab */}
           <TabsContent value="screenshots">
+            {/* Quick Access to Version Screenshots */}
+            <Card className="mb-6 border-2 border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950">
+              <CardContent className="py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-full">
+                      <Database className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-orange-800 dark:text-orange-200">
+                        Versions-Screenshots verwalten
+                      </div>
+                      <div className="text-sm text-orange-600 dark:text-orange-400">
+                        Übersicht aller Flows ohne Screenshots • Auto-Sync für neue Versionen
+                      </div>
+                    </div>
+                  </div>
+                  <Link to="/admin/screenshots">
+                    <Button variant="default" className="bg-orange-600 hover:bg-orange-700">
+                      <Camera className="h-4 w-4 mr-2" />
+                      Zur Übersicht
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid gap-6 lg:grid-cols-2">
               <Card>
                 <CardHeader>
@@ -3289,7 +3336,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
           {/* Calculator Flow Review Tab */}
           <TabsContent value="calculator-review">
             <Tabs defaultValue="manual" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3 max-w-lg">
+              <TabsList className="grid w-full grid-cols-4 max-w-2xl">
                 <TabsTrigger value="manual">Manuell + Export</TabsTrigger>
                 <TabsTrigger value="autoflow">
                   <Zap className="h-4 w-4 mr-1" />
@@ -3306,6 +3353,7 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
               </TabsContent>
               
               <TabsContent value="autoflow" className="space-y-6">
+                <FocusedABTestPanel />
                 <ABTestToggle />
                 <AutoFlowDashboard />
               </TabsContent>
@@ -3318,6 +3366,11 @@ CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXEC
                 <BackgroundExportManager />
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          {/* Jobs & Downloads Tab */}
+          <TabsContent value="jobs-downloads">
+            <JobsDownloadsCenter />
           </TabsContent>
 
           {/* SEO HTML Analyzer Tab */}

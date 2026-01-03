@@ -41,32 +41,33 @@ export function CaptureDebugOverlay() {
   const isReady = status === "ready";
   const hasError = status === "error" || status === "no-sentinel";
 
+  // Position overlay at top-left to avoid covering UI elements (Issue #1, #6, #11)
   return (
     <div
       id="uc-capture-debug"
       style={{
         position: "fixed",
-        bottom: 10,
-        right: 10,
-        padding: "8px 12px",
+        top: 10,
+        left: 10,
+        padding: "6px 10px",
         background: hasError ? "#dc2626" : isReady ? "#16a34a" : "#f59e0b",
         color: "white",
-        borderRadius: 6,
-        fontSize: 11,
+        borderRadius: 4,
+        fontSize: 10,
         fontFamily: "monospace",
         zIndex: 99999,
-        opacity: 0.95,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+        opacity: 0.85,
+        boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+        maxWidth: 140,
+        pointerEvents: "none", // Prevent blocking any clicks
       }}
     >
-      <div style={{ fontWeight: "bold", marginBottom: 2 }}>
-        📷 Capture Mode
+      <div style={{ fontWeight: "bold", marginBottom: 2, fontSize: 9 }}>
+        📷 Capture
       </div>
-      <div>Status: <strong>{status}</strong></div>
-      <div>Step: {captureParams.step ?? "auto"}</div>
-      <div>Flow: {captureParams.flow ?? "default"}</div>
-      <div>Pending: {pendingRequests}</div>
-      <div>Elapsed: {elapsed}s</div>
+      <div style={{ fontSize: 9 }}>
+        {status} | S{captureParams.step ?? "?"} | {elapsed}s
+      </div>
     </div>
   );
 }

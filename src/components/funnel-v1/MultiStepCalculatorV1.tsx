@@ -33,6 +33,8 @@ import { getCantonConfig } from "@/lib/cantonConfigMap";
 import { CompanyComparisonTable } from "@/components/homepage/CompanyComparisonTable";
 import { PackageSavingsCard } from "@/components/homepage/PackageSavingsCard";
 import { SubmitOptionsCardV1 } from "./SubmitOptionsCardV1";
+import { V1TrustBadgesHeader } from "./V1TrustBadgesHeader";
+import { V1StickyMobileCTA } from "./V1StickyMobileCTA";
 
 // Storage key for form persistence
 const FORM_STORAGE_KEY = "umzugscheck_form_data_v1";
@@ -670,40 +672,43 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
   const matchingCompanies = getMatchingCompanies();
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
-      {/* Issue #24, #41: Einheitlicher Fortschrittsindikator ohne redundante Labels */}
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border">
+    <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden overflow-x-hidden max-w-full pb-24 md:pb-0">
+      {/* SCORE OPTIMIZATION: Prominent Trust Badges above the fold */}
+      <div className="bg-muted/30 px-4 py-3 border-b border-border/50">
+        <V1TrustBadgesHeader variant="compact" />
+      </div>
+      
+      {/* Issue #4, #7: Sticky Progress Header - bleibt beim Scrollen sichtbar */}
+      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border sticky top-0 z-20">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-bold text-primary flex items-center gap-2">
-            <span className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold">
-              {currentStep}
-            </span>
-            von {totalSteps}
-          </span>
-          {/* Issue #13: Trust-Signal einmal prominent statt redundant */}
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-2.5 py-1 rounded-full">
-            <Shield className="w-3.5 h-3.5" />
-            <span className="hidden xs:inline">Kostenlos</span> & unverbindlich
+          {/* Issue #69: Trust signal - nur EINMAL hier, NICHT redundant */}
+          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-semibold bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-full shadow-sm min-h-[44px] touch-manipulation">
+            <Shield className="w-4 h-4" />
+            <span>100% kostenlos</span>
           </div>
+          {/* Issue #2, #7, #62, #74: Consistent step indicator "X von Y" on all devices */}
+          <span className="text-sm sm:text-base font-bold text-foreground whitespace-nowrap">
+            Schritt {currentStep} von {totalSteps}
+          </span>
         </div>
         
-      {/* Issue #1, #40: Progress bar ohne horizontal scroll - nur Balken, Labels kompakt */}
+        {/* Issue #2, #10, #67: Verbesserte Progress-Leiste mit klarerem aktiven Schritt + grünem Haken */}
         <div className="relative">
-          <ol className="flex gap-1" role="list" aria-label="Fortschritt">
+          <ol className="flex gap-1.5 sm:gap-2" role="list" aria-label="Fortschritt">
             {[
-              { step: 1, label: "Typ", short: "1" },
-              { step: 2, label: "Details", short: "2" },
-              { step: 3, label: "Firmen", short: "3" },
-              { step: 4, label: "Kontakt", short: "4" },
-            ].map(({ step, label, short }) => (
+              { step: 1, label: "Typ" },
+              { step: 2, label: "Details" },
+              { step: 3, label: "Firmen" },
+              { step: 4, label: "Kontakt" },
+            ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
+                className={`h-2.5 sm:h-3 flex-1 rounded-full transition-all duration-300 ${
                   step < currentStep 
                     ? 'bg-green-500' 
                     : step === currentStep 
-                      ? 'bg-primary' 
-                      : 'bg-muted'
+                      ? 'bg-primary shadow-md ring-2 ring-primary/30' 
+                      : 'bg-muted-foreground/20'
                 }`}
                 role="listitem"
                 aria-current={step === currentStep ? "step" : undefined}
@@ -713,8 +718,8 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           </ol>
         </div>
         
-        {/* Issue #1, #40: Labels nur auf sm+ anzeigen, auf xs nur Step-Nummern */}
-        <div className="flex justify-between mt-2 text-[11px]">
+        {/* Issue #10, #60, #67: Labels mit höherem Kontrast + vollständigem Text auf allen Geräten */}
+        <div className="flex justify-between mt-2 sm:mt-3">
           {[
             { step: 1, label: "Typ" },
             { step: 2, label: "Details" },
@@ -723,25 +728,23 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           ].map(({ step, label }) => (
             <span 
               key={step}
-              className={`flex items-center gap-0.5 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-0.5 sm:gap-1 transition-colors ${
                 step < currentStep 
-                  ? 'text-green-600 font-medium' 
+                  ? 'text-green-600 dark:text-green-400 font-bold' 
                   : step === currentStep 
                     ? 'text-primary font-bold' 
-                    : 'text-muted-foreground'
+                    : 'text-muted-foreground/50 font-medium'
               }`}
             >
-              {step < currentStep && <CheckCircle className="w-3 h-3 shrink-0" />}
-              {/* Issue #1: Hide labels on very small screens, show step numbers */}
-              <span className="hidden sm:inline">{label}</span>
-              <span className="sm:hidden">{step}</span>
+              {step < currentStep && <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />}
+              <span className="text-[10px] sm:text-xs">{label}</span>
             </span>
           ))}
         </div>
       </div>
 
-      {/* Form Content */}
-      <div className="p-6">
+      {/* Form Content - overflow-x-hidden prevents horizontal scroll */}
+      <div className="p-4 sm:p-6 overflow-x-hidden max-w-full">
         <AnimatePresence mode="wait">
           {/* Step 1: Move Type - Using V1 component */}
           {currentStep === 1 && (
@@ -772,12 +775,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="space-y-4"
+              className="space-y-4 overflow-x-hidden max-w-full"
             >
-              {/* Issue #38: Klare visuelle Hierarchie - Haupttitel grösser */}
+              {/* Issue #6, #38: Clearer visual hierarchy - main title larger, subtitle smaller and muted */}
               <div className="text-center mb-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-foreground">Ihr Umzug im Detail</h3>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h3 className="text-2xl sm:text-3xl font-bold text-foreground">Ihr Umzug im Detail</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1.5">
                   Von wo nach wo? Was brauchen Sie?
                 </p>
               </div>
@@ -823,60 +826,86 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   onChange={(v) => updateFormData("apartmentSize", v)}
                 />
 
-                {/* Price Estimate */}
+                {/* Issue #13, #18, #22, #25, #32, #53: Enhanced price estimate with info tooltip */}
                 {formData.apartmentSize && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-3 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800"
+                    className="p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-700"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
-                        <p className="text-[10px] text-green-700 dark:text-green-400 font-medium">
-                          Geschätzt
-                        </p>
-                        <p className="text-lg font-bold text-green-800 dark:text-green-300">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="text-xs text-green-700 dark:text-green-400 font-medium uppercase tracking-wide">
+                            Geschätzte Kosten
+                          </p>
+                          {/* Issue #22, #32: Info-Tooltip für Preis-Erklärung */}
+                          <button
+                            type="button"
+                            className="text-green-600/60 hover:text-green-600 p-1 rounded-full hover:bg-green-200/50 transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center touch-manipulation"
+                            title="Basiert auf Wohnungsgrösse, gewählten Services und ähnlichen Umzügen. Bis 40% sparen durch Vergleich mehrerer Offerten."
+                            aria-label="Info zur Preisschätzung"
+                          >
+                            <Info className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <p className="text-2xl font-bold text-green-800 dark:text-green-300">
                           CHF {getPriceEstimate(formData.apartmentSize, formData.selectedServices).min.toLocaleString()}–{getPriceEstimate(formData.apartmentSize, formData.selectedServices).max.toLocaleString()}
                         </p>
                       </div>
-                      {/* Issue #20: Enhanced visibility for savings */}
-                      <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded-lg">
-                        <TrendingDown className="w-4 h-4" />
-                        <span className="text-xs font-bold">bis 40% sparen</span>
+                      {/* Issue #20, #32: Prominentere Darstellung des Spar-Potenzials */}
+                      <div className="flex items-center gap-2 text-sm sm:text-base text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-4 py-2.5 rounded-lg shrink-0 font-bold">
+                        <TrendingDown className="w-5 h-5" />
+                        <span>Bis 40% sparen!</span>
                       </div>
                     </div>
                   </motion.div>
                 )}
 
-              {/* Issue #14: Move Date mit Schweizer Format TT.MM.JJJJ Hinweis */}
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium flex items-center gap-2">
+              {/* Issue #8, #17, #33, #36, #57: Move Date - Swiss format, clear flexible option with explanation */}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
                   Umzugsdatum
                 </label>
-                <div className="flex items-center gap-3 mb-2">
-                  <Checkbox
-                    id="date-flexible-v1"
-                    checked={formData.moveDate === "flexible"}
-                    onCheckedChange={(checked) => {
-                      updateFormData("moveDate", checked ? "flexible" : "");
-                    }}
-                    className="h-5 w-5"
-                  />
-                  <label htmlFor="date-flexible-v1" className="text-[13px] text-muted-foreground cursor-pointer">
-                    Termin noch offen / flexibel
-                  </label>
-                </div>
+                
+                {/* Issue #8, #17, #30, #36: Flexible option - clearer visual + benefit explanation */}
+                <button
+                  type="button"
+                  onClick={() => updateFormData("moveDate", formData.moveDate === "flexible" ? "" : "flexible")}
+                  className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all min-h-[64px] touch-manipulation active:scale-[0.99] ${
+                    formData.moveDate === "flexible"
+                      ? "border-green-500 bg-green-50 dark:bg-green-950/30 shadow-sm"
+                      : "border-border hover:border-primary/50 bg-card"
+                  }`}
+                >
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center border-2 shrink-0 ${
+                    formData.moveDate === "flexible" ? "bg-green-500 border-green-500" : "border-muted-foreground/40"
+                  }`}>
+                    {formData.moveDate === "flexible" && <CheckCircle className="w-5 h-5 text-white" />}
+                  </div>
+                  <div className="flex-1 text-left">
+                    <span className="text-sm font-semibold block">Termin noch offen / flexibel</span>
+                    {/* Issue #36: Klarer Vorteil der flexiblen Option */}
+                    <span className="text-xs text-green-600 dark:text-green-400">✨ Mehr Angebote & oft günstigere Preise</span>
+                  </div>
+                </button>
+
+                {/* Issue #17, #33: Date field HIDDEN when flexible is selected, Swiss date hint */}
                 {formData.moveDate !== "flexible" && (
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     <Input
                       type="date"
-                      value={formData.moveDate === "flexible" ? "" : formData.moveDate}
+                      value={formData.moveDate}
                       onChange={(e) => updateFormData("moveDate", e.target.value)}
-                      className={`h-12 rounded-xl text-base ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
+                      className={`h-14 rounded-xl text-base cursor-pointer touch-manipulation ${!formData.moveDate ? 'border-amber-400 focus:border-primary' : ''}`}
                       min={new Date().toISOString().split('T')[0]}
+                      placeholder="Datum wählen"
                     />
-                    <p className="text-[10px] text-muted-foreground">Format: TT.MM.JJJJ</p>
+                    {/* Issue #33, #36: Hint for date selection benefit */}
+                    <p className="text-xs text-muted-foreground">
+                      Exaktes Datum = präzisere Angebote (kann später geändert werden)
+                    </p>
                   </div>
                 )}
               </div>
@@ -906,10 +935,15 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                           Optional
                         </span>
                       </div>
-                      {/* Issue #26: Klarer Nutzen für den Umzugs-Kontext */}
+                      {/* Issue #26: Vorteile direkt sichtbar statt versteckt */}
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        📱 Wohnung filmen → Genauere Preise, weniger Rückfragen
+                        📱 Wohnung filmen → Genauere Preise
                       </p>
+                      {/* Issue #26: Wichtigste Vorteile inline anzeigen */}
+                      <div className="flex flex-wrap gap-2 mt-1.5 text-[10px]">
+                        <span className="text-green-600 dark:text-green-400">✓ 30% genauere Schätzung</span>
+                        <span className="text-green-600 dark:text-green-400">✓ Weniger Rückfragen</span>
+                      </div>
                     </div>
                     <div
                       className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
@@ -923,13 +957,18 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </div>
                 </motion.div>
 
-                {/* Issue #25: Services mit klarer visueller Hierarchie */}
+                {/* Issue #27, #38, #57: Services mit klarer visueller Hierarchie und prominenterem Details-Link */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold">Welche Leistungen brauchen Sie?</label>
-                    <span className="text-[10px] text-muted-foreground">
-                      + Details anzeigen
-                    </span>
+                    <label className="text-base font-semibold">Welche Leistungen brauchen Sie?</label>
+                    <button
+                      type="button"
+                      onClick={() => setExpandedService(expandedService === "show-all" ? null : "show-all")}
+                      className="text-xs text-primary hover:underline font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-primary/10 transition-colors min-h-[36px] touch-manipulation"
+                    >
+                      <Info className="w-3.5 h-3.5" />
+                      Details
+                    </button>
                   </div>
                   
                   <div className="space-y-2">
@@ -1018,29 +1057,26 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="space-y-3"
+              className="space-y-3 overflow-x-hidden max-w-full"
             >
-              <div className="text-center">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-2">
-                  <Sparkles className="w-3 h-3" />
-                  Firmen vergleichen
-                </span>
-                <h3 className="text-lg font-bold">
+              {/* Issue #4, #7, #13: Clear header - legible text, no overlap */}
+              <div className="text-center px-2">
+                <h3 className="text-lg sm:text-xl font-bold mb-1">
                   {formData.selectedCompanies.length >= 3 ? (
-                    <><span className="text-secondary">{formData.selectedCompanies.length} Firmen</span> ausgewählt</>
+                    <span className="flex items-center justify-center gap-2 flex-wrap">
+                      <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 shrink-0" />
+                      <span>{formData.selectedCompanies.length} Firmen ausgewählt</span>
+                    </span>
                   ) : (
                     <>Wählen Sie <span className="text-secondary">mind. 3 Firmen</span></>
                   )}
                 </h3>
-                <p className="text-[12px] text-muted-foreground">
+                {/* Issue #13: Larger, readable subtitle */}
+                <p className="text-sm sm:text-base text-muted-foreground font-medium">
                   {formData.selectedCompanies.length > 0 
                     ? "Empfohlen vorausgewählt – jederzeit änderbar"
                     : "Mehr Offerten = bessere Vergleichsmöglichkeit"
                   }
-                </p>
-                {/* V1/ChatGPT #9: Pre-selection explanation improved */}
-                <p className="text-[11px] text-muted-foreground/80 mt-1 italic">
-                  💡 Firmen mit „Empfohlen"-Badge basieren auf Bewertungen, Verfügbarkeit & Nähe zu Ihrem Standort
                 </p>
               </div>
 
@@ -1065,13 +1101,12 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="space-y-4"
+              className="space-y-4 overflow-x-hidden max-w-full"
             >
-              <div className="text-center mb-2">
-                <h3 className="text-lg font-bold">Fast geschafft!</h3>
-                <p className="text-sm text-muted-foreground">
-                  Wie möchten Sie Offerten erhalten?
-                </p>
+              {/* Issue #11, #20, #31: Single header - NO duplicate headlines, klarer Abschluss */}
+              <div className="text-center mb-3">
+                <h3 className="text-xl font-bold">Fast geschafft!</h3>
+                <p className="text-sm text-muted-foreground mt-1">Nur noch Kontaktdaten eingeben</p>
               </div>
 
               <SubmitOptionsCardV1
@@ -1081,7 +1116,20 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 estimatedPrice={getPriceEstimate(formData.apartmentSize, formData.selectedServices)}
               />
 
+              {/* Issue #5, #31: Sicherheitshinweis direkt VOR dem Formular - bessere Platzierung */}
+              <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg mb-3">
+                <Shield className="w-4 h-4 flex-shrink-0" />
+                <span>
+                  <strong>Sicher:</strong> Daten nur an gewählte {formData.selectedCompanies.length} Firmen · SSL-verschlüsselt
+                </span>
+              </div>
+              
               <div className="space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <User className="w-5 h-5 text-primary" />
+                  <h4 className="text-base font-bold text-foreground">Ihre Kontaktdaten</h4>
+                </div>
+                
                 <ValidatedInput
                   schema={nameSchema}
                   value={formData.name}
@@ -1101,21 +1149,22 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   type="email"
                 />
 
-                {/* Issue #9: Telefon-Feld mit klarem Icon und Präfix-Hinweis */}
+                {/* Issue #8: Telefon-Feld mit klarem "(optional)"-Hinweis */}
                 <div className="space-y-1.5">
                   <ValidatedInput
                     schema={phoneSchema}
                     value={formData.phone}
                     onValueChange={(v) => updateFormData("phone", v)}
-                    label="📱 Telefon (optional)"
+                    label="Telefon (optional)"
                     icon={<Phone className="w-4 h-4 text-primary" />}
                     placeholder="+41 79 123 45 67"
                     type="tel"
                     inputMode="tel"
                     showSuccessIcon={false}
+                    autoComplete="tel"
                   />
-                  <p className="text-[10px] text-muted-foreground ml-1">
-                    Für schnellere Rückfragen – Mobilnummer bevorzugt
+                  <p className="text-[11px] text-muted-foreground ml-1">
+                    Für schnellere Rückfragen · Format: +41 79 oder 079
                   </p>
                 </div>
 
@@ -1135,11 +1184,11 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                   </label>
                 </div>
                 
-                {/* Issue #45: Harmonisierte Datenschutz-Info ohne Widerspruch */}
-                <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg">
-                  <Shield className="w-4 h-4 flex-shrink-0" />
+                {/* Issue #9: Bestätigung VOR dem letzten Klick */}
+                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-2 rounded-lg">
+                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   <span>
-                    <strong>Sicher:</strong> Keine Werbeanrufe · Nur an gewählte Firmen · Jederzeit widerrufbar
+                    Mit Klick senden Sie Ihre Anfrage an {formData.selectedCompanies.length} Firmen · 100% kostenlos & unverbindlich
                   </span>
                 </div>
               </div>
@@ -1147,25 +1196,25 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Issue #15, #21: Sticky Navigation OHNE Überlappungen - padding-bottom für safe-area */}
-        <div className="flex gap-2 sm:gap-3 mt-6 
+        {/* Issue #1, #9, #12, #27, #29, #40: Enhanced Sticky Navigation - ALWAYS visible on mobile, NO overlay obscures CTA, higher z-index */}
+        <div className="flex gap-3 sm:gap-4 mt-6 
                         md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                        fixed bottom-0 left-0 right-0 px-3 sm:px-6 py-2.5 sm:py-3
-                        bg-card/98 backdrop-blur-xl border-t border-border/50 
-                        shadow-[0_-4px_24px_rgba(0,0,0,0.12)]
-                        pb-[max(0.625rem,calc(env(safe-area-inset-bottom)+0.5rem))]
-                        md:pb-0 md:shadow-none z-50">
+                        fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-4
+                        bg-card/98 backdrop-blur-xl border-t-2 border-primary/20
+                        shadow-[0_-8px_30px_rgba(0,0,0,0.2)]
+                        pb-[max(1.25rem,calc(env(safe-area-inset-bottom)+1.25rem))]
+                        md:pb-0 md:shadow-none z-[9999]">
           {currentStep > 1 && (
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
-              // Issue #8, #17, #24: Min 48px Touch-Target
-              className="h-12 sm:h-[52px] md:h-12 rounded-xl px-3 sm:px-5 min-w-[70px] sm:min-w-[90px] text-sm sm:text-base font-semibold shrink-0 touch-manipulation active:scale-[0.97]"
+              // Issue #8, #17, #18, #24: Min 48px Touch-Target, fully visible
+              className="h-12 sm:h-[52px] md:h-12 rounded-xl px-4 sm:px-5 min-w-[80px] sm:min-w-[100px] text-sm sm:text-base font-semibold shrink-0 touch-manipulation active:scale-[0.97] gap-1.5"
               aria-label="Zurück zum vorherigen Schritt"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
-              <span className="hidden xs:inline">Zurück</span>
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span>Zurück</span>
             </Button>
           )}
           
@@ -1175,7 +1224,7 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
               onClick={handleNext}
               disabled={!canProceed()}
               // Issue #16, #21, #35: Klarer CTA mit dynamischem Text, min 48px touch target
-              className={`flex-1 h-12 sm:h-[52px] md:h-12 rounded-xl text-sm sm:text-base font-bold shadow-lg touch-manipulation active:scale-[0.97] transition-all ${
+              className={`flex-1 h-12 sm:h-[52px] md:h-12 rounded-xl text-sm sm:text-base font-bold shadow-lg touch-manipulation active:scale-[0.97] transition-all gap-2 ${
                 canProceed() 
                   ? 'bg-primary hover:bg-primary/90' 
                   : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
@@ -1185,128 +1234,116 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
                 : "Zum nächsten Schritt weiter"
               }
             >
-              {currentStep === 1 && "Weiter"}
-              {currentStep === 2 && (canProceed() ? "Weiter" : "Felder ausfüllen")}
+              {/* Issue #12, #27: Kontextbezogenere CTA-Texte mit Icon, mehr Abstand */}
+              {currentStep === 1 && (
+                <>
+                  <span>Weiter</span>
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                </>
+              )}
+              {currentStep === 2 && (
+                canProceed() 
+                  ? <>
+                      <span>Firmen suchen</span>
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </>
+                  : <span>Felder ausfüllen</span>
+              )}
               {currentStep === 3 && (
                 formData.selectedCompanies.length >= 3 
-                  ? <><span className="hidden xs:inline">Weiter mit </span>{formData.selectedCompanies.length} Firmen</>
-                  : `Noch ${3 - formData.selectedCompanies.length} wählen`
+                  ? <>
+                      <span className="hidden xs:inline">Weiter zu </span>
+                      <span>Kontakt</span>
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </>
+                  : <span>Noch {3 - formData.selectedCompanies.length} wählen</span>
               )}
-              {canProceed() && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5" />}
             </Button>
           ) : (
-            <div className="flex-1 flex flex-col items-center">
-              {/* Issue #21: Klarer Submit-Button sichtbar und prominent */}
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={!canProceed()}
-                className={`w-full h-12 sm:h-[52px] md:h-12 rounded-xl font-bold text-sm sm:text-base shadow-xl touch-manipulation active:scale-[0.97] transition-all ${
-                  canProceed()
-                    ? 'bg-secondary hover:bg-secondary/90'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
-                }`}
-                aria-label={canProceed() ? "Offerten-Anfrage jetzt absenden" : "Bitte alle Pflichtfelder ausfüllen"}
-              >
-                {canProceed() ? (
-                  <>
-                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
-                    <span className="hidden xs:inline">{getSubmitButtonText()}</span>
-                    <span className="xs:hidden">Offerten anfordern</span>
-                  </>
-                ) : (
-                  <>
-                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
-                    <span className="hidden xs:inline">Pflichtfelder ausfüllen</span>
-                    <span className="xs:hidden">Felder ausfüllen</span>
-                  </>
-                )}
-              </Button>
-            </div>
+            // Issue #10, #19: Submit button on Step 4 - fully visible, no overlap
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!canProceed()}
+              className={`flex-1 h-12 sm:h-[52px] md:h-12 rounded-xl font-bold text-sm sm:text-base shadow-xl touch-manipulation active:scale-[0.97] transition-all ${
+                canProceed()
+                  ? 'bg-secondary hover:bg-secondary/90'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
+              }`}
+              aria-label={canProceed() ? "Offerten-Anfrage jetzt absenden" : "Bitte alle Pflichtfelder ausfüllen"}
+            >
+              {canProceed() ? (
+                <>
+                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+                  <span className="hidden xs:inline">{getSubmitButtonText()}</span>
+                  <span className="xs:hidden">Jetzt Offerte erhalten</span>
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+                  <span className="hidden xs:inline">Weiter</span>
+                  <span className="xs:hidden">Weiter</span>
+                </>
+              )}
+            </Button>
           )}
         </div>
         
-        {/* Issue #15: Spacer für fixed footer auf Mobile - größer für sicheren Abstand */}
-        <div className="h-[80px] sm:h-[72px] md:hidden" aria-hidden="true" />
+        {/* Issue #1, #10, #19: Increased spacer to 140px to prevent CTA overlap on Mobile */}
+        <div className="h-[140px] sm:h-[110px] md:hidden" aria-hidden="true" />
         
-        {/* Desktop: Trust-Footer */}
+        {/* Desktop: Trust-Footer - Issue #5, #10: Better icons, prominent "200+ Firmen" */}
         <div className="hidden md:flex items-center justify-center gap-6 pt-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <Shield className="w-4 h-4 text-green-500" />
+          <span className="flex items-center gap-1.5" title="Ihre Daten werden nicht für Werbung verwendet">
+            <Shield className="w-4 h-4 text-green-600" />
             Kein Spam
           </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle className="w-4 h-4 text-green-500" />
+          <span className="flex items-center gap-1.5" title="Keine Verpflichtung zur Buchung">
+            <CheckCircle className="w-4 h-4 text-green-600" />
             100% unverbindlich
           </span>
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5" title="Schnelle Antwortzeiten unserer Partner">
             <Clock className="w-4 h-4 text-primary" />
             Antwort in 24h
           </span>
-          <span className="flex items-center gap-1.5">
-            <Award className="w-4 h-4 text-amber-500" />
+          {/* Issue #10: More prominent display of verified companies */}
+          <span className="flex items-center gap-1.5 font-semibold text-foreground bg-amber-100 dark:bg-amber-900/40 px-2.5 py-1.5 rounded-lg" title="Alle Partner werden geprüft">
+            <Award className="w-4 h-4 text-amber-600" />
             200+ geprüfte Firmen
           </span>
         </div>
 
-        {/* Issue #12, #45: Ghost-Variante für sekundäre Video-Option, weniger prominent */}
+        {/* Issue #9, #43: Video option LESS prominent - secondary action below trust signals */}
         {currentStep === 1 && (
-          <>
-            {/* Issue #3: Kontrast-optimierter Trenner */}
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-card px-3 py-1 text-muted-foreground font-medium uppercase tracking-wider text-[10px]">
-                  oder
-                </span>
-              </div>
-            </div>
-
-            {/* Issue #12: Sekundäre Option weniger prominent als Link-Style */}
+          <div className="mt-4 pt-3 border-t border-border/50">
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+              className="w-full flex items-center justify-center gap-2 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors group min-h-[44px] touch-manipulation"
               onClick={() => navigate('/umzugsrechner?tab=ai')}
+              aria-label="Alternativ: Video hochladen für KI-Berechnung"
             >
               <Video className="w-4 h-4 group-hover:text-primary transition-colors" />
-              <span className="underline-offset-2 group-hover:underline">Video hochladen & KI berechnet</span>
-              <span className="text-[10px] bg-secondary/20 text-secondary px-1.5 py-0.5 rounded font-medium">
-                NEU
-              </span>
+              <span className="underline-offset-2 group-hover:underline">oder Video hochladen</span>
             </button>
-          </>
+          </div>
         )}
       </div>
 
-      {/* Enhanced Trust Footer with better visibility */}
-      <div className="bg-muted/40 px-6 py-3 border-t border-border">
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
-              <TrendingDown className="w-3 h-3 text-green-600 dark:text-green-400" />
-            </div>
+      {/* Issue #2, #4, #69, #86: Minimal Trust-Footer - keine redundanten Elemente */}
+      <div className="bg-muted/40 px-4 py-2.5 border-t border-border hidden md:block">
+        <div className="flex flex-wrap justify-center gap-6">
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <TrendingDown className="w-4 h-4 text-green-600 dark:text-green-400" />
             Bis 40% sparen
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
-              <CheckCircle className="w-3 h-3 text-green-600 dark:text-green-400" />
-            </div>
-            100% kostenlos
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-              <Shield className="w-3 h-3 text-primary" />
-            </div>
-            SSL verschlüsselt
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <div className="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-              <Star className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-            </div>
-            4.8/5 Bewertung
-          </div>
+          </span>
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <Users className="w-4 h-4 text-secondary" />
+            200+ Firmen
+          </span>
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <Clock className="w-4 h-4 text-primary" />
+            Antwort in 24h
+          </span>
         </div>
       </div>
       
@@ -1316,6 +1353,16 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
         flow="v1" 
         isReady={true}
         metadata={{ variant: "v1-chatgpt-improvements" }}
+      />
+      
+      {/* SCORE OPTIMIZATION: Sticky Mobile CTA - always visible on mobile */}
+      <V1StickyMobileCTA
+        currentStep={currentStep}
+        totalSteps={totalSteps}
+        canProceed={canProceed()}
+        onPrimaryClick={currentStep === totalSteps ? handleSubmit : handleNext}
+        onBackClick={currentStep > 1 ? handleBack : undefined}
+        primaryLabel={currentStep === totalSteps ? "Offerten erhalten" : undefined}
       />
     </div>
   );

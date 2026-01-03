@@ -1,92 +1,130 @@
-# Copilot / AI Agent Instructions for Umzugscheckv2
+# Copilot / AI Agent Quick Instructions
 
-Purpose: give actionable, repository-specific guidance so an AI coding agent can be productive immediately.
+Short, actionable guidance to help an AI coding agent be productive in this repo.
 
-- **Big picture**: Frontend-only monorepo-style app built with Vite + React + TypeScript. Primary entry is `src/App.tsx` (routing, providers, performance wrappers). See [ARCHITECTURE.md](ARCHITECTURE.md) for full rationale.
-- **Tech stack**: `React 18`, `TypeScript`, `Vite`, `Tailwind CSS`, `shadcn-ui`, `TanStack Query` (server state), `Supabase` (backend), `Zod` for validation.
+## Big picture (what this repo is)
+- **Frontend SPA** built with Vite + React (TypeScript) and Tailwind. See the project intro: [README.md](README.md#L1-L40).
+- **Design / deployment hooks**: the repo integrates with Lovable (automatic commits) and includes a build-time ChatGPT export generator. See Vite plugin usage: [vite.config.ts](vite.config.ts#L1-L120).
 
-- **Where to start (files to read first)**:
-  - `ARCHITECTURE.md` — canonical architecture, dataflows and conventions.
-  - `package.json` — build/test scripts (`npm run dev`, `npm run build`, `npm run preview`, `npm run lint`).
-  - `src/App.tsx` — app shell: providers, routing, lazy-loading conventions, and admin vs main layout behaviour.
-  - `src/main.tsx` — bootstrap (mounts `App`).
-  - `supabase/migrations/` — DB shape and RLS expectations.
+## Major components & boundaries
+- `src/pages` — route-level pages (many are lazy-loaded for code-splitting). Example lazy-loading pattern: [src/App.tsx](src/App.tsx#L1-L50).
+- `src/components` — UI & layout building blocks; `Navigation`/`Footer` are intentionally synchronous for fast FCP (see `MainLayout` in [src/App.tsx](src/App.tsx#L1-L50)).
+- `src/contexts` — global contexts (Auth, Performance, ProviderAuth).
+- `src/components/performance` — performance-specific helpers (CriticalCSS, PrefetchManager, etc.).
 
-- **Important patterns & conventions (do this in code changes)**:
-  - Routing: routes are defined centrally in `src/App.tsx`; admin routes are detected by `location.pathname.startsWith('/admin')`. Keep admin login route first in admin routes.
-  - Code-splitting: use `React.lazy(() => import("./pages/...") )` for pages. Follow existing lazy import style and `.then(m => ({ default: m.SomeExport }))` for named exports.
-  - Providers & state: server state via `@tanstack/react-query`, client session in `src/contexts/*` (e.g., `AuthContext`, `ProviderAuthContext`). Wrap changes with the same provider hooks.
-  - UI: `shadcn/ui` primitives live under `src/components/ui`. Follow `class-variance-authority` variants pattern (see `ARCHITECTURE.md` and examples in `src/components/*`).
-  - Validation: prefer `zod` schemas for form validation — look for `leadSchema` patterns in `src/`.
-  - Performance utilities: `CriticalCSS`, `PrefetchManager`, `ResourceHints`, `PerformanceMonitor` are present and may need care when changing SSR/preload behaviour.
+## Important integration points
+- Lovable: `lovable-tagger` is enabled in dev to tag components (see import and usage in [vite.config.ts](vite.config.ts#L1-L120)). Changes may be auto-synced via Lovable.
+- ChatGPT export: a custom plugin writes `public/chatgpt-export.txt` at build time. Admin UI fetches it (see [scripts/generate-chatgpt-export.js](scripts/generate-chatgpt-export.js#L1-L40) and [src/pages/admin/CodeExport.tsx](src/pages/admin/CodeExport.tsx#L1-L40)).
+- PWA + runtime caching is configured in `vite.config.ts` (fonts, Supabase caching). Adjust cache rules there.
+- Supabase SDK is a runtime dependency (`@supabase/supabase-js` in [package.json](package.json#L1-L40)).
 
-- **Development workflows / commands**:
-  - Install: `npm i`
-  - Dev server: `npm run dev` (Vite dev server)
-  - Production build: `npm run build` (also `npm run build:dev` exists for dev-mode build)
-  - Preview production: `npm run preview`
-  - Lint: `npm run lint` (ESLint)
-  - No test script discovered — run unit or integration tests only if you add them and wire them into `package.json`.
+## Developer workflows (commands)
+- Install: `npm i` — see [README.md](README.md#L20-L40).
+- Dev server: `npm run dev` (Vite server listens on `::` port `8080` per [vite.config.ts](vite.config.ts#L1-L120)).
+- Build: `npm run build` (triggers ChatGPT export and PWA generation via Vite plugins).
+- Preview: `npm run preview`.
+- Lint: `npm run lint` (ESLint).
 
-- **Integration points & external dependencies to watch**:
-  - Supabase: data access and RLS are critical. Check `supabase/migrations/` for schema and RLS rules before schema-affecting changes.
-  - Lovable integration: repo is linked to Lovable — edits may be synced externally; CI/CD and preview deployments can be managed via Lovable.
-  - Analytics & funnels: `src/components/AnalyticsTracker`, `FunnelModeProvider`, and related hooks are central to conversion flows — avoid removing telemetry without replacement.
+## Project-specific conventions & patterns
+- Code-splitting by route: the app keeps a small critical bundle (navigation, footer, IndexPremium) and lazy-loads other pages. See route imports in [src/App.tsx](src/App.tsx#L1-L50).
+- React Query defaults: global `QueryClient` is configured for longer stale times and disabled refetch-on-window-focus to keep snapshot stability for screenshots and performance testing — see [src/App.tsx](src/App.tsx#L317-L322).
+- Tailwind + shadcn-ui style system is used; `src/index.css` + `tailwind.config.ts` form the design system.
+- Plugins run during buildStart: the repository auto-generates a ChatGPT export and includes a dev-only `componentTagger` (lovable). Be careful when changing plugin behaviour — it affects both local builds and the exported artifacts.
 
-- **Project-specific gotchas**:
-  - Many dynamic and region routes exist (e.g., `/umzugsfirmen/:canton`, `/umzugsofferten-:variant`). Add new route aliases carefully to avoid shadowing.
-  - Lazy imports sometimes include a `.catch` wrapper that reloads on chunk errors — preserve that pattern where used (see `FlowDeepAnalysis` import in `src/App.tsx`).
-  - Admin area detection is path-based — changes to that logic affect routing globally.
-  - UI components and core navigation are intentionally synchronous for FCP (e.g., `Navigation`, `Footer` are imported directly in `App.tsx`). Keep critical UI synchronous.
+## Quick examples (copy-paste patterns)
+- Start dev server (local):
 
-- **Code style & naming**:
-  - Components: `PascalCase.tsx` (e.g., `CompanyCard.tsx`)
-  - Hooks: `usePrefix` camelCase (e.g., `useCompanyData.ts`)
-  - Types: `PascalCase` with `.types.ts` suffix where used.
-  - Use `cva` patterns for variants (`class-variance-authority`).
-
-- **When editing routes or major layout pieces**:
-  - Update `src/App.tsx` only after reading `ARCHITECTURE.md` and verifying lazy load and provider order.
-  - Verify that `MainLayout` still includes `Navigation`, `ScrollProgressBar`, `Footer` and mobile wrappers.
-  - Confirm your changes do not break the admin-route-first and login ordering.
-
-- **Examples to reference in PRs / patches**:
-  - Lazy-loading a page: `const SomePage = lazy(() => import('./pages/SomePage'))` (consistent with existing imports).
-  - Preserving chunk-reload logic: see the `FlowDeepAnalysis` import in `src/App.tsx`.
-  - Zod schema example: look for `leadSchema` references in `src/` and `ARCHITECTURE.md`.
-
-If anything above is unclear or you want deeper examples (component-level patterns, common utils under `src/lib/`, or how Supabase calls are wrapped), tell me which area to expand and I will iterate.
-# Docker has specific installation instructions for each operating system.
-# Please refer to the official documentation at https://docker.com/get-started/
-
-# Pull the Node.js Docker image:
-docker pull node:24-alpine
-
-# Create a Node.js container and start a Shell session:
-docker run -it --rm --entrypoint sh node:24-alpine
-
-# Verify the Node.js version:
-node -v # Should print "v24.12.0".
-
-# Verify npm version:
-npm -v # Should print "11.6.2".
-
-# Inside the container, navigate to your project directory.node -v
-npm -v
-
-node -v
-npm -v
-
+```bash
+npm i
 npm run dev
-# Start the development server:src/main.tsx
+```
 
+- Build (generate export + PWA):
 
+```bash
+npm run build
+```
 
+- Inspect React Query defaults (use this when changing caches): [src/App.tsx](src/App.tsx#L317-L322).
 
+## CI, Build & Exports
+- CI workflow: see `.github/workflows/ci.yml`. Key points:
+  - Runs on pushes to `main` and `loop/**`, and on pull requests.
+  - Uses **Node 20**, then runs `npm install --force` and `npm run build`.
+  - If your changes affect build-time artifacts (PWA, chatgpt export), ensure the build completes locally before opening a PR.
+- Local build & preview:
+  - Build: `npm run build`
+  - Preview the production build locally: `npm run preview`
+- Regenerate ChatGPT export manually (no full build required):
 
+```bash
+node scripts/generate-chatgpt-export.js
+```
 
+  - This writes `public/chatgpt-export.txt`. Note: the file is generated and typically listed in `.gitignore`.
+  - The admin UI reads this file (see `src/pages/admin/CodeExport.tsx`) — when changing how exports are generated, update that admin tooling as needed.
+- Environment variables: the CI job sets placeholder `SUPABASE_URL` / `SUPABASE_KEY` envs; if your change requires real keys, add them to GitHub Secrets and/or set them locally for testing.
+- Lint: `npm run lint` (run before PR).
+- Commit & PR guidance:
+  - Use branch names like `feat/<area>` or `chore/<area>` and commit prefixes such as `feat:`, `fix:`, `chore:` (repo uses these conventions).
+  - CI runs the build — ensure `npm run build` succeeds before opening a PR.
 
-src/main.tsx
-chatgpt-export.txt
-chatgpt-export.txt
-npm run dev
+## Where to look first for common tasks
+- Add a new route or page: `src/pages` + update routing in [src/App.tsx](src/App.tsx#L1-L50).
+- Update global styles / design tokens: `src/index.css`, `tailwind.config.ts`.
+- Change build behavior or caching: `vite.config.ts`.
+- Troubleshoot exports used by admin tools: `public/chatgpt-export.txt` (generated) and `scripts/generate-chatgpt-export.js`.
+
+## Notes for AI agents
+- Preserve lazy-loading and QueryClient defaults unless you understand performance implications (screenshots, A/B flows rely on consistent caching).
+- Do not remove the `componentTagger` usage without checking Lovable integration — it tags components used in the design system workflow.
+- When editing routes, respect the comment hints in `src/App.tsx` (e.g., admin login must come before other admin routes).
+
+## Using with ChatGPT
+
+### Personalizing with ChatGPT
+- **Custom GPTs**: You can upload the `public/chatgpt-export.txt` file to your ChatGPT account to train a custom GPT tailored to this project.
+- **Export Usage**: The `chatgpt-export.txt` file contains design system details and component documentation. Regenerate it with:
+
+```bash
+node scripts/generate-chatgpt-export.js
+```
+
+- **Templates**: Use the examples in `.github/copilot-instructions.md` to create prompt templates for ChatGPT. For instance:
+  - "How do I add a new route in `src/pages`?"
+  - "Explain the caching strategy in `src/App.tsx`."
+
+### Automation Options
+- **GitHub Actions**: Automate export generation and upload by extending `.github/workflows/ci.yml`.
+- **API Integration**: Use OpenAI's API to query project-specific details dynamically.
+
+If any area is unclear or you'd like more examples (e.g., typical PR contents, CI/CD details, or example component structure), tell me which part to expand.
+
+## Testing Strategies
+- **Unit Tests**: Run `npm test` to execute unit tests. Ensure all tests pass before committing changes.
+- **Integration Tests**: Integration tests for Supabase functions are located in `supabase/functions/tests`. Use `npm run test:integration` to run these.
+- **Debugging Tests**: Use the `--inspect` flag with Node.js to debug tests. Example: `node --inspect ./node_modules/.bin/jest`.
+
+## Debugging Tips
+- **Supabase Debugging**: Use the Supabase CLI to inspect logs and test functions locally. Example: `supabase start` to run a local Supabase instance.
+- **Runtime Caching**: Check `vite.config.ts` for caching rules. Use browser dev tools to verify cache behavior.
+- **Component Debugging**: Use React DevTools to inspect component state and props.
+
+## External Dependencies
+- **Supabase**: Ensure `SUPABASE_URL` and `SUPABASE_KEY` are set in your environment. Refer to `supabase/config.toml` for local configurations.
+- **Lovable**: The `lovable-tagger` plugin auto-tags components. Verify its integration in `vite.config.ts`.
+
+## Code Quality
+- **Linting**: Run `npm run lint` to check for linting errors. Fix issues using `npm run lint --fix`.
+- **Formatting**: The project uses Prettier for consistent formatting. Ensure code is formatted before committing.
+
+## Additional Examples
+- **Adding a Supabase Function**:
+  1. Create a new function in `supabase/functions`.
+  2. Deploy the function using `supabase functions deploy <function-name>`.
+  3. Test the function locally with `supabase functions serve`.
+
+- **Modifying ChatGPT Export**:
+  1. Update `scripts/generate-chatgpt-export.js`.
+  2. Run `node scripts/generate-chatgpt-export.js` to regenerate the export.
+  3. Verify the output in `public/chatgpt-export.txt`.

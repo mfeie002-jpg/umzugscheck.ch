@@ -41,6 +41,7 @@ import { Json } from "@/integrations/supabase/types";
 const FLOW_DEFINITIONS: Record<string, { path: string; maxSteps: number; name: string }> = {
   "umzugsofferten": { path: "/umzugsofferten", maxSteps: 4, name: "V1 - Control" },
   "umzugsofferten-v2": { path: "/umzugsofferten-v2", maxSteps: 6, name: "V2" },
+  "umzugsofferten-v2e": { path: "/umzugsofferten-v2e", maxSteps: 10, name: "V2.e Chat-Funnel" },
   "umzugsofferten-v3": { path: "/umzugsofferten-v3", maxSteps: 4, name: "V3" },
   "umzugsofferten-v4": { path: "/umzugsofferten-v4", maxSteps: 6, name: "V4" },
   "umzugsofferten-v5": { path: "/umzugsofferten-v5", maxSteps: 6, name: "V5" },
@@ -77,11 +78,10 @@ interface CaptureResult {
 }
 
 export function AutoVersionScreenshots() {
+  // IMPORTANT: Screenshot providers must be able to access the URL publicly.
+  // Our Preview domain is public and contains all routes.
   const defaultPublicBaseUrl = useMemo(() => {
-    if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-    const { origin, hostname } = window.location;
-    const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-    return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
+    return SITE_CONFIG.previewUrl.replace(/\/$/, "");
   }, []);
 
   const [baseUrl, setBaseUrl] = useState(defaultPublicBaseUrl);
@@ -176,19 +176,29 @@ export function AutoVersionScreenshots() {
     return () => clearTimeout(timeout);
   }, [pendingQueue, autoSync]);
 
-  const getFlowPath = (version: FlowVersion): { path: string; steps: number } | null => {
+  const getFlowPath = (version: FlowVersion): { path: string; steps: number; ucFlowId: string } | null => {
     const config = version.config as {
       variantId?: unknown;
       variantPath?: unknown;
       variantSteps?: unknown;
     } | null;
 
+    // Helper to extract uc_flow ID from flow_id
+    const extractUcFlowId = (flowId: string): string => {
+      if (flowId === "umzugsofferten") return "v1";
+      const match = flowId.match(/-v(\d+)/);
+      return match ? `v${match[1]}` : "v1";
+    };
+
     // Prefer explicit variantPath stored in version config (e.g. v1a-v1e, v2f, ...)
     const variantPath = typeof config?.variantPath === "string" ? config.variantPath : null;
     const variantSteps = Array.isArray(config?.variantSteps) ? (config?.variantSteps as unknown[]) : null;
     if (variantPath) {
       const fallbackSteps = FLOW_DEFINITIONS[version.flow_id]?.maxSteps ?? 4;
-      return { path: variantPath, steps: variantSteps?.length ?? fallbackSteps };
+      // Extract variant from path (e.g., /umzugsofferten-v3a -> v3a)
+      const pathMatch = variantPath.match(/umzugsofferten-v(\d+)([a-z])?/i);
+      const ucFlowId = pathMatch ? `v${pathMatch[1]}${pathMatch[2] || ""}` : extractUcFlowId(version.flow_id);
+      return { path: variantPath, steps: variantSteps?.length ?? fallbackSteps, ucFlowId };
     }
 
     // Check for V9 variants
@@ -198,7 +208,8 @@ export function AutoVersionScreenshots() {
       if (variantConfig) {
         return { 
           path: `/umzugsofferten-v9?uc_variant=${variantLetter}`,
-          steps: variantConfig.steps 
+          steps: variantConfig.steps,
+          ucFlowId: `v9${variantLetter.toLowerCase()}`
         };
       }
     }
@@ -206,7 +217,7 @@ export function AutoVersionScreenshots() {
     // Fallback to standard flow definitions
     const flowDef = FLOW_DEFINITIONS[version.flow_id];
     if (flowDef) {
-      return { path: flowDef.path, steps: flowDef.maxSteps };
+      return { path: flowDef.path, steps: flowDef.maxSteps, ucFlowId: extractUcFlowId(version.flow_id) };
     }
 
     // Try to extract from version number (e.g., "9.4" -> V9)
@@ -215,7 +226,7 @@ export function AutoVersionScreenshots() {
       const majorVersion = parseInt(match[1], 10);
       const flowId = majorVersion === 1 ? "umzugsofferten" : `umzugsofferten-v${majorVersion}`;
       const def = FLOW_DEFINITIONS[flowId];
-      if (def) return { path: def.path, steps: def.maxSteps };
+      if (def) return { path: def.path, steps: def.maxSteps, ucFlowId: `v${majorVersion}` };
     }
 
     return null;
@@ -238,10 +249,10 @@ export function AutoVersionScreenshots() {
     setSelectedVersions(ids);
   };
 
-  const buildCaptureUrl = (path: string, step: number) => {
+  const buildCaptureUrl = (path: string, step: number, ucFlowId: string) => {
     const base = (baseUrl || defaultPublicBaseUrl).replace(/\/$/, "");
     const separator = path.includes("?") ? "&" : "?";
-    return `${base}${path}${separator}uc_capture=1&uc_step=${step}&uc_cb=${Date.now()}`;
+    return `${base}${path}${separator}uc_capture=1&uc_flow=${ucFlowId}&uc_step=${step}&uc_cb=${Date.now()}`;
   };
 
   // Upload screenshot to Supabase Storage
@@ -324,7 +335,7 @@ export function AutoVersionScreenshots() {
           message: `${version.version_number} - Step ${step}: ${dimLabel}...`,
         });
 
-        const url = buildCaptureUrl(flowInfo.path, step);
+        const url = buildCaptureUrl(flowInfo.path, step, flowInfo.ucFlowId);
 
         try {
           const result = await captureScreenshot({
@@ -479,6 +490,60 @@ export function AutoVersionScreenshots() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Missing Screenshots Alert - Most Important! */}
+          {(() => {
+            const versionsWithoutScreenshots = versions.filter(v => {
+              const screenshots = v.screenshots as Record<string, string> | null;
+              return !screenshots || Object.keys(screenshots).length === 0;
+            });
+            const missingCount = versionsWithoutScreenshots.length;
+            
+            if (missingCount > 0) {
+              return (
+                <div className="p-4 bg-orange-50 dark:bg-orange-950 border-2 border-orange-300 dark:border-orange-700 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-full">
+                        <Camera className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-orange-800 dark:text-orange-200">
+                          {missingCount} {missingCount === 1 ? 'Version' : 'Versionen'} ohne Screenshots
+                        </div>
+                        <div className="text-sm text-orange-600 dark:text-orange-400">
+                          {versions.length - missingCount} von {versions.length} Versionen haben Screenshots
+                        </div>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="default" 
+                      className="bg-orange-600 hover:bg-orange-700"
+                      onClick={() => {
+                        selectWithoutScreenshots();
+                        toast.info(`${missingCount} Versionen ausgewählt - klicke auf "Screenshots erfassen"`);
+                      }}
+                      disabled={isRunning}
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Alle {missingCount} auswählen
+                    </Button>
+                  </div>
+                </div>
+              );
+            }
+            
+            return (
+              <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <span className="text-green-700 dark:text-green-300 font-medium">
+                    Alle {versions.length} Versionen haben Screenshots
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Auto-Sync Status */}
           {autoSync && (
             <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">

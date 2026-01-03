@@ -6,16 +6,23 @@
  * - "Nur Gratis-Offerten" als Exit
  * - Empfohlen + Default vorausgewählt
  * - Preis-/Paket-Details nach Lead
+ * 
+ * Uses shared components for consistency across all flows
  */
 
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Shield, CheckCircle2, Lock, MapPin, User, Mail, Phone, Star, Check } from 'lucide-react';
+import { Star, Check, MapPin, User, Mail, Phone } from 'lucide-react';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
+import { 
+  ProgressHeader, 
+  TrustBar, 
+  StickyFooterCTA, 
+  FormField,
+  SuccessState 
+} from './shared';
 
 const STEPS = [
   { id: 1, title: 'Details' },
@@ -48,86 +55,6 @@ const TIERS = [
   },
 ];
 
-function ProgressHeader({ step, total, title }: { step: number; total: number; title: string }) {
-  const pct = Math.round((step / total) * 100);
-  return (
-    <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b pb-4 pt-4 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <span className="text-sm text-muted-foreground">Schritt {step}/{total}</span>
-        </div>
-        <Progress value={pct} className="h-2" />
-      </div>
-    </div>
-  );
-}
-
-function TrustBar() {
-  return (
-    <div className="bg-muted/50 rounded-xl p-4 mb-6">
-      <div className="flex flex-wrap justify-center gap-4 text-sm">
-        <div className="flex items-center gap-2">
-          <Shield className="h-4 w-4 text-primary" />
-          <span className="font-medium">Unverbindlich</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-primary" />
-          <span className="font-medium">Geprüfte Firmen</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-primary" />
-          <span className="font-medium">DSG/DSGVO</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function StickyFooterCTA({
-  primaryLabel, onPrimary, disabled, hint, secondaryLabel, onSecondary,
-}: {
-  primaryLabel: string; onPrimary: () => void; disabled?: boolean; hint?: string;
-  secondaryLabel?: string; onSecondary?: () => void;
-}) {
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur border-t safe-area-inset-bottom">
-      <div className="max-w-md mx-auto p-4 space-y-2">
-        {hint && <p className="text-center text-sm text-muted-foreground">{hint}</p>}
-        <Button onClick={onPrimary} disabled={disabled} className="w-full h-14 text-lg font-semibold" size="lg">
-          {primaryLabel}
-        </Button>
-        {secondaryLabel && onSecondary && (
-          <Button variant="ghost" onClick={onSecondary} className="w-full">{secondaryLabel}</Button>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function Field({
-  label, name, type = 'text', value, onChange, placeholder, error, autoComplete, inputMode, icon: Icon,
-}: {
-  label: string; name: string; type?: string; value: string; onChange: (v: string) => void;
-  placeholder?: string; error?: string; autoComplete?: string; inputMode?: 'text' | 'numeric' | 'tel' | 'email';
-  icon?: React.ElementType;
-}) {
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={name} className="text-base font-medium">{label}</Label>
-      <div className="relative">
-        {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />}
-        <Input
-          id={name} name={name} type={type} value={value} onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder} autoComplete={autoComplete} inputMode={inputMode}
-          className={`h-12 text-base ${Icon ? 'pl-10' : ''} ${error ? 'border-destructive' : ''}`}
-        />
-      </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
-    </div>
-  );
-}
-
 function TierCard({ 
   tier, 
   selected, 
@@ -140,9 +67,10 @@ function TierCard({
   return (
     <button
       onClick={onSelect}
-      className={`min-w-[260px] snap-start rounded-2xl border p-4 text-left transition-all ${
+      className={`min-w-[260px] snap-start rounded-2xl border p-4 text-left transition-all min-h-[180px] ${
         selected ? 'border-primary bg-primary/5 ring-2 ring-primary' : 'border-border'
       }`}
+      aria-pressed={selected}
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-bold">{tier.title}</h3>
@@ -158,7 +86,7 @@ function TierCard({
       <ul className="space-y-2 mb-4">
         {tier.features.map((f) => (
           <li key={f} className="flex items-center gap-2 text-sm">
-            <Check className="h-4 w-4 text-primary" />
+            <Check className="h-4 w-4 text-primary flex-shrink-0" />
             {f}
           </li>
         ))}
@@ -170,10 +98,23 @@ function TierCard({
 }
 
 export const V6aFeedbackBased: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
-    fromZip: '', toZip: '', rooms: '', name: '', email: '', phone: '',
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
+  
+  const [currentStep, setCurrentStep] = useState(() => {
+    if (isCaptureMode && captureStep !== null && captureStep >= 1 && captureStep <= 3) {
+      return captureStep;
+    }
+    return 1;
   });
+  
+  const [formData, setFormData] = useState(() => ({
+    fromZip: isCaptureMode ? demoData.fromPostal : '',
+    toZip: isCaptureMode ? demoData.toPostal : '',
+    rooms: isCaptureMode ? '3' : '',
+    name: isCaptureMode ? demoData.name : '',
+    email: isCaptureMode ? demoData.email : '',
+    phone: isCaptureMode ? demoData.phone : '',
+  }));
   const [selectedTier, setSelectedTier] = useState<string>('comfort'); // Default empfohlen
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -216,31 +157,29 @@ export const V6aFeedbackBased: React.FC = () => {
   };
 
   if (isSubmitted) {
+    const selectedTierData = TIERS.find(t => t.id === selectedTier);
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full">
-          <CardContent className="pt-8 pb-8 text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle2 className="h-8 w-8 text-primary" />
-            </div>
-            <h2 className="text-2xl font-bold">Anfrage gesendet!</h2>
-            <p className="text-muted-foreground">
-              {selectedTier 
-                ? `Du erhältst ${TIERS.find(t => t.id === selectedTier)?.title}-Offerten.`
-                : 'Du erhältst unverbindliche Offerten von unseren Partnern.'}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <SuccessState
+        title="Anfrage gesendet!"
+        description={
+          selectedTier 
+            ? `Du erhältst ${selectedTierData?.title}-Offerten.`
+            : 'Du erhältst unverbindliche Offerten von unseren Partnern.'
+        }
+      />
     );
   }
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <ProgressHeader step={currentStep} total={STEPS.length} title={STEPS[currentStep - 1].title} />
+      <ProgressHeader 
+        step={currentStep} 
+        total={STEPS.length} 
+        title={STEPS[currentStep - 1].title} 
+      />
 
       <div className="max-w-md mx-auto p-4 pt-6">
-        {currentStep === 1 && <TrustBar />}
+        {currentStep === 1 && <TrustBar compact />}
 
         {currentStep === 2 ? (
           // Tier Selection - Horizontal Snap Scroll
@@ -266,7 +205,7 @@ export const V6aFeedbackBased: React.FC = () => {
             <Button
               variant="ghost"
               onClick={handleSkipToContact}
-              className="w-full"
+              className="w-full h-11"
             >
               Nur Gratis-Offerten (ohne Paketwahl)
             </Button>
@@ -280,16 +219,30 @@ export const V6aFeedbackBased: React.FC = () => {
                     <h1 className="text-xl font-bold mb-2">Umzugsdetails</h1>
                   </div>
 
-                  <Field label="Von PLZ" name="fromZip" value={formData.fromZip}
-                    onChange={(v) => updateField('fromZip', v)} placeholder="z.B. 8001"
-                    inputMode="numeric" error={errors.fromZip} icon={MapPin} />
+                  <FormField 
+                    label="Von PLZ" 
+                    name="fromZip" 
+                    value={formData.fromZip}
+                    onChange={(v) => updateField('fromZip', v)} 
+                    placeholder="z.B. 8001"
+                    inputMode="numeric" 
+                    error={errors.fromZip} 
+                    icon={MapPin} 
+                  />
 
-                  <Field label="Nach PLZ" name="toZip" value={formData.toZip}
-                    onChange={(v) => updateField('toZip', v)} placeholder="z.B. 3011"
-                    inputMode="numeric" error={errors.toZip} icon={MapPin} />
+                  <FormField 
+                    label="Nach PLZ" 
+                    name="toZip" 
+                    value={formData.toZip}
+                    onChange={(v) => updateField('toZip', v)} 
+                    placeholder="z.B. 3011"
+                    inputMode="numeric" 
+                    error={errors.toZip} 
+                    icon={MapPin} 
+                  />
 
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">Zimmer</Label>
+                    <label className="text-base font-medium">Zimmer</label>
                     <div className="grid grid-cols-4 gap-2">
                       {['1', '2', '3', '4', '5', '6+'].map((r) => (
                         <Button
@@ -317,17 +270,42 @@ export const V6aFeedbackBased: React.FC = () => {
                     )}
                   </div>
 
-                  <Field label="Name" name="name" value={formData.name}
-                    onChange={(v) => updateField('name', v)} placeholder="Vor- und Nachname"
-                    autoComplete="name" error={errors.name} icon={User} />
+                  <FormField 
+                    label="Name" 
+                    name="name" 
+                    value={formData.name}
+                    onChange={(v) => updateField('name', v)} 
+                    placeholder="Vor- und Nachname"
+                    autoComplete="name" 
+                    error={errors.name} 
+                    icon={User} 
+                  />
 
-                  <Field label="E-Mail" name="email" type="email" value={formData.email}
-                    onChange={(v) => updateField('email', v)} placeholder="ihre@email.ch"
-                    autoComplete="email" inputMode="email" error={errors.email} icon={Mail} />
+                  <FormField 
+                    label="E-Mail" 
+                    name="email" 
+                    type="email" 
+                    value={formData.email}
+                    onChange={(v) => updateField('email', v)} 
+                    placeholder="ihre@email.ch"
+                    autoComplete="email" 
+                    inputMode="email" 
+                    error={errors.email} 
+                    icon={Mail} 
+                  />
 
-                  <Field label="Telefon" name="phone" type="tel" value={formData.phone}
-                    onChange={(v) => updateField('phone', v)} placeholder="079 123 45 67"
-                    autoComplete="tel" inputMode="tel" error={errors.phone} icon={Phone} />
+                  <FormField 
+                    label="Telefon" 
+                    name="phone" 
+                    type="tel" 
+                    value={formData.phone}
+                    onChange={(v) => updateField('phone', v)} 
+                    placeholder="079 123 45 67"
+                    autoComplete="tel" 
+                    inputMode="tel" 
+                    error={errors.phone} 
+                    icon={Phone} 
+                  />
 
                   <p className="text-xs text-muted-foreground">
                     Mit Klick auf "Offerten erhalten" erlaubst du uns, deine Anfrage weiterzugeben.

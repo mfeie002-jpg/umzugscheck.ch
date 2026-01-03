@@ -488,10 +488,37 @@ serve(async (req) => {
     const apiUrl = `https://api.screenshotmachine.com?${params.toString()}`;
 
     console.log("Requesting screenshot from ScreenshotMachine API");
-    let response = await fetch(apiUrl);
-
-    // Check for ScreenshotMachine-specific error header (e.g., invalid_selector, timeout)
-    const smErrorHeader = response.headers.get("x-screenshotmachine-response");
+    
+    // Retry logic for transient errors (system_error, rate limits)
+    let response: Response | null = null;
+    let smErrorHeader: string | null = null;
+    const maxRetries = 3;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      response = await fetch(apiUrl);
+      smErrorHeader = response.headers.get("x-screenshotmachine-response");
+      
+      // Check for transient errors that should be retried
+      if (smErrorHeader === "system_error" || smErrorHeader === "too_many_requests") {
+        const backoffMs = Math.min(5000 * attempt, 15000); // 5s, 10s, 15s
+        console.warn(`ScreenshotMachine ${smErrorHeader} (attempt ${attempt}/${maxRetries}), retrying in ${backoffMs}ms...`);
+        
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, backoffMs));
+          continue;
+        }
+      }
+      
+      // Success or non-retryable error - break out of loop
+      break;
+    }
+    
+    if (!response) {
+      return new Response(
+        JSON.stringify({ error: "Failed to connect to ScreenshotMachine API" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
     if (smErrorHeader && smErrorHeader !== "ok") {
       console.error(`ScreenshotMachine error header: ${smErrorHeader}`);
 

@@ -144,6 +144,40 @@ export const FLOW_CONFIGS: Record<string, FlowConfig> = {
       { step: 5, name: 'Kontakt', description: 'Absenden' },
     ],
   },
+  // V2.e Chat-based Funnel (Experimental)
+  'umzugsofferten-v2e': {
+    id: 'umzugsofferten-v2e',
+    label: 'V2.e - Chat Funnel ⭐',
+    path: '/umzugsofferten-v2e',
+    color: 'bg-violet-500',
+    description: 'Chat-basierter Conversational Flow',
+    steps: [
+      { step: 1, name: 'Umzugstyp', description: 'Wohnung/Haus/Büro wählen' },
+      { step: 2, name: 'Von wo', description: 'Startadresse eingeben' },
+      { step: 3, name: 'Nach wo', description: 'Zieladresse eingeben' },
+      { step: 4, name: 'Grösse', description: 'Wohnungsgrösse wählen' },
+      { step: 5, name: 'Video', description: 'Optional: Video-Analyse' },
+      { step: 6, name: 'Datum', description: 'Umzugstermin festlegen' },
+      { step: 7, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 8, name: 'Preis', description: 'Preis-Reveal mit Animation' },
+      { step: 9, name: 'Firmen', description: 'Firmenauswahl treffen' },
+      { step: 10, name: 'Kontakt', description: 'Daten absenden' },
+    ],
+  },
+  // Ultimate Swiss Flow - Best of 36
+  'umzugsofferten-ultimate-best36': {
+    id: 'umzugsofferten-ultimate-best36',
+    label: 'Ultimate Best36 ⭐⭐',
+    path: '/umzugsofferten-ultimate-best36',
+    color: 'bg-gradient-to-r from-green-500 to-emerald-600',
+    description: 'Ultimate Flow: Best of 36 Varianten kombiniert. Ziel-Score: 98/100',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'Von-Nach PLZ eingeben' },
+      { step: 2, name: 'Umfang', description: 'Zimmer, Stockwerk, Inventar' },
+      { step: 3, name: 'Services', description: 'Datum und Zusatzleistungen' },
+      { step: 4, name: 'Kontakt', description: 'Kontaktdaten und Absenden' },
+    ],
+  },
 };
 
 // Sub-Variant Configurations for V9 feedback-based variants
@@ -218,6 +252,32 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
+  // V1f - Sticky CTA + Trust Pills (NEW)
+  'v1f': {
+    id: 'v1f',
+    label: 'V1f Sticky CTA + Trust ⭐',
+    path: '/umzugsofferten-v1f',
+    color: 'bg-emerald-500',
+    description: 'V1f: Enhanced Sticky CTA mit Micro-Feedback + Step Trust Pills',
+    parentFlow: 'umzugsofferten-v1',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ Von-Nach, Datum' },
+      { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // V1g - Input UX + Validation (NEW)
+  'v1g': {
+    id: 'v1g',
+    label: 'V1g Input UX + Validation ⭐',
+    path: '/umzugsofferten-v1g',
+    color: 'bg-emerald-400',
+    description: 'V1g: Enhanced FormFields mit Inline Validation + Mobile inputMode',
+    parentFlow: 'umzugsofferten-v1',
+    steps: [
+      { step: 1, name: 'Umzugsdetails', description: 'PLZ Von-Nach, Datum' },
+      { step: 2, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
   // V2 - Premium Sub-Variants
   'v2a': {
     id: 'v2a',
@@ -271,19 +331,7 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
-  'v2e': {
-    id: 'v2e',
-    label: 'V2e Experimental',
-    path: '/umzugsofferten-v2?variant=v2e',
-    color: 'bg-violet-500',
-    description: 'V2 Experimentelle Version',
-    parentFlow: 'umzugsofferten-v2',
-    steps: [
-      { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer' },
-      { step: 2, name: 'Services', description: 'Zusatzleistungen wählen' },
-      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
-    ],
-  },
+  // v2e entfernt - ist ein Duplikat von 'umzugsofferten-v2e' (Zeile 148)
   'v2f': {
     id: 'v2f',
     label: 'V2f Premium (Feedback)',
@@ -325,18 +373,94 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
-  // V6 - Ultimate Feedback
+  // V6 - Ultimate Feedback Variants
   'v6a': {
     id: 'v6a',
-    label: 'V6a Ultimate (Feedback)',
-    path: '/umzugsofferten-v6?variant=v6a',
+    label: 'V6a Ultimate Optimized ⭐',
+    path: '/umzugsofferten-v6a',
     color: 'bg-orange-600',
-    description: 'V6 Feedback: 3 Pakete statt 6 Tiers, Card-Snap, Gratis-Option',
+    description: 'V6a: 3-Step Ultimate (Details → Paket → Kontakt) mit sticky CTA & Trust',
     parentFlow: 'umzugsofferten-v6',
     steps: [
-      { step: 1, name: 'Umzugsdetails', description: 'PLZ, Datum, Zimmer' },
-      { step: 2, name: 'Paket wählen', description: '3 Pakete mit Snap-Scroll' },
+      { step: 1, name: 'Details', description: 'PLZ Von/Nach, Zimmer' },
+      { step: 2, name: 'Paket', description: 'Service-Level wählen (3 Karten)' },
       { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  'v6b': {
+    id: 'v6b',
+    label: 'V6b Ultimate Extended',
+    path: '/umzugsofferten-v6b',
+    color: 'bg-orange-700',
+    description: 'V6b: 5-Step Ultimate mit Video-Scan, Tooltips, Preis-Reveal und Abschluss',
+    parentFlow: 'umzugsofferten-v6',
+    steps: [
+      { step: 1, name: 'Details', description: 'Von/Nach, Datum, Zimmer' },
+      { step: 2, name: 'Video-Scan', description: 'Inventar per Video (mit Skip)' },
+      { step: 3, name: 'Paket', description: 'Servicepakete vergleichen' },
+      { step: 4, name: 'Preis', description: 'Preisaufschlüsselung' },
+      { step: 5, name: 'Buchen', description: 'Kontakt + Absenden' },
+    ],
+  },
+  'v6c': {
+    id: 'v6c',
+    label: 'V6c Gemini "God Mode"',
+    path: '/umzugsofferten-v6c',
+    color: 'bg-orange-800',
+    description: 'V6c: Gemini God-Mode mit Permission-Priming, Labor-Illusion & Explainable AI',
+    parentFlow: 'umzugsofferten-v6',
+    steps: [
+      { step: 1, name: 'Details', description: 'Basisdaten + Volumen-Teaser' },
+      { step: 2, name: 'Inventar', description: 'Video-Scan / KI-Erkennung' },
+      { step: 3, name: 'Service', description: '6-Tier Decoy Pricing' },
+      { step: 4, name: 'Preis', description: 'Labor-Illusion + Fixpreis' },
+      { step: 5, name: 'Buchung', description: 'Kontakt + Reservierung' },
+      { step: 6, name: 'Bestätigt', description: 'Success + Garantie' },
+    ],
+  },
+  'v6d': {
+    id: 'v6d',
+    label: 'V6d Deep Research',
+    path: '/umzugsofferten-v6d',
+    color: 'bg-orange-900',
+    description: 'V6d: Deep-Research Feedback mit Mobile-First Formular & dynamischen CTAs',
+    parentFlow: 'umzugsofferten-v6',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'PLZ Von/Nach + Datum' },
+      { step: 2, name: 'Umzugsart', description: 'Privat/Firma/Spezial' },
+      { step: 3, name: 'Inventar', description: 'Video oder manuell' },
+      { step: 4, name: 'Services', description: 'Zusatzleistungen (max 3–4)' },
+      { step: 5, name: 'Abschluss', description: 'Kontakt + Privacy' },
+    ],
+  },
+  'v6e': {
+    id: 'v6e',
+    label: 'V6e Thinking Mode',
+    path: '/umzugsofferten-v6e',
+    color: 'bg-amber-700',
+    description: 'V6e: Thinking-Mode Feedback mit sauberem Funnel, Safe-Area Footer & "Fixpreis reservieren"',
+    parentFlow: 'umzugsofferten-v6',
+    steps: [
+      { step: 1, name: 'Details', description: 'Adressen + Datum (de-CH)' },
+      { step: 2, name: 'Video-Scan', description: 'Privacy + Nutzen + Skip' },
+      { step: 3, name: 'Service-Level', description: 'Cards-only Auswahl' },
+      { step: 4, name: 'Ihr Preis', description: '"Was ist drin?" sofort sichtbar' },
+      { step: 5, name: 'Reservieren', description: 'Kontakt + Fixpreis reservieren' },
+    ],
+  },
+  'v6f': {
+    id: 'v6f',
+    label: 'V6f Ultimate (Best of All)',
+    path: '/umzugsofferten-v6f',
+    color: 'bg-amber-800',
+    description: 'V6f: Kombiniert V6a–V6e (enclosed checkout, sticky footer, labor illusion, timeline)',
+    parentFlow: 'umzugsofferten-v6',
+    steps: [
+      { step: 1, name: 'Details', description: 'Wenige Angaben + Trust' },
+      { step: 2, name: 'Service', description: 'Sweet-Spot Tier Auswahl' },
+      { step: 3, name: 'Video', description: 'Video-Scan optional' },
+      { step: 4, name: 'Preis', description: 'Fixpreis berechnen' },
+      { step: 5, name: 'Kontakt', description: 'Offerten erhalten' },
     ],
   },
   // V7 - SwissMove Feedback

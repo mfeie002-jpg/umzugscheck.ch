@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,179 +37,168 @@ import {
   MessageSquare
 } from "lucide-react";
 
+interface BackgroundJobStatus {
+  id: string;
+  status: 'pending' | 'processing' | 'running' | 'completed' | 'failed';
+  progress: number;
+  progressMessage: string;
+  downloadUrl?: string;
+  error?: string;
+}
+
 const ChatGPTOverview = () => {
   const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
+  const [backgroundJob, setBackgroundJob] = useState<BackgroundJobStatus | null>(null);
 
   const flowVariants = getFlowVariants();
   const totalSteps = getTotalStepsAllFlows();
 
-  // Ultimate 1-Click Export - captures EVERYTHING
+  // Poll for background job status
+  const pollJobStatus = useCallback(async (jobId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('export_jobs')
+        .select('id, status, progress, progress_message, download_url, error_message')
+        .eq('id', jobId)
+        .single();
+
+      if (error) return null;
+
+      return {
+        id: data.id,
+        status: data.status as BackgroundJobStatus['status'],
+        progress: data.progress || 0,
+        progressMessage: data.progress_message || '',
+        downloadUrl: data.download_url || undefined,
+        error: data.error_message || undefined,
+      };
+    } catch (err) {
+      return null;
+    }
+  }, []);
+
+  // Check for pending jobs on mount
+  useEffect(() => {
+    const checkPendingJobs = async () => {
+      const { data } = await supabase
+        .from('export_jobs')
+        .select('id, status, progress, progress_message, download_url, error_message')
+        .eq('job_type', 'ultimate_export')
+        .in('status', ['pending', 'processing', 'running'])
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (data && data.length > 0) {
+        const job = data[0];
+        setBackgroundJob({
+          id: job.id,
+          status: job.status as BackgroundJobStatus['status'],
+          progress: job.progress || 0,
+          progressMessage: job.progress_message || '',
+          downloadUrl: job.download_url || undefined,
+          error: job.error_message || undefined,
+        });
+        setIsGenerating(true);
+      }
+    };
+    checkPendingJobs();
+  }, []);
+
+  // Poll when there's an active job
+  useEffect(() => {
+    if (!backgroundJob || backgroundJob.status === 'completed' || backgroundJob.status === 'failed') {
+      return;
+    }
+
+    const interval = setInterval(async () => {
+      const status = await pollJobStatus(backgroundJob.id);
+      if (status) {
+        setBackgroundJob(status);
+        setProgress(status.progress);
+        setStatus(status.progressMessage);
+
+        if (status.status === 'completed') {
+          toast.success('Ultimate Export fertig! Download bereit.');
+          setIsGenerating(false);
+          clearInterval(interval);
+        } else if (status.status === 'failed') {
+          toast.error(`Export fehlgeschlagen: ${status.error || 'Unbekannter Fehler'}`);
+          setIsGenerating(false);
+          clearInterval(interval);
+        }
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [backgroundJob, pollJobStatus]);
+
+  // Ultimate 1-Click Export - now runs in background
   const handleUltimateExport = async () => {
     setIsGenerating(true);
     setProgress(0);
-    setStatus("Starte Ultimate Export...");
+    setStatus("Starte Background-Export...");
 
     try {
-      const zip = new JSZip();
-      const exportDate = new Date().toISOString().split('T')[0];
-      const rootFolder = zip.folder(`ultimate-chatgpt-export-${exportDate}`);
-      if (!rootFolder) throw new Error("Could not create ZIP folder");
+      // Create job record first
+      const { data: jobData, error: jobError } = await supabase
+        .from('export_jobs')
+        .insert({
+          job_type: 'ultimate_export',
+          status: 'pending',
+          progress: 0,
+          progress_message: 'Job wird gestartet...',
+          include_sub_variants: true,
+        })
+        .select()
+        .single();
 
-      const baseUrl = SITE_CONFIG.url.replace(/\/$/, '');
-      let currentOp = 0;
-      const totalOps = flowVariants.reduce((sum, f) => sum + f.steps.length * 3, 0) + 10;
+      if (jobError) throw jobError;
 
-      // Master data structure
-      const masterData: any = {
-        exportDate: new Date().toISOString(),
-        baseUrl,
-        project: SITE_CONFIG.name,
-        totalFlows: flowVariants.length,
-        totalSteps,
-        flows: {},
-      };
+      const jobId = jobData.id;
+      setBackgroundJob({
+        id: jobId,
+        status: 'pending',
+        progress: 0,
+        progressMessage: 'Job wird gestartet...',
+      });
 
-      // Process each flow
-      for (const flow of flowVariants) {
-        const flowFolder = rootFolder.folder(flow.id);
-        if (!flowFolder) continue;
+      // Trigger the edge function (fire and forget)
+      supabase.functions.invoke('background-export', {
+        body: {
+          jobId,
+          baseUrl: SITE_CONFIG.url.replace(/\/$/, ''),
+          includeSubVariants: true,
+        },
+      }).catch(err => {
+        console.error('Edge function error:', err);
+      });
 
-        const flowData: any = {
-          id: flow.id,
-          label: flow.label,
-          path: flow.path,
-          description: flow.description,
-          totalSteps: flow.steps.length,
-          steps: [],
-        };
-
-        // Process each step
-        for (const stepConfig of flow.steps) {
-          const stepFolder = flowFolder.folder(`step-${stepConfig.step}`);
-          if (!stepFolder) continue;
-
-          setStatus(`${flow.label} - Step ${stepConfig.step}/${flow.steps.length}...`);
-
-          const captureUrl = `${baseUrl}${flow.path}?uc_capture=1&uc_step=${stepConfig.step}&uc_flow=${flow.id.replace('umzugsofferten-', 'v').replace('umzugsofferten', 'v1')}`;
-
-          // Desktop Screenshot
-          currentOp++;
-          setProgress((currentOp / totalOps) * 100);
-          let desktopScreenshot: string | null = null;
-          try {
-            const result = await captureScreenshotService({
-              url: captureUrl,
-              dimension: '1920x1080',
-              delay: 30000,
-              format: 'png',
-              fullPage: false,
-              noCache: true,
-            });
-            if (result.success && result.image) {
-              desktopScreenshot = result.image;
-              const base64Data = result.image.replace(/^data:image\/\w+;base64,/, '');
-              stepFolder.file('desktop.png', base64Data, { base64: true });
-            }
-          } catch (e) {
-            console.error('Desktop screenshot failed:', e);
-          }
-
-          // Mobile Screenshot
-          currentOp++;
-          setProgress((currentOp / totalOps) * 100);
-          let mobileScreenshot: string | null = null;
-          try {
-            const result = await captureScreenshotService({
-              url: captureUrl,
-              dimension: '390x844',
-              delay: 30000,
-              format: 'png',
-              fullPage: false,
-              noCache: true,
-            });
-            if (result.success && result.image) {
-              mobileScreenshot = result.image;
-              const base64Data = result.image.replace(/^data:image\/\w+;base64,/, '');
-              stepFolder.file('mobile.png', base64Data, { base64: true });
-            }
-          } catch (e) {
-            console.error('Mobile screenshot failed:', e);
-          }
-
-          // HTML
-          currentOp++;
-          setProgress((currentOp / totalOps) * 100);
-          let html: string | null = null;
-          try {
-            const { data } = await supabase.functions.invoke('capture-rendered-html', {
-              body: { url: captureUrl, waitFor: 5000, formats: ['html'] }
-            });
-            if (data?.html) {
-              html = data.html;
-              stepFolder.file('rendered.html', html);
-            }
-          } catch (e) {
-            console.error('HTML capture failed:', e);
-          }
-
-          // Step meta
-          const stepMeta = {
-            step: stepConfig.step,
-            name: stepConfig.name,
-            description: stepConfig.description,
-            url: captureUrl,
-            hasDesktop: !!desktopScreenshot,
-            hasMobile: !!mobileScreenshot,
-            hasHtml: !!html,
-            htmlLength: html?.length || 0,
-            capturedAt: new Date().toISOString(),
-          };
-          stepFolder.file('meta.json', JSON.stringify(stepMeta, null, 2));
-          
-          // Step prompt
-          stepFolder.file('step-prompt.md', generateStepPrompt(flow, stepConfig, stepMeta));
-
-          flowData.steps.push(stepMeta);
-        }
-
-        // Flow-level files
-        flowFolder.file('flow-info.json', JSON.stringify(flowData, null, 2));
-        flowFolder.file('flow-prompt.md', generateFlowPrompt(flow, flowData.steps));
-
-        masterData.flows[flow.id] = flowData;
-      }
-
-      // Master files
-      setStatus("Generiere Master-Prompts...");
-      currentOp += 5;
-      setProgress((currentOp / totalOps) * 100);
-
-      rootFolder.file('all-flows.json', JSON.stringify(masterData, null, 2));
-      rootFolder.file('MASTER-PROMPT.md', generateMasterPrompt(masterData));
-      rootFolder.file('QUICK-COMPARE.md', generateQuickComparePrompt(masterData));
-      rootFolder.file('V10-SYNTHESIS.md', generateV10SynthesisPrompt(masterData));
-      rootFolder.file('README.md', generateReadme(masterData));
-      rootFolder.file('IMPROVEMENTS.md', generateImprovements());
-
-      // Generate ZIP
-      setStatus("ZIP wird erstellt...");
-      setProgress(98);
-      const blob = await zip.generateAsync({ type: 'blob' });
-      saveAs(blob, `ultimate-chatgpt-export-${exportDate}.zip`);
-
-      setProgress(100);
-      setStatus("");
-      toast.success(`Ultimate Export fertig! ${flowVariants.length} Flows, ${totalSteps} Steps`);
+      toast.success('Background-Export gestartet. Du kannst die Seite schliessen oder warten.');
     } catch (error) {
       console.error('Ultimate export failed:', error);
-      toast.error('Export fehlgeschlagen');
-    } finally {
+      toast.error('Export konnte nicht gestartet werden');
       setIsGenerating(false);
     }
   };
+
+  // Download the completed export
+  const handleDownload = () => {
+    if (backgroundJob?.downloadUrl) {
+      window.open(backgroundJob.downloadUrl, '_blank');
+    }
+  };
+
+  // Clear completed job
+  const clearJob = () => {
+    setBackgroundJob(null);
+    setIsGenerating(false);
+    setProgress(0);
+    setStatus('');
+  };
+
 
   // Helper functions for prompts
   const generateStepPrompt = (flow: any, stepConfig: any, meta: any) => `# Step ${stepConfig.step}: ${stepConfig.name}
@@ -497,31 +486,61 @@ Alert bei unbeabsichtigten UI-Änderungen.
                   <p className="text-muted-foreground">
                     Alle {flowVariants.length} Flows × {totalSteps} Steps = Screenshots, HTML, Prompts in einem ZIP
                   </p>
+                  {backgroundJob?.status === 'completed' && (
+                    <p className="text-sm text-green-600 font-medium mt-1">
+                      ✓ Export fertig - Download bereit!
+                    </p>
+                  )}
                 </div>
               </div>
-              <Button 
-                size="lg" 
-                onClick={handleUltimateExport}
-                disabled={isGenerating}
-                className="min-w-[200px] h-14 text-lg"
-              >
-                {isGenerating ? (
+              <div className="flex gap-2">
+                {backgroundJob?.status === 'completed' && backgroundJob.downloadUrl ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {Math.round(progress)}%
+                    <Button 
+                      size="lg" 
+                      onClick={handleDownload}
+                      className="min-w-[180px] h-14 text-lg"
+                    >
+                      <Download className="mr-2 h-5 w-5" />
+                      Herunterladen
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      size="lg" 
+                      onClick={clearJob}
+                      className="h-14"
+                    >
+                      Neu starten
+                    </Button>
                   </>
                 ) : (
-                  <>
-                    <Zap className="mr-2 h-5 w-5" />
-                    Alles Exportieren
-                  </>
+                  <Button 
+                    size="lg" 
+                    onClick={handleUltimateExport}
+                    disabled={isGenerating}
+                    className="min-w-[200px] h-14 text-lg"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        {Math.round(progress)}%
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="mr-2 h-5 w-5" />
+                        Alles Exportieren
+                      </>
+                    )}
+                  </Button>
                 )}
-              </Button>
+              </div>
             </div>
             {isGenerating && (
               <div className="mt-4 space-y-2">
                 <Progress value={progress} className="h-2" />
-                <p className="text-sm text-muted-foreground text-center">{status}</p>
+                <p className="text-sm text-muted-foreground text-center">
+                  {status || 'Läuft im Hintergrund... Du kannst die Seite schliessen.'}
+                </p>
               </div>
             )}
           </CardContent>

@@ -40,13 +40,20 @@ const CodeExport = () => {
   };
 
   const parseExportContent = (content: string) => {
-    const timestampMatch = content.match(/# Generated: (.+)/);
+    const timestampMatch = content.match(/# Generated: (.+?)(?:\n|\()/);
     if (timestampMatch) {
-      setGeneratedAt(new Date(timestampMatch[1]).toLocaleString("de-CH"));
+      // Handle various date formats like "2025-12-17 (Updated)"
+      const dateStr = timestampMatch[1].trim();
+      try {
+        setGeneratedAt(new Date(dateStr).toLocaleString("de-CH"));
+      } catch {
+        setGeneratedAt(dateStr);
+      }
     }
 
-    const sectionRegex = /={80}\n([A-Z\s]+)\n={80}/g;
-    const fileRegex = /-{80}\nFILE: (.+)\n-{80}/g;
+    // Match sections with 80 = signs on their own lines
+    // Format: ====...==== (80 chars) \n TITLE \n ====...==== (80 chars)
+    const sectionRegex = /={60,}\n([A-Z][A-Z0-9\s\-_&]+)\n={60,}/g;
     
     const parsedSections: FileSection[] = [];
     let sectionMatch;
@@ -60,29 +67,55 @@ const CodeExport = () => {
       });
     }
 
+    // Set section end boundaries
     for (let i = 0; i < sectionPositions.length; i++) {
       if (i < sectionPositions.length - 1) {
         sectionPositions[i].end = sectionPositions[i + 1].start;
       }
     }
 
+    // Parse each section
     for (const section of sectionPositions) {
       const sectionContent = content.slice(section.start, section.end);
-      const files: string[] = [];
-      let fileMatch;
       
-      while ((fileMatch = fileRegex.exec(sectionContent)) !== null) {
-        files.push(fileMatch[1]);
+      // Try to find file references in various formats
+      const filePatterns = [
+        /FILE: (.+)/g,
+        /\/\/ File: (.+)/g,
+        /src\/[a-zA-Z0-9\-_\/]+\.[a-z]+/g
+      ];
+      
+      const files: string[] = [];
+      for (const pattern of filePatterns) {
+        let fileMatch;
+        while ((fileMatch = pattern.exec(sectionContent)) !== null) {
+          const file = fileMatch[1] || fileMatch[0];
+          if (!files.includes(file)) {
+            files.push(file);
+          }
+        }
+        pattern.lastIndex = 0;
       }
-      fileRegex.lastIndex = 0;
 
-      if (files.length > 0 || section.title === "DESIGN SYSTEM") {
-        parsedSections.push({
-          title: section.title,
-          files: files.length > 0 ? files : ["src/index.css", "tailwind.config.ts"],
-          content: sectionContent
-        });
+      // For sections without explicit file references, assign based on title
+      let sectionFiles = files;
+      if (sectionFiles.length === 0) {
+        if (section.title.includes("DESIGN")) {
+          sectionFiles = ["src/index.css", "tailwind.config.ts"];
+        } else if (section.title.includes("TAILWIND")) {
+          sectionFiles = ["tailwind.config.ts"];
+        } else if (section.title.includes("COMPONENT")) {
+          sectionFiles = ["src/components/"];
+        } else {
+          sectionFiles = ["(inline content)"];
+        }
       }
+
+      parsedSections.push({
+        title: section.title,
+        files: sectionFiles,
+        content: sectionContent
+      });
     }
 
     setSections(parsedSections);

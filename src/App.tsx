@@ -82,6 +82,7 @@ import { CaptureReadySentinel } from "@/components/CaptureReadySentinel";
 import { RedirectWithQuery } from "@/components/RedirectWithQuery";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { FunnelModeProvider } from "@/components/funnel/FunnelModeProvider";
+import { ReloadDiagnostics } from "@/components/debug/ReloadDiagnostics";
 
 // Lazy load non-critical UI components
 const AIMovingAssistant = lazy(() => import("./components/AIMovingAssistant").then(m => ({ default: m.AIMovingAssistant })));
@@ -218,16 +219,24 @@ const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
 
 // Other pages
 const Umzugsofferten = lazy(() => import("./pages/Umzugsofferten"));
+const UmzugsoffertenUltimate = lazy(() => import("./pages/UmzugsoffertenUltimate"));
 const UmzugsoffertenBaseline = lazy(() => import("./pages/UmzugsoffertenBaseline"));
 const UmzugsoffertenDynamic = lazy(() => import("./pages/UmzugsoffertenDynamic"));
+const UmzugsoffertenVariant = lazy(() => import("./pages/UmzugsoffertenVariant"));
 const UmzugsoffertenV1 = lazy(() => import("./pages/UmzugsoffertenV1"));
 const UmzugsoffertenV1a = lazy(() => import("./pages/UmzugsoffertenV1a"));
 const UmzugsoffertenV1b = lazy(() => import("./pages/UmzugsoffertenV1b"));
 const UmzugsoffertenV1c = lazy(() => import("./pages/UmzugsoffertenV1c"));
 const UmzugsoffertenV1d = lazy(() => import("./pages/UmzugsoffertenV1d"));
 const UmzugsoffertenV1e = lazy(() => import("./pages/UmzugsoffertenV1e"));
+const UmzugsoffertenV1f = lazy(() => import("./pages/UmzugsoffertenV1f"));
+const UmzugsoffertenV1g = lazy(() => import("./pages/UmzugsoffertenV1g"));
+const UmzugsoffertenUltimateCH = lazy(() => import("./pages/UmzugsoffertenUltimateCH"));
+const UltimateSwissFlow = lazy(() => import("./components/flows/UltimateSwissFlow"));
+const UmzugsoffertenV2e = lazy(() => import("./pages/UmzugsoffertenV2e"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 import FlowTester from "./pages/FlowTester";
+const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
@@ -275,27 +284,10 @@ const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 const FlowComparison = lazy(() => import("./pages/admin/FlowComparison"));
-const FlowDeepAnalysis = lazy(() =>
-  import("./pages/admin/FlowDeepAnalysis").catch((err) => {
-    const msg = String((err as any)?.message ?? err);
-    const isChunkError =
-      /Failed to fetch dynamically imported module|ChunkLoadError|Loading chunk|Importing a module script failed/i.test(
-        msg
-      );
-
-    if (isChunkError) {
-      const key = "uc:chunk-reload-once";
-      if (!sessionStorage.getItem(key)) {
-        sessionStorage.setItem(key, "1");
-        const url = new URL(window.location.href);
-        url.searchParams.set("__reload", Date.now().toString());
-        window.location.replace(url.toString());
-      }
-    }
-
-    throw err;
-  })
-);
+const FlowDeepAnalysis = lazy(() => import("./pages/admin/FlowDeepAnalysis"));
+const FlowAnalysisHub = lazy(() => import("./pages/admin/FlowAnalysisHub"));
+const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
+const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
 
 
 // Customer pages
@@ -327,6 +319,8 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
       gcTime: 1000 * 60 * 30, // 30 minutes (formerly cacheTime)
+      refetchOnWindowFocus: false, // Prevent refetch on window focus (e.g., after screenshots)
+      refetchOnReconnect: false,
     },
   },
 });
@@ -402,8 +396,14 @@ const AdminRoutes = () => (
       <Route path="/admin/ai-command" element={<AICommandCenter />} />
       <Route path="/admin/capabilities" element={<AdminCapabilities />} />
       <Route path="/admin/varianten-testen" element={<VariantTestHub />} />
+      {/* Flow Analysis Hub - Main entry point for all flow analysis */}
+      <Route path="/admin/flow-analysis" element={<FlowAnalysisHub />} />
+      {/* Legacy routes redirect to new hub */}
+      <Route path="/admin/flow-comparison" element={<Navigate to="/admin/flow-analysis?view=ranking" replace />} />
       <Route path="/admin/flow-comparison/:flowNumber" element={<FlowComparison />} />
-      <Route path="/admin/flow-deep-analysis" element={<FlowDeepAnalysis />} />
+      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/admin/flow-analysis?view=analysis" replace />} />
+      <Route path="/admin/analysis-framework" element={<AnalysisFramework />} />
+      <Route path="/admin/flow-feedback-variants" element={<FlowFeedbackVariants />} />
       <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
       <Route path="/admin/v3-varianten" element={<Navigate to="/v3-varianten" replace />} />
       <Route path="/admin/funnel" element={<FunnelAnalytics />} />
@@ -575,10 +575,71 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v1c" element={<UmzugsoffertenV1c />} />
           <Route path="/umzugsofferten-v1d" element={<UmzugsoffertenV1d />} />
           <Route path="/umzugsofferten-v1e" element={<UmzugsoffertenV1e />} />
-          {/* Dynamic route for all V2+ variants - handles v2a, v3b, v9d, etc. automatically */}
+          <Route path="/umzugsofferten-v1f" element={<UmzugsoffertenV1f />} />
+          <Route path="/umzugsofferten-v1g" element={<UmzugsoffertenV1g />} />
+          <Route path="/umzugsofferten-ultimate-ch" element={<UmzugsoffertenUltimateCH />} />
+          <Route path="/umzugsofferten-ultimate-best36" element={<UltimateSwissFlow />} />
+
+          {/* Dynamic route for sub-variants FIRST (v2a, v3b, v6a, v9d, etc.) - before main flows */}
+          <Route path="/umzugsofferten-v2a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v2f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v3e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v4f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v5f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6e" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v6f" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v7a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v8a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9b" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9c" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-v9d" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-multi-a" element={<UmzugsoffertenDynamic />} />
+          <Route path="/umzugsofferten-ultimate-v7" element={<UmzugsoffertenDynamic />} />
+
+          {/* Main V2+ flows (public URLs used by screenshot tooling) */}
+          <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v3" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v4" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v5" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v6" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v7" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v8" element={<UmzugsoffertenVariant />} />
+          <Route path="/umzugsofferten-v9" element={<UmzugsoffertenVariant />} />
+
+          <Route path="/umzugsofferten-v2e" element={<UmzugsoffertenV2e />} />
+          {/* Accept deep links like /umzugsofferten-v2e/step/3 for screenshot tools */}
+          <Route path="/umzugsofferten-v2e/*" element={<UmzugsoffertenV2e />} />
+          {/* Ultimate Flow Pages - dynamic from database */}
+          <Route path="/umzugsofferten-ultimate-:flowId" element={<UmzugsoffertenUltimate />} />
+          {/* Fallback dynamic route for any other sub-variants */}
           <Route path="/umzugsofferten-:variant" element={<UmzugsoffertenDynamic />} />
+
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
+          <Route path="/flow-comparison" element={<TopFlowsComparison />} />
+          <Route path="/flow-vergleich" element={<TopFlowsComparison />} />
           <Route path="/flow-test" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/flowtester" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/flow-tester/" element={<RedirectWithQuery to="/flow-tester" />} />
@@ -667,6 +728,7 @@ const App = () => (
                 <CaptureReadySentinel />
                 <CaptureDebugOverlay />
                 <FunnelModeProvider />
+                <ReloadDiagnostics />
                 <CriticalCSS />
                 <CriticalCSSLoader />
                 <ResourceHints />

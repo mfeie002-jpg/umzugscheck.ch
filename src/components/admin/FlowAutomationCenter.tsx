@@ -11,7 +11,7 @@
  */
 
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -295,37 +295,83 @@ function ExpandableFlowResult({
   );
 }
 
+// SessionStorage key for state persistence (survives Lovable preview reloads)
+const STORAGE_KEY = "uc:flow-automation-state";
+
+function loadPersistedState(): Partial<{
+  analysisResults: AnalysisResult[];
+  selectedFlow: string;
+  feedbackText: string;
+  variantLetter: string;
+  variantName: string;
+  selectedVariantFlowNumber: number;
+}> {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {
+    // ignore
+  }
+  return {};
+}
+
+function persistState(state: Record<string, unknown>) {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // ignore
+  }
+}
+
 export function FlowAutomationCenter() {
-  // Analysis state
-  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>(() =>
-    FLOW_OPTIONS.map((flow) => ({
+  // Load persisted state once on mount
+  const persisted = loadPersistedState();
+
+  // Analysis state - restore from sessionStorage if available
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>(() => {
+    if (persisted.analysisResults?.length) {
+      return persisted.analysisResults;
+    }
+    return FLOW_OPTIONS.map((flow) => ({
       flowId: flow.id,
       flowName: flow.label,
       status: "pending" as const,
-    }))
-  );
+    }));
+  });
   const [isLoadingResults, setIsLoadingResults] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [currentFlowAnalyzing, setCurrentFlowAnalyzing] = useState<string | null>(null);
 
-  // Feedback state
-  const [selectedFlow, setSelectedFlow] = useState("umzugsofferten-v9");
-  const [feedbackText, setFeedbackText] = useState("");
-  const [variantLetter, setVariantLetter] = useState("a");
-  const [variantName, setVariantName] = useState("");
+  // Feedback state - restore from sessionStorage
+  const [selectedFlow, setSelectedFlow] = useState(persisted.selectedFlow ?? "umzugsofferten-v9");
+  const [feedbackText, setFeedbackText] = useState(persisted.feedbackText ?? "");
+  const [variantLetter, setVariantLetter] = useState(persisted.variantLetter ?? "a");
+  const [variantName, setVariantName] = useState(persisted.variantName ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [recentEntries, setRecentEntries] = useState<FeedbackEntry[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [exportingFlowId, setExportingFlowId] = useState<string | null>(null);
   const [bulkMode, setBulkMode] = useState(true); // Default to bulk mode for full AI responses
-  const [selectedVariantFlowNumber, setSelectedVariantFlowNumber] = useState<number>(1);
+  const [selectedVariantFlowNumber, setSelectedVariantFlowNumber] = useState<number>(persisted.selectedVariantFlowNumber ?? 1);
   const [isAnalyzingVariants, setIsAnalyzingVariants] = useState(false);
   const [variantAnalysisProgress, setVariantAnalysisProgress] = useState(0);
   const [variantAnalysisResults, setVariantAnalysisResults] = useState<AnalysisResult[]>([]);
   const [dbVariantsCache, setDbVariantsCache] = useState<Record<number, Array<{ id: string; label: string; path: string }>>>({});
   const [isLoadingVariants, setIsLoadingVariants] = useState(false);
+
+  // Persist important state changes to sessionStorage
+  useEffect(() => {
+    persistState({
+      analysisResults,
+      selectedFlow,
+      feedbackText,
+      variantLetter,
+      variantName,
+      selectedVariantFlowNumber,
+    });
+  }, [analysisResults, selectedFlow, feedbackText, variantLetter, variantName, selectedVariantFlowNumber]);
 
   // Get flow number from ID - handles special "all-flows" case
   const getFlowNumber = (flowId: string) => {
@@ -561,26 +607,63 @@ Antworte auf Deutsch.`;
         if (!latestByFlow.has(row.flow_id)) latestByFlow.set(row.flow_id, row);
       });
 
-      setAnalysisResults(
-        FLOW_OPTIONS.map((flow) => {
+      const runIds = Array.from(latestByFlow.values())
+        .map((r: any) => r.id)
+        .filter(Boolean);
+      const countsByRun = new Map<string, { total: number; critical: number }>();
+
+      // Backfill counts for older runs that didn't store metadata
+      if (runIds.length > 0) {
+        const { data: issues, error: issuesErr } = await supabase
+          .from("flow_ux_issues")
+          .select("run_id, severity")
+          .in("run_id", runIds);
+
+        if (!issuesErr) {
+          (issues ?? []).forEach((i: any) => {
+            const runId = i.run_id as string;
+            const current = countsByRun.get(runId) ?? { total: 0, critical: 0 };
+            current.total += 1;
+            if (i.severity === "critical") current.critical += 1;
+            countsByRun.set(runId, current);
+          });
+        }
+      }
+
+      // IMPORTANT: do NOT rebuild the whole list from scratch.
+      // That felt like a "refresh" to users (all cards visually update at once).
+      // Instead, merge newest completed results into the existing list and keep running states.
+      setAnalysisResults((prev) => {
+        const prevByFlow = new Map(prev.map((r) => [r.flowId, r] as const));
+
+        return FLOW_OPTIONS.map((flow) => {
+          const existing = prevByFlow.get(flow.id);
+
+          // Keep running entries untouched (polling will update them).
+          if (existing?.status === "running") return existing;
+
           const row = latestByFlow.get(flow.id);
           if (!row) {
+            // Keep whatever we already had (completed/pending/error) to avoid a visual reset.
+            if (existing) return existing;
             return { flowId: flow.id, flowName: flow.label, status: "pending" as const };
           }
 
           const meta = (row.metadata ?? {}) as any;
+          const counts = countsByRun.get(row.id);
+
           return {
             flowId: flow.id,
             flowName: flow.label,
             status: "completed" as const,
             score: row.overall_score ?? undefined,
             summary: row.ai_summary ?? undefined,
-            issuesCount: meta.issuesCount ?? meta.issues_count ?? undefined,
-            criticalCount: meta.criticalCount ?? meta.critical_count ?? undefined,
+            issuesCount: meta.issuesCount ?? meta.issues_count ?? counts?.total ?? undefined,
+            criticalCount: meta.criticalCount ?? meta.critical_count ?? counts?.critical ?? undefined,
             runId: row.id,
           };
-        })
-      );
+        });
+      });
 
       toast.success("Letzte Analyse-Ergebnisse geladen");
     } catch (e) {
@@ -591,74 +674,256 @@ Antworte auf Deutsch.`;
     }
   };
 
+  // Poll running analysis runs (main + variants) so the UI updates automatically.
+  const mainRunningRunIdsKey = useMemo(() => {
+    return analysisResults
+      .filter((r) => r.status === "running" && !!r.runId)
+      .map((r) => r.runId as string)
+      .sort()
+      .join(",");
+  }, [analysisResults]);
+
+  useEffect(() => {
+    if (!mainRunningRunIdsKey) return;
+
+    let cancelled = false;
+    const runIds = mainRunningRunIdsKey.split(",").filter(Boolean);
+
+    const tick = async () => {
+      if (cancelled || runIds.length === 0) return;
+
+      const [{ data: runs, error: runsErr }, { data: issues, error: issuesErr }] = await Promise.all([
+        supabase
+          .from("flow_analysis_runs")
+          .select("id, status, overall_score, ai_summary, metadata, steps_captured, total_steps")
+          .in("id", runIds),
+        supabase
+          .from("flow_ux_issues")
+          .select("run_id, severity")
+          .in("run_id", runIds),
+      ]);
+
+      if (cancelled) return;
+      if (runsErr) {
+        console.warn("Polling flow_analysis_runs failed:", runsErr);
+        return;
+      }
+
+      const runById = new Map<string, any>();
+      (runs ?? []).forEach((r: any) => runById.set(r.id, r));
+
+      const countsByRun = new Map<string, { total: number; critical: number }>();
+      if (!issuesErr) {
+        (issues ?? []).forEach((i: any) => {
+          const rid = i.run_id as string;
+          const current = countsByRun.get(rid) ?? { total: 0, critical: 0 };
+          current.total += 1;
+          if (i.severity === "critical") current.critical += 1;
+          countsByRun.set(rid, current);
+        });
+      }
+
+      setAnalysisResults((prev) =>
+        prev.map((item) => {
+          if (!item.runId) return item;
+          const run = runById.get(item.runId);
+          if (!run) return item;
+
+          const meta = (run.metadata ?? {}) as any;
+          const counts = countsByRun.get(item.runId);
+
+          const status: AnalysisResult["status"] =
+            run.status === "completed"
+              ? "completed"
+              : run.status === "failed"
+              ? "error"
+              : "running";
+
+          return {
+            ...item,
+            status,
+            score: run.overall_score ?? item.score,
+            summary: run.ai_summary ?? item.summary,
+            issuesCount: meta.issuesCount ?? counts?.total ?? item.issuesCount,
+            criticalCount: meta.criticalCount ?? counts?.critical ?? item.criticalCount,
+            currentStep: run.steps_captured ?? item.currentStep,
+            totalSteps: run.total_steps ?? item.totalSteps,
+            error: status === "error" ? meta?.error ?? item.error : undefined,
+          };
+        })
+      );
+    };
+
+    // Immediate tick + interval
+    tick();
+    const id = window.setInterval(tick, 4000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [mainRunningRunIdsKey]);
+
+  const variantRunningRunIdsKey = useMemo(() => {
+    return variantAnalysisResults
+      .filter((r) => r.status === "running" && !!r.runId)
+      .map((r) => r.runId as string)
+      .sort()
+      .join(",");
+  }, [variantAnalysisResults]);
+
+  useEffect(() => {
+    if (!variantRunningRunIdsKey) return;
+
+    let cancelled = false;
+    const runIds = variantRunningRunIdsKey.split(",").filter(Boolean);
+
+    const tick = async () => {
+      if (cancelled || runIds.length === 0) return;
+
+      const [{ data: runs, error: runsErr }, { data: issues, error: issuesErr }] = await Promise.all([
+        supabase
+          .from("flow_analysis_runs")
+          .select("id, status, overall_score, ai_summary, metadata, steps_captured, total_steps")
+          .in("id", runIds),
+        supabase
+          .from("flow_ux_issues")
+          .select("run_id, severity")
+          .in("run_id", runIds),
+      ]);
+
+      if (cancelled) return;
+      if (runsErr) {
+        console.warn("Polling variant flow_analysis_runs failed:", runsErr);
+        return;
+      }
+
+      const runById = new Map<string, any>();
+      (runs ?? []).forEach((r: any) => runById.set(r.id, r));
+
+      const countsByRun = new Map<string, { total: number; critical: number }>();
+      if (!issuesErr) {
+        (issues ?? []).forEach((i: any) => {
+          const rid = i.run_id as string;
+          const current = countsByRun.get(rid) ?? { total: 0, critical: 0 };
+          current.total += 1;
+          if (i.severity === "critical") current.critical += 1;
+          countsByRun.set(rid, current);
+        });
+      }
+
+      setVariantAnalysisResults((prev) =>
+        prev.map((item) => {
+          if (!item.runId) return item;
+          const run = runById.get(item.runId);
+          if (!run) return item;
+
+          const meta = (run.metadata ?? {}) as any;
+          const counts = countsByRun.get(item.runId);
+
+          const status: AnalysisResult["status"] =
+            run.status === "completed"
+              ? "completed"
+              : run.status === "failed"
+              ? "error"
+              : "running";
+
+          return {
+            ...item,
+            status,
+            score: run.overall_score ?? item.score,
+            summary: run.ai_summary ?? item.summary,
+            issuesCount: meta.issuesCount ?? counts?.total ?? item.issuesCount,
+            criticalCount: meta.criticalCount ?? counts?.critical ?? item.criticalCount,
+            currentStep: run.steps_captured ?? item.currentStep,
+            totalSteps: run.total_steps ?? item.totalSteps,
+            error: status === "error" ? meta?.error ?? item.error : undefined,
+          };
+        })
+      );
+    };
+
+    tick();
+    const id = window.setInterval(tick, 4000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [variantRunningRunIdsKey]);
+
   // Analyze all 9 flows
   const analyzeAllFlows = async () => {
     setIsAnalyzing(true);
     setAnalysisProgress(0);
-    
-    const results: AnalysisResult[] = FLOW_OPTIONS.map(flow => ({
+
+    const results: AnalysisResult[] = FLOW_OPTIONS.map((flow) => ({
       flowId: flow.id,
       flowName: flow.label,
-      status: 'pending' as const
+      status: "pending" as const,
     }));
     setAnalysisResults(results);
 
-    const baseUrl = (() => {
-      if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-      const { origin, hostname } = window.location;
-      const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-      return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
-    })();
+    // Always use preview URL for flow analysis
+    const baseUrl = 'https://preview--umzugscheckv2.lovable.app';
 
     for (let i = 0; i < FLOW_OPTIONS.length; i++) {
       const flow = FLOW_OPTIONS[i];
       setCurrentFlowAnalyzing(flow.id);
-      
+
       // Update status to running
-      setAnalysisResults(prev => prev.map(r => 
-        r.flowId === flow.id ? { ...r, status: 'running' as const } : r
-      ));
+      setAnalysisResults((prev) =>
+        prev.map((r) => (r.flowId === flow.id ? { ...r, status: "running" as const } : r))
+      );
 
       try {
-        const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
-          body: { 
-            flowId: flow.id, 
-            runType: 'manual',
-            baseUrl 
-          }
+        const { data, error } = await supabase.functions.invoke("auto-analyze-flow", {
+          body: {
+            flowId: flow.id,
+            runType: "manual",
+            baseUrl,
+          },
         });
 
         if (error) throw error;
 
-        setAnalysisResults(prev => prev.map(r => 
-          r.flowId === flow.id ? {
-            ...r,
-            status: 'completed' as const,
-            score: data.overallScore,
-            issuesCount: data.issuesCount,
-            criticalCount: data.criticalCount,
-            summary: data.summary
-          } : r
-        ));
+        // IMPORTANT: auto-analyze-flow runs in the background and returns runId.
+        // We keep the card in "running" state and poll the DB until it becomes completed.
+        setAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === flow.id
+              ? {
+                  ...r,
+                  status: "running" as const,
+                  runId: data?.runId ?? r.runId,
+                  currentStep: 0,
+                  totalSteps: data?.totalSteps ?? r.totalSteps,
+                }
+              : r
+          )
+        );
 
-        toast.success(`${flow.label} analysiert: Score ${data.overallScore}/100`);
+        toast.info(`${flow.label}: Analyse gestartet`);
       } catch (error) {
         console.error(`Error analyzing ${flow.id}:`, error);
-        setAnalysisResults(prev => prev.map(r => 
-          r.flowId === flow.id ? {
-            ...r,
-            status: 'error' as const,
-            error: error instanceof Error ? error.message : 'Unbekannter Fehler'
-          } : r
-        ));
+        setAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === flow.id
+              ? {
+                  ...r,
+                  status: "error" as const,
+                  error: error instanceof Error ? error.message : "Unbekannter Fehler",
+                }
+              : r
+          )
+        );
       }
 
+      // Progress here means "started" (actual completion is tracked via polling)
       setAnalysisProgress(((i + 1) / FLOW_OPTIONS.length) * 100);
     }
 
     setIsAnalyzing(false);
     setCurrentFlowAnalyzing(null);
-    toast.success("Alle 9 Flows analysiert!");
+    toast.success("Analysen gestartet – Ergebnisse werden automatisch aktualisiert.");
   };
 
   // Load variants from database for a specific flow number
@@ -753,59 +1018,64 @@ Antworte auf Deutsch.`;
 
     setIsAnalyzingVariants(true);
     setVariantAnalysisProgress(0);
-    setVariantAnalysisResults(variants.map(v => ({
-      flowId: v.id,
-      flowName: v.label,
-      status: 'pending' as const
-    })));
+    setVariantAnalysisResults(
+      variants.map((v) => ({
+        flowId: v.id,
+        flowName: v.label,
+        status: "pending" as const,
+      }))
+    );
 
-    const baseUrl = (() => {
-      if (typeof window === "undefined") return SITE_CONFIG.url.replace(/\/$/, "");
-      const { origin, hostname } = window.location;
-      const isPreviewHost = hostname.includes("lovable.app") || hostname.includes("lovableproject.com");
-      return (isPreviewHost ? SITE_CONFIG.url : origin).replace(/\/$/, "");
-    })();
+    // Always use preview URL for flow analysis
+    const baseUrl = 'https://preview--umzugscheckv2.lovable.app';
 
     for (let i = 0; i < variants.length; i++) {
       const variant = variants[i];
       setCurrentFlowAnalyzing(variant.id);
-      
-      setVariantAnalysisResults(prev => prev.map(r => 
-        r.flowId === variant.id ? { ...r, status: 'running' as const } : r
-      ));
+
+      setVariantAnalysisResults((prev) =>
+        prev.map((r) => (r.flowId === variant.id ? { ...r, status: "running" as const } : r))
+      );
 
       try {
-        const { data, error } = await supabase.functions.invoke('auto-analyze-flow', {
-          body: { 
-            flowId: variant.id, 
-            runType: 'manual',
-            baseUrl 
-          }
+        const { data, error } = await supabase.functions.invoke("auto-analyze-flow", {
+          body: {
+            flowId: variant.id,
+            runType: "manual",
+            baseUrl,
+          },
         });
 
         if (error) throw error;
 
-        setVariantAnalysisResults(prev => prev.map(r => 
-          r.flowId === variant.id ? {
-            ...r,
-            status: 'completed' as const,
-            score: data.overallScore,
-            issuesCount: data.issuesCount,
-            criticalCount: data.criticalCount,
-            summary: data.summary
-          } : r
-        ));
+        setVariantAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === variant.id
+              ? {
+                  ...r,
+                  status: "running" as const,
+                  runId: data?.runId ?? r.runId,
+                  currentStep: 0,
+                  totalSteps: data?.totalSteps ?? r.totalSteps,
+                }
+              : r
+          )
+        );
 
-        toast.success(`${variant.label} analysiert: Score ${data.overallScore}/100`);
+        toast.info(`${variant.label}: Analyse gestartet`);
       } catch (error) {
         console.error(`Error analyzing ${variant.id}:`, error);
-        setVariantAnalysisResults(prev => prev.map(r => 
-          r.flowId === variant.id ? {
-            ...r,
-            status: 'error' as const,
-            error: error instanceof Error ? error.message : 'Unbekannter Fehler'
-          } : r
-        ));
+        setVariantAnalysisResults((prev) =>
+          prev.map((r) =>
+            r.flowId === variant.id
+              ? {
+                  ...r,
+                  status: "error" as const,
+                  error: error instanceof Error ? error.message : "Unbekannter Fehler",
+                }
+              : r
+          )
+        );
       }
 
       setVariantAnalysisProgress(((i + 1) / variants.length) * 100);
@@ -813,7 +1083,7 @@ Antworte auf Deutsch.`;
 
     setIsAnalyzingVariants(false);
     setCurrentFlowAnalyzing(null);
-    toast.success(`Alle ${variants.length} V${flowNum} Varianten analysiert!`);
+    toast.success(`Varianten-Analysen gestartet – Ergebnisse werden automatisch aktualisiert.`);
   };
 
   // Generate Lovable implementation prompt
@@ -1021,24 +1291,24 @@ ${entry.prompt}
                 </AlertDescription>
               </Alert>
 
-              {/* Strategic Deep Analysis CTA */}
+              {/* Strategic Deep Analysis CTA - Flow Analysis Hub */}
               <div className="p-4 border-2 border-primary/30 rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                       <Sparkles className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">V1 Archetypen-Tiefenanalyse</h3>
+                      <h3 className="font-bold text-lg">Flow Analysis Hub</h3>
                       <p className="text-sm text-muted-foreground">
-                        Element-Level Analyse • Swiss Market Insights • Winner Synthesis • Ultimate Blueprint
+                        Ranking • Tiefenanalyse • Gewinner • Ultimate Flow • AI-Fix - alles an einem Ort
                       </p>
                     </div>
                   </div>
-                  <Link to="/admin/flow-deep-analysis">
+                  <Link to="/admin/flow-analysis">
                     <Button className="gap-2" size="lg">
                       <Sparkles className="h-5 w-5" />
-                      Strategische Analyse starten
+                      Flow Analysis Hub öffnen
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>

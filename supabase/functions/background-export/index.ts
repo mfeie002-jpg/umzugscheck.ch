@@ -108,7 +108,7 @@ const FLOW_CONFIGS: Record<string, { id: string; label: string; path: string; st
       { step: 5, name: 'Kontakt', description: 'Absenden' },
     ],
   },
-  'umzugsofferten-v9': {
+'umzugsofferten-v9': {
     id: 'umzugsofferten-v9',
     label: 'V9 - Zero Friction',
     path: '/umzugsofferten-v9',
@@ -120,7 +120,43 @@ const FLOW_CONFIGS: Record<string, { id: string; label: string; path: string; st
       { step: 5, name: 'Kontakt', description: 'Absenden' },
     ],
   },
+  // V2.e Chat-based Funnel (Experimental)
+  'umzugsofferten-v2e': {
+    id: 'umzugsofferten-v2e',
+    label: 'V2.e - Chat Funnel ⭐',
+    path: '/umzugsofferten-v2e',
+    steps: [
+      { step: 1, name: 'Umzugstyp', description: 'Wohnung/Haus/Büro wählen' },
+      { step: 2, name: 'Von wo', description: 'Startadresse eingeben' },
+      { step: 3, name: 'Nach wo', description: 'Zieladresse eingeben' },
+      { step: 4, name: 'Grösse', description: 'Wohnungsgrösse wählen' },
+      { step: 5, name: 'Video', description: 'Optional: Video-Analyse' },
+      { step: 6, name: 'Datum', description: 'Umzugstermin festlegen' },
+      { step: 7, name: 'Services', description: 'Zusatzleistungen wählen' },
+      { step: 8, name: 'Preis', description: 'Preis-Reveal mit Animation' },
+      { step: 9, name: 'Firmen', description: 'Firmenauswahl treffen' },
+      { step: 10, name: 'Kontakt', description: 'Daten absenden' },
+    ],
+  },
 };
+
+// Ultimate Swiss Flow - Best of 36
+const ULTIMATE_BEST36_CONFIG = {
+  'umzugsofferten-ultimate-best36': {
+    id: 'umzugsofferten-ultimate-best36',
+    label: 'Ultimate Best36 ⭐⭐',
+    path: '/umzugsofferten-ultimate-best36',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'Von-Nach PLZ eingeben' },
+      { step: 2, name: 'Umfang', description: 'Zimmer, Stockwerk, Inventar' },
+      { step: 3, name: 'Services', description: 'Datum und Zusatzleistungen' },
+      { step: 4, name: 'Kontakt', description: 'Kontaktdaten und Absenden' },
+    ],
+  },
+};
+
+// Merge all configs
+const ALL_FLOW_CONFIGS = { ...FLOW_CONFIGS, ...ULTIMATE_BEST36_CONFIG };
 
 // Sub-variant configurations
 const SUB_VARIANT_CONFIGS: Record<string, { id: string; label: string; path: string; steps: { step: number; name: string; description: string }[] }> = {
@@ -128,7 +164,8 @@ const SUB_VARIANT_CONFIGS: Record<string, { id: string; label: string; path: str
   'v2b': { id: 'v2b', label: 'V2b - Simplified Labels', path: '/flow-tester?variant=v2b', steps: [{ step: 1, name: 'Was', description: 'Typ' }, { step: 2, name: 'Wohin', description: 'Adressen' }, { step: 3, name: 'Extras', description: 'Services' }, { step: 4, name: 'Kontakt', description: 'Daten' }] },
   'v2c': { id: 'v2c', label: 'V2c - Trust Focused', path: '/flow-tester?variant=v2c', steps: [{ step: 1, name: 'Umzugsart', description: 'Mit Trust' }, { step: 2, name: 'Details', description: 'Adressen' }, { step: 3, name: 'Services', description: 'Optionen' }, { step: 4, name: 'Kontakt', description: 'Absenden' }] },
   'v2d': { id: 'v2d', label: 'V2d - Speed Optimized', path: '/flow-tester?variant=v2d', steps: [{ step: 1, name: 'Quick', description: 'Schnellauswahl' }, { step: 2, name: 'Details', description: 'Alles' }, { step: 3, name: 'Kontakt', description: 'Absenden' }] },
-  'v2e': { id: 'v2e', label: 'V2e - Experimental', path: '/flow-tester?variant=v2e', steps: [{ step: 1, name: 'Start', description: 'Experimentell' }, { step: 2, name: 'Mitte', description: 'Features' }, { step: 3, name: 'Ende', description: 'Absenden' }] },
+  // Alias: some tools reference v2e as a sub-variant
+  'v2e': { id: 'v2e', label: 'V2.e - Chat Funnel ⭐', path: '/umzugsofferten-v2e', steps: [{ step: 1, name: 'Umzugstyp', description: 'Wohnung/Haus/Büro wählen' }, { step: 2, name: 'Von wo', description: 'Startadresse eingeben' }, { step: 3, name: 'Nach wo', description: 'Zieladresse eingeben' }, { step: 4, name: 'Grösse', description: 'Wohnungsgrösse wählen' }, { step: 5, name: 'Video', description: 'Optional: Video-Analyse' }, { step: 6, name: 'Datum', description: 'Umzugstermin festlegen' }, { step: 7, name: 'Services', description: 'Zusatzleistungen wählen' }, { step: 8, name: 'Preis', description: 'Preis-Reveal mit Animation' }, { step: 9, name: 'Firmen', description: 'Firmenauswahl treffen' }, { step: 10, name: 'Kontakt', description: 'Daten absenden' }] },
   'v3a': { id: 'v3a', label: 'V3a - Mobile First', path: '/flow-tester?variant=v3a', steps: [{ step: 1, name: 'Umzugsart', description: 'Touch' }, { step: 2, name: 'Details', description: 'Adressen' }, { step: 3, name: 'Services', description: 'Extras' }, { step: 4, name: 'Kontakt', description: 'Absenden' }] },
   'v3g': { id: 'v3g', label: 'V3g - Feedback Based', path: '/flow-tester?variant=v3g', steps: [{ step: 1, name: 'Service', description: 'Slider' }, { step: 2, name: 'Details', description: 'Adressen' }, { step: 3, name: 'Ablauf', description: 'Trust' }, { step: 4, name: 'Kontakt', description: 'Offerten' }] },
   'v3b': { id: 'v3b', label: 'V3b - Swipe Navigation', path: '/flow-tester?variant=v3b', steps: [{ step: 1, name: 'Umzugsart', description: 'Swipe' }, { step: 2, name: 'Adressen', description: 'Wischen' }, { step: 3, name: 'Services', description: 'Extras' }, { step: 4, name: 'Kontakt', description: 'Absenden' }] },
@@ -147,19 +184,133 @@ const SUB_VARIANT_CONFIGS: Record<string, { id: string; label: string; path: str
   'v5e': { id: 'v5e', label: 'V5e - Reduced Motion', path: '/flow-tester?variant=v5e', steps: [{ step: 1, name: 'Umzugsart', description: 'Keine Animation' }, { step: 2, name: 'Details', description: 'Statisch' }, { step: 3, name: 'Kontakt', description: 'Ruhig' }] },
 };
 
+// Simple MD5 implementation for hash authentication (Deno doesn't support MD5 in SubtleCrypto)
+function md5(string: string): string {
+  function rotateLeft(lValue: number, iShiftBits: number): number {
+    return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
+  }
+  function addUnsigned(lX: number, lY: number): number {
+    const lX8 = lX & 0x80000000;
+    const lY8 = lY & 0x80000000;
+    const lX4 = lX & 0x40000000;
+    const lY4 = lY & 0x40000000;
+    const lResult = (lX & 0x3fffffff) + (lY & 0x3fffffff);
+    if (lX4 & lY4) return lResult ^ 0x80000000 ^ lX8 ^ lY8;
+    if (lX4 | lY4) {
+      if (lResult & 0x40000000) return lResult ^ 0xc0000000 ^ lX8 ^ lY8;
+      return lResult ^ 0x40000000 ^ lX8 ^ lY8;
+    }
+    return lResult ^ lX8 ^ lY8;
+  }
+  function F(x: number, y: number, z: number): number { return (x & y) | (~x & z); }
+  function G(x: number, y: number, z: number): number { return (x & z) | (y & ~z); }
+  function H(x: number, y: number, z: number): number { return x ^ y ^ z; }
+  function I(x: number, y: number, z: number): number { return y ^ (x | ~z); }
+  function FF(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(F(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  function GG(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(G(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  function HH(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(H(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  function II(a: number, b: number, c: number, d: number, x: number, s: number, ac: number): number {
+    a = addUnsigned(a, addUnsigned(addUnsigned(I(b, c, d), x), ac));
+    return addUnsigned(rotateLeft(a, s), b);
+  }
+  function convertToWordArray(string: string): number[] {
+    let lWordCount: number;
+    const lMessageLength = string.length;
+    const lNumberOfWordsTemp1 = lMessageLength + 8;
+    const lNumberOfWordsTemp2 = (lNumberOfWordsTemp1 - (lNumberOfWordsTemp1 % 64)) / 64;
+    const lNumberOfWords = (lNumberOfWordsTemp2 + 1) * 16;
+    const lWordArray: number[] = Array(lNumberOfWords - 1).fill(0);
+    let lBytePosition = 0;
+    let lByteCount = 0;
+    while (lByteCount < lMessageLength) {
+      lWordCount = (lByteCount - (lByteCount % 4)) / 4;
+      lBytePosition = (lByteCount % 4) * 8;
+      lWordArray[lWordCount] = lWordArray[lWordCount] | (string.charCodeAt(lByteCount) << lBytePosition);
+      lByteCount++;
+    }
+    lWordCount = (lByteCount - (lByteCount % 4)) / 4;
+    lBytePosition = (lByteCount % 4) * 8;
+    lWordArray[lWordCount] = lWordArray[lWordCount] | (0x80 << lBytePosition);
+    lWordArray[lNumberOfWords - 2] = lMessageLength << 3;
+    lWordArray[lNumberOfWords - 1] = lMessageLength >>> 29;
+    return lWordArray;
+  }
+  function wordToHex(lValue: number): string {
+    let wordToHexValue = "", wordToHexValueTemp = "", lByte: number, lCount: number;
+    for (lCount = 0; lCount <= 3; lCount++) {
+      lByte = (lValue >>> (lCount * 8)) & 255;
+      wordToHexValueTemp = "0" + lByte.toString(16);
+      wordToHexValue = wordToHexValue + wordToHexValueTemp.substr(wordToHexValueTemp.length - 2, 2);
+    }
+    return wordToHexValue;
+  }
+  const x = convertToWordArray(string);
+  let a = 0x67452301, b = 0xefcdab89, c = 0x98badcfe, d = 0x10325476;
+  const S11 = 7, S12 = 12, S13 = 17, S14 = 22;
+  const S21 = 5, S22 = 9, S23 = 14, S24 = 20;
+  const S31 = 4, S32 = 11, S33 = 16, S34 = 23;
+  const S41 = 6, S42 = 10, S43 = 15, S44 = 21;
+  for (let k = 0; k < x.length; k += 16) {
+    const AA = a, BB = b, CC = c, DD = d;
+    a = FF(a, b, c, d, x[k + 0], S11, 0xd76aa478); d = FF(d, a, b, c, x[k + 1], S12, 0xe8c7b756);
+    c = FF(c, d, a, b, x[k + 2], S13, 0x242070db); b = FF(b, c, d, a, x[k + 3], S14, 0xc1bdceee);
+    a = FF(a, b, c, d, x[k + 4], S11, 0xf57c0faf); d = FF(d, a, b, c, x[k + 5], S12, 0x4787c62a);
+    c = FF(c, d, a, b, x[k + 6], S13, 0xa8304613); b = FF(b, c, d, a, x[k + 7], S14, 0xfd469501);
+    a = FF(a, b, c, d, x[k + 8], S11, 0x698098d8); d = FF(d, a, b, c, x[k + 9], S12, 0x8b44f7af);
+    c = FF(c, d, a, b, x[k + 10], S13, 0xffff5bb1); b = FF(b, c, d, a, x[k + 11], S14, 0x895cd7be);
+    a = FF(a, b, c, d, x[k + 12], S11, 0x6b901122); d = FF(d, a, b, c, x[k + 13], S12, 0xfd987193);
+    c = FF(c, d, a, b, x[k + 14], S13, 0xa679438e); b = FF(b, c, d, a, x[k + 15], S14, 0x49b40821);
+    a = GG(a, b, c, d, x[k + 1], S21, 0xf61e2562); d = GG(d, a, b, c, x[k + 6], S22, 0xc040b340);
+    c = GG(c, d, a, b, x[k + 11], S23, 0x265e5a51); b = GG(b, c, d, a, x[k + 0], S24, 0xe9b6c7aa);
+    a = GG(a, b, c, d, x[k + 5], S21, 0xd62f105d); d = GG(d, a, b, c, x[k + 10], S22, 0x2441453);
+    c = GG(c, d, a, b, x[k + 15], S23, 0xd8a1e681); b = GG(b, c, d, a, x[k + 4], S24, 0xe7d3fbc8);
+    a = GG(a, b, c, d, x[k + 9], S21, 0x21e1cde6); d = GG(d, a, b, c, x[k + 14], S22, 0xc33707d6);
+    c = GG(c, d, a, b, x[k + 3], S23, 0xf4d50d87); b = GG(b, c, d, a, x[k + 8], S24, 0x455a14ed);
+    a = GG(a, b, c, d, x[k + 13], S21, 0xa9e3e905); d = GG(d, a, b, c, x[k + 2], S22, 0xfcefa3f8);
+    c = GG(c, d, a, b, x[k + 7], S23, 0x676f02d9); b = GG(b, c, d, a, x[k + 12], S24, 0x8d2a4c8a);
+    a = HH(a, b, c, d, x[k + 5], S31, 0xfffa3942); d = HH(d, a, b, c, x[k + 8], S32, 0x8771f681);
+    c = HH(c, d, a, b, x[k + 11], S33, 0x6d9d6122); b = HH(b, c, d, a, x[k + 14], S34, 0xfde5380c);
+    a = HH(a, b, c, d, x[k + 1], S31, 0xa4beea44); d = HH(d, a, b, c, x[k + 4], S32, 0x4bdecfa9);
+    c = HH(c, d, a, b, x[k + 7], S33, 0xf6bb4b60); b = HH(b, c, d, a, x[k + 10], S34, 0xbebfbc70);
+    a = HH(a, b, c, d, x[k + 13], S31, 0x289b7ec6); d = HH(d, a, b, c, x[k + 0], S32, 0xeaa127fa);
+    c = HH(c, d, a, b, x[k + 3], S33, 0xd4ef3085); b = HH(b, c, d, a, x[k + 6], S34, 0x4881d05);
+    a = HH(a, b, c, d, x[k + 9], S31, 0xd9d4d039); d = HH(d, a, b, c, x[k + 12], S32, 0xe6db99e5);
+    c = HH(c, d, a, b, x[k + 15], S33, 0x1fa27cf8); b = HH(b, c, d, a, x[k + 2], S34, 0xc4ac5665);
+    a = II(a, b, c, d, x[k + 0], S41, 0xf4292244); d = II(d, a, b, c, x[k + 7], S42, 0x432aff97);
+    c = II(c, d, a, b, x[k + 14], S43, 0xab9423a7); b = II(b, c, d, a, x[k + 5], S44, 0xfc93a039);
+    a = II(a, b, c, d, x[k + 12], S41, 0x655b59c3); d = II(d, a, b, c, x[k + 3], S42, 0x8f0ccc92);
+    c = II(c, d, a, b, x[k + 10], S43, 0xffeff47d); b = II(b, c, d, a, x[k + 1], S44, 0x85845dd1);
+    a = II(a, b, c, d, x[k + 8], S41, 0x6fa87e4f); d = II(d, a, b, c, x[k + 15], S42, 0xfe2ce6e0);
+    c = II(c, d, a, b, x[k + 6], S43, 0xa3014314); b = II(b, c, d, a, x[k + 13], S44, 0x4e0811a1);
+    a = II(a, b, c, d, x[k + 4], S41, 0xf7537e82); d = II(d, a, b, c, x[k + 11], S42, 0xbd3af235);
+    c = II(c, d, a, b, x[k + 2], S43, 0x2ad7d2bb); b = II(b, c, d, a, x[k + 9], S44, 0xeb86d391);
+    a = addUnsigned(a, AA); b = addUnsigned(b, BB); c = addUnsigned(c, CC); d = addUnsigned(d, DD);
+  }
+  return (wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d)).toLowerCase();
+}
+
 async function captureScreenshot(url: string, dimension: string): Promise<string | null> {
   const apiKey = Deno.env.get("SCREENSHOTMACHINE_API_KEY");
   const secretPhrase = Deno.env.get("SCREENSHOTMACHINE_SECRET_PHRASE") || "";
-  
+
   if (!apiKey) {
-    console.log("No screenshot API key configured");
+    console.error("SCREENSHOTMACHINE_API_KEY not configured!");
     return null;
   }
 
   try {
-    const [width, height] = dimension.split('x');
+    const [width] = dimension.split('x');
     const device = parseInt(width) < 500 ? 'phone' : 'desktop';
-    
+
     const params = new URLSearchParams({
       key: apiKey,
       url: url,
@@ -167,40 +318,105 @@ async function captureScreenshot(url: string, dimension: string): Promise<string
       device: device,
       format: 'png',
       cacheLimit: '0',
-      delay: '3000',
+      delay: '5000', // Increased delay for better rendering
     });
-    
+
+    // Use pure JS MD5 instead of SubtleCrypto (Deno doesn't support MD5)
     if (secretPhrase) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(url + secretPhrase);
-      const hashBuffer = await crypto.subtle.digest('MD5', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      const hash = md5(url + secretPhrase);
       params.set('hash', hash);
     }
 
     const screenshotUrl = `https://api.screenshotmachine.com?${params.toString()}`;
-    const response = await fetch(screenshotUrl);
-    
-    if (!response.ok) return null;
-    
+    console.log(`Fetching screenshot for ${url} (${dimension})...`);
+
+    // IMPORTANT: Add a hard timeout so the job can't hang forever.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60_000);
+
+    let response: Response;
+    try {
+      response = await fetch(screenshotUrl, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!response.ok) {
+      console.error(
+        `Screenshot API returned ${response.status} ${response.statusText} for ${url}`
+      );
+      const errorText = await response.text();
+      console.error(`Error response: ${errorText}`);
+      return null;
+    }
+
+    const contentType = response.headers.get('content-type');
+    console.log(`Response content-type: ${contentType}`);
+
+    // Check if response is actually an image
+    if (!contentType?.includes('image')) {
+      console.error(`Expected image but got ${contentType} for ${url}`);
+      const text = await response.text();
+      console.error(`Non-image response: ${text.substring(0, 200)}`);
+      return null;
+    }
+
     const arrayBuffer = await response.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    console.log(`Got ${arrayBuffer.byteLength} bytes for ${url}`);
+
+    if (arrayBuffer.byteLength < 1000) {
+      console.error(`Screenshot too small (${arrayBuffer.byteLength} bytes) - likely an error`);
+      return null;
+    }
+
+    // Convert to base64 safely for large images
+    const uint8Array = new Uint8Array(arrayBuffer);
+    let binary = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < uint8Array.length; i += chunkSize) {
+      const chunk = uint8Array.subarray(i, i + chunkSize);
+      binary += String.fromCharCode.apply(null, Array.from(chunk));
+    }
+    const base64 = btoa(binary);
+
+    console.log(`Successfully captured screenshot for ${url} (${base64.length} chars base64)`);
     return `data:image/png;base64,${base64}`;
   } catch (error) {
-    console.error("Screenshot capture failed:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.toLowerCase().includes('abort')) {
+      console.error(`Screenshot capture timed out for ${url}`);
+      return null;
+    }
+
+    console.error(`Screenshot capture failed for ${url}:`, error);
     return null;
   }
 }
 
 async function captureHtml(url: string): Promise<string | null> {
   try {
-    const response = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; FlowExport/1.0)' }
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
+
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; FlowExport/1.0)' },
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+
     if (!response.ok) return null;
     return await response.text();
   } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.toLowerCase().includes('abort')) {
+      console.error(`HTML capture timed out for ${url}`);
+      return null;
+    }
+
     console.error("HTML capture failed:", error);
     return null;
   }

@@ -132,43 +132,51 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
   const organicCompanies = processedCompanies.filter(c => !promotedCompanies.includes(c));
 
   return (
-    <div className="space-y-3">
-      {/* Enhanced Filter Bar - larger touch targets with aria-labels */}
-      <div className="bg-muted/50 rounded-xl p-3 space-y-3">
-        <div className="flex items-center justify-between gap-2">
+    <div className="space-y-3 overflow-x-hidden max-w-full">
+      {/* Issue #2, #12, #19, #63: Enhanced Filter Bar - min 48px touch targets, NO horizontal scroll, fully visible */}
+      <div className="bg-muted/50 rounded-xl p-3 sm:p-4 space-y-3 overflow-hidden">
+        <div className="flex items-center justify-between gap-2 sm:gap-3 flex-wrap">
+          {/* Issue #12, #19: 48px min height for filter button, visible text */}
           <Button
-            variant="ghost"
-            size="sm"
+            variant="outline"
+            size="default"
             onClick={() => setShowFilters(!showFilters)}
-            className="h-11 text-sm gap-2 px-4 touch-manipulation"
+            className="h-11 sm:h-12 min-w-[100px] sm:min-w-[120px] text-xs sm:text-sm gap-1.5 sm:gap-2 px-3 sm:px-5 touch-manipulation font-semibold"
             aria-expanded={showFilters}
             aria-label="Filter anzeigen oder ausblenden"
           >
-            <Filter className="w-4 h-4" />
-            <span>Filter</span>
-            {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <Filter className="w-5 h-5" />
+            <span>Filtern</span>
+            {/* Issue #63: Klarer Dropdown-Pfeil */}
+            {showFilters ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            {/* Issue #12, #19: 44px+ touch target for map - hidden on smallest screens */}
             <Button
               variant={showMap ? "default" : "outline"}
-              size="sm"
+              size="default"
               onClick={() => setShowMap(!showMap)}
-              className="h-11 text-sm gap-2 px-4 touch-manipulation"
+              className="h-11 sm:h-12 min-w-[44px] text-xs sm:text-sm gap-1 sm:gap-2 px-2 sm:px-4 touch-manipulation hidden xs:flex"
               aria-pressed={showMap}
               aria-label="Kartenansicht umschalten"
             >
-              <MapIcon className="w-4 h-4" />
-              <span className="hidden xs:inline">Karte</span>
+              <MapIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Karte</span>
             </Button>
             
+            {/* Issue #12, #63: Compact Sort-Dropdown, responsive width */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-11 w-[130px] sm:w-[160px] text-sm" aria-label="Sortierung wählen">
-                <SelectValue placeholder="Sortieren" />
+              <SelectTrigger 
+                className="h-11 sm:h-12 w-[120px] sm:w-[180px] text-xs sm:text-sm font-medium" 
+                aria-label="Sortieren nach"
+              >
+                <span className="text-muted-foreground text-[10px] sm:text-xs mr-0.5 sm:mr-1 hidden sm:inline">Sortieren:</span>
+                <SelectValue placeholder="Empfohlen" />
               </SelectTrigger>
               <SelectContent>
                 {sortOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value} className="text-sm py-2">
+                  <SelectItem key={opt.value} value={opt.value} className="text-sm py-3 min-h-[48px]">
                     {opt.label}
                   </SelectItem>
                 ))}
@@ -185,14 +193,15 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
+              {/* Issue #19: 48px height for filter dropdowns */}
               <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border">
                 <Select value={priceFilter} onValueChange={setPriceFilter}>
-                  <SelectTrigger className="h-11 text-sm" aria-label="Preisklasse filtern">
+                  <SelectTrigger className="h-12 text-sm" aria-label="Preisklasse filtern">
                     <SelectValue placeholder="Preisklasse" />
                   </SelectTrigger>
                   <SelectContent>
                     {priceLevelOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value} className="text-sm py-2">
+                      <SelectItem key={opt.value} value={opt.value} className="text-sm py-3 min-h-[44px]">
                         {opt.label}
                       </SelectItem>
                     ))}
@@ -200,12 +209,12 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
                 </Select>
 
                 <Select value={ratingFilter} onValueChange={setRatingFilter}>
-                  <SelectTrigger className="h-11 text-sm" aria-label="Bewertung filtern">
+                  <SelectTrigger className="h-12 text-sm" aria-label="Bewertung filtern">
                     <SelectValue placeholder="Bewertung" />
                   </SelectTrigger>
                   <SelectContent>
                     {ratingOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value} className="text-sm py-2">
+                      <SelectItem key={opt.value} value={opt.value} className="text-sm py-3 min-h-[44px]">
                         {opt.label}
                       </SelectItem>
                     ))}
@@ -217,7 +226,7 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </AnimatePresence>
       </div>
 
-      {/* Map Placeholder */}
+      {/* Issue #56: Map Placeholder - nur einmal, mit klarer Beschreibung */}
       <AnimatePresence>
         {showMap && (
           <motion.div
@@ -229,15 +238,15 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
             <div className="bg-muted/30 rounded-xl h-48 flex items-center justify-center border border-border">
               <div className="text-center text-muted-foreground">
                 <MapIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p className="text-xs">Interaktive Karte</p>
-                <p className="text-[10px]">Zeigt Standorte der Firmen</p>
+                <p className="text-sm font-medium">Interaktive Karte</p>
+                <p className="text-xs">Zeigt Standorte der Firmen in Ihrer Region</p>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Issue #42, #44, #46: Enhanced Selection Counter - klarer Status, NICHT "Endstatus" suggerieren */}
+      {/* Issue #3, #4, #11, #52, #82: EINZIGE Anzeige der Firmenauswahl - keine Redundanz, klarer CTA */}
       <div
         className={`p-4 rounded-xl transition-all ${
           selectedCompanies.length >= 3
@@ -245,34 +254,23 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
             : "bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-300 dark:border-amber-700"
         }`}
       >
-        <div className="flex flex-col gap-3">
-          {/* Status-Text */}
+        <div className="flex flex-col gap-2">
+          {/* Issue #3, #4: Nur EINE prominente Status-Anzeige */}
           <div className="text-center">
             {selectedCompanies.length < 3 ? (
-              <div>
-                <span className="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center justify-center gap-2">
-                  <span className="text-xl">👆</span>
-                  Noch {3 - selectedCompanies.length} auswählen
-                </span>
-                <span className="text-xs text-amber-600/80 dark:text-amber-500/80">
-                  Mindestens 3 Firmen für optimalen Vergleich
-                </span>
-              </div>
+              <span className="text-base font-bold text-amber-700 dark:text-amber-400 flex items-center justify-center gap-2">
+                <span className="text-xl">👆</span>
+                Noch {3 - selectedCompanies.length} Firma{3 - selectedCompanies.length !== 1 ? "en" : ""} auswählen
+              </span>
             ) : (
-              <div>
-                {/* Issue #44: "ausgewählt" statt "bereit" - kein Endstatus suggerieren */}
-                <span className="text-base font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  {selectedCompanies.length} Firmen ausgewählt
-                </span>
-                <span className="text-xs text-green-600/80 dark:text-green-500/80">
-                  Klicken Sie unten auf "Weiter" um fortzufahren
-                </span>
-              </div>
+              <span className="text-base font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                {selectedCompanies.length} Firmen ausgewählt ✓
+              </span>
             )}
           </div>
           
-          {/* Issue #46: Ausgewählte Firmen mit Entfernen-Button */}
+          {/* Issue #55: Ausgewählte Firmen kompakt anzeigen mit Entfernen-Option */}
           {selectedCompanies.length > 0 && (
             <div className="flex flex-wrap gap-2 justify-center">
               {companies
@@ -282,7 +280,7 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
                     key={company.id}
                     type="button"
                     onClick={() => onToggleCompany(company.id)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 text-sm font-medium text-green-700 dark:text-green-400 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors touch-manipulation"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 text-sm font-medium text-green-700 dark:text-green-400 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors touch-manipulation min-h-[44px]"
                     aria-label={`${company.name} aus Auswahl entfernen`}
                   >
                     {company.name}
@@ -295,19 +293,16 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </div>
       </div>
 
-      {/* Issue #4, #39: Promoted Companies mit klarer Nutzenargumentation */}
+      {/* Issue #17, #42, #57: Premium Partner - reduzierte Redundanz bei Antwortzeit */}
       {promotedCompanies.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between px-1">
-            <div className="flex items-center gap-2">
-              <Crown className="w-4 h-4 text-amber-500" />
-              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">
-                Premium Partner
-              </span>
-            </div>
-            {/* Issue #4: Klare Nutzenargumentation für Premium Partner */}
-            <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-full font-medium">
-              ⚡ Antwort in &lt;4h · Geprüfte Qualität
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-2">
+            <Crown className="w-5 h-5 text-amber-500" />
+            <span className="text-sm font-bold text-foreground uppercase tracking-wide">
+              Premium Partner
+            </span>
+            <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+              · Schnelle Antwort
             </span>
           </div>
           {promotedCompanies.map((company, index) => (
@@ -329,24 +324,45 @@ export const CompanyComparisonTable = memo(function CompanyComparisonTable({
         </div>
       )}
 
-      {/* Issue #3, #4: Organic Companies - VERTIKAL statt horizontal, kein Slider */}
-      <div className="space-y-2 max-h-[450px] overflow-y-auto pr-1 scroll-smooth" role="list" aria-label="Verfügbare Umzugsfirmen">
-        {organicCompanies.map((company, index) => (
-          <CompanyCard
-            key={company.id}
-            company={company}
-            rank={promotedCompanies.length + index + 1}
-            isPromoted={false}
-            isSelected={selectedCompanies.includes(company.id)}
-            isExpanded={expandedCompany === company.id}
-            matchPercent={calculateMatch(company)}
-            priceEstimate={getCompanyPrice(apartmentSize, company.price_level)}
-            selectedServices={selectedServices}
-            serviceIdToCompanyService={serviceIdToCompanyService}
-            onToggle={() => onToggleCompany(company.id)}
-            onExpand={() => setExpandedCompany(expandedCompany === company.id ? null : company.id)}
-          />
-        ))}
+      {/* Issue #54, #56: Organic Companies - VERTIKAL, kein Slider, bessere Sichtbarkeit */}
+      <div className="space-y-2" role="list" aria-label="Verfügbare Umzugsfirmen">
+        {organicCompanies.length > 6 ? (
+          <div className="max-h-[500px] overflow-y-auto pr-1 scroll-smooth space-y-2">
+            {organicCompanies.map((company, index) => (
+              <CompanyCard
+                key={company.id}
+                company={company}
+                rank={promotedCompanies.length + index + 1}
+                isPromoted={false}
+                isSelected={selectedCompanies.includes(company.id)}
+                isExpanded={expandedCompany === company.id}
+                matchPercent={calculateMatch(company)}
+                priceEstimate={getCompanyPrice(apartmentSize, company.price_level)}
+                selectedServices={selectedServices}
+                serviceIdToCompanyService={serviceIdToCompanyService}
+                onToggle={() => onToggleCompany(company.id)}
+                onExpand={() => setExpandedCompany(expandedCompany === company.id ? null : company.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          organicCompanies.map((company, index) => (
+            <CompanyCard
+              key={company.id}
+              company={company}
+              rank={promotedCompanies.length + index + 1}
+              isPromoted={false}
+              isSelected={selectedCompanies.includes(company.id)}
+              isExpanded={expandedCompany === company.id}
+              matchPercent={calculateMatch(company)}
+              priceEstimate={getCompanyPrice(apartmentSize, company.price_level)}
+              selectedServices={selectedServices}
+              serviceIdToCompanyService={serviceIdToCompanyService}
+              onToggle={() => onToggleCompany(company.id)}
+              onExpand={() => setExpandedCompany(expandedCompany === company.id ? null : company.id)}
+            />
+          ))
+        )}
       </div>
     </div>
   );
@@ -393,13 +409,11 @@ function CompanyCard({
           : "border-border hover:border-primary/30"
       }`}
     >
-      {/* Issue #5, #8, #37, #39: Enhanced transparency - dezenteres "Gesponsert" Label, klarerer Nutzen */}
+      {/* Issue #5, #8, #11, #17, #37, #39: Gesponsert-Label mit besserem Kontrast */}
       {isPromoted && (
-        <div className="bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-950/20 text-amber-800 dark:text-amber-300 text-center py-1.5 text-[11px] font-medium flex items-center justify-center gap-2 border-b border-amber-200 dark:border-amber-800">
+        <div className="bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-950/30 text-amber-900 dark:text-amber-200 text-center py-1.5 text-xs font-medium flex items-center justify-center gap-2 border-b border-amber-200 dark:border-amber-700">
           <Sparkles className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-wide text-[10px]">Gesponsert</span>
-          <span className="text-amber-600 dark:text-amber-400">·</span>
-          <span className="font-normal">⚡ Antwortet in &lt;4h</span>
+          <span className="uppercase tracking-wide font-semibold">Gesponsert</span>
         </div>
       )}
       
@@ -514,8 +528,8 @@ function CompanyCard({
                 </Tooltip>
               </TooltipProvider>
 
-              {/* Response Time */}
-              {company.response_time_avg_hours && company.response_time_avg_hours <= 4 && (
+              {/* Issue #17: Response Time nur EINMAL anzeigen, nicht redundant */}
+              {company.response_time_avg_hours && company.response_time_avg_hours <= 4 && !isPromoted && (
                 <span className="inline-flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
                   <Clock className="w-3 h-3" />
                   Antwortet schnell
@@ -566,7 +580,7 @@ function CompanyCard({
           </div>
         </div>
 
-        {/* Issue #13, #27: Expand Button - Enhanced touch target (44px+) for mobile */}
+        {/* Issue #19: Prominenterer "Mehr Details" Button */}
         <Button
           variant="ghost"
           size="sm"
@@ -574,11 +588,11 @@ function CompanyCard({
             e.stopPropagation();
             onExpand();
           }}
-          className="w-full h-11 mt-2 text-sm text-muted-foreground hover:text-foreground touch-manipulation active:scale-[0.98]"
+          className="w-full h-11 mt-2 text-sm text-primary hover:text-primary hover:bg-primary/10 font-medium touch-manipulation active:scale-[0.98]"
           aria-expanded={isExpanded}
           aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
         >
-          {isExpanded ? "Weniger" : "Mehr Details"}
+          {isExpanded ? "Weniger" : "→ Mehr Details"}
           {isExpanded ? <ChevronUp className="w-4 h-4 ml-1.5" /> : <ChevronDown className="w-4 h-4 ml-1.5" />}
         </Button>
       </div>

@@ -91,6 +91,93 @@ interface FlowVersion {
   tags: string[];
 }
 
+type StepConfig = {
+  step: number;
+  name: string;
+  description?: string;
+  url?: string;
+};
+
+const parseStepConfigs = (raw: unknown): StepConfig[] => {
+  if (!Array.isArray(raw)) return [];
+  const mapped = raw
+    .map((s: any, idx: number) => {
+      const step = typeof s?.step === "number" ? s.step : idx + 1;
+      const name = typeof s?.name === "string" ? s.name : `Step ${step}`;
+      const description = typeof s?.description === "string" ? s.description : undefined;
+      const url = typeof s?.url === "string" ? s.url : undefined;
+      return { step, name, description, url } satisfies StepConfig;
+    })
+    .filter((s) => Number.isFinite(s.step));
+  return mapped;
+};
+
+const getEffectiveStepConfigsForVersion = (version: FlowVersion, flowId: string): StepConfig[] => {
+  const fromDb = parseStepConfigs(version.step_configs);
+  if (fromDb.length) return fromDb;
+
+  const cfg = version.config as any;
+  const fromConfig = parseStepConfigs(cfg?.variantSteps);
+  if (fromConfig.length) return fromConfig;
+
+  const fromFlow = FLOW_CONFIGS[flowId]?.steps;
+  if (Array.isArray(fromFlow) && fromFlow.length) {
+    return fromFlow.map((s) => ({ step: s.step, name: s.name, description: s.description }));
+  }
+
+  const fromSub = (SUB_VARIANT_CONFIGS as any)[flowId]?.steps;
+  if (Array.isArray(fromSub) && fromSub.length) {
+    return fromSub.map((s: any) => ({ step: s.step, name: s.name, description: s.description }));
+  }
+
+  const fallbackFlowMajor = getFlowMajorFromFlowId(flowId);
+  if (fallbackFlowMajor !== null) {
+    const parentId = `umzugsofferten-v${fallbackFlowMajor}`;
+    const parent = FLOW_CONFIGS[parentId]?.steps;
+    if (Array.isArray(parent) && parent.length) {
+      return parent.map((s) => ({ step: s.step, name: s.name, description: s.description }));
+    }
+  }
+
+  return [];
+};
+
+const buildBaseUrlForVersion = (
+  version: FlowVersion,
+  flowId: string,
+  stepConfigs: StepConfig[],
+  publicBase: string
+) => {
+  const basePath = FLOW_CONFIGS[flowId]?.path || (SUB_VARIANT_CONFIGS as any)[flowId]?.path || "/umzugsofferten";
+  let baseUrl = `${publicBase}${basePath}`;
+
+  const versionConfig = version.config as { variantPath?: unknown; variantId?: unknown } | null;
+  const variantPath = typeof versionConfig?.variantPath === "string" ? versionConfig.variantPath : null;
+  const variantId = typeof versionConfig?.variantId === "string" ? versionConfig.variantId : null;
+
+  if (variantPath) {
+    baseUrl = `${publicBase}${variantPath.startsWith("/") ? "" : "/"}${variantPath}`;
+  } else if (variantId && (SUB_VARIANT_CONFIGS as any)[variantId]) {
+    baseUrl = `${publicBase}${(SUB_VARIANT_CONFIGS as any)[variantId].path}`;
+  } else {
+    const firstStepUrl = stepConfigs[0]?.url;
+    if (firstStepUrl) {
+      try {
+        const parsedUrl = new URL(firstStepUrl);
+        const v = parsedUrl.searchParams.get("variant");
+        if (v) baseUrl = `${publicBase}${basePath}${basePath.includes("?") ? "&" : "?"}variant=${v}`;
+      } catch {
+        // ignore
+      }
+    } else if (version.flow_code) {
+      const v = version.flow_code.toLowerCase().replace(".", "");
+      baseUrl = `${publicBase}${basePath}${basePath.includes("?") ? "&" : "?"}variant=${v}`;
+    }
+  }
+
+  return baseUrl;
+};
+
 interface FlowStep {
   step: number;
   name: string;
@@ -209,52 +296,20 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
 
   // Start a single batch job for a version
   const startBatchJob = async (version: FlowVersion, index: number, total: number) => {
-    const dbStepConfigs = version.step_configs as Array<{ step: number; name: string; description?: string; url?: string }> | null;
-    
-    if (!dbStepConfigs || dbStepConfigs.length === 0) {
+    const stepConfigs = getEffectiveStepConfigsForVersion(version, flowId);
+
+    if (!stepConfigs.length) {
       toast.error(`Version ${formatVersion(version.version_number)}: Keine Step-Konfiguration`);
       return;
     }
-    
-    // Always use Preview URL for real-time analysis
+
     const publicBase = SITE_CONFIG.previewUrl;
+    const baseUrl = buildBaseUrlForVersion(version, flowId, stepConfigs, publicBase);
 
-    // Default to the selected flow's base path
-    const basePath = FLOW_CONFIGS[flowId]?.path || SUB_VARIANT_CONFIGS[flowId]?.path || "/umzugsofferten";
-    let baseUrl = `${publicBase}${basePath}`;
-
-    // Prefer explicit variantPath stored in the version config (coded variants like v1a-v1e)
-    const versionConfig = version.config as { variantPath?: unknown; variantId?: unknown } | null;
-    const variantPath = typeof versionConfig?.variantPath === "string" ? versionConfig.variantPath : null;
-    const variantId = typeof versionConfig?.variantId === "string" ? versionConfig.variantId : null;
-
-    if (variantPath) {
-      baseUrl = `${publicBase}${variantPath.startsWith("/") ? "" : "/"}${variantPath}`;
-    } else if (variantId && SUB_VARIANT_CONFIGS[variantId]) {
-      baseUrl = `${publicBase}${SUB_VARIANT_CONFIGS[variantId].path}`;
-    } else {
-      // Fallback: try to extract ?variant= from stored step URLs
-      const firstStepUrl = dbStepConfigs[0]?.url;
-      if (firstStepUrl) {
-        try {
-          const parsedUrl = new URL(firstStepUrl);
-          const v = parsedUrl.searchParams.get('variant');
-          if (v) {
-            baseUrl = `${publicBase}${basePath}${basePath.includes("?") ? "&" : "?"}variant=${v}`;
-          }
-        } catch (e) {
-          // ignore
-        }
-      } else if (version.flow_code) {
-        const v = version.flow_code.toLowerCase().replace('.', '');
-        baseUrl = `${publicBase}${basePath}${basePath.includes("?") ? "&" : "?"}variant=${v}`;
-      }
-    }
-    
     await startJob({
       versionId: version.id,
       flowId: version.flow_id,
-      steps: dbStepConfigs,
+      steps: stepConfigs,
       baseUrl,
     });
   };
@@ -276,6 +331,7 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
 
   // Build alternative flow_id patterns to query
   // E.g., for "umzugsofferten-v9" also include "v9a", "v9b", "V9.a", etc.
+  // IMPORTANT: Some coded variants use full flow ids like "umzugsofferten-v2e".
   const getFlowIdPatterns = useCallback((baseFlowId: string): string[] => {
     const patterns: string[] = [baseFlowId];
 
@@ -286,12 +342,16 @@ export function FlowVersionManager({ flowId, currentSteps, onVersionSelect, vari
       // Add patterns for sub-variants
       const letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
       letters.forEach((letter) => {
+        // Historical formats
         patterns.push(`v${majorVersion}${letter}`);
         patterns.push(`V${majorVersion}.${letter}`);
+        // Full flow_id formats (e.g. "umzugsofferten-v2e")
+        patterns.push(`${baseFlowId}${letter}`);
       });
     }
 
-    return patterns;
+    // Deduplicate
+    return Array.from(new Set(patterns));
   }, []);
 
   async function fetchVersions() {
@@ -1339,24 +1399,33 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                   </div>
                   
                   {(() => {
-                    // Always prefer DB step_configs - they are the source of truth for the saved version
-                    const dbStepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
-                    const hasStepConfigs = dbStepConfigs && Array.isArray(dbStepConfigs) && dbStepConfigs.length > 0;
-                    
-                    if (!hasStepConfigs) {
+                    const stepConfigs = getEffectiveStepConfigsForVersion(selectedVersionForBackgroundScreenshots, flowId);
+                    const hasDbStepConfigs = parseStepConfigs(selectedVersionForBackgroundScreenshots.step_configs).length > 0;
+
+                    if (!stepConfigs.length) {
                       return (
                         <div className="p-3 bg-destructive/10 rounded-lg border border-destructive/30 text-destructive">
                           <div className="font-medium text-sm mb-1">⚠️ Keine Step-Konfiguration vorhanden!</div>
                           <p className="text-xs">
-                            Diese Version hat keine Step-Konfiguration. Background-Screenshots können nur für Versionen mit Steps erfasst werden.
+                            Für diese Version konnten keine Steps gefunden werden. Speichere die Version einmal neu, damit die Steps gespeichert werden.
                           </p>
                         </div>
                       );
                     }
-                    
+
                     return (
-                      <div className="text-sm text-muted-foreground">
-                        {dbStepConfigs.length} Steps werden im Hintergrund erfasst (Desktop + Mobile)
+                      <div className="space-y-2">
+                        {!hasDbStepConfigs && (
+                          <div className="p-3 bg-accent rounded-lg border border-border">
+                            <div className="font-medium text-sm mb-1">Hinweis: Steps werden automatisch abgeleitet</div>
+                            <p className="text-xs text-muted-foreground">
+                              Diese Version hat keine gespeicherten Steps. Für die Erfassung werden die aktuellen Flow-Steps verwendet.
+                            </p>
+                          </div>
+                        )}
+                        <div className="text-sm text-muted-foreground">
+                          {stepConfigs.length} Steps werden im Hintergrund erfasst (Desktop + Mobile)
+                        </div>
                       </div>
                     );
                   })()}
@@ -1402,54 +1471,30 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                       </Button>
                       <Button 
                         onClick={async () => {
-                          // Always use DB step_configs - they are the source of truth
-                          const dbStepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string; url?: string }> | null;
-                          
-                          if (!dbStepConfigs || dbStepConfigs.length === 0) {
+                          const stepConfigs = getEffectiveStepConfigsForVersion(selectedVersionForBackgroundScreenshots, flowId);
+
+                          if (!stepConfigs.length) {
                             toast.error('Keine Step-Konfiguration vorhanden');
                             return;
                           }
-                          
-                          // Always use Preview URL for real-time analysis
+
                           const publicBase = SITE_CONFIG.previewUrl;
-                          
-                          // Determine the base URL from flow_code or first step's url
-                          let baseUrl = `${publicBase}/umzugsofferten`;
-                          
-                          // Check if step has a URL and extract the variant
-                          const firstStepUrl = dbStepConfigs[0]?.url;
-                          if (firstStepUrl) {
-                            try {
-                              const parsedUrl = new URL(firstStepUrl);
-                              const variant = parsedUrl.searchParams.get('variant');
-                              if (variant) {
-                                baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
-                              }
-                            } catch (e) {
-                              console.warn('Could not parse step URL, using default baseUrl');
-                            }
-                          } else {
-                            // Fallback: construct from flow_code if available
-                            const flowCode = selectedVersionForBackgroundScreenshots.flow_code;
-                            if (flowCode) {
-                              // e.g. "V3.a" -> "v3a"
-                              const variant = flowCode.toLowerCase().replace('.', '');
-                              baseUrl = `${publicBase}/umzugsofferten?variant=${variant}`;
-                            }
-                          }
-                          
+                          const baseUrl = buildBaseUrlForVersion(
+                            selectedVersionForBackgroundScreenshots,
+                            flowId,
+                            stepConfigs,
+                            publicBase
+                          );
+
                           await startJob({
                             versionId: selectedVersionForBackgroundScreenshots.id,
                             flowId: selectedVersionForBackgroundScreenshots.flow_id,
-                            steps: dbStepConfigs,
+                            steps: stepConfigs,
                             baseUrl,
                           });
                         }}
                         className="flex-1"
-                        disabled={(() => {
-                          const stepConfigs = selectedVersionForBackgroundScreenshots.step_configs as Array<{ step: number; name: string; description?: string }> | null;
-                          return !stepConfigs || !Array.isArray(stepConfigs) || stepConfigs.length === 0;
-                        })()}
+                        disabled={getEffectiveStepConfigsForVersion(selectedVersionForBackgroundScreenshots, flowId).length === 0}
                       >
                         <CloudUpload className="h-4 w-4 mr-2" />
                         Background-Erfassung starten
@@ -1480,8 +1525,7 @@ Lade diese Dateien in ChatGPT, Claude oder Gemini hoch für eine detaillierte UX
                   <ScrollArea className="h-64 border rounded-lg p-2">
                     <div className="space-y-2">
                       {versions.filter(v => {
-                        const sc = v.step_configs as Array<{ step: number }> | null;
-                        return sc && Array.isArray(sc) && sc.length > 0;
+                        return getEffectiveStepConfigsForVersion(v, flowId).length > 0;
                       }).map(version => {
                         const isSelected = selectedVersionsForBatch.has(version.id);
                         return (

@@ -10,8 +10,9 @@ interface RoomOption {
   icon: LucideIcon;
 }
 
+// Issue #41: Konsistente Abkürzung - "Zi." überall
 const roomOptions: RoomOption[] = [
-  { value: "studio", label: "Studio", sublabel: "1 Zimmer", icon: Home },
+  { value: "studio", label: "Studio", sublabel: "1 Zi.", icon: Home },
   { value: "2-2.5", label: "2–2.5 Zi.", sublabel: "50-65m²", icon: Home },
   { value: "3-3.5", label: "3–3.5 Zi.", sublabel: "65-85m²", icon: Building2 },
   { value: "4-4.5", label: "4–4.5 Zi.", sublabel: "85-110m²", icon: Building },
@@ -32,24 +33,24 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
   const hasSelection = value !== "";
   
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={`space-y-2.5 ${className}`}>
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium flex items-center gap-2">
+        <label className="text-sm font-semibold flex items-center gap-2">
           <Home className="w-4 h-4 text-primary" />
           Wohnungsgrösse
         </label>
         {!hasSelection && (
-          <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse font-medium">
+          <span className="text-xs text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 px-2.5 py-1 rounded-full flex items-center gap-1.5 animate-pulse font-semibold">
             👆 Bitte auswählen
           </span>
         )}
       </div>
       
-      {/* Issue #42, #45: Vertikales Grid auf Mobile (2 Spalten), keine horizontale Scroll */}
+      {/* Issue #65, #66: 2-Spalten-Grid auf Mobile, 3 auf Tablet, 5 auf Desktop - KEIN horizontal scroll */}
       <div 
         className={cn(
-          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl transition-all",
-          !hasSelection && "ring-2 ring-amber-400/50 bg-amber-50/50 dark:bg-amber-900/10"
+          "grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5 p-3 rounded-xl transition-all",
+          !hasSelection && "ring-2 ring-amber-400/60 bg-amber-50/60 dark:bg-amber-900/20"
         )}
         role="radiogroup"
         aria-label="Wohnungsgröße auswählen"
@@ -65,35 +66,33 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
               role="radio"
               aria-checked={isSelected}
               onClick={() => onChange(option.value)}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              transition={{ delay: index * 0.04 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               className={cn(
-                // Issue #45: Min 80px Touch-Targets auf Mobile, grössere Touch-Flächen
-                "flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border-2 transition-all min-h-[88px] touch-manipulation active:scale-[0.98]",
+                // Issue #66: Min 110px Höhe für bessere Touch-Targets (44x44px+)
+                "flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl border-2 transition-all min-h-[110px] min-w-[80px] touch-manipulation active:scale-[0.96]",
                 isSelected
-                  ? "border-primary bg-primary/10 shadow-soft ring-2 ring-primary/30"
-                  : "border-border bg-card hover:border-primary/40 hover:bg-muted/50"
+                  ? "border-primary bg-primary/15 shadow-lg ring-2 ring-primary/40"
+                  : "border-border bg-card hover:border-primary/50 hover:bg-muted/60 hover:shadow-md"
               )}
               aria-pressed={isSelected}
             >
               <Icon 
                 className={cn(
-                  // Issue #17: Kompaktere Icons auf Mobile
-                  "w-5 h-5 sm:w-7 sm:h-7 mb-1.5 sm:mb-2 transition-colors",
+                  "w-7 h-7 sm:w-8 sm:h-8 mb-2 transition-colors",
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )} 
               />
               <span className={cn(
-                // Issue #17: Kompaktere Text auf Mobile
-                "text-xs sm:text-sm font-bold transition-colors leading-tight text-center",
+                "text-sm sm:text-base font-bold transition-colors leading-tight text-center",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {option.label}
               </span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
+              <span className="text-xs text-muted-foreground mt-1">
                 {option.sublabel}
               </span>
             </motion.button>
@@ -102,7 +101,7 @@ export const VisualRoomSelector = memo(function VisualRoomSelector({
       </div>
       
       {!hasSelection && (
-        <p className="text-[10px] text-muted-foreground text-center">
+        <p className="text-xs text-muted-foreground text-center">
           Wählen Sie Ihre Wohnungsgrösse für eine Preisschätzung
         </p>
       )}

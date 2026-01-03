@@ -27,15 +27,12 @@ import {
   V2dFeedbackBased,
   V2eExperimental,
   V2fFeedbackBased,
-  // V3 variants
+  // V3 variants - Base Versions Only
   V3aMobileFirst,
   V3bSwipeNavigation,
   V3cBottomSheet,
   V3dThumbZone,
   V3eFullscreen,
-  V3aFeedbackBased,
-  V3bFeedbackBased,
-  V3gFeedbackBased,
   // V4 variants
   V4aUrgencyBased,
   V4bSocialProof,
@@ -47,11 +44,16 @@ import {
   V5aHighContrast,
   V5bScreenReader,
   V5cKeyboardNav,
-  V5dLargeText,
+  V5dFeedbackBased,
   V5eReducedMotion,
   V5fFeedbackBased,
   // V6 variants
   V6aFeedbackBased,
+  V6bChatGPT,
+  V6cGemini,
+  V6fUltimate,
+  V6dDeepResearch,
+  V6eThinkingMode,
   // V7 variants
   V7aFeedbackBased,
   // V8 variants
@@ -61,6 +63,8 @@ import {
   V9bFeedbackBased,
   V9cFeedbackBased,
   V9dFeedbackBased,
+  // Ultimate variants
+  UltimateV7Flow,
   // Multi variants
   MultiAFeedbackBased,
 } from '@/components/calculator-variants';
@@ -96,17 +100,14 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v2e': V2eExperimental,
   'v2f': V2fFeedbackBased,
   
-  // ========== V3 - God Mode ==========
+  // ========== V3 - Mobile-First (Base Versions Only) ==========
   'umzugsofferten-v3': V3aMobileFirst,
   'v3': V3aMobileFirst,
   'v3a': V3aMobileFirst,
-  'v3a-pro': V3aFeedbackBased,
   'v3b': V3bSwipeNavigation,
-  'v3b-feedback': V3bFeedbackBased,
   'v3c': V3cBottomSheet,
   'v3d': V3dThumbZone,
   'v3e': V3eFullscreen,
-  'v3g': V3gFeedbackBased,
   
   // ========== V4 - Video-First AI ==========
   'umzugsofferten-v4': V4aUrgencyBased,
@@ -124,7 +125,7 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v5a': V5aHighContrast,
   'v5b': V5bScreenReader,
   'v5c': V5cKeyboardNav,
-  'v5d': V5dLargeText,
+  'v5d': V5dFeedbackBased,
   'v5e': V5eReducedMotion,
   'v5f': V5fFeedbackBased,
   
@@ -132,6 +133,11 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'umzugsofferten-v6': V6aFeedbackBased,
   'v6': V6aFeedbackBased,
   'v6a': V6aFeedbackBased,
+  'v6b': V6bChatGPT,
+  'v6c': V6cGemini,
+  'v6d': V6dDeepResearch,
+  'v6e': V6eThinkingMode,
+  'v6f': V6fUltimate,
   
   // ========== V7 - SwissMove (90s) ==========
   'umzugsofferten-v7': V7aFeedbackBased,
@@ -150,6 +156,9 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v9b': V9bFeedbackBased,
   'v9c': V9cFeedbackBased,
   'v9d': V9dFeedbackBased,
+  
+  // ========== Ultimate - Combined Best Practices ==========
+  'ultimate-v7': UltimateV7Flow,
   
   // ========== Multi - Combined ==========
   'multi-a': MultiAFeedbackBased,

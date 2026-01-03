@@ -17,7 +17,7 @@ import {
   ArrowLeft, Play, Trophy, Target, Zap, CheckCircle, AlertTriangle,
   AlertCircle, ChevronRight, Star, TrendingUp, Eye, Code, Download,
   RefreshCw, BarChart3, Layers, Sparkles, Crown, Medal, Award, ListOrdered,
-  Wand2, Loader2
+  Wand2, Loader2, Users, BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -28,9 +28,17 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { 
+  ArchetypeRadar, 
+  QuickWinsPanel, 
+  IssuesList, 
+  MovuComparisonCard, 
+  ScoreBadge
+} from '@/components/admin/analysis';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import AnalysisQueuePanel from '@/components/admin/AnalysisQueuePanel';
+import AiFixResultPanel from '@/components/admin/AiFixResultPanel';
 
 interface ElementAnalysis {
   elementType: string;
@@ -242,6 +250,7 @@ const normalizeSynthesis = (s: any): Synthesis | null => {
 
 // All available flow versions
 const ALL_FLOWS = [
+  { id: 'all', label: 'Alle', flowId: 'all' },
   { id: 'v1', label: 'V1', flowId: 'umzugsofferten-v1' },
   { id: 'v2', label: 'V2', flowId: 'umzugsofferten-v2' },
   { id: 'v3', label: 'V3', flowId: 'umzugsofferten-v3' },
@@ -251,6 +260,7 @@ const ALL_FLOWS = [
   { id: 'v7', label: 'V7', flowId: 'umzugsofferten-v7' },
   { id: 'v8', label: 'V8', flowId: 'umzugsofferten-v8' },
   { id: 'v9', label: 'V9', flowId: 'umzugsofferten-v9' },
+  { id: 'ultimate-best36', label: 'Ultimate Best36 ⭐⭐', flowId: 'umzugsofferten-ultimate-best36' },
 ];
 
 const ScoreRing = ({ score, size = 'md', label }: { score: number; size?: 'sm' | 'md' | 'lg'; label?: string }) => {
@@ -417,6 +427,28 @@ export default function FlowDeepAnalysis() {
     const fetchVariants = async () => {
       setLoadingVariants(true);
       try {
+        // Handle "all" case - fetch all active variants from all flows
+        if (selectedFlowVersion === 'all') {
+          const { data, error } = await supabase
+            .from('flow_versions')
+            .select('version_number, flow_code, version_name, flow_id')
+            .eq('is_active', true)
+            .order('flow_id')
+            .order('version_number');
+          
+          if (error) {
+            console.error('Error fetching all variants:', error);
+            setAvailableVariants([]);
+            return;
+          }
+          
+          const variantIds = (data || []).map(v => 
+            v.flow_code?.toLowerCase() || `${v.flow_id}.${v.version_number}`
+          );
+          setAvailableVariants(variantIds);
+          return;
+        }
+
         const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
         if (!flowConfig) {
           setAvailableVariants([]);
@@ -457,28 +489,30 @@ export default function FlowDeepAnalysis() {
         const flowConfig = ALL_FLOWS.find(f => f.id === selectedFlowVersion);
         if (!flowConfig) return;
         
-        // First check for running queue items
-        const { data: queueData } = await supabase
-          .from('flow_analysis_queue')
-          .select('*')
-          .eq('flow_id', flowConfig.flowId)
-          .in('status', ['queued', 'processing'])
-          .order('queued_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        
-        if (queueData) {
-          // There's an active queue item
-          setBackgroundJob({
-            id: queueData.id,
-            status: queueData.status === 'processing' ? 'running' : 'queued',
-            stepsCaptured: 0,
-            totalSteps: 0,
-            startedAt: queueData.started_at
-          });
-          setAnalyses([]);
-          setSynthesis(null);
-          return;
+        // First check for running queue items (skip "all" because that's a synthetic selector)
+        if (selectedFlowVersion !== 'all') {
+          const { data: queueData } = await supabase
+            .from('flow_analysis_queue')
+            .select('*')
+            .eq('flow_id', flowConfig.flowId)
+            .in('status', ['queued', 'processing'])
+            .order('queued_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (queueData) {
+            // There's an active queue item
+            setBackgroundJob({
+              id: queueData.id,
+              status: queueData.status === 'processing' ? 'running' : 'queued',
+              stepsCaptured: 0,
+              totalSteps: 0,
+              startedAt: queueData.started_at
+            });
+            setAnalyses([]);
+            setSynthesis(null);
+            return;
+          }
         }
         
         // Then check flow_analysis_runs
@@ -497,6 +531,8 @@ export default function FlowDeepAnalysis() {
         }
 
         if (data) {
+          console.log('[checkForResults] Found run:', data.id, 'status:', data.status);
+          
           // Check if it's a running job
           if (data.status === 'running' || data.status === 'pending') {
             setBackgroundJob({
@@ -513,13 +549,22 @@ export default function FlowDeepAnalysis() {
             setBackgroundJob(null);
             // Load previous results
             const metadata = data.metadata as any;
+            console.log('[checkForResults] metadata.analyses count:', metadata?.analyses?.length);
+            
             if (metadata?.analyses && Array.isArray(metadata.analyses)) {
-              setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
+              const normalizedAnalyses = metadata.analyses.map(normalizeFlowAnalysis);
+              console.log('[checkForResults] First analysis score:', normalizedAnalyses[0]?.overallScore);
+              setAnalyses(normalizedAnalyses);
             }
 
             const aiRecs = data.ai_recommendations as any;
+            console.log('[checkForResults] ai_recommendations exists:', !!aiRecs, 'length:', aiRecs?.length);
+            
             if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
-              setSynthesis(normalizeSynthesis(aiRecs[0]));
+              const normalizedSynth = normalizeSynthesis(aiRecs[0]);
+              console.log('[checkForResults] Winner:', normalizedSynth?.winner?.flowId, 'score:', normalizedSynth?.winner?.totalScore);
+              console.log('[checkForResults] Ranking length:', normalizedSynth?.ranking?.length, 'first score:', normalizedSynth?.ranking?.[0]?.score);
+              setSynthesis(normalizedSynth);
             } else {
               setSynthesis(null);
             }
@@ -614,6 +659,58 @@ export default function FlowDeepAnalysis() {
           }
         }
         
+        // Prefer tracking the exact run by ID (prevents mixing up runs and false "failed" toasts)
+        const { data: runById } = await supabase
+          .from('flow_analysis_runs')
+          .select('*')
+          .eq('id', backgroundJob.id)
+          .maybeSingle();
+
+        if (runById) {
+          if (runById.status === 'completed') {
+            setBackgroundJob(null);
+            const metadata = runById.metadata as any;
+            if (metadata?.analyses && Array.isArray(metadata.analyses)) {
+              setAnalyses(metadata.analyses.map(normalizeFlowAnalysis));
+            }
+
+            const aiRecs = runById.ai_recommendations as any;
+            if (aiRecs && Array.isArray(aiRecs) && aiRecs.length > 0) {
+              setSynthesis(normalizeSynthesis(aiRecs[0]));
+            } else {
+              setSynthesis(null);
+            }
+
+            toast({ title: 'Analyse abgeschlossen', description: 'Ergebnisse wurden geladen.' });
+            return;
+          }
+
+          if (runById.status === 'failed') {
+            setBackgroundJob(null);
+            const meta = (runById.metadata as any) ?? {};
+            toast({
+              title: 'Analyse fehlgeschlagen',
+              description:
+                String(meta?.error || runById.ai_summary || 'Die Hintergrund-Analyse ist fehlgeschlagen.'),
+              variant: 'destructive',
+            });
+            return;
+          }
+
+          setBackgroundJob(prev =>
+            prev
+              ? {
+                  ...prev,
+                  status: runById.status,
+                  stepsCaptured: runById.steps_captured || 0,
+                  totalSteps: runById.total_steps || 0,
+                  startedAt: runById.started_at,
+                }
+              : null
+          );
+          return;
+        }
+
         // Fallback: check latest deep-analysis run for this flow (more robust than tracking by id)
         if (!flowConfig) return;
 
@@ -651,9 +748,11 @@ export default function FlowDeepAnalysis() {
 
         if (latestDeepRun.status === 'failed') {
           setBackgroundJob(null);
+          const meta = (latestDeepRun.metadata as any) ?? {};
           toast({
             title: 'Analyse fehlgeschlagen',
-            description: 'Die Hintergrund-Analyse ist fehlgeschlagen.',
+            description:
+              String(meta?.error || latestDeepRun.ai_summary || 'Die Hintergrund-Analyse ist fehlgeschlagen.'),
             variant: 'destructive',
           });
           return;
@@ -822,13 +921,86 @@ export default function FlowDeepAnalysis() {
     }
   };
 
-  // AI Fix Flow function
+  // State for generating ultimate flow
+  const [isGeneratingUltimate, setIsGeneratingUltimate] = useState(false);
+
+  // Generate Ultimate Flow from synthesis
+  const handleGenerateUltimateFlow = async () => {
+    if (!synthesis) {
+      toast({
+        title: 'Keine Synthese vorhanden',
+        description: 'Bitte führen Sie zuerst eine Tiefenanalyse durch.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setIsGeneratingUltimate(true);
+
+    toast({
+      title: 'Ultimate Flow wird generiert',
+      description: 'Kombiniere die besten Elemente aller Flows...',
+    });
+
+    try {
+      // Create ultimate flow variant based on synthesis
+      const ultimateFlowData = synthesis.ultimateFlow;
+      
+      const { data, error } = await supabase.functions.invoke('generate-ultimate-flow', {
+        body: {
+          synthesis: {
+            winner: synthesis.winner,
+            ranking: synthesis.ranking,
+            bestElements: synthesis.bestElements,
+            ultimateFlow: ultimateFlowData,
+            implementationPriority: ultimateFlowData.implementationPriority,
+          },
+          analyses: analyses.map(a => ({
+            flowId: a.flowId,
+            flowName: a.flowName,
+            overallScore: a.overallScore,
+            categoryScores: a.categoryScores,
+            strengths: a.strengths,
+            quickWins: a.quickWins,
+          })),
+          flowVersion: selectedFlowVersion,
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.success) {
+        throw new Error(data?.error || 'Ultimate Flow konnte nicht generiert werden.');
+      }
+
+      toast({
+        title: 'Ultimate Flow generiert!',
+        description: `${ultimateFlowData.name || 'Ultimate Flow'} wurde erstellt. Erwartete Conversion-Steigerung: ${ultimateFlowData.expectedConversionLift || '+15-25%'}`,
+      });
+
+      // Open the generated variant
+      if (data?.variantId) {
+        window.open(`/admin/flow-feedback-variants?variant=${data.variantId}`, '_blank');
+      } else if (data?.flowCode) {
+        window.open(`/umzugsofferten-${data.flowCode}`, '_blank');
+      }
+    } catch (error) {
+      console.error('Generate ultimate flow error:', error);
+      const msg = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      toast({
+        title: 'Fehler',
+        description: msg,
+        variant: 'destructive'
+      });
+    }
+  };
+
+  // AI Fix Flow function with background processing
   const handleFixFlow = async (analysis: FlowAnalysis) => {
     setFixingFlowId(analysis.flowId);
     
     toast({
-      title: 'AI-Optimierung gestartet',
-      description: `Generiere Award-Level Optimierungen für ${analysis.flowName}...`,
+      title: '⏳ AI-Fix gestartet',
+      description: `Optimierung läuft im Hintergrund für ${analysis.flowName}...`,
     });
 
     try {
@@ -851,23 +1023,62 @@ export default function FlowDeepAnalysis() {
 
       if (error) throw error;
 
-      toast({
-        title: 'Optimierung abgeschlossen!',
-        description: `${data.optimization?.summary?.totalChanges || 0} Änderungen generiert. Score: ${analysis.overallScore} → ${data.optimization?.optimizedFlow?.expectedScore || 95}+`,
-      });
+      if (data.queued && data.queueId) {
+        toast({
+          title: '🔄 Verarbeitung läuft',
+          description: `Geschätzte Zeit: ${data.estimatedTime}. Du kannst weiterarbeiten.`,
+        });
 
-      // Open the generated variant for viewing
-      if (data.variantId) {
-        window.open(`/admin/flow-feedback-variants?variant=${data.variantId}`, '_blank');
+        // Poll for completion
+        const pollInterval = setInterval(async () => {
+          const { data: queueStatus } = await supabase
+            .from('flow_analysis_queue')
+            .select('status, result_run_id, error_message')
+            .eq('id', data.queueId)
+            .single();
+
+          if (queueStatus?.status === 'completed') {
+            clearInterval(pollInterval);
+            toast({
+              title: '✅ Auto-Fix abgeschlossen!',
+              description: 'Änderungen wurden automatisch angewendet.',
+            });
+            await refreshResults();
+            setFixingFlowId(null);
+          } else if (queueStatus?.status === 'failed') {
+            clearInterval(pollInterval);
+            toast({
+              title: 'Fehler',
+              description: queueStatus.error_message || 'Verarbeitung fehlgeschlagen',
+              variant: 'destructive'
+            });
+            setFixingFlowId(null);
+          }
+        }, 3000);
+
+        // Timeout after 2 minutes
+        setTimeout(() => {
+          clearInterval(pollInterval);
+          if (fixingFlowId === analysis.flowId) {
+            setFixingFlowId(null);
+          }
+        }, 120000);
+      } else {
+        // Fallback for sync response
+        toast({
+          title: '✅ Auto-Fix angewendet!',
+          description: `${data.changesApplied || 0} Änderungen umgesetzt.`,
+        });
+        await refreshResults();
+        setFixingFlowId(null);
       }
     } catch (error) {
       console.error('Fix flow error:', error);
       toast({
         title: 'Fehler',
-        description: 'AI-Optimierung konnte nicht durchgeführt werden',
+        description: 'AI-Optimierung konnte nicht gestartet werden',
         variant: 'destructive'
       });
-    } finally {
       setFixingFlowId(null);
     }
   };
@@ -1125,24 +1336,34 @@ export default function FlowDeepAnalysis() {
         {/* Analysis Results */}
         {analyses.length > 0 && !isAnalyzing && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4">
-              <TabsTrigger value="overview" className="gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Übersicht
-              </TabsTrigger>
-              <TabsTrigger value="comparison" className="gap-2">
-                <Layers className="h-4 w-4" />
-                Vergleich
-              </TabsTrigger>
-              <TabsTrigger value="winner" className="gap-2">
-                <Trophy className="h-4 w-4" />
-                Gewinner
-              </TabsTrigger>
-              <TabsTrigger value="ultimate" className="gap-2">
-                <Crown className="h-4 w-4" />
-                Ultimate
-              </TabsTrigger>
-            </TabsList>
+            <div className="flex items-center justify-between mb-4">
+              <TabsList className="grid w-full max-w-2xl grid-cols-4">
+                <TabsTrigger value="overview" className="gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  <span className="hidden sm:inline">Übersicht</span>
+                </TabsTrigger>
+                <TabsTrigger value="comparison" className="gap-2">
+                  <Layers className="h-4 w-4" />
+                  <span className="hidden sm:inline">Vergleich</span>
+                </TabsTrigger>
+                <TabsTrigger value="winner" className="gap-2">
+                  <Trophy className="h-4 w-4" />
+                  <span className="hidden sm:inline">Gewinner</span>
+                </TabsTrigger>
+                <TabsTrigger value="ultimate" className="gap-2">
+                  <Crown className="h-4 w-4" />
+                  <span className="hidden sm:inline">Ultimate</span>
+                </TabsTrigger>
+              </TabsList>
+              
+              {/* Link to Framework Page */}
+              <Button variant="outline" size="sm" asChild className="gap-2">
+                <Link to="/admin/analysis-framework">
+                  <BookOpen className="h-4 w-4" />
+                  <span className="hidden sm:inline">Methodik & Framework</span>
+                </Link>
+              </Button>
+            </div>
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
@@ -1204,11 +1425,42 @@ export default function FlowDeepAnalysis() {
                             {synthesis?.winner?.flowId === analysis.flowId && (
                               <Trophy className="h-5 w-5 text-yellow-500" />
                             )}
+                            {analysis.overallScore >= 95 && (
+                              <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                            )}
                             <CardTitle className="text-lg">{analysis.flowId}</CardTitle>
+                            {analysis.overallScore >= 95 ? (
+                              <Badge className="bg-gradient-to-r from-yellow-400 to-amber-500 text-white text-[10px]">
+                                GOLD
+                              </Badge>
+                            ) : analysis.overallScore >= 85 ? (
+                              <Badge className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-[10px]">
+                                EXCELLENT
+                              </Badge>
+                            ) : analysis.overallScore >= 70 ? (
+                              <Badge variant="outline" className="text-[10px] border-blue-400 text-blue-600">
+                                GOOD
+                              </Badge>
+                            ) : analysis.overallScore >= 50 ? (
+                              <Badge variant="outline" className="text-[10px] border-orange-400 text-orange-600">
+                                NEEDS WORK
+                              </Badge>
+                            ) : (
+                              <Badge variant="destructive" className="text-[10px]">
+                                CRITICAL
+                              </Badge>
+                            )}
                           </div>
                           <ScoreRing score={analysis.overallScore} size="sm" />
                         </div>
-                        <CardDescription>{analysis.flowName}</CardDescription>
+                        <CardDescription className="flex items-center gap-2">
+                          {analysis.flowName}
+                          {analysis.overallScore >= 95 && (
+                            <Badge variant="outline" className="text-[10px] border-yellow-400 text-yellow-600">
+                              ★ Gold Standard
+                            </Badge>
+                          )}
+                        </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Category Scores */}
@@ -1268,6 +1520,13 @@ export default function FlowDeepAnalysis() {
                             Fix it
                           </Button>
                         </div>
+                        
+                        {/* AI Fix Result Mini Preview */}
+                        <AiFixResultPanel 
+                          flowId={analysis.flowId} 
+                          currentScore={analysis.overallScore}
+                          onReanalyze={() => runDeepAnalysis(true)}
+                        />
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -1339,6 +1598,15 @@ export default function FlowDeepAnalysis() {
                         )}
                         AI Auto-Fix generieren
                       </Button>
+                      
+                      {/* AI Fix Result Panel */}
+                      <div className="mt-4">
+                        <AiFixResultPanel 
+                          flowId={selectedAnalysis.flowId} 
+                          currentScore={selectedAnalysis.overallScore}
+                          onReanalyze={() => runDeepAnalysis(true)}
+                        />
+                      </div>
                     </CardContent>
                   </Card>
 
@@ -1646,9 +1914,23 @@ export default function FlowDeepAnalysis() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-4 justify-center">
-                    <Button size="lg" className="gap-2">
-                      <Zap className="h-5 w-5" />
-                      Ultimate Flow generieren
+                    <Button 
+                      size="lg" 
+                      className="gap-2"
+                      onClick={handleGenerateUltimateFlow}
+                      disabled={isGeneratingUltimate || !synthesis}
+                    >
+                      {isGeneratingUltimate ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Wird generiert...
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="h-5 w-5" />
+                          Ultimate Flow generieren
+                        </>
+                      )}
                     </Button>
                     <Button size="lg" variant="outline" className="gap-2">
                       <Download className="h-5 w-5" />

@@ -103,7 +103,7 @@ export const MoveTypeInitialStepV1e = memo(function MoveTypeInitialStepV1e({
               </div>
               
               <p className="text-sm font-semibold text-center">{option.label}</p>
-              <p className="text-[11px] text-muted-foreground text-center mt-0.5">
+              <p className="text-[11px] text-muted-foreground text-center mt-0.5 line-clamp-2">
                 {option.description}
               </p>
             </motion.button>

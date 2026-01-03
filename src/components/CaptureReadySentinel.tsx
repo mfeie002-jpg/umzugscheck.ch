@@ -486,33 +486,38 @@ export function CaptureReadySentinel({
         aria-hidden="true"
       />
       
-      {/* Debug watermark - visible in screenshot */}
-      <div
-        id="uc-capture-watermark"
-        style={{
-          position: "fixed",
-          bottom: 4,
-          right: 4,
-          padding: "2px 6px",
-          background: state.status === "ready" 
-            ? "rgba(22,163,74,0.9)" 
-            : state.status === "error" 
-              ? "rgba(220,38,38,0.9)" 
-              : "rgba(245,158,11,0.9)",
-          color: "white",
-          borderRadius: 4,
-          fontSize: 9,
-          fontFamily: "monospace",
-          zIndex: 99999,
-          lineHeight: 1.3,
-          maxWidth: 200,
-          wordBreak: "break-all",
-        }}
-      >
-        <div><strong>{state.status.toUpperCase()}</strong> s{state.step}</div>
-        <div>net:{state.pendingRequests} cnt:{state.contentVisible ? "✓" : "✗"}</div>
-        {state.reason && <div style={{ fontSize: 7 }}>{state.reason.slice(0, 50)}</div>}
-      </div>
+      {/* Issue #1 FIX: Debug watermark COMPLETELY HIDDEN in production AND capture mode */}
+      {/* Only show in localhost development for debugging - never in production */}
+      {typeof window !== 'undefined' && 
+       window.location.hostname === 'localhost' && 
+       !window.location.search.includes('uc-capture') && (
+        <div
+          id="uc-capture-watermark"
+          style={{
+            position: "fixed",
+            top: 4,
+            right: 4,
+            padding: "2px 5px",
+            background: state.status === "ready" 
+              ? "rgba(22,163,74,0.8)" 
+              : state.status === "error" 
+                ? "rgba(220,38,38,0.8)" 
+                : "rgba(245,158,11,0.8)",
+            color: "white",
+            borderRadius: 4,
+            fontSize: 8,
+            fontFamily: "monospace",
+            zIndex: 99999,
+            lineHeight: 1.2,
+            maxWidth: 150,
+            wordBreak: "break-all",
+            pointerEvents: "none",
+          }}
+        >
+          <div><strong>{state.status.toUpperCase()}</strong> s{state.step}</div>
+          <div style={{ fontSize: 7 }}>net:{state.pendingRequests} {state.contentVisible ? "✓" : "✗"}</div>
+        </div>
+      )}
     </>
   );
 }

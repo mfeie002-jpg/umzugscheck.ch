@@ -18,6 +18,8 @@ export { V1bFeedbackBased } from './V1bFeedbackBased';
 export { V1cFeedbackBased } from './V1cFeedbackBased';
 export { V1dFeedbackBased } from './V1dFeedbackBased';
 export { V1eFeedbackBased } from './V1eFeedbackBased';
+export { V1fStickyCTATrust } from './V1fStickyCTATrust';
+export { V1gInputUX } from './V1gInputUX';
 
 // V2 Variants (UX-Optimized)
 export { V2aProgressEnhanced } from './V2aProgressEnhanced';
@@ -28,12 +30,9 @@ export { V2dFeedbackBased } from './V2dFeedbackBased';
 export { V2eExperimental } from './V2eExperimental';
 export { V2fFeedbackBased } from './V2fFeedbackBased';
 
-// V3 Variants (Mobile-First)
+// V3 Variants (Mobile-First) - Only Base Versions
 export { V3aMobileFirst } from './V3aMobileFirst';
-export { V3aFeedbackBased } from './V3aFeedbackBased';
-export { V3bFeedbackBased } from './V3bFeedbackBased';
 export { V3bSwipeNavigation } from './V3bSwipeNavigation';
-export { V3gFeedbackBased } from './V3gFeedbackBased';
 export { V3cBottomSheet } from './V3cBottomSheet';
 export { V3dThumbZone } from './V3dThumbZone';
 export { V3eFullscreen } from './V3eFullscreen';
@@ -51,11 +50,17 @@ export { V5aHighContrast } from './V5aHighContrast';
 export { V5bScreenReader } from './V5bScreenReader';
 export { V5cKeyboardNav } from './V5cKeyboardNav';
 export { V5dLargeText } from './V5dLargeText';
+export { V5dFeedbackBased } from './V5dFeedbackBased';
 export { V5eReducedMotion } from './V5eReducedMotion';
 export { V5fFeedbackBased } from './V5fFeedbackBased';
 
 // V6 Variants (Ultimate 6-Tier)
 export { V6aFeedbackBased } from './V6aFeedbackBased';
+export { V6bChatGPT } from './V6bChatGPT';
+export { V6cGemini } from './V6cGemini';
+export { default as V6fUltimate } from './V6fUltimate';
+export { default as V6dDeepResearch } from './V6dDeepResearch';
+export { default as V6eThinkingMode } from './V6eThinkingMode';
 
 // V7 Variants (SwissMove 90s)
 export { V7aFeedbackBased } from './V7aFeedbackBased';
@@ -69,6 +74,9 @@ export { V9bFeedbackBased } from './V9bFeedbackBased';
 export { V9cFeedbackBased } from './V9cFeedbackBased';
 export { V9dFeedbackBased } from './V9dFeedbackBased';
 
+// Ultimate Variants (Combined Best Practices)
+export { UltimateV7Flow } from './UltimateV7Flow';
+
 // Multi Variants (ChatGPT Pro)
 export { MultiAFeedbackBased } from './MultiAFeedbackBased';
 
@@ -79,27 +87,26 @@ export const VARIANT_REGISTRY: Record<string, {
   label: string;
 }> = {
   // V1 - Control Flow
-  'v1': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1 Control' },
+  'v1': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1 Control (Baseline)' },
   'v1a': { component: 'V1aFeedbackBased', stepCount: 2, label: 'V1a Control (Feedback)' },
   'v1b': { component: 'V1bFeedbackBased', stepCount: 4, label: 'V1b ChatGPT Agent' },
   'v1c': { component: 'V1cFeedbackBased', stepCount: 4, label: 'V1c Archetyp (Strategic)' },
   'v1d': { component: 'V1dFeedbackBased', stepCount: 4, label: 'V1d Optimized Funnel' },
   'v1e': { component: 'V1eFeedbackBased', stepCount: 4, label: 'V1e Trust Enhanced' },
+  'v1f': { component: 'V1fStickyCTATrust', stepCount: 2, label: 'V1f Sticky CTA + Trust Pills ⭐' },
+  'v1g': { component: 'V1gInputUX', stepCount: 2, label: 'V1g Input UX + Validation ⭐' },
   // V2 - UX Optimized (Gemini/ChatGPT Feedback Series)
   'v2': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2 Baseline' },
   'v2a': { component: 'V2aProgressEnhanced', stepCount: 4, label: 'V2a Gemini Feedback' },
   'v2b': { component: 'V2bFeedbackBased', stepCount: 6, label: 'V2b ChatGPT Agent' },
   'v2c': { component: 'V2cArchetypCalculator', stepCount: 6, label: 'V2c Archetyp (Strategic)' },
   'v2d': { component: 'V2dFeedbackBased', stepCount: 6, label: 'V2d ChatGPT Pro' },
-  'v2e': { component: 'V2eExperimental', stepCount: 3, label: 'V2e Experimental' },
+  'v2e': { component: 'V2eExperimental', stepCount: 6, label: 'V2e Chat Funnel ⭐' },
   'v2f': { component: 'V2fFeedbackBased', stepCount: 3, label: 'V2f Premium (Feedback)' },
-  // V3 - Mobile-First
+  // V3 - Mobile-First (Base Versions Only)
   'v3': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3 Mobile-First' },
   'v3a': { component: 'V3aMobileFirst', stepCount: 4, label: 'V3a Mobile First' },
-  'v3a-pro': { component: 'V3aFeedbackBased', stepCount: 4, label: 'V3a Pro (Feedback)' },
-  'v3b-feedback': { component: 'V3bFeedbackBased', stepCount: 4, label: 'V3b Feedback Based' },
   'v3b': { component: 'V3bSwipeNavigation', stepCount: 4, label: 'V3b Swipe Navigation' },
-  'v3g': { component: 'V3gFeedbackBased', stepCount: 4, label: 'V3g Feedback Based' },
   'v3c': { component: 'V3cBottomSheet', stepCount: 4, label: 'V3c Bottom Sheet' },
   'v3d': { component: 'V3dThumbZone', stepCount: 3, label: 'V3d Thumb Zone' },
   'v3e': { component: 'V3eFullscreen', stepCount: 3, label: 'V3e Fullscreen' },
@@ -116,12 +123,18 @@ export const VARIANT_REGISTRY: Record<string, {
   'v5a': { component: 'V5aHighContrast', stepCount: 4, label: 'V5a High Contrast' },
   'v5b': { component: 'V5bScreenReader', stepCount: 3, label: 'V5b Screen Reader' },
   'v5c': { component: 'V5cKeyboardNav', stepCount: 3, label: 'V5c Keyboard Nav' },
-  'v5d': { component: 'V5dLargeText', stepCount: 3, label: 'V5d Large Text' },
+  'v5d-legacy': { component: 'V5dLargeText', stepCount: 3, label: 'V5d Large Text' },
+  'v5d': { component: 'V5dFeedbackBased', stepCount: 5, label: 'V5d ChatGPT Feedback' },
   'v5e': { component: 'V5eReducedMotion', stepCount: 3, label: 'V5e Reduced Motion' },
   'v5f': { component: 'V5fFeedbackBased', stepCount: 3, label: 'V5f Marketplace (Feedback)' },
   // V6 - Ultimate 6-Tier
   'v6': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6 Ultimate' },
-  'v6a': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6a Ultimate (Feedback)' },
+  'v6a': { component: 'V6aFeedbackBased', stepCount: 3, label: 'V6a Ultimate (Baseline)' },
+  'v6b': { component: 'V6bChatGPT', stepCount: 5, label: 'V6b ChatGPT Feedback' },
+  'v6c': { component: 'V6cGemini', stepCount: 6, label: 'V6c Gemini "God Mode"' },
+  'v6d': { component: 'V6dDeepResearch', stepCount: 5, label: 'V6d Deep Research' },
+  'v6e': { component: 'V6eThinkingMode', stepCount: 5, label: 'V6e Thinking Mode' },
+  'v6f': { component: 'V6fUltimate', stepCount: 5, label: 'V6f Ultimate (Best of All)' },
   // V7 - SwissMove 90s
   'v7': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7 SwissMove' },
   'v7a': { component: 'V7aFeedbackBased', stepCount: 3, label: 'V7a SwissMove (Feedback)' },
@@ -136,6 +149,8 @@ export const VARIANT_REGISTRY: Record<string, {
   'v9d': { component: 'V9dFeedbackBased', stepCount: 9, label: 'V9d Main Gemini' },
   // Multi - ChatGPT Pro
   'multi-a': { component: 'MultiAFeedbackBased', stepCount: 3, label: 'Multi.a ChatGPT Pro' },
+  // Ultimate - Combined Best Practices
+  'ultimate-v7': { component: 'UltimateV7Flow', stepCount: 5, label: 'Ultimate V7 (95/100)' },
 };
 
 // Get step count for a variant
