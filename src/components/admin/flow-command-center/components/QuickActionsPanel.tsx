@@ -40,8 +40,13 @@ export const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
   const getFlowUrl = () => {
     const baseUrl = 'https://www.umzugscheck.ch';
+    // Handle short variant IDs like v1, v2a
     if (flowId.startsWith('v') && flowId.length <= 3) {
       return `${baseUrl}/umzugsofferten?variant=${flowId}`;
+    }
+    // Handle IDs that already include the full path prefix
+    if (flowId.startsWith('umzugsofferten-')) {
+      return `${baseUrl}/${flowId}`;
     }
     return `${baseUrl}/umzugsofferten-${flowId}`;
   };
