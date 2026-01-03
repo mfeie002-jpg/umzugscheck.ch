@@ -196,6 +196,75 @@ export function LandingPageFeedbackManager() {
     }
   };
 
+  // Analyze feedback with AI
+  const analyzeFeedbackWithAI = async (analysisId: string, feedback: string, pageName: string, pageUrl: string) => {
+    try {
+      toast.info('AI analysiert Feedback...', { duration: 2000 });
+      
+      const { data, error } = await supabase.functions.invoke('analyze-feedback', {
+        body: { feedback, pageName, pageUrl }
+      });
+
+      if (error) throw error;
+      if (!data?.success || !data?.data) {
+        console.warn('AI analysis returned no data');
+        return;
+      }
+
+      const extracted = data.data;
+      console.log('AI extracted:', extracted);
+
+      // Update the analysis with extracted data
+      const { error: updateError } = await supabase
+        .from('landing_page_analyses')
+        .update({
+          ai_summary: extracted.summary || null,
+          ai_recommendations: extracted.recommendations || null,
+          issues: extracted.issues || null,
+          quick_wins: extracted.quick_wins || null,
+          strengths: extracted.strengths || null,
+          overall_score: extracted.scores?.overall || null,
+          seo_score: extracted.scores?.seo || null,
+          mobile_score: extracted.scores?.mobile || null,
+          performance_score: extracted.scores?.performance || null,
+          conversion_score: extracted.scores?.conversion || null,
+          trust_score: extracted.scores?.trust || null,
+          ux_score: extracted.scores?.ux || null,
+          accessibility_score: extracted.scores?.accessibility || null,
+        })
+        .eq('id', analysisId);
+
+      if (updateError) throw updateError;
+
+      // Update local state with new scores
+      setAnalyses(prev => prev.map(a => 
+        a.id === analysisId 
+          ? { 
+              ...a, 
+              ai_summary: extracted.summary || null,
+              ai_recommendations: extracted.recommendations,
+              issues: extracted.issues,
+              quick_wins: extracted.quick_wins,
+              strengths: extracted.strengths,
+              overall_score: extracted.scores?.overall || null,
+              seo_score: extracted.scores?.seo || null,
+              mobile_score: extracted.scores?.mobile || null,
+              performance_score: extracted.scores?.performance || null,
+              conversion_score: extracted.scores?.conversion || null,
+              trust_score: extracted.scores?.trust || null,
+              ux_score: extracted.scores?.ux || null,
+              accessibility_score: extracted.scores?.accessibility || null,
+            }
+          : a
+      ));
+
+      toast.success('AI-Analyse abgeschlossen!');
+    } catch (error) {
+      console.error('Error analyzing feedback with AI:', error);
+      toast.error('AI-Analyse fehlgeschlagen');
+    }
+  };
+
   // Save feedback
   const saveFeedback = async () => {
     if (!selectedAnalysisForFeedback || !feedbackText.trim()) {
@@ -230,6 +299,18 @@ export function LandingPageFeedbackManager() {
 
       toast.success('Feedback gespeichert!');
       setFeedbackDialogOpen(false);
+
+      // Get page info and trigger AI analysis
+      const page = pages.find(p => p.id === selectedAnalysisForFeedback.landing_page_id);
+      if (page) {
+        // Run AI analysis in background
+        analyzeFeedbackWithAI(
+          selectedAnalysisForFeedback.id,
+          feedbackText.trim(),
+          page.display_name,
+          page.url_path
+        );
+      }
     } catch (error) {
       console.error('Error saving feedback:', error);
       toast.error('Fehler beim Speichern');
