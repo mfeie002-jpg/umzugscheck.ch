@@ -16,11 +16,11 @@
 
 import { useState, memo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowRight, ArrowLeft, Shield, CheckCircle, Video, 
+import {
+  ArrowLeft, Shield, CheckCircle, Video,
   MapPin, TrendingDown, Package, Sparkles, Brush, Trash2, Warehouse,
   Plus, Minus, Info, Clock, User, Mail, Phone, Calendar,
-  AlertCircle, HelpCircle
+  AlertCircle, HelpCircle, ChevronDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -352,14 +352,14 @@ function ServiceCard({ service, isSelected, isExpanded, onToggle, onExpand }: Se
               e.stopPropagation();
               onExpand();
             }}
-            className={`p-1 rounded-full transition-colors ${isExpanded ? 'bg-primary/20' : 'hover:bg-muted'}`}
+            className={`p-2 rounded-full transition-colors ${isExpanded ? 'bg-primary/20' : 'hover:bg-muted'}`}
             aria-label={isExpanded ? "Details ausblenden" : "Details anzeigen"}
           >
-            {isExpanded ? (
-              <Minus className="w-4 h-4 text-primary" />
-            ) : (
-              <Plus className="w-4 h-4 text-muted-foreground" />
-            )}
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                isExpanded ? "rotate-180 text-primary" : "text-muted-foreground"
+              }`}
+            />
           </button>
         </div>
       </div>
@@ -764,7 +764,7 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
 
         {/* Form Content */}
         {/* Form Content - Prevent horizontal overflow */}
-        <div className="p-4 sm:p-6 overflow-x-hidden">
+        <div className="p-4 sm:p-6 overflow-x-hidden pb-28 md:pb-6">
           <AnimatePresence mode="wait">
             {/* Step 1: Move Type - ChatGPT Rec #10: Visual confirmation */}
             {currentStep === 1 && (
@@ -806,7 +806,7 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
 
                 <div className="space-y-4">
                   {/* Location Inputs with enhanced autocomplete */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <ValidatedInput
                       schema={postalCodeSchema}
                       value={formData.fromLocation}
@@ -1215,7 +1215,7 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
 
           {/* Navigation Buttons - ChatGPT Rec #4: Sticky on mobile */}
           <div className="flex gap-3 mt-6 md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                          sticky bottom-0 left-0 right-0 -mx-6 px-6 py-4 
+                          sticky bottom-16 md:bottom-0 left-0 right-0 -mx-4 px-4 sm:-mx-6 sm:px-6 py-4 
                           bg-card/98 backdrop-blur-lg border-t border-border/50 
                           shadow-[0_-4px_20px_rgba(0,0,0,0.08)]
                           pb-[calc(1rem+env(safe-area-inset-bottom))]
@@ -1243,7 +1243,7 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
                   ? `Mit ${formData.selectedCompanies.length || "0"} Firmen weiter` 
                   : "Weiter"
                 }
-                <ArrowRight className="w-4 h-4 ml-2" />
+                
               </Button>
             ) : (
               <Button
