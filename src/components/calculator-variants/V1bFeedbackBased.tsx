@@ -168,7 +168,7 @@ function ProgressHeader({ step, total, steps }: { step: number; total: number; s
   return (
     <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b">
       <div className="max-w-2xl mx-auto px-4 py-3">
-        {/* Step tabs */}
+        {/* Step tabs - responsive with proper touch targets */}
         <div className="flex items-center justify-between mb-3">
           {steps.map((s, idx) => (
             <div 
@@ -176,26 +176,27 @@ function ProgressHeader({ step, total, steps }: { step: number; total: number; s
               className={`flex items-center ${idx < steps.length - 1 ? 'flex-1' : ''}`}
             >
               <div className={`flex flex-col items-center ${idx < step ? 'text-primary' : idx === step - 1 ? 'text-primary' : 'text-muted-foreground'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mb-1 
+                {/* Touch target min 44px */}
+                <div className={`w-10 h-10 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm font-medium mb-1 
                   ${idx < step ? 'bg-primary text-primary-foreground' : idx === step - 1 ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
                   {idx < step - 1 ? <CheckCircle2 className="h-4 w-4" /> : s.id}
                 </div>
                 <span className="text-xs hidden sm:block">{s.shortTitle}</span>
               </div>
               {idx < steps.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-2 ${idx < step - 1 ? 'bg-primary' : 'bg-muted'}`} />
+                <div className={`flex-1 h-0.5 mx-1 sm:mx-2 ${idx < step - 1 ? 'bg-primary' : 'bg-muted'}`} />
               )}
             </div>
           ))}
         </div>
         
         {/* Progress bar */}
-        <Progress value={pct} className="h-1.5" />
+        <Progress value={pct} className="h-2" />
         
-        {/* Time hint */}
-        <div className="flex items-center justify-center gap-2 mt-2 text-xs text-muted-foreground">
-          <Clock className="h-3 w-3" />
-          <span>Noch {total - step + 1} {total - step + 1 === 1 ? 'Schritt' : 'Schritte'} • ca. 1 Min.</span>
+        {/* Time hint - readable font size */}
+        <div className="flex items-center justify-center gap-2 mt-2 text-sm text-muted-foreground">
+          <Clock className="h-4 w-4" />
+          <span>Schritt {step} von {total} • ca. 1 Min.</span>
         </div>
       </div>
     </div>
@@ -205,12 +206,12 @@ function ProgressHeader({ step, total, steps }: { step: number; total: number; s
 function TrustBar({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
-      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground py-2">
-        <span className="flex items-center gap-1">
-          <Lock className="h-3 w-3" /> SSL-gesichert
+      <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground py-2">
+        <span className="flex items-center gap-1.5">
+          <Lock className="h-4 w-4" /> SSL-gesichert
         </span>
-        <span className="flex items-center gap-1">
-          <Shield className="h-3 w-3" /> CH-DSG konform
+        <span className="flex items-center gap-1.5">
+          <Shield className="h-4 w-4" /> CH-DSG konform
         </span>
       </div>
     );
@@ -218,33 +219,34 @@ function TrustBar({ compact = false }: { compact?: boolean }) {
   
   return (
     <div className="bg-muted/50 rounded-xl p-4 mb-6">
-      <div className="flex flex-wrap justify-center gap-4 text-sm">
-        <div className="flex items-center gap-2">
-          <Shield className="h-4 w-4 text-primary" />
+      {/* Responsive grid - stacks on mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+        <div className="flex items-center gap-3 p-2">
+          <Shield className="h-6 w-6 text-primary flex-shrink-0" />
           <div>
-            <p className="font-medium">100% Unverbindlich</p>
-            <p className="text-xs text-muted-foreground">Keine Verpflichtung</p>
+            <p className="font-medium text-base">100% Unverbindlich</p>
+            <p className="text-sm text-muted-foreground">Keine Verpflichtung</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-primary" />
+        <div className="flex items-center gap-3 p-2">
+          <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0" />
           <div>
-            <p className="font-medium">Geprüfte Firmen</p>
-            <p className="text-xs text-muted-foreground">Schweizer Partner</p>
+            <p className="font-medium text-base">Geprüfte Firmen</p>
+            <p className="text-sm text-muted-foreground">Schweizer Partner</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-primary" />
+        <div className="flex items-center gap-3 p-2">
+          <Lock className="h-6 w-6 text-primary flex-shrink-0" />
           <div>
-            <p className="font-medium">Datenschutz</p>
-            <p className="text-xs text-muted-foreground">DSG/DSGVO konform</p>
+            <p className="font-medium text-base">Datenschutz</p>
+            <p className="text-sm text-muted-foreground">DSG/DSGVO konform</p>
           </div>
         </div>
       </div>
       
       {/* Social proof */}
       <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t text-sm">
-        <Users className="h-4 w-4 text-primary" />
+        <Users className="h-5 w-5 text-primary" />
         <span className="font-medium">15'000+ Umzüge</span>
         <span className="text-muted-foreground">dieses Jahr vermittelt</span>
       </div>
@@ -272,25 +274,26 @@ function StickyFooterCTA({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur border-t safe-area-inset-bottom">
       <div className="max-w-2xl mx-auto p-4">
-        {hint && <p className="text-center text-xs text-muted-foreground mb-2">{hint}</p>}
+        {hint && <p className="text-center text-sm text-muted-foreground mb-2">{hint}</p>}
         <div className="flex gap-3">
           {showBack && onSecondary && (
             <Button
               variant="outline"
               onClick={onSecondary}
-              className="h-12 px-4"
+              className="h-14 px-5 text-base min-w-[100px]"
             >
-              <ArrowLeft className="h-4 w-4 mr-1" />
+              <ArrowLeft className="h-5 w-5 mr-2" />
               Zurück
             </Button>
           )}
           <Button
             onClick={onPrimary}
             disabled={disabled}
-            className="flex-1 h-12 text-base font-semibold"
+            size="lg"
+            className="flex-1 h-14 text-base font-semibold"
           >
             {primaryLabel}
-            {!disabled && <ArrowRight className="h-4 w-4 ml-2" />}
+            {!disabled && <ArrowRight className="h-5 w-5 ml-2" />}
           </Button>
         </div>
       </div>
@@ -402,26 +405,26 @@ function Step1TypeDetails({
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-2">Umzug planen</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-base">
           In weniger als 2 Minuten zu bis zu 5 Angeboten
         </p>
       </div>
 
-      {/* Move Type Selection */}
+      {/* Move Type Selection - responsive grid, no horizontal scroll */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Was ziehen Sie um?</Label>
-        <div className="grid grid-cols-3 gap-3">
+        <Label className="text-base font-medium">Was ziehen Sie um?</Label>
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {MOVE_TYPES.map((type) => (
             <button
               key={type.id}
               onClick={() => updateField('moveType', type.id)}
-              className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all
+              className={`flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 transition-all min-h-[88px]
                 ${formData.moveType === type.id 
                   ? 'border-primary bg-primary/5' 
                   : 'border-muted hover:border-muted-foreground/30'}`}
             >
-              <type.icon className={`h-8 w-8 mb-2 ${formData.moveType === type.id ? 'text-primary' : 'text-muted-foreground'}`} />
-              <span className={`font-medium text-sm ${formData.moveType === type.id ? 'text-primary' : ''}`}>
+              <type.icon className={`h-7 w-7 sm:h-8 sm:h-8 mb-1.5 ${formData.moveType === type.id ? 'text-primary' : 'text-muted-foreground'}`} />
+              <span className={`font-medium text-sm sm:text-base text-center ${formData.moveType === type.id ? 'text-primary' : ''}`}>
                 {type.label}
               </span>
             </button>
@@ -429,15 +432,15 @@ function Step1TypeDetails({
         </div>
       </div>
 
-      {/* Apartment Size */}
+      {/* Apartment Size - responsive grid, wraps properly */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Wohnungsgrösse</Label>
+        <Label className="text-base font-medium">Wohnungsgrösse (Zimmer)</Label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {APARTMENT_SIZES.map((size) => (
             <button
               key={size.id}
               onClick={() => updateField('apartmentSize', size.id)}
-              className={`p-3 rounded-lg border-2 text-sm font-medium transition-all
+              className={`p-3 sm:p-4 rounded-lg border-2 text-sm sm:text-base font-medium transition-all min-h-[48px]
                 ${formData.apartmentSize === size.id 
                   ? 'border-primary bg-primary/5 text-primary' 
                   : 'border-muted hover:border-muted-foreground/30'}`}
@@ -448,7 +451,7 @@ function Step1TypeDetails({
         </div>
       </div>
 
-      {/* Addresses */}
+      {/* Addresses - stacks on mobile */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field
           label="Von (PLZ & Ort)"
@@ -521,12 +524,12 @@ function Step2Services({
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-2">Welche Leistungen?</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-base">
           Wählen Sie optionale Zusatzleistungen
         </p>
       </div>
 
-      {/* Services List */}
+      {/* Services List - improved touch targets */}
       <div className="space-y-3">
         {SERVICES.map((service) => {
           const isSelected = selectedServices.includes(service.id);
@@ -539,7 +542,7 @@ function Step2Services({
                 ${isSelected ? 'border-primary bg-primary/5' : 'border-muted'}`}
             >
               <div 
-                className="flex items-center justify-between p-4 cursor-pointer"
+                className="flex items-center justify-between p-4 cursor-pointer min-h-[64px]"
                 onClick={() => service.id !== 'basic' && toggleService(service.id)}
               >
                 <div className="flex items-center gap-3 flex-1">
@@ -548,9 +551,9 @@ function Step2Services({
                     disabled={service.included}
                     className="h-5 w-5"
                   />
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{service.label}</span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium text-base">{service.label}</span>
                       {service.badge && (
                         <Badge variant="secondary" className="text-xs">
                           {service.badge}
@@ -563,7 +566,7 @@ function Step2Services({
                       )}
                     </div>
                     {service.price > 0 && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground mt-0.5">
                         + CHF {service.price}–{Math.round(service.price * 1.5)}
                       </p>
                     )}
@@ -575,9 +578,10 @@ function Step2Services({
                     e.stopPropagation();
                     setExpandedService(isExpanded ? null : service.id);
                   }}
-                  className="p-1 text-muted-foreground hover:text-foreground"
+                  className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground hover:text-foreground"
+                  aria-label={isExpanded ? 'Details ausblenden' : 'Details anzeigen'}
                 >
-                  {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                 </button>
               </div>
               
@@ -599,12 +603,12 @@ function Step2Services({
         />
       )}
 
-      {/* Recommendation */}
-      <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl text-sm">
-        <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+      {/* Recommendation - larger text */}
+      <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
+        <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
         <div>
-          <p className="font-medium">Tipp: Komplettpaket</p>
-          <p className="text-muted-foreground">
+          <p className="font-medium text-base">Tipp: Komplettpaket</p>
+          <p className="text-muted-foreground text-sm mt-1">
             Mit Einpack- und Reinigungsservice sparen Sie Zeit und oft 15% gegenüber Einzelbuchungen.
           </p>
         </div>
@@ -652,34 +656,34 @@ function Step3Companies({
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-2">Firmen auswählen</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-base">
           Wir empfehlen mindestens 3 Firmen für einen fairen Vergleich
         </p>
       </div>
 
-      {/* Selection info */}
-      <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="h-5 w-5 text-primary" />
-          <span className="font-medium">{selectedCompanies.length} Firmen ausgewählt</span>
+      {/* Selection info - prominent display */}
+      <div className="flex items-center justify-between p-4 bg-primary/10 rounded-lg">
+        <div className="flex items-center gap-3">
+          <CheckCircle2 className="h-6 w-6 text-primary" />
+          <span className="font-medium text-base">{selectedCompanies.length} Firmen ausgewählt</span>
         </div>
-        <span className="text-sm text-muted-foreground">max. 5</span>
+        <span className="text-base text-muted-foreground">max. 5</span>
       </div>
 
-      {/* Sort/Filter */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
-        <span className="text-sm text-muted-foreground flex-shrink-0">Sortieren:</span>
+      {/* Sort/Filter - wraps on mobile instead of horizontal scroll */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted-foreground">Sortieren:</span>
         {[
           { id: 'recommended', label: 'Empfohlen' },
-          { id: 'rating', label: 'Beste Bewertung' },
-          { id: 'price', label: 'Günstigste' },
+          { id: 'rating', label: 'Beste' },
+          { id: 'price', label: 'Günstig' },
         ].map((option) => (
           <Button
             key={option.id}
             variant={sortBy === option.id ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSortBy(option.id as any)}
-            className="flex-shrink-0"
+            className="min-h-[44px] px-4"
           >
             {option.label}
           </Button>
@@ -695,53 +699,57 @@ function Step3Companies({
             <div
               key={company.id}
               onClick={() => toggleCompany(company.id)}
-              className={`p-4 rounded-xl border-2 cursor-pointer transition-all
+              className={`p-4 rounded-xl border-2 cursor-pointer transition-all min-h-[88px]
                 ${isSelected ? 'border-primary bg-primary/5' : 'border-muted hover:border-muted-foreground/30'}
                 ${company.isPremium ? 'ring-2 ring-amber-400/50' : ''}`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3 flex-1">
-                  <Checkbox checked={isSelected} className="mt-1" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold">{company.name}</span>
-                      {company.isPremium && (
-                        <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 bg-amber-50">
-                          Premium Partner
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground">{company.location}</p>
-                    
-                    <div className="flex items-center gap-3 mt-2 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                        <span className="font-medium">{company.rating}</span>
-                        <span className="text-muted-foreground">({company.reviews})</span>
+              {/* Mobile-optimized layout - stacks price on mobile */}
+              <div className="flex items-start gap-3">
+                <Checkbox checked={isSelected} className="mt-1 h-5 w-5" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-base">{company.name}</span>
+                        {company.isPremium && (
+                          <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 bg-amber-50">
+                            Premium
+                          </Badge>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1 text-green-600">
-                        <TrendingUp className="h-4 w-4" />
-                        <span>{company.match}% Match</span>
-                      </div>
+                      <p className="text-sm text-muted-foreground">{company.location}</p>
                     </div>
                     
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {company.services.slice(0, 3).map((service) => (
-                        <Badge key={service} variant="secondary" className="text-xs">
-                          {service}
-                        </Badge>
-                      ))}
+                    {/* Price - right aligned */}
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-bold text-base sm:text-lg">
+                        CHF {company.priceMin.toLocaleString('de-CH')}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        – {company.priceMax.toLocaleString('de-CH')}
+                      </p>
                     </div>
                   </div>
-                </div>
-                
-                <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-lg">
-                    CHF {company.priceMin.toLocaleString('de-CH')}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    – {company.priceMax.toLocaleString('de-CH')}
-                  </p>
+                  
+                  <div className="flex items-center gap-3 mt-2 text-sm">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                      <span className="font-medium">{company.rating}</span>
+                      <span className="text-muted-foreground hidden sm:inline">({company.reviews})</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-green-600">
+                      <TrendingUp className="h-4 w-4" />
+                      <span>{company.match}%</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {company.services.slice(0, 2).map((service) => (
+                      <Badge key={service} variant="secondary" className="text-xs">
+                        {service}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -750,9 +758,8 @@ function Step3Companies({
       </div>
 
       {/* Transparency note */}
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-sm text-muted-foreground text-center">
         Auswahl basiert auf Bewertungen, Verfügbarkeit & Nähe zu Ihrem Standort.
-        Premium Partner sind gekennzeichnet.
       </p>
     </div>
   );
@@ -771,7 +778,7 @@ function Step4Contact({
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-2">Fast geschafft! 🎉</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-base">
           Wohin sollen wir die Offerten senden?
         </p>
       </div>
@@ -819,15 +826,15 @@ function Step4Contact({
         </CardContent>
       </Card>
 
-      {/* Privacy Checkbox */}
-      <div className="flex items-start gap-3">
+      {/* Privacy Checkbox - larger touch target */}
+      <div className="flex items-start gap-3 p-3 -mx-3 rounded-lg hover:bg-muted/30">
         <Checkbox 
           id="privacy"
           checked={formData.privacyAccepted}
           onCheckedChange={(checked) => updateField('privacyAccepted', checked)}
-          className="mt-0.5"
+          className="mt-1 h-5 w-5"
         />
-        <Label htmlFor="privacy" className="text-sm text-muted-foreground cursor-pointer">
+        <Label htmlFor="privacy" className="text-base text-muted-foreground cursor-pointer leading-relaxed">
           Ich akzeptiere die{" "}
           <Link
             to="/datenschutz"
@@ -837,7 +844,7 @@ function Step4Contact({
           >
             Datenschutzerklärung
           </Link>{" "}
-          und erlaube die Weitergabe meiner Anfrage an ausgewählte Umzugsfirmen zur Offertstellung.
+          und erlaube die Weitergabe meiner Anfrage an ausgewählte Umzugsfirmen.
         </Label>
       </div>
       {errors.privacy && <p className="text-sm text-destructive">{errors.privacy}</p>}
@@ -845,10 +852,10 @@ function Step4Contact({
       {/* Security/Trust Info */}
       <div className="bg-green-50 dark:bg-green-950/30 rounded-xl p-4 border border-green-200 dark:border-green-800">
         <div className="flex items-start gap-3">
-          <Shield className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-          <div className="text-sm">
-            <p className="font-medium text-green-700 dark:text-green-400 mb-1">Ihre Daten sind sicher</p>
-            <ul className="space-y-1 text-green-600 dark:text-green-500">
+          <Shield className="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5" />
+          <div className="text-base">
+            <p className="font-medium text-green-700 dark:text-green-400 mb-2">Ihre Daten sind sicher</p>
+            <ul className="space-y-1.5 text-green-600 dark:text-green-500 text-sm">
               <li>✓ Keine Werbeanrufe</li>
               <li>✓ Nur an ausgewählte Firmen</li>
               <li>✓ 100% unverbindlich</li>
@@ -993,18 +1000,18 @@ export const V1bFeedbackBased: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background pb-32 overflow-x-hidden">
       <ProgressHeader 
         step={currentStep} 
         total={STEPS.length} 
         steps={STEPS}
       />
 
-      <div className="max-w-2xl mx-auto p-4 pt-6">
+      <div className="max-w-2xl mx-auto px-4 py-6">
         {currentStep === 1 && <TrustBar />}
 
-        <Card>
-          <CardContent className="pt-6">
+        <Card className="overflow-hidden">
+          <CardContent className="pt-6 px-4 sm:px-6">
             {currentStep === 1 && (
               <Step1TypeDetails 
                 formData={formData} 
