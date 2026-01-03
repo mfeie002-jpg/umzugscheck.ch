@@ -18,6 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Shield, CheckCircle2, Lock, MapPin, User, Mail, Phone, Clock, Save, ChevronLeft, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
+import { useInitialStep } from '@/hooks/use-initial-step';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
 
 const STEPS = [
   { id: 1, title: 'Adressen' },
@@ -158,7 +160,11 @@ function Field({
 }
 
 export const V7aFeedbackBased: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  // Use centralized capture mode hooks for screenshot automation
+  const initialStep = useInitialStep(1);
+  const { isCaptureMode, demoData } = useCaptureMode();
+  
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [formData, setFormData] = useState({
     fromZip: '', toZip: '', rooms: '', moveDate: '', name: '', email: '', phone: '',
   });
@@ -166,16 +172,30 @@ export const V7aFeedbackBased: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load saved data on mount
+  // Initialize form data based on mode
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setFormData(prev => ({ ...prev, ...parsed }));
-      } catch {}
+    if (isCaptureMode) {
+      // Pre-fill with demo data for consistent screenshots
+      setFormData({
+        fromZip: demoData.fromPostal,
+        toZip: demoData.toPostal,
+        rooms: '3-4',
+        moveDate: demoData.moveDate,
+        name: demoData.name,
+        email: demoData.email,
+        phone: demoData.phone,
+      });
+    } else {
+      // Load saved data on mount (normal mode)
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setFormData(prev => ({ ...prev, ...parsed }));
+        } catch {}
+      }
     }
-  }, []);
+  }, [isCaptureMode, demoData]);
 
   // Auto-save on change
   useEffect(() => {
