@@ -71,3 +71,6 @@ verify_jwt = false
 
 [functions.analyze-landing-page]
 verify_jwt = false
+
+[functions.analyze-feedback]
+verify_jwt = false
