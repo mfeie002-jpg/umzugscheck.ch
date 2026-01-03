@@ -12,3 +12,4 @@ export { FlowComparisonMini } from './FlowComparisonMini';
 export { BatchAnalysisPanel } from './BatchAnalysisPanel';
 export { AIFixSuggestions } from './AIFixSuggestions';
 export { PerformanceBenchmarks } from './PerformanceBenchmarks';
+export { AIBatchFixDialog } from './AIBatchFixDialog';
