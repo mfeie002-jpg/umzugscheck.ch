@@ -185,7 +185,7 @@ export const UltimateWizard = () => {
     name: "",
     email: "",
     phone: "",
-    acceptTerms: false,
+    acceptTerms: false, // IMPORTANT: Default to false - no dark patterns!
   });
   const [showBreakdown, setShowBreakdown] = useState(false);
 
@@ -284,34 +284,63 @@ export const UltimateWizard = () => {
     }
   };
 
-  // Render timeline - Mobile optimized with proper scroll indicators
+  // Render timeline - Mobile optimized with NO horizontal scroll issues
   const renderTimeline = () => (
-    <div className="mb-6 relative">
-      {/* Scroll fade indicators */}
-      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10 md:hidden" />
-      <div className="overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
-        <div className="flex gap-1.5 min-w-max">
-          {TIMELINE_PHASES.map((phase, index) => {
+    <div className="mb-6">
+      {/* Mobile: Compact vertical list, Desktop: Horizontal scroll */}
+      <div className="hidden md:block relative">
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
+        <div className="overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-1.5 min-w-max">
+            {TIMELINE_PHASES.map((phase, index) => {
+              const Icon = phase.icon;
+              const isActive = index === 0;
+              
+              return (
+                <div
+                  key={phase.day}
+                  className={`flex flex-col items-center p-2.5 rounded-lg min-w-[75px] transition-all ${
+                    isActive ? "bg-primary/10 border border-primary/30" : "bg-muted/30"
+                  }`}
+                >
+                  <span className="text-[10px] font-mono text-muted-foreground">{phase.day}</span>
+                  <Icon className={`h-4 w-4 my-1 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                  <span className={`text-[10px] font-medium text-center leading-tight ${isActive ? "text-primary" : "text-muted-foreground"}`}>
+                    {phase.phase}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile: Compact grid that fits without horizontal scroll */}
+      <div className="md:hidden">
+        <div className="grid grid-cols-3 gap-2">
+          {TIMELINE_PHASES.slice(0, 6).map((phase, index) => {
             const Icon = phase.icon;
             const isActive = index === 0;
-            const isPast = false;
             
             return (
               <div
                 key={phase.day}
-                className={`flex flex-col items-center p-2 sm:p-2.5 rounded-lg min-w-[65px] sm:min-w-[75px] transition-all ${
+                className={`flex flex-col items-center p-2 rounded-lg transition-all ${
                   isActive ? "bg-primary/10 border border-primary/30" : "bg-muted/30"
                 }`}
               >
-                <span className="text-[9px] sm:text-[10px] font-mono text-muted-foreground">{phase.day}</span>
-                <Icon className={`h-4 w-4 my-1 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-                <span className={`text-[9px] sm:text-[10px] font-medium text-center leading-tight ${isActive ? "text-primary" : "text-muted-foreground"}`}>
+                <span className="text-[11px] font-mono text-muted-foreground">{phase.day}</span>
+                <Icon className={`h-4 w-4 my-0.5 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                <span className={`text-[11px] font-medium text-center leading-tight ${isActive ? "text-primary" : "text-muted-foreground"}`}>
                   {phase.phase}
                 </span>
               </div>
             );
           })}
         </div>
+        <p className="text-[11px] text-muted-foreground text-center mt-2">
+          +3 weitere Phasen nach der Buchung
+        </p>
       </div>
     </div>
   );
@@ -338,21 +367,27 @@ export const UltimateWizard = () => {
 
   return (
     <Card className="overflow-hidden border-primary/10 shadow-lg">
-      {/* Header with progress */}
-      <CardHeader className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b">
+      {/* Header with progress - Mobile optimized, no horizontal scroll */}
+      <CardHeader className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b px-4 sm:px-6">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Crown className="h-5 w-5 text-primary" />
-            <span className="font-semibold text-lg">God Mode Umzug</span>
-            <Badge variant="secondary" className="text-xs">V6</Badge>
+            <span className="font-semibold text-base sm:text-lg">God Mode Umzug</span>
+            <Badge variant="secondary" className="text-xs hidden sm:inline-flex">V6</Badge>
           </div>
-          <Badge variant="outline" className="text-xs">
-            {currentStepIndex + 1}/{steps.length}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              {currentStepIndex + 1}/{steps.length}
+            </Badge>
+            {/* Mobile: Show current step name */}
+            <span className="text-xs text-muted-foreground sm:hidden">
+              {steps[currentStepIndex]?.label}
+            </span>
+          </div>
         </div>
         
-        {/* Progress steps */}
-        <div className="flex items-center gap-1">
+        {/* Progress steps - Hidden on mobile, shown on desktop */}
+        <div className="hidden sm:flex items-center gap-1">
           {steps.map((s, i) => {
             const Icon = s.icon;
             const isActive = i === currentStepIndex;
@@ -374,6 +409,11 @@ export const UltimateWizard = () => {
               </div>
             );
           })}
+        </div>
+        
+        {/* Mobile: Simple progress bar */}
+        <div className="sm:hidden">
+          <Progress value={progress} className="h-2" />
         </div>
       </CardHeader>
 
@@ -400,11 +440,12 @@ export const UltimateWizard = () => {
               {renderTimeline()}
               {renderTrustSignals()}
 
-              {/* Location form */}
+              {/* Location form - Mobile: Full width inputs */}
               <div className="grid gap-4">
-                <div className="grid grid-cols-2 gap-4">
+                {/* PLZ Fields - Full width on mobile for better touch targets */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
+                    <Label className="flex items-center gap-2 text-base sm:text-sm">
                       <MapPin className="h-4 w-4 text-primary" />
                       Von (PLZ)
                     </Label>
@@ -412,10 +453,12 @@ export const UltimateWizard = () => {
                       placeholder="8000"
                       value={location.fromPlz}
                       onChange={(e) => setLocation({ ...location, fromPlz: e.target.value })}
+                      className="h-12 sm:h-10 text-base sm:text-sm"
+                      inputMode="numeric"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
+                    <Label className="flex items-center gap-2 text-base sm:text-sm">
                       <Target className="h-4 w-4 text-primary" />
                       Nach (PLZ)
                     </Label>
@@ -423,13 +466,16 @@ export const UltimateWizard = () => {
                       placeholder="3000"
                       value={location.toPlz}
                       onChange={(e) => setLocation({ ...location, toPlz: e.target.value })}
+                      className="h-12 sm:h-10 text-base sm:text-sm"
+                      inputMode="numeric"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                {/* Date and Rooms - Stack on mobile */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
+                    <Label className="flex items-center gap-2 text-base sm:text-sm">
                       <Calendar className="h-4 w-4 text-primary" />
                       Umzugsdatum
                     </Label>
@@ -437,15 +483,16 @@ export const UltimateWizard = () => {
                       type="date"
                       value={location.moveDate}
                       onChange={(e) => setLocation({ ...location, moveDate: e.target.value })}
+                      className="h-12 sm:h-10 text-base sm:text-sm"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
+                    <Label className="flex items-center gap-2 text-base sm:text-sm">
                       <Home className="h-4 w-4 text-primary" />
                       Zimmer
                     </Label>
                     <select
-                      className="w-full h-10 rounded-md border border-input bg-background px-3"
+                      className="w-full h-12 sm:h-10 text-base sm:text-sm rounded-md border border-input bg-background px-3"
                       value={location.rooms}
                       onChange={(e) => setLocation({ ...location, rooms: e.target.value })}
                     >
@@ -648,7 +695,7 @@ export const UltimateWizard = () => {
                   onClick={goNext}
                   disabled={isAnalyzing}
                 >
-                  Weiter
+                  Weiter zur Service-Auswahl
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -891,7 +938,7 @@ export const UltimateWizard = () => {
                   className="flex-1 h-12 sm:h-11 text-base sm:text-sm font-semibold shadow-md bg-green-600 hover:bg-green-700 text-white" 
                   onClick={goNext}
                 >
-                  Jetzt buchen
+                  Weiter zur Buchung
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
