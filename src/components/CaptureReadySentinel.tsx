@@ -120,6 +120,46 @@ function ensureNetworkPendingPatch() {
 }
 
 /**
+ * CRITICAL FIX: Wait for all background images to load
+ * This prevents screenshots being taken before hero backgrounds are visible.
+ */
+async function waitForBackgroundImages(): Promise<boolean> {
+  try {
+    const elements = document.querySelectorAll('[style*="backgroundImage"], [style*="background-image"]');
+    const bgUrls: string[] = [];
+    
+    elements.forEach((el) => {
+      const style = window.getComputedStyle(el);
+      const bgImage = style.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        const match = bgImage.match(/url\(["']?([^"')]+)["']?\)/);
+        if (match && match[1]) {
+          bgUrls.push(match[1]);
+        }
+      }
+    });
+    
+    if (bgUrls.length === 0) return true;
+    
+    const loadPromises = bgUrls.map((url) => {
+      return new Promise<boolean>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(true); // Don't block on error
+        img.src = url;
+        // Timeout after 3s per image
+        setTimeout(() => resolve(true), 3000);
+      });
+    });
+    
+    await Promise.all(loadPromises);
+    return true;
+  } catch {
+    return true;
+  }
+}
+
+/**
  * CRITICAL FIX: Check for explicit capture root marker
  * This prevents "ready" when only shell/header is visible.
  * Routes must add data-uc-capture-root="1" to their main content.
@@ -404,9 +444,17 @@ export function CaptureReadySentinel({
       const domStable = msSinceLastMutation >= stabilityMs;
       
       // Ready when: content visible AND (network idle OR stable for a while)
-      const isReady = contentVisible && (networkSettled || (domStable && elapsed > 2000));
+      const isReadyConditions = contentVisible && (networkSettled || (domStable && elapsed > 2000));
 
-      if (isReady) {
+      if (isReadyConditions) {
+        // CRITICAL: Wait for background images before marking ready
+        await waitForBackgroundImages();
+        
+        scrollToTopSafe();
+        
+        // Extra delay for paint to complete after images load
+        await new Promise(r => setTimeout(r, 200));
+        
         scrollToTopSafe();
         
         requestAnimationFrame(() => {
@@ -414,7 +462,7 @@ export function CaptureReadySentinel({
             setState(s => ({ 
               ...s, 
               status: "ready", 
-              reason: `auto: net=${pending}, stable=${msSinceLastMutation}ms`,
+              reason: `auto: net=${pending}, stable=${msSinceLastMutation}ms, bgImages=loaded`,
               scrollY: 0,
               contentVisible: true,
             }));
