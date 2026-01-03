@@ -284,30 +284,34 @@ export const UltimateWizard = () => {
     }
   };
 
-  // Render timeline
+  // Render timeline - Mobile optimized with proper scroll indicators
   const renderTimeline = () => (
-    <div className="mb-6 overflow-x-auto pb-2">
-      <div className="flex gap-1 min-w-max">
-        {TIMELINE_PHASES.map((phase, index) => {
-          const Icon = phase.icon;
-          const isActive = index === 0;
-          const isPast = false;
-          
-          return (
-            <div
-              key={phase.day}
-              className={`flex flex-col items-center p-2 rounded-lg min-w-[70px] transition-all ${
-                isActive ? "bg-primary/10 border border-primary/30" : "bg-muted/30"
-              }`}
-            >
-              <span className="text-[10px] font-mono text-muted-foreground">{phase.day}</span>
-              <Icon className={`h-4 w-4 my-1 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-              <span className={`text-[10px] font-medium ${isActive ? "text-primary" : "text-muted-foreground"}`}>
-                {phase.phase}
-              </span>
-            </div>
-          );
-        })}
+    <div className="mb-6 relative">
+      {/* Scroll fade indicators */}
+      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10 md:hidden" />
+      <div className="overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
+        <div className="flex gap-1.5 min-w-max">
+          {TIMELINE_PHASES.map((phase, index) => {
+            const Icon = phase.icon;
+            const isActive = index === 0;
+            const isPast = false;
+            
+            return (
+              <div
+                key={phase.day}
+                className={`flex flex-col items-center p-2 sm:p-2.5 rounded-lg min-w-[65px] sm:min-w-[75px] transition-all ${
+                  isActive ? "bg-primary/10 border border-primary/30" : "bg-muted/30"
+                }`}
+              >
+                <span className="text-[9px] sm:text-[10px] font-mono text-muted-foreground">{phase.day}</span>
+                <Icon className={`h-4 w-4 my-1 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                <span className={`text-[9px] sm:text-[10px] font-medium text-center leading-tight ${isActive ? "text-primary" : "text-muted-foreground"}`}>
+                  {phase.phase}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -455,14 +459,15 @@ export const UltimateWizard = () => {
                   </div>
                 </div>
 
+                {/* Floor & Elevator - Mobile optimized with larger touch targets */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <Label className="text-sm">Auszug</Label>
-                    <div className="flex items-center gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Auszug</Label>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                       <div className="flex items-center gap-2">
-                        <Label className="text-xs text-muted-foreground">Stock</Label>
+                        <Label className="text-xs text-muted-foreground whitespace-nowrap">Stock</Label>
                         <select
-                          className="w-16 h-8 text-sm rounded border"
+                          className="w-full sm:w-16 h-10 sm:h-9 text-base sm:text-sm rounded-md border border-input bg-background px-2"
                           value={location.fromFloor}
                           onChange={(e) => setLocation({ ...location, fromFloor: parseInt(e.target.value) })}
                         >
@@ -471,22 +476,23 @@ export const UltimateWizard = () => {
                           ))}
                         </select>
                       </div>
-                      <label className="flex items-center gap-1 text-xs">
+                      <label className="flex items-center gap-2 text-sm cursor-pointer touch-manipulation min-h-[44px] px-2 -mx-2 rounded-md hover:bg-muted/50">
                         <Checkbox
                           checked={location.fromElevator}
                           onCheckedChange={(c) => setLocation({ ...location, fromElevator: !!c })}
+                          className="h-5 w-5"
                         />
-                        Lift
+                        <span>Lift vorhanden</span>
                       </label>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <Label className="text-sm">Einzug</Label>
-                    <div className="flex items-center gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Einzug</Label>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                       <div className="flex items-center gap-2">
-                        <Label className="text-xs text-muted-foreground">Stock</Label>
+                        <Label className="text-xs text-muted-foreground whitespace-nowrap">Stock</Label>
                         <select
-                          className="w-16 h-8 text-sm rounded border"
+                          className="w-full sm:w-16 h-10 sm:h-9 text-base sm:text-sm rounded-md border border-input bg-background px-2"
                           value={location.toFloor}
                           onChange={(e) => setLocation({ ...location, toFloor: parseInt(e.target.value) })}
                         >
@@ -495,26 +501,27 @@ export const UltimateWizard = () => {
                           ))}
                         </select>
                       </div>
-                      <label className="flex items-center gap-1 text-xs">
+                      <label className="flex items-center gap-2 text-sm cursor-pointer touch-manipulation min-h-[44px] px-2 -mx-2 rounded-md hover:bg-muted/50">
                         <Checkbox
                           checked={location.toElevator}
                           onCheckedChange={(c) => setLocation({ ...location, toElevator: !!c })}
+                          className="h-5 w-5"
                         />
-                        Lift
+                        <span>Lift vorhanden</span>
                       </label>
                     </div>
                   </div>
                 </div>
               </div>
 
+              {/* Primary CTA - large and prominent for mobile */}
               <Button 
-                className="w-full" 
-                size="lg"
+                className="w-full h-14 sm:h-12 text-base sm:text-sm font-semibold shadow-lg" 
                 onClick={goNext}
                 disabled={!location.fromPlz || !location.toPlz || !location.moveDate}
               >
                 Weiter zum Video-Scan
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5 sm:h-4 sm:w-4" />
               </Button>
             </motion.div>
           )}
@@ -626,17 +633,22 @@ export const UltimateWizard = () => {
                 </Card>
               )}
 
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={goBack}>
+              {/* Navigation with clear visual hierarchy */}
+              <div className="flex gap-3 pt-2">
+                <Button 
+                  variant="ghost" 
+                  onClick={goBack}
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Zurück
                 </Button>
                 <Button 
-                  className="flex-1" 
+                  className="flex-1 h-12 sm:h-11 text-base sm:text-sm font-semibold shadow-md" 
                   onClick={goNext}
                   disabled={isAnalyzing}
                 >
-                  Weiter zur Service-Auswahl
+                  Weiter
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -661,36 +673,39 @@ export const UltimateWizard = () => {
                 </p>
               </div>
 
-              {/* Main Slider */}
-              <div className="bg-gradient-to-r from-muted/50 via-primary/5 to-muted/50 rounded-xl p-6">
-                <div className="flex justify-between text-xs text-muted-foreground mb-3">
+              {/* Main Slider - Mobile optimized with larger touch area */}
+              <div className="bg-gradient-to-r from-muted/50 via-primary/5 to-muted/50 rounded-xl p-4 sm:p-6">
+                <div className="flex justify-between text-xs sm:text-sm text-muted-foreground mb-4 px-1">
                   <span>DIY</span>
                   <span>Hybrid</span>
                   <span>Full-Service</span>
                 </div>
                 
-                <Slider
-                  value={sliderValue}
-                  onValueChange={setSliderValue}
-                  min={0}
-                  max={100}
-                  step={1}
-                  className="mb-4"
-                />
+                {/* Slider with padding for better touch targets */}
+                <div className="py-3 px-1">
+                  <Slider
+                    value={sliderValue}
+                    onValueChange={setSliderValue}
+                    min={0}
+                    max={100}
+                    step={1}
+                    className="touch-manipulation [&_[role=slider]]:h-6 [&_[role=slider]]:w-6 sm:[&_[role=slider]]:h-5 sm:[&_[role=slider]]:w-5"
+                  />
+                </div>
 
                 {/* Current tier display */}
                 <div className="text-center mt-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10">
+                  <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary/10">
                     <currentTier.icon className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">{currentTier.name}</span>
-                    <Badge variant="secondary">{sliderValue[0]}%</Badge>
+                    <span className="font-semibold text-base sm:text-sm">{currentTier.name}</span>
+                    <Badge variant="secondary" className="text-xs">{sliderValue[0]}% Delegation</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">{currentTier.tagline}</p>
                 </div>
               </div>
 
-              {/* Tier cards */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {/* Tier cards - Mobile optimized with larger touch targets */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                 {SERVICE_TIERS.map((tier) => {
                   const isActive = currentTier.id === tier.id;
                   const Icon = tier.icon;
@@ -699,22 +714,22 @@ export const UltimateWizard = () => {
                     <button
                       key={tier.id}
                       onClick={() => setSliderValue([tier.level])}
-                      className={`p-3 rounded-lg text-left transition-all ${
+                      className={`p-3 sm:p-3 rounded-lg text-left transition-all touch-manipulation min-h-[72px] ${
                         isActive 
-                          ? "bg-primary/10 border-2 border-primary" 
-                          : "bg-muted/30 border border-transparent hover:border-muted-foreground/20"
+                          ? "bg-primary/10 border-2 border-primary shadow-sm" 
+                          : "bg-muted/30 border border-transparent hover:border-muted-foreground/20 active:scale-[0.98]"
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        <Icon className={`h-4 w-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-                        <span className={`text-sm font-medium ${isActive ? "text-primary" : ""}`}>
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                        <Icon className={`h-4 w-4 flex-shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                        <span className={`text-xs sm:text-sm font-medium truncate ${isActive ? "text-primary" : ""}`}>
                           {tier.name}
                         </span>
                         {tier.popular && (
-                          <Badge variant="secondary" className="text-[10px] px-1">Beliebt</Badge>
+                          <Badge variant="secondary" className="text-[9px] sm:text-[10px] px-1 flex-shrink-0">Beliebt</Badge>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground line-clamp-1">{tier.tagline}</p>
+                      <p className="text-[11px] sm:text-xs text-muted-foreground line-clamp-2">{tier.tagline}</p>
                     </button>
                   );
                 })}
@@ -753,12 +768,20 @@ export const UltimateWizard = () => {
                 </CardContent>
               </Card>
 
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={goBack}>
+              {/* Navigation with clear visual hierarchy */}
+              <div className="flex gap-3 pt-2">
+                <Button 
+                  variant="ghost" 
+                  onClick={goBack}
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Zurück
                 </Button>
-                <Button className="flex-1" onClick={goNext}>
+                <Button 
+                  className="flex-1 h-12 sm:h-11 text-base sm:text-sm font-semibold shadow-md bg-primary hover:bg-primary/90" 
+                  onClick={goNext}
+                >
                   Fixpreis berechnen
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -854,12 +877,20 @@ export const UltimateWizard = () => {
                 ))}
               </div>
 
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={goBack}>
+              {/* Navigation with clear visual hierarchy */}
+              <div className="flex gap-3 pt-2">
+                <Button 
+                  variant="ghost" 
+                  onClick={goBack}
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Zurück
                 </Button>
-                <Button className="flex-1" onClick={goNext}>
+                <Button 
+                  className="flex-1 h-12 sm:h-11 text-base sm:text-sm font-semibold shadow-md bg-green-600 hover:bg-green-700 text-white" 
+                  onClick={goNext}
+                >
                   Jetzt buchen
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -913,38 +944,42 @@ export const UltimateWizard = () => {
                     onChange={(e) => setContactData({ ...contactData, name: e.target.value })}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                {/* Mobile: stack vertically, Desktop: side by side */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>E-Mail *</Label>
+                    <Label className="text-sm font-medium">E-Mail *</Label>
                     <Input
                       type="email"
                       placeholder="max@beispiel.ch"
                       value={contactData.email}
                       onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
+                      className="h-12 sm:h-10 text-base sm:text-sm"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Telefon</Label>
+                    <Label className="text-sm font-medium">Telefon</Label>
                     <Input
                       type="tel"
                       placeholder="+41 79 123 45 67"
                       value={contactData.phone}
                       onChange={(e) => setContactData({ ...contactData, phone: e.target.value })}
+                      className="h-12 sm:h-10 text-base sm:text-sm"
                     />
                   </div>
                 </div>
                 
-                <label className="flex items-start gap-2 p-3 bg-muted/30 rounded-lg cursor-pointer">
+                {/* Larger touch target for checkbox */}
+                <label className="flex items-start gap-3 p-4 bg-muted/30 rounded-lg cursor-pointer hover:bg-muted/40 transition-colors touch-manipulation">
                   <Checkbox
                     checked={contactData.acceptTerms}
                     onCheckedChange={(c) => setContactData({ ...contactData, acceptTerms: !!c })}
-                    className="mt-0.5"
+                    className="mt-0.5 h-5 w-5 min-w-[20px]"
                   />
-                  <span className="text-sm">
+                  <span className="text-sm sm:text-sm leading-relaxed">
                     Ich akzeptiere die{" "}
                     <Link
                       to="/agb"
-                      className="text-primary underline"
+                      className="text-primary underline font-medium"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -953,29 +988,33 @@ export const UltimateWizard = () => {
                     und{" "}
                     <Link
                       to="/datenschutz"
-                      className="text-primary underline"
+                      className="text-primary underline font-medium"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       Datenschutzerklärung
                     </Link>.
-                    Die Buchung ist 24h kostenlos stornierbar.
+                    <span className="text-muted-foreground"> Die Buchung ist 24h kostenlos stornierbar.</span>
                   </span>
                 </label>
               </div>
 
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={goBack}>
+              {/* Navigation with clear visual hierarchy - booking CTA prominent */}
+              <div className="flex gap-3 pt-2">
+                <Button 
+                  variant="ghost" 
+                  onClick={goBack}
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Zurück
                 </Button>
                 <Button 
-                  className="flex-1" 
-                  size="lg"
+                  className="flex-1 h-14 sm:h-12 text-base font-bold shadow-lg bg-green-600 hover:bg-green-700 text-white" 
                   onClick={goNext}
                   disabled={!contactData.name || !contactData.email || !contactData.acceptTerms}
                 >
-                  <CreditCard className="mr-2 h-4 w-4" />
+                  <CreditCard className="mr-2 h-5 w-5" />
                   Verbindlich buchen
                 </Button>
               </div>
