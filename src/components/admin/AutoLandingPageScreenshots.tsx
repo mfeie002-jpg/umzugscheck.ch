@@ -287,74 +287,94 @@ export function AutoLandingPageScreenshots() {
       return;
     }
 
-    let savedCount = 0;
+    // Group results by pageId
+    const resultsByPage = new Map<string, typeof successfulResults>();
     for (const result of successfulResults) {
+      const existing = resultsByPage.get(result.pageId) || [];
+      existing.push(result);
+      resultsByPage.set(result.pageId, existing);
+    }
+
+    let savedCount = 0;
+    for (const [pageId, pageResults] of resultsByPage) {
       try {
-        const page = pages.find(p => p.id === result.pageId);
+        const page = pages.find(p => p.id === pageId);
         if (!page) continue;
 
-        // Get current version count
+        // Get current version count ONCE per page
         const { data: versions } = await supabase
           .from('landing_page_versions')
           .select('version_number')
-          .eq('landing_page_id', result.pageId)
+          .eq('landing_page_id', pageId)
           .order('version_number', { ascending: false })
           .limit(1);
 
         const nextVersionNumber = (versions?.[0]?.version_number || 0) + 1;
-        const dimLabel = result.deviceType;
+        
+        let desktopUrl: string | null = null;
+        let mobileUrl: string | null = null;
 
-        // Upload to storage
-        const fileName = `landing-pages/${result.pageId}/v${nextVersionNumber}-${dimLabel}-${Date.now()}.png`;
-        const base64Data = result.imageBase64!.replace(/^data:image\/\w+;base64,/, "");
-        const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        // Upload all screenshots for this page
+        for (const result of pageResults) {
+          const dimLabel = result.deviceType;
+          const fileName = `landing-pages/${pageId}/v${nextVersionNumber}-${dimLabel}-${Date.now()}.png`;
+          const base64Data = result.imageBase64!.replace(/^data:image\/\w+;base64,/, "");
+          const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
 
-        const { error: uploadError } = await supabase.storage
-          .from('flow-screenshots')
-          .upload(fileName, binaryData, { contentType: 'image/png', upsert: true });
+          const { error: uploadError } = await supabase.storage
+            .from('flow-screenshots')
+            .upload(fileName, binaryData, { contentType: 'image/png', upsert: true });
 
-        if (uploadError) {
-          console.error('Upload error:', uploadError);
-          continue;
+          if (uploadError) {
+            console.error('Upload error:', uploadError);
+            continue;
+          }
+
+          const { data: publicUrl } = supabase.storage
+            .from('flow-screenshots')
+            .getPublicUrl(fileName);
+
+          if (dimLabel === 'desktop') {
+            desktopUrl = publicUrl.publicUrl;
+          } else {
+            mobileUrl = publicUrl.publicUrl;
+          }
+          savedCount++;
         }
 
-        const { data: publicUrl } = supabase.storage
-          .from('flow-screenshots')
-          .getPublicUrl(fileName);
-
-        // Check if version already exists for this page
-        const { data: existingVersion } = await supabase
-          .from('landing_page_versions')
-          .select('id')
-          .eq('landing_page_id', result.pageId)
-          .eq('version_number', nextVersionNumber)
-          .maybeSingle();
-
-        if (existingVersion) {
-          // Update existing version
-          const updateData = dimLabel === 'desktop' 
-            ? { desktop_screenshot_url: publicUrl.publicUrl }
-            : { mobile_screenshot_url: publicUrl.publicUrl };
-
-          await supabase
+        // Only create/update version if we have at least one screenshot
+        if (desktopUrl || mobileUrl) {
+          // Check if version already exists
+          const { data: existingVersion } = await supabase
             .from('landing_page_versions')
-            .update(updateData)
-            .eq('id', existingVersion.id);
-        } else {
-          // Create new version
-          await supabase
-            .from('landing_page_versions')
-            .insert({
-              landing_page_id: result.pageId,
-              version_number: nextVersionNumber,
-              version_name: `v${nextVersionNumber}`,
-              desktop_screenshot_url: dimLabel === 'desktop' ? publicUrl.publicUrl : null,
-              mobile_screenshot_url: dimLabel === 'mobile' ? publicUrl.publicUrl : null,
-              created_by: 'admin-tool'
-            });
+            .select('id, desktop_screenshot_url, mobile_screenshot_url')
+            .eq('landing_page_id', pageId)
+            .eq('version_number', nextVersionNumber)
+            .maybeSingle();
+
+          if (existingVersion) {
+            // Update existing version, merging URLs
+            await supabase
+              .from('landing_page_versions')
+              .update({
+                desktop_screenshot_url: desktopUrl || existingVersion.desktop_screenshot_url,
+                mobile_screenshot_url: mobileUrl || existingVersion.mobile_screenshot_url,
+              })
+              .eq('id', existingVersion.id);
+          } else {
+            // Create new version with all screenshots
+            await supabase
+              .from('landing_page_versions')
+              .insert({
+                landing_page_id: pageId,
+                version_number: nextVersionNumber,
+                version_name: `v${nextVersionNumber}`,
+                desktop_screenshot_url: desktopUrl,
+                mobile_screenshot_url: mobileUrl,
+                created_by: 'admin-tool'
+              });
+          }
         }
-
-        savedCount++;
       } catch (error) {
         console.error('Save error:', error);
       }
