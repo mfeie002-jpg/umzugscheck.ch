@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS, FlowConfig } from '@/data/flowConfigs';
 import { FLOW_COMPONENT_REGISTRY, hasFlowComponent } from '@/lib/flowComponentRegistry';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FlowFeedback {
   flowId: string;
@@ -71,6 +72,7 @@ export default function FlowTester() {
   
   const [testerInfo, setTesterInfo] = useState<TesterInfo>({ name: '', email: '', role: 'user' });
   const [isRegistered, setIsRegistered] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [currentFlowIndex, setCurrentFlowIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'main' | 'sub' | 'available'>('available');
@@ -93,6 +95,7 @@ export default function FlowTester() {
   const [testStartTime, setTestStartTime] = useState<Date | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [showFinalSurvey, setShowFinalSurvey] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [currentStepFeedback, setCurrentStepFeedback] = useState<{
     rating: number;
     comment: string;
@@ -125,11 +128,34 @@ export default function FlowTester() {
     return flows;
   }, [allFlows, filterType, searchQuery]);
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!testerInfo.name || !testerInfo.email) {
       toast.error('Bitte Name und E-Mail eingeben');
       return;
     }
+    
+    setIsSaving(true);
+    try {
+      // Try to create session in database
+      const { data, error } = await supabase
+        .from('flow_tester_sessions' as any)
+        .insert({
+          tester_name: testerInfo.name,
+          tester_email: testerInfo.email,
+          tester_role: testerInfo.role,
+        })
+        .select('id')
+        .single();
+      
+      if (!error && data) {
+        setSessionId((data as any).id);
+      }
+    } catch (err) {
+      console.warn('Could not save session to database:', err);
+    } finally {
+      setIsSaving(false);
+    }
+    
     setIsRegistered(true);
     toast.success(`Willkommen, ${testerInfo.name}! Starte mit dem Testen.`);
   };
@@ -141,10 +167,13 @@ export default function FlowTester() {
     window.open(flow.path, '_blank');
   };
 
-  const submitFlowFeedback = (flowId: string, rating: number, recommend: boolean, comments: string) => {
+  const submitFlowFeedback = async (flowId: string, rating: number, recommend: boolean, comments: string) => {
     const endTime = new Date();
     const totalTime = testStartTime ? (endTime.getTime() - testStartTime.getTime()) / 1000 : 0;
+    const flow = allFlows.find(f => f.id === flowId);
+    const isSubVariant = flow ? (!!flow.parentFlow || !flow.id.startsWith('umzugsofferten-')) : false;
     
+    // Update local state
     setFeedbacks(prev => ({
       ...prev,
       [flowId]: {
@@ -161,19 +190,67 @@ export default function FlowTester() {
       }
     }));
     
+    // Save to database if session exists
+    if (sessionId) {
+      try {
+        await supabase
+          .from('flow_tester_feedback' as any)
+          .insert({
+            session_id: sessionId,
+            flow_id: flowId,
+            flow_name: flow?.label || flowId,
+            flow_type: isSubVariant ? 'sub' : 'main',
+            rating,
+            feedback: comments || null,
+            abandoned: false,
+          });
+          
+        // Update session total count
+        await supabase
+          .from('flow_tester_sessions' as any)
+          .update({ total_flows_tested: getCompletedCount() + 1 })
+          .eq('id', sessionId);
+      } catch (err) {
+        console.warn('Could not save feedback to database:', err);
+      }
+    }
+    
     setCurrentFlowIndex(null);
     setTestStartTime(null);
     setCurrentStepFeedback({ rating: 0, comment: '', detailedAnswers: {} });
     
-    const flowLabel = allFlows.find(f => f.id === flowId)?.label || flowId;
+    const flowLabel = flow?.label || flowId;
     toast.success(`Feedback für ${flowLabel} gespeichert!`);
   };
 
-  const markAsAbandoned = (flowId: string, atStep: string) => {
+  const markAsAbandoned = async (flowId: string, atStep: string) => {
+    const flow = allFlows.find(f => f.id === flowId);
+    const isSubVariant = flow ? (!!flow.parentFlow || !flow.id.startsWith('umzugsofferten-')) : false;
+    
     setFeedbacks(prev => ({
       ...prev,
       [flowId]: { ...prev[flowId], abandoned: true, abandonedAtStep: atStep }
     }));
+    
+    // Save to database if session exists
+    if (sessionId) {
+      try {
+        await supabase
+          .from('flow_tester_feedback' as any)
+          .insert({
+            session_id: sessionId,
+            flow_id: flowId,
+            flow_name: flow?.label || flowId,
+            flow_type: isSubVariant ? 'sub' : 'main',
+            rating: 1,
+            feedback: `Abgebrochen bei: ${atStep}`,
+            abandoned: true,
+          });
+      } catch (err) {
+        console.warn('Could not save abandoned feedback to database:', err);
+      }
+    }
+    
     setCurrentFlowIndex(null);
     toast.info('Flow als abgebrochen markiert');
   };
