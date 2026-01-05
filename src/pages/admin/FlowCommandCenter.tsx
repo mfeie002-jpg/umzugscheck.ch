@@ -44,7 +44,8 @@ import {
   Download,
   Wand2,
   Camera,
-  MapPin
+  MapPin,
+  ClipboardCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -71,7 +72,8 @@ import {
   AnalysisView,
   HistoryView,
   ComparisonView,
-  LandingPagesView
+  LandingPagesView,
+  FlowTesterResultsView
 } from '@/components/admin/flow-command-center/views';
 import { 
   ScoreRing, 
@@ -114,6 +116,7 @@ const VIEW_CONFIG: Record<ViewMode, { label: string; icon: React.ElementType; de
   comparison: { label: 'Vergleich', icon: Layers, description: 'Flow-Vergleich Side-by-Side' },
   history: { label: 'Historie', icon: HistoryIcon, description: 'Trend-Tracking' },
   'landing-pages': { label: 'Landing Pages', icon: MapPin, description: 'City/Canton Pages' },
+  'tester-results': { label: 'Tester-Ergebnisse', icon: ClipboardCheck, description: 'Flow-Tester Feedback' },
   settings: { label: 'Einstellungen', icon: Settings, description: 'Konfiguration' },
 };
 
@@ -629,6 +632,10 @@ export default function FlowCommandCenter() {
 
       <TabsContent value="landing-pages" className="mt-0">
         <LandingPagesView />
+      </TabsContent>
+
+      <TabsContent value="tester-results" className="mt-0">
+        <FlowTesterResultsView />
       </TabsContent>
     </Tabs>
   );

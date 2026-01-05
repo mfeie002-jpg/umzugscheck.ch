@@ -8,3 +8,4 @@ export { AnalysisView } from './AnalysisView';
 export { HistoryView } from './HistoryView';
 export { ComparisonView } from './ComparisonView';
 export { LandingPagesView } from './LandingPagesView';
+export { FlowTesterResultsView } from './FlowTesterResultsView';
