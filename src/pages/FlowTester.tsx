@@ -19,8 +19,24 @@ import {
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS, FlowConfig } from '@/data/flowConfigs';
-import { FLOW_COMPONENT_REGISTRY, hasFlowComponent } from '@/lib/flowComponentRegistry';
 import { supabase } from '@/integrations/supabase/client';
+
+// Simple check for flow component availability - removed registry import to avoid circular deps
+function hasFlowComponent(flowId: string): boolean {
+  const normalizedId = flowId.toLowerCase().replace('umzugsofferten-', '');
+  // Known working flow IDs
+  const workingFlows = [
+    'v1', 'v1a', 'v1b', 'v1c', 'v1d', 'v1e', 'v1f', 'v1g',
+    'v2', 'v2a', 'v2b', 'v2c', 'v2d', 'v2e', 'v2f',
+    'v3', 'v3a', 'v3b', 'v3c', 'v3d', 'v3e',
+    'v4', 'v4a', 'v4b', 'v4c', 'v4d', 'v4e', 'v4f',
+    'v5', 'v5a', 'v5b', 'v5c', 'v5d', 'v5e', 'v5f',
+    'v6', 'v6a', 'v6b', 'v6c', 'v6d', 'v6e', 'v6f',
+    'v7', 'v7a', 'v8', 'v8a', 'v9', 'v9a', 'v9b', 'v9c', 'v9d',
+    'ultimate-v7', 'multi-a'
+  ];
+  return workingFlows.includes(normalizedId) || workingFlows.includes(flowId.toLowerCase());
+}
 
 interface FlowFeedback {
   flowId: string;
@@ -68,7 +84,15 @@ const FLOW_QUESTIONS = [
 ];
 
 export default function FlowTester() {
-  const allFlows = useMemo(() => getAllFlows(), []);
+  // Get all flows with error handling
+  const allFlows = useMemo(() => {
+    try {
+      return getAllFlows();
+    } catch (err) {
+      console.error('Error loading flow configs:', err);
+      return [];
+    }
+  }, []);
   
   const [testerInfo, setTesterInfo] = useState<TesterInfo>({ name: '', email: '', role: 'user' });
   const [isRegistered, setIsRegistered] = useState(false);
@@ -76,22 +100,7 @@ export default function FlowTester() {
   const [currentFlowIndex, setCurrentFlowIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'main' | 'sub' | 'available'>('available');
-  const [feedbacks, setFeedbacks] = useState<Record<string, FlowFeedback>>(() => {
-    const initial: Record<string, FlowFeedback> = {};
-    allFlows.forEach(flow => {
-      initial[flow.id] = {
-        flowId: flow.id,
-        stepRatings: {},
-        overallRating: 0,
-        wouldRecommend: false,
-        completedAt: null,
-        abandoned: false,
-        totalTime: 0,
-        detailedAnswers: {},
-      };
-    });
-    return initial;
-  });
+  const [feedbacks, setFeedbacks] = useState<Record<string, FlowFeedback>>({});
   const [testStartTime, setTestStartTime] = useState<Date | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [showFinalSurvey, setShowFinalSurvey] = useState(false);
@@ -101,6 +110,26 @@ export default function FlowTester() {
     comment: string;
     detailedAnswers: Record<string, number | string>;
   }>({ rating: 0, comment: '', detailedAnswers: {} });
+
+  // Initialize feedbacks when allFlows is ready
+  useEffect(() => {
+    if (allFlows.length > 0 && Object.keys(feedbacks).length === 0) {
+      const initial: Record<string, FlowFeedback> = {};
+      allFlows.forEach(flow => {
+        initial[flow.id] = {
+          flowId: flow.id,
+          stepRatings: {},
+          overallRating: 0,
+          wouldRecommend: false,
+          completedAt: null,
+          abandoned: false,
+          totalTime: 0,
+          detailedAnswers: {},
+        };
+      });
+      setFeedbacks(initial);
+    }
+  }, [allFlows]);
 
   // Filter flows based on search and type
   const filteredFlows = useMemo(() => {

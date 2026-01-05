@@ -237,7 +237,7 @@ const UmzugsoffertenUltimateCH = lazy(() => import("./pages/UmzugsoffertenUltima
 const UltimateSwissFlow = lazy(() => import("./components/flows/UltimateSwissFlow"));
 const UmzugsoffertenV2e = lazy(() => import("./pages/UmzugsoffertenV2e"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
-import FlowTester from "./pages/FlowTester";
+const FlowTester = lazy(() => import("./pages/FlowTester"));
 const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Note: RegionalOfferten is imported above with canton pages
