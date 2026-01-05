@@ -427,14 +427,8 @@ const AppRouterContent = () => {
     <MainLayout>
       <Suspense fallback={<PageLoadingFallback />}>
         <AnimatedRoutes>
-          {/* Test route */}
-          <Route path="/flow-tester" element={
-            <div className="container mx-auto p-8 min-h-screen">
-              <h1 className="text-2xl font-bold mb-4">Flow-Tester</h1>
-              <p className="text-muted-foreground mb-8">Der Flow-Tester wird derzeit gewartet. Bitte versuchen Sie es später erneut.</p>
-              <a href="/flow-comparison" className="text-primary underline">Zur Flow-Vergleichsseite</a>
-            </div>
-          } />
+          {/* Flow Tester - Public page for testing flows */}
+          <Route path="/flow-tester" element={<FlowTester />} />
           <Route path="/" element={<IndexPremium />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/old-home" element={<Index />} />
