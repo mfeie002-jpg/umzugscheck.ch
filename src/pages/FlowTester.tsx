@@ -84,14 +84,11 @@ const FLOW_QUESTIONS = [
 ];
 
 export default function FlowTester() {
-  // Get all flows with error handling
+  // Get all flows - inline to avoid any async issues
   const allFlows = useMemo(() => {
-    try {
-      return getAllFlows();
-    } catch (err) {
-      console.error('Error loading flow configs:', err);
-      return [];
-    }
+    const mainFlows = Object.values(FLOW_CONFIGS);
+    const subVariants = Object.values(SUB_VARIANT_CONFIGS);
+    return [...mainFlows, ...subVariants];
   }, []);
   
   const [testerInfo, setTesterInfo] = useState<TesterInfo>({ name: '', email: '', role: 'user' });
@@ -470,8 +467,11 @@ export default function FlowTester() {
     );
   };
 
+  // Debug logging
+  console.log('[FlowTester] Rendering', { allFlowsCount: allFlows.length, isRegistered, feedbacksCount: Object.keys(feedbacks).length });
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pt-4">
       <Helmet>
         <title>Umzugscheck Flow-Tester | Umzugscheck.ch</title>
         <meta name="description" content="Testen Sie verschiedene Umzugsofferten-Flows und helfen Sie uns, den besten zu finden." />
@@ -479,7 +479,7 @@ export default function FlowTester() {
       </Helmet>
 
       {/* Header */}
-      <div className="border-b bg-background/80 backdrop-blur-lg sticky top-16 z-30">
+      <div className="border-b bg-background/80 backdrop-blur-lg sticky top-0 z-30">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
@@ -487,7 +487,7 @@ export default function FlowTester() {
             </div>
             <div>
               <span className="font-bold text-lg">Flow-Tester</span>
-              <Badge variant="outline" className="ml-2">{getAvailableCount()} verfügbar</Badge>
+              <Badge variant="outline" className="ml-2">{allFlows.length} Flows</Badge>
             </div>
           </div>
           {isRegistered && (
@@ -495,7 +495,7 @@ export default function FlowTester() {
               <div className="text-sm text-muted-foreground">
                 <span className="font-medium text-foreground">{getCompletedCount()}</span> / {getAvailableCount()} getestet
               </div>
-              <Progress value={(getCompletedCount() / getAvailableCount()) * 100} className="w-32 h-2" />
+              <Progress value={(getCompletedCount() / Math.max(getAvailableCount(), 1)) * 100} className="w-32 h-2" />
             </div>
           )}
         </div>
