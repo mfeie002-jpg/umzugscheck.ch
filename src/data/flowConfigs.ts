@@ -398,7 +398,20 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
-  // v2e entfernt - ist ein Duplikat von 'umzugsofferten-v2e' (Zeile 148)
+  'v2e': {
+    id: 'v2e',
+    label: 'V2e Chat Funnel ⭐',
+    path: '/umzugsofferten-v2e',
+    color: 'bg-violet-500',
+    description: 'V2e: Chat-basierter Conversational Flow',
+    parentFlow: 'umzugsofferten-v2',
+    steps: [
+      { step: 1, name: 'Chat Intro', description: 'Willkommen im Chat' },
+      { step: 2, name: 'Fragen', description: 'Umzugsdetails per Chat' },
+      { step: 3, name: 'Angebote', description: 'Passende Firmen' },
+      { step: 4, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
   'v2f': {
     id: 'v2f',
     label: 'V2f Premium (Feedback)',

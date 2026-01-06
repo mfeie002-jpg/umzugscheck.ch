@@ -13,7 +13,7 @@ import {
   Play, Star, CheckCircle2, 
   ThumbsUp, ThumbsDown,
   BarChart3, Eye,
-  Target, Users, Search, Download, ChevronDown, ExternalLink
+  Target, Users, Search, Download, ChevronDown, ExternalLink, RotateCcw
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
@@ -417,17 +417,46 @@ export default function FlowTesterPage() {
 
                             {/* Live Preview iframe */}
                             <div className="relative rounded-xl border-2 border-border overflow-hidden bg-background shadow-lg">
-                              <div className="absolute top-2 left-2 z-10 flex items-center gap-2">
-                                <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm">
-                                  {variant.id.toUpperCase()}
-                                </Badge>
-                                <span className="text-xs text-muted-foreground bg-background/90 backdrop-blur-sm px-2 py-1 rounded">
-                                  Live Preview
-                                </span>
+                              {/* Toolbar */}
+                              <div className="absolute top-2 left-2 right-2 z-10 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm">
+                                    {variant.id.toUpperCase()}
+                                  </Badge>
+                                  <span className="text-xs text-muted-foreground bg-background/90 backdrop-blur-sm px-2 py-1 rounded">
+                                    Live Preview
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button 
+                                    size="sm" 
+                                    variant="secondary"
+                                    className="h-7 text-xs bg-background/90 backdrop-blur-sm"
+                                    onClick={() => {
+                                      // Reset iframe by updating key
+                                      const iframe = document.getElementById(`iframe-${variant.id}`) as HTMLIFrameElement;
+                                      if (iframe) {
+                                        iframe.src = iframe.src;
+                                      }
+                                    }}
+                                  >
+                                    <RotateCcw className="h-3 w-3 mr-1" />
+                                    Neu starten
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    className="h-7 text-xs"
+                                    onClick={() => startTest(variant.id, variant.path)}
+                                  >
+                                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                                    Fertig - Bewerten
+                                  </Button>
+                                </div>
                               </div>
                               <iframe
+                                id={`iframe-${variant.id}`}
                                 src={variant.path}
-                                className="w-full h-[700px] border-0"
+                                className="w-full h-[700px] border-0 pt-10"
                                 title={`Preview ${variant.id}`}
                               />
                             </div>
