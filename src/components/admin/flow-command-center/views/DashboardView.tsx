@@ -26,7 +26,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { FlowCard, ScoreRing, ScoreBadgeCompact, RankBadge } from '../components';
+import { FlowCard, ScoreRing, ScoreBadgeCompact, RankBadge, BackendHealthIndicator } from '../components';
+import { useBackendHealth } from '../hooks';
 import type { FlowScore, FlowVariant, AnalysisRun } from '../types';
 import { 
   getVariantsForFlow, 
@@ -50,6 +51,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'score' | 'name' | 'date'>('score');
   const [filterFlowNum, setFilterFlowNum] = useState<number | 'all'>('all');
+  
+  // Backend health monitoring
+  const backendHealth = useBackendHealth();
 
   // Fetch scores from database with delta tracking
   useEffect(() => {
@@ -159,8 +163,37 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Backend Health Status - Show prominently if not online */}
+      {backendHealth.status !== 'online' && (
+        <BackendHealthIndicator
+          status={backendHealth.status}
+          latencyMs={backendHealth.latencyMs}
+          lastChecked={backendHealth.lastChecked}
+          error={backendHealth.error}
+          onRetry={backendHealth.checkNow}
+        />
+      )}
+
       {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {/* Compact health indicator when online */}
+        <Card className="col-span-1">
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <BackendHealthIndicator
+                status={backendHealth.status}
+                latencyMs={backendHealth.latencyMs}
+                lastChecked={backendHealth.lastChecked}
+                error={backendHealth.error}
+                onRetry={backendHealth.checkNow}
+                compact
+              />
+              <div className="text-xs text-muted-foreground">
+                Backend
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
