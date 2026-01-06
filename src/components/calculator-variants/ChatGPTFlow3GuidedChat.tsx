@@ -208,20 +208,20 @@ export const ChatGPTFlow3GuidedChat: React.FC = () => {
     callback();
   }, []);
 
-  // Initial greeting
+  // Initial greeting - show immediately for better UX
   useEffect(() => {
-    simulateTyping(() => {
-      addMessage('bot', (
-        <div className="space-y-2">
-          <p className="text-base">Hallo! 👋</p>
-          <p className="text-sm text-muted-foreground">
-            Ich bin Ihr Umzugshelfer und finde die besten Angebote für Sie. 
-            Wohin geht's denn?
-          </p>
-        </div>
-      ));
-      setStep('fromZip');
-    });
+    // Show greeting immediately
+    addMessage('bot', (
+      <div className="space-y-2">
+        <p className="text-base">Hallo! 👋</p>
+        <p className="text-sm text-muted-foreground">
+          Ich bin Ihr Umzugshelfer und finde die besten Angebote für Sie. 
+          Von welcher PLZ ziehen Sie weg?
+        </p>
+      </div>
+    ));
+    setStep('fromZip');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Scroll to bottom
