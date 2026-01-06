@@ -13,7 +13,7 @@ import {
   Play, Star, CheckCircle2, 
   ThumbsUp, ThumbsDown,
   BarChart3, Eye,
-  Target, Users, Search, Download
+  Target, Users, Search, Download, ChevronDown
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
@@ -83,7 +83,7 @@ export default function FlowTesterPage() {
   const [currentRating, setCurrentRating] = useState(0);
   const [currentComment, setCurrentComment] = useState('');
 
-  const [selectedSubVariants, setSelectedSubVariants] = useState<Record<string, string>>({});
+  const [expandedFlows, setExpandedFlows] = useState<Record<string, boolean>>({});
 
   // Initialize feedbacks for all flows including sub-variants
   useEffect(() => {
@@ -123,14 +123,6 @@ export default function FlowTesterPage() {
     setCurrentComment('');
   };
 
-  const getActiveFlow = (flow: typeof FLOW_LIST[0]) => {
-    const selectedSub = selectedSubVariants[flow.id];
-    if (selectedSub && selectedSub !== 'main') {
-      const subVariant = flow.subVariants.find(s => s.id === selectedSub);
-      if (subVariant) return { id: subVariant.id, path: subVariant.path, label: subVariant.label };
-    }
-    return { id: flow.id, path: flow.path, label: flow.label };
-  };
 
   // Count total flows including sub-variants
   const totalFlowCount = FLOW_LIST.reduce((acc, f) => acc + 1 + f.subVariants.length, 0);
@@ -273,87 +265,146 @@ export default function FlowTesterPage() {
             {/* Flow Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredFlows.map((flow) => {
-                const activeFlow = getActiveFlow(flow);
-                const fb = feedbacks[activeFlow.id];
-                const isCompleted = fb?.completedAt;
+                const mainFb = feedbacks[flow.id];
+                const mainCompleted = mainFb?.completedAt;
                 const hasSubVariants = flow.subVariants.length > 0;
+                const isExpanded = expandedFlows[flow.id];
+                
+                // Count completed sub-variants
+                const completedSubCount = flow.subVariants.filter(sub => feedbacks[sub.id]?.completedAt).length;
+                const totalCount = 1 + flow.subVariants.length;
+                const completedTotal = (mainCompleted ? 1 : 0) + completedSubCount;
                 
                 return (
-                  <Card key={flow.id} className={`relative ${isCompleted ? 'bg-green-500/5 border-green-500/30' : ''}`}>
-                    {isCompleted && (
-                      <div className="absolute top-2 right-2 z-10">
-                        <Badge className="bg-green-500">
-                          <CheckCircle2 className="h-3 w-3 mr-1" />
-                          Getestet
-                        </Badge>
-                      </div>
-                    )}
-                    <CardHeader className="pb-2">
+                  <Card key={flow.id} className="relative overflow-hidden">
+                    {/* Main Flow Header - Clickable to expand */}
+                    <CardHeader 
+                      className={`pb-2 cursor-pointer hover:bg-muted/50 transition-colors ${hasSubVariants ? '' : ''}`}
+                      onClick={() => hasSubVariants && setExpandedFlows(prev => ({ ...prev, [flow.id]: !prev[flow.id] }))}
+                    >
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg ${flow.color} flex items-center justify-center text-white font-bold text-sm`}>
+                        <div className={`w-10 h-10 rounded-lg ${flow.color} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
                           {flow.id.toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <CardTitle className="text-base">{flow.label}</CardTitle>
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-base">{flow.label}</CardTitle>
+                            {completedTotal === totalCount && (
+                              <Badge className="bg-green-500 text-xs">
+                                <CheckCircle2 className="h-3 w-3 mr-1" />
+                                Alle getestet
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-xs text-muted-foreground truncate">{flow.description}</p>
                         </div>
+                        {hasSubVariants && (
+                          <motion.div
+                            animate={{ rotate: isExpanded ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="shrink-0"
+                          >
+                            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                          </motion.div>
+                        )}
                       </div>
                     </CardHeader>
+                    
                     <CardContent className="py-2 space-y-3">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant="secondary" className="text-xs">{flow.steps} Schritte</Badge>
                         {hasSubVariants && (
                           <Badge variant="outline" className="text-xs">
-                            +{flow.subVariants.length} Varianten
+                            {completedTotal}/{totalCount} getestet
                           </Badge>
                         )}
                       </div>
-                      
-                      {/* Sub-variant selector */}
-                      {hasSubVariants && (
-                        <Select
-                          value={selectedSubVariants[flow.id] || 'main'}
-                          onValueChange={(value) => setSelectedSubVariants(prev => ({ ...prev, [flow.id]: value }))}
-                        >
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue placeholder="Variante wählen" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="main">
-                              <span className="font-medium">{flow.id.toUpperCase()}</span>
-                              <span className="text-muted-foreground ml-1">- Hauptversion</span>
-                            </SelectItem>
-                            {flow.subVariants.map(sub => (
-                              <SelectItem key={sub.id} value={sub.id}>
-                                <span className="font-medium">{sub.id.toUpperCase()}</span>
-                                <span className="text-muted-foreground ml-1 truncate">- {sub.description.slice(0, 30)}</span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
 
-                      {isCompleted && fb.rating > 0 && (
+                      {/* Main Flow Buttons */}
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => window.open(flow.path, '_blank')}>
+                          <Eye className="h-3 w-3 mr-1" />
+                          Ansehen
+                        </Button>
+                        <Button size="sm" className="flex-1" onClick={() => startTest(flow.id, flow.path)}>
+                          <Play className="h-3 w-3 mr-1" />
+                          {mainCompleted ? 'Nochmal' : 'Testen'}
+                        </Button>
+                      </div>
+                      
+                      {mainCompleted && mainFb.rating > 0 && (
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-muted-foreground">Bewertung:</span>
                           <div className="flex">
                             {[1,2,3,4,5].map(star => (
-                              <Star key={star} className={`h-3 w-3 ${star <= fb.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
+                              <Star key={star} className={`h-3 w-3 ${star <= mainFb.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
                             ))}
                           </div>
                         </div>
                       )}
                     </CardContent>
-                    <CardFooter className="pt-2 gap-2">
-                      <Button size="sm" variant="outline" className="flex-1" onClick={() => window.open(activeFlow.path, '_blank')}>
-                        <Eye className="h-3 w-3 mr-1" />
-                        Ansehen
-                      </Button>
-                      <Button size="sm" className="flex-1" onClick={() => startTest(activeFlow.id, activeFlow.path)}>
-                        <Play className="h-3 w-3 mr-1" />
-                        {isCompleted ? 'Nochmal' : 'Testen'}
-                      </Button>
-                    </CardFooter>
+                    
+                    {/* Expanded Sub-Variants */}
+                    <AnimatePresence>
+                      {hasSubVariants && isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="border-t bg-muted/30 px-4 py-3 space-y-3">
+                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Sub-Varianten</p>
+                            {flow.subVariants.map(sub => {
+                              const subFb = feedbacks[sub.id];
+                              const subCompleted = subFb?.completedAt;
+                              
+                              return (
+                                <div 
+                                  key={sub.id} 
+                                  className={`p-3 rounded-lg border ${subCompleted ? 'bg-green-500/5 border-green-500/30' : 'bg-background'}`}
+                                >
+                                  <div className="flex items-center justify-between gap-2 mb-2">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <Badge variant="outline" className="shrink-0 text-xs font-bold">
+                                        {sub.id.toUpperCase()}
+                                      </Badge>
+                                      <span className="text-sm truncate">{sub.label}</span>
+                                      {subCompleted && (
+                                        <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                                      )}
+                                    </div>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{sub.description}</p>
+                                  
+                                  {subCompleted && subFb.rating > 0 && (
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className="flex">
+                                        {[1,2,3,4,5].map(star => (
+                                          <Star key={star} className={`h-3 w-3 ${star <= subFb.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                  
+                                  <div className="flex gap-2">
+                                    <Button size="sm" variant="outline" className="flex-1 h-7 text-xs" onClick={() => window.open(sub.path, '_blank')}>
+                                      <Eye className="h-3 w-3 mr-1" />
+                                      Ansehen
+                                    </Button>
+                                    <Button size="sm" className="flex-1 h-7 text-xs" onClick={() => startTest(sub.id, sub.path)}>
+                                      <Play className="h-3 w-3 mr-1" />
+                                      {subCompleted ? 'Nochmal' : 'Testen'}
+                                    </Button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </Card>
                 );
               })}
