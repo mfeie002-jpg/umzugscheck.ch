@@ -240,12 +240,25 @@ export const MarketplaceWizardV5c = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-background to-blue-50/30 flex flex-col">
-      {/* Glassmorphism Header */}
+      {/* Quick Win V5c: Intro Toast für neue Benutzer */}
+      {currentStep === "route" && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-500">
+          <div className="bg-primary/95 text-primary-foreground px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm">
+            <span className="animate-pulse">↵</span>
+            <span>Drücken Sie Enter oder nutzen Sie die Buttons</span>
+          </div>
+        </div>
+      )}
+
+      {/* Glassmorphism Header mit verbesserter Sichtbarkeit */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between max-w-2xl mx-auto">
             {currentStepIndex > 0 && currentStep !== "success" ? (
-              <button onClick={goBack} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation">
+              <button 
+                onClick={goBack} 
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation px-3 py-2 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
                 <ArrowLeft className="w-4 h-4" />
                 <span className="sr-only sm:not-sr-only">Zurück</span>
               </button>
@@ -273,7 +286,7 @@ export const MarketplaceWizardV5c = () => {
               </div>
             )}
 
-            <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+            <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
               <HelpCircle className="w-4 h-4" />
             </button>
           </div>
