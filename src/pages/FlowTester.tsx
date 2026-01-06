@@ -107,8 +107,8 @@ export default function FlowTesterPage() {
   }, [searchQuery]);
 
   const handleRegister = () => {
-    if (!testerInfo.name.trim() || !testerInfo.email.trim()) {
-      toast.error('Bitte alle Felder ausfüllen');
+    if (!testerInfo.name.trim()) {
+      toast.error('Bitte Namen eingeben');
       return;
     }
     setIsRegistered(true);
