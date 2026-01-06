@@ -238,6 +238,22 @@ export const VideoFirstCalculator = () => {
                     </Button>
                   </div>
 
+                  {/* Quick Win V4: Skip Button + Erklärung des Nutzens */}
+                  <div className="pt-4 border-t space-y-3">
+                    <div className="flex items-center justify-center gap-2 text-sm text-primary">
+                      <Brain className="w-4 h-4" />
+                      <span className="font-medium">KI erkennt automatisch Ihr Inventar</span>
+                    </div>
+                    
+                    <Button 
+                      variant="ghost" 
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={() => setStep("offers")}
+                    >
+                      Überspringen – Manuell eingeben →
+                    </Button>
+                  </div>
+
                   <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground pt-4 border-t">
                     <span className="flex items-center gap-1.5">
                       <Lock className="w-4 h-4" />
