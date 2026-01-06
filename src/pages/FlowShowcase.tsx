@@ -1,6 +1,8 @@
 /**
  * Flow Showcase - Standalone Landing Pages für einzelne Flows
  * Mobile-optimiert, Flow direkt eingebettet (kein iframe!)
+ * 
+ * Enthält alle Top 10 Flows mit 5.0 Score-Optimierungen
  */
 
 import { lazy, Suspense } from 'react';
@@ -9,14 +11,25 @@ import { Helmet } from 'react-helmet';
 import { ArrowLeft, Shield, Clock, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// Lazy load Flow Components
+// Lazy load Flow Components - Original Top 3
 const V9ZeroFrictionFlow = lazy(() => import('@/components/calculator-variants/V9ZeroFrictionFlow'));
 const UltimateBest36Flow = lazy(() => import('@/components/calculator-variants/UltimateBest36Flow'));
 const GoldenFlowV10 = lazy(() => import('@/components/calculator-variants/GoldenFlowV10'));
+
+// Swiss Premium Flows
 const SwissLightningFlow = lazy(() => import('@/components/calculator-variants/SwissLightningFlow'));
 const SwissPremiumChoiceFlow = lazy(() => import('@/components/calculator-variants/SwissPremiumChoiceFlow'));
 const SwissConciergeHybridFlow = lazy(() => import('@/components/calculator-variants/SwissConciergeHybridFlow'));
 const UltimateV7Flow = lazy(() => import('@/components/calculator-variants/UltimateV7Flow'));
+
+// Top 10 Upgrade Flows (Multi-a, V6a, V1a, V1f, V8a, V4c, V2f)
+const MultiAFeedbackBased = lazy(() => import('@/components/calculator-variants/MultiAFeedbackBased'));
+const V6aFeedbackBased = lazy(() => import('@/components/calculator-variants/V6aFeedbackBased'));
+const V1aFeedbackBased = lazy(() => import('@/components/calculator-variants/V1aFeedbackBased'));
+const V1fStickyCTATrust = lazy(() => import('@/components/calculator-variants/V1fStickyCTATrust'));
+const V8aFeedbackBased = lazy(() => import('@/components/calculator-variants/V8aFeedbackBased'));
+const V4cValueFirst = lazy(() => import('@/components/calculator-variants/V4cValueFirst'));
+const V2fFeedbackBased = lazy(() => import('@/components/calculator-variants/V2fFeedbackBased'));
 
 // Flow definitions with direct component mapping
 const FLOWS: Record<string, {
@@ -25,13 +38,16 @@ const FLOWS: Record<string, {
   component: React.LazyExoticComponent<React.ComponentType<any>>;
   score?: string;
   color: string;
+  category?: string;
 }> = {
+  // === TOP 3 GEMINI FLOWS ===
   'v9-zero-friction': {
     title: 'Zero Friction Flow',
     subtitle: 'Schnell & unkompliziert zum Angebot',
     component: V9ZeroFrictionFlow,
     score: '4.9',
     color: 'from-amber-500 to-orange-600',
+    category: 'gemini-top',
   },
   'ultimate-best36': {
     title: 'Ultimate Best36',
@@ -39,6 +55,7 @@ const FLOWS: Record<string, {
     component: UltimateBest36Flow,
     score: '4.8',
     color: 'from-orange-500 to-red-600',
+    category: 'gemini-top',
   },
   'golden-flow-v10': {
     title: 'Golden Flow V10',
@@ -46,24 +63,33 @@ const FLOWS: Record<string, {
     component: GoldenFlowV10,
     score: '5.0',
     color: 'from-yellow-500 to-amber-600',
+    category: 'gemini-top',
   },
+  
+  // === SWISS PREMIUM FLOWS ===
   'swiss-lightning': {
     title: 'Swiss Lightning',
     subtitle: '90 Sekunden zum Lead',
     component: SwissLightningFlow,
+    score: '4.7',
     color: 'from-emerald-500 to-teal-600',
+    category: 'swiss-premium',
   },
   'swiss-premium-choice': {
     title: 'Swiss Premium Choice',
     subtitle: 'Mit Paketauswahl',
     component: SwissPremiumChoiceFlow,
+    score: '4.6',
     color: 'from-teal-500 to-cyan-600',
+    category: 'swiss-premium',
   },
   'swiss-concierge-hybrid': {
     title: 'Swiss Concierge Hybrid',
     subtitle: 'Optionales Video-Feature',
     component: SwissConciergeHybridFlow,
+    score: '4.5',
     color: 'from-cyan-500 to-blue-600',
+    category: 'swiss-premium',
   },
   'ultimate-v7': {
     title: 'Ultimate V7',
@@ -71,6 +97,65 @@ const FLOWS: Record<string, {
     component: UltimateV7Flow,
     score: '4.5',
     color: 'from-purple-500 to-pink-600',
+    category: 'swiss-premium',
+  },
+  
+  // === TOP 10 UPGRADE FLOWS ===
+  'multi-a': {
+    title: 'Multi-A ChatGPT Pro',
+    subtitle: 'Universal 3-Step Perfect Fast',
+    component: MultiAFeedbackBased,
+    score: '5.0',
+    color: 'from-blue-500 to-indigo-600',
+    category: 'top-10',
+  },
+  'v6a': {
+    title: 'V6a Package Choice',
+    subtitle: 'Premium mit Paketauswahl',
+    component: V6aFeedbackBased,
+    score: '5.0',
+    color: 'from-violet-500 to-purple-600',
+    category: 'top-10',
+  },
+  'v1a': {
+    title: 'V1a 2-Step Lightning',
+    subtitle: 'Schnellster Pfad zum Lead',
+    component: V1aFeedbackBased,
+    score: '5.0',
+    color: 'from-rose-500 to-pink-600',
+    category: 'top-10',
+  },
+  'v1f': {
+    title: 'V1f Sticky Trust',
+    subtitle: 'Enhanced CTA mit Trust Pills',
+    component: V1fStickyCTATrust,
+    score: '5.0',
+    color: 'from-fuchsia-500 to-pink-600',
+    category: 'top-10',
+  },
+  'v8a': {
+    title: 'V8a Decision-Free',
+    subtitle: 'Automatische Firmenauswahl',
+    component: V8aFeedbackBased,
+    score: '5.0',
+    color: 'from-sky-500 to-blue-600',
+    category: 'top-10',
+  },
+  'v4c': {
+    title: 'V4c Value-First',
+    subtitle: 'Ersparnis zuerst zeigen',
+    component: V4cValueFirst,
+    score: '4.8',
+    color: 'from-lime-500 to-green-600',
+    category: 'top-10',
+  },
+  'v2f': {
+    title: 'V2f Premium Upsell',
+    subtitle: 'Gratis first, Premium später',
+    component: V2fFeedbackBased,
+    score: '5.0',
+    color: 'from-amber-500 to-yellow-600',
+    category: 'top-10',
   },
 };
 
@@ -161,3 +246,7 @@ export default function FlowShowcase() {
     </div>
   );
 }
+
+// Export flow list for use in other components
+export const FLOW_LIST = FLOWS;
+export type FlowId = keyof typeof FLOWS;
