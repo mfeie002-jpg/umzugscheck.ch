@@ -289,6 +289,10 @@ const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
 
+// ChatGPT Flow pages
+const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
+const ChatGPTFlow2 = lazy(() => import("./pages/ChatGPTFlow2"));
+const ChatGPTFlow3 = lazy(() => import("./pages/ChatGPTFlow3"));
 
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
@@ -629,6 +633,11 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-v9d" element={<UmzugsoffertenDynamic />} />
           <Route path="/umzugsofferten-multi-a" element={<UmzugsoffertenDynamic />} />
           <Route path="/umzugsofferten-ultimate-v7" element={<UmzugsoffertenDynamic />} />
+
+          {/* ChatGPT Optimized Flows */}
+          <Route path="/chatgpt-flow-1" element={<ChatGPTFlow1 />} />
+          <Route path="/chatgpt-flow-2" element={<ChatGPTFlow2 />} />
+          <Route path="/chatgpt-flow-3" element={<ChatGPTFlow3 />} />
 
           {/* Main V2+ flows (public URLs used by screenshot tooling) */}
           <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
