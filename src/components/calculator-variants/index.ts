@@ -80,6 +80,11 @@ export { UltimateV7Flow } from './UltimateV7Flow';
 // Multi Variants (ChatGPT Pro)
 export { MultiAFeedbackBased } from './MultiAFeedbackBased';
 
+// ChatGPT Optimized Flows (NEW)
+export { ChatGPTFlow1ZeroFriction } from './ChatGPTFlow1ZeroFriction';
+export { ChatGPTFlow2SocialProof } from './ChatGPTFlow2SocialProof';
+export { ChatGPTFlow3GuidedChat } from './ChatGPTFlow3GuidedChat';
+
 // Variant Registry with step counts for dynamic capture
 export const VARIANT_REGISTRY: Record<string, { 
   component: string; 
