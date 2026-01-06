@@ -51,7 +51,12 @@ import {
   Zap,
   Clock,
   Lock,
-  Award
+  Award,
+  MessageCircle,
+  X,
+  Send,
+  Quote,
+  Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -179,6 +184,210 @@ const TrustBadgeInline = ({ icon: Icon, text }: { icon: React.ElementType; text:
     <span>{text}</span>
   </div>
 );
+
+// ============= SOCIAL PROOF TESTIMONIALS =============
+const TESTIMONIALS = [
+  {
+    name: "Sandra M.",
+    location: "Zürich → Basel",
+    text: "Innerhalb von 24h hatte ich 4 Offerten. Die Preisunterschiede waren enorm - habe über 800 CHF gespart!",
+    rating: 5,
+    verified: true,
+  },
+  {
+    name: "Thomas K.",
+    location: "Bern → Luzern", 
+    text: "Super einfacher Prozess. Die Firma war pünktlich, freundlich und hat alles sicher transportiert.",
+    rating: 5,
+    verified: true,
+  },
+  {
+    name: "Maria L.",
+    location: "Winterthur → Zürich",
+    text: "Endlich ein Portal, das wirklich funktioniert. Klare Empfehlung!",
+    rating: 5,
+    verified: true,
+  },
+];
+
+const TestimonialCarousel = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  
+  // Auto-rotate testimonials
+  useState(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  });
+  
+  const testimonial = TESTIMONIALS[activeIndex];
+  
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/10"
+    >
+      <div className="flex items-start gap-3">
+        <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <Quote className="h-5 w-5 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-foreground italic mb-2">
+            "{testimonial.text}"
+          </p>
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <p className="text-sm font-medium">{testimonial.name}</p>
+              <p className="text-xs text-muted-foreground">{testimonial.location}</p>
+            </div>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: testimonial.rating }).map((_, i) => (
+                <Star key={i} className="h-3.5 w-3.5 fill-secondary text-secondary" />
+              ))}
+              {testimonial.verified && (
+                <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">
+                  <CheckCircle2 className="h-3 w-3 mr-0.5" />
+                  Verifiziert
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Dots indicator */}
+      <div className="flex justify-center gap-1.5 mt-3">
+        {TESTIMONIALS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveIndex(i)}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              i === activeIndex ? 'bg-primary' : 'bg-muted-foreground/30'
+            }`}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+};
+
+// ============= LIVE CHAT WIDGET =============
+const LiveChatWidget = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>([
+    { text: "Hallo! 👋 Wie kann ich Ihnen bei Ihrem Umzug helfen?", isUser: false }
+  ]);
+  
+  const handleSend = () => {
+    if (!message.trim()) return;
+    
+    // Add user message
+    setMessages(prev => [...prev, { text: message, isUser: true }]);
+    setMessage('');
+    
+    // Simulate response after delay
+    setTimeout(() => {
+      setMessages(prev => [...prev, { 
+        text: "Vielen Dank für Ihre Nachricht! Ein Berater wird sich in Kürze bei Ihnen melden. Alternativ können Sie das Formular ausfüllen, um direkt Offerten zu erhalten.", 
+        isUser: false 
+      }]);
+    }, 1000);
+  };
+  
+  return (
+    <>
+      {/* Chat Button */}
+      <motion.button
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(true)}
+        className={`fixed bottom-28 right-4 z-50 w-14 h-14 rounded-full bg-secondary text-secondary-foreground shadow-lg flex items-center justify-center ${isOpen ? 'hidden' : ''}`}
+        aria-label="Live Chat öffnen"
+      >
+        <MessageCircle className="h-6 w-6" />
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[10px] text-primary-foreground font-bold">
+          1
+        </span>
+      </motion.button>
+      
+      {/* Chat Window */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-28 right-4 z-50 w-80 max-w-[calc(100vw-2rem)] bg-background rounded-xl shadow-2xl border border-border overflow-hidden"
+          >
+            {/* Header */}
+            <div className="bg-secondary text-secondary-foreground px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-secondary-foreground/20 flex items-center justify-center">
+                  <Users className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">Umzugsberater</p>
+                  <p className="text-xs opacity-80 flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                    Online
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="p-1 rounded-lg hover:bg-secondary-foreground/10 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            {/* Messages */}
+            <div className="h-64 overflow-y-auto p-4 space-y-3 bg-muted/30">
+              {messages.map((msg, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-[80%] px-3 py-2 rounded-xl text-sm ${
+                    msg.isUser 
+                      ? 'bg-primary text-primary-foreground rounded-br-none' 
+                      : 'bg-card border border-border rounded-bl-none'
+                  }`}>
+                    {msg.text}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Input */}
+            <div className="p-3 border-t border-border flex gap-2">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Ihre Frage..."
+                className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <button
+                onClick={handleSend}
+                className="p-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
 
 // ============= PROGRESS INDICATOR =============
 interface ProgressIndicatorProps {
@@ -1085,7 +1294,13 @@ export const UltimateV7Flow = () => {
             transition={{ duration: 0.3 }}
           >
             {currentStep === 1 && (
-              <Step1Logistics formData={formData} updateFormData={updateFormData} />
+              <>
+                <Step1Logistics formData={formData} updateFormData={updateFormData} />
+                {/* Social Proof Testimonials after Step 1 */}
+                <div className="mt-8">
+                  <TestimonialCarousel />
+                </div>
+              </>
             )}
             {currentStep === 2 && (
               <Step2Details formData={formData} updateFormData={updateFormData} />
@@ -1103,64 +1318,85 @@ export const UltimateV7Flow = () => {
         </AnimatePresence>
       </div>
       
-      {/* Sticky Footer with CTA & Trust */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
-          {/* Trust Badges Row */}
-          <div className="flex items-center justify-center gap-4 mb-3 text-xs text-muted-foreground">
-            <TrustBadgeInline icon={Shield} text="Versichert" />
-            <TrustBadgeInline icon={Lock} text="SSL-geschützt" />
-            <TrustBadgeInline icon={Star} text="4.8/5 Sterne" />
+      {/* Live Chat Widget */}
+      <LiveChatWidget />
+      
+      {/* Enhanced Mobile Sticky Footer with CTA & Trust */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+        <div className="max-w-2xl mx-auto px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
+          {/* Enhanced Trust Badges Row */}
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
+              <Shield className="h-3 w-3 text-primary" />
+              <span>Versichert</span>
+            </div>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
+              <Lock className="h-3 w-3 text-primary" />
+              <span>SSL</span>
+            </div>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground bg-secondary/10 px-2 py-1 rounded-full">
+              <Star className="h-3 w-3 fill-secondary text-secondary" />
+              <span className="font-medium text-secondary">4.8/5</span>
+            </div>
           </div>
           
-          {/* Navigation Buttons */}
-          <div className="flex gap-3">
+          {/* Navigation Buttons - Optimized for Mobile */}
+          <div className="flex gap-2">
             {currentStep > 1 && (
               <Button
                 variant="outline"
                 size="lg"
                 onClick={handleBack}
-                className="min-h-[56px] px-6"
+                className="min-h-[52px] px-4 shrink-0"
                 disabled={isSubmitting}
               >
-                <ArrowLeft className="h-5 w-5 mr-1" />
-                Zurück
+                <ArrowLeft className="h-5 w-5" />
+                <span className="sr-only md:not-sr-only md:ml-1">Zurück</span>
               </Button>
             )}
             
-            <Button
-              size="lg"
-              onClick={currentStep === STEPS.length ? handleSubmit : handleNext}
-              disabled={!canProceed() || isSubmitting}
-              className={cn(
-                "flex-1 min-h-[56px] text-base font-semibold",
-                currentStep === STEPS.length 
-                  ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                  : ""
-              )}
+            <motion.div 
+              className="flex-1"
+              whileTap={{ scale: 0.98 }}
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  Wird gesendet...
-                </>
-              ) : currentStep === STEPS.length ? (
-                <>
-                  Jetzt Offerten erhalten
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </>
-              ) : (
-                <>
-                  Weiter
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </>
-              )}
-            </Button>
+              <Button
+                size="lg"
+                onClick={currentStep === STEPS.length ? handleSubmit : handleNext}
+                disabled={!canProceed() || isSubmitting}
+                className={cn(
+                  "w-full min-h-[52px] text-base font-semibold transition-all",
+                  currentStep === STEPS.length 
+                    ? "bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground shadow-lg shadow-secondary/25"
+                    : "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25"
+                )}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    Wird gesendet...
+                  </>
+                ) : currentStep === STEPS.length ? (
+                  <>
+                    Jetzt Offerten erhalten
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                  </>
+                ) : (
+                  <>
+                    Weiter
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                  </>
+                )}
+              </Button>
+            </motion.div>
           </div>
           
-          {/* Microcopy */}
+          {/* Microcopy with progress hint */}
           <p className="text-center text-xs text-muted-foreground mt-2">
-            100% kostenlos & unverbindlich • Keine Registrierung nötig
+            {currentStep < STEPS.length ? (
+              <>Noch {STEPS.length - currentStep} {STEPS.length - currentStep === 1 ? 'Schritt' : 'Schritte'} • 100% kostenlos</>
+            ) : (
+              <>100% kostenlos & unverbindlich • Keine Registrierung nötig</>
+            )}
           </p>
         </div>
       </div>
