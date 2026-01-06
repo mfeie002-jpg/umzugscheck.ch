@@ -13,7 +13,7 @@ import {
   Play, Star, CheckCircle2, 
   ThumbsUp, ThumbsDown,
   BarChart3, Eye,
-  Target, Users, Search, Download, ChevronDown
+  Target, Users, Search, Download, ChevronDown, ExternalLink
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
@@ -279,8 +279,8 @@ export default function FlowTesterPage() {
                   <Card key={flow.id} className="relative overflow-hidden">
                     {/* Main Flow Header - Clickable to expand */}
                     <CardHeader 
-                      className={`pb-2 cursor-pointer hover:bg-muted/50 transition-colors ${hasSubVariants ? '' : ''}`}
-                      onClick={() => hasSubVariants && setExpandedFlows(prev => ({ ...prev, [flow.id]: !prev[flow.id] }))}
+                      className="pb-2 cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => setExpandedFlows(prev => ({ ...prev, [flow.id]: !prev[flow.id] }))}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-lg ${flow.color} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
@@ -298,7 +298,10 @@ export default function FlowTesterPage() {
                           </div>
                           <p className="text-xs text-muted-foreground truncate">{flow.description}</p>
                         </div>
-                        {hasSubVariants && (
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-xs">
+                            {totalCount} Flows
+                          </Badge>
                           <motion.div
                             animate={{ rotate: isExpanded ? 180 : 0 }}
                             transition={{ duration: 0.2 }}
@@ -306,109 +309,140 @@ export default function FlowTesterPage() {
                           >
                             <ChevronDown className="h-5 w-5 text-muted-foreground" />
                           </motion.div>
-                        )}
+                        </div>
                       </div>
                     </CardHeader>
                     
-                    <CardContent className="py-2 space-y-3">
+                    <CardContent className="py-2">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant="secondary" className="text-xs">{flow.steps} Schritte</Badge>
-                        {hasSubVariants && (
-                          <Badge variant="outline" className="text-xs">
-                            {completedTotal}/{totalCount} getestet
-                          </Badge>
-                        )}
+                        <Badge variant="outline" className="text-xs">
+                          {completedTotal}/{totalCount} getestet
+                        </Badge>
                       </div>
-
-                      {/* Main Flow Buttons */}
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline" className="flex-1" onClick={() => window.open(flow.path, '_blank')}>
-                          <Eye className="h-3 w-3 mr-1" />
-                          Ansehen
-                        </Button>
-                        <Button size="sm" className="flex-1" onClick={() => startTest(flow.id, flow.path)}>
-                          <Play className="h-3 w-3 mr-1" />
-                          {mainCompleted ? 'Nochmal' : 'Testen'}
-                        </Button>
-                      </div>
-                      
-                      {mainCompleted && mainFb.rating > 0 && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">Bewertung:</span>
-                          <div className="flex">
-                            {[1,2,3,4,5].map(star => (
-                              <Star key={star} className={`h-3 w-3 ${star <= mainFb.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </CardContent>
-                    
-                    {/* Expanded Sub-Variants */}
-                    <AnimatePresence>
-                      {hasSubVariants && isExpanded && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="border-t bg-muted/30 px-4 py-3 space-y-3">
-                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Sub-Varianten</p>
-                            {flow.subVariants.map(sub => {
-                              const subFb = feedbacks[sub.id];
-                              const subCompleted = subFb?.completedAt;
-                              
-                              return (
-                                <div 
-                                  key={sub.id} 
-                                  className={`p-3 rounded-lg border ${subCompleted ? 'bg-green-500/5 border-green-500/30' : 'bg-background'}`}
-                                >
-                                  <div className="flex items-center justify-between gap-2 mb-2">
-                                    <div className="flex items-center gap-2 min-w-0">
-                                      <Badge variant="outline" className="shrink-0 text-xs font-bold">
-                                        {sub.id.toUpperCase()}
-                                      </Badge>
-                                      <span className="text-sm truncate">{sub.label}</span>
-                                      {subCompleted && (
-                                        <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                                      )}
-                                    </div>
-                                  </div>
-                                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{sub.description}</p>
-                                  
-                                  {subCompleted && subFb.rating > 0 && (
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <div className="flex">
-                                        {[1,2,3,4,5].map(star => (
-                                          <Star key={star} className={`h-3 w-3 ${star <= subFb.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
-                                        ))}
-                                      </div>
-                                    </div>
-                                  )}
-                                  
-                                  <div className="flex gap-2">
-                                    <Button size="sm" variant="outline" className="flex-1 h-7 text-xs" onClick={() => window.open(sub.path, '_blank')}>
-                                      <Eye className="h-3 w-3 mr-1" />
-                                      Ansehen
-                                    </Button>
-                                    <Button size="sm" className="flex-1 h-7 text-xs" onClick={() => startTest(sub.id, sub.path)}>
-                                      <Play className="h-3 w-3 mr-1" />
-                                      {subCompleted ? 'Nochmal' : 'Testen'}
-                                    </Button>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </Card>
                 );
               })}
             </div>
+
+            {/* Expanded Flow with Live Previews */}
+            {filteredFlows.map((flow) => {
+              const isExpanded = expandedFlows[flow.id];
+              if (!isExpanded) return null;
+
+              // All variants including main
+              const allVariants = [
+                { id: flow.id, label: `${flow.id.toUpperCase()} - Hauptversion`, path: flow.path, description: flow.description },
+                ...flow.subVariants.map(sub => ({
+                  id: sub.id,
+                  label: `${sub.id.toUpperCase()} - ${sub.label}`,
+                  path: sub.path,
+                  description: sub.description
+                }))
+              ];
+
+              return (
+                <motion.div
+                  key={`expanded-${flow.id}`}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="mt-6"
+                >
+                  <Card className="border-2 border-primary/20">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-12 h-12 rounded-lg ${flow.color} flex items-center justify-center text-white font-bold`}>
+                            {flow.id.toUpperCase()}
+                          </div>
+                          <div>
+                            <CardTitle className="text-xl">{flow.label}</CardTitle>
+                            <p className="text-sm text-muted-foreground">{allVariants.length} Varianten zum Testen</p>
+                          </div>
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setExpandedFlows(prev => ({ ...prev, [flow.id]: false }))}
+                        >
+                          <ChevronDown className="h-5 w-5 rotate-180" />
+                          Schliessen
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                      {allVariants.map((variant, index) => {
+                        const fb = feedbacks[variant.id];
+                        const isCompleted = fb?.completedAt;
+
+                        return (
+                          <div key={variant.id} className="space-y-3">
+                            {/* Variant Header */}
+                            <div className={`flex items-center justify-between p-3 rounded-lg border ${isCompleted ? 'bg-green-500/5 border-green-500/30' : 'bg-muted/30'}`}>
+                              <div className="flex items-center gap-3">
+                                <Badge variant="outline" className="font-bold text-sm px-3 py-1">
+                                  {variant.id.toUpperCase()}
+                                </Badge>
+                                <div>
+                                  <p className="font-medium">{variant.label}</p>
+                                  <p className="text-xs text-muted-foreground">{variant.description}</p>
+                                </div>
+                                {isCompleted && (
+                                  <Badge className="bg-green-500">
+                                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                                    Getestet
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {isCompleted && fb.rating > 0 && (
+                                  <div className="flex mr-2">
+                                    {[1,2,3,4,5].map(star => (
+                                      <Star key={star} className={`h-4 w-4 ${star <= fb.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
+                                    ))}
+                                  </div>
+                                )}
+                                <Button size="sm" variant="outline" onClick={() => window.open(variant.path, '_blank')}>
+                                  <ExternalLink className="h-3 w-3 mr-1" />
+                                  Neues Tab
+                                </Button>
+                                <Button size="sm" onClick={() => startTest(variant.id, variant.path)}>
+                                  <Play className="h-3 w-3 mr-1" />
+                                  {isCompleted ? 'Nochmal' : 'Testen'}
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* Live Preview iframe */}
+                            <div className="relative rounded-xl border-2 border-border overflow-hidden bg-background shadow-lg">
+                              <div className="absolute top-2 left-2 z-10 flex items-center gap-2">
+                                <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm">
+                                  {variant.id.toUpperCase()}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground bg-background/90 backdrop-blur-sm px-2 py-1 rounded">
+                                  Live Preview
+                                </span>
+                              </div>
+                              <iframe
+                                src={variant.path}
+                                className="w-full h-[700px] border-0"
+                                title={`Preview ${variant.id}`}
+                              />
+                            </div>
+
+                            {index < allVariants.length - 1 && (
+                              <div className="border-b border-dashed pt-4" />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
 
             {filteredFlows.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
