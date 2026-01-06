@@ -294,6 +294,11 @@ const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
 const ChatGPTFlow2 = lazy(() => import("./pages/ChatGPTFlow2"));
 const ChatGPTFlow3 = lazy(() => import("./pages/ChatGPTFlow3"));
 
+// Swiss Premium Flows (ChatGPT optimized)
+const SwissLightning = lazy(() => import("./pages/SwissLightning"));
+const SwissPremiumChoice = lazy(() => import("./pages/SwissPremiumChoice"));
+const SwissConciergeHybrid = lazy(() => import("./pages/SwissConciergeHybrid"));
+
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
 
@@ -638,6 +643,11 @@ const AppRouterContent = () => {
           <Route path="/chatgpt-flow-1" element={<ChatGPTFlow1 />} />
           <Route path="/chatgpt-flow-2" element={<ChatGPTFlow2 />} />
           <Route path="/chatgpt-flow-3" element={<ChatGPTFlow3 />} />
+          
+          {/* Swiss Premium Flows */}
+          <Route path="/swiss-lightning" element={<SwissLightning />} />
+          <Route path="/swiss-premium-choice" element={<SwissPremiumChoice />} />
+          <Route path="/swiss-concierge-hybrid" element={<SwissConciergeHybrid />} />
 
           {/* Main V2+ flows (public URLs used by screenshot tooling) */}
           <Route path="/umzugsofferten-v2" element={<UmzugsoffertenVariant />} />
