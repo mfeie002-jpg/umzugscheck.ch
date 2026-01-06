@@ -31,6 +31,15 @@ const MAIN_FLOWS = [
   { id: 'v7', configId: 'umzugsofferten-v7', prefix: 'v7' },
   { id: 'v8', configId: 'umzugsofferten-v8', prefix: 'v8' },
   { id: 'v9', configId: 'umzugsofferten-v9', prefix: 'v9' },
+  // ChatGPT Optimized Flows
+  { id: 'chatgpt', configId: 'chatgpt-flow-1', prefix: 'chatgpt-flow' },
+];
+
+// ChatGPT Flows as special group
+const CHATGPT_FLOWS = [
+  { id: 'chatgpt-flow-1', label: 'ChatGPT Flow 1 ⭐⭐', path: '/chatgpt-flow-1', description: 'Zero Friction Pro: 2 Steps', steps: 2 },
+  { id: 'chatgpt-flow-2', label: 'ChatGPT Flow 2 ⭐⭐', path: '/chatgpt-flow-2', description: 'Social Proof Boosted: 3 Steps', steps: 3 },
+  { id: 'chatgpt-flow-3', label: 'ChatGPT Flow 3 ⭐⭐', path: '/chatgpt-flow-3', description: 'Personalized Guided Chat', steps: 3 },
 ];
 
 // Get sub-variants for a main flow prefix
@@ -47,19 +56,32 @@ const getSubVariants = (prefix: string) => {
 };
 
 // Build complete flow list with sub-variants
-const FLOW_LIST = MAIN_FLOWS.map(main => {
-  const config = FLOW_CONFIGS[main.configId];
-  const subVariants = getSubVariants(main.prefix);
-  return {
-    id: main.id,
-    label: config?.label || main.id.toUpperCase(),
-    path: config?.path || `/umzugsofferten-${main.id}`,
-    color: config?.color || 'bg-gray-500',
-    description: config?.description || '',
-    steps: config?.steps.length || 4,
-    subVariants,
-  };
-});
+const FLOW_LIST = [
+  // ChatGPT Flows as first group
+  {
+    id: 'chatgpt',
+    label: 'ChatGPT Optimized ⭐⭐',
+    path: '/chatgpt-flow-1',
+    color: 'bg-gradient-to-r from-blue-500 to-teal-500',
+    description: '3 Premium-Flows von ChatGPT optimiert',
+    steps: 2,
+    subVariants: CHATGPT_FLOWS.map(f => ({ ...f, steps: f.steps })),
+  },
+  // Main flows
+  ...MAIN_FLOWS.map(main => {
+    const config = FLOW_CONFIGS[main.configId];
+    const subVariants = getSubVariants(main.prefix);
+    return {
+      id: main.id,
+      label: config?.label || main.id.toUpperCase(),
+      path: config?.path || `/umzugsofferten-${main.id}`,
+      color: config?.color || 'bg-gray-500',
+      description: config?.description || '',
+      steps: config?.steps.length || 4,
+      subVariants,
+    };
+  }),
+];
 
 interface FlowFeedback {
   flowId: string;

@@ -328,6 +328,27 @@ export const ChatGPTFlow2SocialProof: React.FC = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* Price Preview - shows after room selection */}
+                {formData.rooms && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-xl p-4 border border-orange-200 dark:border-orange-800"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Geschätzte Kosten</p>
+                        <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          CHF {Math.round(parseFloat(formData.rooms) * 400 * 0.8).toLocaleString()} – {Math.round(parseFloat(formData.rooms) * 400 * 1.3).toLocaleString()}
+                        </p>
+                      </div>
+                      <Badge className="bg-orange-500 hover:bg-orange-600">
+                        {formData.rooms} Zimmer
+                      </Badge>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           )}
