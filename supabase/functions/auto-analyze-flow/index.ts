@@ -7,8 +7,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Flow configurations - CLEAN LIST of actually existing flows
-// Only includes flows that have real components in src/components/calculator-variants
+// Flow configurations - COMPLETE LIST of all flows (80+ flows)
+// Includes all V1-V9 variants, Ultimate flows, ChatGPT flows, Swiss Premium flows
 const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: string }> = {
   // === V1 - Control Flow (8 variants) ===
   'v1': { name: 'V1 Control (Baseline)', steps: 2, baseUrl: '/umzugsofferten?variant=v1' },
@@ -17,7 +17,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v1c': { name: 'V1c Archetyp Strategic', steps: 4, baseUrl: '/umzugsofferten?variant=v1c' },
   'v1d': { name: 'V1d Optimized Funnel', steps: 4, baseUrl: '/umzugsofferten?variant=v1d' },
   'v1e': { name: 'V1e Trust Enhanced', steps: 4, baseUrl: '/umzugsofferten?variant=v1e' },
-  'v1f': { name: 'V1f Sticky CTA + Trust', steps: 2, baseUrl: '/umzugsofferten?variant=v1f' },
+  'v1f': { name: 'V1f Sticky CTA + Trust ⭐', steps: 2, baseUrl: '/umzugsofferten?variant=v1f' },
   'v1g': { name: 'V1g Input UX + Validation', steps: 2, baseUrl: '/umzugsofferten?variant=v1g' },
   
   // === V2 - Premium Full-Journey (7 variants) ===
@@ -27,7 +27,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v2c': { name: 'V2c Archetyp Calculator', steps: 6, baseUrl: '/umzugsofferten?variant=v2c' },
   'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten?variant=v2d' },
   'v2e': { name: 'V2e Chat Funnel', steps: 6, baseUrl: '/umzugsofferten-v2e' },
-  'v2f': { name: 'V2f Premium (Feedback)', steps: 3, baseUrl: '/umzugsofferten?variant=v2f' },
+  'v2f': { name: 'V2f Premium Upsell ⭐', steps: 3, baseUrl: '/umzugsofferten?variant=v2f' },
   
   // === V3 - God Mode Mobile-First (6 variants) ===
   'v3': { name: 'V3 God Mode (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v3' },
@@ -41,7 +41,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v4': { name: 'V4 Video-First (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v4' },
   'v4a': { name: 'V4a Urgency Based', steps: 4, baseUrl: '/umzugsofferten?variant=v4a' },
   'v4b': { name: 'V4b Social Proof', steps: 3, baseUrl: '/umzugsofferten?variant=v4b' },
-  'v4c': { name: 'V4c Value First', steps: 3, baseUrl: '/umzugsofferten?variant=v4c' },
+  'v4c': { name: 'V4c Value First ⭐', steps: 3, baseUrl: '/umzugsofferten?variant=v4c' },
   'v4d': { name: 'V4d Gamified', steps: 4, baseUrl: '/umzugsofferten?variant=v4d' },
   'v4e': { name: 'V4e Minimal Friction', steps: 2, baseUrl: '/umzugsofferten?variant=v4e' },
   'v4f': { name: 'V4f Video-First Feedback', steps: 3, baseUrl: '/umzugsofferten?variant=v4f' },
@@ -57,7 +57,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   
   // === V6 - Ultimate 6-Tier (7 variants) ===
   'v6': { name: 'V6 Ultimate (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v6' },
-  'v6a': { name: 'V6a Ultimate Optimized ⭐', steps: 6, baseUrl: '/umzugsofferten?variant=v6a' },
+  'v6a': { name: 'V6a Package Choice ⭐', steps: 6, baseUrl: '/umzugsofferten?variant=v6a' },
   'v6b': { name: 'V6b ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten?variant=v6b' },
   'v6c': { name: 'V6c Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten?variant=v6c' },
   'v6d': { name: 'V6d Deep Research', steps: 5, baseUrl: '/umzugsofferten?variant=v6d' },
@@ -70,7 +70,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   
   // === V8 - Decision-Free (2 variants) ===
   'v8': { name: 'V8 Decision-Free (Baseline)', steps: 2, baseUrl: '/umzugsofferten-v8' },
-  'v8a': { name: 'V8a Decision-Free Feedback', steps: 2, baseUrl: '/umzugsofferten?variant=v8a' },
+  'v8a': { name: 'V8a Decision-Free ⭐', steps: 2, baseUrl: '/umzugsofferten?variant=v8a' },
   
   // === V9 - Zero Friction Extended (5 variants) ===
   'v9': { name: 'V9 Zero Friction (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v9' },
@@ -79,16 +79,30 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v9c': { name: 'V9c Zero Friction Optimized', steps: 5, baseUrl: '/umzugsofferten?variant=v9c' },
   'v9d': { name: 'V9d Gemini Extended', steps: 9, baseUrl: '/umzugsofferten?variant=v9d' },
   
-  // === Multi Variants (1 variant) ===
-  'multi-a': { name: 'Multi.A ChatGPT Pro', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
+  // === Multi Variants ===
+  'multi-a': { name: 'Multi.A ChatGPT Pro ⭐', steps: 3, baseUrl: '/umzugsofferten?variant=multi-a' },
   
   // === Ultimate Variants ===
   'ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-best36' },
-  'ultimate-v7': { name: 'Ultimate V7 (95/100)', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v7' },
+  'ultimate-v7': { name: 'Ultimate V7 (95/100) ⭐', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v7' },
   'ultimate-all': { name: 'Ultimate All', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-all' },
   'ultimate-v1': { name: 'Ultimate V1', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v1' },
   'ultimate-v2': { name: 'Ultimate V2', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v2' },
   'ultimate-v5': { name: 'Ultimate V5', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-v5' },
+  'ultimate-ch': { name: 'Ultimate Swiss CH ⭐', steps: 5, baseUrl: '/umzugsofferten?variant=ultimate-ch' },
+  'v2-archetyp': { name: 'V2 Archetyp ⭐', steps: 6, baseUrl: '/umzugsofferten-v2-archetyp' },
+  
+  // === ChatGPT Optimized Flows ===
+  'chatgpt-flow-1': { name: 'ChatGPT Flow 1 - Zero Friction Pro ⭐', steps: 2, baseUrl: '/chatgpt-flow-1' },
+  'chatgpt-flow-2': { name: 'ChatGPT Flow 2 - Social Proof ⭐', steps: 3, baseUrl: '/chatgpt-flow-2' },
+  'chatgpt-flow-3': { name: 'ChatGPT Flow 3 - Guided Chat ⭐', steps: 3, baseUrl: '/chatgpt-flow-3' },
+  
+  // === Swiss Premium Flows (Standalone Pages) ===
+  'v9-zero-friction': { name: 'V9 Zero Friction Flow ⭐⭐', steps: 5, baseUrl: '/flow/v9-zero-friction' },
+  'golden-flow-v10': { name: 'Golden Flow V10 ⭐⭐', steps: 4, baseUrl: '/flow/golden-flow-v10' },
+  'swiss-lightning': { name: 'Swiss Lightning (90s) ⭐', steps: 3, baseUrl: '/flow/swiss-lightning' },
+  'swiss-premium-choice': { name: 'Swiss Premium Choice ⭐', steps: 4, baseUrl: '/flow/swiss-premium-choice' },
+  'swiss-concierge-hybrid': { name: 'Swiss Concierge Hybrid ⭐', steps: 5, baseUrl: '/flow/swiss-concierge-hybrid' },
   
   // === Version 1.1 Variants ===
   'umzugsofferten-v1.1.a': { name: 'V1.1.A', steps: 5, baseUrl: '/umzugsofferten?variant=v1.1.a' },
