@@ -8,28 +8,57 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Play, Star, CheckCircle2, 
   ThumbsUp, ThumbsDown,
   BarChart3, Eye,
-  Target, Users, Filter, Search
+  Target, Users, Search, ChevronDown
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
+import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
 
-// Inline flow config to avoid import issues
-const FLOW_LIST = [
-  { id: 'v1', label: 'V1 - Control', path: '/umzugsofferten-v1', color: 'bg-blue-500', description: 'Original 4-Step', steps: 4 },
-  { id: 'v2', label: 'V2 - Premium', path: '/umzugsofferten-v2', color: 'bg-purple-500', description: 'Premium Flow', steps: 6 },
-  { id: 'v3', label: 'V3 - Minimal', path: '/umzugsofferten-v3', color: 'bg-green-500', description: 'Minimalist Flow', steps: 3 },
-  { id: 'v4', label: 'V4 - Trust', path: '/umzugsofferten-v4', color: 'bg-amber-500', description: 'Trust-focused', steps: 5 },
-  { id: 'v5', label: 'V5 - Speed', path: '/umzugsofferten-v5', color: 'bg-red-500', description: 'Speed-optimized', steps: 4 },
-  { id: 'v6', label: 'V6 - Swiss', path: '/umzugsofferten-v6', color: 'bg-indigo-500', description: 'Swiss Premium', steps: 5 },
-  { id: 'v7', label: 'V7 - Mobile', path: '/umzugsofferten-v7', color: 'bg-teal-500', description: 'Mobile-first', steps: 4 },
-  { id: 'v8', label: 'V8 - Chat', path: '/umzugsofferten-v8', color: 'bg-pink-500', description: 'Chat-style', steps: 1 },
-  { id: 'v9', label: 'V9 - Hybrid', path: '/umzugsofferten-v9', color: 'bg-cyan-500', description: 'Hybrid approach', steps: 4 },
+// Build main flows with their sub-variants
+const MAIN_FLOWS = [
+  { id: 'v1', configId: 'umzugsofferten-v1', prefix: 'v1' },
+  { id: 'v2', configId: 'umzugsofferten-v2', prefix: 'v2' },
+  { id: 'v3', configId: 'umzugsofferten-v3', prefix: 'v3' },
+  { id: 'v4', configId: 'umzugsofferten-v4', prefix: 'v4' },
+  { id: 'v5', configId: 'umzugsofferten-v5', prefix: 'v5' },
+  { id: 'v6', configId: 'umzugsofferten-v6', prefix: 'v6' },
+  { id: 'v7', configId: 'umzugsofferten-v7', prefix: 'v7' },
+  { id: 'v8', configId: 'umzugsofferten-v8', prefix: 'v8' },
+  { id: 'v9', configId: 'umzugsofferten-v9', prefix: 'v9' },
 ];
+
+// Get sub-variants for a main flow prefix
+const getSubVariants = (prefix: string) => {
+  return Object.entries(SUB_VARIANT_CONFIGS)
+    .filter(([key]) => key.startsWith(prefix) && key !== prefix)
+    .map(([key, config]) => ({
+      id: key,
+      label: config.label,
+      path: config.path,
+      description: config.description,
+      steps: config.steps.length,
+    }));
+};
+
+// Build complete flow list with sub-variants
+const FLOW_LIST = MAIN_FLOWS.map(main => {
+  const config = FLOW_CONFIGS[main.configId];
+  const subVariants = getSubVariants(main.prefix);
+  return {
+    id: main.id,
+    label: config?.label || main.id.toUpperCase(),
+    path: config?.path || `/umzugsofferten-${main.id}`,
+    color: config?.color || 'bg-gray-500',
+    description: config?.description || '',
+    steps: config?.steps.length || 4,
+    subVariants,
+  };
+});
 
 interface FlowFeedback {
   flowId: string;
@@ -53,12 +82,17 @@ export default function FlowTesterPage() {
   const [currentRating, setCurrentRating] = useState(0);
   const [currentComment, setCurrentComment] = useState('');
 
-  // Initialize feedbacks
+  const [selectedSubVariants, setSelectedSubVariants] = useState<Record<string, string>>({});
+
+  // Initialize feedbacks for all flows including sub-variants
   useEffect(() => {
     if (Object.keys(feedbacks).length === 0) {
       const initial: Record<string, FlowFeedback> = {};
       FLOW_LIST.forEach(flow => {
         initial[flow.id] = { flowId: flow.id, rating: 0, comment: '', completedAt: null };
+        flow.subVariants.forEach(sub => {
+          initial[sub.id] = { flowId: sub.id, rating: 0, comment: '', completedAt: null };
+        });
       });
       setFeedbacks(initial);
     }
@@ -81,14 +115,24 @@ export default function FlowTesterPage() {
     toast.success(`Willkommen, ${testerInfo.name}!`);
   };
 
-  const startTest = (index: number) => {
-    const flow = filteredFlows[index];
-    if (!flow) return;
-    window.open(flow.path, '_blank');
-    setCurrentFlowIndex(index);
+  const startTest = (flowId: string, path: string) => {
+    window.open(path, '_blank');
+    setCurrentFlowIndex(FLOW_LIST.findIndex(f => f.id === flowId) ?? 0);
     setCurrentRating(0);
     setCurrentComment('');
   };
+
+  const getActiveFlow = (flow: typeof FLOW_LIST[0]) => {
+    const selectedSub = selectedSubVariants[flow.id];
+    if (selectedSub && selectedSub !== 'main') {
+      const subVariant = flow.subVariants.find(s => s.id === selectedSub);
+      if (subVariant) return { id: subVariant.id, path: subVariant.path, label: subVariant.label };
+    }
+    return { id: flow.id, path: flow.path, label: flow.label };
+  };
+
+  // Count total flows including sub-variants
+  const totalFlowCount = FLOW_LIST.reduce((acc, f) => acc + 1 + f.subVariants.length, 0);
 
   const submitFeedback = (flowId: string) => {
     if (currentRating === 0) {
@@ -121,13 +165,13 @@ export default function FlowTesterPage() {
             </div>
             <div>
               <span className="font-bold text-lg">Flow-Tester</span>
-              <Badge variant="outline" className="ml-2">{FLOW_LIST.length} Flows</Badge>
+              <Badge variant="outline" className="ml-2">{totalFlowCount} Flows</Badge>
             </div>
           </div>
           {isRegistered && (
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">{completedCount}</span> / {FLOW_LIST.length} getestet
+                <span className="font-medium text-foreground">{completedCount}</span> / {totalFlowCount} getestet
               </span>
               <Progress value={(completedCount / FLOW_LIST.length) * 100} className="w-32 h-2" />
             </div>
@@ -145,7 +189,7 @@ export default function FlowTesterPage() {
               </div>
               <CardTitle>Flow-Tester</CardTitle>
               <p className="text-muted-foreground text-sm">
-                Testen Sie {FLOW_LIST.length} verschiedene Flows.
+                Testen Sie {totalFlowCount} verschiedene Flows (inkl. Sub-Varianten).
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -226,14 +270,16 @@ export default function FlowTesterPage() {
 
             {/* Flow Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredFlows.map((flow, i) => {
-                const fb = feedbacks[flow.id];
+              {filteredFlows.map((flow) => {
+                const activeFlow = getActiveFlow(flow);
+                const fb = feedbacks[activeFlow.id];
                 const isCompleted = fb?.completedAt;
+                const hasSubVariants = flow.subVariants.length > 0;
                 
                 return (
-                  <Card key={flow.id} className={isCompleted ? 'bg-green-500/5 border-green-500/30' : ''}>
+                  <Card key={flow.id} className={`relative ${isCompleted ? 'bg-green-500/5 border-green-500/30' : ''}`}>
                     {isCompleted && (
-                      <div className="absolute top-2 right-2">
+                      <div className="absolute top-2 right-2 z-10">
                         <Badge className="bg-green-500">
                           <CheckCircle2 className="h-3 w-3 mr-1" />
                           Getestet
@@ -245,16 +291,48 @@ export default function FlowTesterPage() {
                         <div className={`w-10 h-10 rounded-lg ${flow.color} flex items-center justify-center text-white font-bold text-sm`}>
                           {flow.id.toUpperCase()}
                         </div>
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <CardTitle className="text-base">{flow.label}</CardTitle>
-                          <p className="text-xs text-muted-foreground">{flow.description}</p>
+                          <p className="text-xs text-muted-foreground truncate">{flow.description}</p>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="py-2">
-                      <Badge variant="secondary" className="text-xs">{flow.steps} Schritte</Badge>
+                    <CardContent className="py-2 space-y-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="secondary" className="text-xs">{flow.steps} Schritte</Badge>
+                        {hasSubVariants && (
+                          <Badge variant="outline" className="text-xs">
+                            +{flow.subVariants.length} Varianten
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      {/* Sub-variant selector */}
+                      {hasSubVariants && (
+                        <Select
+                          value={selectedSubVariants[flow.id] || 'main'}
+                          onValueChange={(value) => setSelectedSubVariants(prev => ({ ...prev, [flow.id]: value }))}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue placeholder="Variante wählen" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="main">
+                              <span className="font-medium">{flow.id.toUpperCase()}</span>
+                              <span className="text-muted-foreground ml-1">- Hauptversion</span>
+                            </SelectItem>
+                            {flow.subVariants.map(sub => (
+                              <SelectItem key={sub.id} value={sub.id}>
+                                <span className="font-medium">{sub.id.toUpperCase()}</span>
+                                <span className="text-muted-foreground ml-1 truncate">- {sub.description.slice(0, 30)}</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+
                       {isCompleted && fb.rating > 0 && (
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-2">
                           <span className="text-xs text-muted-foreground">Bewertung:</span>
                           <div className="flex">
                             {[1,2,3,4,5].map(star => (
@@ -265,11 +343,11 @@ export default function FlowTesterPage() {
                       )}
                     </CardContent>
                     <CardFooter className="pt-2 gap-2">
-                      <Button size="sm" variant="outline" className="flex-1" onClick={() => window.open(flow.path, '_blank')}>
+                      <Button size="sm" variant="outline" className="flex-1" onClick={() => window.open(activeFlow.path, '_blank')}>
                         <Eye className="h-3 w-3 mr-1" />
                         Ansehen
                       </Button>
-                      <Button size="sm" className="flex-1" onClick={() => startTest(i)}>
+                      <Button size="sm" className="flex-1" onClick={() => startTest(activeFlow.id, activeFlow.path)}>
                         <Play className="h-3 w-3 mr-1" />
                         {isCompleted ? 'Nochmal' : 'Testen'}
                       </Button>
