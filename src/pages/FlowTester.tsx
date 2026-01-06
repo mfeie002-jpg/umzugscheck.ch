@@ -42,6 +42,13 @@ const CHATGPT_FLOWS = [
   { id: 'chatgpt-flow-3', label: 'ChatGPT Flow 3 ⭐⭐', path: '/chatgpt-flow-3', description: 'Personalized Guided Chat', steps: 3 },
 ];
 
+// Swiss Premium Flows (new ChatGPT-designed flows with reusable components)
+const SWISS_PREMIUM_FLOWS = [
+  { id: 'swiss-lightning', label: 'Swiss Lightning ⚡', path: '/swiss-lightning', description: '2 Steps, 90 Sek. bis Lead', steps: 2 },
+  { id: 'swiss-premium-choice', label: 'Swiss Premium Choice 💎', path: '/swiss-premium-choice', description: '3 Steps mit Paketauswahl', steps: 3 },
+  { id: 'swiss-concierge-hybrid', label: 'Swiss Concierge Hybrid 🎬', path: '/swiss-concierge-hybrid', description: '4 Steps, optionales Video', steps: 4 },
+];
+
 // Get sub-variants for a main flow prefix
 const getSubVariants = (prefix: string) => {
   return Object.entries(SUB_VARIANT_CONFIGS)
@@ -57,7 +64,17 @@ const getSubVariants = (prefix: string) => {
 
 // Build complete flow list with sub-variants
 const FLOW_LIST = [
-  // ChatGPT Flows as first group
+  // Swiss Premium Flows as TOP group (newest, best)
+  {
+    id: 'swiss-premium',
+    label: 'Swiss Premium ⚡💎',
+    path: '/swiss-lightning',
+    color: 'bg-gradient-to-r from-emerald-500 to-teal-600',
+    description: '3 neue Flows mit Flow-Components (beste UX)',
+    steps: 2,
+    subVariants: SWISS_PREMIUM_FLOWS.map(f => ({ ...f, steps: f.steps })),
+  },
+  // ChatGPT Flows as second group
   {
     id: 'chatgpt',
     label: 'ChatGPT Optimized ⭐⭐',
