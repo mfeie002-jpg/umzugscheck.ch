@@ -836,6 +836,45 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
       { step: 3, name: 'Kontakt', description: 'Review + Kontaktdaten + Consent' },
     ],
   },
+  // ========== ChatGPT Optimized Flows ==========
+  'chatgpt-flow-1': {
+    id: 'chatgpt-flow-1',
+    label: 'ChatGPT Flow 1 ⭐⭐',
+    path: '/chatgpt-flow-1',
+    color: 'bg-gradient-to-r from-blue-500 to-green-500',
+    description: 'Zero Friction Pro: 2 Steps, Sticky CTA, Trust Badges, Preisvorschau',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Move Info', description: 'Adressen, Datum, Zimmer, Etage kombiniert' },
+      { step: 2, name: 'Review & Services', description: 'Zusammenfassung, Extras, Preisrange, Kontakt' },
+    ],
+  },
+  'chatgpt-flow-2': {
+    id: 'chatgpt-flow-2',
+    label: 'ChatGPT Flow 2 ⭐⭐',
+    path: '/chatgpt-flow-2',
+    color: 'bg-gradient-to-r from-gray-500 to-orange-500',
+    description: 'Social Proof Boosted: 3 Steps, Firmenempfehlungen, Testimonials',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Move Details', description: 'Adressen, Datum, Zimmer, Etage' },
+      { step: 2, name: 'Anbieter & Extras', description: '3 empfohlene Firmen + Zusatzservices' },
+      { step: 3, name: 'Kontakt & Summary', description: 'Review + Kontaktformular' },
+    ],
+  },
+  'chatgpt-flow-3': {
+    id: 'chatgpt-flow-3',
+    label: 'ChatGPT Flow 3 ⭐⭐',
+    path: '/chatgpt-flow-3',
+    color: 'bg-gradient-to-r from-blue-400 to-teal-400',
+    description: 'Personalized Guided Chat: Chat-basierter Flow mit AI-Guidance',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Chat Intro', description: 'Adressen per Chat-Blasen eingeben' },
+      { step: 2, name: 'Services & Preis', description: 'Preisvorschau + Service-Karten im Chat' },
+      { step: 3, name: 'Kontakt & Abschluss', description: 'Kontaktdaten im Chat + Konfetti-Success' },
+    ],
+  },
 };
 
 // Combined config for all flows (main + sub-variants)

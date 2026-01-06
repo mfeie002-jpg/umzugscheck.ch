@@ -67,6 +67,10 @@ import {
   UltimateV7Flow,
   // Multi variants
   MultiAFeedbackBased,
+  // ChatGPT Flows
+  ChatGPTFlow1ZeroFriction,
+  ChatGPTFlow2SocialProof,
+  ChatGPTFlow3GuidedChat,
 } from '@/components/calculator-variants';
 
 import { MultiStepCalculator } from '@/components/homepage/MultiStepCalculator';
@@ -162,6 +166,11 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   
   // ========== Multi - Combined ==========
   'multi-a': MultiAFeedbackBased,
+  
+  // ========== ChatGPT Optimized Flows ==========
+  'chatgpt-flow-1': ChatGPTFlow1ZeroFriction,
+  'chatgpt-flow-2': ChatGPTFlow2SocialProof,
+  'chatgpt-flow-3': ChatGPTFlow3GuidedChat,
 };
 
 /**
