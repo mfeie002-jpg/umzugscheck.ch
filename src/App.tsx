@@ -418,17 +418,27 @@ const AdminRoutes = () => (
 const AppRouterContent = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
+  const isFlowTester = location.pathname.toLowerCase() === '/flow-tester';
 
   if (isAdminRoute) {
     return <AdminRoutes />;
+  }
+
+  // Render FlowTester outside AnimatedRoutes to avoid potential issues
+  if (isFlowTester) {
+    return (
+      <MainLayout>
+        <Suspense fallback={<PageLoadingFallback />}>
+          <FlowTester />
+        </Suspense>
+      </MainLayout>
+    );
   }
 
   return (
     <MainLayout>
       <Suspense fallback={<PageLoadingFallback />}>
         <AnimatedRoutes>
-          {/* Flow Tester - Public page for testing flows */}
-          <Route path="/flow-tester" element={<FlowTester />} />
           <Route path="/" element={<IndexPremium />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/old-home" element={<Index />} />
