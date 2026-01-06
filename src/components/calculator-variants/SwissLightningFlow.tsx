@@ -16,13 +16,14 @@ import {
 import { MapPin, Calendar, Home, User, Mail, Phone, Edit2, Sparkles, CheckCircle2, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface FormData {
+interface SwissLightningFormData {
+  [key: string]: unknown;
   fromZip: string; toZip: string; moveDate: string; rooms: string;
   floor: string; hasLift: boolean;
   name: string; email: string; phone: string; privacy: boolean;
 }
 
-const INITIAL_DATA: FormData = {
+const INITIAL_DATA: SwissLightningFormData = {
   fromZip: '', toZip: '', moveDate: '', rooms: '', floor: 'EG', hasLift: false,
   name: '', email: '', phone: '', privacy: false,
 };
@@ -30,7 +31,7 @@ const INITIAL_DATA: FormData = {
 const ROOMS = ['1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5', '5.5', '6+'];
 
 export const SwissLightningFlow: React.FC = () => {
-  const [state, actions] = useFlowState<FormData>({
+  const [state, actions] = useFlowState<SwissLightningFormData>({
     storageKey: 'swiss-lightning-flow',
     initialData: INITIAL_DATA,
     totalSteps: 2,
