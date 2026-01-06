@@ -412,13 +412,12 @@ const AdminRoutes = () => (
       <Route path="/admin/ai-command" element={<AICommandCenter />} />
       <Route path="/admin/capabilities" element={<AdminCapabilities />} />
       <Route path="/admin/varianten-testen" element={<VariantTestHub />} />
-      {/* Flow Command Center - NEW Ultimate Hub */}
-      <Route path="/admin/flow-command-center" element={<FlowCommandCenter />} />
-      {/* Flow Analysis Hub - Legacy, redirects to new Command Center */}
-      <Route path="/admin/flow-analysis" element={<FlowCommandCenter />} />
-      <Route path="/admin/flow-comparison" element={<Navigate to="/admin/flow-command-center?view=comparison" replace />} />
-      <Route path="/admin/flow-comparison/:flowNumber" element={<Navigate to="/admin/flow-command-center?view=comparison" replace />} />
-      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/admin/flow-command-center?view=analysis" replace />} />
+      {/* Flow Command Center - Redirect to public route */}
+      <Route path="/admin/flow-command-center" element={<Navigate to="/flow-command-center" replace />} />
+      <Route path="/admin/flow-analysis" element={<Navigate to="/flow-command-center" replace />} />
+      <Route path="/admin/flow-comparison" element={<Navigate to="/flow-command-center?view=comparison" replace />} />
+      <Route path="/admin/flow-comparison/:flowNumber" element={<Navigate to="/flow-command-center?view=comparison" replace />} />
+      <Route path="/admin/flow-deep-analysis" element={<Navigate to="/flow-command-center?view=analysis" replace />} />
       <Route path="/admin/analysis-framework" element={<AnalysisFramework />} />
       <Route path="/admin/flow-feedback-variants" element={<FlowFeedbackVariants />} />
       <Route path="/admin/flow-tester" element={<Navigate to="/flow-tester" replace />} />
@@ -678,6 +677,9 @@ const AppRouterContent = () => {
           <Route path="/v9-zero-friction" element={<V9ZeroFriction />} />
           <Route path="/ultimate-best36" element={<UltimateBest36 />} />
           <Route path="/golden-flow-v10" element={<GoldenFlowV10 />} />
+          
+          {/* Flow Command Center - Public (no admin auth required) */}
+          <Route path="/flow-command-center" element={<FlowCommandCenter />} />
 
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/flow/:flowId" element={<FlowShowcase />} />
