@@ -13,11 +13,12 @@ import {
   Play, Star, CheckCircle2, 
   ThumbsUp, ThumbsDown,
   BarChart3, Eye,
-  Target, Users, Search, ChevronDown
+  Target, Users, Search, Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
+import { FlowExportDialog } from '@/components/flow-tester/FlowExportDialog';
 
 // Build main flows with their sub-variants
 const MAIN_FLOWS = [
@@ -170,6 +171,7 @@ export default function FlowTesterPage() {
           </div>
           {isRegistered && (
             <div className="flex items-center gap-4">
+              <FlowExportDialog />
               <span className="text-sm text-muted-foreground">
                 <span className="font-medium text-foreground">{completedCount}</span> / {totalFlowCount} getestet
               </span>
