@@ -49,6 +49,13 @@ const SWISS_PREMIUM_FLOWS = [
   { id: 'swiss-concierge-hybrid', label: 'Swiss Concierge Hybrid 🎬', path: '/swiss-concierge-hybrid', description: '4 Steps, optionales Video', steps: 4 },
 ];
 
+// Gemini Top-Flows (highest scoring flows from Gemini analysis)
+const GEMINI_TOP_FLOWS = [
+  { id: 'v9-zero-friction', label: 'V9 Zero Friction ⭐4.9', path: '/v9-zero-friction', description: '5 Steps, Route-Fokus, Labor Illusion', steps: 5 },
+  { id: 'ultimate-best36', label: 'Ultimate Best36 ⭐4.8', path: '/ultimate-best36', description: '4 Steps, Auto-Advance, High-Contrast', steps: 4 },
+  { id: 'golden-flow-v10', label: 'Golden Flow V10 ⭐5.0', path: '/golden-flow-v10', description: '6 Steps, Glassmorphism, Perfekter Score', steps: 6 },
+];
+
 // Get sub-variants for a main flow prefix
 const getSubVariants = (prefix: string) => {
   return Object.entries(SUB_VARIANT_CONFIGS)
@@ -64,7 +71,17 @@ const getSubVariants = (prefix: string) => {
 
 // Build complete flow list with sub-variants
 const FLOW_LIST = [
-  // Swiss Premium Flows as TOP group (newest, best)
+  // Gemini Top-Flows as TOP group (highest scoring)
+  {
+    id: 'gemini-top',
+    label: 'Gemini Top 🏆⭐',
+    path: '/v9-zero-friction',
+    color: 'bg-gradient-to-r from-amber-500 to-orange-600',
+    description: '3 Top-Flows mit Score 4.8-5.0 (Gemini Analyse)',
+    steps: 5,
+    subVariants: GEMINI_TOP_FLOWS.map(f => ({ ...f, steps: f.steps })),
+  },
+  // Swiss Premium Flows as second group
   {
     id: 'swiss-premium',
     label: 'Swiss Premium ⚡💎',
@@ -74,7 +91,7 @@ const FLOW_LIST = [
     steps: 2,
     subVariants: SWISS_PREMIUM_FLOWS.map(f => ({ ...f, steps: f.steps })),
   },
-  // ChatGPT Flows as second group
+  // ChatGPT Flows as third group
   {
     id: 'chatgpt',
     label: 'ChatGPT Optimized ⭐⭐',
@@ -138,12 +155,26 @@ export default function FlowTesterPage() {
     }
   }, []);
 
+  // Enhanced search: also search in subVariants
   const filteredFlows = useMemo(() => {
     if (!searchQuery) return FLOW_LIST;
     const q = searchQuery.toLowerCase();
-    return FLOW_LIST.filter(f => 
-      f.label.toLowerCase().includes(q) || f.description.toLowerCase().includes(q)
-    );
+    
+    return FLOW_LIST.filter(f => {
+      // Check main flow
+      const mainMatches = f.label.toLowerCase().includes(q) || 
+                          f.description.toLowerCase().includes(q) ||
+                          f.id.toLowerCase().includes(q);
+      
+      // Check subvariants
+      const subMatches = f.subVariants.some(sub => 
+        sub.label.toLowerCase().includes(q) || 
+        sub.description.toLowerCase().includes(q) ||
+        sub.id.toLowerCase().includes(q)
+      );
+      
+      return mainMatches || subMatches;
+    });
   }, [searchQuery]);
 
   const handleRegister = () => {

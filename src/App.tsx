@@ -299,6 +299,11 @@ const SwissLightning = lazy(() => import("./pages/SwissLightning"));
 const SwissPremiumChoice = lazy(() => import("./pages/SwissPremiumChoice"));
 const SwissConciergeHybrid = lazy(() => import("./pages/SwissConciergeHybrid"));
 
+// Gemini Top-Flows (highest scoring flows from Gemini analysis)
+const V9ZeroFriction = lazy(() => import("./pages/V9ZeroFriction"));
+const UltimateBest36 = lazy(() => import("./pages/UltimateBest36"));
+const GoldenFlowV10 = lazy(() => import("./pages/GoldenFlowV10"));
+
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
 
@@ -666,6 +671,11 @@ const AppRouterContent = () => {
           <Route path="/umzugsofferten-ultimate-:flowId" element={<UmzugsoffertenUltimate />} />
           {/* Fallback dynamic route for any other sub-variants */}
           <Route path="/umzugsofferten-:variant" element={<UmzugsoffertenDynamic />} />
+
+          {/* Gemini Top-Flows (highest scoring from Gemini analysis) */}
+          <Route path="/v9-zero-friction" element={<V9ZeroFriction />} />
+          <Route path="/ultimate-best36" element={<UltimateBest36 />} />
+          <Route path="/golden-flow-v10" element={<GoldenFlowV10 />} />
 
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
