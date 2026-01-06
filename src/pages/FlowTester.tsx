@@ -8,40 +8,34 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Play, Star, CheckCircle2, ArrowRight, 
-  ExternalLink, ThumbsUp, ThumbsDown,
-  BarChart3, Trophy, Send, Eye,
+  Play, Star, CheckCircle2, 
+  ThumbsUp, ThumbsDown,
+  BarChart3, Eye,
   Target, Users, Filter, Search
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
-import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS, FlowConfig } from '@/data/flowConfigs';
 
-// Simple check for flow component availability
-function hasFlowComponent(flowId: string): boolean {
-  const normalizedId = flowId.toLowerCase().replace('umzugsofferten-', '');
-  const workingFlows = [
-    'v1', 'v1a', 'v1b', 'v1c', 'v1d', 'v1e',
-    'v2', 'v2a', 'v2b', 'v2c', 'v2d', 'v2e', 'v2f',
-    'v3', 'v3a', 'v3b', 'v3c', 'v3d', 'v3e',
-    'v4', 'v4a', 'v4b', 'v4c', 'v4d', 'v4e', 'v4f',
-    'v5', 'v5a', 'v5b', 'v5c', 'v5d', 'v5e', 'v5f',
-    'v6', 'v6a', 'v6b', 'v6c', 'v6d', 'v6e', 'v6f',
-    'v7', 'v7a', 'v8', 'v8a', 'v9', 'v9a', 'v9b', 'v9c', 'v9d',
-    'ultimate-v7', 'multi-a'
-  ];
-  return workingFlows.includes(normalizedId) || workingFlows.includes(flowId.toLowerCase());
-}
+// Inline flow config to avoid import issues
+const FLOW_LIST = [
+  { id: 'v1', label: 'V1 - Control', path: '/umzugsofferten-v1', color: 'bg-blue-500', description: 'Original 4-Step', steps: 4 },
+  { id: 'v2', label: 'V2 - Premium', path: '/umzugsofferten-v2', color: 'bg-purple-500', description: 'Premium Flow', steps: 6 },
+  { id: 'v3', label: 'V3 - Minimal', path: '/umzugsofferten-v3', color: 'bg-green-500', description: 'Minimalist Flow', steps: 3 },
+  { id: 'v4', label: 'V4 - Trust', path: '/umzugsofferten-v4', color: 'bg-amber-500', description: 'Trust-focused', steps: 5 },
+  { id: 'v5', label: 'V5 - Speed', path: '/umzugsofferten-v5', color: 'bg-red-500', description: 'Speed-optimized', steps: 4 },
+  { id: 'v6', label: 'V6 - Swiss', path: '/umzugsofferten-v6', color: 'bg-indigo-500', description: 'Swiss Premium', steps: 5 },
+  { id: 'v7', label: 'V7 - Mobile', path: '/umzugsofferten-v7', color: 'bg-teal-500', description: 'Mobile-first', steps: 4 },
+  { id: 'v8', label: 'V8 - Chat', path: '/umzugsofferten-v8', color: 'bg-pink-500', description: 'Chat-style', steps: 1 },
+  { id: 'v9', label: 'V9 - Hybrid', path: '/umzugsofferten-v9', color: 'bg-cyan-500', description: 'Hybrid approach', steps: 4 },
+];
 
 interface FlowFeedback {
   flowId: string;
-  overallRating: number;
-  wouldRecommend: boolean;
-  completedAt: Date | null;
-  abandoned: boolean;
+  rating: number;
   comment: string;
+  completedAt: Date | null;
 }
 
 interface TesterInfo {
@@ -50,64 +44,33 @@ interface TesterInfo {
   role: string;
 }
 
-export default function FlowTester() {
-  // Get all flows
-  const allFlows = useMemo(() => {
-    const mainFlows = Object.values(FLOW_CONFIGS);
-    const subVariants = Object.values(SUB_VARIANT_CONFIGS);
-    return [...mainFlows, ...subVariants];
-  }, []);
-  
+export default function FlowTesterPage() {
   const [testerInfo, setTesterInfo] = useState<TesterInfo>({ name: '', email: '', role: 'user' });
   const [isRegistered, setIsRegistered] = useState(false);
   const [currentFlowIndex, setCurrentFlowIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'main' | 'sub' | 'available'>('available');
   const [feedbacks, setFeedbacks] = useState<Record<string, FlowFeedback>>({});
   const [currentRating, setCurrentRating] = useState(0);
   const [currentComment, setCurrentComment] = useState('');
 
-  // Initialize feedbacks when allFlows is ready
+  // Initialize feedbacks
   useEffect(() => {
-    if (allFlows.length > 0 && Object.keys(feedbacks).length === 0) {
+    if (Object.keys(feedbacks).length === 0) {
       const initial: Record<string, FlowFeedback> = {};
-      allFlows.forEach(flow => {
-        initial[flow.id] = {
-          flowId: flow.id,
-          overallRating: 0,
-          wouldRecommend: false,
-          completedAt: null,
-          abandoned: false,
-          comment: '',
-        };
+      FLOW_LIST.forEach(flow => {
+        initial[flow.id] = { flowId: flow.id, rating: 0, comment: '', completedAt: null };
       });
       setFeedbacks(initial);
     }
-  }, [allFlows, feedbacks]);
+  }, []);
 
-  // Filter flows
   const filteredFlows = useMemo(() => {
-    let flows = allFlows;
-    
-    if (filterType === 'main') {
-      flows = flows.filter(f => !f.parentFlow && f.id.startsWith('umzugsofferten-'));
-    } else if (filterType === 'sub') {
-      flows = flows.filter(f => f.parentFlow || !f.id.startsWith('umzugsofferten-'));
-    } else if (filterType === 'available') {
-      flows = flows.filter(f => hasFlowComponent(f.id));
-    }
-    
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      flows = flows.filter(f => 
-        f.label.toLowerCase().includes(query) ||
-        f.id.toLowerCase().includes(query) ||
-        f.description.toLowerCase().includes(query)
-      );
-    }
-    
-    return flows;
-  }, [allFlows, filterType, searchQuery]);
+    if (!searchQuery) return FLOW_LIST;
+    const q = searchQuery.toLowerCase();
+    return FLOW_LIST.filter(f => 
+      f.label.toLowerCase().includes(q) || f.description.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
   const handleRegister = () => {
     if (!testerInfo.name.trim() || !testerInfo.email.trim()) {
@@ -121,8 +84,6 @@ export default function FlowTester() {
   const startTest = (index: number) => {
     const flow = filteredFlows[index];
     if (!flow) return;
-    
-    // Open flow in new tab
     window.open(flow.path, '_blank');
     setCurrentFlowIndex(index);
     setCurrentRating(0);
@@ -134,184 +95,20 @@ export default function FlowTester() {
       toast.error('Bitte eine Bewertung abgeben');
       return;
     }
-    
     setFeedbacks(prev => ({
       ...prev,
-      [flowId]: {
-        ...prev[flowId],
-        overallRating: currentRating,
-        wouldRecommend: currentRating >= 4,
-        completedAt: new Date(),
-        comment: currentComment,
-      }
+      [flowId]: { ...prev[flowId], rating: currentRating, comment: currentComment, completedAt: new Date() }
     }));
-    
     setCurrentFlowIndex(null);
     toast.success('Feedback gespeichert!');
   };
 
-  const getCompletedCount = () => Object.values(feedbacks).filter(f => f.completedAt).length;
-  const getAvailableCount = () => allFlows.filter(f => hasFlowComponent(f.id)).length;
-
-  const renderFlowCard = (flow: FlowConfig, index: number) => {
-    const fb = feedbacks[flow.id];
-    const isCompleted = fb?.completedAt;
-    const isAvailable = hasFlowComponent(flow.id);
-    const isSubVariant = !!flow.parentFlow || !flow.id.startsWith('umzugsofferten-');
-    
-    return (
-      <Card key={flow.id} className={`relative overflow-hidden ${isCompleted ? 'bg-green-500/5 border-green-500/30' : ''} ${!isAvailable ? 'opacity-60' : ''}`}>
-        {isCompleted && (
-          <div className="absolute top-2 right-2">
-            <Badge className="bg-green-500">
-              <CheckCircle2 className="h-3 w-3 mr-1" />
-              Getestet
-            </Badge>
-          </div>
-        )}
-        {!isAvailable && !isCompleted && (
-          <div className="absolute top-2 right-2">
-            <Badge variant="outline" className="text-muted-foreground">
-              Nicht verfügbar
-            </Badge>
-          </div>
-        )}
-        <CardHeader className="pb-2">
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-lg ${flow.color || 'bg-muted'} flex items-center justify-center text-white font-bold text-xs`}>
-              {flow.id.replace('umzugsofferten-', '').toUpperCase().slice(0, 4)}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-base truncate">{flow.label}</CardTitle>
-                {isSubVariant && (
-                  <Badge variant="outline" className="text-xs shrink-0">Sub</Badge>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground line-clamp-1">{flow.description}</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="py-2">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="secondary" className="text-xs">{flow.steps?.length || '?'} Schritte</Badge>
-            <span className="truncate">{flow.path}</span>
-          </div>
-          {isCompleted && fb.overallRating > 0 && (
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs text-muted-foreground">Bewertung:</span>
-              <div className="flex">
-                {[1,2,3,4,5].map(star => (
-                  <Star key={star} className={`h-3 w-3 ${star <= fb.overallRating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
-                ))}
-              </div>
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="pt-2 gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex-1"
-            onClick={() => window.open(flow.path, '_blank')}
-            disabled={!isAvailable}
-          >
-            <Eye className="h-3 w-3 mr-1" />
-            Ansehen
-          </Button>
-          <Button
-            size="sm"
-            className="flex-1"
-            onClick={() => startTest(index)}
-            disabled={!isAvailable}
-          >
-            <Play className="h-3 w-3 mr-1" />
-            {isCompleted ? 'Nochmal' : 'Testen'}
-          </Button>
-        </CardFooter>
-      </Card>
-    );
-  };
-
-  // Feedback dialog
-  const renderFeedbackDialog = () => {
-    if (currentFlowIndex === null) return null;
-    const flow = filteredFlows[currentFlowIndex];
-    if (!flow) return null;
-    
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-        onClick={() => setCurrentFlowIndex(null)}
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-background rounded-xl p-6 max-w-md w-full shadow-xl"
-          onClick={e => e.stopPropagation()}
-        >
-          <h3 className="text-lg font-bold mb-4">Feedback für {flow.label}</h3>
-          
-          <div className="space-y-4">
-            <div>
-              <Label>Gesamtbewertung</Label>
-              <div className="flex gap-1 mt-2">
-                {[1,2,3,4,5].map(star => (
-                  <button
-                    key={star}
-                    onClick={() => setCurrentRating(star)}
-                    className="p-1 hover:scale-110 transition-transform"
-                  >
-                    <Star className={`h-8 w-8 ${star <= currentRating ? 'text-yellow-500 fill-yellow-500' : 'text-muted hover:text-yellow-400'}`} />
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div>
-              <Label>Kommentar (optional)</Label>
-              <Textarea
-                placeholder="Was hat Ihnen gefallen/gefehlt?"
-                value={currentComment}
-                onChange={(e) => setCurrentComment(e.target.value)}
-                rows={3}
-                className="mt-2"
-              />
-            </div>
-            
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setCurrentFlowIndex(null)}
-              >
-                <ThumbsDown className="mr-2 h-4 w-4" />
-                Abbrechen
-              </Button>
-              <Button
-                className="flex-1"
-                onClick={() => submitFeedback(flow.id)}
-                disabled={currentRating === 0}
-              >
-                <ThumbsUp className="mr-2 h-4 w-4" />
-                Speichern
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    );
-  };
+  const completedCount = Object.values(feedbacks).filter(f => f.completedAt).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <Helmet>
         <title>Flow-Tester | Umzugscheck.ch</title>
-        <meta name="description" content="Testen Sie verschiedene Umzugsofferten-Flows" />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -324,15 +121,15 @@ export default function FlowTester() {
             </div>
             <div>
               <span className="font-bold text-lg">Flow-Tester</span>
-              <Badge variant="outline" className="ml-2">{getAvailableCount()} verfügbar</Badge>
+              <Badge variant="outline" className="ml-2">{FLOW_LIST.length} Flows</Badge>
             </div>
           </div>
           {isRegistered && (
             <div className="flex items-center gap-4">
-              <div className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">{getCompletedCount()}</span> / {getAvailableCount()} getestet
-              </div>
-              <Progress value={(getCompletedCount() / Math.max(getAvailableCount(), 1)) * 100} className="w-32 h-2" />
+              <span className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">{completedCount}</span> / {FLOW_LIST.length} getestet
+              </span>
+              <Progress value={(completedCount / FLOW_LIST.length) * 100} className="w-32 h-2" />
             </div>
           )}
         </div>
@@ -348,7 +145,7 @@ export default function FlowTester() {
               </div>
               <CardTitle>Flow-Tester</CardTitle>
               <p className="text-muted-foreground text-sm">
-                Testen Sie {getAvailableCount()} verschiedene Flows und helfen Sie uns, den besten zu finden.
+                Testen Sie {FLOW_LIST.length} verschiedene Flows.
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -377,15 +174,15 @@ export default function FlowTester() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="user" id="user" />
-                    <Label htmlFor="user">Normaler Nutzer</Label>
+                    <Label htmlFor="user">Nutzer</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="ux" id="ux" />
-                    <Label htmlFor="ux">UX/Design Experte</Label>
+                    <Label htmlFor="ux">UX Experte</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="business" id="business" />
-                    <Label htmlFor="business">Business/Marketing</Label>
+                    <Label htmlFor="business">Business</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -393,7 +190,7 @@ export default function FlowTester() {
             <CardFooter>
               <Button className="w-full" onClick={handleRegister}>
                 <Play className="mr-2 h-4 w-4" />
-                Mit Testen beginnen
+                Starten
               </Button>
             </CardFooter>
           </Card>
@@ -409,70 +206,83 @@ export default function FlowTester() {
                   <div>
                     <h3 className="font-bold text-base mb-1">So funktioniert es</h3>
                     <p className="text-sm text-muted-foreground">
-                      Klicken Sie auf <strong>Testen</strong> um einen Flow in neuem Tab zu öffnen. 
-                      Nach dem Testen geben Sie Ihr Feedback.
+                      Klicken Sie auf <strong>Testen</strong> um einen Flow zu öffnen.
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Search & Filter */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Flow suchen..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Tabs value={filterType} onValueChange={(v) => setFilterType(v as any)} className="w-full sm:w-auto">
-                <TabsList className="grid grid-cols-4 w-full sm:w-auto">
-                  <TabsTrigger value="available">Verfügbar</TabsTrigger>
-                  <TabsTrigger value="all">Alle</TabsTrigger>
-                  <TabsTrigger value="main">Haupt</TabsTrigger>
-                  <TabsTrigger value="sub">Sub</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-
-            {/* Flow stats */}
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Filter className="h-4 w-4" />
-              <span>{filteredFlows.length} Flows angezeigt</span>
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Flow suchen..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
 
             {/* Flow Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredFlows.map((flow, i) => renderFlowCard(flow, i))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredFlows.map((flow, i) => {
+                const fb = feedbacks[flow.id];
+                const isCompleted = fb?.completedAt;
+                
+                return (
+                  <Card key={flow.id} className={isCompleted ? 'bg-green-500/5 border-green-500/30' : ''}>
+                    {isCompleted && (
+                      <div className="absolute top-2 right-2">
+                        <Badge className="bg-green-500">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Getestet
+                        </Badge>
+                      </div>
+                    )}
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-lg ${flow.color} flex items-center justify-center text-white font-bold text-sm`}>
+                          {flow.id.toUpperCase()}
+                        </div>
+                        <div>
+                          <CardTitle className="text-base">{flow.label}</CardTitle>
+                          <p className="text-xs text-muted-foreground">{flow.description}</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="py-2">
+                      <Badge variant="secondary" className="text-xs">{flow.steps} Schritte</Badge>
+                      {isCompleted && fb.rating > 0 && (
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-xs text-muted-foreground">Bewertung:</span>
+                          <div className="flex">
+                            {[1,2,3,4,5].map(star => (
+                              <Star key={star} className={`h-3 w-3 ${star <= fb.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                    <CardFooter className="pt-2 gap-2">
+                      <Button size="sm" variant="outline" className="flex-1" onClick={() => window.open(flow.path, '_blank')}>
+                        <Eye className="h-3 w-3 mr-1" />
+                        Ansehen
+                      </Button>
+                      <Button size="sm" className="flex-1" onClick={() => startTest(i)}>
+                        <Play className="h-3 w-3 mr-1" />
+                        {isCompleted ? 'Nochmal' : 'Testen'}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })}
             </div>
 
             {filteredFlows.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <p>Keine Flows gefunden.</p>
-                <Button variant="link" onClick={() => { setSearchQuery(''); setFilterType('available'); }}>
-                  Filter zurücksetzen
-                </Button>
               </div>
-            )}
-
-            {/* Summary */}
-            {getCompletedCount() >= 3 && (
-              <Card className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/20">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <Trophy className="h-10 w-10 text-green-500" />
-                    <div>
-                      <h3 className="font-bold text-lg">Super gemacht!</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Sie haben {getCompletedCount()} Flows getestet. Vielen Dank!
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             )}
           </div>
         )}
@@ -480,7 +290,60 @@ export default function FlowTester() {
 
       {/* Feedback Dialog */}
       <AnimatePresence>
-        {currentFlowIndex !== null && renderFeedbackDialog()}
+        {currentFlowIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            onClick={() => setCurrentFlowIndex(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              className="bg-background rounded-xl p-6 max-w-md w-full shadow-xl"
+              onClick={e => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-bold mb-4">Feedback für {filteredFlows[currentFlowIndex]?.label}</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label>Bewertung</Label>
+                  <div className="flex gap-1 mt-2">
+                    {[1,2,3,4,5].map(star => (
+                      <button key={star} onClick={() => setCurrentRating(star)} className="p-1 hover:scale-110 transition-transform">
+                        <Star className={`h-8 w-8 ${star <= currentRating ? 'text-yellow-500 fill-yellow-500' : 'text-muted hover:text-yellow-400'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <Label>Kommentar</Label>
+                  <Textarea
+                    placeholder="Was hat Ihnen gefallen?"
+                    value={currentComment}
+                    onChange={(e) => setCurrentComment(e.target.value)}
+                    rows={3}
+                    className="mt-2"
+                  />
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1" onClick={() => setCurrentFlowIndex(null)}>
+                    <ThumbsDown className="mr-2 h-4 w-4" />
+                    Abbrechen
+                  </Button>
+                  <Button className="flex-1" onClick={() => submitFeedback(filteredFlows[currentFlowIndex]?.id)} disabled={currentRating === 0}>
+                    <ThumbsUp className="mr-2 h-4 w-4" />
+                    Speichern
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
