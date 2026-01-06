@@ -693,13 +693,46 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
   'v8a': {
     id: 'v8a',
     label: 'V8a Decision-Free (Feedback)',
-    path: '/umzugsofferten-v8?variant=v8a',
+    path: '/umzugsofferten-v8a',
     color: 'bg-teal-600',
     description: 'V8 Feedback: 2-Step, Review-Card, Transparenz-Panel',
     parentFlow: 'umzugsofferten-v8',
     steps: [
       { step: 1, name: 'Kurze Eingabe', description: 'PLZ, Datum, Zimmer' },
       { step: 2, name: 'Review & Kontakt', description: 'Überblick + Kontaktdaten' },
+    ],
+  },
+  // V2 Archetyp - Best-of-Best
+  'v2-archetyp': {
+    id: 'v2-archetyp',
+    label: 'V2 Archetyp ⭐⭐',
+    path: '/umzugsofferten-v2-archetyp',
+    color: 'bg-gradient-to-r from-purple-600 to-pink-500',
+    description: 'V2 Archetyp: 4 Kundentypen, Swiss Framework, KI-Video',
+    parentFlow: 'umzugsofferten-v2',
+    steps: [
+      { step: 1, name: 'Typ wählen', description: 'Security/Efficiency/Value/Overwhelmed' },
+      { step: 2, name: 'Adressen', description: 'Von-Nach mit Autocomplete' },
+      { step: 3, name: 'Details', description: 'Zimmer, Datum, Video-Option' },
+      { step: 4, name: 'Services', description: 'Paket-Auswahl' },
+      { step: 5, name: 'Firmen', description: 'Firmenvergleich' },
+      { step: 6, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+    ],
+  },
+  // Ultimate Swiss Flow
+  'ultimate-ch': {
+    id: 'ultimate-ch',
+    label: 'Ultimate CH ⭐⭐',
+    path: '/umzugsofferten-ultimate-ch',
+    color: 'bg-gradient-to-r from-red-600 to-red-500',
+    description: 'Ultimate Swiss: Komplett Schweiz-optimiert',
+    parentFlow: 'umzugsofferten-v9',
+    steps: [
+      { step: 1, name: 'Start', description: 'Swiss Trust Intro' },
+      { step: 2, name: 'Adressen', description: 'Von-Nach PLZ' },
+      { step: 3, name: 'Details', description: 'CH-Zimmer, Datum' },
+      { step: 4, name: 'Services', description: 'Pakete wählen' },
+      { step: 5, name: 'Kontakt', description: 'Absenden' },
     ],
   },
   // V9 Variants
