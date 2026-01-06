@@ -679,7 +679,7 @@ const AppRouterContent = () => {
           <Route path="/golden-flow-v10" element={<GoldenFlowV10 />} />
 
           {/* Flow tester already defined at top, only redirects here */}
-          <Route path="/flows/:groupId" element={<FlowShowcase />} />
+          <Route path="/flow/:flowId" element={<FlowShowcase />} />
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
           <Route path="/flow-comparison" element={<TopFlowsComparison />} />
           <Route path="/flow-vergleich" element={<TopFlowsComparison />} />

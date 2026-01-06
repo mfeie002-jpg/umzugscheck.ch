@@ -1,188 +1,162 @@
 /**
- * Flow Showcase - Standalone Landing Pages für Flow-Gruppen
- * Mobile-optimiert, keine iframes - Flows direkt eingebettet
+ * Flow Showcase - Standalone Landing Pages für einzelne Flows
+ * Mobile-optimiert, Flow direkt eingebettet (kein iframe!)
  */
 
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { motion } from 'framer-motion';
+import { ArrowLeft, Shield, Clock, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Star, Zap, Trophy, ChevronRight, ExternalLink } from 'lucide-react';
 
-// Flow-Gruppen Definition
-const FLOW_GROUPS = {
-  'gemini-top': {
-    title: 'Gemini Top Flows',
-    subtitle: 'Die 3 höchstbewerteten Flows (Score 4.8-5.0)',
+// Lazy load Flow Components
+const V9ZeroFrictionFlow = lazy(() => import('@/components/calculator-variants/V9ZeroFrictionFlow'));
+const UltimateBest36Flow = lazy(() => import('@/components/calculator-variants/UltimateBest36Flow'));
+const GoldenFlowV10 = lazy(() => import('@/components/calculator-variants/GoldenFlowV10'));
+const SwissLightningFlow = lazy(() => import('@/components/calculator-variants/SwissLightningFlow'));
+const SwissPremiumChoiceFlow = lazy(() => import('@/components/calculator-variants/SwissPremiumChoiceFlow'));
+const SwissConciergeHybridFlow = lazy(() => import('@/components/calculator-variants/SwissConciergeHybridFlow'));
+const UltimateV7Flow = lazy(() => import('@/components/calculator-variants/UltimateV7Flow'));
+
+// Flow definitions with direct component mapping
+const FLOWS: Record<string, {
+  title: string;
+  subtitle: string;
+  component: React.LazyExoticComponent<React.ComponentType<any>>;
+  score?: string;
+  color: string;
+}> = {
+  'v9-zero-friction': {
+    title: 'Zero Friction Flow',
+    subtitle: 'Schnell & unkompliziert zum Angebot',
+    component: V9ZeroFrictionFlow,
+    score: '4.9',
     color: 'from-amber-500 to-orange-600',
-    flows: [
-      { id: 'v9-zero-friction', name: 'V9 Zero Friction', score: '4.9', path: '/v9-zero-friction', description: '5 Steps, Route-Fokus, Labor Illusion' },
-      { id: 'ultimate-best36', name: 'Ultimate Best36', score: '4.8', path: '/ultimate-best36', description: '4 Steps, Auto-Advance, High-Contrast' },
-      { id: 'golden-flow-v10', name: 'Golden Flow V10', score: '5.0', path: '/golden-flow-v10', description: '6 Steps, Glassmorphism, Perfekter Score' },
-    ]
   },
-  'swiss-premium': {
-    title: 'Swiss Premium Flows',
-    subtitle: '3 neue Flows mit modernsten Flow-Components',
+  'ultimate-best36': {
+    title: 'Ultimate Best36',
+    subtitle: 'Optimiert für beste Conversion',
+    component: UltimateBest36Flow,
+    score: '4.8',
+    color: 'from-orange-500 to-red-600',
+  },
+  'golden-flow-v10': {
+    title: 'Golden Flow V10',
+    subtitle: 'Der perfekte Score',
+    component: GoldenFlowV10,
+    score: '5.0',
+    color: 'from-yellow-500 to-amber-600',
+  },
+  'swiss-lightning': {
+    title: 'Swiss Lightning',
+    subtitle: '90 Sekunden zum Lead',
+    component: SwissLightningFlow,
     color: 'from-emerald-500 to-teal-600',
-    flows: [
-      { id: 'swiss-lightning', name: 'Swiss Lightning', score: '⚡', path: '/swiss-lightning', description: '2 Steps, 90 Sek. bis Lead' },
-      { id: 'swiss-premium-choice', name: 'Swiss Premium Choice', score: '💎', path: '/swiss-premium-choice', description: '3 Steps mit Paketauswahl' },
-      { id: 'swiss-concierge-hybrid', name: 'Swiss Concierge Hybrid', score: '🎬', path: '/swiss-concierge-hybrid', description: '4 Steps, optionales Video' },
-    ]
   },
-  'chatgpt': {
-    title: 'ChatGPT Optimized Flows',
-    subtitle: '3 Premium-Flows von ChatGPT optimiert',
-    color: 'from-blue-500 to-teal-500',
-    flows: [
-      { id: 'chatgpt-flow-1', name: 'ChatGPT Flow 1', score: '⭐⭐', path: '/chatgpt-flow-1', description: 'Zero Friction Pro: 2 Steps' },
-      { id: 'chatgpt-flow-2', name: 'ChatGPT Flow 2', score: '⭐⭐', path: '/chatgpt-flow-2', description: 'Social Proof Boosted: 3 Steps' },
-      { id: 'chatgpt-flow-3', name: 'ChatGPT Flow 3', score: '⭐⭐', path: '/chatgpt-flow-3', description: 'Personalized Guided Chat' },
-    ]
+  'swiss-premium-choice': {
+    title: 'Swiss Premium Choice',
+    subtitle: 'Mit Paketauswahl',
+    component: SwissPremiumChoiceFlow,
+    color: 'from-teal-500 to-cyan-600',
+  },
+  'swiss-concierge-hybrid': {
+    title: 'Swiss Concierge Hybrid',
+    subtitle: 'Optionales Video-Feature',
+    component: SwissConciergeHybridFlow,
+    color: 'from-cyan-500 to-blue-600',
+  },
+  'ultimate-v7': {
+    title: 'Ultimate V7',
+    subtitle: 'Social Proof & Live-Chat',
+    component: UltimateV7Flow,
+    score: '4.5',
+    color: 'from-purple-500 to-pink-600',
   },
 };
 
-export default function FlowShowcase() {
-  const { groupId } = useParams<{ groupId: string }>();
-  const group = FLOW_GROUPS[groupId as keyof typeof FLOW_GROUPS];
-  const [expandedFlow, setExpandedFlow] = useState<string | null>(null);
+// Minimal Trust Bar for flow pages
+const FlowTrustBar = () => (
+  <div className="flex items-center justify-center gap-4 py-2 px-4 bg-muted/50 text-xs text-muted-foreground">
+    <span className="flex items-center gap-1">
+      <Shield className="h-3 w-3 text-emerald-600" />
+      SSL-gesichert
+    </span>
+    <span className="flex items-center gap-1">
+      <Clock className="h-3 w-3" />
+      ~2 Min
+    </span>
+    <span className="flex items-center gap-1">
+      <Star className="h-3 w-3 text-amber-500" />
+      4.8/5
+    </span>
+  </div>
+);
 
-  if (!group) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-bold mb-2">Flow-Gruppe nicht gefunden</h2>
-            <p className="text-muted-foreground mb-4">Die angeforderte Flow-Gruppe existiert nicht.</p>
-            <Button asChild>
-              <Link to="/flow-tester">Zurück zum Flow-Tester</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+// Loading fallback
+const FlowLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="text-center space-y-4">
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+      <p className="text-muted-foreground">Flow wird geladen...</p>
+    </div>
+  </div>
+);
+
+export default function FlowShowcase() {
+  const { flowId } = useParams<{ flowId: string }>();
+  const flow = flowId ? FLOWS[flowId] : null;
+
+  // Redirect to main flow tester if flow not found
+  if (!flow) {
+    return <Navigate to="/flow-tester" replace />;
   }
 
+  const FlowComponent = flow.component;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+    <div className="min-h-screen flex flex-col bg-background">
       <Helmet>
-        <title>{group.title} | Umzugscheck.ch</title>
+        <title>{flow.title} | Umzugscheck.ch</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild>
+      {/* Minimal Header - only on larger screens or as floating back button on mobile */}
+      <header className="fixed top-4 left-4 z-50 md:relative md:top-0 md:left-0 md:border-b md:bg-background/95 md:backdrop-blur">
+        <div className="md:container md:mx-auto md:px-4 md:py-3">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              asChild 
+              className="h-10 w-10 rounded-full shadow-lg md:shadow-none md:rounded-md bg-background"
+            >
               <Link to="/flow-tester">
                 <ArrowLeft className="h-5 w-5" />
               </Link>
             </Button>
-            <div>
-              <h1 className="font-bold text-lg">{group.title}</h1>
-              <p className="text-sm text-muted-foreground">{group.subtitle}</p>
+            <div className="hidden md:block">
+              <h1 className="font-semibold">{flow.title}</h1>
+              <p className="text-sm text-muted-foreground">{flow.subtitle}</p>
             </div>
+            {flow.score && (
+              <span className="hidden md:inline-flex ml-auto px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium">
+                Score: {flow.score}
+              </span>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Flow Cards - Mobile-First Vertical Layout */}
-      <main className="container mx-auto px-4 py-6 space-y-6">
-        {group.flows.map((flow, index) => (
-          <motion.div
-            key={flow.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <Card className="overflow-hidden">
-              <CardHeader className={`bg-gradient-to-r ${group.color} text-white`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-                      {groupId === 'gemini-top' && <Trophy className="h-5 w-5" />}
-                      {groupId === 'swiss-premium' && <Zap className="h-5 w-5" />}
-                      {groupId === 'chatgpt' && <Star className="h-5 w-5" />}
-                    </div>
-                    <div>
-                      <CardTitle className="text-white text-lg">{flow.name}</CardTitle>
-                      <p className="text-white/80 text-sm">{flow.description}</p>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0">
-                    {flow.score}
-                  </Badge>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="p-4 space-y-4">
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button asChild className="flex-1" size="lg">
-                    <Link to={flow.path}>
-                      Flow öffnen
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="flex-1" 
-                    size="lg"
-                    onClick={() => setExpandedFlow(expandedFlow === flow.id ? null : flow.id)}
-                  >
-                    {expandedFlow === flow.id ? 'Vorschau schliessen' : 'Vorschau anzeigen'}
-                    <ChevronRight className={`ml-2 h-4 w-4 transition-transform ${expandedFlow === flow.id ? 'rotate-90' : ''}`} />
-                  </Button>
-                </div>
+      {/* Trust Bar - visible on mobile */}
+      <div className="md:hidden">
+        <FlowTrustBar />
+      </div>
 
-                {/* Expanded Preview - Full Height on Mobile */}
-                {expandedFlow === flow.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="border rounded-lg overflow-hidden"
-                  >
-                    <div className="bg-muted/50 p-2 text-center text-sm text-muted-foreground border-b">
-                      Live-Vorschau • <Link to={flow.path} className="text-primary hover:underline">Vollbild öffnen →</Link>
-                    </div>
-                    <iframe
-                      src={flow.path}
-                      className="w-full h-[70vh] sm:h-[600px] border-0"
-                      title={`Preview: ${flow.name}`}
-                    />
-                  </motion.div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-
-        {/* Quick Links zu anderen Gruppen */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="text-base">Andere Flow-Gruppen</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {Object.entries(FLOW_GROUPS)
-                .filter(([key]) => key !== groupId)
-                .map(([key, g]) => (
-                  <Button key={key} variant="outline" asChild className="justify-start">
-                    <Link to={`/flows/${key}`}>
-                      <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${g.color} mr-2`} />
-                      {g.title}
-                    </Link>
-                  </Button>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
+      {/* Flow Component - Full Screen */}
+      <main className="flex-1">
+        <Suspense fallback={<FlowLoader />}>
+          <FlowComponent />
+        </Suspense>
       </main>
     </div>
   );
