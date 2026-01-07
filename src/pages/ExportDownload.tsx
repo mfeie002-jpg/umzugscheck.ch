@@ -33,28 +33,49 @@ const ExportDownload = () => {
     try {
       const zip = new JSZip();
       const screenshotsFolder = zip.folder("mobile-screenshots");
-      const total = MOBILE_SCREENSHOTS.length + 3; // screenshots + 3 files
+      const total = MOBILE_SCREENSHOTS.length + 6; // screenshots + 6 files
 
-      // Fetch JSON
-      setStatus("Lade JSON...");
+      // Fetch Summary JSON
+      setStatus("Lade Zusammenfassung JSON...");
       const jsonResponse = await fetch("/exports/top10-flows-mobile-complete.json");
       const jsonData = await jsonResponse.text();
       zip.file("top10-flows-mobile-complete.json", jsonData);
       setProgress(1 / total * 100);
 
-      // Fetch Markdown
-      setStatus("Lade Markdown...");
+      // Fetch Summary Markdown
+      setStatus("Lade Zusammenfassung Markdown...");
       const mdResponse = await fetch("/exports/top10-flows-mobile-complete.md");
       const mdData = await mdResponse.text();
       zip.file("top10-flows-mobile-complete.md", mdData);
       setProgress(2 / total * 100);
 
-      // Fetch HTML
-      setStatus("Lade HTML...");
+      // Fetch Summary HTML
+      setStatus("Lade Zusammenfassung HTML...");
       const htmlResponse = await fetch("/exports/top10-flows-mobile-complete.html");
       const htmlData = await htmlResponse.text();
       zip.file("top10-flows-mobile-complete.html", htmlData);
       setProgress(3 / total * 100);
+
+      // Fetch All-Steps JSON (39 einzelne Steps)
+      setStatus("Lade Alle Steps JSON...");
+      const allStepsJsonResponse = await fetch("/exports/top10-flows-all-steps-mobile.json");
+      const allStepsJsonData = await allStepsJsonResponse.text();
+      zip.file("top10-flows-all-steps-mobile.json", allStepsJsonData);
+      setProgress(4 / total * 100);
+
+      // Fetch All-Steps Markdown
+      setStatus("Lade Alle Steps Markdown...");
+      const allStepsMdResponse = await fetch("/exports/top10-flows-all-steps-mobile.md");
+      const allStepsMdData = await allStepsMdResponse.text();
+      zip.file("top10-flows-all-steps-mobile.md", allStepsMdData);
+      setProgress(5 / total * 100);
+
+      // Fetch All-Steps HTML
+      setStatus("Lade Alle Steps HTML...");
+      const allStepsHtmlResponse = await fetch("/exports/top10-flows-all-steps-mobile.html");
+      const allStepsHtmlData = await allStepsHtmlResponse.text();
+      zip.file("top10-flows-all-steps-mobile.html", allStepsHtmlData);
+      setProgress(6 / total * 100);
 
       // Fetch Screenshots
       for (let i = 0; i < MOBILE_SCREENSHOTS.length; i++) {
@@ -69,7 +90,7 @@ const ExportDownload = () => {
           console.error(`Failed to fetch screenshot for ${flow.name}:`, err);
         }
         
-        setProgress(((i + 4) / total) * 100);
+        setProgress(((i + 7) / total) * 100);
       }
 
       // Generate ZIP
@@ -106,10 +127,10 @@ const ExportDownload = () => {
           <div className="bg-muted/50 rounded-lg p-4 space-y-3">
             <h3 className="font-medium text-sm">Inhalt der ZIP-Datei:</h3>
             <div className="space-y-2 text-sm">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Zusammenfassung</p>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <FileJson className="h-4 w-4 text-blue-500" />
                 <span>top10-flows-mobile-complete.json</span>
-                <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">39 Steps</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <FileText className="h-4 w-4 text-green-500" />
@@ -119,6 +140,23 @@ const ExportDownload = () => {
                 <FileCode className="h-4 w-4 text-orange-500" />
                 <span>top10-flows-mobile-complete.html</span>
               </div>
+              
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-2">Alle 39 Steps einzeln</p>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <FileJson className="h-4 w-4 text-blue-500" />
+                <span>top10-flows-all-steps-mobile.json</span>
+                <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">39 Steps</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <FileText className="h-4 w-4 text-green-500" />
+                <span>top10-flows-all-steps-mobile.md</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <FileCode className="h-4 w-4 text-orange-500" />
+                <span>top10-flows-all-steps-mobile.html</span>
+              </div>
+              
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-2">Screenshots</p>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Image className="h-4 w-4 text-purple-500" />
                 <span>mobile-screenshots/ (10 PNG-Dateien)</span>
@@ -163,20 +201,37 @@ const ExportDownload = () => {
           </Button>
 
           {/* Individual Links */}
-          <div className="pt-4 border-t">
-            <p className="text-xs text-muted-foreground text-center mb-3">
+          <div className="pt-4 border-t space-y-3">
+            <p className="text-xs text-muted-foreground text-center">
               Oder einzelne Dateien herunterladen:
             </p>
-            <div className="flex gap-2 justify-center flex-wrap">
-              <Button variant="outline" size="sm" asChild>
-                <a href="/exports/top10-flows-mobile-complete.json" download>JSON</a>
-              </Button>
-              <Button variant="outline" size="sm" asChild>
-                <a href="/exports/top10-flows-mobile-complete.md" download>Markdown</a>
-              </Button>
-              <Button variant="outline" size="sm" asChild>
-                <a href="/exports/top10-flows-mobile-complete.html" download>HTML</a>
-              </Button>
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">Zusammenfassung:</p>
+              <div className="flex gap-2 justify-center flex-wrap">
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/exports/top10-flows-mobile-complete.json" download>JSON</a>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/exports/top10-flows-mobile-complete.md" download>MD</a>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/exports/top10-flows-mobile-complete.html" download>HTML</a>
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">Alle 39 Steps:</p>
+              <div className="flex gap-2 justify-center flex-wrap">
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/exports/top10-flows-all-steps-mobile.json" download>JSON</a>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/exports/top10-flows-all-steps-mobile.md" download>MD</a>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/exports/top10-flows-all-steps-mobile.html" download>HTML</a>
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
