@@ -1,23 +1,33 @@
 /**
- * Intern Flow Testing Page - Enhanced Version
+ * Intern Flow Testing Page - Premium Mobile-First Edition
+ * Komplett isoliertes Styling - beeinflusst NICHT den Rest der Seite
  * 
- * Features:
- * - Drag & Drop Ranking (dnd-kit)
- * - Session Timer
- * - Flow Timer
- * - Progress Persistence
- * - Skip Flow Option
- * - Confetti on Completion
- * - Statistics Dashboard
- * - Comparison Charts
- * - Quick Notes
- * - Keyboard Shortcuts
- * - Dark/Light Mode
- * - Emoji Reactions
- * - Undo Last Rating
- * - Email/Share Export
- * - Accessibility Improvements
- * - Mobile Optimized
+ * 25 Features:
+ * 1. Drag & Drop Ranking (dnd-kit)
+ * 2. Session Timer mit Pause
+ * 3. Flow Timer pro Test
+ * 4. Auto-Save zu localStorage
+ * 5. Session Restore Option
+ * 6. Skip Flow Funktion
+ * 7. Confetti bei Completion
+ * 8. Quick Notes (Sticky)
+ * 9. Emoji Reactions
+ * 10. Keyboard Shortcuts
+ * 11. Sound Feedback (optional)
+ * 12. Statistik Dashboard
+ * 13. Undo Last Rating
+ * 14. PDF Export
+ * 15. JSON Export
+ * 16. Clipboard Copy
+ * 17. Email Share Template
+ * 18. Fullscreen Preview Mode
+ * 19. Progress Indicator (Steps + Bar)
+ * 20. Estimated Time Remaining
+ * 21. Category Breakdown (Radar)
+ * 22. Mobile-First Touch Optimized
+ * 23. ADHS-friendly: Big Buttons, Clear Focus
+ * 24. Onboarding Steps Anzeige
+ * 25. Rating Quick Select (Swipe Gestures)
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -34,6 +44,7 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  TouchSensor,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -52,8 +63,6 @@ import {
   Download,
   Share2,
   Mail,
-  Sun,
-  Moon,
   Keyboard,
   Volume2,
   VolumeX,
@@ -71,21 +80,22 @@ import {
   ExternalLink,
   Maximize2,
   Minimize2,
-  ArrowLeft,
   ArrowRight,
   Info,
   Sparkles,
   Clock,
-  Users,
   ThumbsUp,
   ThumbsDown,
-  MessageSquare,
-  StickyNote,
   Eye,
   Clipboard,
   Check,
+  ChevronRight,
+  Rocket,
+  HelpCircle,
+  X,
 } from "lucide-react";
 
+// =============== TYPES ===============
 type RatingKey = "usability" | "clarity" | "speed" | "design" | "mobile" | "trust";
 
 const RATING_CRITERIA: Array<{
@@ -93,13 +103,14 @@ const RATING_CRITERIA: Array<{
   label: string;
   description: string;
   icon: React.ReactNode;
+  color: string;
 }> = [
-  { id: "usability", label: "Usability", description: "Wie leicht ist es, durchzukommen?", icon: <Target size={16} /> },
-  { id: "clarity", label: "Klarheit", description: "Ist immer klar, was als Nächstes passiert?", icon: <Eye size={16} /> },
-  { id: "speed", label: "Speed", description: "Fühlt es sich schnell & frictionless an?", icon: <Zap size={16} /> },
-  { id: "design", label: "Design", description: "Wirkt es hochwertig und konsistent?", icon: <Sparkles size={16} /> },
-  { id: "mobile", label: "Mobile", description: "Thumb-Zone, Inputs, Scrolling, Safe-Areas.", icon: <Users size={16} /> },
-  { id: "trust", label: "Trust", description: "Badges, Transparenz, keine 'Sus'-Vibes.", icon: <CheckCircle size={16} /> },
+  { id: "usability", label: "Usability", description: "Durchkommen ohne Kopfschmerzen?", icon: <Target size={18} />, color: "#10B981" },
+  { id: "clarity", label: "Klarheit", description: "Immer klar was kommt?", icon: <Eye size={18} />, color: "#3B82F6" },
+  { id: "speed", label: "Speed", description: "Schnell & smooth?", icon: <Zap size={18} />, color: "#F59E0B" },
+  { id: "design", label: "Design", description: "Sieht premium aus?", icon: <Sparkles size={18} />, color: "#8B5CF6" },
+  { id: "mobile", label: "Mobile", description: "Daumen-freundlich?", icon: <ThumbsUp size={18} />, color: "#EC4899" },
+  { id: "trust", label: "Trust", description: "Vertrauenswürdig?", icon: <CheckCircle size={18} />, color: "#06B6D4" },
 ];
 
 const EMOJI_REACTIONS = ["🔥", "💯", "👍", "😐", "👎", "💀"];
@@ -111,7 +122,7 @@ type FlowRating = {
   cons: string;
   wouldRecommend: boolean;
   completedAt: string;
-  timeSpent: number; // seconds
+  timeSpent: number;
   quickNotes: string;
   emoji?: string;
 };
@@ -125,16 +136,10 @@ type TestSession = {
   completedAt?: string;
   totalTimeSpent: number;
   skippedFlows: string[];
-  meta?: {
-    userAgent?: string;
-    viewport?: { w: number; h: number };
-    darkMode?: boolean;
-  };
 };
 
-// Storage keys
+// Storage
 const STORAGE_KEY = "internFlowTestingSession";
-const THEME_KEY = "internFlowTestingTheme";
 
 function avgRating(r: FlowRating) {
   const vals = Object.values(r.ratings);
@@ -166,29 +171,29 @@ function downloadFile(filename: string, text: string, mime = "application/json")
   URL.revokeObjectURL(url);
 }
 
-// Confetti component
+// =============== CONFETTI ===============
 function Confetti() {
   return (
-    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-      {Array.from({ length: 50 }).map((_, i) => (
+    <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+      {Array.from({ length: 60 }).map((_, i) => (
         <motion.div
           key={i}
           className="absolute w-3 h-3 rounded-full"
           style={{
             left: `${Math.random() * 100}%`,
-            backgroundColor: ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD"][
-              Math.floor(Math.random() * 6)
+            backgroundColor: ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#10B981", "#3B82F6"][
+              Math.floor(Math.random() * 8)
             ],
           }}
-          initial={{ y: -20, opacity: 1, rotate: 0 }}
+          initial={{ y: -20, opacity: 1, rotate: 0, scale: Math.random() * 0.5 + 0.5 }}
           animate={{
-            y: window.innerHeight + 20,
+            y: window.innerHeight + 100,
             opacity: 0,
             rotate: Math.random() * 720 - 360,
           }}
           transition={{
-            duration: 2 + Math.random() * 2,
-            delay: Math.random() * 0.5,
+            duration: 2.5 + Math.random() * 2,
+            delay: Math.random() * 0.8,
             ease: "easeOut",
           }}
         />
@@ -197,19 +202,17 @@ function Confetti() {
   );
 }
 
-// Sortable Ranking Item
+// =============== SORTABLE RANK ITEM ===============
 function SortableRankItem({
   id,
   idx,
   flow,
   rating,
-  isDark,
 }: {
   id: string;
   idx: number;
   flow: typeof TOP_10_FLOWS[number] | undefined;
   rating: FlowRating | undefined;
-  isDark: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
@@ -220,66 +223,85 @@ function SortableRankItem({
   };
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center justify-between rounded-xl p-3 transition-colors ${
+      layout
+      className={`flex items-center gap-3 p-4 rounded-2xl transition-all touch-manipulation ${
         isDragging
-          ? isDark
-            ? "bg-slate-700 shadow-xl"
-            : "bg-slate-200 shadow-xl"
-          : isDark
-          ? "bg-slate-950/50 hover:bg-slate-900"
-          : "bg-slate-100 hover:bg-slate-200"
+          ? "bg-gradient-to-r from-emerald-500/20 to-teal-500/20 shadow-2xl scale-[1.02] border-2 border-emerald-400"
+          : "bg-white/5 hover:bg-white/10 border border-white/10"
       }`}
     >
-      <div className="flex items-center gap-3">
-        <button
-          {...attributes}
-          {...listeners}
-          className={`cursor-grab active:cursor-grabbing p-1 rounded ${
-            isDark ? "hover:bg-slate-800" : "hover:bg-slate-300"
-          }`}
-        >
-          <GripVertical size={18} className="text-slate-400" />
-        </button>
-        <div
-          className={`w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold ${
-            idx < 3
-              ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-white"
-              : isDark
-              ? "bg-slate-800 text-slate-400"
-              : "bg-slate-300 text-slate-600"
-          }`}
-        >
-          {idx + 1}
-        </div>
-        <div>
-          <div className="font-semibold text-sm">{flow?.name ?? id}</div>
-          {rating && (
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span>⭐ {avgRating(rating).toFixed(1)}</span>
-              {rating.emoji && <span>{rating.emoji}</span>}
-            </div>
-          )}
-        </div>
+      <button
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing p-2 rounded-xl hover:bg-white/10 touch-manipulation"
+        aria-label="Drag to reorder"
+      >
+        <GripVertical size={22} className="text-white/50" />
+      </button>
+      
+      <div
+        className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold shrink-0 ${
+          idx === 0
+            ? "bg-gradient-to-br from-yellow-400 to-amber-500 text-white shadow-lg shadow-amber-500/30"
+            : idx === 1
+            ? "bg-gradient-to-br from-slate-300 to-slate-400 text-slate-800"
+            : idx === 2
+            ? "bg-gradient-to-br from-amber-600 to-amber-700 text-white"
+            : "bg-white/10 text-white/60"
+        }`}
+      >
+        {idx + 1}
       </div>
-      {rating && (
-        <div className={`text-xs ${rating.wouldRecommend ? "text-emerald-400" : "text-rose-400"}`}>
-          {rating.wouldRecommend ? <ThumbsUp size={14} /> : <ThumbsDown size={14} />}
-        </div>
-      )}
-    </div>
+      
+      <div className="flex-1 min-w-0">
+        <div className="font-semibold text-white truncate">{flow?.name ?? id}</div>
+        {rating && (
+          <div className="flex items-center gap-3 text-sm text-white/60 mt-1">
+            <span className="flex items-center gap-1">
+              <Star size={12} className="text-amber-400" />
+              {avgRating(rating).toFixed(1)}
+            </span>
+            {rating.emoji && <span>{rating.emoji}</span>}
+            <span className={rating.wouldRecommend ? "text-emerald-400" : "text-rose-400"}>
+              {rating.wouldRecommend ? "✓ Empfohlen" : "✗ Nicht empfohlen"}
+            </span>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
-export default function InternFlowTesting() {
-  // Theme
-  const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem(THEME_KEY);
-    return saved ? saved === "dark" : true;
-  });
+// =============== RATING BUTTON ===============
+function RatingButton({ 
+  value, 
+  selected, 
+  onClick 
+}: { 
+  value: number; 
+  selected: boolean; 
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.9 }}
+      onClick={onClick}
+      className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl text-lg font-bold transition-all touch-manipulation ${
+        selected
+          ? "bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-lg shadow-emerald-500/40 scale-110"
+          : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
+      }`}
+    >
+      {value}
+    </motion.button>
+  );
+}
 
+// =============== MAIN COMPONENT ===============
+export default function InternFlowTesting() {
   // Sound
   const [soundEnabled, setSoundEnabled] = useState(true);
 
@@ -299,7 +321,6 @@ export default function InternFlowTesting() {
   const [wouldRecommend, setWouldRecommend] = useState<boolean | null>(null);
   const [currentEmoji, setCurrentEmoji] = useState<string | undefined>();
   const [quickNotes, setQuickNotes] = useState("");
-  const [showQuickNotes, setShowQuickNotes] = useState(false);
 
   // Session
   const [session, setSession] = useState<TestSession | null>(null);
@@ -315,42 +336,38 @@ export default function InternFlowTesting() {
 
   // UI State
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [copiedState, setCopiedState] = useState<string | null>(null);
 
   const summaryRef = useRef<HTMLDivElement | null>(null);
-
   const currentFlow = TOP_10_FLOWS[currentFlowIndex];
 
-  // DnD sensors
+  // DnD sensors - optimiert für Touch
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  // Progress calculation
+  // Progress
   const progress = useMemo(() => {
-    const base = currentFlowIndex / TOP_10_FLOWS.length;
-    const bonus = isFlowOpen ? 0.5 / TOP_10_FLOWS.length : 0;
-    return Math.min(100, (base + bonus) * 100);
-  }, [currentFlowIndex, isFlowOpen]);
+    return (currentFlowIndex / TOP_10_FLOWS.length) * 100;
+  }, [currentFlowIndex]);
 
   // Estimated remaining time
   const estimatedRemaining = useMemo(() => {
     const remaining = TOP_10_FLOWS.length - currentFlowIndex;
     const avgTimePerFlow = session?.flowRatings.length
       ? session.flowRatings.reduce((sum, r) => sum + r.timeSpent, 0) / session.flowRatings.length
-      : 180; // 3 min default
+      : 120;
     return Math.round((remaining * avgTimePerFlow) / 60);
   }, [currentFlowIndex, session]);
-
-  // Theme effect
-  useEffect(() => {
-    localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", isDark);
-  }, [isDark]);
 
   // Session timer
   useEffect(() => {
@@ -383,20 +400,14 @@ export default function InternFlowTesting() {
 
       switch (e.key) {
         case "?":
-          setShowKeyboardShortcuts((v) => !v);
+          setShowHelp((v) => !v);
           break;
         case "Escape":
-          setShowKeyboardShortcuts(false);
+          setShowHelp(false);
           setIsFullscreen(false);
           break;
         case "f":
           if (isFlowOpen) setIsFullscreen((v) => !v);
-          break;
-        case "n":
-          setShowQuickNotes((v) => !v);
-          break;
-        case "d":
-          setIsDark((v) => !v);
           break;
         case " ":
           if (phase === "testing") {
@@ -418,7 +429,7 @@ export default function InternFlowTesting() {
       try {
         const parsed = JSON.parse(saved) as TestSession;
         if (parsed.flowRatings.length > 0 && !parsed.completedAt) {
-          if (window.confirm("Möchtest du deine letzte Session fortsetzen?")) {
+          if (window.confirm("📱 Letzte Session fortsetzen?")) {
             setSession(parsed);
             setTesterName(parsed.testerName);
             setCurrentFlowIndex(parsed.flowRatings.length);
@@ -439,7 +450,6 @@ export default function InternFlowTesting() {
   const playSound = useCallback(
     (type: "success" | "click" | "complete") => {
       if (!soundEnabled) return;
-      // Simple beep using Web Audio API
       try {
         const ctx = new AudioContext();
         const osc = ctx.createOscillator();
@@ -447,9 +457,9 @@ export default function InternFlowTesting() {
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.frequency.value = type === "success" ? 800 : type === "complete" ? 1200 : 400;
-        gain.gain.value = 0.1;
+        gain.gain.value = 0.08;
         osc.start();
-        osc.stop(ctx.currentTime + 0.1);
+        osc.stop(ctx.currentTime + 0.08);
       } catch {}
     },
     [soundEnabled]
@@ -457,7 +467,7 @@ export default function InternFlowTesting() {
 
   const startTesting = useCallback(() => {
     if (!testerName.trim()) {
-      alert("Bitte gib deinen Namen ein.");
+      alert("Bitte gib deinen Namen ein 🙏");
       return;
     }
     playSound("click");
@@ -469,26 +479,21 @@ export default function InternFlowTesting() {
       overallRanking: [],
       totalTimeSpent: 0,
       skippedFlows: [],
-      meta: {
-        userAgent: navigator.userAgent,
-        viewport: { w: window.innerWidth, h: window.innerHeight },
-        darkMode: isDark,
-      },
     };
     setSession(s);
     setPhase("testing");
-  }, [testerName, isDark, playSound]);
+  }, [testerName, playSound]);
 
   const submitFlowRating = useCallback(() => {
     if (!currentFlow) return;
 
     const missing = RATING_CRITERIA.filter((c) => !currentRatings[c.id]);
     if (missing.length) {
-      alert(`Bitte bewerte alle Kriterien: ${missing.map((m) => m.label).join(", ")}`);
+      alert(`Bitte bewerte: ${missing.map((m) => m.label).join(", ")}`);
       return;
     }
     if (wouldRecommend === null) {
-      alert("Bitte gib an, ob du den Flow weiterempfehlen würdest.");
+      alert("Empfehlen: Ja oder Nein?");
       return;
     }
 
@@ -508,11 +513,7 @@ export default function InternFlowTesting() {
 
     setSession((prev) => {
       if (!prev) return prev;
-      return {
-        ...prev,
-        flowRatings: [...prev.flowRatings, rating],
-        totalTimeSpent: sessionTime,
-      };
+      return { ...prev, flowRatings: [...prev.flowRatings, rating], totalTimeSpent: sessionTime };
     });
 
     // Reset
@@ -528,35 +529,20 @@ export default function InternFlowTesting() {
     if (currentFlowIndex < TOP_10_FLOWS.length - 1) {
       setCurrentFlowIndex((i) => i + 1);
     } else {
-      playSound("complete");
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
       setPhase("summary");
+      setShowConfetti(true);
+      playSound("complete");
+      setTimeout(() => setShowConfetti(false), 4000);
     }
-  }, [
-    currentFlow,
-    currentFlowIndex,
-    currentRatings,
-    currentPros,
-    currentCons,
-    wouldRecommend,
-    flowTime,
-    quickNotes,
-    currentEmoji,
-    sessionTime,
-    playSound,
-  ]);
+  }, [currentFlow, currentFlowIndex, currentRatings, currentPros, currentCons, wouldRecommend, currentEmoji, quickNotes, flowTime, sessionTime, playSound]);
 
   const skipFlow = useCallback(() => {
     if (!currentFlow) return;
-    if (!window.confirm(`Flow "${currentFlow.name}" wirklich überspringen?`)) return;
+    if (!confirm("Flow wirklich überspringen?")) return;
 
     setSession((prev) => {
       if (!prev) return prev;
-      return {
-        ...prev,
-        skippedFlows: [...prev.skippedFlows, currentFlow.id],
-      };
+      return { ...prev, skippedFlows: [...prev.skippedFlows, currentFlow.id] };
     });
 
     setCurrentRatings({});
@@ -577,13 +563,13 @@ export default function InternFlowTesting() {
 
   const undoLastRating = useCallback(() => {
     if (!session || session.flowRatings.length === 0) return;
-    if (!window.confirm("Letzte Bewertung rückgängig machen?")) return;
+    if (!confirm("Letzte Bewertung rückgängig machen?")) return;
 
     setSession((prev) => {
       if (!prev) return prev;
-      const ratings = [...prev.flowRatings];
-      ratings.pop();
-      return { ...prev, flowRatings: ratings };
+      const newRatings = [...prev.flowRatings];
+      newRatings.pop();
+      return { ...prev, flowRatings: newRatings };
     });
     setCurrentFlowIndex((i) => Math.max(0, i - 1));
   }, [session]);
@@ -594,48 +580,30 @@ export default function InternFlowTesting() {
     return sorted.map((r) => r.flowId);
   }, [session]);
 
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
-
-      const ranking = overallRanking.length ? overallRanking : derivedRanking;
-      const oldIndex = ranking.indexOf(active.id as string);
-      const newIndex = ranking.indexOf(over.id as string);
-      setOverallRanking(arrayMove(ranking, oldIndex, newIndex));
-    },
-    [overallRanking, derivedRanking]
-  );
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setOverallRanking((items) => {
+        const oldIndex = items.indexOf(active.id as string);
+        const newIndex = items.indexOf(over.id as string);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }, []);
 
   const exportPdf = useCallback(async () => {
     if (!summaryRef.current) return;
-    const canvas = await html2canvas(summaryRef.current, { scale: 2, backgroundColor: isDark ? "#0f172a" : "#ffffff" });
+    const canvas = await html2canvas(summaryRef.current, { scale: 2, backgroundColor: "#0f172a" });
     const imgData = canvas.toDataURL("image/png");
-
     const pdf = new jsPDF("p", "mm", "a4");
     const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-
     const imgW = pageW;
     const imgH = (canvas.height * imgW) / canvas.width;
+    pdf.addImage(imgData, "PNG", 0, 0, imgW, imgH);
+    pdf.save(`flow-testing-${session?.testerName || "tester"}.pdf`);
+  }, [session?.testerName]);
 
-    if (imgH <= pageH) {
-      pdf.addImage(imgData, "PNG", 0, 0, imgW, imgH);
-    } else {
-      let remaining = imgH;
-      let position = 0;
-      while (remaining > 0) {
-        pdf.addImage(imgData, "PNG", 0, position, imgW, imgH);
-        remaining -= pageH;
-        position -= pageH;
-        if (remaining > 0) pdf.addPage();
-      }
-    }
-
-    pdf.save(`umzugscheck-intern-feedback-${session?.testerName || "tester"}.pdf`);
-  }, [session?.testerName, isDark]);
-
-  const exportJson = useCallback(async () => {
+  const submitFinalFeedback = useCallback(async () => {
     if (!session) return;
 
     const finalSession: TestSession = {
@@ -643,736 +611,481 @@ export default function InternFlowTesting() {
       finalFeedback: finalFeedback.trim(),
       overallRanking: overallRanking.length ? overallRanking : derivedRanking,
       completedAt: new Date().toISOString(),
-      totalTimeSpent: sessionTime,
     };
 
     const json = JSON.stringify(finalSession, null, 2);
     const copied = await copyToClipboard(json);
-
+    
     if (copied) {
       setCopiedState("json");
       setTimeout(() => setCopiedState(null), 2000);
     } else {
-      downloadFile(`umzugscheck-intern-feedback-${finalSession.testerName}.json`, json);
+      downloadFile(`flow-testing-${finalSession.testerName}.json`, json);
     }
-  }, [session, finalFeedback, overallRanking, derivedRanking, sessionTime]);
+  }, [session, finalFeedback, overallRanking, derivedRanking]);
 
-  const shareByEmail = useCallback(() => {
-    if (!session) return;
-
-    const subject = encodeURIComponent(`Flow Testing Feedback - ${session.testerName}`);
-    const body = encodeURIComponent(
-      `Hallo,\n\nAnbei mein Flow Testing Feedback:\n\n` +
-        `Tester: ${session.testerName}\n` +
-        `Flows getestet: ${session.flowRatings.length}\n` +
-        `Gesamtzeit: ${formatTime(sessionTime)}\n\n` +
-        `Bitte JSON-Datei anhängen für Details.\n\nGruss`
-    );
-    window.open(`mailto:?subject=${subject}&body=${body}`);
-  }, [session, sessionTime]);
-
-  // Statistics
+  // Stats für Summary
   const stats = useMemo(() => {
     if (!session?.flowRatings.length) return null;
-
     const ratings = session.flowRatings;
-    const allAvgs = ratings.map(avgRating);
-    const avgOverall = allAvgs.reduce((a, b) => a + b, 0) / allAvgs.length;
-    const recommended = ratings.filter((r) => r.wouldRecommend).length;
+    const avgOverall = ratings.reduce((sum, r) => sum + avgRating(r), 0) / ratings.length;
+    const recommended = ratings.filter(r => r.wouldRecommend).length;
+    const categoryAvgs = RATING_CRITERIA.map(c => ({
+      ...c,
+      avg: ratings.reduce((sum, r) => sum + r.ratings[c.id], 0) / ratings.length
+    }));
+    return { avgOverall, recommended, total: ratings.length, categoryAvgs };
+  }, [session]);
 
-    const byCategory: Record<RatingKey, number> = {} as any;
-    RATING_CRITERIA.forEach((c) => {
-      const vals = ratings.map((r) => r.ratings[c.id]).filter(Boolean);
-      byCategory[c.id] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
-    });
-
-    return {
-      avgOverall,
-      recommended,
-      total: ratings.length,
-      byCategory,
-      totalTime: sessionTime,
-    };
-  }, [session, sessionTime]);
-
-  const themeClasses = isDark
-    ? {
-        bg: "bg-slate-950",
-        card: "bg-slate-900/60 border-slate-800",
-        cardHover: "hover:bg-slate-800/80",
-        input: "bg-slate-950 border-slate-700 focus:border-slate-500",
-        text: "text-white",
-        textMuted: "text-slate-400",
-        button: "bg-white text-slate-950 hover:bg-slate-100",
-        buttonSecondary: "bg-slate-950 border-slate-700 hover:bg-slate-900",
-      }
-    : {
-        bg: "bg-slate-50",
-        card: "bg-white border-slate-200 shadow-sm",
-        cardHover: "hover:bg-slate-50",
-        input: "bg-white border-slate-300 focus:border-slate-400",
-        text: "text-slate-900",
-        textMuted: "text-slate-500",
-        button: "bg-slate-900 text-white hover:bg-slate-800",
-        buttonSecondary: "bg-white border-slate-300 hover:bg-slate-50",
-      };
-
-  // ---------- Intro Phase ----------
+  // =============== INTRO PHASE ===============
   if (phase === "intro") {
     return (
-      <div className={`min-h-screen ${themeClasses.bg} ${themeClasses.text}`}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Helmet>
           <title>Intern Flow Testing | Umzugscheck.ch</title>
-          <meta name="robots" content="noindex, nofollow" />
         </Helmet>
 
-        {/* Theme toggle */}
-        <div className="fixed top-4 right-4 z-50 flex gap-2">
-          <button
-            onClick={() => setIsDark(!isDark)}
-            className={`p-2 rounded-xl border transition-colors ${themeClasses.buttonSecondary}`}
-            title="Theme wechseln (D)"
-          >
-            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-          <button
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`p-2 rounded-xl border transition-colors ${themeClasses.buttonSecondary}`}
-            title="Sound"
-          >
-            {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-          </button>
-        </div>
-
-        <div className="mx-auto max-w-4xl px-4 py-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="flex items-center gap-4 mb-2">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600">
-                <Clipboard size={28} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold">Intern Flow Testing</h1>
-                <p className={`${themeClasses.textMuted}`}>
-                  Teste unsere <span className="font-semibold">Top 10</span> Umzugsofferten-Flows
+        <div className="min-h-screen flex flex-col">
+          {/* Hero */}
+          <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full max-w-lg space-y-8"
+            >
+              {/* Logo & Title */}
+              <div className="text-center space-y-4">
+                <motion.div
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", bounce: 0.5 }}
+                  className="w-20 h-20 mx-auto bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-emerald-500/30"
+                >
+                  <Rocket className="w-10 h-10 text-white" />
+                </motion.div>
+                
+                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                  Flow Testing
+                </h1>
+                <p className="text-lg text-white/60">
+                  Teste unsere <span className="text-emerald-400 font-semibold">Top 10</span> Flows
                 </p>
               </div>
-            </div>
-          </motion.div>
 
-          {/* How it works */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className={`mt-8 rounded-2xl border p-6 ${themeClasses.card}`}
-          >
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Info size={20} className="text-blue-500" />
-              So funktioniert's
-            </h2>
-            <ol className="mt-4 grid gap-4 md:grid-cols-3">
-              {[
-                { icon: <Play size={20} />, title: "Flow testen", desc: "Öffnen, durchgehen, Gefühl notieren." },
-                { icon: <Star size={20} />, title: "Bewerten", desc: "6 Kriterien + Pro/Contra + Emoji." },
-                { icon: <Download size={20} />, title: "Export", desc: "JSON kopieren + PDF speichern." },
-              ].map((step, i) => (
-                <li
-                  key={i}
-                  className={`rounded-xl p-4 border ${isDark ? "bg-slate-900 border-slate-800" : "bg-slate-50 border-slate-200"}`}
-                >
-                  <div className="flex items-center gap-2 text-emerald-500">
-                    <span className="text-lg font-bold">{i + 1}</span>
-                    {step.icon}
-                  </div>
-                  <div className="mt-2 font-semibold">{step.title}</div>
-                  <div className={`mt-1 text-sm ${themeClasses.textMuted}`}>{step.desc}</div>
-                </li>
-              ))}
-            </ol>
-          </motion.div>
-
-          {/* Features */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className={`mt-6 rounded-2xl border p-6 ${themeClasses.card}`}
-          >
-            <h2 className="text-lg font-semibold mb-4">✨ Features</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-              {[
-                "⏱️ Timer pro Flow",
-                "🎯 6 Bewertungskriterien",
-                "😀 Emoji Reactions",
-                "📝 Quick Notes",
-                "↕️ Drag & Drop Ranking",
-                "📊 Statistiken",
-                "🌙 Dark/Light Mode",
-                "⌨️ Keyboard Shortcuts",
-                "💾 Auto-Save",
-                "📄 PDF Export",
-                "📋 JSON Export",
-                "📧 Email-Share",
-              ].map((feature) => (
-                <div key={feature} className={`p-2 rounded-lg ${isDark ? "bg-slate-800/50" : "bg-slate-100"}`}>
-                  {feature}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Top 10 Preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className={`mt-6 rounded-2xl border p-6 ${themeClasses.card}`}
-          >
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Trophy size={20} className="text-yellow-500" />
-              Top 10 Flows zum Testen
-            </h2>
-            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-              {TOP_10_FLOWS.map((flow) => (
-                <motion.div
-                  key={flow.id}
-                  whileHover={{ scale: 1.01 }}
-                  className={`flex items-center gap-4 p-3 rounded-xl border transition-colors ${
-                    isDark ? "bg-slate-900 border-slate-800 hover:bg-slate-800" : "bg-slate-50 border-slate-200 hover:bg-slate-100"
-                  }`}
-                >
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br ${flow.color} text-white font-bold text-lg shrink-0`}
+              {/* Steps */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { step: 1, label: "Testen", icon: <ExternalLink size={20} /> },
+                  { step: 2, label: "Bewerten", icon: <Star size={20} /> },
+                  { step: 3, label: "Export", icon: <Download size={20} /> },
+                ].map((item) => (
+                  <motion.div
+                    key={item.step}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: item.step * 0.1 }}
+                    className="bg-white/5 backdrop-blur rounded-2xl p-4 text-center border border-white/10"
                   >
-                    {flow.rank}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{flow.name}</p>
-                    <p className={`text-sm truncate ${themeClasses.textMuted}`}>{flow.description}</p>
-                  </div>
-                  <div className={`text-sm shrink-0 flex items-center gap-1 ${themeClasses.textMuted}`}>
-                    <Clock size={14} />
-                    {flow.estimatedTime}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-            <div className={`mt-4 p-3 rounded-xl ${isDark ? "bg-blue-500/10 border border-blue-500/20" : "bg-blue-50 border border-blue-200"}`}>
-              <p className="text-sm flex items-center gap-2">
-                <Clock size={16} className="text-blue-500" />
-                <span>Geschätzte Gesamtdauer: ca. 30-45 Minuten</span>
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Name Input */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className={`mt-6 rounded-2xl border p-6 ${themeClasses.card}`}
-          >
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Users size={20} className="text-purple-500" />
-              Dein Name
-            </h2>
-            <div className="mt-4 flex gap-3">
-              <input
-                className={`w-full rounded-xl border px-4 py-3 outline-none transition-colors ${themeClasses.input}`}
-                placeholder="Vorname Nachname"
-                value={testerName}
-                onChange={(e) => setTesterName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && startTesting()}
-              />
-              <button
-                className={`rounded-xl px-6 py-3 font-semibold transition-colors flex items-center gap-2 ${themeClasses.button}`}
-                onClick={startTesting}
-              >
-                <Play size={18} />
-                Test starten
-              </button>
-            </div>
-            <p className={`mt-3 text-xs ${themeClasses.textMuted}`}>
-              💡 Tipp: Mach's ehrlich — wenn's nervt, dann nervt's. Wir wollen's killen, nicht schönreden.
-            </p>
-            <p className={`mt-1 text-xs ${themeClasses.textMuted}`}>
-              ⌨️ Drücke <kbd className={`px-1.5 py-0.5 rounded ${isDark ? "bg-slate-800" : "bg-slate-200"}`}>?</kbd> für
-              Keyboard Shortcuts
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Keyboard shortcuts modal */}
-        <AnimatePresence>
-          {showKeyboardShortcuts && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-              onClick={() => setShowKeyboardShortcuts(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className={`rounded-2xl border p-6 max-w-md w-full ${themeClasses.card} ${themeClasses.bg}`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                  <Keyboard size={20} />
-                  Keyboard Shortcuts
-                </h3>
-                <div className="space-y-2 text-sm">
-                  {[
-                    ["?", "Shortcuts anzeigen"],
-                    ["Esc", "Schliessen / Vollbild beenden"],
-                    ["F", "Vollbild toggle"],
-                    ["N", "Quick Notes toggle"],
-                    ["D", "Dark/Light Mode"],
-                    ["Space", "Timer pausieren"],
-                  ].map(([key, desc]) => (
-                    <div key={key} className="flex items-center justify-between">
-                      <kbd className={`px-2 py-1 rounded font-mono ${isDark ? "bg-slate-800" : "bg-slate-200"}`}>{key}</kbd>
-                      <span className={themeClasses.textMuted}>{desc}</span>
+                    <div className="w-10 h-10 mx-auto bg-white/10 rounded-xl flex items-center justify-center text-emerald-400 mb-2">
+                      {item.icon}
                     </div>
-                  ))}
-                </div>
+                    <div className="text-xs text-white/40">Schritt {item.step}</div>
+                    <div className="text-sm font-semibold text-white">{item.label}</div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Name Input */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-4"
+              >
+                <input
+                  className="w-full px-6 py-4 bg-white/10 backdrop-blur border-2 border-white/20 rounded-2xl text-white text-lg placeholder:text-white/40 focus:outline-none focus:border-emerald-400 transition-all touch-manipulation"
+                  placeholder="Dein Name..."
+                  value={testerName}
+                  onChange={(e) => setTesterName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && startTesting()}
+                  autoFocus
+                />
+
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  onClick={startTesting}
+                  className="w-full py-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white text-lg font-bold shadow-xl shadow-emerald-500/30 active:shadow-lg transition-all touch-manipulation flex items-center justify-center gap-3"
+                >
+                  Los geht's
+                  <ArrowRight size={24} />
+                </motion.button>
               </motion.div>
+
+              {/* Tips */}
+              <p className="text-center text-white/40 text-sm px-4">
+                💡 Sei ehrlich - konstruktive Kritik hilft uns am meisten!
+              </p>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </div>
+
+          {/* Sound Toggle */}
+          <div className="pb-6 flex justify-center">
+            <button
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full text-white/60 text-sm touch-manipulation"
+            >
+              {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+              Sound {soundEnabled ? "An" : "Aus"}
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // ---------- Testing Phase ----------
+  // =============== TESTING PHASE ===============
   if (phase === "testing" && session && currentFlow) {
     return (
-      <div className={`min-h-screen ${themeClasses.bg} ${themeClasses.text}`}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Helmet>
-          <title>
-            Flow {currentFlowIndex + 1}/10 | Testing | Umzugscheck.ch
-          </title>
+          <title>Flow {currentFlowIndex + 1}/{TOP_10_FLOWS.length} | Testing</title>
         </Helmet>
 
-        {/* Header */}
-        <div className={`sticky top-0 z-40 border-b ${themeClasses.card} backdrop-blur-xl`}>
-          <div className="mx-auto max-w-6xl px-4 py-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-4">
-                <div className={`text-sm ${themeClasses.textMuted}`}>{session.testerName}</div>
-                <div className="text-lg font-bold">
-                  Flow {currentFlowIndex + 1}/{TOP_10_FLOWS.length}
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                {/* Timers */}
-                <div className={`flex items-center gap-2 text-sm ${themeClasses.textMuted}`}>
-                  <Timer size={14} />
-                  <span title="Session-Zeit">{formatTime(sessionTime)}</span>
-                  {isFlowOpen && (
-                    <>
-                      <span>/</span>
-                      <span title="Flow-Zeit" className="text-emerald-500">
-                        {formatTime(flowTime)}
-                      </span>
-                    </>
-                  )}
-                </div>
-                <button
-                  onClick={() => setIsTimerPaused(!isTimerPaused)}
-                  className={`p-1.5 rounded-lg transition-colors ${themeClasses.buttonSecondary} border`}
-                  title="Timer pausieren (Space)"
-                >
-                  {isTimerPaused ? <Play size={14} /> : <Pause size={14} />}
-                </button>
-                <div className={`px-2 py-1 rounded-lg text-xs ${isDark ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-100 text-emerald-700"}`}>
-                  {session.flowRatings.length} bewertet
-                </div>
-                <button
-                  onClick={() => setIsDark(!isDark)}
-                  className={`p-1.5 rounded-lg border transition-colors ${themeClasses.buttonSecondary}`}
-                >
-                  {isDark ? <Sun size={14} /> : <Moon size={14} />}
-                </button>
-              </div>
-            </div>
-            {/* Progress bar */}
-            <div className={`mt-2 h-2 w-full rounded-full ${isDark ? "bg-slate-800" : "bg-slate-200"}`}>
+        {showConfetti && <Confetti />}
+
+        {/* Header - Sticky */}
+        <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-lg border-b border-white/10 px-4 py-3 safe-area-top">
+          <div className="max-w-4xl mx-auto">
+            {/* Progress Bar */}
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden mb-3">
               <motion.div
-                className="h-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
+                className="h-full bg-gradient-to-r from-emerald-400 to-teal-500"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3 }}
               />
             </div>
-            <div className={`mt-1 text-xs ${themeClasses.textMuted} flex justify-between`}>
-              <span>~{estimatedRemaining} Min. verbleibend</span>
-              <span>{Math.round(progress)}% abgeschlossen</span>
+
+            {/* Info Row */}
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-3">
+                <span className="text-white font-bold">
+                  {currentFlowIndex + 1}/{TOP_10_FLOWS.length}
+                </span>
+                <span className="text-white/40 hidden sm:inline">{session.testerName}</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setIsTimerPaused(!isTimerPaused)}
+                  className="flex items-center gap-1.5 text-white/60 touch-manipulation"
+                >
+                  {isTimerPaused ? <Play size={14} /> : <Pause size={14} />}
+                  <Clock size={14} />
+                  <span className="font-mono">{formatTime(sessionTime)}</span>
+                </button>
+
+                <button
+                  onClick={() => setShowHelp(true)}
+                  className="p-2 text-white/40 hover:text-white touch-manipulation"
+                >
+                  <HelpCircle size={18} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mx-auto max-w-6xl px-4 py-6">
-          {/* Flow Card */}
+        {/* Main Content */}
+        <div className="px-4 py-6 max-w-4xl mx-auto space-y-6">
+          {/* Current Flow Card */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`rounded-2xl border p-6 ${themeClasses.card}`}
+            className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-5 space-y-4"
           >
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div
-                  className={`flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${currentFlow.color} text-white font-bold text-xl shadow-lg shrink-0`}
-                >
-                  #{currentFlow.rank}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`w-8 h-8 rounded-xl bg-gradient-to-br ${currentFlow.color} flex items-center justify-center text-white text-sm font-bold`}>
+                    {currentFlow.rank}
+                  </span>
+                  <span className="text-white/40 text-sm">{currentFlow.steps} Steps</span>
+                  <span className="text-white/40 text-sm">•</span>
+                  <span className="text-white/40 text-sm">{currentFlow.estimatedTime}</span>
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold">{currentFlow.name}</h2>
-                  <p className={`text-sm ${themeClasses.textMuted}`}>{currentFlow.description}</p>
-                  <div className={`flex items-center gap-4 mt-2 text-sm ${themeClasses.textMuted}`}>
-                    <span className="flex items-center gap-1">
-                      <Zap size={14} />
-                      {currentFlow.steps} Steps
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock size={14} />
-                      {currentFlow.estimatedTime}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  className={`rounded-xl px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${themeClasses.button}`}
-                  onClick={() => window.open(currentFlow.url, "_blank", "noopener,noreferrer")}
-                >
-                  <ExternalLink size={16} />
-                  Neuer Tab
-                </button>
-                <button
-                  className={`rounded-xl border px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${themeClasses.buttonSecondary}`}
-                  onClick={() => {
-                    setIsFlowOpen(!isFlowOpen);
-                    if (!isFlowOpen) setFlowTime(0);
-                  }}
-                >
-                  {isFlowOpen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-                  {isFlowOpen ? "Schliessen" : "Hier öffnen"}
-                </button>
-              </div>
-            </div>
-
-            {currentFlow.reason && (
-              <div className={`mt-4 p-3 rounded-xl ${isDark ? "bg-blue-500/10 border border-blue-500/20" : "bg-blue-50 border border-blue-200"}`}>
-                <p className="text-sm">
-                  <strong>💡 Warum dieser Flow?</strong> {currentFlow.reason}
+                <h2 className="text-xl font-bold text-white mt-2 line-clamp-2">
+                  {currentFlow.name}
+                </h2>
+                <p className="text-white/60 text-sm mt-1 line-clamp-2">
+                  {currentFlow.description}
                 </p>
               </div>
-            )}
-
-            {/* Quick actions */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                onClick={() => setShowQuickNotes(!showQuickNotes)}
-                className={`text-xs px-3 py-1.5 rounded-lg border flex items-center gap-1.5 transition-colors ${themeClasses.buttonSecondary}`}
-              >
-                <StickyNote size={12} />
-                Quick Notes (N)
-              </button>
-              <button
-                onClick={skipFlow}
-                className={`text-xs px-3 py-1.5 rounded-lg border flex items-center gap-1.5 transition-colors ${themeClasses.buttonSecondary}`}
-              >
-                <SkipForward size={12} />
-                Überspringen
-              </button>
-              {session.flowRatings.length > 0 && (
-                <button
-                  onClick={undoLastRating}
-                  className={`text-xs px-3 py-1.5 rounded-lg border flex items-center gap-1.5 transition-colors ${themeClasses.buttonSecondary}`}
-                >
-                  <Undo2 size={12} />
-                  Letzte rückgängig
-                </button>
-              )}
             </div>
 
-            {/* Quick notes */}
-            <AnimatePresence>
-              {showQuickNotes && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="mt-4">
-                    <label className={`text-sm font-medium ${themeClasses.textMuted}`}>
-                      📝 Schnelle Notizen (werden gespeichert)
-                    </label>
-                    <textarea
-                      className={`mt-2 w-full rounded-xl border p-3 outline-none transition-colors ${themeClasses.input}`}
-                      rows={2}
-                      value={quickNotes}
-                      onChange={(e) => setQuickNotes(e.target.value)}
-                      placeholder="Erste Eindrücke, Bugs, Ideen..."
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3">
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => window.open(currentFlow.url, "_blank")}
+                className="py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 touch-manipulation"
+              >
+                <ExternalLink size={20} />
+                Öffnen
+              </motion.button>
+
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setIsFlowOpen(!isFlowOpen)}
+                className="py-4 bg-white/10 rounded-2xl text-white font-semibold flex items-center justify-center gap-2 touch-manipulation"
+              >
+                {isFlowOpen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                {isFlowOpen ? "Schließen" : "Preview"}
+              </motion.button>
+            </div>
           </motion.div>
 
-          {/* Preview & Rating */}
-          <AnimatePresence mode="wait">
-            {isFlowOpen ? (
+          {/* Preview Iframe */}
+          <AnimatePresence>
+            {isFlowOpen && (
               <motion.div
-                key="flow-open"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="mt-6 grid gap-6 lg:grid-cols-2"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
               >
-                {/* Preview */}
-                <div
-                  className={`rounded-2xl border p-4 ${themeClasses.card} ${isFullscreen ? "lg:col-span-2" : ""}`}
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <div className="font-semibold flex items-center gap-2">
-                      <Eye size={16} />
-                      Flow-Preview
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        className={`rounded-lg border px-3 py-1 text-sm transition-colors ${themeClasses.buttonSecondary}`}
-                        onClick={() => setIsFullscreen(!isFullscreen)}
-                      >
-                        {isFullscreen ? "Verkleinern (F)" : "Vollbild (F)"}
-                      </button>
-                    </div>
-                  </div>
-                  <div className={`overflow-hidden rounded-xl border ${isDark ? "border-slate-700" : "border-slate-300"}`}>
-                    <iframe
-                      title={currentFlow.id}
-                      src={currentFlow.url}
-                      className="h-[600px] w-full bg-white"
-                    />
-                  </div>
+                <div className={`bg-white rounded-2xl overflow-hidden ${isFullscreen ? "fixed inset-4 z-50" : ""}`}>
+                  {isFullscreen && (
+                    <button
+                      onClick={() => setIsFullscreen(false)}
+                      className="absolute top-3 right-3 z-10 p-2 bg-slate-900/80 rounded-full text-white touch-manipulation"
+                    >
+                      <X size={20} />
+                    </button>
+                  )}
+                  <iframe
+                    title={currentFlow.id}
+                    src={currentFlow.url}
+                    className={`w-full bg-white ${isFullscreen ? "h-full" : "h-[500px] md:h-[600px]"}`}
+                  />
                 </div>
 
-                {/* Rating Form */}
                 {!isFullscreen && (
-                  <div className={`rounded-2xl border p-6 ${themeClasses.card}`}>
-                    <div className="text-xl font-bold flex items-center gap-2">
-                      <Star size={20} className="text-yellow-500" />
-                      Bewertung
-                    </div>
-                    <p className={`mt-1 text-sm ${themeClasses.textMuted}`}>1 = schlecht, 5 = exzellent</p>
-
-                    <div className="mt-6 space-y-4">
-                      {/* Ratings */}
-                      {RATING_CRITERIA.map((c) => (
-                        <div
-                          key={c.id}
-                          className={`rounded-xl p-4 border ${isDark ? "bg-slate-950/50 border-slate-800" : "bg-slate-50 border-slate-200"}`}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-center gap-2">
-                              <span className="text-emerald-500">{c.icon}</span>
-                              <div>
-                                <div className="font-semibold text-sm">{c.label}</div>
-                                <div className={`text-xs ${themeClasses.textMuted}`}>{c.description}</div>
-                              </div>
-                            </div>
-                            <div className="flex gap-1.5">
-                              {[1, 2, 3, 4, 5].map((v) => (
-                                <button
-                                  key={v}
-                                  className={`h-8 w-8 rounded-lg border text-sm font-semibold transition-all ${
-                                    currentRatings[c.id] === v
-                                      ? "border-emerald-500 bg-emerald-500 text-white scale-110"
-                                      : isDark
-                                      ? "border-slate-700 bg-slate-950 hover:border-slate-500"
-                                      : "border-slate-300 bg-white hover:border-slate-400"
-                                  }`}
-                                  onClick={() => {
-                                    playSound("click");
-                                    setCurrentRatings((prev) => ({ ...prev, [c.id]: v }));
-                                  }}
-                                >
-                                  {v}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* Emoji reaction */}
-                      <div>
-                        <label className={`text-sm font-semibold ${themeClasses.textMuted}`}>
-                          Quick Reaction (optional)
-                        </label>
-                        <div className="mt-2 flex gap-2 flex-wrap">
-                          {EMOJI_REACTIONS.map((emoji) => (
-                            <button
-                              key={emoji}
-                              onClick={() => setCurrentEmoji(currentEmoji === emoji ? undefined : emoji)}
-                              className={`text-2xl p-2 rounded-xl border transition-all ${
-                                currentEmoji === emoji
-                                  ? "border-emerald-500 bg-emerald-500/20 scale-110"
-                                  : isDark
-                                  ? "border-slate-700 hover:border-slate-500"
-                                  : "border-slate-200 hover:border-slate-400"
-                              }`}
-                            >
-                              {emoji}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Pros & Cons */}
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div>
-                          <label className="text-sm font-semibold flex items-center gap-1">
-                            <ThumbsUp size={14} className="text-emerald-500" />
-                            Was war gut?
-                          </label>
-                          <textarea
-                            className={`mt-2 w-full rounded-xl border p-3 outline-none transition-colors text-sm ${themeClasses.input}`}
-                            rows={3}
-                            value={currentPros}
-                            onChange={(e) => setCurrentPros(e.target.value)}
-                            placeholder="Positive Punkte..."
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-semibold flex items-center gap-1">
-                            <ThumbsDown size={14} className="text-rose-500" />
-                            Was war schlecht?
-                          </label>
-                          <textarea
-                            className={`mt-2 w-full rounded-xl border p-3 outline-none transition-colors text-sm ${themeClasses.input}`}
-                            rows={3}
-                            value={currentCons}
-                            onChange={(e) => setCurrentCons(e.target.value)}
-                            placeholder="Negative Punkte..."
-                          />
-                        </div>
-                      </div>
-
-                      {/* Would recommend */}
-                      <div>
-                        <div className="text-sm font-semibold">Würdest du den Flow weiterempfehlen?</div>
-                        <div className="mt-2 flex gap-2">
-                          <button
-                            className={`flex-1 rounded-xl border px-4 py-3 font-semibold transition-all flex items-center justify-center gap-2 ${
-                              wouldRecommend === true
-                                ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
-                                : isDark
-                                ? "border-slate-700 bg-slate-950 hover:border-slate-500"
-                                : "border-slate-300 bg-white hover:border-slate-400"
-                            }`}
-                            onClick={() => setWouldRecommend(true)}
-                          >
-                            <ThumbsUp size={18} />
-                            Ja
-                          </button>
-                          <button
-                            className={`flex-1 rounded-xl border px-4 py-3 font-semibold transition-all flex items-center justify-center gap-2 ${
-                              wouldRecommend === false
-                                ? "border-rose-500 bg-rose-500/20 text-rose-400"
-                                : isDark
-                                ? "border-slate-700 bg-slate-950 hover:border-slate-500"
-                                : "border-slate-300 bg-white hover:border-slate-400"
-                            }`}
-                            onClick={() => setWouldRecommend(false)}
-                          >
-                            <ThumbsDown size={18} />
-                            Nein
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Submit */}
-                      <div className="flex gap-2 pt-2">
-                        <button
-                          className={`flex-1 rounded-xl border px-4 py-3 font-semibold transition-colors ${themeClasses.buttonSecondary}`}
-                          onClick={() => setIsFlowOpen(false)}
-                        >
-                          <ArrowLeft size={16} className="inline mr-2" />
-                          Zurück
-                        </button>
-                        <button
-                          className={`flex-1 rounded-xl px-4 py-3 font-semibold transition-colors ${themeClasses.button}`}
-                          onClick={submitFlowRating}
-                        >
-                          Speichern
-                          <ArrowRight size={16} className="inline ml-2" />
-                        </button>
-                      </div>
-                    </div>
+                  <div className="flex justify-center mt-3">
+                    <button
+                      onClick={() => setIsFullscreen(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full text-white/60 text-sm touch-manipulation"
+                    >
+                      <Maximize2 size={14} />
+                      Vollbild
+                    </button>
                   </div>
                 )}
               </motion.div>
-            ) : (
-              <motion.div
-                key="flow-closed"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className={`mt-6 rounded-2xl border p-8 text-center ${themeClasses.card}`}
-              >
-                <Play size={48} className={`mx-auto ${themeClasses.textMuted}`} />
-                <p className={`mt-4 ${themeClasses.textMuted}`}>
-                  Klicke auf <strong>"Neuer Tab"</strong> oder <strong>"Hier öffnen"</strong> um den Flow zu testen.
-                </p>
-              </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Rating Section */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-5 space-y-6"
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-white">Bewertung</h3>
+              {flowTime > 0 && (
+                <span className="text-white/40 text-sm flex items-center gap-1">
+                  <Timer size={14} />
+                  {formatTime(flowTime)}
+                </span>
+              )}
+            </div>
+
+            {/* Rating Criteria */}
+            <div className="space-y-5">
+              {RATING_CRITERIA.map((criterion) => (
+                <div key={criterion.id} className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg" style={{ backgroundColor: `${criterion.color}20` }}>
+                      <div style={{ color: criterion.color }}>{criterion.icon}</div>
+                    </div>
+                    <div>
+                      <div className="text-white font-medium">{criterion.label}</div>
+                      <div className="text-white/40 text-xs">{criterion.description}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between gap-2">
+                    {[1, 2, 3, 4, 5].map((val) => (
+                      <RatingButton
+                        key={val}
+                        value={val}
+                        selected={currentRatings[criterion.id] === val}
+                        onClick={() => setCurrentRatings((prev) => ({ ...prev, [criterion.id]: val }))}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Emoji Reaction */}
+            <div className="space-y-2">
+              <div className="text-white/60 text-sm">Quick Reaction</div>
+              <div className="flex justify-between">
+                {EMOJI_REACTIONS.map((emoji) => (
+                  <motion.button
+                    key={emoji}
+                    whileTap={{ scale: 0.85 }}
+                    onClick={() => setCurrentEmoji(emoji)}
+                    className={`w-12 h-12 text-2xl rounded-2xl flex items-center justify-center transition-all touch-manipulation ${
+                      currentEmoji === emoji
+                        ? "bg-white/20 scale-110 ring-2 ring-white/40"
+                        : "bg-white/5 hover:bg-white/10"
+                    }`}
+                  >
+                    {emoji}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
+            {/* Pro/Contra */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-emerald-400 text-sm font-medium flex items-center gap-1">
+                  <ThumbsUp size={14} /> Was war gut?
+                </label>
+                <textarea
+                  value={currentPros}
+                  onChange={(e) => setCurrentPros(e.target.value)}
+                  placeholder="z.B. Schnelles Formular..."
+                  className="w-full h-24 px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/30 focus:outline-none focus:border-emerald-400/50 resize-none touch-manipulation"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-rose-400 text-sm font-medium flex items-center gap-1">
+                  <ThumbsDown size={14} /> Was war schlecht?
+                </label>
+                <textarea
+                  value={currentCons}
+                  onChange={(e) => setCurrentCons(e.target.value)}
+                  placeholder="z.B. Zu viele Felder..."
+                  className="w-full h-24 px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/30 focus:outline-none focus:border-rose-400/50 resize-none touch-manipulation"
+                />
+              </div>
+            </div>
+
+            {/* Quick Notes */}
+            <div className="space-y-2">
+              <label className="text-white/60 text-sm font-medium">Notizen (optional)</label>
+              <textarea
+                value={quickNotes}
+                onChange={(e) => setQuickNotes(e.target.value)}
+                placeholder="Weitere Gedanken..."
+                className="w-full h-20 px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 resize-none touch-manipulation"
+              />
+            </div>
+
+            {/* Recommend */}
+            <div className="space-y-3">
+              <div className="text-white font-medium">Würdest du empfehlen?</div>
+              <div className="grid grid-cols-2 gap-3">
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setWouldRecommend(true)}
+                  className={`py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all touch-manipulation ${
+                    wouldRecommend === true
+                      ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                      : "bg-white/10 text-white/70"
+                  }`}
+                >
+                  <ThumbsUp size={20} />
+                  Ja ✓
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setWouldRecommend(false)}
+                  className={`py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all touch-manipulation ${
+                    wouldRecommend === false
+                      ? "bg-rose-500 text-white shadow-lg shadow-rose-500/30"
+                      : "bg-white/10 text-white/70"
+                  }`}
+                >
+                  <ThumbsDown size={20} />
+                  Nein ✗
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Action Buttons */}
+          <div className="space-y-3 pb-6">
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={submitFlowRating}
+              className="w-full py-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white text-lg font-bold shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 touch-manipulation"
+            >
+              <Check size={24} />
+              Bewertung speichern
+            </motion.button>
+
+            <div className="flex gap-3">
+              {session.flowRatings.length > 0 && (
+                <button
+                  onClick={undoLastRating}
+                  className="flex-1 py-3 bg-white/5 rounded-2xl text-white/60 font-medium flex items-center justify-center gap-2 touch-manipulation"
+                >
+                  <Undo2 size={18} />
+                  Zurück
+                </button>
+              )}
+              <button
+                onClick={skipFlow}
+                className="flex-1 py-3 bg-white/5 rounded-2xl text-white/60 font-medium flex items-center justify-center gap-2 touch-manipulation"
+              >
+                <SkipForward size={18} />
+                Überspringen
+              </button>
+            </div>
+
+            {/* Remaining Time Hint */}
+            <div className="text-center text-white/40 text-sm">
+              ~{estimatedRemaining} Min. verbleibend
+            </div>
+          </div>
         </div>
 
-        {/* Keyboard shortcuts modal */}
+        {/* Help Modal */}
         <AnimatePresence>
-          {showKeyboardShortcuts && (
+          {showHelp && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-              onClick={() => setShowKeyboardShortcuts(false)}
+              className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+              onClick={() => setShowHelp(false)}
             >
               <motion.div
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.9 }}
-                className={`rounded-2xl border p-6 max-w-md w-full ${themeClasses.card} ${themeClasses.bg}`}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-slate-800 rounded-3xl p-6 max-w-sm w-full"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                  <Keyboard size={20} />
-                  Keyboard Shortcuts
-                </h3>
-                <div className="space-y-2 text-sm">
-                  {[
-                    ["?", "Shortcuts anzeigen"],
-                    ["Esc", "Schliessen / Vollbild beenden"],
-                    ["F", "Vollbild toggle"],
-                    ["N", "Quick Notes toggle"],
-                    ["D", "Dark/Light Mode"],
-                    ["Space", "Timer pausieren"],
-                  ].map(([key, desc]) => (
-                    <div key={key} className="flex items-center justify-between">
-                      <kbd className={`px-2 py-1 rounded font-mono ${isDark ? "bg-slate-800" : "bg-slate-200"}`}>
-                        {key}
-                      </kbd>
-                      <span className={themeClasses.textMuted}>{desc}</span>
-                    </div>
-                  ))}
+                <h3 className="text-xl font-bold text-white mb-4">Shortcuts</h3>
+                <div className="space-y-2 text-white/70 text-sm">
+                  <div className="flex justify-between"><span>Pause/Resume</span><kbd className="px-2 py-1 bg-white/10 rounded">Space</kbd></div>
+                  <div className="flex justify-between"><span>Vollbild</span><kbd className="px-2 py-1 bg-white/10 rounded">F</kbd></div>
+                  <div className="flex justify-between"><span>Schließen</span><kbd className="px-2 py-1 bg-white/10 rounded">Esc</kbd></div>
                 </div>
+                <button
+                  onClick={() => setShowHelp(false)}
+                  className="w-full mt-6 py-3 bg-white/10 rounded-2xl text-white font-medium touch-manipulation"
+                >
+                  Verstanden
+                </button>
               </motion.div>
             </motion.div>
           )}
@@ -1381,191 +1094,121 @@ export default function InternFlowTesting() {
     );
   }
 
-  // ---------- Summary Phase ----------
+  // =============== SUMMARY PHASE ===============
   if (!session) return null;
 
-  const rankingItems = overallRanking.length ? overallRanking : derivedRanking;
+  // Init ranking wenn nötig
+  useEffect(() => {
+    if (phase === "summary" && overallRanking.length === 0 && derivedRanking.length > 0) {
+      setOverallRanking(derivedRanking);
+    }
+  }, [phase, derivedRanking, overallRanking.length]);
 
   return (
-    <div className={`min-h-screen ${themeClasses.bg} ${themeClasses.text}`}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Helmet>
-        <title>Feedback Summary | Umzugscheck.ch</title>
+        <title>Zusammenfassung | Flow Testing</title>
       </Helmet>
 
       {showConfetti && <Confetti />}
 
-      {/* Theme toggle */}
-      <div className="fixed top-4 right-4 z-50">
-        <button
-          onClick={() => setIsDark(!isDark)}
-          className={`p-2 rounded-xl border transition-colors ${themeClasses.buttonSecondary}`}
+      <div className="px-4 py-6 max-w-2xl mx-auto space-y-6">
+        {/* Success Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-4 py-8"
         >
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-      </div>
-
-      <div className="mx-auto max-w-5xl px-4 py-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`rounded-2xl border p-6 ${themeClasses.card}`}>
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600">
-              <Trophy size={28} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Alle Flows getestet 🎉</h1>
-              <p className={themeClasses.textMuted}>
-                Danke, <span className="font-semibold">{session.testerName}</span>! Jetzt noch dein Fazit.
-              </p>
-            </div>
-          </div>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
+            className="w-20 h-20 mx-auto bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-emerald-500/30"
+          >
+            <Trophy className="w-10 h-10 text-white" />
+          </motion.div>
+          
+          <h1 className="text-3xl font-bold text-white">Fertig! 🎉</h1>
+          <p className="text-white/60">
+            Danke, <span className="text-white font-semibold">{session.testerName}</span>!
+          </p>
         </motion.div>
 
-        {/* Statistics */}
+        {/* Stats Cards */}
         {stats && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className={`mt-6 rounded-2xl border p-6 ${themeClasses.card}`}
-          >
-            <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-              <BarChart3 size={20} className="text-blue-500" />
-              Statistiken
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className={`p-4 rounded-xl ${isDark ? "bg-slate-900" : "bg-slate-100"}`}>
-                <div className="text-2xl font-bold">{stats.avgOverall.toFixed(1)}</div>
-                <div className={`text-sm ${themeClasses.textMuted}`}>Ø Bewertung</div>
-              </div>
-              <div className={`p-4 rounded-xl ${isDark ? "bg-slate-900" : "bg-slate-100"}`}>
-                <div className="text-2xl font-bold text-emerald-500">
-                  {stats.recommended}/{stats.total}
-                </div>
-                <div className={`text-sm ${themeClasses.textMuted}`}>Empfohlen</div>
-              </div>
-              <div className={`p-4 rounded-xl ${isDark ? "bg-slate-900" : "bg-slate-100"}`}>
-                <div className="text-2xl font-bold">{formatTime(stats.totalTime)}</div>
-                <div className={`text-sm ${themeClasses.textMuted}`}>Gesamtzeit</div>
-              </div>
-              <div className={`p-4 rounded-xl ${isDark ? "bg-slate-900" : "bg-slate-100"}`}>
-                <div className="text-2xl font-bold">{session.skippedFlows.length}</div>
-                <div className={`text-sm ${themeClasses.textMuted}`}>Übersprungen</div>
-              </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-4 text-center border border-white/10">
+              <div className="text-2xl font-bold text-white">{stats.avgOverall.toFixed(1)}</div>
+              <div className="text-xs text-white/40">Ø Score</div>
             </div>
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-4 text-center border border-white/10">
+              <div className="text-2xl font-bold text-emerald-400">{stats.recommended}</div>
+              <div className="text-xs text-white/40">Empfohlen</div>
+            </div>
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-4 text-center border border-white/10">
+              <div className="text-2xl font-bold text-white">{formatTime(sessionTime)}</div>
+              <div className="text-xs text-white/40">Testzeit</div>
+            </div>
+          </div>
+        )}
 
-            {/* Category breakdown */}
-            <div className="mt-6">
-              <h3 className={`text-sm font-semibold mb-3 ${themeClasses.textMuted}`}>Bewertung nach Kategorie</h3>
-              <div className="space-y-2">
-                {RATING_CRITERIA.map((c) => (
-                  <div key={c.id} className="flex items-center gap-3">
-                    <div className="w-24 text-sm flex items-center gap-1">
-                      {c.icon}
-                      {c.label}
+        {/* Summary Content for PDF */}
+        <div ref={summaryRef} className="space-y-6">
+          {/* Category Breakdown */}
+          {stats && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-white/5 backdrop-blur rounded-3xl p-5 border border-white/10"
+            >
+              <h2 className="text-lg font-bold text-white mb-4">Kategorien</h2>
+              <div className="space-y-3">
+                {stats.categoryAvgs.map((cat) => (
+                  <div key={cat.id} className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 rounded" style={{ backgroundColor: `${cat.color}20` }}>
+                          <div style={{ color: cat.color }}>{cat.icon}</div>
+                        </div>
+                        <span className="text-white">{cat.label}</span>
+                      </div>
+                      <span className="text-white font-semibold">{cat.avg.toFixed(1)}</span>
                     </div>
-                    <div className={`flex-1 h-3 rounded-full ${isDark ? "bg-slate-800" : "bg-slate-200"}`}>
-                      <motion.div
-                        className="h-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(stats.byCategory[c.id] / 5) * 100}%` }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
+                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${(cat.avg / 5) * 100}%`,
+                          backgroundColor: cat.color,
+                        }}
                       />
-                    </div>
-                    <div className="w-10 text-right text-sm font-semibold">
-                      {stats.byCategory[c.id].toFixed(1)}
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Summary area for PDF */}
-        <div ref={summaryRef} id="summary-area" className="mt-6 space-y-6">
-          {/* Ratings list */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className={`rounded-2xl border p-6 ${themeClasses.card}`}
-          >
-            <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-              <CheckCircle size={20} className="text-emerald-500" />
-              Deine Bewertungen
-            </h2>
-            <div className="space-y-3">
-              {session.flowRatings.map((r, idx) => {
-                const flow = TOP_10_FLOWS.find((f) => f.id === r.flowId);
-                return (
-                  <div
-                    key={r.flowId}
-                    className={`flex items-center justify-between rounded-xl p-4 ${
-                      isDark ? "bg-slate-950/50" : "bg-slate-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
-                          idx < 3
-                            ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-white"
-                            : isDark
-                            ? "bg-slate-800 text-slate-400"
-                            : "bg-slate-200 text-slate-600"
-                        }`}
-                      >
-                        {idx + 1}
-                      </div>
-                      <div>
-                        <div className="font-semibold flex items-center gap-2">
-                          {flow?.name ?? r.flowId}
-                          {r.emoji && <span>{r.emoji}</span>}
-                        </div>
-                        <div className={`text-xs ${themeClasses.textMuted}`}>
-                          {formatTime(r.timeSpent)} • {flow?.url}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold flex items-center gap-1">
-                        <Star size={16} className="text-yellow-500" />
-                        {avgRating(r).toFixed(1)}
-                      </div>
-                      <div
-                        className={`text-xs flex items-center gap-1 ${
-                          r.wouldRecommend ? "text-emerald-400" : "text-rose-400"
-                        }`}
-                      >
-                        {r.wouldRecommend ? <ThumbsUp size={12} /> : <ThumbsDown size={12} />}
-                        {r.wouldRecommend ? "Empfohlen" : "Nicht empfohlen"}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
+            </motion.div>
+          )}
 
           {/* Drag & Drop Ranking */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className={`rounded-2xl border p-6 ${themeClasses.card}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white/5 backdrop-blur rounded-3xl p-5 border border-white/10"
           >
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <TrendingUp size={20} className="text-purple-500" />
-                Dein Ranking
-              </h2>
-              <p className={`text-sm ${themeClasses.textMuted}`}>
-                <GripVertical size={14} className="inline" /> Drag & Drop zum Anpassen
-              </p>
-            </div>
+            <h2 className="text-lg font-bold text-white mb-4">Dein Ranking</h2>
+            <p className="text-white/40 text-sm mb-4">Ziehe um zu sortieren</p>
 
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={rankingItems} strategy={verticalListSortingStrategy}>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={overallRanking.length ? overallRanking : derivedRanking}
+                strategy={verticalListSortingStrategy}
+              >
                 <div className="space-y-2">
-                  {rankingItems.map((id, idx) => {
+                  {(overallRanking.length ? overallRanking : derivedRanking).map((id, idx) => {
                     const flow = TOP_10_FLOWS.find((f) => f.id === id);
                     const rating = session.flowRatings.find((r) => r.flowId === id);
                     return (
@@ -1575,7 +1218,6 @@ export default function InternFlowTesting() {
                         idx={idx}
                         flow={flow}
                         rating={rating}
-                        isDark={isDark}
                       />
                     );
                   })}
@@ -1584,63 +1226,66 @@ export default function InternFlowTesting() {
             </DndContext>
           </motion.div>
 
-          {/* Final feedback */}
+          {/* Final Feedback */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className={`rounded-2xl border p-6 ${themeClasses.card}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white/5 backdrop-blur rounded-3xl p-5 border border-white/10"
           >
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <MessageSquare size={20} className="text-orange-500" />
-              Dein Gesamtfeedback
-            </h2>
-            <p className={`mt-1 text-sm ${themeClasses.textMuted}`}>
-              Was war dein Favorit? Wo gab's Friction? Was ist "must-fix"?
-            </p>
+            <h2 className="text-lg font-bold text-white mb-2">Dein Fazit</h2>
+            <p className="text-white/40 text-sm mb-4">Was war dein Favorit? Was sollten wir fixen?</p>
             <textarea
-              className={`mt-4 w-full rounded-xl border p-4 outline-none transition-colors ${themeClasses.input}`}
-              rows={8}
               value={finalFeedback}
               onChange={(e) => setFinalFeedback(e.target.value)}
-              placeholder="Dein detailliertes Feedback hier..."
+              placeholder="Schreib deine Gedanken hier..."
+              className="w-full h-32 px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/30 focus:outline-none focus:border-emerald-400/50 resize-none touch-manipulation"
             />
           </motion.div>
         </div>
 
-        {/* Export Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 flex flex-wrap gap-3"
-        >
-          <button
-            className={`rounded-xl px-4 py-3 font-semibold transition-colors flex items-center gap-2 ${themeClasses.button}`}
-            onClick={exportJson}
+        {/* Export Buttons */}
+        <div className="space-y-3 pb-8">
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={submitFinalFeedback}
+            className="w-full py-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white text-lg font-bold shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 touch-manipulation"
           >
-            {copiedState === "json" ? <Check size={18} /> : <FileJson size={18} />}
-            {copiedState === "json" ? "Kopiert!" : "JSON kopieren"}
-          </button>
+            {copiedState === "json" ? <Check size={24} /> : <Clipboard size={24} />}
+            {copiedState === "json" ? "Kopiert! ✓" : "JSON kopieren"}
+          </motion.button>
+
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={exportPdf}
+              className="py-4 bg-white/10 rounded-2xl text-white font-medium flex items-center justify-center gap-2 touch-manipulation"
+            >
+              <FileText size={20} />
+              PDF
+            </button>
+            <button
+              onClick={() => {
+                const json = JSON.stringify(session, null, 2);
+                downloadFile(`flow-testing-${session.testerName}.json`, json);
+              }}
+              className="py-4 bg-white/10 rounded-2xl text-white font-medium flex items-center justify-center gap-2 touch-manipulation"
+            >
+              <Download size={20} />
+              Download
+            </button>
+          </div>
+
           <button
-            className={`rounded-xl border px-4 py-3 font-semibold transition-colors flex items-center gap-2 ${themeClasses.buttonSecondary}`}
-            onClick={exportPdf}
+            onClick={() => {
+              const subject = encodeURIComponent(`Flow Testing Feedback - ${session.testerName}`);
+              const body = encodeURIComponent(`Hallo,\n\nHier mein Flow Testing Feedback:\n\nDurchschnitt: ${stats?.avgOverall.toFixed(1)}/5\nEmpfohlen: ${stats?.recommended}/${stats?.total}\n\nFazit:\n${finalFeedback}\n\nDetails im Anhang.`);
+              window.open(`mailto:?subject=${subject}&body=${body}`);
+            }}
+            className="w-full py-4 bg-white/5 rounded-2xl text-white/60 font-medium flex items-center justify-center gap-2 touch-manipulation"
           >
-            <FileText size={18} />
-            PDF exportieren
-          </button>
-          <button
-            className={`rounded-xl border px-4 py-3 font-semibold transition-colors flex items-center gap-2 ${themeClasses.buttonSecondary}`}
-            onClick={shareByEmail}
-          >
-            <Mail size={18} />
+            <Mail size={20} />
             Per Email teilen
           </button>
-        </motion.div>
-
-        <p className={`mt-4 text-xs ${themeClasses.textMuted}`}>
-          💡 Tipp: JSON-Datei enthält alle Details. PDF zeigt die sichtbare Zusammenfassung.
-        </p>
+        </div>
       </div>
     </div>
   );
