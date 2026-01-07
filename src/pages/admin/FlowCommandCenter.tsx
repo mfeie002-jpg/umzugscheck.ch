@@ -16,7 +16,7 @@
  * 3. AI-First: Kontext-basierte Tool-Auswahl
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -63,6 +63,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { ErrorState } from '@/components/ErrorState';
 import { supabase } from '@/integrations/supabase/client';
 
 // Command Center Components
@@ -215,6 +216,8 @@ export default function FlowCommandCenter() {
     lastAnalysisDate: null,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const loadRequestIdRef = useRef(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Keyboard shortcuts
