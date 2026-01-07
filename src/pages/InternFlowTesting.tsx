@@ -98,6 +98,7 @@ import {
   Lightbulb,
   Info,
   AlertCircle,
+  Crown,
 } from "lucide-react";
 
 // =============== TYPES ===============
@@ -931,21 +932,79 @@ export default function InternFlowTesting() {
             animate={{ opacity: 1, y: 0 }}
             className="flex-1 max-w-lg mx-auto w-full space-y-6"
           >
-            {/* Header */}
+            {/* Header - Special for Bulgarian */}
             <div className="text-center space-y-2">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
-                <BookOpen className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-white">{t("onboarding.title")}</h1>
+              {lang === "bg" ? (
+                <>
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", bounce: 0.5 }}
+                    className="w-20 h-20 mx-auto bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-purple-500/30"
+                  >
+                    <Rocket className="w-10 h-10 text-white" />
+                  </motion.div>
+                  <h1 className="text-2xl font-bold text-white">{t("onboarding.title")}</h1>
+                  <p className="text-pink-400 text-sm">Специално за теб, Mutscheli! 💕</p>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+                    <BookOpen className="w-8 h-8 text-white" />
+                  </div>
+                  <h1 className="text-2xl font-bold text-white">{t("onboarding.title")}</h1>
+                </>
+              )}
             </div>
 
             {/* Sections */}
             <div className="space-y-4">
+              {/* Mission Section - Bulgarian Only */}
+              {lang === "bg" && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-gradient-to-br from-amber-500/20 via-orange-500/20 to-red-500/20 backdrop-blur rounded-2xl p-5 border-2 border-amber-400/30 shadow-lg shadow-amber-500/10"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <Trophy className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="font-bold text-white text-lg">{t("onboarding.mission")}</h2>
+                        <span className="text-amber-400 text-xs">TOP SECRET! 🤫</span>
+                      </div>
+                    </div>
+                    <div className="text-white/90 text-sm leading-relaxed whitespace-pre-line">{t("onboarding.mission.desc")}</div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-gradient-to-br from-pink-500/20 via-rose-500/20 to-red-500/20 backdrop-blur rounded-2xl p-5 border-2 border-pink-400/30"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <Crown className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="font-bold text-white text-lg">{t("onboarding.why")}</h2>
+                        <span className="text-pink-400 text-xs">VIP Status! 👑</span>
+                      </div>
+                    </div>
+                    <div className="text-white/90 text-sm leading-relaxed whitespace-pre-line">{t("onboarding.why.desc")}</div>
+                  </motion.div>
+                </>
+              )}
+
               {/* What is this? */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={{ delay: lang === "bg" ? 0.3 : 0.1 }}
                 className="bg-white/5 backdrop-blur rounded-2xl p-5 border border-white/10"
               >
                 <div className="flex items-center gap-3 mb-3">
@@ -954,14 +1013,14 @@ export default function InternFlowTesting() {
                   </div>
                   <h2 className="font-bold text-white">{t("onboarding.what")}</h2>
                 </div>
-                <p className="text-white/70 text-sm leading-relaxed">{t("onboarding.what.desc")}</p>
+                <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line">{t("onboarding.what.desc")}</p>
               </motion.div>
 
               {/* How does it work? */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: lang === "bg" ? 0.4 : 0.2 }}
                 className="bg-white/5 backdrop-blur rounded-2xl p-5 border border-white/10"
               >
                 <div className="flex items-center gap-3 mb-3">
@@ -977,7 +1036,7 @@ export default function InternFlowTesting() {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: lang === "bg" ? 0.5 : 0.3 }}
                 className="bg-white/5 backdrop-blur rounded-2xl p-5 border border-white/10"
               >
                 <div className="flex items-center gap-3 mb-3">
@@ -993,7 +1052,7 @@ export default function InternFlowTesting() {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: lang === "bg" ? 0.6 : 0.4 }}
                 className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur rounded-2xl p-5 border border-purple-500/20"
               >
                 <div className="flex items-center gap-3 mb-3">
