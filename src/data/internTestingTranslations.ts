@@ -388,10 +388,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "intro.on": "Вкл",
     "intro.off": "Изкл (като слушането ти)",
     
-    // Onboarding
-    "onboarding.title": "Добре дошла Fudeli! 💕",
-    "onboarding.what": "Какво е това, златце?",
-    "onboarding.what.desc": "Ти тестваш 10 потока и ги оценяваш. Като готвенето, само че с бутони вместо тигани! 🍳",
+    // Onboarding - Special Mission Intro for Mutscheli
+    "onboarding.title": "🚀 Специална Мисия за Mutscheli! 💕",
+    "onboarding.mission": "Мисията",
+    "onboarding.mission.desc": "Mutscheli, ти си ПЪРВАТА човек който тества това! 🏆\n\nНие строим НАЙ-ДОБРАТА страница за преместване В СВЕТА! 🌍\n\nЦелта: Да оптимизираме ЦЕЛИЯ процес на преместване - от A до Z - колкото е технически възможно!\n\nИ ТИ си основата! Твоето мнение е ЗЛАТНО! ✨",
+    "onboarding.why": "Защо ТИ си важна?",
+    "onboarding.why.desc": "🥇 Ти си ПЪРВИЯТ тестер\n💎 Твоето мнение формира бъдещето\n🏗️ Ти си ОСНОВНИЯТ камък на проекта\n👑 Без теб няма да стане!\n\nMorris (твоят герой 🦸‍♂️) създаде всичко това, и ТИ си избраната да го тестваш първа!",
+    "onboarding.what": "Какво правим?",
+    "onboarding.what.desc": "Ти тестваш 10 различни варианта на нашата страница. Всеки е различен дизайн. Ти казваш кой е НАЙ-ДОБРИЯТ!\n\nТова е като избор на най-хубавата рокля... само че за уебсайт! 👗✨",
     "onboarding.how": "Как работи? (Слушай внимателно!)",
     "onboarding.how.desc": "1. Отвори всеки поток\n2. Премини през него (не спи!)\n3. Оцени 6 критерия\n4. Напиши плюсове/минуси\n5. Накрая: Създай класиране",
     "onboarding.time": "Колко време? (Не повече от 1 цигара!)",
@@ -402,7 +406,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "onboarding.tip3": "⏱️ Фокусирай се! Знам че е трудно с ADHD 💕",
     "onboarding.tip4": "🔍 Гледай детайлите, не миналото!",
     "onboarding.tip5": "💬 Записвай веднага (преди да забравиш какво каза)",
-    "onboarding.understood": "Разбрах златко! 💋",
+    "onboarding.understood": "Готова съм! Хайде! 🚀💪",
     "onboarding.skip": "Пропусни (типично!)",
     
     // Testing
