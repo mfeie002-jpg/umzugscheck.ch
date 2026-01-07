@@ -20,6 +20,8 @@ import {
   V1cFeedbackBased,
   V1dFeedbackBased,
   V1eFeedbackBased,
+  V1fStickyCTATrust,
+  V1gInputUX,
   // V2 variants
   V2aProgressEnhanced,
   V2bFeedbackBased,
@@ -63,8 +65,15 @@ import {
   V9bFeedbackBased,
   V9cFeedbackBased,
   V9dFeedbackBased,
+  V9ZeroFrictionFlow,
   // Ultimate variants
   UltimateV7Flow,
+  UltimateBest36Flow,
+  GoldenFlowV10,
+  // Swiss Premium Flows
+  SwissLightningFlow,
+  SwissPremiumChoiceFlow,
+  SwissConciergeHybridFlow,
   // Multi variants
   MultiAFeedbackBased,
   // ChatGPT Flows
@@ -160,9 +169,17 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v9b': V9bFeedbackBased,
   'v9c': V9cFeedbackBased,
   'v9d': V9dFeedbackBased,
+  'v9-zero-friction': V9ZeroFrictionFlow,
   
   // ========== Ultimate - Combined Best Practices ==========
   'ultimate-v7': UltimateV7Flow,
+  'ultimate-best36': UltimateBest36Flow,
+  'golden-flow-v10': GoldenFlowV10,
+  
+  // ========== Swiss Premium Flows ==========
+  'swiss-lightning': SwissLightningFlow,
+  'swiss-premium-choice': SwissPremiumChoiceFlow,
+  'swiss-concierge-hybrid': SwissConciergeHybridFlow,
   
   // ========== Multi - Combined ==========
   'multi-a': MultiAFeedbackBased,
@@ -171,6 +188,10 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'chatgpt-flow-1': ChatGPTFlow1ZeroFriction,
   'chatgpt-flow-2': ChatGPTFlow2SocialProof,
   'chatgpt-flow-3': ChatGPTFlow3GuidedChat,
+  
+  // ========== V1f/V1g - New Feedback Variants ==========
+  'v1f': V1fStickyCTATrust,
+  'v1g': V1gInputUX,
 };
 
 /**
