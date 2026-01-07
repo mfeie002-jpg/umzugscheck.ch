@@ -85,7 +85,7 @@ import {
 } from '@/components/calculator-variants';
 
 import { MultiStepCalculator } from '@/components/homepage/MultiStepCalculator';
-
+import { VideoFirstCalculator } from '@/components/video-first-v4/VideoFirstCalculator';
 /**
  * Complete mapping of all flow variant IDs to their components
  * 
@@ -125,8 +125,9 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v3e': V3eFullscreen,
   
   // ========== V4 - Video-First AI ==========
-  'umzugsofferten-v4': V4aUrgencyBased,
-  'v4': V4aUrgencyBased,
+  // Baseline should match /umzugsofferten-v4 (VideoFirstCalculator), not the V4a test variant.
+  'umzugsofferten-v4': VideoFirstCalculator,
+  'v4': VideoFirstCalculator,
   'v4a': V4aUrgencyBased,
   'v4b': V4bSocialProof,
   'v4c': V4cValueFirst,
