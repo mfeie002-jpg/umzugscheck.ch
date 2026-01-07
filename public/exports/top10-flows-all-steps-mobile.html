@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top 10 Flows - Alle Steps - Mobile Dokumentation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    
+    header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 3rem 2rem; margin-bottom: 2rem; border-radius: 1rem; }
+    header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    header p { opacity: 0.8; font-size: 1.1rem; }
+    
+    .meta { display: flex; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .meta-item { background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.9rem; }
+    
+    .overview-table { background: white; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 3rem; }
+    .overview-table table { width: 100%; border-collapse: collapse; }
+    .overview-table th { background: #f1f5f9; padding: 1rem; text-align: left; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .overview-table td { padding: 1rem; border-top: 1px solid #e2e8f0; }
+    .overview-table tr:hover { background: #f8fafc; }
+    
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border-radius: 50%; font-weight: 700; font-size: 0.9rem; }
+    .steps-badge { display: inline-block; padding: 0.25rem 0.75rem; background: #e0f2fe; color: #0369a1; border-radius: 1rem; font-size: 0.85rem; font-weight: 500; }
+    
+    .flow-section { background: white; border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .flow-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid #f1f5f9; }
+    .flow-header .rank { font-size: 2rem; font-weight: 800; color: #3b82f6; min-width: 3rem; }
+    .flow-header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .flow-header .description { color: #64748b; font-size: 0.95rem; }
+    .flow-header .reason { margin-top: 0.5rem; font-style: italic; color: #059669; font-size: 0.9rem; }
+    
+    .flow-meta { display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .flow-meta span { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 500; }
+    .flow-meta .steps { background: #dbeafe; color: #1d4ed8; }
+    .flow-meta .time { background: #d1fae5; color: #047857; }
+    .flow-meta .url { background: #f1f5f9; color: #475569; font-family: monospace; }
+    
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    
+    .step-card { background: #f8fafc; border-radius: 0.75rem; overflow: hidden; border: 1px solid #e2e8f0; transition: all 0.2s; }
+    .step-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    
+    .step-header { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 1rem; }
+    .step-header h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .step-header .step-num { font-size: 0.8rem; opacity: 0.8; }
+    
+    .step-content { padding: 1rem; }
+    .step-content p { color: #64748b; font-size: 0.9rem; margin-bottom: 1rem; }
+    
+    .step-url { display: block; padding: 0.5rem 0.75rem; background: #1e293b; color: #94a3b8; font-family: monospace; font-size: 0.75rem; border-radius: 0.375rem; overflow-x: auto; white-space: nowrap; margin-bottom: 1rem; }
+    
+    .features-list { list-style: none; }
+    .features-list li { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.25rem 0; font-size: 0.85rem; color: #475569; }
+    .features-list li::before { content: "✓"; color: #10b981; font-weight: 700; flex-shrink: 0; }
+    
+    .screenshot-placeholder { background: linear-gradient(135deg, #e2e8f0, #f1f5f9); border: 2px dashed #cbd5e1; border-radius: 0.5rem; padding: 2rem; text-align: center; color: #64748b; font-size: 0.85rem; margin-top: 1rem; }
+    .screenshot-placeholder .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    
+    .summary-section { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border-radius: 1rem; padding: 2rem; margin-top: 3rem; }
+    .summary-section h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; }
+    .summary-item { text-align: center; }
+    .summary-item .value { font-size: 2.5rem; font-weight: 800; color: #3b82f6; }
+    .summary-item .label { font-size: 0.9rem; opacity: 0.8; }
+    
+    .gradient-emerald { background: linear-gradient(135deg, #10b981, #0d9488) !important; }
+    .gradient-sky { background: linear-gradient(135deg, #0ea5e9, #6366f1) !important; }
+    .gradient-blue { background: linear-gradient(135deg, #3b82f6, #06b6d4) !important; }
+    .gradient-violet { background: linear-gradient(135deg, #8b5cf6, #d946ef) !important; }
+    .gradient-amber { background: linear-gradient(135deg, #f59e0b, #ea580c) !important; }
+    .gradient-rose { background: linear-gradient(135deg, #f43f5e, #ec4899) !important; }
+    .gradient-slate { background: linear-gradient(135deg, #475569, #0f172a) !important; }
+    .gradient-lime { background: linear-gradient(135deg, #84cc16, #15803d) !important; }
+    .gradient-teal { background: linear-gradient(135deg, #14b8a6, #059669) !important; }
+    .gradient-purple { background: linear-gradient(135deg, #a855f7, #4f46e5) !important; }
+    
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      header h1 { font-size: 1.75rem; }
+      .flow-header { flex-direction: column; }
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🏆 Top 10 Flows - Mobile</h1>
+      <p>Umfassende Dokumentation aller Steps für die besten Conversion-Flows</p>
+      <div class="meta">
+        <span class="meta-item">📅 Generiert: 2026-01-07</span>
+        <span class="meta-item">📱 Device: Mobile (375x812)</span>
+        <span class="meta-item">📊 Total: 10 Flows / 39 Steps</span>
+      </div>
+    </header>
+
+    <!-- Overview Table -->
+    <div class="overview-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Rang</th>
+            <th>Flow</th>
+            <th>Steps</th>
+            <th>Zeit</th>
+            <th>URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="rank-badge">1</span></td><td>ChatGPT Flow 1 (Zero Friction Pro)</td><td><span class="steps-badge">2 Steps</span></td><td>45–90 Sek.</td><td><code>/chatgpt-flow-1</code></td></tr>
+          <tr><td><span class="rank-badge">2</span></td><td>V8a Decision-Free (Feedback)</td><td><span class="steps-badge">2 Steps</span></td><td>60–120 Sek.</td><td><code>/umzugsofferten-v8a</code></td></tr>
+          <tr><td><span class="rank-badge">3</span></td><td>V1f Sticky CTA + Trust</td><td><span class="steps-badge">2 Steps</span></td><td>60–120 Sek.</td><td><code>/umzugsofferten-v1f</code></td></tr>
+          <tr><td><span class="rank-badge">4</span></td><td>V6a Ultimate Optimized</td><td><span class="steps-badge">3 Steps</span></td><td>2–4 Min.</td><td><code>/umzugsofferten-v6a</code></td></tr>
+          <tr><td><span class="rank-badge">5</span></td><td>V5f Marketplace (Feedback)</td><td><span class="steps-badge">3 Steps</span></td><td>2–4 Min.</td><td><code>/umzugsofferten-v5f</code></td></tr>
+          <tr><td><span class="rank-badge">6</span></td><td>Ultimate Best36</td><td><span class="steps-badge">4 Steps</span></td><td>3–6 Min.</td><td><code>/umzugsofferten-ultimate-best36</code></td></tr>
+          <tr><td><span class="rank-badge">7</span></td><td>V6f Ultimate (Best of All)</td><td><span class="steps-badge">5 Steps</span></td><td>4–7 Min.</td><td><code>/umzugsofferten-v6f</code></td></tr>
+          <tr><td><span class="rank-badge">8</span></td><td>Ultimate V7</td><td><span class="steps-badge">6 Steps</span></td><td>5–8 Min.</td><td><code>/umzugsofferten-ultimate-v7</code></td></tr>
+          <tr><td><span class="rank-badge">9</span></td><td>V9c Zero Friction Optimized</td><td><span class="steps-badge">6 Steps</span></td><td>5–9 Min.</td><td><code>/umzugsofferten-v9c</code></td></tr>
+          <tr><td><span class="rank-badge">10</span></td><td>V2 Archetyp</td><td><span class="steps-badge">6 Steps</span></td><td>5–9 Min.</td><td><code>/umzugsofferten-v2-archetyp</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Flow 1 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#1</span>
+        <div>
+          <h2>ChatGPT Flow 1 (Zero Friction Pro)</h2>
+          <p class="description">2 Steps, Sticky CTA, Trust Badges, Preisvorschau</p>
+          <p class="reason">💡 Extrem kurze Completion-Time, perfekte Conversion-Basis. Ideal als Benchmark.</p>
+          <div class="flow-meta">
+            <span class="steps">2 Steps</span>
+            <span class="time">45–90 Sek.</span>
+            <span class="url">/chatgpt-flow-1</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-header gradient-emerald">
+            <span class="step-num">Step 1 / 2</span>
+            <h3>Umzugsdetails</h3>
+          </div>
+          <div class="step-content">
+            <p>PLZ-Eingabe (Von/Nach), Umzugsdatum, Zimmerauswahl, Etage, Preisvorschau</p>
+            <code class="step-url">/chatgpt-flow-1?uc_capture=1&uc_step=1</code>
+            <ul class="features-list">
+              <li>Sticky Progress Header mit Step-Anzeige</li>
+              <li>Trust Badges (Geprüfte Partner, SSL, 4.8/5)</li>
+              <li>PLZ-Eingabefelder mit großen Touch-Targets</li>
+              <li>Zimmer-Auswahl als Button-Grid</li>
+              <li>Echtzeit-Preisvorschau</li>
+            </ul>
+            <div class="screenshot-placeholder">
+              <div class="icon">📱</div>
+              Screenshot: chatgpt-flow-1-step-1.png
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-header gradient-emerald">
+            <span class="step-num">Step 2 / 2</span>
+            <h3>Kontakt & Extras</h3>
+          </div>
+          <div class="step-content">
+            <p>Zusammenfassung, Zusatzleistungen, Kontaktformular, Datenschutz</p>
+            <code class="step-url">/chatgpt-flow-1?uc_capture=1&uc_step=2</code>
+            <ul class="features-list">
+              <li>Kompakte Zusammenfassung der Angaben</li>
+              <li>Zusatzleistungen als Cards</li>
+              <li>Kontaktfelder mit Validierungs-Icons</li>
+              <li>Sticky CTA mit Micro-Feedback</li>
+            </ul>
+            <div class="screenshot-placeholder">
+              <div class="icon">📱</div>
+              Screenshot: chatgpt-flow-1-step-2.png
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow 2 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#2</span>
+        <div>
+          <h2>V8a Decision-Free (Feedback)</h2>
+          <p class="description">2 Steps, Review-Card, Transparenz-Panel</p>
+          <p class="reason">💡 Decision-Free + Review-Pattern reduziert Unsicherheit, sehr gute UX fürs Handy.</p>
+          <div class="flow-meta">
+            <span class="steps">2 Steps</span>
+            <span class="time">60–120 Sek.</span>
+            <span class="url">/umzugsofferten-v8a</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-header gradient-sky">
+            <span class="step-num">Step 1 / 2</span>
+            <h3>Umzugsdetails</h3>
+          </div>
+          <div class="step-content">
+            <p>Adresseingabe mit PLZ, Datumswahl</p>
+            <code class="step-url">/umzugsofferten-v8a?uc_capture=1&uc_step=1</code>
+            <ul class="features-list">
+              <li>Progress Header mit Step-Indikator</li>
+              <li>Step-spezifische Trust Pills</li>
+              <li>WhyThis-Transparenz-Komponente</li>
+            </ul>
+            <div class="screenshot-placeholder">
+              <div class="icon">📱</div>
+              Screenshot: v8a-step-1.png
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-header gradient-sky">
+            <span class="step-num">Step 2 / 2</span>
+            <h3>Kontakt</h3>
+          </div>
+          <div class="step-content">
+            <p>Kontaktdaten für Offerten-Zustellung</p>
+            <code class="step-url">/umzugsofferten-v8a?uc_capture=1&uc_step=2</code>
+            <ul class="features-list">
+              <li>Review-Card mit Zusammenfassung</li>
+              <li>Name, E-Mail, Telefon-Felder</li>
+              <li>Offerten erhalten-CTA</li>
+            </ul>
+            <div class="screenshot-placeholder">
+              <div class="icon">📱</div>
+              Screenshot: v8a-step-2.png
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow 3 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#3</span>
+        <div>
+          <h2>V1f Sticky CTA + Trust</h2>
+          <p class="description">2 Steps, Sticky CTA, Micro-Feedback, Trust Pills</p>
+          <p class="reason">💡 Trust-Mechaniken + kleinstes Formular. Super Vergleich zu #1.</p>
+          <div class="flow-meta">
+            <span class="steps">2 Steps</span>
+            <span class="time">60–120 Sek.</span>
+            <span class="url">/umzugsofferten-v1f</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-header gradient-blue">
+            <span class="step-num">Step 1 / 2</span>
+            <h3>Umzugsdetails</h3>
+          </div>
+          <div class="step-content">
+            <p>PLZ-Felder mit Trust Pills und WhyThis-Erklärung</p>
+            <code class="step-url">/umzugsofferten-v1f?uc_capture=1&uc_step=1</code>
+            <ul class="features-list">
+              <li>Progress Header (Step 1/2)</li>
+              <li>Step-spezifische Trust Pills</li>
+              <li>Enhanced Sticky CTA mit Disabled-Hint</li>
+            </ul>
+            <div class="screenshot-placeholder">
+              <div class="icon">📱</div>
+              Screenshot: v1f-step-1.png
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-header gradient-blue">
+            <span class="step-num">Step 2 / 2</span>
+            <h3>Kontakt</h3>
+          </div>
+          <div class="step-content">
+            <p>Kontaktformular mit Datenschutz-Erklärung</p>
+            <code class="step-url">/umzugsofferten-v1f?uc_capture=1&uc_step=2</code>
+            <ul class="features-list">
+              <li>Trust Pills (contact-spezifisch)</li>
+              <li>Sticky CTA mit Zurück-Button</li>
+              <li>Summary-Line über CTA</li>
+            </ul>
+            <div class="screenshot-placeholder">
+              <div class="icon">📱</div>
+              Screenshot: v1f-step-2.png
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow 4 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#4</span>
+        <div>
+          <h2>V6a Ultimate Optimized</h2>
+          <p class="description">3 Steps (Details → Paket → Kontakt) mit Sticky CTA & Trust</p>
+          <p class="reason">💡 Bestes 3-Step Premium-Pattern: klar, schnell, dennoch Upsell-fähig.</p>
+          <div class="flow-meta">
+            <span class="steps">3 Steps</span>
+            <span class="time">2–4 Min.</span>
+            <span class="url">/umzugsofferten-v6a</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-header gradient-violet"><span class="step-num">Step 1 / 3</span><h3>Umzugsdetails</h3></div>
+          <div class="step-content">
+            <code class="step-url">/umzugsofferten-v6a?uc_capture=1&uc_step=1</code>
+            <div class="screenshot-placeholder"><div class="icon">📱</div>v6a-step-1.png</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-header gradient-violet"><span class="step-num">Step 2 / 3</span><h3>Paket</h3></div>
+          <div class="step-content">
+            <code class="step-url">/umzugsofferten-v6a?uc_capture=1&uc_step=2</code>
+            <div class="screenshot-placeholder"><div class="icon">📱</div>v6a-step-2.png</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-header gradient-violet"><span class="step-num">Step 3 / 3</span><h3>Kontakt</h3></div>
+          <div class="step-content">
+            <code class="step-url">/umzugsofferten-v6a?uc_capture=1&uc_step=3</code>
+            <div class="screenshot-placeholder"><div class="icon">📱</div>v6a-step-3.png</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow 5 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#5</span>
+        <div>
+          <h2>V5f Marketplace (Feedback)</h2>
+          <p class="description">3 Steps, Top-3 Empfehlungen, Trust-Badges, Filter/Sort</p>
+          <p class="reason">💡 Marketplace-Value ohne Overload. Wichtig für euer 'Vergleich'-Versprechen.</p>
+          <div class="flow-meta">
+            <span class="steps">3 Steps</span>
+            <span class="time">2–4 Min.</span>
+            <span class="url">/umzugsofferten-v5f</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-header gradient-amber"><span class="step-num">Step 1 / 3</span><h3>Umzugsdetails</h3></div>
+          <div class="step-content">
+            <code class="step-url">/umzugsofferten-v5f?uc_capture=1&uc_step=1</code>
+            <div class="screenshot-placeholder"><div class="icon">📱</div>v5f-step-1.png</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-header gradient-amber"><span class="step-num">Step 2 / 3</span><h3>Firmen</h3></div>
+          <div class="step-content">
+            <code class="step-url">/umzugsofferten-v5f?uc_capture=1&uc_step=2</code>
+            <div class="screenshot-placeholder"><div class="icon">📱</div>v5f-step-2.png</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-header gradient-amber"><span class="step-num">Step 3 / 3</span><h3>Kontakt</h3></div>
+          <div class="step-content">
+            <code class="step-url">/umzugsofferten-v5f?uc_capture=1&uc_step=3</code>
+            <div class="screenshot-placeholder"><div class="icon">📱</div>v5f-step-3.png</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow 6 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#6</span>
+        <div>
+          <h2>Ultimate Best36</h2>
+          <p class="description">4 Steps, Best-of 36 Varianten (Ziel: 98/100)</p>
+          <p class="reason">💡 Euer 'Best-of'-Kandidat: sehr stark für Gesamtqualität vs. Steps.</p>
+          <div class="flow-meta">
+            <span class="steps">4 Steps</span>
+            <span class="time">3–6 Min.</span>
+            <span class="url">/umzugsofferten-ultimate-best36</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-header gradient-rose"><span class="step-num">Step 1 / 4</span><h3>Adressen</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=1</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-best36-step-1.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-rose"><span class="step-num">Step 2 / 4</span><h3>Details</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=2</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-best36-step-2.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-rose"><span class="step-num">Step 3 / 4</span><h3>Services</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=3</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-best36-step-3.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-rose"><span class="step-num">Step 4 / 4</span><h3>Kontakt</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=4</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-best36-step-4.png</div></div></div>
+      </div>
+    </section>
+
+    <!-- Flow 7 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#7</span>
+        <div>
+          <h2>V6f Ultimate (Best of All)</h2>
+          <p class="description">5 Steps, kombiniert V6a–V6e</p>
+          <p class="reason">💡 Komplexer, aber wahrscheinlich 'Sweet Spot' zwischen Premium & Conversion.</p>
+          <div class="flow-meta">
+            <span class="steps">5 Steps</span>
+            <span class="time">4–7 Min.</span>
+            <span class="url">/umzugsofferten-v6f</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-header gradient-slate"><span class="step-num">Step 1 / 5</span><h3>Start</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v6f?uc_capture=1&uc_step=1</code><div class="screenshot-placeholder"><div class="icon">📱</div>v6f-step-1.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-slate"><span class="step-num">Step 2 / 5</span><h3>Details</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v6f?uc_capture=1&uc_step=2</code><div class="screenshot-placeholder"><div class="icon">📱</div>v6f-step-2.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-slate"><span class="step-num">Step 3 / 5</span><h3>Services</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v6f?uc_capture=1&uc_step=3</code><div class="screenshot-placeholder"><div class="icon">📱</div>v6f-step-3.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-slate"><span class="step-num">Step 4 / 5</span><h3>Termin</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v6f?uc_capture=1&uc_step=4</code><div class="screenshot-placeholder"><div class="icon">📱</div>v6f-step-4.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-slate"><span class="step-num">Step 5 / 5</span><h3>Kontakt</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v6f?uc_capture=1&uc_step=5</code><div class="screenshot-placeholder"><div class="icon">📱</div>v6f-step-5.png</div></div></div>
+      </div>
+    </section>
+
+    <!-- Flow 8 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#8</span>
+        <div>
+          <h2>Ultimate V7</h2>
+          <p class="description">6 Steps, Best Practices aus 50+ Flow-Analysen</p>
+          <p class="reason">💡 Super Referenz für 'voller Funnel' inkl. Firmen-Step & Sort/Filter.</p>
+          <div class="flow-meta">
+            <span class="steps">6 Steps</span>
+            <span class="time">5–8 Min.</span>
+            <span class="url">/umzugsofferten-ultimate-v7</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-header gradient-lime"><span class="step-num">Step 1 / 6</span><h3>Adressen</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=1</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-v7-step-1.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-lime"><span class="step-num">Step 2 / 6</span><h3>Wohnung</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=2</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-v7-step-2.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-lime"><span class="step-num">Step 3 / 6</span><h3>Services</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=3</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-v7-step-3.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-lime"><span class="step-num">Step 4 / 6</span><h3>Firmen</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=4</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-v7-step-4.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-lime"><span class="step-num">Step 5 / 6</span><h3>Termin</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=5</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-v7-step-5.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-lime"><span class="step-num">Step 6 / 6</span><h3>Kontakt</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=6</code><div class="screenshot-placeholder"><div class="icon">📱</div>ultimate-v7-step-6.png</div></div></div>
+      </div>
+    </section>
+
+    <!-- Flow 9 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#9</span>
+        <div>
+          <h2>V9c Zero Friction Optimized</h2>
+          <p class="description">6 Steps, Tooltips, keine Vorauswahl, Filter/Sort, Trust-Badges</p>
+          <p class="reason">💡 Euer 'Anti-Rechner'-Mindset: Guidance ohne Manipulation, sehr stark für Trust.</p>
+          <div class="flow-meta">
+            <span class="steps">6 Steps</span>
+            <span class="time">5–9 Min.</span>
+            <span class="url">/umzugsofferten-v9c</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-header gradient-teal"><span class="step-num">Step 1 / 6</span><h3>Start</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v9c?uc_capture=1&uc_step=1</code><div class="screenshot-placeholder"><div class="icon">📱</div>v9c-step-1.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-teal"><span class="step-num">Step 2 / 6</span><h3>Adressen</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v9c?uc_capture=1&uc_step=2</code><div class="screenshot-placeholder"><div class="icon">📱</div>v9c-step-2.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-teal"><span class="step-num">Step 3 / 6</span><h3>Details</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v9c?uc_capture=1&uc_step=3</code><div class="screenshot-placeholder"><div class="icon">📱</div>v9c-step-3.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-teal"><span class="step-num">Step 4 / 6</span><h3>Services</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v9c?uc_capture=1&uc_step=4</code><div class="screenshot-placeholder"><div class="icon">📱</div>v9c-step-4.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-teal"><span class="step-num">Step 5 / 6</span><h3>Firmen</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v9c?uc_capture=1&uc_step=5</code><div class="screenshot-placeholder"><div class="icon">📱</div>v9c-step-5.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-teal"><span class="step-num">Step 6 / 6</span><h3>Kontakt</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v9c?uc_capture=1&uc_step=6</code><div class="screenshot-placeholder"><div class="icon">📱</div>v9c-step-6.png</div></div></div>
+      </div>
+    </section>
+
+    <!-- Flow 10 -->
+    <section class="flow-section">
+      <div class="flow-header">
+        <span class="rank">#10</span>
+        <div>
+          <h2>V2 Archetyp</h2>
+          <p class="description">6 Steps, 4 Kundentypen (Security/Efficiency/Value/Overwhelmed)</p>
+          <p class="reason">💡 Wichtig für Personalisierung & Emotional UX (Stress-Event Umzug).</p>
+          <div class="flow-meta">
+            <span class="steps">6 Steps</span>
+            <span class="time">5–9 Min.</span>
+            <span class="url">/umzugsofferten-v2-archetyp</span>
+          </div>
+        </div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-header gradient-purple"><span class="step-num">Step 1 / 6</span><h3>Typ-Auswahl</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=1</code><div class="screenshot-placeholder"><div class="icon">📱</div>v2-archetyp-step-1.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-purple"><span class="step-num">Step 2 / 6</span><h3>Adressen</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=2</code><div class="screenshot-placeholder"><div class="icon">📱</div>v2-archetyp-step-2.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-purple"><span class="step-num">Step 3 / 6</span><h3>Details</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=3</code><div class="screenshot-placeholder"><div class="icon">📱</div>v2-archetyp-step-3.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-purple"><span class="step-num">Step 4 / 6</span><h3>Services</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=4</code><div class="screenshot-placeholder"><div class="icon">📱</div>v2-archetyp-step-4.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-purple"><span class="step-num">Step 5 / 6</span><h3>Termin</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=5</code><div class="screenshot-placeholder"><div class="icon">📱</div>v2-archetyp-step-5.png</div></div></div>
+        <div class="step-card"><div class="step-header gradient-purple"><span class="step-num">Step 6 / 6</span><h3>Kontakt</h3></div><div class="step-content"><code class="step-url">/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=6</code><div class="screenshot-placeholder"><div class="icon">📱</div>v2-archetyp-step-6.png</div></div></div>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="summary-section">
+      <h2>📊 Zusammenfassung</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="value">10</div>
+          <div class="label">Flows</div>
+        </div>
+        <div class="summary-item">
+          <div class="value">39</div>
+          <div class="label">Steps total</div>
+        </div>
+        <div class="summary-item">
+          <div class="value">3</div>
+          <div class="label">2-Step Flows</div>
+        </div>
+        <div class="summary-item">
+          <div class="value">2</div>
+          <div class="label">3-Step Flows</div>
+        </div>
+        <div class="summary-item">
+          <div class="value">1</div>
+          <div class="label">4-Step Flow</div>
+        </div>
+        <div class="summary-item">
+          <div class="value">1</div>
+          <div class="label">5-Step Flow</div>
+        </div>
+        <div class="summary-item">
+          <div class="value">3</div>
+          <div class="label">6-Step Flows</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

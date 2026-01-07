@@ -1,0 +1,554 @@
+{
+  "exportInfo": {
+    "title": "Top 10 Flows - Alle Steps - Mobile Screenshots & Dokumentation",
+    "generatedAt": "2026-01-07",
+    "description": "Umfassende Dokumentation aller Steps für die Top 10 Conversion-Flows",
+    "device": "mobile",
+    "viewport": "375x812 (iPhone)"
+  },
+  "flows": [
+    {
+      "rank": 1,
+      "id": "chatgpt-flow-1",
+      "name": "ChatGPT Flow 1 (Zero Friction Pro)",
+      "description": "2 Steps, Sticky CTA, Trust Badges, Preisvorschau",
+      "reason": "Extrem kurze Completion-Time, perfekte Conversion-Basis. Ideal als Benchmark.",
+      "color": "from-emerald-500 to-teal-600",
+      "totalSteps": 2,
+      "estimatedTime": "45–90 Sek.",
+      "baseUrl": "/chatgpt-flow-1",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Umzugsdetails",
+          "description": "PLZ-Eingabe (Von/Nach), Umzugsdatum, Zimmerauswahl, Etage, Preisvorschau",
+          "url": "/chatgpt-flow-1?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/chatgpt-flow-1-step-1.png",
+          "features": [
+            "Sticky Progress Header mit Step-Anzeige",
+            "Trust Badges (Geprüfte Partner, SSL, 4.8/5 Bewertung)",
+            "PLZ-Eingabefelder mit großen Touch-Targets",
+            "Zimmer-Auswahl als Button-Grid",
+            "Echtzeit-Preisvorschau nach Eingabe",
+            "Mobile-optimierte Etagen-Auswahl"
+          ]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Kontakt & Extras",
+          "description": "Zusammenfassung, Zusatzleistungen, Kontaktformular, Datenschutz",
+          "url": "/chatgpt-flow-1?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/chatgpt-flow-1-step-2.png",
+          "features": [
+            "Kompakte Zusammenfassung der Angaben",
+            "Bearbeiten-Button für Korrekturen",
+            "Zusatzleistungen als Cards (Packservice, Reinigung, Montage)",
+            "Kontaktfelder mit Validierungs-Icons",
+            "Datenschutz-Checkbox",
+            "Sticky CTA mit Micro-Feedback"
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "id": "v8a",
+      "name": "V8a Decision-Free (Feedback)",
+      "description": "2 Steps, Review-Card, Transparenz-Panel",
+      "reason": "Decision-Free + Review-Pattern reduziert Unsicherheit, sehr gute UX fürs Handy.",
+      "color": "from-sky-500 to-indigo-600",
+      "totalSteps": 2,
+      "estimatedTime": "60–120 Sek.",
+      "baseUrl": "/umzugsofferten-v8a",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Umzugsdetails",
+          "description": "Adresseingabe mit PLZ, Datumswahl",
+          "url": "/umzugsofferten-v8a?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/v8a-step-1.png",
+          "features": [
+            "Progress Header mit Step-Indikator",
+            "Step-spezifische Trust Pills",
+            "PLZ-Eingabefelder mit Icons",
+            "Umzugsdatum-Picker",
+            "WhyThis-Transparenz-Komponente",
+            "Enhanced Sticky CTA mit Hint"
+          ]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten für Offerten-Zustellung",
+          "url": "/umzugsofferten-v8a?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/v8a-step-2.png",
+          "features": [
+            "Review-Card mit Zusammenfassung",
+            "Name, E-Mail, Telefon-Felder",
+            "Validierung mit Echtzeit-Feedback",
+            "Datenschutz-Erklärung",
+            "Offerten erhalten-CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "id": "v1f",
+      "name": "V1f Sticky CTA + Trust",
+      "description": "2 Steps, Sticky CTA, Micro-Feedback, Trust Pills",
+      "reason": "Trust-Mechaniken + kleinstes Formular. Super Vergleich zu #1.",
+      "color": "from-blue-500 to-cyan-600",
+      "totalSteps": 2,
+      "estimatedTime": "60–120 Sek.",
+      "baseUrl": "/umzugsofferten-v1f",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Umzugsdetails",
+          "description": "PLZ-Felder mit Trust Pills und WhyThis-Erklärung",
+          "url": "/umzugsofferten-v1f?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/v1f-step-1.png",
+          "features": [
+            "Progress Header (Step 1/2)",
+            "Step-spezifische Trust Pills (addresses)",
+            "Von PLZ / Nach PLZ mit Icons",
+            "Optionales Umzugsdatum",
+            "WhyThis-Transparenz",
+            "Enhanced Sticky CTA mit Disabled-Hint"
+          ]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktformular mit Datenschutz-Erklärung",
+          "url": "/umzugsofferten-v1f?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/v1f-step-2.png",
+          "features": [
+            "Progress Header (Step 2/2)",
+            "Trust Pills (contact-spezifisch)",
+            "Name, E-Mail, Telefon mit Validierung",
+            "Datenschutz WhyThis",
+            "Sticky CTA mit Zurück-Button",
+            "Summary-Line über CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "id": "v6a",
+      "name": "V6a Ultimate Optimized",
+      "description": "3 Steps (Details → Paket → Kontakt) mit Sticky CTA & Trust",
+      "reason": "Bestes 3-Step Premium-Pattern: klar, schnell, dennoch Upsell-fähig.",
+      "color": "from-violet-500 to-fuchsia-600",
+      "totalSteps": 3,
+      "estimatedTime": "2–4 Min.",
+      "baseUrl": "/umzugsofferten-v6a",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Umzugsdetails",
+          "description": "Adressen und Datum",
+          "url": "/umzugsofferten-v6a?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/v6a-step-1.png",
+          "features": [
+            "3-Step Progress Indicator",
+            "Von/Nach PLZ-Eingabe",
+            "Datum-Auswahl",
+            "Trust Badges"
+          ]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Paket",
+          "description": "Service-Paket Auswahl",
+          "url": "/umzugsofferten-v6a?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/v6a-step-2.png",
+          "features": [
+            "Paket-Auswahl Cards",
+            "Preis-Vorschau pro Paket",
+            "Zusatzleistungen",
+            "Upsell-Möglichkeiten"
+          ]
+        },
+        {
+          "stepNumber": 3,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten und Absenden",
+          "url": "/umzugsofferten-v6a?uc_capture=1&uc_step=3",
+          "screenshotPath": "/exports/screenshots/mobile/v6a-step-3.png",
+          "features": [
+            "Zusammenfassung der Auswahl",
+            "Kontaktformular",
+            "Datenschutz",
+            "Final CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "id": "v5f",
+      "name": "V5f Marketplace (Feedback)",
+      "description": "3 Steps, Top-3 Empfehlungen, Trust-Badges, Filter/Sort",
+      "reason": "Marketplace-Value ohne Overload. Wichtig für euer 'Vergleich'-Versprechen.",
+      "color": "from-amber-500 to-orange-600",
+      "totalSteps": 3,
+      "estimatedTime": "2–4 Min.",
+      "baseUrl": "/umzugsofferten-v5f",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Umzugsdetails",
+          "description": "Basis-Informationen",
+          "url": "/umzugsofferten-v5f?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/v5f-step-1.png",
+          "features": [
+            "PLZ-Eingabe",
+            "Zimmer-Auswahl",
+            "Datum"
+          ]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Firmen",
+          "description": "Top-3 Firmen-Empfehlungen",
+          "url": "/umzugsofferten-v5f?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/v5f-step-2.png",
+          "features": [
+            "Firmen-Cards mit Bewertungen",
+            "Filter/Sort-Optionen",
+            "Preis-Ranges",
+            "Trust-Badges"
+          ]
+        },
+        {
+          "stepNumber": 3,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten und Absenden",
+          "url": "/umzugsofferten-v5f?uc_capture=1&uc_step=3",
+          "screenshotPath": "/exports/screenshots/mobile/v5f-step-3.png",
+          "features": [
+            "Ausgewählte Firmen",
+            "Kontaktformular",
+            "Offerten-Anfrage"
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "id": "umzugsofferten-ultimate-best36",
+      "name": "Ultimate Best36",
+      "description": "4 Steps, Best-of 36 Varianten (Ziel: 98/100)",
+      "reason": "Euer 'Best-of'-Kandidat: sehr stark für Gesamtqualität vs. Steps.",
+      "color": "from-rose-500 to-pink-600",
+      "totalSteps": 4,
+      "estimatedTime": "3–6 Min.",
+      "baseUrl": "/umzugsofferten-ultimate-best36",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Adressen",
+          "description": "Von/Nach Adressen",
+          "url": "/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-best36-step-1.png",
+          "features": [
+            "4-Step Progress",
+            "Adress-Eingabe",
+            "PLZ-Validierung"
+          ]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Details",
+          "description": "Wohnungs-Details",
+          "url": "/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-best36-step-2.png",
+          "features": [
+            "Zimmer-Anzahl",
+            "Etage",
+            "Lift verfügbar"
+          ]
+        },
+        {
+          "stepNumber": 3,
+          "stepTitle": "Services",
+          "description": "Zusatzleistungen",
+          "url": "/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=3",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-best36-step-3.png",
+          "features": [
+            "Service-Auswahl",
+            "Preisvorschau",
+            "Paket-Optionen"
+          ]
+        },
+        {
+          "stepNumber": 4,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten",
+          "url": "/umzugsofferten-ultimate-best36?uc_capture=1&uc_step=4",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-best36-step-4.png",
+          "features": [
+            "Zusammenfassung",
+            "Kontaktformular",
+            "Final CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "id": "v6f",
+      "name": "V6f Ultimate (Best of All)",
+      "description": "5 Steps, kombiniert V6a–V6e (sticky footer, timeline, price flow)",
+      "reason": "Komplexer, aber wahrscheinlich 'Sweet Spot' zwischen Premium & Conversion.",
+      "color": "from-slate-600 to-slate-900",
+      "totalSteps": 5,
+      "estimatedTime": "4–7 Min.",
+      "baseUrl": "/umzugsofferten-v6f",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Start",
+          "description": "Einführung und Adressen",
+          "url": "/umzugsofferten-v6f?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/v6f-step-1.png",
+          "features": ["5-Step Timeline", "Adressen"]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Details",
+          "description": "Wohnungs-Details",
+          "url": "/umzugsofferten-v6f?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/v6f-step-2.png",
+          "features": ["Zimmer", "Etage", "Lift"]
+        },
+        {
+          "stepNumber": 3,
+          "stepTitle": "Services",
+          "description": "Service-Auswahl",
+          "url": "/umzugsofferten-v6f?uc_capture=1&uc_step=3",
+          "screenshotPath": "/exports/screenshots/mobile/v6f-step-3.png",
+          "features": ["Pakete", "Extras"]
+        },
+        {
+          "stepNumber": 4,
+          "stepTitle": "Termin",
+          "description": "Datum und Zeit",
+          "url": "/umzugsofferten-v6f?uc_capture=1&uc_step=4",
+          "screenshotPath": "/exports/screenshots/mobile/v6f-step-4.png",
+          "features": ["Kalender", "Zeitfenster"]
+        },
+        {
+          "stepNumber": 5,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten und Absenden",
+          "url": "/umzugsofferten-v6f?uc_capture=1&uc_step=5",
+          "screenshotPath": "/exports/screenshots/mobile/v6f-step-5.png",
+          "features": ["Zusammenfassung", "Kontakt", "CTA"]
+        }
+      ]
+    },
+    {
+      "rank": 8,
+      "id": "ultimate-v7",
+      "name": "Ultimate V7",
+      "description": "6 Steps, Best Practices aus 50+ Flow-Analysen",
+      "reason": "Super Referenz für 'voller Funnel' inkl. Firmen-Step & Sort/Filter.",
+      "color": "from-lime-500 to-green-700",
+      "totalSteps": 6,
+      "estimatedTime": "5–8 Min.",
+      "baseUrl": "/umzugsofferten-ultimate-v7",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Adressen",
+          "description": "Von/Nach",
+          "url": "/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-v7-step-1.png",
+          "features": ["6-Step Progress", "Adressen"]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Wohnung",
+          "description": "Wohnungs-Details",
+          "url": "/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-v7-step-2.png",
+          "features": ["Zimmer", "Etage"]
+        },
+        {
+          "stepNumber": 3,
+          "stepTitle": "Services",
+          "description": "Zusatzleistungen",
+          "url": "/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=3",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-v7-step-3.png",
+          "features": ["Service-Auswahl"]
+        },
+        {
+          "stepNumber": 4,
+          "stepTitle": "Firmen",
+          "description": "Firmen-Auswahl",
+          "url": "/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=4",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-v7-step-4.png",
+          "features": ["Firmen-Cards", "Filter/Sort"]
+        },
+        {
+          "stepNumber": 5,
+          "stepTitle": "Termin",
+          "description": "Datum",
+          "url": "/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=5",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-v7-step-5.png",
+          "features": ["Kalender"]
+        },
+        {
+          "stepNumber": 6,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten",
+          "url": "/umzugsofferten-ultimate-v7?uc_capture=1&uc_step=6",
+          "screenshotPath": "/exports/screenshots/mobile/ultimate-v7-step-6.png",
+          "features": ["Kontakt", "Absenden"]
+        }
+      ]
+    },
+    {
+      "rank": 9,
+      "id": "v9c",
+      "name": "V9c Zero Friction Optimized",
+      "description": "6 Steps, Tooltips, keine Vorauswahl, Filter/Sort, Trust-Badges",
+      "reason": "Euer 'Anti-Rechner'-Mindset: Guidance ohne Manipulation, sehr stark für Trust.",
+      "color": "from-teal-500 to-emerald-700",
+      "totalSteps": 6,
+      "estimatedTime": "5–9 Min.",
+      "baseUrl": "/umzugsofferten-v9c",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Start",
+          "description": "Einführung",
+          "url": "/umzugsofferten-v9c?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/v9c-step-1.png",
+          "features": ["Zero Friction Intro"]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Adressen",
+          "description": "Von/Nach",
+          "url": "/umzugsofferten-v9c?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/v9c-step-2.png",
+          "features": ["Tooltips", "PLZ"]
+        },
+        {
+          "stepNumber": 3,
+          "stepTitle": "Details",
+          "description": "Wohnungs-Details",
+          "url": "/umzugsofferten-v9c?uc_capture=1&uc_step=3",
+          "screenshotPath": "/exports/screenshots/mobile/v9c-step-3.png",
+          "features": ["Keine Vorauswahl"]
+        },
+        {
+          "stepNumber": 4,
+          "stepTitle": "Services",
+          "description": "Optionale Services",
+          "url": "/umzugsofferten-v9c?uc_capture=1&uc_step=4",
+          "screenshotPath": "/exports/screenshots/mobile/v9c-step-4.png",
+          "features": ["Transparenz"]
+        },
+        {
+          "stepNumber": 5,
+          "stepTitle": "Firmen",
+          "description": "Firmen mit Filter",
+          "url": "/umzugsofferten-v9c?uc_capture=1&uc_step=5",
+          "screenshotPath": "/exports/screenshots/mobile/v9c-step-5.png",
+          "features": ["Filter/Sort", "Trust-Badges"]
+        },
+        {
+          "stepNumber": 6,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten",
+          "url": "/umzugsofferten-v9c?uc_capture=1&uc_step=6",
+          "screenshotPath": "/exports/screenshots/mobile/v9c-step-6.png",
+          "features": ["Kontakt"]
+        }
+      ]
+    },
+    {
+      "rank": 10,
+      "id": "v2-archetyp",
+      "name": "V2 Archetyp",
+      "description": "6 Steps, 4 Kundentypen (Security/Efficiency/Value/Overwhelmed)",
+      "reason": "Wichtig für Personalisierung & Emotional UX (Stress-Event Umzug).",
+      "color": "from-purple-500 to-indigo-700",
+      "totalSteps": 6,
+      "estimatedTime": "5–9 Min.",
+      "baseUrl": "/umzugsofferten-v2-archetyp",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepTitle": "Typ-Auswahl",
+          "description": "Kundentyp wählen",
+          "url": "/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=1",
+          "screenshotPath": "/exports/screenshots/mobile/v2-archetyp-step-1.png",
+          "features": ["4 Archetypen", "Emotional UX"]
+        },
+        {
+          "stepNumber": 2,
+          "stepTitle": "Adressen",
+          "description": "Von/Nach",
+          "url": "/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=2",
+          "screenshotPath": "/exports/screenshots/mobile/v2-archetyp-step-2.png",
+          "features": ["Personalisiert"]
+        },
+        {
+          "stepNumber": 3,
+          "stepTitle": "Details",
+          "description": "Wohnungs-Details",
+          "url": "/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=3",
+          "screenshotPath": "/exports/screenshots/mobile/v2-archetyp-step-3.png",
+          "features": ["Typ-spezifisch"]
+        },
+        {
+          "stepNumber": 4,
+          "stepTitle": "Services",
+          "description": "Empfohlene Services",
+          "url": "/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=4",
+          "screenshotPath": "/exports/screenshots/mobile/v2-archetyp-step-4.png",
+          "features": ["Archetyp-Empfehlungen"]
+        },
+        {
+          "stepNumber": 5,
+          "stepTitle": "Termin",
+          "description": "Datum",
+          "url": "/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=5",
+          "screenshotPath": "/exports/screenshots/mobile/v2-archetyp-step-5.png",
+          "features": ["Kalender"]
+        },
+        {
+          "stepNumber": 6,
+          "stepTitle": "Kontakt",
+          "description": "Kontaktdaten",
+          "url": "/umzugsofferten-v2-archetyp?uc_capture=1&uc_step=6",
+          "screenshotPath": "/exports/screenshots/mobile/v2-archetyp-step-6.png",
+          "features": ["Kontakt"]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalFlows": 10,
+    "totalSteps": 39,
+    "stepBreakdown": {
+      "2-step-flows": 3,
+      "3-step-flows": 2,
+      "4-step-flows": 1,
+      "5-step-flows": 1,
+      "6-step-flows": 3
+    },
+    "screenshotUrls": {
+      "note": "Alle Screenshots müssen mit ?uc_capture=1&uc_step=N Parameter aufgerufen werden",
+      "device": "Mobile (375x812)",
+      "format": "PNG"
+    }
+  }
+}
