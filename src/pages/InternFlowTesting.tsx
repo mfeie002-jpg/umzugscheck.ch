@@ -40,6 +40,8 @@ import jsPDF from "jspdf";
 import { motion, AnimatePresence } from "framer-motion";
 import { TOP_10_FLOWS } from "@/data/top10Flows";
 import { translations, LANGUAGES, Language, useTranslation } from "@/data/internTestingTranslations";
+import { MutscheliJokeBanner } from "@/components/intern-testing/MutscheliJokeBanner";
+import { MutscheliAchievementToast, getMutscheliAchievement } from "@/components/intern-testing/MutscheliAchievements";
 import {
   DndContext,
   closestCenter,
@@ -808,6 +810,9 @@ export default function InternFlowTesting() {
           <title>Flow Testing | Umzugscheck.ch</title>
         </Helmet>
 
+        {/* Mutscheli Joke Banner - Bulgarian Only */}
+        {lang === "bg" && <MutscheliJokeBanner variant="top" autoRotate rotateInterval={10000} />}
+
         <div className="min-h-screen flex flex-col safe-area-top safe-area-bottom">
           {/* Language Selector */}
           <div className="flex justify-end p-4">
@@ -1036,18 +1041,34 @@ export default function InternFlowTesting() {
 
   // =============== TESTING PHASE ===============
   if (phase === "testing" && session && currentFlow) {
+    const mutscheliAchievementData = lang === "bg" && achievement ? getMutscheliAchievement(
+      achievement.includes("Първ") ? "firstFlow" :
+      achievement.includes("Полов") ? "halfWay" :
+      achievement.includes("бърза") ? "speedster" :
+      achievement.includes("слуша") ? "critic" :
+      achievement.includes("успя") ? "complete" : ""
+    ) : null;
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Helmet>
           <title>{t("testing.flow")} {currentFlowIndex + 1}/{TOP_10_FLOWS.length}</title>
         </Helmet>
 
+        {/* Mutscheli Joke Banner - Bulgarian Only */}
+        {lang === "bg" && <MutscheliJokeBanner variant="top" autoRotate rotateInterval={12000} />}
+
         {showConfetti && <Confetti />}
         
         <AnimatePresence>
-          {achievement && (
+          {achievement && lang === "bg" && mutscheliAchievementData ? (
+            <MutscheliAchievementToast 
+              achievement={mutscheliAchievementData} 
+              onClose={() => setAchievement(null)} 
+            />
+          ) : achievement ? (
             <AchievementToast message={achievement} onClose={() => setAchievement(null)} />
-          )}
+          ) : null}
         </AnimatePresence>
 
         {/* Header */}

@@ -360,22 +360,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "special.greeting": "Здрасти Mutscheli <3 / Fudeli <3 / Bory Bory! 🚗💨",
     "special.subtitle": "Специално за теб от България с Мерцедеса! 🇧🇬",
     
-    // Bulgarian jokes for Mutscheli
-    "joke.1": "🚗 Защо Mutscheli кара Мерцедес? Защото другите коли не издържат колко много говори!",
-    "joke.2": "👱‍♀️ Mutscheli има extensions... и за косата, и за извиненията си!",
-    "joke.3": "😴 Mutscheli спи 12 часа на ден. Другите 12 часа търси извинения защо е спала толкова.",
-    "joke.4": "🍳 Mutscheli е готвач... готви планове които никога не се случват!",
-    "joke.5": "💬 ADHD? Не, Mutscheli просто има твърде много интересни мисли... за миналото!",
-    "joke.6": "🚬 Mutscheli пуши за здраве - казва че релаксира. После пие за стреса от пушенето!",
-    "joke.7": "💸 Mutscheli е на минус? Не е минус, само временно отрицателен баланс с план за утре!",
-    "joke.8": "👂 Mutscheli не може да слуша? Не, тя просто чува само важните неща... от 2019!",
-    "joke.9": "🍷 Една чаша вино помага. Втората още повече. Третата... какво питаше?",
-    "joke.10": "💕 Mutscheli е най-сладкото същество... особено когато има нужда от услуга!",
-    "joke.11": "📱 Братът на Mutscheli се обажда. Тя: 'Имам среща!' (лежи на дивана)",
-    "joke.12": "🛏️ 'Ставам в 7!' - Mutscheli, всяка вечер в 2 сутринта.",
-    "joke.13": "💇‍♀️ Extensionsите на Mutscheli имат повече живот от плановете ѝ!",
-    "joke.14": "🇧🇬 Какво е общото между Mutscheli и българската икономика? И двете живеят на кредит!",
-    "joke.15": "❤️ Mutscheli е моята приятелка и я обичам... дори когато разказва за 2017 пак!",
+    // Achievement titles - Mutscheli Edition
+    "achievement.firstFlow": "Кралица на Мерцедеса! 🚗 Първият поток готов!",
+    "achievement.halfWay": "Без сън днес! 😴➡️😊 Половината готови!",
+    "achievement.speedster": "По-бърза от Мерцедеса! 🚗💨 Под 2 мин!",
+    "achievement.critic": "Наистина слуша! 👂✨ Много feedback!",
+    "achievement.complete": "Mutscheli, ти успя! 👑💕 Всичките 10!",
+    "achievement.paused": "Кафе пауза! ☕ Типично!",
+    "achievement.focused": "ADHD? Какво ADHD? 🎯",
+    "achievement.longFeedback": "Extension Кралица! 💇‍♀️ Дълъг feedback!",
+    "achievement.noSkips": "Без извинения! 🎉 Всичко завършено!",
+    "achievement.present": "Живее в момента! 🌟",
     
     // Intro
     "intro.title": "Тестване на Потоци",
@@ -475,12 +470,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "summary.download": "Изтегли",
     "summary.email": "Сподели по имейл",
     
-    // Achievements - Mutscheli Edition
-    "achievement.firstFlow": "Браво Bory Bory! Първият поток готов! 🎉",
-    "achievement.halfWay": "Половина! Без да заспиш! 😴➡️😊",
-    "achievement.speedster": "По-бърза от Мерцедеса! Под 2 мин! 🚗💨",
-    "achievement.critic": "Критичен мислител! (Накрая слушаше!) 👂",
-    "achievement.complete": "Mutscheli ти успя! Всички 10! 🏆💕",
     
     // Help
     "help.title": "Помощ за Fudeli",
