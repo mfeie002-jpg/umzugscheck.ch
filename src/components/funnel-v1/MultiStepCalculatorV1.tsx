@@ -1223,7 +1223,39 @@ export const MultiStepCalculatorV1 = memo(function MultiStepCalculatorV1() {
           )}
         </AnimatePresence>
 
-        {/* Navigation removed - V1StickyMobileCTA now handles all devices */}
+        {/* Desktop inline navigation - mobile uses sticky CTA */}
+        <div className="hidden md:flex gap-3 mt-6">
+          {currentStep > 1 && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleBack}
+              className="h-12 rounded-xl px-5 min-w-[100px] text-base font-semibold"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1.5" />
+              Zurück
+            </Button>
+          )}
+          
+          <Button
+            type="button"
+            onClick={currentStep === totalSteps ? handleSubmit : handleNext}
+            disabled={!canProceed()}
+            className="flex-1 h-12 rounded-xl font-bold text-base shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+          >
+            {currentStep === totalSteps ? (
+              <>
+                <CheckCircle className="w-5 h-5 mr-2" />
+                Offerten erhalten
+              </>
+            ) : (
+              <>
+                Weiter
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </>
+            )}
+          </Button>
+        </div>
         
         {/* Mobile spacer removed - V1StickyMobileCTA handles spacing */}
         
