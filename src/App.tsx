@@ -34,6 +34,7 @@ const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.H
 const HomeOptimized = lazy(() => import("./pages/HomeOptimized"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
+const ExportDownload = lazy(() => import("./pages/ExportDownload"));
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -767,6 +768,7 @@ const AppRouterContent = () => {
           <Route path="/provider/login" element={<ProviderLogin />} />
           <Route path="/fuer-firmen/anmelden" element={<ProviderLogin />} />
           <Route path="/fuer-firmen/registrieren" element={<ProviderSignupNew />} />
+          <Route path="/export-download" element={<ExportDownload />} />
           <Route path="*" element={<NotFound />} />
         </AnimatedRoutes>
       </Suspense>
