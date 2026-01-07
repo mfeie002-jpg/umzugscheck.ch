@@ -8,7 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, RefreshCw, X, Crown, Star, Heart } from "lucide-react";
 
 // All Mutscheli jokes - she's never wrong, always has excuses, lives in the past
+// Plus Morris jokes - the hero, the love, the big boss, the Einstein!
 const MUTSCHELI_JOKES = [
+  // Mutscheli classics
   { icon: "🚗", text: "Защо Mutscheli кара Мерцедес? Защото другите коли не издържат колко много говори!" },
   { icon: "👱‍♀️", text: "Mutscheli има extensions... и за косата, и за извиненията си!" },
   { icon: "😴", text: "Mutscheli спи 12 часа на ден. Другите 12 часа търси извинения защо е спала толкова." },
@@ -24,7 +26,7 @@ const MUTSCHELI_JOKES = [
   { icon: "💇‍♀️", text: "Extensionsите на Mutscheli имат повече живот от плановете ѝ!" },
   { icon: "🇧🇬", text: "Какво е общото между Mutscheli и българската икономика? И двете живеят на кредит!" },
   { icon: "❤️", text: "Mutscheli е моята приятелка и я обичам... дори когато разказва за 2017 пак!" },
-  // New "never wrong" jokes
+  // "Never wrong" jokes
   { icon: "👑", text: "Mutscheli никога не греши. Просто всички други са грешни!" },
   { icon: "🎯", text: "'Аз ти казах!' - Mutscheli, за всичко, винаги, дори когато не е казала." },
   { icon: "🤔", text: "Mutscheli: 'Не е моя грешка.' Наратор: Беше нейна грешка." },
@@ -40,6 +42,28 @@ const MUTSCHELI_JOKES = [
   { icon: "💤", text: "Mutscheli не спи много. Тя просто 'възстановява енергията' 14 часа." },
   { icon: "🚀", text: "Mutscheli е винаги права. Дори когато не е. Особено тогава." },
   { icon: "🎶", text: "Mutscheli не говори много. Просто другите слушат малко!" },
+  
+  // MORRIS - The Hero, The Love, The Big Boss, The Einstein! 💪
+  { icon: "🦸‍♂️", text: "Кой е героят на Mutscheli? MORRIS! Единственият, който я търпи! 💪" },
+  { icon: "❤️‍🔥", text: "Morris е любовта на Mutscheli. Той е най-добрият! THE BEST! 🏆" },
+  { icon: "👔", text: "Big Boss Morris! Когато той говори, дори Mutscheli слуша... понякога." },
+  { icon: "🧠", text: "Morris = Einstein 2.0! Толкова умен, че разбира какво казва Mutscheli!" },
+  { icon: "💎", text: "Кой е най-милият? MORRIS! Дори когато Mutscheli има 100 извинения!" },
+  { icon: "🤴", text: "Morris - The Biggest Dealer! Дава на Mutscheli любов на кредит! 💕" },
+  { icon: "🌍", text: "Mutscheli: 'Аз съм най-добрата!' Morris: 'Да, златце.' (Big Boss Energy)" },
+  { icon: "💘", text: "Morris + Mutscheli = ❤️ Той е нейният герой, дори когато тя забравя!" },
+  { icon: "🎖️", text: "Morris - Герой на Mutscheli! Издържа повече от Мерцедеса!" },
+  { icon: "🏅", text: "Кой е THE BOSS? Morris! Mutscheli само мисли че е тя! 😉" },
+  { icon: "🧲", text: "Morris е магнит за любов! Mutscheli каза... преди 5 години." },
+  { icon: "👑", text: "Morris - Кралят! Mutscheli е кралица, но той е Big Boss!" },
+  { icon: "🔥", text: "Morris е толкова hot, че дори extensions-ите на Mutscheli се топят!" },
+  { icon: "💪", text: "Кой търпи Mutscheli 24/7? Само Morris! Истински герой! 🦸‍♂️" },
+  { icon: "🎁", text: "Morris дава най-добрите подаръци: търпение и любов... и пари за кредитите!" },
+  { icon: "🌹", text: "Morris е романтик! Обича Mutscheli дори когато тя говори за 2015!" },
+  { icon: "⭐", text: "5 звезди за Morris! Най-добрият boyfriend! The Einstein of Love!" },
+  { icon: "🎯", text: "Morris никога не греши. За разлика от... о, чакай, Mutscheli също не греши! 😏" },
+  { icon: "💑", text: "Mutscheli + Morris = Perfect Match! Той слуша, тя говори... много!" },
+  { icon: "🦁", text: "Morris - Big Boss Lion! Mutscheli е неговата малка... много говореща котка!" },
 ];
 
 interface MutscheliJokeBannerProps {
