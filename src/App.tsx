@@ -239,7 +239,7 @@ const UmzugsoffertenV2e = lazy(() => import("./pages/UmzugsoffertenV2e"));
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 const FlowTester = lazy(() => import("./pages/FlowTester"));
 const FlowShowcase = lazy(() => import("./pages/FlowShowcase"));
-const FlowOverview = lazy(() => import("./pages/FlowOverview"));
+// FlowOverview merged into FlowTester
 const FlowFamilyLanding = lazy(() => import("./pages/FlowFamilyLanding"));
 const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
@@ -684,7 +684,7 @@ const AppRouterContent = () => {
 
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/flow/:flowId" element={<FlowShowcase />} />
-          <Route path="/flow-overview" element={<FlowOverview />} />
+          <Route path="/flow-overview" element={<Navigate to="/flow-tester" replace />} />
           {/* Flow Family Landing Pages - dedicated page per flow family */}
           <Route path="/flows/:familyId" element={<FlowFamilyLanding />} />
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
