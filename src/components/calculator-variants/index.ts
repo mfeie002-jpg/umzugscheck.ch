@@ -73,9 +73,17 @@ export { V9aFeedbackBased } from './V9aFeedbackBased';
 export { V9bFeedbackBased } from './V9bFeedbackBased';
 export { V9cFeedbackBased } from './V9cFeedbackBased';
 export { V9dFeedbackBased } from './V9dFeedbackBased';
+export { default as V9ZeroFrictionFlow } from './V9ZeroFrictionFlow';
 
 // Ultimate Variants (Combined Best Practices)
 export { UltimateV7Flow } from './UltimateV7Flow';
+export { default as UltimateBest36Flow } from './UltimateBest36Flow';
+export { default as GoldenFlowV10 } from './GoldenFlowV10';
+
+// Swiss Premium Flows
+export { default as SwissLightningFlow } from './SwissLightningFlow';
+export { default as SwissPremiumChoiceFlow } from './SwissPremiumChoiceFlow';
+export { default as SwissConciergeHybridFlow } from './SwissConciergeHybridFlow';
 
 // Multi Variants (ChatGPT Pro)
 export { MultiAFeedbackBased } from './MultiAFeedbackBased';
