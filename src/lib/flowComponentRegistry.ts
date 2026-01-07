@@ -192,6 +192,14 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   // ========== V1f/V1g - New Feedback Variants ==========
   'v1f': V1fStickyCTATrust,
   'v1g': V1gInputUX,
+  
+  // ========== V2 Archetyp & Ultimate CH ==========
+  'v2-archetyp': V2aProgressEnhanced, // TODO: Create dedicated V2ArchetypFlow
+  'ultimate-ch': V9aFeedbackBased, // TODO: Create dedicated UltimateChFlow
+  
+  // ========== Main Config Aliases ==========
+  'umzugsofferten-v2e': V2eExperimental,
+  'umzugsofferten-ultimate-best36': UltimateBest36Flow,
 };
 
 /**
