@@ -45,7 +45,7 @@ export const V1StickyMobileCTA = memo(function V1StickyMobileCTA({
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="md:hidden fixed inset-x-0 bottom-0 z-[9999]"
+      className="fixed inset-x-0 bottom-0 z-[9999]"
     >
       {/* Gradient fade for smooth transition */}
       <div 
