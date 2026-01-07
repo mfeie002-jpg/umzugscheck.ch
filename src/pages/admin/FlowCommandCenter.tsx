@@ -247,155 +247,114 @@ export default function FlowCommandCenter() {
   }, []);
 
   const loadData = async () => {
+    const requestId = ++loadRequestIdRef.current;
     setIsLoading(true);
+    setLoadError(null);
+
+    // Timeout guard - 12 seconds max
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), 12000)
+    );
+
     try {
-      const flowIds = getAllFlowIds();
-      const scoreMap = new Map<string, FlowScore>();
-      let totalScore = 0;
-      let topScore = 0;
-      let analyzedCount = 0;
-      
-      // Try to fetch data, but don't fail completely if Supabase is unavailable
-      let featureData: any[] = [];
-      let analysisData: any[] = [];
-      let criticalCount = 0;
-      let totalIssues = 0;
-      let lastRunDate: string | null = null;
-      
-      try {
-        // Fetch all flow scores from feature_scores table
-        const { data, error } = await supabase
-          .from('flow_feature_scores')
-          .select('*')
-          .order('updated_at', { ascending: false });
-        
-        if (!error && data) featureData = data;
-      } catch (e) {
-        console.warn('Could not fetch feature scores:', e);
-      }
+      await Promise.race([loadDataInternal(requestId), timeoutPromise]);
+    } catch (err: any) {
+      // Only update state if this is still the current request
+      if (requestId !== loadRequestIdRef.current) return;
 
-      try {
-        // Also fetch from flow_analysis_runs for completed analyses
-        const { data, error } = await supabase
-          .from('flow_analysis_runs')
-          .select('*')
-          .eq('status', 'completed')
-          .not('overall_score', 'is', null)
-          .order('created_at', { ascending: false });
-
-        if (!error && data) analysisData = data;
-      } catch (e) {
-        console.warn('Could not fetch analysis runs:', e);
+      console.error('loadData failed:', err);
+      const message =
+        err?.message === 'timeout'
+          ? 'Verbindung zum Backend dauert zu lange. Bitte erneut versuchen.'
+          : 'Daten konnten nicht geladen werden. Bitte erneut versuchen.';
+      setLoadError(message);
+    } finally {
+      if (requestId === loadRequestIdRef.current) {
+        setIsLoading(false);
       }
-      
-      // First, try to match by exact ID or with umzugsofferten- prefix
-      for (const id of flowIds) {
-        // Try multiple matching patterns
-        const featureScore = featureData?.find(f => 
-          f.flow_id === id || 
-          f.flow_id === `umzugsofferten-${id}` ||
-          f.flow_id.replace('umzugsofferten-', '') === id
-        );
-        
-        // Also check analysis runs
-        const analysisRun = analysisData?.find(a => 
-          a.flow_id === id || 
-          a.flow_id === `umzugsofferten-${id}` ||
-          a.flow_id.replace('umzugsofferten-', '') === id
-        );
-        
-        // Use feature score if available, otherwise use analysis run
-        const sourceData = featureScore || analysisRun;
-        
-        if (sourceData) {
-          const score: FlowScore = {
-            flowId: id,
-            overallScore: sourceData.overall_score,
-            conversionScore: sourceData.conversion_score,
-            uxScore: sourceData.ux_score,
-            mobileScore: sourceData.mobile_score,
-            trustScore: sourceData.trust_score,
-            accessibilityScore: sourceData.accessibility_score,
-            performanceScore: sourceData.performance_score,
-            lastAnalyzed: 'updated_at' in sourceData ? sourceData.updated_at : sourceData.created_at,
-          };
-          scoreMap.set(id, score);
-          
-          if (score.overallScore !== null) {
-            totalScore += score.overallScore;
-            topScore = Math.max(topScore, score.overallScore);
-            analyzedCount++;
-          }
-        } else {
-          // Flow without analysis
-          scoreMap.set(id, {
-            flowId: id,
-            overallScore: null,
-            conversionScore: null,
-            uxScore: null,
-            mobileScore: null,
-            trustScore: null,
-            accessibilityScore: null,
-            performanceScore: null,
-            lastAnalyzed: null,
-          });
+    }
+  };
+
+  const loadDataInternal = async (requestId: number) => {
+    const flowIds = getAllFlowIds();
+    const scoreMap = new Map<string, FlowScore>();
+    let totalScore = 0;
+    let topScore = 0;
+    let analyzedCount = 0;
+
+    // Try to fetch data, but don't fail completely if Supabase is unavailable
+    let featureData: any[] = [];
+    let analysisData: any[] = [];
+    let criticalCount = 0;
+    let totalIssues = 0;
+    let lastRunDate: string | null = null;
+
+    // Fetch all flow scores from feature_scores table
+    const { data: fetchedFeatures, error: featError } = await supabase
+      .from('flow_feature_scores')
+      .select('*')
+      .order('updated_at', { ascending: false });
+
+    if (featError) throw featError;
+    featureData = fetchedFeatures || [];
+
+    // Abort if request is stale
+    if (requestId !== loadRequestIdRef.current) return;
+
+    // Also fetch from flow_analysis_runs for completed analyses
+    const { data: fetchedAnalysis, error: analysisError } = await supabase
+      .from('flow_analysis_runs')
+      .select('*')
+      .eq('status', 'completed')
+      .not('overall_score', 'is', null)
+      .order('created_at', { ascending: false });
+
+    if (analysisError) throw analysisError;
+    analysisData = fetchedAnalysis || [];
+
+    if (requestId !== loadRequestIdRef.current) return;
+
+    // First, try to match by exact ID or with umzugsofferten- prefix
+    for (const id of flowIds) {
+      // Try multiple matching patterns
+      const featureScore = featureData?.find(f =>
+        f.flow_id === id ||
+        f.flow_id === `umzugsofferten-${id}` ||
+        f.flow_id.replace('umzugsofferten-', '') === id
+      );
+
+      // Also check analysis runs
+      const analysisRun = analysisData?.find(a =>
+        a.flow_id === id ||
+        a.flow_id === `umzugsofferten-${id}` ||
+        a.flow_id.replace('umzugsofferten-', '') === id
+      );
+
+      // Use feature score if available, otherwise use analysis run
+      const sourceData = featureScore || analysisRun;
+
+      if (sourceData) {
+        const score: FlowScore = {
+          flowId: id,
+          overallScore: sourceData.overall_score,
+          conversionScore: sourceData.conversion_score,
+          uxScore: sourceData.ux_score,
+          mobileScore: sourceData.mobile_score,
+          trustScore: sourceData.trust_score,
+          accessibilityScore: sourceData.accessibility_score,
+          performanceScore: sourceData.performance_score,
+          lastAnalyzed: 'updated_at' in sourceData ? sourceData.updated_at : sourceData.created_at,
+        };
+        scoreMap.set(id, score);
+
+        if (score.overallScore !== null) {
+          totalScore += score.overallScore;
+          topScore = Math.max(topScore, score.overallScore);
+          analyzedCount++;
         }
-      }
-
-      setScores(scoreMap);
-
-      try {
-        // Fetch issue counts
-        const { count } = await supabase
-          .from('flow_ux_issues')
-          .select('*', { count: 'exact', head: true })
-          .eq('is_resolved', false)
-          .eq('severity', 'critical');
-        criticalCount = count || 0;
-      } catch (e) {
-        console.warn('Could not fetch critical issues:', e);
-      }
-
-      try {
-        const { count } = await supabase
-          .from('flow_ux_issues')
-          .select('*', { count: 'exact', head: true })
-          .eq('is_resolved', false);
-        totalIssues = count || 0;
-      } catch (e) {
-        console.warn('Could not fetch total issues:', e);
-      }
-
-      try {
-        // Get last analysis date
-        const { data: lastRun } = await supabase
-          .from('flow_analysis_runs')
-          .select('created_at')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        lastRunDate = lastRun?.created_at || null;
-      } catch (e) {
-        console.warn('Could not fetch last run:', e);
-      }
-
-      setStats({
-        totalFlows: flowIds.length,
-        analyzedFlows: analyzedCount,
-        avgScore: analyzedCount > 0 ? Math.round(totalScore / analyzedCount) : 0,
-        topScore,
-        criticalIssues: criticalCount,
-        totalIssues: totalIssues,
-        lastAnalysisDate: lastRunDate,
-      });
-
-    } catch (err) {
-      console.error('Failed to load data:', err);
-      // Still show the UI, just with empty data
-      const flowIds = getAllFlowIds();
-      const emptyScoreMap = new Map<string, FlowScore>();
-      flowIds.forEach(id => {
-        emptyScoreMap.set(id, {
+      } else {
+        // Flow without analysis
+        scoreMap.set(id, {
           flowId: id,
           overallScore: null,
           conversionScore: null,
@@ -406,21 +365,51 @@ export default function FlowCommandCenter() {
           performanceScore: null,
           lastAnalyzed: null,
         });
-      });
-      setScores(emptyScoreMap);
-      setStats({
-        totalFlows: flowIds.length,
-        analyzedFlows: 0,
-        avgScore: 0,
-        topScore: 0,
-        criticalIssues: 0,
-        totalIssues: 0,
-        lastAnalysisDate: null,
-      });
-      toast.error('Daten konnten nicht vollständig geladen werden. Einige Funktionen sind eingeschränkt.');
-    } finally {
-      setIsLoading(false);
+      }
     }
+
+    if (requestId !== loadRequestIdRef.current) return;
+
+    setScores(scoreMap);
+
+    // Fetch issue counts
+    const { count: critCount } = await supabase
+      .from('flow_ux_issues')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_resolved', false)
+      .eq('severity', 'critical');
+    criticalCount = critCount || 0;
+
+    if (requestId !== loadRequestIdRef.current) return;
+
+    const { count: issueCount } = await supabase
+      .from('flow_ux_issues')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_resolved', false);
+    totalIssues = issueCount || 0;
+
+    if (requestId !== loadRequestIdRef.current) return;
+
+    // Get last analysis date
+    const { data: lastRun } = await supabase
+      .from('flow_analysis_runs')
+      .select('created_at')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    lastRunDate = lastRun?.created_at || null;
+
+    if (requestId !== loadRequestIdRef.current) return;
+
+    setStats({
+      totalFlows: flowIds.length,
+      analyzedFlows: analyzedCount,
+      avgScore: analyzedCount > 0 ? Math.round(totalScore / analyzedCount) : 0,
+      topScore,
+      criticalIssues: criticalCount,
+      totalIssues: totalIssues,
+      lastAnalysisDate: lastRunDate,
+    });
   };
 
   const [analyzingFlowId, setAnalyzingFlowId] = useState<string | null>(null);
@@ -962,7 +951,14 @@ export default function FlowCommandCenter() {
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
+          <span className="ml-3 text-muted-foreground">Daten werden geladen…</span>
         </div>
+      ) : loadError ? (
+        <ErrorState
+          title="Verbindungsfehler"
+          message={loadError}
+          onRetry={loadData}
+        />
       ) : (
         <>
           {interfaceMode === 'tabs' && renderTabsInterface()}
