@@ -1,6 +1,7 @@
 import React, { useState, useCallback, memo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Building2, Briefcase, Package, PackageOpen, Boxes, Calendar, ArrowUp, ChevronRight, Check, Shield, ArrowLeft, Lock, Star, BadgeCheck, Clock, Zap, Timer, Award } from 'lucide-react';
+import { FlowCompleteFeedback } from '@/components/flow-components/FlowCompleteFeedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
@@ -447,20 +448,15 @@ const StepContact = memo(({ data, onUpdate }: { data: FlowData; onUpdate: (d: Pa
 });
 StepContact.displayName = 'StepContact';
 
-// Success Screen
-const StepSuccess = memo(() => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="text-center py-12 space-y-6"
-  >
-    <div className="w-20 h-20 mx-auto bg-blue-600 rounded-full flex items-center justify-center">
-      <Check className="w-10 h-10 text-white" />
-    </div>
-    <h2 className="text-2xl font-bold text-slate-900">Perfekt!</h2>
-    <p className="text-slate-600">Ihre Offerten werden in Kürze erstellt.</p>
-    <TargetScoreBadge />
-  </motion.div>
+// Success Screen with Feedback
+const StepSuccess = memo(({ flowId }: { flowId: string }) => (
+  <div className="py-6">
+    <FlowCompleteFeedback 
+      flowId={flowId}
+      flowLabel="Ultimate Best36"
+      showHomeButton={true}
+    />
+  </div>
 ));
 StepSuccess.displayName = 'StepSuccess';
 
@@ -505,7 +501,7 @@ export const UltimateBest36Flow = memo(() => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="w-full max-w-lg">
-          <StepSuccess />
+          <StepSuccess flowId="ultimate-best36" />
         </div>
       </div>
     );

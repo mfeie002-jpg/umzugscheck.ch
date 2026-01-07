@@ -1,6 +1,7 @@
 import React, { useState, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Building2, MapPin, Sofa, Bed, ChefHat, Bath, Tv, Dumbbell, Calendar, Check, Shield, Lock, Award, Info, ArrowLeft } from 'lucide-react';
+import { FlowCompleteFeedback } from '@/components/flow-components/FlowCompleteFeedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -379,24 +380,15 @@ const StepCheckout = memo(({ data, onUpdate }: { data: FlowData; onUpdate: (d: P
 ));
 StepCheckout.displayName = 'StepCheckout';
 
-// Success Screen
-const StepSuccess = memo(() => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="text-center py-12 space-y-6"
-  >
-    <motion.div
-      animate={{ scale: [1, 1.1, 1] }}
-      transition={{ duration: 0.5 }}
-      className="w-24 h-24 mx-auto bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-xl shadow-violet-500/30"
-    >
-      <Check className="w-12 h-12 text-white" />
-    </motion.div>
-    <h2 className="text-2xl font-bold text-slate-900">Perfekt!</h2>
-    <p className="text-slate-600">Ihre Offerten werden in Kürze erstellt.</p>
-    <TrustBadges />
-  </motion.div>
+// Success Screen with Feedback
+const StepSuccess = memo(({ flowId }: { flowId: string }) => (
+  <div className="py-6">
+    <FlowCompleteFeedback 
+      flowId={flowId}
+      flowLabel="Golden Flow V10"
+      showHomeButton={true}
+    />
+  </div>
 ));
 StepSuccess.displayName = 'StepSuccess';
 
@@ -445,7 +437,7 @@ export const GoldenFlowV10 = memo(() => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center p-4">
         <GlassCard className="w-full max-w-lg p-8">
-          <StepSuccess />
+          <StepSuccess flowId="golden-flow-v10" />
         </GlassCard>
       </div>
     );
