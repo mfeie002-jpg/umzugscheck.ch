@@ -1,9 +1,9 @@
-import { useMemo, Suspense } from 'react';
+import { useMemo, Suspense, useState, useCallback } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Star, Sparkles, Zap, Trophy, MessageSquare, Target } from 'lucide-react';
+import { ArrowLeft, Star, Sparkles, Zap, Trophy, MessageSquare, Target, Maximize2, X, ChevronDown } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
 import { getFlowComponent } from '@/lib/flowComponentRegistry';
@@ -167,6 +167,8 @@ const getSubVariants = (prefix: string) => {
 
 export default function FlowFamilyLanding() {
   const { familyId } = useParams<{ familyId: string }>();
+  const [fullscreenFlow, setFullscreenFlow] = useState<string | null>(null);
+  const [navOpen, setNavOpen] = useState(false);
   
   const family = familyId ? FLOW_FAMILIES[familyId as keyof typeof FLOW_FAMILIES] : null;
   
@@ -183,11 +185,31 @@ export default function FlowFamilyLanding() {
     return getSubVariants(family.prefix);
   }, [family]);
   
+  const scrollToFlow = useCallback((flowId: string) => {
+    const element = document.getElementById(flowId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setNavOpen(false);
+    }
+  }, []);
+  
+  const openFullscreen = useCallback((flowId: string) => {
+    setFullscreenFlow(flowId);
+    document.body.style.overflow = 'hidden';
+  }, []);
+  
+  const closeFullscreen = useCallback(() => {
+    setFullscreenFlow(null);
+    document.body.style.overflow = '';
+  }, []);
+  
   if (!family) {
     return <Navigate to="/flow-tester" replace />;
   }
   
   const IconComponent = family.icon;
+  const fullscreenVariant = variants.find(v => v.id === fullscreenFlow);
+  const FullscreenComponent = fullscreenFlow ? getFlowComponent(fullscreenFlow) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
@@ -196,7 +218,47 @@ export default function FlowFamilyLanding() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      {/* Header */}
+      {/* Fullscreen Modal */}
+      <AnimatePresence>
+        {fullscreenFlow && FullscreenComponent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-background"
+          >
+            {/* Fullscreen Header */}
+            <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur-xl">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${family.color} flex items-center justify-center text-white font-bold text-sm`}>
+                  {fullscreenVariant?.id.toUpperCase().slice(0, 3)}
+                </div>
+                <div>
+                  <h2 className="font-bold">{fullscreenVariant?.label}</h2>
+                  <p className="text-xs text-muted-foreground">Vollbild-Modus</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" onClick={closeFullscreen}>
+                <X className="h-4 w-4 mr-2" />
+                Schliessen
+              </Button>
+            </div>
+            
+            {/* Fullscreen Content */}
+            <div className="h-[calc(100vh-65px)] overflow-auto">
+              <Suspense fallback={
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-muted-foreground">Flow wird geladen...</p>
+                </div>
+              }>
+                <FullscreenComponent />
+              </Suspense>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Header with Navigation */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -217,9 +279,48 @@ export default function FlowFamilyLanding() {
                 </div>
               </div>
             </div>
-            <Badge variant="outline" className="text-sm">
-              Flow-Familie
-            </Badge>
+            
+            {/* Quick Nav Dropdown */}
+            <div className="relative">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setNavOpen(!navOpen)}
+                className="gap-2"
+              >
+                Zur Flow springen
+                <ChevronDown className={`h-4 w-4 transition-transform ${navOpen ? 'rotate-180' : ''}`} />
+              </Button>
+              
+              <AnimatePresence>
+                {navOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 top-full mt-2 w-72 bg-background border rounded-xl shadow-xl overflow-hidden z-50"
+                  >
+                    <div className="p-2 max-h-80 overflow-auto">
+                      {variants.map((variant, index) => (
+                        <button
+                          key={variant.id}
+                          onClick={() => scrollToFlow(variant.id)}
+                          className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors text-left"
+                        >
+                          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${family.color} flex items-center justify-center text-white text-xs font-bold`}>
+                            {index + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{variant.label}</p>
+                            <p className="text-xs text-muted-foreground">{variant.steps} Schritte</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </header>
@@ -284,6 +385,17 @@ export default function FlowFamilyLanding() {
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Fullscreen Button */}
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => openFullscreen(variant.id)}
+                      className="gap-2"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                      Vollbild
+                    </Button>
                   </div>
                 </div>
                 
