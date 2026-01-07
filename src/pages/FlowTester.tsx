@@ -12,6 +12,8 @@ import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
 import { FlowExportDialog } from '@/components/flow-tester/FlowExportDialog';
 import { TopTenFlowSelector } from '@/components/flow-tester/TopTenFlowSelector';
+import { FlowRatingsDisplay } from '@/components/flow-tester/FlowRatingsDisplay';
+import { FlowZipExport } from '@/components/flow-tester/FlowZipExport';
 
 // Build main flows with their sub-variants
 const MAIN_FLOWS = [
@@ -163,8 +165,10 @@ export default function FlowTesterPage() {
               <Badge variant="outline" className="ml-2">{totalFlowCount} Flows</Badge>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <FlowRatingsDisplay />
             <TopTenFlowSelector />
+            <FlowZipExport />
             <FlowExportDialog />
             <Link to="/flow-command-center">
               <Button variant="outline" size="sm">

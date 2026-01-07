@@ -1,6 +1,7 @@
 import React, { useState, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Calendar, Package, Truck, SprayCan, Warehouse, ChevronRight, Check, Shield, Lock, Star, ArrowLeft, Award, Users, BadgeCheck, Clock, MessageCircle, Phone as PhoneIcon } from 'lucide-react';
+import { FlowCompleteFeedback } from '@/components/flow-components/FlowCompleteFeedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -380,20 +381,15 @@ const StepContact = memo(({ data, onUpdate }: { data: FlowData; onUpdate: (d: Pa
 ));
 StepContact.displayName = 'StepContact';
 
-// Success Screen
-const StepSuccess = memo(() => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="text-center py-12 space-y-6"
-  >
-    <div className="w-20 h-20 mx-auto bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
-      <Check className="w-10 h-10 text-white" />
-    </div>
-    <h2 className="text-2xl font-bold text-slate-900">Anfrage erfolgreich!</h2>
-    <p className="text-slate-600">Sie erhalten in Kürze bis zu 5 Offerten.</p>
-    <TrustBadges />
-  </motion.div>
+// Success Screen with Feedback
+const StepSuccess = memo(({ flowId }: { flowId: string }) => (
+  <div className="py-6">
+    <FlowCompleteFeedback 
+      flowId={flowId}
+      flowLabel="V9 Zero Friction"
+      showHomeButton={true}
+    />
+  </div>
 ));
 StepSuccess.displayName = 'StepSuccess';
 
@@ -441,7 +437,7 @@ export const V9ZeroFrictionFlow = memo(() => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center p-4">
         <div className="w-full max-w-lg">
-          <StepSuccess />
+          <StepSuccess flowId="v9-zero-friction" />
         </div>
       </div>
     );
