@@ -57,7 +57,7 @@ export const TOP_10_FLOWS = [
     color: "from-amber-500 to-orange-600",
     steps: 3,
     estimatedTime: "2–4 Min.",
-    url: "/umzugsofferten-v5?variant=v5f",
+    url: "/umzugsofferten-v5f",
   },
   {
     rank: 6,
