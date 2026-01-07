@@ -1,0 +1,566 @@
+{
+  "exportInfo": {
+    "title": "Top 10 Flows - Vollständige Mobile Analyse",
+    "generatedAt": "2026-01-07T00:00:00Z",
+    "platform": "umzugscheck.ch",
+    "device": "mobile",
+    "purpose": "ChatGPT Agent Testing & Analysis"
+  },
+  "summary": {
+    "totalFlows": 10,
+    "totalSteps": 39,
+    "averageSteps": 3.9,
+    "shortestFlow": { "name": "ChatGPT Flow 1", "steps": 2 },
+    "longestFlow": { "name": "V2 Archetyp", "steps": 6 }
+  },
+  "flows": [
+    {
+      "rank": 1,
+      "id": "chatgpt-flow-1",
+      "name": "ChatGPT Flow 1 (Zero Friction Pro)",
+      "url": "/chatgpt-flow-1",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/chatgpt-flow-1",
+      "description": "2 Steps, Sticky CTA, Trust Badges, Preisvorschau",
+      "reason": "Extrem kurze Completion-Time, perfekte Conversion-Basis. Ideal als Benchmark.",
+      "totalSteps": 2,
+      "estimatedTime": "45–90 Sek.",
+      "color": "from-emerald-500 to-teal-600",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8f2b6da6-d9c9-4872-93d8-86fa02e75024/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811437967.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Umzugsdetails",
+          "stepTitle": "Ihr Umzug in 2 Minuten",
+          "fields": ["Von (PLZ)", "Nach (PLZ)", "Umzugsdatum", "Anzahl Zimmer", "Etage (Von-Wohnung)"],
+          "uiElements": ["Progress Bar (Schritt 1/2)", "Trust Badges (Geprüfte Partner, SSL, 4.8/5 Bewertung)", "Sticky CTA Button"],
+          "ctaButton": "Weiter zur Offerte",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Kontaktdaten",
+          "stepTitle": "Kontaktinformationen",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Progress Bar (Schritt 2/2)", "Preisvorschau", "Trust Badges"],
+          "ctaButton": "Offerten erhalten",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["Zero Friction", "Sticky CTA", "Trust Badges", "Price Preview", "Progressive Disclosure"],
+      "conversionOptimizations": ["Minimal form fields", "Clear progress indicator", "Social proof via ratings"]
+    },
+    {
+      "rank": 2,
+      "id": "v8a",
+      "name": "V8a Decision-Free (Feedback)",
+      "url": "/umzugsofferten-v8a",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-v8a",
+      "description": "2 Steps, Review-Card, Transparenz-Panel",
+      "reason": "Decision-Free + Review-Pattern reduziert Unsicherheit, sehr gute UX fürs Handy.",
+      "totalSteps": 2,
+      "estimatedTime": "60–120 Sek.",
+      "color": "from-sky-500 to-indigo-600",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9f07c6b5-7ca7-493c-8eaf-e494b2fc14b1/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811438779.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Basics",
+          "stepTitle": "Nur 5 Felder – fertig!",
+          "fields": ["Von PLZ", "Nach PLZ", "Name", "E-Mail", "Telefon"],
+          "uiElements": ["Progress Bar (Schritt 1/2)", "Info Panel (Was passiert als Nächstes?)", "Privacy Badge"],
+          "ctaButton": "Überprüfen",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Bestätigung",
+          "stepTitle": "Daten überprüfen",
+          "fields": [],
+          "uiElements": ["Review Card", "Transparenz-Panel", "Edit Options"],
+          "ctaButton": "Offerten anfordern",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["Decision-Free", "Review Pattern", "Transparency Panel", "Minimal Cognitive Load"],
+      "conversionOptimizations": ["All fields on one page", "Clear next steps explanation", "Data review before submit"]
+    },
+    {
+      "rank": 3,
+      "id": "v1f",
+      "name": "V1f Sticky CTA + Trust",
+      "url": "/umzugsofferten-v1f",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-v1f",
+      "description": "2 Steps, Sticky CTA, Micro-Feedback, Trust Pills",
+      "reason": "Trust-Mechaniken + kleinstes Formular. Super Vergleich zu #1.",
+      "totalSteps": 2,
+      "estimatedTime": "60–120 Sek.",
+      "color": "from-blue-500 to-cyan-600",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c253b32b-e0b8-4cd8-ba07-fafd8a3d197a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443082.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Umzugsdetails",
+          "stepTitle": "Umzug planen",
+          "fields": ["Von PLZ", "Nach PLZ", "Umzugsdatum"],
+          "uiElements": ["Progress Bar (Schritt 1/2)", "Trust Pills (Kostenlos & unverbindlich, Schweizer Anbieter, Keine Telefonpflicht)", "Step Indicator Sidebar", "Tooltip (Warum fragen wir das?)"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Kontakt",
+          "stepTitle": "Kontaktdaten",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Progress Bar (Schritt 2/2)", "Micro-Feedback", "Trust Pills"],
+          "ctaButton": "Offerten erhalten",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["Sticky CTA", "Trust Pills", "Micro-Feedback", "Tooltip Explanations", "Sidebar Navigation"],
+      "conversionOptimizations": ["Smallest possible form", "Maximum trust signals", "Clear field explanations"]
+    },
+    {
+      "rank": 4,
+      "id": "v6a",
+      "name": "V6a Ultimate Optimized",
+      "url": "/umzugsofferten-v6a",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-v6a",
+      "description": "3 Steps (Details → Paket → Kontakt) mit Sticky CTA & Trust",
+      "reason": "Bestes 3-Step Premium-Pattern: klar, schnell, dennoch Upsell-fähig.",
+      "totalSteps": 3,
+      "estimatedTime": "2–4 Min.",
+      "color": "from-violet-500 to-fuchsia-600",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6e5b2e03-62cd-4a99-856f-9b7773dc74d0/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811440648.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Details",
+          "stepTitle": "Umzugsdetails",
+          "fields": ["Von PLZ", "Nach PLZ", "Zimmer (1-6+)"],
+          "uiElements": ["Progress Bar (Schritt 1/3)", "Trust Badges (Unverbindlich, Geprüfte Firmen, DSG/DSGVO)", "Room Selector Grid"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Paket",
+          "stepTitle": "Service-Paket wählen",
+          "fields": ["Service-Level Auswahl"],
+          "uiElements": ["Package Comparison Cards", "Upsell Options"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 3,
+          "stepName": "Kontakt",
+          "stepTitle": "Kontaktdaten",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Contact Form", "Privacy Notice"],
+          "ctaButton": "Offerten anfordern",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["3-Step Premium Pattern", "Sticky CTA", "Trust Badges", "Upsell Integration", "Grid Selection"],
+      "conversionOptimizations": ["Clean 3-step flow", "Upsell opportunity", "Trust signals throughout"]
+    },
+    {
+      "rank": 5,
+      "id": "v5f",
+      "name": "V5f Marketplace (Feedback)",
+      "url": "/umzugsofferten-v5f",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-v5f",
+      "description": "3 Steps, Top-3 Empfehlungen, Trust-Badges, Filter/Sort",
+      "reason": "Marketplace-Value ohne Overload. Wichtig für euer 'Vergleich'-Versprechen.",
+      "totalSteps": 3,
+      "estimatedTime": "2–4 Min.",
+      "color": "from-amber-500 to-orange-600",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/448eb988-dde7-45fe-8b90-4342fbda728a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811440956.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Details",
+          "stepTitle": "Umzugsdetails",
+          "fields": ["Von PLZ", "Nach PLZ", "Zimmer (1-6+)"],
+          "uiElements": ["Progress Bar (Schritt 1/3)", "Trust Badges (Unverbindlich, Geprüfte Firmen, DSG/DSGVO)", "Room Selector Grid"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Empfehlungen",
+          "stepTitle": "Top-3 Firmen für dich",
+          "fields": [],
+          "uiElements": ["Company Cards", "Filter Bar", "Sort Options", "Rating Display"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 3,
+          "stepName": "Kontakt",
+          "stepTitle": "Kontaktdaten",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Contact Form", "Selected Companies Preview"],
+          "ctaButton": "Offerten anfordern",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["Marketplace Pattern", "Top-3 Recommendations", "Filter/Sort", "Company Cards", "Trust Badges"],
+      "conversionOptimizations": ["Shows value before commitment", "Comparison shopping feel", "Curated recommendations"]
+    },
+    {
+      "rank": 6,
+      "id": "umzugsofferten-ultimate-best36",
+      "name": "Ultimate Best36",
+      "url": "/umzugsofferten-ultimate-best36",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-ultimate-best36",
+      "description": "4 Steps, Best-of 36 Varianten (Ziel: 98/100)",
+      "reason": "Euer 'Best-of'-Kandidat: sehr stark für Gesamtqualität vs. Steps.",
+      "totalSteps": 4,
+      "estimatedTime": "3–6 Min.",
+      "color": "from-rose-500 to-pink-600",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b1948636-c114-4ac0-8c6b-0e041f3bdab3/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443001.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Adressen",
+          "stepTitle": "Wohin führt Ihr Umzug?",
+          "fields": ["Von (PLZ + Ort, Strasse)", "Nach (PLZ + Ort, Strasse)"],
+          "uiElements": ["Step Indicators (1-4)", "Trust Badges (ASTAG, SSL, 4.8/5)", "Address Autocomplete", "Tip Text"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-right"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Umfang",
+          "stepTitle": "Umzugsumfang",
+          "fields": ["Wohnungsgrösse", "Stockwerk", "Lift"],
+          "uiElements": ["Selection Cards", "Info Tooltips"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-right"
+        },
+        {
+          "stepNumber": 3,
+          "stepName": "Services",
+          "stepTitle": "Zusatzservices",
+          "fields": ["Service Options (Multi-Select)"],
+          "uiElements": ["Service Cards", "Price Indicators"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-right"
+        },
+        {
+          "stepNumber": 4,
+          "stepName": "Kontakt",
+          "stepTitle": "Kontaktdaten",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Contact Form", "Summary Panel"],
+          "ctaButton": "Offerten erhalten",
+          "ctaPosition": "bottom-right"
+        }
+      ],
+      "uxPatterns": ["4-Step Premium Flow", "Visual Step Indicators", "Address Autocomplete", "Service Selection"],
+      "conversionOptimizations": ["Best-of-36 optimizations", "Clear visual progress", "Guided experience"]
+    },
+    {
+      "rank": 7,
+      "id": "v6f",
+      "name": "V6f Ultimate (Best of All)",
+      "url": "/umzugsofferten-v6f",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-v6f",
+      "description": "5 Steps, kombiniert V6a–V6e (sticky footer, timeline, price flow)",
+      "reason": "Komplexer, aber wahrscheinlich 'Sweet Spot' zwischen Premium & Conversion.",
+      "totalSteps": 5,
+      "estimatedTime": "4–7 Min.",
+      "color": "from-slate-600 to-slate-900",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/16e96953-7b7c-49fc-8b60-57526f77fd3d/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811444607.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Basics",
+          "stepTitle": "Wenige Angaben zum Umzug",
+          "fields": ["Von PLZ", "Nach PLZ", "Umzugsdatum", "Wohnungsgrösse (1.5-5+)"],
+          "uiElements": ["Progress Bar (1/5, 20%)", "Icon Timeline", "Trust Badges (4.9/5, CHF 50'000 Allianz, Swiss Made, Fixpreis-Garantie)", "Social Proof (47 Personen)", "Customer Quote"],
+          "ctaButton": "Weiter: Service wählen",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Service",
+          "stepTitle": "Service-Paket wählen",
+          "fields": ["Service Level Selection"],
+          "uiElements": ["Service Cards", "Price Comparison", "Features List"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 3,
+          "stepName": "Inventar",
+          "stepTitle": "Inventar erfassen",
+          "fields": ["Room-by-Room Inventory"],
+          "uiElements": ["Inventory Cards", "Quantity Selectors"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 4,
+          "stepName": "Extras",
+          "stepTitle": "Zusatzoptionen",
+          "fields": ["Extra Services Selection"],
+          "uiElements": ["Extra Options Cards", "Price Updates"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 5,
+          "stepName": "Kontakt",
+          "stepTitle": "Kontaktdaten",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Contact Form", "Price Summary", "Final Trust Badges"],
+          "ctaButton": "Offerten erhalten",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["5-Step Premium Flow", "Sticky Footer", "Timeline Navigation", "Price Flow", "Social Proof", "Customer Quotes"],
+      "conversionOptimizations": ["Sweet spot between premium and conversion", "Progressive price revelation", "Multiple trust touchpoints"]
+    },
+    {
+      "rank": 8,
+      "id": "ultimate-v7",
+      "name": "Ultimate V7",
+      "url": "/umzugsofferten-ultimate-v7",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-ultimate-v7",
+      "description": "6 Steps, Best Practices aus 50+ Flow-Analysen",
+      "reason": "Super Referenz für 'voller Funnel' inkl. Firmen-Step & Sort/Filter.",
+      "totalSteps": 6,
+      "estimatedTime": "5–8 Min.",
+      "color": "from-lime-500 to-green-700",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ca4cd521-0e09-4516-8260-c57baf7978bf/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811448637.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Logistik",
+          "stepTitle": "Wohin geht Ihr Umzug?",
+          "fields": ["Von (Strasse & Hausnummer, PLZ, Ort)", "Nach (Strasse & Hausnummer, PLZ, Ort)", "Umzugsdatum"],
+          "uiElements": ["Step Navigation (1-5)", "Customer Testimonial Carousel", "Trust Badges (Versichert, SSL, 4.8/5)"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Details",
+          "stepTitle": "Umzugsdetails",
+          "fields": ["Wohnungsgrösse", "Stockwerk", "Lift"],
+          "uiElements": ["Selection Grid", "Info Cards"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 3,
+          "stepName": "Inventar",
+          "stepTitle": "Inventar",
+          "fields": ["Room Inventory", "Special Items"],
+          "uiElements": ["Inventory List", "Quick Add Buttons"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 4,
+          "stepName": "Services",
+          "stepTitle": "Services auswählen",
+          "fields": ["Service Packages"],
+          "uiElements": ["Service Cards", "Price Indicators", "Comparison Table"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 5,
+          "stepName": "Kontakt",
+          "stepTitle": "Kontaktdaten",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Contact Form", "Summary Panel"],
+          "ctaButton": "Offerten anfordern",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 6,
+          "stepName": "Firmen",
+          "stepTitle": "Passende Firmen",
+          "fields": [],
+          "uiElements": ["Company List", "Filter/Sort", "Company Cards", "Ratings"],
+          "ctaButton": "Fertigstellen",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["Full Funnel", "Company Selection Step", "Sort/Filter", "Testimonial Carousel", "Progressive Disclosure"],
+      "conversionOptimizations": ["Complete user journey", "Company visibility", "Best practices from 50+ analyses"]
+    },
+    {
+      "rank": 9,
+      "id": "v9c",
+      "name": "V9c Zero Friction Optimized",
+      "url": "/umzugsofferten-v9c",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-v9c",
+      "description": "6 Steps, Tooltips, keine Vorauswahl, Filter/Sort, Trust-Badges",
+      "reason": "Euer 'Anti-Rechner'-Mindset: Guidance ohne Manipulation, sehr stark für Trust.",
+      "totalSteps": 6,
+      "estimatedTime": "5–9 Min.",
+      "color": "from-teal-500 to-emerald-700",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ca37ffe4-55f2-48a7-b855-9c7e56a3108b/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443750.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Adressen",
+          "stepTitle": "Wohin geht Ihr Umzug?",
+          "fields": ["Von (PLZ)", "Nach (PLZ)", "Wohnungsgrösse (1-6+)"],
+          "uiElements": ["Step Navigation (1-5)", "Trust Badges (Unverbindlich, Geprüfte Firmen, Datenschutz)", "Room Selector Grid", "Customer Quote", "Info Tooltips"],
+          "ctaButton": "Preis berechnen",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Details",
+          "stepTitle": "Umzugsdetails",
+          "fields": ["Stockwerk", "Lift", "Umzugsdatum"],
+          "uiElements": ["Selection Cards", "Tooltips"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 3,
+          "stepName": "Services",
+          "stepTitle": "Services wählen",
+          "fields": ["Service Options"],
+          "uiElements": ["Service Cards", "No Pre-Selection (Anti-Dark-Pattern)"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 4,
+          "stepName": "Extras & Datum",
+          "stepTitle": "Extras und Datum",
+          "fields": ["Extra Options", "Preferred Date"],
+          "uiElements": ["Extra Cards", "Calendar"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 5,
+          "stepName": "Firmen",
+          "stepTitle": "Passende Firmen",
+          "fields": [],
+          "uiElements": ["Company List", "Filter/Sort", "Company Cards"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "bottom-sticky"
+        },
+        {
+          "stepNumber": 6,
+          "stepName": "Kontakt",
+          "stepTitle": "Kontaktdaten",
+          "fields": ["Name", "E-Mail", "Telefon"],
+          "uiElements": ["Contact Form", "Price Summary"],
+          "ctaButton": "Offerten anfordern",
+          "ctaPosition": "bottom-sticky"
+        }
+      ],
+      "uxPatterns": ["Zero Friction", "No Pre-Selection (Anti-Dark-Pattern)", "Tooltips", "Filter/Sort", "Trust Badges"],
+      "conversionOptimizations": ["Guidance without manipulation", "Maximum trust", "Transparent pricing"]
+    },
+    {
+      "rank": 10,
+      "id": "v2-archetyp",
+      "name": "V2 Archetyp",
+      "url": "/umzugsofferten-v2-archetyp",
+      "fullUrl": "https://824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com/umzugsofferten-v2-archetyp",
+      "description": "6 Steps, 4 Kundentypen (Security/Efficiency/Value/Overwhelmed)",
+      "reason": "Wichtig für Personalisierung & Emotional UX (Stress-Event Umzug).",
+      "totalSteps": 6,
+      "estimatedTime": "5–9 Min.",
+      "color": "from-purple-500 to-indigo-700",
+      "mobileScreenshot": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8d592687-0e00-44ad-b93e-dec5db3678ed/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811444216.png",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "stepName": "Einstieg",
+          "stepTitle": "Wohin zügeln Sie?",
+          "fields": ["Umzugstyp (Privatumzug/Firmenumzug)", "Von (PLZ, Ort, Stock, Lift)", "Nach (PLZ, Ort, Stock, Lift)"],
+          "uiElements": ["Step Navigation (1-6)", "Feature Badges (4 Archetypen, 6-Schritte Framework, Movu-Differenzierung)", "Trust Badges (ASTAG, Abnahmegarantie, CH Datenschutz, 4.8/5)", "Live Statistics Panel", "Sidebar Navigation", "Speichern Button"],
+          "ctaButton": "Weiter zum Datum",
+          "ctaPosition": "inline-bottom"
+        },
+        {
+          "stepNumber": 2,
+          "stepName": "Timing",
+          "stepTitle": "Wann ist Ihr Umzug?",
+          "fields": ["Umzugsdatum", "Flexibilität"],
+          "uiElements": ["Calendar", "Flexibility Options"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "inline-bottom"
+        },
+        {
+          "stepNumber": 3,
+          "stepName": "Inventar",
+          "stepTitle": "Was wird umgezogen?",
+          "fields": ["Wohnungsgrösse", "Room Inventory"],
+          "uiElements": ["Inventory Cards", "Quantity Selectors"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "inline-bottom"
+        },
+        {
+          "stepNumber": 4,
+          "stepName": "Services",
+          "stepTitle": "Welche Services benötigen Sie?",
+          "fields": ["Service Selection (Archetype-based)"],
+          "uiElements": ["Service Cards tailored to 4 archetypes", "Price Indicators"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "inline-bottom"
+        },
+        {
+          "stepNumber": 5,
+          "stepName": "Vertrauen",
+          "stepTitle": "Firmenpräferenzen",
+          "fields": ["Company Preferences", "Trust Factors"],
+          "uiElements": ["Trust Factor Cards", "Priority Selection"],
+          "ctaButton": "Weiter",
+          "ctaPosition": "inline-bottom"
+        },
+        {
+          "stepNumber": 6,
+          "stepName": "Ergebnis",
+          "stepTitle": "Ihre personalisierten Angebote",
+          "fields": ["Kontaktdaten"],
+          "uiElements": ["Personalized Results", "Company Matches", "Price Summary"],
+          "ctaButton": "Offerten anfordern",
+          "ctaPosition": "inline-bottom"
+        }
+      ],
+      "uxPatterns": ["4 Customer Archetypes (Security/Efficiency/Value/Overwhelmed)", "Emotional UX", "Personalization", "Live Statistics", "6-Step Framework"],
+      "conversionOptimizations": ["Tailored to stress event (moving)", "Archetype-based recommendations", "Emotional connection"]
+    }
+  ],
+  "analysisMetrics": {
+    "uxPatternFrequency": {
+      "Sticky CTA": 8,
+      "Trust Badges": 10,
+      "Progress Indicator": 10,
+      "Filter/Sort": 3,
+      "Social Proof": 4,
+      "Tooltips": 3,
+      "Company Cards": 4
+    },
+    "ctaButtonVariants": [
+      "Weiter",
+      "Weiter zur Offerte",
+      "Überprüfen",
+      "Preis berechnen",
+      "Offerten erhalten",
+      "Offerten anfordern",
+      "Weiter: Service wählen",
+      "Weiter zum Datum",
+      "Fertigstellen"
+    ],
+    "fieldComplexity": {
+      "minimal": ["chatgpt-flow-1", "v8a", "v1f"],
+      "moderate": ["v6a", "v5f", "umzugsofferten-ultimate-best36"],
+      "comprehensive": ["v6f", "ultimate-v7", "v9c", "v2-archetyp"]
+    }
+  }
+}

@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top 10 Flows - Mobile Analyse | Umzugscheck.ch</title>
+  <style>
+    :root {
+      --primary: #0066cc;
+      --secondary: #f4f4f4;
+      --success: #10b981;
+      --text: #1a1a2e;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f9fafb;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), #004080);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+    
+    .summary-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .summary-card .label {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    .flow-card {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+    }
+    
+    .flow-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .flow-rank {
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    .flow-title {
+      flex: 1;
+    }
+    
+    .flow-title h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .flow-title .meta {
+      display: flex;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    .flow-body {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 2rem;
+      padding: 1.5rem;
+    }
+    
+    @media (max-width: 900px) {
+      .flow-body {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .flow-screenshot {
+      background: #f4f4f4;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    
+    .flow-screenshot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    .flow-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .detail-section {
+      background: var(--secondary);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    
+    .detail-section h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    
+    .detail-section p {
+      color: var(--text);
+    }
+    
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .step-content h4 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .step-content p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .tag {
+      background: var(--primary);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    
+    .cta-badge {
+      display: inline-block;
+      background: var(--success);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+    }
+    
+    .download-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    
+    .download-btn:hover {
+      background: #004080;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚚 Top 10 Flows - Mobile Analyse</h1>
+    <p>Umzugscheck.ch | Generiert am 07.01.2026 | Für ChatGPT Agent Testing</p>
+  </header>
+  
+  <div class="container">
+    <div class="download-links">
+      <a href="/exports/top10-flows-mobile-complete.json" download class="download-btn">📄 JSON Download</a>
+      <a href="/exports/top10-flows-mobile-complete.md" download class="download-btn">📝 Markdown Download</a>
+    </div>
+    
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="value">10</div>
+        <div class="label">Total Flows</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">39</div>
+        <div class="label">Total Steps</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">3.9</div>
+        <div class="label">Ø Steps</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">2</div>
+        <div class="label">Min Steps</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">6</div>
+        <div class="label">Max Steps</div>
+      </div>
+    </div>
+
+    <!-- Flow 1 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">1</div>
+        <div class="flow-title">
+          <h2>ChatGPT Flow 1 (Zero Friction Pro)</h2>
+          <div class="meta">
+            <span>📱 2 Steps</span>
+            <span>⏱️ 45–90 Sek.</span>
+            <span>🔗 /chatgpt-flow-1</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8f2b6da6-d9c9-4872-93d8-86fa02e75024/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811437967.png" alt="ChatGPT Flow 1 Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>2 Steps, Sticky CTA, Trust Badges, Preisvorschau. Extrem kurze Completion-Time, perfekte Conversion-Basis. Ideal als Benchmark.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Umzugsdetails</h4>
+                  <p>Von PLZ, Nach PLZ, Umzugsdatum, Zimmer, Etage • CTA: <span class="cta-badge">Weiter zur Offerte</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Kontaktdaten</h4>
+                  <p>Name, E-Mail, Telefon • CTA: <span class="cta-badge">Offerten erhalten</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">Zero Friction</span>
+              <span class="tag">Sticky CTA</span>
+              <span class="tag">Trust Badges</span>
+              <span class="tag">Price Preview</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 2 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">2</div>
+        <div class="flow-title">
+          <h2>V8a Decision-Free (Feedback)</h2>
+          <div class="meta">
+            <span>📱 2 Steps</span>
+            <span>⏱️ 60–120 Sek.</span>
+            <span>🔗 /umzugsofferten-v8a</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9f07c6b5-7ca7-493c-8eaf-e494b2fc14b1/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811438779.png" alt="V8a Decision-Free Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>2 Steps, Review-Card, Transparenz-Panel. Decision-Free + Review-Pattern reduziert Unsicherheit, sehr gute UX fürs Handy.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Basics</h4>
+                  <p>Von PLZ, Nach PLZ, Name, E-Mail, Telefon • CTA: <span class="cta-badge">Überprüfen</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Bestätigung</h4>
+                  <p>Review Card, Transparenz-Panel • CTA: <span class="cta-badge">Offerten anfordern</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">Decision-Free</span>
+              <span class="tag">Review Pattern</span>
+              <span class="tag">Transparency Panel</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 3 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">3</div>
+        <div class="flow-title">
+          <h2>V1f Sticky CTA + Trust</h2>
+          <div class="meta">
+            <span>📱 2 Steps</span>
+            <span>⏱️ 60–120 Sek.</span>
+            <span>🔗 /umzugsofferten-v1f</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c253b32b-e0b8-4cd8-ba07-fafd8a3d197a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443082.png" alt="V1f Sticky CTA Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>2 Steps, Sticky CTA, Micro-Feedback, Trust Pills. Trust-Mechaniken + kleinstes Formular.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Umzugsdetails</h4>
+                  <p>Von PLZ, Nach PLZ, Umzugsdatum • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Kontakt</h4>
+                  <p>Name, E-Mail, Telefon • CTA: <span class="cta-badge">Offerten erhalten</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">Sticky CTA</span>
+              <span class="tag">Trust Pills</span>
+              <span class="tag">Micro-Feedback</span>
+              <span class="tag">Sidebar Navigation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 4 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">4</div>
+        <div class="flow-title">
+          <h2>V6a Ultimate Optimized</h2>
+          <div class="meta">
+            <span>📱 3 Steps</span>
+            <span>⏱️ 2–4 Min.</span>
+            <span>🔗 /umzugsofferten-v6a</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6e5b2e03-62cd-4a99-856f-9b7773dc74d0/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811440648.png" alt="V6a Ultimate Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>3 Steps (Details → Paket → Kontakt) mit Sticky CTA & Trust. Bestes 3-Step Premium-Pattern.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Details</h4>
+                  <p>Von PLZ, Nach PLZ, Zimmer • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Paket</h4>
+                  <p>Service-Level Auswahl • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Kontakt</h4>
+                  <p>Name, E-Mail, Telefon • CTA: <span class="cta-badge">Offerten anfordern</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">3-Step Premium</span>
+              <span class="tag">Sticky CTA</span>
+              <span class="tag">Upsell Integration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 5 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">5</div>
+        <div class="flow-title">
+          <h2>V5f Marketplace (Feedback)</h2>
+          <div class="meta">
+            <span>📱 3 Steps</span>
+            <span>⏱️ 2–4 Min.</span>
+            <span>🔗 /umzugsofferten-v5f</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/448eb988-dde7-45fe-8b90-4342fbda728a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811440956.png" alt="V5f Marketplace Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>3 Steps, Top-3 Empfehlungen, Trust-Badges, Filter/Sort. Marketplace-Value ohne Overload.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Details</h4>
+                  <p>Von PLZ, Nach PLZ, Zimmer • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Empfehlungen</h4>
+                  <p>Top-3 Firmen, Filter/Sort • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Kontakt</h4>
+                  <p>Name, E-Mail, Telefon • CTA: <span class="cta-badge">Offerten anfordern</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">Marketplace</span>
+              <span class="tag">Top-3 Recommendations</span>
+              <span class="tag">Filter/Sort</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 6 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">6</div>
+        <div class="flow-title">
+          <h2>Ultimate Best36</h2>
+          <div class="meta">
+            <span>📱 4 Steps</span>
+            <span>⏱️ 3–6 Min.</span>
+            <span>🔗 /umzugsofferten-ultimate-best36</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b1948636-c114-4ac0-8c6b-0e041f3bdab3/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443001.png" alt="Ultimate Best36 Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>4 Steps, Best-of 36 Varianten (Ziel: 98/100). Best-of-Kandidat für Gesamtqualität vs. Steps.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Adressen</h4>
+                  <p>Von, Nach (PLZ + Strasse) • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Umfang</h4>
+                  <p>Wohnungsgrösse, Stockwerk, Lift • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Services</h4>
+                  <p>Zusatzservices Multi-Select • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Kontakt</h4>
+                  <p>Name, E-Mail, Telefon • CTA: <span class="cta-badge">Offerten erhalten</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">4-Step Premium</span>
+              <span class="tag">Visual Step Indicators</span>
+              <span class="tag">Address Autocomplete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 7 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">7</div>
+        <div class="flow-title">
+          <h2>V6f Ultimate (Best of All)</h2>
+          <div class="meta">
+            <span>📱 5 Steps</span>
+            <span>⏱️ 4–7 Min.</span>
+            <span>🔗 /umzugsofferten-v6f</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/16e96953-7b7c-49fc-8b60-57526f77fd3d/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811444607.png" alt="V6f Ultimate Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>5 Steps, kombiniert V6a–V6e (sticky footer, timeline, price flow). Sweet Spot zwischen Premium & Conversion.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Basics</h4>
+                  <p>PLZ, Datum, Wohnungsgrösse • CTA: <span class="cta-badge">Weiter: Service wählen</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Service</h4>
+                  <p>Service-Level • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Inventar</h4>
+                  <p>Room-by-Room • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Extras</h4>
+                  <p>Zusatzoptionen • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                  <h4>Kontakt</h4>
+                  <p>Kontaktdaten • CTA: <span class="cta-badge">Offerten erhalten</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">5-Step Premium</span>
+              <span class="tag">Timeline Navigation</span>
+              <span class="tag">Price Flow</span>
+              <span class="tag">Social Proof</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 8 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">8</div>
+        <div class="flow-title">
+          <h2>Ultimate V7</h2>
+          <div class="meta">
+            <span>📱 6 Steps</span>
+            <span>⏱️ 5–8 Min.</span>
+            <span>🔗 /umzugsofferten-ultimate-v7</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ca4cd521-0e09-4516-8260-c57baf7978bf/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811448637.png" alt="Ultimate V7 Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>6 Steps, Best Practices aus 50+ Flow-Analysen. Voller Funnel inkl. Firmen-Step & Sort/Filter.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Logistik</h4>
+                  <p>Adressen, Datum • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Details</h4>
+                  <p>Wohnungsgrösse, Stock, Lift • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Inventar</h4>
+                  <p>Room Inventory • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Services</h4>
+                  <p>Service Packages • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                  <h4>Kontakt</h4>
+                  <p>Kontaktdaten • CTA: <span class="cta-badge">Offerten anfordern</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                  <h4>Firmen</h4>
+                  <p>Company Selection • CTA: <span class="cta-badge">Fertigstellen</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">Full Funnel</span>
+              <span class="tag">Company Selection</span>
+              <span class="tag">Sort/Filter</span>
+              <span class="tag">Testimonials</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 9 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">9</div>
+        <div class="flow-title">
+          <h2>V9c Zero Friction Optimized</h2>
+          <div class="meta">
+            <span>📱 6 Steps</span>
+            <span>⏱️ 5–9 Min.</span>
+            <span>🔗 /umzugsofferten-v9c</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ca37ffe4-55f2-48a7-b855-9c7e56a3108b/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443750.png" alt="V9c Zero Friction Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>6 Steps, Tooltips, keine Vorauswahl, Filter/Sort. Anti-Rechner-Mindset: Guidance ohne Manipulation.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Adressen</h4>
+                  <p>PLZ, Wohnungsgrösse • CTA: <span class="cta-badge">Preis berechnen</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Details</h4>
+                  <p>Stock, Lift, Datum • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Services</h4>
+                  <p>No Pre-Selection • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Extras & Datum</h4>
+                  <p>Extra Options • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                  <h4>Firmen</h4>
+                  <p>Company Selection • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                  <h4>Kontakt</h4>
+                  <p>Kontaktdaten • CTA: <span class="cta-badge">Offerten anfordern</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">Zero Friction</span>
+              <span class="tag">No Pre-Selection</span>
+              <span class="tag">Tooltips</span>
+              <span class="tag">Anti-Dark-Pattern</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 10 -->
+    <div class="flow-card">
+      <div class="flow-header">
+        <div class="flow-rank">10</div>
+        <div class="flow-title">
+          <h2>V2 Archetyp</h2>
+          <div class="meta">
+            <span>📱 6 Steps</span>
+            <span>⏱️ 5–9 Min.</span>
+            <span>🔗 /umzugsofferten-v2-archetyp</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-body">
+        <div class="flow-screenshot">
+          <img src="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8d592687-0e00-44ad-b93e-dec5db3678ed/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811444216.png" alt="V2 Archetyp Mobile Screenshot">
+        </div>
+        <div class="flow-details">
+          <div class="detail-section">
+            <h3>Beschreibung</h3>
+            <p>6 Steps, 4 Kundentypen (Security/Efficiency/Value/Overwhelmed). Emotional UX für Stress-Event Umzug.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Steps</h3>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Einstieg</h4>
+                  <p>Umzugstyp, Adressen • CTA: <span class="cta-badge">Weiter zum Datum</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Timing</h4>
+                  <p>Datum, Flexibilität • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Inventar</h4>
+                  <p>Wohnungsgrösse, Inventory • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Services</h4>
+                  <p>Archetype-based Selection • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                  <h4>Vertrauen</h4>
+                  <p>Trust Factors • CTA: <span class="cta-badge">Weiter</span></p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                  <h4>Ergebnis</h4>
+                  <p>Personalisierte Angebote • CTA: <span class="cta-badge">Offerten anfordern</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>UX Patterns</h3>
+            <div class="tags">
+              <span class="tag">4 Archetypes</span>
+              <span class="tag">Emotional UX</span>
+              <span class="tag">Personalization</span>
+              <span class="tag">Live Statistics</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Umzugscheck.ch | Top 10 Flows Mobile Analyse</p>
+    <p>Generiert für ChatGPT Agent Testing & Analysis</p>
+  </footer>
+</body>
+</html>
