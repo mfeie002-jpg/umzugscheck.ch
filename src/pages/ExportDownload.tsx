@@ -2,25 +2,22 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package } from "lucide-react";
+import { Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package, FileCode } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
-const FLOWS_DATA = {
-  exportDate: "2025-01-07T18:26:00Z",
-  flows: [
-    { rank: 1, id: "chatgpt-flow-1", name: "ChatGPT Flow 1", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/18b93b20-0e44-4f42-8e72-a7c212a0a464/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810355830.png" },
-    { rank: 2, id: "v8a", name: "V8a Decision-Free", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e53e92dd-162f-4804-9e69-8b18956eadca/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810357213.png" },
-    { rank: 3, id: "v1f", name: "V1f Sticky CTA", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d22a26b8-79f7-41c9-b2cf-b924651a6bf8/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810362403.png" },
-    { rank: 4, id: "v6a", name: "V6a Ultimate", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/24a822f6-57d7-410e-a6c5-dee4c144732a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810364138.png" },
-    { rank: 5, id: "v5f", name: "V5f Marketplace", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a1dff45c-429d-48eb-9b82-c24b5d8cb19a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810364908.png" },
-    { rank: 6, id: "best36", name: "Ultimate Best36", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0e70193a-560d-412d-983d-d37451df2ab6/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810359229.png" },
-    { rank: 7, id: "v6f", name: "V6f Ultimate", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6ab38599-1832-476c-a1b3-511b02d9772e/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810361038.png" },
-    { rank: 8, id: "v7", name: "Ultimate V7", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bdb57f3c-e35f-497e-aaf4-73122788f1c6/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810365612.png" },
-    { rank: 9, id: "v9c", name: "V9c Zero Friction", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4f28c796-62d2-4181-9027-4486d1371826/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810363994.png" },
-    { rank: 10, id: "v2-archetyp", name: "V2 Archetyp", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ae52cc49-980e-4e9a-9a3d-5c35a224eb4f/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767810361631.png" },
-  ]
-};
+const MOBILE_SCREENSHOTS = [
+  { rank: 1, id: "chatgpt-flow-1", name: "ChatGPT Flow 1", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8f2b6da6-d9c9-4872-93d8-86fa02e75024/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811437967.png" },
+  { rank: 2, id: "v8a", name: "V8a Decision-Free", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9f07c6b5-7ca7-493c-8eaf-e494b2fc14b1/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811438779.png" },
+  { rank: 3, id: "v1f", name: "V1f Sticky CTA", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c253b32b-e0b8-4cd8-ba07-fafd8a3d197a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443082.png" },
+  { rank: 4, id: "v6a", name: "V6a Ultimate", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6e5b2e03-62cd-4a99-856f-9b7773dc74d0/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811440648.png" },
+  { rank: 5, id: "v5f", name: "V5f Marketplace", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/448eb988-dde7-45fe-8b90-4342fbda728a/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811440956.png" },
+  { rank: 6, id: "best36", name: "Ultimate Best36", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b1948636-c114-4ac0-8c6b-0e041f3bdab3/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443001.png" },
+  { rank: 7, id: "v6f", name: "V6f Ultimate", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/16e96953-7b7c-49fc-8b60-57526f77fd3d/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811444607.png" },
+  { rank: 8, id: "v7", name: "Ultimate V7", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ca4cd521-0e09-4516-8260-c57baf7978bf/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811448637.png" },
+  { rank: 9, id: "v9c", name: "V9c Zero Friction", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ca37ffe4-55f2-48a7-b855-9c7e56a3108b/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811443750.png" },
+  { rank: 10, id: "v2-archetyp", name: "V2 Archetyp", screenshot: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8d592687-0e00-44ad-b93e-dec5db3678ed/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1767811444216.png" },
+];
 
 const ExportDownload = () => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -35,38 +32,44 @@ const ExportDownload = () => {
 
     try {
       const zip = new JSZip();
-      const screenshotsFolder = zip.folder("screenshots");
-      const total = FLOWS_DATA.flows.length + 2; // screenshots + 2 files
+      const screenshotsFolder = zip.folder("mobile-screenshots");
+      const total = MOBILE_SCREENSHOTS.length + 3; // screenshots + 3 files
 
       // Fetch JSON
       setStatus("Lade JSON...");
-      const jsonResponse = await fetch("/exports/top10-flows-analysis.json");
+      const jsonResponse = await fetch("/exports/top10-flows-mobile-complete.json");
       const jsonData = await jsonResponse.text();
-      zip.file("top10-flows-analysis.json", jsonData);
+      zip.file("top10-flows-mobile-complete.json", jsonData);
       setProgress(1 / total * 100);
 
       // Fetch Markdown
       setStatus("Lade Markdown...");
-      const mdResponse = await fetch("/exports/top10-flows-analysis.md");
+      const mdResponse = await fetch("/exports/top10-flows-mobile-complete.md");
       const mdData = await mdResponse.text();
-      zip.file("top10-flows-analysis.md", mdData);
+      zip.file("top10-flows-mobile-complete.md", mdData);
       setProgress(2 / total * 100);
 
+      // Fetch HTML
+      setStatus("Lade HTML...");
+      const htmlResponse = await fetch("/exports/top10-flows-mobile-complete.html");
+      const htmlData = await htmlResponse.text();
+      zip.file("top10-flows-mobile-complete.html", htmlData);
+      setProgress(3 / total * 100);
+
       // Fetch Screenshots
-      for (let i = 0; i < FLOWS_DATA.flows.length; i++) {
-        const flow = FLOWS_DATA.flows[i];
-        setStatus(`Lade Screenshot ${i + 1}/10: ${flow.name}...`);
+      for (let i = 0; i < MOBILE_SCREENSHOTS.length; i++) {
+        const flow = MOBILE_SCREENSHOTS[i];
+        setStatus(`Lade Mobile Screenshot ${i + 1}/10: ${flow.name}...`);
         
         try {
           const response = await fetch(flow.screenshot);
           const blob = await response.blob();
-          screenshotsFolder?.file(`${String(flow.rank).padStart(2, '0')}-${flow.id}.png`, blob);
+          screenshotsFolder?.file(`${String(flow.rank).padStart(2, '0')}-${flow.id}-mobile.png`, blob);
         } catch (err) {
           console.error(`Failed to fetch screenshot for ${flow.name}:`, err);
-          // Continue with other screenshots
         }
         
-        setProgress(((i + 3) / total) * 100);
+        setProgress(((i + 4) / total) * 100);
       }
 
       // Generate ZIP
@@ -74,7 +77,7 @@ const ExportDownload = () => {
       const content = await zip.generateAsync({ type: "blob" });
       
       // Download
-      saveAs(content, `umzugscheck-top10-flows-${new Date().toISOString().split('T')[0]}.zip`);
+      saveAs(content, `umzugscheck-top10-flows-mobile-${new Date().toISOString().split('T')[0]}.zip`);
       
       setStatus("Download gestartet!");
       setCompleted(true);
@@ -93,9 +96,9 @@ const ExportDownload = () => {
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Package className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Top 10 Flows Export</CardTitle>
+          <CardTitle className="text-2xl">Top 10 Flows - Mobile Export</CardTitle>
           <CardDescription>
-            Lade alle Flow-Daten als ZIP herunter für ChatGPT Analyse
+            Vollständige Mobile-Analyse mit allen Steps für ChatGPT Agent
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -105,15 +108,20 @@ const ExportDownload = () => {
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <FileJson className="h-4 w-4 text-blue-500" />
-                <span>top10-flows-analysis.json</span>
+                <span>top10-flows-mobile-complete.json</span>
+                <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">39 Steps</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <FileText className="h-4 w-4 text-green-500" />
-                <span>top10-flows-analysis.md</span>
+                <span>top10-flows-mobile-complete.md</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <FileCode className="h-4 w-4 text-orange-500" />
+                <span>top10-flows-mobile-complete.html</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Image className="h-4 w-4 text-purple-500" />
-                <span>screenshots/ (10 PNG-Dateien)</span>
+                <span>mobile-screenshots/ (10 PNG-Dateien)</span>
               </div>
             </div>
           </div>
@@ -159,12 +167,15 @@ const ExportDownload = () => {
             <p className="text-xs text-muted-foreground text-center mb-3">
               Oder einzelne Dateien herunterladen:
             </p>
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-2 justify-center flex-wrap">
               <Button variant="outline" size="sm" asChild>
-                <a href="/exports/top10-flows-analysis.json" download>JSON</a>
+                <a href="/exports/top10-flows-mobile-complete.json" download>JSON</a>
               </Button>
               <Button variant="outline" size="sm" asChild>
-                <a href="/exports/top10-flows-analysis.md" download>Markdown</a>
+                <a href="/exports/top10-flows-mobile-complete.md" download>Markdown</a>
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <a href="/exports/top10-flows-mobile-complete.html" download>HTML</a>
               </Button>
             </div>
           </div>
