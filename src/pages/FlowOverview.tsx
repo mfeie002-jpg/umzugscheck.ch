@@ -395,7 +395,7 @@ export default function FlowOverview() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Flow Übersicht | {totalFlows}+ Flows | Umzugscheck.ch</title>
+        <title>{`Flow Übersicht | ${totalFlows}+ Flows | Umzugscheck.ch`}</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       
