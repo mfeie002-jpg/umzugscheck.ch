@@ -512,6 +512,19 @@ export const MultiStepCalculatorV1d = memo(function MultiStepCalculatorV1d() {
                   setTimeout(() => setCurrentStep(2), 300);
                 }}
               />
+              
+              {/* Explicit "Weiter" button for Step 1 - fallback if auto-advance doesn't work */}
+              {formData.moveType && (
+                <div className="mt-6 flex justify-center">
+                  <Button
+                    onClick={handleNext}
+                    className="h-14 px-8 text-lg font-bold rounded-xl shadow-lg"
+                  >
+                    Weiter
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+              )}
             </motion.div>
           )}
 
