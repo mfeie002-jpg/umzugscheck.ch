@@ -26,6 +26,7 @@ import {
   ChevronRight, Building, ArrowLeft, Quote, Award
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FlowCompleteFeedback } from '@/components/flow-components/FlowCompleteFeedback';
 
 // ============================================================================
 // TYPES
@@ -180,6 +181,7 @@ const TestimonialCarousel: React.FC = () => {
 // ============================================================================
 export const ChatGPTFlow2SocialProof: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fromZip: '',
     toZip: '',
@@ -215,7 +217,20 @@ export const ChatGPTFlow2SocialProof: React.FC = () => {
 
   const handleSubmit = () => {
     console.log('Form submitted:', formData);
+    setIsSubmitted(true);
   };
+
+  // Show feedback after submission
+  if (isSubmitted) {
+    return (
+      <FlowCompleteFeedback 
+        flowId="chatgpt-flow-2"
+        flowLabel="ChatGPT Flow 2 - Social Proof Boosted"
+        onComplete={() => window.location.href = '/'}
+        onSkip={() => window.location.href = '/'}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">
