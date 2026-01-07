@@ -242,6 +242,7 @@ const FlowShowcase = lazy(() => import("./pages/FlowShowcase"));
 // FlowOverview merged into FlowTester
 const FlowsIndex = lazy(() => import("./pages/FlowsIndex"));
 const FlowFamilyLanding = lazy(() => import("./pages/FlowFamilyLanding"));
+const InternFlowTesting = lazy(() => import("./pages/InternFlowTesting"));
 const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Note: RegionalOfferten is imported above with canton pages
@@ -691,6 +692,7 @@ const AppRouterContent = () => {
           {/* Flow Family Landing Pages */}
           <Route path="/flows" element={<FlowsIndex />} />
           <Route path="/flows/:familyId" element={<FlowFamilyLanding />} />
+          <Route path="/intern-testing" element={<InternFlowTesting />} />
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
           <Route path="/flow-comparison" element={<TopFlowsComparison />} />
           <Route path="/flow-vergleich" element={<TopFlowsComparison />} />
