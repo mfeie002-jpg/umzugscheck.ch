@@ -134,7 +134,7 @@ export const ChatGPTFlow1ZeroFriction: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-32">
       {/* Progress Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="container max-w-2xl mx-auto px-4 py-3">
@@ -455,7 +455,7 @@ export const ChatGPTFlow1ZeroFriction: React.FC = () => {
       </div>
 
       {/* Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md border-t border-border p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="container max-w-2xl mx-auto">
           {step === 1 ? (
             <Button 
