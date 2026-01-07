@@ -871,7 +871,7 @@ serve(async (req) => {
         flow_id: normalizedFlowId, // Use normalized ID for tracking
         flow_name: flowConfig.name,
         run_type: runType,
-        status: 'running',
+        status: 'processing',
         started_at: new Date().toISOString(),
         total_steps: flowConfig.steps,
       })
@@ -926,7 +926,7 @@ serve(async (req) => {
         originalFlowId: rawFlowId,
         resolvedFlowId,
         flowName: flowConfig.name,
-        status: 'running',
+        status: 'processing',
         totalSteps: flowConfig.steps,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
