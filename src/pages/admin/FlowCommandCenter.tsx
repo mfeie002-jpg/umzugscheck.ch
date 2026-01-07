@@ -954,24 +954,54 @@ export default function FlowCommandCenter() {
       </div>
 
       {/* Content based on interface mode */}
-      {isLoading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
-          <span className="ml-3 text-muted-foreground">Daten werden geladen…</span>
-        </div>
-      ) : loadError ? (
-        <ErrorState
-          title="Verbindungsfehler"
-          message={loadError}
-          onRetry={loadData}
-        />
-      ) : (
-        <>
-          {interfaceMode === 'tabs' && renderTabsInterface()}
-          {interfaceMode === 'modular' && renderModularInterface()}
-          {interfaceMode === 'ai-first' && renderAIFirstInterface()}
-        </>
-      )}
+      {(() => {
+        const bypassBackendGate = activeView === 'flows';
+
+        if (isLoading && !bypassBackendGate) {
+          return (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
+              <span className="ml-3 text-muted-foreground">Daten werden geladen…</span>
+            </div>
+          );
+        }
+
+        if (loadError && !bypassBackendGate) {
+          return (
+            <ErrorState
+              title="Verbindungsfehler"
+              message={loadError}
+              onRetry={loadData}
+            />
+          );
+        }
+
+        return (
+          <>
+            {loadError && (
+              <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+                  <div>
+                    <div className="font-medium text-destructive">Backend nicht erreichbar</div>
+                    <div className="text-muted-foreground">
+                      Flows kannst du trotzdem testen; Analysen/Rankings laden wieder, sobald das Backend online ist.
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={loadData}>
+                      Erneut versuchen
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {interfaceMode === 'tabs' && renderTabsInterface()}
+            {interfaceMode === 'modular' && renderModularInterface()}
+            {interfaceMode === 'ai-first' && renderAIFirstInterface()}
+          </>
+        );
+      })()}
     </div>
   );
 }
