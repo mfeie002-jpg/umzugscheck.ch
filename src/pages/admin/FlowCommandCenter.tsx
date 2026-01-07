@@ -74,7 +74,8 @@ import {
   HistoryView,
   ComparisonView,
   LandingPagesView,
-  FlowTesterResultsView
+  FlowTesterResultsView,
+  FlowsView
 } from '@/components/admin/flow-command-center/views';
 import { 
   ScoreRing, 
@@ -116,6 +117,7 @@ const VIEW_CONFIG: Record<ViewMode, { label: string; icon: React.ElementType; de
   analysis: { label: 'Analyse', icon: BarChart3, description: 'Deep Analysis pro Flow' },
   comparison: { label: 'Vergleich', icon: Layers, description: 'Flow-Vergleich Side-by-Side' },
   history: { label: 'Historie', icon: HistoryIcon, description: 'Trend-Tracking' },
+  flows: { label: 'Flows', icon: Layers, description: 'Alle Flow-Familien & Varianten' },
   'landing-pages': { label: 'Landing Pages', icon: MapPin, description: 'City/Canton Pages' },
   'tester-results': { label: 'Tester-Ergebnisse', icon: ClipboardCheck, description: 'Flow-Tester Feedback' },
   settings: { label: 'Einstellungen', icon: Settings, description: 'Konfiguration' },
@@ -548,7 +550,7 @@ export default function FlowCommandCenter() {
     <Tabs value={activeView} onValueChange={(v) => handleViewChange(v as ViewMode)}>
       <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
         <TabsList className="h-auto flex-wrap">
-          {(['dashboard', 'ranking', 'analysis', 'history', 'comparison', 'landing-pages'] as ViewMode[]).map((view) => {
+          {(['dashboard', 'ranking', 'analysis', 'history', 'comparison', 'flows', 'landing-pages'] as ViewMode[]).map((view) => {
             const config = VIEW_CONFIG[view];
             const Icon = config.icon;
             return (
@@ -675,6 +677,10 @@ export default function FlowCommandCenter() {
           initialFlowA={selectedFlowId}
           onSelectFlow={handleSelectFlow}
         />
+      </TabsContent>
+
+      <TabsContent value="flows" className="mt-0">
+        <FlowsView onSelectFlow={handleSelectFlow} />
       </TabsContent>
 
       <TabsContent value="landing-pages" className="mt-0">
