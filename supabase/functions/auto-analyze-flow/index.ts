@@ -865,22 +865,52 @@ serve(async (req) => {
 
     // Create analysis run BEFORE starting background task
     // Store both the original flowId (for display) and resolvedFlowId (for analysis)
-    const { data: run, error: runError } = await supabase
-      .from('flow_analysis_runs')
-      .insert({
-        flow_id: normalizedFlowId, // Use normalized ID for tracking
-        flow_name: flowConfig.name,
-        run_type: runType,
-        status: 'processing',
-        started_at: new Date().toISOString(),
-        total_steps: flowConfig.steps,
-      })
-      .select()
-      .single();
+    let run: any = null;
+    let lastRunError: any = null;
 
-    if (runError) {
-      console.error('Error creating run:', runError);
-      throw new Error('Failed to create analysis run');
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const { data, error } = await supabase
+        .from('flow_analysis_runs')
+        .insert({
+          flow_id: normalizedFlowId, // Use normalized ID for tracking
+          flow_name: flowConfig.name,
+          run_type: runType,
+          // Use the most compatible status label (DB enum often expects 'running')
+          status: 'running',
+          started_at: new Date().toISOString(),
+          total_steps: flowConfig.steps,
+        })
+        .select()
+        .single();
+
+      if (!error) {
+        run = data;
+        break;
+      }
+
+      lastRunError = error;
+      console.error(`[RunCreate] attempt ${attempt}/3 failed:`, error);
+      await sleep(600 * attempt);
+    }
+
+    if (!run) {
+      const msg = lastRunError?.message || 'unknown_error';
+      const isLikelyNetwork = /fetch|network|timeout|timed out|522/i.test(String(msg));
+
+      return new Response(
+        JSON.stringify({
+          error: 'Failed to create analysis run',
+          reason: msg,
+          code: lastRunError?.code || null,
+          hint: lastRunError?.hint || null,
+          details: lastRunError?.details || null,
+          retryable: isLikelyNetwork,
+        }),
+        {
+          status: isLikelyNetwork ? 503 : 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     console.log(`Created run: ${run.id} - starting background analysis for resolved flow: ${resolvedFlowId}`);
