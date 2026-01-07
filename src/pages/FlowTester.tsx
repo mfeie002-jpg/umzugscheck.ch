@@ -11,6 +11,7 @@ import {
 import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
 import { FlowExportDialog } from '@/components/flow-tester/FlowExportDialog';
+import { TopTenFlowSelector } from '@/components/flow-tester/TopTenFlowSelector';
 
 // Build main flows with their sub-variants
 const MAIN_FLOWS = [
@@ -163,6 +164,7 @@ export default function FlowTesterPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <TopTenFlowSelector />
             <FlowExportDialog />
             <Link to="/flow-command-center">
               <Button variant="outline" size="sm">
