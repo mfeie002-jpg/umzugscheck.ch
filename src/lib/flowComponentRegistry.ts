@@ -86,6 +86,11 @@ import {
 
 import { MultiStepCalculator } from '@/components/homepage/MultiStepCalculator';
 import { VideoFirstCalculator } from '@/components/video-first-v4/VideoFirstCalculator';
+import { MarketplaceWizard } from '@/components/marketplace-v5/MarketplaceWizard';
+import { UltimateWizard } from '@/components/ultimate-v6/UltimateWizard';
+import { SwissMoveWizard } from '@/components/swissmove-v7/SwissMoveWizard';
+import { DecisionFreeWizard } from '@/components/decisionfree-v8/DecisionFreeWizard';
+import { ZeroFrictionWizard } from '@/components/zerofriction-v9/ZeroFrictionWizard';
 /**
  * Complete mapping of all flow variant IDs to their components
  * 
@@ -136,8 +141,9 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v4f': V4fFeedbackBased,
   
   // ========== V5 - Marketplace Wizard ==========
-  'umzugsofferten-v5': V5aHighContrast,
-  'v5': V5aHighContrast,
+  // Baseline uses actual MarketplaceWizard, not accessibility variants
+  'umzugsofferten-v5': MarketplaceWizard,
+  'v5': MarketplaceWizard,
   'v5a': V5aHighContrast,
   'v5b': V5bScreenReader,
   'v5c': V5cKeyboardNav,
@@ -146,8 +152,9 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v5f': V5fFeedbackBased,
   
   // ========== V6 - Ultimate (6-Tier) ==========
-  'umzugsofferten-v6': V6aFeedbackBased,
-  'v6': V6aFeedbackBased,
+  // Baseline uses actual UltimateWizard
+  'umzugsofferten-v6': UltimateWizard,
+  'v6': UltimateWizard,
   'v6a': V6aFeedbackBased,
   'v6b': V6bChatGPT,
   'v6c': V6cGemini,
@@ -156,18 +163,21 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v6f': V6fUltimate,
   
   // ========== V7 - SwissMove (90s) ==========
-  'umzugsofferten-v7': V7aFeedbackBased,
-  'v7': V7aFeedbackBased,
+  // Baseline uses actual SwissMoveWizard
+  'umzugsofferten-v7': SwissMoveWizard,
+  'v7': SwissMoveWizard,
   'v7a': V7aFeedbackBased,
   
   // ========== V8 - Decision-Free ==========
-  'umzugsofferten-v8': V8aFeedbackBased,
-  'v8': V8aFeedbackBased,
+  // Baseline uses actual DecisionFreeWizard
+  'umzugsofferten-v8': DecisionFreeWizard,
+  'v8': DecisionFreeWizard,
   'v8a': V8aFeedbackBased,
   
   // ========== V9 - Zero Friction ⭐ ==========
-  'umzugsofferten-v9': V9aFeedbackBased,
-  'v9': V9aFeedbackBased,
+  // Baseline uses actual ZeroFrictionWizard
+  'umzugsofferten-v9': ZeroFrictionWizard,
+  'v9': ZeroFrictionWizard,
   'v9a': V9aFeedbackBased,
   'v9b': V9bFeedbackBased,
   'v9c': V9cFeedbackBased,
