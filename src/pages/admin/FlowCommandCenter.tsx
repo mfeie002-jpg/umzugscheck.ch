@@ -955,7 +955,9 @@ export default function FlowCommandCenter() {
 
       {/* Content based on interface mode */}
       {(() => {
-        const bypassBackendGate = activeView === 'flows';
+        // Allow all views to render even when backend is temporarily unreachable
+        // We'll show a warning banner instead of blocking the UI
+        const bypassBackendGate = true;
 
         if (isLoading && !bypassBackendGate) {
           return (
@@ -963,16 +965,6 @@ export default function FlowCommandCenter() {
               <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
               <span className="ml-3 text-muted-foreground">Daten werden geladen…</span>
             </div>
-          );
-        }
-
-        if (loadError && !bypassBackendGate) {
-          return (
-            <ErrorState
-              title="Verbindungsfehler"
-              message={loadError}
-              onRetry={loadData}
-            />
           );
         }
 
