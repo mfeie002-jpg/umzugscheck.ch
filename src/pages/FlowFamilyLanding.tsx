@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo, Suspense } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ExternalLink, Play, Star, Sparkles, Zap, Trophy, MessageSquare, Target } from 'lucide-react';
+import { ArrowLeft, Star, Sparkles, Zap, Trophy, MessageSquare, Target } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
+import { getFlowComponent } from '@/lib/flowComponentRegistry';
 
 // Flow family configurations
 const FLOW_FAMILIES = {
@@ -166,7 +167,6 @@ const getSubVariants = (prefix: string) => {
 
 export default function FlowFamilyLanding() {
   const { familyId } = useParams<{ familyId: string }>();
-  const [hoveredFlow, setHoveredFlow] = useState<string | null>(null);
   
   const family = familyId ? FLOW_FAMILIES[familyId as keyof typeof FLOW_FAMILIES] : null;
   
@@ -246,93 +246,80 @@ export default function FlowFamilyLanding() {
         </div>
       </section>
 
-      {/* Flow List - Full Width Cards */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="space-y-6">
-          {variants.map((variant, index) => (
-            <motion.div
-              key={variant.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              onMouseEnter={() => setHoveredFlow(variant.id)}
-              onMouseLeave={() => setHoveredFlow(null)}
-              className="group"
-            >
-              <div className={`
-                relative overflow-hidden rounded-2xl border-2 transition-all duration-300
-                ${hoveredFlow === variant.id 
-                  ? 'border-primary shadow-xl scale-[1.01]' 
-                  : 'border-border hover:border-primary/50'
-                }
-              `}>
+      {/* Flow List - Direct Embedding */}
+      <main className="py-8">
+        <div className="space-y-16">
+          {variants.map((variant, index) => {
+            const FlowComponent = getFlowComponent(variant.id);
+            
+            return (
+              <motion.section
+                key={variant.id}
+                id={variant.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="scroll-mt-20"
+              >
                 {/* Flow Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 bg-background gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className={`
-                      w-14 h-14 rounded-xl bg-gradient-to-br ${family.color} 
-                      flex items-center justify-center text-white font-bold text-lg shadow-md
-                    `}>
-                      {variant.id.toUpperCase().slice(0, 3)}
-                    </div>
-                    <div>
-                      <h3 className="text-lg md:text-xl font-bold">{variant.label}</h3>
-                      <p className="text-sm text-muted-foreground">{variant.description}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {variant.steps} Schritte
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {variant.id.toUpperCase()}
-                        </Badge>
+                <div className="container mx-auto px-4 mb-6">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-muted/50 border">
+                    <div className="flex items-center gap-4">
+                      <div className={`
+                        w-12 h-12 rounded-xl bg-gradient-to-br ${family.color} 
+                        flex items-center justify-center text-white font-bold text-sm shadow-md
+                      `}>
+                        {variant.id.toUpperCase().slice(0, 3)}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold">{variant.label}</h3>
+                        <p className="text-sm text-muted-foreground">{variant.description}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="secondary" className="text-xs">
+                            {variant.steps} Schritte
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            #{index + 1}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 md:gap-3">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => window.open(variant.path, '_blank')}
-                      className="flex-1 md:flex-none"
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Neues Tab
-                    </Button>
-                    <Link to={variant.path} className="flex-1 md:flex-none">
-                      <Button size="sm" className={`w-full bg-gradient-to-r ${family.color} hover:opacity-90`}>
-                        <Play className="h-4 w-4 mr-2" />
-                        Flow starten
-                      </Button>
-                    </Link>
-                  </div>
                 </div>
-
-                {/* Live Preview */}
-                <div className="relative border-t bg-muted/30">
-                  <div className="aspect-[16/9] md:aspect-[21/9] relative">
-                    <iframe
-                      src={variant.path}
-                      className="absolute inset-0 w-full h-full"
-                      title={`Preview: ${variant.label}`}
-                      loading="lazy"
-                    />
-                    {/* Overlay for click protection */}
-                    <Link 
-                      to={variant.path}
-                      className="absolute inset-0 bg-transparent hover:bg-primary/5 transition-colors flex items-center justify-center group/overlay"
-                    >
-                      <div className="opacity-0 group-hover/overlay:opacity-100 transition-opacity">
-                        <Button size="lg" className={`bg-gradient-to-r ${family.color} shadow-2xl`}>
-                          <Play className="h-5 w-5 mr-2" />
-                          Flow öffnen
-                        </Button>
+                
+                {/* Flow Component - Full Width */}
+                <div className="w-full">
+                  <Suspense fallback={
+                    <div className="container mx-auto px-4">
+                      <div className="h-[600px] rounded-2xl bg-muted/30 animate-pulse flex items-center justify-center">
+                        <p className="text-muted-foreground">Flow wird geladen...</p>
                       </div>
-                    </Link>
-                  </div>
+                    </div>
+                  }>
+                    {FlowComponent ? (
+                      <FlowComponent />
+                    ) : (
+                      <div className="container mx-auto px-4">
+                        <div className="h-[400px] rounded-2xl border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+                          <div className="text-center">
+                            <p className="text-muted-foreground mb-2">Flow-Komponente nicht gefunden</p>
+                            <Badge variant="outline">{variant.id}</Badge>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </Suspense>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+                
+                {/* Divider */}
+                {index < variants.length - 1 && (
+                  <div className="container mx-auto px-4 mt-12">
+                    <div className="border-t border-dashed" />
+                  </div>
+                )}
+              </motion.section>
+            );
+          })}
         </div>
       </main>
 
