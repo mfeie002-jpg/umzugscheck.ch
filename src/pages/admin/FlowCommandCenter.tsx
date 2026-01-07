@@ -246,30 +246,44 @@ export default function FlowCommandCenter() {
   const loadData = async () => {
     setIsLoading(true);
     try {
-      // Fetch all flow scores from feature_scores table
-      const { data: featureData, error: featureError } = await supabase
-        .from('flow_feature_scores')
-        .select('*')
-        .order('updated_at', { ascending: false });
-
-      if (featureError) throw featureError;
-
-      // Also fetch from flow_analysis_runs for completed analyses
-      const { data: analysisData, error: analysisError } = await supabase
-        .from('flow_analysis_runs')
-        .select('*')
-        .eq('status', 'completed')
-        .not('overall_score', 'is', null)
-        .order('created_at', { ascending: false });
-
-      if (analysisError) throw analysisError;
-
+      const flowIds = getAllFlowIds();
       const scoreMap = new Map<string, FlowScore>();
       let totalScore = 0;
       let topScore = 0;
       let analyzedCount = 0;
+      
+      // Try to fetch data, but don't fail completely if Supabase is unavailable
+      let featureData: any[] = [];
+      let analysisData: any[] = [];
+      let criticalCount = 0;
+      let totalIssues = 0;
+      let lastRunDate: string | null = null;
+      
+      try {
+        // Fetch all flow scores from feature_scores table
+        const { data, error } = await supabase
+          .from('flow_feature_scores')
+          .select('*')
+          .order('updated_at', { ascending: false });
+        
+        if (!error && data) featureData = data;
+      } catch (e) {
+        console.warn('Could not fetch feature scores:', e);
+      }
 
-      const flowIds = getAllFlowIds();
+      try {
+        // Also fetch from flow_analysis_runs for completed analyses
+        const { data, error } = await supabase
+          .from('flow_analysis_runs')
+          .select('*')
+          .eq('status', 'completed')
+          .not('overall_score', 'is', null)
+          .order('created_at', { ascending: false });
+
+        if (!error && data) analysisData = data;
+      } catch (e) {
+        console.warn('Could not fetch analysis runs:', e);
+      }
       
       // First, try to match by exact ID or with umzugsofferten- prefix
       for (const id of flowIds) {
@@ -327,39 +341,80 @@ export default function FlowCommandCenter() {
 
       setScores(scoreMap);
 
-      // Fetch issue counts
-      const { count: criticalCount } = await supabase
-        .from('flow_ux_issues')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_resolved', false)
-        .eq('severity', 'critical');
+      try {
+        // Fetch issue counts
+        const { count } = await supabase
+          .from('flow_ux_issues')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_resolved', false)
+          .eq('severity', 'critical');
+        criticalCount = count || 0;
+      } catch (e) {
+        console.warn('Could not fetch critical issues:', e);
+      }
 
-      const { count: totalIssues } = await supabase
-        .from('flow_ux_issues')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_resolved', false);
+      try {
+        const { count } = await supabase
+          .from('flow_ux_issues')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_resolved', false);
+        totalIssues = count || 0;
+      } catch (e) {
+        console.warn('Could not fetch total issues:', e);
+      }
 
-      // Get last analysis date
-      const { data: lastRun } = await supabase
-        .from('flow_analysis_runs')
-        .select('created_at')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      try {
+        // Get last analysis date
+        const { data: lastRun } = await supabase
+          .from('flow_analysis_runs')
+          .select('created_at')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        lastRunDate = lastRun?.created_at || null;
+      } catch (e) {
+        console.warn('Could not fetch last run:', e);
+      }
 
       setStats({
         totalFlows: flowIds.length,
         analyzedFlows: analyzedCount,
         avgScore: analyzedCount > 0 ? Math.round(totalScore / analyzedCount) : 0,
         topScore,
-        criticalIssues: criticalCount || 0,
-        totalIssues: totalIssues || 0,
-        lastAnalysisDate: lastRun?.created_at || null,
+        criticalIssues: criticalCount,
+        totalIssues: totalIssues,
+        lastAnalysisDate: lastRunDate,
       });
 
     } catch (err) {
       console.error('Failed to load data:', err);
-      toast.error('Fehler beim Laden der Daten');
+      // Still show the UI, just with empty data
+      const flowIds = getAllFlowIds();
+      const emptyScoreMap = new Map<string, FlowScore>();
+      flowIds.forEach(id => {
+        emptyScoreMap.set(id, {
+          flowId: id,
+          overallScore: null,
+          conversionScore: null,
+          uxScore: null,
+          mobileScore: null,
+          trustScore: null,
+          accessibilityScore: null,
+          performanceScore: null,
+          lastAnalyzed: null,
+        });
+      });
+      setScores(emptyScoreMap);
+      setStats({
+        totalFlows: flowIds.length,
+        analyzedFlows: 0,
+        avgScore: 0,
+        topScore: 0,
+        criticalIssues: 0,
+        totalIssues: 0,
+        lastAnalysisDate: null,
+      });
+      toast.error('Daten konnten nicht vollständig geladen werden. Einige Funktionen sind eingeschränkt.');
     } finally {
       setIsLoading(false);
     }
