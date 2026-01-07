@@ -815,63 +815,63 @@ export default function InternFlowTesting() {
           </div>
 
           {/* Hero */}
-          <div className="flex-1 flex flex-col items-center justify-center px-4 pb-8">
+          <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-lg space-y-8"
+              className="w-full max-w-lg space-y-6"
             >
               {/* Logo & Title */}
-              <div className="text-center space-y-4">
+              <div className="text-center space-y-3">
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", bounce: 0.5 }}
-                  className="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-emerald-500/30"
+                  className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-2xl shadow-emerald-500/30"
                 >
-                  <Rocket className="w-12 h-12 text-white" />
+                  <Rocket className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
                 </motion.div>
                 
-                <h1 className="text-4xl font-bold text-white">
+                <h1 className="text-3xl sm:text-4xl font-bold text-white">
                   {t("intro.title")}
                 </h1>
-                <p className="text-xl text-white/60">
+                <p className="text-lg sm:text-xl text-white/60">
                   {t("intro.subtitle")}
                 </p>
               </div>
 
-              {/* Steps */}
-              <div className="grid grid-cols-3 gap-3">
+              {/* Steps - Mobile optimized */}
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 {[
-                  { step: 1, label: t("intro.step1"), desc: t("intro.step1.desc"), icon: <ExternalLink size={22} /> },
-                  { step: 2, label: t("intro.step2"), desc: t("intro.step2.desc"), icon: <Star size={22} /> },
-                  { step: 3, label: t("intro.step3"), desc: t("intro.step3.desc"), icon: <Download size={22} /> },
+                  { step: 1, label: t("intro.step1"), desc: t("intro.step1.desc"), icon: <ExternalLink size={20} /> },
+                  { step: 2, label: t("intro.step2"), desc: t("intro.step2.desc"), icon: <Star size={20} /> },
+                  { step: 3, label: t("intro.step3"), desc: t("intro.step3.desc"), icon: <Download size={20} /> },
                 ].map((item) => (
                   <motion.div
                     key={item.step}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: item.step * 0.1 }}
-                    className="bg-white/5 backdrop-blur rounded-2xl p-4 text-center border border-white/10"
+                    className="bg-white/5 backdrop-blur rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center border border-white/10"
                   >
-                    <div className="w-12 h-12 mx-auto bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-xl flex items-center justify-center text-emerald-400 mb-2">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-lg sm:rounded-xl flex items-center justify-center text-emerald-400 mb-1.5 sm:mb-2">
                       {item.icon}
                     </div>
-                    <div className="text-xs text-white/40 mb-1">{item.step}</div>
-                    <div className="text-sm font-bold text-white">{item.label}</div>
+                    <div className="text-[10px] sm:text-xs text-white/40 mb-0.5">{item.step}</div>
+                    <div className="text-xs sm:text-sm font-bold text-white">{item.label}</div>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Name Input */}
+              {/* Name Input - Large touch targets */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="space-y-4"
+                className="space-y-3 sm:space-y-4"
               >
                 <input
-                  className="w-full px-6 py-5 bg-white/10 backdrop-blur border-2 border-white/20 rounded-2xl text-white text-lg placeholder:text-white/40 focus:outline-none focus:border-emerald-400 transition-all touch-manipulation"
+                  className="w-full px-5 py-4 sm:px-6 sm:py-5 bg-white/10 backdrop-blur border-2 border-white/20 rounded-xl sm:rounded-2xl text-white text-base sm:text-lg placeholder:text-white/40 focus:outline-none focus:border-emerald-400 transition-all touch-manipulation"
                   placeholder={t("intro.name.placeholder")}
                   value={testerName}
                   onChange={(e) => setTesterName(e.target.value)}
@@ -882,16 +882,16 @@ export default function InternFlowTesting() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={startTesting}
-                  className="w-full py-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white text-xl font-bold shadow-xl shadow-emerald-500/30 active:shadow-lg transition-all touch-manipulation flex items-center justify-center gap-3"
+                  className="w-full py-4 sm:py-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl sm:rounded-2xl text-white text-lg sm:text-xl font-bold shadow-xl shadow-emerald-500/30 active:shadow-lg transition-all touch-manipulation flex items-center justify-center gap-2 sm:gap-3 min-h-[56px]"
                 >
                   {t("intro.start")}
-                  <ArrowRight size={24} />
+                  <ArrowRight size={22} />
                 </motion.button>
               </motion.div>
 
-              {/* Tips */}
-              <div className="flex items-center justify-center gap-2 text-white/40 text-sm">
-                <Lightbulb size={16} className="text-amber-400" />
+              {/* Tips - Smaller on mobile */}
+              <div className="flex items-center justify-center gap-2 text-white/40 text-xs sm:text-sm px-2 text-center">
+                <Lightbulb size={14} className="text-amber-400 shrink-0" />
                 <span>{t("intro.tip")}</span>
               </div>
             </motion.div>
