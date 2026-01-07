@@ -495,6 +495,21 @@ export default function InternFlowTesting() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
+  // Scroll to top on phase change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [phase]);
+
+  // Scroll to top on flow change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentFlowIndex]);
+
+  // Scroll to top on initial page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
   // Progress
   const progress = useMemo(() => (currentFlowIndex / TOP_10_FLOWS.length) * 100, [currentFlowIndex]);
 
