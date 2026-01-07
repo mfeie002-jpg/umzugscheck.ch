@@ -79,6 +79,8 @@ export { default as V9ZeroFrictionFlow } from './V9ZeroFrictionFlow';
 export { UltimateV7Flow } from './UltimateV7Flow';
 export { default as UltimateBest36Flow } from './UltimateBest36Flow';
 export { default as GoldenFlowV10 } from './GoldenFlowV10';
+export { default as V2ArchetypFlow } from './V2ArchetypFlow';
+export { default as UltimateChFlow } from './UltimateChFlow';
 
 // Swiss Premium Flows
 export { default as SwissLightningFlow } from './SwissLightningFlow';

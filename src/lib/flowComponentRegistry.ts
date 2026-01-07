@@ -70,6 +70,8 @@ import {
   UltimateV7Flow,
   UltimateBest36Flow,
   GoldenFlowV10,
+  V2ArchetypFlow,
+  UltimateChFlow,
   // Swiss Premium Flows
   SwissLightningFlow,
   SwissPremiumChoiceFlow,
@@ -194,8 +196,8 @@ export const FLOW_COMPONENT_REGISTRY: Record<string, ComponentType> = {
   'v1g': V1gInputUX,
   
   // ========== V2 Archetyp & Ultimate CH ==========
-  'v2-archetyp': V2aProgressEnhanced, // TODO: Create dedicated V2ArchetypFlow
-  'ultimate-ch': V9aFeedbackBased, // TODO: Create dedicated UltimateChFlow
+  'v2-archetyp': V2ArchetypFlow,
+  'ultimate-ch': UltimateChFlow,
   
   // ========== Main Config Aliases ==========
   'umzugsofferten-v2e': V2eExperimental,
