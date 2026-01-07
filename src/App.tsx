@@ -33,6 +33,7 @@ const NewIndex = lazy(() => import("./pages/NewIndex"));
 const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
 const HomeOptimized = lazy(() => import("./pages/HomeOptimized"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
+const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
 
 // Service pages
 const ServicesOverview = lazy(() => import("./pages/services/ServicesOverview"));
@@ -693,6 +694,7 @@ const AppRouterContent = () => {
           <Route path="/flows" element={<FlowsIndex />} />
           <Route path="/flows/:familyId" element={<FlowFamilyLanding />} />
           <Route path="/intern-testing" element={<InternFlowTesting />} />
+          <Route path="/admin/intern-results" element={<AdminInternResults />} />
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
           <Route path="/flow-comparison" element={<TopFlowsComparison />} />
           <Route path="/flow-vergleich" element={<TopFlowsComparison />} />
