@@ -240,6 +240,7 @@ const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBest
 const FlowTester = lazy(() => import("./pages/FlowTester"));
 const FlowShowcase = lazy(() => import("./pages/FlowShowcase"));
 const FlowOverview = lazy(() => import("./pages/FlowOverview"));
+const FlowFamilyLanding = lazy(() => import("./pages/FlowFamilyLanding"));
 const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Note: RegionalOfferten is imported above with canton pages
@@ -684,6 +685,8 @@ const AppRouterContent = () => {
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/flow/:flowId" element={<FlowShowcase />} />
           <Route path="/flow-overview" element={<FlowOverview />} />
+          {/* Flow Family Landing Pages - dedicated page per flow family */}
+          <Route path="/flows/:familyId" element={<FlowFamilyLanding />} />
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
           <Route path="/flow-comparison" element={<TopFlowsComparison />} />
           <Route path="/flow-vergleich" element={<TopFlowsComparison />} />
