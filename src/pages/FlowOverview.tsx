@@ -103,7 +103,7 @@ const CATEGORIES = {
   'ultimate': {
     label: 'Ultimate Flows',
     icon: Crown,
-    color: 'from-gradient-to-r from-purple-500 to-pink-500',
+    color: 'from-purple-500 to-pink-500',
     description: 'Combined Best Practices'
   }
 };
