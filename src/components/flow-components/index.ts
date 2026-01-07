@@ -41,3 +41,11 @@ export type { ProgressIndicatorProps } from './ProgressIndicator';
 // Utility hooks for flow state management
 export { useFlowState } from './useFlowState';
 export type { FlowState, FlowActions } from './useFlowState';
+
+// Flow Completion Feedback
+export { 
+  FlowCompleteFeedback, 
+  loadFlowRatings, 
+  getFlowAverageRating 
+} from './FlowCompleteFeedback';
+export type { FlowRating } from './FlowCompleteFeedback';

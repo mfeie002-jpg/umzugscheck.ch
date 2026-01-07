@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { 
-  FlowStepShell, StickyCtaBar, ReviewReceipt, useFlowState 
+  FlowStepShell, StickyCtaBar, ReviewReceipt, useFlowState, FlowCompleteFeedback 
 } from '@/components/flow-components';
 import { 
   MapPin, Calendar, Home, User, Mail, Phone, Video, Zap, 
@@ -110,20 +110,28 @@ export const SwissConciergeHybridFlow: React.FC = () => {
   if (state.isComplete) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/30 p-4">
-        <Card className="max-w-md w-full text-center">
-          <CardContent className="pt-8 pb-6 space-y-4">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-16 h-16 mx-auto rounded-full bg-success/20 flex items-center justify-center">
-              <CheckCircle2 className="h-8 w-8 text-success" />
-            </motion.div>
-            <h2 className="text-2xl font-bold">Vielen Dank!</h2>
-            <p className="text-muted-foreground">
-              {formData.videoUploaded 
-                ? 'Ihr Video wurde erfolgreich übermittelt. Sie erhalten präzisere Offerten!'
-                : 'Sie erhalten in Kürze bis zu 5 unverbindliche Offerten.'}
-            </p>
-            <Button onClick={() => window.location.href = '/'} className="mt-4">Zur Startseite</Button>
-          </CardContent>
-        </Card>
+        <div className="max-w-md w-full space-y-6">
+          <Card className="text-center">
+            <CardContent className="pt-8 pb-6 space-y-4">
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-16 h-16 mx-auto rounded-full bg-success/20 flex items-center justify-center">
+                <CheckCircle2 className="h-8 w-8 text-success" />
+              </motion.div>
+              <h2 className="text-2xl font-bold">Anfrage erfolgreich!</h2>
+              <p className="text-muted-foreground">
+                {formData.videoUploaded 
+                  ? 'Ihr Video wurde erfolgreich übermittelt. Sie erhalten präzisere Offerten!'
+                  : 'Sie erhalten in Kürze bis zu 5 unverbindliche Offerten.'}
+              </p>
+            </CardContent>
+          </Card>
+          
+          <FlowCompleteFeedback
+            flowId="swiss-concierge-hybrid"
+            flowLabel="Swiss Concierge Hybrid 🎬"
+            onComplete={() => window.location.href = '/'}
+            onSkip={() => window.location.href = '/'}
+          />
+        </div>
       </div>
     );
   }
