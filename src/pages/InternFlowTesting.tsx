@@ -1225,52 +1225,64 @@ export default function InternFlowTesting() {
 
             {/* Rating Criteria */}
             <div className="space-y-5">
-              {CRITERIA.map((criterion) => (
-                <div key={criterion.id} className="space-y-3">
-                  <div 
-                    className="flex items-center justify-between cursor-pointer"
-                    onClick={() => setExpandedCriterion(expandedCriterion === criterion.id ? null : criterion.id)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl" style={{ backgroundColor: `${criterion.color}20` }}>
-                        <div style={{ color: criterion.color }}>{criterion.icon}</div>
+              {CRITERIA.map((criterion, criterionIndex) => (
+                <React.Fragment key={criterion.id}>
+                  {/* Inline Joke Banner - Bulgarian Only (after every 2 criteria) */}
+                  {lang === "bg" && criterionIndex > 0 && criterionIndex % 2 === 0 && (
+                    <MutscheliJokeBanner variant="inline" className="my-3" />
+                  )}
+                  
+                  <div className="space-y-3">
+                    <div 
+                      className="flex items-center justify-between cursor-pointer"
+                      onClick={() => setExpandedCriterion(expandedCriterion === criterion.id ? null : criterion.id)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl" style={{ backgroundColor: `${criterion.color}20` }}>
+                          <div style={{ color: criterion.color }}>{criterion.icon}</div>
+                        </div>
+                        <div>
+                          <div className="text-white font-semibold">{criterion.label}</div>
+                          <div className="text-white/40 text-xs">{criterion.description}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-white font-semibold">{criterion.label}</div>
-                        <div className="text-white/40 text-xs">{criterion.description}</div>
-                      </div>
+                      <Tooltip tip={criterion.tip}>
+                        <Info size={16} className="text-white/30" />
+                      </Tooltip>
                     </div>
-                    <Tooltip tip={criterion.tip}>
-                      <Info size={16} className="text-white/30" />
-                    </Tooltip>
+                    
+                    <AnimatePresence>
+                      {expandedCriterion === criterion.id && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="bg-white/5 rounded-xl p-3 text-xs text-white/60"
+                        >
+                          <AlertCircle size={12} className="inline mr-1" />
+                          {criterion.tip}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    
+                    <div className="flex justify-between gap-2">
+                      {[1, 2, 3, 4, 5].map((val) => (
+                        <RatingButton
+                          key={val}
+                          value={val}
+                          selected={currentRatings[criterion.id] === val}
+                          onClick={() => setCurrentRatings((prev) => ({ ...prev, [criterion.id]: val }))}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  
-                  <AnimatePresence>
-                    {expandedCriterion === criterion.id && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="bg-white/5 rounded-xl p-3 text-xs text-white/60"
-                      >
-                        <AlertCircle size={12} className="inline mr-1" />
-                        {criterion.tip}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  
-                  <div className="flex justify-between gap-2">
-                    {[1, 2, 3, 4, 5].map((val) => (
-                      <RatingButton
-                        key={val}
-                        value={val}
-                        selected={currentRatings[criterion.id] === val}
-                        onClick={() => setCurrentRatings((prev) => ({ ...prev, [criterion.id]: val }))}
-                      />
-                    ))}
-                  </div>
-                </div>
+                </React.Fragment>
               ))}
+              
+              {/* Final inline joke after all criteria - Bulgarian Only */}
+              {lang === "bg" && (
+                <MutscheliJokeBanner variant="inline" className="mt-4" />
+              )}
             </div>
 
             {/* Emoji Reaction */}
