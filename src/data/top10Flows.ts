@@ -13,7 +13,7 @@ export const TOP_10_FLOWS = [
     color: "from-emerald-500 to-teal-600",
     steps: 2,
     estimatedTime: "45–90 Sek.",
-    url: "https://umzugscheck.ch/chatgpt-flow-1",
+    url: "/chatgpt-flow-1",
   },
   {
     rank: 2,
@@ -24,7 +24,7 @@ export const TOP_10_FLOWS = [
     color: "from-sky-500 to-indigo-600",
     steps: 2,
     estimatedTime: "60–120 Sek.",
-    url: "https://umzugscheck.ch/umzugsofferten-v8a",
+    url: "/umzugsofferten-v8a",
   },
   {
     rank: 3,
@@ -35,7 +35,7 @@ export const TOP_10_FLOWS = [
     color: "from-blue-500 to-cyan-600",
     steps: 2,
     estimatedTime: "60–120 Sek.",
-    url: "https://umzugscheck.ch/umzugsofferten-v1f",
+    url: "/umzugsofferten-v1f",
   },
   {
     rank: 4,
@@ -46,7 +46,7 @@ export const TOP_10_FLOWS = [
     color: "from-violet-500 to-fuchsia-600",
     steps: 3,
     estimatedTime: "2–4 Min.",
-    url: "https://umzugscheck.ch/umzugsofferten-v6a",
+    url: "/umzugsofferten-v6a",
   },
   {
     rank: 5,
@@ -57,7 +57,7 @@ export const TOP_10_FLOWS = [
     color: "from-amber-500 to-orange-600",
     steps: 3,
     estimatedTime: "2–4 Min.",
-    url: "https://umzugscheck.ch/umzugsofferten-v5?variant=v5f",
+    url: "/umzugsofferten-v5?variant=v5f",
   },
   {
     rank: 6,
@@ -68,7 +68,7 @@ export const TOP_10_FLOWS = [
     color: "from-rose-500 to-pink-600",
     steps: 4,
     estimatedTime: "3–6 Min.",
-    url: "https://umzugscheck.ch/umzugsofferten-ultimate-best36",
+    url: "/umzugsofferten-ultimate-best36",
   },
   {
     rank: 7,
@@ -79,7 +79,7 @@ export const TOP_10_FLOWS = [
     color: "from-slate-600 to-slate-900",
     steps: 5,
     estimatedTime: "4–7 Min.",
-    url: "https://umzugscheck.ch/umzugsofferten-v6f",
+    url: "/umzugsofferten-v6f",
   },
   {
     rank: 8,
@@ -90,7 +90,7 @@ export const TOP_10_FLOWS = [
     color: "from-lime-500 to-green-700",
     steps: 6,
     estimatedTime: "5–8 Min.",
-    url: "https://umzugscheck.ch/umzugsofferten-ultimate-v7",
+    url: "/umzugsofferten-ultimate-v7",
   },
   {
     rank: 9,
@@ -101,7 +101,7 @@ export const TOP_10_FLOWS = [
     color: "from-teal-500 to-emerald-700",
     steps: 6,
     estimatedTime: "5–9 Min.",
-    url: "https://umzugscheck.ch/umzugsofferten-v9c",
+    url: "/umzugsofferten-v9c",
   },
   {
     rank: 10,
@@ -112,7 +112,7 @@ export const TOP_10_FLOWS = [
     color: "from-purple-500 to-indigo-700",
     steps: 6,
     estimatedTime: "5–9 Min.",
-    url: "https://umzugscheck.ch/umzugsofferten-v2-archetyp",
+    url: "/umzugsofferten-v2-archetyp",
   },
 ] as const;
 
