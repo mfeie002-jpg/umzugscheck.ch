@@ -26,6 +26,7 @@ import {
   ChevronRight, Sparkles, Edit2, Building, ArrowLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FlowCompleteFeedback } from '@/components/flow-components/FlowCompleteFeedback';
 
 // ============================================================================
 // TYPES
@@ -83,6 +84,7 @@ const calculatePriceRange = (rooms: string, extras: string[]): { min: number; ma
 // ============================================================================
 export const ChatGPTFlow1ZeroFriction: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fromZip: '',
     toZip: '',
@@ -116,8 +118,20 @@ export const ChatGPTFlow1ZeroFriction: React.FC = () => {
 
   const handleSubmit = () => {
     console.log('Form submitted:', formData);
-    // TODO: Submit to backend
+    setIsSubmitted(true);
   };
+
+  // Show feedback after submission
+  if (isSubmitted) {
+    return (
+      <FlowCompleteFeedback 
+        flowId="chatgpt-flow-1"
+        flowLabel="ChatGPT Flow 1 - Zero Friction Pro"
+        onComplete={() => window.location.href = '/'}
+        onSkip={() => window.location.href = '/'}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-24">

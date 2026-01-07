@@ -25,6 +25,7 @@ import {
   Send, Sparkles, MessageCircle, PartyPopper
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FlowCompleteFeedback } from '@/components/flow-components/FlowCompleteFeedback';
 
 // ============================================================================
 // TYPES
@@ -178,6 +179,7 @@ export const ChatGPTFlow3GuidedChat: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
   const [formData, setFormData] = useState<FormData>({
@@ -374,30 +376,26 @@ export const ChatGPTFlow3GuidedChat: React.FC = () => {
     
     simulateTyping(() => {
       setShowConfetti(true);
-      addMessage('bot', (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <PartyPopper className="h-6 w-6 text-cyan-500" />
-            <span className="text-lg font-semibold">Geschafft!</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Ihre Anfrage wurde erfolgreich übermittelt. Sie erhalten in Kürze 
-            bis zu 5 unverbindliche Offerten per E-Mail.
-          </p>
-          <div className="flex gap-2 flex-wrap pt-2">
-            {TRUST_BADGES.map((b, i) => (
-              <Badge key={i} variant="outline" className="text-xs gap-1">
-                <b.icon className="h-3 w-3" /> {b.label}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      ));
       setStep('complete');
       
-      setTimeout(() => setShowConfetti(false), 3000);
+      setTimeout(() => {
+        setShowConfetti(false);
+        setShowFeedback(true);
+      }, 2000);
     });
   };
+
+  // Show feedback screen after completion
+  if (showFeedback) {
+    return (
+      <FlowCompleteFeedback 
+        flowId="chatgpt-flow-3"
+        flowLabel="ChatGPT Flow 3 - Guided Chat"
+        onComplete={() => window.location.href = '/'}
+        onSkip={() => window.location.href = '/'}
+      />
+    );
+  }
 
   const toggleExtra = (id: string) => {
     setFormData(prev => ({
