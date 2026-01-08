@@ -690,12 +690,85 @@ const ScreenshotsPanel: React.FC<{
     step_name: string | null;
   }>>([]);
   const [loading, setLoading] = useState(true);
+  const [captureStatus, setCaptureStatus] = useState<{
+    status: string;
+    progress: number;
+    stepsCaptured: number;
+    totalSteps: number;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     if (flowId) {
       fetchStepMetrics();
     }
   }, [flowId]);
+
+  // Poll for capture status when capturing
+  useEffect(() => {
+    if (!isCapturing || !flowId) {
+      setCaptureStatus(null);
+      return;
+    }
+
+    const pollStatus = async () => {
+      try {
+        const normalizedId = flowId.startsWith('umzugsofferten-')
+          ? flowId.replace('umzugsofferten-', '')
+          : flowId;
+        const flowIds = [flowId, normalizedId, `umzugsofferten-${normalizedId}`];
+
+        const { data: latestRun } = await supabase
+          .from('flow_analysis_runs')
+          .select('id, status, steps_captured, total_steps, created_at')
+          .in('flow_id', flowIds)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (latestRun) {
+          const stepsCaptured = latestRun.steps_captured || 0;
+          const totalSteps = latestRun.total_steps || 4;
+          const progress = totalSteps > 0 ? Math.round((stepsCaptured / totalSteps) * 100) : 0;
+          
+          let message = 'Starte...';
+          if (latestRun.status === 'running') {
+            if (stepsCaptured > 0) {
+              message = `Step ${stepsCaptured}/${totalSteps} erfasst`;
+            } else {
+              message = 'Initialisiere...';
+            }
+          } else if (latestRun.status === 'completed') {
+            message = 'Fertig!';
+          } else if (latestRun.status === 'failed') {
+            message = 'Fehlgeschlagen';
+          }
+
+          setCaptureStatus({
+            status: latestRun.status,
+            progress,
+            stepsCaptured,
+            totalSteps,
+            message
+          });
+
+          // Refresh screenshots if completed
+          if (latestRun.status === 'completed') {
+            setTimeout(() => fetchStepMetrics(), 500);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to poll status:', err);
+      }
+    };
+
+    // Initial poll
+    pollStatus();
+    
+    // Poll every 3 seconds
+    const interval = setInterval(pollStatus, 3000);
+    return () => clearInterval(interval);
+  }, [isCapturing, flowId]);
 
   const fetchStepMetrics = async () => {
     if (!flowId) return;
@@ -792,6 +865,28 @@ const ScreenshotsPanel: React.FC<{
           </Button>
         </div>
       </div>
+
+      {/* Capture Progress Indicator */}
+      {isCapturing && captureStatus && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="py-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <span className="font-medium">Screenshots werden erfasst...</span>
+                </span>
+                <span className="text-muted-foreground">{captureStatus.message}</span>
+              </div>
+              <Progress value={captureStatus.progress} className="h-2" />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Step {captureStatus.stepsCaptured} von {captureStatus.totalSteps}</span>
+                <span>{captureStatus.progress}%</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {!hasScreenshots ? (
         <Card>
