@@ -10,11 +10,37 @@ import { Progress } from '@/components/ui/progress';
 import { Keyboard } from 'lucide-react';
 import { useInitialStep } from '@/hooks/use-initial-step';
 
-const OPTIONS = [
-  { id: 'privat', label: 'Privatumzug', shortcut: '1' },
-  { id: 'firma', label: 'Firmenumzug', shortcut: '2' },
-  { id: 'senior', label: 'Seniorenumzug', shortcut: '3' },
-];
+const STEP_OPTIONS: Record<number, { id: string; label: string; shortcut: string }[]> = {
+  1: [
+    { id: 'privat', label: 'Privatumzug', shortcut: '1' },
+    { id: 'firma', label: 'Firmenumzug', shortcut: '2' },
+    { id: 'senior', label: 'Seniorenumzug', shortcut: '3' },
+  ],
+  2: [
+    { id: 'studio', label: 'Studio / 1 Zimmer', shortcut: '1' },
+    { id: '2-3', label: '2-3 Zimmer Wohnung', shortcut: '2' },
+    { id: '4-5', label: '4-5 Zimmer Wohnung', shortcut: '3' },
+    { id: 'haus', label: 'Haus', shortcut: '4' },
+  ],
+  3: [
+    { id: 'lokal', label: 'Lokal (gleiche Stadt)', shortcut: '1' },
+    { id: 'regional', label: 'Regional (< 50km)', shortcut: '2' },
+    { id: 'national', label: 'National (> 50km)', shortcut: '3' },
+    { id: 'international', label: 'International', shortcut: '4' },
+  ],
+  4: [
+    { id: 'standard', label: 'Standard (2-4 Wochen)', shortcut: '1' },
+    { id: 'flexibel', label: 'Flexibel (< 2 Wochen)', shortcut: '2' },
+    { id: 'express', label: 'Express (< 1 Woche)', shortcut: '3' },
+  ],
+};
+
+const STEP_TITLES: Record<number, { title: string; description: string }> = {
+  1: { title: 'Umzugsart wählen', description: 'Was für ein Umzug planen Sie?' },
+  2: { title: 'Wohnungsgrösse', description: 'Wie gross ist Ihre aktuelle Wohnung?' },
+  3: { title: 'Entfernung', description: 'Wie weit ist der Umzugsweg?' },
+  4: { title: 'Zeitrahmen', description: 'Wann soll der Umzug stattfinden?' },
+};
 
 export const V5cKeyboardNav: React.FC = () => {
   const initialStep = useInitialStep(1);
@@ -23,6 +49,15 @@ export const V5cKeyboardNav: React.FC = () => {
   const [showShortcuts, setShowShortcuts] = useState(false);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const progress = (currentStep / 4) * 100;
+  
+  // Get current step options and title
+  const currentOptions = STEP_OPTIONS[currentStep] || STEP_OPTIONS[1];
+  const currentTitle = STEP_TITLES[currentStep] || STEP_TITLES[1];
+
+  // Reset selected index when step changes
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [currentStep]);
 
   // Focus management
   useEffect(() => {
@@ -38,9 +73,11 @@ export const V5cKeyboardNav: React.FC = () => {
         setTimeout(() => setShowShortcuts(false), 3000);
       }
       // Number shortcuts
-      if (['1', '2', '3'].includes(e.key)) {
+      if (['1', '2', '3', '4'].includes(e.key)) {
         const index = parseInt(e.key) - 1;
-        setSelectedIndex(index);
+        if (index < currentOptions.length) {
+          setSelectedIndex(index);
+        }
       }
       // Enter to proceed
       if (e.key === 'Enter' && e.ctrlKey) {
@@ -57,12 +94,12 @@ export const V5cKeyboardNav: React.FC = () => {
       case 'ArrowDown':
       case 'ArrowRight':
         e.preventDefault();
-        setSelectedIndex((index + 1) % OPTIONS.length);
+        setSelectedIndex((index + 1) % currentOptions.length);
         break;
       case 'ArrowUp':
       case 'ArrowLeft':
         e.preventDefault();
-        setSelectedIndex((index - 1 + OPTIONS.length) % OPTIONS.length);
+        setSelectedIndex((index - 1 + currentOptions.length) % currentOptions.length);
         break;
       case 'Home':
         e.preventDefault();
@@ -70,7 +107,7 @@ export const V5cKeyboardNav: React.FC = () => {
         break;
       case 'End':
         e.preventDefault();
-        setSelectedIndex(OPTIONS.length - 1);
+        setSelectedIndex(currentOptions.length - 1);
         break;
       case ' ':
       case 'Enter':
@@ -142,18 +179,18 @@ export const V5cKeyboardNav: React.FC = () => {
       {/* Main content */}
       <main className="p-6">
         <Card className="p-6">
-          <h2 className="text-2xl font-semibold mb-2">Umzugsart wählen</h2>
+          <h2 className="text-2xl font-semibold mb-2">{currentTitle.title}</h2>
           <p className="text-muted-foreground mb-6">
-            Verwenden Sie Pfeiltasten oder Zifferntasten zur Navigation
+            {currentTitle.description}
           </p>
 
           <div
             role="listbox"
-            aria-label="Umzugsart"
-            aria-activedescendant={OPTIONS[selectedIndex].id}
+            aria-label={currentTitle.title}
+            aria-activedescendant={currentOptions[selectedIndex]?.id}
             className="space-y-2"
           >
-            {OPTIONS.map((option, index) => (
+            {currentOptions.map((option, index) => (
               <button
                 key={option.id}
                 ref={(el) => (optionRefs.current[index] = el)}
