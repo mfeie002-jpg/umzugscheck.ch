@@ -17,6 +17,7 @@ const navItems = [
 // All calculator/funnel flows have their own sticky footer CTAs
 const HIDDEN_PATHS = [
   '/umzugsofferten',  // All /umzugsofferten variants
+  '/chatgpt-flow',    // ChatGPT flows have their own sticky CTA
   '/umzugsrechner',   // Calculator page
   '/god-mode',        // God mode calculator
   '/flow-tester',     // Flow testing
