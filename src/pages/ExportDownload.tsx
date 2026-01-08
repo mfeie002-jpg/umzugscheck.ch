@@ -7,18 +7,18 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
 
-// Top 10 Flow IDs in ranking order
+// Top 10 Flow IDs in ranking order - using actual database flow_ids
 const TOP_10_FLOW_IDS = [
-  { rank: 1, id: "chatgpt-flow-1", name: "ChatGPT Flow 1" },
-  { rank: 2, id: "v8a", name: "V8a Decision-Free" },
-  { rank: 3, id: "v1f", name: "V1f Sticky CTA" },
-  { rank: 4, id: "v6a", name: "V6a Ultimate" },
-  { rank: 5, id: "v5f", name: "V5f Marketplace" },
-  { rank: 6, id: "umzugsofferten-ultimate-best36", name: "Ultimate Best36" },
-  { rank: 7, id: "v6f", name: "V6f Ultimate" },
-  { rank: 8, id: "ultimate-v7", name: "Ultimate V7" },
-  { rank: 9, id: "v9c", name: "V9c Zero Friction" },
-  { rank: 10, id: "v2-archetyp", name: "V2 Archetyp" },
+  { rank: 1, id: "umzugsofferten-ultimate-best36", name: "Ultimate Best36" },
+  { rank: 2, id: "umzugsofferten-v1", name: "V1 Control" },
+  { rank: 3, id: "umzugsofferten-v7", name: "V7 Ultimate" },
+  { rank: 4, id: "v3a", name: "V3a" },
+  { rank: 5, id: "v3b", name: "V3b" },
+  { rank: 6, id: "v3c", name: "V3c" },
+  { rank: 7, id: "v3d", name: "V3d" },
+  { rank: 8, id: "v3e", name: "V3e" },
+  { rank: 9, id: "umzugsofferten-v2", name: "V2" },
+  { rank: 10, id: "umzugsofferten-v2e", name: "V2e" },
 ];
 
 interface StepScreenshot {
