@@ -146,7 +146,7 @@ ${topFlows.map((f, i) => `${i + 1}. **${f.flowId}** - Score: ${f.overallScore}/1
 
 ## 🔴 Kritische Issues (${criticalIssues.length})
 
-${criticalIssues.slice(0, 10).map(i => `- **[${i.severity.toUpperCase()}]** ${i.flowId}: ${i.title}
+${criticalIssues.slice(0, 10).map(i => `- **[${(i.severity || 'unknown').toUpperCase()}]** ${i.flowId || 'unknown'}: ${i.title || 'Kein Titel'}
   ${i.description || ''}`).join('\n\n')}
 
 ---
