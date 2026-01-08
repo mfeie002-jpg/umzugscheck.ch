@@ -1228,64 +1228,54 @@ export default function InternFlowTesting() {
               />
             </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3">
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={() => window.open(currentFlow.url, "_blank")}
-                className="py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 touch-manipulation"
-              >
-                <ExternalLink size={20} />
-                {t("testing.open")}
-              </motion.button>
-
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={() => setIsFlowOpen(!isFlowOpen)}
-                className="py-4 bg-white/10 rounded-2xl text-white font-semibold flex items-center justify-center gap-2 touch-manipulation"
-              >
-                {isFlowOpen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                {isFlowOpen ? t("testing.close") : t("testing.preview")}
-              </motion.button>
-            </div>
+            {/* Single Action Button - Direct Fullscreen */}
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                setIsFlowOpen(true);
+                setIsFullscreen(true);
+              }}
+              className="w-full py-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white text-lg font-bold flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/30 touch-manipulation"
+            >
+              <Play size={24} />
+              {t("testing.startFlow") || "Flow testen"}
+            </motion.button>
           </motion.div>
 
-          {/* Preview Iframe */}
+          {/* Fullscreen Iframe Overlay */}
           <AnimatePresence>
-            {isFlowOpen && (
+            {isFlowOpen && isFullscreen && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 bg-black"
               >
-                <div className={`bg-white rounded-2xl overflow-hidden ${isFullscreen ? "fixed inset-2 z-50" : ""}`}>
-                  {isFullscreen && (
-                    <button
-                      onClick={() => setIsFullscreen(false)}
-                      className="absolute top-3 right-3 z-10 p-3 bg-slate-900/80 rounded-full text-white touch-manipulation"
-                    >
-                      <X size={24} />
-                    </button>
-                  )}
-                  <iframe
-                    title={currentFlow.id}
-                    src={currentFlow.url}
-                    className={`w-full bg-white ${isFullscreen ? "h-full" : "h-[500px] md:h-[600px]"}`}
-                  />
+                {/* Close Button */}
+                <button
+                  onClick={() => {
+                    setIsFullscreen(false);
+                    setIsFlowOpen(false);
+                  }}
+                  className="absolute top-4 right-4 z-10 p-3 bg-slate-900/90 rounded-full text-white shadow-lg touch-manipulation safe-area-top"
+                >
+                  <X size={24} />
+                </button>
+                
+                {/* Flow Counter Badge */}
+                <div className="absolute top-4 left-4 z-10 px-4 py-2 bg-slate-900/90 rounded-full text-white text-sm font-medium shadow-lg safe-area-top flex items-center gap-2">
+                  <span className="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center text-xs font-bold">
+                    {currentFlowIndex + 1}
+                  </span>
+                  <span>/ {TOP_10_FLOWS.length}</span>
                 </div>
 
-                {!isFullscreen && (
-                  <div className="flex justify-center mt-3">
-                    <button
-                      onClick={() => setIsFullscreen(true)}
-                      className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full text-white/60 text-sm touch-manipulation"
-                    >
-                      <Maximize2 size={14} />
-                      {t("testing.fullscreen")}
-                    </button>
-                  </div>
-                )}
+                {/* Iframe */}
+                <iframe
+                  title={currentFlow.id}
+                  src={currentFlow.url}
+                  className="w-full h-full bg-white"
+                />
               </motion.div>
             )}
           </AnimatePresence>
