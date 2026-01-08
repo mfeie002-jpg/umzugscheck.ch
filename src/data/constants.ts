@@ -40,8 +40,11 @@ export const SITE_CONFIG = {
   twitterHandle: '@umzugscheck',
 } as const;
 
-// For analysis tools - always use Preview for real-time testing
+// For analysis tools - prefer current environment; fallback to configured preview
 export const getAnalysisBaseUrl = (): string => {
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return window.location.origin;
+  }
   return SITE_CONFIG.previewUrl;
 };
 
