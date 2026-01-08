@@ -78,7 +78,7 @@ serve(async (req) => {
       body: JSON.stringify({
         flowId,
         runType: 'triggered',
-        baseUrl: 'https://www.umzugscheck.ch'
+        baseUrl: 'https://preview--umzugscheckv2.lovable.app'
       }),
     });
 

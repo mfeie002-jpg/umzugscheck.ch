@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { getAnalysisBaseUrl } from '@/data/constants';
 
 interface QuickActionsPanelProps {
   flowId: string;
@@ -39,16 +40,13 @@ export const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   const [exporting, setExporting] = useState<string | null>(null);
 
   const getFlowUrl = () => {
-    const baseUrl = 'https://www.umzugscheck.ch';
-    // Handle short variant IDs like v1, v2a
-    if (flowId.startsWith('v') && flowId.length <= 3) {
-      return `${baseUrl}/umzugsofferten?variant=${flowId}`;
-    }
-    // Handle IDs that already include the full path prefix
-    if (flowId.startsWith('umzugsofferten-')) {
-      return `${baseUrl}/${flowId}`;
-    }
-    return `${baseUrl}/umzugsofferten-${flowId}`;
+    // Use preview URL for analysis/capture - all flows use /umzugsofferten-{variant} format
+    const baseUrl = getAnalysisBaseUrl();
+    // Normalize: always use /umzugsofferten-{flowId} format
+    const normalizedId = flowId.startsWith('umzugsofferten-') 
+      ? flowId.replace('umzugsofferten-', '') 
+      : flowId;
+    return `${baseUrl}/umzugsofferten-${normalizedId}`;
   };
 
   const copyFlowUrl = async () => {

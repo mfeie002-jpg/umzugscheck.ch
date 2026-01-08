@@ -1,6 +1,8 @@
 /**
  * V4e - Minimal Friction
  * Focus: Fewest possible fields, smart defaults, instant gratification
+ * 
+ * Capture Mode Support: uc_step=1|2|3 with pre-filled demo data
  */
 
 import React, { useState } from 'react';
@@ -8,14 +10,22 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Check, Loader2, Zap, Sparkles } from 'lucide-react';
-import { useInitialStep } from '@/hooks/use-initial-step';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
+import { CaptureSentinel } from './shared';
 
 export const V4eMinimalFriction: React.FC = () => {
-  const initialStep = useInitialStep(1);
-  const [step, setStep] = useState(initialStep);
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
+  
+  const [step, setStep] = useState(() => {
+    if (isCaptureMode && captureStep !== null && captureStep >= 1 && captureStep <= 3) {
+      return captureStep;
+    }
+    return 1;
+  });
   const [loading, setLoading] = useState(false);
-  const [fromZip, setFromZip] = useState('');
-  const [toZip, setToZip] = useState('');
+  const [fromZip, setFromZip] = useState(isCaptureMode ? demoData.fromPostal : '');
+  const [toZip, setToZip] = useState(isCaptureMode ? demoData.toPostal : '');
+  const [email, setEmail] = useState(isCaptureMode ? demoData.email : '');
 
   const handleSubmit = () => {
     setLoading(true);
@@ -27,6 +37,9 @@ export const V4eMinimalFriction: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+      {/* Capture sentinel for screenshot automation */}
+      <CaptureSentinel />
+      
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-1 text-xs text-primary mb-8">
           <Zap className="h-3 w-3" />
@@ -110,6 +123,8 @@ export const V4eMinimalFriction: React.FC = () => {
                   placeholder="ihre@email.ch"
                   className="h-14 text-lg"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
