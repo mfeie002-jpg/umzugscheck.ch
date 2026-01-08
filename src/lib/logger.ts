@@ -37,9 +37,13 @@ export const logger = {
     }
   },
   
-  warn: (message: string, context?: LogContext) => {
+  warn: (message: string, errorOrContext?: Error | unknown | LogContext, context?: LogContext) => {
     if (isDevelopment) {
-      console.warn(`[WARN] ${message}`, context ? sanitizeContext(context) : '');
+      if (errorOrContext instanceof Error) {
+        console.warn(`[WARN] ${message}`, errorOrContext.message, context ? sanitizeContext(context) : '');
+      } else {
+        console.warn(`[WARN] ${message}`, errorOrContext ? sanitizeContext(errorOrContext as LogContext) : '');
+      }
     }
   },
   
