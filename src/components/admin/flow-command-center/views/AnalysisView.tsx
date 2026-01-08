@@ -694,20 +694,21 @@ const ScreenshotsPanel: React.FC<{
 
       const { data } = await supabase
         .from('flow_step_metrics')
-        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, step_name')
+        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, step_name, created_at')
         .in('flow_id', flowIds)
-        .order('step_number', { ascending: true });
+        .order('created_at', { ascending: false });
 
       if (data && data.length > 0) {
-        // Get latest screenshots per step
+        // Get NEWEST screenshots per step (first occurrence wins since sorted desc)
         const latestByStep = new Map<number, typeof data[0]>();
         for (const row of data) {
-          if (!latestByStep.has(row.step_number) || 
-              (row.desktop_screenshot_url || row.mobile_screenshot_url)) {
+          if (!latestByStep.has(row.step_number)) {
             latestByStep.set(row.step_number, row);
           }
         }
-        setStepMetrics(Array.from(latestByStep.values()));
+        // Sort by step_number for display
+        const sorted = Array.from(latestByStep.values()).sort((a, b) => a.step_number - b.step_number);
+        setStepMetrics(sorted);
       }
     } catch (err) {
       console.error('Failed to fetch step metrics:', err);
