@@ -664,10 +664,10 @@ type FlowFilterType = 'all' | 'main' | 'variants';
 type SortOption = 'name' | 'score' | 'issues' | 'date';
 type SortDirection = 'asc' | 'desc';
 
-// Base URL options for analysis
+// Base URL options for analysis - Preview is default for real-time testing
 const BASE_URL_OPTIONS = [
+  { value: 'https://preview--umzugscheckv2.lovable.app', label: 'Preview (Empfohlen)' },
   { value: 'https://www.umzugscheck.ch', label: 'Production (umzugscheck.ch)' },
-  { value: window.location.origin, label: `Preview (${window.location.host})` },
 ];
 
 // Running analysis tracking

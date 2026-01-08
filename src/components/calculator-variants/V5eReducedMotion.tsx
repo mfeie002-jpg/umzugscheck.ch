@@ -1,6 +1,8 @@
 /**
  * V5e - Reduced Motion & Simplified
  * Focus: No animations, simple transitions, cognitive accessibility
+ * 
+ * Capture Mode Support: uc_step=1|2|3|4 with pre-filled demo data
  */
 
 import React, { useState } from 'react';
@@ -8,7 +10,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Pause, Check } from 'lucide-react';
-import { useInitialStep } from '@/hooks/use-initial-step';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
+import { CaptureSentinel } from './shared';
 
 const STEPS = [
   { id: 1, title: 'Schritt 1: Umzugsart' },
@@ -18,14 +21,23 @@ const STEPS = [
 ];
 
 export const V5eReducedMotion: React.FC = () => {
-  const initialStep = useInitialStep(1);
-  const [currentStep, setCurrentStep] = useState(initialStep);
-  const [selected, setSelected] = useState<string>('privat');
+  const { isCaptureMode, captureStep, demoData } = useCaptureMode();
+  
+  const [currentStep, setCurrentStep] = useState(() => {
+    if (isCaptureMode && captureStep !== null && captureStep >= 1 && captureStep <= 4) {
+      return captureStep;
+    }
+    return 1;
+  });
+  const [selected, setSelected] = useState<string>(isCaptureMode ? 'privat' : 'privat');
   const progress = (currentStep / STEPS.length) * 100;
 
   return (
     // prefers-reduced-motion is respected via Tailwind's motion-reduce
     <div className="min-h-screen bg-background motion-reduce:transition-none">
+      {/* Capture sentinel for screenshot automation */}
+      <CaptureSentinel />
+      
       {/* Simple header */}
       <header className="border-b border-border px-6 py-4 bg-muted">
         <div className="flex items-center justify-between">

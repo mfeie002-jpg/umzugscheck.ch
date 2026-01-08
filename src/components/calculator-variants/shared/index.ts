@@ -25,3 +25,6 @@ export { StepTrustPills } from './StepTrustPills';
 export { WhyThis } from './WhyThis';
 export { EnhancedStickyCTA } from './EnhancedStickyCTA';
 export { EnhancedFormField } from './EnhancedFormField';
+
+// Capture automation
+export { CaptureSentinel } from './CaptureSentinel';
