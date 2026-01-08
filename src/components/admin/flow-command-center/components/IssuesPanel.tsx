@@ -36,8 +36,9 @@ interface IssuesPanelProps {
 
 // Helper to deduplicate issues by title similarity
 const deduplicateIssues = (issues: UxIssue[]): (UxIssue & { duplicateCount: number })[] => {
-  const normalizeTitle = (title: string) => 
-    title.toLowerCase()
+  const normalizeTitle = (title: string | null | undefined) =>
+    String(title ?? '')
+      .toLowerCase()
       .replace(/[^a-zäöü\s]/g, '')
       .replace(/\s+/g, ' ')
       .trim();

@@ -543,8 +543,14 @@ Antworte im JSON-Format:
 }
 
 // Helper: Normalize issue title for deduplication
-function normalizeIssueKey(issue: { title: string; category: string; severity: string }): string {
-  return `${issue.category}::${issue.severity}::${issue.title.toLowerCase().trim().replace(/\s+/g, ' ')}`;
+function normalizeIssueKey(issue: { title?: string | null; category?: string | null; severity?: string | null }): string {
+  const category = String(issue.category ?? 'unknown').toLowerCase().trim();
+  const severity = String(issue.severity ?? 'unknown').toLowerCase().trim();
+  const title = String(issue.title ?? '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ');
+  return `${category}::${severity}::${title}`;
 }
 
 // Helper: Deduplicate issues and mark already-resolved ones
