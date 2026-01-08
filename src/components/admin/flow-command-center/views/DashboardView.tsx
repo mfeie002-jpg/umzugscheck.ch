@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { FlowCard, ScoreRing, ScoreBadgeCompact, RankBadge, BackendHealthIndicator } from '../components';
+import { FlowCard, ScoreRing, ScoreBadgeCompact, RankBadge, BackendHealthIndicator, ChatGPTExportPanel } from '../components';
 import { useBackendHealth } from '../hooks';
 import type { FlowScore, FlowVariant, AnalysisRun } from '../types';
 import { 
@@ -303,27 +303,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      {/* Flow Grid */}
-      {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      {/* Flow Grid and Export */}
+      <div className="grid gap-6 lg:grid-cols-4">
+        <div className="lg:col-span-3">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {sortedVariants.map((variant, index) => (
+                <FlowCard
+                  key={variant.id}
+                  variant={variant}
+                  score={getScoreForVariant(variant.id)}
+                  rank={sortBy === 'score' && filterFlowNum === 'all' ? index + 1 : null}
+                  isAnalyzing={isAnalyzing === variant.id}
+                  onAnalyze={() => onAnalyzeFlow(variant.id)}
+                  onViewDetails={() => onViewFlowDetails(variant.id)}
+                  compact
+                />
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {sortedVariants.map((variant, index) => (
-            <FlowCard
-              key={variant.id}
-              variant={variant}
-              score={getScoreForVariant(variant.id)}
-              rank={sortBy === 'score' && filterFlowNum === 'all' ? index + 1 : null}
-              isAnalyzing={isAnalyzing === variant.id}
-              onAnalyze={() => onAnalyzeFlow(variant.id)}
-              onViewDetails={() => onViewFlowDetails(variant.id)}
-              compact
-            />
-          ))}
+        
+        {/* ChatGPT Export Panel */}
+        <div className="lg:col-span-1">
+          <ChatGPTExportPanel />
         </div>
-      )}
+      </div>
 
       {/* No results */}
       {!loading && sortedVariants.length === 0 && (
