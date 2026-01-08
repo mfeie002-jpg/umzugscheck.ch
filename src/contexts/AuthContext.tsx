@@ -120,50 +120,71 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   const signIn = async (email: string, password: string) => {
-    // Primary: standard auth login
+    const isFailedToFetch = (err: any) =>
+      String(err?.message || err || "")
+        .toLowerCase()
+        .includes("failed to fetch");
+
+    // 1) Try normal browser login first
     try {
       const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      return { error, data };
+
+      if (!error || !isFailedToFetch(error)) {
+        return { error, data };
+      }
+
+      // 2) Fallback for environments where /auth/v1 is blocked (CORS/network)
+      const { data: fnData, error: fnError } = await supabase.functions.invoke(
+        "admin-login",
+        { body: { email, password } }
+      );
+
+      if (fnError) {
+        return { error: new Error(fnError.message), data: null };
+      }
+
+      const access_token = (fnData as any)?.access_token;
+      const refresh_token = (fnData as any)?.refresh_token;
+      if (!access_token || !refresh_token) {
+        return { error: new Error("Anmeldung fehlgeschlagen"), data: null };
+      }
+
+      const { data: sessionData, error: setError } = await supabase.auth.setSession({
+        access_token,
+        refresh_token,
+      });
+
+      return { error: setError, data: sessionData };
     } catch (error: any) {
-      // Fallback: some environments block /auth/v1 CORS and surface it as "Failed to fetch".
-      // We tunnel the login through a backend function and then set the session client-side.
-      const msg = String(error?.message || "");
-      const shouldFallback = msg.toLowerCase().includes("failed to fetch");
-      if (!shouldFallback) {
+      if (!isFailedToFetch(error)) {
         return { error, data: null };
       }
 
       try {
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        const resp = await fetch(`${supabaseUrl}/functions/v1/admin-login`, {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
+        const { data: fnData, error: fnError } = await supabase.functions.invoke(
+          "admin-login",
+          { body: { email, password } }
+        );
 
-        const json = await resp.json().catch(() => ({}));
-        if (!resp.ok) {
-          return {
-            error: new Error(json?.error || "Anmeldung fehlgeschlagen"),
-            data: null,
-          };
+        if (fnError) {
+          return { error: new Error(fnError.message), data: null };
         }
 
-        const access_token = json?.access_token;
-        const refresh_token = json?.refresh_token;
+        const access_token = (fnData as any)?.access_token;
+        const refresh_token = (fnData as any)?.refresh_token;
         if (!access_token || !refresh_token) {
           return { error: new Error("Anmeldung fehlgeschlagen"), data: null };
         }
 
-        const { data, error: setError } = await supabase.auth.setSession({
+        const { data: sessionData, error: setError } = await supabase.auth.setSession({
           access_token,
           refresh_token,
         });
 
-        return { error: setError, data };
+        return { error: setError, data: sessionData };
       } catch (fallbackError: any) {
         return {
           error: new Error(fallbackError?.message || "Backend nicht erreichbar"),
