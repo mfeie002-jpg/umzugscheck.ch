@@ -699,23 +699,24 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
 
   return (
     <TooltipProvider>
-      {/* Prevent horizontal overflow on mobile */}
-      <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden max-w-full">
-        {/* Header with Progress - Enhanced contrast for active step */}
-        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-4 sm:px-6 py-4 border-b border-border">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">
+      {/* Prevent horizontal overflow on mobile - FIX: overflow-x-hidden at container level */}
+      <div className="bg-card rounded-2xl border border-border shadow-premium overflow-x-hidden max-w-full w-full">
+        {/* Header with Progress - 4-Step visual indicator matching text */}
+        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 px-3 sm:px-6 py-4 border-b border-border overflow-hidden">
+          {/* Step counter - clearer positioning */}
+          <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+            <span className="text-sm font-semibold text-foreground">
               Schritt {currentStep} von {totalSteps}
             </span>
             <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium">
-              <Shield className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Kostenlos & unverbindlich</span>
-              <span className="sm:hidden">100% kostenlos</span>
+              <Shield className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="hidden xs:inline sm:inline">Kostenlos & unverbindlich</span>
+              <span className="xs:hidden">Gratis</span>
             </div>
           </div>
           
-          {/* Progress bar - Enhanced active step contrast */}
-          <ol className="flex gap-1.5" role="list" aria-label="Fortschritt">
+          {/* Progress bar - 4 clear steps with proper sizing */}
+          <ol className="flex gap-1 sm:gap-1.5 w-full" role="list" aria-label="Fortschritt">
             {[
               { step: 1, label: "Typ" },
               { step: 2, label: "Details" },
@@ -724,11 +725,11 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
             ].map(({ step, label }) => (
               <li
                 key={step}
-                className={`h-2.5 flex-1 rounded-full transition-colors duration-300 ${
+                className={`h-2 sm:h-2.5 flex-1 rounded-full transition-colors duration-300 ${
                   step === currentStep 
                     ? 'bg-primary ring-2 ring-primary/30 ring-offset-1'
                     : step < currentStep 
-                      ? 'bg-primary/70' 
+                      ? 'bg-primary' 
                       : 'bg-border'
                 }`}
                 role="listitem"
@@ -738,8 +739,8 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
             ))}
           </ol>
           
-          {/* Step labels with enhanced active state */}
-          <div className="flex justify-between mt-2 text-xs">
+          {/* Step labels - 4 steps with better mobile spacing */}
+          <div className="flex justify-between mt-2 text-[10px] sm:text-xs gap-1">
             {[
               { step: 1, label: "Typ" },
               { step: 2, label: "Details" },
@@ -748,23 +749,22 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
             ].map(({ step, label }) => (
               <span 
                 key={step}
-                className={`transition-colors ${
+                className={`flex-1 text-center transition-colors truncate ${
                   step === currentStep 
                     ? 'text-primary font-bold' 
                     : step < currentStep 
-                      ? 'text-primary/70 font-medium'
+                      ? 'text-primary font-medium'
                       : 'text-muted-foreground'
                 }`}
               >
-                {label}
+                {step}. {label}
               </span>
             ))}
           </div>
         </div>
 
-        {/* Form Content */}
-        {/* Form Content - Prevent horizontal overflow */}
-        <div className="p-4 sm:p-6 overflow-x-hidden pb-28 md:pb-6">
+        {/* Form Content - FIX: larger bottom padding for sticky CTA clearance */}
+        <div className="p-3 sm:p-6 overflow-x-hidden pb-36 sm:pb-32 md:pb-6">
           <AnimatePresence mode="wait">
             {/* Step 1: Move Type - ChatGPT Rec #10: Visual confirmation */}
             {currentStep === 1 && (
@@ -854,26 +854,27 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
                     ))}
                   </datalist>
 
-                  {/* Room Size Selector - Simplified grid */}
+                  {/* Room Size Selector - FIX: Added unit (Zimmer), better mobile grid */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-2">
-                      🏠 Wohnungsgrösse
+                      🏠 Wohnungsgrösse <span className="text-muted-foreground font-normal">(Zimmer)</span>
                     </label>
-                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                    {/* FIX: 2 columns on very small screens, 3 on small, 5 on desktop */}
+                    <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2">
                       {roomSizes.map((size) => (
                         <button
                           key={size.value}
                           type="button"
                           onClick={() => updateFormData("apartmentSize", size.value)}
-                          className={`p-3 rounded-xl border-2 transition-all text-center ${
+                          className={`p-2.5 sm:p-3 rounded-xl border-2 transition-all text-center min-h-[72px] touch-manipulation ${
                             formData.apartmentSize === size.value
-                              ? "border-primary bg-primary/10"
-                              : "border-border hover:border-primary/30"
+                              ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                              : "border-border hover:border-primary/30 active:bg-muted/50"
                           }`}
                         >
-                          <div className="text-lg mb-1">{size.icon}</div>
-                          <div className="text-xs font-semibold">{size.label}</div>
-                          <div className="text-[10px] text-muted-foreground">{size.sublabel}</div>
+                          <div className="text-base sm:text-lg mb-0.5">{size.icon}</div>
+                          <div className="text-xs font-semibold leading-tight">{size.label}</div>
+                          <div className="text-[9px] sm:text-[10px] text-muted-foreground">{size.sublabel}</div>
                         </button>
                       ))}
                     </div>
@@ -1226,44 +1227,46 @@ export const MultiStepCalculatorV1b = memo(function MultiStepCalculatorV1b() {
             )}
           </AnimatePresence>
 
-          {/* Navigation Buttons - ChatGPT Rec #4: Sticky on mobile */}
-          <div className="flex gap-3 mt-6 md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
-                          sticky bottom-16 md:bottom-0 left-0 right-0 -mx-4 px-4 sm:-mx-6 sm:px-6 py-4 
-                          bg-card/98 backdrop-blur-lg border-t border-border/50 
-                          shadow-[0_-4px_20px_rgba(0,0,0,0.08)]
-                          pb-[calc(1rem+env(safe-area-inset-bottom))]
-                          md:pb-0 md:shadow-none z-30">
+          {/* Navigation Buttons - FIX: Higher z-index, larger touch targets, clear button hierarchy */}
+          <div className="flex gap-2 sm:gap-3 mt-6 md:relative md:bg-transparent md:shadow-none md:border-0 md:p-0
+                          fixed bottom-0 left-0 right-0 px-3 sm:px-4 py-3 sm:py-4 
+                          bg-card/98 backdrop-blur-lg border-t border-border
+                          shadow-[0_-4px_20px_rgba(0,0,0,0.12)]
+                          pb-[calc(0.75rem+env(safe-area-inset-bottom))]
+                          md:static md:pb-0 md:shadow-none md:border-0 z-50">
+            {/* FIX: Back button as ghost/link style for clear hierarchy */}
             {currentStep > 1 && (
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 onClick={handleBack}
-                className="h-12 md:h-11 rounded-xl px-4 min-w-[90px]"
+                className="h-14 sm:h-12 md:h-11 rounded-xl px-3 sm:px-4 min-w-[80px] text-muted-foreground hover:text-foreground border border-border/50"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
-                Zurück
+                <span className="hidden xs:inline">Zurück</span>
               </Button>
             )}
             
+            {/* FIX: Primary CTA with larger touch target (min 48px), clear visual prominence */}
             {currentStep < totalSteps ? (
               <Button
                 type="button"
                 onClick={handleNext}
                 disabled={!canProceed()}
-                className="flex-1 h-12 md:h-11 rounded-xl bg-primary hover:bg-primary-hover text-base font-semibold"
+                className="flex-1 h-14 sm:h-12 md:h-11 rounded-xl bg-primary hover:bg-primary/90 text-base sm:text-lg font-bold shadow-lg disabled:opacity-50"
               >
                 {currentStep === 3 
                   ? `Mit ${formData.selectedCompanies.length || "0"} Firmen weiter` 
                   : "Weiter"
                 }
-                
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             ) : (
               <Button
                 type="button"
                 onClick={handleSubmit}
                 disabled={!canProceed()}
-                className="flex-1 h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base shadow-cta"
+                className="flex-1 h-14 sm:h-12 rounded-xl bg-secondary hover:bg-secondary/90 font-bold text-base sm:text-lg shadow-lg disabled:opacity-50"
               >
                 <CheckCircle className="w-5 h-5 mr-2" />
                 {getSubmitButtonText()}

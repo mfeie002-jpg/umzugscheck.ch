@@ -52,12 +52,13 @@ export const SubmitOptionsCardV1b = memo(function SubmitOptionsCardV1b({
   selectedCompaniesCount,
 }: Props) {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">Wie möchten Sie Offerten erhalten?</label>
+    <div className="space-y-2 overflow-x-hidden">
+      {/* FIX: Clearer label with better contrast */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <label className="text-sm font-semibold text-foreground">Wie möchten Sie Offerten erhalten?</label>
         <Tooltip>
           <TooltipTrigger asChild>
-            <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
+            <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
           </TooltipTrigger>
           <TooltipContent className="max-w-xs">
             <p className="text-sm">Wählen Sie die Methode, die am besten zu Ihnen passt. "Beides" bietet die grösste Auswahl.</p>
@@ -65,6 +66,7 @@ export const SubmitOptionsCardV1b = memo(function SubmitOptionsCardV1b({
         </Tooltip>
       </div>
 
+      {/* FIX: Radio buttons with clear labels and larger touch targets */}
       <div className="space-y-2">
         {options.map((option) => {
           const Icon = option.icon;
@@ -73,14 +75,22 @@ export const SubmitOptionsCardV1b = memo(function SubmitOptionsCardV1b({
           return (
             <div
               key={option.value}
-              role="button"
+              role="radio"
+              aria-checked={isSelected}
+              tabIndex={0}
               onClick={() => onChange(option.value)}
-              className={`relative p-3 rounded-xl border-2 transition-all cursor-pointer ${
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onChange(option.value);
+                }
+              }}
+              className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all cursor-pointer touch-manipulation min-h-[64px] ${
                 isSelected
                   ? option.highlight
-                    ? "border-secondary bg-secondary/5"
-                    : "border-primary bg-primary/5"
-                  : "border-border hover:border-primary/30"
+                    ? "border-secondary bg-secondary/5 ring-2 ring-secondary/20"
+                    : "border-primary bg-primary/5 ring-2 ring-primary/20"
+                  : "border-border hover:border-primary/30 active:bg-muted/50"
               }`}
             >
               <div className="flex items-start gap-3">

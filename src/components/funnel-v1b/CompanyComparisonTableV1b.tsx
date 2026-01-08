@@ -26,7 +26,7 @@ export const CompanyComparisonTableV1b = memo(function CompanyComparisonTableV1b
   const [expandedCompany, setExpandedCompany] = useState<string | null>(null);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 overflow-x-hidden">
       {companies.slice(0, 8).map((company, idx) => {
         const isSelected = selectedCompanies.includes(company.id);
         const isExpanded = expandedCompany === company.id;
@@ -38,25 +38,36 @@ export const CompanyComparisonTableV1b = memo(function CompanyComparisonTableV1b
             key={company.id}
             className={`rounded-xl border-2 transition-all overflow-hidden ${
               isSelected
-                ? "border-primary bg-primary/5"
+                ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                 : "border-border hover:border-primary/30"
             } ${company.is_featured ? "ring-2 ring-amber-400/50" : ""}`}
           >
-            {/* Sponsored badge */}
+            {/* Sponsored badge - clear label */}
             {company.is_featured && (
               <div className="bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/20 px-3 py-1 text-xs text-amber-700 dark:text-amber-300 font-medium flex items-center gap-1">
-                ✨ Gesponsert · Premium Partner
+                <span className="bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 px-1.5 py-0.5 rounded text-[9px] font-bold">
+                  Gesponsert
+                </span>
+                Premium Partner
               </div>
             )}
             
-            {/* Main row - simplified */}
+            {/* Main row - FIX: Larger touch target, clear checkbox */}
             <div
-              role="button"
+              role="checkbox"
+              aria-checked={isSelected}
+              tabIndex={0}
               onClick={() => onToggleCompany(company.id)}
-              className="flex items-center gap-3 p-3 cursor-pointer"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onToggleCompany(company.id);
+                }
+              }}
+              className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 cursor-pointer touch-manipulation min-h-[64px]"
             >
-              {/* Checkbox */}
-              <div className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 ${
+              {/* FIX: Larger checkbox touch target */}
+              <div className={`w-6 h-6 rounded flex items-center justify-center border-2 shrink-0 ${
                 isSelected ? "bg-primary border-primary" : "border-border"
               }`}>
                 {isSelected && <CheckCircle className="w-4 h-4 text-primary-foreground" />}
@@ -69,25 +80,28 @@ export const CompanyComparisonTableV1b = memo(function CompanyComparisonTableV1b
                 {idx + 1}
               </div>
 
-              {/* Company info - reduced */}
+              {/* Company info - responsive */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-semibold text-sm truncate">{company.name}</p>
-                  <div className="flex items-center gap-1 text-amber-500">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-semibold text-sm truncate max-w-[140px] sm:max-w-none">{company.name}</p>
+                  <div className="flex items-center gap-1 text-amber-500 shrink-0">
                     <Star className="w-3.5 h-3.5 fill-current" />
                     <span className="text-xs font-medium">{company.rating}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-muted-foreground flex-wrap">
                   <span className="text-green-600 font-medium">{matchPercent}% Match</span>
-                  <span>·</span>
-                  <span>{company.price_level === "günstig" ? "💰" : company.price_level === "premium" ? "⭐" : "🤝"} {company.price_level}</span>
+                  <span className="hidden xs:inline">·</span>
+                  <span className="flex items-center gap-0.5">
+                    {company.price_level === "günstig" ? "💰" : company.price_level === "premium" ? "⭐" : "🤝"}
+                    <span className="hidden xs:inline">{company.price_level}</span>
+                  </span>
                 </div>
               </div>
 
-              {/* Price */}
+              {/* Price - responsive */}
               <div className="text-right shrink-0">
-                <p className="text-sm font-bold text-primary">
+                <p className="text-xs sm:text-sm font-bold text-primary leading-tight">
                   CHF {price.min.toLocaleString()}–{price.max.toLocaleString()}
                 </p>
                 <button
@@ -96,9 +110,11 @@ export const CompanyComparisonTableV1b = memo(function CompanyComparisonTableV1b
                     e.stopPropagation();
                     setExpandedCompany(isExpanded ? null : company.id);
                   }}
-                  className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-0.5"
+                  className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-0.5 mt-0.5 p-1 -m-1 rounded touch-manipulation"
+                  aria-expanded={isExpanded}
+                  aria-label={isExpanded ? "Details ausblenden" : "Mehr Details anzeigen"}
                 >
-                  Mehr Details
+                  Details
                   <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                 </button>
               </div>
