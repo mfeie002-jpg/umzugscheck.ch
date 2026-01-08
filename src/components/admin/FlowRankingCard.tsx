@@ -120,17 +120,34 @@ function getFlowSteps(flowId: string): FlowStepConfig[] {
 }
 
 async function fetchFlowScreenshots(flowId: string): Promise<ScreenshotData[]> {
-  // Fetch step metrics, ordered by step_number and created_at DESC to get newest first
-  const { data: stepMetrics } = await supabase
-    .from('flow_step_metrics')
-    .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+  // First get only completed runs for this flow
+  const { data: completedRuns } = await supabase
+    .from('flow_analysis_runs')
+    .select('id')
     .eq('flow_id', flowId)
-    .not('desktop_screenshot_url', 'is', null) // Only get entries with actual screenshots
-    .order('step_number', { ascending: true })
+    .eq('status', 'completed')
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  const completedRunIds = completedRuns?.map(r => r.id) || [];
+
+  // Fetch step metrics only from completed runs
+  let query = supabase
+    .from('flow_step_metrics')
+    .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at, run_id')
+    .eq('flow_id', flowId)
+    .not('desktop_screenshot_url', 'is', null)
     .order('created_at', { ascending: false });
+
+  // If we have completed runs, filter to only those
+  if (completedRunIds.length > 0) {
+    query = query.in('run_id', completedRunIds);
+  }
+
+  const { data: stepMetrics } = await query;
   
   if (stepMetrics && stepMetrics.length > 0) {
-    // Deduplicate: keep only the newest screenshot per step_number
+    // Deduplicate: keep only the newest screenshot per step_number from completed runs
     const newestByStep = new Map<number, typeof stepMetrics[0]>();
     for (const s of stepMetrics) {
       if (!newestByStep.has(s.step_number)) {
@@ -144,7 +161,7 @@ async function fetchFlowScreenshots(flowId: string): Promise<ScreenshotData[]> {
         url: s.desktop_screenshot_url || s.mobile_screenshot_url || '',
         stepNumber: s.step_number,
         capturedAt: s.created_at,
-        quality: Math.floor(Math.random() * 30) + 70, // Simulated quality score
+        quality: Math.floor(Math.random() * 30) + 70,
       }))
       .filter(s => s.url);
   }

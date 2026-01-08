@@ -110,15 +110,32 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const fetchScreenshots = async (flowId: string, side: 'A' | 'B') => {
     setLoadingScreenshots(true);
     try {
-      const { data: stepMetrics } = await supabase
-        .from('flow_step_metrics')
-        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+      // First get only completed runs for this flow
+      const { data: completedRuns } = await supabase
+        .from('flow_analysis_runs')
+        .select('id')
         .eq('flow_id', flowId)
-        .order('step_number', { ascending: true })
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      const completedRunIds = completedRuns?.map(r => r.id) || [];
+
+      // Fetch step metrics only from completed runs
+      let query = supabase
+        .from('flow_step_metrics')
+        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at, run_id')
+        .eq('flow_id', flowId)
         .order('created_at', { ascending: false });
 
+      if (completedRunIds.length > 0) {
+        query = query.in('run_id', completedRunIds);
+      }
+
+      const { data: stepMetrics } = await query;
+
       if (stepMetrics && stepMetrics.length > 0) {
-        // Deduplicate by step_number, keeping newest entry that HAS screenshots
+        // Deduplicate by step_number, keeping newest entry that HAS screenshots from completed runs
         const newestByStep = new Map<number, { 
           step_number: number; 
           mobileUrl: string | null; 
