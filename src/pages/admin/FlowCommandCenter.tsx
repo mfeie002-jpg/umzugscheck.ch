@@ -92,6 +92,7 @@ import type {
 
 // Flow configs
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
+import { getAnalysisBaseUrl } from '@/data/constants';
 
 // ─────────────────────────────────────────────────────────────
 // Types
@@ -428,7 +429,7 @@ export default function FlowCommandCenter() {
         body: {
           flowId: edgeFlowId,
           runType: 'manual',
-          baseUrl: 'https://www.umzugscheck.ch'
+          baseUrl: getAnalysisBaseUrl(),
         }
       });
 
@@ -473,7 +474,7 @@ export default function FlowCommandCenter() {
           body: {
             flowId: edgeFlowId,
             runType: 'manual',
-            baseUrl: 'https://www.umzugscheck.ch'
+            baseUrl: getAnalysisBaseUrl(),
           }
         });
 
