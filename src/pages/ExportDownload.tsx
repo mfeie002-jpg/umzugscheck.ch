@@ -48,16 +48,32 @@ const ExportDownload = () => {
       try {
         const flowIds = TOP_10_FLOW_IDS.map(f => f.id);
 
-        // Get latest screenshots per flow/step
-        const { data, error: queryError } = await supabase
+        // First get only completed runs for these flows
+        const { data: completedRuns } = await supabase
+          .from('flow_analysis_runs')
+          .select('id, flow_id')
+          .in('flow_id', flowIds)
+          .eq('status', 'completed')
+          .order('created_at', { ascending: false });
+
+        const completedRunIds = completedRuns?.map(r => r.id) || [];
+
+        // Get latest screenshots per flow/step from completed runs only
+        let query = supabase
           .from('flow_step_metrics')
-          .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at')
+          .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
           .in('flow_id', flowIds)
           .order('created_at', { ascending: false });
 
+        if (completedRunIds.length > 0) {
+          query = query.in('run_id', completedRunIds);
+        }
+
+        const { data, error: queryError } = await query;
+
         if (queryError) throw queryError;
 
-        // Deduplicate: keep only latest per flow_id + step_number
+        // Deduplicate: keep only latest per flow_id + step_number from completed runs
         const latestMap = new Map<string, StepScreenshot>();
         
         for (const row of data || []) {

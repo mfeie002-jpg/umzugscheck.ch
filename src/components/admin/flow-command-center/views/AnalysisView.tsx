@@ -692,17 +692,37 @@ const ScreenshotsPanel: React.FC<{
         : flowId;
       const flowIds = [flowId, normalizedId, `umzugsofferten-${normalizedId}`];
 
-      const { data } = await supabase
+      // First get only completed runs for this flow
+      const { data: completedRuns } = await supabase
+        .from('flow_analysis_runs')
+        .select('id')
+        .in('flow_id', flowIds)
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      const completedRunIds = completedRuns?.map(r => r.id) || [];
+
+      // Fetch step metrics only from completed runs (or all if no runs found)
+      let query = supabase
         .from('flow_step_metrics')
-        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, step_name, created_at')
+        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, step_name, created_at, run_id')
         .in('flow_id', flowIds)
         .order('created_at', { ascending: false });
 
+      // If we have completed runs, filter to only those
+      if (completedRunIds.length > 0) {
+        query = query.in('run_id', completedRunIds);
+      }
+
+      const { data } = await query;
+
       if (data && data.length > 0) {
-        // Get NEWEST screenshots per step (first occurrence wins since sorted desc)
+        // Get NEWEST screenshots per step from COMPLETED runs only
         const latestByStep = new Map<number, typeof data[0]>();
         for (const row of data) {
-          if (!latestByStep.has(row.step_number)) {
+          // Only take rows with actual screenshot URLs
+          if (!latestByStep.has(row.step_number) && (row.desktop_screenshot_url || row.mobile_screenshot_url)) {
             latestByStep.set(row.step_number, row);
           }
         }
