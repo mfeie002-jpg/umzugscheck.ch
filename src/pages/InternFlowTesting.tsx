@@ -1127,7 +1127,7 @@ export default function InternFlowTesting() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Helmet>
-          <title>{t("testing.flow")} {currentFlowIndex + 1}/{TOP_10_FLOWS.length}</title>
+          <title>{`${t("testing.flow")} ${currentFlowIndex + 1}/${TOP_10_FLOWS.length}`}</title>
         </Helmet>
 
         {/* Mutscheli Joke Banner - Bulgarian Only */}
@@ -1532,7 +1532,7 @@ export default function InternFlowTesting() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 safe-area-top safe-area-bottom">
       <Helmet>
-        <title>{t("summary.title")} | Flow Testing</title>
+        <title>{`${t("summary.title")} | Flow Testing`}</title>
       </Helmet>
 
       {showConfetti && <Confetti />}
