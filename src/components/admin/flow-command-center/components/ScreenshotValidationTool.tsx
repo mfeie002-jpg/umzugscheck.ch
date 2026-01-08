@@ -16,10 +16,12 @@ import {
   ChevronUp,
   Camera,
   Monitor,
-  Smartphone
+  Smartphone,
+  Wrench
 } from "lucide-react";
 import { toast } from "sonner";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { SITE_CONFIG } from "@/data/constants";
 
 interface MissingScreenshot {
   stepNumber: number;
@@ -29,6 +31,7 @@ interface MissingScreenshot {
 interface FlowValidationResult {
   flowId: string;
   flowName: string;
+  flowPath?: string;
   expectedSteps: number;
   actualSteps: number;
   missingSteps: number[];
@@ -46,6 +49,9 @@ interface ScreenshotValidationToolProps {
 
 export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }: ScreenshotValidationToolProps) {
   const [isValidating, setIsValidating] = useState(false);
+  const [isFixing, setIsFixing] = useState(false);
+  const [fixProgress, setFixProgress] = useState(0);
+  const [fixMessage, setFixMessage] = useState("");
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
   const [results, setResults] = useState<FlowValidationResult[]>([]);
@@ -262,6 +268,82 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
     }
   };
 
+  // Fix all broken flows by re-capturing screenshots
+  const fixAllBrokenFlows = async () => {
+    const brokenFlows = results.filter(r => r.status === 'error' || r.status === 'warning');
+    
+    if (brokenFlows.length === 0) {
+      toast.info("Keine Flows zu reparieren");
+      return;
+    }
+
+    setIsFixing(true);
+    setFixProgress(0);
+    setFixMessage("Starte Reparatur...");
+
+    try {
+      const baseUrl = typeof window !== 'undefined' 
+        ? window.location.origin 
+        : SITE_CONFIG.previewUrl;
+
+      for (let i = 0; i < brokenFlows.length; i++) {
+        const flow = brokenFlows[i];
+        setFixProgress(Math.round(((i + 1) / brokenFlows.length) * 100));
+        setFixMessage(`Erfasse Screenshots für ${flow.flowName}... (${i + 1}/${brokenFlows.length})`);
+
+        // Get the flow's path from flow_versions
+        const { data: flowVersion } = await supabase
+          .from('flow_versions')
+          .select('step_configs')
+          .eq('flow_id', flow.flowId)
+          .eq('is_active', true)
+          .maybeSingle();
+
+        const stepConfigs = flowVersion?.step_configs as any[] || [];
+        
+        // Call the auto-analyze-flow function
+        const { error } = await supabase.functions.invoke('auto-analyze-flow', {
+          body: {
+            flowId: flow.flowId,
+            flowName: flow.flowName,
+            steps: stepConfigs.map((s: any, idx: number) => ({
+              number: idx + 1,
+              name: s.name || `Step ${idx + 1}`,
+              path: s.path || `/?step=${idx + 1}`
+            })),
+            baseUrl,
+            runType: 'screenshots-only'
+          }
+        });
+
+        if (error) {
+          console.error(`Failed to fix ${flow.flowId}:`, error);
+          toast.error(`Fehler bei ${flow.flowName}: ${error.message}`);
+        }
+
+        // Wait a bit between flows to not overload
+        if (i < brokenFlows.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
+
+      toast.success(`${brokenFlows.length} Flows zur Reparatur gestartet. Screenshots werden im Hintergrund erfasst.`);
+      
+      // Re-validate after a delay
+      setTimeout(() => {
+        validateScreenshots(validateAll);
+      }, 5000);
+
+    } catch (error) {
+      console.error('Fix error:', error);
+      toast.error("Reparatur fehlgeschlagen");
+    } finally {
+      setIsFixing(false);
+      setFixMessage("");
+      setFixProgress(0);
+    }
+  };
+
   const getStatusIcon = (status: FlowValidationResult['status']) => {
     switch (status) {
       case 'valid':
@@ -287,6 +369,7 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
   const errorFlows = results.filter(r => r.status === 'error');
   const warningFlows = results.filter(r => r.status === 'warning');
   const validFlows = results.filter(r => r.status === 'valid');
+  const brokenFlowsCount = errorFlows.length + warningFlows.length;
 
   const renderFlowCard = (flow: FlowValidationResult, bgColor: string, borderColor: string, textColor: string) => {
     const isExpanded = expandedFlows.has(flow.flowId);
@@ -411,22 +494,58 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
         </div>
       )}
 
+      {/* Fix Progress */}
+      {isFixing && (
+        <div className="space-y-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+            <span className="text-sm font-medium text-blue-800">Reparatur läuft...</span>
+          </div>
+          <Progress value={fixProgress} className="h-2" />
+          <p className="text-xs text-blue-600">{fixMessage}</p>
+        </div>
+      )}
+
       {results.length > 0 && (
         <div className="space-y-4">
-          {/* Summary */}
-          <div className="flex gap-4 text-sm">
-            <div className="flex items-center gap-1">
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
-              <span>{validFlows.length} Valide</span>
+          {/* Summary + Fix All Button */}
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 text-sm">
+              <div className="flex items-center gap-1">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <span>{validFlows.length} Valide</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                <span>{warningFlows.length} Warnungen</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <XCircle className="h-4 w-4 text-red-500" />
+                <span>{errorFlows.length} Fehler</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              <span>{warningFlows.length} Warnungen</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <XCircle className="h-4 w-4 text-red-500" />
-              <span>{errorFlows.length} Fehler</span>
-            </div>
+            
+            {brokenFlowsCount > 0 && (
+              <Button
+                onClick={fixAllBrokenFlows}
+                disabled={isFixing || isValidating}
+                variant="default"
+                size="sm"
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                {isFixing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Repariere...
+                  </>
+                ) : (
+                  <>
+                    <Wrench className="h-4 w-4 mr-2" />
+                    Alle {brokenFlowsCount} beheben
+                  </>
+                )}
+              </Button>
+            )}
           </div>
 
           {/* Error Flows */}
