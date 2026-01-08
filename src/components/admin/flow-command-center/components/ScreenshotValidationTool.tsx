@@ -11,9 +11,20 @@ import {
   Loader2, 
   ImageOff,
   RefreshCw,
-  FileWarning
+  FileWarning,
+  ChevronDown,
+  ChevronUp,
+  Camera,
+  Monitor,
+  Smartphone
 } from "lucide-react";
 import { toast } from "sonner";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+
+interface MissingScreenshot {
+  stepNumber: number;
+  type: 'desktop' | 'mobile' | 'both';
+}
 
 interface FlowValidationResult {
   flowId: string;
@@ -21,25 +32,42 @@ interface FlowValidationResult {
   expectedSteps: number;
   actualSteps: number;
   missingSteps: number[];
-  duplicateScreenshots: boolean;
+  duplicateScreenshots: { type: 'desktop' | 'mobile'; steps: number[] }[];
+  missingUrls: MissingScreenshot[];
   errorScreenshots: string[];
-  blankScreenshots: string[];
   status: 'valid' | 'warning' | 'error';
   issues: string[];
 }
 
 interface ScreenshotValidationToolProps {
   flowIds?: string[];
+  showAllFlowsOption?: boolean;
 }
 
-export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolProps) {
+export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }: ScreenshotValidationToolProps) {
   const [isValidating, setIsValidating] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState("");
   const [results, setResults] = useState<FlowValidationResult[]>([]);
+  const [validateAll, setValidateAll] = useState(!flowIds || flowIds.length === 0);
+  const [expandedFlows, setExpandedFlows] = useState<Set<string>>(new Set());
 
-  const validateScreenshots = async () => {
+  const toggleExpanded = (flowId: string) => {
+    setExpandedFlows(prev => {
+      const next = new Set(prev);
+      if (next.has(flowId)) {
+        next.delete(flowId);
+      } else {
+        next.add(flowId);
+      }
+      return next;
+    });
+  };
+
+  const validateScreenshots = async (all: boolean = validateAll) => {
     setIsValidating(true);
     setProgress(0);
+    setProgressMessage("Lade Flows...");
     setResults([]);
 
     try {
@@ -47,14 +75,15 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
       const { data: flows } = await supabase
         .from('flow_versions')
         .select('flow_id, version_name, step_configs')
-        .eq('is_active', true);
+        .eq('is_active', true)
+        .order('flow_id');
 
       if (!flows || flows.length === 0) {
         toast.error("Keine aktiven Flows gefunden");
         return;
       }
 
-      const flowsToValidate = flowIds 
+      const flowsToValidate = (!all && flowIds && flowIds.length > 0)
         ? flows.filter(f => flowIds.includes(f.flow_id))
         : flows;
 
@@ -63,6 +92,7 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
       for (let i = 0; i < flowsToValidate.length; i++) {
         const flow = flowsToValidate[i];
         setProgress(Math.round(((i + 1) / flowsToValidate.length) * 100));
+        setProgressMessage(`Prüfe ${flow.version_name || flow.flow_id}...`);
 
         // Get step configs to determine expected steps
         const stepConfigs = flow.step_configs as any[];
@@ -95,21 +125,24 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
         const issues: string[] = [];
         const missingSteps: number[] = [];
         const errorScreenshots: string[] = [];
-        const blankScreenshots: string[] = [];
+        const missingUrls: MissingScreenshot[] = [];
+        const duplicateScreenshots: { type: 'desktop' | 'mobile'; steps: number[] }[] = [];
 
         // Check for missing steps
         const foundSteps = new Set(screenshots?.map(s => s.step_number) || []);
         for (let step = 1; step <= expectedSteps; step++) {
           if (!foundSteps.has(step)) {
             missingSteps.push(step);
-            issues.push(`Step ${step} fehlt`);
           }
+        }
+
+        if (missingSteps.length > 0) {
+          issues.push(`${missingSteps.length} Step(s) komplett fehlen: ${missingSteps.join(', ')}`);
         }
 
         // Check for duplicate screenshots (same URL for different steps)
         const desktopUrls = new Map<string, number[]>();
         const mobileUrls = new Map<string, number[]>();
-        let hasDuplicates = false;
 
         screenshots?.forEach(s => {
           if (s.desktop_screenshot_url) {
@@ -124,32 +157,48 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
           }
         });
 
-        desktopUrls.forEach((steps, url) => {
+        desktopUrls.forEach((steps, _url) => {
           if (steps.length > 1) {
-            hasDuplicates = true;
-            issues.push(`Desktop Screenshot dupliziert für Steps ${steps.join(', ')}`);
+            duplicateScreenshots.push({ type: 'desktop', steps });
+            issues.push(`Desktop dupliziert für Steps ${steps.join(', ')}`);
           }
         });
 
-        mobileUrls.forEach((steps, url) => {
+        mobileUrls.forEach((steps, _url) => {
           if (steps.length > 1) {
-            hasDuplicates = true;
-            issues.push(`Mobile Screenshot dupliziert für Steps ${steps.join(', ')}`);
+            duplicateScreenshots.push({ type: 'mobile', steps });
+            issues.push(`Mobile dupliziert für Steps ${steps.join(', ')}`);
           }
         });
 
-        // Check for null/missing screenshot URLs
+        // Check for null/missing screenshot URLs - more detailed
         screenshots?.forEach(s => {
-          if (!s.desktop_screenshot_url) {
-            blankScreenshots.push(`Step ${s.step_number} Desktop`);
-          }
-          if (!s.mobile_screenshot_url) {
-            blankScreenshots.push(`Step ${s.step_number} Mobile`);
+          const hasDesktop = !!s.desktop_screenshot_url;
+          const hasMobile = !!s.mobile_screenshot_url;
+          
+          if (!hasDesktop && !hasMobile) {
+            missingUrls.push({ stepNumber: s.step_number, type: 'both' });
+          } else if (!hasDesktop) {
+            missingUrls.push({ stepNumber: s.step_number, type: 'desktop' });
+          } else if (!hasMobile) {
+            missingUrls.push({ stepNumber: s.step_number, type: 'mobile' });
           }
         });
 
-        if (blankScreenshots.length > 0) {
-          issues.push(`${blankScreenshots.length} fehlende Screenshot-URLs`);
+        if (missingUrls.length > 0) {
+          const bothMissing = missingUrls.filter(m => m.type === 'both');
+          const desktopMissing = missingUrls.filter(m => m.type === 'desktop');
+          const mobileMissing = missingUrls.filter(m => m.type === 'mobile');
+          
+          if (bothMissing.length > 0) {
+            issues.push(`Step(s) ${bothMissing.map(m => m.stepNumber).join(', ')}: Beide Screenshots fehlen`);
+          }
+          if (desktopMissing.length > 0) {
+            issues.push(`Step(s) ${desktopMissing.map(m => m.stepNumber).join(', ')}: Desktop fehlt`);
+          }
+          if (mobileMissing.length > 0) {
+            issues.push(`Step(s) ${mobileMissing.map(m => m.stepNumber).join(', ')}: Mobile fehlt`);
+          }
         }
 
         // Validate screenshot URLs are accessible (sample check)
@@ -172,7 +221,7 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
         let status: 'valid' | 'warning' | 'error' = 'valid';
         if (missingSteps.length > 0 || errorScreenshots.length > 0) {
           status = 'error';
-        } else if (hasDuplicates || blankScreenshots.length > 0) {
+        } else if (duplicateScreenshots.length > 0 || missingUrls.length > 0) {
           status = 'warning';
         }
 
@@ -182,9 +231,9 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
           expectedSteps,
           actualSteps: foundSteps.size,
           missingSteps,
-          duplicateScreenshots: hasDuplicates,
+          duplicateScreenshots,
+          missingUrls,
           errorScreenshots,
-          blankScreenshots,
           status,
           issues
         });
@@ -209,6 +258,7 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
       toast.error("Validierung fehlgeschlagen");
     } finally {
       setIsValidating(false);
+      setProgressMessage("");
     }
   };
 
@@ -238,6 +288,77 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
   const warningFlows = results.filter(r => r.status === 'warning');
   const validFlows = results.filter(r => r.status === 'valid');
 
+  const renderFlowCard = (flow: FlowValidationResult, bgColor: string, borderColor: string, textColor: string) => {
+    const isExpanded = expandedFlows.has(flow.flowId);
+    
+    return (
+      <Collapsible key={flow.flowId} open={isExpanded} onOpenChange={() => toggleExpanded(flow.flowId)}>
+        <div className={`p-3 ${bgColor} rounded-lg border ${borderColor}`}>
+          <CollapsibleTrigger className="w-full">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {getStatusIcon(flow.status)}
+                <span className="font-medium">{flow.flowName}</span>
+                {getStatusBadge(flow.status)}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {flow.actualSteps}/{flow.expectedSteps} Steps
+                </span>
+                {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </div>
+            </div>
+            <p className={`text-sm ${textColor} text-left mt-1`}>
+              {flow.issues.length > 0 ? flow.issues[0] : 'Alles OK'}
+              {flow.issues.length > 1 && ` (+${flow.issues.length - 1} weitere)`}
+            </p>
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent>
+            <div className={`mt-3 pt-3 border-t ${borderColor} space-y-2`}>
+              <p className="text-xs text-muted-foreground font-medium">Alle Issues:</p>
+              {flow.issues.map((issue, i) => (
+                <p key={i} className={`text-sm ${textColor} flex items-center gap-1`}>
+                  <ImageOff className="h-3 w-3 flex-shrink-0" />
+                  {issue}
+                </p>
+              ))}
+              
+              {/* Detailed missing URLs */}
+              {flow.missingUrls.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  <p className="text-xs font-medium">Fehlende Screenshot-URLs:</p>
+                  {flow.missingUrls.map((m, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs">
+                      <span className="font-mono bg-white/50 px-1 rounded">Step {m.stepNumber}</span>
+                      {m.type === 'both' && (
+                        <span className="flex items-center gap-1">
+                          <Monitor className="h-3 w-3" /> + <Smartphone className="h-3 w-3" />
+                        </span>
+                      )}
+                      {m.type === 'desktop' && <Monitor className="h-3 w-3" />}
+                      {m.type === 'mobile' && <Smartphone className="h-3 w-3" />}
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Fix suggestion */}
+              <div className="mt-3 p-2 bg-white/50 rounded text-xs">
+                <p className="font-medium mb-1">🔧 Behebung:</p>
+                <ol className="list-decimal list-inside space-y-0.5">
+                  <li>Flow im Command Center öffnen</li>
+                  <li>"Screenshots" Tab → "Alle Screenshots erstellen" klicken</li>
+                  <li>Danach "Analyse starten" für neue Analyse</li>
+                </ol>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </div>
+      </Collapsible>
+    );
+  };
+
   return (
     <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
@@ -250,29 +371,43 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
             Prüft ob alle Screenshots vollständig und korrekt sind
           </p>
         </div>
-        <Button 
-          onClick={validateScreenshots} 
-          disabled={isValidating}
-          variant="outline"
-        >
-          {isValidating ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Validiere...
-            </>
-          ) : (
-            <>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Validieren
-            </>
+        <div className="flex items-center gap-2">
+          {showAllFlowsOption && (
+            <Button
+              variant={validateAll ? "default" : "outline"}
+              size="sm"
+              onClick={() => setValidateAll(!validateAll)}
+              className="text-xs"
+            >
+              {validateAll ? "Alle Flows" : "Nur aktueller Flow"}
+            </Button>
           )}
-        </Button>
+          <Button 
+            onClick={() => validateScreenshots(validateAll)} 
+            disabled={isValidating}
+            variant="outline"
+          >
+            {isValidating ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Validiere...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Validieren
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {isValidating && (
         <div className="space-y-2">
           <Progress value={progress} />
-          <p className="text-sm text-muted-foreground text-center">{progress}%</p>
+          <p className="text-sm text-muted-foreground text-center">
+            {progress}% - {progressMessage}
+          </p>
         </div>
       )}
 
@@ -298,25 +433,7 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
           {errorFlows.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-red-600">Flows mit Fehlern:</h4>
-              {errorFlows.map(flow => (
-                <div key={flow.flowId} className="p-3 bg-red-50 rounded-lg border border-red-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    {getStatusIcon(flow.status)}
-                    <span className="font-medium">{flow.flowName}</span>
-                    <span className="text-xs text-muted-foreground">({flow.flowId})</span>
-                    {getStatusBadge(flow.status)}
-                  </div>
-                  <div className="text-sm text-red-700 space-y-1">
-                    <p>Erwartet: {flow.expectedSteps} Steps | Gefunden: {flow.actualSteps} Steps</p>
-                    {flow.issues.map((issue, i) => (
-                      <p key={i} className="flex items-center gap-1">
-                        <ImageOff className="h-3 w-3" />
-                        {issue}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              {errorFlows.map(flow => renderFlowCard(flow, 'bg-red-50', 'border-red-200', 'text-red-700'))}
             </div>
           )}
 
@@ -324,28 +441,27 @@ export function ScreenshotValidationTool({ flowIds }: ScreenshotValidationToolPr
           {warningFlows.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-yellow-600">Flows mit Warnungen:</h4>
-              {warningFlows.map(flow => (
-                <div key={flow.flowId} className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    {getStatusIcon(flow.status)}
-                    <span className="font-medium">{flow.flowName}</span>
-                    {getStatusBadge(flow.status)}
-                  </div>
-                  <div className="text-sm text-yellow-700">
-                    {flow.issues.map((issue, i) => (
-                      <p key={i}>{issue}</p>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              {warningFlows.map(flow => renderFlowCard(flow, 'bg-yellow-50', 'border-yellow-200', 'text-yellow-700'))}
             </div>
           )}
 
           {/* Valid Flows (collapsed) */}
           {validFlows.length > 0 && (
-            <div className="text-sm text-green-600">
-              ✓ {validFlows.length} Flows haben vollständige und korrekte Screenshots
-            </div>
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center gap-2 text-sm text-green-600 hover:underline">
+                <CheckCircle2 className="h-4 w-4" />
+                {validFlows.length} Flows haben vollständige Screenshots
+                <ChevronDown className="h-3 w-3" />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2 space-y-1">
+                {validFlows.map(flow => (
+                  <div key={flow.flowId} className="text-xs text-muted-foreground flex items-center gap-2">
+                    <CheckCircle2 className="h-3 w-3 text-green-500" />
+                    {flow.flowName} ({flow.actualSteps}/{flow.expectedSteps} Steps)
+                  </div>
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
           )}
         </div>
       )}
