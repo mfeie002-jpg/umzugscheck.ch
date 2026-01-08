@@ -196,25 +196,35 @@ export const RankingView: React.FC<RankingViewProps> = ({
         const isRunning = latest.status === 'running' || latest.status === 'processing';
         const runningTime = new Date().getTime() - new Date(latest.created_at).getTime();
         const isStalled = isRunning && runningTime > 30 * 60 * 1000; // 30 min timeout
-        
+
         if (isRunning && !isStalled) runningTotal++;
-        
+
         const metadata = latest.metadata as { error?: string } | null;
-        
+        const rawError = isStalled ? 'Analysis stalled - screenshot service error' : metadata?.error;
+        const errorText = rawError ? String(rawError) : undefined;
+        const isKnownOldBug = Boolean(errorText && errorText.toLowerCase().includes('tolowercase'));
+        const treatFailedAsCompleted = latest.status === 'failed' && isKnownOldBug && Boolean(lastCompleted);
+
         // For screenshot count, use last COMPLETED run if current is running
         const completedForScreenshots = lastCompleted; // reuse from above
         const runIdForScreenshots = isRunning && completedForScreenshots ? completedForScreenshots.id : latest.id;
         const totalStepsForScreenshots = isRunning && completedForScreenshots ? (completedForScreenshots.total_steps || 1) : (latest.total_steps || 1);
-        
+
         statusMap[normalizedId] = {
-          status: latest.status === 'completed' ? 'completed' 
-                : latest.status === 'failed' || isStalled ? 'failed'
-                : isRunning ? 'running' : 'none',
+          status: treatFailedAsCompleted
+            ? 'completed'
+            : latest.status === 'completed' ? 'completed'
+            : latest.status === 'failed' || isStalled ? 'failed'
+            : isRunning ? 'running' : 'none',
           stepsCaptures: latest.steps_captured || 0,
           totalSteps: totalStepsForScreenshots,
           screenshotsCount: screenshotCounts.get(runIdForScreenshots) || 0,
-          hasErrors: latest.status === 'failed' || isStalled,
-          lastError: isStalled ? 'Analysis stalled - screenshot service error' : metadata?.error,
+          hasErrors: (latest.status === 'failed' || isStalled) && !treatFailedAsCompleted,
+          lastError: treatFailedAsCompleted
+            ? undefined
+            : isKnownOldBug
+              ? 'Analysefehler (alt) – bitte neu analysieren'
+              : errorText,
         };
       });
       
