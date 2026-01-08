@@ -6,6 +6,7 @@
 export { LeaderboardPanel } from './LeaderboardPanel';
 export { HeatmapPanel } from './HeatmapPanel';
 export { ABTestTracker } from './ABTestTracker';
+export { CtaVisibilityChecker } from './CtaVisibilityChecker';
 export {
   LiveCollaborators,
   FocusMode,

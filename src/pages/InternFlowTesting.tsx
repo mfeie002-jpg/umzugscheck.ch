@@ -42,6 +42,7 @@ import { TOP_10_FLOWS } from "@/data/top10Flows";
 import { translations, LANGUAGES, Language, useTranslation } from "@/data/internTestingTranslations";
 import { MutscheliJokeBanner } from "@/components/intern-testing/MutscheliJokeBanner";
 import { MutscheliAchievementToast, getMutscheliAchievement } from "@/components/intern-testing/MutscheliAchievements";
+import { CtaVisibilityChecker } from "@/components/intern-testing/CtaVisibilityChecker";
 import {
   DndContext,
   closestCenter,
@@ -1133,6 +1134,9 @@ export default function InternFlowTesting() {
         {lang === "bg" && <MutscheliJokeBanner variant="top" autoRotate rotateInterval={12000} />}
 
         {showConfetti && <Confetti />}
+
+        {/* CTA Visibility Checker - Dev Tool */}
+        <CtaVisibilityChecker enabled={true} className="top-20 right-4" />
         
         <AnimatePresence>
           {achievement && lang === "bg" && mutscheliAchievementData ? (
