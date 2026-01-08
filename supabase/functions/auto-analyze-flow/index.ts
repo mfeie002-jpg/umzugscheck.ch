@@ -428,30 +428,31 @@ Sei WOHLWOLLEND - nicht jeder kleine Optimierungsvorschlag ist ein "Issue".`;
     
     const parsed = JSON.parse(jsonContent);
 
-    // Ensure scores are within valid range with BOOST for professional flows
-    // AI tends to be too harsh - we add a baseline boost to normalize scores
-    const clampScore = (raw: unknown, boost: number = 15) => {
+    // Parse scores properly without artificial boosting
+    // AI should return realistic scores - we only clamp to valid range
+    const clampScore = (raw: unknown, issuePenalty: number = 0) => {
       const num = typeof raw === 'number'
         ? raw
         : typeof raw === 'string'
           ? parseFloat(raw.replace(',', '.'))
           : Number(raw);
 
-      // Apply boost to bring AI scores up to realistic levels
-      const boosted = (Number.isFinite(num) ? num : 80) + boost;
-      // Clamp between 70-98 (professional flows should never go below 70)
-      return Math.max(70, Math.min(98, boosted));
+      // Use AI score directly, only apply issue penalty
+      // Default to 75 if AI doesn't return a valid number (mid-range baseline)
+      const baseScore = Number.isFinite(num) ? num : 75;
+      const adjusted = Math.max(0, baseScore - issuePenalty);
+      // Clamp between 0-100
+      return Math.max(0, Math.min(100, adjusted));
     };
 
-    // Calculate issue penalty
+    // Calculate issue penalty for score adjustment
     const issues = parsed.issues || [];
     const criticalCount = issues.filter((i: any) => i.severity === 'critical').length;
     const warningCount = issues.filter((i: any) => i.severity === 'warning').length;
     const infoCount = issues.filter((i: any) => i.severity === 'info').length;
     
-    // Reduce boost based on actual issues found
-    const issuePenalty = (criticalCount * 8) + (warningCount * 3) + (infoCount * 1);
-    const adjustedBoost = Math.max(0, 15 - issuePenalty);
+    // Calculate penalty based on issues found
+    const issuePenalty = (criticalCount * 5) + (warningCount * 2) + (infoCount * 0.5);
 
     return {
       stepNumber,
@@ -459,9 +460,9 @@ Sei WOHLWOLLEND - nicht jeder kleine Optimierungsvorschlag ist ein "Issue".`;
       issues: issues,
       suggestions: parsed.suggestions || [],
       scores: {
-        mobile: clampScore(parsed.scores?.mobile, adjustedBoost),
-        conversion: clampScore(parsed.scores?.conversion, adjustedBoost),
-        ux: clampScore(parsed.scores?.ux, adjustedBoost)
+        mobile: clampScore(parsed.scores?.mobile, issuePenalty),
+        conversion: clampScore(parsed.scores?.conversion, issuePenalty),
+        ux: clampScore(parsed.scores?.ux, issuePenalty)
       }
     };
   } catch (error) {
@@ -471,7 +472,7 @@ Sei WOHLWOLLEND - nicht jeder kleine Optimierungsvorschlag ist ein "Issue".`;
       stepName,
       issues: [],
       suggestions: ['AI-Analyse fehlgeschlagen - manuell prüfen'],
-      scores: { mobile: 70, conversion: 70, ux: 70 }
+      scores: { mobile: 50, conversion: 50, ux: 50 } // Default to mid-range on error
     };
   }
 }
