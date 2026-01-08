@@ -832,7 +832,28 @@ serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    const { flowId: rawFlowId, runType = 'manual', baseUrl = 'https://preview--umzugscheckv2.lovable.app' }: AnalysisRequest = await req.json();
+    const body: Partial<AnalysisRequest> = await req.json().catch(() => ({} as Partial<AnalysisRequest>));
+    const { flowId: rawFlowId, runType = 'manual' } = body as AnalysisRequest;
+
+    // Prefer caller-provided baseUrl; otherwise infer from request headers.
+    // This ensures analyses reflect the CURRENT environment (preview/staging/custom domain)
+    // instead of a hardcoded URL.
+    const baseUrl = (() => {
+      const fromBody = body.baseUrl;
+      const fromOrigin = req.headers.get('origin');
+      const fromReferer = req.headers.get('referer');
+
+      let url = fromBody || fromOrigin || undefined;
+      if (!url && fromReferer) {
+        try {
+          url = new URL(fromReferer).origin;
+        } catch {
+          // ignore
+        }
+      }
+
+      return (url || 'https://preview--umzugscheckv2.lovable.app').replace(/\/+$/, '');
+    })();
 
     console.log(`Starting analysis for flow: ${rawFlowId}`);
 

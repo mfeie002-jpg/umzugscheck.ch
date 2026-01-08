@@ -157,6 +157,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
       
       const latestRun = runData?.[0];
       const prevRun = runData?.[1];
+      const latestRunId = latestRun?.id ?? null;
       
       if (latestRun) {
         setRun({
@@ -212,13 +213,19 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
         setPreviousRun(null);
       }
       
-      // Fetch issues
-      const { data: issuesData, error: issuesError } = await supabase
+      // Fetch issues (scope to latest completed run to avoid showing stale issues)
+      let issuesQuery = supabase
         .from('flow_ux_issues')
         .select('*')
         .in('flow_id', flowIds)
         .eq('is_resolved', false)
         .order('severity', { ascending: true });
+
+      if (latestRunId) {
+        issuesQuery = issuesQuery.eq('run_id', latestRunId);
+      }
+
+      const { data: issuesData, error: issuesError } = await issuesQuery;
 
       if (issuesError) throw issuesError;
       
@@ -235,12 +242,18 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
         createdAt: i.created_at,
       })));
       
-      // Fetch archetype scores
-      const { data: archetypeData, error: archetypeError } = await supabase
+      // Fetch archetype scores (scope to latest completed run)
+      let archetypeQuery = supabase
         .from('flow_archetype_scores')
         .select('*')
         .in('flow_id', flowIds)
         .order('created_at', { ascending: false });
+
+      if (latestRunId) {
+        archetypeQuery = archetypeQuery.eq('run_id', latestRunId);
+      }
+
+      const { data: archetypeData, error: archetypeError } = await archetypeQuery;
 
       if (!archetypeError && archetypeData && archetypeData.length > 0) {
         // Get latest scores per archetype
