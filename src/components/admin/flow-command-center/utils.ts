@@ -393,8 +393,8 @@ export function generateCombinedFixPrompt(flowId: string, issues: Array<{
   category: string;
 }>): string {
   const issueList = issues
-    .map((i, idx) => `${idx + 1}. [${i.severity.toUpperCase()}] ${i.title}
-   Kategorie: ${i.category}
+    .map((i, idx) => `${idx + 1}. [${(i.severity || 'unknown').toUpperCase()}] ${i.title || 'Kein Titel'}
+   Kategorie: ${i.category || 'unknown'}
    ${i.description ? `Beschreibung: ${i.description}` : ''}
    ${i.recommendation ? `Empfehlung: ${i.recommendation}` : ''}`)
     .join('\n\n');
