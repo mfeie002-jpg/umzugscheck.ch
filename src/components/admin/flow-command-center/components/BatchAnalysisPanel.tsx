@@ -10,7 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
-import { getAnalysisBaseUrl } from '@/data/constants';
+import { getAnalysisBaseUrl, SITE_CONFIG } from '@/data/constants';
 import { Play, Loader2, CheckCircle, XCircle, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -75,7 +75,7 @@ export const BatchAnalysisPanel: React.FC<BatchAnalysisPanelProps> = ({
           body: {
             flowId,
             runType: 'batch',
-            baseUrl: getAnalysisBaseUrl()
+            baseUrl: getAnalysisBaseUrl().replace(/\/$/, "")
           }
         });
 

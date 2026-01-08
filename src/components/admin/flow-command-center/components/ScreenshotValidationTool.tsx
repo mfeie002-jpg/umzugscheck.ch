@@ -282,9 +282,7 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
     setFixMessage("Starte Reparatur...");
 
     try {
-      const baseUrl = typeof window !== 'undefined' 
-        ? window.location.origin 
-        : SITE_CONFIG.previewUrl;
+      const baseUrl = SITE_CONFIG.previewUrl.replace(/\/$/, "");
 
       for (let i = 0; i < brokenFlows.length; i++) {
         const flow = brokenFlows[i];

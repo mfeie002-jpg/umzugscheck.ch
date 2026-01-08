@@ -107,14 +107,23 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     }
   }, [flowA, flowB]);
 
+  const getFlowIdCandidates = useCallback((flowId: string) => {
+    const normalized = flowId.startsWith('umzugsofferten-')
+      ? flowId.replace('umzugsofferten-', '')
+      : flowId;
+    return Array.from(new Set([flowId, normalized, `umzugsofferten-${normalized}`]));
+  }, []);
+
   const fetchScreenshots = async (flowId: string, side: 'A' | 'B') => {
     setLoadingScreenshots(true);
     try {
-      // First get only completed runs for this flow
+      const flowIds = getFlowIdCandidates(flowId);
+
+      // First get only completed runs for this flow (any of its normalized IDs)
       const { data: completedRuns } = await supabase
         .from('flow_analysis_runs')
         .select('id')
-        .eq('flow_id', flowId)
+        .in('flow_id', flowIds)
         .eq('status', 'completed')
         .order('created_at', { ascending: false })
         .limit(5);
@@ -125,7 +134,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       let query = supabase
         .from('flow_step_metrics')
         .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at, run_id')
-        .eq('flow_id', flowId)
+        .in('flow_id', flowIds)
         .order('created_at', { ascending: false });
 
       if (completedRunIds.length > 0) {
@@ -146,14 +155,12 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           const existing = newestByStep.get(s.step_number);
           
           if (!existing) {
-            // First entry for this step
             newestByStep.set(s.step_number, {
               step_number: s.step_number,
               mobileUrl: s.mobile_screenshot_url,
               desktopUrl: s.desktop_screenshot_url,
             });
           } else {
-            // Merge: prefer existing URLs but fill in missing ones
             newestByStep.set(s.step_number, {
               step_number: s.step_number,
               mobileUrl: existing.mobileUrl || s.mobile_screenshot_url,
@@ -187,22 +194,24 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const fetchFlowData = async (flowId: string, side: 'A' | 'B') => {
     setLoading(true);
     try {
+      const flowIds = getFlowIdCandidates(flowId);
+
       // Fetch latest COMPLETED run (avoid picking currently running/incomplete runs)
       const { data: runData } = await supabase
         .from('flow_analysis_runs')
         .select('*')
-        .eq('flow_id', flowId)
+        .in('flow_id', flowIds)
         .eq('status', 'completed')
         .not('completed_at', 'is', null)
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      // Fetch issues count
+      // Fetch issues count (across normalized IDs)
       const { count: issueCount } = await supabase
         .from('flow_ux_issues')
         .select('*', { count: 'exact', head: true })
-        .eq('flow_id', flowId)
+        .in('flow_id', flowIds)
         .eq('is_resolved', false);
 
       const score: FlowScore | null = runData ? {
