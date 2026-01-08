@@ -74,3 +74,6 @@ verify_jwt = false
 
 [functions.analyze-feedback]
 verify_jwt = false
+
+[functions.admin-login]
+verify_jwt = false
