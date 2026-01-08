@@ -1,6 +1,6 @@
 /**
- * Special Mutscheli Achievements - Bulgarian Only
- * Custom achievements with unique icons and animations for Mutscheli
+ * Special Bory Achievements - Bulgarian Only
+ * Custom achievements with love messages from Morris
  */
 
 import React, { useEffect, useState } from "react";
@@ -38,29 +38,29 @@ export interface MutscheliAchievement {
 
 export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
   {
-    id: "mercedes_queen",
-    title: "Кралица на Мерцедеса! 🚗",
-    description: "Първият поток готов - по-бързо от паркиране!",
-    icon: <Car size={28} />,
-    color: "#10B981",
-    gradient: "from-emerald-400 to-teal-500",
+    id: "first_love",
+    title: "Първата стъпка! 💕",
+    description: "Bory, ти си страхотна! Morris те обича! ❤️",
+    icon: <Heart size={28} />,
+    color: "#EC4899",
+    gradient: "from-pink-400 to-rose-500",
     unlockCondition: "firstFlow",
     rarity: "common"
   },
   {
-    id: "no_sleep_needed",
-    title: "Без сън днес! 😴➡️😊",
-    description: "Половината потоци без да заспиш!",
-    icon: <Moon size={28} />,
+    id: "half_love",
+    title: "Половината път! 🌟",
+    description: "Bory, продължаваш да ме изумяваш! Morris 💖",
+    icon: <Star size={28} />,
     color: "#8B5CF6",
     gradient: "from-violet-400 to-purple-500",
     unlockCondition: "halfWay",
     rarity: "rare"
   },
   {
-    id: "faster_than_mercedes",
-    title: "По-бърза от Мерцедеса! 🚗💨",
-    description: "Под 2 минути - дори extensions-ите не могат!",
+    id: "speed_queen",
+    title: "Моята бърза кралица! 👑",
+    description: "Bory, ти си невероятна! По-бърза от светлината! ⚡",
     icon: <Zap size={28} />,
     color: "#F59E0B",
     gradient: "from-amber-400 to-orange-500",
@@ -68,9 +68,9 @@ export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
     rarity: "epic"
   },
   {
-    id: "actually_listened",
-    title: "Наистина слуша! 👂✨",
-    description: "Много feedback - чудо стана!",
+    id: "sweet_words",
+    title: "Сладки думи! 💬",
+    description: "Bory, обичам как пишеш! Morris те боготвори! 💕",
     icon: <MessageCircle size={28} />,
     color: "#EC4899",
     gradient: "from-pink-400 to-rose-500",
@@ -79,8 +79,8 @@ export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
   },
   {
     id: "queen_complete",
-    title: "Mutscheli, ти успя! 👑💕",
-    description: "Всичките 10 потока готови! Bory Bory е най-добрата!",
+    title: "Bory, ти успя! 👑💕",
+    description: "Всичко е готово! Обичам те безкрайно! Morris ❤️‍🔥",
     icon: <Crown size={28} />,
     color: "#FBBF24",
     gradient: "from-yellow-400 to-amber-500",
@@ -88,9 +88,9 @@ export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
     rarity: "legendary"
   },
   {
-    id: "coffee_break",
-    title: "Кафе пауза! ☕",
-    description: "Паузирала си тестването - типично!",
+    id: "coffee_love",
+    title: "Кафе за моята любов! ☕",
+    description: "Почивка? Заслужаваш я, Bory! Morris 💋",
     icon: <Coffee size={28} />,
     color: "#78350F",
     gradient: "from-amber-700 to-amber-900",
@@ -98,9 +98,9 @@ export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
     rarity: "common"
   },
   {
-    id: "focus_master",
-    title: "ADHD? Какво ADHD? 🎯",
-    description: "Завърши поток без разсейване!",
+    id: "focus_love",
+    title: "Фокусирана красавица! 🎯",
+    description: "Bory, ти си невероятно умна! Morris те обожава! 🧠",
     icon: <Brain size={28} />,
     color: "#06B6D4",
     gradient: "from-cyan-400 to-teal-500",
@@ -108,9 +108,9 @@ export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
     rarity: "epic"
   },
   {
-    id: "extension_queen",
-    title: "Extension Кралица! 💇‍♀️",
-    description: "Толкова дълъг feedback колкото extensions-ите!",
+    id: "sparkle_queen",
+    title: "Моята блестяща звезда! ✨",
+    description: "Bory, ти светиш по-ярко от всички! Morris 💎",
     icon: <Sparkles size={28} />,
     color: "#D946EF",
     gradient: "from-fuchsia-400 to-pink-500",
@@ -118,9 +118,9 @@ export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
     rarity: "rare"
   },
   {
-    id: "no_excuses",
-    title: "Без извинения! 🎉",
-    description: "Завърши всичко без да каже 'после'!",
+    id: "perfect_love",
+    title: "Перфектна! 🎉",
+    description: "Bory, ти си съвършена! Завинаги твой, Morris! 💕",
     icon: <Target size={28} />,
     color: "#22C55E",
     gradient: "from-green-400 to-emerald-500",
@@ -128,10 +128,10 @@ export const MUTSCHELI_ACHIEVEMENTS: MutscheliAchievement[] = [
     rarity: "legendary"
   },
   {
-    id: "present_moment",
-    title: "Живее в момента! 🌟",
-    description: "Цял час без да спомене 2017!",
-    icon: <Star size={28} />,
+    id: "eternal_love",
+    title: "Вечна любов! 🌹",
+    description: "Bory, обичам те днес, утре, завинаги! Morris ❤️",
+    icon: <Heart size={28} />,
     color: "#F472B6",
     gradient: "from-pink-400 to-rose-400",
     unlockCondition: "present",

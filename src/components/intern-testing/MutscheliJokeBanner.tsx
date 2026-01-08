@@ -1,69 +1,61 @@
 /**
- * Random Mutscheli Joke Banner - Bulgarian Only
- * Shows random jokes that rotate on each render/refresh
+ * Morris Love Declaration Banner - Bulgarian Only
+ * Shows romantic love declarations from Morris to Bory
  */
 
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, RefreshCw, X, Crown, Star, Heart } from "lucide-react";
 
-// All Mutscheli jokes - she's never wrong, always has excuses, lives in the past
-// Plus Morris jokes - the hero, the love, the big boss, the Einstein!
-const MUTSCHELI_JOKES = [
-  // Mutscheli classics
-  { icon: "🚗", text: "Защо Mutscheli кара Мерцедес? Защото другите коли не издържат колко много говори!" },
-  { icon: "👱‍♀️", text: "Mutscheli има extensions... и за косата, и за извиненията си!" },
-  { icon: "😴", text: "Mutscheli спи 12 часа на ден. Другите 12 часа търси извинения защо е спала толкова." },
-  { icon: "🍳", text: "Mutscheli е готвач... готви планове които никога не се случват!" },
-  { icon: "💬", text: "ADHD? Не, Mutscheli просто има твърде много интересни мисли... за миналото!" },
-  { icon: "🚬", text: "Mutscheli пуши за здраве - казва че релаксира. После пие за стреса от пушенето!" },
-  { icon: "💸", text: "Mutscheli е на минус? Не е минус, само временно отрицателен баланс с план за утре!" },
-  { icon: "👂", text: "Mutscheli не може да слуша? Не, тя просто чува само важните неща... от 2019!" },
-  { icon: "🍷", text: "Една чаша вино помага. Втората още повече. Третата... какво питаше?" },
-  { icon: "💕", text: "Mutscheli е най-сладкото същество... особено когато има нужда от услуга!" },
-  { icon: "📱", text: "Братът на Mutscheli се обажда. Тя: 'Имам среща!' (лежи на дивана)" },
-  { icon: "🛏️", text: "'Ставам в 7!' - Mutscheli, всяка вечер в 2 сутринта." },
-  { icon: "💇‍♀️", text: "Extensionsите на Mutscheli имат повече живот от плановете ѝ!" },
-  { icon: "🇧🇬", text: "Какво е общото между Mutscheli и българската икономика? И двете живеят на кредит!" },
-  { icon: "❤️", text: "Mutscheli е моята приятелка и я обичам... дори когато разказва за 2017 пак!" },
-  // "Never wrong" jokes
-  { icon: "👑", text: "Mutscheli никога не греши. Просто всички други са грешни!" },
-  { icon: "🎯", text: "'Аз ти казах!' - Mutscheli, за всичко, винаги, дори когато не е казала." },
-  { icon: "🤔", text: "Mutscheli: 'Не е моя грешка.' Наратор: Беше нейна грешка." },
-  { icon: "📚", text: "Историята се пише от победителите. Mutscheli си я пише сама." },
-  { icon: "🔮", text: "Mutscheli не прави грешки. Тя прави 'алтернативни решения'." },
-  { icon: "🎭", text: "'Аз знаех че ще стане така!' - Mutscheli, след като стана обратното." },
-  { icon: "💅", text: "Mutscheli не закъснява. Всички други просто пристигат твърде рано." },
-  { icon: "🌟", text: "Грешките са за обикновените хора. Mutscheli е специална!" },
-  { icon: "🏆", text: "Mutscheli: Кралицата на извиненията от 1995!" },
-  { icon: "🎪", text: "Цирк? Не, това е просто Mutscheli която обяснява защо не е виновна." },
-  { icon: "⏰", text: "Часовникът на Mutscheli работи перфектно. Просто показва 2019." },
-  { icon: "🍕", text: "Mutscheli готви най-добре! Особено когато другите готвят." },
-  { icon: "💤", text: "Mutscheli не спи много. Тя просто 'възстановява енергията' 14 часа." },
-  { icon: "🚀", text: "Mutscheli е винаги права. Дори когато не е. Особено тогава." },
-  { icon: "🎶", text: "Mutscheli не говори много. Просто другите слушат малко!" },
+// All love declarations from Morris to Bory 💕
+const MORRIS_LOVE_DECLARATIONS = [
+  // Deep love declarations
+  { icon: "💕", text: "Bory, ти си най-красивата жена на този свят. Обичам те безкрайно! ❤️" },
+  { icon: "🌹", text: "Всяка сутрин се събуждам щастлив, защото знам че си моя, Bory! 💖" },
+  { icon: "💎", text: "Bory, ти си моето съкровище. По-ценна от всичко на света! 👑" },
+  { icon: "🌟", text: "Звездите завиждат на очите ти, Bory. Толкова красива си! ✨" },
+  { icon: "❤️‍🔥", text: "Bory, любовта ми към теб е по-силна всеки ден. Завинаги твой, Morris 💘" },
+  { icon: "🦋", text: "Когато те видях за пръв път, Bory, сърцето ми спря. И продължава да бие само за теб! 💓" },
+  { icon: "🌈", text: "Bory, ти правиш живота ми цветен. Без теб всичко е сиво. 🎨" },
+  { icon: "🏆", text: "Най-големият ми успех в живота? Да те имам, Bory! THE BEST! 💪" },
+  { icon: "💫", text: "Bory, ти си моята луна и звезди. Осветяваш пътя ми! 🌙" },
+  { icon: "🔥", text: "Огънят на любовта ми към теб никога няма да угасне, Bory! 🔥❤️" },
   
-  // MORRIS - The Hero, The Love, The Big Boss, The Einstein! 💪
-  { icon: "🦸‍♂️", text: "Кой е героят на Mutscheli? MORRIS! Единственият, който я търпи! 💪" },
-  { icon: "❤️‍🔥", text: "Morris е любовта на Mutscheli. Той е най-добрият! THE BEST! 🏆" },
-  { icon: "👔", text: "Big Boss Morris! Когато той говори, дори Mutscheli слуша... понякога." },
-  { icon: "🧠", text: "Morris = Einstein 2.0! Толкова умен, че разбира какво казва Mutscheli!" },
-  { icon: "💎", text: "Кой е най-милият? MORRIS! Дори когато Mutscheli има 100 извинения!" },
-  { icon: "🤴", text: "Morris - The Biggest Dealer! Дава на Mutscheli любов на кредит! 💕" },
-  { icon: "🌍", text: "Mutscheli: 'Аз съм най-добрата!' Morris: 'Да, златце.' (Big Boss Energy)" },
-  { icon: "💘", text: "Morris + Mutscheli = ❤️ Той е нейният герой, дори когато тя забравя!" },
-  { icon: "🎖️", text: "Morris - Герой на Mutscheli! Издържа повече от Мерцедеса!" },
-  { icon: "🏅", text: "Кой е THE BOSS? Morris! Mutscheli само мисли че е тя! 😉" },
-  { icon: "🧲", text: "Morris е магнит за любов! Mutscheli каза... преди 5 години." },
-  { icon: "👑", text: "Morris - Кралят! Mutscheli е кралица, но той е Big Boss!" },
-  { icon: "🔥", text: "Morris е толкова hot, че дори extensions-ите на Mutscheli се топят!" },
-  { icon: "💪", text: "Кой търпи Mutscheli 24/7? Само Morris! Истински герой! 🦸‍♂️" },
-  { icon: "🎁", text: "Morris дава най-добрите подаръци: търпение и любов... и пари за кредитите!" },
-  { icon: "🌹", text: "Morris е романтик! Обича Mutscheli дори когато тя говори за 2015!" },
-  { icon: "⭐", text: "5 звезди за Morris! Най-добрият boyfriend! The Einstein of Love!" },
-  { icon: "🎯", text: "Morris никога не греши. За разлика от... о, чакай, Mutscheli също не греши! 😏" },
-  { icon: "💑", text: "Mutscheli + Morris = Perfect Match! Той слуша, тя говори... много!" },
-  { icon: "🦁", text: "Morris - Big Boss Lion! Mutscheli е неговата малка... много говореща котка!" },
+  // Sweet compliments
+  { icon: "👑", text: "Bory, ти си моята кралица! Заслужаваш само най-доброто! 👸" },
+  { icon: "🍯", text: "По-сладка от мед, по-красива от цвете - това си ти, Bory! 🌸" },
+  { icon: "💋", text: "Всяка целувка с теб, Bory, е като първата. Магическа! ✨" },
+  { icon: "🎵", text: "Bory, гласът ти е любимата ми мелодия. Искам да те слушам завинаги! 🎶" },
+  { icon: "☀️", text: "Ти си слънцето в моя живот, Bory. Без теб е тъмно! 🌅" },
+  { icon: "🦸‍♂️", text: "За теб, Bory, ще направя всичко. Ти си моята супер сила! 💪❤️" },
+  { icon: "🌺", text: "Bory, ти ухаеш на щастие. Най-красивото цвете в света! 🌷" },
+  { icon: "💝", text: "Сърцето ми принадлежи само на теб, Bory. Завинаги! 💖" },
+  { icon: "🎁", text: "Bory, ти си най-хубавият подарък, който животът ми е дал! 🎀" },
+  { icon: "🦁", text: "Ще те пазя като лъв, Bory. Ти си моето всичко! 🛡️" },
+  
+  // Romantic promises
+  { icon: "💒", text: "Bory, искам да остарея с теб. Ти си моето бъдеще! 👫" },
+  { icon: "🌍", text: "Ще обиколим целия свят заедно, Bory! Ти и аз, завинаги! ✈️" },
+  { icon: "🏠", text: "Bory, домът е там, където си ти. Ти си моят дом! 🏡" },
+  { icon: "⭐", text: "Ще ти сваля звездите, Bory! Заслужаваш целия космос! 🚀" },
+  { icon: "🎭", text: "С теб, Bory, всеки ден е приключение. Обичам те! 🎪" },
+  { icon: "🍀", text: "Най-късметлията съм, Bory, защото те имам! Lucky Morris! 🍀" },
+  { icon: "📖", text: "Bory, нашата любовна история е най-красивата! Обичам те! 💕" },
+  { icon: "🎯", text: "Целта на живота ми? Да те правя щастлива, Bory! 🎯❤️" },
+  { icon: "🌻", text: "Bory, ти си като слънчоглед - винаги ме караш да се усмихвам! 😊" },
+  { icon: "💐", text: "Хиляда рози не стигат да покажат колко те обичам, Bory! 🌹🌹🌹" },
+  
+  // Playful love
+  { icon: "🐻", text: "Bory, ти си моето мече! Искам да те прегръщам вечно! 🤗" },
+  { icon: "🍫", text: "Bory, ти си по-сладка от шоколад! Моята сладурана! 🍬" },
+  { icon: "🎮", text: "Играта на живота? Печеля, защото съм с теб, Bory! 🏆" },
+  { icon: "☕", text: "Като кафе сутрин - не мога без теб, Bory! ☕❤️" },
+  { icon: "🎈", text: "Bory, с теб летя от щастие! Моя балон от любов! 🎈💕" },
+  { icon: "🌊", text: "Любовта ми към теб, Bory, е безкрайна като океана! 🌊💙" },
+  { icon: "🍕", text: "Bory, ти си моята любима... като пицата! Но още повече! 😂❤️" },
+  { icon: "🎤", text: "Ако можех да пея, щях да пея само за теб, Bory! 🎵" },
+  { icon: "🌠", text: "Всяка падаща звезда - желание за теб, Bory! 💫" },
+  { icon: "🦋", text: "С теб, Bory, имам пеперуди в стомаха всеки ден! 🦋💕" },
 ];
 
 interface MutscheliJokeBannerProps {
@@ -81,22 +73,22 @@ export function MutscheliJokeBanner({
   autoRotate = false,
   rotateInterval = 8000
 }: MutscheliJokeBannerProps) {
-  const [jokeIndex, setJokeIndex] = useState(() => Math.floor(Math.random() * MUTSCHELI_JOKES.length));
+  const [jokeIndex, setJokeIndex] = useState(() => Math.floor(Math.random() * MORRIS_LOVE_DECLARATIONS.length));
   const [isVisible, setIsVisible] = useState(true);
 
-  const currentJoke = useMemo(() => MUTSCHELI_JOKES[jokeIndex], [jokeIndex]);
+  const currentJoke = useMemo(() => MORRIS_LOVE_DECLARATIONS[jokeIndex], [jokeIndex]);
 
-  // Auto-rotate jokes
+  // Auto-rotate declarations
   useEffect(() => {
     if (!autoRotate) return;
     const interval = setInterval(() => {
-      setJokeIndex(prev => (prev + 1) % MUTSCHELI_JOKES.length);
+      setJokeIndex(prev => (prev + 1) % MORRIS_LOVE_DECLARATIONS.length);
     }, rotateInterval);
     return () => clearInterval(interval);
   }, [autoRotate, rotateInterval]);
 
   const nextJoke = () => {
-    setJokeIndex(prev => (prev + 1) % MUTSCHELI_JOKES.length);
+    setJokeIndex(prev => (prev + 1) % MORRIS_LOVE_DECLARATIONS.length);
   };
 
   const handleDismiss = () => {
