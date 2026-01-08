@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Check for existing session (timeout-safe to avoid infinite loading)
     (async () => {
-      const timeoutMs = 6000;
+      const timeoutMs = 15000; // Increased timeout for slow networks
       try {
         const result = await Promise.race([
           supabase.auth.getSession(),
@@ -104,7 +104,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setAdminChecked(true);
         }
       } catch (error) {
-        logger.error("Error loading session", error);
+        // On timeout/error, still allow app to load without session
+        logger.warn("Session check failed, continuing without auth", error);
         setSession(null);
         setUser(null);
         setIsAdmin(false);
