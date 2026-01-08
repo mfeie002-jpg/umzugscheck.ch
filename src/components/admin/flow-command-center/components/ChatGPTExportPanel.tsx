@@ -60,6 +60,43 @@ export function ChatGPTExportPanel() {
   const [includeIssues, setIncludeIssues] = useState(true);
   const [includeScores, setIncludeScores] = useState(true);
   const [includePrompts, setIncludePrompts] = useState(true);
+  const [stats, setStats] = useState<{ screenshots: number; flows: number; issues: number } | null>(null);
+
+  // Load stats on mount
+  React.useEffect(() => {
+    async function loadStats() {
+      try {
+        // Count unique flow+step combinations with screenshots
+        const { data: screenshotsData } = await supabase
+          .from('flow_step_metrics')
+          .select('flow_id, step_number')
+          .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null');
+        
+        const uniqueKeys = new Set<string>();
+        (screenshotsData || []).forEach(s => {
+          uniqueKeys.add(`${s.flow_id}-${s.step_number}`);
+        });
+        
+        const { count: issueCount } = await supabase
+          .from('flow_ux_issues')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_resolved', false);
+        
+        const { count: flowCount } = await supabase
+          .from('flow_feature_scores')
+          .select('*', { count: 'exact', head: true });
+        
+        setStats({
+          screenshots: uniqueKeys.size * 2, // Approx mobile + desktop
+          flows: flowCount || 0,
+          issues: issueCount || 0,
+        });
+      } catch (e) {
+        console.error('Failed to load export stats:', e);
+      }
+    }
+    loadStats();
+  }, []);
 
   const fetchImageAsBase64 = async (url: string): Promise<string | null> => {
     try {
@@ -328,22 +365,31 @@ Vergleiche alle exportierten Flows und erstelle ein Ranking.
         recommendation: i.recommendation,
       }));
 
-      // 3. Fetch screenshots
+      // 3. Fetch screenshots - get ALL screenshots with mobile OR desktop URLs
       setStatus('Lade Screenshot-URLs...');
       setProgress(15);
       const { data: screenshotsData } = await supabase
         .from('flow_step_metrics')
-        .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url')
-        .not('mobile_screenshot_url', 'is', null)
-        .order('flow_id')
-        .order('step_number');
+        .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at')
+        .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null')
+        .order('created_at', { ascending: false });
 
-      const screenshots: FlowScreenshot[] = (screenshotsData || []).map(s => ({
-        flowId: s.flow_id,
-        stepNumber: s.step_number,
-        mobileUrl: s.mobile_screenshot_url,
-        desktopUrl: s.desktop_screenshot_url,
-      }));
+      // Deduplicate: Keep only the latest screenshot per flow_id + step_number
+      const screenshotMap = new Map<string, FlowScreenshot>();
+      (screenshotsData || []).forEach(s => {
+        const key = `${s.flow_id}-step${s.step_number}`;
+        if (!screenshotMap.has(key)) {
+          screenshotMap.set(key, {
+            flowId: s.flow_id,
+            stepNumber: s.step_number,
+            mobileUrl: s.mobile_screenshot_url,
+            desktopUrl: s.desktop_screenshot_url,
+          });
+        }
+      });
+      
+      const screenshots: FlowScreenshot[] = Array.from(screenshotMap.values())
+        .sort((a, b) => a.flowId.localeCompare(b.flowId) || a.stepNumber - b.stepNumber);
 
       // 4. Add data files
       if (includeScores) {
@@ -475,8 +521,26 @@ README.md        - Diese Datei
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Stats Preview */}
+        {stats && (
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-lg font-bold text-primary">{stats.screenshots}</div>
+              <div className="text-xs text-muted-foreground">Screenshots</div>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-lg font-bold text-primary">{stats.flows}</div>
+              <div className="text-xs text-muted-foreground">Flows</div>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-lg font-bold text-primary">{stats.issues}</div>
+              <div className="text-xs text-muted-foreground">Issues</div>
+            </div>
+          </div>
+        )}
+
         {/* Options */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox 
               checked={includeScreenshots} 
