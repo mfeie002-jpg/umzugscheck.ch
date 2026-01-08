@@ -77,7 +77,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v9a': { name: 'V9a Gemini Archetyp', steps: 6, baseUrl: '/umzugsofferten-v9a' },
   'v9b': { name: 'V9b Gemini Agent', steps: 5, baseUrl: '/umzugsofferten-v9b' },
   'v9c': { name: 'V9c Zero Friction Optimized', steps: 5, baseUrl: '/umzugsofferten-v9c' },
-  'v9d': { name: 'V9d Gemini Extended', steps: 9, baseUrl: '/umzugsofferten-v9d' },
+  'v9d': { name: 'V9d Gemini Extended', steps: 6, baseUrl: '/umzugsofferten-v9d' },
   
   // === Multi Variants ===
   'multi-a': { name: 'Multi.A ChatGPT Pro ⭐', steps: 3, baseUrl: '/umzugsofferten-multi-a' },
