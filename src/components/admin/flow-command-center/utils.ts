@@ -30,6 +30,9 @@ export const ALL_FLOW_OPTIONS = [
   { id: 'v8', label: 'V8', flowId: 'umzugsofferten-v8' },
   { id: 'v9', label: 'V9', flowId: 'umzugsofferten-v9' },
   { id: 'ultimate-best36', label: 'Ultimate ⭐', flowId: 'umzugsofferten-ultimate-best36' },
+  { id: 'vultimate', label: 'vultimate', flowId: 'vultimate' },
+  { id: 'vultimate-v1', label: 'vultimate V1', flowId: 'vultimate-v1' },
+  { id: 'vultimate-v2', label: 'vultimate V2', flowId: 'vultimate-v2' },
 ];
 
 export function getMainFlowKey(flowNumber: number): string {
@@ -71,14 +74,23 @@ export function getVariantsForFlow(flowNumber: number | 'all'): FlowVariant[] {
       /umzugsofferten-v(\d+)/i,
       /^v(\d+)/i,
       /^multi/i, // multi-a is based on v9
+      /^vultimate/i, // vultimate flows are ultimate-based
+      /^ultimate/i, // ultimate flows
+      /^chatgpt/i, // chatgpt flows
     ];
     for (const pattern of patterns) {
       const match = id.match(pattern);
       if (match) {
         if (pattern.source === '^multi') return 9; // multi-* are V9 variants
+        if (pattern.source === '^vultimate/i' || pattern.source === '^vultimate') return 10; // vultimate = 10
+        if (pattern.source === '^ultimate/i' || pattern.source === '^ultimate') return 10; // ultimate = 10
+        if (pattern.source === '^chatgpt/i' || pattern.source === '^chatgpt') return 11; // chatgpt = 11
         return parseInt(match[1], 10);
       }
     }
+    // Additional fallback for vultimate/ultimate/chatgpt without regex match
+    if (id.startsWith('vultimate') || id.startsWith('ultimate')) return 10;
+    if (id.startsWith('chatgpt')) return 11;
     return null;
   };
 

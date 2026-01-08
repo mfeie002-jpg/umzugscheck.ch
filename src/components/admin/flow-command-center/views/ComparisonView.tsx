@@ -108,10 +108,36 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   }, [flowA, flowB]);
 
   const getFlowIdCandidates = useCallback((flowId: string) => {
+    // Normalize: strip umzugsofferten- prefix if present
     const normalized = flowId.startsWith('umzugsofferten-')
       ? flowId.replace('umzugsofferten-', '')
       : flowId;
-    return Array.from(new Set([flowId, normalized, `umzugsofferten-${normalized}`]));
+    
+    // Build candidate list - includes multiple variations
+    const candidates = new Set([
+      flowId,
+      normalized,
+      `umzugsofferten-${normalized}`,
+    ]);
+    
+    // For vultimate flows, also try without 'v' prefix variants
+    if (normalized.startsWith('vultimate')) {
+      candidates.add(normalized);
+      candidates.add(`umzugsofferten-${normalized}`);
+    }
+    
+    // For ultimate flows, try both with and without prefix
+    if (normalized.startsWith('ultimate')) {
+      candidates.add(normalized);
+      candidates.add(`umzugsofferten-${normalized}`);
+    }
+    
+    // For chatgpt flows
+    if (normalized.startsWith('chatgpt')) {
+      candidates.add(normalized);
+    }
+    
+    return Array.from(candidates);
   }, []);
 
   const fetchScreenshots = async (flowId: string, side: 'A' | 'B') => {

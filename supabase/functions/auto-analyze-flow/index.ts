@@ -82,7 +82,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   // === Multi Variants ===
   'multi-a': { name: 'Multi.A ChatGPT Pro ⭐', steps: 3, baseUrl: '/umzugsofferten-multi-a' },
   
-  // === Ultimate Variants ===
+  // === Ultimate Variants (vultimate included) ===
   'ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-best36' },
   'ultimate-v7': { name: 'Ultimate V7 (95/100) ⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-v7' },
   'ultimate-all': { name: 'Ultimate All', steps: 5, baseUrl: '/umzugsofferten-ultimate-all' },
@@ -91,6 +91,9 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'ultimate-v5': { name: 'Ultimate V5', steps: 5, baseUrl: '/umzugsofferten-ultimate-v5' },
   'ultimate-ch': { name: 'Ultimate Swiss CH ⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-ch' },
   'v2-archetyp': { name: 'V2 Archetyp ⭐', steps: 6, baseUrl: '/umzugsofferten-v2-archetyp' },
+  'vultimate': { name: 'Ultimate Flow (All) ⭐', steps: 6, baseUrl: '/umzugsofferten?v=vultimate' },
+  'vultimate-v1': { name: 'Ultimate Flow V1 - Swiss Archetype Edition ⭐', steps: 6, baseUrl: '/umzugsofferten?v=vultimate-v1' },
+  'vultimate-v2': { name: 'Ultimate Flow Vv2 ⭐', steps: 6, baseUrl: '/umzugsofferten?v=vultimate-v2' },
   
   // === ChatGPT Optimized Flows ===
   'chatgpt-flow-1': { name: 'ChatGPT Flow 1 - Zero Friction Pro ⭐', steps: 2, baseUrl: '/chatgpt-flow-1' },
@@ -836,8 +839,8 @@ serve(async (req) => {
     const { flowId: rawFlowId, runType = 'manual' } = body as AnalysisRequest;
 
     // Prefer caller-provided baseUrl; otherwise infer from request headers.
-    // This ensures analyses reflect the CURRENT environment (preview/staging/custom domain)
-    // instead of a hardcoded URL.
+    // IMPORTANT: lovableproject.com and netlify previews are auth-protected and will cause login screenshots.
+    // Always use the public preview domain for automated analysis.
     const baseUrl = (() => {
       const fromBody = body.baseUrl;
       const fromOrigin = req.headers.get('origin');
@@ -850,6 +853,12 @@ serve(async (req) => {
         } catch {
           // ignore
         }
+      }
+
+      // CRITICAL: lovableproject.com is auth-protected - always use public preview
+      if (url && (url.includes('lovableproject.com') || url.includes('netlify'))) {
+        console.log(`[BaseUrl] Rejected auth-protected domain: ${url}, using public preview`);
+        url = undefined;
       }
 
       return (url || 'https://preview--umzugscheckv2.lovable.app').replace(/\/+$/, '');
