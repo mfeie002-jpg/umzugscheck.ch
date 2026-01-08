@@ -15,3 +15,4 @@ export { PerformanceBenchmarks } from './PerformanceBenchmarks';
 export { AIBatchFixDialog } from './AIBatchFixDialog';
 export { BackendHealthIndicator } from './BackendHealthIndicator';
 export { ChatGPTExportPanel } from './ChatGPTExportPanel';
+export { ScreenshotValidationTool } from './ScreenshotValidationTool';
