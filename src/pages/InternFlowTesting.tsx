@@ -43,6 +43,7 @@ import { translations, LANGUAGES, Language, useTranslation } from "@/data/intern
 import { MutscheliJokeBanner } from "@/components/intern-testing/MutscheliJokeBanner";
 import { MutscheliAchievementToast, getMutscheliAchievement } from "@/components/intern-testing/MutscheliAchievements";
 import { CtaVisibilityChecker } from "@/components/intern-testing/CtaVisibilityChecker";
+import { FlowScreenshotPreview } from "@/components/intern-testing/FlowScreenshotPreview";
 import {
   DndContext,
   closestCenter,
@@ -1217,6 +1218,14 @@ export default function InternFlowTesting() {
               <p className="text-white/60 text-sm mt-1">
                 {currentFlow.description}
               </p>
+              
+              {/* Screenshot Preview */}
+              <FlowScreenshotPreview 
+                flowId={currentFlow.id}
+                flowName={currentFlow.name}
+                totalSteps={currentFlow.steps}
+                className="mt-3"
+              />
             </div>
 
             {/* Action Buttons */}
