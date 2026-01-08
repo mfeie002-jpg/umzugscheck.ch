@@ -120,11 +120,57 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   const signIn = async (email: string, password: string) => {
-    const { error, data } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error, data };
+    // Primary: standard auth login
+    try {
+      const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      return { error, data };
+    } catch (error: any) {
+      // Fallback: some environments block /auth/v1 CORS and surface it as "Failed to fetch".
+      // We tunnel the login through a backend function and then set the session client-side.
+      const msg = String(error?.message || "");
+      const shouldFallback = msg.toLowerCase().includes("failed to fetch");
+      if (!shouldFallback) {
+        return { error, data: null };
+      }
+
+      try {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const resp = await fetch(`${supabaseUrl}/functions/v1/admin-login`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const json = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          return {
+            error: new Error(json?.error || "Anmeldung fehlgeschlagen"),
+            data: null,
+          };
+        }
+
+        const access_token = json?.access_token;
+        const refresh_token = json?.refresh_token;
+        if (!access_token || !refresh_token) {
+          return { error: new Error("Anmeldung fehlgeschlagen"), data: null };
+        }
+
+        const { data, error: setError } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+
+        return { error: setError, data };
+      } catch (fallbackError: any) {
+        return {
+          error: new Error(fallbackError?.message || "Backend nicht erreichbar"),
+          data: null,
+        };
+      }
+    }
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
