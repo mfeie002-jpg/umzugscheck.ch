@@ -3,16 +3,23 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-api-version",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
 };
 
 serve(async (req) => {
+  const requestId = crypto.randomUUID();
+
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
+    console.log("admin-login: CORS preflight", {
+      requestId,
+      origin: req.headers.get("origin"),
+      requestedHeaders: req.headers.get("access-control-request-headers"),
+    });
     return new Response(null, { headers: corsHeaders });
   }
-
-  const requestId = crypto.randomUUID();
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");

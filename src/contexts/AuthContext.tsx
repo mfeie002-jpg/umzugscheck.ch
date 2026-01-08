@@ -142,9 +142,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { body: { email, password } }
       );
 
-      if (fnError) {
-        return { error: new Error(fnError.message), data: null };
-      }
+        if (fnError) {
+          const msg = fnError.message || "";
+          if (msg.includes("Failed to send") || msg.includes("Failed to fetch")) {
+            return {
+              error: new Error("Backend nicht erreichbar. Bitte Adblocker/Privacy-Shields prüfen oder im Inkognito-Modus testen."),
+              data: null,
+            };
+          }
+          return { error: new Error(msg || "Anmeldung fehlgeschlagen"), data: null };
+        }
 
       const access_token = (fnData as any)?.access_token;
       const refresh_token = (fnData as any)?.refresh_token;
@@ -170,7 +177,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         );
 
         if (fnError) {
-          return { error: new Error(fnError.message), data: null };
+          const msg = fnError.message || "";
+          if (msg.includes("Failed to send") || msg.includes("Failed to fetch")) {
+            return {
+              error: new Error("Backend nicht erreichbar. Bitte Adblocker/Privacy-Shields prüfen oder im Inkognito-Modus testen."),
+              data: null,
+            };
+          }
+          return { error: new Error(msg || "Anmeldung fehlgeschlagen"), data: null };
         }
 
         const access_token = (fnData as any)?.access_token;

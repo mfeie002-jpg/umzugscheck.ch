@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, User, Shield, ArrowRight, Loader2 } from "lucide-react";
+import { Lock, User, Shield, ArrowRight, Loader2, Wifi, WifiOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+
+type ConnectionStatus = "idle" | "testing" | "ok" | "error";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -18,6 +20,21 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [connStatus, setConnStatus] = useState<ConnectionStatus>("idle");
+  const [connError, setConnError] = useState<string | null>(null);
+
+  const testConnection = async () => {
+    setConnStatus("testing");
+    setConnError(null);
+    try {
+      const { error } = await supabase.functions.invoke("health");
+      if (error) throw error;
+      setConnStatus("ok");
+    } catch (err: any) {
+      setConnStatus("error");
+      setConnError(err?.message || "Verbindung fehlgeschlagen");
+    }
+  };
 
   // Prevent "infinite loading" when backend signOut hangs (network/db issues)
   const safeSignOut = async () => {
@@ -169,6 +186,33 @@ const AdminLogin = () => {
             >
               Registrieren
             </Button>
+
+            {/* Connection test */}
+            <div className="mt-4 pt-4 border-t">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="w-full text-muted-foreground"
+                onClick={testConnection}
+                disabled={connStatus === "testing"}
+              >
+                {connStatus === "testing" && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {connStatus === "ok" && <Wifi className="mr-2 h-4 w-4 text-green-500" />}
+                {connStatus === "error" && <WifiOff className="mr-2 h-4 w-4 text-destructive" />}
+                {connStatus === "idle" && <Wifi className="mr-2 h-4 w-4" />}
+                Backend-Verbindung testen
+              </Button>
+              {connStatus === "ok" && (
+                <p className="text-xs text-center text-green-600 mt-1">Verbindung OK</p>
+              )}
+              {connStatus === "error" && (
+                <p className="text-xs text-center text-destructive mt-1">
+                  {connError || "Verbindung fehlgeschlagen"}
+                </p>
+              )}
+            </div>
+
             <p className="text-xs text-center text-muted-foreground">
               Geschützter Bereich nur für autorisierte Administratoren
             </p>
