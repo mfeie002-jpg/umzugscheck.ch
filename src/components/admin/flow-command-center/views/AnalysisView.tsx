@@ -44,7 +44,8 @@ import {
   QuickActionsPanel,
   FlowComparisonMini,
   AIFixSuggestions,
-  PerformanceBenchmarks
+  PerformanceBenchmarks,
+  ScreenshotValidationTool
 } from '../components';
 import { 
   ArchetypeRadar, 
@@ -864,6 +865,9 @@ const ScreenshotsPanel: React.FC<{
           ))}
         </div>
       )}
+
+      {/* Screenshot Validation Tool */}
+      <ScreenshotValidationTool flowIds={flowId ? [flowId] : undefined} />
     </div>
   );
 };
