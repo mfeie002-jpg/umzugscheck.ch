@@ -21,6 +21,7 @@ const HIDDEN_PATHS = [
   '/umzugsrechner',   // Calculator page
   '/god-mode',        // God mode calculator
   '/flow-tester',     // Flow testing
+  '/intern-testing',  // Internal testing page with flows
 ];
 
 export const MobileBottomNav = () => {
