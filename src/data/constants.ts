@@ -43,6 +43,14 @@ export const SITE_CONFIG = {
 // For analysis tools - prefer current environment; fallback to configured preview
 export const getAnalysisBaseUrl = (): string => {
   if (typeof window !== 'undefined' && window.location?.origin) {
+    const host = window.location.hostname || '';
+
+    // IMPORTANT: lovableproject.com previews are auth-protected and will render "login" for screenshots.
+    // Always use the public preview domain for automated analysis.
+    if (host.endsWith('lovableproject.com')) {
+      return SITE_CONFIG.previewUrl;
+    }
+
     return window.location.origin;
   }
   return SITE_CONFIG.previewUrl;
