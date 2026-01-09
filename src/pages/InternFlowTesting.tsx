@@ -42,6 +42,7 @@ import { TOP_10_FLOWS } from "@/data/top10Flows";
 import { translations, LANGUAGES, Language, useTranslation } from "@/data/internTestingTranslations";
 import { MutscheliJokeBanner } from "@/components/intern-testing/MutscheliJokeBanner";
 import { MutscheliAchievementToast, getMutscheliAchievement } from "@/components/intern-testing/MutscheliAchievements";
+import { KifferJokeBanner, KifferAchievementToast, getKifferAchievement } from "@/components/intern-testing/KifferJokeBanner";
 import { CtaVisibilityChecker } from "@/components/intern-testing/CtaVisibilityChecker";
 import { FlowScreenshotPreview } from "@/components/intern-testing/FlowScreenshotPreview";
 import {
@@ -265,7 +266,7 @@ function LanguageSelector({ current, onChange }: { current: Language; onChange: 
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              className="absolute right-0 mt-2 w-48 bg-slate-800 border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50"
+              className="absolute right-0 mt-2 w-48 bg-[hsl(210,80%,15%)] border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50"
             >
               {LANGUAGES.map((lang) => (
                 <button
@@ -312,10 +313,10 @@ function Tooltip({ children, tip }: { children: React.ReactNode; tip: string }) 
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-700 text-white text-xs rounded-xl whitespace-nowrap z-50 max-w-[200px] text-center"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[hsl(210,100%,33%)] text-white text-xs rounded-xl whitespace-nowrap z-50 max-w-[200px] text-center"
           >
             {tip}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-700" />
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[hsl(210,100%,33%)]" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -830,7 +831,7 @@ export default function InternFlowTesting() {
   // =============== INTRO PHASE ===============
   if (phase === "intro") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen bg-gradient-to-br from-[hsl(208,87%,8%)] via-[hsl(210,80%,15%)] to-[hsl(208,87%,8%)]">
         <Helmet>
           <title>Flow Testing | Umzugscheck.ch</title>
         </Helmet>
@@ -945,7 +946,7 @@ export default function InternFlowTesting() {
   // =============== ONBOARDING PHASE ===============
   if (phase === "onboarding") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 safe-area-top safe-area-bottom">
+      <div className="min-h-screen bg-gradient-to-br from-[hsl(208,87%,8%)] via-[hsl(210,80%,15%)] to-[hsl(208,87%,8%)] safe-area-top safe-area-bottom">
         <Helmet>
           <title>How-To | Flow Testing</title>
         </Helmet>
@@ -1131,15 +1132,24 @@ export default function InternFlowTesting() {
       achievement.includes("слуша") ? "critic" :
       achievement.includes("успя") ? "complete" : ""
     ) : null;
+    
+    const kifferAchievementData = lang === "it" && achievement ? getKifferAchievement(
+      achievement.includes("Primo") ? "firstFlow" :
+      achievement.includes("metà") || achievement.includes("Metà") ? "halfWay" :
+      achievement.includes("Velocista") ? "speedster" :
+      achievement.includes("critico") || achievement.includes("Pensatore") ? "critic" :
+      achievement.includes("Tutti") ? "complete" : ""
+    ) : null;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen bg-gradient-to-br from-[hsl(208,87%,8%)] via-[hsl(210,80%,15%)] to-[hsl(208,87%,8%)]">
         <Helmet>
           <title>{`${t("testing.flow")} ${currentFlowIndex + 1}/${TOP_10_FLOWS.length}`}</title>
         </Helmet>
 
-        {/* Mutscheli Joke Banner - Bulgarian Only */}
+        {/* Joke Banners - Language Specific */}
         {lang === "bg" && <MutscheliJokeBanner variant="top" autoRotate rotateInterval={12000} />}
+        {lang === "it" && <KifferJokeBanner variant="top" autoRotate rotateInterval={15000} />}
 
         {showConfetti && <Confetti />}
 
@@ -1152,18 +1162,23 @@ export default function InternFlowTesting() {
               achievement={mutscheliAchievementData} 
               onClose={() => setAchievement(null)} 
             />
+          ) : achievement && lang === "it" && kifferAchievementData ? (
+            <KifferAchievementToast 
+              achievement={kifferAchievementData} 
+              onClose={() => setAchievement(null)} 
+            />
           ) : achievement ? (
             <AchievementToast message={achievement} onClose={() => setAchievement(null)} />
           ) : null}
         </AnimatePresence>
 
         {/* Header */}
-        <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-lg border-b border-white/10 px-4 py-3 safe-area-top">
+        <div className="sticky top-0 z-40 bg-[hsl(208,87%,8%)]/95 backdrop-blur-lg border-b border-white/10 px-4 py-3 safe-area-top">
           <div className="max-w-4xl mx-auto">
             {/* Progress Bar */}
             <div className="h-2.5 bg-white/10 rounded-full overflow-hidden mb-3">
               <motion.div
-                className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full"
+                className="h-full bg-gradient-to-r from-[hsl(210,100%,33%)] to-[hsl(210,100%,50%)] rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3 }}
@@ -1264,14 +1279,14 @@ export default function InternFlowTesting() {
                     setIsFullscreen(false);
                     setIsFlowOpen(false);
                   }}
-                  className="absolute top-4 right-4 z-10 p-3 bg-slate-900/90 rounded-full text-white shadow-lg touch-manipulation safe-area-top"
+                  className="absolute top-4 right-4 z-10 p-3 bg-[hsl(208,87%,8%)]/90 rounded-full text-white shadow-lg touch-manipulation safe-area-top"
                 >
                   <X size={24} />
                 </button>
                 
                 {/* Flow Counter Badge */}
-                <div className="absolute top-4 left-4 z-10 px-4 py-2 bg-slate-900/90 rounded-full text-white text-sm font-medium shadow-lg safe-area-top flex items-center gap-2">
-                  <span className="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center text-xs font-bold">
+                <div className="absolute top-4 left-4 z-10 px-4 py-2 bg-[hsl(208,87%,8%)]/90 rounded-full text-white text-sm font-medium shadow-lg safe-area-top flex items-center gap-2">
+                  <span className="w-6 h-6 bg-[hsl(210,100%,33%)] rounded-lg flex items-center justify-center text-xs font-bold">
                     {currentFlowIndex + 1}
                   </span>
                   <span>/ {TOP_10_FLOWS.length}</span>
@@ -1509,7 +1524,7 @@ export default function InternFlowTesting() {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-slate-800 rounded-3xl p-6 max-w-sm w-full"
+                className="bg-[hsl(210,80%,15%)] rounded-3xl p-6 max-w-sm w-full"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 className="text-xl font-bold text-white mb-4">{t("help.title")}</h3>
@@ -1536,7 +1551,7 @@ export default function InternFlowTesting() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 safe-area-top safe-area-bottom">
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(208,87%,8%)] via-[hsl(210,80%,15%)] to-[hsl(208,87%,8%)] safe-area-top safe-area-bottom">
       <Helmet>
         <title>{`${t("summary.title")} | Flow Testing`}</title>
       </Helmet>
