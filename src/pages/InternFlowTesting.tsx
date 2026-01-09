@@ -203,9 +203,9 @@ function Confetti() {
 // =============== ACHIEVEMENT TOAST ===============
 function AchievementToast({ message, onClose }: { message: string; onClose: () => void }) {
   useEffect(() => {
-    const timer = setTimeout(onClose, 3000);
+    const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, [message]); // Use message as dependency, not onClose
 
   return (
     <motion.div
@@ -222,6 +222,13 @@ function AchievementToast({ message, onClose }: { message: string; onClose: () =
           <div className="text-white/70 text-xs font-medium">Achievement!</div>
           <div className="text-white font-bold">{message}</div>
         </div>
+        <button
+          onClick={onClose}
+          className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+          aria-label="Schliessen"
+        >
+          <X className="w-5 h-5 text-white" />
+        </button>
       </div>
     </motion.div>
   );
