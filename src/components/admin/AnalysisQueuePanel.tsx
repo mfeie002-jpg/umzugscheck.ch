@@ -475,7 +475,7 @@ export default function AnalysisQueuePanel({ availableFlows = [] }: AnalysisQueu
                       <div
                         key={run.id}
                         className="flex items-center justify-between p-3 rounded bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
-                        onClick={() => window.location.href = `/admin/flow-deep-analysis?flow=${version}`}
+                        onClick={() => navigate(`/admin/flow-deep-analysis?flow=${version}`)}
                       >
                         <div className="flex flex-col">
                           <span className="font-medium text-sm">{run.flow_name || run.flow_id}</span>
