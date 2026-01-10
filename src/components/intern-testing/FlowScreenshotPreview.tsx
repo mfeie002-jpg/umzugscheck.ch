@@ -34,45 +34,80 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
   const fetchScreenshots = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
+    const getFlowIdCandidates = (id: string) => {
+      const normalized = id.startsWith('umzugsofferten-')
+        ? id.replace('umzugsofferten-', '')
+        : id;
+      return Array.from(new Set([
+        id,
+        normalized,
+        `umzugsofferten-${normalized}`,
+      ]));
+    };
+
     try {
-      // Get the latest completed run for this flow
-      const { data: latestRun } = await supabase
+      const flowIds = getFlowIdCandidates(flowId);
+
+      // Prefer the latest *completed* run, but if none exists, fall back to the latest run that has screenshots.
+      const { data: latestCompletedRun } = await supabase
         .from('flow_analysis_runs')
         .select('id')
-        .eq('flow_id', flowId)
+        .in('flow_id', flowIds)
         .eq('status', 'completed')
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
-      
-      if (!latestRun) {
+        .maybeSingle();
+
+      let runId = latestCompletedRun?.id || null;
+
+      if (!runId) {
+        const { data: latestMetric } = await supabase
+          .from('flow_step_metrics')
+          .select('run_id, created_at')
+          .in('flow_id', flowIds)
+          .or('desktop_screenshot_url.not.is.null,mobile_screenshot_url.not.is.null')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        runId = latestMetric?.run_id || null;
+      }
+
+      if (!runId) {
         setError('Keine Screenshots verfügbar');
         setScreenshots([]);
         return;
       }
-      
-      // Fetch step metrics for this specific run
+
+      // Fetch step metrics for the chosen run
       const { data, error: queryError } = await supabase
         .from('flow_step_metrics')
-        .select('step_number, desktop_screenshot_url, mobile_screenshot_url')
-        .eq('run_id', latestRun.id)
-        .order('step_number', { ascending: true });
-      
+        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+        .eq('run_id', runId)
+        .order('created_at', { ascending: false });
+
       if (queryError) throw queryError;
-      
+
       if (!data || data.length === 0) {
         setError('Keine Screenshots verfügbar');
         setScreenshots([]);
         return;
       }
-      
-      const steps: StepScreenshot[] = data.map(row => ({
-        stepNumber: row.step_number,
-        desktopUrl: row.desktop_screenshot_url,
-        mobileUrl: row.mobile_screenshot_url,
-      }));
-      
+
+      // Deduplicate: keep newest per step_number (fixes cases where multiple rows exist per step)
+      const newestByStep = new Map<number, StepScreenshot>();
+      for (const row of data) {
+        if (!newestByStep.has(row.step_number)) {
+          newestByStep.set(row.step_number, {
+            stepNumber: row.step_number,
+            desktopUrl: row.desktop_screenshot_url,
+            mobileUrl: row.mobile_screenshot_url,
+          });
+        }
+      }
+
+      const steps = Array.from(newestByStep.values()).sort((a, b) => a.stepNumber - b.stepNumber);
       setScreenshots(steps);
     } catch (err) {
       console.error('Failed to fetch screenshots:', err);
