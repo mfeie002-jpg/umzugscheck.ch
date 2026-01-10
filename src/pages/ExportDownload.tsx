@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package, FileCode, AlertCircle } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package, FileCode, AlertCircle, ChevronDown } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
 
-// Top 10 Flow IDs in ranking order - using actual database flow_ids
+// Top 10 Flow IDs - hardcoded for quick access
 const TOP_10_FLOW_IDS = [
   { rank: 1, id: "umzugsofferten-ultimate-best36", name: "Ultimate Best36" },
   { rank: 2, id: "umzugsofferten-v1", name: "V1 Control" },
@@ -30,46 +31,118 @@ interface StepScreenshot {
   desktopUrl: string | null;
 }
 
+interface FlowInfo {
+  id: string;
+  name: string;
+  rank: number;
+}
+
+type ExportMode = "top10" | "all";
+
 const ExportDownload = () => {
+  const [mode, setMode] = useState<ExportMode>("top10");
   const [isDownloading, setIsDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
   const [completed, setCompleted] = useState(false);
   const [screenshots, setScreenshots] = useState<StepScreenshot[]>([]);
+  const [allFlows, setAllFlows] = useState<FlowInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch screenshots from database on mount
+  // Fetch all available flows from DB
+  useEffect(() => {
+    const fetchAllFlows = async () => {
+      try {
+        const { data } = await supabase
+          .from('flow_analysis_runs')
+          .select('flow_id, flow_name')
+          .order('created_at', { ascending: false });
+        
+        if (data) {
+          // Deduplicate by flow_id
+          const uniqueFlows = new Map<string, FlowInfo>();
+          data.forEach((row, idx) => {
+            if (!uniqueFlows.has(row.flow_id)) {
+              uniqueFlows.set(row.flow_id, {
+                id: row.flow_id,
+                name: row.flow_name || row.flow_id,
+                rank: idx + 1,
+              });
+            }
+          });
+          setAllFlows(Array.from(uniqueFlows.values()));
+        }
+      } catch (err) {
+        console.error("Failed to fetch all flows:", err);
+      }
+    };
+    fetchAllFlows();
+  }, []);
+
+  // Get flow list based on mode
+  const targetFlows = useMemo(() => {
+    if (mode === "top10") {
+      return TOP_10_FLOW_IDS;
+    }
+    // "all" mode - use all flows from DB
+    return allFlows.map((f, idx) => ({
+      rank: idx + 1,
+      id: f.id,
+      name: f.name,
+    }));
+  }, [mode, allFlows]);
+
+  // Fetch screenshots when mode or targetFlows changes
   useEffect(() => {
     const fetchScreenshots = async () => {
+      if (targetFlows.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+      
       setIsLoading(true);
       setError(null);
 
       try {
-        const flowIds = TOP_10_FLOW_IDS.map(f => f.id);
+        const flowIds = targetFlows.map(f => f.id);
 
-        // First get only completed runs for these flows
-        const { data: completedRuns } = await supabase
+        // Get ALL runs for these flows (not just completed)
+        const { data: allRuns } = await supabase
           .from('flow_analysis_runs')
-          .select('id, flow_id')
-          .in('flow_id', flowIds)
-          .eq('status', 'completed')
-          .order('created_at', { ascending: false });
-
-        const completedRunIds = completedRuns?.map(r => r.id) || [];
-
-        // Get latest screenshots per flow/step from completed runs only
-        let query = supabase
-          .from('flow_step_metrics')
-          .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
+          .select('id, flow_id, status, created_at')
           .in('flow_id', flowIds)
           .order('created_at', { ascending: false });
 
-        if (completedRunIds.length > 0) {
-          query = query.in('run_id', completedRunIds);
+        // Build a map: flow_id -> best run_id (prefer completed, fallback to latest)
+        const flowToRunId = new Map<string, string>();
+        const completedRunIds: string[] = [];
+        
+        for (const run of allRuns || []) {
+          if (!flowToRunId.has(run.flow_id)) {
+            flowToRunId.set(run.flow_id, run.id);
+          }
+          if (run.status === 'completed') {
+            completedRunIds.push(run.id);
+            // Override with completed run if we had a non-completed one
+            flowToRunId.set(run.flow_id, run.id);
+          }
         }
 
-        const { data, error: queryError } = await query;
+        const runIdsToQuery = Array.from(flowToRunId.values());
+
+        if (runIdsToQuery.length === 0) {
+          setScreenshots([]);
+          setIsLoading(false);
+          return;
+        }
+
+        // Get step metrics for these runs
+        const { data, error: queryError } = await supabase
+          .from('flow_step_metrics')
+          .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
+          .in('run_id', runIdsToQuery)
+          .order('created_at', { ascending: false });
 
         if (queryError) throw queryError;
 
@@ -79,7 +152,7 @@ const ExportDownload = () => {
         for (const row of data || []) {
           const key = `${row.flow_id}-${row.step_number}`;
           if (!latestMap.has(key) && (row.mobile_screenshot_url || row.desktop_screenshot_url)) {
-            const flowInfo = TOP_10_FLOW_IDS.find(f => f.id === row.flow_id);
+            const flowInfo = targetFlows.find(f => f.id === row.flow_id);
             if (flowInfo) {
               latestMap.set(key, {
                 flowId: row.flow_id,
@@ -109,11 +182,12 @@ const ExportDownload = () => {
     };
 
     fetchScreenshots();
-  }, []);
+  }, [targetFlows]);
 
   const mobileCount = screenshots.filter(s => s.mobileUrl).length;
   const desktopCount = screenshots.filter(s => s.desktopUrl).length;
   const totalScreenshots = mobileCount + desktopCount;
+  const uniqueFlowCount = new Set(screenshots.map(s => s.flowId)).size;
 
   const downloadZip = async () => {
     setIsDownloading(true);
@@ -125,81 +199,122 @@ const ExportDownload = () => {
       const mobileFolder = zip.folder("screenshots-mobile");
       const desktopFolder = zip.folder("screenshots-desktop");
       
-      // 6 doc files + all screenshots
-      const total = 6 + totalScreenshots;
+      const total = totalScreenshots;
       let current = 0;
 
-      // Fetch Summary JSON
-      setStatus("Lade Zusammenfassung JSON...");
-      try {
-        const jsonResponse = await fetch("/exports/top10-flows-mobile-complete.json");
-        if (jsonResponse.ok) {
-          const jsonData = await jsonResponse.text();
-          zip.file("top10-flows-mobile-complete.json", jsonData);
-        }
-      } catch (e) { console.warn("Could not fetch summary JSON"); }
-      current++;
-      setProgress((current / total) * 100);
+      // Generate dynamic JSON manifest
+      const manifestData = {
+        generatedAt: new Date().toISOString(),
+        mode: mode,
+        totalFlows: uniqueFlowCount,
+        totalSteps: screenshots.length,
+        mobileScreenshots: mobileCount,
+        desktopScreenshots: desktopCount,
+        flows: targetFlows.filter(f => screenshots.some(s => s.flowId === f.id)).map(f => ({
+          rank: f.rank,
+          id: f.id,
+          name: f.name,
+          steps: screenshots.filter(s => s.flowId === f.id).map(s => ({
+            step: s.stepNumber,
+            hasMobile: !!s.mobileUrl,
+            hasDesktop: !!s.desktopUrl,
+            mobileUrl: s.mobileUrl,
+            desktopUrl: s.desktopUrl,
+          })),
+        })),
+      };
 
-      // Fetch Summary Markdown
-      setStatus("Lade Zusammenfassung Markdown...");
-      try {
-        const mdResponse = await fetch("/exports/top10-flows-mobile-complete.md");
-        if (mdResponse.ok) {
-          const mdData = await mdResponse.text();
-          zip.file("top10-flows-mobile-complete.md", mdData);
-        }
-      } catch (e) { console.warn("Could not fetch summary MD"); }
-      current++;
-      setProgress((current / total) * 100);
+      // Generate Markdown summary
+      let markdown = `# Umzugscheck Flow Export\n\n`;
+      markdown += `**Generated:** ${new Date().toISOString()}\n`;
+      markdown += `**Mode:** ${mode === 'top10' ? 'Top 10 Flows' : `All Flows (${uniqueFlowCount})`}\n`;
+      markdown += `**Total Steps:** ${screenshots.length}\n`;
+      markdown += `**Screenshots:** ${mobileCount} Mobile, ${desktopCount} Desktop\n\n`;
+      markdown += `---\n\n`;
 
-      // Fetch Summary HTML
-      setStatus("Lade Zusammenfassung HTML...");
-      try {
-        const htmlResponse = await fetch("/exports/top10-flows-mobile-complete.html");
-        if (htmlResponse.ok) {
-          const htmlData = await htmlResponse.text();
-          zip.file("top10-flows-mobile-complete.html", htmlData);
+      for (const flow of manifestData.flows) {
+        markdown += `## ${flow.rank}. ${flow.name}\n`;
+        markdown += `**Flow ID:** \`${flow.id}\`\n\n`;
+        
+        for (const step of flow.steps) {
+          markdown += `### Step ${step.step}\n`;
+          if (step.mobileUrl) {
+            markdown += `- Mobile: [View](${step.mobileUrl})\n`;
+          }
+          if (step.desktopUrl) {
+            markdown += `- Desktop: [View](${step.desktopUrl})\n`;
+          }
+          markdown += `\n`;
         }
-      } catch (e) { console.warn("Could not fetch summary HTML"); }
-      current++;
-      setProgress((current / total) * 100);
+        markdown += `---\n\n`;
+      }
 
-      // Fetch All-Steps JSON
-      setStatus("Lade Alle Steps JSON...");
-      try {
-        const allStepsJsonResponse = await fetch("/exports/top10-flows-all-steps-mobile.json");
-        if (allStepsJsonResponse.ok) {
-          const allStepsJsonData = await allStepsJsonResponse.text();
-          zip.file("top10-flows-all-steps-mobile.json", allStepsJsonData);
-        }
-      } catch (e) { console.warn("Could not fetch all-steps JSON"); }
-      current++;
-      setProgress((current / total) * 100);
+      // Generate HTML summary
+      let html = `<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Umzugscheck Flow Export</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #1e3a5f; }
+    .meta { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .flow { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    .flow h2 { margin-top: 0; color: #1e3a5f; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+    .step { background: #f9fafb; padding: 10px; border-radius: 6px; }
+    .step img { width: 100%; border-radius: 4px; border: 1px solid #e5e7eb; }
+    .step-title { font-weight: 600; margin-bottom: 8px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+    .mobile { background: #dbeafe; color: #1d4ed8; }
+    .desktop { background: #dcfce7; color: #166534; }
+  </style>
+</head>
+<body>
+  <h1>🚚 Umzugscheck Flow Export</h1>
+  <div class="meta">
+    <p><strong>Generated:</strong> ${new Date().toISOString()}</p>
+    <p><strong>Mode:</strong> ${mode === 'top10' ? 'Top 10 Flows' : `All Flows (${uniqueFlowCount})`}</p>
+    <p><strong>Total:</strong> ${screenshots.length} Steps | ${mobileCount} Mobile | ${desktopCount} Desktop</p>
+  </div>
+`;
 
-      // Fetch All-Steps Markdown
-      setStatus("Lade Alle Steps Markdown...");
-      try {
-        const allStepsMdResponse = await fetch("/exports/top10-flows-all-steps-mobile.md");
-        if (allStepsMdResponse.ok) {
-          const allStepsMdData = await allStepsMdResponse.text();
-          zip.file("top10-flows-all-steps-mobile.md", allStepsMdData);
+      for (const flow of manifestData.flows) {
+        html += `  <div class="flow">
+    <h2>${flow.rank}. ${flow.name}</h2>
+    <p><code>${flow.id}</code></p>
+    <div class="steps">
+`;
+        for (const step of flow.steps) {
+          html += `      <div class="step">
+        <div class="step-title">Step ${step.step}</div>
+`;
+          if (step.mobileUrl) {
+            html += `        <p><span class="badge mobile">Mobile</span></p>
+        <a href="${step.mobileUrl}" target="_blank"><img src="${step.mobileUrl}" alt="Step ${step.step} Mobile" loading="lazy"></a>
+`;
+          }
+          if (step.desktopUrl) {
+            html += `        <p><span class="badge desktop">Desktop</span></p>
+        <a href="${step.desktopUrl}" target="_blank"><img src="${step.desktopUrl}" alt="Step ${step.step} Desktop" loading="lazy"></a>
+`;
+          }
+          html += `      </div>
+`;
         }
-      } catch (e) { console.warn("Could not fetch all-steps MD"); }
-      current++;
-      setProgress((current / total) * 100);
+        html += `    </div>
+  </div>
+`;
+      }
 
-      // Fetch All-Steps HTML
-      setStatus("Lade Alle Steps HTML...");
-      try {
-        const allStepsHtmlResponse = await fetch("/exports/top10-flows-all-steps-mobile.html");
-        if (allStepsHtmlResponse.ok) {
-          const allStepsHtmlData = await allStepsHtmlResponse.text();
-          zip.file("top10-flows-all-steps-mobile.html", allStepsHtmlData);
-        }
-      } catch (e) { console.warn("Could not fetch all-steps HTML"); }
-      current++;
-      setProgress((current / total) * 100);
+      html += `</body>
+</html>`;
+
+      // Add generated files to ZIP
+      zip.file("manifest.json", JSON.stringify(manifestData, null, 2));
+      zip.file("summary.md", markdown);
+      zip.file("summary.html", html);
 
       // Fetch all screenshots from database URLs
       for (const shot of screenshots) {
@@ -238,32 +353,15 @@ const ExportDownload = () => {
         }
       }
 
-      // Generate manifest of what's included
-      const manifest = {
-        generatedAt: new Date().toISOString(),
-        totalFlows: TOP_10_FLOW_IDS.length,
-        totalSteps: screenshots.length,
-        mobileScreenshots: mobileCount,
-        desktopScreenshots: desktopCount,
-        flows: TOP_10_FLOW_IDS.map(f => ({
-          rank: f.rank,
-          id: f.id,
-          name: f.name,
-          steps: screenshots.filter(s => s.flowId === f.id).map(s => ({
-            step: s.stepNumber,
-            hasMobile: !!s.mobileUrl,
-            hasDesktop: !!s.desktopUrl,
-          })),
-        })),
-      };
-      zip.file("manifest.json", JSON.stringify(manifest, null, 2));
-
       // Generate ZIP
       setStatus("Erstelle ZIP-Datei...");
       const content = await zip.generateAsync({ type: "blob" });
       
       // Download
-      saveAs(content, `umzugscheck-top10-flows-all-steps-${new Date().toISOString().split('T')[0]}.zip`);
+      const filename = mode === "top10" 
+        ? `umzugscheck-top10-flows-${new Date().toISOString().split('T')[0]}.zip`
+        : `umzugscheck-all-${uniqueFlowCount}-flows-${new Date().toISOString().split('T')[0]}.zip`;
+      saveAs(content, filename);
       
       setStatus("Download gestartet!");
       setCompleted(true);
@@ -297,12 +395,29 @@ const ExportDownload = () => {
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Package className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Top 10 Flows - Vollständiger Export</CardTitle>
+          <CardTitle className="text-2xl">Flow Screenshot Export</CardTitle>
           <CardDescription>
-            Alle {screenshots.length} Steps mit Mobile & Desktop Screenshots
+            {mode === "top10" 
+              ? `Top 10 Flows - ${screenshots.length} Steps`
+              : `Alle ${uniqueFlowCount} Flows - ${screenshots.length} Steps`
+            }
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Mode Selector */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Export-Modus:</label>
+            <Select value={mode} onValueChange={(v: ExportMode) => setMode(v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="top10">Top 10 Flows</SelectItem>
+                <SelectItem value="all">Alle Flows ({allFlows.length})</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {error && (
             <div className="flex items-center gap-2 text-destructive bg-destructive/10 p-3 rounded-lg">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -311,18 +426,22 @@ const ExportDownload = () => {
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="bg-muted/50 rounded-lg p-3">
-              <div className="text-2xl font-bold text-primary">{screenshots.length}</div>
-              <div className="text-xs text-muted-foreground">Steps</div>
+          <div className="grid grid-cols-4 gap-2 text-center">
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-xl font-bold text-primary">{uniqueFlowCount}</div>
+              <div className="text-[10px] text-muted-foreground">Flows</div>
             </div>
-            <div className="bg-muted/50 rounded-lg p-3">
-              <div className="text-2xl font-bold text-blue-500">{mobileCount}</div>
-              <div className="text-xs text-muted-foreground">Mobile</div>
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-xl font-bold text-amber-500">{screenshots.length}</div>
+              <div className="text-[10px] text-muted-foreground">Steps</div>
             </div>
-            <div className="bg-muted/50 rounded-lg p-3">
-              <div className="text-2xl font-bold text-green-500">{desktopCount}</div>
-              <div className="text-xs text-muted-foreground">Desktop</div>
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-xl font-bold text-blue-500">{mobileCount}</div>
+              <div className="text-[10px] text-muted-foreground">Mobile</div>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-xl font-bold text-green-500">{desktopCount}</div>
+              <div className="text-[10px] text-muted-foreground">Desktop</div>
             </div>
           </div>
 
@@ -330,33 +449,20 @@ const ExportDownload = () => {
           <div className="bg-muted/50 rounded-lg p-4 space-y-3">
             <h3 className="font-medium text-sm">Inhalt der ZIP-Datei:</h3>
             <div className="space-y-2 text-sm">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Dokumentation</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Dokumentation (dynamisch generiert)</p>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <FileJson className="h-4 w-4 text-blue-500" />
-                <span>top10-flows-mobile-complete.json</span>
+                <span>manifest.json</span>
+                <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">mit URLs</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <FileText className="h-4 w-4 text-green-500" />
-                <span>top10-flows-mobile-complete.md</span>
+                <span>summary.md</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <FileCode className="h-4 w-4 text-orange-500" />
-                <span>top10-flows-mobile-complete.html</span>
-              </div>
-              
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-2">Alle Steps einzeln</p>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <FileJson className="h-4 w-4 text-blue-500" />
-                <span>top10-flows-all-steps-mobile.json</span>
-                <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">{screenshots.length} Steps</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <FileText className="h-4 w-4 text-green-500" />
-                <span>top10-flows-all-steps-mobile.md</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <FileCode className="h-4 w-4 text-orange-500" />
-                <span>top10-flows-all-steps-mobile.html</span>
+                <span>summary.html</span>
+                <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded">mit Previews</span>
               </div>
               
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-2">Screenshots (aus Datenbank)</p>
@@ -409,40 +515,11 @@ const ExportDownload = () => {
             )}
           </Button>
 
-          {/* Individual Links */}
-          <div className="pt-4 border-t space-y-3">
-            <p className="text-xs text-muted-foreground text-center">
-              Oder einzelne Dateien herunterladen:
+          {screenshots.length === 0 && !isLoading && (
+            <p className="text-sm text-muted-foreground text-center">
+              Keine Screenshots gefunden. Bitte zuerst Screenshots erfassen.
             </p>
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground">Zusammenfassung:</p>
-              <div className="flex gap-2 justify-center flex-wrap">
-                <Button variant="outline" size="sm" asChild>
-                  <a href="/exports/top10-flows-mobile-complete.json" download>JSON</a>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <a href="/exports/top10-flows-mobile-complete.md" download>MD</a>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <a href="/exports/top10-flows-mobile-complete.html" download>HTML</a>
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground">Alle {screenshots.length} Steps:</p>
-              <div className="flex gap-2 justify-center flex-wrap">
-                <Button variant="outline" size="sm" asChild>
-                  <a href="/exports/top10-flows-all-steps-mobile.json" download>JSON</a>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <a href="/exports/top10-flows-all-steps-mobile.md" download>MD</a>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <a href="/exports/top10-flows-all-steps-mobile.html" download>HTML</a>
-                </Button>
-              </div>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

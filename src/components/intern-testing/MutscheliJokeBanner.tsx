@@ -1,6 +1,6 @@
 /**
  * Morris Love Declaration Banner - Bulgarian Only
- * Shows romantic love declarations from Morris to Bory
+ * Shows love declarations + kiffer/ski jokes for Bulgarian testers
  */
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -10,18 +10,34 @@ import { Sparkles, RefreshCw, X, Crown, Star, Heart } from "lucide-react";
 // All love declarations from Morris to Bory 💕
 // NOTE: Keep it playful + non-offensive (no sexual content).
 const MORRIS_LOVE_DECLARATIONS = [
-  // Winter / Ski / Snow (BG)
-  { icon: "⛷️", text: "Bory, готова ли си за ски? Аз съм 'професионалист'… в падането. 😂" },
-  { icon: "❄️", text: "Bory, навън вали сняг… а аз се плъзгам по UX-а като на лед! 🧊😅" },
-  { icon: "🏔️", text: "Bory, ако този flow беше писта: Step 1 е синя, Step 2 е червена… а Step 3 е 'къде ми е CTA-то' 🤣" },
-  { icon: "☕", text: "Bory, топъл чай след тестовете, а после… още 1 flow. Само още 1. Обещавам. 😇" },
-
-  // Light stoner / kiffer-style jokes (BG, mild)
-  { icon: "🌿", text: "Bory, казах 'само 2 стъпки'… после видях още 8. Май някой е 'на облак' ☁️😂" },
+  // ========== KIFFER / STONER JOKES (BG) ==========
+  { icon: "🌿", text: "Bory, казах 'само 2 стъпки'… после видях още 8. Май съм на облак ☁️😂" },
   { icon: "💨", text: "Bory, аз не съм бавен… просто UX-ът е в slow motion. 💨🐌" },
   { icon: "🍪", text: "Bory, правило #1: Step 1 → snack. Step 2 → snack. Step 3 →… пак snack. 🍪✨" },
-
-  // Deep love declarations
+  { icon: "🧠", text: "Bory, имах гениална идея за UX-а… *забравям веднага* 💭😅" },
+  { icon: "🔄", text: "Testing loop: Отвори flow → Разсейка → Пак отвори flow → Repeat 🔁🌿" },
+  { icon: "🌈", text: "Bory, цветовете на този flow са прекрасни... или съм аз? 🌈✨" },
+  { icon: "😴", text: "Bory, 'още 1 flow' казах на 22:00... сега е 03:00 😴🌙" },
+  { icon: "🍕", text: "Bory, този бутон ми прилича на пица... Чакай, гладен съм. 🍕🤔" },
+  { icon: "⏰", text: "Bory, времето при testing: 5 минути = 2 часа. Или не. Кой знае? ⏰🌀" },
+  { icon: "🔮", text: "Bory, предвиждам че този flow ще бъде... wait, какво казвах? 🔮💨" },
+  { icon: "🤔", text: "Bory, ако flow-ът има 3 стъпки... колко flow-a има flow-ът? 🤯🌿" },
+  { icon: "💭", text: "Deep thought: CTA бутонът съществува ли или е метафора? 🧘💭" },
+  { icon: "😎", text: "Bory, Pro tip: Ако не разбираш flow-а, виновен е flow-ът. Никога ти! 😎✌️" },
+  
+  // ========== SNOW / SKI JOKES (BG) ==========
+  { icon: "⛷️", text: "Bory, готова ли си за ски? Аз съм 'професионалист'… в падането. 😂⛷️" },
+  { icon: "❄️", text: "Bory, навън вали сняг… а аз се плъзгам по UX-а като на лед! 🧊😅" },
+  { icon: "🏔️", text: "Bory, ако този flow беше писта: Step 1 е синя, Step 2 е червена, Step 3 е 'къде ми е CTA-то' 🤣🎿" },
+  { icon: "☕", text: "Bory, топъл чай след тестовете, а после… още 1 flow. Само още 1. Обещавам. 😇❄️" },
+  { icon: "🎿", text: "Bory, каращ ски като мен правиш testing: много падания, но накрая стигаш долу! 🎿💪" },
+  { icon: "🌨️", text: "Bory, снегът пада, а аз тествам flows. Идеален зимен ден! 🌨️💻" },
+  { icon: "🧊", text: "Bory, този loading spinner е като ски лифт: бавен, но стигаш там! 🚡⏳" },
+  { icon: "⛄", text: "Bory, направих снежен човек... изглежда като UI на този flow! ⛄🤣" },
+  { icon: "🧣", text: "Bory, облечи се топло - тези flows са COOL! 🧣😎" },
+  { icon: "🏂", text: "Bory, сноуборд или ски? Аз: и двете... и падам и от двете! 🏂😅" },
+  
+  // ========== LOVE DECLARATIONS (BG) ==========
   { icon: "💕", text: "Bory, ти си най-красивата жена на този свят. Обичам те безкрайно! ❤️" },
   { icon: "🌹", text: "Всяка сутрин се събуждам щастлив, защото знам че си моя, Bory! 💖" },
   { icon: "💎", text: "Bory, ти си моето съкровище. По-ценна от всичко на света! 👑" },
@@ -32,15 +48,11 @@ const MORRIS_LOVE_DECLARATIONS = [
   { icon: "🏆", text: "Най-големият ми успех в живота? Да те имам, Bory! THE BEST! 💪" },
   { icon: "💫", text: "Bory, ти си моята луна и звезди. Осветяваш пътя ми! 🌙" },
   { icon: "🔥", text: "Огънят на любовта ми към теб никога няма да угасне, Bory! 🔥❤️" },
-
-  // Sweet compliments
   { icon: "👑", text: "Bory, ти си моята кралица! Заслужаваш само най-доброто! 👸" },
   { icon: "🍯", text: "По-сладка от мед, по-красива от цвете - това си ти, Bory! 🌸" },
   { icon: "🎵", text: "Bory, гласът ти е любимата ми мелодия. Искам да те слушам завинаги! 🎶" },
   { icon: "☀️", text: "Ти си слънцето в моя живот, Bory. Без теб е тъмно! 🌅" },
   { icon: "🦸‍♂️", text: "За теб, Bory, ще направя всичко. Ти си моята супер сила! 💪❤️" },
-
-  // Playful love
   { icon: "🍕", text: "Bory, ти си моята любима... като пицата! Но още повече! 😂❤️" },
   { icon: "☕", text: "Като кафе сутрин - не мога без теб, Bory! ☕❤️" },
   { icon: "🍀", text: "Най-късметлията съм, Bory, защото те имам! Lucky Morris! 🍀" },

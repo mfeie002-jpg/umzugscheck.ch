@@ -17,7 +17,7 @@ interface CaptureSentinelProps {
 export const CaptureSentinel: React.FC<CaptureSentinelProps> = ({ 
   step, 
   flow, 
-  isReady = true 
+  isReady = false // FIXED: default to false - flows must explicitly set isReady when content is rendered
 }) => {
   return <CaptureReadySentinel step={step} flow={flow} isReady={isReady} />;
 };
