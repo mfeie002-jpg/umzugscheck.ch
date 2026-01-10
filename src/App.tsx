@@ -242,6 +242,7 @@ const UmzugsoffertenV2Archetyp = lazy(() => import("./pages/UmzugsoffertenV2Arch
 const UmzugsoffertenBestaetigung = lazy(() => import("./pages/UmzugsoffertenBestaetigung"));
 const FlowTester = lazy(() => import("./pages/FlowTester"));
 const FlowShowcase = lazy(() => import("./pages/FlowShowcase"));
+const FlowReview = lazy(() => import("./pages/FlowReview"));
 // FlowOverview merged into FlowTester
 const FlowsIndex = lazy(() => import("./pages/FlowsIndex"));
 const FlowFamilyLanding = lazy(() => import("./pages/FlowFamilyLanding"));
@@ -688,7 +689,7 @@ const AppRouterContent = () => {
           {/* Flow Command Center - Public (no admin auth required) */}
           <Route path="/flow-command-center" element={<FlowCommandCenter />} />
           <Route path="/flow-command-center/*" element={<FlowCommandCenter />} />
-
+          <Route path="/flow-review" element={<FlowReview />} />
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/flow/:flowId" element={<FlowShowcase />} />
           <Route path="/flow-overview" element={<Navigate to="/flow-tester" replace />} />

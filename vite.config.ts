@@ -86,6 +86,7 @@ export default defineConfig(({ mode }) => ({
     chatgptExportPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
+      devOptions: { enabled: false },
       includeAssets: ['favicon.ico', 'robots.txt', 'lovable-uploads/**/*'],
       manifest: {
         name: 'Umzugscheck.ch',
