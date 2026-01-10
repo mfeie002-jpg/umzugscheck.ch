@@ -698,6 +698,8 @@ const AppRouterContent = () => {
           <Route path="/flows" element={<FlowsIndex />} />
           <Route path="/flows/:familyId" element={<FlowFamilyLanding />} />
           <Route path="/intern-testing" element={<InternFlowTesting />} />
+          {/* accept trailing slash / subpaths */}
+          <Route path="/intern-testing/*" element={<InternFlowTesting />} />
           <Route path="/admin/intern-results" element={<AdminInternResults />} />
           <Route path="/v3-varianten" element={<V3VariantComparison />} />
           <Route path="/flow-comparison" element={<TopFlowsComparison />} />
