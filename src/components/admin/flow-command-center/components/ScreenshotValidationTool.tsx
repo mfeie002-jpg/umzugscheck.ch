@@ -270,9 +270,13 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
 
   // Fix all broken flows by re-capturing screenshots
   const fixAllBrokenFlows = async () => {
+    console.log('[FixAllBrokenFlows] Button clicked! Results length:', results.length);
+    toast.info("🔧 Button wurde geklickt - starte...");
+    
     const brokenFlows = results.filter(r => r.status === 'error' || r.status === 'warning');
     
     console.log('[FixAllBrokenFlows] Starting with', brokenFlows.length, 'flows');
+    console.log('[FixAllBrokenFlows] Broken flows:', brokenFlows.map(f => f.flowId));
     
     if (brokenFlows.length === 0) {
       toast.info("Keine Flows zu reparieren");
@@ -282,7 +286,7 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
     setIsFixing(true);
     setFixProgress(0);
     setFixMessage("Starte Reparatur...");
-    toast.info(`Starte Reparatur von ${brokenFlows.length} Flows...`);
+    toast.success(`🚀 Starte Reparatur von ${brokenFlows.length} Flows...`);
 
     try {
       const baseUrl = SITE_CONFIG.previewUrl.replace(/\/$/, "");
