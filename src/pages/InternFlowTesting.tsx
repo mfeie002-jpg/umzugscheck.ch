@@ -1326,9 +1326,12 @@ export default function InternFlowTesting() {
             <div className="space-y-5">
               {CRITERIA.map((criterion, criterionIndex) => (
                 <React.Fragment key={criterion.id}>
-                  {/* Inline Joke Banner - Bulgarian Only (after every 2 criteria) */}
+                  {/* Inline Joke Banners - Language Specific (after every 2 criteria) */}
                   {lang === "bg" && criterionIndex > 0 && criterionIndex % 2 === 0 && (
                     <MutscheliJokeBanner variant="inline" className="my-3" />
+                  )}
+                  {lang === "it" && criterionIndex > 0 && criterionIndex % 2 === 0 && (
+                    <KifferJokeBanner variant="inline" className="my-3" />
                   )}
                   
                   <div className="space-y-3">
@@ -1378,9 +1381,12 @@ export default function InternFlowTesting() {
                 </React.Fragment>
               ))}
               
-              {/* Final inline joke after all criteria - Bulgarian Only */}
+              {/* Final inline joke after all criteria - Language Specific */}
               {lang === "bg" && (
                 <MutscheliJokeBanner variant="inline" className="mt-4" />
+              )}
+              {lang === "it" && (
+                <KifferJokeBanner variant="inline" className="mt-4" />
               )}
             </div>
 
