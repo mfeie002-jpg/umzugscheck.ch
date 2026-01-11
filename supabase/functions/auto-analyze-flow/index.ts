@@ -875,13 +875,19 @@ serve(async (req) => {
 
     // 1) If the raw ID is already a known config key, keep it.
     if (!FLOW_CONFIGS[normalizedFlowId]) {
-      // 2) Otherwise strip the common prefix.
-      normalizedFlowId = rawFlowId
-        .replace(/^umzugsofferten-/, '')
-        .replace(/^umzugsofferten$/, 'v1');
+      // 2) Try with umzugsofferten- prefix (e.g., v1.1.a -> umzugsofferten-v1.1.a)
+      const withPrefix = `umzugsofferten-${rawFlowId}`;
+      if (FLOW_CONFIGS[withPrefix]) {
+        normalizedFlowId = withPrefix;
+      } else {
+        // 3) Otherwise strip the common prefix.
+        normalizedFlowId = rawFlowId
+          .replace(/^umzugsofferten-/, '')
+          .replace(/^umzugsofferten$/, 'v1');
 
-      // 3) Handle legacy/alias IDs.
-      if (normalizedFlowId === 'all') normalizedFlowId = 'ultimate-all';
+        // 4) Handle legacy/alias IDs.
+        if (normalizedFlowId === 'all') normalizedFlowId = 'ultimate-all';
+      }
     }
 
     console.log(`Normalized flow ID: ${rawFlowId} -> ${normalizedFlowId}`);
