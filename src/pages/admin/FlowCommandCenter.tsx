@@ -117,6 +117,7 @@ const VIEW_CONFIG: Record<ViewMode, { label: string; icon: React.ElementType; de
   ranking: { label: 'Ranking', icon: Trophy, description: 'Sortierte Liste & Winner' },
   analysis: { label: 'Analyse', icon: BarChart3, description: 'Deep Analysis pro Flow' },
   comparison: { label: 'Vergleich', icon: Layers, description: 'Flow-Vergleich Side-by-Side' },
+  studio: { label: 'Studio', icon: Camera, description: 'Screenshot/Live Vergleich & Analyse' },
   history: { label: 'Historie', icon: HistoryIcon, description: 'Trend-Tracking' },
   flows: { label: 'Flows', icon: Layers, description: 'Alle Flow-Familien & Varianten' },
   'landing-pages': { label: 'Landing Pages', icon: MapPin, description: 'City/Canton Pages' },
